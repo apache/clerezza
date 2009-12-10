@@ -1,0 +1,11 @@
+${ns:user=http://clerezza.org/2009/05/usermanager#}
+${ns:foaf=http://xmlns.com/foaf/0.1/}
+${ns:permission=http://clerezza.org/2008/10/permission#}
+Hi ${user:recipient/foaf:name},
+
+Your password has been reset. The newly generated password is:
+
+	${user:recipient/permission:password}
+
+Regards,
+Clerezza Dev Team

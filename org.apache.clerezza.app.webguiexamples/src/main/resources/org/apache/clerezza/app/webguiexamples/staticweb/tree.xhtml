@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>tree - example</title>
+
+	<link href="/style/style.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="./style/demo.css" media="screen" rel="stylesheet" type="text/css" />
+
+	<style type="text/css"> 
+		.col1 {
+			width: 7em; 
+		}
+		
+		.col2 {
+			width: 6em; 
+		}
+	</style>
+	
+</head>
+
+<body>
+
+<!-- content -->
+<div id="tx-content" class="demo">
+
+	<!-- tree view -->
+	<div class="tx-tree">
+    	
+		<!-- contains the tree -->
+		<div class="tx-tree-view">
+			<table class="tx-table">
+				<tr>
+					<th></th>
+					<th>Concepts</th>
+					<th class="col1">Tagged pages</th>
+					<th class="col2">In concepts</th>
+				</tr>
+			</table>
+			<!-- example folder structure -->
+			<ol>
+				<!--  tx-open, shows the arrow down on a "open" element -->
+				<li class="tx-open">
+					<!-- li content is wrapped inside a div to avoid some javascript event problems, eg. drag drop events can be assigned to the div instead -->
+					<div>
+						<!-- span class tx-info should be correspond with the table th widths -->
+						<span class="tx-info"><span class="col1">9</span><span class="col2">3</span></span>
+						<!-- drag icon -->
+						<div title=" Themes..." class="tx-icon tx-icon-drag">drag me</div>
+						<!-- checkbox -->
+						<input type="checkbox" /><!-- name --><a href=""></a><a href="">Themes...</a>
+					</div>
+					<!-- subelements of an li -->
+					<ol>
+						<li class="tx-open"><div>
+								<span class="tx-info"><span class="col1">29</span><span class="col2">2</span></span>
+								<div title=" Where" class="tx-icon tx-icon-drag">drag me</div>
+								<input type="checkbox" /><a href=""></a><a href=""> Where</a>
+							</div>
+							<ol>
+								<!-- li default shows an right arrow as background -->
+								<li><div>
+									<span class="tx-info"><span class="col1">51</span><span class="col2">5</span></span>
+									<div title="Africa" class="tx-icon tx-icon-drag">drag me</div>
+									<input type="checkbox" /><a href=""></a><a href="">Africa</a>
+								</div></li>
+								<li><div>
+									<span class="tx-info"><span class="col1">8</span><span class="col2">6</span></span>
+									<div title="Asia" class="tx-icon tx-icon-drag">drag me</div>
+									<input type="checkbox" /><a href=""></a><a href="">Asia</a>
+								</div></li>
+								<!-- tx-nobg, shows no arrow on a element, e.g. element has no subelements -->
+								<li class="tx-nobg"><div>
+									<span class="tx-info"><span class="col1">70</span><span class="col2">2</span></span>
+									<div title="Ecoregions" class="tx-icon tx-icon-drag">drag me</div>
+									<input type="checkbox" /><a href=""></a><a href="">Ecoregions</a>
+								</div></li>
+							</ol>
+						</li>		
+					</ol>
+				</li>
+			</ol>
+			<!-- // example folder structure-->
+		</div>
+		<!-- // tree view -->
+
+		<div id="demo">
+			<h3>Description</h3>
+
+			In the tx-content a &lt;div> with class <b>tx-tree</b> is created.
+			<br/>
+			<br/>			
+			
+			In the <strong>li</strong> elements of the <strong>tx-tree-view</strong> are the <strong>span.tx-info</strong>, which referes to the <strong>table th</strong>. 
+			<br/>
+			<br/>
+			
+			<strong>tx-tree-view</strong> contains the tree view. for a better description, how the tree view is defined, refer the source code (context highlighting in the browser) 
+			<br/>
+			<br/>
+			The current example has no ids or names defined, if necessary they have to be defined contextually.
+			<br/>
+			
+			
+			<strong>div.tx-tree</strong> is the main container for the tree view. If no class is defined on the <strong>div.tx-tree</strong> element the tree has 100% width. 
+			<br/>
+			The classes <strong>.tx-show-panel</strong>, <strong>.tx-hide-panel</strong> and <strong>.tx-halfwidth-left</strong> define the position of the tree view.
+			<br/>
+			<br/>
+			
+			<strong>.tx-show-panel</strong>: position with a panel on the left side.<br/>
+			<strong>.tx-hide-panel</strong>: position with a panel on the left side, hidden.<br/>
+			<strong>.tx-halfwidth-left</strong>: position on the left side 50% width.<br/>
+			<br/>
+			<br/>
+			
+			
+
+			<h3>Example code</h3>
+			
+			<pre>
+&lt;!-- contains the tree --&gt;
+&lt;div class="tx-tree-view"&gt;
+	&lt;table class="tx-table"&gt;
+		&lt;tr&gt;
+			&lt;th&gt;&lt;/th&gt;
+			&lt;th&gt;Concepts&lt;/th&gt;
+			&lt;th class="col1"&gt;Tagged pages&lt;/th&gt;
+			&lt;th class="col2"&gt;In concepts&lt;/th&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;!-- example folder structure --&gt;
+	&lt;ol&gt;
+		&lt;!--  tx-open, shows the arrow down on a "open" element --&gt;
+		&lt;li class="tx-open"&gt;
+			&lt;!-- li content is wrapped inside a div to avoid some javascript event problems, eg. drag drop events can be assigned to the div instead --&gt;
+			&lt;div&gt;
+				&lt;!-- span class tx-info should be correspond with the table th widths --&gt;
+				&lt;span class="tx-info"&gt;&lt;span class="col1"&gt;9&lt;/span&gt;&lt;span class="col2"&gt;3&lt;/span&gt;&lt;/span&gt;
+				&lt;!-- drag icon --&gt;
+				&lt;div title=" Themes..." class="tx-icon tx-icon-drag"&gt;drag me&lt;/div&gt;
+				&lt;!-- checkbox --&gt;
+				&lt;input type="checkbox" /&gt;&lt;!-- name --&gt;&lt;a href=""&gt;&lt;/a&gt;&lt;a href=""&gt;Themes...&lt;/a&gt;
+			&lt;/div&gt;
+			&lt;!-- subelements of an li --&gt;
+			&lt;ol&gt;
+				&lt;li class="tx-open"&gt;&lt;div&gt;
+						&lt;span class="tx-info"&gt;&lt;span class="col1"&gt;29&lt;/span&gt;&lt;span class="col2"&gt;2&lt;/span&gt;&lt;/span&gt;
+						&lt;div title=" Where" class="tx-icon tx-icon-drag"&gt;drag me&lt;/div&gt;
+						&lt;input type="checkbox" /&gt;&lt;a href=""&gt;&lt;/a&gt;&lt;a href=""&gt; Where&lt;/a&gt;
+					&lt;/div&gt;
+					&lt;ol&gt;
+						&lt;!-- li default shows an right arrow as background --&gt;
+						&lt;li&gt;&lt;div&gt;
+							&lt;span class="tx-info"&gt;&lt;span class="col1"&gt;51&lt;/span&gt;&lt;span class="col2"&gt;5&lt;/span&gt;&lt;/span&gt;
+							&lt;div title="Africa" class="tx-icon tx-icon-drag"&gt;drag me&lt;/div&gt;
+							&lt;input type="checkbox" /&gt;&lt;a href=""&gt;&lt;/a&gt;&lt;a href=""&gt;Africa&lt;/a&gt;
+						&lt;/div&gt;&lt;/li&gt;
+						&lt;!-- tx-nobg, shows no arrow on a element, e.g. element has no subelements --&gt;
+						&lt;li class="tx-nobg"&gt;&lt;div&gt;
+							&lt;span class="tx-info"&gt;&lt;span class="col1"&gt;70&lt;/span&gt;&lt;span class="col2"&gt;2&lt;/span&gt;&lt;/span&gt;
+							&lt;div title="Ecoregions" class="tx-icon tx-icon-drag"&gt;drag me&lt;/div&gt;
+							&lt;input type="checkbox" /&gt;&lt;a href=""&gt;&lt;/a&gt;&lt;a href=""&gt;Ecoregions&lt;/a&gt;
+						&lt;/div&gt;&lt;/li&gt;
+					&lt;/ol&gt;
+				&lt;/li&gt;		
+			&lt;/ol&gt;
+		&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;!-- // example folder structure--&gt;
+&lt;/div&gt;
+&lt;!-- // tree view --&gt;
+			</pre>
+
+		</div>
+	</div>	
+</div>
+<!-- // content -->
+
+
+	
+</body>
+</html>
+

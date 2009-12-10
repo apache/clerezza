@@ -1,0 +1,210 @@
+
+#!/bin/bash
+#-------------------------------------------------------------------------------
+# This script downloads the latest sversion of org.apache.clerezza.integrationtest.web
+# and org.apache.clerezza.integrationtest.web.performance
+#-------------------------------------------------------------------------------
+# Author: daniel.spicar@clerezza.org
+#-------------------------------------------------------------------------------
+# Requirements:	curl, wget, bash
+#-------------------------------------------------------------------------------
+
+# error codes
+NO_ERROR=0
+DOWNLOAD_FAILED=1
+BAD_ARGUMENTS=2
+REQUIREMENTS_NOT_FULFILLED=3
+NOT_DOWNLOADED=4
+
+command_test=$(whatis "curl" | grep 'nothing appropriate')
+if [ -n "$command_test" ]; then
+	echo "curl not found.";	
+	exit $REQUIREMENTS_NOT_FULFILLED
+fi
+command_test=$(whatis "wget" | grep 'nothing appropriate')
+if [ -n "$command_test" ]; then
+	echo "wget not found.";	
+	exit $REQUIREMENTS_NOT_FULFILLED
+fi
+
+# global vars
+BIN_URI_FRAMEWORK=http://repo.trialox.org/snapshot/org/apache/clerezza/org.apache.clerezza.integrationtest.web/
+BIN_URI_FRAMEWORK_RELEASE=`echo $BIN_URI_FRAMEWORK | sed 's/snapshot/release/'`
+BIN_URI_PERFORMANCETEST=http://repo.trialox.org/snapshot/org/apache/clerezza/org.apache.clerezza.integrationtest.web.performance/
+BIN_URI_PERFORMANCETEST_RELEASE=`echo $BIN_URI_PERFORMANCETEST | sed 's/snapshot/release/'`
+LIB_DIR=`pwd`
+
+# Prints the usage message
+print_usage()
+{
+	echo "Usage: tx-getlatestframework [<output-directory> <framework-repo-uri> <performancetest-repo-uri>]"
+}
+
+# Checks whether the supplied file is present in LIB_DIR
+# Args: file
+check_file()
+{
+	local file
+
+	if [ $# -eq 1 ]; then
+		file=$1
+	else
+		return $BAD_ARGUMENTS;
+	fi
+
+	if [ -e $LIB_DIR/$file ]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+# Downloads the specified binary. Requires exactly 3 arguments.
+# Args: uri
+#		directory
+#		file
+download_bin()
+{
+	local uri
+	local dir
+	local file
+
+	if [ $# -eq 3 ]; then
+		uri=$1
+		dir=$2
+		file=$3
+	else
+		return $BAD_ARGUMENTS;
+	fi
+	
+	if `check_file $file`; then
+		echo "the most recent file is $LIB_DIR/$file and it is already downloaded."
+		return $NOT_DOWNLOADED
+	else
+		if wget -O $LIB_DIR/$file $uri$dir$file ; then
+			return $NO_ERROR
+		fi
+	fi
+
+	return $DOWNLOAD_FAILED
+}
+
+# Checks if the first the first supplied version is higher than the second.
+# Syntax: Versions are interpreted as follows: major_version.minor_version
+# Example: to compare if 0.10 is larger than 0.9, the arguments are: 0 10 0 9
+#
+# NOTE: Same versions return true as well. 
+# 		This means the first argument is prioritized.
+#
+# Args: major_version_first
+#		minor_version_first
+#		major_version_second
+#		minor_version_second
+is_higher_version()
+{
+	if [ $# -ne 4 ]; then
+		return $BAD_ARGUMENTS
+	fi
+
+	if [ $1 -gt $3 ]; then
+		return 0
+	else
+		if [ $1 -eq $3 ]; then
+			if [ $2 -ge $4 ]; then
+				return 0
+			fi
+		fi	
+	fi
+
+	return 1
+}
+
+# Get the latest binary.
+# Args: uri
+#		uri_release
+# Returns: An array with latest_uri latest_dir latest_file in that order.
+get_latest_version()
+{
+	if [ $# -ne 2 ]; then
+		return $BAD_ARGUMENTS
+	fi
+
+	local uri
+	local uri_release
+	local major_version_release
+	local minor_version_release
+	local major_version_snapshot
+	local minor_version_snapshot
+	local major_version
+	local minor_version
+
+	uri=$1
+	uri_release=$2
+	major_version_release=-1
+	minor_version_release=-1
+	for line in `curl $uri_release 2> /dev/null | sed 's/^.*\">//;s/<\/a.*$//;1,/Parent Directory/d;/^[^0-9]/,$d;'`; do		
+		major_version=`echo $line | sed 's/\.[0-9]\+\///'`
+		minor_version=`echo $line | sed 's/\///;s/^[0-9]\+\.//'`
+		if `is_higher_version $major_version $minor_version $major_version_release $minor_version_release`; then
+			major_version_release=$major_version
+			minor_version_release=$minor_version
+			latest_dir_release=$line
+		fi		
+	done
+
+	major_version_snapshot=-1
+	minor_version_snapshot=-1
+	for line in `curl $uri 2> /dev/null | sed 's/^.*\">//;s/<\/a.*$//;1,/Parent Directory/d;/^[^0-9]/,$d;'`; do
+		major_version=`echo $line | sed 's/\.[0-9]\+-SNAPSHOT\///'`
+		minor_version=`echo $line | sed 's/-SNAPSHOT\///;s/^[0-9]\+\.//'`
+		if `is_higher_version $major_version $minor_version $major_version_snapshot $minor_version_snapshot`; then
+			major_version_snapshot=$major_version
+			minor_version_snapshot=$minor_version
+			latest_dir=$line
+		fi	
+	done
+
+	if `is_higher_version $major_version_release $minor_version_release $major_version_snapshot $minor_version_snapshot`; then
+		latest_dir=$latest_dir_release
+		uri=$uri_release
+	fi
+
+	for line in `curl $uri$latest_dir 2> /dev/null | sed '1,/<a href=\"o/d;/<hr>/,$d;/\.jar</!d;/sources/d;s/^ *<a href=\"//;s/\">.*$//'`; do
+        latest_file=$line
+	done
+
+	local ret
+	ret=( $uri $latest_dir $latest_file )
+	echo ${ret[@]}
+}
+
+# main script
+# Argument handling
+if [ $# -lt 4 ]; then	
+	if [ $# -ge 1 ]; then
+		case $1 in
+			-*)  print_usage; exit $NO_ERROR;;			
+			*)   LIB_DIR=$1;;
+		esac
+	fi
+	if [ $# -ge 2 ]; then
+		BIN_URI_FRAMEWORK=$2
+		BIN_URI_FRAMEWORK_RELEASE=`echo $BIN_URI_FRAMEWORK | sed 's/snapshot/release/'`
+	fi
+	if [ $# -eq 3 ]; then
+		BIN_URI_PERFORMANCETEST=$3
+		BIN_URI_PERFORMANCETEST_RELEASE=`echo $BIN_URI_PERFORMANCETEST | sed 's/snapshot/release/'`
+	fi
+else
+	echo "Too many arguments!"
+	print_usage
+	exit $BAD_ARGUMETNS
+fi
+
+
+latest_version=( `get_latest_version $BIN_URI_FRAMEWORK $BIN_URI_FRAMEWORK_RELEASE` )
+echo ${latest_version[@]}
+download_bin ${latest_version[@]}
+latest_version=( `get_latest_version $BIN_URI_PERFORMANCETEST $BIN_URI_PERFORMANCETEST_RELEASE` )
+download_bin ${latest_version[@]}
+exit $?

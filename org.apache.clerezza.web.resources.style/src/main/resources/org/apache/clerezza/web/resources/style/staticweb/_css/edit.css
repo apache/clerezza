@@ -1,0 +1,184 @@
+#tx-edit {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	width: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
+	min-width: 720px;
+}
+
+#tx-edit.tx-padding-full {
+	left: 225px;
+}
+
+#tx-edit.tx-padding-small {
+	left: 30px;
+}
+
+#tx-edit .tx-edit-header  {
+	margin: 0px;
+	padding: 5px 10px;
+	background-image: url(../img/bg/fade-tab-edit.png);
+	background-repeat: repeat-x;	
+	height: 40px;
+	color: #ffffff;
+	font-size: 1.5em;
+	/*margin-left: 260px;*/
+}
+
+
+ul#tx-edit-tabs, ul.yui-nav  {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+	background-image: url(../img/bg/fade-tab-edit.png);
+	background-repeat: repeat-x;	
+	height: 40px;
+	/*margin-left: 260px;*/
+}
+
+ul#tx-edit-tabs li, #tx-edit ul.yui-nav li  {
+	float: left;
+	margin: 0;
+}
+
+ul#tx-edit-tabs li.active, ul.yui-nav li.selected {
+	background-color: #eeeeee;
+}
+
+ul#tx-edit-tabs li a, ul.yui-nav li a {
+	color: #ffffff;
+	display: block;
+	padding: 10px 15px; 
+	text-decoration: none;
+}
+
+ul#tx-edit-tabs li a:visited, ul#tx-edit-tabs li a:link,
+ul.yui-nav li a:visited, ul.yui-nav li a:link {
+	
+}
+
+ul#tx-edit-tabs li a:active, ul#tx-edit-tabs li a:hover,
+ul.yui-nav li a:active, ul.yui-nav li a:hover  {
+	background-color: #eeeeee;
+	color: #000000;
+}
+
+ul#tx-edit-tabs li.active a:visited, ul#tx-edit-tabs li.active a:link,
+ul.yui-nav li.selected a:visited, ul.yui-nav li.selected a:link  {
+	background-color: #eeeeee;
+	color: #000000;
+}
+
+ul#tx-edit-tabs li.active a:active, ul#tx-edit-tabs li.active a:hover,
+ul.yui-nav li.selected a:active, ul.yui-nav li.selected a:hover  {
+	background-color: #eeeeee;
+	color: #000000;
+}
+
+
+#tx-edit-info {
+	float: left;
+	width: 200px;
+	padding-top: 10px;
+	margin-right: 20px;
+}
+
+#tx-edit-content {
+	float: left;
+	padding-right: 15px;
+
+}
+
+#tx-edit-info div {
+	font-size: 1.2em;
+	padding-bottom: 20px;
+	
+}
+
+#tx-edit-info div span {
+	font-size: 1.5em;
+}
+
+
+#tx-edit form {
+
+}
+
+
+#tx-edit input, #tx-edit textarea {
+	width: 210px;
+}
+
+#tx-edit select {
+	width: 217px;
+}
+
+
+#tx-edit fieldset ul {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+	/*border-top: solid 1px #aaaaaa;*/
+}
+
+#tx-edit fieldset ul li {
+	clear: both;
+	padding: 5px 5px 5px 10px;
+	margin: 0;
+	margin-top: 5px;
+	line-height: 1.8em;	
+}
+
+#tx-edit .tx-line {
+	border-top: none;
+
+	border-bottom: solid 1px #aaaaaa;
+}
+
+
+#tx-edit fieldset li label {
+	width: 200px;
+	float: left;
+}
+
+#tx-edit fieldset li label + p {
+	
+	margin: 0px;
+	margin-left: 200px;
+}
+
+#tx-edit fieldset li label + div {
+	
+	margin: 0px;
+	margin-left: 200px;
+}
+
+/*
+#tx-edit fieldset li span.tx-error {
+	color: #d91020;
+	display: block;
+	width: 290px;
+	float: right;
+	padding-right: 5px;
+}
+*/
+#tx-edit fieldset li a {
+	text-decoration: none;
+}
+
+#tx-edit fieldset li span.tx-item {
+	display: block;
+	line-height: 2em;
+	height: 2em;
+	clear: right;
+	margin-bottom: 0.5em;
+}
+
+#tx-edit fieldset li span.tx-item a {
+	float: right;
+}
+

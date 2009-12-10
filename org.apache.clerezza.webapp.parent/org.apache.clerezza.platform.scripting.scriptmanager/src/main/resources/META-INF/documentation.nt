@@ -1,0 +1,103 @@
+<bundle:///script-manager-content-el/5-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/5-content> <http://discobits.org/ontology#infoBit> "If a script gets executed through a GET request on one of its execution URIs, the following information about the GET request can be accessed by the script: javax.ws.rs.core.UriInfo, javax.ws.rs.core.Request, and javax.ws.rs.core.HttpHeaders. The variables to access those data are: uriInfo, request, and httpHeaders respectively, and they all have engine scope.\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d55 .
+<bundle:///script-manager> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d54 .
+<bundle:///script-manager> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d55 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d55 <http://discobits.org/ontology#pos> "1" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d55 <http://discobits.org/ontology#holds> <bundle:///script-manager-content> .
+<bundle:///script-manager-title> <http://discobits.org/ontology#infoBit> "Script Manager"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d53 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d53 <http://discobits.org/ontology#pos> "5" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d53 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/5> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d52 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d52 <http://discobits.org/ontology#pos> "0" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d52 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/4-title> .
+<bundle:///script-manager-content-el/1-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/1-title> <http://discobits.org/ontology#infoBit> "Installing Scripts"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d51 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d51 <http://discobits.org/ontology#pos> "1" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d51 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/4-content> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d50 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/0> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d50 <http://discobits.org/ontology#pos> "0" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d50 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+<bundle:///script-manager-content-el/5-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/5-title> <http://discobits.org/ontology#infoBit> "Accessing Information about the GET Request on an Execution URI"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4f <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4f <http://discobits.org/ontology#pos> "0" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4f <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/1-title> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4e <http://discobits.org/ontology#pos> "3" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4e <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/3> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4d <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4d <http://discobits.org/ontology#pos> "1" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4d <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/2-content> .
+<bundle:///script-manager-content-el/4-title> <http://discobits.org/ontology#infoBit> "Accessing Platform Services"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-content-el/4-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/3-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/3-content> <http://discobits.org/ontology#infoBit> "A script can have more than one execution URIs. Execution URIs are accessible via the path /admin/script-manager/execution-uri-overview. Through this path, existing execution URIs of a script can be deleted and new ones can be added."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-content-el/3-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/3-title> <http://discobits.org/ontology#infoBit> "Managing Execution URIs"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-content-el/2-title> <http://discobits.org/ontology#infoBit> "Manipulating and Executing Scripts"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-content-el/2-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d54 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d54 <http://discobits.org/ontology#pos> "0" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d54 <http://discobits.org/ontology#holds> <bundle:///script-manager-title> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4c <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4c <http://discobits.org/ontology#pos> "1" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4c <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/3-content> .
+<bundle:///script-manager-content-el/4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///script-manager-content-el/4> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d52 .
+<bundle:///script-manager-content-el/4> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d51 .
+<bundle:///script-manager-content-el/5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///script-manager-content-el/5> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d4b .
+<bundle:///script-manager-content-el/5> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d4a .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d49 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d49 <http://discobits.org/ontology#pos> "1" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d49 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/1> .
+<bundle:///script-manager-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#OrderedContent> .
+<bundle:///script-manager-content> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d50 .
+<bundle:///script-manager-content> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d49 .
+<bundle:///script-manager-content> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d48 .
+<bundle:///script-manager-content> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d4e .
+<bundle:///script-manager-content> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d47 .
+<bundle:///script-manager-content> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d53 .
+<bundle:///script-manager-content-el/4-content> <http://discobits.org/ontology#infoBit> "Three platform services are made available to scripts through Bindings: TcManager, DiscobitsHandler, and ContentGraphProvider. The variables to access those services are tcManager, contentHandler, and contentGraphProvider respectively. Note that those variables have engine scope and in JRuby script their names are preceded with '$', e.g., $tcManager."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-content-el/4-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/0> <http://discobits.org/ontology#infoBit> "A script in the clerezza platform has the following properties:\n<ul xmlns=\"http://www.w3.org/1999/xhtml\">\n<li>name: the name of the script</li>\n<li>language: the language and its version in which the script is written</li>\n<li>media type: the media type of the script</li>\n<li>produced media type: the media type of the script's output</li>\n</ul>\n\nThe Script Manager provides a web interface to:\n<ul xmlns=\"http://www.w3.org/1999/xhtml\">\n<li>install (create) scripts,</li>\n<li>list and show available scripts,</li>\n<li>update scripts,</li>\n<li>delete scripts, and</li>\n<li>execute scripts</li>\n</ul>\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-content-el/0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/1> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d46 .
+<bundle:///script-manager-content-el/1> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d4f .
+<bundle:///script-manager-content-el/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///script-manager-content-el/3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///script-manager-content-el/3> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d45 .
+<bundle:///script-manager-content-el/3> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d4c .
+<bundle:///script-manager-content-el/1-content> <http://discobits.org/ontology#infoBit> "The web page for installing scripts is accessible under the path: /admin/script-manager/script-install. There are two ways to install scripts into the platform:\n<ul xmlns=\"http://www.w3.org/1999/xhtml\">\n<li>type in the script directly into a text box labeled \"Script\", or</li>\n<li>upload a file containing the script.</li>\n</ul>\n\nAlong with the script installation, there are some information about the script to be delivered:\n<ul xmlns=\"http://www.w3.org/1999/xhtml\">\n<li>language: the language (and language version) of a script can only take one of the values listed in a drop-down box on the page. Those are languages supported by the platform.</li>\n<li>name: if a script is installed by uploading a file, the file's name is used as the script's name, otherwise the user must specify the name of the script.</li>\n<li>media type (optional): if the user does not specify the media type of the installed script, it is extracted from the media type of the script file sent by the browser. If the script is directly typed into a text box and the media type is unspecified, then it will have the default value text/plain.</li>\n<li>produced media type (optional): if the script returns a GraphNode, then the produced media type of the script is ignored, otherwise the default value of the produced media type is text/plain.</li>\n<li>execution URI (optional): an execution URI can be specified, under which the execution of the script can be requested.</li>\n</ul>\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-content-el/1-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///script-manager-content-el/2> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d4d .
+<bundle:///script-manager-content-el/2> <http://discobits.org/ontology#contains> _:A16b5c081X3aX1239149e335X3aXX2dX7d44 .
+<bundle:///script-manager-content-el/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///script-manager-content-el/2-content> <http://discobits.org/ontology#infoBit> "Once a script is installed, it can be manipulated and executed via the path /admin/script-manager/script-overview. A list of all installed scripts will be shown and if a script is selected, its contents as well as information about the script will be shown and can be updated. There are 3 push buttons available to do the followings:\n<ul xmlns=\"http://www.w3.org/1999/xhtml\">\n<li>save: save changes made to the selected script</li>\n<li>delete: delete the selected script and all related information</li>\n<li>execute: execute the selected script</li>\n</ul>\nA script can also be executed by sending a GET request on its execution URI.\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///script-manager-content-el/2-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d48 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/2> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d48 <http://discobits.org/ontology#pos> "2" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d48 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d45 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d45 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/3-title> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d45 <http://discobits.org/ontology#pos> "0" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d46 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/1-content> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d46 <http://discobits.org/ontology#pos> "1" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d46 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4a <http://discobits.org/ontology#pos> "1" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4a <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/5-content> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d47 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d47 <http://discobits.org/ontology#pos> "4" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d47 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/4> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d44 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d44 <http://discobits.org/ontology#pos> "0" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d44 <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/2-title> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4b <http://discobits.org/ontology#holds> <bundle:///script-manager-content-el/5-title> .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4b <http://discobits.org/ontology#pos> "0" .
+_:A16b5c081X3aX1239149e335X3aXX2dX7d4b <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .

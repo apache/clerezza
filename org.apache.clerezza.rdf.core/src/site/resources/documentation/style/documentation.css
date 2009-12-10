@@ -1,0 +1,13 @@
+.note {
+    background-color:  #f4e010;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+blockcode {
+	white-space: pre;
+	display: block;
+	background-color:  #f4e0e0;
+	padding-left: 4em;
+	margin-bottom: 1em;
+}

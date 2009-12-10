@@ -1,0 +1,216 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.clerezza.rdf.core.access;
+
+import java.util.Collection;
+import java.util.Iterator;
+import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcPermission;
+import org.apache.clerezza.rdf.core.event.FilterTriple;
+import org.apache.clerezza.rdf.core.event.GraphListener;
+
+/**
+ *
+ * @author mir
+ */
+public class SecuredTripleCollection implements TripleCollection {
+
+	private TripleCollection wrapped;
+	private String name;
+
+	SecuredTripleCollection(TripleCollection wrapped, UriRef name) {
+		this.wrapped = wrapped;
+		this.name = name.getUnicodeString();
+	}
+
+	@Override
+	public Iterator<Triple> filter(final NonLiteral subject, final UriRef predicate, final Resource object) {
+		final Iterator<Triple> baseIter = wrapped.filter(subject, predicate, object);
+		return new Iterator<Triple>() {
+
+			@Override
+			public boolean hasNext() {
+				checkRead();
+				return baseIter.hasNext();
+			}
+
+			@Override
+			public Triple next() {
+				checkRead();
+				return baseIter.next();
+			}
+
+			@Override
+			public void remove() {
+				checkWrite();
+				baseIter.remove();
+			}
+		};
+	}
+
+	@Override
+	public int size() {
+		checkRead();
+		return wrapped.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		checkRead();
+		return wrapped.isEmpty();
+	}
+
+	@Override
+	public Object[] toArray() {
+		checkRead();
+		return wrapped.toArray();
+	}
+
+	@Override
+	public <T> T[] toArray(T[] a) {
+		checkRead();
+		return wrapped.toArray(a);
+	}
+
+	@Override
+	public boolean add(Triple e) {
+		checkWrite();
+		return wrapped.add(e);
+	}
+
+	@Override
+	public boolean remove(Object o) {
+		checkWrite();
+		return wrapped.remove(o);
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends Triple> c) {
+		checkWrite();
+		boolean modified = false;
+		Iterator<? extends Triple> e = c.iterator();
+		while (e.hasNext()) {
+			if (wrapped.add(e.next())) {
+				modified = true;
+			}
+		}
+		return modified;
+
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		checkWrite();
+		boolean modified = false;
+		Iterator<?> e = wrapped.iterator();
+		while (e.hasNext()) {
+			if (c.contains(e.next())) {
+			e.remove();
+			modified = true;
+			}
+		}
+		return modified;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		checkWrite();
+		boolean modified = false;
+		Iterator<Triple> e = wrapped.iterator();
+		while (e.hasNext()) {
+			if (!c.contains(e.next())) {
+			e.remove();
+			modified = true;
+			}
+		}
+		return modified;
+	}
+
+	@Override
+	public void clear() {
+		checkWrite();
+		Iterator<Triple> e = wrapped.iterator();
+		while (e.hasNext()) {
+			e.next();
+			e.remove();
+		}
+	}
+
+	private void checkRead() {
+		SecurityManager security = System.getSecurityManager();
+		if (security != null) {
+			security.checkPermission(new TcPermission(name, "read"));
+		}
+	}
+
+	private void checkWrite() {
+		SecurityManager security = System.getSecurityManager();
+		if (security != null) {
+			security.checkPermission(new TcPermission(name, "write"));
+		}
+	}
+
+	@Override
+	public boolean contains(Object o) {
+		checkRead();
+		Iterator<Triple> e = wrapped.iterator();
+		if (o==null) {
+			while (e.hasNext())
+			if (e.next()==null)
+				return true;
+		} else {
+			while (e.hasNext())
+			if (o.equals(e.next()))
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
+		checkRead();
+		wrapped.addGraphListener(listener, filter, delay);
+	}
+
+	@Override
+	public void addGraphListener(GraphListener listener, FilterTriple filter) {
+		checkRead();
+		wrapped.addGraphListener(listener, filter);
+	}
+
+	@Override
+	public void removeGraphListener(GraphListener listener) {
+		wrapped.removeGraphListener(listener);
+	}
+
+	@Override
+	public Iterator<Triple> iterator() {
+		return filter(null, null, null);
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		checkRead();
+		return wrapped.containsAll(c);
+	}
+}

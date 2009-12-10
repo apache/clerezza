@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:skos="http://www.w3.org/2008/05/skos#"
+>
+
+<!-- Ontology -->
+
+<owl:Ontology rdf:about="http://clerezza.org/2009/04/list#">
+	<owl:versionInfo>Revision: 0.1</owl:versionInfo>
+	<dc:title xml:lang="en">List Ontology</dc:title>
+	<rdfs:comment xml:lang="en">
+		This ontology describes lists and sublists, thus about resources
+		belonging to the rdf:List class. This ontology aims at extending
+		and not replacing properties and classes defined in RDF ontology.
+	</rdfs:comment>
+</owl:Ontology>
+
+<!-- Classes -->
+
+<rdfs:Class rdf:about="http://clerezza.org/2009/04/list#SubList">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">SubList</rdfs:label>
+	<skos:definition xml:lang="en">
+		A SubList is a list of the elements of another list from a start 
+		to an end position.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/list#" />
+	<rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List" />
+</rdfs:Class>
+
+<!-- Properties -->
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/list#indexFrom">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdfs:label xml:lang="en">indexFrom</rdfs:label>
+	<skos:definition xml:lang="en">
+		Points to a number denoting the zero-based start index of those 
+		elements in the SubList within the super list. 
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/list#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/list#SubList" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#unsignedInt" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/list#indexTo">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdfs:label xml:lang="en">indexTo</rdfs:label>
+	<skos:definition xml:lang="en">
+		Points to a number denoting the zero-based end index of those 
+		elements in the SubList within the super list.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/list#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/list#SubList" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#unsignedInt" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/list#length">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdfs:label xml:lang="en">length</rdfs:label>
+	<skos:definition xml:lang="en">
+		Points to the number of elements in the SubList.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/list#" />
+	<rdfs:domain rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#unsignedInt" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/list#subListOf">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdfs:label xml:lang="en">subListOf</rdfs:label>
+	<skos:definition xml:lang="en">
+		Points to an rdf:List of which this SubList is part of.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/list#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/list#SubList" />
+	<rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/list#predecessor">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdfs:label xml:lang="en">predecessor</rdfs:label>
+	<skos:definition xml:lang="en">
+		Points to a preceding SubList.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/list#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/list#SubList" />
+	<rdfs:range rdf:resource="http://clerezza.org/2009/04/list#SubList" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/list#successor">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdfs:label xml:lang="en">successor</rdfs:label>
+	<skos:definition xml:lang="en">
+		Points to a succeeding SubList.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/list#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/list#SubList" />
+	<rdfs:range rdf:resource="http://clerezza.org/2009/04/list#SubList" />
+</rdf:Property>
+
+</rdf:RDF>

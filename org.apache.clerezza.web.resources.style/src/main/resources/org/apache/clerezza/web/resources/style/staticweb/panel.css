@@ -1,0 +1,140 @@
+/* panel */
+.tx-panel {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0.5em;
+	width: 18.3em;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border-right: solid 1px #e4e4e4;
+}	
+
+.tx-panel.tx-close {
+	width: 1.6em;
+	background-color: #aaaaaa;
+}	
+
+
+.tx-panel label {
+	display: block;
+	padding: 0.4em 0.5em 0.4em 0.3em;
+	height: 1.4em;
+}
+
+
+.tx-panel fieldset label:first-child {
+	border-bottom: solid 1px #ffffff;
+	height: 1.8em;
+	background-repeat: repeat-x;
+	background-image: url(./images/bg/fade-panel-search.png);
+}
+
+.tx-panel fieldset {
+	background-color: #e7e7e7;
+	width: 16.7em;
+	background-image: url(./images/bg/fade-panel.png);
+	background-repeat: repeat-x;
+	border-bottom: solid 1px #ffffff;
+}
+
+.tx-panel input[type="text"] {
+	float: none;
+	display: inline;
+	width: 10em;
+}
+
+.tx-panel input[type="button"], .tx-panel input[type="submit"] {
+	float: none;
+	display: inline;
+}
+
+.tx-panel input[type="radio"] {
+	margin: 0.2em 0 0.2em 0;
+	vertical-align: middle;
+}
+
+.tx-panel .tx-panel-open-close {
+	color: #ffffff;
+	background-color: #414143;
+	display: block;
+	height: 2.6em;
+	width: 1.6em;
+	position: absolute;
+	top: 0;
+	left: 15.1em;
+	z-index: 10;
+	text-indent: -9999px;
+} 
+
+.tx-panel .tx-panel-open-close.tx-close {
+	left: 0;
+}	
+
+.tx-result {
+	width: 16.7em;
+}
+
+.tx-result ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	background-color: #34c0da;
+}
+
+.tx-result > ol > li {
+	background-image: url(./images/icons/arr-right-inverse.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em 0.65em;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #ffffff;
+}
+
+.tx-result > ol > li.tx-open {
+	background-image: url(./images/icons/arr-down-inverse.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em 0.65em;
+}
+
+.tx-result ol li a {
+	color: #ffffff;
+	text-decoration: none;
+	display: block;
+	padding: 0.4em 0.2em 0.3em 1.9em;	
+}
+
+.tx-result li a:visited, .tx-result li a:link  {
+	color: #ffffff;
+}
+
+.tx-result li a:active, .tx-result li a:hover  {
+	color: #ffffff;
+}
+
+.tx-result ol ol {
+	background-color: #ddf1f5;
+	display: none;
+}
+
+.tx-result > ol > li.tx-open > ol {
+	display: block;
+}
+
+.tx-result ol li lli {
+}
+
+.tx-result ol li li a {
+	color: #000000;
+	padding: 0.4em 0.2em 0.3em 1.9em;	
+}
+
+.tx-result ol li li a:visited, .tx-result ol li li a:link  {
+	color: #000000;
+}
+
+.tx-result ol li li a:active, .tx-result ol li li a:hover  {
+	color: #000000;
+}
+
+

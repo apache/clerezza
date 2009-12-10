@@ -1,0 +1,18 @@
+<sitemap>
+	<section>
+        <name>Documentation</name>
+        <page>reference.xhtml</page>
+    </section>
+    <section>
+        <name>Tutorials</name>
+        <page>tutorial_1.xhtml</page>
+    </section>
+    <section>
+        <name>Howto configure path-prefixes</name>
+        <page>howto_prefix.xhtml</page>
+    </section>
+    <section>
+        <name>Get Triaxrs</name>
+        <page>download.xhtml</page>
+    </section>
+</sitemap>

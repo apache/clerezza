@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:skos="http://www.w3.org/2008/05/skos#"
+>
+
+<!-- Ontology -->
+
+<owl:Ontology rdf:about="http://clerezza.org/2009/04/typerendering#">
+	<owl:versionInfo>Revision: 0.1</owl:versionInfo>
+	<dc:title xml:lang="en">
+		Clerezza Type Rendering Ontology
+	</dc:title>
+</owl:Ontology>
+
+
+<!-- Classes -->
+
+<rdfs:Class rdf:about="http://clerezza.org/2009/04/typerendering#RenderletDefinition">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">RenderletDefinition</rdfs:label>
+	<skos:definition xml:lang="en">An association of a renderlet service pid, an rdf type
+	and optionally a renderingMode string and rendering specification.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+</rdfs:Class>
+<rdfs:Class rdf:about="http://clerezza.org/2009/04/typerendering#BuiltInRenderletDefinition">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">BuiltInRenderletDefinition</rdfs:label>
+	<skos:definition xml:lang="en">A built-in renderlet definition, i.e. a renderlet definition 
+	provided by a bundle.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:subClassOf rdf:resource="#RenderletDefinition" />
+</rdfs:Class>
+<rdfs:Class rdf:about="http://clerezza.org/2009/04/typerendering#CustomRenderletDefinition">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">CustomRenderletDefinition</rdfs:label>
+	<skos:definition xml:lang="en">A Custom Renderlet Definition</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:subClassOf rdf:resource="#RenderletDefinition" />
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://clerezza.org/2009/04/typerendering#RenderingSpecification">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">RenderingSpecification</rdfs:label>
+	<skos:definition xml:lang="en">The specification of the
+	rendering of a data structure (i.e. a resource and its context) to an output
+	format.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://clerezza.org/2009/04/typerendering#Exception">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">Exception</rdfs:label>
+	<skos:definition xml:lang="en">A rendering specification exception.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+</rdfs:Class>
+
+<!-- Properties -->
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#renderingSpecification">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">renderingSpecification</rdfs:label>
+	<skos:definition xml:lang="en">Points to the RenderingSpecification of the subject</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#RenderletDefinition" />
+	<rdfs:range rdf:resource="http://clerezza.org/2009/04/typerendering#RenderingSpecification"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#errorSource">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">errorSource</rdfs:label>
+	<skos:definition xml:lang="en">Points to the source containing the error that caused the subject</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#Exception" />
+	<rdfs:range rdf:resource="http://clerezza.org/2009/04/typerendering#RenderingSpecification"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#renderedType">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">renderedType</rdfs:label>
+	<skos:definition xml:lang="en">Points to an rdfs Class of which instances can
+	be rendered by the renderlet associated with the subject.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#RenderletDefinition" />
+	<rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+</rdf:Property>
+
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#renderingMode">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">renderingMode</rdfs:label>
+	<skos:definition xml:lang="en">Points to the renderingMode of the subject</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#RenderletDefinition" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#mediaType">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">mediaType</rdfs:label>
+	<skos:definition xml:lang="en">Points to the media type of the subject.
+	This is the media type of the result rendered by the renderlet with its
+	rendering specification.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#RenderletDefinition" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#renderlet">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">renderlet</rdfs:label>
+	<skos:definition xml:lang="en">Points to the renderlet of the subject. The
+	renderlet is represented throught the service pid of the renderlet implementation.
+	An implementation implements the org.apache.clerezza.platform.typerendering.Renderlet
+	interface. The purpose of a renderlet is to render a
+	org.apache.clerezza.rdf.utils.GraphNode with an optional rendering
+	specification (e.g. a template).</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#RenderletDefinition" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#line">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">line</rdfs:label>
+	<skos:definition xml:lang="en">Points to the line in the rendering specifiaciton
+		on which the error is located that caused the subject.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#Exception" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#column">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">column</rdfs:label>
+	<skos:definition xml:lang="en">Points to the column in the rendering specifiaciton
+		on which the error is located that caused the subject.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#Exception" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#message">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">message</rdfs:label>
+	<skos:definition xml:lang="en">Points to the the message about the subject. The
+		message gives details about the error in the rendering specification that caused
+		the exception.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#Exception" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</rdf:Property>
+</rdf:RDF>

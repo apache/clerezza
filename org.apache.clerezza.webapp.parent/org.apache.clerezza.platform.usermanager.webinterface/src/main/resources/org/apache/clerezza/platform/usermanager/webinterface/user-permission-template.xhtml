@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+    	<title>User Management</title>
+		${ns:foaf=http://xmlns.com/foaf/0.1/}
+		${ns:permission=http://clerezza.org/2008/10/permission#}
+		${ns:umr=http://clerezza.org/2009/05/usermanager#}
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		
+        <link href="/style/style.css" media="screen" rel="stylesheet" type="text/css" />
+	
+		<script type="text/javascript">
+			function removePermission(form) {
+				form.name.value = '${umr:user/foaf:name}';
+				form.submit();
+			}
+		</script>
+	</head>
+	<body>
+		
+		<h2>Add new Permission to ${umr:user/foaf:name}</h2>
+		<form method="post" action="add-user-permissions">
+			<div>
+				<input type="hidden" name="name" value="${umr:user/foaf:name}" />
+				<label>Permission Entry: 
+					<input type="text" name="permEntries" />
+				</label>
+				<input type="submit" value="Add new permission" />
+			</div>
+		</form>
+		<h2>List of Permissions for ${umr:user/foaf:name}</h2>
+		<br/>
+        <br/>
+        <div id="tx-content">
+        <div class="tx-list">
+        <table>
+        	<thead>
+			<tr align="center">
+				<th colspan="2">Permission Entry</th>
+			</tr>
+            </thead>
+            <tbody>
+			${loop}
+			<tr>
+				<td>${umr:permission/permission:javaPermissionEntry}</td>
+				<td>
+					<form method="post" action="delete-user-permissions">
+						<input type="hidden" name="name" value="" />
+						<input type="hidden" name="permEntries" value='${umr:permission/permission:javaPermissionEntry}' />
+						<input type="button" onclick="javascript: removePermission(this.parentNode)" value="delete" />
+					</form>
+				</td>
+			</tr>
+			${/loop}
+            </tbody>
+		</table>
+        <a href="list-users">back</a>
+        </div>
+        </div>
+	</body>
+</html>

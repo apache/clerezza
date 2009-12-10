@@ -1,0 +1,41 @@
+<rdf:RDF xmlns="http://clerezza.org/2009/09/hierarchy#"
+	xml:base="http://clerezza.org/2009/09/hierarchy"
+	xmlns:hierarchy="http://clerezza.org/2009/09/hierarchy#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:dbt="http://discobits.org/ontology#">
+
+	<owl:Ontology rdf:about="http://clerezza.org/2009/09/hierarchy#">
+		<dc:title>Clerezza Ontology for Hierarchical Structure</dc:title>
+	</owl:Ontology>
+
+    <!-- Classes -->
+
+	<owl:Class rdf:about="#Collection">
+		<rdfs:comment>An ordered  collection of members. The URI of a Collection
+			must end with a slash ('/').</rdfs:comment>
+	</owl:Class>
+
+	<owl:Class rdf:about="#Page">
+		<rdfs:comment>A titled content that is typically displayed in a web browser
+			without being a part of a containing entity.</rdfs:comment>
+		<rdfs:subClassOf rdf:resource="dbt:TitledContent" />
+	</owl:Class>
+
+	<owl:ObjectProperty rdf:about="#members">
+        <rdfs:comment>Points to a list of Resources.</rdfs:comment>
+        <rdfs:domain rdf:resource="#Collection"/>
+        <rdfs:range rdf:resource="rdf:List"/>
+    </owl:ObjectProperty>
+
+	<owl:ObjectProperty rdf:about="#membersNumber">
+        <rdfs:comment>Points from a collection to an integer that states the
+			number of members in the collection.</rdfs:comment>
+        <rdfs:domain rdf:resource="#Collection"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:ObjectProperty>
+
+</rdf:RDF>

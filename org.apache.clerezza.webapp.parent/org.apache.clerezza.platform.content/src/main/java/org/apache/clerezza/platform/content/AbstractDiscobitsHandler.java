@@ -1,0 +1,124 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.clerezza.platform.content;
+
+import java.util.HashSet;
+import java.util.Iterator;
+
+import java.util.Set;
+import javax.ws.rs.core.MediaType;
+
+import org.apache.clerezza.rdf.core.LiteralFactory;
+import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.TypedLiteral;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.ontologies.DISCOBITS;
+import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.clerezza.rdf.utils.GraphNode;
+
+/**
+ *
+ * @author reto
+ */
+public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
+
+	/**
+	 *
+	 * @return the MGraph to be used to retrieve and create discobits
+	 */
+	protected abstract MGraph getMGraph();
+
+	@Override
+	public void put(UriRef infoDiscoBitUri, MediaType mediaType,
+			byte[] data) {
+		remove(infoDiscoBitUri);
+		MGraph mGraph = getMGraph();
+		GraphNode infoDiscoBitNode = new GraphNode(infoDiscoBitUri, mGraph);
+		infoDiscoBitNode.addProperty(RDF.type, DISCOBITS.InfoDiscoBit);
+		TypedLiteral dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
+		infoDiscoBitNode.addProperty(DISCOBITS.infoBit, dataLiteral);
+		TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
+		infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
+	}
+
+	@Override
+	public  void remove(NonLiteral node) {
+		MGraph mGraph = getMGraph();
+		Iterator<Triple> properties = mGraph.filter(node, null, null);
+		//copying properties to set, as we're modifying underlying graph
+		Set<Triple> propertiesSet = new HashSet<Triple>();
+		while (properties.hasNext()) {
+			propertiesSet.add(properties.next());
+		}
+		properties = propertiesSet.iterator();
+		while (properties.hasNext()) {
+			Triple triple = properties.next();
+			UriRef predicate = triple.getPredicate();
+			if (predicate.equals(DISCOBITS.contains)) {
+				try {
+					GraphNode graphNode = new GraphNode((NonLiteral)triple.getObject(), mGraph);
+					//The following includes triple
+					graphNode.deleteNodeContext();
+				} catch (ClassCastException e) {
+					throw new RuntimeException("The value of "+predicate+" is expected not to be a literal");
+				}
+				//as some other properties of node could have been in the context of the object
+				remove(node);
+				return;
+			}
+			if (predicate.getUnicodeString().startsWith("http://discobits.org/ontology#")) {
+				mGraph.remove(triple);
+				continue;
+			}
+			if (predicate.equals(RDF.type)) {
+				Resource object = triple.getObject();
+				if ((object instanceof UriRef)
+						&& ((UriRef)object).getUnicodeString().startsWith("http://discobits.org/ontology#")) {
+					mGraph.remove(triple);
+				}
+			}
+		}
+	}
+
+	@Override
+	public byte[] getData(UriRef uriRef) {
+		MGraph mGraph = getMGraph();
+		GraphNode node = new GraphNode(uriRef, mGraph);
+		final InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(node);
+		if (infoDiscobit == null) {
+			return null;
+		}
+		return infoDiscobit.getData();
+	}
+
+	@Override
+	public MediaType getMediaType(UriRef uriRef) {
+		MGraph mGraph = getMGraph();
+		GraphNode node = new GraphNode(uriRef, mGraph);
+		final InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(node);
+		if (infoDiscobit == null) {
+			return null;
+		}
+		return MediaType.valueOf(infoDiscobit.getContentType());
+	}
+
+}

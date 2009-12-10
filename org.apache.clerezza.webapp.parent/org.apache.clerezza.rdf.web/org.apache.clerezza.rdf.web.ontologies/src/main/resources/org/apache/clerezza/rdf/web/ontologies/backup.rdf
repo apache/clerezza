@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns="http://clerezza.org/2009/11/backup#"
+	xml:base="http://clerezza.org/2009/11/backup"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:skos="http://www.w3.org/2008/05/skos#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+
+<!-- Ontology -->
+
+<owl:Ontology rdf:about="http://clerezza.org/2009/11/backup#">
+	<owl:versionInfo>Revision: 0.1</owl:versionInfo>
+	<dc:title xml:lang="en">
+		Clerezza Backup
+	</dc:title>
+</owl:Ontology>
+
+<!-- Classes -->
+<rdfs:Class rdf:about="#Graph">
+	<rdf:type rdf:resource="owl:Class"/>
+	<rdfs:label xml:lang="en">Graph</rdfs:label>
+	<skos:definition xml:lang="en">An RDF graph.</skos:definition>
+</rdfs:Class>
+
+<!-- Properties -->
+
+<rdf:Property rdf:about="#file">
+	<rdf:type rdf:resource="owl:DatatypeProperty" />
+	<rdfs:label xml:lang="en">file</rdfs:label>
+	<skos:definition xml:lang="en">Points to the backup filename of the subject.
+	</skos:definition>
+	<rdfs:domain rdf:resource="#Graph"/>
+	<rdfs:range rdf:resource="xsd:string"/>
+</rdf:Property>
+
+</rdf:RDF>

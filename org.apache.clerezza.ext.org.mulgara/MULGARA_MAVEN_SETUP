@@ -1,0 +1,45 @@
+Setup Mulgara-Core as Maven Project:
+
+This guide explains how to add mulgara-core and its dependencies as maven projects. This has to be done only once.
+
+
+- Compile Mulgara-Core and add it as maven project to repository:
+
+1. Download the stable mulgara version from http://www.mulgara.org/download.html and extract it.
+2. Run "build.sh core-dist" to compile the ./dist/mulgara-core-[version].jar
+3. Copy mularga.pom into the mulgara-[version] folder.
+(3.1 If you have a newer version than 2.1.1 then update the version number (e.g. from 2.1.1 -> 2.1.2) in mulgara.pom and the commands in step 4. and 5.)
+4. Run the following command to install the mulgara-core-[version].jar in your local maven repository:
+(Note: make sure the host key of repo.trialox.org is registered to your~/.ssh/known_hosts) 
+$ mvn install:install-file -DpomFile=mulgara.pom -Dfile=dist/mulgara-core-2.1.1.jar -DgroupId=org.mulgara -DartifactId=mulgara-core -Dversion=2.1.1 -Dpackaging=jar
+
+5. Run the following command to deploy the mulgara jars to clerezza repository:
+$ mvn deploy:deploy-file -DpomFile=$HOME/.m2/repository/org/mulgara/mulgara-core/2.1.1/mulgara-core-2.1.1.pom -Dfile=dist/mulgara-core-2.1.1.jar -DrepositoryId=clerezza.webserver -Durl=scpexe://repo.trialox.org/usr/local/www/repo/ext
+
+
+- Add the dependencies of the mulgara project to the repository (if you have a newer version than 2.1.1 the dependencies could have changed):
+
+execute the following commands in the mulgara-[version] folder:
+
+add emory-util-2.1-remote.jar to local repository
+$ mvn install:install-file -DgroupId=edu.emory.mathcs -DartifactId=emory-util -Dversion=2.1 -Dpackaging=jar -Dfile=./lib/emory-util-2.1-remote.jar
+add emory-util-2.1-remote.jar to clerezza repository
+$ mvn deploy:deploy-file -DpomFile=$HOME/.m2/repository/edu/emory/mathcs/emory-util/2.1/emory-util-2.1.pom -Dfile=./lib/emory-util-2.1-remote.jar -DrepositoryId=clerezza.webserver -Durl=scpexe://repo.trialox.org/usr/local/www/repo/ext
+
+add jargs-0.2.jar to local repository
+$ mvn install:install-file -DgroupId=jargs.gnu -DartifactId=jargs -Dversion=0.2 -Dpackaging=jar -Dfile=./lib/jargs-0.2.jar
+add jargs-0.2.jar to clerezza repository
+$ mvn deploy:deploy-file -DpomFile=$HOME/.m2/repository/jargs/gnu/jargs/0.2/jargs-0.2.pom -Dfile=./lib/jargs-0.2.jar -DrepositoryId=clerezza.webserver -Durl=scpexe://repo.trialox.org/usr/local/www/repo/ext
+
+add serializer-2.7.0.jar to local repository
+$ mvn install:install-file -DgroupId=org.apache.xml -DartifactId=serializer -Dversion=2.7 -Dpackaging=jar -Dfile=./lib/serializer-2.7.0.jar
+add serializer-2.7.0.jar to clerezza repository
+$ mvn deploy:deploy-file -DpomFile=$HOME/.m2/repository/org/apache/xml/serializer/2.7/serializer-2.7.pom -Dfile=./lib/serializer-2.7.0.jar -DrepositoryId=clerezza.webserver -Durl=scpexe://repo.trialox.org/usr/local/www/repo/ext
+
+add connector-1.5.jar to local repository
+$ mvn install:install-file -DgroupId=javax.resource -DartifactId=connector -Dversion=1.5 -Dpackaging=jar -Dfile=./lib/connector-1_5.jar
+add connector-1.5.jar to clerezza repository
+$ mvn deploy:deploy-file -DpomFile=$HOME/.m2/repository/javax/resource/connector/1.5/connector-1.5.pom -Dfile=./lib/connector-1_5.jar -DrepositoryId=clerezza.webserver -Durl=scpexe://repo.trialox.org/usr/local/www/repo/ext
+
+
+

@@ -1,0 +1,85 @@
+resultDocModifier.setTitle("Renderlet Manager");
+resultDocModifier.addNodes2Elem("tx-module", <h1>Renderlet Manager</h1>);
+def typerendering(s: Any) = new UriRef("http://clerezza.org/2009/04/typerendering#"+s)
+def dhb(s: Any) = new UriRef("http://clerezza.org/2009/06/dashboard#"+s)
+
+	<div id="tx-content">
+        <h2>List of Installed Renderlets</h2>
+        <p><a href="install-renderlet-form">Install Renderlet</a></p>
+        <ul>
+		{
+			for (rdfType <- res!!) yield {
+				if ((rdfType/-typerendering("renderedType")).length > 0) {
+                    <li>
+                        <table>
+                            <tr>
+                                <td>
+                                    <strong>RDF Type: {rdfType*}</strong>
+                                </td>
+                                <td>
+                                    <form method="post" action="up">
+                                            <input type="hidden" name="renderedType" value={rdfType*} />
+                                            <input type="submit" value="up" />
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="post" action="down">
+                                            <input type="hidden" name="renderedType" value={rdfType*} />
+                                            <input type="submit" value="down" />
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                        <table border="1" style="width:80%">
+                            <tr>
+                                <th>Renderlet</th>
+                                <th>Mode</th>
+                                <th>Media Type</th>
+                                <th>Specification Location</th>
+                                <th colspan="2">Action</th>
+                            </tr>
+							{for (renderConf <- rdfType/-typerendering("renderedType")) yield {
+                            <tr>
+                                <td>{renderConf/typerendering("renderlet")*}</td>
+                                <td>{if ((renderConf/typerendering("renderingMode")).length > 0) {
+										renderConf/typerendering("renderingMode")*
+									} else {""}}</td>
+                                <td>{renderConf/typerendering("mediaType")*}</td>
+                                <td>{if ((renderConf/typerendering("renderingSpecification")).length > 0) {
+										renderConf/typerendering("renderingSpecification")*
+									} else {""}}</td>
+                                <td>
+                                    <form method="post" action="uninstall-renderlet">
+                                    <p>
+                                        <input type="hidden" name="renderlet" value={renderConf/typerendering("renderlet")*} />
+                                        <input type="hidden" name="renderingMode" value={if ((renderConf/typerendering("renderingMode")).length > 0) { renderConf/typerendering("renderingMode")*} else {""}} />
+                                        {if ((renderConf/typerendering("renderingSpecification")).length > 0) {<input type="hidden" name="renderingSpecification" value={renderConf/typerendering("renderingSpecification")*} />} else {""}}
+                                        <input type="hidden" name="renderedType" value={renderConf/typerendering("renderedType")*} />
+                                        <input type="hidden" name="mediaType" value={renderConf/typerendering("mediaType")*} />
+                                        <input type="submit" value="uninstall" />
+                                    </p>
+                                    </form>
+								</td>
+								<td>
+									<form method="get" action="edit-renderlet-form">
+                                    <p>
+                                        <input type="hidden" name="renderlet" value={renderConf/typerendering("renderlet")*} />
+                                        <input type="hidden" name="renderingMode" value={if ((renderConf/typerendering("renderingMode")).length > 0) {renderConf/typerendering("renderingMode")*} else {""}} />
+                                        {if ((renderConf/typerendering("renderingSpecification")).length > 0) {<input type="hidden" name="renderingSpecification" value={renderConf/typerendering("renderingSpecification")*} />} else {""}}
+                                        <input type="hidden" name="renderedType" value={renderConf/typerendering("renderedType")*} />
+                                        <input type="hidden" name="mediaType" value={renderConf/typerendering("mediaType")*} />
+                                        <input type="submit" value="edit/clone" />
+                                    </p>
+                                    </form>
+                                </td>
+                            </tr>
+                            }}
+                        </table>
+                    </li>
+                } else {
+                    ""
+                }
+			}
+        }
+        </ul>
+     </div>

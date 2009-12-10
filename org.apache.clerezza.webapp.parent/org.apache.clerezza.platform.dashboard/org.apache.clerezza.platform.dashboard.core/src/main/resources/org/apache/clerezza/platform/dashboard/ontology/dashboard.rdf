@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+>
+
+<!-- Ontology -->
+
+<owl:Ontology rdf:about="http://clerezza.org/2009/04/dashboard#">
+	<owl:versionInfo>Revision: 0.1</owl:versionInfo>
+	<dc:title xml:lang="en">
+		Clerezza Dashboard
+	</dc:title>
+</owl:Ontology>
+
+
+<!-- Classes -->
+
+<rdfs:Class rdf:about="http://clerezza.org/2009/04/dashboard#DashBoard">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">Dashboard</rdfs:label>
+	<skos:definition xml:lang="en">The header of admin web pages incl. menu web page</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/08/dashboard#" />
+</rdfs:Class>
+
+<!-- Properties -->
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/dashboard#includeDashBoardMenu">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdfs:label xml:lang="en">size</rdfs:label>
+	<skos:definition xml:lang="en">Points to the dashboard</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/08/dashboard#" />
+	<rdfs:range rdf:resource="http://clerezza.org/2009/08/dashboard#DashBoard" />
+</rdf:Property>
+
+
+</rdf:RDF>
+

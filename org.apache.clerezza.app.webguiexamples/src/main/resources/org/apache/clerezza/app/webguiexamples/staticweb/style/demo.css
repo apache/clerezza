@@ -1,0 +1,39 @@
+#demo {
+	padding-left: 1.5em;
+	padding-top: 1.5em;
+}
+
+#demo ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	clear: both;
+}
+
+#demo ol li {
+	float: left;
+	clear: right;
+	margin: 1em;
+}
+
+#demo h3 {
+	clear: both;
+	margin: 0;
+	padding: 1em 0em;
+	
+}
+
+#demo h4 {
+	font-weight: normal;
+	clear: both;
+	margin: 0;
+	padding-left: 1em;
+}
+
+#demo .demo-bg {
+	background-color: #34C0DA;
+}
+
+#tx-content.demo {
+	top: 1em;
+}

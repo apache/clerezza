@@ -1,0 +1,10 @@
+${ns:dct=http://purl.org/dc/terms/}
+<ol>
+	<li class="tx-open" id="scripts"><a href="#">Available Scripts</a>
+		<ol>
+		${loop}
+			<li><a href="#" id="${contains}" class="link">${contains/dct:title}</a></li>
+		${/loop}
+		</ol>
+	</li>
+</ol>

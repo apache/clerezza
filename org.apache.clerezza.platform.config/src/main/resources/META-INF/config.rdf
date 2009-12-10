@@ -1,0 +1,56 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:j.0="http://clerezza.org/2008/10/permission#"
+    xmlns:j.1="http://xmlns.com/foaf/0.1/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:j.2="http://rdfs.org/sioc/ns#">
+  <j.0:Role>
+    <dc:title>CommunityUser</dc:title>
+    <j.0:hasPermission rdf:parseType="Resource">
+      <j.0:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "http://tpf.localhost/user/{username}/*" "readwrite")</j.0:javaPermissionEntry>
+    </j.0:hasPermission>
+    <j.0:hasPermission rdf:parseType="Resource">
+      <j.0:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.UserBundlePermission "{username}" "")</j.0:javaPermissionEntry>
+  	</j.0:hasPermission>
+  </j.0:Role>
+  <j.1:Agent>
+    <j.1:name>anonymous</j.1:name>
+    <j.2:has_function>
+      <j.0:Role>
+        <dc:title>DefaultRole</dc:title>
+        <j.0:hasPermission rdf:parseType="Resource">
+          <j.0:javaPermissionEntry>(java.util.PropertyPermission "*" "read")</j.0:javaPermissionEntry>
+        </j.0:hasPermission>
+        <j.0:hasPermission rdf:parseType="Resource">
+          <j.0:javaPermissionEntry>(org.osgi.framework.AdminPermission "*" "resource")</j.0:javaPermissionEntry>
+        </j.0:hasPermission>
+        <j.0:hasPermission rdf:parseType="Resource">
+          <j.0:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "http://tpf.localhost/content.graph" "read")</j.0:javaPermissionEntry>
+        </j.0:hasPermission>
+		<j.0:hasPermission rdf:parseType="Resource">
+          <j.0:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "http://tpf.localhost/documentation.graph" "read")</j.0:javaPermissionEntry>
+        </j.0:hasPermission>
+        <j.0:hasPermission rdf:parseType="Resource">
+      	  <j.0:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.ChangePasswordPermission "{username}" "")</j.0:javaPermissionEntry>
+  		</j.0:hasPermission>
+    	<j.0:hasPermission rdf:parseType="Resource">
+      	  <j.0:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.AccountControlAccessPermission "{username}" "")</j.0:javaPermissionEntry>
+    	</j.0:hasPermission>
+      </j.0:Role>
+    </j.2:has_function>
+  </j.1:Agent>
+  <rdf:Description rdf:about="http://tpf.localhost/typePriorityList">
+    <rdf:rest rdf:parseType="Collection">
+      <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    </rdf:rest>
+    <rdf:first rdf:resource="http://clerezza.org/2009/07/script#ScriptGeneratedResource"/>
+  </rdf:Description>
+  <j.1:Agent>
+    <j.0:hasPermission rdf:parseType="Resource">
+      <j.0:javaPermissionEntry>(java.security.AllPermission "" "")</j.0:javaPermissionEntry>
+    </j.0:hasPermission>
+    <j.1:name>admin</j.1:name>
+    <j.1:mbox rdf:resource="mailto:noreply@clerezza.org"/>
+    <j.0:passwordSha1>d033e22ae348aeb5660fc2140aec35850c4da997</j.0:passwordSha1>
+  </j.1:Agent>
+</rdf:RDF>

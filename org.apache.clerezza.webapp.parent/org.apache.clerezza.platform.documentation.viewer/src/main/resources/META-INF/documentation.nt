@@ -1,0 +1,25 @@
+<bundle:///intro-content-el/0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/0> <http://discobits.org/ontology#infoBit> "The documentation viewer provides access to the documentation (provided by the different modules) at <a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"/documentation\">/documentation</a>."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/1> <http://discobits.org/ontology#infoBit> "The documentation is ordered so that the after properties http://clerezza.org/2009/08/documentation#after are satisfied. When the documentation is writter in the discobits editor such a property is typically set by adding something like the folleowing in the RDF editing mode to the xml element representing the resource: &lt;after a=\"http://clerezza.org/2009/08/documentation#\" rdf:resource=\"bundle:///platform-content\" /&gt;"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f52 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f52 <http://discobits.org/ontology#pos> "0" .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f52 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/0> .
+<bundle:///intro-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-title> <http://discobits.org/ontology#infoBit> "Documentation Viewer"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#OrderedContent> .
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:AX2dX4174973dX3aX123952065f3X3aXX2dX7f52 .
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:AX2dX4174973dX3aX123952065f3X3aXX2dX7f51 .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f51 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f51 <http://discobits.org/ontology#pos> "1" .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f51 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/1> .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f50 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f50 <http://discobits.org/ontology#pos> "1" .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f50 <http://discobits.org/ontology#holds> <bundle:///intro-content> .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f4f <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f4f <http://discobits.org/ontology#pos> "0" .
+_:AX2dX4174973dX3aX123952065f3X3aXX2dX7f4f <http://discobits.org/ontology#holds> <bundle:///intro-title> .
+<bundle:///intro> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///intro> <http://discobits.org/ontology#contains> _:AX2dX4174973dX3aX123952065f3X3aXX2dX7f4f .
+<bundle:///intro> <http://discobits.org/ontology#contains> _:AX2dX4174973dX3aX123952065f3X3aXX2dX7f50 .
+<bundle:///intro> <bundle:///nullafter> <bundle://org.apache.clerezza.platform.content/discobits-editor> .

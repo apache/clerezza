@@ -1,0 +1,29 @@
+<rdf:RDF xmlns="http://clerezza.org/2009/09/contentprototype#"
+	xml:base="http://clerezza.org/2009/09/contentprototype"
+	xmlns:contentprototype="http://clerezza.org/2009/09/contentprototype#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:dbt="http://discobits.org/ontology#">
+
+	<owl:Ontology rdf:about="http://clerezza.org/2009/09/contentprototype#">
+		<dc:title>Clerezza Ontology for Description of Content Prototype</dc:title>
+	</owl:Ontology>
+
+    <!-- Classes -->
+
+	<owl:Class rdf:about="#PrototypeDescriptor">
+		<rdfs:comment>A descriptor for a content prototype. A content prototype defines the structure of contents</rdfs:comment>
+	</owl:Class>
+
+    <!-- Object Properties -->
+
+    <owl:ObjectProperty rdf:about="#prototype">
+        <rdfs:comment>Points to an OrderedContent.</rdfs:comment>
+        <rdfs:domain rdf:resource="#PrototypeDescriptor"/>
+        <rdfs:range rdf:resource="dbt:DiscoBit"/>
+    </owl:ObjectProperty>
+
+</rdf:RDF>

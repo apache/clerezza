@@ -1,0 +1,92 @@
+import scala.xml.NodeBuffer
+import scala.collection.mutable.ListBuffer
+def cp(s: Any) = new UriRef("http://clerezza.org/2009/03/controlpanel#"+s)
+def osgi(s: Any) = new UriRef("http://clerezza.org/2008/11/osgi#"+s)
+def foaf(s: Any) = new UriRef("http://xmlns.com/foaf/0.1/"+s)
+val nodeBuff = new ListBuffer[NodeBuffer]
+resultDocModifier.setTitle("Account Control Panel");
+resultDocModifier.addNodes2Elem("tx-module", <h1>Account Control Panel</h1>);
+
+<div id="tx-content">
+{if ((res/cp("userBundlePermission")*) == "true")
+	{nodeBuff +=(<h2>Bundle Control Panel</h2>
+	<h3>Install Bundle</h3>
+
+	<form method="post" action="control-panel/install-bundle" enctype="multipart/form-data">
+		<input type="file" class="FieldText" name="bundle" size="30" title="bundle path"/>
+		<input value="Install" type="submit"/><p />
+	</form>
+
+	<h3>User Bundles</h3>
+	<table border="1">
+	<tbody>
+		<tr>
+			<th>Location</th>
+			<th>Status</th>
+			<th colspan="4">Action</th>
+		</tr>
+
+		{for (renderlet <- (res/-osgi("owner")).sort((a,b) => ((a*)<(b*)))) yield
+		<tr>
+			<td>{renderlet*}</td>
+			<td>{renderlet/osgi("status")* match {
+				case "2" => "Installed"
+				case "4" => "Resolved"
+				case "8" => "Starting"
+				case "16" => "Stopping"
+				case "32" => "Active"
+				}}
+			</td>
+			{if (((renderlet/osgi("bundle_id")).length) > 0)
+			<td>
+			<form method="post" action="control-panel/start-bundle">
+			<input name="bundleId" value={(renderlet/osgi("bundle_id"))*} type="hidden"/>
+			<input value="start" type="submit"/>
+			</form>
+			</td>
+			<td>
+			<form method="post" action="control-panel/stop-bundle">
+			<input name="bundleId" value={(renderlet/osgi("bundle_id"))*} type="hidden"/>
+			<input value="stop" type="submit"/>
+			</form>
+			</td>
+			<td>
+			<form method="post" action="control-panel/uninstall-bundle">
+			<input name="bundleId" value={(renderlet/osgi("bundle_id"))*} type="hidden"/>
+			<input value="uninstall" type="submit"/>
+			</form>
+			</td>
+			else
+			<td colspan="3">Not registered as bundle</td>}
+			</tr>
+			}
+		</tbody>
+	</table>
+	<br/>)}
+}
+
+{if((res/cp("changePasswordPermission")*) == "true")
+nodeBuff +=(<h2>Change Password</h2>
+<form method="post" action="control-panel/change-password" >
+<label for="oldPW">Current Password:</label>
+<input type="password" name="oldPW"/>
+<br />
+<label for="newPW">New Password:</label>
+<input type="password" name="newPW"/>
+<br />
+<label for="confirmNewPW">Confirm new Password:</label>
+<input type="password" name="confirmNewPW"/>
+<br />
+<input type="submit" name="submit" value="Submit"/>
+</form>)}
+{
+	if((res/cp("changedPassword")).length > 0) {
+		nodeBuff +=(<br /><span>Password has not changed, either wrong current password or the
+			new password and the confirmation didn't match!</span>)
+	}
+}
+{if(nodeBuff.isEmpty)
+	<span>There are no settings you can configure for this account!</span> else
+	nodeBuff
+}
+</div>

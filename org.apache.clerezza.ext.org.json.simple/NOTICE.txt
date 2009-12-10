@@ -1,0 +1,5 @@
+JSON.simple is licensed under Apache License 2.0.
+
+JSON.simple is a simple Java toolkit for JSON. You can use JSON.simple to encode or decode JSON text. 
+ 
+http://code.google.com/p/json-simple/

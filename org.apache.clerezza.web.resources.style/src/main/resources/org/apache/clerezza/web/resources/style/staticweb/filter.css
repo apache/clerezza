@@ -1,0 +1,43 @@
+/* filter (in panel)*/
+
+.tx-panel .tx-filter {
+	background-color: #FFFFFF;
+	padding: 1em 0 0 0;
+	width: 16.7em;
+	background-image: url(./images/bg/fade-filter.png);
+	background-repeat: repeat-x;	
+}
+
+.tx-panel .tx-filter  h4 {
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+	padding-left: 1.9em;
+	padding-bottom: 0.5em;
+	color: #666666;
+	font-size: 1.0em;
+}
+
+.tx-panel .tx-filter ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.tx-panel .tx-filter ol li {
+	background-color: #fff2e4;
+	margin: 0;
+	padding: 0 0 0 1.9em;
+	color: #000000;
+	height: 1.6em;
+	border-bottom: solid 1px #ffffff;
+	line-height: 1.8em;
+
+}
+
+.tx-panel .tx-filter a {
+	float: right;
+	color: #000000;
+} 
+
+

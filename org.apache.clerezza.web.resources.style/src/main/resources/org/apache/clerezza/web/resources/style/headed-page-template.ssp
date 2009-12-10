@@ -1,0 +1,39 @@
+resultDocModifier.addStyleSheet("/style/style.css");
+resultDocModifier.addStyleSheet("/yui/container/assets/container-core.css");
+resultDocModifier.addScriptReference("/jquery/jquery-1.3.2.min.js");
+resultDocModifier.addScriptReference("/jquery/jquery.menu.js");
+resultDocModifier.addScriptReference("/scripts/modification-status.js");
+resultDocModifier.addScriptReference("/scripts/status-message.js");
+resultDocModifier.addScriptReference("/yui/yahoo-dom-event/yahoo-dom-event.js");
+resultDocModifier.addScriptReference("/yui/element/element-min.js");
+resultDocModifier.addScriptReference("/yui/container/container-min.js");
+resultDocModifier.addScriptReference("/scripts/alert-message.js");
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	    <title></title>
+	</head>
+	<body>
+		<div id="tx-header">
+				{render(context,"menu")}
+			<div id="tx-module">
+				<div id="tx-page-actions">
+					<ol id="tx-page-actions-ol">
+					</ol>
+				</div>	
+			</div>
+			<div id="tx-module-tabs">
+				<ol id="tx-module-tabs-ol">
+				</ol>
+				<div id="tx-contextual-buttons">
+					<ol id="tx-contextual-buttons-ol">
+					</ol>
+				</div>
+			</div>
+			<div id="tx-module-options">	
+				<ol id="tx-module-options-ol">
+				</ol>	
+			</div>
+		</div>
+		{render(res,"naked")}
+	</body>
+</html>

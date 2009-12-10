@@ -1,0 +1,7 @@
+${ns:login=http://clerezza.org/2009/07/login#}
+<form method="post" action="../login">
+	<label for="user" id="label_user">User name:</label><input type="text" id="user" name="user"/>
+	<label for="pass" id="label_pass">Password:</label><input type="password" id="pass" name="pass" value="" />
+	<input type="hidden" id="referer" name="referer" value="${login:refererUri}" />
+	<input value="Login" type="submit"/><p />
+</form>

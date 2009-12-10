@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+	<head>
+		<title>Usage: How to use the UserManager</title>
+</head>
+	<body>
+		<h1>Usage: How to use the User Manager</h1>
+		<p>Author: Daniel Spicar, Tsuyoshi Ito - clerezza.org</p>
+		<p>Date: March 25, 2009</p>
+		<h2 id="add">1. Add a new user</h2>
+        <p>
+            In order to add a new user to the CMS click the <a href="http://localhost:8282/admin/user-manager/add-user" target="_blank">Add User</a> link in the user list (<a href="http://localhost:8282/admin/user-manager/" target="_blank">http://localhost:8282/admin/user-manager/</a>).
+            Fill in the form with the Username, E-Mail address and the ID and a password.
+            Then choose a role and click the <i>add user</i> button.        </p>
+        <p>To add some special information to the user profile, single and multiple informations can be added to the form by clicking the corresponding buttons. Keep attention that the property identifier is a valid URI. Otherwise the graph will be compromised.</p>
+    <h2 id="permissions">2. Manage permissions</h2>
+        <p>
+            The user permissions can be edited by clicking the <i>manage permissions</i> button.
+            On the following page the current user permissions are listed.
+            For example the admin has the entry <i>(java.security.AllPermission "" "")</i>.
+            These permissions are based on Java Authentication and Authorization Service (JAAS).
+            More information on how to use them can be found at: <a href="jaas.xhtml">JAAS Permissions</a>.
+        </p>
+        <p>
+            To add a new permission enter it into the text field
+            and press the <i>add new permission</i> button.
+        </p>
+        <p>
+            To remove existing permissions find the permission in the list and click the
+            <i>delete</i> button.
+        </p>
+        <h2 id="delete">3. Delete a user</h2>
+        <p>
+            Deleting a user is very simple. Just click the <i>delete button</i> in the user-list and the
+            it will be deleted.        </p>
+        <h2 id="edit">4. Edit a user</h2>
+        <p> The first step of editing a user is done by clicking on the <em>edit button</em> in the user-list.On the following page the current user data is showed, and it is possible to add some new data to the appropriate fields. By clicking the<em> save changes button</em>, all the entered data will be stored to the user.<br />
+</p>
+        <h2 id="properties">5. Manage User Formfields</h2>
+        <p>On the management site for user formfields (<a href="http://localhost:8282/admin/user-manager/manage-user-form-fields">http://localhost:8282/admin/user-manager/manage-user-form-fields</a>) you can delete defined properties or define others according to the add-user page.</p>
+        <p>To remove existing formfields find the formfield in the list and click the
+        <i>delete</i> button. </p>
+</body>
+</html>
+

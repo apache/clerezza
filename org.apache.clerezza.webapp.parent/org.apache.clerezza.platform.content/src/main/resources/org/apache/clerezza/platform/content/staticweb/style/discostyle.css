@@ -1,0 +1,52 @@
+img {
+	border: 0;
+}
+
+ol {
+	padding-left: 0;
+}
+
+.titledContent {
+	list-style-type: none;
+}
+
+.titledContent .content {
+	padding-left: 1em;
+}
+
+.titledContent .title .typeWidget {
+	font-size: 200%;
+	color: red;
+}
+	
+.titledContent .titledContent  .title .typeWidget {
+	font-size: 150%;
+}
+
+
+.titledContent .titledContent .titledContent .title .typeWidget {
+	font-size: 130%;
+	color: black;
+}
+
+.titledContent .titledContent .titledContent .titledContent .title .typeWidget {
+	font-size: 100%;
+}
+
+.orderedContent {
+	padding-left: 2em;
+}
+.controlArea {
+	float: right;
+}
+
+.sourceEdit {
+	background-color: grey;
+	position: absolute; top: 10%; right: 10%; left: 10%; bottom: 10%
+}
+
+.sourceEdit textarea {
+	width: 100%;
+	height: 90%
+}
+
