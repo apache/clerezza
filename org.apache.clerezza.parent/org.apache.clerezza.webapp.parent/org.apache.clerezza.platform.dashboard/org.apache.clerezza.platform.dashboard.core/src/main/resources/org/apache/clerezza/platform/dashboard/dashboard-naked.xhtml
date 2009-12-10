@@ -1,0 +1,37 @@
+		${ns:list=http://clerezza.org/2009/04/list#}
+		${ns:dhb=http://clerezza.org/2009/06/dashboard#}
+
+	<div id="tx-globalsearch">
+		<form action="">
+		<fieldset>
+			<input type="text" name="globalsearch_value" id="tx-globalsearch_value" /> <input type="submit" value="Go" />
+		</fieldset>	
+		</form>
+
+	</div>
+
+	<div id="tx-login">
+		
+	</div>
+
+	<div id="tx-logo"><a href=""></a></div>
+
+	<div id="tx-menu">
+	<ol>
+    	<li><a href="${dhb:hasRelativeUrl}">${dhb:hasLabel}</a></li>
+		${loop}
+		<li><a href="">${contains/dhb:hasDashBoardGroupLabel}</a>
+        	<ol>
+             ${loop}
+            	
+              		<li><a href="${contains/contains/dhb:hasRelativeUrl}">${contains/contains/dhb:hasLabel}</a></li>
+             ${/loop}
+             </ol>
+        </li>
+		${/loop}
+        <li><a href="/logout">Logout</a></li>
+	</ol>
+	</div>
+
+
+

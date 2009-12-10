@@ -1,0 +1,126 @@
+/* #navigation */
+#tx-panel {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	width: 215px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}	
+
+#tx-panel.tx-close {
+	width: 20px;
+	background-color: #aaaaaa;
+}	
+
+
+#tx-panel label {
+	display: block;
+	padding: 0.5em 0.5em 0.5em 1.0em;
+	height: 2.0em;
+}
+
+#tx-panel fieldset label:first-child {
+	background-color: #aaaaaa;
+	border-bottom: solid 1px #ffffff;
+}
+
+#tx-panel fieldset {
+	background-color: #d1d2d4;
+	width: 200px;
+}
+
+#tx-panel-open-close {
+	/*float: right;*/
+	color: #ffffff;
+	background-color: #414143;
+	display: block;
+	height: 3.0em;
+	width: 20px;
+	background-repeat: repeat-x;
+	background-position: left;
+	position: absolute;
+	top: 0;
+	left: 180px;
+	z-index: 10;
+} 
+
+#tx-panel-open-close.tx-close {
+	left: 0px;
+}	
+
+
+
+#tx-result {
+	width: 200px;
+}
+
+#tx-result ul {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+	background-color: #34C0DA;
+}
+
+#tx-result > ul > li {
+	font-size: 1.1em;
+	background-image: url(../img/icons/arr-right-light.png);
+	background-repeat: no-repeat;
+	background-position: 0.2em 0.6em;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #ffffff;
+}
+
+#tx-result > ul > li.tx-open {
+	font-size: 1.1em;	
+	background-image: url(../img/icons/arr-down-light.png);
+	background-repeat: no-repeat;
+	background-position: 0.2em 0.6em;
+}
+
+#tx-result ul li  a {
+	color: #ffffff;
+	text-decoration: none;
+	display: block;
+	padding: 0.4em 0.2em 0.3em 1.2em;	
+}
+
+#tx-result ul li a:visited, #tx-result li a:link  {
+	color: #ffffff;
+}
+
+#tx-result li a:active, #tx-result li a:hover  {
+	color: #ffffff;
+}
+
+#tx-result ul ul {
+	background-color: #ddf1f5;
+	display: none;
+}
+
+#tx-result > ul > li.tx-open > ul {
+	display: block;
+}
+
+#tx-result ul li li {
+	background-image: url(../img/icons/arr-right-dark.png);
+	background-repeat: no-repeat;
+	background-position: 1.2em 0.6em;
+}
+
+#tx-result ul li li a {
+	color: #000000;
+	padding: 0.4em 0.2em 0.3em 2.5em;	
+}
+
+#tx-result ul li li a:visited, #tx-result ul li li a:link  {
+	color: #000000;
+}
+
+#tx-result ul li li a:active, #tx-result ul li li a:hover  {
+	color: #000000;
+}
+
+

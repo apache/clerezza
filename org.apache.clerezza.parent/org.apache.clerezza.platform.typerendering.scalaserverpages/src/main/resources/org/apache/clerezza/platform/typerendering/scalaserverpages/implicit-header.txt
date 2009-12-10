@@ -1,0 +1,16 @@
+import org.apache.clerezza.rdf.ontologies._
+import org.apache.clerezza.rdf.core._
+import org.apache.clerezza.rdf.utils._
+import org.apache.clerezza.rdf.scala.utils.Preamble._
+
+def render(resource : GraphNode, mode : String) = {
+    def parseNodeSeq(string : String)  = {
+        scala.xml.XML.loadString("<elem>"+string+"</elem>").child
+    }
+    val baos = new java.io.ByteArrayOutputStream
+    renderer.render(resource, context, mode, baos)
+    parseNodeSeq(new String(baos.toByteArray))
+}
+
+val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
+

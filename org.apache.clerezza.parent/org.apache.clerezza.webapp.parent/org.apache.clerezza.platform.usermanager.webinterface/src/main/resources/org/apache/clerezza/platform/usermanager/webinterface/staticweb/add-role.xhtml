@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head> 
+		<title>Role Management</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="/style/_css/style.css" media="screen" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<div id="navigation"><a href="/admin/user-manager/list-roles">Role Overview</a></div>
+		<hr />
+		<h2>Add a New Role</h2>
+		<form method="post" action="/admin/user-manager/add-role">
+			<p>
+				<label for="roleTitle">Title: </label>
+				<input name="roleTitle" type="text" />
+				<input type="submit" value="add role" />
+			</p>
+		</form>
+	</body>
+</html>

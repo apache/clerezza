@@ -1,0 +1,12 @@
+
+
+Adobe, Photoshop and XMP are either registered trademarks or trademarks of 
+Adobe Systems Incorporated in the United States and/or other countries.
+
+Portions are
+These portions are licensed under the COMMON DEVELOPMENT AND DISTRIBUTION
+LICENSE (CDDL) Version 1.0, see the file LICENSE.cddl.txt. When redistributing
+this portions of the software you must ensure to comply with the CDDL license,
+if you do not modify the respective files this is done by indicating where the
+original sources can be retrieved, if you modify the files you must publish the
+modifications.

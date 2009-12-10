@@ -1,0 +1,28 @@
+def typerendering(s: Any) = new UriRef("http://clerezza.org/2009/04/typerendering#"+s)
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+	<head>
+		<link type="text/css" href="/style/style.css" rel="stylesheet" />
+	    <title>Error Rendering Page</title>
+	</head>
+	<body>
+		<h1>Error Rendering Page</h1>
+		<p>
+		File: {res/typerendering("errorSource")*}<br/>
+			{
+				if ((res/typerendering("line")).length > 0) {
+					"Line: " + (res/typerendering("line")*)
+				} else {""}
+			}
+			<br/>
+			{
+				if ((res/typerendering("column")).length > 0) {
+					"Column: " + (res/typerendering("column")*)
+				} else {""}
+			}
+		</p>
+		<p>Description:</p>
+				<pre>{res/typerendering("message")*}</pre>
+	</body>
+</html>

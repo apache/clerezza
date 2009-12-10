@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+${ns:discobits=http://discobits.org/ontology#}
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	${loop sort asc discobits:contains/discobits:pos}
+		${if lexicalForm(discobits:contains/discobits:pos) = "0"}
+			<head>
+				<link type="text/css" href="/style/style.css" rel="stylesheet" />
+				<title>${render(discobits:contains/discobits:holds, "naked")}</title>
+			</head>
+		${/if}
+	${/loop}
+	<body>
+		${render(., "naked")}
+	</body>
+</html>

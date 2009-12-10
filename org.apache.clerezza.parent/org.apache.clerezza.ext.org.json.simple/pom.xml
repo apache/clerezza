@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  	<modelVersion>4.0.0</modelVersion>
+  	<parent>
+    	<artifactId>org.apache.clerezza.parent</artifactId>
+    	<groupId>org.apache.clerezza</groupId>
+    	<version>0.2-SNAPSHOT</version>
+  	</parent>
+  	<groupId>org.apache.clerezza.ext</groupId>
+  	<artifactId>org.json.simple</artifactId>
+  	<name>Clerezza Ext - Json.simple OSGi Bundle</name>
+  	<version>0.3-SNAPSHOT</version>
+  	<packaging>bundle</packaging>
+	<description>json.simple parses and serializes json</description>
+  	<dependencies>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Package>org.json.simple.*</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

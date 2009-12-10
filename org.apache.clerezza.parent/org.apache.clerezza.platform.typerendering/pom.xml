@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.apache.clerezza</groupId>
+		<artifactId>org.apache.clerezza.webapp.parent</artifactId>
+		<version>0.2-SNAPSHOT</version>
+	</parent>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.platform.typerendering</artifactId>
+	<packaging>pom</packaging>
+	<version>0.6-SNAPSHOT</version>
+	<name>Clerezza - Platform Type Rendering</name>
+	<description>This project provides a JAX-RS MessageBodyWriter to render GraphNodes. Rendering requests are delegated to registered renderlets.</description>
+	
+	<modules>
+		<module>org.apache.clerezza.platform.typerendering.ontologies</module>
+		<module>org.apache.clerezza.platform.typerendering.core</module>
+	</modules>
+</project>

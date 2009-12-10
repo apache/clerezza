@@ -1,0 +1,70 @@
+		${ns:script=http://clerezza.org/2009/07/script#}
+		${ns:sma=http://clerezza.org/2009/07/scriptmanager#}
+		${ns:dct=http://purl.org/dc/terms/}
+		${ns:discobits=http://discobits.org/ontology#}
+		<form method="post" id="updateform" action="update-script" enctype="multipart/form-data">
+			<input type="hidden" name="scriptUri" id="scriptUri" value="${sma:script}" />
+			<table>
+				<tr>
+					<th colspan="2">${sma:script/dct:title}</th>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<textarea name="scriptCode" id="scriptCode" rows="10" style="font-size:12px; width:70%;">${sma:script/sma:code}</textarea>
+						<div id="scriptConsole" style="display:none;"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="fileName">Script Name</label>
+					</td>
+					<td>
+						<input type="text" name="fileName" value="${sma:script/dct:title}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="scriptLanguage">Script Language:</label>
+					</td>
+					<td>
+						<select name="scriptLanguage" size="1">
+							<optgroup label="current value">
+								<option selected="selected">${sma:script/script:scriptLanguage} (${sma:script/script:scriptLanguageVersion})</option>
+							</optgroup>
+							<optgroup label="available values">
+							${loop}
+								<option>${sma:scriptLanguageDescription/script:scriptLanguage} (${sma:scriptLanguageDescription/script:scriptLanguageVersion})</option>
+							${/loop}
+							</optgroup>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="scriptFile">New Source File:</label>
+					</td>
+					<td>
+						<input type="file" name="scriptFile" />
+						(A new file upload will overwrite the code.)
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="mediaType">Media Type (of the script file):</label>
+					</td>
+					<td>
+						<input type="text" name="mediaType" value="${if sma:script/discobits:mediaType}${sma:script/discobits:mediaType}${/if}"/>
+						(optional: Use to enforce a specific media type)
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="producedType">Media Type of the script output:</label>
+					</td>
+					<td>
+						<input type="text" name="producedType" value="${if sma:script/script:producedType}${sma:script/script:producedType}${/if}"/>
+						(optional: ignored if return value is a GraphNode, default: text/plain)
+					</td>
+				</tr>
+			</table>
+		</form>

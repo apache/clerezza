@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:skos="http://www.w3.org/2008/05/skos#"
+>
+
+<!-- Ontology -->
+
+<owl:Ontology rdf:about="http://clerezza.org/2009/06/tcprovider#">
+	<owl:versionInfo>Revision: 0.1</owl:versionInfo>
+	<dc:title xml:lang="en">
+		Clerezza Triple Collection Provider Ontology Namespace
+	</dc:title>
+</owl:Ontology>
+
+<!-- Classes -->
+
+<rdfs:Class rdf:about="http://clerezza.org/2009/06/tcprovider#Graph">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">Graph</rdfs:label>
+	<skos:definition xml:lang="en">
+		A graph, modeled as a set of triples.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/06/tcprovider#" />
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://clerezza.org/2009/06/tcprovider#MGraph">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">MGraph</rdfs:label>
+	<skos:definition xml:lang="en">
+		A mutable graph.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/06/tcprovider#" />
+</rdfs:Class>
+
+</rdf:RDF>

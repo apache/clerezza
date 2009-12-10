@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>org.apache.clerezza.parent</artifactId>
+		<groupId>org.apache.clerezza</groupId>
+		<version>0.2-SNAPSHOT</version>
+	</parent>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.platform.xhtml2html</artifactId>
+	<packaging>bundle</packaging>
+	<version>0.5-SNAPSHOT</version>
+	<name>Clerezza - Filter for browsers that do not support XHTML</name>
+	<description>Provides a wrhapi filter that changes the content-type of the
+	response from application/xhtml+xml to text/html</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.wymiwyg</groupId>
+			<artifactId>wrhapi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+	</dependencies>
+</project>

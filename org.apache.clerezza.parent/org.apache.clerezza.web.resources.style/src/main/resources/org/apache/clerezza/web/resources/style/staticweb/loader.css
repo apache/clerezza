@@ -1,0 +1,26 @@
+#tx-loader {
+	border: solid 1px #CCCCCC;
+	position: absolute;
+	top: 100px;
+	left: 100px;
+	width: 12em;
+	background-color: white;
+	z-Index: 10000;
+	color: #666666;
+}
+
+#tx-loader div {
+	border-top: solid 1px #CCCCCC;
+	background-image: url(./images/icons/anim-loading.gif);
+	background-position: 0.3em center;
+	min-height: 1.8em;
+	background-repeat: no-repeat;
+	padding: 0.2em 0.4em 0.1em 2.2em;
+	vertical-align: middle;
+	clear: both;
+	line-height: 1.4em;
+}
+
+#tx-loader div:first-child {
+	border: none;
+}

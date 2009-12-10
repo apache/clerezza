@@ -1,0 +1,204 @@
+/* table will be replaced with .tx-table */
+
+table {
+	border-collapse: collapse;
+	border: none;
+	width: 100%;
+}
+
+table thead tr {
+}
+
+table thead {
+}
+
+table tbody tr {
+	border-bottom: solid 1px #e4e4e4;
+}
+
+table tbody tr:visited, table tbody tr:link,
+table tbody tr:active, table tbody tr:hover {
+	background-color: #ffffff;
+}
+
+table td {
+	vertical-align: middle;	
+	padding-left: 0.6em;
+	padding-right: 0.6em;
+}
+
+table th {
+	vertical-align: middle;
+	text-align: left;
+	font-weight: normal;
+	color: #555555;
+	padding: 0 0.6em;
+	background-image: url(./images/bg/fade-th-off.png);
+	background-repeat: repeat-x;
+	background-position: bottom;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #ffffff;
+	height: 2.2em;
+}
+
+table th span.tx-right {
+	float: right;
+	padding-right: 0.4em;
+}
+
+table th.tx-on {
+	background: url(./images/bg/fade-th-on.png) top  repeat-x;
+	color: #555555;
+	background-position: bottom;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #ffffff;
+}
+
+table th a:visited, table th a:link,
+table th a:active, table th a:hover {
+	color: #555555;
+	text-decoration: none;
+}
+
+table td:first-child {
+	text-align: left;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+table a img  {
+	padding: 0;
+	text-decoration: none;
+	float: left;
+}
+
+table a:hover img  {
+	border: solid 0px #54c5d0;
+	text-decoration: none;
+	padding: 0;
+}
+
+td span.tx-right {
+	float: right;
+}
+
+td span.tx-left {
+	float: left;
+}
+
+table .tx-icon {
+	margin-left: 0.4em;
+}
+
+table th .tx-icon-down, table th .tx-icon-up {
+	text-indent: -9999px;
+	height: 10px;
+	width: 10px;
+	display: block;
+	padding-top: 0.4em;	
+}
+
+/* .tx-table */
+
+table.tx-table {
+	border-collapse: collapse;
+	border: none;
+	width: 100%;
+}
+
+table.tx-table thead tr {
+}
+
+table.tx-table thead {
+}
+
+table.tx-table tbody tr {
+	border-bottom: solid 1px #e4e4e4;
+}
+
+table.tx-table tbody tr:visited, table.tx-table tbody tr:link,
+table.tx-table tbody tr:active, table.tx-table tbody tr:hover {
+	background-color: #ffffff;
+}
+
+table.tx-table td {
+	vertical-align: middle;	
+	padding-left: 0.6em;
+	padding-right: 0.6em;
+}
+
+table.tx-table th {
+	vertical-align: middle;
+	text-align: left;
+	font-weight: normal;
+	color: #555555;
+	padding: 0 0.6em;
+	background-image: url(./images/bg/fade-th-off.png);
+	background-repeat: repeat-x;
+	background-position: bottom;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #ffffff;
+	height: 2.2em;
+}
+
+table.tx-table th span.tx-right {
+	float: right;
+	padding-right: 0.4em;
+}
+
+table.tx-table th.tx-on {
+	background: url(./images/bg/fade-th-on.png) top  repeat-x;
+	color: #555555;
+	background-position: bottom;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #ffffff;
+}
+
+table.tx-table th a:visited, table.tx-table th a:link,
+table.tx-table th a:active, table.tx-table th a:hover {
+	color: #555555;
+	text-decoration: none;
+}
+
+table.tx-table td:first-child {
+	text-align: left;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+table.tx-table a img  {
+	padding: 0;
+	text-decoration: none;
+	float: left;
+}
+
+table.tx-table a:hover img  {
+	border: solid 0px #54c5d0;
+	text-decoration: none;
+	padding: 0;
+}
+
+.tx-table td span.tx-right {
+	float: right;
+}
+
+.tx-table td span.tx-left {
+	float: left;
+}
+
+table.tx-table .tx-icon {
+	margin-left: 0.4em;
+}
+
+table.tx-table th .tx-icon-down, table.tx-table th .tx-icon-up {
+	text-indent: -9999px;
+	height: 10px;
+	width: 10px;
+	display: block;
+	padding-top: 0.4em;	
+}
+

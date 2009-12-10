@@ -1,0 +1,20 @@
+${ns:sma=http://clerezza.org/2009/07/scriptmanager#}
+<table>
+	<thead>
+		<tr>
+			<th colspan="2">Execution URI</th>
+		</tr>
+	</thead>
+	<tbody>
+    ${loop}
+        <tr id="${sma:executionUri}">
+          	<td width="20px;">
+            	<input type="checkbox" onclick="" name="executionUriCheckBox" value="${sma:executionUri}" />
+            </td>
+			<td>${sma:executionUri}</td>
+        </tr>
+    ${/loop}
+    </tbody>
+</table>
+
+

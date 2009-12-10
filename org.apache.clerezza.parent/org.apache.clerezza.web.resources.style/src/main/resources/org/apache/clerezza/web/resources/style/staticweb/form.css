@@ -1,0 +1,59 @@
+/* form */
+form, fieldset {
+	padding: 0;
+	margin: 0;	
+	border: none;
+}
+
+
+input, select, textarea, button {
+	margin: 0;
+	padding: 0.15em 0 0.1em 0.4em;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+input.radio {
+
+}
+
+input[type="submit"], input[type="file"] {
+}
+
+input[type="radio"], input[type="checkbox"] {
+	margin: auto 0;
+	padding: 0;
+	width: 1.4em !important;
+	min-height: 1.4em !important;
+	height: 1.4em !important;
+	vertical-align: text-bottom;
+	border: none !important;
+	background-image: none;
+	background-color: transparent;
+}
+
+
+input, select, textarea {
+	border-top: solid 1px #a7a7a7;
+	border-left: solid 1px #a7a7a7;
+	border-right: solid 1px #a7a7a7;
+	border-bottom: solid 1px #cccccc;
+	background-image: url(./images/bg/fade-input.png);
+	background-repeat: repeat-x;	
+	background-color: #ffffff;
+	min-height: 1.2em;
+	vertical-align: middle;
+	font-size: 1.0em;
+
+}
+
+select {
+	padding-left: 0.2em;
+}
+
+textarea {
+	font-size: 1.0em;
+	padding-right: 0.2em;
+}
+
+
+

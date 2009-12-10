@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>org.apache.clerezza.parent</artifactId>
+		<groupId>org.apache.clerezza</groupId>
+		<version>0.2-SNAPSHOT</version>
+	</parent>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.webapp.parent</artifactId>
+	<packaging>pom</packaging>
+	<name>Clerezza - Parent for Web Applications</name>
+	<url>http://clerezza.org/projects/</url>
+	<version>0.2-SNAPSHOT</version>
+	<description>The direct or indirect parent of Clerezza Artifacts exposing web service</description>
+	<modules>
+		<module>org.apache.clerezza.platform.accountcontrolpanel</module>
+		<module>org.apache.clerezza.platform.content</module>
+		<module>org.apache.clerezza.platform.dashboard</module>
+		<module>org.apache.clerezza.platform.documentation.viewer</module>
+		<module>org.apache.clerezza.platform.menumanager</module>
+		<module>org.apache.clerezza.platform.scripting.scriptmanager</module>
+		<module>org.apache.clerezza.platform.security</module>
+		<module>org.apache.clerezza.platform.security.auth.cookie</module>
+		<module>org.apache.clerezza.platform.typehandlerspace</module>
+		<module>org.apache.clerezza.platform.typerendering.manager</module>
+		<module>org.apache.clerezza.platform.usermanager.webinterface</module>
+		<module>org.apache.clerezza.rdf.web</module>
+		<module>org.apache.clerezza.web.fileserver</module>
+	</modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>net.sf.alchim</groupId>
+				<artifactId>yuicompressor-maven-plugin</artifactId>
+				<version>0.7.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compress</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<exclude>
+							**/*.txt
+						</exclude>
+					</excludes>
+					<nosuffix>true</nosuffix>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

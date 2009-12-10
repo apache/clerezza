@@ -1,0 +1,86 @@
+/* menu */
+#tx-menu {
+	top: 0.4em;
+	left: 13em; 
+	position: absolute;
+	z-index: 10000;
+}	
+
+#tx-menu ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#tx-menu ol li {
+	float: left;
+}
+
+#tx-menu ol li.active {
+}
+
+#tx-menu ol li a {
+	color: #ffffff;
+	text-decoration: none;
+	display: block;
+	padding: 0 1.6em 0.5em 0.4em;
+}
+
+#tx-menu ol li a:visited, #tx-menu li a:link  {
+	text-decoration: none;
+}
+
+#tx-menu ol li a:active, #tx-menu ol li a:hover  {
+	text-decoration: underline;
+}
+
+#tx-menu ol li.active a:visited, #tx-menu ol li.active a:link  {
+}
+
+#tx-menu ol li.active a:active, #tx-menu ol li.active a:hover  {
+}
+
+
+#tx-menu ol ol {
+	background-color: #eeeeee;
+	border-right: solid 3px #cccccc;
+	border-bottom: solid 3px #cccccc;
+	opacity: 0.7;
+	display: none;
+	position: absolute;	
+}
+
+#tx-menu ol li li {
+	float: none;
+	border-top: 1px dotted #dddddd;
+	padding: 0px;
+	min-width: 13em;
+}
+
+#tx-menu ol li li a {
+	color: #000000;
+	display: block;
+	padding: 0.4em 0 0.4em 0.4em;
+	min-width: 12.5em;
+}
+
+#tx-menu ol li.active li {
+}
+
+#tx-menu ol li li a:visited, #tx-menu ol li li a:link  {
+	text-decoration: none;
+}
+
+#tx-menu ol li li a:active, #tx-menu ol li li a:hover  {
+	text-decoration: underline;
+}
+
+#tx-menu ol li.active li a:visited, #tx-menu ol li.active li a:link  {
+}
+
+#tx-menu ol li.active li a:active, #tx-menu ol li.active li a:hover  {
+}
+
+#tx-menu2 ol ol {
+	display: none;
+}

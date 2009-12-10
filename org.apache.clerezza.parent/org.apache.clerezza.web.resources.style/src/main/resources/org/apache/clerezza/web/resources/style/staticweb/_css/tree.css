@@ -1,0 +1,191 @@
+/* #navigation */
+#tx-tree {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 5px;
+	width: 415px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}	
+
+#tx-tree.tx-close {
+	width: 20px;
+	background-color: #aaaaaa;
+}	
+
+
+
+#tx-tree ul {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+	/*background-color: #34C0DA;
+	padding-left: 1em;*/
+	/*padding-top: 0.3em;*/	
+}
+
+#tx-tree li {
+	background-image: url(../img/icons/arr-right-dark.png);
+	background-repeat: no-repeat;
+	background-position: 1.8em 0.6em;
+	border-top: solid 1px #aaaaaa;
+	top-bottom: 0.3em;
+}
+
+#tx-tree li.tx-open {
+	background-image: url(../img/icons/arr-down-dark.png);
+}
+
+#tx-tree li a {
+	color: #ffffff;
+	text-decoration: none;
+	/*display: block;*/
+	padding: 0.0em 0.2em 0.0em 1.2em;	
+	line-height: 1.5em;
+	margin-bottom: 1em;
+	vertical-align: middle;
+}
+
+#tx-tree > div > ul > li {
+	font-size: 1.1em;
+}
+
+#tx-tree > div > ul > li:last-child {
+	border-bottom: solid 1px #aaaaaa;
+}
+
+#tx-tree li a:visited, #tx-tree li a:link  {
+	color: #000000;
+}
+
+#tx-tree li a:active, #tx-tree li a:hover  {
+	color: #000000;
+}
+
+#tx-tree input[type="checkbox"] {
+	margin: 0.4em 0.3em 0.2em 0.2em;
+	vertical-align: middle;
+}
+
+#tx-tree div {
+	clear: both;
+	width: 400px;
+}
+
+#tx-tree div.tx-tree-header {
+	text-align: left;
+	font-weight: normal;
+	color: #555555;
+	padding-left: 30px;
+	padding-top: 5px;
+	background-image: url(../img/bg/fade-th-off.png);
+	background-repeat: repeat-x;
+	background-position: bottom;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #FFF;
+	clear: both;
+	height: 20px;
+	margin-bottom: 10px;
+	width: 370px;
+}
+
+#tx-tree div.tx-tree-header span {
+	float: left;
+}
+
+#tx-tree li span.tx-info {
+	float: right; 
+	width: 160px;
+	vertical-align: middle;
+	padding-top: 3px;
+}
+
+#tx-tree li span.tx-info span {
+	width: 80px;
+	float: left; 
+}
+
+
+/* levels */
+
+#tx-tree li li {
+	background-position: 2.8em 0.6em;
+}
+
+#tx-tree li li a {
+	padding-left: 2.2em;	
+}
+
+#tx-tree li li li {
+	background-position: 3.8em 0.6em;
+}
+
+#tx-tree li li li a {
+	padding-left: 3.2em;	
+}
+
+#tx-tree li li li li {
+	background-position: 4.8em 0.6em;
+}
+
+#tx-tree li li li li a {
+	padding-left: 4.2em;	
+}
+
+#tx-tree li li li li li {
+	background-position: 5.8em 0.6em;
+}
+
+#tx-tree li li li li li a {
+	padding-left: 5.2em;	
+}
+
+#tx-tree li li li li li li {
+	background-position: 6.8em 0.6em;
+}
+
+#tx-tree li li li li li li a {
+	padding-left: 6.2em;	
+}
+
+#tx-tree li li li li li li li {
+	background-position: 7.8em 0.6em;
+}
+
+#tx-tree li li li li li li li a {
+	padding-left: 7.2em;	
+}
+
+#tx-tree li li li li li li li li {
+	background-position: 8.8em 0.6em;
+}
+
+#tx-tree li li li li li li li li a {
+	padding-left: 8.2em;	
+}
+
+#tx-tree li li li li li li li li li {
+	background-position: 9.8em 0.6em;
+}
+
+#tx-tree li li li li li li li li li a {
+	padding-left: 9.2em;	
+}
+
+#tx-tree li li li li li li li li li li {
+	background-position: 10.8em 0.6em;
+}
+
+#tx-tree li li li li li li li li li li a {
+	padding-left: 10.2em;	
+}
+
+#tx-tree li li li li li li li li li li {
+	background-position: 11.8em 0.6em;
+}
+
+#tx-tree li li li li li li li li li li a {
+	padding-left: 11.2em;	
+}

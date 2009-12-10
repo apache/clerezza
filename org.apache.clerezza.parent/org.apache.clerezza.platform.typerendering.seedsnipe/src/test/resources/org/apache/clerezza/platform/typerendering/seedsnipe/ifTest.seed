@@ -1,0 +1,2 @@
+${ns:ex=http://clerezza.org/2009/04/ex#}
+${if ex:renderingSpecification}${ex:renderingSpecification}${else}**${/if}-

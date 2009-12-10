@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	${ns:foaf=http://xmlns.com/foaf/0.1/}
+	${ns:rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#}
+	${ns:dc=http://purl.org/dc/elements/1.1/}
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>clerezza - Combined Tutorial</title>
+</head>
+<body>
+	<h1>clerezza - Combined Tutorial</h1>
+	<h2>FOAF Person:</h2>
+	<div>
+		<p>Name: ${foaf:title} ${foaf:name}</p>
+		<p>Email: ${foaf:mbox}</p>
+		${if foaf:nick}
+		<p>Nickname: ${foaf:nick}</p>
+		${/if}
+		<p>Topic interests: <br />
+		${loop}
+			${foaf:topic_interest}<br />
+		${/loop}
+		</p>
+	</div>
+</body>
+</html>

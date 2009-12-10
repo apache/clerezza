@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="org.apache.clerezza.rdf.core">
+	<fileSets>
+		<fileSet filtered="true" encoding="UTF-8">
+			<directory></directory>
+			<includes>
+				<include>NOTICE.txt</include>
+			</includes>
+		</fileSet>
+		<fileSet encoding="UTF-8">
+			<directory></directory>
+			<includes>
+				<include>.hgignore</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+	<requiredProperties>
+		<requiredProperty key="groupId">
+			<defaultValue>org.apache.clerezza</defaultValue>
+		</requiredProperty>
+		<requiredProperty key="version">
+			<defaultValue>0.1-SNAPSHOT</defaultValue>
+		</requiredProperty>
+	</requiredProperties>
+</archetype-descriptor>

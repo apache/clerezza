@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>org.apache.clerezza.maven-pladoc-plugin</artifactId>
+		<groupId>org.apache.clerezza</groupId>
+		<version>0.3-SNAPSHOT</version>
+	</parent>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.maven-pladoc-plugin.api</artifactId>
+	<packaging>jar</packaging>
+	<version>0.3-SNAPSHOT</version>
+	<name>Clerezza - Maven PlaDoc Plugin API</name>
+	<description>API exposed from the service to the host application</description>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.content</artifactId>
+			<!-- <scope>provided</scope> -->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.rdf.simple.storage</artifactId>
+			<!-- <scope>provided</scope> -->
+		</dependency>
+	</dependencies>
+	<reporting>
+		<excludeDefaults>true</excludeDefaults>
+		<plugins/>
+	</reporting>
+</project>

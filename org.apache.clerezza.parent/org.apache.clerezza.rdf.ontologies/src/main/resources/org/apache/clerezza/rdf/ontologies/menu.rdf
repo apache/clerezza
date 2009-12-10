@@ -1,0 +1,20 @@
+<rdf:RDF xmlns="http://clerezza.org/2009/09/menu#"
+	xml:base="http://clerezza.org/2009/09/menu"
+	xmlns:menu="http://clerezza.org/2009/09/menu#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/">
+
+	<owl:Ontology rdf:about="http://clerezza.org/2009/09/menu#">
+		<dc:title>Clerezza Ontology for Menu Structure</dc:title>
+	</owl:Ontology>
+
+    <!-- Classes -->
+
+	<owl:Class rdf:about="#MenuNode">
+		<rdfs:comment>An item of a menu</rdfs:comment>
+	</owl:Class>
+
+</rdf:RDF>

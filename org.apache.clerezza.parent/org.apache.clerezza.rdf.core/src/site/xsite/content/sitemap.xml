@@ -1,0 +1,11 @@
+<sitemap>
+	<section>
+        <name>Overview</name>
+        <page>overview.xhtml</page>
+    </section>
+	<section>
+        <name>Tutorials</name>
+        <page>tutorial_1.xhtml</page>
+        <page>scb-triaxrs-tutorial.xhtml</page>
+    </section> 
+</sitemap>

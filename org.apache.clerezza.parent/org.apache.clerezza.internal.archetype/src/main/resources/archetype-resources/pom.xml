@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.apache.clerezza</groupId>
+		<artifactId>org.apache.clerezza.main.parent</artifactId>
+		<version>0.5-SNAPSHOT</version>
+	</parent>
+	<groupId>${groupId}</groupId>
+	<artifactId>${artifactId}</artifactId>
+	<packaging>bundle</packaging>
+	<version>${version}</version>
+	<name>Clerezza - ${artifactId}</name>
+	<description>A clerezza project</description>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
