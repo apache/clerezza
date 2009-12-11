@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 	Licensed to the Apache Software Foundation (ASF) under one
 	or more contributor license agreements.  See the NOTICE file
 	distributed with this work for additional information
@@ -15,7 +16,8 @@
 	KIND, either express or implied.  See the License for the
 	specific language governing permissions and limitations
 	under the License.
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>org.apache.clerezza.parent</artifactId>
@@ -29,12 +31,11 @@
 	<name>Clerezza - Platform Launcher Storageless Parent POM</name>
 	<description>A parent for Platform launchers, containing the platform bundles as runtime dependencies.
 	</description>
-	<scm>
-		<url>http://scm.trialox.org/main</url>
-		<connection>scm:hg:http://scm.trialox.org/main</connection>
-		<developerConnection>scm:hg:ssh://scm.trialox.org//home/mercurial/main/repositories</developerConnection>
-	</scm>
+	<modules>
+		<module>org.apache.clerezza.platform.launcher.storageless</module>
+	</modules>
 	<dependencies>
+
 		<!--
 			Clerezza Dependencies
 		-->
@@ -86,7 +87,6 @@
 			<version>${scala.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.sun.script.jruby</groupId>
 			<artifactId>jruby-engine</artifactId>
@@ -328,6 +328,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.web.resources.scripts</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
@@ -337,10 +338,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
@@ -350,71 +353,27 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.documentation</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.documentation.viewer</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.menumanager</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.language</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.app.webguiexamples</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>ops4j</id>
-			<name>OPS4J Maven repository</name>
-			<url>http://repository.ops4j.org/maven2</url>
-		</repository>
-	</repositories>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
-				<version>1.0.10</version>
-				<executions>
-					<execution>
-						<id>generate-scr-scrdescriptor</id>
-						<phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-	<!-- for child-projects the artifactId is appended,
-	for the parent the articactId will be missing :-(
-	see http://jira.codehaus.org/browse/MNG-2915
-	-->
-	<distributionManagement>
-		<!-- where to deploy the web site -->
-		<site>
-			<id>clerezza.webserver</id>
-			<url>scp://trialox.org/usr/local/www/main/projects/</url>
-		</site>
-	</distributionManagement>
-	<profiles>
-		<profile>
-			<id>deploying-base-pom-itself</id>
-			<activation>
-				<file>
-					<exists>THIS-IS-base-pom</exists>
-				</file>
-			</activation>
-			<distributionManagement>
-				<site>
-					<id>clerezza.webserver</id>
-					<url>scp://trialox.org/usr/local/www/main/projects/${artifactId}</url>
-				</site>
-			</distributionManagement>
-		</profile>
-	</profiles>
 </project>
