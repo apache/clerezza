@@ -26,6 +26,7 @@
 		<module>org.apache.clerezza.platform.usermanager.webinterface</module>
 		<module>org.apache.clerezza.rdf.web</module>
 		<module>org.apache.clerezza.web.fileserver</module>
+		<module>org.apache.clerezza.web.resources.scripts</module>
 	</modules>
 	<build>
 		<plugins>
