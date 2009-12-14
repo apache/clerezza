@@ -19,6 +19,8 @@
 package org.apache.clerezza.platform.typerendering.seedsnipe;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -48,8 +50,10 @@ public class WebRenderingFunctionsTest {
 		RenderingFunction<Object, String> dateFunction = webRenderingFunctions
 				.getNamedFunctions().get("date");
 
-		Assert.assertEquals(date.toString(), dateFunction.process(dateLiteral,
-				"EEE MMM dd HH:mm:ss z yyyy"));
+		final String formatPattern = "EEE MMM dd HH:mm:ss z yyyy";
+		final DateFormat dateFormat = new SimpleDateFormat(formatPattern);
+		Assert.assertEquals(dateFormat.format(date), dateFunction.process(dateLiteral,
+				formatPattern));
 
 	}
 
