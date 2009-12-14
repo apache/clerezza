@@ -9,7 +9,7 @@ body#tx-body, body {
 	color: #333333;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1.2em;
-	
+
 }
 
 img {
@@ -19,6 +19,7 @@ img {
 a {
 	color: #34c0da;
 	text-decoration: none;
+	outline: none;
 }
 
 a:active, a:hover  {
@@ -38,11 +39,12 @@ a:active, a:hover  {
 	top: 0em;
 	left: 0;
 	position: absolute;
-	height: 11.7em; 
+	height: 11.7em;
 	width: 100%;
 	min-width: 80em;
-	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow-x: visible;
+	overflow-y: visible;
+	z-index: 9999;
 }
 
 #tx-content {
@@ -53,6 +55,7 @@ a:active, a:hover  {
 	bottom: 0;
 	width: 100%;
 	min-width: 80em;
+	z-index: 0;
 }
 
 pre {
@@ -74,4 +77,3 @@ pre {
     padding-left: 4em;
     margin-bottom: 1em;
 }
-
