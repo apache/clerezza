@@ -68,7 +68,8 @@ AlertMessage.show = function(doFunction, message, headerText, textYes, textNo) {
 			text:"No",
 			handler:handleNo
 		}]
-	} else if(textNo != undefined){
+	}
+	if(textNo != undefined){
 		buttonConfig.push({
 			text:textNo,
 			handler:handleNo
