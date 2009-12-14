@@ -7,11 +7,11 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 	width: 99%;
-}	
+}
 
 .tx-tree.tx-halfwidth-left {
 	width: 49%;
-}	
+}
 
 .tx-tree.tx-show-panel {
 	left: 20em;
@@ -36,6 +36,11 @@
 	background-position: 3.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li {
+	background-position: 2.3em 0.9em;
+}
+
+
 .tx-tree > div > ol > li:first-child {
 	border-top: none;
 }
@@ -52,7 +57,7 @@
 .tx-tree li div.tx-icon-drag {
 	padding: 0;
 	margin: 0;
-	vertical-align: middle;	
+	vertical-align: middle;
 	clear: none;
 	height: 2.2em;
 	width: 0.9em;
@@ -61,7 +66,7 @@
 .tx-tree li div.tx-icon-spacer {
 	padding: 0;
 	margin: 0;
-	vertical-align: middle;	
+	vertical-align: middle;
 	clear: none;
 	height: 2.2em;
 	width: 0.9em;
@@ -70,7 +75,7 @@
 .tx-tree li a {
 	color: #ffffff;
 	text-decoration: none;
-	padding: 0 0.2em 0 0;	
+	padding: 0 0.2em 0 0;
 	line-height: 1.5em;
 	margin-bottom: 1em;
 	vertical-align: middle;
@@ -123,14 +128,14 @@
 
 
 .tx-tree span.tx-info {
-	float: right; 
+	float: right;
 	vertical-align: middle;
 	padding-top: 0.3em;
 }
 
 .tx-tree span.tx-info span {
 	float: left;
-	text-align: center; 
+	text-align: center;
 	padding: 0 0.6em;
 	height: 2em;
 	line-height: 2em;
@@ -143,8 +148,12 @@
 	background-position: 4.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li {
+	background-position: 3.3em 0.9em;
+}
+
 .tx-tree li li a {
-	padding-left: 2.5em;	
+	padding-left: 2.5em;
 }
 
 .tx-tree li li a + a {
@@ -155,8 +164,12 @@
 	background-position: 5.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li {
+	background-position: 4.3em 0.9em;
+}
+
 .tx-tree li li li a {
-	padding-left: 3.5em;	
+	padding-left: 3.5em;
 }
 
 .tx-tree li li li a + a {
@@ -167,8 +180,12 @@
 	background-position: 6.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li li {
+	background-position: 5.3em 0.9em;
+}
+
 .tx-tree li li li li a {
-	padding-left: 4.5em;	
+	padding-left: 4.5em;
 }
 
 .tx-tree li li li li a + a {
@@ -179,8 +196,12 @@
 	background-position: 7.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li li li {
+	background-position: 6.3em 0.9em;
+}
+
 .tx-tree li li li li li a {
-	padding-left: 5.5em;	
+	padding-left: 5.5em;
 }
 
 .tx-tree li li li li li a + a {
@@ -191,8 +212,12 @@
 	background-position: 8.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li li li li {
+	background-position: 7.3em 0.9em;
+}
+
 .tx-tree li li li li li li a {
-	padding-left: 6.5em;	
+	padding-left: 6.5em;
 }
 
 .tx-tree li li li li li li a + a {
@@ -203,8 +228,12 @@
 	background-position: 9.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li li li li li {
+	background-position: 8.3em 0.9em;
+}
+
 .tx-tree li li li li li li li a {
-	padding-left: 7.5em;	
+	padding-left: 7.5em;
 }
 
 .tx-tree li li li li li li li a + a {
@@ -215,8 +244,12 @@
 	background-position: 10.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li li li li li li {
+	background-position: 9.3em 0.9em;
+}
+
 .tx-tree li li li li li li li li a {
-	padding-left: 8.5em;	
+	padding-left: 8.5em;
 }
 
 .tx-tree li li li li li li li li a + a {
@@ -227,8 +260,12 @@
 	background-position: 11.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li li li li li li li {
+	background-position: 10.3em 0.9em;
+}
+
 .tx-tree li li li li li li li li li a {
-	padding-left: 9.5em;	
+	padding-left: 9.5em;
 }
 
 .tx-tree li li li li li li li li li a + a {
@@ -239,8 +276,12 @@
 	background-position: 12.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li li li li li li li li {
+	background-position: 11.3em 0.9em;
+}
+
 .tx-tree li li li li li li li li li li a {
-	padding-left: 10.5em;	
+	padding-left: 10.5em;
 }
 
 .tx-tree li li li li li li li li li li a + a {
@@ -251,8 +292,12 @@
 	background-position: 13.3em 0.9em;
 }
 
+.tx-tree .tx-nodrag li li li li li li li li li li li {
+	background-position: 12.3em 0.9em;
+}
+
 .tx-tree li li li li li li li li li li li a {
-	padding-left: 11.5em;	
+	padding-left: 11.5em;
 }
 
 .tx-tree li li li li li li li li li li li a + a {
@@ -267,4 +312,8 @@
 
 .tx-tree  table tr > th:first-child  {
 	width: 1.5em;
+}
+
+.tx-tree .tx-nodrag table tr > th:first-child  {
+	width: 0.5em;
 }
