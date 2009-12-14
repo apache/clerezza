@@ -952,7 +952,7 @@
 	<!-- jira -->
 	<issueManagement>
 		<system>Jira</system>
-		<url>http://issues.trialox.org</url>
+		<url>https://issues.apache.org/jira/browse/CLEREZZA</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Continuum</system>
@@ -965,9 +965,9 @@
 	see http://jira.codehaus.org/browse/MNG-2915
 	-->
 	<scm>
-		<url>http://scm.trialox.org/main</url>
-		<connection>scm:hg:http://scm.trialox.org/main</connection>
-		<developerConnection>scm:hg:ssh://scm.trialox.org//home/mercurial/main/repositories</developerConnection>
+		<url>http://svn.apache.org/viewvc/incubator/clerezza</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/trunk</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/trunk/org.apache.clerezza.parent</developerConnection>
 	</scm>
 
 	<!-- lets generate reports -->
