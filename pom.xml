@@ -89,12 +89,6 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<!-- Version 2.6  passes invalid arguments to the wadl doclet -->
-					<version>2.4</version>
-				</plugin>
-				<plugin>
 					<!-- org.apache.clerezza is all open source -->
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
@@ -195,6 +189,11 @@
 					<groupId>org.apache.clerezza</groupId>
 					<artifactId>org.apache.clerezza.maven-pladoc-plugin.core</artifactId>
 					<version>0.2-SNAPSHOT</version>
+				</plugin>
+				<plugin>
+					<groupId>org.scala-tools</groupId>
+					<artifactId>maven-scala-plugin</artifactId>
+					<version>2.9.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -978,6 +977,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<!-- Version 2.6  passes invalid arguments to the wadl doclet -->
+				<version>2.4</version>
 			</plugin>
 
 			<!-- test results -->

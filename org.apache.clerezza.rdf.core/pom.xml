@@ -69,7 +69,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>${pom.artifactId}.*</Export-Package>
+                        <Export-Package>${project.artifactId}.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
