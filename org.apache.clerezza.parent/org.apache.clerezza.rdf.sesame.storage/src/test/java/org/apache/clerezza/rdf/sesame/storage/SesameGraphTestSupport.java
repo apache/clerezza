@@ -9,6 +9,7 @@
 package org.apache.clerezza.rdf.sesame.storage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,9 +33,9 @@ public class SesameGraphTestSupport {
      * @param testName  Name of the test to support.
      * @throws RepositoryException  If it failed to activate the graph.
      */
-    public SesameMGraph setUp(String testName) throws RepositoryException {
-        final File userDir= new File(System.getProperty("user.dir"));
-        final File dataDir= new File(userDir, "tmp/SesameGraphTest");
+    public SesameMGraph setUp(String testName) throws RepositoryException, IOException {
+        final File dataDir= File.createTempFile("SesameGraph", "Test");
+		dataDir.delete();
         dataDir.mkdirs();
         cleanDirectory(dataDir);
         
