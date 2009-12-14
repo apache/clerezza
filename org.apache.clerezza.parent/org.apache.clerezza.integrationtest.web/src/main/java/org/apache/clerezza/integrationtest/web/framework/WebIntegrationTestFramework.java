@@ -47,7 +47,7 @@ public class WebIntegrationTestFramework {
 	/**
 	 * Service property
 	 * 
-	 * @scr.property value="http://localhost:8282"
+	 * @scr.property value="http://localhost:8080"
 	 *	description="Specifies the URI prefix of the subject under test."
 	 */
 	public static final String SUBJECT_UNDER_TEST = "subjectUnderTest";
