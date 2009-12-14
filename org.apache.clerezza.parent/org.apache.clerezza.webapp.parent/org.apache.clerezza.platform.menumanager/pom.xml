@@ -48,6 +48,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<!-- Version 2.6  passes invalid arguments to the wadl doclet -->
+				<version>2.4</version>
 				<executions>
 					<execution>
 						<goals>
@@ -61,7 +63,6 @@
 					<verbose>false</verbose>
 					<show>public</show>
 					<subpackages>org.apache.clerezza.platform.menumanager</subpackages>
-
 					<doclet>com.sun.jersey.wadl.resourcedoc.ResourceDoclet</doclet>
 					<docletArtifacts>
 						<docletArtifact>
@@ -81,7 +82,6 @@
 						</docletArtifact>
 					</docletArtifacts>
 					<additionalparam>-output ${project.build.outputDirectory}/resourcedoc.xml</additionalparam>
-
 				</configuration>
 			</plugin>
 
