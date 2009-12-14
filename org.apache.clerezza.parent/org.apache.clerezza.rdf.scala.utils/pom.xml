@@ -85,7 +85,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>${pom.artifactId}.*</Export-Package>
+						<Export-Package>${project.artifactId}.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -99,6 +99,7 @@
 				<configuration>
 					<scalaVersion>${scala.version}</scalaVersion>
 				</configuration>
+				<version>2.9.1</version>
 			</plugin>
 		</plugins>
 	</reporting>

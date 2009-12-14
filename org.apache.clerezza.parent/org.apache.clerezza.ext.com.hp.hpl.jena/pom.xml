@@ -41,7 +41,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;artifactId=!commons-logging</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
 						<Import-Package>!com.hp.hpl.jena.test,!com.hp.hpl.jena.*.test,!arq.*,

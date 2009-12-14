@@ -96,7 +96,7 @@
 						<configuration>
 							<tasks>
 								<echo>Add version number in download.xhtml</echo>
-								<property name="stable_version" value="${version}"/>
+								<property name="stable_version" value="${project.version}"/>
 								<property name="stable_version_rdf_providers" value="0.5"/>
 								<script language="javascript"> <![CDATA[
 						  		var version_no = project.getProperty("stable_version");
@@ -114,18 +114,18 @@
 					   			}
 					   			project.setProperty("stable_version",version_no);]]>
 								</script>
-								<condition else="${version}" property="latest_stable_version_no" value="${stable_version}">
-									<contains string="${version}" substring="SNAPSHOT"/>
+								<condition else="${project.version}" property="latest_stable_version_no" value="${stable_version}">
+									<contains string="${project.version}" substring="SNAPSHOT"/>
 								</condition>
 								<replaceregexp file="${basedir}/target/site/documentation/download.xhtml" flags="g" match="\[VERSION\]" replace="${latest_stable_version_no}">
 								</replaceregexp>
 								<replaceregexp file="${basedir}/target/site/documentation/download.xhtml" flags="g" match="\[VERSION-RDF-PROVIDERS\]" replace="${stable_version_rdf_providers}">
 								</replaceregexp>
-								<property name="link_jaxrs" value="&lt;a href=&quot;http://repo.trialox.org/snapshot/org/apache/clerezza/org.apache.clerezza.triaxrs/${version}/&quot; &gt; http://repo.trialox.org/snapshot/org/apache/clerezza/org.apache.clerezza.triaxrs/${version}/ &lt;/a&gt;"/>
+								<property name="link_jaxrs" value="&lt;a href=&quot;http://repo.trialox.org/snapshot/org/apache/clerezza/org.apache.clerezza.triaxrs/${project.version}/&quot; &gt; http://repo.trialox.org/snapshot/org/apache/clerezza/org.apache.clerezza.triaxrs/${project.version}/ &lt;/a&gt;"/>
 								<property name="link_jaxrs_providers" value="&lt;a href=&quot;http://repo.trialox.org/snapshot/org/apache/clerezza/org.apache.clerezza.jaxrs.rdf.providers/&quot; &gt; http://repo.trialox.org/snapshot/org/apache/clerezza/org.apache.clerezza.jaxrs.rdf.providers/ &lt;/a&gt;"/>
 								<property name="html_text" value="&lt;p&gt; The latest snapshot is available on ${link_jaxrs} and ${link_jaxrs_providers} &lt;/p&gt;"/>
 								<condition else="" property="insert_text" value="${html_text}">
-									<contains string="${version}" substring="SNAPSHOT"/>
+									<contains string="${project.version}" substring="SNAPSHOT"/>
 								</condition>
 								<replaceregexp file="${basedir}/target/site/documentation/download.xhtml" flags="g" match="\[ADD_SNAPSHOT_LINK\]" replace="${insert_text}">
 								</replaceregexp>

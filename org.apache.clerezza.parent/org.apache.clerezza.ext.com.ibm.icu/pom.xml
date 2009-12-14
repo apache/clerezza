@@ -28,7 +28,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-						<_exportcontents>${artifactId}.*</_exportcontents>
+						<_exportcontents>${project.artifactId}.*</_exportcontents>
                         <Embed-Dependency>*</Embed-Dependency>
                     </instructions>
                 </configuration>
