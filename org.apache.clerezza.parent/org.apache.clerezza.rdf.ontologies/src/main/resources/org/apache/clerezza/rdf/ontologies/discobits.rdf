@@ -13,7 +13,14 @@
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
     <rdfs:domain rdf:resource="http://discobits.org/ontology#InfoBit"/>
     <rdfs:label xml:lang="en">mediaType</rdfs:label>
-    <ns0:Definition>The media-type of the subject</ns0:Definition>
+    <ns0:definition xml:lang="en">The media-type of the subject</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#thumbnail">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>	
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#InfoBit"/>
+	<rdfs:range rdf:resource="http://discobits.org/ontology#InfoBit"/>
+    <rdfs:label xml:lang="en">thumbnail</rdfs:label>	
+    <ns0:definition xml:lang="en">A thumbnail representation of the subject</ns0:definition>
   </rdf:Description>
   <rdf:Description rdf:about="http://discobits.org/ontology#InfoDiscoBit">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
@@ -26,7 +33,7 @@
     <rdfs:domain rdf:resource="http://discobits.org/ontology#OrderedContent"/>
     <rdfs:label xml:lang="en">contains</rdfs:label>
     <rdfs:range rdf:resource="http://discobits.org/ontology#Entry"/>
-    <ns0:Definition>An entry of the subject</ns0:Definition>
+    <ns0:definition xml:lang="en">An entry of the subject</ns0:definition>
   </rdf:Description>
   <rdf:Description rdf:about="http://discobits.org/ontology#DiscoBit">
     <dc:comment xml:lang="en">Whenever something is said about an InfoBit which is not implied 
@@ -40,14 +47,14 @@
     <rdfs:domain rdf:resource="http://discobits.org/ontology#Entry"/>
     <rdfs:label xml:lang="en">hols</rdfs:label>
     <rdfs:range rdf:resource="http://discobits.org/ontology#InfoBit"/>
-    <ns0:Definition>The discobit hold by an entry</ns0:Definition>
+    <ns0:definition xml:lang="en">The discobit hold by an entry</ns0:definition>
   </rdf:Description>
   <rdf:Description rdf:about="http://discobits.org/ontology#contained">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
     <rdfs:domain rdf:resource="http://discobits.org/ontology#PositionedDiscoBit"/>
     <rdfs:label xml:lang="en">contained</rdfs:label>
     <rdfs:range rdf:resource="http://discobits.org/ontology#DiscoBit"/>
-    <ns0:Definition>The property-value represented by the subject.</ns0:Definition>
+    <ns0:definition xml:lang="en">The property-value represented by the subject.</ns0:definition>
   </rdf:Description>
   <rdf:Description rdf:about="http://discobits.org/ontology#OrderedContent">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
@@ -67,7 +74,7 @@
     <rdfs:domain rdf:resource="http://discobits.org/ontology#PositionedDiscoBit"/>
     <rdfs:label xml:lang="en">representedProperty</rdfs:label>
     <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-    <ns0:Definition>The property-value represented by the subject.</ns0:Definition>
+    <ns0:definition xml:lang="en">The property-value represented by the subject.</ns0:definition>
   </rdf:Description>
   <rdf:Description rdf:about="http://discobits.org/ontology#infoBit">
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
@@ -119,7 +126,7 @@
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
     <rdfs:domain rdf:resource="http://discobits.org/ontology#InfoBit"/>
     <rdfs:label xml:lang="en">byte</rdfs:label>
-    <ns0:Definition>The bytes of the subject</ns0:Definition>
+    <ns0:definition xml:lang="en">The bytes of the subject</ns0:definition>
   </rdf:Description>
   <rdf:Description rdf:about="http://discobits.org/ontology#Entry">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
@@ -132,6 +139,6 @@
     <rdfs:domain rdf:resource="http://discobits.org/ontology#Entry"/>
     <rdfs:label xml:lang="en">pos</rdfs:label>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
-    <ns0:Definition>The position of an entry within its containing OrderedContent</ns0:Definition>
+    <ns0:definition xml:lang="en">The position of an entry within its containing OrderedContent</ns0:definition>
   </rdf:Description>
 </rdf:RDF>
