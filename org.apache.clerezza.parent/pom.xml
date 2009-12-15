@@ -934,18 +934,18 @@
 	<distributionManagement>
 		<!-- where to deploy the web site -->
 		<site>
-			<id>clerezza.webserver</id>
-			<url>scp://trialox.org/usr/local/www/main/projects/org.apache.clerezza.parent/</url>
+			<id>people.apache.org</id>
+			<url>scp://people.apache.org/www/incubator.apache.org/clerezza/mvn-site/</url>
 		</site>
 
 		<!-- where to deploy the artifacts -->
 		<snapshotRepository>
-			<id>clerezza.webserver</id>
-			<url>scp://trialox.org/usr/local/www/repo/snapshot/</url>
+			<id>people.apache.org</id>
+			<url>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository/</url>
 		</snapshotRepository>
 		<repository>
-			<id>clerezza.webserver</id>
-			<url>scp://trialox.org/usr/local/www/repo/distro/</url>
+			<id>people.apache.org</id>
+			<url>scp://people.apache.org/www/people.apache.org/repo/m2-incubating-repository</url>
 		</repository>
 	</distributionManagement>
 
@@ -960,13 +960,9 @@
 	</ciManagement>
 
 
-	<!-- for child-projects the artifactId is appended,
-	for the parent the articactId will be missing :-(
-	see http://jira.codehaus.org/browse/MNG-2915
-	-->
 	<scm>
 		<url>http://svn.apache.org/viewvc/incubator/clerezza</url>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/trunk</connection>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/trunk/org.apache.clerezza.parent/</connection>
 		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/trunk/org.apache.clerezza.parent</developerConnection>
 	</scm>
 
