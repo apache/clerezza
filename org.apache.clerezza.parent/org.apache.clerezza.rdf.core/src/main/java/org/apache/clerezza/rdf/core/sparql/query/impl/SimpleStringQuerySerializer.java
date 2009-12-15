@@ -45,21 +45,18 @@ import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 import org.apache.clerezza.rdf.core.sparql.query.UnaryOperation;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * This class implements abstract methods of {@link StringQuerySerializer}
+ * to serialize specific {@link Query} types.
  *
  * @author hasan
  */
 public class SimpleStringQuerySerializer extends StringQuerySerializer {
 
-	static final SimpleStringQuerySerializer instance = new SimpleStringQuerySerializer();
-
-	private SimpleStringQuerySerializer() {
-	}
-
-	public static StringQuerySerializer getInstance() {
-		return instance;
-	}
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public String serialize(SelectQuery selectQuery) {
@@ -108,50 +105,20 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
 		if (queryPattern == null) {
 			return;
 		}
-		s.append("WHERE\n{\n");
-		appendQueryPattern(s, q.getQueryPattern());
-		s.append("\n}\n");
+		s.append("WHERE\n");
+		appendGroupGraphPattern(s, q.getQueryPattern());
 	}
 
-	private void appendQueryPattern(StringBuffer s, GroupGraphPattern g) {
+	private void appendGroupGraphPattern(StringBuffer s,
+			GroupGraphPattern groupGraphPattern) {
 
-		for (GraphPattern p : g.getGraphPatterns()) {
-			if (p instanceof BasicGraphPattern) {
-				appendTriplePatterns(s,
-						((BasicGraphPattern) p).getTriplePatterns());
-			} else if (p instanceof GroupGraphPattern) {
-				s.append(" {");
-				appendQueryPattern(s, (GroupGraphPattern) p);
-				s.append("} ");
-			} else if (p instanceof OptionalGraphPattern) {
-				appendQueryPattern(s,
-						(GroupGraphPattern) ((OptionalGraphPattern) p).getMainGraphPattern());
-				s.append(" OPTIONAL ");
-				appendQueryPattern(s,
-						((OptionalGraphPattern) p).getOptionalGraphPattern());
-			} else if (p instanceof AlternativeGraphPattern) {
-				List<GroupGraphPattern> alternativeGraphPatterns =
-						((AlternativeGraphPattern) p).getAlternativeGraphPatterns();
-				if ((alternativeGraphPatterns != null) &&
-						(!alternativeGraphPatterns.isEmpty())) {
-					appendQueryPattern(s, alternativeGraphPatterns.get(0));
-					int size = alternativeGraphPatterns.size();
-					int i = 1;
-					while (i < size) {
-						s.append(" UNION ");
-						appendQueryPattern(s, alternativeGraphPatterns.get(i));
-						i++;
-					}
-				}
-			} else if (p instanceof GraphGraphPattern) {
-				s.append("GRAPH ");
-				appendResourceOrVariable(s, ((GraphGraphPattern) p).getGraph());
-				s.append(" ");
-				appendQueryPattern(s, ((GraphGraphPattern) p).getGroupGraphPattern());
-			}
+		s.append("{ ");
+		for (GraphPattern graphPattern : groupGraphPattern.getGraphPatterns()) {
+			appendGraphPattern(s, graphPattern);
 		}
-		for (Expression e : g.getFilter()) {
-			boolean brackettedExpr = !((e instanceof BuiltInCall) || (e instanceof FunctionCall));
+		for (Expression e : groupGraphPattern.getFilter()) {
+			boolean brackettedExpr = !((e instanceof BuiltInCall)
+					|| (e instanceof FunctionCall));
 			s.append("FILTER ");
 			if (brackettedExpr) {
 				s.append("(");
@@ -161,6 +128,43 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
 				s.append(")");
 			}
 			s.append("\n");
+		}
+		s.append("} ");
+	}
+
+	private void appendGraphPattern(StringBuffer s, GraphPattern graphPattern) {
+		if (graphPattern instanceof BasicGraphPattern) {
+			appendTriplePatterns(s,
+					((BasicGraphPattern) graphPattern).getTriplePatterns());
+		} else if (graphPattern instanceof GroupGraphPattern) {
+			appendGroupGraphPattern(s, (GroupGraphPattern) graphPattern);
+		} else if (graphPattern instanceof OptionalGraphPattern) {
+			appendGraphPattern(s,
+					((OptionalGraphPattern) graphPattern).getMainGraphPattern());
+			s.append(" OPTIONAL ");
+			appendGroupGraphPattern(s,
+					((OptionalGraphPattern) graphPattern).getOptionalGraphPattern());
+		} else if (graphPattern instanceof AlternativeGraphPattern) {
+			List<GroupGraphPattern> alternativeGraphPatterns =
+					((AlternativeGraphPattern) graphPattern).getAlternativeGraphPatterns();
+			if ((alternativeGraphPatterns != null) &&
+					(!alternativeGraphPatterns.isEmpty())) {
+				appendGroupGraphPattern(s, alternativeGraphPatterns.get(0));
+				int size = alternativeGraphPatterns.size();
+				int i = 1;
+				while (i < size) {
+					s.append(" UNION ");
+					appendGroupGraphPattern(s, alternativeGraphPatterns.get(i));
+					i++;
+				}
+			}
+		} else if (graphPattern instanceof GraphGraphPattern) {
+			s.append("GRAPH ");
+			appendResourceOrVariable(s, ((GraphGraphPattern) graphPattern).getGraph());
+			s.append(" ");
+			appendGroupGraphPattern(s, ((GraphGraphPattern) graphPattern).getGroupGraphPattern());
+		} else {
+			logger.warn("Unsupported GraphPattern {}", graphPattern.getClass());
 		}
 	}
 

@@ -55,6 +55,6 @@ public class SimpleDescribeQuery extends SimpleQueryWithSolutionModifier
 
 	@Override
 	public String toString() {
-		return SimpleStringQuerySerializer.getInstance().serialize(this);
+		return (new SimpleStringQuerySerializer()).serialize(this);
 	}
 }
