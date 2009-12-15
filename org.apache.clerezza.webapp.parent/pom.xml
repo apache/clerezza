@@ -15,6 +15,7 @@
 	<modules>
 		<module>org.apache.clerezza.platform.accountcontrolpanel</module>
 		<module>org.apache.clerezza.platform.content</module>
+		<module>org.apache.clerezza.platform.content.thumbnails</module>
 		<module>org.apache.clerezza.platform.dashboard</module>
 		<module>org.apache.clerezza.platform.documentation.viewer</module>
 		<module>org.apache.clerezza.platform.menumanager</module>
