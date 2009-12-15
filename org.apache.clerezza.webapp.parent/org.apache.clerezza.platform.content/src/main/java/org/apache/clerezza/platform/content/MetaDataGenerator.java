@@ -16,31 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.clerezza.platform.content;
 
-import java.util.Set;
-import org.apache.clerezza.rdf.core.MGraph;
+import javax.ws.rs.core.MediaType;
+import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
+ * An implementation of <code>MetaDataGenerator</code> generates meta data
+ * about specified data depending on its media type.
  *
- * @author reto
+ * @author mir
  */
-class SimpleDiscobitsHandler extends AbstractDiscobitsHandler {
+public interface MetaDataGenerator {
+
+	/**
+	 * Generates meta data about the specified bytes depending on its mediaType.
+	 * The meta data will be added to the specified graph node.
+	 * @param node The graph node to which the meta data will be added
+	 * @param data The data from which the meta data is generated
+	 * @param mediaType The media type of the data
+	 */
+	public void generate(GraphNode node, byte[] data, MediaType mediaType);
 	
-	private final MGraph mGraph;
-
-	public SimpleDiscobitsHandler(MGraph mGraph) {
-		this.mGraph = mGraph;
-	}
-
-	@Override
-	protected MGraph getMGraph() {
-		return mGraph;
-	}
-
-	@Override
-	protected Set<MetaDataGenerator> getMetaDataGenerators() {
-		return null;
-	}
-
 }

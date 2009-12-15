@@ -43,7 +43,8 @@ public interface DiscobitsHandler {
 			byte[] data);
 
 	/**
-	 * removes InfoDiscoBits (aka binary contents) and other DiscoBits.
+	 * Removes InfoDiscoBits (aka binary contents), other DiscoBits and
+	 * the context of the specified node.
 	 * 
 	 * @param node
 	 */

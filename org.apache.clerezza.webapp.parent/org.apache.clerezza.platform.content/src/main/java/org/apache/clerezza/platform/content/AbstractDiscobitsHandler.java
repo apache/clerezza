@@ -27,7 +27,6 @@ import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -47,6 +46,14 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 	 */
 	protected abstract MGraph getMGraph();
 
+	/**
+	 * A <code>Set</code> containing <code>MetaDataGenerator</code>s to be used
+	 * to add meta data to data putted by the handler.
+	 *
+	 * @return a Set containing meta data generators
+	 */
+	protected abstract Set<MetaDataGenerator> getMetaDataGenerators();
+
 	@Override
 	public void put(UriRef infoDiscoBitUri, MediaType mediaType,
 			byte[] data) {
@@ -58,11 +65,14 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 		infoDiscoBitNode.addProperty(DISCOBITS.infoBit, dataLiteral);
 		TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
 		infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
+		for(MetaDataGenerator generator : getMetaDataGenerators()) {
+			generator.generate(infoDiscoBitNode, data, mediaType);
+		}
 	}
 
 	@Override
 	public  void remove(NonLiteral node) {
-		MGraph mGraph = getMGraph();
+		MGraph mGraph = getMGraph();		
 		Iterator<Triple> properties = mGraph.filter(node, null, null);
 		//copying properties to set, as we're modifying underlying graph
 		Set<Triple> propertiesSet = new HashSet<Triple>();
@@ -75,28 +85,19 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 			UriRef predicate = triple.getPredicate();
 			if (predicate.equals(DISCOBITS.contains)) {
 				try {
-					GraphNode graphNode = new GraphNode((NonLiteral)triple.getObject(), mGraph);
+					GraphNode containedNode = new GraphNode((NonLiteral)triple.getObject(), mGraph);
 					//The following includes triple
-					graphNode.deleteNodeContext();
+					containedNode.deleteNodeContext();
 				} catch (ClassCastException e) {
 					throw new RuntimeException("The value of "+predicate+" is expected not to be a literal");
 				}
 				//as some other properties of node could have been in the context of the object
 				remove(node);
 				return;
-			}
-			if (predicate.getUnicodeString().startsWith("http://discobits.org/ontology#")) {
-				mGraph.remove(triple);
-				continue;
-			}
-			if (predicate.equals(RDF.type)) {
-				Resource object = triple.getObject();
-				if ((object instanceof UriRef)
-						&& ((UriRef)object).getUnicodeString().startsWith("http://discobits.org/ontology#")) {
-					mGraph.remove(triple);
-				}
-			}
+			}			
 		}
+		GraphNode graphNode = new GraphNode(node, mGraph);
+		graphNode.deleteNodeContext();
 	}
 
 	@Override
@@ -120,5 +121,4 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 		}
 		return MediaType.valueOf(infoDiscobit.getContentType());
 	}
-
 }
