@@ -45,16 +45,16 @@ function Overlay(){};
 Overlay.show = function(bodyText, headerText, widthOverlay, heightOverlay) {
 
 	if(widthOverlay == undefined || widthOverlay == "") {
-		widthOverlay = "560px";
+		widthOverlay = 560;
 	}
 	if(heightOverlay == undefined || heightOverlay == "") {
-		heightOverlay = "450px";
+		heightOverlay = 450;
 	}
 
 	this.overlay = new YAHOO.widget.Panel("tx-assetsdetail", {
 		draggable: true,
-		width: "560px",
-		height: "450px",
+		width: widthOverlay+"px",
+		height: heightOverlay+"px",
 		constraintoviewport: true,
 		modal: true,
 		zIndex: 100,
@@ -72,7 +72,7 @@ Overlay.show = function(bodyText, headerText, widthOverlay, heightOverlay) {
 		this.overlay.setHeader(headerText);
 	}	
 	
-	this.overlay.render("tx-body");
+	this.overlay.render(document.body);
 	$("#tx-assetsdetail").addClass("tx-window");
 	
 	// if overlay is closed the overlay is removed from dom (default is visibility: hidden)
@@ -86,8 +86,8 @@ Overlay.show = function(bodyText, headerText, widthOverlay, heightOverlay) {
 	this.resize = new YAHOO.util.Resize("tx-assetsdetail", {
 		handles: ["br"],
 		autoRatio: false,
-		minWidth: 560,
-		minHeight: 300,
+		minWidth: widthOverlay,
+		minHeight: heightOverlay,
 		status: false 
 	});
 
