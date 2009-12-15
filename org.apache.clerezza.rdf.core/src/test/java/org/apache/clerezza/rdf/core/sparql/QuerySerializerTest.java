@@ -18,13 +18,17 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.sparql.query.BinaryOperation;
+import org.apache.clerezza.rdf.core.sparql.query.BuiltInCall;
+import org.apache.clerezza.rdf.core.sparql.query.Expression;
 import org.apache.clerezza.rdf.core.sparql.query.LiteralExpression;
 import org.apache.clerezza.rdf.core.sparql.query.ResourceOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
@@ -241,6 +245,37 @@ public class QuerySerializerTest {
 		queryPattern.addGraphPattern(ogp);
 		selectQuery.setQueryPattern(queryPattern);
 
+		Assert.assertTrue(selectQuery.toString()
+				.replaceAll("( |\n)+", " ").trim().equals(queryString));
+	}
+
+	@Test
+	public void testRegex() {
+
+		final String queryString = "SELECT ?p WHERE { " +
+				"<http://localhost/testitem> ?p ?x . " +
+				"FILTER REGEX(?x,\".*uni.*\"^^<http://www.w3.org/2001/XMLSchema#string>) }";
+
+		Variable p = new Variable("p");
+		SimpleSelectQuery selectQuery = new SimpleSelectQuery();
+		selectQuery.addSelection(p);
+
+		Variable x = new Variable("x");
+		Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
+		triplePatterns.add(new SimpleTriplePattern(
+				new UriRef("http://localhost/testitem"), p, x));
+
+		SimpleBasicGraphPattern bgp = new SimpleBasicGraphPattern(triplePatterns);
+		SimpleGroupGraphPattern queryPattern = new SimpleGroupGraphPattern();
+		queryPattern.addGraphPattern(bgp);
+
+		List<Expression> arguments = new ArrayList<Expression>();
+		arguments.add(x);
+		arguments.add(new LiteralExpression(LiteralFactory.getInstance().
+				createTypedLiteral(".*uni.*")));
+		BuiltInCall constraint = new BuiltInCall("REGEX", arguments);
+		queryPattern.addConstraint(constraint);
+		selectQuery.setQueryPattern(queryPattern);
 		Assert.assertTrue(selectQuery.toString()
 				.replaceAll("( |\n)+", " ").trim().equals(queryString));
 	}

@@ -224,8 +224,13 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
 		s.append(name).append("(");
 		for (Expression e : expr) {
 			appendExpression(s, e);
+			s.append(",");
 		}
-		s.append(")");
+		if (expr.isEmpty()) {
+			s.append(")");
+		} else {
+			s.setCharAt(s.length()-1, ')');
+		}
 	}
 
 	private void appendLiteralExpression(StringBuffer s, LiteralExpression le) {
