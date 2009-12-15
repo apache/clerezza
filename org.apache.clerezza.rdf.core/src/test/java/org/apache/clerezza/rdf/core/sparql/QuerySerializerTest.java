@@ -35,6 +35,7 @@ import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleBasicGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleDescribeQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleGroupGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleOptionalGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleOrderCondition;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleSelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleTriplePattern;
@@ -198,6 +199,47 @@ public class QuerySerializerTest {
 		queryPattern.addGraphPattern(bgp);
 		selectQuery.setQueryPattern(queryPattern);
 		selectQuery.addOrderCondition(new SimpleOrderCondition(c, false));
+
+		Assert.assertTrue(selectQuery.toString()
+				.replaceAll("( |\n)+", " ").trim().equals(queryString));
+	}
+
+	@Test
+	public void testOptional() {
+
+		final String queryString = "SELECT ?title ?price WHERE { " +
+				"?x <http://purl.org/dc/elements/1.1/title> ?title . " +
+				"OPTIONAL { ?x <http://example.org/ns#price> ?price . } " +
+				"}";
+
+		Variable title = new Variable("title");
+		Variable price = new Variable("price");
+		SimpleSelectQuery selectQuery = new SimpleSelectQuery();
+		selectQuery.addSelection(title);
+		selectQuery.addSelection(price);
+
+		Variable x = new Variable("x");
+		Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
+		triplePatterns.add(new SimpleTriplePattern(x,
+				new UriRef("http://purl.org/dc/elements/1.1/title"), title));
+
+		SimpleBasicGraphPattern bgp = new SimpleBasicGraphPattern(triplePatterns);
+
+		Set<TriplePattern> triplePatternsOpt = new HashSet<TriplePattern>();
+		triplePatternsOpt.add(new SimpleTriplePattern(x,
+				new UriRef("http://example.org/ns#price"), price));
+
+		SimpleBasicGraphPattern bgpOpt =
+				new SimpleBasicGraphPattern(triplePatternsOpt);
+
+		SimpleGroupGraphPattern ggpOpt = new SimpleGroupGraphPattern();
+		ggpOpt.addGraphPattern(bgpOpt);
+
+		SimpleOptionalGraphPattern ogp = new SimpleOptionalGraphPattern(bgp, ggpOpt);
+
+		SimpleGroupGraphPattern queryPattern = new SimpleGroupGraphPattern();
+		queryPattern.addGraphPattern(ogp);
+		selectQuery.setQueryPattern(queryPattern);
 
 		Assert.assertTrue(selectQuery.toString()
 				.replaceAll("( |\n)+", " ").trim().equals(queryString));

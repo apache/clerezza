@@ -28,6 +28,6 @@ public class SimpleAskQuery extends SimpleQuery implements AskQuery {
 
 	@Override
 	public String toString() {
-		return SimpleStringQuerySerializer.getInstance().serialize(this);
+		return (new SimpleStringQuerySerializer()).serialize(this);
 	}
 }

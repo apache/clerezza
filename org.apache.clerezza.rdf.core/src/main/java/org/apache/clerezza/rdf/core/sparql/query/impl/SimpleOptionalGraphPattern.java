@@ -23,7 +23,8 @@ import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.OptionalGraphPattern;
 
 /**
- * 
+ * This class implements {@link OptionalGraphPattern}.
+ *
  * @author hasan
  */
 public class SimpleOptionalGraphPattern implements OptionalGraphPattern {
@@ -31,15 +32,26 @@ public class SimpleOptionalGraphPattern implements OptionalGraphPattern {
 	private GraphPattern mainGraphPattern;
 	private GroupGraphPattern optionalGraphPattern;
 
+	/**
+	 * Constructs an {@link OptionalGraphPattern} out of a {@link GraphPattern}
+	 * as the main graph pattern and a {@link GroupGraphPattern} as the 
+	 * optional pattern.
+	 * 
+	 * @param mainGraphPattern
+	 *		a {@link GraphPattern} specifying the main pattern.
+	 * @param optionalGraphPattern
+	 *		a {@link GroupGraphPattern} specifying the optional pattern.
+	 */
 	public SimpleOptionalGraphPattern(GraphPattern mainGraphPattern,
 			GroupGraphPattern optionalGraphPattern) {
-		if (mainGraphPattern == null) {
-			throw new IllegalArgumentException("Main graph pattern may not be null");
-		}
 		if (optionalGraphPattern == null) {
 			throw new IllegalArgumentException("Optional graph pattern may not be null");
 		}
-		this.mainGraphPattern = mainGraphPattern;
+		if (mainGraphPattern == null) {
+			this.mainGraphPattern = new SimpleGroupGraphPattern();
+		} else {
+			this.mainGraphPattern = mainGraphPattern;
+		}
 		this.optionalGraphPattern = optionalGraphPattern;
 	}
 
