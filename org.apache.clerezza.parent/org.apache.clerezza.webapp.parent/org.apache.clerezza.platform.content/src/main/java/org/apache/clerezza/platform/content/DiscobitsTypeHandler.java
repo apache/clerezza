@@ -18,9 +18,12 @@
  */
 package org.apache.clerezza.platform.content;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
@@ -33,6 +36,13 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.RuntimeDelegate;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
@@ -51,24 +61,29 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * TypeHanlder to allow HTTP GET and PUT.
  *
  * @author reto, tho
- * 
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.service interface="org.apache.clerezza.platform.content.DiscobitsHandler"
- * @scr.property name="org.apache.clerezza.platform.typehandler" type="Boolean" value="true"
- * 
  */
+@Component
+@Services({
+	@Service(Object.class),
+	@Service(DiscobitsHandler.class)
+})
+@Property(name="org.apache.clerezza.platform.typehandler", boolValue=true)
+@Reference(name="metaDataGenerator",
+	policy=ReferencePolicy.DYNAMIC,
+	cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
+	referenceInterface=MetaDataGenerator.class
+)
 @SupportedTypes(types = { "http://www.w3.org/2000/01/rdf-schema#Resource" }, prioritize = false)
 public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		implements DiscobitsHandler {
 
-	/**
-	 * @scr.reference
-	 */
+	@Reference
 	private ContentGraphProvider cgProvider;
 	
 	private static final Logger logger = LoggerFactory.getLogger(DiscobitsTypeHandler.class);
 
+	private Set<MetaDataGenerator> metaDataGenerators =
+			Collections.synchronizedSet(new HashSet<MetaDataGenerator>());
 
 	/**
 	 * TypeHandle method for rdf types "TitledContext", "InfoDiscoBit",
@@ -122,9 +137,21 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		return Response.status(Status.CREATED).build();
 	}
 
+	protected void bindMetaDataGenerator(MetaDataGenerator generator) {
+		metaDataGenerators.add(generator);
+	}
+
+	protected void unbindMetaDataGenerator(MetaDataGenerator generator) {
+		metaDataGenerators.remove(generator);
+	}
+
 	@Override
 	protected MGraph getMGraph() {
 		return cgProvider.getContentGraph();
 	}
 
+	@Override
+	protected Set<MetaDataGenerator> getMetaDataGenerators() {
+		return metaDataGenerators;
+	}
 }
