@@ -3,12 +3,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>org.apache.clerezza.webapp.parent</artifactId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.rdf.web</artifactId>
 	<packaging>pom</packaging>
-	<version>0.8-SNAPSHOT</version>
+	<version>0.8-incubating-SNAPSHOT</version>
 	<name>Clerezza - SCB Web Access</name>
 	<description>Allows access to SCB graphs over HTTP with JAX-RS</description>
 	<modules>

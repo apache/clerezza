@@ -3,12 +3,12 @@
 	<parent>
 		<artifactId>org.apache.clerezza.maven-pladoc-plugin</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.maven-pladoc-plugin.service</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.3-incubating-SNAPSHOT</version>
 	<name>Clerezza - Maven PlaDoc Plugin Service</name>
 	<dependencies>
 		<dependency>

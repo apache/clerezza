@@ -3,12 +3,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>org.apache.clerezza.parent</artifactId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.web.resources.style</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4-incubating-SNAPSHOT</version>
 	<name>Clerezza - Style</name>
 	<description>
 		Icons and css for HTML pages

@@ -4,12 +4,12 @@
 	<parent>
 		<artifactId>org.apache.clerezza.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.integrationtest.web-run</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - Web Test Framework</name>
 	<description>A framework to run tests against a webserver</description>
 	<dependencies>
@@ -26,7 +26,7 @@
 		<dependency>
 			<artifactId>org.apache.clerezza.integrationtest.web</artifactId>
 			<groupId>org.apache.clerezza</groupId>
-			<version>0.3-SNAPSHOT</version>
+			<version>0.3-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>

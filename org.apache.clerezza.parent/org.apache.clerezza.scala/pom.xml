@@ -3,11 +3,11 @@
 	<parent>
 		<artifactId>org.apache.clerezza.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.scala</artifactId>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.3-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Scala support</name>
 	<description>OSGi bundle providing a service org.apache.clerezza.scala.service.ScalaService for interpreting scala code - see ScalaDocs</description>

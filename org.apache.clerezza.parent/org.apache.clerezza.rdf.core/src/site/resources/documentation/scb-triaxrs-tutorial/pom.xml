@@ -5,12 +5,12 @@
 	<groupId>org.example.clerezza</groupId>
 	<artifactId>combined.tutorial</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0-incubating-SNAPSHOT</version>
 	<name>SCB Jaxrs Tutorial</name>	
 	<parent>
 		<artifactId>org.apache.clerezza.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.11-SNAPSHOT</version>
+		<version>0.11-incubating-SNAPSHOT</version>
 	</parent>
 	<repositories>
 		<repository>

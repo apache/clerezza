@@ -3,12 +3,12 @@
 	<parent>
 		<artifactId>org.apache.clerezza.webapp.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.web.fileserver</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9-incubating-SNAPSHOT</version>
 	<name>Clerezza - Jax-Rs File Server</name>
 	<dependencies>
 		<dependency>
