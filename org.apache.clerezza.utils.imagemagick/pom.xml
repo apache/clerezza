@@ -3,11 +3,11 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>org.apache.clerezza.parent</artifactId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.utils.imagemagick</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.5-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Utils ImageMagick based Image Processor</name>
 	<description>A utility to manipulate images using ImageMagick</description>

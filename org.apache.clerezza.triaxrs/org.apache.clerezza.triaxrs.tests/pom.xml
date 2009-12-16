@@ -2,12 +2,12 @@
 	<parent>
 		<artifactId>org.apache.clerezza.triaxrs.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.triaxrs.tests</artifactId>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.3-incubating-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Clerezza - Triaxrs Tests</name>
 	<description>JAX-RS (aka JSR 311) implementation for runnning in OSGi container</description>

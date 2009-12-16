@@ -3,12 +3,12 @@
 	<parent>
 		<artifactId>org.apache.clerezza.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.integrationtest.web.performance</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.6-SNAPSHOT</version>
+	<version>0.6-incubating-SNAPSHOT</version>
 	<name>Clerezza - Web Performance Integration Tests</name>
 	<dependencies>
 		<dependency>

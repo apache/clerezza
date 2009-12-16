@@ -2,12 +2,12 @@
 	<parent>
 		<artifactId>org.apache.clerezza.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.rdf.mulgara.storage</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.5-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - SCB Mulgara Storage</name>
 	<dependencies>
