@@ -184,12 +184,12 @@
 				<plugin>
 					<groupId>org.apache.clerezza</groupId>
 					<artifactId>org.apache.clerezza.maven-ontologies-plugin</artifactId>
-					<version>0.3-SNAPSHOT</version>
+					<version>0.3-incubating-SNAPSHOT</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.clerezza</groupId>
 					<artifactId>org.apache.clerezza.maven-pladoc-plugin.core</artifactId>
-					<version>0.2-SNAPSHOT</version>
+					<version>0.2-incubating-SNAPSHOT</version>
 				</plugin>
 				<plugin>
 					<groupId>org.scala-tools</groupId>
