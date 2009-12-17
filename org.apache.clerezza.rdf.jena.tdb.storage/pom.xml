@@ -36,7 +36,6 @@
 		<dependency>
             <groupId>com.hp.hpl.jena</groupId>
             <artifactId>tdb</artifactId>
-			<version>0.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
@@ -46,7 +45,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.5</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>

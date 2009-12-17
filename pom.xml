@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.parent</artifactId>
@@ -372,38 +373,37 @@
 			<url>http://scala-tools.org/repo-releases</url>
 		</pluginRepository>
 		<pluginRepository>
-		    <id>trialox-plugin-release</id>
-		    <name>trialox.org distribution repository</name>
-		    <url>http://repo.trialox.org/release</url>
+			<id>trialox-plugin-release</id>
+			<name>trialox.org distribution repository</name>
+			<url>http://repo.trialox.org/release</url>
 		</pluginRepository>
 		<pluginRepository>
-		    <id>trialox-plugin-snapshot</id>
-		    <name>trialox.org snapshot repository</name>
-		    <url>http://repo.trialox.org/snapshot</url>
+			<id>trialox-plugin-snapshot</id>
+			<name>trialox.org snapshot repository</name>
+			<url>http://repo.trialox.org/snapshot</url>
 		</pluginRepository>
 		<!-- for a version that fixed PAXEXAM-159 and 160 -->
 		<pluginRepository>
-		    <id>ops4j-plugin-snapshot</id>
-		    <name>ops4j.org snapshot repository</name>
-		    <url>http://repository.ops4j.org/mvn-snapshots/</url>
+			<id>ops4j-plugin-snapshot</id>
+			<name>ops4j.org snapshot repository</name>
+			<url>http://repository.ops4j.org/mvn-snapshots/</url>
 		</pluginRepository>
 		<!-- neede by fix of PAXEXAM-160 -->
 		<pluginRepository>
-		    <id>apache-plugin-snapshot</id>
-		    <name>apache.org snapshot repository</name>
-		    <url>http://repository.apache.org/content/groups/snapshots-group</url>
+			<id>apache-plugin-snapshot</id>
+			<name>apache.org snapshot repository</name>
+			<url>http://repository.apache.org/content/groups/snapshots-group</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.5</version>
+			<version>1.5.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.5</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -435,6 +435,11 @@
 				<version>2.6.0</version>
 			</dependency>
 			<dependency>
+				<groupId>com.hp.hpl.jena</groupId>
+				<artifactId>tdb</artifactId>
+				<version>0.8.4</version>
+			</dependency>
+			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>2.4</version>
@@ -447,7 +452,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
-				<version>1.5.5</version>
+				<version>1.5.8</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
