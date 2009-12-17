@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.platform.typerendering;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,33 +70,26 @@ import org.apache.clerezza.rdf.ontologies.RDFS;
 	@Service(RenderletManager.class),
 	@Service(RendererFactory.class)
 })
-@Reference(name="renderlet",
-	cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
-	policy=ReferencePolicy.DYNAMIC,
-	referenceInterface=Renderlet.class)
+@Reference(name = "renderlet",
+cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE,
+policy = ReferencePolicy.DYNAMIC,
+referenceInterface = Renderlet.class)
 public class RenderletRendererFactoryImpl implements RenderletManager, RendererFactory,
-		GraphListener{
+		GraphListener {
 
 	private Logger logger = LoggerFactory.getLogger(RenderletRendererFactoryImpl.class);
-
 	@Reference
 	private ContentGraphProvider contentGraphProvider;
-
 	private static final String RDF_TYPE_PRIO_LIST_URI =
 			"http://tpf.localhost/rdfTypePriorityList";
-
 	/**
 	 * Mapping of service pid's of renderlets to the service objects.
 	 */
-	private Map<String,Renderlet> renderletMap = new HashMap<String,Renderlet>();
-
+	private Map<String, Renderlet> renderletMap = new HashMap<String, Renderlet>();
 	private ComponentContext componentContext;
-
 	private ReentrantReadWriteLock configLock = new ReentrantReadWriteLock();
-
 	private Set<ServiceReference> renderletRefStore =
 			Collections.synchronizedSet(new HashSet<ServiceReference>());
-	
 	List<Resource> rdfTypePrioList;
 
 	@Override
@@ -102,7 +97,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		// extract rdf types
 		Set<UriRef> rdfTypes = new HashSet<UriRef>();
 		Iterator<UriRef> it = resource.getUriRefObjects(RDF.type);
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			final UriRef rdfType = it.next();
 			rdfTypes.add(rdfType);
 		}
@@ -110,57 +105,65 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		return getRenderer(rdfTypes, mode, acceptableMediaTypes);
 	}
 
-	private RendererImpl getRenderer(Set<UriRef> rdfTypes,
-			String mode, List<MediaType> acceptableMediaTypes) {
-		MGraph contentGraph = contentGraphProvider.getContentGraph();
-		SortedSet<RendererImpl> configurationList =
-				new TreeSet<RendererImpl>();
-		for (Resource prioRdfType : rdfTypePrioList) {
-			if (!rdfTypes.contains(prioRdfType)) {
-				continue;
-			}
-			Iterator<Triple> renderletDefs =
-					contentGraph.filter(null, TYPERENDERING.renderedType, prioRdfType);
-			while (renderletDefs.hasNext()) {
-				NonLiteral renderletDef = renderletDefs.next().getSubject();
-				GraphNode renderletDefNode = new GraphNode(renderletDef,
-						contentGraph);
-				String renderingModeStr = getMode(contentGraph,
-						renderletDef);
-				MediaType mediaTypeInGraph = getMediaType(contentGraph, renderletDef);
-				int prio = -1;
-				for (int i = 0; i < acceptableMediaTypes.size(); i++) {
-					MediaType acceptableMediaType = acceptableMediaTypes.get(i);
-					if (acceptableMediaType.isCompatible(mediaTypeInGraph)) {
-						prio = i;
-						break;
+	private RendererImpl getRenderer(final Set<UriRef> rdfTypes,
+			final String mode, final List<MediaType> acceptableMediaTypes) {
+		//this is done as priviledged as the user need not have right to read from
+		//the content graph for the locating the template (this is needed e.g.
+		//to show a login page)
+		return AccessController.doPrivileged(new PrivilegedAction<RendererImpl>() {
+			@Override
+			public RendererImpl run() {
+				MGraph contentGraph = contentGraphProvider.getContentGraph();
+				SortedSet<RendererImpl> configurationList =
+						new TreeSet<RendererImpl>();
+				for (Resource prioRdfType : rdfTypePrioList) {
+					if (!rdfTypes.contains(prioRdfType)) {
+						continue;
 					}
-				}
-				if (prio == -1) {
-					continue;
-				}
-				if (equals(renderingModeStr, mode)) {
-					final String renderletName = getRenderletName(contentGraph, renderletDef);
-					Renderlet renderlet = renderletMap.
-							get(renderletName);
-					if (renderlet == null) {
-						throw new RenderletNotFoundException("Renderlet "+renderletName+" could not be loaded.");
-					}
-					configurationList.add(new RendererImpl(
-							getRenderingSpecification(contentGraph, renderletDef),
-							renderlet,
-							mediaTypeInGraph,
-							prio, new CallbackRendererImpl(this, mediaTypeInGraph),
-							renderletDefNode.hasProperty(RDF.type,
-							TYPERENDERING.BuiltInRenderletDefinition)));
-				}
+					Iterator<Triple> renderletDefs =
+							contentGraph.filter(null, TYPERENDERING.renderedType, prioRdfType);
+					while (renderletDefs.hasNext()) {
+						NonLiteral renderletDef = renderletDefs.next().getSubject();
+						GraphNode renderletDefNode = new GraphNode(renderletDef,
+								contentGraph);
+						String renderingModeStr = getMode(contentGraph,
+								renderletDef);
+						MediaType mediaTypeInGraph = getMediaType(contentGraph, renderletDef);
+						int prio = -1;
+						for (int i = 0; i < acceptableMediaTypes.size(); i++) {
+							MediaType acceptableMediaType = acceptableMediaTypes.get(i);
+							if (acceptableMediaType.isCompatible(mediaTypeInGraph)) {
+								prio = i;
+								break;
+							}
+						}
+						if (prio == -1) {
+							continue;
+						}
+						if (RenderletRendererFactoryImpl.equals(renderingModeStr, mode)) {
+							final String renderletName = getRenderletName(contentGraph, renderletDef);
+							Renderlet renderlet = renderletMap.get(renderletName);
+							if (renderlet == null) {
+								throw new RenderletNotFoundException("Renderlet " + renderletName + " could not be loaded.");
+							}
+							configurationList.add(new RendererImpl(
+									getRenderingSpecification(contentGraph, renderletDef),
+									renderlet,
+									mediaTypeInGraph,
+									prio, new CallbackRendererImpl(RenderletRendererFactoryImpl.this, mediaTypeInGraph),
+									renderletDefNode.hasProperty(RDF.type,
+									TYPERENDERING.BuiltInRenderletDefinition)));
+						}
 
+					}
+					if (!configurationList.isEmpty()) {
+						return configurationList.first();
+					}
+				}
+				return null;
 			}
-			if (!configurationList.isEmpty()) {
-				return configurationList.first();
-			}
-		}
-		return null;
+		});
+
 	}
 
 	/**
@@ -175,8 +178,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		Iterator<Triple> renderletModeIter = contentGraph.filter(
 				(NonLiteral) renderletDef, TYPERENDERING.renderingMode, null);
 		if (renderletModeIter.hasNext()) {
-			TypedLiteral renderletMode = (TypedLiteral) renderletModeIter.next()
-					.getObject();
+			TypedLiteral renderletMode = (TypedLiteral) renderletModeIter.next().getObject();
 			return LiteralFactory.getInstance().createObject(String.class,
 					renderletMode);
 		}
@@ -224,8 +226,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		Iterator<Triple> renderletModeIter = contentGraph.filter(
 				(NonLiteral) renderletDef, TYPERENDERING.renderlet, null);
 		if (renderletModeIter.hasNext()) {
-			TypedLiteral renderletMode = (TypedLiteral) renderletModeIter.next()
-					.getObject();
+			TypedLiteral renderletMode = (TypedLiteral) renderletModeIter.next().getObject();
 			String renderletName = LiteralFactory.getInstance().createObject(String.class,
 					renderletMode);
 			return renderletName;
@@ -237,8 +238,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		Iterator<Triple> mediaTypeIter = contentGraph.filter(
 				(NonLiteral) renderletDef, TYPERENDERING.mediaType, null);
 		if (mediaTypeIter.hasNext()) {
-			TypedLiteral renderletMode = (TypedLiteral) mediaTypeIter.next()
-					.getObject();
+			TypedLiteral renderletMode = (TypedLiteral) mediaTypeIter.next().getObject();
 			String mediaTypeStr = LiteralFactory.getInstance().createObject(String.class,
 					renderletMode);
 			return MediaType.valueOf(mediaTypeStr);
@@ -253,14 +253,13 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 			String mode,
 			MediaType mediaType, boolean builtIn) {
 		MGraph contentGraph = contentGraphProvider.getContentGraph();
-		
+
 		removeExisting(rdfType, mode, mediaType, builtIn, contentGraph);
 
 		BNode renderletDefinition = new BNode();
 		GraphNode renderletDefinitionNode = new GraphNode(renderletDefinition, contentGraph);
 		contentGraph.add(new TripleImpl(renderletDefinition,
-				TYPERENDERING.renderlet, LiteralFactory.getInstance()
-							.createTypedLiteral(renderlet)));
+				TYPERENDERING.renderlet, LiteralFactory.getInstance().createTypedLiteral(renderlet)));
 		if (renderingSpecification != null) {
 			contentGraph.add(new TripleImpl(renderletDefinition,
 					TYPERENDERING.renderingSpecification, renderingSpecification));
@@ -269,10 +268,9 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 				TYPERENDERING.renderedType, rdfType));
 
 		contentGraph.add(new TripleImpl(renderletDefinition,
-				TYPERENDERING.mediaType, LiteralFactory.getInstance()
-							.createTypedLiteral(mediaType.toString())));
+				TYPERENDERING.mediaType, LiteralFactory.getInstance().createTypedLiteral(mediaType.toString())));
 		renderletDefinitionNode.addProperty(RDF.type, TYPERENDERING.RenderletDefinition);
-		
+
 		if (builtIn) {
 			renderletDefinitionNode.addProperty(RDF.type,
 					TYPERENDERING.BuiltInRenderletDefinition);
@@ -280,11 +278,10 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 			renderletDefinitionNode.addProperty(RDF.type,
 					TYPERENDERING.CustomRenderletDefinition);
 		}
-		
+
 		if (mode != null) {
 			contentGraph.add(new TripleImpl(renderletDefinition,
-					TYPERENDERING.renderingMode, LiteralFactory.getInstance()
-							.createTypedLiteral(mode)));
+					TYPERENDERING.renderingMode, LiteralFactory.getInstance().createTypedLiteral(mode)));
 		}
 
 		if (!rdfTypePrioList.contains(rdfType)) {
@@ -292,7 +289,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 				rdfTypePrioList.add(RDFS.Resource);
 			} else {
 				rdfTypePrioList.add(0, rdfType);
-			}			
+			}
 		}
 	}
 
@@ -312,7 +309,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		existing.deleteProperties(TYPERENDERING.renderingSpecification);
 		existing.deleteProperties(TYPERENDERING.renderlet);
 
-		
+
 	}
 
 	private GraphNode findDefinition(UriRef rdfType, String mode,
@@ -336,7 +333,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 			if (!equals(modeInGraph, mode)) {
 				continue;
 			}
-			if (builtIn && !node.hasProperty(RDF.type, 
+			if (builtIn && !node.hasProperty(RDF.type,
 					TYPERENDERING.BuiltInRenderletDefinition)) {
 				continue;
 			}
@@ -349,9 +346,9 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		return null;
 	}
 
-	private boolean equals(Object o1, Object o2) {
+	private static boolean equals(Object o1, Object o2) {
 		return o1 == o2 ||
-					(o1 != null) && o1.equals(o2);
+				(o1 != null) && o1.equals(o2);
 	}
 
 	protected void bindContentGraphProvider(ContentGraphProvider contentGraphProvider) {
@@ -363,8 +360,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	}
 
 	protected void bindRenderlet(ServiceReference renderletRef) {
-		logger.info("Bind renderlet of bundle {}", renderletRef
-				.getBundle().getSymbolicName());
+		logger.info("Bind renderlet of bundle {}", renderletRef.getBundle().getSymbolicName());
 		if (componentContext != null) {
 			registerRenderletService(renderletRef);
 		} else {
@@ -374,8 +370,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 
 	private void registerRenderletService(ServiceReference renderletRef) {
 		String servicePid = (String) renderletRef.getProperty(Constants.SERVICE_PID);
-		Renderlet renderlet = (Renderlet) componentContext.
-				locateService("renderlet", renderletRef);
+		Renderlet renderlet = (Renderlet) componentContext.locateService("renderlet", renderletRef);
 		registerRenderletService(servicePid, renderlet);
 	}
 
@@ -391,14 +386,12 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	}
 
 	protected void unbindRenderlet(ServiceReference renderletRef) {
-		logger.info("Unbind renderlet of bundle {}", renderletRef
-				.getBundle().getSymbolicName());
+		logger.info("Unbind renderlet of bundle {}", renderletRef.getBundle().getSymbolicName());
 		configLock.writeLock().lock();
-		try{
+		try {
 			if (!renderletRefStore.remove(renderletRef)) {
 				String servicePid = (String) renderletRef.getProperty(Constants.SERVICE_PID);
-				Renderlet renderlet = (Renderlet) componentContext.
-				locateService("renderlet", renderletRef);
+				Renderlet renderlet = (Renderlet) componentContext.locateService("renderlet", renderletRef);
 				unregisterRenderletService(servicePid, renderlet);
 			}
 		} finally {
@@ -417,7 +410,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	}
 
 	private void registerRenderletsFromStore() {
-		for(ServiceReference renderletRef : renderletRefStore) {
+		for (ServiceReference renderletRef : renderletRefStore) {
 			registerRenderletService(renderletRef);
 		}
 		renderletRefStore.clear();
