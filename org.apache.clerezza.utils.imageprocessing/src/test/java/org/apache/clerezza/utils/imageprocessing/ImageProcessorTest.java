@@ -86,12 +86,14 @@ public class ImageProcessorTest {
 	public void testMakeAThumbnail() throws IOException {
 		BufferedImage tempImg = processor.makeAThumbnail(bimg, 50, 70);
 		Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
+		Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
 		bimg = ImageIO.read(new File(getClass().getResource("testimage1.jpg").getPath()));
 		tempImg = processor.makeAThumbnail(bimg, 50, 70);
 		Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
+		Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
 		bimg = ImageIO.read(new File(getClass().getResource("testimage2.jpg").getPath()));
 		tempImg = processor.makeAThumbnail(bimg, 50, 70);
 		Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
-		
+		Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
 	}
 }

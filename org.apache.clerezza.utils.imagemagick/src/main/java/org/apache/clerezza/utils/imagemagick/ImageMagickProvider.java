@@ -49,6 +49,11 @@ import org.apache.clerezza.utils.imageprocessing.metadataprocessing.ExifTagDataS
 import org.apache.clerezza.utils.imageprocessing.metadataprocessing.IptcDataSet;
 import org.apache.clerezza.utils.imageprocessing.metadataprocessing.MetaData;
 import org.apache.clerezza.utils.imageprocessing.metadataprocessing.MetaDataProcessor;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * This class implements interfaces that execute system calls to imageMagick.
@@ -60,25 +65,20 @@ import org.apache.clerezza.utils.imageprocessing.metadataprocessing.MetaDataProc
  * at: <a href='http://www.imagemagick.org/'>http://www.imagemagick.org/</a>.
  * </p>
  * 
- * @scr.component
- * @scr.service interface="org.apache.clerezza.utils.imageprocessing.ImageProcessor"
- * @scr.property name="convert" value="convert"
- *               description="Specifies the ImageMagick convert command."
- * @scr.property name="identify" value="identify"
- *               description="Specifies the ImageMagick identify command."
- * @scr.property type="Integer" value="6" name="release_number"
- * 				 description="Specifies ImageMagick release number (Syntax: release.version.majorRevision-minorRevision)."
- * @scr.property type="Integer" value="5" name="version_number"
- * 				 description="Specifies ImageMagick version number (Syntax: release.version.majorRevision-minorRevision)."
- * @scr.property type="Integer" value="2" name="major_release_number"
- * 				 description="Specifies ImageMagick major revision number (Syntax: release.version.majorRevision-minorRevision)."
- * @scr.property type="Integer" value="10" name="minor_release_number"
- * 				 description="Specifies ImageMagick minor revision number (Syntax: release.version.majorRevision-minorRevision)."
- * @scr.property name="service.ranking" value=100
- * 
  * @author tio, hasan, daniel
  */
-public class ImageMagickProvider implements ImageProcessor, MetaDataProcessor {
+@Component(metatype=true)
+@Properties({	
+	@Property(name="convert", value="convert", description="Specifies the ImageMagick convert command."),
+	@Property(name="identify", value="identify", description="Specifies the ImageMagick identify command."),
+	@Property(name="release_number", intValue=6, description="Specifies ImageMagick release number (Syntax: release.version.majorRevision-minorRevision)."),
+	@Property(name="version_number", intValue=5, description="Specifies ImageMagick version number (Syntax: release.version.majorRevision-minorRevision)."),
+	@Property(name="major_release_number", intValue=2, description="Specifies ImageMagick major revision number (Syntax: release.version.majorRevision-minorRevision)."),
+	@Property(name="minor_release_number", intValue=10, description="Specifies ImageMagick minor revision number (Syntax: release.version.majorRevision-minorRevision)."),
+	@Property(name="service.ranking", value="100")
+	})
+@Service(ImageProcessor.class)
+public class ImageMagickProvider extends ImageProcessor implements MetaDataProcessor {
 
 	private String convert = "convert";
 	private String identify = "identify";
@@ -87,9 +87,7 @@ public class ImageMagickProvider implements ImageProcessor, MetaDataProcessor {
 	private int imagemagickRevisionMajorNumber = 2;
 	private int imagemagickRevisionMinorNumber = 10;
 
-	/**
-	 * @scr.reference
-	 */
+	@Reference
 	private Serializer serializer;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -300,20 +298,9 @@ public class ImageMagickProvider implements ImageProcessor, MetaDataProcessor {
 		List<String> command = new ArrayList<String>(10);
 		command.add(convert);
 		command.add("-geometry");
-		command.add(resizeFactor + "%");
+		command.add(100 * resizeFactor + "%");
 
 		return processImage(command, 100, image);
-	}
-
-	@Override
-	public BufferedImage makeAThumbnail(BufferedImage image, int newWidth,
-			int newHeight) {
-		BufferedImage tmp = resizeProportional(image, newWidth, newHeight);
-		if (tmp == null) {
-			return null;
-		} else {
-			return crop(tmp, newWidth, newHeight);
-		}
 	}
 
 	private BufferedImage crop(BufferedImage image, int newWidth, int newHeight) {

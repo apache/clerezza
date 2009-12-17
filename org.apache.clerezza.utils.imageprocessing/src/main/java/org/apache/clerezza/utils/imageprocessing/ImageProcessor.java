@@ -26,9 +26,9 @@ import java.awt.image.BufferedImage;
  * <code>java.awt.image.BufferedImage</code>. BufferedImage is an accessible
  * buffer of image data (pixels and their RGB colors).
  * 
- * @author tio, hasan
+ * @author tio, hasan, mir
  */
-public interface ImageProcessor {
+public abstract class ImageProcessor {
 
 	/**
 	 * Makes an image translucent. The parameter translucency has to be in the 
@@ -37,7 +37,7 @@ public interface ImageProcessor {
 	 * @param image
 	 * @param translucency
 	 */
-	public BufferedImage makeImageTranslucent(BufferedImage image,
+	public abstract BufferedImage makeImageTranslucent(BufferedImage image,
 			float translucency);
 
 	/**
@@ -46,7 +46,7 @@ public interface ImageProcessor {
 	 * @param image
 	 * @param color
 	 */
-	public BufferedImage makeColorTransparent(BufferedImage image, Color color);
+	public abstract BufferedImage makeColorTransparent(BufferedImage image, Color color);
 
 	/**
 	 * Flips an image
@@ -56,7 +56,7 @@ public interface ImageProcessor {
 	 *		0 means horizontal
 	 *		1 means vertical
 	 */
-	public BufferedImage flip(BufferedImage image, int direction);
+	public abstract BufferedImage flip(BufferedImage image, int direction);
 
 	/**
 	 * Rotates an image by an angle defined in degrees.
@@ -66,7 +66,7 @@ public interface ImageProcessor {
 	 * @param image
 	 * @param angle
 	 */
-	public BufferedImage rotate(BufferedImage image, int angle);
+	public abstract BufferedImage rotate(BufferedImage image, int angle);
 
 	/**
 	 * Resizes an image
@@ -75,7 +75,7 @@ public interface ImageProcessor {
 	 * @param newWidth
 	 * @param newHeight
 	 */
-	public BufferedImage resize(BufferedImage image, int newWidth, int newHeight);
+	public abstract BufferedImage resize(BufferedImage image, int newWidth, int newHeight);
 
 	/**
 	 * Resizes an image proportionally. 
@@ -89,7 +89,7 @@ public interface ImageProcessor {
 	 * @param newWidth
 	 * @param newHeight
 	 */
-	public BufferedImage resizeProportional(BufferedImage image, int newWidth,
+	public abstract BufferedImage resizeProportional(BufferedImage image, int newWidth,
 			int newHeight);
 
 	/**
@@ -100,7 +100,7 @@ public interface ImageProcessor {
 	 * @param resizeFactorWidth
 	 * @param resizeFactorHeight
 	 */
-	public BufferedImage resizeRelative(BufferedImage image,
+	public abstract BufferedImage resizeRelative(BufferedImage image,
 			float resizeFactorWidth, float resizeFactorHeight);
 
 	/**
@@ -110,18 +110,30 @@ public interface ImageProcessor {
 	 * @param image
 	 * @param resizeFactor
 	 */
-	public BufferedImage resizeRelativeProportional(BufferedImage image,
+	public abstract BufferedImage resizeRelativeProportional(BufferedImage image,
 			float resizeFactor);
 
 	/**
-	 * Create a thumbnail of the image. First the image will be resized and
-	 * cropped if necessary to obtain the end size as specified in the parameter
-	 * newWidth and newHeight.
+	 * Create a thumbnail of the image. The image is scaled down so that height
+	 * and width are smaller or equals to <code>height</code> and
+	 * <code>width</code> respectively. If image is already smaller or equals
+	 * <code>width</code> x <code>height</code> image is returned without
+	 * transformation.
 	 * 
-	 * @param image
-	 * @param newWidth
-	 * @param newHeight
+	 * @param image The image from which the thumbnails is derived.
+	 * @param width The maximum width of the thumbnail
+	 * @param height The maximum height of the thumbnail
 	 */
-	public BufferedImage makeAThumbnail(BufferedImage image,
-			int newWidth, int newHeight);
+	public BufferedImage makeAThumbnail(BufferedImage image, int width, int height) {
+		int imgWidth = image.getWidth();
+		int imgHeight = image.getHeight();
+		if (imgWidth <= width && imgHeight <= height) {
+			return image;
+		}
+		float propWidth = (float) width / imgWidth;
+		float propHeight = (float) height / imgHeight;
+		float factor = (propWidth < propHeight) ? propWidth : propHeight;
+		BufferedImage img = resizeRelativeProportional(image, factor);
+		return img;
+	}
 }

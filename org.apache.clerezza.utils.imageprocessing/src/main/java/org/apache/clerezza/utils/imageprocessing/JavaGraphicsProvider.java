@@ -30,19 +30,22 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.PackedColorModel;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * @scr.component
- * @scr.service
- *			interface="org.apache.clerezza.utils.imageprocessing.ImageProcessor"
+ * <code>ImageProcessor</code> implementation based on the Java Abstract
+ * Windowing Toolkit.
  * 
  * @author tio, hasan
  */
-public class JavaGraphicsProvider implements ImageProcessor {
+@Component
+@Service(ImageProcessor.class)
+public class JavaGraphicsProvider extends ImageProcessor {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -280,17 +283,4 @@ public class JavaGraphicsProvider implements ImageProcessor {
 		int newHeight = (int) (height * resizeFactor);
 		return resizeBufferedImage(image, newWidth, newHeight, width, height);
 	}
-
-	@Override
-	public BufferedImage makeAThumbnail(BufferedImage image,
-			int newWidth, int newHeight) {
-		//resizeProportional
-		int width = image.getWidth();
-		int height = image.getHeight();
-		float propWidth = (float) newWidth / width;
-		float propHeight = (float) newHeight / height;
-		float factor = (propWidth > propHeight) ? propWidth : propHeight;
-		BufferedImage img = resizeRelativeProportional(image, factor);
-		return img;
-	}	
 }
