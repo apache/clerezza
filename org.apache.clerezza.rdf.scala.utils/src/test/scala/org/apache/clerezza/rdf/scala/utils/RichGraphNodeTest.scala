@@ -72,6 +72,14 @@ class RichGraphNodeTest {
 	}
 
 	@Test
+	def testMissingProperty = {
+		val rNode = new RichGraphNode(node)
+		Assert.assertEquals(0, (rNode/FOAF.thumbnail).length)
+		Assert.assertEquals("", rNode/FOAF.thumbnail*)
+
+	}
+
+	@Test
 	def testInverseImplicit = {
 		Assert.assertEquals(1, (node/-FOAF.knows).length)
 	}

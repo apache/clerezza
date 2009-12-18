@@ -29,11 +29,18 @@ import rdf.core._
 */
 object Preamble {
 
+	val emptyGraph = new impl.SimpleGraph(new impl.SimpleMGraph)
+	val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
+
 	implicit def toRichGraphNode(node: GraphNode) = {
 		new RichGraphNode(node)
 	}
 
 	implicit def toFirstElement(c: CollectedIter[RichGraphNode])  = {
-		c(0)
+		if (c.length > 0) {
+			c(0)
+		} else {
+			emptyLiteral
+		}
 	}
 }
