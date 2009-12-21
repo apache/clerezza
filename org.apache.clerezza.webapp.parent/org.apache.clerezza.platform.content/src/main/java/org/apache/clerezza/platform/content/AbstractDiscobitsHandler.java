@@ -33,12 +33,16 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author reto
  */
 public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
+
+	private static final Logger logger = LoggerFactory.getLogger(Editor.class);
 
 	/**
 	 *
@@ -66,7 +70,11 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 		TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
 		infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
 		for(MetaDataGenerator generator : getMetaDataGenerators()) {
-			generator.generate(infoDiscoBitNode, data, mediaType);
+			try {
+				generator.generate(infoDiscoBitNode, data, mediaType);
+			} catch (RuntimeException ex) {
+				logger.error("Exception in MetaDataGenerator ", ex);
+			}
 		}
 	}
 
