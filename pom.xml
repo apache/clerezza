@@ -921,7 +921,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.content.thumbnails</artifactId>
+				<artifactId>org.apache.clerezza.platform.content.representations</artifactId>
 				<version>0.1-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
