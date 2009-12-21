@@ -57,7 +57,7 @@ Overlay.show = function(bodyText, headerText, widthOverlay, heightOverlay) {
 		height: heightOverlay+"px",
 		constraintoviewport: true,
 		modal: true,
-		zIndex: 100,
+		zIndex: 100000,
 		close: true,
 		fixedcenter: true,
 		autofillheight: "body",
