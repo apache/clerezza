@@ -836,21 +836,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.app.conceptmanager</artifactId>
-				<version>0.6-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.app.conceptmanager.ontologies</artifactId>
-				<version>0.6-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.app.conceptmanager.core</artifactId>
-				<version>0.6-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.xhtml2html</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
