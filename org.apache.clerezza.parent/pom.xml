@@ -39,6 +39,7 @@
 		<module>org.apache.clerezza.maven-ontologies-plugin</module>
 		<module>org.apache.clerezza.maven-pladoc-plugin</module>
 		<module>org.apache.clerezza.platform.config</module>
+		<module>org.apache.clerezza.platform.content.imagemetadada</module>
 		<module>org.apache.clerezza.platform.content.representations</module>
 		<module>org.apache.clerezza.platform.documentation</module>
 		<module>org.apache.clerezza.platform.graphprovider.content</module>
@@ -923,6 +924,21 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.content.representations</artifactId>
+				<version>0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.content.representations.core</artifactId>
+				<version>0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.content.representations.ontologies</artifactId>
+				<version>0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.content.imagemetadata</artifactId>
 				<version>0.1-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
