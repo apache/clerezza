@@ -54,6 +54,7 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Services;
 
 /**
  * This class implements interfaces that execute system calls to imageMagick.
@@ -77,7 +78,11 @@ import org.apache.felix.scr.annotations.Service;
 	@Property(name="minor_release_number", intValue=10, description="Specifies ImageMagick minor revision number (Syntax: release.version.majorRevision-minorRevision)."),
 	@Property(name="service.ranking", value="100")
 	})
-@Service(ImageProcessor.class)
+@Services({
+	@Service(ImageProcessor.class),
+	@Service(MetaDataProcessor.class)
+	})
+
 public class ImageMagickProvider extends ImageProcessor implements MetaDataProcessor {
 
 	private String convert = "convert";

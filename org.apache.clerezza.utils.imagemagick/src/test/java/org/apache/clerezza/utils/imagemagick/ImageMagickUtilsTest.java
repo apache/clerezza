@@ -133,6 +133,5 @@ public class ImageMagickUtilsTest {
 						(NonLiteral) it.next().getObject(),
 						new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#_1"),
 						new PlainLiteralImpl(".Joe O'Shaughnessy"))));
-
 	}
 }
