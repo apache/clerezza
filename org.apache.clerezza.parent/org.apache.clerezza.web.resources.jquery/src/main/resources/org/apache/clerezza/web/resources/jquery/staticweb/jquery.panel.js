@@ -3,15 +3,14 @@ $(document).ready(function () {
 		$(this).find("ol").toggle();
 		if ($(this).children().is(":hidden"))
 			$(this).removeClass("tx-open");
-		else	
+		else
 			$(this).addClass("tx-open");
 	});
 
 	$('.tx-panel-open-close').bind("click",function(){
-		
+
 		var oPanel = $('.tx-panel').children().not(".tx-panel-open-close");
-		oPanel.toggle();
-		if (oPanel.is(":hidden")) {
+		if (!$('.tx-panel').hasClass("tx-close")) {
 			$(this).removeClass("tx-icon-left-inverse");
 			$(this).addClass("tx-icon-right-inverse");
 			$('.tx-panel').addClass("tx-close");
@@ -20,15 +19,15 @@ $(document).ready(function () {
 			$('.tx-edit').addClass("tx-hide-panel").removeClass("tx-show-panel");
 			$('.tx-tree').addClass("tx-hide-panel").removeClass("tx-show-panel");
 		}
-		else {	
+		else {
 			$(this).removeClass("tx-icon-right-inverse");
 			$(this).addClass("tx-icon-left-inverse");
 			$('.tx-panel').removeClass("tx-close");
 			$(this).removeClass("tx-close");
 			$('.tx-list').addClass("tx-show-panel").removeClass("tx-hide-panel");
 			$('.tx-edit').addClass("tx-show-panel").removeClass("tx-hide-panel");
-			$('.tx-tree').addClass("tx-show-panel").removeClass("tx-hide-panel");				
+			$('.tx-tree').addClass("tx-show-panel").removeClass("tx-hide-panel");
 		}
-	});	
-	
+	});
+
 });

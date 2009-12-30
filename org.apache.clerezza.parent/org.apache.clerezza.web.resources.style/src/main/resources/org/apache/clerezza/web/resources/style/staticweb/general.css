@@ -17,13 +17,13 @@ img {
 }
 
 a {
-	color: #34c0da;
+	color: #1c6d8b;
 	text-decoration: none;
 	outline: none;
 }
 
 a:active, a:hover  {
-	color: #34c0da;
+	color: #1c6d8b;
 	text-decoration: underline;
 }
 
@@ -76,4 +76,3 @@ pre {
     background-color: #f4e0e0;
     padding-left: 4em;
     margin-bottom: 1em;
-}
