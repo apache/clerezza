@@ -1,5 +1,3 @@
-/* edit */
-
 .tx-edit {
 	position: absolute;
 	top: 0;
@@ -16,17 +14,17 @@
 }
 
 .tx-edit.tx-show-panel {
-	left: 20.0em;
+	left: 28em;
 }
 
 .tx-edit.tx-hide-panel {
-	left: 3.0em;
+	left: 5em;
 }
 
 .tx-edit.tx-halfwidth-right {
 	left: 51%;
 	padding-left: 1.6em;
-	border-left: solid 1px #e4e4e4;	
+	border-left: solid 1px #e4e4e4;
 }
 
 .tx-edit .tx-edit-header, .tx-edit h3  {
@@ -34,7 +32,7 @@
 	padding: 0;
 	padding-bottom: 0.5em;
 	color: #999999;
-	font-size: 1.5em;
+	font-size: 1.8em;
 }
 
 /* +yui */
@@ -45,8 +43,8 @@ ol.tx-edit-tabs, ul.yui-nav  {
 	width: 100%;
 	height: 5em;
 	margin: 0;
-	padding: 0;	
-	list-style: none;	
+	padding: 0;
+	list-style: none;
 }
 
 ol.tx-edit-tabs li, .tx-edit ul.yui-nav li  {
@@ -62,13 +60,13 @@ ol.tx-edit-tabs li.tx-active, ul.yui-nav li.selected {
 ol.tx-edit-tabs li a, ul.yui-nav li a {
 	color: #666666;
 	display: block;
-	padding: 0.8em 1.2em; 
+	padding: 0.8em 1.2em;
 	text-decoration: none;
 }
 
 ol.tx-edit-tabs li a:visited, ol.tx-edit-tabs li a:link,
 ul.yui-nav li a:visited, ul.yui-nav li a:link {
-	
+
 }
 
 ol.tx-edit-tabs li a:active, ol.tx-edit-tabs li a:hover,
@@ -95,7 +93,7 @@ ul.yui-nav li.selected a:active, ul.yui-nav li.selected a:hover  {
 
 .tx-edit-info div {
 	padding-bottom: 1.6em;
-	
+
 }
 
 .tx-edit-info div span {
@@ -126,7 +124,7 @@ ul.yui-nav li.selected a:active, ul.yui-nav li.selected a:hover  {
 	padding: 0 0 0.4em 0;
 	margin: 0;
 	margin-top: 0.4em;
-	line-height: 1.8em;	
+	line-height: 1.8em;
 }
 
 .tx-edit .tx-line {
@@ -165,4 +163,3 @@ ul.yui-nav li.selected a:active, ul.yui-nav li.selected a:hover  {
 .tx-edit fieldset li span.tx-item a {
 	float: right;
 }
-

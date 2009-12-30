@@ -14,12 +14,12 @@
 }
 
 .tx-tree.tx-show-panel {
-	left: 20em;
+	left: 28em;
 	width: auto;
 }
 
 .tx-tree.tx-hide-panel {
-	left: 3em;
+	left: 5em;
 	width: auto;
 }
 
@@ -73,7 +73,6 @@
 }
 
 .tx-tree li a {
-	color: #ffffff;
 	text-decoration: none;
 	padding: 0 0.2em 0 0;
 	line-height: 1.5em;
@@ -87,12 +86,10 @@
 }
 
 .tx-tree li a + a:visited, .tx-tree li a + a:link  {
-	color: #34c0da;
 	text-decoration: none;
 }
 
 .tx-tree li a + a:active, .tx-tree li a + a:hover  {
-	color: #34c0da;
 	text-decoration: underline;
 }
 
@@ -104,11 +101,9 @@
 }
 
 .tx-tree li a:visited, .tx-tree li a:link  {
-	color: #000000;
 }
 
 .tx-tree li a:active, .tx-tree li a:hover  {
-	color: #000000;
 }
 
 .tx-tree input[type="checkbox"] {

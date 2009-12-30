@@ -20,85 +20,95 @@
 
 	<!-- panel -->
 	<div class="tx-panel">
-		<!-- open-close button, jquery.panel.js, toggles in the tx-edit, tx-tree, tx-list the tx-show-panel and tx-hide-panel classes -->
-		<a href="#" class="tx-icon tx-icon-left-inverse tx-panel-open-close">remove</a>
-		<form action="" method="post">
-			<fieldset>
-				<label>
-					<input type="text" value="search assets" />
-					<input type="submit" value="" class="tx-icon tx-icon-search"/>
-				</label>
-				<!-- optional input elements-->
-				<label>
-					<input type="radio" name="searchtype" value="" />
-					new search</label>
-				<label>
-					<input type="radio" name="searchtype" value="" />
-					search within results</label>
-			</fieldset>
-		</form>
-		<!-- selected filter elements -->
-		<div class="tx-filter">
-			<h4>Actual filter:</h4>
-			<ol>
-				<!-- filter elements, tx-icon is floating right, must be at the first place -->
-				<li><a href="#" class="tx-icon tx-icon-delete">remove</a>Tiger</li>
-				<li><a href="#" class="tx-icon tx-icon-delete">remove</a>Last Week</li>
-			</ol>
-		</div> 
+	<!-- open-close button, jquery.panel.js, toggles in the tx-edit, tx-tree, tx-list the tx-show-panel and tx-hide-panel classes -->
+		<a href="#" class="tx-panel-open-close">close/open</a><h3>Filter</h3>
 		
-		<!-- results from filter -->
-		<div class="tx-result">
-		<!-- ul li contruct, only 2 levels supported -->
-			<ol>
-				<!-- main category-->
-				<li><a href="#">Type</a>
-					<ol>
-						<!-- sub category -->
-						<li><a href="#">Images (234)</a></li>
-						<li><a href="#">Videos (20)</a></li>
-						<li><a href="#">Flash (45)</a></li>
-						<li><a href="#">Documents (234)</a></li>
-						<li><a href="#">Images (234)</a></li>
-					</ol>
-				</li>
-				<!-- tx-open, open element icon, arrow down-->
-				<li class="tx-open"><a href="#">Taxonomy</a>
-					<ol>
-						<li><a href="#">Images (234)</a></li>
-						<li><a href="#">Videos (20)</a></li>
-					</ol>
-				</li>
-				<!-- li default shows an right arrow as background -->
-				<li><a href="#">Tags</a>
-					<ol>
-						<li><a href="#">Tiger (48)</a></li>
-						<li><a href="#">Animal (80)</a></li>
-						<li><a href="#">Africa (784)</a></li>
-					</ol>
-				</li>
-				<li><a href="#">Usage</a>
-					<ol>
-						<li><a href="#">Website (20)</a></li>
-						<li><a href="#">News (14)</a></li>
-					</ol>
-				</li>
-				<li><a href="#">Time</a>
-					<ol>
-						<li><a href="#">Yesterday (20)</a></li>
-						<li><a href="#">Last Week (14)</a></li>
-						<li><a href="#">Last Month (23)</a></li>
-					</ol>
-				</li>
-				<li><a href="#">Source</a>
-					<ol>
-						<li><a href="#">Flickr (14)</a></li>
-						<li><a href="#">Youtube (8)</a></li>
-					</ol>
-				</li>
-			</ol>
-		</div>
-	</div>
+		<div class="tx-panel-window">
+			<!-- panel icons -->
+			<div class="tx-tab">
+			
+			</div>
+			
+			<div class="tx-panel-detail">
+				<div>
+					<form action="" method="post">
+						<fieldset>
+							<label>
+								<input type="submit" value="" class="tx-icon tx-icon-search"/>
+								<input type="text" value="search assets" />
+								
+							</label>
+						</fieldset>
+					</form>
+					<!-- selected filter elements -->
+					<div class="tx-filter">
+					
+						<h4><a href="#" class="tx-icon tx-icon-delete">clear all</a><a href="">Clear All</a>Current filter:</h4>
+						<ol>
+							<!-- filter elements, tx-icon is floating right, must be at the first place -->
+							<li><a href="#" class="tx-icon tx-icon-delete">remove</a>Tiger</li>
+							<li><a href="#" class="tx-icon tx-icon-delete">remove</a>Last Week</li>
+						</ol>
+					</div> 
+					
+					<!-- results from filter -->
+					<div class="tx-result">
+					<!-- ul li contruct, only 2 levels supported -->
+						<ol>
+							<!-- main category-->
+							<li><a href="#">Type</a>
+								<ol>
+									<!-- sub category -->
+									<li><a href="#">Images (234)</a></li>
+									<li><a href="#">Videos (20)</a></li>
+									<li><a href="#">Flash (45)</a></li>
+									<li><a href="#">Documents (234)</a></li>
+									<li><a href="#">Images (234)</a></li>
+								</ol>
+							</li>
+							<!-- tx-open, open element icon, arrow down-->
+							<li class="tx-open"><a href="#">Taxonomy</a>
+								<ol>
+									<li><a href="#">Images (234)</a></li>
+									<li><a href="#">Videos (20)</a></li>
+								</ol>
+							</li>
+							<!-- li default shows an right arrow as background -->
+							<li><a href="#">Tags</a>
+								<ol>
+									<li><a href="#">Tiger (48)</a></li>
+									<li><a href="#">Animal (80)</a></li>
+									<li><a href="#">Africa (784)</a></li>
+								</ol>
+							</li>
+							<li><a href="#">Usage</a>
+								<ol>
+									<li><a href="#">Website (20)</a></li>
+									<li><a href="#">News (14)</a></li>
+								</ol>
+							</li>
+							<li><a href="#">Time</a>
+								<ol>
+									<li><a href="#">Yesterday (20)</a></li>
+									<li><a href="#">Last Week (14)</a></li>
+									<li><a href="#">Last Month (23)</a></li>
+								</ol>
+							</li>
+							<li><a href="#">Source</a>
+								<ol>
+									<li><a href="#">Flickr (14)</a></li>
+									<li><a href="#">Youtube (8)</a></li>
+								</ol>
+							</li>
+						</ol>
+					</div>
+					<!-- // tx-result -->
+				</div>
+			</div>
+			<!-- // tx-panel-detail -->
+		</div>	
+		<!-- // tx-panel-window -->
+	</div>	
 	<!-- // panel -->
 
 	<div class="tx-edit tx-show-panel">
@@ -118,55 +128,79 @@
 		<h3>Example code</h3>
 		
 		<pre>
+&lt;!-- panel --&gt;
+&lt;div class="tx-panel"&gt;
 &lt;!-- open-close button, jquery.panel.js, toggles in the tx-edit, tx-tree, tx-list the tx-show-panel and tx-hide-panel classes --&gt;
-&lt;a href="#" class="tx-icon tx-icon-left-inverse tx-panel-open-close"&gt;remove&lt;/a&gt;
-&lt;form action="" method="post"&gt;
-	&lt;fieldset&gt;
-		&lt;label&gt;
-			&lt;input type="text" value="search assets" /&gt;
-			&lt;input type="submit" value="" class="tx-icon tx-icon-search"/&gt;
-		&lt;/label&gt;
-	&lt;/fieldset&gt;
-&lt;/form&gt;
-&lt;!-- selected filter elements --&gt;
-&lt;div class="tx-filter"&gt;
-	&lt;h4&gt;Actual filter:&lt;/h4&gt;
-	&lt;ol&gt;
-		&lt;!-- filter elements, tx-icon is floating right, must be at the first place --&gt;
-		&lt;li&gt;&lt;a href="#" class="tx-icon tx-icon-delete"&gt;remove&lt;/a&gt;Tiger&lt;/li&gt;
-		&lt;li&gt;&lt;a href="#" class="tx-icon tx-icon-delete"&gt;remove&lt;/a&gt;Last Week&lt;/li&gt;
-	&lt;/ol&gt;
-&lt;/div&gt; 
-
-&lt;!-- results from filter --&gt;
-&lt;div class="tx-result"&gt;
-&lt;!-- ul li contruct, only 2 levels supported --&gt;
-	&lt;ol&gt;
-		&lt;!-- main category--&gt;
-		&lt;li&gt;&lt;a href="#"&gt;Type&lt;/a&gt;
-			&lt;ol&gt;
-				&lt;!-- sub category --&gt;
-				&lt;li&gt;&lt;a href="#"&gt;Images (234)&lt;/a&gt;&lt;/li&gt;
-				&lt;li&gt;&lt;a href="#"&gt;Videos (20)&lt;/a&gt;&lt;/li&gt;
-				&lt;li&gt;&lt;a href="#"&gt;Flash (45)&lt;/a&gt;&lt;/li&gt;
-			&lt;/ol&gt;
-		&lt;/li&gt;
-		&lt;!-- tx-open, open element icon, arrow down--&gt;
-		&lt;li class="tx-open"&gt;&lt;a href="#"&gt;Taxonomy&lt;/a&gt;
-			&lt;ol&gt;
-				&lt;li&gt;&lt;a href="#"&gt;Images (234)&lt;/a&gt;&lt;/li&gt;
-				&lt;li&gt;&lt;a href="#"&gt;Videos (20)&lt;/a&gt;&lt;/li&gt;
-			&lt;/ol&gt;
-		&lt;/li&gt;
-		&lt;!-- li default shows an right arrow as background --&gt;
-		&lt;li&gt;&lt;a href="#"&gt;Tags&lt;/a&gt;
-			&lt;ol&gt;
-				&lt;li&gt;&lt;a href="#"&gt;Tiger (48)&lt;/a&gt;&lt;/li&gt;
-				&lt;li&gt;&lt;a href="#"&gt;Animal (80)&lt;/a&gt;&lt;/li&gt;
-			&lt;/ol&gt;
-		&lt;/li&gt;
-	&lt;/ol&gt;
-&lt;/div&gt;
+	&lt;a href="#" class="tx-panel-open-close"&gt;close/open&lt;/a&gt;&lt;h3&gt;Filter&lt;/h3&gt;
+	
+	&lt;div class="tx-panel-window"&gt;
+		&lt;!-- panel icons --&gt;
+		&lt;div class="tx-tab"&gt;
+		
+		&lt;/div&gt;
+		
+		&lt;div class="tx-panel-detail"&gt;
+			&lt;div&gt;
+				&lt;form action="" method="post"&gt;
+					&lt;fieldset&gt;
+						&lt;label&gt;
+							&lt;input type="submit" value="" class="tx-icon tx-icon-search"/&gt;
+							&lt;input type="text" value="search assets" /&gt;
+							
+						&lt;/label&gt;
+					&lt;/fieldset&gt;
+				&lt;/form&gt;
+				&lt;!-- selected filter elements --&gt;
+				&lt;div class="tx-filter"&gt;
+				
+					&lt;h4&gt;&lt;a href="#" class="tx-icon tx-icon-delete"&gt;clear all&lt;/a&gt;&lt;a href=""&gt;Clear All&lt;/a&gt;Current filter:&lt;/h4&gt;
+					&lt;ol&gt;
+						&lt;!-- filter elements, tx-icon is floating right, must be at the first place --&gt;
+						&lt;li&gt;&lt;a href="#" class="tx-icon tx-icon-delete"&gt;remove&lt;/a&gt;Tiger&lt;/li&gt;
+						&lt;li&gt;&lt;a href="#" class="tx-icon tx-icon-delete"&gt;remove&lt;/a&gt;Last Week&lt;/li&gt;
+					&lt;/ol&gt;
+				&lt;/div&gt; 
+				
+				&lt;!-- results from filter --&gt;
+				&lt;div class="tx-result"&gt;
+				&lt;!-- ul li contruct, only 2 levels supported --&gt;
+					&lt;ol&gt;
+						&lt;!-- main category--&gt;
+						&lt;li&gt;&lt;a href="#"&gt;Type&lt;/a&gt;
+							&lt;ol&gt;
+								&lt;!-- sub category --&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Images (234)&lt;/a&gt;&lt;/li&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Videos (20)&lt;/a&gt;&lt;/li&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Flash (45)&lt;/a&gt;&lt;/li&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Documents (234)&lt;/a&gt;&lt;/li&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Images (234)&lt;/a&gt;&lt;/li&gt;
+							&lt;/ol&gt;
+						&lt;/li&gt;
+						&lt;!-- tx-open, open element icon, arrow down--&gt;
+						&lt;li class="tx-open"&gt;&lt;a href="#"&gt;Taxonomy&lt;/a&gt;
+							&lt;ol&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Images (234)&lt;/a&gt;&lt;/li&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Videos (20)&lt;/a&gt;&lt;/li&gt;
+							&lt;/ol&gt;
+						&lt;/li&gt;
+						&lt;!-- li default shows an right arrow as background --&gt;
+						&lt;li&gt;&lt;a href="#"&gt;Tags&lt;/a&gt;
+							&lt;ol&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Tiger (48)&lt;/a&gt;&lt;/li&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Animal (80)&lt;/a&gt;&lt;/li&gt;
+								&lt;li&gt;&lt;a href="#"&gt;Africa (784)&lt;/a&gt;&lt;/li&gt;
+							&lt;/ol&gt;
+						&lt;/li&gt;
+					&lt;/ol&gt;
+				&lt;/div&gt;
+				&lt;!-- // tx-result --&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;!-- // tx-panel-detail --&gt;
+	&lt;/div&gt;	
+	&lt;!-- // tx-panel-window --&gt;
+&lt;/div&gt;	
+&lt;!-- // panel --&gt;
 		</pre>
 		
 	</div>

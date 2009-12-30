@@ -50,13 +50,21 @@
 		</div>
         <div id="tx-content">
             <div class="tx-panel" id="tx-panel">
-                <a href="#" class="tx-icon tx-icon-left-inverse tx-panel-open-close" id="tx-panel-open-close">remove</a>
-                <div id="tx-result" class="tx-result">
-                ${render(./sma:scriptList , "naked")}
-                </div>
-            </div>    
+                <a href="#" class="tx-panel-open-close tx-icon-left-inverse" id="tx-panel-open-close">open/close</a>
+				<h3>Scripts</h3>
+				<div class="tx-panel-window">
+					<div class="tx-tab">  </div>
+					<div class="tx-panel-detail">
+						<div id="tx-result" class="tx-result">
+
+							${render(./sma:scriptList , "naked")}
+
+						</div>
+					</div>
+				</div>
+            </div>
             
-            <div id="tx-list" class="tx-list tx-padding-full tx-show-panel">
+            <div id="tx-list" class="tx-edit tx-show-panel">
             </div>
         </div>
 	</body>
