@@ -939,7 +939,7 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.content.imagemetadata</artifactId>
-				<version>0.1-SNAPSHOT</version>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
