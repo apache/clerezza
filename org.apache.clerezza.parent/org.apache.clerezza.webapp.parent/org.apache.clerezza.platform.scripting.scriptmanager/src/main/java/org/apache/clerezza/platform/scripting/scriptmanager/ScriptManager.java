@@ -19,6 +19,8 @@
 package org.apache.clerezza.platform.scripting.scriptmanager;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -779,13 +781,17 @@ public class ScriptManager {
 		} catch (NoEngineException ex) {
 			throw new WebApplicationException(ex);
 		} catch (ScriptException ex) {
-			StringBuilder sb = new StringBuilder();
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			pw.println("Exception executing script: ");
 			if (ex.getLineNumber() != -1 || ex.getColumnNumber() != -1) {
-				sb.append("at line number" + ex.getLineNumber() + " ");
-				sb.append("at column number" + ex.getColumnNumber() + ": ");
+				pw.print("at line number" + ex.getLineNumber() + " ");
+				pw.print("at column number" + ex.getColumnNumber() + ": ");
 			}
-			sb.append(ex.getMessage() + "\n");
-			return sb.toString();
+			pw.println(ex.getMessage());
+			ex.printStackTrace(pw);
+			pw.flush();
+			return sw.toString();
 		} 
 	}
 
