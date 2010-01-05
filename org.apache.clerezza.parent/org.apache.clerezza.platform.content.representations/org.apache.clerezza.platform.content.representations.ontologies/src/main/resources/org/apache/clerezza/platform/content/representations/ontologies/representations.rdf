@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:skos="http://www.w3.org/2008/05/skos#"
+>
+
+<!-- Ontology -->
+
+<owl:Ontology rdf:about="http://clerezza.org/2009/12/representations#">
+	<owl:versionInfo>Revision: 0.1</owl:versionInfo>
+	<dc:title xml:lang="en">
+		Clerezza Content Representations
+	</dc:title>
+</owl:Ontology>
+
+
+<!-- Properties -->
+
+<rdf:Property rdf:about="http://clerezza.org/2009/12/representations#isIconFor">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	<rdfs:label xml:lang="en">is icon for</rdfs:label>
+	<skos:definition xml:lang="en">Points to a string specifying the resource type for which the subject is an icon.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/12/representations#" />
+	<rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Image" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string" />
+</rdf:Property>
+</rdf:RDF>
+

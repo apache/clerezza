@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.platform.content.representations;
+package org.apache.clerezza.platform.content.representations.core;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -170,6 +170,7 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 		String newUri;
 		int lastIndexOfDot = oldUri.lastIndexOf(".");
 		int lastIndexOfSlash = oldUri.lastIndexOf("/");
+		// 6 characters to keep the extension at the end.
 		if (lastIndexOfSlash < lastIndexOfDot &&
 				lastIndexOfDot >= (oldUri.length() - 6)) {
 			String firstPart = oldUri.substring(0, lastIndexOfDot);
