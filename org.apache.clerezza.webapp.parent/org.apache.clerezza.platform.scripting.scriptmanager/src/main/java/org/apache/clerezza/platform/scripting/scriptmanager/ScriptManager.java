@@ -483,8 +483,7 @@ public class ScriptManager {
 		
 		byte[] scriptFileBytes = formFile.getContent();
 
-		// delete all existing informations
-		deleteScript(scriptUri);
+
 
 		if (scriptFileBytes == null || (scriptFileBytes.length == 0)) {
 			scriptFileBytes = scriptCode.getBytes();
@@ -517,8 +516,7 @@ public class ScriptManager {
 	public Response deleteScript(@FormParam("script") String script) {
 
 		UriRef scriptUri = new UriRef(script);
-		//remove Script
-		deleteScript(scriptUri);
+		
 
 		//remove execution URIs
 		Set<NonLiteral> scriptGeneratedResources =
@@ -526,6 +524,9 @@ public class ScriptManager {
 		for(NonLiteral scriptGenratedResource : scriptGeneratedResources) {
 			deleteExecutionUri(scriptGenratedResource, scriptUri);
 		}
+
+		//remove Script
+		deleteScript(scriptUri);
 
 		logger.info("script {} deleted", scriptUri);
 		
@@ -542,9 +543,15 @@ public class ScriptManager {
 
 			MGraph contentGraph = cgProvider.getContentGraph();
 
+
+
 			contentHandler.put(scriptUri, mediaType, scriptFileBytes);
 
 			GraphNode scriptNode = new GraphNode(scriptUri, contentGraph);
+			scriptNode.deleteProperties(DCTERMS.title);
+			scriptNode.deleteProperties(SCRIPT.scriptLanguage);
+			scriptNode.deleteProperties(SCRIPT.scriptLanguageVersion);
+			scriptNode.deleteProperties(SCRIPT.producedType);
 			scriptNode.addProperty(RDF.type, SCRIPT.Script);
 			scriptNode.addProperty(DCTERMS.title,
 					LiteralFactory.getInstance().
