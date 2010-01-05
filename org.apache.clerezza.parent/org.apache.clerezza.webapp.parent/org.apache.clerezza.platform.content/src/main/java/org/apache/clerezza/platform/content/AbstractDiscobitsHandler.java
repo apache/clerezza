@@ -61,13 +61,14 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 	@Override
 	public void put(UriRef infoDiscoBitUri, MediaType mediaType,
 			byte[] data) {
-		remove(infoDiscoBitUri);
 		MGraph mGraph = getMGraph();
 		GraphNode infoDiscoBitNode = new GraphNode(infoDiscoBitUri, mGraph);
 		infoDiscoBitNode.addProperty(RDF.type, DISCOBITS.InfoDiscoBit);
 		TypedLiteral dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
+		infoDiscoBitNode.deleteProperties(DISCOBITS.infoBit);
 		infoDiscoBitNode.addProperty(DISCOBITS.infoBit, dataLiteral);
 		TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
+		infoDiscoBitNode.deleteProperties(DISCOBITS.mediaType);
 		infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
 		for(MetaDataGenerator generator : getMetaDataGenerators()) {
 			try {
