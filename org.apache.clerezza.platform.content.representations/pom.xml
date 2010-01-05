@@ -1,45 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
+		<artifactId>org.apache.clerezza.parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.platform.content.representations</artifactId>
+	<packaging>pom</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<name>Clerezza - Platform Content Representations</name>
-	<description>Provides a Meta Data Generator that generates alternative
-		representations for data of	various meta types</description>
-	<dependencies>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils.imageprocessing</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
-	</dependencies>
+	<name>Clerezza - Platform Representations</name>
+	<description>Provides services for creating and retrieving alternative representations of content.</description>
+	
+	<modules>
+		<module>org.apache.clerezza.platform.content.representations.ontologies</module>
+		<module>org.apache.clerezza.platform.content.representations.core</module>
+	</modules>
 </project>
