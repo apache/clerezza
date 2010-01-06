@@ -70,7 +70,7 @@ public class Style {
 	 * The activate method is called when SCR activates the component
 	 * configuration.
 	 *
-	 * @param componentContext
+	 * @param context
 	 */
 	protected void activate(ComponentContext context) {
 		Bundle bundle = context.getBundleContext().getBundle();
