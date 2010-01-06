@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.apache.clerezza.rdf.core.access.TcProvider;
@@ -33,7 +35,8 @@ import org.apache.clerezza.rdf.core.test.TcProviderTest;
  */
 public class TdbTcProviderTest extends TcProviderTest {
 
-	File tempFile;
+	private File tempFile;
+	private TdbTcProvider lastInstance;
 
 	@Before
 	public void setupDirectory() throws IOException {
@@ -50,6 +53,10 @@ public class TdbTcProviderTest extends TcProviderTest {
 
 	@Override
 	protected TcProvider getInstance() {
-		return new TdbTcProvider(tempFile);
+		if (lastInstance != null) {
+			lastInstance.deactivate(null);
+		}
+		lastInstance =  new TdbTcProvider(tempFile);
+		return lastInstance;
 	}
 }
