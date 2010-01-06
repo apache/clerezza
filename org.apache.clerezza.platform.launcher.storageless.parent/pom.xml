@@ -193,7 +193,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content.representations</artifactId>
+			<artifactId>org.apache.clerezza.platform.content.representations.core</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.content.representations.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
