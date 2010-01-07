@@ -20,8 +20,10 @@ package org.apache.clerezza.web.fileserver;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -33,11 +35,14 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.service.component.ComponentContext;
+import org.wymiwyg.commons.util.dirbrowser.FilePathNode;
 import org.wymiwyg.commons.util.dirbrowser.MultiPathNode;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
  * Serves file located under "META-INF/static-web" in bundles at the path "/static".
+ * As well as from the file path specified by the framework property
+ * <code>org.apache.clerezza.web.fileserver.static.extra</code>
  *
  * @author rbn, mir
  */
@@ -49,6 +54,8 @@ public class BundleFileServer implements BundleListener {
 	private volatile FileServer fileServer;
 	private Map<Bundle, PathNode> bundleNodeMap =
 			Collections.synchronizedMap(new HashMap<Bundle, PathNode>());
+	//an option path for addditional static files
+	private String extraPath;
 
 	protected void activate(ComponentContext context) throws IOException,
 			URISyntaxException {
@@ -56,8 +63,9 @@ public class BundleFileServer implements BundleListener {
 		for (Bundle bundle : context.getBundleContext().getBundles()) {
 			registerStaticFiles(bundle);
 		}
+		context.getBundleContext().addBundleListener(this);
+		extraPath = context.getBundleContext().getProperty("org.apache.clerezza.web.fileserver.static.extra");
 		updateFileServer();
-		context.getBundleContext().addBundleListener(this);		
 	}
 
 	@Override
@@ -91,8 +99,12 @@ public class BundleFileServer implements BundleListener {
 	}
 
 	private void updateFileServer() {
-		MultiPathNode multiPathNode = new MultiPathNode(bundleNodeMap.values().
-				toArray(new PathNode[bundleNodeMap.size()]));
+		final Collection<PathNode> nodes = new HashSet<PathNode>(bundleNodeMap.values());
+		if (extraPath != null) {
+			nodes.add(new FilePathNode(extraPath));
+		}
+		MultiPathNode multiPathNode = new MultiPathNode(nodes.
+				toArray(new PathNode[nodes.size()]));
 		fileServer = new FileServer(multiPathNode);
 	}
 }
