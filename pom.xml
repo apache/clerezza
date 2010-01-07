@@ -40,7 +40,6 @@
 		<module>org.apache.clerezza.maven-pladoc-plugin</module>
 		<module>org.apache.clerezza.platform.config</module>
 		<module>org.apache.clerezza.platform.content.imagemetadata</module>
-		<module>org.apache.clerezza.platform.content.representations</module>
 		<module>org.apache.clerezza.platform.documentation</module>
 		<module>org.apache.clerezza.platform.graphprovider.content</module>
 		<module>org.apache.clerezza.platform.language</module>
