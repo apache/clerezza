@@ -1,86 +1,21 @@
-<!--
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
--->
-<html id="tx-html" lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-    <head>
-        <title>Script Manager</title>
-        
-        <link href="/style/style.css" media="screen" rel="stylesheet" type="text/css" />
-		${ns:dhb=http://clerezza.org/2009/06/dashboard#}
-		${ns:sma=http://clerezza.org/2009/07/scriptmanager#}
-		<script src="/jquery/jquery-1.3.2.min.js" type="text/javascript"></script>	
-		<script src="/jquery/jquery.menu.js" type="text/javascript"></script>
-        
-        <script src="/jquery/jquery.panel.js" type="text/javascript"></script>
-        
-		<script src="js/scriptmanager.js" type="text/javascript"></script>
-		<script type="text/javascript">
-			$(document).ready(function () {
-			
-				$('.link').bind("click",function() {
-						showInformation($(this).attr('id'));
-				});
-			${if sma:script}
-				$('.tx-button tx-button-remove').bind("click",function() {
-						deleteScript();
-				});
-				$('.tx-button tx-button-create').bind("click",function() {
-						updateScript();
-				});
-				$('.tx-button tx-button-modify').bind("click",function() {
-						executeScript();
-				});
-			${/if}	
+def sma(s: Any) = new UriRef("http://clerezza.org/2009/07/scriptmanager#"+s)
+
+resultDocModifier.addScriptReference("/scripts/ajax-options.js");
+resultDocModifier.addScriptReference("js/scriptmanager.js");
+resultDocModifier.addScriptReference("js/scriptmanager-overview.js");
+resultDocModifier.setTitle("Script Manager");
+resultDocModifier.addNodes2Elem("tx-module", <h1>Script Manager</h1>);
+
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Scripts</a></li>);
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class=""><a href="script-install">Install Scripts</a></li>);
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class=""><a href="execution-uri-overview">Execution URIs</a></li>);
+
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="deleteButton" class="tx-button tx-button-remove" href="#">Delete</a></li>);
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="editButton" class="tx-button tx-button-create" href="#">Save</a></li>);
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton" class="tx-button tx-button-modify" href="#">Execute</a></li>);
 	
-			});		
-    	</script>
-    </head>
-    <body id="tx-body">
-        <div id="tx-header">
-			<div id="tx-system">
-                ${render(dhb:includeDashBoardMenu, "naked")}
-			</div>
-			<div id="tx-module">
-                <h1>Script Manager</h1>
-			</div>
-
-			<div id="tx-module-tabs" class="clearfix">
-				<ol id="tx-tabs">
-					<li class="tx-active"><a href="#">Scripts</a></li>
-					<li><a href="script-install">Install Script</a></li>
-					<li><a href="execution-uri-overview">Execution URIs</a></li>
-				</ol>
-
-				<div id="tx-contextual-buttons">
-					${if sma:script}
-					<ol>
-						<li><a href="#" class="tx-button tx-button-remove">Delete</a></li>
-						<li><a href="#" class="tx-button tx-button-create">Save</a></li>
-						<li><a href="#" class="tx-button tx-button-modify">Execute</a></li>
-					</ol>
-					${/if}
-				</div>
-			</div>
-			<div id="tx-module-options"></div>
-		</div>
         <div id="tx-content">
+
             <div class="tx-panel" id="tx-panel">
                 <a href="#" class="tx-panel-open-close tx-icon-left-inverse" id="tx-panel-open-close">open/close</a>
 				<h3>Scripts</h3>
@@ -89,18 +24,18 @@
 					<div class="tx-panel-detail">
 						<div id="tx-result" class="tx-result">
 
-							${render(sma:scriptList , "naked")}
+							{render(res/sma("scriptList") , "naked")}
 
 						</div>
 					</div>
 				</div>
             </div>
             <div class="tx-edit tx-show-panel" id="tx-list">
-                ${if sma:script}
-                    ${render(sma:script, "naked")}
-                ${/if}
+                {if (!((res/sma("script")*).equals(""))) {
+                    render(res/sma("script"), "naked")
+				} else {
+					<div></div>
+				}}
             </div>
         </div>
-    </body>
-</html>
 
