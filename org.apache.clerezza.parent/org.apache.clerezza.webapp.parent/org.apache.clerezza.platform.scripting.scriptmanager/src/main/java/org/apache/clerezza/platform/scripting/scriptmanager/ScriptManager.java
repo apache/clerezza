@@ -52,7 +52,8 @@ import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.jaxrs.utils.form.FormFile;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
 import org.apache.clerezza.platform.content.DiscobitsHandler;
-import org.apache.clerezza.platform.dashboard.DashBoard;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.scripting.NoEngineException;
 import org.apache.clerezza.platform.scripting.ScriptExecution;
@@ -60,6 +61,7 @@ import org.apache.clerezza.platform.scripting.ScriptLanguageDescription;
 import org.apache.clerezza.platform.scripting.scriptmanager.ontology.SCRIPTMANAGER;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -70,6 +72,7 @@ import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.SCRIPT;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -77,6 +80,11 @@ import org.apache.clerezza.rdf.utils.RdfList;
 import org.apache.clerezza.rdf.utils.UnionMGraph;
 import org.apache.clerezza.web.fileserver.BundlePathNode;
 import org.apache.clerezza.web.fileserver.FileServer;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Services;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
@@ -87,46 +95,32 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  *
  * Also enables creating and deleting of execution URIs for scripts.
  *
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
- * @scr.property name="org.apache.clerezza.platform.dashboard.visible" type="Boolean"
- *               value="true"
- * @scr.property name="dashboardLabel" type="String" value="Script Manager"
- *               description="Specifies the label of the button."
- * @scr.property name="dashBoardMenuOrder" type="Integer" value="1" 
- *				 description="Specifies the order"
- * @scr.property name="dashBoardGroupLabel" type="String" value="Developer-Modules"
- *               description="Specifies the the group label"
- * @scr.reference name="cgProvider" cardinality="1..1" policy="static"
- *                interface="org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider"
- * @scr.reference name="contentHandler" cardinality="1..1" policy="static"
- *                interface="org.apache.clerezza.platform.content.DiscobitsHandler"
- *
  * @author daniel, marc
  */
+@Component
+@Services({
+	@Service(value=Object.class),
+	@Service(value=GlobalMenuItemsProvider.class)
+})
+@Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/script-manager")
-public class ScriptManager {
+public class ScriptManager implements GlobalMenuItemsProvider{
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	/**
-	 * @scr.reference
-	 */
-	private DashBoard dashBoard;
-
-	/**
-	 * @scr.reference
-	 */
+	@Reference
 	private RenderletManager renderletManager;
+
+	@Reference
 	private ContentGraphProvider cgProvider;
-	private FileServer fileServer;
+
+	@Reference
 	private DiscobitsHandler contentHandler;
 
-	/**
-	 * @scr.reference
-	 */
+	@Reference
 	private ScriptExecution scriptExecution;
+
+	private FileServer fileServer;
 	
 	/**
 	 * Called when bundle is activated.
@@ -149,25 +143,25 @@ public class ScriptManager {
 
 		fileServer = new FileServer(pathNode);
 		URL renderlet = getClass().getResource("scriptmanager-script-overview.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(renderlet.toURI().toString()),
 				SCRIPTMANAGER.ScriptManagerOverviewPage,
-				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderlet = getClass().getResource("scriptmanager-script-list.xhtml");
 		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
 				new UriRef(renderlet.toURI().toString()),
 				SCRIPTMANAGER.ScriptList,
 				"naked" , MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderlet = getClass().getResource("scriptmanager-script-install.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(renderlet.toURI().toString()),
 				SCRIPTMANAGER.ScriptManagerInstallPage,
-				null , MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				"naked" , MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderlet = getClass().getResource("scriptmanager-execution-uri-overview.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(renderlet.toURI().toString()),
 				SCRIPTMANAGER.ExecutionUriOverviewPage,
-				null , MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				"naked" , MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderlet = getClass().getResource("scriptmanager-execution-uri-list.xhtml");
 		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
 				new UriRef(renderlet.toURI().toString()),
@@ -219,7 +213,9 @@ public class ScriptManager {
 					SCRIPTMANAGER.script,
 					scriptNode.getNode()));
 		}
-		
+		resultGraph.add(new TripleImpl(resultResource,
+				RDF.type,
+				PLATFORM.HeadedPage));
 		resultGraph.add(new TripleImpl(resultResource, 
 				RDF.type,
 				SCRIPTMANAGER.ScriptManagerOverviewPage));
@@ -234,8 +230,7 @@ public class ScriptManager {
 				contentGraph);
 		}
 		
-		return dashBoard.createGraphNodeWithDashBoardMenu(
-				resultResource, unionGraph);
+		return new GraphNode(resultResource, unionGraph);
 	}
 
 	/**
@@ -329,6 +324,8 @@ public class ScriptManager {
 		resultGraph.add(new TripleImpl(resultResource, 
 				RDF.type,
 				SCRIPTMANAGER.ScriptManagerInstallPage));
+		resultGraph.add(new TripleImpl(resultResource,
+				RDF.type, PLATFORM.HeadedPage));
 		
 		GraphNode languageList = getScriptLanguageList(resultResource);
 		
@@ -337,8 +334,7 @@ public class ScriptManager {
 		UnionMGraph unionGraph = new UnionMGraph(resultGraph,
 				scriptList.getGraph(), languageList.getGraph(), contentGraph);
 		
-		return dashBoard.createGraphNodeWithDashBoardMenu(
-				resultResource, unionGraph);
+		return new GraphNode(resultResource, unionGraph);
 	}
 
 	private GraphNode getScriptLanguageList(NonLiteral resource){
@@ -653,6 +649,9 @@ public class ScriptManager {
 		MGraph contentGraph = cgProvider.getContentGraph();
 		BNode resultResource = new BNode();
 		MGraph resultGraph = new SimpleMGraph();
+		resultGraph.add(new TripleImpl(resultResource,
+				RDF.type,
+				PLATFORM.HeadedPage));
 		resultGraph.add(new TripleImpl(resultResource, 
 				RDF.type,
 				SCRIPTMANAGER.ExecutionUriOverviewPage));
@@ -660,8 +659,7 @@ public class ScriptManager {
 		
 		UnionMGraph unionGraph = new UnionMGraph(resultGraph,
 				scriptList.getGraph(), contentGraph);
-		return dashBoard.createGraphNodeWithDashBoardMenu(
-				resultResource, unionGraph);
+		return new GraphNode(resultResource, unionGraph);
 	}
 
 	/**
@@ -815,38 +813,12 @@ public class ScriptManager {
 		return node;
 	}
 
-	/**
-	 * Binds the content graph provider.
-	 *
-	 * @param cgProvider  the {@link ContentGraphProvider}.
-	 */
-	protected void bindCgProvider(ContentGraphProvider cgProvider) {
-		this.cgProvider = cgProvider;
-	}
-	/**
-	 * Unbinds the content graph provider.
-	 *
-	 * @param cgProvider  the {@link ContentGraphProvider}.
-	 */
-	protected void unbindCgProvider(ContentGraphProvider cgProvider) {
-		this.cgProvider = null;
-	}
+	@Override
+	public Set<GlobalMenuItem> getMenuItems() {
+		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
 
-	/**
-	 * Binds the discobits handler.
-	 *
-	 * @param contentHandler  the {@link DiscobitsHandler}.
-	 */
-	protected void bindContentHandler(DiscobitsHandler contentHandler) {
-		this.contentHandler = contentHandler;
-	}
-
-	/**
-	 * Unbinds the discobits handler.
-	 *
-	 * @param contentHandler  the {@link DiscobitsHandler}.
-	 */
-	protected void unbindContentHandler(DiscobitsHandler contentHandler) {
-		this.contentHandler = null;
+		items.add(new GlobalMenuItem("/admin/script-manager/", "SCM", "Script Manager", 1,
+				"Dev-Modules"));
+		return items;
 	}
 }

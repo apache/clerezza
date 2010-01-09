@@ -4,15 +4,16 @@ function showInformation(script){
 	setActualScript(script);
 	var url = document.location.href;
 	if(url.indexOf("execution-uri-overview") != -1){
+		statusMessage.add("load-execution-uri", "loading execution uri");
 		$("#tx-list").load("./get-execution-uri?script="+script+"&mode=naked", function(){
+			statusMessage.remove("load-execution-uri");
 			showExecutionUriTabActions();
 		});
 	} else if(url.indexOf("script-overview") != -1){
-		$("#tx-list").load("./get-script?script="+script+"&mode=naked");
-		$('#tx-contextual-buttons').empty();
-		$('#tx-contextual-buttons').append('<ol><li><a href="javascript:deleteScript();" class="tx-button tx-button-remove">Delete</a></li>'+
-			'<li><a href="javascript:updateScript();" class="tx-button tx-button-create">Save</a></li>'+
-			'<li><a href="javascript:executeScript();" class="tx-button tx-button-modify">Execute</a></li></ol>');
+		statusMessage.add("get-scripts", "loading scripts");
+		$("#tx-list").load("./get-script?script="+script+"&mode=naked", function() {
+			statusMessage.remove("get-scripts");
+		});
 	}
 }
 
@@ -40,21 +41,35 @@ function setActualScript(script){
 	ACTUALSCRIPT = script;
 }
 
+function getQueryParam(name) {
+
+	var query = window.location.search.substring(1);
+	var parms = query.split('&');
+	for (var i=0; i<parms.length; i++) {
+		var pos = parms[i].indexOf('=');
+		if (pos > 0) {
+			var key = parms[i].substring(0,pos);
+			if(key == name) {
+				setActualScript(parms[i].substring(pos+1));
+				break;
+			}
+		}
+	}
+}
+
 function updateScript(){
 	$("#updateform").submit();
 }
 
 function deleteScript(){
-	$.ajax({
-		type: "POST",
-		url: "./delete",
-		data: "script="+$('#scriptUri').val(),
-		success: function(msg){
-			$("#tx-list").empty();
-			$('#tx-contextual-buttons').empty();
-			$("#tx-result").load("./script-list?mode=naked");
-		}
-	});
+	var options = new AjaxOptions("delete-script", "deleting script", function(obj) {
+					$("#tx-list").empty();
+					$("#tx-result").load("./script-list?mode=naked");
+				});
+	options.type = "POST"
+	options.url = "delete";
+	options.data = "script=" + encodeURIComponent(ACTUALSCRIPT);
+	$.ajax(options);
 }
 
 function installScript(){
@@ -62,17 +77,15 @@ function installScript(){
 }
 
 function executeScript(){
-	$.ajax({
-		type: "GET",
-		url: "./execute",
-		data: "script="+$('#scriptUri').val(),
-		success: function(e) {
-			$('#scriptConsole').empty();
-			$('#scriptConsole').append('<h4>Script Output</h4><pre>'
-				+e+'</pre>');
-			$('#scriptConsole').slideDown('slow');
-		}
-	});
+	var options = new AjaxOptions("execute-script", "executing script", function(obj) {
+					$('#scriptConsole').empty();
+					$('#scriptConsole').append('<h4>Script Output</h4><pre>'
+						+obj+'</pre>');
+					$('#scriptConsole').slideDown('slow');
+				});
+	options.url = "execute";
+	options.data = "script=" + encodeURIComponent(ACTUALSCRIPT);
+	$.ajax(options);
 }
 
 function showAddExecutionUriForm(){
@@ -86,33 +99,31 @@ function showAddExecutionUriForm(){
 function deleteExecutionUris(){
 	$(':checked').each(
 		function() {
-			$.ajax({
-				type: "POST",
-				url: "./delete-executionUri",
-				data: "executionUri="+$(this).val()+"&scriptUri="+ACTUALSCRIPT,
-				success: function(e) {
-					$("#tx-list").load("./get-execution-uri?script="+ACTUALSCRIPT+"&mode=naked", function(){
+			var options = new AjaxOptions("delete-execution-uri", "deleting execution uri", function(obj) {
+						$("#tx-list").load("./get-execution-uri?script="+ACTUALSCRIPT+"&mode=naked", function(){
 						showExecutionUriTabActions();
 					});
-				}
-			});
+						});
+			options.type = "POST"
+			options.url = "delete-executionUri";
+			options.data = "executionUri="+$(this).val()+"&scriptUri="+encodeURIComponent(ACTUALSCRIPT);
+			$.ajax(options);
 		}
 	);
 }
 
 function addExecutionUri(){
 	var serialized = $('#addExecutionUri').serialize();
-	$.ajax({
-		type: "POST",
-		url: "./add-execution-uri",
-		data: serialized,
-		success: function(msg) {
-			$('#addExecutionUriForm').slideUp('slow');
-			$("#tx-list").load("./get-execution-uri?script="+$('#scriptUri').val()+"&mode=naked", function(){
-				showExecutionUriTabActions();
+	var options = new AjaxOptions("add-execution-uri", "saving execution uri", function(obj) {
+				$('#addExecutionUriForm').slideUp('slow');
+				$("#tx-list").load("./get-execution-uri?script="+$('#scriptUri').val()+"&mode=naked", function(){
+					showExecutionUriTabActions();
+				});
 			});
-		}
-	});
+	options.type = "POST"
+	options.url = "add-execution-uri";
+	options.data = serialized;
+	$.ajax(options);
 }
 
 function fileChoiceSelected() {
