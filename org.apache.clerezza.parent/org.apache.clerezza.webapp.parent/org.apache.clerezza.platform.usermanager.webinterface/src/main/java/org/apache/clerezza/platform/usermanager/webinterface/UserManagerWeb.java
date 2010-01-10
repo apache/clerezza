@@ -25,8 +25,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -46,6 +48,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
@@ -59,9 +62,10 @@ import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
 import org.apache.clerezza.platform.config.SystemConfig;
-import org.apache.clerezza.platform.dashboard.DashBoard;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
 import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.platform.usermanager.UserComparator;
@@ -81,6 +85,7 @@ import org.apache.clerezza.rdf.core.sparql.ParseException;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.LIST;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.RdfList;
@@ -89,20 +94,20 @@ import org.apache.clerezza.utils.customproperty.CustomProperty;
 import org.apache.clerezza.utils.customproperty.ontology.CUSTOMPROPERTY;
 import org.apache.clerezza.web.fileserver.BundlePathNode;
 import org.apache.clerezza.web.fileserver.FileServer;
+import org.apache.felix.scr.annotations.Services;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
- * @author koersgen, hasan
+ * @author koersgen, hasan, tio
  */
 @Component(metatype=true)
-@Service(value=Object.class)
-@Properties({@Property(name="javax.ws.rs", boolValue=true),
-			@Property(name="org.apache.clerezza.platform.dashboard.visible", boolValue=true)})
+@Services({
+	@Service(value=Object.class),
+	@Service(value=GlobalMenuItemsProvider.class)
+})
+@Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/user-manager")
-public class UserManagerWeb {
-	
-	@Reference
-	private DashBoard dashBoard;
+public class UserManagerWeb implements GlobalMenuItemsProvider {
 	
 	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
 	private MGraph systemGraph;
@@ -119,24 +124,6 @@ public class UserManagerWeb {
 	@Reference
 	private CustomProperty customPropertyManager;
 
-	/**
-	 * Service property           
-	 */
-	@Property(value="User Manager", description="Specifies the label of the button.")
-	private static final String DASHBOARD_LABEL = "dashboardLabel";
-
-	/**
-	 * Service property
-	 */
-	@Property(intValue=3, description="Specifies the order")
-	private static final String DASHBOARD_MENU_ORDER = "dashBoardMenuOrder";
-
-	/**
-	 * Service property
-	 */
-	@Property(value="Main-Modules", description="Specifies the the group label")
-	private static final String DASHBOARD_GROUP_LABEL = "dashBoardGroupLabel";
-
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private FileServer fileServer;
 
@@ -150,49 +137,49 @@ public class UserManagerWeb {
 
 		fileServer = new FileServer(pathNode);
 
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"user-overview-template.xhtml").toURI().toString()),
-				USERMANAGER.UserOverviewPage, null,
+				USERMANAGER.UserOverviewPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource("add-user-template.xhtml")
-						.toURI().toString()), USERMANAGER.AddUserPage, null,
+						.toURI().toString()), USERMANAGER.AddUserPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"user-permission-template.xhtml").toURI().toString()),
-				USERMANAGER.UserPermissionPage, null,
+				USERMANAGER.UserPermissionPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource("update-user-template.xhtml")
-						.toURI().toString()), USERMANAGER.UpdateUserPage, null,
+						.toURI().toString()), USERMANAGER.UpdateUserPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"custom-property-template.xhtml").toURI().toString()),
-				USERMANAGER.CustomFieldPage, null,
+				USERMANAGER.CustomFieldPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"role-overview-template.xhtml").toURI().toString()),
-				USERMANAGER.RoleOverviewPage, null,
+				USERMANAGER.RoleOverviewPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"role-permission-template.xhtml").toURI().toString()),
-				USERMANAGER.RolePermissionPage, null,
+				USERMANAGER.RolePermissionPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"add-single-property-template.xhtml").toURI()
 						.toString()), USERMANAGER.SingleCustomPropertyPage,
-				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"add-multiple-property-template.xhtml").toURI()
 						.toString()), USERMANAGER.MultipleCustomPropertyPage,
-				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager
 				.registerRenderlet(SeedsnipeRenderlet.class.getName(),
 						new UriRef(getClass().getResource(
@@ -261,6 +248,7 @@ public class UserManagerWeb {
 		GraphNode result = new GraphNode(userOverviewPage, unionGraph);
 
 		result.addProperty(RDF.type, USERMANAGER.UserOverviewPage);
+		result.addProperty(RDF.type, PLATFORM.HeadedPage);
 		result.addProperty(LIST.predecessor, new UriRef(uriInfo
 				.getAbsolutePath().toString()
 				+ "?from=" + prevFrom + "&to=" + from));
@@ -273,7 +261,8 @@ public class UserManagerWeb {
 				.createTypedLiteral(to));
 		result.addProperty(LIST.length, LiteralFactory.getInstance()
 				.createTypedLiteral(sortedSet.size()));
-		return dashBoard.createGraphNodeWithDashBoardMenu(userOverviewPage, unionGraph);
+		
+		return result;
 	}
 
 	@GET
@@ -287,6 +276,8 @@ public class UserManagerWeb {
 
 		resultGraph.add(new TripleImpl(addUserPage, RDF.type,
 				USERMANAGER.AddUserPage));
+		resultGraph.add(new TripleImpl(addUserPage, RDF.type,
+				PLATFORM.HeadedPage));
 
 		Iterator<NonLiteral> roles = userManager.getRoles();
 		while (roles.hasNext()) {
@@ -302,8 +293,9 @@ public class UserManagerWeb {
 							CUSTOMPROPERTY.customfield, formFields.next()
 									.getSubject()));
 		}
-		
-		return dashBoard.createGraphNodeWithDashBoardMenu(addUserPage, new UnionMGraph(
+
+
+		return new GraphNode(addUserPage, new UnionMGraph(
 				resultGraph, systemGraph, contentGraph));
 	}
 
@@ -507,7 +499,6 @@ public class UserManagerWeb {
 	 * show page to manage user permissionEntries
 	 */
 	@GET
-	@Produces("text/html")
 	@Path("manage-user-permissions")
 	public GraphNode manageUserPermissions(
 			@QueryParam(value = "userName") String userName,
@@ -517,6 +508,8 @@ public class UserManagerWeb {
 
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral userPermissionPage = new BNode();
+		resultGraph.add(new TripleImpl(userPermissionPage, RDF.type,
+				PLATFORM.HeadedPage));
 		resultGraph.add(new TripleImpl(userPermissionPage, RDF.type,
 				USERMANAGER.UserPermissionPage));
 
@@ -592,7 +585,8 @@ public class UserManagerWeb {
 			NonLiteral updateUserPage = new BNode();
 			resultGraph.add(new TripleImpl(updateUserPage, RDF.type,
 					USERMANAGER.UpdateUserPage));
-
+			resultGraph.add(new TripleImpl(updateUserPage, RDF.type,
+					PLATFORM.HeadedPage));
 			Iterator<NonLiteral> roles = userManager.getRoles();
 			while (roles.hasNext()) {
 				resultGraph.add(new TripleImpl(updateUserPage,
@@ -629,7 +623,7 @@ public class UserManagerWeb {
 							CUSTOMPROPERTY.actualvalues, value));
 				}
 			}
-			return dashBoard.createGraphNodeWithDashBoardMenu(updateUserPage,
+			return new GraphNode(updateUserPage,
 					new UnionMGraph(resultGraph, systemGraph, contentGraph));
 		}
 		throw new WebApplicationException(Response.status(Status.NOT_FOUND)
@@ -679,6 +673,8 @@ public class UserManagerWeb {
 		NonLiteral roleOverviewPage = new BNode();
 		resultGraph.add(new TripleImpl(roleOverviewPage, RDF.type,
 				USERMANAGER.RoleOverviewPage));
+		resultGraph.add(new TripleImpl(roleOverviewPage, RDF.type,
+				PLATFORM.HeadedPage));
 
 		Iterator<NonLiteral> roles = userManager.getRoles();
 
@@ -687,7 +683,7 @@ public class UserManagerWeb {
 					roles.next()));
 		}
 		
-		return dashBoard.createGraphNodeWithDashBoardMenu(roleOverviewPage, 
+		return new GraphNode(roleOverviewPage,
 				new UnionMGraph(resultGraph, systemGraph));
 	}
 
@@ -758,6 +754,8 @@ public class UserManagerWeb {
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral rolePermissionPage = new BNode();
 		resultGraph.add(new TripleImpl(rolePermissionPage, RDF.type,
+				PLATFORM.HeadedPage));
+		resultGraph.add(new TripleImpl(rolePermissionPage, RDF.type,
 				USERMANAGER.RolePermissionPage));
 
 		NonLiteral role = userManager.getRoleByTitle(title);
@@ -825,9 +823,12 @@ public class UserManagerWeb {
 		NonLiteral node = new BNode();
 		resultGraph.add(new TripleImpl(node, RDF.type,
 				USERMANAGER.SingleCustomPropertyPage));
+		resultGraph.add(new TripleImpl(node, RDF.type,
+				PLATFORM.HeadedPage));
+
 		resultGraph.add(new TripleImpl(node, USERMANAGER.role,
 				new PlainLiteralImpl(role)));
-		return dashBoard.createGraphNodeWithDashBoardMenu(node, resultGraph);
+		return new GraphNode(node, resultGraph);
 	}
 
 	@GET
@@ -838,9 +839,12 @@ public class UserManagerWeb {
 		NonLiteral node = new BNode();
 		resultGraph.add(new TripleImpl(node, RDF.type,
 				USERMANAGER.MultipleCustomPropertyPage));
+		resultGraph.add(new TripleImpl(node, RDF.type,
+				PLATFORM.HeadedPage));
+
 		resultGraph.add(new TripleImpl(node, USERMANAGER.role,
 				new PlainLiteralImpl(role)));
-		return dashBoard.createGraphNodeWithDashBoardMenu(node, resultGraph);
+		return new GraphNode(node, resultGraph);
 	}
 
 	@POST
@@ -902,6 +906,8 @@ public class UserManagerWeb {
 				USERMANAGER.role, new PlainLiteralImpl(role)));
 		resultGraph.add(new TripleImpl(propertyManagementPage, RDF.type,
 				USERMANAGER.CustomFieldPage));
+		resultGraph.add(new TripleImpl(propertyManagementPage, RDF.type,
+				PLATFORM.HeadedPage));
 		ArrayList<NonLiteral> customfields = customPropertyManager
 				.getCustomfieldsOfCollection(customPropertyManager
 						.getCustomPropertyCollection(PERMISSION.Role, role));
@@ -911,7 +917,7 @@ public class UserManagerWeb {
 			resultGraph.add(new TripleImpl(propertyManagementPage,
 					CUSTOMPROPERTY.customfield, customfield));
 		}
-		return dashBoard.createGraphNodeWithDashBoardMenu(propertyManagementPage, new UnionMGraph(
+		return new GraphNode(propertyManagementPage, new UnionMGraph(
 				resultGraph, contentGraph));
 	}
 
@@ -924,12 +930,16 @@ public class UserManagerWeb {
 	@Path("{path:.+}")
 	public PathNode getStaticFile(@PathParam("path") String path) {
 		final PathNode node = fileServer.getNode(path);
-		logger.info("Serving static {}", node);
-		try {
-			logger.info("Inputstream {}", node.getInputStream());
-		} catch (IOException ex) {
-			logger.error("Reading static file {}", ex);
-		}
 		return node;
+
+	}
+
+	@Override
+	public Set<GlobalMenuItem> getMenuItems() {
+		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+
+		items.add(new GlobalMenuItem("/admin/user-manager/", "UMR", "User Manager", 2,
+				"Main-Modules"));
+		return items;
 	}
 }

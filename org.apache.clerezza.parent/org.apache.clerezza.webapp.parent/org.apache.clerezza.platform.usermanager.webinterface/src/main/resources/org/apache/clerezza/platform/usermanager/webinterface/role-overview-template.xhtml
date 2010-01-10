@@ -1,82 +1,23 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" id="tx-html">
-	<head>
-    	<title>User Management</title>
-		${ns:permission=http://clerezza.org/2008/10/permission#}
-		${ns:umr=http://clerezza.org/2009/05/usermanager#}
-		${ns:dc=http://purl.org/dc/elements/1.1/}
-		${ns:dhb=http://clerezza.org/2009/06/dashboard#}
-		 
-		<link href="/style/style.css" media="screen" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" type="text/css" href="js/fancybox/jquery.fancybox.css" media="screen" />
-        
-		<script src="/jquery/jquery-1.3.2.min.js" type="text/javascript"></script>
-		<script src="/jquery/jquery.menu.js" type="text/javascript"></script>
-		<script type="text/javascript" src="js/fancybox/jquery.fancybox-1.2.1.pack.js"></script>
-    	<script type="text/javascript" src="js/customfield.js"></script>
-    
-    	<script type="text/javascript">		
-			$(document).ready(function() {
-				$("a#include").fancybox();
-				$("#deleteButton").hide();
-				$("#deleteButton").bind("click", function() {
-					$(":checkbox:checked").each(function() {
-						var title = $(this).val();
-						$.ajax({
-						type: "POST",
-						url: "./delete-role",
-						data: "roleTitle="+title,
-						success: function(msg) {		
-							$("#" + title).remove();						
-						}
-					});
-						
-					});
-				});
-				$(":checkbox").bind("click", function() {
-					buttonVisibilty();
-				});
-			});
-			function buttonVisibilty() {
-				if ($(":checkbox:checked").length >= 1) {
-					$("#deleteButton").show();
+def permission(s: Any) = new UriRef("http://clerezza.org/2008/10/permission#" + s)
+def umr(s: Any) = new UriRef("http://clerezza.org/2009/05/usermanager#" + s)
+def dc(s: Any) = new UriRef("http://purl.org/dc/elements/1.1/" + s)
 
-				} else if ($(":checkbox:checked").length == 0) {
-					$("#deleteButton").hide();
-				}
-			}
-				
-		
-        </script>
-    
-	</head>
-	<body id="tx-body">
-        <div id="tx-header">
-			<div id="tx-system">
-				${render(dhb:includeDashBoardMenu, "naked")}
-			</div>
-			<div id="tx-module">
-				<h1>User Manager</h1>
-			</div>
+resultDocModifier.addStyleSheet("js/fancybox/jquery.fancybox.css");
+resultDocModifier.addScriptReference("js/fancybox/jquery.fancybox-1.2.1.pack.js");
+resultDocModifier.addScriptReference("js/customfield.js");
+resultDocModifier.addScriptReference("js/usermanager-role-overview.js");
+
+resultDocModifier.setTitle("User Manager");
+resultDocModifier.addNodes2Elem("tx-module", <h1>User Manager</h1>);
+
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="list-users">Users</a></li>);
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Roles</a></li>);
+
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="deleteButton" class="tx-button tx-button-remove" href="#">Remove</a></li>);
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton" class="tx-button tx-button-create" href="add-role.xhtml">Create</a></li>)
 
 
-			<div id="tx-module-tabs" class="clearfix">
-				<ol id="tx-tabs">
-					<li><a href="list-users">Users</a></li>
-					<li class="tx-active"><a href="list-roles">Roles</a></li>
-				</ol>
 
-				<div id="tx-contextual-buttons">
-					<ol>
-						<li><a href="#" id="deleteButton" class="tx-button tx-button-remove">Delete</a></li>
-						<li><a href="add-role.xhtml" id="addButton" class="tx-button tx-button-create">Create Role</a></li>
-
-					</ol>
-				</div>
-
-			</div >
-        </div>
         <div id="tx-content">
             <div class="tx-panel">
                 
@@ -100,24 +41,23 @@
                         </thead>
                         <tbody>
                 
-                     ${loop}
-                    <tr id="${umr:role/dc:title}">
+                    {for (role <- (res/umr("role"))) yield {
+                    <tr id={role/dc("title")*}>
                         <td>
-                            <input type="checkbox" value="${umr:role/dc:title}" />
+                            <input type="checkbox" value={role/dc("title")*} />
                         </td>
-                        <td>${umr:role/dc:title}</td>
+                        <td>{role/dc("title")*}</td>
                         <td>
-                            <a href="add-single-property?roleTitle=${umr:role/dc:title}" >add single-valued property</a> / 
-                            <a href="add-multiple-property?roleTitle=${umr:role/dc:title}" >add multiple-valued property</a> / 
-                            <a href="manage-custom-properties?role=${umr:role/dc:title}" >manage customfields</a>
+                            <a href={"add-single-property?roleTitle=" + (role/dc("title")*)} >add single-valued property</a> /
+                            <a href={"add-multiple-property?roleTitle=" + (role/dc("title")*)} >add multiple-valued property</a> /
+                            <a href={"manage-custom-properties?role=" + (role/dc("title")*)} >manage customfields</a>
                         </td>
-                        <td><a href="manage-role-permissions?roleTitle=${umr:role/dc:title}">show permissions</a></td>
+                        <td><a href={"manage-role-permissions?roleTitle=" + (role/dc("title")*)}>show permissions</a></td>
                     </tr>
-                    ${/loop}
+                   }
+				   }
                     </tbody>
                     </table>
                 </fieldset> 
             </div>
         </div>
-	</body>
-</html>

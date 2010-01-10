@@ -1,62 +1,56 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-    	<title>Role Management</title> 
-		${ns:permission=http://clerezza.org/2008/10/permission#}
-		${ns:umr=http://clerezza.org/2009/05/usermanager#}
-		${ns:dc=http://purl.org/dc/elements/1.1/}
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>     
-        	
-        <link href="/style/style.css" media="screen" rel="stylesheet" type="text/css" />
-        
-		<script type="text/javascript">
-			function removePermission(form) {
-				form.roleTitle.value = '${umr:role/dc:title}';
-				form.submit();
-			}
-		</script>
-	</head>
-	<body>
-		
-		<h2>Add new Permission to ${umr:role/dc:title}</h2>
-		<form method="post" action="add-role-permissions">
-			<div>
-				<input type="hidden" name="roleTitle" value="${umr:role/dc:title}" />
-				<label for="permEntries">Permission Entry:</label>
-				<input type="text" name="permEntries" />
-				<input type="submit" value="Add new permission" />
-			</div>
-		</form>
-		<h2>List of Permissions for ${umr:role/dc:title}</h2>
-        <br/>
-        <br/>
-        <div id="tx-content">
+def dc(s: Any) = new UriRef("http://purl.org/dc/elements/1.1/" + s)
+def permission(s: Any) = new UriRef("http://clerezza.org/2008/10/permission#" + s)
+def umr(s: Any) = new UriRef("http://clerezza.org/2009/05/usermanager#" + s)
+
+resultDocModifier.setTitle("User Manager");
+resultDocModifier.addNodes2Elem("tx-module", <h1>User Manager</h1>);
+
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="list-users">Users</a></li>);
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li  class="tx-active"><a href="#">Roles</a></li>);
+
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="editButton" class="tx-button tx-button-generic" href="list-roles">Back</a></li>);
+
+
+	<div id="tx-content">
         <div class="tx-list">
-		<table>
-        	<thead>
-			<tr align="center">
-				<th colspan="2">Permission Entry</th>
-			</tr>
-            </thead>
-            <tbody>
-			${loop}
-			<tr>
-				<td>${umr:permission/permission:javaPermissionEntry}</td>
-				<td>
-					<form method="post" action="delete-role-permissions">
-						<input type="hidden" name="roleTitle" value="" />
-						<input type="hidden" name="permEntries" value='${umr:permission/permission:javaPermissionEntry}' />
-						<input type="button" onclick="javascript: removePermission(this.parentNode)" value="delete" />
-					</form>
-				</td>
-			</tr>
-			${/loop}
-            </tbody>
-		</table>
-         <a href="list-roles">back</a>
+		<script type="text/javascript">
+				function removePermission(form) {{
+					form.roleTitle.value = {"'" + (res/umr("role")/dc("title")*) + "'"};
+					form.submit();
+				}}
+			</script>
+			<h2>Add new Permission to {res/umr("role")/dc("title")*}</h2>
+			<form method="post" action="add-role-permissions">
+				<div>
+					<input type="hidden" name="roleTitle" value={res/umr("role")/dc("title")*} />
+					<label for="permEntries">Permission Entry:</label>
+					<input type="text" name="permEntries" />
+					<input type="submit" value="Add new permission" />
+				</div>
+			</form>
+			<h2>List of Permissions for {res/umr("role")/dc("title")*}</h2>
+			<br/>
+			<table>
+				<thead>
+				<tr align="center">
+					<th colspan="2">Permission Entry</th>
+				</tr>
+				</thead>
+				<tbody>
+				{for (perm <- (res/umr("permission"))) yield {
+				<tr>
+					<td>{perm/permission("javaPermissionEntry")*}</td>
+					<td>
+						<form method="post" action="delete-role-permissions">
+							<input type="hidden" name="roleTitle" value="" />
+							<input type="hidden" name="permEntries" value={perm/permission("javaPermissionEntry")*} />
+							<input type="button" onclick="javascript: removePermission(this.parentNode)" value="delete" />
+						</form>
+					</td>
+				</tr>
+				}
+				}
+				</tbody>
+			</table>
         </div>
-        </div>
-       
-	</body>
-</html>
+	</div>
