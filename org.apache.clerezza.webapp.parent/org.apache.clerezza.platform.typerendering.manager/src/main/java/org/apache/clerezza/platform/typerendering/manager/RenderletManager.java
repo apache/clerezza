@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -39,8 +41,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
 import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -52,6 +54,7 @@ import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.jaxrs.utils.form.FormFile;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
 import org.apache.clerezza.platform.content.DiscobitsHandler;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
 import org.apache.clerezza.platform.typerendering.ontology.RENDERLETMANAGER;
@@ -71,6 +74,7 @@ import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.RdfList;
 import org.apache.clerezza.rdf.utils.UnionMGraph;
+import org.apache.felix.scr.annotations.Services;
 
 /**
  * 
@@ -79,21 +83,14 @@ import org.apache.clerezza.rdf.utils.UnionMGraph;
  * @author tio
  */
 @Component
-@Service(Object.class)
-@Properties({
-	@Property(name="javax.ws.rs", boolValue=true),
-	@Property(name="org.apache.clerezza.platform.dashboard.visible", boolValue=true)
+@Services ({
+	@Service(Object.class),
+	@Service(GlobalMenuItemsProvider.class)
 })
-
+@Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/renderlet-manager")
-public class RenderletManager {
+public class RenderletManager implements GlobalMenuItemsProvider{
 
-	@Property(value="Renderlet Manager", description="Specifies the label of the button.")
-	private static final String DASHBOARD_LABEL = "dashBoardLabel";
-	@Property(intValue=0, description="Specifies the order")
-	private static final String DASHBOARD_MENU_ORDER = "dashBoardMenuOrder";	
-	@Property(value="Main-Modules", description="Specifies the the group label")
-	private static final String DASHBOARD_GROUP_LABEL = "dashBoardGroupLabel";
 	@Reference
 	private ContentGraphProvider cgProvider;
 	@Reference
@@ -446,5 +443,14 @@ public class RenderletManager {
 		}
 		return uriRef;
 
+	}
+
+	@Override
+	public Set<GlobalMenuItem> getMenuItems() {
+		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+
+		items.add(new GlobalMenuItem("/admin/renderlet-manager/", "RMR", "Renderlet Manager", 3,
+				"Main-Modules"));
+		return items;
 	}
 }
