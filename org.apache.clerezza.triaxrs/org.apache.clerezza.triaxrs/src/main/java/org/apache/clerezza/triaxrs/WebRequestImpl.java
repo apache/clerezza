@@ -39,6 +39,7 @@ import org.apache.clerezza.triaxrs.providers.provided.JafMessageBodyReader;
 import org.apache.clerezza.triaxrs.util.CaseInsensitiveMap;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
+import org.wymiwyg.wrhapi.Method;
 import org.wymiwyg.wrhapi.Request;
 
 /**
@@ -228,7 +229,16 @@ public class WebRequestImpl implements WebRequest {
 
 	@Override
 	public String getMethod() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		try {
+            Method method = wrhapiRequest.getMethod();
+            if (method != null) {
+                return (method.toString()).substring(8);
+            } else {
+                return null;
+            }
+        } catch (HandlerException ex) {
+            throw new RuntimeException(ex);
+        }
 	}
 
 	@Override

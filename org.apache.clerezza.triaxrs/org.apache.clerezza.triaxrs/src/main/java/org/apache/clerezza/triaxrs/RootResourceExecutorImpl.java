@@ -27,8 +27,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -525,7 +527,17 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 	
 	private ProcessableResponse responsDefaultOption(WebRequest request,
 			Set<Method> candidateMethods) {
-		throw new UnsupportedOperationException("Not yet implemented");
+        
+		List<Annotation> annotationList = new ArrayList<Annotation>();
+        Annotation[] annotations = {};
+        for (Method candidateMethod : candidateMethods){
+            Annotation[] declaredAnnotations = candidateMethod.getDeclaredAnnotations();
+            for (Annotation annotation : declaredAnnotations) {
+                annotationList.add(annotation);
+            }
+        }
+        return ProcessableResponse.createProcessableResponse(null,
+                annotationList.toArray(annotations), null, null, null);
 	}
 
 	private String templateUrlEncode(String value) {
