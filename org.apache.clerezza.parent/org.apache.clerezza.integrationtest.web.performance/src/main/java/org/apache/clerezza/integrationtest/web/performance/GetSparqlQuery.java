@@ -39,7 +39,7 @@ import org.apache.clerezza.integrationtest.web.framework.WebTestCase;
  *
  * @scr.component
  * @scr.service 
- *              interface="org.clerezza.integrationtest.web.framework.WebTestCase"
+ *              interface="org.apache.clerezza.integrationtest.web.framework.WebTestCase"
  * 
  * @author tio
  * 
