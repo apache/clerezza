@@ -94,15 +94,7 @@ public class FelixContextualMenuGeneratorTest {
 	private Dictionary<String, Object> jaxRsResourceProperty = new Hashtable<String, Object>();
 
 	private String resourceLabel = "testResource";
-	{
-		jaxRsResourceProperty.put("javax.ws.rs", Boolean.TRUE);
-		jaxRsResourceProperty.put("service.pid", SimpleRootResource.class.getName());
-		jaxRsResourceProperty.put("org.apache.clerezza.platform.dashboard.visible", Boolean.TRUE);
-		jaxRsResourceProperty.put("dashboardLabel", resourceLabel);
-		jaxRsResourceProperty.put("dashBoardMenuOrder", 0);
-		jaxRsResourceProperty.put("dashBoardGroupLabel", GlobalMenuItemsProviderA.groupAId);
-	}
-
+	
 	private boolean webServerExist;
 
 	@Before
@@ -110,8 +102,6 @@ public class FelixContextualMenuGeneratorTest {
 		webServerExist = waitForWebserver();
 		if (webServerExist) {
 			waitFor(Handler.class, 300000);
-			bundleContext.registerService(Object.class.getName(),
-					new SimpleRootResource(), jaxRsResourceProperty);
 			bundleContext.registerService(GlobalMenuItemsProvider.class.getName(),
 					new GlobalMenuItemsProviderA(), null);
 			Thread.sleep(10000);
@@ -142,14 +132,13 @@ public class FelixContextualMenuGeneratorTest {
 		Assert.assertEquals(GlobalMenuItemsProviderA.groupAPath,
 				getPath(graph, list.get(0)));
 		RdfList children = getChildren(graph, list.get(0));
-		Assert.assertEquals(3, children.size());
-		Assert.assertEquals(resourceLabel, getLabel(graph, children.get(0)));
+		Assert.assertEquals(2, children.size());
 		Assert.assertEquals(GlobalMenuItemsProviderA.itemA2Label,
-				getLabel(graph, children.get(1)));
+				getLabel(graph, children.get(0)));
 		Assert.assertEquals(GlobalMenuItemsProviderA.itemA1Label,
-				getLabel(graph, children.get(2)));
+				getLabel(graph, children.get(1)));
 		Assert.assertEquals(GlobalMenuItemsProviderA.itemA2Path,
-				getPath(graph, children.get(1)));
+				getPath(graph, children.get(0)));
 	}
 
 	private String getLabel(TripleCollection graph, Resource res) {
