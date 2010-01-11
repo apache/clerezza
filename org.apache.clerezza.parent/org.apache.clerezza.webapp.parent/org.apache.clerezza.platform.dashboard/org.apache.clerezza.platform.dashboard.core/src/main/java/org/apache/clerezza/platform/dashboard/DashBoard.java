@@ -20,9 +20,10 @@ package org.apache.clerezza.platform.dashboard;
 
 import java.net.URL;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -32,7 +33,6 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.felix.scr.annotations.Services;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.platform.dashboard.ontology.DASHBOARD;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
-import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
@@ -48,25 +48,24 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.rdf.utils.UnionMGraph;
+import org.apache.felix.scr.annotations.Services;
 
 /**
- * @deprecated obsoleted as the menu is now attached to the context node which
- *		is provided by the <code>ContextualMenuGenerator</code>.
+ *
  * @author tio
  */
 @Component
 @Services({
 	@Service(Object.class),
-	@Service(DashBoard.class)
+	@Service(GlobalMenuItemsProvider.class)
 })
 
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/dashboard")
-@Deprecated
-public class DashBoard {
+public class DashBoard implements GlobalMenuItemsProvider{
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -77,15 +76,12 @@ public class DashBoard {
 	private RenderletManager renderletManager;
 
 	protected void activate(ComponentContext cCtx) throws Exception {
-		logger.debug("Activating DashBoard");
-		
-		URL template = getClass().getResource("dashboard-naked.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(), new UriRef(template.toURI()
-				.toString()), DASHBOARD.DashBoardMenu, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);	
+		logger.debug("Activating DashBoard");	
 	
-		template = getClass().getResource("dashboard-template.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(), new UriRef(template.toURI()
-				.toString()), DASHBOARD.DashBoard, null, MediaType.APPLICATION_XHTML_XML_TYPE, true);	
+		URL template = getClass().getResource("dashboard-template.xhtml");
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(), 
+				new UriRef(template.toURI().toString()), DASHBOARD.DashBoard,
+				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 	}
 	
 	/**
@@ -118,33 +114,17 @@ public class DashBoard {
 		MGraph mGraph = new SimpleMGraph(); 
 		NonLiteral overview = new BNode();
 		mGraph.add(new TripleImpl(overview, RDF.type, DASHBOARD.DashBoard));
-		mGraph.add(new TripleImpl(overview, DASHBOARD.includeDashBoardMenu, 
-				DashBoardGenerator.DASHBOARD_URI));
-		return createGraphNodeWithDashBoardMenu(overview, mGraph);
-	}
-	
-	/**
-	 * Returns the header of the dashboard.
-	 * 
-	 * @return {@link GraphNode}
-	 * 
-	 */
-	@GET
-	@Produces("text/plain")
-	@Path("header")
-	public GraphNode getHeader(@Context UriInfo uriInfo) {
-
-		TrailingSlash.enforceNotPresent(uriInfo);
-
-		return new GraphNode(DashBoardGenerator.DASHBOARD_URI, 
-				tcMgr.getMGraph(DashBoardGenerator.GRAPH_NAME));
+		mGraph.add(new TripleImpl(overview, RDF.type, PLATFORM.HeadedPage));
+		return new GraphNode(overview, mGraph);
 	}
 
-	public GraphNode createGraphNodeWithDashBoardMenu(NonLiteral nonLiteral, MGraph graph) {
-		MGraph mGraph = tcMgr.getMGraph(DashBoardGenerator.GRAPH_NAME);
-		graph.add(new TripleImpl(nonLiteral, DASHBOARD.includeDashBoardMenu, 
-				DashBoardGenerator.DASHBOARD_URI));
-		UnionMGraph unionGraph = new UnionMGraph(graph, mGraph);
-		return new GraphNode(nonLiteral, unionGraph);
+	@Override
+	public Set<GlobalMenuItem> getMenuItems() {
+		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+
+		items.add(new GlobalMenuItem("/dashboard", "DHB", "Overview", 1,
+				"Dashboard"));
+		return items;
 	}
+
 }
