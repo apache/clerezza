@@ -1,4 +1,4 @@
-/*
+ /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,6 +20,7 @@ package org.apache.clerezza.platform.xhtml2html;
 
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
+import org.wymiwyg.wrhapi.MessageBody;
 import org.wymiwyg.wrhapi.Response;
 import org.wymiwyg.wrhapi.util.ResponseWrapper;
 
@@ -27,18 +28,26 @@ import org.wymiwyg.wrhapi.util.ResponseWrapper;
  *
  * @author rbn
  */
-class WrappedResponse extends ResponseWrapper {
+class WrappedResponse extends ResponseWrapper implements ResponseStatusInfo {
 	private String XHTML_TYPE = "application/xhtml+xml";
 	private String HTML_TYPE = "text/html";
+	private boolean isHtml = false;
 
 	public WrappedResponse(Response response) {
 		super(response);
 	}
 
+
+
 	@Override
 	public void addHeader(HeaderName headerName, Object value) throws HandlerException {
+		if (headerName.equals(HeaderName.CONTENT_LENGTH) && isHtml) {
+			return;
+		}
 		if (headerName.equals(HeaderName.CONTENT_TYPE) && XHTML_TYPE.equals(value)) {
 			super.addHeader(headerName, HTML_TYPE);
+			isHtml = true;
+			super.setHeader(HeaderName.CONTENT_LENGTH, null);
 		} else {
 			super.addHeader(headerName, value);
 		}
@@ -46,10 +55,25 @@ class WrappedResponse extends ResponseWrapper {
 
 	@Override
 	public void setHeader(HeaderName headerName, Object value) throws HandlerException {
+		if (headerName.equals(HeaderName.CONTENT_LENGTH) && isHtml) {
+			return;
+		}
 		if (headerName.equals(HeaderName.CONTENT_TYPE) && XHTML_TYPE.equals(value)) {
 			super.setHeader(headerName, HTML_TYPE);
+			isHtml = true;
+			super.setHeader(HeaderName.CONTENT_LENGTH, null);
 		} else {
 			super.setHeader(headerName, value);
 		}
+	}
+
+	@Override
+	public void setBody(MessageBody body) throws HandlerException {
+		super.setBody(new DocTypeSettingBody(body, this));
+	}
+
+	@Override
+	public boolean isHtml() {
+		return isHtml;
 	}
 }
