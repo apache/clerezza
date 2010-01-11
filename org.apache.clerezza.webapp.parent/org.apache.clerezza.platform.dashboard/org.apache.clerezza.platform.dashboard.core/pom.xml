@@ -31,7 +31,6 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.core</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
@@ -42,7 +41,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.seedsnipe</artifactId>
+			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
