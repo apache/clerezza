@@ -43,6 +43,7 @@ import java.util.Set;
 
 import javax.activation.UnsupportedDataTypeException;
 import javax.security.auth.Subject;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
@@ -63,6 +64,7 @@ import org.apache.clerezza.triaxrs.util.BodyStoringResponse;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
 import org.wymiwyg.wrhapi.MessageBody;
+import org.wymiwyg.wrhapi.Method;
 import org.wymiwyg.wrhapi.Response;
 import org.wymiwyg.wrhapi.ResponseStatus;
 import org.wymiwyg.wrhapi.util.MessageBody2Write;
@@ -105,6 +107,21 @@ class ResponseProcessor {
 		}
 		if (entity == null) {
 			response.setHeader(HeaderName.CONTENT_LENGTH, 0);
+
+            String method = request.getMethod();
+            if (method != null && Method.OPTIONS.toString().contains(method)) {
+                List<String> allowed = new ArrayList<String>();
+                for (Annotation annotation : annotations) {
+                    HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
+                    String annotationValue;
+                    if (httpMethod != null) {
+                        annotationValue = annotation.annotationType().getSimpleName();
+                        allowed.add(annotationValue);
+                    }
+                }
+                response.setHeader(HeaderName.ALLOW, allowed.toString()
+                        .replace("[", "").replace("]", "").replace(" ", ""));
+            }
 
 			if (responseStatus == ResponseStatus.SUCCESS.getCode()) {
 				response.setResponseStatus(ResponseStatus.NO_CONTENT);
