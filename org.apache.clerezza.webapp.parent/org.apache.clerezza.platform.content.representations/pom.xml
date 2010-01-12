@@ -9,7 +9,7 @@
 	<artifactId>org.apache.clerezza.platform.content.representations</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
-	<name>Clerezza - Platform Representations</name>
+	<name>Clerezza - Platform Content Representations</name>
 	<description>Provides services for creating and retrieving alternative representations of content.</description>
 	
 	<modules>
