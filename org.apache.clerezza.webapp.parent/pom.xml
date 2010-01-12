@@ -14,7 +14,8 @@
 	<description>The direct or indirect parent of Clerezza Artifacts exposing web service</description>
 	<modules>
 		<module>org.apache.clerezza.platform.accountcontrolpanel</module>
-		<module>org.apache.clerezza.platform.content</module>
+		<module>org.apache.clerezza.platform.concepts</module>
+		<module>org.apache.clerezza.platform.content</module>		
 		<module>org.apache.clerezza.platform.content.representations</module>
 		<module>org.apache.clerezza.platform.dashboard</module>
 		<module>org.apache.clerezza.platform.documentation.viewer</module>
