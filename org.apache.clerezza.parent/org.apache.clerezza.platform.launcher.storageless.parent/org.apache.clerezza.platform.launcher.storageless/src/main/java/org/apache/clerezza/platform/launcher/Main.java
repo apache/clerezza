@@ -189,7 +189,6 @@ public class Main implements BundleActivator {
 	}
 
 	public static void main(String... args) throws IOException {
-
 		LauncherArguments arguments;
 		try {
 			final ArgumentHandler argumentHandler = new ArgumentHandler(args);
@@ -212,7 +211,6 @@ public class Main implements BundleActivator {
 			showUsage();
 			return;
 		}
-
 		Policy.setPolicy(new Policy() {
 
 			@Override
@@ -223,20 +221,15 @@ public class Main implements BundleActivator {
 			}
 		});
 		System.setSecurityManager(new SecurityManager());
-
 		Properties configProps = getConfigProps(arguments);
 		try {
 			Felix m_felix = new Felix(configProps);
-
 			System.out.println("starting felix");
 			m_felix.start();
 			final PathNode bundlesRoot = PathNodeFactory.getPathNode(Main.class.getResource("/bundles"));
 			final BundleContext bundleContext = m_felix.getBundleContext();
 			final String revertParam = arguments.getRevertParam();
 			installBundlesForStartLevels(bundleContext, bundlesRoot, revertParam);
-
-
-
 		} catch (Exception ex) {
 			System.err.println("Could not create framework: " + ex);
 			ex.printStackTrace();
