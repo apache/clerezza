@@ -942,17 +942,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.concept</artifactId>
+				<artifactId>org.apache.clerezza.platform.concepts</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.concept.core</artifactId>
+				<artifactId>org.apache.clerezza.platform.concepts.core</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.concept.ontologies</artifactId>
+				<artifactId>org.apache.clerezza.platform.concepts.ontologies</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
