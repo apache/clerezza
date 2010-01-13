@@ -31,8 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,9 +89,6 @@ public class FelixContextualMenuGeneratorTest {
 	protected final static int testHttpPort = 8976;
 	@Inject
 	private BundleContext bundleContext;
-	private Dictionary<String, Object> jaxRsResourceProperty = new Hashtable<String, Object>();
-
-	private String resourceLabel = "testResource";
 	
 	private boolean webServerExist;
 
