@@ -39,7 +39,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.seedsnipe</artifactId>
+			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -158,6 +158,23 @@
 			<artifactId>httpclient-osgi</artifactId>
 			<version>4.0</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.scala</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang-osgi</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.7.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang-osgi</groupId>
+			<artifactId>scala-compiler</artifactId>
+			<version>2.7.5</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
