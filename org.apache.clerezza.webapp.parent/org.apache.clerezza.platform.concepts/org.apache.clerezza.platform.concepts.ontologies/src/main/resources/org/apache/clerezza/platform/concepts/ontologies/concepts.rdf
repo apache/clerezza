@@ -85,6 +85,14 @@
 	</skos:definition>
 </rdfs:Class>
 
+<rdfs:Class rdf:about="#GenericResourcePage">
+	<rdf:type rdf:resource="owl:Class"/>
+	<rdfs:label xml:lang="en">Generic Resource Page</rdfs:label>
+	<skos:definition xml:lang="en">
+		A web page containing a resource and selected concepts.
+	</skos:definition>
+</rdfs:Class>
+
 <!-- Properties -->
 
 <rdf:Property rdf:about="#selectedScheme">
@@ -150,6 +158,13 @@
 		cached search results for a search term.
 	</skos:definition>
 	<rdfs:domain rdf:resource="#ConceptCache"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="#resource">
+	<rdf:type rdf:resource="owl:ObjectProperty"/>
+	<rdfs:label xml:lang="en">Resource</rdfs:label>
+	<skos:definition xml:lang="en">Points to a resource.</skos:definition>
+	<rdfs:domain rdf:resource="#GenericConceptScheme"/>
 </rdf:Property>
 
 </rdf:RDF>
