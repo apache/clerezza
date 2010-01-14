@@ -57,6 +57,10 @@ AjaxOptions.prototype.success = function(obj) {
 AjaxOptions.prototype.errorAction = function() {};
 AjaxOptions.prototype.error = function(XMLHttpRequest, textStatus, errorThrown) {
     this.errorAction();
-	AlertMessage.show(function(){}, "The following error occured: " + textStatus, "Error", "Ok");
+	var errorMessage = XMLHttpRequest.responseText;
+	if(errorMessage == undefined || errorMessage == "") {
+		errorMessage = "Unspecified Error (" + textStatus + ")";
+	}
+	AlertMessage.show(function(){}, "The following error occured: " + errorMessage, "Error", "Ok");
 	statusMessage.remove(this.actionName);
 };
