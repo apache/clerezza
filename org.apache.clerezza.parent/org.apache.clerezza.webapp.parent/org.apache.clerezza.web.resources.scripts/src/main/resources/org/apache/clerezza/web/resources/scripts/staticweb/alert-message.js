@@ -83,7 +83,7 @@ AlertMessage.show = function(doFunction, message, headerText, textYes, textNo) {
 		draggable: false,
 		close: true,
 		modal: true,
-		zIndex: 1000,
+		zIndex: 100000,
 		text: message,
 
 		constraintoviewport: true,
