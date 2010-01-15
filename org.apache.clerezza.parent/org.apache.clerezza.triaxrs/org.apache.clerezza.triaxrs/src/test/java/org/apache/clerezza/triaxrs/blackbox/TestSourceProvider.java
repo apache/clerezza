@@ -24,8 +24,8 @@ import java.io.StringWriter;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import java.util.Hashtable;
 
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -169,13 +169,9 @@ public class TestSourceProvider {
 	}
 
 	private String getContentType() {
-		Hashtable<HeaderName, Object> headers = response.getHeaders();
-		Object object = headers.get(HeaderName.CONTENT_TYPE);
-		if (object instanceof String) {
-			return (String)object;
-		} else {
-			return "foo";
-		}
+		Map<HeaderName,String[]> headers = response.getHeaders();
+		String[] contentType = headers.get(HeaderName.CONTENT_TYPE);
+		return contentType[0];
 	}
 
 	@Test

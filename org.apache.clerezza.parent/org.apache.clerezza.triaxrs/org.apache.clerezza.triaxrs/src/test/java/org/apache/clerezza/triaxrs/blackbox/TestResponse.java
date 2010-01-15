@@ -113,7 +113,8 @@ public class TestResponse {
 
 		assertTrue(postMethodInvoked);
 
-		String location = (String) response.getHeaders().get(HeaderName.LOCATION);
-		assertEquals("http://localhost:8000/newresource", location);
+		String[] location = response.getHeaders().get(HeaderName.LOCATION);
+		Assert.assertTrue(location.length == 1);
+		assertEquals("http://localhost:8000/newresource", location[0]);
 	}
 }

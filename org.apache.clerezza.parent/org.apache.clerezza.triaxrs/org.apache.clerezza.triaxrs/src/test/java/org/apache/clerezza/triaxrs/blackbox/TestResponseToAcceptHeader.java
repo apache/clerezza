@@ -76,8 +76,9 @@ public class TestResponseToAcceptHeader {
         replay(requestURI);
         handler.handle(requestMock, responseImpl);
         responseImpl.consumeBody();
-        Assert.assertEquals("text/plain", 
-                responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE));
+        String[] contentType = responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE);
+		Assert.assertTrue(contentType.length == 1);
+        Assert.assertEquals("text/plain", contentType[0]);
     }
 }
 

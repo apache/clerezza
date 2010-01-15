@@ -198,10 +198,12 @@ public class SelectWriterBasedOnAcceptTest {
 		assertTrue(string1Writer.writerCalled);
 		Assert.assertFalse(string2Writer.writerCalled);
 		Assert.assertArrayEquals(entity.getBytes(), responseImpl.getBodyBytes());
-		Assert.assertEquals("test/string1",
-				responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE).toString());
-		Assert.assertEquals(Integer.toString(entity.length()),
-				responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH).toString());
+		String[] contentType = responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE);
+		Assert.assertTrue(contentType.length == 1);
+		Assert.assertEquals("test/string1",contentType[0]);
+		String[] contentLength = responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH);
+		Assert.assertTrue(contentLength.length == 1);
+		Assert.assertEquals(Integer.toString(entity.length()), contentLength[0]);
 		Assert.assertEquals(ResponseStatus.SUCCESS, responseImpl.getStatus());
 
 	}
@@ -227,10 +229,12 @@ public class SelectWriterBasedOnAcceptTest {
 		assertTrue(string2Writer.writerCalled);
 		Assert.assertFalse(string1Writer.writerCalled);
 		Assert.assertArrayEquals(entity.getBytes(), responseImpl.getBodyBytes());
-		Assert.assertEquals("test/string2", 
-				responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE).toString());
-		Assert.assertEquals(Integer.toString(entity.length()),
-				responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH).toString());
+		String[] contentType = responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE);
+		Assert.assertTrue(contentType.length == 1);
+		Assert.assertEquals("test/string2",contentType[0]);
+		String[] contentLength = responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH);
+		Assert.assertTrue(contentLength.length == 1);
+		Assert.assertEquals(Integer.toString(entity.length()), contentLength[0]);
 		Assert.assertEquals(ResponseStatus.SUCCESS, responseImpl.getStatus());
 	}
 
@@ -256,10 +260,12 @@ public class SelectWriterBasedOnAcceptTest {
 		Assert.assertFalse(string1Writer.writerCalled);
 		Assert.assertFalse(stringWildcardWriter.writerCalled);
 		Assert.assertArrayEquals(entity.getBytes(), responseImpl.getBodyBytes());
-		Assert.assertEquals("test/string2",
-				responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE).toString());
-		Assert.assertEquals(Integer.toString(entity.length()),
-				responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH).toString());
+		String[] contentType = responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE);
+		Assert.assertTrue(contentType.length == 1);
+		Assert.assertEquals("test/string2",contentType[0]);
+		String[] contentLength = responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH);
+		Assert.assertTrue(contentLength.length == 1);
+		Assert.assertEquals(Integer.toString(entity.length()), contentLength[0]);
 		Assert.assertEquals(ResponseStatus.SUCCESS, responseImpl.getStatus());
 	}
 
@@ -285,8 +291,9 @@ public class SelectWriterBasedOnAcceptTest {
 		Assert.assertFalse(string1Writer.writerCalled);
 		Assert.assertFalse(string2Writer.writerCalled);
 		Assert.assertArrayEquals(entity.getBytes(), responseImpl.getBodyBytes());
-		Assert.assertEquals(Integer.toString(entity.length()),
-				responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH).toString());
+		String[] contentLength = responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH);
+		Assert.assertTrue(contentLength.length == 1);
+		Assert.assertEquals(Integer.toString(entity.length()), contentLength[0]);
 		Assert.assertEquals(ResponseStatus.SUCCESS, responseImpl.getStatus());
 	}
 	
