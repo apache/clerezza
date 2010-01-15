@@ -23,27 +23,23 @@ import java.io.IOException;
 import java.nio.channels.Channels;
 import java.util.Hashtable;
 
+import java.util.Map;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
 import org.wymiwyg.wrhapi.MessageBody;
-import org.wymiwyg.wrhapi.Response;
 import org.wymiwyg.wrhapi.ResponseStatus;
+import org.wymiwyg.wrhapi.util.ResponseBase;
 
 /**
  *
  * @author szalay
  */
-public class ResponseImpl implements Response {
+public class ResponseImpl extends ResponseBase {
 
     private Hashtable<HeaderName, Object> headers = new Hashtable<HeaderName, Object>();
     private MessageBody body;
     private ResponseStatus status;
     private byte[] bodyBytes;
-    
-    @Override
-    public void addHeader(HeaderName arg0, Object arg1) throws HandlerException {
-        getHeaders().put(arg0, arg1);
-    }
 
     @Override
     public void setBody(MessageBody arg0) throws HandlerException {
@@ -51,17 +47,12 @@ public class ResponseImpl implements Response {
     }
 
     @Override
-    public void setHeader(HeaderName arg0, Object arg1) throws HandlerException {
-        getHeaders().put(arg0, arg1);
-    }
-
-    @Override
     public void setResponseStatus(ResponseStatus arg0) throws HandlerException {
         this.status = arg0;
     }
 
-    public Hashtable<HeaderName, Object> getHeaders() {
-        return headers;
+    public Map<HeaderName, String[]> getHeaders() {
+        return getHeaderMap();
     }
 
     public MessageBody getBody() {

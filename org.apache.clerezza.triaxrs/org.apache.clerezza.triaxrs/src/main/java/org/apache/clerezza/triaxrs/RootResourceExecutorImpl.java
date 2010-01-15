@@ -38,11 +38,14 @@ import java.util.TreeSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Encoded;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.MessageBodyReader;
 
 import org.slf4j.Logger;
@@ -55,6 +58,7 @@ import org.apache.clerezza.triaxrs.util.PathMatching;
 import org.apache.clerezza.triaxrs.util.TemplateEncoder;
 import org.apache.clerezza.triaxrs.util.URITemplate;
 import org.wymiwyg.wrhapi.HandlerException;
+import org.wymiwyg.wrhapi.HeaderName;
 
 /**
  * @scr.component
@@ -528,16 +532,28 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 	private ProcessableResponse responsDefaultOption(WebRequest request,
 			Set<Method> candidateMethods) {
         
+		ResponseBuilder builder = Response.ok();
 		List<Annotation> annotationList = new ArrayList<Annotation>();
-        Annotation[] annotations = {};
-        for (Method candidateMethod : candidateMethods){
-            Annotation[] declaredAnnotations = candidateMethod.getDeclaredAnnotations();
-            for (Annotation annotation : declaredAnnotations) {
-                annotationList.add(annotation);
-            }
-        }
-        return ProcessableResponse.createProcessableResponse(null,
-                annotationList.toArray(annotations), null, null, null);
+		for (Method candidateMethod : candidateMethods) {
+			Annotation[] declaredAnnotations = candidateMethod.getDeclaredAnnotations();
+			for (Annotation annotation : declaredAnnotations) {
+				annotationList.add(annotation);
+			}
+		}
+
+		String allowHeader = "";
+		for (Annotation annotation : annotationList) {
+			HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
+			if (httpMethod != null) {
+				allowHeader += httpMethod.value()+",";
+			}
+		}
+		if(allowHeader.lastIndexOf(",") != -1){
+			allowHeader = allowHeader.substring(0, allowHeader.lastIndexOf(","));
+		}
+		builder.header(HeaderName.ALLOW.toString(), allowHeader);
+		return ProcessableResponse.createProcessableResponse(builder.build(),
+				null, null, null, null);
 	}
 
 	private String templateUrlEncode(String value) {

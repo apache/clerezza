@@ -161,10 +161,13 @@ public class WriterAcceptTest {
 		responseImpl.consumeBody();
 		assertTrue(writerCalled);
 		Assert.assertArrayEquals(entity.getBytes(), responseImpl.getBodyBytes());
-		Assert.assertEquals("test/string2", 
-				responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE).toString());
-		Assert.assertEquals(Integer.toString(entity.length()),
-				responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH).toString());
+
+		String[] contentType = responseImpl.getHeaders().get(HeaderName.CONTENT_TYPE);
+		Assert.assertTrue(contentType.length == 1);
+		Assert.assertEquals("test/string2",contentType[0]);
+		String[] contentLength = responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH);
+		Assert.assertTrue(contentLength.length == 1);
+		Assert.assertEquals(Integer.toString(entity.length()), contentLength[0]);
 		Assert.assertEquals(ResponseStatus.SUCCESS, responseImpl.getStatus());
 	}
 	

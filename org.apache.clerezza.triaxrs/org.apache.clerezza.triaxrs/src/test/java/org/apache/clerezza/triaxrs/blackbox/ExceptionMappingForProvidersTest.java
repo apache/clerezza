@@ -181,7 +181,9 @@ public class ExceptionMappingForProvidersTest {
 		assertTrue(exceptionMapperUsed);
 		assertEquals(ResponseStatus.SUCCESS, responseImpl.getStatus());
 		assertEquals(BODY, new String(responseImpl.getBodyBytes()));
-		assertEquals(new Long(BODY.length()), responseImpl.getHeaders().
-				get(HeaderName.CONTENT_LENGTH));
+
+		String[] contentLength = responseImpl.getHeaders().get(HeaderName.CONTENT_LENGTH);
+		assertTrue(contentLength.length == 1);
+		assertEquals(new Long(BODY.length()), new Long(contentLength[0]));
 	}
 }
