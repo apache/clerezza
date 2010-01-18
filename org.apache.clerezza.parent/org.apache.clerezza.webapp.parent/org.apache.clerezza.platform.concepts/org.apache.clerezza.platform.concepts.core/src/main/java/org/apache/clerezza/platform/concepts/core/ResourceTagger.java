@@ -65,11 +65,22 @@ public class ResourceTagger {
 	protected void activate(ComponentContext context)
 			throws URISyntaxException {
 
-
-		URL template = getClass().getResource("selected-concepts.ssp");
+		URL template = getClass().getResource("concept-existing-subjects.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(template.toURI().toString()),
-				RDFS.Resource, "selectedconcepts",
+				RDFS.Resource, "concept-existing-subjects",
+				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+
+		template = getClass().getResource("concept-tagging.ssp");
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+				new UriRef(template.toURI().toString()),
+				RDFS.Resource, "concept-tagging",
+				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+
+		template = getClass().getResource("concept-find-create.ssp");
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+				new UriRef(template.toURI().toString()),
+				RDFS.Resource, "concept-find-create",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 	}
 

@@ -11,15 +11,12 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 	<script type="text/javascript">
 		$(document).ready(function() {{
 			$("#addButton").click(function() {{
-				$("form").submit();
+				$("#selected-concepts-form").submit();
 			}});
 		}});
 	</script>
 	<h4>About: {res/cpt("resource")*}</h4>
-	<div><object width="200" data={res/cpt("resource")*}></object></div>
+	<div><object width="80%" data={res/cpt("resource")*}></object></div>
 	<br/>
-	<form method="post" action="/concepts/tagger/set">
-		<input type="hidden" name="uri" value={res/cpt("resource")*}></input>
-		{render(res/cpt("resource"), "selectedconcepts")}
-	</form>
+	{render(res,"concept-tagging")}
 </div>
