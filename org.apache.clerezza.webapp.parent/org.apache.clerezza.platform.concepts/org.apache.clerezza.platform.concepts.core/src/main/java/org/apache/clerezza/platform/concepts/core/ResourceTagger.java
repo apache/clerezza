@@ -82,6 +82,12 @@ public class ResourceTagger {
 				new UriRef(template.toURI().toString()),
 				RDFS.Resource, "concept-find-create",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+
+		template = getClass().getResource("selected-concepts.ssp");
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+				new UriRef(template.toURI().toString()),
+				RDFS.Resource, "selectedconcepts",
+				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 	}
 
 	/**

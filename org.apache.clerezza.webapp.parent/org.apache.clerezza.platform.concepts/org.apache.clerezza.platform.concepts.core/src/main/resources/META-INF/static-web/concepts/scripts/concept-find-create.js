@@ -25,16 +25,16 @@ ConceptFinder.setAddConceptCallback = function (callback) {
 }
 
 ConceptFinder.search = function () {
-	$("#system-suggested-concepts").empty();
+	$("#system-found-concepts").empty();
 	var searchTerm = $(":text[name=\"search-term\"]").val();
 	if (searchTerm.length > 0) {
 		var options = new AjaxOptions("find-concepts", "finding concepts", function(data) {
 			var concepts = data.concepts;
-			ConceptFinder.addSuggestions(concepts);
+			ConceptFinder.addFoundConcepts(concepts);
 			$("#add-button-label")
-				.html("<div>or</div><div>Add '"+searchTerm
+				.html("<div>Add '"+searchTerm
 					+"' as new Free Concept</div>");
-			$("#system-suggested-concepts-area").show();
+			$("#system-found-concepts-area").show();
 			$("#user-defined-concept-area").show();
 		});
 		options.url = "/concepts/find";
@@ -45,19 +45,21 @@ ConceptFinder.search = function () {
 	return false;
 }
 
-ConceptFinder.addSuggestions = function (concepts) {
+ConceptFinder.addFoundConcepts = function (concepts) {
 	var selectedConceptsExists = false;
 	if (typeof(SelectedConcepts) != "undefined") {
 		selectedConceptsExists = true;
 	}
+	var added = false;
 	for (var i = 0; i < concepts.length; i++) {
 		if (!selectedConceptsExists || !SelectedConcepts.exists(concepts[i].uri)) {
-			var div = $("<div/>").appendTo("#system-suggested-concepts");
+			added = true;
+			var div = $("<div/>").appendTo("#system-found-concepts");
 			$("<div/>").text(concepts[i].prefLabel)
 			.appendTo(div);
 			$("<div/>").text(concepts[i].uri)
 			.appendTo(div);
-			$("<a/>").addClass("tx-icon tx-icon-plus add-suggested-concept")
+			$("<a/>").addClass("tx-icon tx-icon-plus")
 			.attr({
 				href: "#"
 			})
@@ -77,6 +79,11 @@ ConceptFinder.addSuggestions = function (concepts) {
 			$("<br/>").appendTo(div);
 			$("<br/>").appendTo(div);
 		}
+	}
+	if (added) {
+		$("#label-for-search-results").text("Concepts found:");
+	} else {
+		$("#label-for-search-results").text("No additional concepts found.");
 	}
 }
 
@@ -102,7 +109,6 @@ ConceptManipulator.addConcept = function () {
 		});
 		options.type = "POST";
 		options.url = "/concepts/manipulator/add-concept";
-		options.data = $("#suggestions-form").serialize();
 		options.data = {"pref-label":searchTerm,
 			lang:$(":input[name='lang']").val(),
 			comment:$(":textarea[name='comment']").val()}
@@ -119,6 +125,6 @@ $(document).ready(function () {
 	$("#add-user-defined-concept").click(function() {
 		ConceptManipulator.addConcept();
 	});
-	$("#system-suggested-concepts-area").hide();
+	$("#system-found-concepts-area").hide();
 	$("#user-defined-concept-area").hide();
 });
