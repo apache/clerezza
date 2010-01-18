@@ -1,0 +1,8 @@
+def skos(s: Any) = new UriRef("http://www.w3.org/2008/05/skos#"+s)
+def dct(s: Any) = new UriRef("http://purl.org/dc/terms/"+s)
+def cpt(s: Any) = new UriRef("http://clerezza.org/2010/01/concepts#"+s);
+
+<form method="post" action="/concepts/tagger/set" id="selected-concepts-form">
+	<input type="hidden" name="uri" value={res/cpt("resource")*}></input>
+	{render(res/cpt("resource"), "selectedconcepts")}
+</form>

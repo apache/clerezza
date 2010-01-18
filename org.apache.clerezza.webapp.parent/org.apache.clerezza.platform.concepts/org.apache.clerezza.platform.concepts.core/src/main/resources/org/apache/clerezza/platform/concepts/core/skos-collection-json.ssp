@@ -1,0 +1,12 @@
+import org.json.simple.JSONObject
+
+def skos(s: Any) = new UriRef("http://www.w3.org/2008/05/skos#"+s)
+
+"{\"concepts\":" +
+	(for (concept <- (res/skos("member"))) yield {
+		"{" +
+			"\"prefLabel\":\"" + JSONObject.escape(concept/skos("prefLabel")*) + "\"," +
+			"\"uri\":\"" + JSONObject.escape(concept*) + "\"" +
+		"}"
+	}).mkString("[", ",", "]") +
+"}";

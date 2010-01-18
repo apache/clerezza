@@ -63,6 +63,8 @@ public class GenericResourcePage {
 	@Reference
 	private RenderletManager renderletManager;
 
+	private RemoteConceptsDescriptionManager remoteConceptsDescriptionManager = null;
+
 	protected void activate(ComponentContext context)
 			throws URISyntaxException {
 
@@ -71,6 +73,8 @@ public class GenericResourcePage {
 				new UriRef(template.toURI().toString()),
 				CONCEPTS.GenericResourcePage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+
+		remoteConceptsDescriptionManager = new RemoteConceptsDescriptionManager();
 	}
 
 	/**
@@ -86,7 +90,8 @@ public class GenericResourcePage {
 			@Context UriInfo uriInfo) {
 
 		GraphNode node = new GraphNode(new BNode(), new UnionMGraph(new SimpleMGraph(),
-				cgProvider.getContentGraph()));
+				cgProvider.getContentGraph(),
+				remoteConceptsDescriptionManager.getRemoteConceptsDescriptionMGraph()));
 		node.addProperty(RDF.type, PLATFORM.HeadedPage);
 		node.addProperty(RDF.type, CONCEPTS.GenericResourcePage);
 		if (uri != null) {

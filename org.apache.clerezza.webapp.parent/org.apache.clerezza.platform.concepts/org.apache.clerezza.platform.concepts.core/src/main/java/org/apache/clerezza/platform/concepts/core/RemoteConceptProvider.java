@@ -50,6 +50,7 @@ public class RemoteConceptProvider implements ConceptProvider {
 	private UriRef defaultGraph = null;
 	private String queryTemplate = null;
 	private ConceptCache conceptCache = null;
+	private RemoteConceptsDescriptionManager remoteConceptsDescriptionManager = null;
 
 	/**
 	 * Constructs a {@link RemoteConceptProvider} with the specified parameters.
@@ -67,6 +68,7 @@ public class RemoteConceptProvider implements ConceptProvider {
 		this.defaultGraph = defaultGraph;
 		this.queryTemplate = queryTemplate;
 		this.conceptCache = new ConceptCache(sparqlEndPoint, defaultGraph);
+		this.remoteConceptsDescriptionManager = new RemoteConceptsDescriptionManager();
 	}
 
 	@Override
@@ -107,6 +109,7 @@ public class RemoteConceptProvider implements ConceptProvider {
 							SupportedFormat.RDF_XML);
 					is.close();
 					conceptCache.cache(searchTerm.toLowerCase(), parsedGraph);
+					remoteConceptsDescriptionManager.storeConceptsDescription(parsedGraph);
 					return parsedGraph;
 				} else {
 					final InputStream es = con.getErrorStream();

@@ -55,6 +55,10 @@ public class LocalConceptProvider implements ConceptProvider {
 		this.selectedScheme = selectedScheme;
 	}
 
+	public UriRef getSelectedScheme() {
+		return this.selectedScheme;
+	}
+
 	@Override
 	public Graph retrieveConcepts(String searchTerm) {
 		QueryParser queryParser = QueryParser.getInstance();

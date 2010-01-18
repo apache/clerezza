@@ -18,11 +18,18 @@
  */
 package org.apache.clerezza.platform.concepts.core;
 
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import org.apache.clerezza.platform.config.PlatformConfig;
+import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
+import org.apache.clerezza.platform.typerendering.RenderletManager;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -35,6 +42,7 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.OWL;
@@ -42,13 +50,19 @@ import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.ontologies.SKOS;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * This JAX-RS resource can be used to search concepts accessible through
- * registered {@link ConceptProvider}s. Concept providers are prioritized.
+ * registered {@link ConceptProvider}s. If no {@link LocalConceptProvider} is
+ * registered for {@link ConceptManipulator.FREE_CONCEPT_SCHEME}, then one is
+ * created to find free concepts in the content graph.
+ * Concept providers are prioritized.
  * The URI, SKOS:prefLabel and RDFS:comment of a concept from a provider of a 
  * higher priority will be used instead of those concepts having an OWL:sameAs
  * relation with this concept, but from a provider of lower priority.
+ * Implicitly created {@link LocalConceptProvider} for free concepts has the
+ * lowest priority.
  *
  * The URI path of this service is /concepts/find.
  *
@@ -61,7 +75,37 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 public class ConceptsFinder {
 
 	@Reference
+	private RenderletManager renderletManager;
+
+	@Reference
 	protected ConceptProviderManager conceptProviderManager;
+
+	@Reference
+	private TcManager tcManager;
+
+	@Reference
+	protected ContentGraphProvider cgProvider;
+
+	@Reference
+	private PlatformConfig platformConfig;
+
+	private LocalConceptProvider freeConceptProvider = null;
+
+	private UriRef freeConceptScheme = null;
+
+	protected void activate(ComponentContext context) throws URISyntaxException {
+		URL template = getClass().getResource("skos-collection-json.ssp");
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+				new UriRef(template.toURI().toString()),
+				SKOS.Collection, null,
+				MediaType.APPLICATION_JSON_TYPE, true);
+
+		freeConceptScheme =
+				new UriRef(platformConfig.getDefaultBaseUri().getUnicodeString()
+				+ ConceptManipulator.FREE_CONCEPT_SCHEME);
+		freeConceptProvider = new LocalConceptProvider(tcManager, cgProvider,
+				freeConceptScheme);
+	}
 
 	/**
 	 * Searches concepts for a specified search term. The actual search task
@@ -80,6 +124,8 @@ public class ConceptsFinder {
 	public GraphNode findConcepts(@QueryParam(value="searchTerm")
 			String searchTerm) {
 
+		boolean freeConceptProviderFound = false;
+
 		List<ConceptProvider> conceptProviderList = conceptProviderManager
 				.getConceptProviders();
 
@@ -87,31 +133,49 @@ public class ConceptsFinder {
 		GraphNode resultNode = new GraphNode(new BNode(), resultMGraph);
 		boolean first = true;
 		for (ConceptProvider cp : conceptProviderList) {
-			Graph graph = cp.retrieveConcepts(searchTerm);
-			Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
-			if (first) {
-				while (concepts.hasNext()) {
-					resultNode.addProperty(SKOS.member, concepts.next().getSubject());
-				}
-				resultMGraph.addAll(graph);
-				first = false;
-			} else {
-				while (concepts.hasNext()) {
-					NonLiteral concept = concepts.next().getSubject();
-					GraphNode conceptGraphNode = new GraphNode(concept, graph);
-					Iterator<Resource> sameAsConcepts =
-							conceptGraphNode.getObjects(OWL.sameAs);
-					if (!(hasSameAs(resultMGraph, concept)
-							|| hasAnyConcept(resultMGraph, sameAsConcepts))) {
-						resultNode.addProperty(SKOS.member, concept);
-						addConceptToResultMGraph(resultMGraph, conceptGraphNode);
+			if (!freeConceptProviderFound) {
+				if (cp instanceof LocalConceptProvider) {
+					if (((LocalConceptProvider) cp).getSelectedScheme().equals(
+							freeConceptScheme)) {
+						freeConceptProviderFound = true;
 					}
-
 				}
 			}
+			retrieveConcepts(cp, first, resultNode, searchTerm);
+			if (first) {
+				first = false;
+			}
+		}
+		if (!freeConceptProviderFound && freeConceptProvider != null) {
+			retrieveConcepts(freeConceptProvider, first, resultNode, searchTerm);
 		}
 		resultNode.addProperty(RDF.type, SKOS.Collection);
 		return resultNode;
+	}
+
+	private void retrieveConcepts(ConceptProvider conceptProvider, boolean first,
+			GraphNode resultNode, String searchTerm) {
+		MGraph resultMGraph = (MGraph) resultNode.getGraph();
+		Graph graph = conceptProvider.retrieveConcepts(searchTerm);
+		Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
+		if (first) {
+			while (concepts.hasNext()) {
+				resultNode.addProperty(SKOS.member, concepts.next().getSubject());
+			}
+			resultMGraph.addAll(graph);
+		} else {
+			while (concepts.hasNext()) {
+				NonLiteral concept = concepts.next().getSubject();
+				GraphNode conceptGraphNode = new GraphNode(concept, graph);
+				Iterator<Resource> sameAsConcepts =
+						conceptGraphNode.getObjects(OWL.sameAs);
+				if (!(hasSameAs(resultMGraph, concept) || hasAnyConcept(resultMGraph, sameAsConcepts))) {
+					resultNode.addProperty(SKOS.member, concept);
+					addConceptToResultMGraph(resultMGraph, conceptGraphNode);
+				}
+
+			}
+		}
 	}
 
 	private boolean hasSameAs(MGraph graph, NonLiteral sameAsConcept) {
