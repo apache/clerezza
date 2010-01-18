@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,6 +37,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.platform.concepts.ontologies.CONCEPTS;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -70,11 +74,13 @@ import org.osgi.service.component.ComponentContext;
 @Component
 @Services({
 	@Service(Object.class),
-	@Service(ConceptProviderManager.class)
+	@Service(ConceptProviderManager.class),
+	@Service(GlobalMenuItemsProvider.class)
 })
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("/concepts/provider-manager")
-public class SimpleConceptProviderManager implements ConceptProviderManager {
+public class SimpleConceptProviderManager implements ConceptProviderManager,
+		GlobalMenuItemsProvider {
 
 	@Reference
 	private TcManager tcManager;
@@ -283,5 +289,14 @@ public class SimpleConceptProviderManager implements ConceptProviderManager {
 	@Override
 	public List<ConceptProvider> getConceptProviders() {
 		return conceptProviderList;
+	}
+
+	@Override
+	public Set<GlobalMenuItem> getMenuItems() {
+		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+
+		items.add(new GlobalMenuItem("/concepts/provider-manager/edit-concept-provider-list",
+				"CPM", "Concept Provider Manager", 5, "Main-Modules"));
+		return items;
 	}
 }

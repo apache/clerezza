@@ -2,18 +2,18 @@ resultDocModifier.addScriptReference("/scripts/ajax-options.js");
 resultDocModifier.addScriptReference("/static/concepts/scripts/concept-find-create.js");
 
 <div>Add Concepts</div>
-<form onsubmit="return ConceptFinder.search()" id="suggestions-form">
+<form onsubmit="return ConceptFinder.search()" id="search-form">
 	<br/>
 	<input type="text" value="" name="search-term"/>
 	<a href="#" id="go-button" class="tx-icon tx-icon-search">Go</a>
 	<br/>
 	<br/>
-	<div id="system-suggested-concepts-area">
-		<div>
+	<div id="system-found-concepts-area">
+		<div id="label-for-search-results">
 			Found Concepts:
 		</div>
 		<br/>
-		<div id="system-suggested-concepts"></div>
+		<div id="system-found-concepts"></div>
 	</div>
 	<br/>
 	<div id="user-defined-concept-area">
