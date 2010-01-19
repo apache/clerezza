@@ -390,5 +390,15 @@
 			<artifactId>org.apache.clerezza.app.webguiexamples</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+	      <groupId>org.apache.clerezza</groupId>
+	      <artifactId>org.apache.clerezza.platform.concepts.core</artifactId>
+	      <scope>runtime</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.apache.clerezza</groupId>
+	      <artifactId>org.apache.clerezza.platform.concepts.ontologies</artifactId>
+	      <scope>runtime</scope>
+	    </dependency>
 	</dependencies>
 </project>
