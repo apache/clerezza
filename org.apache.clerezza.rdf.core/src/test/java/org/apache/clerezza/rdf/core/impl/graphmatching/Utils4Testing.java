@@ -16,44 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.impl;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
+package org.apache.clerezza.rdf.core.impl.graphmatching;
 
-import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.rdf.core.impl.TripleImpl;
 
 /**
  *
  * @author reto
  */
-public class SimpleMGraph extends SimpleTripleCollection implements MGraph {
+public class Utils4Testing {
 
-	/**
-	 * Creates an empty SimpleMGraph
-	 */
-	public SimpleMGraph() {
+	static MGraph generateLine(int size, final NonLiteral firstNode) {
+		if (size < 1) {
+			throw new IllegalArgumentException();
+		}
+		MGraph result = new SimpleMGraph();
+		NonLiteral lastNode = firstNode;
+		for (int i = 0; i < size; i++) {
+			final BNode newNode = new BNode();
+			result.add(new TripleImpl(lastNode, u1, newNode));
+			lastNode = newNode;
+		}
+		return result;
 	}
 
-	public SimpleMGraph(Set<Triple> baseSet) {
-		super(baseSet);
-	}
+	final static UriRef u1 = new UriRef("http://example.org/u1");
 
-	public SimpleMGraph(Collection<Triple> baseCollection) {
-		super(baseCollection);
-	}
-
-	public SimpleMGraph(Iterator<Triple> iterator) {
-		super(iterator);
-	}
-
-	@Override
-	public Graph getGraph() {
-		return new SimpleGraph(this);
-	}
 }
-
-	

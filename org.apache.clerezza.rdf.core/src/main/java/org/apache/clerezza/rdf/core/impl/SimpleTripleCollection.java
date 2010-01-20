@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.core.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -71,6 +72,16 @@ class SimpleTripleCollection extends AbstractTripleCollection {
 	 */
 	public SimpleTripleCollection(Set<Triple> baseSet) {
 		this.triples = baseSet;
+	}
+
+	/**
+	 * Creates a SimpleTripleCollection for the specified collection of triples,
+	 * subsequent modification of baseSet do not affect the created instance.
+	 *
+	 * @param baseSet
+	 */
+	public SimpleTripleCollection(Collection<Triple> baseCollection) {
+		this.triples = new HashSet<Triple>(baseCollection);
 	}
 
 	@Override

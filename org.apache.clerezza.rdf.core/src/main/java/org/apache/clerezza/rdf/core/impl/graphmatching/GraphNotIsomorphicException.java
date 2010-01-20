@@ -16,44 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.impl;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
+package org.apache.clerezza.rdf.core.impl.graphmatching;
 
 /**
  *
  * @author reto
  */
-public class SimpleMGraph extends SimpleTripleCollection implements MGraph {
+class GraphNotIsomorphicException extends Exception {
 
-	/**
-	 * Creates an empty SimpleMGraph
-	 */
-	public SimpleMGraph() {
-	}
-
-	public SimpleMGraph(Set<Triple> baseSet) {
-		super(baseSet);
-	}
-
-	public SimpleMGraph(Collection<Triple> baseCollection) {
-		super(baseCollection);
-	}
-
-	public SimpleMGraph(Iterator<Triple> iterator) {
-		super(iterator);
-	}
-
-	@Override
-	public Graph getGraph() {
-		return new SimpleGraph(this);
-	}
 }
-
-	
