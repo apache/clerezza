@@ -39,6 +39,10 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.SCRIPT;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * This class handles HTTP GET requests to resources of type ScriptGeneratedResource.
@@ -47,25 +51,20 @@ import org.apache.clerezza.rdf.ontologies.SCRIPT;
  * 
  * @see org.apache.clerezza.rdf.ontologies.SCRIPT#ScriptGeneratedResource
  *
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="org.apache.clerezza.platform.typehandler" type="Boolean" value="true"
- *
  */
+@Component
+@Service(Object.class)
+@Property(name="org.apache.clerezza.platform.typehandler", boolValue=true)
 @SupportedTypes(types = { "http://clerezza.org/2009/07/script#ScriptGeneratedResource" }, prioritize = true)
 public class ScriptGeneratedResourceTypeHandler {
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(ScriptGeneratedResourceTypeHandler.class);
 
-	/**
-	 * @scr.reference
-	 */
+        @Reference
 	private ContentGraphProvider cgProvider;
 
-	/**
-	 * @scr.reference
-	 */
+        @Reference
 	private ScriptExecution scriptExecution;
 
 	/**
