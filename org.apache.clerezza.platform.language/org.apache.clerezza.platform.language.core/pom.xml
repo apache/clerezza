@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>org.apache.clerezza.platform.language</artifactId>
+		<groupId>org.apache.clerezza</groupId>
+		<version>0.2-incubating-SNAPSHOT</version>
+	</parent>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.platform.language.core</artifactId>
+	<version>0.2-incubating-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+	<name>Clerezza - Platform Language Core</name>
+	<description>This bundles provides methods to manage languages in the Clerezza platform
+    </description>
+	<dependencies>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.language.ontologies</artifactId>
+		</dependency>
+	</dependencies>
+</project>

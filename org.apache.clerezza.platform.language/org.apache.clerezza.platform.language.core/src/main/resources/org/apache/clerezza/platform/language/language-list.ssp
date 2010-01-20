@@ -1,0 +1,29 @@
+import org.apache.clerezza.rdf.scala.utils.RichGraphNode
+def lingvoj(s: Any) = new UriRef("http://www.lingvoj.org/ontology#"+s)
+def rdfs(s: Any) = new UriRef("http://www.w3.org/2000/01/rdf-schema#"+s)
+def getLabel(language:Language, node:RichGraphNode) : String = {
+	val matchingLabels = for (label <- node/rdfs("label");
+		val labelLiteral = label.getNode.asInstanceOf[PlainLiteral];
+		if (labelLiteral.getLanguage.equals(language))
+	) yield {
+		label*
+	}
+	if (matchingLabels.length == 0) {
+		"no label"
+	} else {
+		matchingLabels.apply(0)
+	}
+}
+resultDocModifier.addScriptReference("/language-widget/scripts/language-list.js")
+val defaultLanguage:Language = new Language(res%!!(0)/lingvoj("iso1")*)
+
+<select name="availablelanguages" id="availablelanguages">
+	<option value={defaultLanguage.toString} selected="selected">{getLabel(defaultLanguage, res%!!(0))}</option>
+	{
+		for(language <- res!!;
+			val iso1 = language/lingvoj("iso1")*;
+			if (!iso1.equals(defaultLanguage.toString))) yield {
+			<option value={iso1}>{getLabel(defaultLanguage,language)}</option>
+		}
+	}
+</select>
