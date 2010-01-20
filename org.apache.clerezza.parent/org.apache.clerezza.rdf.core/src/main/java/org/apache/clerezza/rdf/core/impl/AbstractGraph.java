@@ -25,6 +25,7 @@ import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.impl.graphmatching.GraphMatcher;
 
 /**
  * <code>AbstractGraph</code> is an abstract implementation of <code>Graph</code> 
@@ -91,6 +92,15 @@ public abstract class AbstractGraph extends AbstractTripleCollection
 
 	@Override
 	public boolean equals(Object obj) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Graph)) {
+			return false;
+		}
+		if (hashCode() != obj.hashCode()) {
+			return false;
+		}
+		return GraphMatcher.getValidMapping(this, (Graph) obj) != null;
 	}
 }

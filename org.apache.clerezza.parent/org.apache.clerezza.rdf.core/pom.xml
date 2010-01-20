@@ -29,6 +29,12 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+	 <dependency>
+	  <groupId>fastutil</groupId>
+	  <artifactId>fastutil</artifactId>
+	  <version>5.0.9</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -76,3 +82,4 @@
 		</plugins>
 	</build>
 </project>
+
