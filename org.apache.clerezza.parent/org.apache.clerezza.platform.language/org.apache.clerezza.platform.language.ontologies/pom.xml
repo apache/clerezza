@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.apache.clerezza</groupId>
+		<artifactId>org.apache.clerezza.platform.language</artifactId>
+		<version>0.2-incubating-SNAPSHOT</version>
+	</parent>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.platform.language.ontologies</artifactId>
+	<version>0.2-incubating-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+	<name>Clerezza - Platform Language Ontologies</name>
+	<description>
+		Language Ontologies
+	</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.maven-ontologies-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<configuration>
+							<resourcePath>${basedir}/src/main/resources</resourcePath>
+							<sources>
+								<source>${basedir}/target/generated-sources/main/java</source>
+							</sources>
+						</configuration>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
