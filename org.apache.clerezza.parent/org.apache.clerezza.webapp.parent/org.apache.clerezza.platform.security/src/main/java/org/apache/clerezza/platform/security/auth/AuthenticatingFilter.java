@@ -27,6 +27,11 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.security.auth.Subject;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.Service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +45,13 @@ import org.wymiwyg.wrhapi.filter.Filter;
 /**
  * 
  * @author reto
- * 
- * @scr.component 
- *                name="org.apache.clerezza.platform.security.auth.AuthenticatingFilter"
- * @scr.service interface="org.wymiwyg.wrhapi.filter.Filter"
- * @scr.reference name="weightedAuthenticationMethod"
- *     cardinality="1..n" policy="dynamic"
- *     interface="org.apache.clerezza.platform.security.auth.WeightedAuthenticationMethod"
  */
+@Component
+@Service(Filter.class)
+@Reference(name="weightedAuthenticationMethod",
+    cardinality=ReferenceCardinality.MANDATORY_MULTIPLE,
+    policy=ReferencePolicy.DYNAMIC,
+    referenceInterface=WeightedAuthenticationMethod.class)
 public class AuthenticatingFilter implements Filter {
 
 	private final Logger logger = LoggerFactory.getLogger(AuthenticatingFilter.class);

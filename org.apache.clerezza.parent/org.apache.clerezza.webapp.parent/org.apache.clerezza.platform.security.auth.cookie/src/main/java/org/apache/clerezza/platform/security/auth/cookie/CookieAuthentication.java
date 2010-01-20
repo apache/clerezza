@@ -28,6 +28,10 @@ import java.util.Set;
 import javax.ws.rs.core.Cookie;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.security.auth.*;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.wymiwyg.commons.util.Base64;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
@@ -40,10 +44,10 @@ import org.wymiwyg.wrhapi.ResponseStatus;
  *
  * @author mir
  *
- * @scr.component
- * @scr.service interface="org.apache.clerezza.platform.security.auth.WeightedAuthenticationMethod"
- * @scr.property name="weight" type="Integer" value="20"
  */
+@Component
+@Service(WeightedAuthenticationMethod.class)
+@Property(name="weight", intValue=20)
 public class CookieAuthentication implements WeightedAuthenticationMethod{
 
 	/**
@@ -57,9 +61,7 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 	 */
 	private int weight = 20;
 
-	/**
-	 * @scr.reference
-	 */
+        @Reference
 	AuthenticationChecker authenticationChecker;
 
 	public void activate(ComponentContext componentContext) {

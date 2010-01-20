@@ -25,6 +25,10 @@ import java.nio.channels.ReadableByteChannel;
 import java.security.AccessControlException;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.security.auth.*;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.wymiwyg.commons.util.Base64;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
@@ -37,10 +41,10 @@ import org.wymiwyg.wrhapi.util.MessageBody2Read;
  *
  * @author mir
  *
- * @scr.component
- * @scr.service interface="org.apache.clerezza.platform.security.auth.WeightedAuthenticationMethod"
- * @scr.property name="weight" type="Integer" value="10"
  */
+@Component
+@Service(WeightedAuthenticationMethod.class)
+@Property(name="weight", intValue=10)
 public class BasicAuthentication implements WeightedAuthenticationMethod{
 	
 	/**
@@ -48,9 +52,7 @@ public class BasicAuthentication implements WeightedAuthenticationMethod{
 	 */
 	private int weight = 10;
 
-	/**
-	 * @scr.reference
-	 */
+        @Reference
 	AuthenticationChecker authenticationChecker;
 
 	public void activate(ComponentContext componentContext) {
