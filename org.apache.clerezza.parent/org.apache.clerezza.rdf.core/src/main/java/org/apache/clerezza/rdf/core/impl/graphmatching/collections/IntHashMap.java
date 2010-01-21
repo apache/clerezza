@@ -19,10 +19,9 @@
  * but rereleased by the original author under the ASF license (above).
  */
 
-package org.apache.clerezza.rdf.core.impl.graphmatching;
+package org.apache.clerezza.rdf.core.impl.graphmatching.collections;
 
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+
 
 /**
  * <p>A hash map that uses primitive ints for the key rather than objects.</p>
@@ -38,9 +37,10 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  * @version $Revision: 1.2 $
  * @see java.util.HashMap
  */
-class  IntHashMap<T> {
-	
-	private IntSet keySet = new IntOpenHashSet();
+public class IntHashMap<T> {
+
+
+	private IntSet keySet = new IntHashSet();
 
     /**
      * The hash table data.
