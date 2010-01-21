@@ -19,6 +19,7 @@
 package org.apache.clerezza.ontologiesplugin;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
@@ -27,6 +28,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -165,22 +168,30 @@ public class OntologyJavaClassCreatorMojo extends AbstractMojo {
 			}
 		};
 
-		PrintWriter out = null;
 		SchemaGen schemaGen;
 		try {
 			schemaGen = new SchemaGen(arguments);
-			String rootPath = baseDir + File.separator + "target"
-					+ File.separator + "generated-sources" + File.separator
-					+ "main" + File.separator + "java" + File.separator;
-			File dir = new File(rootPath + pathToJavaClass);
-			dir.mkdirs();
-			out = new PrintWriter(new File(rootPath + pathToJavaClass
-					+ className + ".java"));
-			schemaGen.writeClass(out);
 		} catch (IOException e) {
 			getLog().error(e.getMessage(), e);
+			return;
 		} catch (URISyntaxException e) {
 			getLog().error(e.getMessage(), e);
+			return;
+		}
+		String rootPath = baseDir + File.separator + "target"
+				+ File.separator + "generated-sources" + File.separator
+				+ "main" + File.separator + "java" + File.separator;
+		File dir = new File(rootPath + pathToJavaClass);
+		dir.mkdirs();
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(new File(rootPath + pathToJavaClass + className + ".java"));
+		} catch (FileNotFoundException e) {
+			getLog().error(e.getMessage(), e);
+			return;
+		}
+		try {
+			schemaGen.writeClass(out);
 		} finally {
 			out.flush();
 		}
