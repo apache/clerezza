@@ -19,8 +19,8 @@
 
 package org.apache.clerezza.rdf.core.impl.graphmatching;
 
-import it.unimi.dsi.fastutil.ints.IntIterator;
 
+import org.apache.clerezza.rdf.core.impl.graphmatching.collections.IntHashMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,6 +34,7 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.core.impl.graphmatching.collections.IntIterator;
 
 /**
  *
@@ -118,7 +119,7 @@ public class HashMatching {
 		}
 
 		matchingGroups = new HashMap<Set<BNode>, Set<BNode>>();
-		IntIterator hashIter = hashNodeMap1.keySet().iterator();
+		IntIterator hashIter = hashNodeMap1.keySet().intIterator();
 		while (hashIter.hasNext()) {
 			int hash = hashIter.next();
 			Set<BNode> nodes1 = hashNodeMap1.get(hash);
