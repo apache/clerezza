@@ -53,14 +53,18 @@ class WebRenderingFunctions implements RenderingFunctions {
 	private TripleCollection graph;
 	private GraphNode context;
 	private CallbackRenderer callbackRenderer;
+	private String mode;
 
 	WebRenderingFunctions(TripleCollection graph,
 			GraphNode context,
-			CallbackRenderer callbackRenderer) {
+			CallbackRenderer callbackRenderer, String mode) {
 		this.graph = graph;
 		this.context = context;
 		this.callbackRenderer = callbackRenderer;
+		this.mode = mode;
 	}
+
+
 
 	@Override
 	public RenderingFunction<Object, String> getDefaultFunction() {
@@ -116,6 +120,7 @@ class WebRenderingFunctions implements RenderingFunctions {
 	public Map<String, RenderingFunction> getNamedFunctions() {
 		Map<String, RenderingFunction> result = new HashMap<String, RenderingFunction>();
 		result.put("render", new RenderFunction());
+		result.put("mode", new ModeFunction());
 		result.put("language", languageFunction);
 		result.put("datatype", datatypeFunction);
 		result.put("type", typeFunction);
@@ -148,6 +153,17 @@ class WebRenderingFunctions implements RenderingFunctions {
 			} catch (UnsupportedEncodingException ex) {
 				throw new RuntimeException(ex);
 			}
+		}
+	}
+
+	/**
+	 * A function that returns the current rendering mode
+	 */
+	private class ModeFunction implements RenderingFunction<Object, String> {
+
+		@Override
+		public String process(Object... values) {
+			return mode;
 		}
 	}
 
@@ -250,6 +266,10 @@ class WebRenderingFunctions implements RenderingFunctions {
 			}
 		}
 	};
+
+
+	
+
 	/**
 	 * A function that takes an object, a beginindex and an endindex as
 	 * arguments. It returns the substring from beginindex to endindex

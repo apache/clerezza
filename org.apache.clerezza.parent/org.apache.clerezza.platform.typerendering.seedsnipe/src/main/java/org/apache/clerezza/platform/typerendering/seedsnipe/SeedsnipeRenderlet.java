@@ -50,11 +50,12 @@ public class SeedsnipeRenderlet implements Renderlet{
 	public void render(GraphNode res, GraphNode context,
 			CallbackRenderer callbackRenderer,
 			URI renderingSpecification,
+			String mode,
 			MediaType mediaType,
 			OutputStream os) throws IOException {
 		try {
 			RenderingFunctions renderingFunctions = new WebRenderingFunctions(
-					res.getGraph(), context, callbackRenderer);
+					res.getGraph(), context, callbackRenderer, mode);
 			seedsnipeEngine.process(res, context, renderingFunctions, renderingSpecification.toURL(), os);
 		} catch (MalformedURLException ex) {
 			throw new WebApplicationException(ex);

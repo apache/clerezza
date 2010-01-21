@@ -149,6 +149,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 							configurationList.add(new RendererImpl(
 									getRenderingSpecification(contentGraph, renderletDef),
 									renderlet,
+									mode,
 									mediaTypeInGraph,
 									prio, new CallbackRendererImpl(RenderletRendererFactoryImpl.this, mediaTypeInGraph),
 									renderletDefNode.hasProperty(RDF.type,

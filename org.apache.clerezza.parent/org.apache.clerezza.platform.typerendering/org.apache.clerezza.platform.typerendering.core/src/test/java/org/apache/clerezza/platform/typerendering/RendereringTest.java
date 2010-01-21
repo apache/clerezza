@@ -76,7 +76,7 @@ public abstract class RendereringTest {
 		@Override
 		public void render(GraphNode res, GraphNode context, 
 				CallbackRenderer callbackRenderer, URI renderingSpecification,
-				MediaType mediaType, OutputStream os) {
+				String mode, MediaType mediaType, OutputStream os) {
 			try {
 				String engineOutput = "";
 

@@ -104,7 +104,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	@Override
 	public void render(GraphNode res, GraphNode context,
 			CallbackRenderer callbackRenderer, URI renderingSpecification,
-			MediaType mediaType, OutputStream os) throws IOException {
+			String mode, MediaType mediaType, OutputStream os) throws IOException {
 		try {
 			logger.debug("ScalaServerPagesRenderlet rendering");
 			final InputStream in = renderingSpecification.toURL().openStream();
@@ -121,6 +121,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			map.put("res", GraphNode.class);
 			map.put("context", GraphNode.class);
 			map.put("renderer", CallbackRenderer.class);
+			map.put("mode", String.class);
 			logger.debug("compiling script");
 			
 			CompiledScript cs = scalaService.interpretScalaScript(
@@ -131,6 +132,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			values.put("res", res);
 			values.put("context", context);
 			values.put("renderer", callbackRenderer);
+			values.put("mode", mode);
 			os.write(toString(cs.execute(values)).getBytes("UTF-8"));
 			logger.debug("executed");
 			os.flush();
