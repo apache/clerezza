@@ -62,6 +62,7 @@ public class TitledContentRenderlet implements Renderlet {
 	public void render(GraphNode res, GraphNode context,
 			CallbackRenderer callbackRenderer,
 			URI renderingSpecification,
+			String mode,
 			MediaType mediaType,
 			OutputStream os) throws IOException {
 		PrintWriter writer = new PrintWriter(os);
@@ -70,14 +71,14 @@ public class TitledContentRenderlet implements Renderlet {
 		writer.flush();
 		callbackRenderer.render(
 				containedNodes.get(0),
-				context, "naked", os);
+				context, mode, os);
 		writer.println(getHeaderClose());
 		writer.print("<div>");
 		headingLevel.set(headingLevel.get()+1);
 		writer.flush();
 		callbackRenderer.render(
 				containedNodes.get(1),
-				context, "naked", os);
+				context, mode, os);
 		headingLevel.set(headingLevel.get()-1);
 		writer.println("</div>");
 		writer.flush();

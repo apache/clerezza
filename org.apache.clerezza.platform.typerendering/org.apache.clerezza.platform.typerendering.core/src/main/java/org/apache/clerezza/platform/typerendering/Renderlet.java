@@ -29,7 +29,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * A renderlet renders a <code>GraphNode</code> with the optionally specified
  * rendering specification (e.g. a template).
  * 
- * @author daniel, mir
+ * @author daniel, mir, reto
  */
 public interface Renderlet {
 	
@@ -38,15 +38,19 @@ public interface Renderlet {
 	 * engine.
 	 *
 	 * @param res  RDF resource to be rendered with the template.
-	 * @param context RDF resource providing a redering context.
-	 * @param typeRenderer renderer for call backs.
-	 * @param mode mode .
+	 * @param context  RDF resource providing a redering context.
+	 * @param callbackRenderer  renderer for call backs.
+	 * @param renderingSpecification  the rendering specification
+	 * @param mediaType  the media type this media produces (a part of)
+	 * @param mode  the mode this Renderlet was invoked with, this is mainly used
+	 * so that the callbackeRenderer can be claeed inheriting the mode.
 	 * @param os  where the output will be written to.
 	 */
 	public void render(GraphNode res,
 			GraphNode context,
 			CallbackRenderer callbackRenderer,
 			URI renderingSpecification,
+			String mode,
 			MediaType mediaType,
 			OutputStream os) throws IOException;
 }

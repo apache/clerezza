@@ -46,7 +46,7 @@ public class WebRenderingFunctionsTest {
 				.createTypedLiteral(date);
 
 		WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
-				null, null, null);
+				null, null, null, null);
 		RenderingFunction<Object, String> dateFunction = webRenderingFunctions
 				.getNamedFunctions().get("date");
 
@@ -61,7 +61,7 @@ public class WebRenderingFunctionsTest {
 	public void substringTest() throws IOException {
 
 		WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
-				null, null, null);
+				null, null, null, null);
 		RenderingFunction<Object, String> function = webRenderingFunctions
 				.getNamedFunctions().get("substring");
 
@@ -92,7 +92,7 @@ public class WebRenderingFunctionsTest {
 	@Test
 	public void lexicalFormFunctionTest() throws IOException {
 		WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
-				null, null, null);
+				null, null, null, null);
 		RenderingFunction<Literal, String> function = webRenderingFunctions
 				.getNamedFunctions().get("lexicalForm");
 		
@@ -103,7 +103,7 @@ public class WebRenderingFunctionsTest {
 	@Test
 	public void containsTest() throws IOException {
 		WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
-				null, null, null);
+				null, null, null, null);
 		RenderingFunction<Object, Boolean> function = webRenderingFunctions
 				.getNamedFunctions().get("contains");
 		UriRef testObject = new UriRef("http://example.org/bla#fooBar");

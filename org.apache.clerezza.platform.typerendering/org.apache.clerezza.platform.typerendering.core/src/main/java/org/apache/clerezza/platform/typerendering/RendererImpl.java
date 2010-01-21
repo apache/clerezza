@@ -39,12 +39,14 @@ class RendererImpl implements Renderer, Comparable {
 	private int prio;
 	private CallbackRenderer callbackRenderer;
 	private boolean builtIn;
+	private String mode;
 
 	RendererImpl(UriRef renderingSpecification,
-			Renderlet renderlet, MediaType mediaType, int prio,
+			Renderlet renderlet, String mode, MediaType mediaType, int prio,
 			CallbackRenderer callbackRenderer, boolean builtIn) {
 		this.renderlet = renderlet;
 		this.mediaType = mediaType;
+		this.mode = mode;
 		this.prio = prio;
 		this.callbackRenderer = callbackRenderer;
 		this.builtIn = builtIn;
@@ -81,7 +83,7 @@ class RendererImpl implements Renderer, Comparable {
 	public void render(GraphNode resource, GraphNode context, OutputStream os)
 		throws IOException {
 			renderlet.render(resource, context, callbackRenderer,
-				renderSpecUri, mediaType, os);
+				renderSpecUri, mode, mediaType, os);
 	}
 
 	@Override
