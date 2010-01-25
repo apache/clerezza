@@ -2,6 +2,8 @@ resultDocModifier.addStyleSheet("/style/style.css");
 resultDocModifier.addStyleSheet("/yui/container/assets/container-core.css");
 resultDocModifier.addScriptReference("/jquery/jquery-1.3.2.min.js");
 resultDocModifier.addScriptReference("/jquery/jquery.menu.js");
+resultDocModifier.addScriptReference("/jquery/jquery.panel.js");
+resultDocModifier.addScriptReference("/style/scripts/panel.js");
 resultDocModifier.addScriptReference("/scripts/modification-status.js");
 resultDocModifier.addScriptReference("/scripts/status-message.js");
 resultDocModifier.addScriptReference("/yui/yahoo-dom-event/yahoo-dom-event.js");
@@ -32,6 +34,17 @@ resultDocModifier.addScriptReference("/scripts/alert-message.js");
 			<div id="tx-module-options">	
 				<ol id="tx-module-options-ol">
 				</ol>	
+			</div>
+		</div>
+		<div class="tx-panel" id="tx-panel">
+			<a href="#" class="tx-panel-open-close tx-icon-left-inverse" id="tx-panel-open-close">open/close</a>
+			<div id="tx-panel-title"></div>
+			<div class="tx-panel-window">
+				<div class="tx-tab" id="tx-panel-tab">
+					<ol id="tx-tab-panel-ol">
+					</ol>
+				</div>
+				<div class="tx-panel-detail" id="tx-panel-detail"></div>
 			</div>
 		</div>
 		{render(res,"naked")}
