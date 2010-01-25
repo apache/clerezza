@@ -1,10 +1,11 @@
 /* panel */
 .tx-panel {
 	position: absolute;
-	top: 0;
+	top: 12em;
 	bottom: 0;
 	left: 0.5em;
 	width: 27em;
+	z-Index: 100;
 }
 
 .tx-panel.tx-close {

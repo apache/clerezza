@@ -67,7 +67,6 @@ public class Style {
 	private RenderletManager renderletManager;
 
 	/**
-	 * The activate method is called when SCR activates the component
 	 * configuration.
 	 *
 	 * @param context
@@ -88,6 +87,7 @@ public class Style {
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(templateURL.toString()), PLATFORM.HeadedPage, null,
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+
 	}
 
 	/**
@@ -99,12 +99,6 @@ public class Style {
 	@Path("{path:.+}")
 	public PathNode getStaticFile(@PathParam("path") String path) {
 		final PathNode node = fileServer.getNode(path);
-		logger.debug("Serving static {}", node);
-		try {
-			logger.debug("Inputstream {}", node.getInputStream());
-		} catch (IOException ex) {
-			logger.error("Reading static file {}", ex);
-		}
 		return node;
 	}
 }
