@@ -13,7 +13,7 @@
 	overflow: hidden;
 }
 
-.tx-panel.tx-close .tx-tab ol  {
+.tx-panel.tx-close .tx-panel-tab-buttons ol  {
 	display: none;
 }
 
@@ -36,19 +36,19 @@
 	line-height: 2.2em;
 	margin: 0 0 0.5em 26px;
 	width: 21em;
-	/* for the border of the tx-panel2-detail box */
+	/* for the border of the tx-panel-tabs box */
 	padding-right: 2px;
 	padding-left: 1em;
 }
 
-.tx-panel-detail {
+.tx-panel-tabs {
 	border: solid 1px #bdbdbd;
 	margin-left: 26px;
 	width: 22em;
 	min-height: 98%;
 }
 
-.tx-panel-detail > div {
+.tx-panel-tabs > div {
 	padding: 1em;
 	background-image: url(./images/bg/fade-filter.png);
 	background-repeat: repeat-x;
@@ -217,7 +217,7 @@
 
 /* tabs */
 
-.tx-panel .tx-tab {
+.tx-panel .tx-panel-tab-buttons {
 	background-color: #dadada;
 	background-image: url(./images/panel/bg-tab.png);
 	background-repeat: repeat-y;
@@ -227,19 +227,20 @@
 	padding-bottom: 2px;
 }
 
-.tx-panel .tx-tab ol {
+.tx-panel .tx-panel-tab-buttons ol {
 	width: 26px;
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.tx-panel .tx-tab li {
+.tx-panel .tx-panel-tab-buttons li {
 	margin: 0;
 	padding: 0;
 }
 
-.tx-panel .tx-tab li a {
+.tx-panel .tx-panel-tab-buttons li a {
+	background-image: url(./images/panel/tab-button-default.png);
 	height: 30px;
 	width: 26px;
 	display: block;
@@ -248,7 +249,7 @@
 	text-indent: -9999px;
 }
 
-.tx-panel .tx-tab li.tx-active a {
+.tx-panel .tx-panel-tab-buttons li.tx-active a {
 	background-color: #ffffff;
 	border: solid 1px #bdbdbd;
 	border-right: none;

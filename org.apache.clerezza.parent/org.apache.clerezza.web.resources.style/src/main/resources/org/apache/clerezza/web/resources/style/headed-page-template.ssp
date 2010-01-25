@@ -38,13 +38,13 @@ resultDocModifier.addScriptReference("/scripts/alert-message.js");
 		</div>
 		<div class="tx-panel" id="tx-panel">
 			<a href="#" class="tx-panel-open-close tx-icon-left-inverse" id="tx-panel-open-close">open/close</a>
-			<div id="tx-panel-title"></div>
+			<div id="tx-panel-title"><h3></h3></div>
 			<div class="tx-panel-window">
-				<div class="tx-tab" id="tx-panel-tab">
-					<ol id="tx-tab-panel-ol">
+				<div class="tx-panel-tab-buttons" id="tx-panel-tab-buttons">
+					<ol id="tx-panel-tab-buttons-ol">
 					</ol>
 				</div>
-				<div class="tx-panel-detail" id="tx-panel-detail"></div>
+				<div class="tx-panel-tabs" id="tx-panel-tabs"></div>
 			</div>
 		</div>
 		{render(res,"naked")}
