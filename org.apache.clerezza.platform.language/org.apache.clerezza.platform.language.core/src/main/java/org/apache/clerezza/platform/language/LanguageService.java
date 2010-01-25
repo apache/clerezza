@@ -168,9 +168,11 @@ public class LanguageService {
 	 * 
 	 * @param componentContext
 	 */
-	protected void activate(ComponentContext componentContext) {		
+	protected void activate(ComponentContext componentContext) {
+		//access to languages should not require access to system graph,
+		//so copying the resources to an ArrayList
 		languageList = Collections.synchronizedList(
-				new RdfList(getListNode(), systemGraph));
+				new ArrayList<Resource>(new RdfList(getListNode(), systemGraph)));
 		if (languageList.size() == 0) {
 			addLanguage(new UriRef("http://www.lingvoj.org/lang/en"));
 		}
