@@ -11,6 +11,8 @@ def render(resource : GraphNode, mode : String) = {
     renderer.render(resource, context, mode, baos)
     parseNodeSeq(new String(baos.toByteArray))
 }
-
+def ifx[T](con:  => Boolean)(elem: T) :  T = {
+	if (con) elem else null.asInstanceOf[T]
+}
 val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
 
