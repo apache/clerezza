@@ -19,6 +19,7 @@
 		<module>org.apache.clerezza.platform.content.representations</module>
 		<module>org.apache.clerezza.platform.dashboard</module>
 		<module>org.apache.clerezza.platform.documentation.viewer</module>
+		<module>org.apache.clerezza.platform.language</module>
 		<module>org.apache.clerezza.platform.menumanager</module>
 		<module>org.apache.clerezza.platform.scripting.scriptmanager</module>
 		<module>org.apache.clerezza.platform.security</module>
