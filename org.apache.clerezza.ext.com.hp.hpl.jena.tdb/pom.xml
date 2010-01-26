@@ -66,6 +66,8 @@
 						!junit.*,!org.apache.xml.resolver.*,!sun.*,
 						!org.junit.*,
 						!com.sun.msv.*,
+						!com.sun.jdmk.*,
+						!javax.jms.*,
 						*</Import-Package>
 						<Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
 					</instructions>
