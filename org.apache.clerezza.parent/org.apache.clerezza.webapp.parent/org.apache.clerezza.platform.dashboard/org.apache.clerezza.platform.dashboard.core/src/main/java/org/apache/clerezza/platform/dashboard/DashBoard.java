@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
-import org.apache.clerezza.platform.dashboard.ontology.DASHBOARD;
+import org.apache.clerezza.platform.dashboard.ontologies.DASHBOARD;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
