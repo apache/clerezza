@@ -990,8 +990,8 @@
 		<url>https://issues.apache.org/jira/browse/CLEREZZA</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Continuum</system>
-		<url>http://build.trialox.org/continuum/</url>
+		<system>Hudson</system>
+		<url>http://hudson.zones.apache.org/hudson/</url>
 	</ciManagement>
 
 
