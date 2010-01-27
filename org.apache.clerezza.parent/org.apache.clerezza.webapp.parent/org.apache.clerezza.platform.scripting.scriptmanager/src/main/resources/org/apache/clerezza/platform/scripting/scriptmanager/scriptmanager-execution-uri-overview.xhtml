@@ -12,22 +12,17 @@ resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a hr
 
 resultDocModifier.addNodes2Elem("tx-module-options", <div id="addExecutionUriForm" style="display:none; float:right;"></div>);
 
+resultDocModifier.addNodes2Elem("tx-panel-tabs", <div id="scripts"><h3>Scripts</h3>
+
+					<div id="tx-result" class="tx-result">
+
+						{render(res/sma("scriptList") , "naked")}
+
+					</div>
+				</div>);
+
+
 <div id="tx-content">
-	<div class="tx-panel" id="tx-panel">
-		<a href="#" class="tx-panel-open-close tx-icon-left-inverse" id="tx-panel-open-close">open/close</a>
-		<h3>Scripts</h3>
-		<div class="tx-panel-window">
-			<div class="tx-tab">  </div>
-			<div class="tx-panel-detail">
-				<div id="tx-result" class="tx-result">
-
-					{render(res/sma("scriptList") , "naked")}
-
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<div id="tx-list" class="tx-edit tx-show-panel">
 	</div>
 </div>
