@@ -13,29 +13,23 @@ resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class=""><a href="execu
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="deleteButton" class="tx-button tx-button-remove" href="#">Delete</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="editButton" class="tx-button tx-button-create" href="#">Save</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton" class="tx-button tx-button-modify" href="#">Execute</a></li>);
-	
-        <div id="tx-content">
 
-            <div class="tx-panel" id="tx-panel">
-                <a href="#" class="tx-panel-open-close tx-icon-left-inverse" id="tx-panel-open-close">open/close</a>
-				<h3>Scripts</h3>
-				<div class="tx-panel-window">
-					<div class="tx-tab">  </div>
-					<div class="tx-panel-detail">
-						<div id="tx-result" class="tx-result">
+resultDocModifier.addNodes2Elem("tx-panel-tabs", <div id="scripts"><h3>Scripts</h3>
 
-							{render(res/sma("scriptList") , "naked")}
+					<div id="tx-result" class="tx-result">
 
-						</div>
+						{render(res/sma("scriptList") , "naked")}
+
 					</div>
-				</div>
-            </div>
-            <div class="tx-edit tx-show-panel" id="tx-list">
-                {if (!((res/sma("script")*).equals(""))) {
-                    render(res/sma("script"), "naked")
-				} else {
-					<div></div>
-				}}
-            </div>
-        </div>
+				</div>);
+
+<div id="tx-content">
+	<div class="tx-edit tx-show-panel" id="tx-list">
+		{if (!((res/sma("script")*).equals(""))) {
+			render(res/sma("script"), "naked")
+		} else {
+			<div></div>
+		}}
+	</div>
+</div>
 
