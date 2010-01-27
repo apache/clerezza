@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,9 +35,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Providers;
+import org.apache.clerezza.rdf.utils.MGraphUtils.NoSuchSubGraphException;
 
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.ComponentContext;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
@@ -48,6 +52,7 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.rdf.utils.MGraphUtils;
 import org.apache.clerezza.web.fileserver.BundlePathNode;
 import org.apache.clerezza.web.fileserver.FileServer;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
@@ -57,22 +62,18 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  * using the Discobits ontology
  *
  * @author rbn
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
  *
  */
+@Component
+@Service(Object.class)
+@Property(name="javax.ws.rs", boolValue=true)
 @Path("tools/editor")
 public class Editor {
-	
-	/**
-	 * @scr.reference
-	 */
+
+	@Reference
 	private ContentGraphProvider cgProvider;
 
-	/**
-	 * @scr.reference
-	 */
+	@Reference
 	private TcManager tcManager;
 
 	
@@ -116,35 +117,39 @@ public class Editor {
 			tcManager.getMGraph(graphUri);
 		return new GraphNode(uri, mGraph);
 	}
-	/*
-	 * note that without specifying consumes the subsequent method using
-	 * @FormParam is never selected
+
+	/**
+	 * replaces the subgraph serialized with RDF/XML in <code>revokedString
+	 * </code> with the one from <code>assertedString</code>.
+	 *
+	 * @param graphUri the graph within which the replacement has to take place or null
+	 * for the content graph
+	 * @param assertedString the asserted Graph as RDF/XML
+	 * @param revokedString the revoked Graph as RDF/XML
 	 */
 	@POST
 	@Path("post")
-	@Consumes({"application/rdf+xml", "text/rdf+n3","application/n-triples","application/turtle","application/n3","text/n3","text/turtle"})
-	public void postDiscobit(@QueryParam("resource") UriRef uri, 
-			@QueryParam("graph") UriRef graphUri, Graph graph) {
-		final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
-			tcManager.getMGraph(graphUri);
-		new SimpleDiscobitsHandler(mGraph).remove(uri);
-		mGraph.addAll(graph);
-	}
-	
-	@POST
-	@Path("post")
-	public void postDiscobit(@QueryParam("resource") UriRef uri,
-			@QueryParam("graph") UriRef graphUri,
-			@FormParam("assert") String assertedString) {
+	public void postDiscobit(@QueryParam("graph") UriRef graphUri,
+			@FormParam("assert") String assertedString,
+			@FormParam("revoke") String revokedString) {
 		MessageBodyReader<Graph> graphReader = providers.getMessageBodyReader(Graph.class, Graph.class, null,rdfXmlType);
 		final Graph assertedGraph;
+		final Graph revokedGraph;
 		try {
-			assertedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(assertedString.getBytes()));			
+			assertedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(assertedString.getBytes()));
+			revokedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(revokedString.getBytes()));
 		} catch (IOException ex) {
 			logger.error("reading graph {}", ex);
 			throw new WebApplicationException(ex, 500);
 		}
-		postDiscobit(uri, graphUri, assertedGraph);
+		final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
+			tcManager.getMGraph(graphUri);
+		try {
+			MGraphUtils.removeSubGraph(mGraph, revokedGraph);
+		} catch (NoSuchSubGraphException ex) {
+			throw new RuntimeException(ex);
+		}
+		mGraph.addAll(assertedGraph);
 	}
 
 	@GET
