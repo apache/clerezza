@@ -477,7 +477,7 @@ public class JaxRsHandler implements Handler {
 			}
 			
 		} catch (ResourceMethodException ex) {
-			Exception cause = (Exception) ex.getCause();
+			Throwable cause = ex.getCause();
 			if (cause == null) { // This should not happen
 				logger.error("Exception {}", ex);
 			} else {
@@ -500,7 +500,7 @@ public class JaxRsHandler implements Handler {
 		}
 	}
 
-	static void handleException(Exception exception, WebRequest request, Response response) throws HandlerException, RuntimeException {
+	static void handleException(Throwable exception, WebRequest request, Response response) throws HandlerException, RuntimeException {
 		if (exception instanceof WebApplicationException) {
 			WebApplicationException webEx = (WebApplicationException) exception;
 			logger.debug("Exception {}", webEx);
