@@ -109,6 +109,7 @@ public class InjectionUtilities {
 
 			if (count > countParameters) {
 				constructor = c;
+				countParameters = count; //update max parameters size found so far
 			}
 		}
 
