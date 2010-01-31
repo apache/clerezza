@@ -34,12 +34,17 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Assert;
+import org.apache.clerezza.platform.scripting.scriptmanager.ScriptManager;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.web.resources.jquery.JQuery;
+import org.apache.clerezza.web.resources.scripts.Scripts;
 import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.exam.Inject;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -57,6 +62,14 @@ public class FelixClerezzaPlatformTest {
 				"org.osgi.core").versionAsInProject(),
 				mavenBundle().groupId("org.osgi").artifactId(
 				"org.osgi.compendium").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza.ext").artifactId(
+				"com.hp.hpl.jena").versionAsInProject(),
+				mavenBundle().groupId("org.apache.felix").artifactId(
+				"org.apache.felix.log").versionAsInProject(),
+				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
+				"pax-logging-api").versionAsInProject(),
+				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
+				"pax-logging-service").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.rdf.core").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza.ext").artifactId(
@@ -77,12 +90,92 @@ public class FelixClerezzaPlatformTest {
 				"org.apache.felix.eventadmin").version("1.0.0"),
 				mavenBundle().groupId("org.apache.felix").artifactId(
 				"org.apache.felix.metatype").version("1.0.2"),
-				/*dsProfile(),*/
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.triaxrs").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza.ext").artifactId(
+				"javax.mail").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza.ext").artifactId(
+				"org.json.simple").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.utils").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.jaxrs.rdf.providers").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.jaxrs.utils").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.ontologies").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.config").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.graphprovider.content").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.templating").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.scala").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.typerendering.scalaserverpages").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.scala.utils").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.typerendering.ontologies").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.typerendering.core").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.templating.seedsnipe").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.typerendering.seedsnipe").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.mail").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.utils.customproperty").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.dashboard.core").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.dashboard.ontologies").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.web.fileserver").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.content").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.typehandlerspace").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.web.resources.jquery").startLevel(4).versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.usermanager").startLevel(4).versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.scripting").startLevel(4).versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.jena.sparql").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.jena.parser").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.jena.serializer").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.rdfjson").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.web.ontologies").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.rdf.web.core").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.typerendering.manager").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.scripting.scriptmanager").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.xhtml2html").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.web.resources.yui").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.utils.imageprocessing").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.menumanager").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.language").versionAsInProject(),
+				//dsProfile(),
 				configProfile(),
 				webProfile(),
 				junitBundles(),
 				frameworks(
-				felix().version("2.0.1")),
+				felix().version("2.0.2")),
 				systemProperty("org.osgi.service.http.port").value(
 				Integer.toString(testHttpPort)));
 	}
@@ -106,7 +199,21 @@ public class FelixClerezzaPlatformTest {
 		Assert.assertTrue(webServerExist);
 		Object service = waitFor(TcManager.class, 20000);
 		Assert.assertTrue(service != null);
+
 	}
+
+	@Test
+	public void checkJaxRsServices()
+			throws Exception {
+		Assert.assertTrue(webServerExist);
+		Object service = waitFor(JQuery.class, 20000);
+		Assert.assertTrue(service != null);		
+		service = waitFor(Scripts.class, 20000);
+		Assert.assertTrue(service != null);
+		service = waitFor(ScriptManager.class, 20000);
+		Assert.assertTrue(service != null);
+	}
+
 
 	private Object waitFor(Class<?> aClass, long timeout)
 			throws InterruptedException {
