@@ -113,7 +113,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 			if (!literal.getDataType().equals(booleanUri)) {
 				throw new InvalidLiteralTypeException(Boolean.class, literal.getDataType());
 			}
-			return new Boolean(literal.getLexicalForm());
+			return Boolean.valueOf(literal.getLexicalForm());
 		}
 	}
 

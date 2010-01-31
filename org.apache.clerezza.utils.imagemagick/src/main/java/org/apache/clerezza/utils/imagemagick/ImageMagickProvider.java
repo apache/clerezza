@@ -160,7 +160,7 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 			output = br.readLine();
 			br.close();
 			
-			if(!output.contains("Version: ImageMagick")) {
+			if(output!=null && !output.contains("Version: ImageMagick")) {
 				ok = false;
 			}
 			

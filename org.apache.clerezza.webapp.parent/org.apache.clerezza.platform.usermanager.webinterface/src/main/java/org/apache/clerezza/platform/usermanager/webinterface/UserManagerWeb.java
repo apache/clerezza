@@ -48,27 +48,18 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Properties;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-import org.osgi.framework.Bundle;
-import org.osgi.service.component.ComponentContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
 import org.apache.clerezza.platform.config.SystemConfig;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
 import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
-import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.platform.usermanager.UserComparator;
+import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.platform.usermanager.webinterface.ontology.USERMANAGER;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
@@ -94,7 +85,15 @@ import org.apache.clerezza.utils.customproperty.CustomProperty;
 import org.apache.clerezza.utils.customproperty.ontology.CUSTOMPROPERTY;
 import org.apache.clerezza.web.fileserver.BundlePathNode;
 import org.apache.clerezza.web.fileserver.FileServer;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.felix.scr.annotations.Services;
+import org.osgi.framework.Bundle;
+import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
@@ -420,7 +419,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			UriRef property = customPropertyManager
 					.getCustomFieldProperty(customField);
 
-			if (userName != null && userName != ""
+			if (userName != null && !userName.equals("")
 					&& userName.trim().length() > 0) {
 				NonLiteral user = getCustomUser(contentGraph, userName);
 				if (user != null) {

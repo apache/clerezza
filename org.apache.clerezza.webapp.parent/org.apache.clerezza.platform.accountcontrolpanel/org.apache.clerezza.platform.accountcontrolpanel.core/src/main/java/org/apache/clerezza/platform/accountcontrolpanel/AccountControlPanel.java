@@ -169,7 +169,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 		} catch (AccessControlException e) {
 			graphNode.addProperty(CONTROLPANEL.changePasswordPermission,
 					SimpleLiteralFactory.getInstance().createTypedLiteral(
-					new Boolean(false)));
+						Boolean.valueOf(false)));
 		}
 		if (changedPassword != null && changedPassword.equals("false")) {
 			graphNode.addProperty(CONTROLPANEL.changedPassword,
@@ -209,7 +209,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 				GraphNode graphNode = new GraphNode(getAgent(userId), unionGraph);
 				graphNode.addProperty(CONTROLPANEL.userBundlePermission,
 						SimpleLiteralFactory.getInstance().createTypedLiteral(
-						new Boolean(true)));
+						Boolean.valueOf(true)));
 				return graphNode;
 			}
 		});

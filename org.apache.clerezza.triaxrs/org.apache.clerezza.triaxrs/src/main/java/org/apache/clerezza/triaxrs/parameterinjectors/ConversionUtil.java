@@ -145,28 +145,28 @@ class ConversionUtil {
 	private static <T> T getPrimitiveValue(String value, Class<T> type) {
 		//boolean, byte, char, short, int, long, float, and double)
 		if (type.equals(boolean.class)) {
-			return (T) new Boolean(value);
+			return (T) Boolean.valueOf(value);
 		}
 		if (type.equals(byte.class)) {
-			return (T) new Byte(value);
+			return (T) Byte.valueOf(value);
 		}
 		if (type.equals(char.class)) {
-			return (T) new Character(value.charAt(0));
+			return (T) Character.valueOf(value.charAt(0));
 		}
 		if (type.equals(short.class)) {
-			return (T) new Short(value);
+			return (T) Short.valueOf(value);
 		}
 		if (type.equals(int.class)) {
-			return (T) new Integer(value);
+			return (T) Integer.valueOf(value);
 		}
 		if (type.equals(long.class)) {
-			return (T) new Long(value);
+			return (T) Long.valueOf(value);
 		}
 		if (type.equals(float.class)) {
-			return (T) new Float(value);
+			return (T) Float.valueOf(value);
 		}
 		if (type.equals(double.class)) {
-			return (T) new Double(value);
+			return (T) Double.valueOf(value);
 		}
 		throw new RuntimeException(type+" is not a known primitive type");
 	}

@@ -129,7 +129,7 @@ public class RenderingspecificationException extends TypeRenderingException{
 			result.addProperty(TYPERENDERING.line, factory.createTypedLiteral(new Integer(lineNumber)));
 		}
 		if (columnNumber != -1) {
-			result.addProperty(TYPERENDERING.column, factory.createTypedLiteral(new Integer(columnNumber)));
+			result.addProperty(TYPERENDERING.column, factory.createTypedLiteral(Integer.valueOf(columnNumber)));
 		}
 		result.addProperty(TYPERENDERING.message, new PlainLiteralImpl(getMessage()));
 		return result;

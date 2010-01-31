@@ -48,7 +48,7 @@ public class ImageMetaDataGenerator implements MetaDataGenerator {
 				node.addProperty(EXIF.width, LiteralFactory.getInstance().
 						createTypedLiteral(new Integer(buffImage.getWidth())));
 				node.addProperty(EXIF.height, LiteralFactory.getInstance().
-						createTypedLiteral(new Integer(buffImage.getHeight())));
+						createTypedLiteral(Integer.valueOf(buffImage.getHeight())));
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);
 			}
