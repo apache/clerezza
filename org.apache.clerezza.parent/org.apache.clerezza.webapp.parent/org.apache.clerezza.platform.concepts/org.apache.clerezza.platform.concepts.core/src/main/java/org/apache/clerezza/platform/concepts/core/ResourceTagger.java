@@ -117,7 +117,7 @@ public class ResourceTagger {
 					node.addProperty(DCTERMS.subject, new UriRef(subject));
 				}
 			}
-		} else if(uri != null){
+		} else {
 			throw new WebApplicationException(Response.status(
 					Status.BAD_REQUEST).entity("No resource uri defined.").build());
 		}

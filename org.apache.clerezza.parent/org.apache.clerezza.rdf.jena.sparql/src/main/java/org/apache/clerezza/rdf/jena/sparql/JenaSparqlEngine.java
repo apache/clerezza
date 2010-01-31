@@ -68,7 +68,7 @@ public class JenaSparqlEngine implements QueryEngine {
 				return new ResultSetWrapper(qexec.execSelect());
 			} catch (QueryExecException e) {
 				try {
-					return new Boolean(qexec.execAsk());
+					return Boolean.valueOf(qexec.execAsk());
 				} catch (QueryExecException e2) {
 					try {
 						return new JenaGraphAdaptor(

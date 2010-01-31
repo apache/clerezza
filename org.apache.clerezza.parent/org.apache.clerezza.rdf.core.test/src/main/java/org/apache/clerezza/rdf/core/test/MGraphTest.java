@@ -132,7 +132,7 @@ public abstract class MGraphTest {
 		graph.add(new TripleImpl(uriRef1, uriRef2, uriRef3));
 		graph.add(new TripleImpl(uriRef2, uriRef3, uriRef4));
 		Assert.assertEquals(2, graph.size());
-		graph.removeAll(graph);
+		graph.clear();
 		Assert.assertEquals(0, graph.size());
 	}
 

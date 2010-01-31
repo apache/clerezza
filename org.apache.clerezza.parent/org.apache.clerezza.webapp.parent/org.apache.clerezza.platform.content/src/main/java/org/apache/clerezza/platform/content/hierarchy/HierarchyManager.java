@@ -255,7 +255,7 @@ public class HierarchyManager {
 				result.add(new TripleImpl(memberNode.getNode(),
 						HIERARCHY.membersNumber,
 						LiteralFactory.getInstance().createTypedLiteral(
-						new Integer(memberCollection.getMembers().size()))));
+						Integer.valueOf(memberCollection.getMembers().size()))));
 			}
 		}
 		return result;
