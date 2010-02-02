@@ -20,7 +20,9 @@ package org.apache.clerezza.pladocplugin.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,7 +59,6 @@ public class GeneratorServiceImpl implements GeneratorService {
 	Parser parser;
 	@Reference
 	RendererFactory rendererFactory;
-
 	/** this is just to activate Triaxrs in order for MediaType to work
 	 *
 	 */
@@ -86,30 +87,8 @@ public class GeneratorServiceImpl implements GeneratorService {
 			} finally {
 				in.close();
 			}
-			Set<NonLiteral> docRoots = new HashSet<NonLiteral>();
-			Iterator<Triple> titledContentTypeTriples =
-					documentationGraph.filter(null, RDF.type, DISCOBITS.TitledContent);
-			while (titledContentTypeTriples.hasNext()) {
-				NonLiteral titleContent = titledContentTypeTriples.next().getSubject();
-				if (!documentationGraph.filter(null, DISCOBITS.holds, titleContent).hasNext()) {
-					docRoots.add(titleContent);
-					System.out.println("doc root: " + titleContent);
-				}
-			}
-			for (NonLiteral docRoot : docRoots) {
-				GraphNode docRootNode = new GraphNode(docRoot, documentationGraph);
-				Renderer renderer = rendererFactory.createRenderer(docRootNode, null,
-						Collections.singletonList(MediaType.APPLICATION_XHTML_XML_TYPE));
-				String fileName = generateFileNameFromUri((UriRef)docRoot)+".html";
-				File outFile = new File(outputDir, fileName);
-				FileOutputStream out = new FileOutputStream(outFile);
-				try {
-					System.out.println("writing "+outFile);
-					renderer.render(docRootNode, docRootNode, out);
-				} finally {
-					out.close();
-				}
-			}
+			process(documentationGraph, outputDir);
+
 
 
 		} catch (Exception ex) {
@@ -127,5 +106,37 @@ public class GeneratorServiceImpl implements GeneratorService {
 		}
 		String lastSection = uriString.substring(uriString.lastIndexOf('/'));
 		return lastSection;
+	}
+
+	private void process(Graph documentationGraph, File outputDir) throws IOException {
+		Set<NonLiteral> docRoots = new HashSet<NonLiteral>();
+		Iterator<Triple> titledContentTypeTriples =
+				documentationGraph.filter(null, RDF.type, DISCOBITS.TitledContent);
+		while (titledContentTypeTriples.hasNext()) {
+			NonLiteral titleContent = titledContentTypeTriples.next().getSubject();
+			if (!documentationGraph.filter(null, DISCOBITS.holds, titleContent).hasNext()) {
+				docRoots.add(titleContent);
+				System.out.println("doc root: " + titleContent);
+			}
+		}
+		for (NonLiteral docRoot : docRoots) {
+			String fileName = generateFileNameFromUri((UriRef) docRoot) + ".html";
+			File outFile = new File(outputDir, fileName);
+			createFile(docRoot, documentationGraph, outFile);
+		}
+	}
+
+	private void createFile(NonLiteral docRoot, Graph documentationGraph,
+			File outFile) throws IOException {
+		GraphNode docRootNode = new GraphNode(docRoot, documentationGraph);
+			Renderer renderer = rendererFactory.createRenderer(docRootNode, null,
+					Collections.singletonList(MediaType.APPLICATION_XHTML_XML_TYPE));
+			FileOutputStream out = new FileOutputStream(outFile);
+			try {
+				System.out.println("writing " + outFile);
+				renderer.render(docRootNode, docRootNode, out);
+			} finally {
+				out.close();
+			}
 	}
 }
