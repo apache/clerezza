@@ -169,13 +169,13 @@ public class FelixClerezzaPlatformTest {
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.menumanager").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
-				"org.apache.clerezza.platform.language").versionAsInProject(),
+				"org.apache.clerezza.platform.language.core").versionAsInProject(),
 				//dsProfile(),
 				configProfile(),
 				webProfile(),
 				junitBundles(),
 				frameworks(
-				felix().version("2.0.2")),
+				felix()),
 				systemProperty("org.osgi.service.http.port").value(
 				Integer.toString(testHttpPort)));
 	}
@@ -209,8 +209,6 @@ public class FelixClerezzaPlatformTest {
 		Object service = waitFor(JQuery.class, 20000);
 		Assert.assertTrue(service != null);		
 		service = waitFor(Scripts.class, 20000);
-		Assert.assertTrue(service != null);
-		service = waitFor(ScriptManager.class, 20000);
 		Assert.assertTrue(service != null);
 	}
 
