@@ -38,6 +38,7 @@
 		<module>org.apache.clerezza.jaxrs.utils</module>
 		<module>org.apache.clerezza.maven-ontologies-plugin</module>
 		<module>org.apache.clerezza.maven-pladoc-plugin</module>
+		<module>org.apache.clerezza.maven-jaxrs-report-plugin</module>
 		<module>org.apache.clerezza.platform.config</module>
 		<module>org.apache.clerezza.platform.content.imagemetadata</module>
 		<module>org.apache.clerezza.platform.documentation</module>
@@ -1061,6 +1062,11 @@
 				<configuration>
 					<targetJdk>1.6</targetJdk>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.maven-jaxrs-report-plugin</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</plugin>
 <!--			<plugin>
 				<groupId>org.apache.clerezza</groupId>
