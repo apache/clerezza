@@ -239,46 +239,60 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 			for (Method method : result) {
 				method2PathParams.put(method, inheritedPathParams);
 			}
+			
+			if(result.size() == 0){
+				return getSubResourceMethods(request, instance, remainingPath,
+						method2PathParams, inheritedPathParams);
+			} else {
+				return new MethodsAndInstance(result, instance);
+			}
+			
 		} else {
-			SortedSet<MethodDescriptor> methodDescriptors = getSubThingMethodDescriptors(instance
-					.getClass());
-			result = new HashSet<Method>();
-			URITemplate uriTemplateOfFirstMatchingRM = null;
-			Map<String, String> subPathParam = null;
-			for (MethodDescriptor methodDescriptor : methodDescriptors) {
-				final URITemplate currentUriTemplate = methodDescriptor
-						.getUriTemplate();
-				if (uriTemplateOfFirstMatchingRM != null) {
-					if (uriTemplateOfFirstMatchingRM.equals(currentUriTemplate)
-							&& !methodDescriptor.isSubResourceLocator()) {
-						result.add(methodDescriptor.getMethod());
-						method2PathParams.put(methodDescriptor.getMethod(),
-								subPathParam);
-						continue;
-					}
-					break;
-				}
-				PathMatching subPathMatching = currentUriTemplate
-						.match(remainingPath);
-				if (subPathMatching == null) {
+			return getSubResourceMethods(request, instance, remainingPath,
+					method2PathParams, inheritedPathParams);
+		}
+	}
+
+	private MethodsAndInstance getSubResourceMethods(WebRequest request,
+			Object instance, String remainingPath,
+			Map<Method, Map<String, String>> method2PathParams,
+			Map<String, String> inheritedPathParams) throws HandlerException,
+			UnsupportedFieldType {
+		SortedSet<MethodDescriptor> methodDescriptors = getSubThingMethodDescriptors(instance.getClass());
+		Set<Method> result;
+		result = new HashSet<Method>();
+		URITemplate uriTemplateOfFirstMatchingRM = null;
+		Map<String, String> subPathParam = null;
+		for (MethodDescriptor methodDescriptor : methodDescriptors) {
+			final URITemplate currentUriTemplate = methodDescriptor.getUriTemplate();
+			if (uriTemplateOfFirstMatchingRM != null) {
+				if (uriTemplateOfFirstMatchingRM.equals(currentUriTemplate)
+						&& !methodDescriptor.isSubResourceLocator()) {
+					result.add(methodDescriptor.getMethod());
+					method2PathParams.put(methodDescriptor.getMethod(),
+							subPathParam);
 					continue;
 				}
-				subPathParam = new HashMap<String, String>(inheritedPathParams);
-				subPathParam.putAll(subPathMatching.getParameters());
-				if (methodDescriptor.isSubResourceLocator()) {
-					return getCandidateMethods(request, getSubResource(
-							instance, methodDescriptor.getMethod(), request,
-							subPathMatching), subPathMatching
-							.getRemainingURIPath(), method2PathParams,
-							subPathParam);
-				}
-				if (subPathMatching.isSlashOrEmpty()) {
-					if (!methodDescriptor.isSubResourceLocator()) {
-						Method method = methodDescriptor.getMethod();
-						result.add(method);
-						uriTemplateOfFirstMatchingRM = currentUriTemplate;
-						method2PathParams.put(method, subPathParam);
-					}
+				break;
+			}
+			PathMatching subPathMatching = currentUriTemplate.match(remainingPath);
+			if (subPathMatching == null) {
+				continue;
+			}
+			subPathParam = new HashMap<String, String>(inheritedPathParams);
+			subPathParam.putAll(subPathMatching.getParameters());
+			if (methodDescriptor.isSubResourceLocator()) {
+				return getCandidateMethods(request, getSubResource(
+						instance, methodDescriptor.getMethod(), request,
+						subPathMatching), subPathMatching.getRemainingURIPath(), method2PathParams,
+						subPathParam);
+			}
+			if (subPathMatching.isSlashOrEmpty()) {
+				if (!methodDescriptor.isSubResourceLocator()) {
+					Method method = methodDescriptor.getMethod();
+					result.add(method);
+					uriTemplateOfFirstMatchingRM = currentUriTemplate;
+					method2PathParams.put(method, subPathParam);
 				}
 			}
 		}
