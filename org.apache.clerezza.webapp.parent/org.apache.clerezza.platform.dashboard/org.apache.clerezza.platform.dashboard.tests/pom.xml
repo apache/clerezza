@@ -192,21 +192,6 @@
 			<plugin>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>maven-paxexam-plugin</artifactId>
-				<version>1.2.0</version>
-				<executions>
-					<execution>
-						<id>generate-depends-file</id>
-						<goals>
-							<goal>generate-depends-file</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generate-config</id>
-						<goals>
-							<goal>generate-config</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
