@@ -23,14 +23,14 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.ontologies.FOAF;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 
 public class UserComparator implements Comparator<GraphNode> {
 
 	@Override
 	public int compare(GraphNode user1, GraphNode user2) {
-		Iterator<Literal> names1 = user1.getLiterals(FOAF.name);
-		Iterator<Literal> names2 = user2.getLiterals(FOAF.name);
+		Iterator<Literal> names1 = user1.getLiterals(PLATFORM.userName);
+		Iterator<Literal> names2 = user2.getLiterals(PLATFORM.userName);
 		if (names1.hasNext() && names2.hasNext()) {
 			return names1.next().getLexicalForm()
 					.compareTo(names2.next().getLexicalForm());

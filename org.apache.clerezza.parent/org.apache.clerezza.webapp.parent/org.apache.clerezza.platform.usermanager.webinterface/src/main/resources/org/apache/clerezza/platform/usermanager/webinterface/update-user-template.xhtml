@@ -4,6 +4,7 @@ def permission(s: Any) = new UriRef("http://clerezza.org/2008/10/permission#" + 
 def sioc(s: Any) = new UriRef("http://rdfs.org/sioc/ns#" + s)
 def dc(s: Any) = new UriRef("http://purl.org/dc/elements/1.1/" + s)
 def umr(s: Any) = new UriRef("http://clerezza.org/2009/05/usermanager#" + s)
+def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#" + s)
 
 resultDocModifier.addScriptReference("js/usermanager.js");
 
@@ -30,11 +31,11 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 				$(document).ready(function() {{
 					$('#userRoles').val(userRoles);
 					
-					refreshCustomInformation({"'" + (res/umr("user")/foaf("name")*) + "'"});
+					refreshCustomInformation({"'" + (res/umr("user")/platform("userName")*) + "'"});
 
 					 $("#userRoles option").each(function() {{
 						$(this).bind("click", function() {{
-							refreshCustomInformation({"'" + (res/umr("user")/foaf("name")*)  + "'"});
+							refreshCustomInformation({"'" + (res/umr("user")/platform("userName")*)  + "'"});
 						}});
 					 }});
 				}});
@@ -47,7 +48,7 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
                 <div style="float:left; width:300px;">
                     <fieldset border="1px">	
                         <legend>Basic User Information</legend>
-                        <label>Username: <input name="userName" type="text" value={res/umr("user")/foaf("name")*}/></label><br />
+                        <label>Username: <input name="userName" type="text" value={res/umr("user")/platform("userName")*}/></label><br />
                         <label>Email: <input name="email" type="text" value={res/umr("user")/foaf("mbox")*}/></label><br />
                         <label>Path Prefix: <input name="pathPrefix" type="text" value={res/umr("user")/osgi("agent_path_prefix")*} /></label><br />
                         <label>User Roles: 

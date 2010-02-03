@@ -333,7 +333,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		MGraph contentGraph = cgProvider.getContentGraph();
 		NonLiteral user = new BNode();
 		contentGraph.add(new TripleImpl(user, RDF.type, FOAF.Agent));
-		contentGraph.add(new TripleImpl(user, FOAF.name, new PlainLiteralImpl(
+		contentGraph.add(new TripleImpl(user, PLATFORM.userName, new PlainLiteralImpl(
 				userName)));
 
 		saveCustomUserInformation(contentGraph, userName, userRoles, form);
@@ -371,7 +371,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	}
 
 	private NonLiteral getCustomUser(MGraph contentGraph, String userName) {
-		Iterator<Triple> users = contentGraph.filter(null, FOAF.name,
+		Iterator<Triple> users = contentGraph.filter(null, PLATFORM.userName,
 				new PlainLiteralImpl(userName.trim()));
 		if (users.hasNext()) {
 			return users.next().getSubject();

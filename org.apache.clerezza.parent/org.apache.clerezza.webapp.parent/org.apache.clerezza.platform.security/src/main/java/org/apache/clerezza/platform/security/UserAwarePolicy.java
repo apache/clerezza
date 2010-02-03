@@ -45,8 +45,8 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.SIOC;
 
 /**
@@ -199,7 +199,7 @@ public class UserAwarePolicy extends Policy {
 
 	private NonLiteral getUserByName(String userName)
 			throws UserUnregisteredException {
-		Iterator<Triple> triples = systemGraph.filter(null, FOAF.name,
+		Iterator<Triple> triples = systemGraph.filter(null, PLATFORM.userName,
 				new PlainLiteralImpl(userName));
 
 		if (triples.hasNext()) {
