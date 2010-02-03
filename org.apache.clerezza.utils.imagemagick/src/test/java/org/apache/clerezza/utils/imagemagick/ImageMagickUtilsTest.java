@@ -39,6 +39,8 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.DC;
 import org.apache.clerezza.utils.imageprocessing.metadataprocessing.ExifTagDataSet;
 import org.apache.clerezza.utils.imageprocessing.metadataprocessing.IptcDataSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -47,12 +49,14 @@ import org.apache.clerezza.utils.imageprocessing.metadataprocessing.IptcDataSet;
 public class ImageMagickUtilsTest {
 
 	private static boolean correctlyInstalled = true;
+	private final static Logger logger = LoggerFactory.getLogger(ImageMagickUtilsTest.class);
 
 	@BeforeClass
 	public static void checkIfImageMagickInstalled() {
 		try {
-		new ImageMagickProvider().checkImageMagickInstallation();
+			new ImageMagickProvider().checkImageMagickInstallation();
 		} catch (RuntimeException ex) {
+			logger.warn("No valid imagemagick installation found, skipping tests.");
 			correctlyInstalled = false;
 		}
 	}

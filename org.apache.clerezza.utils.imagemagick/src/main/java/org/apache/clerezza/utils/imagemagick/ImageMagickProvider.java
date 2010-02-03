@@ -170,8 +170,8 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 			logger.warn("ImageMagick version check has been interrupted. " +
 					"Assuming correct version.");
 		} catch (IOException ex) {
-			logger.warn("ImageMagick version check failed. " +
-				"Assuming correct version.");
+			//this occurs when the commands are miising
+			ok = false;
 		} catch (NullPointerException ex) {
 			//can occur when output is empty (e.g. imagemagick prints
 			//only error messages which go to stderror)
