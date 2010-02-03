@@ -91,4 +91,13 @@ property.
 	<rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
 </rdf:Property>
 
+<rdf:Property rdf:about="http://clerezza.org/2009/08/platform#user">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty" />
+	<rdfs:label xml:lang="en">User</rdfs:label>
+	<skos:definition xml:lang="en">Points to a platform user.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/08/platform#" />
+	<rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+</rdf:Property>
+
 </rdf:RDF>
