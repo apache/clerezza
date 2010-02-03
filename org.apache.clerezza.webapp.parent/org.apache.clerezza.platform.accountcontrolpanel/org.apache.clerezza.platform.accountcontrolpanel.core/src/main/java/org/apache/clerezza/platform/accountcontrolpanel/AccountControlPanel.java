@@ -255,7 +255,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 
 		logger.debug("Get agent with id {}", id);
 
-		Iterator<Triple> agents = systemGraph.filter(null, FOAF.name,
+		Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName,
 				new PlainLiteralImpl(id));
 
 		if (agents.hasNext()) {

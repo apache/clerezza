@@ -18,515 +18,210 @@
  */
 package org.apache.clerezza.platform.usermanager;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Policy;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.clerezza.platform.config.SystemConfig;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
+
 import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.ontologies.DC;
-import org.apache.clerezza.rdf.ontologies.FOAF;
-import org.apache.clerezza.rdf.ontologies.OSGI;
-import org.apache.clerezza.rdf.ontologies.PERMISSION;
-import org.apache.clerezza.rdf.ontologies.RDF;
-import org.apache.clerezza.rdf.ontologies.SIOC;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
- * @author hasan
+ * An implementation of this interface provides methods to manage data about 
+ * users and their roles.
+ * Data managed are needed for authentication and for setting permissions.
+ * Those data include user names, email addresses, passwords, roles, permissions, 
+ * etc.
+ * A user is uniquely identified by a user name.
+ * Each user has an email address and an email address can only belong to a user.
+ * 
+ * @author hasan, tio
  */
-@Component
-@Service(value=UserManager.class)
-public class UserManager implements UserManagementProvider {
-
-	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
-	private MGraph systemGraph;
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	@Override
-	public void storeRole(String title) {
-		if (title == null) {
-			return;
-		}
-		if (getRoleByTitle(title) != null) {
-			return;
-		}
-		BNode role = new BNode();
-
-		systemGraph.add(new TripleImpl(role, RDF.type, PERMISSION.Role));
-		systemGraph.add(new TripleImpl(role, DC.title,
-				new PlainLiteralImpl(title)));
-	}
-
-	@Override
-	public NonLiteral getRoleByTitle(String title) {
-		Iterator<Triple> triples = systemGraph.filter(null, DC.title,
-				new PlainLiteralImpl(title));
-		NonLiteral role = null;
-		while (triples.hasNext()) {
-			role = triples.next().getSubject();
-			if (systemGraph.filter(role, RDF.type, PERMISSION.Role).hasNext()) {
-				return role;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public boolean roleExists(String title) {
-		return getRoleByTitle(title) != null;
-	}
-
-	@Override
-	public Iterator<NonLiteral> getRoles() {
-		return getRoles(PERMISSION.Role);
-	}
-
-	private Iterator<NonLiteral> getRoles(UriRef type) {
-		final Iterator<Triple> triples =
-				systemGraph.filter(null, RDF.type, type);
-		return new Iterator<NonLiteral>() {
-
-			@Override
-			public boolean hasNext() {
-				return triples.hasNext();
-			}
-
-			@Override
-			public NonLiteral next() {
-				return triples.next().getSubject();
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
-	}
-
-	@Override
-	public Iterator<NonLiteral> getRolesOfUser(NonLiteral user){
-		final Iterator<Triple> triples = systemGraph.filter(user,SIOC.has_function, null);
-		return new Iterator<NonLiteral>() {
-
-			@Override
-			public boolean hasNext() {
-				return triples.hasNext();
-			}
-
-			@Override
-			public NonLiteral next() {
-				return (NonLiteral)triples.next().getObject();
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
-	}
-
-	@Override
-	public void deleteRole(String title) {
-		if (title == null) {
-			return;
-		}
-
-		NonLiteral role = getRoleByTitle(title);
-		if (role == null) {
-			return;
-		}
-		deleteTriplesOfASubject(role);
-	}
-
-	private void deleteTriplesOfASubject(NonLiteral subject) {
-		Iterator<Triple> triples = systemGraph.filter(subject, null, null);
-		while (triples.hasNext()) {
-			systemGraph.remove(triples.next());
-		}
-	}
-
-	@Override
-	public void assignPermissionsToRole(String title,
-			List<String> permissionEntries) {
-
-		if (title == null) {
-			return;
-		}
-
-		addPermissionEntriesForARole(
-				getRoleByTitle(title), title,
-				permissionEntries);
-	}
-
-	private void addPermissionEntriesForARole(NonLiteral role,
-			String id, List<String> permissionEntries) {
-		if (role == null) {
-			logger.debug("Cannot assign permissions: {} does not exist", id);
-			return;
-		}
-		if (permissionEntries.isEmpty()) {
-			return;
-		}
-		for (String permissionEntry : permissionEntries) {
-			if (permissionEntry.trim().length() == 0) {
-				continue;
-			}
-			systemGraph.add(new TripleImpl(role, PERMISSION.hasPermission,
-					getPermissionOfAJavaPermEntry(permissionEntry)));
-		}
-		//refresh the policy so it will recheck the permissions
-		Policy.getPolicy().refresh();
-	}
+public interface UserManager {
 
 	/**
-	 * Get the permission node having the specified java permission entry.
-	 * If the node does not exist, a new node is created.
 	 *
-	 * @param graph
-	 * @param permissionString the specified java permission entry
-	 * @return permission node
+	 * @param title
+	 *		the title of the role, may not be null
 	 */
-	private NonLiteral getPermissionOfAJavaPermEntry(
-			String permissionString) {
-		PlainLiteral javaPermEntry = new PlainLiteralImpl(permissionString);
-		Iterator<Triple> javaPermTriples = systemGraph.filter(null,
-				PERMISSION.javaPermissionEntry, javaPermEntry);
-		if (javaPermTriples.hasNext()) {
-			return javaPermTriples.next().getSubject();
-		}
-		BNode result = new BNode();
-		systemGraph.add(new TripleImpl(result,
-				PERMISSION.javaPermissionEntry, javaPermEntry));
-		return result;
-	}
+	public void storeRole(String title);
 
-	@Override
-	public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role) {
+	/**
+	 * Checks if a role with this title exists
+	 *
+	 * @param title specifies the title of the role
+	 *
+	 * @return true if the role exists otherwise false
+	 */
+	public boolean roleExists(String title);
 
-		final Iterator<Triple> triples = systemGraph.filter(role,
-				PERMISSION.hasPermission, null);
-		return new Iterator<NonLiteral>() {
+	/**
+	 * 
+	 * @param title
+	 * @return NonLiteral which is either a BNode or a UriRef
+	 */
+	public NonLiteral getRoleByTitle(String title);
 
-			@Override
-			public boolean hasNext() {
-				return triples.hasNext();
-			}
+	/**
+	 * 
+	 * @return Iterator defining all roles
+	 */
+	public Iterator<NonLiteral> getRoles();
+	
+	/**
+	 * 
+	 * @param user 
+	 *			the user is either a BNode or a UriRef
+	 *		
+	 * @return Iterator defining all the Roles the specified user owns
+	 */
+	public Iterator<NonLiteral> getRolesOfUser(NonLiteral user);
 
-			@Override
-			public NonLiteral next() {
-				return (NonLiteral) triples.next().getObject();
-			}
+	/**
+	 * 
+	 * @param title
+	 *		the title of the role to be deleted, may not be null
+	 */
+	public void deleteRole(String title);
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
-	}
-
-	@Override
-	public void deletePermissionsOfRole(String title,
-			List<String> permissionEntries) {
-
-		if (title == null) {
-			return;
-		}
-
-		deletePermissionEntriesOfARole(
-				getRoleByTitle(title), title,
-				permissionEntries);
-	}
-
-	private void deletePermissionEntriesOfARole(NonLiteral role,
-			String id, List<String> permissionEntries) {
-		if (role == null) {
-			logger.debug("Cannot delete permissions: {} does not exist", id);
-			return;
-		}
-		if (permissionEntries.isEmpty()) {
-			return;
-		}
-		for (String permissionEntry : permissionEntries) {
-			NonLiteral permission = getPermissionOfAJavaPermEntry(permissionEntry);
-			systemGraph.remove(new TripleImpl(role, PERMISSION.hasPermission,
-					permission));
-		}
-		//refresh the policy so it will recheck the permissions
-		Policy.getPolicy().refresh();
-	}
-
-	@Override
-	public void deleteAllPermissionsOfRole(String title) {
-		if (title == null) {
-			return;
-		}
-
-		deleteAllPermissionEntriesOfARole(
-				getRoleByTitle(title));
-	}
-
-	private void deleteAllPermissionEntriesOfARole(NonLiteral role) {
-		if (role == null) {
-			return;
-		}
-		GraphNode graphNode = new GraphNode(role, systemGraph);
-		graphNode.deleteProperties(PERMISSION.hasPermission);
-		//refresh the policy so it will recheck the permissions
-		Policy.getPolicy().refresh();
-	}
-
-	@Override
-	public void storeUser(String name, String email, String password,
-			List<String> assignedRoles, String pathPrefix) {
-
-		if (name == null) {
-			return;
-		}
-
-		if (getUserByName(name) != null) {
-			throw new UserAlreadyExistsException(name);
-		}
-		if (email != null) {
-			String storedName = getNameByEmail(email);
-			if (storedName != null && !name.equals(storedName)) {
-				throw new EmailAlreadyAssignedException(email, storedName);
-			}
-		}
-		BNode user = new BNode();
-		systemGraph.add(new TripleImpl(user, RDF.type, FOAF.Agent));
-		systemGraph.add(new TripleImpl(user, FOAF.name,
-				new PlainLiteralImpl(name)));
-		if (email != null) {
-			systemGraph.add(new TripleImpl(user, FOAF.mbox,
-					new UriRef("mailto:" + email)));
-		}
-		if (password != null) {
-			try {
-				String pswSha1 = bytes2HexString(MessageDigest.getInstance("SHA1").digest(password.getBytes("UTF-8")));
-				systemGraph.add(new TripleImpl(user, PERMISSION.passwordSha1, new PlainLiteralImpl(pswSha1)));
-			} catch (UnsupportedEncodingException ex) {
-				throw new RuntimeException(ex);
-			} catch (NoSuchAlgorithmException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-		if (pathPrefix != null && pathPrefix.trim().length() != 0) {
-			systemGraph.add(new TripleImpl(user, OSGI.agent_path_prefix,
-					new PlainLiteralImpl(pathPrefix)));
-		}
-		if (!assignedRoles.isEmpty()) {
-			for (String roleTitle : assignedRoles) {
-
-				// skip empty strings
-				if ((roleTitle == null) || (roleTitle.trim().length() == 0)) {
-					continue;
-				}
-				NonLiteral role = getRoleByTitle(roleTitle);
-				if (role == null) {
-					throw new RoleUnavailableException(roleTitle);
-				}
-				systemGraph.add(new TripleImpl(user, SIOC.has_function, role));
-			}
-		}
-	}
+	/**
+	 * Assigns a permission to a role
+	 *
+	 * @param title specifies the title of the role, may not be null
+	 * @param permissionEntries specifies a list of permissions
+	 */
+	public void assignPermissionsToRole(String title,
+			List<String> permissionEntries);
 
 	/**
 	 *
-	 * @param graph
+	 * @param role
+	 *			the role is either a BNode or an UriRef
+	 *
+	 * @return Iterator defining all permissions of a role
+	 */
+	public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role);
+
+	/**
+	 *  Deletes the defined permissions of the role
+	 *
+	 * @param title specifies the title of the role, may not be null
+	 * @param permissionEntries
+	 */
+	public void deletePermissionsOfRole(String title,
+			List<String> permissionEntries);
+	/**
+	 * Deletes all permission of a role
+	 *
+	 * @param title specifies the title of the role, may not be null
+	 */
+	public void deleteAllPermissionsOfRole(String title);
+
+	/**
+	 *
+	 * @param name
+	 *		the username of the user, may not be null
+	 * @param email
+	 * @param password
+	 * @param assignedRoles
+	 * @param pathPrefix
+	 * @throws java.security.NoSuchAlgorithmException
+	 * @throws java.io.UnsupportedEncodingException
+	 */
+	public void storeUser(String name, String email, String password,
+			List<String> assignedRoles, String pathPrefix);
+
+	/**
+	 *
+	 * @param name, may not be null
+	 * @param email
+	 * @param password
+	 * @param assignedRoles
+	 * @param pathPrefix
+	 */
+	public void updateUser(String name, String email, String password,
+			List<String> assignedRoles, String pathPrefix);
+
+	/**
+	 *	Checks if the username exists
+	 *
+	 * @param name specifies the username, may not be null
+	 * @return true if exists otherwise false
+	 */
+	public boolean nameExists(String name);
+
+	/**
+	 * Checks if the email exists
+	 *
+	 * @param email
+	 * @return true if exists otherwise false
+	 */
+	public boolean emailExists(String email);
+
+	/**
+	 *
 	 * @param email
 	 * @return
-	 *		null if the email does not exist in the graph,
-	 *		otherwise returns the name of the user who owns the email
+	 *		null if the email is null or the email does not exist in the
+	 *		storage, otherwise returns the name of the user who owns the email
 	 * @throws org.apache.clerezza.platform.usermanager.UserHasNoNameException
 	 */
-	@Override
-	public String getNameByEmail(String email)
-			throws UserHasNoNameException {
-		if (email == null) {
-			return null;
-		}
-		Iterator<Triple> triples = systemGraph.filter(null, FOAF.mbox,
-				new UriRef("mailto:" + email));
-		if (!triples.hasNext()) {
-			return null;
-		}
-		NonLiteral user = triples.next().getSubject();
-		triples = systemGraph.filter(user, FOAF.name, null);
-		if (!triples.hasNext()) {
-			throw new UserHasNoNameException("User with email address" + email +
-					" does not have a name");
-		}
-		return ((PlainLiteral) triples.next().getObject()).getLexicalForm();
-	}
-
-	@Override
-	public void updateUser(String name, String email, String password,
-			List<String> assignedRoles, String pathPrefix) {
-
-		if (name == null) {
-			return;
-		}
-
-		NonLiteral user = getUserByName(name);
-		if (user == null) {
-			throw new UserNotExistsException(name);
-		}
-		GraphNode userGraphNode = new GraphNode(user, systemGraph);
-		if (email != null) {
-			updateProperty(userGraphNode, FOAF.mbox, new UriRef("mailto:" + email));
-		}
-
-		if (password != null) {
-			try {
-				String pswSha1 = bytes2HexString(MessageDigest.getInstance("SHA1").digest(password.getBytes("UTF-8")));
-				updateProperty(userGraphNode, PERMISSION.passwordSha1, new PlainLiteralImpl(pswSha1));
-			} catch (UnsupportedEncodingException ex) {
-				throw new RuntimeException(ex);
-			} catch (NoSuchAlgorithmException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-		if (pathPrefix != null && pathPrefix.trim().length() != 0) {
-			updateProperty(userGraphNode, OSGI.agent_path_prefix,
-					new PlainLiteralImpl(pathPrefix));
-		}
-		if (!assignedRoles.isEmpty()) {
-			userGraphNode.deleteProperties(SIOC.has_function);
-			for (String roleTitle : assignedRoles) {
-
-				// skip empty strings
-				if ((roleTitle == null) || (roleTitle.trim().length() == 0)) {
-					continue;
-				}
-				NonLiteral role = getRoleByTitle(roleTitle);
-				if (role == null) {
-					throw new RoleUnavailableException(roleTitle);
-				}
-				userGraphNode.addProperty(SIOC.has_function, role);
-			}
-			//refresh the policy so it will recheck the permissions
-			Policy.getPolicy().refresh();
-		}
-	}
-
-	private void updateProperty(GraphNode node, UriRef predicate, Resource object) {
-		node.deleteProperties(predicate);
-		node.addProperty(predicate, object);
-	}
-
-	@Override
-	public boolean nameExists(String name) {
-
-		return systemGraph.filter(null, FOAF.name,
-				new PlainLiteralImpl(name)).hasNext();
-	}
-
-	@Override
-	public boolean emailExists(String email) {
-
-		return systemGraph.filter(null, FOAF.mbox,
-				new UriRef("mailto:" + email)).hasNext();
-	}
-
-	@Override
-	public NonLiteral getUserByName( String name) {
-		Iterator<Triple> triples = systemGraph.filter(null, FOAF.name,
-				new PlainLiteralImpl(name));
-		if (triples.hasNext()) {
-			return triples.next().getSubject();
-		}
-		return null;
-	}
-
-	@Override
-	public Iterator<NonLiteral> getUsers() {
-		return getRoles(FOAF.Agent);
-	}
-
-	@Override
-	public void deleteUser(String name) {
-		if (name == null) {
-			return;
-		}
-
-		NonLiteral user = getUserByName(name);
-		if (user != null) {
-			deleteTriplesOfASubject(user);
-		}
-	}
-
-	@Override
-	public void assignPermissionsToUser(String name,
-			List<String> permissionEntries) {
-
-		if (name == null) {
-			return;
-		}
-
-		addPermissionEntriesForARole(
-				getUserByName(name), name,
-				permissionEntries);
-	}
-
-	@Override
-	public Iterator<NonLiteral> getPermissionsOfUser(NonLiteral user) {
-		return getPermissionsOfRole(user);
-	}
-
-	@Override
-	public void deletePermissionsOfUser(String name,
-			List<String> permissionEntries) {
-
-		if (name == null) {
-			return;
-		}
-
-		deletePermissionEntriesOfARole(
-				getUserByName(name), name,
-				permissionEntries);
-	}
-
-	@Override
-	public void deleteAllPermissionsOfUser(String name) {
-		if (name == null) {
-			return;
-		}
-
-		deleteAllPermissionEntriesOfARole(
-				getUserByName(name));
-	}
+	public String getNameByEmail(String email) throws UserHasNoNameException;
 
 	/**
-	 * @param bytes
-	 *		array of bytes to be converted to a String of hexadecimal numbers
-	 * @return
-	 *		String of hexadecimal numbers representing the byte array
+	 *
+	 * @param name specifies the username of the user
+	 * @return NonLiteral which is either a BNode or a UriRef
 	 */
-	private char[] HEXDIGITS = "0123456789abcdef".toCharArray();
+	public NonLiteral getUserByName(String name);
 
-	private String bytes2HexString(byte[] bytes) {
-		char[] result = new char[bytes.length << 1];
-		for (int i = 0, j = 0; i < bytes.length; i++) {
-			result[j++] = HEXDIGITS[bytes[i] >> 4 & 0xF];
-			result[j++] = HEXDIGITS[bytes[i] & 0xF];
-		}
-		return new String(result);
-	}
+	/**
+	 * Returns all users.
+	 *
+	 * @return Iterator defining all users.
+	 */
+	public Iterator<NonLiteral> getUsers();
+
+	/**
+	 *
+	 * @param name specifies the username of the user, may not be null
+	 */
+	public void deleteUser(String name);
+
+	/**
+	 *
+	 * @param name specifies the username of the user, may not be null
+	 * @param permissionEntries
+	 */
+	public void assignPermissionsToUser(String name,
+			List<String> permissionEntries);
+	/**
+	 *
+	 * @param user
+	 *			the user is either a BNode or a UriRef
+	 * @return  Iterator defining all permissions of the specified user
+	 */
+	public Iterator<NonLiteral> getPermissionsOfUser(NonLiteral user);
+
+	/**
+	 *
+	 * @param name specifies the username of the user, may not be null
+	 * @param permissionEntries
+	 */
+	public void deletePermissionsOfUser(String name,
+			List<String> permissionEntries);
+
+	/**
+	 * Deletes all permission of a user
+	 *
+	 * @param name specifies the username of the user, may not be null
+	 */
+	public void deleteAllPermissionsOfUser(String name);
+
+	/**
+	 * Retrieves all information associated with a user as GraphNode. The GraphNode
+	 * consists of a UnionMGraph between a new SimpleMGraph and the system graph.
+	 *
+	 * @param name specifies the username of the user, may not be null
+	 * @return GraphNode
+	 */
+	public GraphNode getUserGraphNode(String name);
 }

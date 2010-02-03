@@ -58,8 +58,8 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.UnionMGraph;
@@ -147,7 +147,7 @@ public class PasswordReset {
 							"User name and email address don't match");
 				}
 				try {
-					Iterator<Triple> agents = systemGraph.filter(null, FOAF.name,
+					Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName,
 							new PlainLiteralImpl(userName));
 					NonLiteral agent = agents.next().getSubject();
 					MGraph temporary = new SimpleMGraph();

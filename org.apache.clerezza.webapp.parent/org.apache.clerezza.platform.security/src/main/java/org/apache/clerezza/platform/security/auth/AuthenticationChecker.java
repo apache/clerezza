@@ -27,7 +27,6 @@ import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
 import org.wymiwyg.wrhapi.HandlerException;
 
@@ -36,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.platform.security.PasswordUtil;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 
 /**
  * A service that checks if a provided username and password matches a
@@ -77,7 +77,7 @@ public class AuthenticationChecker {
 
 	private NonLiteral getAgentFromGraph(String userName) throws NoSuchAgent {
 		NonLiteral agent;
-		Iterator<Triple> agents = systemGraph.filter(null, FOAF.name, new PlainLiteralImpl(userName));
+		Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName, new PlainLiteralImpl(userName));
 		if (agents.hasNext()) {
 			agent = agents.next().getSubject();
 		} else {

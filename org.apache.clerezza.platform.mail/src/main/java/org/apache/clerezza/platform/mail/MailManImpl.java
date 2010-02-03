@@ -48,6 +48,7 @@ import org.apache.clerezza.rdf.core.sparql.QueryParser;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
 import org.apache.clerezza.rdf.ontologies.FOAF;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -322,7 +323,7 @@ public class MailManImpl implements MailMan {
 
 		final String queryString = "SELECT ?email WHERE { " +
 				"?x " + FOAF.mbox + " ?email . " +
-				"?x " + FOAF.name + " \"" + user + "\" . " +
+				"?x " + PLATFORM.userName + " \"" + user + "\" . " +
 				"}";
 		try {
 			SelectQuery selectQuery = (SelectQuery) QueryParser.getInstance().parse(queryString);

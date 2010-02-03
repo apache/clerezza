@@ -4,6 +4,7 @@ def permission(s: Any) = new UriRef("http://clerezza.org/2008/10/permission#" + 
 def list(s: Any) = new UriRef("http://clerezza.org/2009/04/list#" + s)
 def sioc(s: Any) = new UriRef("http://rdfs.org/sioc/ns#" + s)
 def dc(s: Any) = new UriRef("http://purl.org/dc/elements/1.1/" + s)
+def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#" + s)
 
 resultDocModifier.addStyleSheet("js/fancybox/jquery.fancybox.css");
 resultDocModifier.addScriptReference("js/fancybox/jquery.fancybox-1.2.1.pack.js");
@@ -44,16 +45,16 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 				</thead>
 				<tbody>
                     {for (user <- (res!!)) yield {
-					<tr id={user/foaf("name")*}>
+					<tr id={user/platform("userName")*}>
                         <td>
-                            <input type="checkbox" value={user/foaf("name")*} />
+                            <input type="checkbox" value={user/platform("userName")*} />
                         </td>
-                        <td><a href={"update-user?userName=" + (user/foaf("name")*)}>{user/foaf("name")*}</a></td>
+                        <td><a href={"update-user?userName=" + (user/platform("userName")*)}>{user/platform("userName")*}</a></td>
                         <td>{user/foaf("mbox")*}</td>
                         <td>{user/osgi("agent_path_prefix")*}</td>
                         <td>{user/permission("passwordSha1")*}</td>
                         <td>{for (title <- (user/sioc("has_function"))) yield {  title/dc("title")* }}</td>
-                        <td><a href={"manage-user-permissions?userName=" + (user/foaf("name")*)}>show permissions</a></td>
+                        <td><a href={"manage-user-permissions?userName=" + (user/platform("userName")*)}>show permissions</a></td>
                     </tr>
                     }}
 				</tbody>
