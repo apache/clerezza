@@ -18,12 +18,10 @@
  */
 package org.apache.clerezza.platform.security.auth.cookie;
 
-import java.net.URL;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -38,26 +36,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
-import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
+import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.wymiwyg.wrhapi.util.Cookie;
 
 /**
  *
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
- *
  * @author mir
  */
+@Component
+@Service(Object.class)
+@Property(name = "javax.ws.rs", boolValue = true)
 @Path("/logout")
 public class CookieLogout {
 
 	private final Logger logger = LoggerFactory.getLogger(CookieLogout.class);
 
-	/**
-	 * @scr.reference
-	 */
+	@Reference
 	private RenderletManager renderletManager;
 
 	/**
@@ -66,10 +66,6 @@ public class CookieLogout {
 	 * @param componentContext
 	 */
 	protected void activate(ComponentContext componentContext) {
-		URL templateURL = getClass().getResource("logout_success.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), LOGIN.LogoutSuccessPage,
-				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
 		logger.info("Cookie Logout activated.");
 	}
@@ -88,7 +84,15 @@ public class CookieLogout {
 	public GraphNode logoutSuccessPage(@Context UriInfo uriInfo) {
 		TrailingSlash.enforcePresent(uriInfo);
 		GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
-		result.addProperty(RDF.type, LOGIN.LogoutSuccessPage);
+		PlainLiteral message = new PlainLiteralImpl(
+						"You successfully logged out.");
+		result.addProperty(LOGIN.message, message);
+		result.addProperty(RDF.type, LOGIN.LoginPage);
+
+		String baseUri = uriInfo.getBaseUri().getScheme() + "://" +
+				uriInfo.getBaseUri().getAuthority();
+
+		result.addProperty(LOGIN.refererUri, new UriRef(baseUri + "/dashboard/overview"));
 		return result;
 	}
 	

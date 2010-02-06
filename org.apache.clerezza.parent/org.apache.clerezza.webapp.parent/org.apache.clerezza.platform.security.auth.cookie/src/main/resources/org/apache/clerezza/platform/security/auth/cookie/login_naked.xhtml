@@ -1,7 +1,20 @@
-${ns:login=http://clerezza.org/2009/07/login#}
-<form method="post" action="../login">
-	<label for="user" id="label_user">User name:</label><input type="text" id="user" name="user"/>
-	<label for="pass" id="label_pass">Password:</label><input type="password" id="pass" name="pass" value="" />
-	<input type="hidden" id="referer" name="referer" value="${login:refererUri}" />
-	<input value="Login" type="submit"/><p />
+def login(s: Any) = new UriRef("http://clerezza.org/2009/07/login#"+s);
+
+
+resultDocModifier.addScriptReference("/jquery/jquery-1.3.2.min.js");
+resultDocModifier.addScriptReference("/login/scripts/login.js");
+
+<form action="/login" method="post" id="login-form">
+	<fieldset class="tx-line">
+		<ol>
+			<li><label>Username</label>
+				<input size="30" type="text" name="user" value="" /></li>
+			<li><label>Password</label>
+				<input size="30" type="password" name="pass" value="" /></li>
+			<li>
+				<input type="submit" value="Log in" id="submitButton"></input>
+			</li>
+		</ol>
+		<input type="hidden" id="referer" name="referer" value={res/login("refererUri")*} />
+	</fieldset>
 </form>

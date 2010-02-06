@@ -1,17 +1,42 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+def login(s: Any) = new UriRef("http://clerezza.org/2009/07/login#"+s);
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-${ns:login=http://clerezza.org/2009/07/login#}
-<title>Login</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Login Page</title>
+
+	<link href="/style/style.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="/style/login.css" media="screen" rel="stylesheet" type="text/css" />
+
 </head>
-	<body>
-	<h1>Clerezza Login</h1>
-	<hr/>
-	${if login:message}
-		${login:message}
-	${/if}
-		${render(., "naked")}
-	<a href="../reset/">forgot password?</a>
-	</body>
+
+<body>
+
+<!-- header -->
+<div id="tx-header">
+	<!-- system -->
+	<div id="tx-system"></div>
+	<!-- //system -->
+</div>
+<!-- // header -->
+
+<!-- content -->
+<div id="tx-login-mask">
+	<div>
+		<div>
+			<div id="tx-logo"></div>
+			<div class="tx-info"></div>
+			{ifx((res/login("message")).length > 0) {
+				<div class="tx-error">{res/login("message")*}</div>
+			}
+			}
+			
+		</div>
+			{render(res, "naked")}
+		<a href="/reset/" class="tx-icon-right" style="padding-left: 1em; background-position: left center;">Forgot password</a>
+	</div>
+</div>
+<!-- // content -->
+
+</body>
 </html>
+

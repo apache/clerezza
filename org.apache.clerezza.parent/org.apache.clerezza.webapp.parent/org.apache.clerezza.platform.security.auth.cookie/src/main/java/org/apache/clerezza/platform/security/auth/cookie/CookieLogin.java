@@ -31,6 +31,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -49,7 +50,7 @@ import org.apache.clerezza.platform.security.auth.AuthenticationChecker;
 import org.apache.clerezza.platform.security.auth.NoSuchAgent;
 import org.apache.clerezza.platform.security.auth.cookie.onotology.LOGIN;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
-import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -57,18 +58,25 @@ import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.web.fileserver.BundlePathNode;
+import org.apache.clerezza.web.fileserver.FileServer;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.Bundle;
 import org.wymiwyg.commons.util.Base64;
+import org.wymiwyg.commons.util.dirbrowser.PathNode;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.util.Cookie;
 
 /**
  *
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
- *
  * @author mir
  */
+@Component
+@Service(Object.class)
+@Property(name = "javax.ws.rs", boolValue = true)
 @Path("/login")
 public class CookieLogin {
 
@@ -77,13 +85,12 @@ public class CookieLogin {
 	 */
 	public static final String AUTH_COOKIE_NAME = "auth";
 	private final Logger logger = LoggerFactory.getLogger(CookieLogin.class);
-	/**
-	 * @scr.reference
-	 */
+	private FileServer fileServer;
+
+	@Reference
 	private RenderletManager renderletManager;
-	/**
-	 * @scr.reference
-	 */
+
+	@Reference
 	AuthenticationChecker authenticationChecker;
 
 	/**
@@ -92,13 +99,20 @@ public class CookieLogin {
 	 * @param componentContext
 	 */
 	protected void activate(ComponentContext componentContext) {
+
+		Bundle bundle = componentContext.getBundleContext().getBundle();
+		URL resourceDir = getClass().getResource("staticweb");
+		PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
+		fileServer = new FileServer(pathNode);
+
+
 		URL templateURL = getClass().getResource("login.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(templateURL.toString()), LOGIN.LoginPage,
 				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
 		templateURL = getClass().getResource("login_naked.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(templateURL.toString()), LOGIN.LoginPage,
 				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
@@ -199,5 +213,11 @@ public class CookieLogin {
 		Cookie cookie = new Cookie(AUTH_COOKIE_NAME, Base64.encode(
 				cookieString.getBytes()));
 		return cookie;
+	}
+
+	@GET
+	@Path("{path:.+}")
+	public PathNode getStaticFile(@PathParam("path") String path) {
+		return fileServer.getNode(path);
 	}
 }
