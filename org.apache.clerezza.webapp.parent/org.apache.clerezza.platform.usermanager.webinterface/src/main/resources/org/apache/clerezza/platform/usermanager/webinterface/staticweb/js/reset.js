@@ -16,27 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.platform.security.auth.cookie.onotology;
 
-import org.apache.clerezza.rdf.core.UriRef;
+$(document).ready(function() {
 
-public class LOGIN {
-	//Classes
+	$("#resetButton").hide();
+	$("<a/>").addClass("tx-button tx-button-generic").attr("href", "#")
+		.text("Reset").insertBefore("#resetButton");
 
-	/**
-	 * A page which provides an interface to log in.
-	 */
-	public static final UriRef LoginPage = new UriRef("http://clerezza.org/2009/07/login#LoginPage");
+	$(".tx-button-generic").click(function(){
+		$("#reset-form").submit();
+	});
 
-	// Properties
+	$("input[name*='user']").focus();
 
-	/**
-	 * Points to a message for the client
-	 */
-	public static final UriRef message = new UriRef("http://clerezza.org/2009/07/login#message");
-
-	/**
-	 * Points to the URI of the page that caused the login process.
-	 */
-	public static final UriRef refererUri = new UriRef("http://clerezza.org/2009/07/login#refererUri");
-}
+	var aHref = $("<a/>").addClass("tx-icon-right")
+		.attr({"href": "/login?referer=" + 
+				document.location.href.substring(0,
+					document.location.href.indexOf(document.location.pathname)) +
+				"/dashboard/overview",
+			"style" : "padding-left: 1em; background-position: left center;"})
+		.text("Login Page").insertAfter("#reset-form");
+});
