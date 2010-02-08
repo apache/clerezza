@@ -189,13 +189,17 @@ public class ResultDocModifier {
 			link.setAttribute("type", "text/css");
 			link.setAttribute("rel", "stylesheet");
 			link.setAttribute("href", styleSheet);
+			head.appendChild(document.createTextNode("\t"));
 			head.appendChild(link);
+			head.appendChild(document.createTextNode("\n"));
 		}
 		for (String scriptRef : scriptRefs) {
 			Element script = document.createElementNS(XHTMLNS, "script");
 			script.setAttribute("type", "text/javascript");
 			script.setAttribute("src", scriptRef);
+			head.appendChild(document.createTextNode("\t"));
 			head.appendChild(script);
+			head.appendChild(document.createTextNode("\n"));
 		}
 		if (!scriptCodes.isEmpty()) {
 			Element inlineScript = document.createElementNS(XHTMLNS, "script");
