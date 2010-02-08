@@ -27,6 +27,7 @@ import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
 import javax.security.auth.Subject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,6 +37,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -68,7 +70,6 @@ import org.osgi.framework.Bundle;
 import org.wymiwyg.commons.util.Base64;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 import org.wymiwyg.wrhapi.HandlerException;
-import org.wymiwyg.wrhapi.util.Cookie;
 
 /**
  *
@@ -168,6 +169,7 @@ public class CookieLogin {
 	public Object login(@FormParam("user") final String userName,
 			@FormParam("pass") final String password,
 			@FormParam("referer") final String referer,
+			@DefaultValue("false") @FormParam("stayloggedin") final Boolean stayLoggedIn,
 			@Context final UriInfo uriInfo) {
 		return AccessController.doPrivileged(new PrivilegedAction<Object>() {
 			@Override
@@ -183,7 +185,7 @@ public class CookieLogin {
 							RedirectUtil.createSeeOtherResponse(
 							referer, uriInfo));
 						responseBuilder.header(HttpHeaders.SET_COOKIE,
-								getLoginCookie(userName, password));
+								getLoginCookie(userName, password, stayLoggedIn));
 						return responseBuilder.build();
 					} else {
 						result.addProperty(LOGIN.message, failedMessage);
@@ -208,10 +210,15 @@ public class CookieLogin {
 	 * @param password
 	 * @return
 	 */
-	public static Cookie getLoginCookie(String userName, String password) {
+	public static NewCookie getLoginCookie(String userName, String password,
+			Boolean stayLoggedIn) {
 		String cookieString = userName + ":" + password;
-		Cookie cookie = new Cookie(AUTH_COOKIE_NAME, Base64.encode(
-				cookieString.getBytes()));
+		int maxAge = -1;
+		if (stayLoggedIn) {
+			maxAge = Integer.MAX_VALUE;
+		}
+		NewCookie cookie = new NewCookie(AUTH_COOKIE_NAME, Base64.encode(
+				cookieString.getBytes()), null, null, null, maxAge, false);
 		return cookie;
 	}
 

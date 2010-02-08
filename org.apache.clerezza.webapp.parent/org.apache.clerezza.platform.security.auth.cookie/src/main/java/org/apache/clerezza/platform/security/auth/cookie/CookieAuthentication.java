@@ -123,7 +123,6 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 	@Override
 	public boolean writeLoginResponse(Request request,Response response, Throwable cause) throws HandlerException{
 
-		System.out.println(request.getMethod());
 		if (!request.getMethod().equals(Method.GET)) {
 			return false;
 		}
