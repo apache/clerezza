@@ -77,11 +77,6 @@ public class Yui {
 	public PathNode getStaticFile(@PathParam("path") String path) {
 		final PathNode node = fileServer.getNode(path);
 		logger.debug("Serving static {}", node);
-		try {
-			logger.debug("Inputstream {}", node.getInputStream());
-		} catch (IOException ex) {
-			logger.error("Reading static file {}", ex);
-		}
 		return node;
 	}
 
