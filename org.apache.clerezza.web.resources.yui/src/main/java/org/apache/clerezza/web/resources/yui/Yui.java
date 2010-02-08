@@ -75,7 +75,22 @@ public class Yui {
 	@GET
 	@Path("{path:.+}")
 	public PathNode getStaticFile(@PathParam("path") String path) {
-		final PathNode node = fileServer.getNode(path);
+		logger.warn("Accessing deprecated path for yui2, use 2/{} instead.", path);
+		return getYui2File(path);
+	}
+
+	@GET
+	@Path("2/{path:.+}")
+	public PathNode getYui2File(@PathParam("path") String path) {
+		final PathNode node = fileServer.getNode("2/"+path);
+		logger.debug("Serving static {}", node);
+		return node;
+	}
+	
+	@GET
+	@Path("3/{path:.+}")
+	public PathNode getYui3File(@PathParam("path") String path) {
+		final PathNode node = fileServer.getNode("3/"+path);
 		logger.debug("Serving static {}", node);
 		return node;
 	}
