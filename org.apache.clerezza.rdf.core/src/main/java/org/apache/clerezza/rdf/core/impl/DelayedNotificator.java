@@ -36,7 +36,7 @@ class DelayedNotificator {
 
 	private static Timer timer = new Timer("Event delivery timer",true);
 
-	class ListenerHolder {
+	static class ListenerHolder {
 
 		long delay;
 		List<GraphEvent> events = null;
