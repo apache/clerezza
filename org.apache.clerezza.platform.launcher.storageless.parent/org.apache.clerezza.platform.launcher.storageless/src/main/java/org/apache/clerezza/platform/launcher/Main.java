@@ -301,10 +301,9 @@ public class Main implements BundleActivator {
 				artDescs = getRevertArtifacts(revertParam, artDescs, installedBundles);
 			}
 			if (!alreadyInstalled(artDescs, installedBundles) || revertParam != null) {
-				installBundles(bundleContext, new TreeSet(artDescs), startLevel);
+				newlyInstalledBundles.addAll(installBundles(bundleContext, new TreeSet(artDescs), startLevel));
 				System.out.println("level " + startLevel + " bundles installed");
 			}
-			newlyInstalledBundles.addAll(installBundles(bundleContext, new TreeSet(artDescs), startLevel));
 		}
 
 		for (Bundle bundle : newlyInstalledBundles) {
