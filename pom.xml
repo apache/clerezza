@@ -5,7 +5,7 @@
 	<artifactId>org.apache.clerezza.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Clerezza - Parent for all (root)</name>
-	<url>http://clerezza.org/projects/org.apache.clerezza.parent/</url>
+	<url>http://incubator.apache.org/clerezza/mvn-site/</url>
 	<version>0.2-incubating-SNAPSHOT</version>
 	<description>The direct or indirect parent of all Clerezza Artifacts</description>
 	<properties>
