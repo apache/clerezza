@@ -28,7 +28,7 @@ import java.nio.channels.WritableByteChannel;
  *
  * @author mir
  */
-class DocTypeSettingByteChannel implements WritableByteChannel {
+class DocTypeFilteringByteChannel implements WritableByteChannel {
 	
 	private final static byte[] DOCTYPE_DEF_BYTES = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> ".getBytes();
 	private final static byte[] DOCTYPE_TAG_BYTES = "<!DOCTYPE".getBytes();
@@ -45,7 +45,7 @@ class DocTypeSettingByteChannel implements WritableByteChannel {
 	private boolean isXmlDeclaration = true;
 	private boolean isNotADoctypeDef = false;
 	
-	public DocTypeSettingByteChannel(WritableByteChannel byteChannel, 
+	public DocTypeFilteringByteChannel(WritableByteChannel byteChannel,
 			ResponseStatusInfo wrappedResponse) {
 		this.wrappedByteChannel = byteChannel;
 		this.wrappedResponse = wrappedResponse;
@@ -53,7 +53,7 @@ class DocTypeSettingByteChannel implements WritableByteChannel {
 
 	@Override
 	public int write(ByteBuffer byteBuffer) throws IOException {
-		if (!doctypeWritten && wrappedResponse.isHtml()) {
+		if (!doctypeWritten && wrappedResponse.convertXhtml2Html()) {
 			int initialRemaining = byteBuffer.remaining();
 			while (byteBuffer.remaining() > 0) {
 				byte b = byteBuffer.get();

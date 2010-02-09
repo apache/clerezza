@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.clerezza.platform.xhtml2html;
 
 import java.io.IOException;
@@ -26,14 +25,14 @@ import org.wymiwyg.wrhapi.util.MessageBody2Write;
 
 /**
  *
- * @author tio
+ * @author mir
  */
-class DocTypeSettingBody extends MessageBody2Write {
+class Xhtml2HtmlConvertingBody extends MessageBody2Write {
 
 	private WrappedResponse wrappedResponse;
 	private MessageBody body;
 
-	public DocTypeSettingBody(MessageBody body, WrappedResponse wrappedResponse) {
+	public Xhtml2HtmlConvertingBody(MessageBody body, WrappedResponse wrappedResponse) {
 		this.wrappedResponse = wrappedResponse;
 		this.body = body;
 	}
@@ -41,8 +40,8 @@ class DocTypeSettingBody extends MessageBody2Write {
 	@Override
 	public void writeTo(WritableByteChannel byteChannel)
 			throws IOException {
-		body.writeTo(new DocTypeSettingByteChannel(byteChannel, wrappedResponse));
+		body.writeTo(new ContentLengthSettingByteChannel(new DocTypeFilteringByteChannel(
+				new SelfClosing2ClosingTagsByteChannel(
+				byteChannel, wrappedResponse), wrappedResponse), wrappedResponse));
 	}
-
-
 }

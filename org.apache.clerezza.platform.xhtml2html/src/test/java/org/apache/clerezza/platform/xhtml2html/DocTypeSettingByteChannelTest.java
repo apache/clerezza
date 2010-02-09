@@ -38,11 +38,11 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeSettingByteChannel(Channels.newChannel(baos),
+		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
 				new ResponseStatusInfo() {
 
 			@Override
-			public boolean isHtml() {
+			public boolean convertXhtml2Html() {
 				return true;
 			}
 
@@ -64,11 +64,11 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeSettingByteChannel(Channels.newChannel(baos),
+		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
 				new ResponseStatusInfo() {
 
 			@Override
-			public boolean isHtml() {
+			public boolean convertXhtml2Html() {
 				return true;
 			}
 		});
@@ -95,11 +95,11 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeSettingByteChannel(Channels.newChannel(baos),
+		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
 				new ResponseStatusInfo() {
 
 			@Override
-			public boolean isHtml() {
+			public boolean convertXhtml2Html() {
 				return true;
 			}
 		});
@@ -124,11 +124,11 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeSettingByteChannel(Channels.newChannel(baos),
+		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
 				new ResponseStatusInfo() {
 
 			@Override
-			public boolean isHtml() {
+			public boolean convertXhtml2Html() {
 				return true;
 			}
 
@@ -148,11 +148,11 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeSettingByteChannel(Channels.newChannel(baos),
+		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
 				new ResponseStatusInfo() {
 
 			@Override
-			public boolean isHtml() {
+			public boolean convertXhtml2Html() {
 				return true;
 			}
 
