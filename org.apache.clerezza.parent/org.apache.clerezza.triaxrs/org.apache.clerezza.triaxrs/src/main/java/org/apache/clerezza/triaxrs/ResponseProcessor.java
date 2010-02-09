@@ -132,8 +132,7 @@ class ResponseProcessor {
 		// get best writer
 		List<MediaType> methodProducibleMediaTypesList = new ArrayList<MediaType>(
 				methodProducibleMediaTypes);
-		AcceptHeader acceptHeader = new AcceptHeader(request.getHeaders().get(
-				HttpHeaders.ACCEPT));
+		AcceptHeader acceptHeader = request.getAcceptHeader();
 		if (methodProducibleMediaTypesList.size() == 0) {
 			methodProducibleMediaTypesList.add(MediaType.WILDCARD_TYPE);
 		}

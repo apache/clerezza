@@ -103,8 +103,7 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 
 			Set<MethodAndInputType> invocableMethods = filterByConsumedType(
 					httpMatchingMethods, request);
-			AcceptHeader acceptHeader = new AcceptHeader(request.getHeaders()
-					.get(HttpHeaders.ACCEPT));
+			AcceptHeader acceptHeader = request.getAcceptHeader();
 			SortedSet<MethodAndConsumedAndProducibleTypes> acceptableMethods = new TreeSet<MethodAndConsumedAndProducibleTypes>(
 					filterByAcceptHeader(invocableMethods, acceptHeader));
 

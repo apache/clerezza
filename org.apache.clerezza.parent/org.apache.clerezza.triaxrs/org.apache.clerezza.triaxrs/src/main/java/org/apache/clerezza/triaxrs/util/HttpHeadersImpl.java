@@ -73,18 +73,7 @@ public class HttpHeadersImpl implements HttpHeaders {
 
 	@Override
 	public List<MediaType> getAcceptableMediaTypes() {
-		List<MediaType> mediatypes = new ArrayList<MediaType>();
-		List<String> types = request.getHeaders().get(HttpHeaders.ACCEPT);
-		MediaTypeProvider mtp = new MediaTypeProvider();
-		
-		if(types == null){
-			return null;
-		}
-		
-		for (String type : types) {
-			mediatypes.add(mtp.fromString(type));
-		}
-		return mediatypes;
+		return request.getAcceptHeader().getEntries();
 	}
 
 	@Override
