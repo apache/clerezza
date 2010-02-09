@@ -22,18 +22,20 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.apache.clerezza.rdf.utils.GraphNode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.platform.config.PlatformConfig;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 
 
@@ -208,8 +210,10 @@ public class HierarchyTest{
 
 	private class TestHierarchyService extends HierarchyService {
 		@Override
-		protected NonLiteral getCreator() {
-			return new BNode();
+		protected GraphNode getCreator() {
+			GraphNode node = new GraphNode(new BNode(), new SimpleMGraph());
+			node.addProperty(PLATFORM.userName, new PlainLiteralImpl("userName"));
+			return node;
 		}
 	}
 }
