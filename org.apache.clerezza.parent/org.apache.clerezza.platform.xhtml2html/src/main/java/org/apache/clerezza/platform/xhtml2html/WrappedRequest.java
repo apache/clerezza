@@ -19,13 +19,10 @@
 package org.apache.clerezza.platform.xhtml2html;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
 import org.wymiwyg.wrhapi.Request;
-import org.wymiwyg.wrhapi.util.AcceptHeaderEntry;
-import org.wymiwyg.wrhapi.util.AcceptHeaderIterator;
 import org.wymiwyg.wrhapi.util.RequestWrapper;
 
 /**

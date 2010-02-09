@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.platform.xhtml2html;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
 import org.wymiwyg.wrhapi.MessageBody;
@@ -31,23 +33,26 @@ import org.wymiwyg.wrhapi.util.ResponseWrapper;
 class WrappedResponse extends ResponseWrapper implements ResponseStatusInfo {
 	private String XHTML_TYPE = "application/xhtml+xml";
 	private String HTML_TYPE = "text/html";
-	private boolean isHtml = false;
+	private boolean convertXhtml2Html = false;
+	private List<Object> contentLengths = new ArrayList<Object>();
 
 	public WrappedResponse(Response response) {
 		super(response);
 	}
 
-
-
 	@Override
 	public void addHeader(HeaderName headerName, Object value) throws HandlerException {
-		if (headerName.equals(HeaderName.CONTENT_LENGTH) && isHtml) {
+		if (headerName.equals(HeaderName.CONTENT_LENGTH)) {
+			if (convertXhtml2Html) {
+				// do nothing
+			} else {
+				contentLengths.add(value);
+			}
 			return;
 		}
 		if (headerName.equals(HeaderName.CONTENT_TYPE) && XHTML_TYPE.equals(value)) {
 			super.addHeader(headerName, HTML_TYPE);
-			isHtml = true;
-			super.setHeader(HeaderName.CONTENT_LENGTH, null);
+			convertXhtml2Html = true;
 		} else {
 			super.addHeader(headerName, value);
 		}
@@ -55,13 +60,18 @@ class WrappedResponse extends ResponseWrapper implements ResponseStatusInfo {
 
 	@Override
 	public void setHeader(HeaderName headerName, Object value) throws HandlerException {
-		if (headerName.equals(HeaderName.CONTENT_LENGTH) && isHtml) {
+		if (headerName.equals(HeaderName.CONTENT_LENGTH)) {
+			if (convertXhtml2Html) {
+				// do nothing
+			} else {
+				contentLengths.clear();
+				contentLengths.add(value);
+			}
 			return;
 		}
 		if (headerName.equals(HeaderName.CONTENT_TYPE) && XHTML_TYPE.equals(value)) {
 			super.setHeader(headerName, HTML_TYPE);
-			isHtml = true;
-			super.setHeader(HeaderName.CONTENT_LENGTH, null);
+			convertXhtml2Html = true;
 		} else {
 			super.setHeader(headerName, value);
 		}
@@ -69,11 +79,17 @@ class WrappedResponse extends ResponseWrapper implements ResponseStatusInfo {
 
 	@Override
 	public void setBody(MessageBody body) throws HandlerException {
-		super.setBody(new DocTypeSettingBody(body, this));
+		super.setBody(new Xhtml2HtmlConvertingBody(body, this));
 	}
 
 	@Override
-	public boolean isHtml() {
-		return isHtml;
+	public boolean convertXhtml2Html() {
+		return convertXhtml2Html;
+	}
+
+	void setContentLengthIfNoConversion() throws HandlerException {
+		if (contentLengths.size() > 0 && !convertXhtml2Html) {
+			super.setHeader(HeaderName.CONTENT_LENGTH, contentLengths.toArray());
+		}
 	}
 }
