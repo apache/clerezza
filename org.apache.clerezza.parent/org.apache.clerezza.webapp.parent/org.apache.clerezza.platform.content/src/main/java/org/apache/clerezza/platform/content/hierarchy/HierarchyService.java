@@ -20,12 +20,10 @@ package org.apache.clerezza.platform.content.hierarchy;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.AccessController;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import javax.security.auth.Subject;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -33,10 +31,12 @@ import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.config.PlatformConfig;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
+import org.apache.clerezza.platform.security.UserUtil;
 import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -45,6 +45,7 @@ import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
  * The hierarchy service is an OSGi service that provides methods for managing
@@ -307,21 +308,29 @@ public class HierarchyService {
 	}
 
 	private void addCreationProperties(HierarchyNode node) {
-		NonLiteral user = getCreator();
-		if (node.hasProperty(FOAF.maker, user)) {
-			throw new RuntimeException(
-					"Creator information already exists for node " + 
-					node.getName());
-		}
-		node.addProperty(FOAF.maker, user);
+		GraphNode agentNode = getCreator();
+		if(!(node.getObjects(FOAF.maker).hasNext())) {
+
+			Iterator<Triple> agents = node.getGraph().filter(null, PLATFORM.userName,
+					agentNode.getObjects(PLATFORM.userName).next());
+
+			NonLiteral agent = null;
+			if(agents.hasNext()) {
+				agent = (NonLiteral) agents.next();
+			} else {
+				agent = (NonLiteral) agentNode.getNode();
+			}
+			node.addProperty(FOAF.maker, agent);
+			node.getGraph().add(new TripleImpl(agent,
+					PLATFORM.userName, agentNode.getObjects(
+					PLATFORM.userName).next()));
+		} 
 		node.addProperty(DCTERMS.created,
 				LiteralFactory.getInstance().createTypedLiteral(new Date()));
 	}
 
-	protected NonLiteral getCreator() {
-		String userName = Subject.getSubject(AccessController.getContext()).
-				getPrincipals().iterator().next().getName();
-		return userManager.getUserByName(userName);
+	protected GraphNode getCreator() {
+		return userManager.getUserGraphNode(UserUtil.getCurrentUserName());
 	}
 
 	void deleteCreationProperties(HierarchyNode node) {
