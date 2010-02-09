@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Variant;
@@ -36,6 +37,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Providers;
 
 import org.apache.clerezza.triaxrs.providers.provided.JafMessageBodyReader;
+import org.apache.clerezza.triaxrs.util.AcceptHeader;
 import org.apache.clerezza.triaxrs.util.CaseInsensitiveMap;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
@@ -49,11 +51,12 @@ import org.wymiwyg.wrhapi.Request;
  */
 public class WebRequestImpl implements WebRequest {
 
+	
 	static class BodyKey {
 		private Annotation[] transformationAnnotation;
 		private Type genericType;
 		private Class<?> type;
-
+		
 		public BodyKey(Class<?> type, Type genericType,
 				Annotation[] transformationAnnotation) {
 			this.type = type;
@@ -110,6 +113,7 @@ public class WebRequestImpl implements WebRequest {
 	private Providers providers;
 	private BodyKey bodyKey = null;
 	private Object body = null;
+	private AcceptHeader acceptHeader = null;
 
 	/**
 	 * Constructs a WebRequest with the specified request and using the
@@ -136,6 +140,15 @@ public class WebRequestImpl implements WebRequest {
 			}
 		}
 		return headers;
+	}
+
+	@Override
+	public AcceptHeader getAcceptHeader() {
+		if (acceptHeader == null) {
+			acceptHeader = new AcceptHeader(getHeaders()
+					.get(HttpHeaders.ACCEPT));
+		}
+		return acceptHeader;
 	}
 
 	public <T> T getBodyObject(Class<T> type, Type genericType,

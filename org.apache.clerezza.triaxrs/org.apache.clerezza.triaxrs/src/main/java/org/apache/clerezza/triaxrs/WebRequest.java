@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.clerezza.jaxrs.extensions.HttpRequest;
+import org.apache.clerezza.triaxrs.util.AcceptHeader;
 import org.wymiwyg.wrhapi.Request;
 
 /**
@@ -49,6 +50,12 @@ public interface WebRequest extends javax.ws.rs.core.Request, HttpRequest {
 	 * @return
 	 */
 	public MultivaluedMap<String, String> getHeaders();
+
+	/**
+	 * Returns the chosen accept header of the request
+	 * @return the accept header
+	 */
+	public AcceptHeader getAcceptHeader();
 
 	/**
 	 * Returns the body of the request.
