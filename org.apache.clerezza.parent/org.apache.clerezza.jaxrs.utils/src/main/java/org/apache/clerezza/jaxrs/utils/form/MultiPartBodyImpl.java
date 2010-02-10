@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.channels.Channels;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +48,7 @@ public class MultiPartBodyImpl extends AbstractParameterCollection implements
 	 * @author reto
 	 * 
 	 */
-	public class FormFileImpl implements FormFile {
+	public static class FormFileImpl implements FormFile {
 
 		private byte[] content;
 		private String fileName;
@@ -94,7 +93,7 @@ public class MultiPartBodyImpl extends AbstractParameterCollection implements
 	 * @author reto
 	 * 
 	 */
-	class Disposition {
+	static class Disposition {
 
 		private String fileName;
 
