@@ -217,8 +217,7 @@ public interface UserManager {
 	public void deleteAllPermissionsOfUser(String name);
 
 	/**
-	 * Retrieves all information associated with a user as GraphNode. The GraphNode
-	 * consists of a UnionMGraph between a new SimpleMGraph and the system graph.
+	 * Retrieves all information associated with a user as GraphNode.
 	 *
 	 * @param name specifies the username of the user, may not be null
 	 * @return GraphNode
