@@ -158,7 +158,7 @@ public class ComponentsRegistrationTest {
 		return referenceMock;
 	}
 
-	public class MyComponentContext implements ComponentContext {
+	public static class MyComponentContext implements ComponentContext {
 
 		Map<ServiceReference, Object> reference2ComponentMap = new HashMap<ServiceReference, Object>();
 

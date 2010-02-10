@@ -37,7 +37,7 @@ import org.apache.clerezza.triaxrs.providers.SelectableProviders;
 public class SelectableProvidersTest {
 
 	@Produces("text/html")
-	public class ExampleProvider {
+	public static class ExampleProvider {
 
 	}
 	

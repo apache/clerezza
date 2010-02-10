@@ -64,7 +64,7 @@ public class ContextInjectionIntoFieldTest {
 
 	@Provider
 	@Produces("test/string")
-	public class MyMessageBodyWriter implements MessageBodyWriter<String> {
+	public static class MyMessageBodyWriter implements MessageBodyWriter<String> {
 
 		@Context
 		public WebRequest request;
