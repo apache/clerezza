@@ -21,6 +21,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.jena.commons</artifactId>
+		 <exclusions>
+		  <exclusion>
+		   <artifactId>jmxri</artifactId>
+		   <groupId>com.sun.jmx</groupId>
+		  </exclusion>
+		 </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
