@@ -50,7 +50,6 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.SIOC;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.rdf.utils.UnionMGraph;
 
 /**
  * @author hasan, tio
@@ -543,10 +542,8 @@ public class UserManagerImpl implements UserManager {
 			public GraphNode run() {
 				NonLiteral user = getUserByName(name);
 				if(user != null) {
-					GraphNode node = new GraphNode(user, new UnionMGraph(
-							new SimpleMGraph(), new GraphNode(user, systemGraph)
-							.getNodeContext()));
-
+					GraphNode node = new GraphNode(user, new SimpleMGraph(
+							new GraphNode(user, systemGraph).getNodeContext()));
 					return node;
 				} else {
 					throw new RuntimeException("No user with username " + name + " exists");
