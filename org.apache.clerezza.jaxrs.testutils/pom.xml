@@ -18,7 +18,6 @@
 		<dependency>
 			<groupId>org.wymiwyg</groupId>
 			<artifactId>wrhapi-jetty</artifactId>
-			<version>0.7</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>

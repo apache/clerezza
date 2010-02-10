@@ -72,4 +72,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<repositories>
+		<repository>
+			<id>aduna</id>
+			<name>Aduna releases</name>
+			<url>http://repo.aduna-software.org/maven2/releases/</url>
+		</repository>
+	</repositories>
 </project>

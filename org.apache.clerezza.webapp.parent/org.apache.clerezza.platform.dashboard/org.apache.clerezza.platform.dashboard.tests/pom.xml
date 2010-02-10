@@ -121,25 +121,21 @@
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam</artifactId>
-			<version>1.2.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-junit</artifactId>
-			<version>1.2.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-container-default</artifactId>
-			<version>1.2.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.wymiwyg</groupId>
 			<artifactId>wrhapi-osgi</artifactId>
-			<version>0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -195,11 +191,11 @@
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
+	<!-- <repositories>
 		<repository>
 			<id>codehaus-repository</id>
 			<name>Codehaus Repository</name>
 			<url>http://repository.codehaus.org</url>
 		</repository>
-	</repositories>
+	</repositories> -->
 </project>
