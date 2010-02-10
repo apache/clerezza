@@ -18,17 +18,14 @@
  */
 package org.apache.clerezza.triaxrs;
 
-import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.clerezza.triaxrs.util.PathMatching;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.triaxrs.util.PathMatching;
 import org.wymiwyg.wrhapi.HandlerException;
-import org.wymiwyg.wrhapi.Response;
 
 /**
  * Manages a set of root-resources delivering a suitable root-resource given a
@@ -42,7 +39,7 @@ public class RootResources {
 	 * @author mir
 	 * 
 	 */
-	public class ResourceAndPathMatching {
+	public static class ResourceAndPathMatching {
 
 		private Object rootResource;
 		private PathMatching pathMatching;
