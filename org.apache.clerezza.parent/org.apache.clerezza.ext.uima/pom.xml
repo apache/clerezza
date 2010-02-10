@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.ext.uima</artifactId>
+	<version>0.1-incubating-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Apache UIMA extension module</name>
+	<description>Apache UIMA extension modules enable usage of UIMA for enhanced metadata extraction inside Clerezza</description>
+	<parent>
+		<groupId>org.apache.clerezza</groupId>
+		<artifactId>org.apache.clerezza.parent</artifactId>
+		<version>0.2-incubating-SNAPSHOT</version>
+	</parent>
+	<modules>
+		<module>org.apache.clerezza.ext.uima.metadata-generator</module>
+		<module>org.apache.clerezza.ext.uima.concept-tagging</module>
+        <module>org.apache.clerezza.ext.uima.utils</module>
+	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-ep-runtime</artifactId>
+		</dependency>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>uimaj-ep-runtime</artifactId>
+				<version>2.3.0.incubating</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>
