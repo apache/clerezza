@@ -181,11 +181,11 @@
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
+	<!-- <repositories>
 		<repository>
 			<id>codehaus-repository</id>
 			<name>Codehaus Repository</name>
 			<url>http://repository.codehaus.org</url>
 		</repository>
-	</repositories>
+	</repositories> -->
 </project>

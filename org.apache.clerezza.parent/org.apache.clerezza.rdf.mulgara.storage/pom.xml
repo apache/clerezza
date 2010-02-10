@@ -59,4 +59,20 @@
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>trialox-ext</id>
+			<name>Trialox provided bundles for external projects</name>
+			<url>http://repo.trialox.org/ext/</url>
+		</repository>
+		<repository>
+			<id>sun</id>
+			<name>sun java repository</name>
+			<releases>
+				<updatePolicy>interval:60</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<url>http://download.java.net/maven/2/</url>
+		</repository>
+	</repositories>
 </project>

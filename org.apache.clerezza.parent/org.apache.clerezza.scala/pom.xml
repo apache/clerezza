@@ -11,21 +11,21 @@
 	<packaging>bundle</packaging>
 	<name>Clerezza - Scala support</name>
 	<description>OSGi bundle providing a service org.apache.clerezza.scala.service.ScalaService for interpreting scala code - see ScalaDocs</description>
-	<repositories>
+	<!-- <repositories>
 		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</repository>
-	</repositories>
+	</repositories> -->
 
-	<pluginRepositories>
+	<!-- <pluginRepositories>
 		<pluginRepository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</pluginRepository>
-	</pluginRepositories>
+	</pluginRepositories> -->
 
 	<dependencies>
 		<dependency>

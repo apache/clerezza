@@ -280,56 +280,10 @@
 		</resources>
 	</build>
 	<repositories>
-		<repository>
-			<id>sun</id>
-			<name>sun java repository</name>
-			<releases>
-				<updatePolicy>interval:60</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<url>http://download.java.net/maven/2/</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>wymiwyg</id>
-			<name>wymiwyg repository</name>
-			<releases>
-				<updatePolicy>interval:60</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<url>http://wymiwyg.berlios.de/maven2/</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>aduna</id>
-			<name>aduna repository</name>
-			<releases>
-				<updatePolicy>interval:60</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<url>http://repo.aduna-software.org/maven2/releases</url>
-			<layout>default</layout>
-		</repository>
 		<!-- for PAXEXAM-159 and 160 -->
 		<repository>
 			<id>ops4j</id>
 			<name>ops4j repository</name>
-			<releases>
-				<updatePolicy>interval:60</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
 			<snapshots>
 				<updatePolicy>always</updatePolicy>
 				<checksumPolicy>warn</checksumPolicy>
@@ -341,10 +295,6 @@
 		<repository>
 			<id>apache</id>
 			<name>apache repository</name>
-			<releases>
-				<updatePolicy>interval:60</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
 			<snapshots>
 				<updatePolicy>always</updatePolicy>
 				<checksumPolicy>warn</checksumPolicy>
@@ -352,56 +302,9 @@
 			<url>http://repository.apache.org/content/groups/snapshots-group</url>
 			<layout>default</layout>
 		</repository>
-		<repository>
-			<id>clerezza-ext</id>
-			<name>clerezza.org ext repository</name>
-			<url>http://repo.trialox.org/ext</url>
-			<releases>
-				<updatePolicy>interval:60</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>jena</id>
-			<name>hp jena repository</name>
-			<releases>
-				<updatePolicy>interval:60</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<url>http://openjena.org/repo/</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>scala-tools.org</id>
-			<name>Scala-Tools Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</repository>
+		
 	</repositories>
 	<pluginRepositories>
-		<pluginRepository>
-			<id>scala-tools.org</id>
-			<name>Scala-Tools Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>trialox-plugin-release</id>
-			<name>trialox.org distribution repository</name>
-			<url>http://repo.trialox.org/release</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>trialox-plugin-snapshot</id>
-			<name>trialox.org snapshot repository</name>
-			<url>http://repo.trialox.org/snapshot</url>
-		</pluginRepository>
 		<!-- for a version that fixed PAXEXAM-159 and 160 -->
 		<pluginRepository>
 			<id>ops4j-plugin-snapshot</id>
@@ -792,7 +695,17 @@
 			<dependency>
 				<groupId>org.wymiwyg</groupId>
 				<artifactId>wrhapi</artifactId>
-				<version>0.8</version>
+				<version>0.8.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wymiwyg</groupId>
+				<artifactId>wrhapi-osgi</artifactId>
+				<version>0.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wymiwyg</groupId>
+				<artifactId>wrhapi-jetty</artifactId>
+				<version>0.8.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>

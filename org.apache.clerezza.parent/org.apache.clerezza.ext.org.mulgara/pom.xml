@@ -92,9 +92,23 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>codehaus</id>
-			<name>Maven Codehaus repository</name>
-			<url>http://repository.codehaus.org/</url>
+			<id>trialox-ext</id>
+			<name>Trialox provided bundles for external projects</name>
+			<url>http://repo.trialox.org/ext/</url>
+		</repository>
+		<repository>
+			<id>sun</id>
+			<name>sun java repository</name>
+			<releases>
+				<updatePolicy>interval:60</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<url>http://download.java.net/maven/2/</url>
+			<layout>default</layout>
 		</repository>
 	</repositories>
 </project>

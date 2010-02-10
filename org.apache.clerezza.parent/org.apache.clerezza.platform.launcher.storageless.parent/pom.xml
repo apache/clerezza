@@ -47,7 +47,6 @@
 		<dependency>
 			<groupId>org.wymiwyg</groupId>
 			<artifactId>wrhapi-osgi</artifactId>
-			<version>0.2</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -406,4 +405,22 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<!-- org.scala-lang-osgi is not in central repo -->
+			<id>scala-tools</id>
+			<name>Scala tools</name>
+			<url>http://scala-tools.org/repo-releases/</url>
+		</repository>
+		<repository>
+			<id>sun</id>
+			<name>sun java repository</name>
+			<releases>
+				<!-- com.sun.script.jruby is not in central repo -->
+				<updatePolicy>interval:60</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<url>http://download.java.net/maven/2/</url>
+		</repository>
+	</repositories>
 </project>
