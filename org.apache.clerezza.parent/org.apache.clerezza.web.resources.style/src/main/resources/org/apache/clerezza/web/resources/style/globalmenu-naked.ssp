@@ -1,5 +1,9 @@
 def menu(s: Any) = new UriRef("http://clerezza.org/2009/11/global-menu#"+s)
 def rdfs(s: Any) = new UriRef("http://www.w3.org/2000/01/rdf-schema#"+s)
+def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#"+s)
+
+resultDocModifier.addScriptReference("/style/scripts/login.js");
+
 <div id="tx-system">
 	<div id="tx-globalsearch">
 		<form action="/globalsearch">
@@ -10,7 +14,18 @@ def rdfs(s: Any) = new UriRef("http://www.w3.org/2000/01/rdf-schema#"+s)
 
 	</div>
 
-	<div id="tx-login"></div>
+	<div id="tx-login">
+				{if((context/platform("user")/platform("userName")*).equals("anonymous")) {
+						<span>
+							<a href="#" id="tx-login-button">login</a>
+						</span>
+					} else {
+						<span>{context/platform("user")/platform("userName")*}
+							<a href="/logout">logout</a>
+						</span>
+					}
+				}
+	</div>
 
 	<div id="tx-logo"><a href=""></a></div>
 
@@ -18,22 +33,21 @@ def rdfs(s: Any) = new UriRef("http://www.w3.org/2000/01/rdf-schema#"+s)
 	<ol>
 	{for (menuItem <- res/menu("globalMenu")!!) yield
 		<li><a href=
-			   {
+			{
 					if ((menuItem/menu("path")).length > 0) {
 						menuItem/menu("path")*
 					} else {""}
-			   }>{(menuItem/rdfs("label")*)}</a>
-        	<ol>
+			}>{(menuItem/rdfs("label")*)}</a>
+			<ol>
 				 {
 					if ((menuItem/menu("children")).length > 0) {
 					for (childMenuItem <- menuItem/menu("children")!!) yield
 					<li><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a></li>
 					} else {}
 				 }
-            </ol>
-        </li>
+			</ol>
+		</li>
 	}
-        <li><a href="/logout">Logout</a></li>
 	</ol>
 	</div>
 </div>
