@@ -39,8 +39,12 @@
 			<artifactId>tdb</artifactId>
 			<exclusions>
 				<exclusion>
-					<artifactId>jmxri</artifactId>
 					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
