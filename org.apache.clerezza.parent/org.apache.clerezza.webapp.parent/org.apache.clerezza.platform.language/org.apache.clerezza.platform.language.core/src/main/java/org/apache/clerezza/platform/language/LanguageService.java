@@ -56,7 +56,7 @@ import org.apache.clerezza.rdf.utils.RdfList;
  */
 @Component(immediate=true, enabled= true)
 @Service(LanguageService.class)
-public class LanguageService {
+public class LanguageService {	
 
 	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
 	private MGraph systemGraph;
@@ -64,7 +64,14 @@ public class LanguageService {
 	@Reference
 	private ContentGraphProvider cgProvider;
 
+	/** this is linked to the system-graph, accessing requires respective
+	 * permission
+	 */
 	private List<Resource> languageList;
+	/**
+	 * no permission on the system graph required to access this
+	 */
+	private List<Resource> languageListCache;
 
 	private static final String PARSER_FILTER =
 			"(supportedFormat=" + SupportedFormat.RDF_XML +")";
@@ -82,7 +89,7 @@ public class LanguageService {
 	 */
 	public List<LanguageDescription> getLanguages() {
 		List<LanguageDescription> langList = new ArrayList<LanguageDescription>();
-		Iterator<Resource> languages = languageList.iterator();
+		Iterator<Resource> languages = languageListCache.iterator();
 		while (languages.hasNext()) {
 			UriRef language = (UriRef) languages.next();
 			langList.add(
@@ -99,7 +106,7 @@ public class LanguageService {
 	 */
 	public LanguageDescription getDefaultLanguage() {
 		return new LanguageDescription(
-				new GraphNode(languageList.get(0), cgProvider.getContentGraph()));
+				new GraphNode(languageListCache.get(0), cgProvider.getContentGraph()));
 	}
 
 	/**
@@ -130,11 +137,12 @@ public class LanguageService {
 	 *		added to the platform.
 	 */
 	public void addLanguage(UriRef languageUri) {
-		if (!languageList.contains(languageUri)) {
+		if (!languageListCache.contains(languageUri)) {
 			if(languageList.add(languageUri)) {
 				cgProvider.getContentGraph().
 						addAll(getLanguageContext(languageUri));
 			}
+			languageListCache.add(languageUri);
 		}
 	}
 
@@ -169,11 +177,13 @@ public class LanguageService {
 	 * @param componentContext
 	 */
 	protected void activate(ComponentContext componentContext) {
+		final RdfList rdfList = new RdfList(getListNode(), systemGraph);
+		languageList = Collections.synchronizedList(rdfList);
 		//access to languages should not require access to system graph,
 		//so copying the resources to an ArrayList
-		languageList = Collections.synchronizedList(
-				new ArrayList<Resource>(new RdfList(getListNode(), systemGraph)));
-		if (languageList.size() == 0) {
+		languageListCache = Collections.synchronizedList(
+				new ArrayList<Resource>(rdfList));
+		if (languageListCache.size() == 0) {
 			addLanguage(new UriRef("http://www.lingvoj.org/lang/en"));
 		}
 	}
