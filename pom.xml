@@ -305,13 +305,13 @@
 		
 	</repositories>
 	<pluginRepositories>
-		<!-- for a version that fixed PAXEXAM-159 and 160 -->
+		<!-- for a version that fixes PAXEXAM-159 and 160 -->
 		<pluginRepository>
 			<id>ops4j-plugin-snapshot</id>
 			<name>ops4j.org snapshot repository</name>
 			<url>http://repository.ops4j.org/mvn-snapshots/</url>
 		</pluginRepository>
-		<!-- neede by fix of PAXEXAM-160 -->
+		<!-- needed by fix of PAXEXAM-160 -->
 		<pluginRepository>
 			<id>apache-plugin-snapshot</id>
 			<name>apache.org snapshot repository</name>
@@ -341,6 +341,13 @@
 				<groupId>javax.ws.rs</groupId>
 				<artifactId>jsr311-api</artifactId>
 				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<!-- this is needed as 1.2.15 point to non functional repository,
+				http://jira.codehaus.org/browse/MEV-649 -->
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.14</version>
 			</dependency>
 			<dependency>
 				<groupId>org.scala-lang</groupId>
