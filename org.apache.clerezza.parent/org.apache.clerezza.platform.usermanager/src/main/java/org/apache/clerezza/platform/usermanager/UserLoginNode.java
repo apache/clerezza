@@ -20,7 +20,6 @@ package org.apache.clerezza.platform.usermanager;
 
 import org.apache.clerezza.platform.security.UserUtil;
 import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
 
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
