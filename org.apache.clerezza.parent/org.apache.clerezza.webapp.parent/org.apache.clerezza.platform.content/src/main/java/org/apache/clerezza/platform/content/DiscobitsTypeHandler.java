@@ -20,7 +20,6 @@ package org.apache.clerezza.platform.content;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import java.util.Set;
@@ -35,6 +34,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.RuntimeDelegate;
+import org.apache.clerezza.platform.content.hierarchy.HierarchyService;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
@@ -48,9 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typehandlerspace.SupportedTypes;
 import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -79,6 +77,9 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 
 	@Reference
 	private ContentGraphProvider cgProvider;
+
+	@Reference
+	private HierarchyService hierarchyService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(DiscobitsTypeHandler.class);
 
@@ -98,7 +99,6 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		final MGraph mGraph = cgProvider.getContentGraph();
 		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
 		final GraphNode graphNode = new GraphNode(uri, mGraph);
-		final Iterator<Triple> typeStmts = mGraph.filter(uri, RDF.type, null);
 		InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(graphNode);
 		if (infoDiscobit != null) {
 			return infoDiscobit;
@@ -153,5 +153,10 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	@Override
 	protected Set<MetaDataGenerator> getMetaDataGenerators() {
 		return metaDataGenerators;
+	}
+
+	@Override
+	protected HierarchyService getHierarchyService() {
+		return hierarchyService;
 	}
 }

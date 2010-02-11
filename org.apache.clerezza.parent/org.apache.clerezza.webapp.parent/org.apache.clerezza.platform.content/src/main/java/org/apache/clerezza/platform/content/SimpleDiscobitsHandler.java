@@ -19,6 +19,7 @@
 package org.apache.clerezza.platform.content;
 
 import java.util.Set;
+import org.apache.clerezza.platform.content.hierarchy.HierarchyService;
 import org.apache.clerezza.rdf.core.MGraph;
 
 /**
@@ -40,6 +41,11 @@ class SimpleDiscobitsHandler extends AbstractDiscobitsHandler {
 
 	@Override
 	protected Set<MetaDataGenerator> getMetaDataGenerators() {
+		return null;
+	}
+
+	@Override
+	protected HierarchyService getHierarchyService() {
 		return null;
 	}
 
