@@ -48,7 +48,7 @@
 							<outputDirectory>target/extracted</outputDirectory>
 							<includes>**</includes>
 							<excludes>
-								META-INF/**
+								META-INF/**,**/com.hp.hpl.jena*
 							</excludes>
 						</configuration>
 					</execution>

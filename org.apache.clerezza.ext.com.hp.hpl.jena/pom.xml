@@ -12,6 +12,20 @@
     <name>Clerezza Ext - Jena OSGi Bundle</name>
     <description>All required dependencies for Jena</description>
     <dependencies>
+		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>arq</artifactId>
+			<exclusions>
+                <exclusion>
+                    <artifactId>xmlParserAPIs</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion>
+               <exclusion>
+                    <artifactId>xercesImpl</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion>
+            </exclusions>
+		</dependency>
         <dependency>
             <groupId>com.hp.hpl.jena</groupId>
             <artifactId>jena</artifactId>
@@ -44,15 +58,14 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;artifactId=!commons-logging</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-						<Import-Package>!com.hp.hpl.jena.test,!com.hp.hpl.jena.*.test,!arq.*,
-						!com.hp.hpl.*.junit,!javax.xml.transform.stream,!javax.xml.stream,
-						!org.apache.lucene.*,!com.hp.hpl.jena.graph.test,!javax.mail.*,
-						!junit.*,!org.apache.xml.resolver.*,!antlr.parseview,!sun.*,
-						!org.w3c.dom.ls,!org.json.*,!org.apache.avalon.*,
-						!org.apache.log,
-						<!-- !org.apache.xerces.impl.*, -->
-						!org.apache.xerces.impl.validation.*,
-						!org.xml.sax.*,
+						<Import-Package>!com.hp.hpl.jena.test,!com.hp.hpl.jena.*.test,
+						!com.hp.hpl.*.junit,
+						!junit.*,!org.apache.xml.resolver.*,!sun.*,
+						!org.junit.*,
+						!com.sun.msv.*,
+						!com.sun.jdmk.*,
+						!javax.jms.*,
+						!org.relaxng.*,
 						*</Import-Package>
 						<Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
                     </instructions>
