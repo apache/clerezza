@@ -302,7 +302,12 @@
 			<url>http://repository.apache.org/content/groups/snapshots-group</url>
 			<layout>default</layout>
 		</repository>
-		
+		<!-- broken version in main: http://tech.groups.yahoo.com/group/jena-dev/message/42871 -->
+		<repository>
+			<id>jena</id>
+			<name>jena repository</name>
+			<url>http://openjena.org/repo/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<!-- for a version that fixes PAXEXAM-159 and 160 -->
