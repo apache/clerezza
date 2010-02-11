@@ -18,8 +18,10 @@
  */
 package org.apache.clerezza.platform.content.hierarchy;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,7 +38,6 @@ import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -153,6 +154,47 @@ public class HierarchyService {
 	}
 
 	/**
+	 * Creates a new {@link HierarchyNode} which is not a {@link CollectionNode}
+	 * and adds it to its parent collections member list at the specified position
+	 * posInParent.
+	 * If the specified uri does not start with an existing root uri, then
+	 * the base URI ('http://[host]/') of uri is added as root.
+	 *
+	 * @param parentCollection the uri of parent collection
+	 * @param name the name of non collection node
+	 * @param posInParent the position of the non collection node in the
+	 *		members list of its parent collection
+	 * @throws NodeAlreadyExistsException Thrown if the specified node already
+	 *		exists.
+	 * @throws IllegalArgumentException Thrown if uri ends with a '/'
+	 * @return the created non collection node.
+	 */
+	public HierarchyNode createNonCollectionNode(UriRef parentCollection, String name, int posInParent)
+			throws NodeAlreadyExistsException {
+		UriRef uri = createNonCollectionUri(parentCollection, name);
+		return createNonCollectionNode(uri, posInParent);
+	}
+
+	/**
+	 * Creates a new {@link HierarchyNode} which is not a {@link CollectionNode}
+	 * and adds it at the end of its parent collections member list.
+	 * If the specified uri does not start with an existing root uri, then
+	 * the base URI ('http://[host]/') of uri is added as root.
+	 *
+	 * @param parentCollection the uri of parent collection
+	 * @param name the name of non collection node
+	 * @throws NodeAlreadyExistsException Thrown if the specified node already
+	 *		exists.
+	 * @throws IllegalArgumentException Thrown if uri ends with a '/'
+	 * @return the created non collection node.
+	 */
+	public HierarchyNode createNonCollectionNode(UriRef parentCollection, String name)
+			throws NodeAlreadyExistsException {
+		UriRef uri = createNonCollectionUri(parentCollection, name);
+		return createNonCollectionNode(uri);
+	}
+
+	/**
 	 * Checks if the uri starts with one of the roots. If not, then it adds
 	 * the base URI of uri as new root.
 	 * @param uri The Uri to be checked.
@@ -259,6 +301,52 @@ public class HierarchyService {
 		return collectionNode;
 	}
 
+	/**
+	 * Creates a new {@link CollectionNode} in the specified parent collection with
+	 * the specified name. If in the parent collection already contains a collection
+	 * with that name, then a <code>NodeAlreadyExistsException</code> is thrown.
+	 * The newly created collection node will be added to its parent collection's
+	 * member list at the specified position posInParent. If the specified uri
+	 * does not start with an existing root uri, then the base URI ('http://[host]/')
+	 * of uri is added as root.
+	 *
+	 * @param parentCollection the uri of the parent collection.
+	 * @param name the name of the collection
+	 * @param posInParent the position of the collection in the members list of
+	 *		its parent collection.
+	 * @throws NodeAlreadyExistsException Thrown if the specified node already
+	 *		exists.
+	 * @throws IllegalArgumentException Thrown if uri ends not with a '/'
+	 * @return the created collection node.
+	 */
+	public HierarchyNode createCollectionNode(UriRef parentCollection, String name, int posInParent)
+			throws NodeAlreadyExistsException {
+		UriRef uri = createCollectionUri(parentCollection, name);
+		return createCollectionNode(uri, posInParent);
+	}
+
+	/**
+	 * Creates a new {@link CollectionNode} in the specified parent collection with
+	 * the specified name. If in the parent collection already contains a collection
+	 * with that name, then a <code>NodeAlreadyExistsException</code> is thrown.
+	 * The newly created collection node will be added at the end of its parent
+	 * collection's member list. If the specified uri does not start with an
+	 * existing root uri, then the base URI ('http://[host]/') of uri is added
+	 * as root.
+	 *
+	 * @param parentCollection the uri of the parent collection.
+	 * @param name the name of the collection
+	 * @throws NodeAlreadyExistsException Thrown if the specified node already
+	 *		exists.
+	 * @throws IllegalArgumentException Thrown if uri ends not with a '/'
+	 * @return the created collection node.
+	 */
+	public HierarchyNode createCollectionNode(UriRef parentCollection, String name)
+			throws NodeAlreadyExistsException {
+		UriRef uri = createCollectionUri(parentCollection, name);
+		return createCollectionNode(uri);
+	}
+
 	private void addCollectionTypeTriple(UriRef uri) {
 		Triple collectionTypeTriple = new TripleImpl(uri, RDF.type,
 				HIERARCHY.Collection);
@@ -269,7 +357,7 @@ public class HierarchyService {
 	 * Creates a new CollectionNode at the specified uri. If at the specified
 	 * uri a collection node already exists, then a
 	 * <code>NodeAlreadyExistsException</code> is thrown. The newly
-	 * created collection node will be added at the end of its parent collections
+	 * created collection node will be added at the end of its parent collection's
 	 * member list.
 	 *
 	 * @param uri the uri where the collection should be created.
@@ -316,7 +404,7 @@ public class HierarchyService {
 
 			NonLiteral agent = null;
 			if(agents.hasNext()) {
-				agent = (NonLiteral) agents.next();
+				agent = (NonLiteral) agents.next().getSubject();
 			} else {
 				agent = (NonLiteral) agentNode.getNode();
 			}
@@ -336,5 +424,25 @@ public class HierarchyService {
 	void deleteCreationProperties(HierarchyNode node) {
 		node.deleteProperties(FOAF.maker);
 		node.deleteProperties(DCTERMS.created);
+	}
+
+	/**
+	 * Creates a uri that ends with a slash ('/').
+	 * @param parrentCollectionUri the URI of the parent collection
+	 * @param name the name of the collection
+	 * @return
+	 */
+	UriRef createCollectionUri(UriRef parrentCollectionUri, String name) {
+		return new UriRef(
+				createNonCollectionUri(parrentCollectionUri, name).getUnicodeString() + "/");
+	}
+
+	UriRef createNonCollectionUri(UriRef parentCollectionUri, String name) {
+		try {
+			return new UriRef(parentCollectionUri.getUnicodeString() +
+					URLEncoder.encode(name, "UTF-8"));
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 }
