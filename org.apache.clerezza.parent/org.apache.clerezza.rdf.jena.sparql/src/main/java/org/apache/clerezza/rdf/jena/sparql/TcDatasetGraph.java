@@ -20,6 +20,7 @@ package org.apache.clerezza.rdf.jena.sparql;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import java.util.Iterator;
@@ -68,8 +69,30 @@ class TcDatasetGraph implements DatasetGraph {
 	}
 
 	@Override
-	public Iterator listGraphNodes() {
-		throw new UnsupportedOperationException("Not supported yet.");
+	public Iterator<Node> listGraphNodes() {
+		final Iterator<UriRef> graphsIter = tcManager.listTripleCollections().iterator();
+		return new Iterator<Node>() {
+
+			@Override
+			public boolean hasNext() {
+				return graphsIter.hasNext();
+			}
+
+			@Override
+			public Node next() {
+				UriRef uriRef = graphsIter.next();
+				if (uriRef == null) {
+					return null;
+				}
+				return new Node_URI(uriRef.getUnicodeString()) {};
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("Not supported yet.");
+			}
+
+		};
 	}
 
 	@Override
