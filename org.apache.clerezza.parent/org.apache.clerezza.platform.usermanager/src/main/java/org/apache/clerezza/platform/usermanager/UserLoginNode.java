@@ -26,6 +26,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.typerendering.UserContextProvider;
+import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 
 /**
