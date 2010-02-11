@@ -18,9 +18,7 @@
  */
 package org.apache.clerezza.platform.content.hierarchy;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import javax.ws.rs.FormParam;
@@ -86,7 +84,7 @@ public class HierarchyManager {
 			@FormParam(value = "parentCollectionUri") UriRef parentCollectionUri,
 			@FormParam(value = "pos") Integer pos,
 			@FormParam(value = "name") String name) {
-		UriRef resourceUri = createNonCollectionUri(parentCollectionUri, name);
+		UriRef resourceUri = hierarchyService.createNonCollectionUri(parentCollectionUri, name);
 		try {
 			HierarchyNode node;
 			if (pos == null) {
@@ -125,7 +123,7 @@ public class HierarchyManager {
 			@FormParam(value = "parentCollectionUri") UriRef parentCollectionUri,
 			@FormParam(value = "pos") Integer pos,
 			@FormParam(value = "name") String name) {
-		UriRef collectionUri = createCollectionUri(parentCollectionUri, name);
+		UriRef collectionUri = hierarchyService.createCollectionUri(parentCollectionUri, name);
 		try {
 			CollectionNode node;
 			if (pos == null) {
@@ -293,25 +291,5 @@ public class HierarchyManager {
 			}
 		}
 		return count;
-	}
-
-	/**
-	 * Creates a uri that ends with a slash ('/').
-	 * @param parrentCollectionUri the URI of the parent collection
-	 * @param name the name of the collection
-	 * @return
-	 */
-	private UriRef createCollectionUri(UriRef parrentCollectionUri, String name) {
-		return new UriRef(
-				createNonCollectionUri(parrentCollectionUri, name).getUnicodeString() + "/");
-	}
-
-	private UriRef createNonCollectionUri(UriRef parentCollectionUri, String name) {
-		try {
-			return new UriRef(parentCollectionUri.getUnicodeString() +
-					URLEncoder.encode(name, "UTF-8"));
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
-		}
 	}
 }
