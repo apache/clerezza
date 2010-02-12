@@ -2,14 +2,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.ext.uima.metadata-generator</artifactId>
-	<version>0.0.1-incubating-SNAPSHOT</version>
+	<artifactId>org.apache.clerezza.uima.concept-tagging</artifactId>
+	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>Apache Clerezza UIMA extension for metadata generation </name>
-	<description>Apache Clerezza UIMA extension for metadata generation </description>
+	<name>Apache Clerezza UIMA extension for concept (SKOS) tagging</name>
+	<description>Apache Clerezza UIMA extension for concept (SKOS) tagging</description>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.ext.uima</artifactId>
+		<artifactId>org.apache.clerezza.uima</artifactId>
 		<version>0.1-incubating-SNAPSHOT</version>
 	</parent>
 </project>

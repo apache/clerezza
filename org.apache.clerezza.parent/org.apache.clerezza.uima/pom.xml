@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.ext.uima</artifactId>
+	<artifactId>org.apache.clerezza.uima</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Apache UIMA extension module</name>
@@ -13,9 +13,9 @@
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<modules>
-		<module>org.apache.clerezza.ext.uima.metadata-generator</module>
-		<module>org.apache.clerezza.ext.uima.concept-tagging</module>
-        <module>org.apache.clerezza.ext.uima.utils</module>
+		<module>org.apache.clerezza.uima.metadata-generator</module>
+		<module>org.apache.clerezza.uima.concept-tagging</module>
+        <module>org.apache.clerezza.uima.utils</module>
 	</modules>
 	<dependencies>
 		<dependency>
