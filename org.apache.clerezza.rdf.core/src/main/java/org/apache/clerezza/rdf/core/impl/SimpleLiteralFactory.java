@@ -20,9 +20,12 @@ package org.apache.clerezza.rdf.core.impl;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.apache.clerezza.rdf.core.InvalidLiteralTypeException;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.NoConvertorException;
@@ -40,8 +43,25 @@ import org.apache.clerezza.rdf.core.impl.util.W3CDateFormat;
 
 public class SimpleLiteralFactory extends LiteralFactory {
 
-	final static Class<? extends byte[]> byteArrayType;
+	final private static UriRef xsdInteger =
+			new UriRef("http://www.w3.org/2001/XMLSchema#integer");
+	final private static UriRef xsdInt =
+			new UriRef("http://www.w3.org/2001/XMLSchema#int");
+	final private static UriRef xsdShort =
+			new UriRef("http://www.w3.org/2001/XMLSchema#short");
+	final private static UriRef xsdByte =
+			new UriRef("http://www.w3.org/2001/XMLSchema#byte");
+	
 
+	final private static Set<UriRef> decimalTypes = new HashSet<UriRef>();
+	static {
+		Collections.addAll(decimalTypes, xsdInteger, xsdInt, xsdByte, xsdShort);
+	}
+
+	final private static UriRef xsdDouble =
+			new UriRef("http://www.w3.org/2001/XMLSchema#double");
+
+	final static Class<? extends byte[]> byteArrayType;
 	static {
 		byte[] byteArray = new byte[0];
 		byteArrayType = byteArray.getClass();
@@ -138,17 +158,15 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class IntegerConverter implements TypeConverter<Integer> {
 
-		private static final UriRef intUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#int");
 
 		@Override
 		public TypedLiteral createTypedLiteral(Integer value) {
-			return new TypedLiteralImpl(value.toString(), intUri);
+			return new TypedLiteralImpl(value.toString(), xsdInt);
 		}
 
 		@Override
 		public Integer createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(intUri)) {
+			if (!decimalTypes.contains(literal.getDataType())) {
 				throw new InvalidLiteralTypeException(Integer.class, literal.getDataType());
 			}
 			return new Integer(literal.getLexicalForm());
@@ -157,17 +175,16 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class LongConverter implements TypeConverter<Long> {
 
-		private static final UriRef longUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#integer");
+		
 
 		@Override
 		public TypedLiteral createTypedLiteral(Long value) {
-			return new TypedLiteralImpl(value.toString(), longUri);
+			return new TypedLiteralImpl(value.toString(), xsdInteger);
 		}
 
 		@Override
 		public Long createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(longUri)) {
+			if (!decimalTypes.contains(literal.getDataType())) {
 				throw new InvalidLiteralTypeException(Long.class, literal.getDataType());
 			}
 			return new Long(literal.getLexicalForm());
@@ -176,17 +193,16 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class DoubleConverter implements TypeConverter<Double> {
 
-		private static final UriRef doubleUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#double");
+
 
 		@Override
 		public TypedLiteral createTypedLiteral(Double value) {
-			return new TypedLiteralImpl(value.toString(), doubleUri);
+			return new TypedLiteralImpl(value.toString(), xsdDouble);
 		}
 
 		@Override
 		public Double createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(doubleUri)) {
+			if (!literal.getDataType().equals(xsdDouble)) {
 				throw new InvalidLiteralTypeException(Double.class, literal.getDataType());
 			}
 			return new Double(literal.getLexicalForm());
