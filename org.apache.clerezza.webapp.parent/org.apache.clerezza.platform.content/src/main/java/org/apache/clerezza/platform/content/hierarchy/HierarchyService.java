@@ -102,8 +102,13 @@ public class HierarchyService {
 
 	private void checkExistence(HierarchyNode node) throws NodeDoesNotExistException {
 		if (!getRoots().contains(node)) {
-			CollectionNode parent = node.getParent();
-			UriRef nodeUri = node.getNode();
+                        CollectionNode parent;
+                        UriRef nodeUri = node.getNode();
+                        try {
+                            parent = node.getParent();
+                        } catch(IllegalArgumentException ex){
+                            throw new NodeDoesNotExistException(nodeUri);
+                        }			
 			if (!parent.getMembersRdf().contains(nodeUri)) {
 				throw new NodeDoesNotExistException(nodeUri);
 			}
