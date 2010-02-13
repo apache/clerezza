@@ -49,6 +49,8 @@ public class HierarchyTest{
 	private UriRef fooResource = new UriRef("http://localhost:8282/foo/resource");
 	private UriRef fooResource2 = new UriRef("http://localhost:8282/foo/resource2");
 	private UriRef fooResource3 = new UriRef("http://localhost:8282/foo/resource3");
+        private UriRef fooTest = new UriRef("http://localhost:8282/foo/test/");
+        private UriRef fooTestResource4 = new UriRef("http://localhost:8282/foo/test/resource4");
 	private UriRef fooFolder1 = new UriRef("http://localhost:8282/foo/folder1/");	
 	private UriRef bar = new UriRef("http://localhost:8282/bar/");
 	private UriRef barResource = new UriRef("http://localhost:8282/bar/resource");
@@ -58,6 +60,7 @@ public class HierarchyTest{
 	private UriRef newRootTest = new UriRef("http://newRoot/test/");
 	private UriRef newRoot2Resource = new UriRef("http://newRoot2/resource");
 	private UriRef newRoot2 = new UriRef("http://newRoot2/");
+        
 
 	@Test
 	public void listPositionTest() throws Exception{
@@ -98,7 +101,7 @@ public class HierarchyTest{
 		exceptionThrown = false;
 		try {
 			fooFolder1Node = (CollectionNode) hierarchyService.getHierarchyNode(fooFolder1);
-		} catch(RuntimeException e) {
+		} catch(NodeDoesNotExistException e) {
 			exceptionThrown = true;
 		}
 		Assert.assertTrue(exceptionThrown);
@@ -110,6 +113,17 @@ public class HierarchyTest{
 			exceptionThrown = true;
 		}
 		Assert.assertTrue(exceptionThrown);
+	}
+
+        @Test
+	public void nonCollectionNodeCreation() throws Exception{
+		HierarchyService hierarchyService = getHierarchyService();
+		HierarchyNode fooTestResource4Node = hierarchyService.
+                        createNonCollectionNode(fooTestResource4, 0);
+                CollectionNode fooTestNode = fooTestResource4Node.getParent();
+                Assert.assertEquals(fooTest, fooTestNode.getNode());
+                CollectionNode fooNode = fooTestNode.getParent();
+                Assert.assertEquals(foo, fooNode.getNode());
 	}
 
 	@Test
