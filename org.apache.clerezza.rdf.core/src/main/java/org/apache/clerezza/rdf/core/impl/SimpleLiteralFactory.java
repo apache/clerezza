@@ -209,9 +209,9 @@ public class SimpleLiteralFactory extends LiteralFactory {
 		}
 	}
 
-	private Map<Class<?>, TypeConverter<?>> typeConverterMap = new HashMap<Class<?>, TypeConverter<?>>();
+	private static Map<Class<?>, TypeConverter<?>> typeConverterMap = new HashMap<Class<?>, TypeConverter<?>>();
 
-	{
+	static {
 		typeConverterMap.put(byteArrayType, new ByteArrayConverter());
 		typeConverterMap.put(Date.class, new DateConverter());
 		typeConverterMap.put(Boolean.class, new BooleanConverter());
