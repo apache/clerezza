@@ -12,4 +12,30 @@
 		<artifactId>org.apache.clerezza.uima</artifactId>
 		<version>0.1-incubating-SNAPSHOT</version>
 	</parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>org.apache.clerezza.platform.content</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>org.apache.clerezza.uima.utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>org.apache.clerezza.rdf.core</artifactId>
+        </dependency>
+        <dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
+		</dependency>
+        <dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+    </dependencies>
 </project>
