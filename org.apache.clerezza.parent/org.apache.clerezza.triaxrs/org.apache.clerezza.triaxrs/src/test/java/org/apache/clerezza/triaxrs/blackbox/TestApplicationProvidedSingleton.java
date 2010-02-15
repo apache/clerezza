@@ -85,10 +85,10 @@ public class TestApplicationProvidedSingleton {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);

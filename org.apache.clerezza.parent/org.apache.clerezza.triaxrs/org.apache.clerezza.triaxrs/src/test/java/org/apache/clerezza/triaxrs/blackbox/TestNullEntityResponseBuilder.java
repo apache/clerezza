@@ -72,10 +72,10 @@ public class TestNullEntityResponseBuilder {
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
 		responseMock.setResponseStatus(ResponseStatus.CREATED);
-		expect(requestMock.getMethod()).andReturn(Method.PUT);
+		expect(requestMock.getMethod()).andReturn(Method.PUT).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);

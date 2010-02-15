@@ -66,10 +66,10 @@ public class TestBundlePathPrefix {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/prefix/test/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
@@ -84,10 +84,10 @@ public class TestBundlePathPrefix {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/test/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
@@ -103,10 +103,10 @@ public class TestBundlePathPrefix {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/prefix/test/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
@@ -123,10 +123,10 @@ public class TestBundlePathPrefix {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/test2/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);

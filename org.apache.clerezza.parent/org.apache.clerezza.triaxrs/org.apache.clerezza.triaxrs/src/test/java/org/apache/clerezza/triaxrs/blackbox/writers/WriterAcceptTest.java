@@ -146,7 +146,7 @@ public class WriterAcceptTest {
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		ResponseImpl responseImpl = new ResponseImpl();
 
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		String[] acceptHeaders = {"test/string2;q=.8", "test/string1;q=.7"};
 		expect(requestMock.getHeaderNames()).andReturn(
 				Collections.singleton(HeaderName.ACCEPT)).anyTimes();
@@ -154,7 +154,7 @@ public class WriterAcceptTest {
 				.andReturn(acceptHeaders).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		handler.handle(requestMock, responseImpl);
@@ -203,7 +203,7 @@ public class WriterAcceptTest {
 
 		//triaxrs has default writer for String, so the following isn't true:
 		//responseMock.setResponseStatus(ResponseStatus.NOT_ACCEPTABLE);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		String[] acceptHeaders = {"test/string2;q=.8", "test/string4;q=.7"};
 		expect(requestMock.getHeaderNames()).andReturn(
 				Collections.singleton(HeaderName.ACCEPT)).anyTimes();
@@ -211,7 +211,7 @@ public class WriterAcceptTest {
 				.andReturn(acceptHeaders).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);

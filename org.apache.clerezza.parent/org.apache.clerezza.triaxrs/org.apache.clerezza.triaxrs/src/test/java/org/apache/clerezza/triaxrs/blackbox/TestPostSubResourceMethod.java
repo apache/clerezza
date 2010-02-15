@@ -63,10 +63,11 @@ public class TestPostSubResourceMethod {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.POST);
+		expect(requestMock.getMethod()).andReturn(Method.POST).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/path");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
+		expect(requestURI.getType()).andReturn(null).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);

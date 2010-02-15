@@ -64,7 +64,7 @@ public class TestSimplePut {
 		
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.PUT);
+		expect(requestMock.getMethod()).andReturn(Method.PUT).anyTimes();
 		String[] contentTypeHeader = {"text/plain"};
 		expect(requestMock.getHeaderValues(HeaderName.CONTENT_TYPE)).andReturn(contentTypeHeader).anyTimes();
 		//this redundancy makes me prefer not to use mocks
@@ -81,7 +81,7 @@ public class TestSimplePut {
 		});
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);

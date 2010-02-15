@@ -209,7 +209,7 @@ public class TestCascadingProviders {
 			}
 		});
 		expect(requestURI.getPath()).andReturn(currentRequestUri);
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
