@@ -36,11 +36,22 @@ public class UserUtil {
 
 	/**
 	 *
-	 * @return the name of user which is associated to the current thread
+	 * @return the name of user which is associated to the 
+	 * <code>AccessControlContext</code> of the current thread.
 	 */
-	public static String getCurrentUserName() {
-		Subject subject;
-		final AccessControlContext context = AccessController.getContext();
+	public static String getCurrentUserName() {		 
+		return getUserName(AccessController.getContext());
+	}
+	
+	/**
+	 * Returns the name of the user associtated with the specified 
+	 * <code>AccessControlContext</code>.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static String getUserName(final AccessControlContext context) {
+		Subject subject;		
 		try {
 			subject = AccessController.doPrivileged(new PrivilegedExceptionAction<Subject>() {
 
