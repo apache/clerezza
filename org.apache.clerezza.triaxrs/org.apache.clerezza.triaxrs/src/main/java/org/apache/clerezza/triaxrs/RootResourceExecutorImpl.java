@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.triaxrs;
 
+import java.io.StringWriter;
+import java.util.Iterator;
 import org.apache.clerezza.jaxrs.extensions.ResourceMethodException;
 import org.apache.clerezza.jaxrs.extensions.HttpRequest;
 import org.apache.clerezza.jaxrs.extensions.MethodResponse;
@@ -28,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -79,11 +82,11 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 		}
 		try {
 			Map<Method, Map<String, String>> method2PathParams = new HashMap<Method, Map<String, String>>();
-			MethodsAndInstance candidateMethodsAndInstance = getCandidateMethods(
-					request, resource, subResourcePath,
-					method2PathParams, pathParams);
+				MethodsAndInstance candidateMethodsAndInstance = getCandidateMethods(
+						request, resource, subResourcePath,
+						method2PathParams, pathParams);
 			Set<Method> candidateMethods = candidateMethodsAndInstance.methods;
-			resource = candidateMethodsAndInstance.instance;
+				resource = candidateMethodsAndInstance.instance;
 			final org.wymiwyg.wrhapi.Method httpMethod = request
 					.getWrhapiRequest().getMethod();
 			Set<Method> httpMatchingMethods = MethodUtil.filterByHttpMethod(
@@ -127,6 +130,7 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 			throw new RuntimeException(ex);
 		}
 	}
+
 
 	private static class MethodsAndInstance {
 
@@ -554,19 +558,28 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 			}
 		}
 
-		String allowHeader = "";
+		final Set<String> supportedMethods = new HashSet<String>();	
 		for (Annotation annotation : annotationList) {
-			HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
+			final HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
 			if (httpMethod != null) {
-				allowHeader += httpMethod.value()+",";
+				supportedMethods.add(httpMethod.value());
 			}
 		}
-		if(allowHeader.lastIndexOf(",") != -1){
-			allowHeader = allowHeader.substring(0, allowHeader.lastIndexOf(","));
-		}
+		final String allowHeader = concateNameWithComa(supportedMethods);
 		builder.header(HeaderName.ALLOW.toString(), allowHeader);
 		return ProcessableResponse.createProcessableResponse(builder.build(),
 				null, null, null, null);
+	}
+
+	private String concateNameWithComa(Collection<String> collection) {
+		if (collection.isEmpty()) return "";
+		final Iterator<String> iterator = collection.iterator();
+		final StringBuffer buffer = new StringBuffer(iterator.next());
+		while (iterator.hasNext()) {
+			buffer.append(", ");
+			buffer.append(iterator.next());
+		}
+		return buffer.toString();
 	}
 
 	private String templateUrlEncode(String value) {

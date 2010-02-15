@@ -76,10 +76,10 @@ public class TestResponse {
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		ResponseImpl responseImpl = new ResponseImpl();
 
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		handler.handle(requestMock, responseImpl);

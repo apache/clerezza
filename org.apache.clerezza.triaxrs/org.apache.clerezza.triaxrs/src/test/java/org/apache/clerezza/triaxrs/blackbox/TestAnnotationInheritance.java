@@ -124,10 +124,10 @@ public class TestAnnotationInheritance {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/interface");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
@@ -151,10 +151,10 @@ public class TestAnnotationInheritance {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/superclass");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
@@ -177,10 +177,10 @@ public class TestAnnotationInheritance {
 	
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/superclass");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
@@ -191,10 +191,10 @@ public class TestAnnotationInheritance {
 		
 		Request requestMock2 = EasyMock.createNiceMock(Request.class);
 		Response responseMock2 = EasyMock.createNiceMock(Response.class);
-		expect(requestMock2.getMethod()).andReturn(Method.GET);
+		expect(requestMock2.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI2 = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI2.getPath()).andReturn("/interface");
-		expect(requestMock2.getRequestURI()).andReturn(requestURI2);
+		expect(requestMock2.getRequestURI()).andReturn(requestURI2).anyTimes();
 		replay(requestMock2);
 		replay(requestURI2);
 		replay(responseMock2);
@@ -216,10 +216,10 @@ public class TestAnnotationInheritance {
 		
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.PUT);
+		expect(requestMock.getMethod()).andReturn(Method.PUT).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/resource");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
@@ -230,10 +230,10 @@ public class TestAnnotationInheritance {
 		
 		Request requestMock2 = EasyMock.createNiceMock(Request.class);
 		Response responseMock2 = EasyMock.createNiceMock(Response.class);
-		expect(requestMock2.getMethod()).andReturn(Method.GET);
+		expect(requestMock2.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI2 = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI2.getPath()).andReturn("/interface");
-		expect(requestMock2.getRequestURI()).andReturn(requestURI2);
+		expect(requestMock2.getRequestURI()).andReturn(requestURI2).anyTimes();
 		replay(requestMock2);
 		replay(requestURI2);
 		replay(responseMock2);
@@ -255,10 +255,10 @@ public class TestAnnotationInheritance {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.PUT);
+		expect(requestMock.getMethod()).andReturn(Method.PUT).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/resource");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);
@@ -270,10 +270,10 @@ public class TestAnnotationInheritance {
 		
 		Request requestMock2 = EasyMock.createNiceMock(Request.class);
 		Response responseMock2 = EasyMock.createNiceMock(Response.class);
-		expect(requestMock2.getMethod()).andReturn(Method.GET);
+		expect(requestMock2.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI2 = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI2.getPath()).andReturn("/superclass");
-		expect(requestMock2.getRequestURI()).andReturn(requestURI2);
+		expect(requestMock2.getRequestURI()).andReturn(requestURI2).anyTimes();
 		replay(requestMock2);
 		replay(requestURI2);
 		replay(responseMock2);

@@ -105,7 +105,7 @@ public class TestPutWithReader {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.PUT);
+		expect(requestMock.getMethod()).andReturn(Method.PUT).anyTimes();
 		String[] contentTypeHeader = { "application/x-mymessage" };
 		expect(requestMock.getHeaderValues(HeaderName.CONTENT_TYPE)).andReturn(
 				contentTypeHeader).anyTimes();
@@ -123,7 +123,7 @@ public class TestPutWithReader {
 		});
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		replay(responseMock);

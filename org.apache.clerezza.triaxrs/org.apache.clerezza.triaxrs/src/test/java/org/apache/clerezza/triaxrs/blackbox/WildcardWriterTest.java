@@ -126,10 +126,10 @@ public class WildcardWriterTest {
 
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		ResponseImpl responseImpl = new ResponseImpl();
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		String[] acceptHeaders = {"test/string2", "*/*;q=.95"};
 		expect(requestMock.getHeaderNames()).andReturn(
 				Collections.singleton(HeaderName.ACCEPT)).anyTimes();

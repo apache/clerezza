@@ -23,7 +23,9 @@ import org.apache.clerezza.jaxrs.extensions.ResourceMethodException;
 import org.apache.clerezza.jaxrs.extensions.RootResourceExecutor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.security.AccessControlException;
@@ -32,34 +34,39 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.Providers;
-import javax.ws.rs.ext.RuntimeDelegate;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.jaxrs.extensions.prefixmanager.BundlePrefixManager;
-import org.apache.clerezza.triaxrs.delegate.RuntimeDelegateImpl;
 import org.apache.clerezza.triaxrs.providers.AggregatedProviders;
 import org.apache.clerezza.triaxrs.providers.CascadingProviders;
 import org.apache.clerezza.triaxrs.providers.DefaultProviders;
 import org.apache.clerezza.triaxrs.providers.ProvidersImpl;
+import org.apache.clerezza.triaxrs.util.MethodUtil;
 import org.apache.clerezza.triaxrs.util.PathMatching;
 import org.apache.clerezza.triaxrs.util.TemplateEncoder;
 import org.wymiwyg.wrhapi.Handler;
 import org.wymiwyg.wrhapi.HandlerException;
+import org.wymiwyg.wrhapi.HeaderName;
+import org.wymiwyg.wrhapi.Method;
 import org.wymiwyg.wrhapi.Request;
+import org.wymiwyg.wrhapi.RequestURI.Type;
 import org.wymiwyg.wrhapi.Response;
 import org.wymiwyg.wrhapi.ResponseStatus;
 import org.wymiwyg.wrhapi.util.MessageBody2Read;
@@ -164,6 +171,8 @@ public class JaxRsHandler implements Handler {
 	 */
 	public static ThreadLocal<WebRequest> localRequest = new ThreadLocal<WebRequest>();
 
+	private Set<HttpMethod> httpMethods = new HashSet<HttpMethod>();
+
 	public JaxRsHandler() {
 		// initialize default providers
 		Class<?>[] defaultProviders = DefaultProviders.getDefaultProviders();
@@ -246,12 +255,26 @@ public class JaxRsHandler implements Handler {
 		} else {
 			logger.info("Register resource {} to path {}", component.getClass().getName(), pathPrefix);
 			logger.info("Path value {} ", path.value());
+			collectHttpMethods(component.getClass());
 			final RootResourceDescriptor descriptor = new RootResourceDescriptor(
 					clazz, component, pathPrefix + path.value(), providers);
 			rootResources.add(descriptor);
 			// FIXME An unbind will potentially remove the wrong
 			// descriptor from the set. Solution: Use a list or a
 			// lookup table.
+		}
+	}
+
+	private void collectHttpMethods(Class<?> clazz) {
+		Set<java.lang.reflect.Method> annotatedMethods = MethodUtil.getAnnotatedMethods(clazz);
+		for (java.lang.reflect.Method method : annotatedMethods) {
+			Annotation[] annotations = method.getAnnotations();
+			for (Annotation annotation : annotations) {
+				HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
+				if (httpMethod != null) {
+					httpMethods.add(httpMethod);
+				}
+			}
 		}
 	}
 
@@ -370,6 +393,7 @@ public class JaxRsHandler implements Handler {
 				throw new RuntimeException(e);
 			}
 			RootResourceDescriptor rootResourceDescriptor;
+			collectHttpMethods(clazz);
 			if (instance == null) {
 				rootResourceDescriptor = new RootResourceDescriptor(clazz,
 						encodedPathTemplate);
@@ -457,17 +481,38 @@ public class JaxRsHandler implements Handler {
 		localRequest.set(request);
 
 		try {
-			RootResources.ResourceAndPathMatching resourceAndPathMatching;
-			configLock.readLock().lock();
-			try {
-				resourceAndPathMatching = rootResources.getResourceAndPathMatching(request);
-			} finally {
-				configLock.readLock().unlock();
+			MethodResponse methodResponse;
+			Type type = request.getWrhapiRequest().getRequestURI().getType();
+			Method method = request.getWrhapiRequest().getMethod();
+			if (Type.NO_RESOURCE.equals(type) && Method.OPTIONS.equals(method)) {
+				ResponseBuilder builder = javax.ws.rs.core.Response.ok();
+				StringWriter sw = new StringWriter();
+				Iterator<HttpMethod> iter = httpMethods.iterator();
+				if (iter.hasNext()) {
+					for (int i = 0; i < httpMethods.size() - 1; i++) {
+						HttpMethod httpMethod = iter.next();
+						sw.append(httpMethod.value());
+						sw.append(",");
+					}
+					sw.append(iter.next().value());
+				}
+				builder.header(HeaderName.ALLOW.toString(), sw.toString());
+				methodResponse = getWildCardOptionsResponse();
+
+			} else {
+				RootResources.ResourceAndPathMatching resourceAndPathMatching;
+				configLock.readLock().lock();
+				try {
+					resourceAndPathMatching = rootResources.getResourceAndPathMatching(request);
+				} finally {
+					configLock.readLock().unlock();
+				}
+				final PathMatching pathMatching = resourceAndPathMatching.getPathMatching();
+
+				methodResponse = resourceExecutor.execute(
+						request, resourceAndPathMatching.getRootResource(),
+						pathMatching.getRemainingURIPath(), pathMatching.getParameters());
 			}
-			final PathMatching pathMatching = resourceAndPathMatching.getPathMatching();
-			MethodResponse methodResponse = resourceExecutor.execute(
-					request, resourceAndPathMatching.getRootResource(),
-					pathMatching.getRemainingURIPath(), pathMatching.getParameters());
 			try {
 				ProcessableResponse processableResponse = (ProcessableResponse) methodResponse;
 				ResponseProcessor.handleReturnValue(request, response, processableResponse);
@@ -554,5 +599,22 @@ public class JaxRsHandler implements Handler {
 			logger.warn("Exception (with no exception mapper)", exception);
 			throw new HandlerException(exception);
 		}
+	}
+
+	private MethodResponse getWildCardOptionsResponse() {
+		ResponseBuilder builder = javax.ws.rs.core.Response.ok();
+				StringWriter sw = new StringWriter();
+				Iterator<HttpMethod> iter = httpMethods.iterator();
+				if (iter.hasNext()) {
+					for (int i = 0; i < httpMethods.size() - 1; i++) {
+						HttpMethod httpMethod = iter.next();
+						sw.append(httpMethod.value());
+						sw.append(",");
+					}
+					sw.append(iter.next().value());
+				}
+				builder.header(HeaderName.ALLOW.toString(), sw.toString());
+				return  ProcessableResponse.createProcessableResponse(
+						builder.build(), null, null, null, null);
 	}
 }

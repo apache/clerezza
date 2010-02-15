@@ -182,7 +182,7 @@ public class SelectWriterBasedOnAcceptTest {
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		ResponseImpl responseImpl = new ResponseImpl();
 
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		String[] acceptHeaders = {"test/string1;q=.8", "test/string2;q=.7"};
 		expect(requestMock.getHeaderNames()).andReturn(
 				Collections.singleton(HeaderName.ACCEPT)).anyTimes();
@@ -190,7 +190,7 @@ public class SelectWriterBasedOnAcceptTest {
 				.andReturn(acceptHeaders).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		handler.handle(requestMock, responseImpl);
@@ -213,7 +213,7 @@ public class SelectWriterBasedOnAcceptTest {
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		ResponseImpl responseImpl = new ResponseImpl();
 
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		String[] acceptHeaders = {"test/string2;q=.8", "test/string1;q=.7"};
 		expect(requestMock.getHeaderNames()).andReturn(
 				Collections.singleton(HeaderName.ACCEPT)).anyTimes();
@@ -221,7 +221,7 @@ public class SelectWriterBasedOnAcceptTest {
 				.andReturn(acceptHeaders).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		handler.handle(requestMock, responseImpl);
@@ -243,7 +243,7 @@ public class SelectWriterBasedOnAcceptTest {
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		ResponseImpl responseImpl = new ResponseImpl();
 
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		String[] acceptHeaders = {"test/string2", "*/*"};
 		expect(requestMock.getHeaderNames()).andReturn(
 				Collections.singleton(HeaderName.ACCEPT)).anyTimes();
@@ -251,7 +251,7 @@ public class SelectWriterBasedOnAcceptTest {
 				.andReturn(acceptHeaders).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		handler.handle(requestMock, responseImpl);
@@ -274,7 +274,7 @@ public class SelectWriterBasedOnAcceptTest {
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		ResponseImpl responseImpl = new ResponseImpl();
 
-		expect(requestMock.getMethod()).andReturn(Method.GET);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
 		String[] acceptHeaders = {"test/string2;q=.9", "anything/else"};
 		expect(requestMock.getHeaderNames()).andReturn(
 				Collections.singleton(HeaderName.ACCEPT)).anyTimes();
@@ -282,7 +282,7 @@ public class SelectWriterBasedOnAcceptTest {
 				.andReturn(acceptHeaders).anyTimes();
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		expect(requestURI.getPath()).andReturn("/");
-		expect(requestMock.getRequestURI()).andReturn(requestURI);
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
 		handler.handle(requestMock, responseImpl);
