@@ -333,14 +333,18 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 	 * @return
 	 */
 	private Set<MethodAndInputType> filterByConsumedType(Set<Method> methods,
-			WebRequest request) {
+			WebRequest request) throws HandlerException {
 		final String contentTypeString = request.getHeaders().getFirst(
 				HttpHeaders.CONTENT_TYPE);
 		MediaType mediaType;
 		if (contentTypeString != null) {
 			mediaType = MediaType.valueOf(contentTypeString);
 		} else {
-			mediaType = null;
+			if (request.getWrhapiRequest().getMessageBody() != null) {
+				mediaType = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+			} else {
+				mediaType = null;
+			}
 		}
 		Set<MethodAndInputType> result = new HashSet<MethodAndInputType>();
 		METHODS: for (Method method : methods) {
