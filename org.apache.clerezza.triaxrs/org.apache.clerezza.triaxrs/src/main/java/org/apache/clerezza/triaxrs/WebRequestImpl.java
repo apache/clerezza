@@ -173,8 +173,7 @@ public class WebRequestImpl implements WebRequest {
 			MediaType mediaType;
 			if ((contentTypeHeaders == null)
 					|| (contentTypeHeaders.length == 0)) {
-				mediaType = new MediaType("application",
-						"x-www-form-urlencoded");// MediaType.WILDCARD_TYPE;
+				mediaType = MediaType.APPLICATION_OCTET_STREAM_TYPE;
 			} else {
 				mediaType = MediaType.valueOf(contentTypeHeaders[0]);
 			}
