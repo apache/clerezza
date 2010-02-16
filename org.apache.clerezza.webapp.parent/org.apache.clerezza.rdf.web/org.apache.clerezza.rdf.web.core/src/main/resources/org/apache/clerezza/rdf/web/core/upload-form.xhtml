@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Upload triples</title>
+    </head>
+    <body>
+        
+            <form method="post" enctype="multipart/form-data" action="/graph">
+				<div>
+				<label for="graph">RDF File: </label><input id="graph" type="file" name="graph" /><br/>
+				<label for="name">Graph Name: </label>
+				<input type="text" id="name" name="name" value="http://tpf.localhost/content.graph" size="80"/><br/>
+				<input type="hidden" name="redirection" value="/graph/upload-form" /><br/>
+				<input type="submit" />
+				</div>
+			</form>
+
+    </body>
+</html>
