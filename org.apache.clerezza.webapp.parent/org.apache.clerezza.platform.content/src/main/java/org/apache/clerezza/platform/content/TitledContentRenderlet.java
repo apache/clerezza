@@ -67,13 +67,13 @@ public class TitledContentRenderlet implements Renderlet {
 			OutputStream os) throws IOException {
 		PrintWriter writer = new PrintWriter(os);
 		List<GraphNode> containedNodes = getContainedNodes(res);
+		writer.print("<div class='tx-titledcontent'>");
 		writer.print(getHeaderOpen());
 		writer.flush();
 		callbackRenderer.render(
 				containedNodes.get(0),
 				context, mode, os);
 		writer.println(getHeaderClose());
-		writer.print("<div>");
 		headingLevel.set(headingLevel.get()+1);
 		writer.flush();
 		callbackRenderer.render(
