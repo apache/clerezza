@@ -44,6 +44,7 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.RdfList;
@@ -189,13 +190,18 @@ public class LanguageService {
 	}
 
 	private NonLiteral getListNode() {
-		Iterator<Triple> langListIter = systemGraph.filter(PLATFORM.Instance,
+		Iterator<Triple> instances = systemGraph.filter(null, RDF.type, PLATFORM.Instance);
+		if (!instances.hasNext()) {
+			throw new RuntimeException("No Platform:Instance in system graph.");
+		}
+		NonLiteral instance = instances.next().getSubject();
+		Iterator<Triple> langListIter = systemGraph.filter(instance,
 				PLATFORM.languages, null);
 		if (langListIter.hasNext()) {
 			return (NonLiteral) langListIter.next().getObject();
 		}
 		BNode listNode = new BNode();
-		systemGraph.add(new TripleImpl(PLATFORM.Instance, PLATFORM.languages,
+		systemGraph.add(new TripleImpl(instance, PLATFORM.languages,
 				listNode));
 		return listNode;
 	}

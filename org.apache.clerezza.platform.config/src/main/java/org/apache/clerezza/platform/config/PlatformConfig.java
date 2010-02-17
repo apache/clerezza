@@ -27,9 +27,13 @@ import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -53,7 +57,7 @@ public class PlatformConfig {
 	 * @return the base URI of the Clerezza platform
 	 */
 	public UriRef getDefaultBaseUri() {
-		Iterator<Resource> triples = new GraphNode(PLATFORM.Instance, systemGraph).
+		Iterator<Resource> triples = new GraphNode(getPlatformInstance(), systemGraph).
 				getObjects(PLATFORM.defaultBaseUri);
 		if (triples.hasNext()) {
 			return (UriRef) triples.next();
@@ -69,13 +73,21 @@ public class PlatformConfig {
 		}
 	}
 
+	private NonLiteral getPlatformInstance() throws RuntimeException {
+		Iterator<Triple> instances = systemGraph.filter(null, RDF.type, PLATFORM.Instance);
+		if (!instances.hasNext()) {
+			throw new RuntimeException("No Platform:Instance in system graph.");
+		}		
+		return instances.next().getSubject();
+	}
+
 	/**
 	 * Returns the base URIs of the Clerezza platform instance.
 	 * A base Uri is the shortest URI of a URI-Hierarhy the platform handles.
 	 * @return the base URI of the Clerezza platform
 	 */
 	public Set<UriRef> getBaseUris() {
-		Iterator<Resource> baseUrisIter = new GraphNode(PLATFORM.Instance, systemGraph).
+		Iterator<Resource> baseUrisIter = new GraphNode(getPlatformInstance(), systemGraph).
 				getObjects(PLATFORM.baseUri);
 		Set<UriRef> baseUris = new HashSet<UriRef>();
 		while (baseUrisIter.hasNext()) {
@@ -84,6 +96,24 @@ public class PlatformConfig {
 		}
 		baseUris.add(getDefaultBaseUri());
 		return baseUris;
+	}
+
+	/**
+	 * Adds a base URI to the Clerezza platform instance.
+	 *
+	 * @param baseUri The base URI which will be added to the platform instance
+	 */
+	public void addBaseUri(UriRef baseUri) {
+		systemGraph.add(new TripleImpl(getPlatformInstance(), PLATFORM.baseUri, baseUri));
+	}
+
+	/**
+	 * Removes a base URI from the Clerezza platform instance.
+	 *
+	 * @param baseUri The base URI which will be removed from the platform instance
+	 */
+	public void removeBaseUri(UriRef baseUri) {
+		systemGraph.remove(new TripleImpl(getPlatformInstance(), PLATFORM.baseUri, baseUri));
 	}
 
 	/**
