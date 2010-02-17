@@ -66,7 +66,7 @@ body {
 }	
 
 #tx-login-mask #tx-logo {
-	height: 23px;
+	height: 2.5em;
 	width: 166px;
 	background-image: url(./images/logo-big.png);
 	background-repeat: no-repeat;
