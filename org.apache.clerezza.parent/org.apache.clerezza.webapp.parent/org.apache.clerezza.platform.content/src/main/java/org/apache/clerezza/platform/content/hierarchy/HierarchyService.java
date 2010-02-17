@@ -214,7 +214,7 @@ public class HierarchyService {
 			}
 		}
 		UriRef baseUri = extractBaseUri(uri);
-		systemGraph.add(new TripleImpl(PLATFORM.Instance, PLATFORM.baseUri, baseUri));
+		config.addBaseUri(baseUri);
 		addRoot(baseUri);
 	}
 
@@ -397,7 +397,7 @@ public class HierarchyService {
 
 	void removeRoot(CollectionNode root) {
 		roots.remove(root);
-		systemGraph.remove(new TripleImpl(PLATFORM.Instance, PLATFORM.baseUri, root.getNode()));
+		config.removeBaseUri(root.getNode());
 	}
 
 	private void addCreationProperties(HierarchyNode node) {
