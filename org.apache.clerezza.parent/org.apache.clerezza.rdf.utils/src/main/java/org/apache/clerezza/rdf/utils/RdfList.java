@@ -72,7 +72,9 @@ public class RdfList extends AbstractList<Resource> {
 		firstList = listResource;
 		this.tc = tc;
 		if (!tc.filter(listResource, RDF.first, null).hasNext()) {
-			tc.add(new TripleImpl(listResource, OWL.sameAs, RDF_NIL));
+			if (!tc.filter(listResource, OWL.sameAs, RDF_NIL).hasNext()) {
+				tc.add(new TripleImpl(listResource, OWL.sameAs, RDF_NIL));
+			}
 		}
 
 	}
