@@ -18,6 +18,9 @@
  */
 package org.apache.clerezza.platform.usermanager;
 
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import org.apache.clerezza.platform.security.UserUtil;
 import org.apache.clerezza.rdf.core.NonLiteral;
 
@@ -31,7 +34,7 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM;
 
 /**
  * The login name is added to the user context node. The name is accessable via
- * ssp template by using the context node 
+ * ssp template by using the context node
  * (e.g. context/platform("user")/platform("userName")).
  *
  * @author tio
@@ -46,8 +49,15 @@ public class UserLoginNode implements UserContextProvider {
 
 	@Override
 	public GraphNode addUserContext(GraphNode node) {
-		GraphNode agent = userManager.getUserGraphNode(UserUtil.getCurrentUserName());
-		if(!(node.getObjects(PLATFORM.user).hasNext())) {
+
+		final AccessControlContext context = AccessController.getContext();
+		GraphNode agent = AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
+			@Override
+			public GraphNode run() {
+				return userManager.getUserGraphNode(UserUtil.getUserName(context));
+			}
+		});
+		if (!(node.getObjects(PLATFORM.user).hasNext())) {
 			node.addProperty(PLATFORM.user, agent.getNode());
 		} else {
 			Resource user = node.getObjects(PLATFORM.user).next();
