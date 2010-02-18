@@ -32,6 +32,7 @@ import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.config.SystemConfig;
+import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
@@ -60,6 +61,9 @@ public class UserManagerImpl implements UserManager {
 
 	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
 	private MGraph systemGraph;
+
+	@Reference
+	private ContentGraphProvider cgProvider;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -304,7 +308,7 @@ public class UserManagerImpl implements UserManager {
 			return;
 		}
 
-		if (getUserByName(name) != null) {
+		if (getUserByUserName(name) != null) {
 			throw new UserAlreadyExistsException(name);
 		}
 		if (email != null) {
@@ -388,7 +392,7 @@ public class UserManagerImpl implements UserManager {
 			return;
 		}
 
-		NonLiteral user = getUserByName(name);
+		NonLiteral user = getUserByUserName(name);
 		if (user == null) {
 			throw new UserNotExistsException(name);
 		}
@@ -451,12 +455,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public NonLiteral getUserByName( String name) {
-		Iterator<Triple> triples = systemGraph.filter(null, PLATFORM.userName,
-				new PlainLiteralImpl(name));
-		if (triples.hasNext()) {
-			return triples.next().getSubject();
-		}
-		return null;
+		return getUserByUserName(name);
 	}
 
 	@Override
@@ -470,7 +469,7 @@ public class UserManagerImpl implements UserManager {
 			return;
 		}
 
-		NonLiteral user = getUserByName(name);
+		NonLiteral user = getUserByUserName(name);
 		if (user != null) {
 			deleteTriplesOfASubject(user);
 		}
@@ -485,7 +484,7 @@ public class UserManagerImpl implements UserManager {
 		}
 
 		addPermissionEntriesForARole(
-				getUserByName(name), name,
+				getUserByUserName(name), name,
 				permissionEntries);
 	}
 
@@ -503,7 +502,7 @@ public class UserManagerImpl implements UserManager {
 		}
 
 		deletePermissionEntriesOfARole(
-				getUserByName(name), name,
+				getUserByUserName(name), name,
 				permissionEntries);
 	}
 
@@ -514,7 +513,7 @@ public class UserManagerImpl implements UserManager {
 		}
 
 		deleteAllPermissionEntriesOfARole(
-				getUserByName(name));
+				getUserByUserName(name));
 	}
 
 	/**
@@ -535,21 +534,61 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public GraphNode getUserGraphNode(final String name) {
-		return AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
-
-			@Override
-			public GraphNode run() {
-				NonLiteral user = getUserByName(name);
-				if(user != null) {
-					GraphNode node = new GraphNode(user, new SimpleMGraph(
-							new GraphNode(user, systemGraph).getNodeContext()));
-					return node;
-				} else {
-					throw new RuntimeException("No user with username " + name + " exists");
-				}
-			}
-		});
+	public GraphNode getUserInSystemGraph(final String name) {
+		NonLiteral user = getUserByUserName(name);
+		if (user != null) {
+			return new GraphNode(user, systemGraph);
+		} else {
+			return null;
+		}
 	}
 
+	@Override
+	public GraphNode getUserInContentGraph(final String name) {
+		final MGraph contentGraph = cgProvider.getContentGraph();
+		Iterator<Triple> triples = contentGraph.filter(null, PLATFORM.userName,
+				new PlainLiteralImpl(name));
+		GraphNode resultNode = null;
+		if (triples.hasNext()) {
+			resultNode = new GraphNode(triples.next().getSubject(), contentGraph);
+		} else {
+			NonLiteral user = AccessController.doPrivileged(
+					new PrivilegedAction<NonLiteral>() {
+
+						@Override
+						public NonLiteral run() {
+							return getUserByUserName(name);
+						}
+					});
+			if (user != null) {
+				resultNode = new GraphNode(new BNode(), contentGraph);
+				resultNode.addProperty(PLATFORM.userName,
+						new PlainLiteralImpl(name));
+			}
+		}
+		return resultNode;
+	}
+
+	@Override
+	public GraphNode getUserGraphNode(final String name) {
+		NonLiteral user = getUserByUserName(name);
+		if (user != null) {
+			GraphNode userNodeInSystemGraph =
+					new GraphNode(getUserByUserName(name), systemGraph);
+			MGraph copiedUserContext = new SimpleMGraph(userNodeInSystemGraph.getNodeContext());
+			return new GraphNode(userNodeInSystemGraph.getNode(),
+					copiedUserContext);
+		} else {
+			return null;
+		}
+	}
+
+	private NonLiteral getUserByUserName(String name) {
+		Iterator<Triple> triples = systemGraph.filter(null, PLATFORM.userName,
+				new PlainLiteralImpl(name));
+		if (triples.hasNext()) {
+			return triples.next().getSubject();
+		}
+		return null;
+	}
 }
