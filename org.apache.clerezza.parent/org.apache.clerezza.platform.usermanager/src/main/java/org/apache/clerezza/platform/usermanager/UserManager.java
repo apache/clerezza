@@ -25,14 +25,14 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
- * An implementation of this interface provides methods to manage data about 
+ * An implementation of this interface provides methods to manage data about
  * users and their roles.
  * Data managed are needed for authentication and for setting permissions.
- * Those data include user names, email addresses, passwords, roles, permissions, 
+ * Those data include user names, email addresses, passwords, roles, permissions,
  * etc.
  * A user is uniquely identified by a user name.
  * Each user has an email address and an email address can only belong to a user.
- * 
+ *
  * @author hasan, tio
  */
 public interface UserManager {
@@ -54,29 +54,29 @@ public interface UserManager {
 	public boolean roleExists(String title);
 
 	/**
-	 * 
+	 *
 	 * @param title
 	 * @return NonLiteral which is either a BNode or a UriRef
 	 */
 	public NonLiteral getRoleByTitle(String title);
 
 	/**
-	 * 
+	 *
 	 * @return Iterator defining all roles
 	 */
 	public Iterator<NonLiteral> getRoles();
-	
+
 	/**
-	 * 
-	 * @param user 
+	 *
+	 * @param user
 	 *			the user is either a BNode or a UriRef
-	 *		
+	 *
 	 * @return Iterator defining all the Roles the specified user owns
 	 */
 	public Iterator<NonLiteral> getRolesOfUser(NonLiteral user);
 
 	/**
-	 * 
+	 *
 	 * @param title
 	 *		the title of the role to be deleted, may not be null
 	 */
@@ -149,7 +149,7 @@ public interface UserManager {
 	public boolean nameExists(String name);
 
 	/**
-	 * Checks if the email exists
+	 * Checks if thereis already an agent with that email address.
 	 *
 	 * @param email
 	 * @return true if exists otherwise false
@@ -169,14 +169,50 @@ public interface UserManager {
 	/**
 	 *
 	 * @param name specifies the username of the user
-	 * @return NonLiteral which is either a BNode or a UriRef
+	 * @return NonLiteral representing the user in the system Graph
 	 */
+	@Deprecated
 	public NonLiteral getUserByName(String name);
+
+	/**
+	 * Returns the user with the specified name in an (editable) MGraph
+	 * (i.e. a SimpleGraph but this is implementation specific) with the context
+	 * of the user node, editing the graphnode('s Mgraph) doesn't cause any
+	 * changes elsewhere. Returns null if the user does not exist.
+	 * The caller of this method needs the permission to read the system graph,
+	 * otherwise a AccessControlException will be thrown.
+	 *
+	 * @param name The username of the user
+	 * @return GraphNode representing the suer with some context in a dedicated MGraph
+	 */
+	public GraphNode getUserGraphNode(String name);
+
+	/**
+	 * Returns the <code>GraphNode</code> pointing to the user with the
+	 * specified name in the system graph. Returns null if the user does not
+	 * exist.
+	 *
+	 * @param name The username of the user
+	 * @return GraphNode represing the user in the system graph
+	 */
+	public GraphNode getUserInSystemGraph(String name);
+
+	/**
+	 * Returns the <code>GraphNode</code> pointing to the user with the
+	 * specified name in the content graph. If the user does not exist in the
+	 * content graph, but in the system graph, then the it is created with the
+	 * PLATFORM.userName property copied from the system graph. Returns null if
+	 * the user does not exist.
+	 *
+	 * @param name The username of the user
+	 * @return GraphNode representing the user in the content graph
+	 */
+	public GraphNode getUserInContentGraph(String name);
 
 	/**
 	 * Returns all users.
 	 *
-	 * @return Iterator defining all users.
+	 * @return Iterator of users in the system Graph.
 	 */
 	public Iterator<NonLiteral> getUsers();
 
@@ -215,12 +251,4 @@ public interface UserManager {
 	 * @param name specifies the username of the user, may not be null
 	 */
 	public void deleteAllPermissionsOfUser(String name);
-
-	/**
-	 * Retrieves all information associated with a user as GraphNode.
-	 *
-	 * @param name specifies the username of the user, may not be null
-	 * @return GraphNode
-	 */
-	public GraphNode getUserGraphNode(String name);
 }
