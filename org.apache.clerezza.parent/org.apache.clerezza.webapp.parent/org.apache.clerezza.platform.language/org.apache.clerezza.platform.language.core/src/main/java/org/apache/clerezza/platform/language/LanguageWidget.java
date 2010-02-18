@@ -21,6 +21,9 @@ package org.apache.clerezza.platform.language;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessControlException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -40,6 +43,8 @@ import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.UserContextProvider;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -99,26 +104,43 @@ public class LanguageWidget implements UserContextProvider {
 	}
 
 	@Override
-	public GraphNode addUserContext(GraphNode node) {
-		BNode instance = new BNode();
-		node.addProperty(PLATFORM.instance, instance);
-		node.getGraph().add(new TripleImpl(instance, RDF.type, PLATFORM.Instance));
-		BNode lang = getLanguagesList(node.getGraph());
-		node.getGraph().add(new TripleImpl(instance, PLATFORM.languages, lang));
-		node = new GraphNode(node.getNode(), new UnionMGraph(node.getGraph(),
-				cgProvider.getContentGraph()));
-		return node;
+	public GraphNode addUserContext(final GraphNode node) {
+		try {
+			return addLanguages(node, languageService.getLanguages(), false);
+			 
+		} catch (AccessControlException ex) {
+			return AccessController.doPrivileged(
+				new PrivilegedAction<GraphNode>() {
+					@Override
+					public GraphNode run() {
+						return addLanguages(node, languageService.getLanguages(), true);						 
+					}
+				});
+		}		
 	}
 
-	private BNode getLanguagesList(TripleCollection graph) {
-		BNode listNode = new BNode();
+	private GraphNode addLanguages(GraphNode node, List<LanguageDescription> languages, boolean copyToNode) {
+		TripleCollection graph = node.getGraph();
+		BNode listNode = new BNode();		
 		RdfList list = new RdfList(listNode, graph);
-		List<LanguageDescription> languages = languageService.getLanguages();
+		MGraph contentGraph = cgProvider.getContentGraph();
 		for (LanguageDescription languageDescription : languages) {
-			list.add(languageDescription.getResource().getNode());
+			NonLiteral languageUri = (NonLiteral) languageDescription.getResource().getNode();
+			list.add(languageUri);
+			if (copyToNode) {
+			graph.addAll(new GraphNode(languageUri, contentGraph).
+					getNodeContext());
+			}
 		}
+		BNode instance = new BNode();
+		node.addProperty(PLATFORM.instance, instance);
+		graph.add(new TripleImpl(instance, RDF.type, PLATFORM.Instance));
+		graph.add(new TripleImpl(instance, PLATFORM.languages, listNode));
 		graph.add(new TripleImpl(listNode, RDF.type, LANGUAGE.LanguageList));
-		return listNode;
+		if (!copyToNode) {
+			node = new GraphNode(node.getNode(), new UnionMGraph(graph, contentGraph));
+		}
+		return node;
 	}
 
 	/**
