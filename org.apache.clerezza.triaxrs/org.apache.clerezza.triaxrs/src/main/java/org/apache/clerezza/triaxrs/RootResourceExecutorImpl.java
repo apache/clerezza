@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.triaxrs;
 
-import java.io.StringWriter;
 import java.util.Iterator;
 import org.apache.clerezza.jaxrs.extensions.ResourceMethodException;
 import org.apache.clerezza.jaxrs.extensions.HttpRequest;
@@ -29,6 +28,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -546,6 +546,9 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 			throw new WebApplicationException(500);
 		} catch (InvocationTargetException ex) {
 			logger.error("Exception {}", ex);
+			if (ex.getCause() instanceof AccessControlException) {
+				throw (AccessControlException) ex.getCause();
+			}
 			throw new WebApplicationException(500);
 		}
 	}
