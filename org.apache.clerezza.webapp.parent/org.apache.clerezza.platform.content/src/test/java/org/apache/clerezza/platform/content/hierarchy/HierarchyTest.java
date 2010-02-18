@@ -202,6 +202,13 @@ public class HierarchyTest{
 	}
 
 	private static class MyPlatformConfig extends PlatformConfig {
+
+		MyPlatformConfig() {
+			final SimpleMGraph systemGraph = new SimpleMGraph();
+			systemGraph.add(new TripleImpl(new BNode(),
+					RDF.type, PLATFORM.Instance));
+			bindSystemGraph(systemGraph);
+		}
 		@Override
 		public Set<UriRef> getBaseUris() {
 			return Collections.singleton(root);
@@ -211,10 +218,12 @@ public class HierarchyTest{
 	private HierarchyService getHierarchyService() {
 		HierarchyService hierarchyService = new TestHierarchyService();
 		ContentGraphProvider myCgProvider = new MyContentGraphProvider();
+		final SimpleMGraph systemGraph = new SimpleMGraph();
 		PlatformConfig myPlatConf = new MyPlatformConfig();
 		hierarchyService.cgProvider = myCgProvider;
 		hierarchyService.config = myPlatConf;
-		hierarchyService.systemGraph = new SimpleMGraph();
+		
+		hierarchyService.systemGraph = systemGraph;
 		Triple rootTriple = new TripleImpl(root,
 			RDF.type, HIERARCHY.Collection);
 		myCgProvider.getContentGraph().add(rootTriple);
