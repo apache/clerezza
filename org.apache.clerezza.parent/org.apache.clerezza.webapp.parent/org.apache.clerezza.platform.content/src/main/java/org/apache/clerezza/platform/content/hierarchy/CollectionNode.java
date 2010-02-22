@@ -143,7 +143,7 @@ public class CollectionNode extends HierarchyNode {
 		} catch(IllegalArgumentException e) {
 			HierarchyNode memberResource = new HierarchyNode(memberUri,
 					getGraph(), hierarchyService);
-			UriRef newUri = new UriRef(getNode().getUnicodeString() + "/" +
+			UriRef newUri = new UriRef(getNode().getUnicodeString() +
 				memberResource.getName());
 			memberResource.replaceWith(newUri);
 		}

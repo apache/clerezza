@@ -49,13 +49,15 @@ public class HierarchyTest{
 	private UriRef fooResource = new UriRef("http://localhost:8282/foo/resource");
 	private UriRef fooResource2 = new UriRef("http://localhost:8282/foo/resource2");
 	private UriRef fooResource3 = new UriRef("http://localhost:8282/foo/resource3");
-        private UriRef fooTest = new UriRef("http://localhost:8282/foo/test/");
-        private UriRef fooTestResource4 = new UriRef("http://localhost:8282/foo/test/resource4");
+	private UriRef fooTest = new UriRef("http://localhost:8282/foo/test/");
+	private UriRef fooTestResource4 = new UriRef("http://localhost:8282/foo/test/resource4");
 	private UriRef fooFolder1 = new UriRef("http://localhost:8282/foo/folder1/");	
 	private UriRef bar = new UriRef("http://localhost:8282/bar/");
 	private UriRef barResource = new UriRef("http://localhost:8282/bar/resource");
 	private UriRef barResource2 = new UriRef("http://localhost:8282/bar/resource2");
 	private UriRef barFoo = new UriRef("http://localhost:8282/bar/foo/");
+	private UriRef barFooResource = new UriRef("http://localhost:8282/bar/foo/resource");
+	private UriRef barFooTest = new UriRef("http://localhost:8282/bar/foo/test/");
 	private UriRef newRoot = new UriRef("http://newRoot/");
 	private UriRef newRootTest = new UriRef("http://newRoot/test/");
 	private UriRef newRoot2Resource = new UriRef("http://newRoot2/resource");
@@ -156,6 +158,24 @@ public class HierarchyTest{
 		Assert.assertEquals(movedResourceNode, barList.get(0));
 		Assert.assertEquals(barResource2Node, barList.get(1));
 	}
+
+	@Test
+	public void nonCollectionMoveTest2() throws Exception{
+		HierarchyService hierarchyService = getHierarchyService();
+		hierarchyService.createNonCollectionNode(fooResource);
+		CollectionNode barNode = hierarchyService.createCollectionNode(bar);
+
+		CollectionNode fooNode = (CollectionNode)hierarchyService.getHierarchyNode(foo);
+		fooNode.move(barNode, 0);
+		List<HierarchyNode> barList = barNode.getMembers();
+		CollectionNode barFooNode = hierarchyService.getCollectionNode(barFoo);
+		Assert.assertEquals(1, barList.size());
+		Assert.assertEquals(barFooNode, barList.get(0));
+		List<HierarchyNode> barFooList = barFooNode.getMembers();
+		Assert.assertEquals(1, barFooList.size());
+		HierarchyNode barFooResourceNode = hierarchyService.getHierarchyNode(barFooResource);
+		Assert.assertEquals(barFooResourceNode, barFooList.get(0));
+	}
 	
 	@Test
 	public void collectionMoveTest() throws Exception{
@@ -170,6 +190,24 @@ public class HierarchyTest{
 		HierarchyNode barFooNode = hierarchyService.getHierarchyNode(barFoo);
 		Assert.assertTrue(barNode.getMembers().contains(barFooNode));
 		Assert.assertFalse(rootNode.getMembers().contains(fooNode));
+	}
+
+	@Test
+	public void collectionMoveTest2() throws Exception{
+		HierarchyService hierarchyService = getHierarchyService();
+		hierarchyService.createCollectionNode(fooTest);
+		CollectionNode barNode = hierarchyService.createCollectionNode(bar);
+
+		CollectionNode fooNode = (CollectionNode)hierarchyService.getHierarchyNode(foo);
+		fooNode.move(barNode, 0);
+		List<HierarchyNode> barList = barNode.getMembers();
+		CollectionNode barFooNode = hierarchyService.getCollectionNode(barFoo);
+		Assert.assertEquals(1, barList.size());
+		Assert.assertEquals(barFooNode, barList.get(0));
+		List<HierarchyNode> barFooList = barFooNode.getMembers();
+		Assert.assertEquals(1, barFooList.size());
+		HierarchyNode barFooTestNode = hierarchyService.getHierarchyNode(barFooTest);
+		Assert.assertEquals(barFooTestNode, barFooList.get(0));
 	}
 
 	@Test
