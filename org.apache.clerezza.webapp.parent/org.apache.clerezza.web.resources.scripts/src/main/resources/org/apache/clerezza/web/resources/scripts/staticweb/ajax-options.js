@@ -61,6 +61,22 @@ AjaxOptions.prototype.error = function(XMLHttpRequest, textStatus, errorThrown) 
 	if(errorMessage == undefined || errorMessage == "") {
 		errorMessage = "Unspecified Error (" + textStatus + ")";
 	}
+	try {
+		var errorXml = XMLHttpRequest.responseXML
+	} catch (err) {
+	}
+	if (!errorXml) {
+		errorXml = $(errorMessage)[0]
+	}
+	if (errorXml) {
+		try {
+			var errorMessageFromXml = $('body',errorXml).text()
+		} catch (err) {
+		}
+	}
+	if (errorMessageFromXml) {
+		errorMessage = errorMessageFromXml
+	}
 	AlertMessage.show(function(){}, "The following error occured: " + errorMessage, "Error", "Ok");
 	statusMessage.remove(this.actionName);
 };
