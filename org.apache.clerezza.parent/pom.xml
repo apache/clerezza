@@ -450,6 +450,11 @@
 				<version>0.9.5</version>
 			</dependency>
 			<dependency>
+				<groupId>asm</groupId>
+				<artifactId>asm-all</artifactId>
+				<version>3.2</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.clerezza.ext</groupId>
 				<artifactId>org.jruby</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
