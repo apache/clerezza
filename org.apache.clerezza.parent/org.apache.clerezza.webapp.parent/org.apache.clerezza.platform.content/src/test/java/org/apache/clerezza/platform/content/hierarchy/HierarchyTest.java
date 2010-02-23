@@ -211,6 +211,18 @@ public class HierarchyTest{
 	}
 
 	@Test
+	public void collectionMoveIntoItselfTest() throws Exception {
+		HierarchyService hierarchyService = getHierarchyService();
+		CollectionNode barNode = hierarchyService.createCollectionNode(bar);
+		try {
+			barNode.move(barNode, 0);
+			Assert.assertTrue(false);
+		} catch (IllegalMoveException ex) {
+			Assert.assertTrue(true);
+		}
+	}
+
+	@Test
 	public void rootAutoCreationTest() throws Exception{
 		HierarchyService hierarchyService = getHierarchyService();
 		hierarchyService.createCollectionNode(newRootTest);

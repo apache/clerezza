@@ -86,10 +86,11 @@ public class HierarchyNode extends GraphNode {
 	 * the new parent collection.
 	 * @throws NodeAlreadyExistsException is thrown if the new parent collection
 	 *		already contains a hierarchy node with the same name.
+	 * @throws IllegalMoveException is thrown if the move operation is not allowed
 	 * @return the HierarchyNode at the new location
 	 */
 	public HierarchyNode move(CollectionNode newParentCollection, int pos) 
-			throws NodeAlreadyExistsException {
+			throws NodeAlreadyExistsException, IllegalMoveException {
 		
 		if (newParentCollection.equals(getParent())) {
 			UriRef nodeUri = getNode();
