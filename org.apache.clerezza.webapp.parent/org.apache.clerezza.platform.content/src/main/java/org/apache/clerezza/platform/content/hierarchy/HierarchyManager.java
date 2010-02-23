@@ -200,6 +200,9 @@ public class HierarchyManager {
 					targetCollection.getUnicodeString() + " already exists in " +
 					"collection.").
 					type(MediaType.TEXT_PLAIN_TYPE).build();
+		} catch (IllegalMoveException ex) {
+			return Response.status(Response.Status.CONFLICT).entity(ex.getMessage()).
+					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		return Response.created(
 				URI.create(hierarchyNode.getNode().getUnicodeString())).build();

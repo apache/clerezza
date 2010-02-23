@@ -132,6 +132,15 @@ public class CollectionNode extends HierarchyNode {
 		}
 	}
 
+	@Override
+	public HierarchyNode move(CollectionNode newParentCollection, int pos) throws NodeAlreadyExistsException,
+			IllegalMoveException {
+		if (newParentCollection.isSubcollectionOf(this)) {
+			throw new IllegalMoveException("Collection can not be moved into itself or a subcollection of itself");
+		}
+		return super.move(newParentCollection, pos);
+	}
+
 	private void updateMember(UriRef memberUri) {
 		try {
 			CollectionNode memberCollection = new CollectionNode(memberUri,
@@ -167,6 +176,11 @@ public class CollectionNode extends HierarchyNode {
 	private void deleteCollection() {
 		deleteProperty(RDF.type, HIERARCHY.Collection);
 		deleteProperties(HIERARCHY.members);
+	}
+
+	private boolean isSubcollectionOf(CollectionNode collection) {
+		return collection.getNode().getUnicodeString().
+				startsWith(getNode().getUnicodeString());
 	}
 
 }
