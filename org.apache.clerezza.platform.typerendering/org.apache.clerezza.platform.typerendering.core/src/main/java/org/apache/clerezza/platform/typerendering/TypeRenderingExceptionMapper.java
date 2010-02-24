@@ -61,6 +61,7 @@ public class TypeRenderingExceptionMapper implements ExceptionMapper<TypeRenderi
 		ResponseBuilder rb = Response.serverError();
 		logger.info(exception.getMessage());
 		if (exception.getRenderNode().hasProperty(RDF.type, TYPERENDERING.Exception)) {
+			logger.error("Exception in template used for rendering exceptions ", exception);
 			rb.entity("There is an error in the template used for rendering" +
 					" exceptions. Please check the console output for further" +
 					" information. Thanks!").type(MediaType.TEXT_PLAIN_TYPE);

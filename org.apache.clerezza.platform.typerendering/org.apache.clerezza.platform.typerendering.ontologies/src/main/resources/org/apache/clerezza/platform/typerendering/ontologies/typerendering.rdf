@@ -164,4 +164,14 @@
 	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#Exception" />
 	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
 </rdf:Property>
+
+<rdf:Property rdf:about="http://clerezza.org/2009/04/typerendering#stackTrace">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
+	<rdfs:label xml:lang="en">stack trace</rdfs:label>
+	<skos:definition xml:lang="en">Points to the the stack trace of the subject.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/04/typerendering#" />
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/04/typerendering#Exception" />
+	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</rdf:Property>
 </rdf:RDF>

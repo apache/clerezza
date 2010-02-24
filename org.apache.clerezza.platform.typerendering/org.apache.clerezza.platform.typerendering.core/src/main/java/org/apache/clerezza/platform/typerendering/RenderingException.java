@@ -18,10 +18,12 @@
  */
 package org.apache.clerezza.platform.typerendering;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
 import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.LiteralFactory;
+import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
@@ -41,7 +43,9 @@ public class RenderingException extends TypeRenderingException {
 
 	public RenderingException(Exception cause, URI renderingSpecification,
 			GraphNode renderNode, GraphNode context) {
-		super(cause.getMessage(), renderingSpecification, renderNode, context);
+		super(cause.getClass().getName() + ": " + cause.getMessage(), renderingSpecification,
+				renderNode, context);
+		this.cause = cause;
 		this.renderingSpecification = renderingSpecification;
 	}
 
@@ -49,10 +53,17 @@ public class RenderingException extends TypeRenderingException {
 	public GraphNode getExceptionGraphNode() {
 		GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
 		result.addProperty(RDF.type, TYPERENDERING.Exception);
-		LiteralFactory factory = LiteralFactory.getInstance();
 		result.addProperty(TYPERENDERING.errorSource, new UriRef(renderingSpecification.toString()));
 		result.addProperty(TYPERENDERING.message, new PlainLiteralImpl(getMessage()));
+		result.addProperty(TYPERENDERING.stackTrace, getStackTraceLiteral());
 		return result;
 	}
 
+	private PlainLiteral getStackTraceLiteral() {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		cause.printStackTrace(pw);
+		pw.flush();
+		return new PlainLiteralImpl(sw.toString());
+	}
 }
