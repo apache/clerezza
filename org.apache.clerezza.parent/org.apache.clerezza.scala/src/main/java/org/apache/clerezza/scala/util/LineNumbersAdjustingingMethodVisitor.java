@@ -16,24 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.scala.service;
+package org.apache.clerezza.scala.util;
 
-import org.osgi.service.component.ComponentContext;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodAdapter;
+import org.objectweb.asm.MethodVisitor;
 
 /**
- * The <code>ScalaServiceJava</code> is the bridge between Java and 
- * Scala Code. <code>ScalaService</code> is a scala class which interprets
- * a ScalaScript.
- *   
- * @scr.service interface="org.apache.clerezza.scala.service.ScalaService"
- * @scr.service interface="javax.script.ScriptEngineFactory"
- * @scr.component immediate=true
- * 
- * @author rbn, mkn, pmg
+ *
+ * @author mir
  */
-public class ScalaServiceJava extends ScalaService {
+class LineNumbersAdjustingingMethodVisitor extends MethodAdapter {
 
-	public void activate(ComponentContext context) {
-		super.activate(context);
+	private int lineOffset;
+
+	public LineNumbersAdjustingingMethodVisitor(MethodVisitor mv, int lineOffset) {
+		super(mv);
+		this.lineOffset = lineOffset;
 	}
+
+	@Override
+	public void visitLineNumber(int i, Label label) {
+		super.visitLineNumber(i + lineOffset, label);
+	}
+
+
 }

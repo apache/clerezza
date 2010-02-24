@@ -24,6 +24,7 @@ import java.lang.reflect.Type
 import javax.script.ScriptException
 import java.security.{AccessController, PrivilegedAction}
 import java.lang.reflect.Method
+import org.apache.clerezza.scala.util.LineNumbersAdjustingUtil
 import scala.collection._
 import scala.tools.nsc.{Settings, Global}
 import scala.tools.nsc.interpreter.AbstractFileClassLoader
@@ -114,15 +115,13 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    * @return  a valid Scala source and the lines of headers that have been added before the actual code
    */
   protected def preProcess(name: String, code: String, bindings: Map[String, Type]): (String, Int) = {
-   
-    val compounds = packetize(name)
+
+	  val compounds = packetize(name)
 
     def packageDeclaration =
       if (compounds.size > 1) compounds.init.mkString("package ", ".", "") + NL
       else "" //to make sure the header always has the same length
-
     def className = compounds.last
-
     val header = packageDeclaration +
     "object " + className + " {" + NL +
     "  def main(bindings: Map[String, Any]," + NL +
@@ -149,8 +148,11 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
      "val " + key + " =  bindings.get(\""+key+"\").get.asInstanceOf["+value.asInstanceOf[Class[AnyRef]].getName+"]"
    }).mkString(";"+NL)
   }
-  
-    
+
+  private def getName(filePath : String) : String = {
+	val compounds = packetize(filePath)
+	compounds.last
+  }    
 
   /**
    * Compiles a list of source files. No pre-processing takes place.
@@ -166,6 +168,8 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
       reporter
     else {
       run.compileSources(sources)
+	  LineNumbersAdjustingUtil.adjustAllFilesStartingWithFileName(
+		settings.outdir.value + "/", sources.first.path, -lineDeduction)
       reporter
     }
   }
@@ -187,9 +191,9 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    * @param bindings  variable bindings to pass to the script
    * @return  result of compilation
    */
-	def compile(name: String, code: String, bindings: Map[String, Type]) : Reporter = {
+	def compile(name: String, code: String, bindings: Map[String, Type], lineOffset : Int) : Reporter = {
 		val preprocessedScript = preProcess(name, code, bindings)
-    	compile(name, preprocessedScript._1, preprocessedScript._2)
+    	compile(getName(name), preprocessedScript._1, preprocessedScript._2 + lineOffset)
     }
 
   /**

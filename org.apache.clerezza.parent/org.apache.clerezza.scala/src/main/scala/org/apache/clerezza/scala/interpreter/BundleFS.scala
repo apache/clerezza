@@ -25,130 +25,132 @@ import org.apache.clerezza.scala.interpreter.Utils.{valueOrElse, nullOrElse}
 
 package org.apache.clerezza.scala.interpreter {
 
-/**
- * Implementation of {@link AbstractFile} on top of a {@link org.osgi.framework.Bundle}
- */
-object BundleFS {
-
   /**
-   * Create a new {@link AbstractFile} instance representing an
-   * {@link org.osgi.framework.Bundle}
-   * @param bundle
+   * Implementation of {@link AbstractFile} on top of a {@link org.osgi.framework.Bundle}
    */
-  def create(bundle: Bundle): AbstractFile = {
-    require(bundle != null, "bundle must not be null")
+  object BundleFS {
 
-    abstract class BundleEntry(url: URL, parent: DirEntry) extends AbstractFile {
-      require(url != null, "url must not be null")
-      lazy val (path: String, name: String) = getPathAndName(url)
-      lazy val fullName: String = (path::name::Nil).filter(!_.isEmpty).mkString("/")
+	/**
+	 * Create a new {@link AbstractFile} instance representing an
+	 * {@link org.osgi.framework.Bundle}
+	 * @param bundle
+	 */
+	def create(bundle: Bundle): AbstractFile = {
+	  require(bundle != null, "bundle must not be null")
 
-      /**
-       * @return null
-       */
-      def file: File = null
+	  abstract class BundleEntry(url: URL, parent: DirEntry) extends AbstractFile {
+		require(url != null, "url must not be null")
+		lazy val (path: String, name: String) = getPathAndName(url)
+		lazy val fullName: String = (path::name::Nil).filter(!_.isEmpty).mkString("/")
 
-      /**
-       * @return last modification time or 0 if not known
-       */
-      def lastModified: Long =
-        try { url.openConnection.getLastModified }
+		/**
+		 * @return null
+		 */
+		def file: File = null
+
+		/**
+		 * @return last modification time or 0 if not known
+		 */
+		def lastModified: Long =
+		  try { url.openConnection.getLastModified }
         catch { case _ => 0 }
 
-      @throws(classOf[IOException])
-      def container: AbstractFile =
-        valueOrElse(parent) {
-          throw new IOException("No container")
-        }
+		@throws(classOf[IOException])
+		def container: AbstractFile =
+		  valueOrElse(parent) {
+			throw new IOException("No container")
+		  }
 
-      @throws(classOf[IOException])
-      def input: InputStream = url.openStream()
+		@throws(classOf[IOException])
+		def input: InputStream = url.openStream()
 
-      /**
-       * Not supported. Always throws an IOException.
-       * @throws IOException
-       */
-      @throws(classOf[IOException])
-      def output = throw new IOException("not supported: output")
+		/**
+		 * Not supported. Always throws an IOException.
+		 * @throws IOException
+		 */
+		@throws(classOf[IOException])
+		def output = throw new IOException("not supported: output")
 
-      private def getPathAndName(url: URL): (String, String) = {
-        val u = url.getPath
-        var k = u.length
-        while( (k > 0) && (u(k - 1) == '/') )
-          k = k - 1
+		private def getPathAndName(url: URL): (String, String) = {
+		  val u = url.getPath
+		  var k = u.length
+		  while( (k > 0) && (u(k - 1) == '/') )
+			k = k - 1
 
-        var j = k
-        while( (j > 0) && (u(j - 1) != '/') )
-          j = j - 1
+		  var j = k
+		  while( (j > 0) && (u(j - 1) != '/') )
+			j = j - 1
 
-        (u.substring(if (j > 0) 1 else 0, if (j > 1) j - 1 else j), u.substring(j, k))
-      }
+		  (u.substring(if (j > 0) 1 else 0, if (j > 1) j - 1 else j), u.substring(j, k))
+		}
 
-      override def toString = fullName
-    }
+		override def toString = fullName
+	  }
 
-    class DirEntry(url: URL, parent: DirEntry) extends BundleEntry(url, parent) {
+	  class DirEntry(url: URL, parent: DirEntry) extends BundleEntry(url, parent) {
 
-      /**
-       * @return true
-       */
-      def isDirectory: Boolean = true
+		/**
+		 * @return true
+		 */
+		def isDirectory: Boolean = true
 
-      def elements: Iterator[AbstractFile] = {
-        new Iterator[AbstractFile]() {
-          val dirs = bundle.getEntryPaths(fullName)
-          def hasNext = dirs.hasMoreElements
-          def next = {
-            val entry = dirs.nextElement.asInstanceOf[String]
-            var entryUrl = bundle.getResource("/" + entry)
+		def elements: Iterator[AbstractFile] = {
+		  new Iterator[AbstractFile]() {
+			val dirs = bundle.getEntryPaths(fullName)						
+			  def hasNext = if (dirs != null) { dirs.hasMoreElements} else {false}
+			  def next = {
+				val entry = dirs.nextElement.asInstanceOf[String]
+				var entryUrl = bundle.getResource("/" + entry)
 
-            // Bundle.getResource seems to be inconsistent with respect to requiring
-            // a trailing slash
-            if (entryUrl == null) 
-              entryUrl = bundle.getResource("/" + removeTralingSlash(entry))
+				// Bundle.getResource seems to be inconsistent with respect to requiring
+				// a trailing slash
+				if (entryUrl == null)
+				  entryUrl = bundle.getResource("/" + removeTralingSlash(entry))
             
-            if (entry.endsWith(".class"))
-              new FileEntry(entryUrl, DirEntry.this)
-            else
-              new DirEntry(entryUrl, DirEntry.this)
-          }
+				if (entry.endsWith(".class"))
+				  new FileEntry(entryUrl, DirEntry.this)
+				else
+				  new DirEntry(entryUrl, DirEntry.this)
+			  }
           
-          private def removeTralingSlash(s: String): String = 
-            if (s == null || s.length == 0)
-              s
-            else if (s.last == '/') 
-              removeTralingSlash(s.substring(0, s.length - 1))
-            else
-              s
-        }
-      }
+			  private def removeTralingSlash(s: String): String = {
+				if (s == null || s.length == 0) {
+				  s
+				}else if (s.last == '/') {
+				  removeTralingSlash(s.substring(0, s.length - 1))
+				} else {
+				  s
+				}
+			  }
+		  }
+		}
 
-      def lookupName(name: String, directory: Boolean): AbstractFile = {
-        val entry = bundle.getEntry(fullName + "/" + name)
-        nullOrElse(entry) { entry =>
-          if (directory)
-            new DirEntry(entry, DirEntry.this)
-          else
-            new FileEntry(entry, DirEntry.this)
-        }
-      }
+		def lookupName(name: String, directory: Boolean): AbstractFile = {
+		  val entry = bundle.getEntry(fullName + "/" + name)
+		  nullOrElse(entry) { entry =>
+			if (directory)
+			  new DirEntry(entry, DirEntry.this)
+			else
+			  new FileEntry(entry, DirEntry.this)
+		  }
+		}
 
-    }
+	  }
 
-    class FileEntry(url: URL, parent: DirEntry) extends BundleEntry(url, parent) {
+	  class FileEntry(url: URL, parent: DirEntry) extends BundleEntry(url, parent) {
 
-      /**
-       * @return false
-       */
-      def isDirectory: Boolean = false
-      override def sizeOption: Option[Int] = Some(bundle.getEntry(fullName).openConnection().getContentLength())
-      def elements: Iterator[AbstractFile] = Iterator.empty
-      def lookupName(name: String, directory: Boolean): AbstractFile = null
-    }
+		/**
+		 * @return false
+		 */
+		def isDirectory: Boolean = false
+		override def sizeOption: Option[Int] = Some(bundle.getEntry(fullName).openConnection().getContentLength())
+		def elements: Iterator[AbstractFile] = Iterator.empty
+		def lookupName(name: String, directory: Boolean): AbstractFile = null
+	  }
 
-    new DirEntry(bundle.getResource("/"), null)
+	  new DirEntry(bundle.getResource("/"), null)
+	}
+
   }
-
-}
 
 }

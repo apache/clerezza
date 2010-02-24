@@ -31,25 +31,33 @@ package org.apache.clerezza.scala.service{
 	 *
 	 * @param script
 	 * 			the script which has to be compiled and executed
-	 * @param typeMap
+	 * @param jTypeMap
 	 * 			a Java Map which contains the Types of the parameters
-	 * @param interprete
+	 * @param interpreter
 	 * 			the ScalaInterpreter which compiles and executes the script
-	 *
+	 * @param className
+	 *			the name of the class of the compiled script.
+	 * @param lineOffset
+	 *			the offset used for adjusting the line numbers.
 	 * @author rbn, mkn, pmg
 	 */
   
-	class CompiledScript (script : String , jTypeMap : Map[String, Type] , interpreter : ScalaInterpreter){
-		val name = createClassName()
+	class CompiledScript (script : String , jTypeMap : Map[String, Type] , interpreter : ScalaInterpreter,
+		  className : String, lineOffset : Int){
+		val name = if (className == null) {
+			createClassName("CompiledScalaScript");
+		} else {
+			createClassName(className.replaceAll("-", "_"));
+		}
+		
 		if (interpreter.getClassFile(name) == null) {
 			//prevents synchroneous compilation (even for different scripts)
 			CompiledScript.synchronized {
 				if (interpreter.getClassFile(name) == null) {
-					interpreter.compile(name, script, jTypeMap)
+					interpreter.compile(name, script, jTypeMap, lineOffset)
 				}
 			}
 		}
-
 
 		/**
 		 * Executes the Creates and stores a concept with the specified prefLabel into the
@@ -73,7 +81,7 @@ package org.apache.clerezza.scala.service{
 		 * 	Creates a name based on the hash value of the script
 		 * 	e.g. 54ec400cde5e65a27320d6c71e2a334d.class
 		 */
-		protected def createClassName() = {
+		protected def createClassName(className : String) = {
 			val encryptMsg : Array[Byte] =
 			try {
 				val md = MessageDigest.getInstance("MD5")
@@ -93,7 +101,7 @@ package org.apache.clerezza.scala.service{
 				}
 				strBuf.append(swap); // appending swap to get complete hash-key
 			}
-			"CompiledScalaScript" + strBuf.toString()
+			className + strBuf.toString()
 		}
 	}
 

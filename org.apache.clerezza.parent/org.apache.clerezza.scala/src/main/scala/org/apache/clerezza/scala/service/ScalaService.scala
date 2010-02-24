@@ -115,7 +115,7 @@ package org.apache.clerezza.scala.service {
 				jTypeMap.put(entry._1, getAccessibleClass(entry._2.getClass))
 				valueMap.put(entry._1, entry._2)
 			}
-			interpretScalaScript(script, jTypeMap).execute(valueMap).asInstanceOf[Object]
+			interpretScalaScript(script, jTypeMap, null, 0).execute(valueMap).asInstanceOf[Object]
 		}
 		override def getFactory() = this
 		override def createBindings() : Bindings = new SimpleBindings
@@ -163,11 +163,14 @@ package org.apache.clerezza.scala.service {
 		 * 			the scala script
 		 * @param jTypeMap
 		 * 			the map with the parameter types
+		 * @param className the name of the class that the compiled script will have.
+		 * @param lineOffset the offset applied to the line numbers in the byte code.
 		 * @return CompiledScript
 		 *			the compiled scala script
 		 */
 		@throws(classOf[ScriptException])
-		def interpretScalaScript(script : String , jTypeMap : java.util.Map[String, java.lang.reflect.Type]) : CompiledScript = {
+		def interpretScalaScript(script : String , jTypeMap : java.util.Map[String, java.lang.reflect.Type],
+			  className : String, lineOffset : Int) : CompiledScript = {
 			val jHashMap = new java.util.HashMap[String, java.lang.reflect.Type]()
 			jHashMap.putAll(jTypeMap)
 			val map : immutable.Map[String, java.lang.reflect.Type] =
@@ -175,7 +178,7 @@ package org.apache.clerezza.scala.service {
 			try {
 				val compileScript = AccessController.doPrivileged(new PrivilegedExceptionAction[CompiledScript] {
 						override def run(): CompiledScript = {
-							new CompiledScript(script, map, interpreter)
+							new CompiledScript(script, map, interpreter, className, lineOffset)
 						}
 				 })
 				return compileScript
