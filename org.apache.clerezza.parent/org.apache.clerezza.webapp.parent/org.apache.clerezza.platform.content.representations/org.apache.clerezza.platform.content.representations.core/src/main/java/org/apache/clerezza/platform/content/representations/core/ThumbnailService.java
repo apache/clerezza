@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,23 +19,28 @@
 package org.apache.clerezza.platform.content.representations.core;
 
 import java.net.URI;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.platform.config.PlatformConfig;
-import org.apache.clerezza.platform.content.representations.ontologies.REPRESENTATIONS;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.ontologies.EXIF;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -43,6 +48,10 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,47 +59,36 @@ import org.slf4j.LoggerFactory;
 /**
  * This JAX-RS resource provides a method to retrieve the uri to
  * the thumbnail or a other small representation of a InfoDiscoBit.
- * 
+ *
  * @author mir
  */
 @Component
-@Service(value = Object.class)
+@Service(Object.class)
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("thumbnail-service")
-public class ThumbnailService {
+public class ThumbnailService implements BundleListener{
 
 	@Reference
 	ContentGraphProvider cgProvider;
 	@Reference
 	PlatformConfig config;
-	private UriRef defaultIconUri;
 	private static final Logger log = LoggerFactory.getLogger(ThumbnailService.class);
+	private BundleContext bundleContext;
+	private String STATICWEB_PATH = "/org/apache/clerezza/web/resources/style/staticweb/";
+	private String BASE_PATH = STATICWEB_PATH + "images/icons/mediatype/";
+	private Bundle cachedStyleBundle = null;
+	private Map<MediaType, String> mediaTypeIconUriCache =
+			Collections.synchronizedMap(new HashMap<MediaType, String>());
 
 	protected void activate(ComponentContext context) {
-		String baseUri = config.getDefaultBaseUri().getUnicodeString();
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/text/plain.png"), MediaType.TEXT_PLAIN);
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/application/msword.png"), "application/msword");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/application/x-amf.png"), "application/x-shockwave-flash");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/application/pdf.png"), "application/pdf");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/application/vnd.ms-powerpoint.png"), "application/vnd.ms-powerpoint");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/application/x-tar.png"), "application/x-tar");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/application/x-amf.png"), "application/x-amf");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/application/vnd.ms-excel.png"), "application/vnd.ms-excel");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/application/octet-stream.png"), "application/octet-stream");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/audio/any.png"), "audio/x-wav");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/audio/any.png"), "audio/mpeg");
-		addMediaTypeIcon(createUriRef(baseUri, "style/images/icons/mediatype/audio/any.png"), "audio/mid");
-		defaultIconUri = createUriRef(baseUri, "style/images/icons/mediatype/any.png");
+		bundleContext = context.getBundleContext();
+		bundleContext.addBundleListener(this);
 	}
 
-	private UriRef createUriRef(String baseUri, String relativeUri) {
-		return new UriRef(baseUri + relativeUri);
-	}
-
-	private void addMediaTypeIcon(UriRef icon, String type) {
-		cgProvider.getContentGraph().add(
-				new TripleImpl(icon, REPRESENTATIONS.isIconFor,
-				LiteralFactory.getInstance().createTypedLiteral(type)));
+	protected void deactivate(ComponentContext context) {
+		bundleContext.removeBundleListener(this);
+		bundleContext = null;
+		mediaTypeIconUriCache.clear();
 	}
 
 	/**
@@ -110,7 +108,8 @@ public class ThumbnailService {
 	@GET
 	public Response getThumbnailUri(@QueryParam("uri") UriRef infoBitUri,
 			@QueryParam("width") Integer width,
-			@QueryParam("height") Integer height) {
+			@QueryParam("height") Integer height,
+						@Context UriInfo uriInfo) {
 		if ((width == null) && (height == null)) {
 			throw new WebApplicationException(new IllegalArgumentException("height and/or width must be specified"),
 					Response.Status.BAD_REQUEST);
@@ -129,16 +128,55 @@ public class ThumbnailService {
 		}
 		Iterator<Resource> mediaTypes = infoBitNode.getObjects(DISCOBITS.mediaType);
 		if (mediaTypes.hasNext()) {
-			GraphNode mediaType = new GraphNode(mediaTypes.next(),
-					cgProvider.getContentGraph());
-
-			Iterator<NonLiteral> icons = mediaType.getSubjects(REPRESENTATIONS.isIconFor);
-			if (icons.hasNext()) {
-				return Response.seeOther(
-						URI.create(((UriRef) icons.next()).getUnicodeString())).build();
+			MediaType mediaType = MediaType.valueOf(LiteralFactory.getInstance().createObject(
+					String.class, (TypedLiteral) mediaTypes.next()));
+			String iconUri = mediaTypeIconUriCache.get(mediaType);
+			if (iconUri == null) {
+				iconUri = getMediaTypeIconUri(mediaType);
+				mediaTypeIconUriCache.put(mediaType, iconUri);
 			}
+			return RedirectUtil.createSeeOtherResponse(iconUri, uriInfo);
 		}
-		return Response.seeOther(URI.create(defaultIconUri.getUnicodeString())).build();
+		return RedirectUtil.createSeeOtherResponse(
+				getDefaultIconUrl(getStyleBundle()), uriInfo);
+	}
+
+	private String getMediaTypeIconUri(MediaType mediaType) {
+		Bundle styleBundle = getStyleBundle();
+		if (styleBundle == null) {
+			throw new RuntimeException("no style bundle found");
+		}
+		String path = BASE_PATH + mediaType.getType() + "/";
+		Enumeration entries = styleBundle.findEntries(path,
+				mediaType.getSubtype() + ".*", false);
+		String iconUri = createIconUri(entries);
+		if (iconUri != null) {
+			return iconUri;
+		}
+		entries = styleBundle.findEntries(path, "any.*", false);
+		iconUri = createIconUri(entries);
+		if (iconUri != null) {
+			return iconUri;
+		}
+		return getDefaultIconUrl(styleBundle);
+	}
+
+	private String getDefaultIconUrl(Bundle bundle) {
+		Enumeration entries = bundle.findEntries(BASE_PATH, "any.*", false);
+		String iconUri = createIconUri(entries);
+		if (iconUri != null) {
+			return iconUri;
+		} else {
+			throw new RuntimeException("No default icon found");
+		}
+	}
+
+	private String createIconUri(Enumeration entries) {
+		if (entries != null && entries.hasMoreElements()) {
+			URL iconUrl = (URL) entries.nextElement();
+			return iconUrl.getPath().replace(STATICWEB_PATH, "style/");
+		}
+		return null;
 	}
 
 	private UriRef getThumbnailUri(GraphNode infoBitNode,
@@ -195,6 +233,31 @@ public class ThumbnailService {
 			return getSurfaceSizeIfFitting(infoBitNode, width, height) > -1;
 		} else {
 			return false;
+		}
+	}
+
+	private synchronized Bundle getStyleBundle() {
+		if (cachedStyleBundle != null) {
+			return cachedStyleBundle;
+		}
+		Bundle[] bundles = bundleContext.getBundles();
+		for (Bundle bundle : bundles) {
+			URL staticWebPathURL = bundle.getEntry(STATICWEB_PATH);
+			if (staticWebPathURL != null ) {
+				cachedStyleBundle = bundle;
+				return bundle;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public synchronized void bundleChanged(BundleEvent be) {
+		if (be.getType() == BundleEvent.UNINSTALLED && 
+				be.getBundle().equals(cachedStyleBundle)) {
+			cachedStyleBundle = null;
+			cachedStyleBundle = getStyleBundle();
+			mediaTypeIconUriCache.clear();
 		}
 	}
 }
