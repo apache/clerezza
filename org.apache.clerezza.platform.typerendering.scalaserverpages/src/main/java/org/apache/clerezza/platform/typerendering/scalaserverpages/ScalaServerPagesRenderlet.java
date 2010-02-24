@@ -62,6 +62,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	 */
 	private ScalaService scalaService;
 	private static final Logger logger = LoggerFactory.getLogger(ScalaServerPagesRenderlet.class);
+	private int byteHeaderLines = 0;
 
 	/**
 	 * Default constructor as for usage as OSGi service
@@ -121,12 +122,11 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			map.put("res", GraphNode.class);
 			map.put("context", GraphNode.class);
 			map.put("renderer", CallbackRenderer.class);
-			map.put("mode", String.class);
-			logger.debug("compiling script");
-			
+			map.put("mode", String.class);			
+			String scriptName = extractFileName(renderingSpecification);
+			logger.debug("compiling script: " + scriptName);
 			CompiledScript cs = scalaService.interpretScalaScript(
-					new String(baos.toByteArray(), "UTF-8"), map);
-			
+					new String(baos.toByteArray(), "UTF-8"), map, scriptName, getByteHeaderLines());			
 			logger.debug("compiled");
 			final Map<String, Object> values = new HashMap<String, Object>();
 			values.put("res", res);
@@ -148,22 +148,25 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 				throw new RenderingException(cause, renderingSpecification, res, context);
 			}
 			throw new RenderingspecificationException(ex.getMessage(), renderingSpecification,
-					ex.getLineNumber() - getLines(byteHeader), ex.getColumnNumber(), res, context);
+					ex.getLineNumber(), ex.getColumnNumber(), res, context);
 		}
 	}
 
-	private int getLines(byte[] bytes) {
-		int count = 0;
-		LineNumberReader ln = new LineNumberReader(
-				new InputStreamReader(new ByteArrayInputStream(bytes)));
-		try {
-			while (ln.readLine() != null) {
-				count++;
+	private int getByteHeaderLines() {
+		if (byteHeaderLines == 0) {
+			int count = 0;
+			LineNumberReader ln = new LineNumberReader(
+					new InputStreamReader(new ByteArrayInputStream(byteHeader)));
+			try {
+				while (ln.readLine() != null) {
+					count++;
+				}
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
 			}
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
+			byteHeaderLines = count;
 		}
-		return count;
+		return byteHeaderLines;
 	}
 
 	private String toString(Object object) {
@@ -172,5 +175,10 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		} else {
 			return object.toString();
 		}
+	}
+
+	private String extractFileName(URI renderingSpecification) {
+		String path = renderingSpecification.getPath();
+		return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
 	}
 }

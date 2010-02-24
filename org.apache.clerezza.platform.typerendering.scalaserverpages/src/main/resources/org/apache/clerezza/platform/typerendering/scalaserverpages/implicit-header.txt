@@ -5,7 +5,7 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
 
 def render(resource : GraphNode, mode : String) = {
     def parseNodeSeq(string : String)  = {
-        scala.xml.XML.loadString("<elem>"+string+"</elem>").child
+        _root_.scala.xml.XML.loadString("<elem>"+string+"</elem>").child
     }
     val baos = new java.io.ByteArrayOutputStream
     renderer.render(resource, context, mode, baos)
