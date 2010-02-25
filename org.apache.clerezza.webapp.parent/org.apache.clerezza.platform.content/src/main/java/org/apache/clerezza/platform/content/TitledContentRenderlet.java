@@ -33,6 +33,7 @@ import org.apache.clerezza.platform.typerendering.CallbackRenderer;
 import org.apache.clerezza.platform.typerendering.Renderlet;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -67,6 +68,13 @@ public class TitledContentRenderlet implements Renderlet {
 			OutputStream os) throws IOException {
 		PrintWriter writer = new PrintWriter(os);
 		List<GraphNode> containedNodes = getContainedNodes(res);
+		if (containedNodes.size() < 2) {
+			String nodeLabel = res.getNode() instanceof UriRef ?
+				((UriRef)res.getNode()).getUnicodeString() : " Bnode";
+			writer.print(nodeLabel+": titled and/or content could not be found");
+			writer.flush();
+			return;
+		}
 		writer.print(getHeaderOpen());
 		writer.flush();
 		callbackRenderer.render(
