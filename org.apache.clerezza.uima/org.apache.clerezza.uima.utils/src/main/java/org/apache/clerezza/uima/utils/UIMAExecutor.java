@@ -14,14 +14,21 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 public class UIMAExecutor {
 
-  private transient final AEProvider aeProvider = new AEProvider();
+  private transient final AEProvider aeProvider;
 
   private boolean withResults;
 
   private JCas results;
 
-  public UIMAExecutor() {
+  @SuppressWarnings("unused")
+  private UIMAExecutor() {
+    // cannot instantiate without arguments
+    aeProvider = null;
+  }
+
+  public UIMAExecutor(String xmlDescriptorPath) {
     withResults = false;
+    aeProvider = new AEProvider(xmlDescriptorPath);
   }
 
   public UIMAExecutor withResults() {
@@ -29,10 +36,23 @@ public class UIMAExecutor {
     return this;
   }
 
+  /**
+   * analyze a text document using with this executor
+   * 
+   * @param doc
+   * @throws AnalysisEngineProcessException
+   */
   public void analyzeDocument(String doc) throws AnalysisEngineProcessException {
     analyzeDocument(doc, aeProvider.getDefaultXMLPath());
   }
 
+  /**
+   * analyze a text document specifying a different Analysis Engine descriptor path
+   * 
+   * @param doc
+   * @param xmlPath
+   * @throws AnalysisEngineProcessException
+   */
   public void analyzeDocument(String doc, String xmlPath) throws AnalysisEngineProcessException {
     try {
       this.executeAE(aeProvider.getAE(xmlPath), doc);
@@ -66,7 +86,7 @@ public class UIMAExecutor {
       throw new ExecutionWithoutResultsException();
     return results;
   }
-  
+
   private void setResults(JCas jcas) {
     this.results = jcas;
 
