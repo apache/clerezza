@@ -34,17 +34,14 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Assert;
-import org.apache.clerezza.platform.scripting.scriptmanager.ScriptManager;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.web.resources.jquery.JQuery;
 import org.apache.clerezza.web.resources.scripts.Scripts;
 import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.exam.Inject;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -188,15 +185,13 @@ public class FelixClerezzaPlatformTest {
 	public void registerServices()
 			throws Exception {
 		webServerExist = waitForWebserver();
-		if (webServerExist) {
-			Thread.sleep(10000);
-		}
+		Assert.assertTrue("webserver running on port "+testHttpPort, webServerExist);
+		Thread.sleep(10000);
 	}
 
 	@Test
 	public void checkTcManagerService()
 			throws Exception {
-		Assert.assertTrue(webServerExist);
 		Object service = waitFor(TcManager.class, 20000);
 		Assert.assertTrue(service != null);
 
@@ -205,7 +200,6 @@ public class FelixClerezzaPlatformTest {
 	@Test
 	public void checkJaxRsServices()
 			throws Exception {
-		Assert.assertTrue(webServerExist);
 		Object service = waitFor(JQuery.class, 20000);
 		Assert.assertTrue(service != null);		
 		service = waitFor(Scripts.class, 20000);
