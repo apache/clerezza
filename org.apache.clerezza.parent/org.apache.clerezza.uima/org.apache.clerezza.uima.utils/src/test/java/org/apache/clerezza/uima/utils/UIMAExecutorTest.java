@@ -15,7 +15,7 @@ public class UIMAExecutorTest {
   @Test
   public void testDefaultConstructor() {
     try {
-      UIMAExecutor uimaExecutor = new UIMAExecutor();
+      UIMAExecutor uimaExecutor = new UIMAExecutor("ExtServicesAE.xml");
       assertTrue(uimaExecutor != null);
     } catch (Throwable e) {
       fail(e.getLocalizedMessage());
@@ -25,7 +25,7 @@ public class UIMAExecutorTest {
   @Test
   public void testWithResultsConstructor() {
     try {
-      UIMAExecutor uimaExecutor = new UIMAExecutor().withResults();
+      UIMAExecutor uimaExecutor = new UIMAExecutor("ExtServicesAE.xml").withResults();
       assertTrue(uimaExecutor != null);
     } catch (Throwable e) {
       fail(e.getLocalizedMessage());
