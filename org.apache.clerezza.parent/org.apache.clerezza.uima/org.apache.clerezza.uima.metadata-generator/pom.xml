@@ -1,41 +1,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.uima.metadata-generator</artifactId>
-	<version>0.1-incubating-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<name>Apache Clerezza UIMA extension for metadata generation </name>
-	<description>Apache Clerezza UIMA extension for metadata generation </description>
-	<parent>
-		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.uima</artifactId>
-		<version>0.1-incubating-SNAPSHOT</version>
-	</parent>
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.platform.content</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.uima.utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.rdf.core</artifactId>
-        </dependency>
-        <dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
-        <dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-    </dependencies>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.clerezza</groupId>
+  <artifactId>org.apache.clerezza.uima.metadata-generator</artifactId>
+  <version>0.1-incubating-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  <name>Apache Clerezza UIMA extension for metadata generation </name>
+  <description>Apache Clerezza UIMA extension for metadata generation </description>
+  <parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>org.apache.clerezza.uima</artifactId>
+    <version>0.1-incubating-SNAPSHOT</version>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.clerezza</groupId>
+      <artifactId>org.apache.clerezza.platform.content</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.clerezza</groupId>
+      <artifactId>org.apache.clerezza.uima.utils</artifactId>
+      <version>0.1-incubating-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.clerezza</groupId>
+      <artifactId>org.apache.clerezza.rdf.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.scr.annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+    </dependency>
+  </dependencies>
 </project>
