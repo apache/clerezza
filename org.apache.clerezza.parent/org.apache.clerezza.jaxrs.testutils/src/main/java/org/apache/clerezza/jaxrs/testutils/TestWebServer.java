@@ -40,6 +40,7 @@ public class TestWebServer {
 
 	private int port;
 	private WebServer webServer;
+	private boolean stopped;
 
 	/**
 	 * starts a webserver for the given jax-rs application
@@ -111,9 +112,19 @@ public class TestWebServer {
 
 	protected void finalize() throws Throwable {
 		try {
-			webServer.stop();
+			if (!stopped) {
+				webServer.stop();
+			}
 		} finally {
 			super.finalize();
 		}
+	}
+
+	/**
+	 * stops the webserver
+	 */
+	public void stop() {
+		webServer.stop();
+		stopped = true;
 	}
 }
