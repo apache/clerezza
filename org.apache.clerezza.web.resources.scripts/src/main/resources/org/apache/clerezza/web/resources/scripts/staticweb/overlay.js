@@ -33,28 +33,28 @@ function Overlay(){};
 /**
  * Creates and renders an overlay.
  *
- * @param bodyText
- * @param headerText
+ * @param body html elements or text
+ * @param header html elements or text
  * @param widthOverlay an optional parameter which specifies the width of the overlay
- * (default is 560px)
+ * (default is 46em)
  * @param heightOverlay an optional parameter which specifies the height of the overlay
- * (default is 450px)
+ * (default is 37em)
  * 
  *
  */
-Overlay.show = function(bodyText, headerText, widthOverlay, heightOverlay) {
+Overlay.show = function(body, header, widthOverlay, heightOverlay) {
 
 	if(widthOverlay == undefined || widthOverlay == "") {
-		widthOverlay = 560;
+		widthOverlay = "46em";
 	}
 	if(heightOverlay == undefined || heightOverlay == "") {
-		heightOverlay = 450;
+		heightOverlay = "37em";
 	}
 
-	this.overlay = new YAHOO.widget.Panel("tx-assetsdetail", {
+	this.overlay = new YAHOO.widget.Panel("tx-overlay", {
 		draggable: true,
-		width: widthOverlay+"px",
-		height: heightOverlay+"px",
+		width: widthOverlay,
+		height: heightOverlay,
 		constraintoviewport: true,
 		modal: true,
 		zIndex: 100000,
@@ -64,12 +64,16 @@ Overlay.show = function(bodyText, headerText, widthOverlay, heightOverlay) {
 		context: ["content"]
 	});
 	
-	if (bodyText.length) {
-		this.overlay.setBody(bodyText);
+	if (body.length) {
+		if (!body.substring) {
+			//as with results from jquery $-fucntion
+			body = body[0]
+		}
 	}
-	
-	if (headerText.length) {
-		this.overlay.setHeader(headerText);
+
+	this.overlay.setBody(body);
+	if (header.length) {
+		this.overlay.setHeader(header);
 	}	
 	
 	this.overlay.render(document.body);
@@ -86,8 +90,6 @@ Overlay.show = function(bodyText, headerText, widthOverlay, heightOverlay) {
 	this.resize = new YAHOO.util.Resize("tx-assetsdetail", {
 		handles: ["br"],
 		autoRatio: false,
-		minWidth: widthOverlay,
-		minHeight: heightOverlay,
 		status: false 
 	});
 

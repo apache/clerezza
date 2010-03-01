@@ -28,7 +28,7 @@ function AlertMessage(){};
 /**
  * Creates and renders a dialox box.
  *
- * @param doFunction is a callback function which fired if accept button is pressed
+ * @param doFunction is a callback function which fired when the yes button is pressed
  * @param message
  * @param headerText
  * @param textYes
@@ -36,7 +36,7 @@ function AlertMessage(){};
  * 
  *
  */
-AlertMessage.show = function(doFunction, message, headerText, textYes, textNo) {
+AlertMessage.show = function(handleYesFunction, message, headerText, textYes, textNo) {
 	var handleYes = function() {
 		doFunction();
 		this.destroy();
