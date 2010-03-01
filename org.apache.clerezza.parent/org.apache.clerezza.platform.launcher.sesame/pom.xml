@@ -34,7 +34,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
 				<executions>
 					<execution>
 						<id>inline-jars</id>
@@ -90,9 +89,6 @@
 		<resources>
 			<resource>
 				<directory>target/extracted/</directory>
-				<includes>
-					<include>**</include>
-				</includes>
 			</resource>
 			<resource>
 				<targetPath>META-INF</targetPath>
