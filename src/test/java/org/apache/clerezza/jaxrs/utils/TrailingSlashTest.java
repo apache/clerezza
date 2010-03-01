@@ -66,7 +66,8 @@ public class TrailingSlashTest {
 	
 	@Test
 	public void testEnforceSlash() throws IOException {		
-		int port = createTestWebServer(new MyResource()).getPort();
+		final TestWebServer testWebServer = createTestWebServer(new MyResource());
+		int port = testWebServer.getPort();
 		URL serverURL = new URL("http://localhost:" + port + "/foo/bar");
 		HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
 		connection = (HttpURLConnection) serverURL.openConnection();
@@ -74,12 +75,13 @@ public class TrailingSlashTest {
 		connection.addRequestProperty("Accept", "text/html, */*; q=.2");	
 		Assert.assertEquals(204, connection.getResponseCode());
 		Assert.assertTrue(path.endsWith("/"));
+		testWebServer.stop();
 	}
 	
 	@Test
 	public void testEnforceNoSlash() throws IOException {
-		
-		int port = createTestWebServer(new MyResource2()).getPort();
+		final TestWebServer testWebServer = createTestWebServer(new MyResource2());
+		int port = testWebServer.getPort();
 		URL serverURL = new URL("http://localhost:" + port + "/one/two/");
 		HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
 		connection = (HttpURLConnection) serverURL.openConnection();
@@ -88,6 +90,7 @@ public class TrailingSlashTest {
 		connection.addRequestProperty("Accept", "text/html, */*; q=.2");
 		Assert.assertEquals(204, connection.getResponseCode());
 		Assert.assertFalse(path.endsWith("/"));
+		testWebServer.stop();
 	}
 	
 	
