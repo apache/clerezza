@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>overlay - example</title>
+
+	<link href="/style/style.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="./style/demo.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="/yui/container/assets/container-core.css" rel="stylesheet" type="text/css"/>
+	<script src="/jquery/jquery-1.3.2.min.js" type="text/javascript"/>
+	<script src="/yui/yahoo-dom-event/yahoo-dom-event.js" type="text/javascript"/>
+	<script src="/yui/element/element-min.js" type="text/javascript"/>
+	<script src="/yui/container/container-min.js" type="text/javascript"/>
+	<script src="/yui/resize/resize-min.js" type="text/javascript"/>
+	<script src="/yui/utilities/utilities.js" type="text/javascript"/>
+	<script src="/scripts/overlay.js" type="text/javascript"/>
+</head>
+
+<body>
+
+
+<!-- content -->
+<div id="tx-content" class="demo">
+
+	<div id="demo">
+    	<h3>Description</h3>
+
+       
+		<h3>Overlay</h3>
+		
+        <div>
+		The Overlay behave similarly to an OS window. Unlike true browser popup windows,
+		the overlay is floating DHTML elements embedded directly within the page context.
+		The Overlay is positioned above the flow of a page and is draggable, resizable and has a close button.
+		The Overlay has a method show with arguments body, header, width and height, which renders the overlay.
+		The body and the header can be html elements or text.
+		The width (default value: 46em) and height (default value: 37em) can be defined absolutely or relatively.
+		Furthermore the Overlay has a method close to destroy the overlay.
+		<br/>
+		<br/>
+		<div style="display: none">
+			<div id="myOverlayBody">body</div>
+		</div>
+		<div>
+			<a href="#" onclick="Overlay.show($('#myOverlayBody'), 'header', '20em', '10em');">click here to add the overlay.</a> <br/>
+		</div>
+		<br/>
+		<br/>
+
+
+		The following css and scripts have to be included:
+		<pre>
+&lt;link href="/yui/container/assets/container-core.css" rel="stylesheet" type="text/css"/&gt;
+&lt;script src="/yui/yahoo-dom-event/yahoo-dom-event.js" type="text/javascript"/&gt;
+&lt;script src="/yui/element/element-min.js" type="text/javascript"/&gt;
+&lt;script src="/yui/container/container-min.js" type="text/javascript"/&gt;
+&lt;script src="/yui/dragdrop/dragdrop-min.js" type="text/javascript"/&gt;
+&lt;script src="/yui/resize/resize-min.js" type="text/javascript"/&gt;
+&lt;script src="/yui/utilities/utilities.js" type="text/javascript"/&gt;
+&lt;script src="/scripts/overlay.js" type="text/javascript"/&gt;
+		</pre>
+		<br/>
+		<br/>
+		e.g.
+		<pre>
+...
+	&lt;body&gt;
+	   &lt;div style="display: none">
+			&lt;div id="myOverlayBody">body&lt;/div>
+		&lt;/div>
+	   &lt;div&gt;
+		 &lt;a href="#" onclick="Overlay.show($('#myOverlayBody'), 'header', '20em', '10em');"&gt;click here to add the overlay &lt;/a&gt; &lt;br/&gt;
+	   &lt;/div&gt;
+	&lt;/body&gt;
+...
+		</pre>
+		</div>
+		
+	</div>
+</div>
+<!-- // content -->
+	
+</body>
+</html>
+
