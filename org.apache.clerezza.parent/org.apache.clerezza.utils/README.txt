@@ -1,0 +1,1 @@
+Utilities copied from org.apache.httpclient because they were discontinued.
