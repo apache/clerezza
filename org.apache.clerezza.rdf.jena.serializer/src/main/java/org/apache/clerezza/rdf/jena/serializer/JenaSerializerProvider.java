@@ -29,17 +29,22 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.serializedform.UnsupportedSerializationFormatException;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
 /**
  * A {@link org.apache.clerezza.rdf.core.serializedform.SerializingProvider} based on Jena
  *
  * @author mir
- * 
- * @scr.component immediate="true"
- * @scr.service interface="org.apache.clerezza.rdf.core.serializedform.SerializingProvider"
  */
 /*
  * see http://jena.sourceforge.net/IO/iohowto.html
  */
+@Component
+@Service(SerializingProvider.class)
+@Property(name="supportedFormat", value={SupportedFormat.RDF_XML,
+	SupportedFormat.TURTLE,	SupportedFormat.X_TURTLE,
+	SupportedFormat.N_TRIPLE, SupportedFormat.N3})
 @SupportedFormat({SupportedFormat.RDF_XML,
 	SupportedFormat.TURTLE,	SupportedFormat.X_TURTLE,
 	SupportedFormat.N_TRIPLE, SupportedFormat.N3})
