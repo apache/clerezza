@@ -69,6 +69,8 @@ public abstract class AbstractServiceRootResourceTest {
 	@Test
 	public void getHello() throws Exception {
 		URL serverURL = new URL("http://localhost:" + testHttpPort + "/foo");
+		System.out.println("I AM HERE!");
+		Thread.sleep(40000);
 		HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
 		Assert.assertEquals("text/plain", connection.getHeaderField("Content-Type"));
 		Reader reader = new InputStreamReader(connection.getInputStream());

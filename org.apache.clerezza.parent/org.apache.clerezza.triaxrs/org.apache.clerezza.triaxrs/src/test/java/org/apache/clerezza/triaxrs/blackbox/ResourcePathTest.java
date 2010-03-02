@@ -18,22 +18,19 @@
  */
 package org.apache.clerezza.triaxrs.blackbox;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertTrue;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.easymock.EasyMock;
 import org.junit.Test;
 import org.apache.clerezza.triaxrs.JaxRsHandler;
+import org.apache.clerezza.triaxrs.mock.RequestImpl;
+import org.apache.clerezza.triaxrs.mock.RequestURIImpl;
+import org.apache.clerezza.triaxrs.mock.ResponseImpl;
 import org.apache.clerezza.triaxrs.testutils.HandlerCreator;
+import org.junit.Before;
 import org.wymiwyg.wrhapi.Method;
-import org.wymiwyg.wrhapi.Request;
-import org.wymiwyg.wrhapi.RequestURI;
-import org.wymiwyg.wrhapi.Response;
-
 
 public class ResourcePathTest {
 
@@ -46,25 +43,121 @@ public class ResourcePathTest {
 		public void handleGet() {
 			methodInvokedForGet = true;
 		}
+
+		@Path("bar%20foo")
+		@GET
+		public void handleGet2() {
+			methodInvokedForGet = true;
+		}
+
+		@Path("da ja")
+		@GET
+		public void handleGet3() {
+			methodInvokedForGet = true;
+		}
+	}
+
+	@Path("test%20resource")
+	public static class MyResource2 {
+
+		@GET
+		public void handleGet() {
+			methodInvokedForGet = true;
+		}
+	}
+
+	@Path("bla bla")
+	public static class MyResource3 {
+
+		@GET
+		public void handleGet() {
+			methodInvokedForGet = true;
+		}
+	}
+
+	@Path("test+resource")
+	public static class MyResource4 {
+
+		@GET
+		public void handleGet() {
+			methodInvokedForGet = true;
+		}
+	}
+
+	@Before
+	public void reset() {
+		methodInvokedForGet = false;
 	}
 
 	@Test
-	public void testOptions() throws Exception {
-
+	public void requestOnResourcePathTest() throws Exception {
 		JaxRsHandler handler = HandlerCreator.getHandler(MyResource.class);
-		
-		Request requestMock = EasyMock.createNiceMock(Request.class);
-		Response responseMock = EasyMock.createNiceMock(Response.class);
-		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
-		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
-		expect(requestURI.getPath()).andReturn("/foo");
-		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
-		replay(requestMock);
-		replay(requestURI);
-		replay(responseMock);
-		handler.handle(requestMock, responseMock);
+		RequestImpl requestMock = new RequestImpl();
+		RequestURIImpl requestUri = new RequestURIImpl();
+		requestUri.setPath("/foo");
+		requestMock.setRequestURI(requestUri);
+		requestMock.setMethod(Method.GET);
+		handler.handle(requestMock, new ResponseImpl());
 		assertTrue(methodInvokedForGet);
+	}
 
+	@Test
+	public void requestOnResourcePathContainingEncodedSpaceTest() throws Exception {
+		JaxRsHandler handler = HandlerCreator.getHandler(MyResource2.class);
+		RequestImpl requestMock = new RequestImpl();
+		RequestURIImpl requestUri = new RequestURIImpl();
+		requestUri.setPath("/test%20resource");
+		requestMock.setRequestURI(requestUri);
+		requestMock.setMethod(Method.GET);
+		handler.handle(requestMock, new ResponseImpl());
+		assertTrue(methodInvokedForGet);
+	}
+
+	@Test
+	public void requestOnResourcePathContainingPlusTest() throws Exception {
+		JaxRsHandler handler = HandlerCreator.getHandler(MyResource4.class);
+		RequestImpl requestMock = new RequestImpl();
+		RequestURIImpl requestUri = new RequestURIImpl();
+		requestUri.setPath("/test+resource");
+		requestMock.setRequestURI(requestUri);
+		requestMock.setMethod(Method.GET);
+		handler.handle(requestMock, new ResponseImpl());
+		assertTrue(methodInvokedForGet);
+	}
+
+	@Test
+	public void requestOnResourcePathContainingSpaceTest() throws Exception {
+		JaxRsHandler handler = HandlerCreator.getHandler(MyResource3.class);
+		RequestImpl requestMock = new RequestImpl();
+		RequestURIImpl requestUri = new RequestURIImpl();
+		requestUri.setPath("/bla%20bla");
+		requestMock.setRequestURI(requestUri);
+		requestMock.setMethod(Method.GET);
+		handler.handle(requestMock, new ResponseImpl());
+		assertTrue(methodInvokedForGet);
+	}
+
+	@Test
+	public void reqOnResMethodPathContainingEncSpaceTest() throws Exception {
+		JaxRsHandler handler = HandlerCreator.getHandler(MyResource.class);
+		RequestImpl requestMock = new RequestImpl();
+		RequestURIImpl requestUri = new RequestURIImpl();
+		requestUri.setPath("/foo/bar%20foo");
+		requestMock.setRequestURI(requestUri);
+		requestMock.setMethod(Method.GET);
+		handler.handle(requestMock, new ResponseImpl());
+		assertTrue(methodInvokedForGet);
+	}
+
+	@Test
+	public void reqOnResMethodPathContainingSpaceTest() throws Exception {
+		JaxRsHandler handler = HandlerCreator.getHandler(MyResource.class);
+		RequestImpl requestMock = new RequestImpl();
+		RequestURIImpl requestUri = new RequestURIImpl();
+		requestUri.setPath("/foo/da%20ja");
+		requestMock.setRequestURI(requestUri);
+		requestMock.setMethod(Method.GET);
+		handler.handle(requestMock, new ResponseImpl());
+		assertTrue(methodInvokedForGet);
 	}
 }
-

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.clerezza.utils.UriException;
 
 public class URITemplate implements Comparable<URITemplate> {
 
@@ -67,6 +68,11 @@ public class URITemplate implements Comparable<URITemplate> {
 	private String templateString;
 
 	public URITemplate(String rawTemplateString) {
+		try {
+			rawTemplateString = TemplateEncoder.encode(rawTemplateString, "UTF-8");
+		} catch (UriException ex) {
+			throw new RuntimeException(ex);
+		}
 		if ((rawTemplateString.length() > 0) && (rawTemplateString.charAt(0) == '/')) {
 			this.templateString = rawTemplateString.substring(1);
 		} else {

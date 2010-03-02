@@ -69,7 +69,17 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient-osgi</artifactId>
 			<scope>provided</scope>
-			<version>4.0</version>
+			<version>4.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.utils</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore-osgi</artifactId>
+			<scope>provided</scope>
 		</dependency>
 <!-- pax exam related stuff -->
 		<dependency>
@@ -86,15 +96,7 @@
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-container-default</artifactId>
 			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore-osgi</artifactId>
-			<version>4.0.1</version>
-			<scope>test</scope>
-		</dependency>
-		
+		</dependency>		
 	</dependencies>
 	<build>
 		<plugins>
@@ -111,7 +113,6 @@
 			<plugin>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>maven-paxexam-plugin</artifactId>
-				<version>1.2.0</version>
 				<executions>
 					<execution>
 						<id>generate-depends-file</id>

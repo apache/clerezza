@@ -23,7 +23,6 @@ import org.apache.clerezza.jaxrs.extensions.ResourceMethodException;
 import org.apache.clerezza.jaxrs.extensions.HttpRequest;
 import org.apache.clerezza.jaxrs.extensions.MethodResponse;
 import org.apache.clerezza.jaxrs.extensions.RootResourceExecutor;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -60,6 +59,7 @@ import org.apache.clerezza.triaxrs.util.MethodUtil;
 import org.apache.clerezza.triaxrs.util.PathMatching;
 import org.apache.clerezza.triaxrs.util.TemplateEncoder;
 import org.apache.clerezza.triaxrs.util.URITemplate;
+import org.apache.clerezza.utils.UriException;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
 
@@ -592,7 +592,7 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 	private String templateUrlEncode(String value) {
 		try {
 			return TemplateEncoder.encode(value, "utf-8");
-		} catch (UnsupportedEncodingException e) {
+		} catch (UriException e) {
 			throw new RuntimeException(e);
 		}
 	}

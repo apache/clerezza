@@ -21,14 +21,27 @@ package org.apache.clerezza.triaxrs.util;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.apache.clerezza.triaxrs.util.TemplateEncoder;
 
-public class TestTemplateEncoder {
+public class TemplateEncoderTest {
 	@Test
 	public void simpleEncoding() throws Exception {
-		String s = "/föö/{blüü}/blä";
+		String s = "/föö/{blüü}/blä{euo}+{";
 		String encoded = TemplateEncoder.encode(s, "utf-8");
-		Assert.assertTrue(encoded.indexOf("{blüü}") != -1);
+		System.out.println(encoded);
+		Assert.assertEquals("/f%C3%B6%C3%B6/{blüü}/bl%C3%A4{euo}%2B%7B", encoded);
 	}
-	
+
+	@Test
+	public void spaceEncoding() throws Exception {
+		String s = "/foo bar";
+		String encoded = TemplateEncoder.encode(s, "utf-8");
+		Assert.assertEquals("/foo%20bar", encoded);
+	}
+
+	@Test
+	public void containsAlreadyEncodedCharsTest() throws Exception {
+		String s = "/++/%20 %20/äöü%GG";
+		String encoded = TemplateEncoder.encode(s, "utf-8");
+		Assert.assertEquals("/%2B%2B/%20%20%20/%C3%A4%C3%B6%C3%BC%25GG", encoded);
+	}
 }
