@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+	<head>
+		<title>Tutorial 1: Developing a RESTful Web Application for OSGi Runtime Environment</title>
+	</head>
+	<body>
+		<h1>Tutorial 1: Developing a RESTful Web Application for OSGi
+			Runtime Environment</h1>
+		<p>Author: Hasan - clerezza.org</p>
+		<p>Date: October 9, 2008</p>
+		<p>Contributor: Reto BG, Tsuyoshi Ito - clerezza.org</p>
+		<h2>Table of Contents</h2>
+		<p>
+			<a href="#objective">1. Objective</a>
+		</p>
+		<p>
+			<a href="#initialization">2. Initializing a Maven Project</a>
+		</p>
+		<p>
+			<a href="#functionality">3. Implementing the Functionality</a>
+		</p>
+		<p>
+			<a href="#root_resource">4. Making a Class a JAX-RS Root Resource</a>
+		</p>
+		<p>
+			<a href="#representation">5. Getting the Representation of a Resource</a>
+		</p>
+		<p>
+			<a href="#bundling">6. Configuring Packaging Type and Plugin for Bundling</a>
+		</p>
+		<p>
+			<a href="#declarative_service">7. Using OSGi Declarative Service</a>
+		</p>
+		<p>
+			<a href="#build">8. Building Tutorial1 Bundle</a>
+		</p>
+		<p>
+			<a href="#deploy">9. Deploying and Starting the Bundle in an OSGi Container
+			</a>
+		</p>
+		<p>
+			<a href="#service_access">10. Accessing the Web Service</a>
+		</p>
+		<p>
+			<a href="#references">11. References</a>
+		</p>
+		<h2 id="objective">1. Objective</h2>
+		<p>
+			In this tutorial you will learn how to write a RESTful [
+			<a href="#ref1">1</a>
+			] Web application running in an OSGi [
+			<a href="#ref2">2</a>
+			] container. One key advantage of applying REST principles in
+			developing a Web application is the simpler implementation of a
+			service, since interactions are stateless. Statelessness also leads
+			to a better server scalability (cf. Section 5.1.3 of [
+			<a href="#ref1">1</a>
+			]). The use of OSGi technology offers a modular implementation of an
+			application through its component model. Each component (in the form
+			of a bundle) can be dynamically deployed and replaced without the
+			need to take the application down. A bundle is a tightly-coupled,
+			dynamically loadable collection of classes, jars, and configuration
+			files.
+		</p>
+		<p>
+			The example OSGi bundle to be developed allows for the retrieval of
+			personal data by specifying an identification number (ID). Thus, the
+			Web application provides for a personal data retrieval service.
+			Depending on the ID in the URI of a Web request, the corresponding
+			personal data are returned in the Web response. For the sake of
+			simplicity, the personal data in this tutorial consist only of
+			firstname and lastname. The time it takes to go through this tutorial
+			is around 30 minutes. This tutorial is intended for Web application
+			developers who are supposed to be familiar with the programming
+			language Java and the build tool maven [
+			<a href="#ref3">3</a>
+			].
+		</p>
+		<h2 id="initialization">2. Initializing a Maven Project</h2>
+		<p>First, a maven project with the groupId org.example.clerezza
+			and the artifactId tutorial1 will be created by executing the
+			following command in a shell:</p>
+		<pre><code>
+    $ mvn archetype:generate --batch-mode \
+    -DarchetypeGroupId=org.apache.maven.archetypes \
+    -DarchetypeArtifactId=maven-archetype-quickstart \
+    -DgroupId=org.example.clerezza \
+    -DartifactId=tutorial1 \
+    -Dversion=1.0-SNAPSHOT \
+    -Dpackage=org.example.clerezza.tutorial1
+    ...
+    ------------------------------------------------------------------------
+    [INFO] BUILD SUCCESSFUL
+    [INFO]
+    ------------------------------------------------------------------------
+    ...
+  </code></pre>
+		<p>A new directory called tutorial1 is created containing a source
+			directory src and a file called pom.xml used by maven to build the
+			project. A program file called App.java is created and placed under
+			the directory src/main/java/org/example/clerezza/tutorial1/. Since we
+			are going to use annotations and generics, we need to configure
+			maven-compiler-plugin in the pom.xml accordingly, i.e., to use javac
+			version 1.5 or higher. In this tutorial we use version 1.6, thus, the
+			modified pom.xml looks as follows:</p>
+		<pre><code>
+  &lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;groupId&gt;org.example.clerezza&lt;/groupId&gt;
+    &lt;artifactId&gt;tutorial1&lt;/artifactId&gt;
+    &lt;packaging&gt;jar&lt;/packaging&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;tutorial1&lt;/name&gt;
+    &lt;url&gt;http://maven.apache.org&lt;/url&gt;
+    &lt;dependencies&gt;
+      &lt;dependency&gt;
+        &lt;groupId&gt;junit&lt;/groupId&gt;
+        &lt;artifactId&gt;junit&lt;/artifactId&gt;
+        &lt;version&gt;3.8.1&lt;/version&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+      &lt;/dependency&gt;
+    &lt;/dependencies&gt;<strong>
+    &lt;build&gt;
+      &lt;plugins&gt;
+        &lt;plugin&gt;
+          &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+          &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+          &lt;configuration&gt;
+            &lt;source&gt;1.6&lt;/source&gt;
+            &lt;target&gt;1.6&lt;/target&gt;
+          &lt;/configuration&gt;
+        &lt;/plugin&gt;
+      &lt;/plugins&gt;
+    &lt;/build&gt;</strong>
+  &lt;/project&gt;
+  </code></pre>
+
+  <h2 id="functionality">3. Implementing the Functionality</h2>
+  <p>To implement the required functionality, we need a Java class to represent persons and another Java class to manage them. We will modify App.java to implement the second class and write a new file called Person.java to implement the first class. As you can see, both classes are simply POJO. The class App manages an array of Person objects and provides for a method to retrieve a Person object given his ID. For the sake of simplicity, the ID of a person is represented by the respective array index.</p>
+  <p>The content of App.java is as follows:</p>
+  <pre><code>
+  package org.example.clerezza.tutorial1;
+
+  public class App {
+
+	Person[] persons;
+	public App() {
+		persons = new Person[3];
+		persons[0] = new Person("Jane", "Roe");
+		persons[1] = new Person("Richard", "Roe");
+		persons[2] = new Person("John", "Doe");
+	}
+
+	public Person getPerson(int id) {
+		return persons[id];
+	}
+  }
+  </code></pre>
+
+  <p>The class Person is defined in Person.java as follows:</p>
+  <pre><code>
+  package org.example.clerezza.tutorial1;
+
+  public class Person {
+	String firstName, lastName;
+
+	public Person(String firstName, String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+  }
+  </code></pre>
+
+  <h2 id="root_resource">4. Making a Class a JAX-RS Root Resource</h2>
+  <p>JAX-RS [<a href="#ref4">4</a>] (a.k.a JSR 311) is the Java API for RESTful Web Services. Since we are going to use JAX-RS in this tutorial, we need to configure this dependency in the pom.xml. The modified pom.xml looks as follows:</p>
+  <pre><code>
+  &lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+    ...
+    &lt;dependencies&gt;<strong>
+      &lt;dependency&gt;
+        &lt;groupId&gt;javax.ws.rs&lt;/groupId&gt;
+        &lt;artifactId&gt;jsr311-api&lt;/artifactId&gt;
+        &lt;version&gt;1.0&lt;/version&gt;
+      &lt;/dependency&gt;</strong>
+      ...
+    &lt;/dependencies&gt;
+    ...
+  &lt;/project&gt;
+  </code></pre>
+
+  <p>The class App is a resource class (in JAX-RS terminology), i.e., a class that implements a Web resource. To denote a resource class, JAX-RS annotations [<a href="#ref5">5</a>] are used, as shown in the class App below. The JAX-RS annotation @Path in this class sets the path of the resource to “/contact”. The JAX-RS annotation @GET tells that the annotated method, getPerson, is responsible for processing GET requests. This method accepts a parameter, whose value is obtained from the GET request parameter called id. This is defined through the JAX-RS annotation @QueryParam.</p>
+
+  <pre><code>
+  package org.example.clerezza.tutorial1;
+
+  import javax.ws.rs.GET;
+  import javax.ws.rs.Path;
+  import javax.ws.rs.QueryParam;
+
+  @Path("/contact") // sets the path for this service
+  public class App {
+
+	Person[] persons;
+	public App() {
+		persons = new Person[3];
+		persons[0] = new Person("Jane", "Roe");
+		persons[1] = new Person("Richard", "Roe");
+		persons[2] = new Person("John", "Doe");
+	}
+
+	@GET // this method process GET requests
+	public Person getPerson(@QueryParam("id") int id) {
+		return persons[id];
+	}
+  }
+  </code></pre>
+
+  <h2 id="representation">5. Getting the Representation of a Resource</h2>
+  <p>A resource can have multiple representations. For example, a Web page can be represented as html, pdf, plain text, or other representations. The HTTP defines a mechanism known as content negotiation to allow a client (e.g., a Web browser) to specify which representation it would like to get from the server. With JAX-RS we can define writers for various representations. In this tutorial we will add a writer, called PersonWriter, to produce an HTML representation of the resource Person. The content of PersonWriter.java is as follows:</p>
+  <pre><code>
+  package org.example.clerezza.tutorial1;
+
+  import java.io.IOException;
+  import java.io.OutputStream;
+  import java.io.PrintWriter;
+  import java.lang.annotation.Annotation;
+  import java.lang.reflect.Type;
+  import javax.ws.rs.Produces;
+  import javax.ws.rs.WebApplicationException;
+  import javax.ws.rs.core.MediaType;
+  import javax.ws.rs.core.MultivaluedMap;
+  import javax.ws.rs.ext.MessageBodyWriter;
+  import javax.ws.rs.ext.Provider;
+
+  @Provider
+  @Produces("text/html")
+  public class PersonWriter implements MessageBodyWriter&lt;Person&gt; {
+
+        @Override
+        public boolean isWriteable(Class&lt;?&gt; type, Type genericType,
+                        Annotation[] annotations, MediaType mediaType) {
+                return Person.class.isAssignableFrom(type);
+        }
+
+        @Override
+        public long getSize(Person t, Class&lt;?&gt; type, Type genericType,
+                        Annotation[] annotations, MediaType mediaType) {
+                return -1;
+        }
+
+        @Override
+        public void writeTo(Person t, Class&lt;?&gt; type, Type genericType,
+                        Annotation[] annotations, MediaType mediaType,
+                        MultivaluedMap&lt;String, Object&gt; httpHeaders,
+                        OutputStream entityStream)
+                        throws IOException, WebApplicationException {
+                PrintWriter writer = new PrintWriter(entityStream);
+                writer.println("&lt;html&gt;");
+                writer.println("&lt;body&gt;");
+                writer.println("Firstname: "+t.getFirstName());
+                writer.println("&lt;br/&gt;");
+                writer.println("Lastname: "+t.getLastName());
+                writer.println("&lt;/body&gt;");
+                writer.println("&lt;/html&gt;");
+                writer.flush();
+        }
+  }
+  </code></pre>
+
+  <p>The JAX-RS annotation @Provider tells that the annotated class implements a JAX-RS extension interface. The JAX-RS runtime is extended using application-supplied provider classes. In our case, the class PersonWriter is an entity provider, i.e., a provider that supplies a mapping service between representations and their associated Java types (classes). The PersonWriter maps a Java type to a representation. The JAX-RS annotation @Produces specifies a list of media types that a Java type or a method can produce.</p>
+  <p>To compile the sources, execute:</p>
+  <pre><code>
+  $ mvn compile
+  ...
+  [INFO] [compiler:compile]
+  [INFO] Compiling 3 source files to .../tutorial1/target/classes
+  [INFO] ------------------------------------------------------------------------
+  [INFO] BUILD SUCCESSFUL
+  [INFO] ------------------------------------------------------------------------
+  ...
+  </code></pre>
+
+  <p><strong>Congratulations! You have just written a JAX-RS application.</strong></p>
+  <p>Fig. 1 depicts the class diagram of this simple Web application which comprises 3 classes and 1 interface class. An instance of the class Person (a Person object) represents a person identified by its first name and last name. PersonWriter provides a writeTo method to convert a Person object into a data stream containing the first name and the last name of the person in HTML. It implements the interface MessageBodyWriter defined by the JAX-RS specification.</p>
+  <p><img src="images/tut_1_class_diagram.png" alt="Class Diagram"/><br/><i>Figure 1: Class Diagram of Web Application for Contacts Lookup</i></p>
+  <p>Since we are going to run the application in an OSGi container, let's dive into OSGi world now.</p>
+
+  <h2 id="bundling">6. Configuring Packaging Type and Plugin for Bundling</h2>
+  <p>We need to create a bundle from those classes defined above. To generate a bundle, we need to specify bundle as the packaging type and configure the build to use maven-bundle-plugin in the pom.xml as follows:</p>
+  <pre><code>
+  &lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+    ...<strong>
+    &lt;packaging&gt;bundle&lt;/packaging&gt; </strong>
+    ...
+    &lt;build&gt;
+      &lt;plugins&gt;
+        ...<strong>
+        &lt;plugin&gt;
+          &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+          &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+          &lt;extensions&gt;true&lt;/extensions&gt;
+        &lt;/plugin&gt;</strong>
+        ...
+      &lt;/plugins&gt;
+    &lt;/build&gt;
+  &lt;/project&gt;
+  </code></pre>
+
+  <h2 id="declarative_service">7. Using OSGi Declarative Service</h2>
+  <p>We use OSGi Declarative Service (OSGi DS) to wire together services across bundles. This wiring is specified declaratively in XML format, however, we will use maven-scr-plugin to automate the generation of this specification. This requires a plugin configuration in the pom.xml as follows:</p>
+  <pre><code>
+  &lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+    ...
+    &lt;build&gt;
+      &lt;plugins&gt;
+        ...<strong>
+        &lt;plugin&gt;
+          &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+          &lt;artifactId&gt;maven-scr-plugin&lt;/artifactId&gt;
+          &lt;executions&gt;
+            &lt;execution&gt;
+              &lt;id&gt;generate-scr-scrdescriptor&lt;/id&gt;
+              &lt;goals&gt;
+                &lt;goal&gt;scr&lt;/goal&gt;
+              &lt;/goals&gt;
+            &lt;/execution&gt;
+          &lt;/executions&gt;
+        &lt;/plugin&gt;</strong>
+        ...
+      &lt;/plugins&gt;
+    &lt;/build&gt;
+  &lt;/project&gt;
+  </code></pre>
+
+  <p>We use Triaxrs [<a href="#ref6">6</a>] developed by clerezza.org as the implementation of JAX-RS. It supports both injection of javax.ws.rs.core.Application instances as well as direct injection of Providers and root resources. For a direct injection, a component just needs to expose a service of type java.lang.Object and have the property &quot;javax.ws.rs&quot; set to true. Therefore, the next step is to add OSGi DS annotations to source code to be processed by the maven-scr-plugin.</p>
+  <p>The complete code of App.java looks now as follows:</p>
+  <pre><code>
+  package org.example.clerezza.tutorial1;
+
+  import javax.ws.rs.GET;
+  import javax.ws.rs.Path;
+  import javax.ws.rs.QueryParam;
+
+  /**
+   * Get Persons by id <strong>
+   *
+   * @scr.component
+   * @scr.service interface="java.lang.Object"
+   * @scr.property name="javax.ws.rs" type="Boolean" value="true" </strong>
+   */
+
+  @Path("/contact") // sets the path for this service
+  public class App {
+
+        Person[] persons;
+        public App() {
+                persons = new Person[3];
+                persons[0] = new Person("Jane", "Roe");
+                persons[1] = new Person("Richard", "Roe");
+                persons[2] = new Person("John", "Doe");
+        }
+
+        @GET // this method process GET requests
+        public Person getPerson(@QueryParam("id") int id) {
+                return persons[id];
+        }
+  }
+  </code></pre>
+
+  <p>And the complete code of PersonWriter.java looks as follows:</p>
+  <pre><code>
+  package org.example.clerezza.tutorial1;
+
+  import java.io.IOException;
+  import java.io.OutputStream;
+  import java.io.PrintWriter;
+  import java.lang.annotation.Annotation;
+  import java.lang.reflect.Type;
+  import javax.ws.rs.Produces;
+  import javax.ws.rs.WebApplicationException;
+  import javax.ws.rs.core.MediaType;
+  import javax.ws.rs.core.MultivaluedMap;
+  import javax.ws.rs.ext.MessageBodyWriter;
+  import javax.ws.rs.ext.Provider;
+
+  /**
+   * <strong>
+   * @scr.component
+   * @scr.service interface="java.lang.Object"
+   * @scr.property name="javax.ws.rs" type="Boolean" value="true" </strong>
+   */
+  @Provider
+  @Produces("text/html")
+  public class PersonWriter implements MessageBodyWriter&lt;Person&gt; {
+
+        @Override
+        public boolean isWriteable(Class&lt;?&gt; type, Type genericType,
+                        Annotation[] annotations, MediaType mediaType) {
+                return Person.class.isAssignableFrom(type);
+        }
+
+        @Override
+        public long getSize(Person t, Class&lt;?&gt; type, Type genericType,
+                        Annotation[] annotations, MediaType mediaType) {
+                return -1;
+        }
+
+        @Override
+        public void writeTo(Person t, Class&lt;?&gt; type, Type genericType,
+                        Annotation[] annotations, MediaType mediaType,
+                        MultivaluedMap&lt;String, Object&gt; httpHeaders,
+                        OutputStream entityStream)
+                        throws IOException, WebApplicationException {
+                PrintWriter writer = new PrintWriter(entityStream);
+                writer.println("&lt;html&gt;");
+                writer.println("&lt;body&gt;");
+                writer.println("Firstname: "+t.getFirstName());
+                writer.println("&lt;br/&gt;");
+                writer.println("Lastname: "+t.getLastName());
+                writer.println("&lt;/body&gt;");
+                writer.println("&lt;/html&gt;");
+                writer.flush();
+        }
+  }
+  </code></pre>
+
+  <p>Based on the @scr annotations, the maven-scr-plugin generates the configuration file serviceComponents.xml and places it in the directory target/scr-plugin-generated/OSGI-INF/ (see the next section). After executing "mvn compile" the file serviceComponents.xml is generated. The content of this file looks as follows:</p>
+  <pre><code>
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  &lt;components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0"&gt;
+    &lt;scr:component enabled="true" name="org.example.clerezza.tutorial1.App"&gt;
+        &lt;scr:implementation class="org.example.clerezza.tutorial1.App"/&gt;
+        &lt;scr:service servicefactory="false"&gt;
+            &lt;scr:provide interface="java.lang.Object"/&gt;
+        &lt;/scr:service&gt;
+        &lt;scr:property name="javax.ws.rs" type="Boolean" value="true"/&gt;
+        &lt;scr:property name="service.pid" value="org.example.clerezza.tutorial1.App"/&gt;
+    &lt;/scr:component&gt;
+    &lt;scr:component enabled="true" name="org.example.clerezza.tutorial1.PersonWriter"&gt;
+        &lt;scr:implementation class="org.example.clerezza.tutorial1.PersonWriter"/&gt;
+        &lt;scr:service servicefactory="false"&gt;
+            &lt;scr:provide interface="java.lang.Object"/&gt;
+        &lt;/scr:service&gt;
+        &lt;scr:property name="javax.ws.rs" type="Boolean" value="true"/&gt;
+        &lt;scr:property name="service.pid" value="org.example.clerezza.tutorial1.PersonWriter"/&gt;
+    &lt;/scr:component&gt;
+  &lt;/components&gt;
+  </code></pre>
+
+  <p>The file serviceComponents.xml specifies that there are two OSGi components called org.example.clerezza.tutorial1.App and org.example.clerezza.tutorial1.PersonWriter which are to be enabled. A component needs to be enabled before its configuration can be activated. If you are interested in the detail description of a component life cycle, you can obtain this information from the OSGi Service Platform Service Compendium [<a href="#ref7">7</a>] Section 112.5. The serviceComponents.xml also specifies the class that is to be loaded when a component is activated. Based on this component description, the OSGi runtime can determine and invoke service instances referred to by Triaxrs.</p>
+
+  <h2 id="build">8. Building Tutorial1 Bundle</h2>
+  <p>Now we can build the tutorial1 bundle with the following command:</p>
+  <pre><code>
+  $ mvn clean install
+  ...
+  [INFO] [clean:clean]
+  [INFO] [resources:resources]
+  ...
+  [INFO] [compiler:compile]
+  [INFO] Compiling 3 source files to .../tutorial1/target/classes
+  [INFO] [scr:scr {execution: generate-scr-scrdescriptor}]
+  [INFO] Generating 4 MetaType Descriptors to .../tutorial1/target/scr-plugin-generated/OSGI-INF/metatype/metatype.xml
+  [INFO] Writing abstract service descriptor .../tutorial1/target/scr-plugin-generated/OSGI-INF/scr-plugin/scrinfo.xml with 2 entries.
+  [INFO] Generating 2 Service Component Descriptors to .../tutorial1/target/scr-plugin-generated/OSGI-INF/serviceComponents.xml
+  [INFO] [resources:testResources]
+  [INFO] Using default encoding to copy filtered resources.
+  [INFO] [compiler:testCompile]
+  [INFO] Compiling 1 source file to .../tutorial1/target/test-classes
+  [INFO] [surefire:test]
+  ...
+  [INFO] [bundle:bundle]
+  [INFO] [install:install]
+  [INFO] Installing .../tutorial1/target/tutorial1-1.0-SNAPSHOT.jar to .../.m2/repository/org/example/clerezza/tutorial1/1.0-SNAPSHOT/tutorial1-1.0-SNAPSHOT.jar
+  [INFO] [bundle:install]
+  [INFO] Parsing file:/home/origami/.m2/repository/repository.xml
+  [INFO] Installing org/example/clerezza/tutorial1/1.0-SNAPSHOT/tutorial1-1.0-SNAPSHOT.jar
+  [INFO] Writing OBR metadata
+  [INFO] ------------------------------------------------------------------------
+  [INFO] BUILD SUCCESSFUL
+  [INFO] ------------------------------------------------------------------------
+  ...
+  </code></pre>
+
+  <p>If there is no error occurred during the build, maven will generate the package tutorial1-1.0-SNAPSHOT.jar, place it in the directory target and install it into the local repository. Besides serviceComponents.xml described above, the maven-scr-plugin also generates metatype.xml and scrinfo.xml within the OSGI-INF directory. The metatype.xml specifies the type of data that a service can use as arguments (cf. Section 105 of [<a href="#ref7">7</a>]), whereas the scrinfo.xml contains abstract service description. The maven-bundle-plugin generates the file MANIFEST.MF and places it in the directory classes/META-INF/. This file describes the generated bundle JAR as shown below. It specifies amongst others the packages that are to be exported and imported by the bundle, the location and the name of the component configuration file serviceComponents.xml. The information about the location and name of the component configuration file comes from the maven-scr-plugin.</p>
+
+  <pre><code>
+  Manifest-Version: 1.0
+  Export-Package: org.example.clerezza.tutorial1;uses:="javax.ws.rs,javax
+   .ws.rs.ext,javax.ws.rs.core"
+  Service-Component: OSGI-INF/serviceComponents.xml
+  Built-By: hasan
+  Tool: Bnd-0.0.255
+  Bundle-Name: Tutorial 1
+  Created-By: Apache Maven Bundle Plugin
+  Bundle-Version: 1.0.0.SNAPSHOT
+  Build-Jdk: 1.6.0_07
+  Bnd-LastModified: 1223461032518
+  Bundle-ManifestVersion: 2
+  Import-Package: javax.ws.rs,javax.ws.rs.core,javax.ws.rs.ext,org.examp
+   le.clerezza.tutorial1
+  Bundle-SymbolicName: org.example.clerezza.tutorial1
+  </code></pre>
+
+  <h2 id="deploy">9. Deploying and Starting the Bundle in an OSGi Container</h2>
+  <p>We will deploy tutorial1 bundle generated by maven and all its required bundles in Apache Felix, which is an OSGi container. Table 1 lists all bundles needed in this tutorial in addition to bundles that are already started by Apache Felix.</p>
+  <p><i>Table 1: Bundles Needed in Tutorial 1</i></p>
+  <table border="1" cellpadding="4">
+    <tr>
+      <th>Bundle Name</th>
+      <th>Bundle Symbolic Name</th>
+      <th>Required By</th>
+    </tr>
+    <tr>
+      <td>Servlet Specification 2.5 API</td>
+      <td>org.mortbay.jetty.servlet-api-2.5</td>
+      <td>Jetty Utilities</td>
+    </tr>
+    <tr>
+      <td>Jetty Utilities</td>
+      <td>org.mortbay.jetty.util</td>
+      <td>Jetty Server</td>
+    </tr>
+    <tr>
+      <td>Jetty Server</td>
+      <td>org.mortbay.jetty.server</td>
+      <td>WRHAPI Jetty</td>
+    </tr>
+    <tr>
+      <td>Apache Commons Logging Plug-in</td>
+      <td>org.apache.commons.logging</td>
+      <td>WRHAPI Jetty</td>
+    </tr>
+    <tr>
+      <td>WRHAPI</td>
+      <td>org.wymiwyg.wrhapi</td>
+      <td>WRHAPI Jetty, Clerezza - Triaxrs</td>
+    </tr>
+    <tr>
+      <td>WRHAPI Jetty</td>
+      <td>org.wymiwyg.wrhapi-jetty</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>jsr311-api</td>
+      <td>javax.ws.rs.jsr311-api</td>
+      <td>Clerezza - Triaxrs, Tutorial 1</td>
+    </tr>
+    <tr>
+      <td>Sling - OSGi LogService Implementation</td>
+      <td>org.apache.sling.commons.log</td>
+      <td>Clerezza - Triaxrs</td>
+    </tr>
+    <tr>
+      <td>Clerezza - JAXRS Extensions</td>
+      <td>org.clerezza.jaxrs.extensions</td>
+      <td>Clerezza - Triaxrs</td>
+    </tr>
+    <tr>
+      <td>Clerezza - Triaxrs</td>
+      <td>org.clerezza.triaxrs</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Tutorial 1</td>
+      <td>org.example.clerezza.tutorial1</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Apache Felix Declarative Services</td>
+      <td>org.apache.felix.scr</td>
+      <td>-</td>
+    </tr>
+  </table>
+  <p><br/></p>
+  <p>Apache Felix can be downloaded from <a href="http://felix.apache.org/site/downloads.cgi">http://felix.apache.org/site/downloads.cgi</a>. The current version of Felix at the time of writing this tutorial is version 1.6.0. To install, you just need to untar the downloaded package felix-1.6.0.tar.gz:</p>
+  <pre><code>
+  $ tar xzvf felix-1.6.0.tar.gz
+  </code></pre>
+
+  <p>To run Felix, change the working directory to felix-1.6.0 and then execute the program felix.jar in the directory bin. You will be asked for a profile name which identifies a set of bundles to be installed or that was previously installed and associated with this profile name. Felix creates a directory for each profile and places it in the directory ~/.felix by default. In this tutorial we use tutorial_1 as the profile name. After you have entered the profile name, the Felix shell is started and the prompt “-&gt;” is shown.</p>
+  <pre><code>
+  $ cd felix-1.6.0
+  $ java -jar bin/felix.jar
+
+  Welcome to Felix.
+  =================
+
+  -&gt;
+  </code></pre>
+
+  <p>You can enter commands after the prompt of the Felix shell. Read the Apache Felix Usage Documentation [<a href="#ref8">8</a>] for a list of commands and their descriptions. Those bundles listed above can be installed and started as shown below. Note that not all bundles need to be started, e.g., API bundles such as javax.ws.rs need only be installed.</p>
+  <pre><code>
+  -&gt; start http://mirrors.ibiblio.org/pub/mirrors/maven2/org/apache/felix/org.apache.felix.scr/1.0.6/org.apache.felix.scr-1.0.6.jar
+  -&gt; install http://repo1.maven.org/maven2/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11.jar
+  -&gt; install http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11.jar
+  -&gt; install http://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11.jar
+  -&gt; start http://mirror.switch.ch/mirror/apache/dist/sling/org.apache.sling.commons.log-2.0.6.jar
+  -&gt; start http://wymiwyg.berlios.de/maven2/org/wymiwyg/wrhapi/0.6/wrhapi-0.6.jar
+  -&gt; start http://wymiwyg.berlios.de/maven2/org/wymiwyg/wrhapi-jetty/0.6/wrhapi-jetty-0.6.jar
+  -&gt; install http://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.0/jsr311-api-1.0.jar
+  -&gt; start http://repo.trialox.org/release/org/clerezza/org.clerezza.jaxrs.extensions/0.1/org.clerezza.jaxrs.extensions-0.1.jar
+  -&gt; start http://repo.trialox.org/release/org/clerezza/org.clerezza.triaxrs/0.6/org.clerezza.triaxrs-0.6.jar
+  -&gt; start file:///home/.../tutorial1/target/tutorial1-1.0-SNAPSHOT.jar
+  </code></pre>
+
+  <h2 id="service_access">10. Accessing the Web Service</h2>
+  <p>Now, open a Web Browser window and access the service through the URL: http://localhost:8080/contact?id=2</p>
+  <p>As a response from the server, your Web Browser should show the following text in the window:</p>
+  <pre><code>
+  Firstname: John
+  Lastname: Doe
+  </code></pre>
+  <p>Surely you have noticed the use of the port number 8080 in the URL. This is due to the fact that the Activator bundle configures the Jetty Web server to listen on this port number.</p>
+
+  <h2 id="references">11. References</h2>
+  <p id="ref1">[1] R.T. Fielding: Architectural Styles and the Design of Network-based Software Architectures; CHAPTER 5 Representational State Transfer (REST), 2000, <a href="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm</a></p>
+  <p id="ref2">[2] OSGi, <a href="http://www.osgi.org/Main/HomePage">http://www.osgi.org/Main/HomePage</a></p>
+  <p id="ref3">[3] Maven, <a href="http://maven.apache.org/">http://maven.apache.org/</a></p>
+  <p id="ref4">[4] JAX-RS: The Java API for RESTful Web Services, <a href="http://jcp.org/en/jsr/detail?id=311">http://jcp.org/en/jsr/detail?id=311</a></p>
+  <p id="ref5">[5] JAX-RS Annotations, <a href="https://jsr311.dev.java.net/nonav/javadoc/javax/ws/rs/package-summary.html">https://jsr311.dev.java.net/nonav/javadoc/javax/ws/rs/package-summary.html</a></p>
+  <p id="ref6">[6] Triaxrs, <a href="http://trialox.org/projects/org.clerezza.triaxrs.parent/org.clerezza.triaxrs/index.html">http://trialox.org/projects/org.clerezza.triaxrs.parent/org.clerezza.triaxrs/index.html</a></p>
+  <p id="ref7">[7] The OSGi Alliance: OSGi Service Platform Service Compendium; Release 4, Version 4.1, April 2007</p>
+  <p id="ref8">[8] Apache Felix: Apache Felix Usage Documentation; <a href="http://felix.apache.org/site/apache-felix-usage-documentation.html">http://felix.apache.org/site/apache-felix-usage-documentation.html</a></p>
+
+  <p><i>That's all folks for this time! <br/><!--You can send your feedback to: --></i></p>
+</body>
+</html>

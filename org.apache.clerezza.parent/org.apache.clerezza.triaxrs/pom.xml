@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.apache.clerezza</groupId>
+		<artifactId>org.apache.clerezza.parent</artifactId>
+		<version>0.2-incubating-SNAPSHOT</version>
+	</parent>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.triaxrs.parent</artifactId>
+	<packaging>pom</packaging>
+	<version>0.3-incubating-SNAPSHOT</version>
+	<name>Clerezza - Triaxrs Parent</name>
+	<description>Parent projects for Triaxrs, a JAX-RS implementation for OSGi.
+	See the org.apache.clerezza.triaxrs module for documentation</description>
+	<modules>
+		<module>org.apache.clerezza.triaxrs</module>
+		<module>org.apache.clerezza.triaxrs.tests</module>
+	</modules>
+</project>
