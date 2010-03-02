@@ -37,18 +37,18 @@ class RootResourceDescriptor implements Comparable<RootResourceDescriptor> {
 	private Object instance;
 	private Logger logger = LoggerFactory.getLogger(RootResourceDescriptor.class);
 
-	public RootResourceDescriptor(Class<?> clazz, String encodedPathTemplate) {
+	public RootResourceDescriptor(Class<?> clazz, String pathTemplate) {
 		super();
-		uriTemplate = new URITemplate(encodedPathTemplate);
+		uriTemplate = new URITemplate(pathTemplate);
 		this.clazz = clazz;
 	//store methods of the class
 	//httpMethodsOfClass = ReflectionUtil.getMethodsOfClass(clazz);
 	}
 
 	public RootResourceDescriptor(Class<?> clazz, Object instance,
-			String encodedPathTemplate, Providers providers) {
+			String pathTemplate, Providers providers) {
 		super();
-		uriTemplate = new URITemplate(encodedPathTemplate);
+		uriTemplate = new URITemplate(pathTemplate);
 		this.clazz = clazz;
 		this.instance = instance;
 		if (instance != null) {

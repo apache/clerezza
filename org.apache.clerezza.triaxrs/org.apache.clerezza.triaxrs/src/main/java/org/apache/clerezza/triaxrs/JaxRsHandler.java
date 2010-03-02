@@ -24,7 +24,6 @@ import org.apache.clerezza.jaxrs.extensions.RootResourceExecutor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -60,7 +59,6 @@ import org.apache.clerezza.triaxrs.providers.DefaultProviders;
 import org.apache.clerezza.triaxrs.providers.ProvidersImpl;
 import org.apache.clerezza.triaxrs.util.MethodUtil;
 import org.apache.clerezza.triaxrs.util.PathMatching;
-import org.apache.clerezza.triaxrs.util.TemplateEncoder;
 import org.wymiwyg.wrhapi.Handler;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
@@ -383,23 +381,15 @@ public class JaxRsHandler implements Handler {
 			String pathPrefix) {
 		Path path = clazz.getAnnotation(Path.class);
 		if (path != null) {
-			// URI encode the template, ignoring URI template variable
-			// specifications.
-			String encodedPathTemplate;
-			try {
-				encodedPathTemplate = TemplateEncoder.encode(pathPrefix
-						+ path.value(), "utf-8");
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
-			}
 			RootResourceDescriptor rootResourceDescriptor;
 			collectHttpMethods(clazz);
+			String completePath = pathPrefix + path.value();
 			if (instance == null) {
 				rootResourceDescriptor = new RootResourceDescriptor(clazz,
-						encodedPathTemplate);
+						completePath);
 			} else {
 				rootResourceDescriptor = new RootResourceDescriptor(clazz,
-						instance, encodedPathTemplate, providers);
+						instance, completePath, providers);
 			}
 			rootResources.add(rootResourceDescriptor);
 			applicationProvidedDescriptors.add(rootResourceDescriptor);

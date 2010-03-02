@@ -26,7 +26,7 @@ import javax.ws.rs.Produces;
  *
  * @author reto
  */
-@Path("foo")
+@Path("/foo")
 public class SimpleRootResource {
 
 	static final public String greeting = "hello";

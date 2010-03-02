@@ -23,6 +23,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.clerezza.triaxrs.util.PathMatching;
+import org.apache.clerezza.triaxrs.util.TemplateEncoder;
+import org.apache.clerezza.utils.UriException;
+import org.apache.clerezza.utils.UriUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wymiwyg.wrhapi.HandlerException;
@@ -123,8 +126,14 @@ public class RootResources {
 
 	ResourceAndPathMatching getResourceAndPathMatching(WebRequest request)
 			throws HandlerException, NoMatchingRootResourceException {
-		String uriPath = request.getWrhapiRequest().getRequestURI().getPath();
+		String uriPath;
+		try {
+			uriPath = UriUtil.encodePartlyEncodedPath(request.getWrhapiRequest().getRequestURI().getPath(), "UTF-8");
+		} catch (UriException ex) {
+			throw new RuntimeException(ex);
+		}
 		requestUri.set(uriPath);
+
 		PathMatching pathMatching = null;
 		RootResourceDescriptor descriptor = null;
 		Iterator<RootResourceDescriptor> descriptorIter = rootResourceDescriptors

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.apache.clerezza.triaxrs.JaxRsHandler;
 import org.apache.clerezza.triaxrs.delegate.RuntimeDelegateImpl;
 import org.apache.clerezza.triaxrs.mock.RequestImpl;
 import org.apache.clerezza.triaxrs.mock.RequestURIImpl;
