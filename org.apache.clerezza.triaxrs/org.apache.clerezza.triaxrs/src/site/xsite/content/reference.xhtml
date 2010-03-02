@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+		<title>Triaxrs reference documentation</title>
+	</head>
+	<body>
+		<h1>Triaxrs reference documentation</h1>
+		<p> This document shall give a complete and concise documentation of
+			Triaxrs. To get started with Triaxrs we suggest you have a look at
+			the tutorials.</p>
+		<h2>Goals and functionality</h2>
+		<p> The goal of Triaxrs is to implement JAX-RS (aka JSR 311) in a way
+			that runs smoothly in an OSGi container and to leverage the
+			possibilities of OSGi declarative service to locate JAX-RS
+			components.</p>
+		<h2>System requirements</h2>
+		<p>
+			Triaxrs requires the following to run [<a href="#note-1">1</a>]:
+			<ul>
+				<li>JavaTM SE Runtime Environment 6 [<a href="#note-2">2</a>]</li>
+				<li>An OSGi container such as Apache Felix [<a href="#note-3">3</a>] or Eclipse Equinox [<a href="#note-4">4</a>]</li>
+				<li>OSGi-Declarative Service support (see the
+					documentation of your OSGi container)</li>
+				<li>The JAX-RS API as OSGi bundle [<a href="#note-5">5</a>]</li>
+				<li>WYMIWYG WRHAPI [<a href="#note-6">6</a>]</li>
+				<li>A WRHAPI implementation such as WRHAPI-Jetty</li>
+			</ul>
+		</p>
+		
+		<h2>Location of resources and providers</h2>
+		<p>
+			Triaxrs locates the providers and root resources by locating 0 or 1
+			service implementing <code>javax.ws.rs.core.Application</code>
+			and an arbitrary number of individual root resources and providers.
+			Individual root resources and providers are POJOs meeting the
+			requirements of the JAX-RS specification and being exposed as service
+			implementing <code>java.lang.Object</code> annotated with a property of type
+			<code>Boolean</code> named <code>javax.ws.rs</code> set to 
+			<code>true</code>.
+		</p>
+		<h2>Configuration</h2>
+        <p> It is possible to define a default path prefix that is prepended to all resources
+            of a bundle. The default prefix can be defined in the bundle manifest using the "Triaxrs-PathPrefix"-header. 
+            The user has also the opportunity  to change or define a custom path prefix of such resource bundle through the
+            Triaxrs Prefix Manager service. The Triaxrs Prefix Manager has a property "mappings" which contains the 
+            the mappings between a symbolic name of a bundle and the custom prefix. It has also the properties 
+            "Triaxrs-UseDefaultPrefix" and "Triaxrs-UseCustomPrefix" which defines, if default/custom prefix should be used.</p>
+		<p>	The WRHAPI service org.wymiwyg.wrhapi.activator.Activator has a property "port"
+			indicating the port under which the resources are reachable, the default is 8080.</p>
+			
+		<h2>Compiling from sources</h2>
+		<p>The Triaxrs sources [<a href="#note-7">7</a>] are compiled using Maven [<a href="#note-8">8</a>]. You should add the 
+		following repositories to your maven <code>settings.xml</code>:</p> 
+		<ul>
+			<li>For releases: http://repo.trialox.org/distro</li>
+			<li>For snapshots: http://repo.trialox.org/snapshot</li>
+		</ul>
+		<p>Maven will dowload the pom of the parent project from the specified repository 
+		and use the <code>repositories</code> section therein to locate the repositories for 
+		other dependencies.</p>
+		<h2>Notes</h2>
+		<p id="note-1">[1] it is possible to run Triaxrs with limited functionality
+			without the OSGi environment, but this is not currently documented
+		</p>
+		<p id="note-2">[2] <a href="http://java.sun.com/javase/downloads/index.jsp">http://java.sun.com/javase/downloads/index.jsp</a></p>
+		<p id="note-3">[3] <a href="http://felix.apache.org/">http://felix.apache.org/</a></p>
+		<p id="note-4">[4] <a href="http://www.eclipse.org/equinox/">http://www.eclipse.org/equinox/</a></p>
+		<p id="note-5">[5] Clerezza is providing the API as bundle at 
+		<a href="http://repo.trialox.org/distro/org/apache/clerezza/ext/javax.ws.rs/">http://repo.trialox.org/distro/org/apache/clerezza/ext/javax.ws.rs/</a> (as soon as a release is available), note that the
+		versioning of this bundle is independent of the JAX-RS versioning, for instance
+		version 0.3 bundles version 1.0 of the API</p>
+		<p id="note-6">[6] see <a href="http://wrhapi.wymiwyg.org">http://wrhapi.wymiwyg.org</a>, downloadable at 
+		<a href="http://wymiwyg.berlios.de/maven2/org/wymiwyg/">http://wymiwyg.berlios.de/maven2/org/wymiwyg/</a></p>
+                <p id="note-7">[7] see <a href="http://trialox.org/projects/org.apache.clerezza.triaxrs.parent/org.apache.clerezza.triaxrs/source-repository.html">
+                http://trialox.org/projects/org.apache.clerezza.triaxrs.parent/org.apache.clerezza.triaxrs/source-repository.html</a>
+                for instructions on how to access the sources</p>
+		<p id="note-8">[8] <a href="http://maven.apache.org/">http://maven.apache.org/</a></p>
+
+	</body>
+</html>

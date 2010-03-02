@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+	<head>
+		<title>How to Configure the Path Prefix of a Resource Bundle</title>
+	</head>
+	<body>
+		<h1>How to Configure the Path Prefix of a Resource Bundle</h1>
+		<p>Author: Manuel - clerezza.org</p>
+		<p>Date: November 20, 2008</p>
+		<h2>Table of Contents</h2>
+		<p>
+			<a href="#intro">1. Introduction</a>
+		</p>
+		<p>
+			<a href="#defaultprefix">2. Setup the Default Prefix in the Resource Bundle</a>
+		</p>
+		<p>
+			<a href="#customprefix">3. Define a Custom Prefix for a Resource Bundle</a>
+		</p>
+		<p>
+			<a href="#references">4. References</a>
+		</p>
+		<h2 id="intro">1. Introduction</h2>
+
+        <p> A resource is annotated with the <code>@Path</code> annotation, which
+            specifies where the resource is found. The path value is after compilation hard to change,
+            but it is maybe for desirable the user of that resource to modifiy that path.
+            Therefore Triaxrs offers the possibility to prepend a path prefix
+            to all resources of a resource bundle. A resource bundle is a bundle that provides
+            a <code>javax.ws.rs.core.Application</code> or individual resources, both are marked
+            with the service property set <code>javax.ws.rs=true</code>. </p>
+        <p> Triaxrs supports two ways to modify the path prefix of a resource bundle: </p>
+        <ul>
+            <li>The developer of a resource bundle has the option to define a default path prefix
+             in the bundle manifest.</li>
+            <li>The user of the bundle can change/define the path prefix over the Triaxrs Prefix
+            Manager service.</li>
+        </ul>
+
+       <h2 id="defaultprefix">2. Setup the Default Prefix in the Resource Bundle</h2>
+
+		<p> The default path prefix is defined by the developer of that bundle. The prefix
+            can be defined directly in the bundle manifest using the "Triaxrs-PathPrefix"-header
+            or through the pom.xml in the configuration of the maven-bundle-plugin.
+            Here is an example how the header looks in the bundle manifest: </p>
+		<pre><code>
+			Triaxrs-PathPrefix: /myprefix
+		</code></pre>
+		<p>
+
+			The following is an example how the default path prefix configuration is done
+			in the pom.xml:
+		</p>
+		<pre><code>
+			...
+			&lt;plugin&gt;
+				&lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+				&lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+				&lt;extensions&gt;true&lt;/extensions&gt;
+				&lt;configuration&gt;<strong>
+					&lt;instructions&gt;
+						&lt;Triaxrs-PathPrefix&gt;/myprefix&lt;/Triaxrs-PathPrefix&gt;
+					&lt;/instructions&gt;</strong>
+				&lt;/configuration&gt;
+			&lt;/plugin&gt;
+			...
+		</code></pre>
+
+		<p>	The following resource in the bundle with the above prefix would be reachable
+			under the path "/myprefix/contact/". </p>
+		<pre><code>
+		  package org.example.clerezza.tutorial1;
+
+		  import javax.ws.rs.GET;
+		  import javax.ws.rs.Path;
+		  import javax.ws.rs.QueryParam;
+
+		  @Path("/contact") // sets the path for this service
+		  public class App {
+
+			Person[] persons;
+			public App() {
+				persons = new Person[3];
+				persons[0] = new Person("Jane", "Roe");
+				persons[1] = new Person("Richard", "Roe");
+				persons[2] = new Person("John", "Doe");
+			}
+
+			@GET // this method process GET requests
+			public Person getPerson(@QueryParam("id") int id) {
+				return persons[id];
+			}
+		  }
+		</code></pre>
+        <h2 id="customprefix">3. Define a Custom Prefix for a Resource Bundle</h2>
+		<p> The default path prefix is "hard-coded"	in the bundle and is hence for the
+			bundle user hard to change.	Therefore Triaxrs provides the Triaxrs Prefix
+            Manager service which gives the user the opportunity to customize path prefixes.
+            When a resource bundle is bound to the <code>org.clerezza.triaxrs.JaxRsHandler</code>
+            service, it will look up if a prefix is defined. For this the Triaxrs Prefix Manager
+            maintains a mapping between a bundles symoblic name and its prefix. The user can modify
+            this mapping over the configuration admin service[<a href="#note-1">1</a>].
+            This allows that the Triaxrs Prefix Manager can be configured over a configuration user interface
+            like for example Felix's OSGi Management Console.</p>
+		<p> It is also possible to activate or deactivate the usage of the default and custom
+			prefixes. This can be done by setting the service properties "Triaxrs-UseDefaultPrefix" and
+            "Triaxrs-UseCustomPrefix" of the Triaxrs Prefix Manager. They can be set to
+            <code>true</code> or <code>false</code>. By default prefixes are used. </p>
+
+  <h2 id="references">4. References</h2>
+  <p id="ref1">[1] OSGi Service Platform, Service Compendium, Release 4, Version 4.1, OSGi Alliance., 2007, chap. 104. , ISBN 978-90-79350-02-5</p>
+
+  <p><i>That's all folks for this time! <br/><!--You can send your feedback to: --></i></p>
+</body>
+</html>
+
