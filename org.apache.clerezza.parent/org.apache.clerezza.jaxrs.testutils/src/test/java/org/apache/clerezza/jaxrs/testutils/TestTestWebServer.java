@@ -52,7 +52,7 @@ public class TestTestWebServer {
 
 	@Test
 	public void testWebServerRuns() throws IOException {
-		int port = new TestWebServer(new Application() {
+		TestWebServer testWebServer = new TestWebServer(new Application() {
 
 			@Override
 			public Set<Class<?>> getClasses() {
@@ -61,7 +61,8 @@ public class TestTestWebServer {
 				return result;
 			}
 
-		}).getPort();
+		});
+		int port = testWebServer.getPort();
 		URL serverURL = new URL("http://localhost:"
 				+ port + "/");
 		URLConnection connection = serverURL.openConnection();
@@ -71,6 +72,7 @@ public class TestTestWebServer {
 		InputStream responseStream = connection.getInputStream();
 		Assert.assertEquals(1, responseStream.read());
 		Assert.assertEquals(2, responseStream.read());
+		testWebServer.stop();
 		
 	}
 }
