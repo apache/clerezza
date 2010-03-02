@@ -2,8 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>org.apache.clerezza.webapp.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
+		<artifactId>org.apache.clerezza.parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
     <groupId>org.apache.clerezza</groupId>
