@@ -18,10 +18,8 @@
  */
 package org.apache.clerezza.platform.content.hierarchy;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -51,6 +49,8 @@ import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.utils.UriException;
+import org.apache.clerezza.utils.UriUtil;
 
 /**
  * The hierarchy service is an OSGi service that provides methods for managing
@@ -91,13 +91,23 @@ public class HierarchyService {
 	 * @param uri
 	 */
 	public HierarchyNode getHierarchyNode(UriRef uri)
+			throws NodeDoesNotExistException{		
+		try {
+			uri = new UriRef(UriUtil.encodePartlyEncodedPath(uri.getUnicodeString(), "UTF-8"));
+		} catch (UriException ex) {
+			throw new RuntimeException(ex);
+		}
+		return getHierarchyNodeWithEncodedUri(uri);
+	}
+
+	HierarchyNode getHierarchyNodeWithEncodedUri(UriRef uri)
 			throws NodeDoesNotExistException{
 		HierarchyNode hierarchyNode;
 		try {
-			hierarchyNode = 
+			hierarchyNode =
 					new CollectionNode(uri, cgProvider.getContentGraph(), this);
 		} catch(IllegalArgumentException e) {
-			hierarchyNode = 
+			hierarchyNode =
 					new HierarchyNode(uri, cgProvider.getContentGraph(), this);
 		}
 		checkExistence(hierarchyNode);
@@ -129,7 +139,16 @@ public class HierarchyService {
 	 */
 	public CollectionNode getCollectionNode(UriRef uri)
 			throws NodeDoesNotExistException{
+		try {
+			uri = new UriRef(UriUtil.encodePartlyEncodedPath(uri.getUnicodeString(), "UTF-8"));
+		} catch (UriException ex) {
+			throw new RuntimeException(ex);
+		}
+		return getCollectionNodeWithEncodedUri(uri);
+	}
 
+	CollectionNode getCollectionNodeWithEncodedUri(UriRef uri)
+			throws NodeDoesNotExistException{
 		CollectionNode collectionNode =
 				new CollectionNode(uri, cgProvider.getContentGraph(), this);
 		checkExistence(collectionNode);
@@ -153,6 +172,11 @@ public class HierarchyService {
 	 */
 	public HierarchyNode createNonCollectionNode(UriRef uri, int posInParent)
 			throws NodeAlreadyExistsException {
+		try {
+			uri = new UriRef(UriUtil.encodePath(uri.getUnicodeString(), "UTF-8"));
+		} catch (UriException ex) {
+			throw new RuntimeException(ex);
+		}
 		HierarchyUtils.ensureNonCollectionUri(uri);
 		handleRootOfUri(uri);
 		HierarchyNode hierarchyNode = new HierarchyNode(uri,
@@ -300,6 +324,11 @@ public class HierarchyService {
 	 */
 	public CollectionNode createCollectionNode(UriRef uri, int posInParent)
 			throws NodeAlreadyExistsException {
+		try {
+			uri = new UriRef(UriUtil.encodePartlyEncodedPath(uri.getUnicodeString(), "UTF-8"));
+		} catch (UriException ex) {
+			throw new RuntimeException(ex);
+		}
 		HierarchyUtils.ensureCollectionUri(uri);
 		handleRootOfUri(uri);
 		addCollectionTypeTriple(uri);
@@ -328,7 +357,7 @@ public class HierarchyService {
 	 * @throws IllegalArgumentException Thrown if uri ends not with a '/'
 	 * @return the created collection node.
 	 */
-	public HierarchyNode createCollectionNode(UriRef parentCollection, String name, int posInParent)
+	public CollectionNode createCollectionNode(UriRef parentCollection, String name, int posInParent)
 			throws NodeAlreadyExistsException {
 		UriRef uri = createCollectionUri(parentCollection, name);
 		return createCollectionNode(uri, posInParent);
@@ -350,7 +379,7 @@ public class HierarchyService {
 	 * @throws IllegalArgumentException Thrown if uri ends not with a '/'
 	 * @return the created collection node.
 	 */
-	public HierarchyNode createCollectionNode(UriRef parentCollection, String name)
+	public CollectionNode createCollectionNode(UriRef parentCollection, String name)
 			throws NodeAlreadyExistsException {
 		UriRef uri = createCollectionUri(parentCollection, name);
 		return createCollectionNode(uri);
@@ -455,16 +484,11 @@ public class HierarchyService {
 	 * @return
 	 */
 	UriRef createCollectionUri(UriRef parrentCollectionUri, String name) {
-		return new UriRef(
-				createNonCollectionUri(parrentCollectionUri, name).getUnicodeString() + "/");
+		return new UriRef(parrentCollectionUri.getUnicodeString() + name + "/");
 	}
 
 	UriRef createNonCollectionUri(UriRef parentCollectionUri, String name) {
-		try {
-			return new UriRef(parentCollectionUri.getUnicodeString() +
-					URLEncoder.encode(name, "UTF-8"));
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
-		}
+		return new UriRef(parentCollectionUri.getUnicodeString() + name);
 	}
+
 }
