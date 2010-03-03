@@ -84,15 +84,14 @@ public class HierarchyManager {
 			@FormParam(value = "parentCollectionUri") UriRef parentCollectionUri,
 			@FormParam(value = "pos") Integer pos,
 			@FormParam(value = "name") String name) {
-		UriRef resourceUri = hierarchyService.createNonCollectionUri(parentCollectionUri, name);
-		try {
-			HierarchyNode node;
+		HierarchyNode node = null;
+		try {			
 			if (pos == null) {
 				node = hierarchyService.
-						createNonCollectionNode(resourceUri);
+						createNonCollectionNode(parentCollectionUri, name);
 			} else {
 				node = hierarchyService.
-						createNonCollectionNode(resourceUri, pos);
+						createNonCollectionNode(parentCollectionUri, name, pos);
 			}
 		} catch (NodeAlreadyExistsException ex) {
 			return Response.status(Response.Status.CONFLICT).entity(ex.toString()).
@@ -101,7 +100,7 @@ public class HierarchyManager {
 			return Response.status(Response.Status.BAD_REQUEST).entity(e.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
-		return Response.created(URI.create(resourceUri.getUnicodeString())).build();
+		return Response.created(URI.create(node.getNode().getUnicodeString())).build();
 	}
 
 	/**
@@ -123,13 +122,13 @@ public class HierarchyManager {
 			@FormParam(value = "parentCollectionUri") UriRef parentCollectionUri,
 			@FormParam(value = "pos") Integer pos,
 			@FormParam(value = "name") String name) {
-		UriRef collectionUri = hierarchyService.createCollectionUri(parentCollectionUri, name);
+		CollectionNode node = null;
 		try {
-			CollectionNode node;
+			
 			if (pos == null) {
-				node = hierarchyService.createCollectionNode(collectionUri);
+				node = hierarchyService.createCollectionNode(parentCollectionUri, name);
 			} else {
-				node = hierarchyService.createCollectionNode(collectionUri, pos);
+				node = hierarchyService.createCollectionNode(parentCollectionUri, name, pos);
 			}
 		} catch (NodeAlreadyExistsException e) {
 			return Response.status(Response.Status.CONFLICT).entity(e.toString()).
@@ -138,7 +137,7 @@ public class HierarchyManager {
 			return Response.status(Response.Status.BAD_REQUEST).entity(e.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
-		return Response.created(URI.create(collectionUri.getUnicodeString())).build();
+		return Response.created(URI.create(node.getNode().getUnicodeString())).build();
 	}
 
 	/**

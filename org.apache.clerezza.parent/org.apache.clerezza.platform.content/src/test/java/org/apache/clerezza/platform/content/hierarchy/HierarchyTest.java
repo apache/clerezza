@@ -37,6 +37,7 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.clerezza.utils.UriUtil;
 
 
 /**
@@ -51,7 +52,7 @@ public class HierarchyTest{
 	private UriRef fooResource3 = new UriRef("http://localhost:8282/foo/resource3");
 	private UriRef fooTest = new UriRef("http://localhost:8282/foo/test/");
 	private UriRef fooTestResource4 = new UriRef("http://localhost:8282/foo/test/resource4");
-	private UriRef fooFolder1 = new UriRef("http://localhost:8282/foo/folder1/");	
+	private UriRef fooFolder1 = new UriRef("http://localhost:8282/foo/folder1/");
 	private UriRef bar = new UriRef("http://localhost:8282/bar/");
 	private UriRef barResource = new UriRef("http://localhost:8282/bar/resource");
 	private UriRef barResource2 = new UriRef("http://localhost:8282/bar/resource2");
@@ -62,6 +63,9 @@ public class HierarchyTest{
 	private UriRef newRootTest = new UriRef("http://newRoot/test/");
 	private UriRef newRoot2Resource = new UriRef("http://newRoot2/resource");
 	private UriRef newRoot2 = new UriRef("http://newRoot2/");
+	private UriRef encodedResource = new UriRef("http://localhost:8282/t +");
+	private UriRef encodedCollection = new UriRef("http://localhost:8282/t +/");
+
         
 
 	@Test
@@ -117,15 +121,33 @@ public class HierarchyTest{
 		Assert.assertTrue(exceptionThrown);
 	}
 
-        @Test
+    @Test
 	public void nonCollectionNodeCreation() throws Exception{
 		HierarchyService hierarchyService = getHierarchyService();
 		HierarchyNode fooTestResource4Node = hierarchyService.
-                        createNonCollectionNode(fooTestResource4, 0);
-                CollectionNode fooTestNode = fooTestResource4Node.getParent();
-                Assert.assertEquals(fooTest, fooTestNode.getNode());
-                CollectionNode fooNode = fooTestNode.getParent();
-                Assert.assertEquals(foo, fooNode.getNode());
+		createNonCollectionNode(fooTestResource4, 0);
+		CollectionNode fooTestNode = fooTestResource4Node.getParent();
+		Assert.assertEquals(fooTest, fooTestNode.getNode());
+		CollectionNode fooNode = fooTestNode.getParent();
+		Assert.assertEquals(foo, fooNode.getNode());
+	}
+
+	@Test
+	public void nonCollectionNodeCreationWithEncodedCharacters() throws Exception{
+		HierarchyService hierarchyService = getHierarchyService();
+		hierarchyService.createNonCollectionNode(encodedResource, 0);
+        HierarchyNode encodedNode = hierarchyService.getHierarchyNode(encodedResource);
+		Assert.assertEquals(UriUtil.encodePath(encodedResource.getUnicodeString(), "UTF-8"),
+				encodedNode.getNode().getUnicodeString());
+	}
+
+	@Test
+	public void collectionNodeCreationWithEncodedCharacters() throws Exception{
+		HierarchyService hierarchyService = getHierarchyService();
+		hierarchyService.createCollectionNode(encodedCollection, 0);
+        CollectionNode encodedNode = hierarchyService.getCollectionNode(encodedCollection);
+		Assert.assertEquals(UriUtil.encodePath(encodedCollection.getUnicodeString(), "UTF-8"),
+				encodedNode.getNode().getUnicodeString());
 	}
 
 	@Test

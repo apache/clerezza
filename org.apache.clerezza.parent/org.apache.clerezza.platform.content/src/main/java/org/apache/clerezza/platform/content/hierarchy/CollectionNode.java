@@ -84,7 +84,7 @@ public class CollectionNode extends HierarchyNode {
 		while (membersIter.hasNext()) {
 			UriRef uri = (UriRef) membersIter.next();
 			try {
-				nodes.add(hierarchyService.getHierarchyNode(uri));
+				nodes.add(hierarchyService.getHierarchyNodeWithEncodedUri(uri));
 			} catch (NodeDoesNotExistException ex) {
 				throw new RuntimeException(ex);
 			}
@@ -179,8 +179,9 @@ public class CollectionNode extends HierarchyNode {
 	}
 
 	private boolean isSubcollectionOf(CollectionNode collection) {
-		return collection.getNode().getUnicodeString().
-				startsWith(getNode().getUnicodeString());
+		return getNode().getUnicodeString().startsWith(
+				collection.getNode().getUnicodeString());
+				
 	}
 
 }

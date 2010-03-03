@@ -72,7 +72,7 @@ public class HierarchyNode extends GraphNode {
 		try {
 			UriRef parentCollectionUri = HierarchyUtils
 					.extractParentCollectionUri(getNode());
-			return hierarchyService.getCollectionNode(parentCollectionUri);
+			return hierarchyService.getCollectionNodeWithEncodedUri(parentCollectionUri);
 		} catch (NodeDoesNotExistException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -115,7 +115,7 @@ public class HierarchyNode extends GraphNode {
 		if (newParentCollection.getMembersRdf().contains(newUri)) {
 			HierarchyNode existingNode = null;
 			try {
-				existingNode = hierarchyService.getHierarchyNode(newUri);
+				existingNode = hierarchyService.getHierarchyNodeWithEncodedUri(newUri);
 			} catch (NodeDoesNotExistException ex) {
 				throw new RuntimeException(ex);
 			}
