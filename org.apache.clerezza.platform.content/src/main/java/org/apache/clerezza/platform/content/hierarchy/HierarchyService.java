@@ -25,7 +25,9 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import org.apache.clerezza.rdf.core.event.GraphEvent;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -40,6 +42,8 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.event.FilterTriple;
+import org.apache.clerezza.rdf.core.event.GraphListener;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.ontologies.FOAF;
@@ -384,6 +388,19 @@ public class HierarchyService {
 			UriRef baseUri = baseUris.next();
 			addRoot(baseUri);
 		}
+		//listening to newly added base-uris
+		final GraphListener graphListener  = new GraphListener() {
+			@Override
+			public void graphChanged(List<GraphEvent> events) {
+				for (GraphEvent event : events) {
+					addRoot((UriRef)event.getTriple().getObject());
+				}
+			}
+		};
+		systemGraph.addGraphListener(graphListener, new FilterTriple(null,
+				PLATFORM.baseUri, null));
+		systemGraph.addGraphListener(graphListener, new FilterTriple(null,
+				PLATFORM.defaultBaseUri, null));
 	}
 
 	private void addRoot(UriRef baseUri) {
