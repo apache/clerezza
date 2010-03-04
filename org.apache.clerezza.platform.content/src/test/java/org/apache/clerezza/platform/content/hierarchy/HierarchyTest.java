@@ -245,6 +245,38 @@ public class HierarchyTest{
 	}
 
 	@Test
+	public void renamingTest() throws Exception {
+		HierarchyService hierarchyService = getHierarchyService();
+		CollectionNode barNode = hierarchyService.createCollectionNode(bar);
+		barNode.move(barNode.getParent(), "foo", 0);
+		try {
+			barNode = hierarchyService.getCollectionNode(bar);
+			Assert.assertTrue(false);
+		} catch (NodeDoesNotExistException e) {}
+		try {
+			hierarchyService.getCollectionNode(foo);
+		} catch (NodeDoesNotExistException e) {
+			Assert.assertTrue(false);
+		}
+		HierarchyNode resource = hierarchyService.createNonCollectionNode(fooResource);
+		resource.move(resource.getParent(), "resource2", 0);
+		try {
+			resource = hierarchyService.getHierarchyNode(fooResource);
+			Assert.assertTrue(false);
+		} catch (NodeDoesNotExistException e) {}
+		try {
+			hierarchyService.getHierarchyNode(fooResource2);
+		} catch (NodeDoesNotExistException e) {
+			Assert.assertTrue(false);
+		}
+		HierarchyNode resource3 = hierarchyService.createNonCollectionNode(fooResource3);
+		try {
+			resource.move(resource3.getParent(), "resource2", 0);
+			Assert.assertTrue(false);
+		} catch (NodeAlreadyExistsException ex) {}
+	}
+
+	@Test
 	public void rootAutoCreationTest() throws Exception{
 		HierarchyService hierarchyService = getHierarchyService();
 		hierarchyService.createCollectionNode(newRootTest);

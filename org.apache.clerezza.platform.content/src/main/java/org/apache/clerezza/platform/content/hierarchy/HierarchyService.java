@@ -120,8 +120,12 @@ public class HierarchyService {
                         UriRef nodeUri = node.getNode();
                         try {
                             parent = node.getParent();
-                        } catch(IllegalArgumentException ex){
-                            throw new NodeDoesNotExistException(nodeUri);
+                        } catch(RuntimeException ex){
+							if (ex.getCause() instanceof NodeDoesNotExistException) {
+								throw new NodeDoesNotExistException(nodeUri);
+							} else {
+								throw ex;
+							}
                         }			
 			if (!parent.getMembersRdf().contains(nodeUri)) {
 				throw new NodeDoesNotExistException(nodeUri);
@@ -149,8 +153,13 @@ public class HierarchyService {
 
 	CollectionNode getCollectionNodeWithEncodedUri(UriRef uri)
 			throws NodeDoesNotExistException{
-		CollectionNode collectionNode =
-				new CollectionNode(uri, cgProvider.getContentGraph(), this);
+		CollectionNode collectionNode;
+		try {
+			collectionNode =
+					new CollectionNode(uri, cgProvider.getContentGraph(), this);
+		} catch (IllegalArgumentException ex) {
+			throw new NodeDoesNotExistException(uri);
+		}
 		checkExistence(collectionNode);
 		return collectionNode;
 	}

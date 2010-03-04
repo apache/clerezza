@@ -19,11 +19,15 @@
 package org.apache.clerezza.platform.content.hierarchy;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.utils.UriException;
+import org.apache.clerezza.utils.UriUtil;
 
 /**
  * This class represents a node in a hierarchy and provides methods for
@@ -91,33 +95,65 @@ public class HierarchyNode extends GraphNode {
 	 */
 	public HierarchyNode move(CollectionNode newParentCollection, int pos) 
 			throws NodeAlreadyExistsException, IllegalMoveException {
+		return this.move(newParentCollection, null, pos);
+	}
 		
+	/**
+	 * Moves this node into the specified parent collection at the specified
+	 * position pos. Optionally you can specifiy a new name.
+	 *
+	 * @param newParentCollection the collection into which this node should be moved
+	 * @param newName the new name of the moved node. Can be null.
+	 * @param pos the member position of the moved node in the members list of
+	 * the new parent collection.
+	 * @throws NodeAlreadyExistsException is thrown if the new parent collection
+	 *		already contains a hierarchy node with the same name.
+	 * @throws IllegalMoveException is thrown if the move operation is not allowed
+	 * @return the HierarchyNode at the new location
+	 */
+	public HierarchyNode move(CollectionNode newParentCollection, String newName, int pos)
+			throws NodeAlreadyExistsException, IllegalMoveException {
+		String name;
+		try {
+			name = newName == null ? getName() : UriUtil.encodePartlyEncodedPath(newName, "UTF-8");
+		} catch (UriException ex) {
+			throw new RuntimeException(ex);
+		}
 		if (newParentCollection.equals(getParent())) {
 			UriRef nodeUri = getNode();
 			List<Resource> membersRdfList = newParentCollection.getMembersRdf();
 			int oldPos = membersRdfList.indexOf(nodeUri);			
 			if (oldPos < pos) {
 				pos -= 1;
-			}
-			if (oldPos == pos) {
-				return this;
 			}			
-			membersRdfList.remove(nodeUri);
-			membersRdfList.add(pos, nodeUri);
-			return this;
-		}
-		String newName = newParentCollection.getNode().getUnicodeString() +
-				getName();		
+			if (name.equals(getName())) {				
+				if (oldPos != pos) {
+					membersRdfList.remove(nodeUri);
+					membersRdfList.add(pos, nodeUri);
+				}				
+				return this;
+			}
+		}		
+		String newUriString = newParentCollection.getNode().getUnicodeString() +
+				name;
 		if (this instanceof CollectionNode) {
-			newName += "/";
+			newUriString += "/";
 		}
-		UriRef newUri = new UriRef(newName);	
-		if (newParentCollection.getMembersRdf().contains(newUri)) {
+		UriRef newUri = new UriRef(newUriString);
+		String alternativeUriString = newUriString.endsWith("/") ? 
+			newUriString.substring(0, newUriString.length() - 1) : newUriString + "/";
+		UriRef alternativeUri = new UriRef(alternativeUriString);
+		List<Resource> parentMembers = newParentCollection.getMembersRdf();
+		if (parentMembers.contains(newUri) || parentMembers.contains(alternativeUri)) {
 			HierarchyNode existingNode = null;
 			try {
 				existingNode = hierarchyService.getHierarchyNodeWithEncodedUri(newUri);
 			} catch (NodeDoesNotExistException ex) {
-				throw new RuntimeException(ex);
+				try {
+					existingNode = hierarchyService.getHierarchyNodeWithEncodedUri(alternativeUri);
+				} catch (NodeDoesNotExistException e) {
+					throw new RuntimeException(ex);
+				}
 			}
 			throw new NodeAlreadyExistsException(existingNode);
 		}
@@ -135,12 +171,8 @@ public class HierarchyNode extends GraphNode {
 	 * @return the name of the hierarchy node.
 	 */
 	public String getName() {
-		String uri = getNode().getUnicodeString();
-		if (uri.endsWith("/")) {
-			uri = uri.substring(0, uri.length() - 1);
+		return HierarchyUtils.getName(this.getNode());
 		}
-		return uri.substring(uri.lastIndexOf("/") + 1, uri.length());
-	}
 
 	@Override
 	public UriRef getNode() {
