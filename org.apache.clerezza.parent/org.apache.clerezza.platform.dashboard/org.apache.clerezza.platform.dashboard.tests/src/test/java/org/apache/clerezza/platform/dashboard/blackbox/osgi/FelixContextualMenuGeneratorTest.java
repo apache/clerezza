@@ -69,12 +69,13 @@ public class FelixContextualMenuGeneratorTest {
 	public static Option[] configuration() {
 		return options(
 				mavenConfiguration(),
+				//using old ds because of issues with 1.0.8
 				mavenBundle().groupId("org.apache.felix").artifactId(
-				"org.apache.felix.scr").version("1.0.6"),			
+				"org.apache.felix.scr").version("1.0.6"),
 				mavenBundle().groupId("org.apache.felix").artifactId(
 				"org.apache.felix.eventadmin").version("1.0.0"),
 				mavenBundle().groupId("org.apache.felix").artifactId(
-				"org.apache.felix.metatype").version("1.0.2"),				
+				"org.apache.felix.metatype").version("1.0.2"),
 				/*dsProfile(),*/
 				configProfile(),
 				webProfile(),
