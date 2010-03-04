@@ -25,6 +25,7 @@
 		A graph, modeled as a set of triples.
 	</skos:definition>
 	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/06/tcprovider#" />
+	<rdfs:subClassOf rdf:resource="http://clerezza.org/2009/06/tcprovider#TripleCollection" />
 </rdfs:Class>
 
 <rdfs:Class rdf:about="http://clerezza.org/2009/06/tcprovider#MGraph">
@@ -32,6 +33,16 @@
 	<rdfs:label xml:lang="en">MGraph</rdfs:label>
 	<skos:definition xml:lang="en">
 		A mutable graph.
+	</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/06/tcprovider#" />
+	<rdfs:subClassOf rdf:resource="http://clerezza.org/2009/06/tcprovider#TripleCollection" />
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://clerezza.org/2009/06/tcprovider#TripleCollection">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">TripleCollection</rdfs:label>
+	<skos:definition xml:lang="en">
+		A triple collcetion, i.e. a mutable or inmutable graph.
 	</skos:definition>
 	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/06/tcprovider#" />
 </rdfs:Class>
