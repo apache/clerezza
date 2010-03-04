@@ -34,8 +34,7 @@
 	<rdfs:label xml:lang="en">tripleCollection</rdfs:label>
 	<skos:definition xml:lang="en">Points to a Triple Collection.
 	</skos:definition>
-	<rdfs:range rdf:resource="tcp:Graph"/>
-	<rdfs:range rdf:resource="tcp:MGraph"/>
+	<rdfs:range rdf:resource="http://clerezza.org/2009/06/tcprovider#TripleCollection"/>
 </rdf:Property>
 
 </rdf:RDF>
