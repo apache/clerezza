@@ -37,7 +37,6 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
-import org.apache.clerezza.utils.UriUtil;
 
 
 /**
@@ -63,8 +62,10 @@ public class HierarchyTest{
 	private UriRef newRootTest = new UriRef("http://newRoot/test/");
 	private UriRef newRoot2Resource = new UriRef("http://newRoot2/resource");
 	private UriRef newRoot2 = new UriRef("http://newRoot2/");
-	private UriRef encodedResource = new UriRef("http://localhost:8282/t +");
-	private UriRef encodedCollection = new UriRef("http://localhost:8282/t +/");
+	private UriRef unencodedResource = new UriRef("http://localhost:8282/t +");
+	private UriRef encodedResource = new UriRef("http://localhost:8282/t%20%2B");
+	private UriRef unencodedCollection = new UriRef("http://localhost:8282/t +/");
+	private UriRef encodedCollection = new UriRef("http://localhost:8282/t%20%2B/");
 
         
 
@@ -135,19 +136,17 @@ public class HierarchyTest{
 	@Test
 	public void nonCollectionNodeCreationWithEncodedCharacters() throws Exception{
 		HierarchyService hierarchyService = getHierarchyService();
-		hierarchyService.createNonCollectionNode(encodedResource, 0);
-        HierarchyNode encodedNode = hierarchyService.getHierarchyNode(encodedResource);
-		Assert.assertEquals(UriUtil.encodePath(encodedResource.getUnicodeString(), "UTF-8"),
-				encodedNode.getNode().getUnicodeString());
+		hierarchyService.createNonCollectionNode(unencodedResource, 0);
+        HierarchyNode encodedNode = hierarchyService.getHierarchyNode(unencodedResource);
+		Assert.assertEquals(encodedResource, encodedNode.getNode());
 	}
 
 	@Test
 	public void collectionNodeCreationWithEncodedCharacters() throws Exception{
 		HierarchyService hierarchyService = getHierarchyService();
-		hierarchyService.createCollectionNode(encodedCollection, 0);
-        CollectionNode encodedNode = hierarchyService.getCollectionNode(encodedCollection);
-		Assert.assertEquals(UriUtil.encodePath(encodedCollection.getUnicodeString(), "UTF-8"),
-				encodedNode.getNode().getUnicodeString());
+		hierarchyService.createCollectionNode(unencodedCollection, 0);
+        CollectionNode encodedNode = hierarchyService.getCollectionNode(unencodedCollection);
+		Assert.assertEquals(encodedCollection, encodedNode.getNode());
 	}
 
 	@Test
@@ -195,6 +194,7 @@ public class HierarchyTest{
 		Assert.assertEquals(barFooNode, barList.get(0));
 		List<HierarchyNode> barFooList = barFooNode.getMembers();
 		Assert.assertEquals(1, barFooList.size());
+		System.out.println(barFooList.get(0).toString());
 		HierarchyNode barFooResourceNode = hierarchyService.getHierarchyNode(barFooResource);
 		Assert.assertEquals(barFooResourceNode, barFooList.get(0));
 	}

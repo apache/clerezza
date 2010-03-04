@@ -90,9 +90,5 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils</artifactId>
-		</dependency>
 	</dependencies>
 </project>

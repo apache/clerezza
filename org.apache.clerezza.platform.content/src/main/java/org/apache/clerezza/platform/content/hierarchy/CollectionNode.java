@@ -30,6 +30,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.RdfList;
+import org.apache.clerezza.utils.UriException;
 
 /**
  * This class represents a collection in a hierarchy. A collection can have
@@ -42,12 +43,13 @@ public class CollectionNode extends HierarchyNode {
 	private HierarchyService hierarchyService;
 
 	CollectionNode(UriRef collectionNode, TripleCollection graph,
-			HierarchyService hierarchyService) {
+			HierarchyService hierarchyService) throws UriException {
 		super(collectionNode, graph, hierarchyService);
-		if (!this.hasProperty(RDF.type, HIERARCHY.Collection)) {
-			throw new IllegalArgumentException(collectionNode + " is not a Collection");
-		}
 		this.hierarchyService = hierarchyService;
+	}
+
+	boolean isValid() {
+		return this.hasProperty(RDF.type, HIERARCHY.Collection);
 	}
 
 	/**
@@ -84,7 +86,7 @@ public class CollectionNode extends HierarchyNode {
 		while (membersIter.hasNext()) {
 			UriRef uri = (UriRef) membersIter.next();
 			try {
-				nodes.add(hierarchyService.getHierarchyNodeWithEncodedUri(uri));
+				nodes.add(hierarchyService.getHierarchyNode(uri));
 			} catch (NodeDoesNotExistException ex) {
 				throw new RuntimeException(ex);
 			}
@@ -117,8 +119,12 @@ public class CollectionNode extends HierarchyNode {
 		UriRef newUri = (UriRef) replacement;
 		HierarchyUtils.ensureCollectionUri(newUri);
 		super.replaceWith(newUri);
-		CollectionNode movedNode = new CollectionNode(newUri, getGraph(),
-				hierarchyService);
+		CollectionNode movedNode;
+		try {
+			movedNode = new CollectionNode(newUri, getGraph(), hierarchyService);
+		} catch (UriException ex) {
+			throw new IllegalArgumentException(ex);
+		}
 		movedNode.updateMembers();
 		return movedNode;
 	}
@@ -145,16 +151,20 @@ public class CollectionNode extends HierarchyNode {
 		try {
 			CollectionNode memberCollection = new CollectionNode(memberUri,
 					getGraph(), hierarchyService);
-			UriRef newUri = new UriRef(getNode().getUnicodeString() +
-				memberCollection.getName() + "/");
-			memberCollection.replaceWith(newUri);
-			memberCollection.updateMembers();
-		} catch(IllegalArgumentException e) {
-			HierarchyNode memberResource = new HierarchyNode(memberUri,
-					getGraph(), hierarchyService);
-			UriRef newUri = new UriRef(getNode().getUnicodeString() +
-				memberResource.getName());
-			memberResource.replaceWith(newUri);
+			if (memberCollection.isValid()) {
+				UriRef newUri = new UriRef(getNode().getUnicodeString()
+						+ memberCollection.getName() + "/");
+				memberCollection.replaceWith(newUri);
+				memberCollection.updateMembers();
+			} else {
+				HierarchyNode memberResource = new HierarchyNode(memberUri,
+						getGraph(), hierarchyService);
+				UriRef newUri = new UriRef(getNode().getUnicodeString()
+						+ memberResource.getName());
+				memberResource.replaceWith(newUri);
+			}
+		} catch (UriException e) {
+			throw new IllegalArgumentException(e);
 		}
 	}
 
