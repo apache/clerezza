@@ -215,10 +215,8 @@ public class HierarchyManager {
 	 * "http://localhost:8080/foo/bar" to "test" the new URI will be 
 	 * "http://localhost:8080/foo/test".
 	 * This resource method has the path "rename".
-	 *
-	 * @param oldPos
-	 * @param newPos
-	 * @param newName The new name of the moved node. This parameter is optionally.
+	 * 
+	 * @param newName The new name of the moved node.
 	 * @return if sucessfully renamed then a Created (201) HTTP Response is returned.
 	 *		If the node does not exist, then a Not Found (404) HTTP Response is
 	 *		returned.
