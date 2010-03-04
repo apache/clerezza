@@ -52,4 +52,12 @@ class HierarchyUtils {
 			throw new IllegalArgumentException(uri + " does not end with a slash");
 		}
 	}
+
+	static String getName(UriRef uri) {
+		String uriString = uri.getUnicodeString();
+		if (uriString.endsWith("/")) {
+			uriString = uriString.substring(0, uriString.length() - 1);
+		}
+		return uriString.substring(uriString.lastIndexOf("/") + 1, uriString.length());
+	}
 }

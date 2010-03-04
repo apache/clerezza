@@ -165,20 +165,24 @@ public class HierarchyManager {
 
 	/**
 	 * Moves the node into the specified collection as the member at
-	 * the specified position pos.
+	 * the specified position pos. 
 	 * This resource method has the path "move"
 	 *
 	 * @param oldPos
 	 * @param newPos
+	 * @param newName The new name of the moved node. This parameter is optionally.
 	 * @return if sucessfully moved then a Created (201) HTTP Response is returned.
 	 *		if the specified targetCollection is not a collection then a
-	 *		Conflict (409) HTTP Response is returned.
+	 *		Conflict (409) HTTP Response is returned. If the node to be moved or
+	 *		the target collection does not exist, then a Not Found (404) HTTP
+	 *		Response is returned.
 	 */
 	@POST
 	@Path("move")
 	public Response move(@FormParam(value = "nodeUri") UriRef nodeUri,
 			@FormParam(value = "targetCollection") UriRef targetCollection,
-			@FormParam(value = "pos") Integer newPos) {
+			@FormParam(value = "pos") Integer newPos,
+			@FormParam(value = "newName") String newName) {
 		HierarchyNode hierarchyNode;
 		CollectionNode targetCollectionNode;
 		try {
@@ -191,12 +195,11 @@ public class HierarchyManager {
 					targetCollection.getUnicodeString() + " is not a Collection.").
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
-
 		try {
-			hierarchyNode = hierarchyNode.move(targetCollectionNode, newPos);
+			hierarchyNode = hierarchyNode.move(targetCollectionNode, newName, newPos);
 		} catch (NodeAlreadyExistsException ex) {
 			return Response.status(Response.Status.CONFLICT).entity(
-					targetCollection.getUnicodeString() + " already exists in " +
+					nodeUri.getUnicodeString() + " already exists in " +
 					"collection.").
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		} catch (IllegalMoveException ex) {
@@ -205,6 +208,34 @@ public class HierarchyManager {
 		}
 		return Response.created(
 				URI.create(hierarchyNode.getNode().getUnicodeString())).build();
+	}
+	
+	/**
+	 * Renames the specified node to the given name. E.g. if you rename 
+	 * "http://localhost:8080/foo/bar" to "test" the new URI will be 
+	 * "http://localhost:8080/foo/test".
+	 * This resource method has the path "rename".
+	 *
+	 * @param oldPos
+	 * @param newPos
+	 * @param newName The new name of the moved node. This parameter is optionally.
+	 * @return if sucessfully renamed then a Created (201) HTTP Response is returned.
+	 *		If the node does not exist, then a Not Found (404) HTTP Response is
+	 *		returned.
+	 */
+	@POST
+	@Path("rename")
+	public Response rename(@FormParam(value = "nodeUri") UriRef nodeUri,
+			@FormParam(value = "newName") String newName) {
+		try {
+			HierarchyNode hierarchyNode = hierarchyService.getHierarchyNode(nodeUri);
+			CollectionNode parent = hierarchyNode.getParent();
+			int pos = parent.getMembers().indexOf(hierarchyNode);
+			return move(nodeUri, parent.getNode(), pos, newName);
+		} catch (NodeDoesNotExistException ex) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		
 	}
 
 	/**
