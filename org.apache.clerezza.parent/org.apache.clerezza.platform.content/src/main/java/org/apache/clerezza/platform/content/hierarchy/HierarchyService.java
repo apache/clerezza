@@ -50,7 +50,6 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.utils.UriException;
-import org.apache.clerezza.utils.UriUtil;
 
 /**
  * The hierarchy service is an OSGi service that provides methods for managing
@@ -91,24 +90,19 @@ public class HierarchyService {
 	 * @param uri
 	 */
 	public HierarchyNode getHierarchyNode(UriRef uri)
-			throws NodeDoesNotExistException{		
-		try {
-			uri = new UriRef(UriUtil.encodePartlyEncodedPath(uri.getUnicodeString(), "UTF-8"));
-		} catch (UriException ex) {
-			throw new RuntimeException(ex);
-		}
-		return getHierarchyNodeWithEncodedUri(uri);
-	}
-
-	HierarchyNode getHierarchyNodeWithEncodedUri(UriRef uri)
-			throws NodeDoesNotExistException{
+			throws NodeDoesNotExistException {
 		HierarchyNode hierarchyNode;
 		try {
-			hierarchyNode =
+			CollectionNode collectionNode =
 					new CollectionNode(uri, cgProvider.getContentGraph(), this);
-		} catch(IllegalArgumentException e) {
-			hierarchyNode =
-					new HierarchyNode(uri, cgProvider.getContentGraph(), this);
+			if (collectionNode.isValid()) {
+				hierarchyNode = collectionNode;
+			} else {
+				hierarchyNode = new HierarchyNode(uri, cgProvider.getContentGraph(), this);
+			}
+
+		} catch (UriException ex) {
+			throw new IllegalArgumentException(ex);
 		}
 		checkExistence(hierarchyNode);
 		return hierarchyNode;
@@ -143,22 +137,14 @@ public class HierarchyService {
 	 */
 	public CollectionNode getCollectionNode(UriRef uri)
 			throws NodeDoesNotExistException{
-		try {
-			uri = new UriRef(UriUtil.encodePartlyEncodedPath(uri.getUnicodeString(), "UTF-8"));
-		} catch (UriException ex) {
-			throw new RuntimeException(ex);
-		}
-		return getCollectionNodeWithEncodedUri(uri);
-	}
-
-	CollectionNode getCollectionNodeWithEncodedUri(UriRef uri)
-			throws NodeDoesNotExistException{
 		CollectionNode collectionNode;
 		try {
 			collectionNode =
 					new CollectionNode(uri, cgProvider.getContentGraph(), this);
 		} catch (IllegalArgumentException ex) {
 			throw new NodeDoesNotExistException(uri);
+		} catch (UriException ex) {
+			throw new IllegalArgumentException(ex);
 		}
 		checkExistence(collectionNode);
 		return collectionNode;
@@ -181,15 +167,14 @@ public class HierarchyService {
 	 */
 	public HierarchyNode createNonCollectionNode(UriRef uri, int posInParent)
 			throws NodeAlreadyExistsException {
-		try {
-			uri = new UriRef(UriUtil.encodePath(uri.getUnicodeString(), "UTF-8"));
-		} catch (UriException ex) {
-			throw new RuntimeException(ex);
-		}
 		HierarchyUtils.ensureNonCollectionUri(uri);
 		handleRootOfUri(uri);
-		HierarchyNode hierarchyNode = new HierarchyNode(uri,
-				cgProvider.getContentGraph(), this);
+		HierarchyNode hierarchyNode;
+		try {
+			hierarchyNode = new HierarchyNode(uri, cgProvider.getContentGraph(), this);
+		} catch (UriException ex) {
+			throw new IllegalArgumentException(ex);
+		}
 		addToParent(hierarchyNode, posInParent);
 		addCreationProperties(hierarchyNode);
 		return hierarchyNode;
@@ -333,16 +318,15 @@ public class HierarchyService {
 	 */
 	public CollectionNode createCollectionNode(UriRef uri, int posInParent)
 			throws NodeAlreadyExistsException {
-		try {
-			uri = new UriRef(UriUtil.encodePartlyEncodedPath(uri.getUnicodeString(), "UTF-8"));
-		} catch (UriException ex) {
-			throw new RuntimeException(ex);
-		}
 		HierarchyUtils.ensureCollectionUri(uri);
 		handleRootOfUri(uri);
-		addCollectionTypeTriple(uri);
-		CollectionNode collectionNode = new CollectionNode(uri,
-				cgProvider.getContentGraph(), this);
+		CollectionNode collectionNode;
+		try {
+			collectionNode = new CollectionNode(uri, cgProvider.getContentGraph(), this);
+		} catch (UriException ex) {
+			throw new IllegalArgumentException(ex);
+		} 
+		addCollectionTypeTriple(collectionNode);
 		addToParent(collectionNode, posInParent);
 		addCreationProperties(collectionNode);
 		return collectionNode;
@@ -394,10 +378,8 @@ public class HierarchyService {
 		return createCollectionNode(uri);
 	}
 
-	private void addCollectionTypeTriple(UriRef uri) {
-		Triple collectionTypeTriple = new TripleImpl(uri, RDF.type,
-				HIERARCHY.Collection);
-		cgProvider.getContentGraph().add(collectionTypeTriple);
+	private void addCollectionTypeTriple(CollectionNode node) {
+		node.addProperty(RDF.type, HIERARCHY.Collection);
 	}
 
 	/**
@@ -442,8 +424,13 @@ public class HierarchyService {
 	}
 
 	private void addRoot(UriRef baseUri) {
-		addCollectionTypeTriple(baseUri);
-		roots.add(new CollectionNode(baseUri, cgProvider.getContentGraph(), this));
+		try {
+			CollectionNode node = new CollectionNode(baseUri, cgProvider.getContentGraph(), this);
+			addCollectionTypeTriple(node);
+			roots.add(node);
+		} catch (UriException ex) {
+			throw new IllegalArgumentException(ex);
+		}
 	}
 
 	protected void deactivate(ComponentContext componentContext) {

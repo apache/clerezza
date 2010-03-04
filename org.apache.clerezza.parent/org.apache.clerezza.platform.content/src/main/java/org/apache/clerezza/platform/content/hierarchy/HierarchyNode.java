@@ -19,12 +19,11 @@
 package org.apache.clerezza.platform.content.hierarchy;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.utils.EncodedUriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.utils.UriException;
 import org.apache.clerezza.utils.UriUtil;
@@ -40,8 +39,8 @@ public class HierarchyNode extends GraphNode {
 	private HierarchyService hierarchyService;
 
 	HierarchyNode(UriRef hierarchyNode, TripleCollection graph,
-			HierarchyService hierarchyService) {
-		super(hierarchyNode, graph);
+			HierarchyService hierarchyService) throws UriException {
+		super(new EncodedUriRef(hierarchyNode), graph);
 		this.hierarchyService = hierarchyService;
 	}
 
@@ -76,7 +75,7 @@ public class HierarchyNode extends GraphNode {
 		try {
 			UriRef parentCollectionUri = HierarchyUtils
 					.extractParentCollectionUri(getNode());
-			return hierarchyService.getCollectionNodeWithEncodedUri(parentCollectionUri);
+			return hierarchyService.getCollectionNode(parentCollectionUri);
 		} catch (NodeDoesNotExistException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -136,21 +135,22 @@ public class HierarchyNode extends GraphNode {
 		}		
 		String newUriString = newParentCollection.getNode().getUnicodeString() +
 				name;
+		String alternativeUriString = newUriString;
 		if (this instanceof CollectionNode) {
 			newUriString += "/";
+		} else {
+			alternativeUriString += "/";
 		}
 		UriRef newUri = new UriRef(newUriString);
-		String alternativeUriString = newUriString.endsWith("/") ? 
-			newUriString.substring(0, newUriString.length() - 1) : newUriString + "/";
 		UriRef alternativeUri = new UriRef(alternativeUriString);
 		List<Resource> parentMembers = newParentCollection.getMembersRdf();
 		if (parentMembers.contains(newUri) || parentMembers.contains(alternativeUri)) {
 			HierarchyNode existingNode = null;
 			try {
-				existingNode = hierarchyService.getHierarchyNodeWithEncodedUri(newUri);
+				existingNode = hierarchyService.getHierarchyNode(newUri);
 			} catch (NodeDoesNotExistException ex) {
 				try {
-					existingNode = hierarchyService.getHierarchyNodeWithEncodedUri(alternativeUri);
+					existingNode = hierarchyService.getHierarchyNode(alternativeUri);
 				} catch (NodeDoesNotExistException e) {
 					throw new RuntimeException(ex);
 				}
@@ -186,7 +186,11 @@ public class HierarchyNode extends GraphNode {
 		}
 		UriRef newUri = (UriRef) replacement;
 		super.replaceWith(newUri);
-		return new HierarchyNode(newUri, getGraph(), hierarchyService);
+		try {
+			return new HierarchyNode(newUri, getGraph(), hierarchyService);
+		} catch (UriException ex) {
+			throw new IllegalArgumentException(ex);
+		}
 	}
 
 	/**
