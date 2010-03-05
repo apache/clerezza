@@ -37,7 +37,7 @@ public class GlobalMenuItem implements Comparable<GlobalMenuItem> {
 	 * @param relativeUri of the resource to be shown in the menu.
 	 * @param identifier The identifier of the menu item.
 	 * @param label Specifies the label of the menu entry.
-	 * @param priority Specifies the position within the group.
+	 * @param priority the priority, higher numbers appear first in the menu
 	 * @param groupIdentifier Specifies the the identifier of the group of which
 	 *		the menu item is part.
 	 */
