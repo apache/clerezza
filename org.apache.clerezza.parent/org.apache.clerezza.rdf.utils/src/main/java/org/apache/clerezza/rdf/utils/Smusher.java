@@ -72,7 +72,7 @@ public class Smusher {
 			}
 			equivalentNodes.add(triple.getSubject());
 		}
-		Set<Set<NonLiteral>> unitedEquivalenceSets = uniteEquivalenceSets(ifp2nodesMap.values());
+		Set<Set<NonLiteral>> unitedEquivalenceSets = uniteSetsWithCommonElement(ifp2nodesMap.values());
 		Map<NonLiteral, NonLiteral> current2ReplacementMap = new HashMap<NonLiteral, NonLiteral>();
 		final MGraph owlSameAsGraph = new SimpleMGraph();
 		for (Set<NonLiteral> equivalenceSet : unitedEquivalenceSets) {
@@ -147,31 +147,44 @@ public class Smusher {
 		return first;
 	}
 
-	private static Set<Set<NonLiteral>> uniteEquivalenceSets(
-			Collection<Set<NonLiteral>> originalSets) {
-		final Map<NonLiteral, Set<Set<NonLiteral>>> node2OriginalSets =
-				new HashMap<NonLiteral, Set<Set<NonLiteral>>>();
-		for (Set<NonLiteral> set : originalSets) {
-			for (NonLiteral nonLiteral : set) {
-				Set<Set<NonLiteral>> sets = node2OriginalSets.get(nonLiteral);
-				if (sets == null) {
-					sets = new HashSet<Set<NonLiteral>>();
-					node2OriginalSets.put(nonLiteral, sets);
-				}
-				sets.add(set);
+	private static <T> Set<Set<T>> uniteSetsWithCommonElement(
+			Collection<Set<T>> originalSets) {
+		Set<Set<T>> result = new HashSet<Set<T>>();
+		Iterator<Set<T>> iter = originalSets.iterator();
+		while (iter.hasNext()) {
+			Set<T> originalSet = iter.next();
+			Set<T> matchingSet = getMatchinSet(originalSet, result);
+			if (matchingSet != null) {
+				matchingSet.addAll(originalSet);
+			} else {
+				result.add(new HashSet<T>(originalSet));
 			}
 		}
-		Set<Set<NonLiteral>> result = new HashSet<Set<NonLiteral>>();
-		for (Set<Set<NonLiteral>> sets2Unite : node2OriginalSets.values()) {
-			Set<NonLiteral> newSet = new HashSet<NonLiteral>();
-			for (Set<NonLiteral> existingSet : sets2Unite) {
-				newSet.addAll(existingSet);
-			}
-			result.add(newSet);
+		if (result.size() < originalSets.size()) {
+			return uniteSetsWithCommonElement(result);
+		} else {
+			return result;
 		}
-		return result;
-
 	}
+
+	private static <T> Set<T> getMatchinSet(Set<T> set, Set<Set<T>> setOfSet) {
+		for (Set<T> current : setOfSet) {
+			if (shareElements(set,current)) {
+				return current;
+			}
+		}
+		return null;
+	}
+
+	private static <T> boolean shareElements(Set<T> set1, Set<T> set2) {
+		for (T elem : set2) {
+			if (set1.contains(elem)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 
 	static class PredicateObject {
 
