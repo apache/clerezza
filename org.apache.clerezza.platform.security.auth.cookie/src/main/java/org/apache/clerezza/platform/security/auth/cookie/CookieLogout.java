@@ -18,7 +18,10 @@
  */
 package org.apache.clerezza.platform.security.auth.cookie;
 
+import java.net.URI;
+import java.net.URL;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -71,10 +74,16 @@ public class CookieLogout {
 	}
 
 	@GET
-	public Response logout(@Context UriInfo uriInfo) {
-		TrailingSlash.enforcePresent(uriInfo);		
-		ResponseBuilder responseBuilder = Response.fromResponse(
-				RedirectUtil.createSeeOtherResponse("../logout/success", uriInfo));
+	public Response logout(@Context UriInfo uriInfo,
+			@HeaderParam("Referer") URI referer) {
+		TrailingSlash.enforceNotPresent(uriInfo);
+		ResponseBuilder responseBuilder;
+		if (referer != null) {
+			responseBuilder = Response.seeOther(referer);
+		} else {
+			responseBuilder = Response.fromResponse(
+				RedirectUtil.createSeeOtherResponse("logout/success", uriInfo));
+		}
 		responseBuilder.header(HttpHeaders.SET_COOKIE, getLogoutCookie());
 		return responseBuilder.build();
 	}
