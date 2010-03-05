@@ -675,10 +675,16 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 
 		String user = getUserName();
 		if (user != null) {
+			try {
+				AccessController.checkPermission(new AccountControlAccessPermission(user, ""));
+			} catch (AccessControlException e) {
+				return items;
+			}
 			String path = "/user/" + user + "/control-panel/";
 			items.add(new GlobalMenuItem(path, "ACP", "Account Control Panel", 5,
 					"Main-Modules"));
 		}
+		
 		return items;
 	}
 
