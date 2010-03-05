@@ -205,7 +205,7 @@ public class Smusher {
 				return false;
 			}
 			final PredicateObject other = (PredicateObject) obj;
-			if (this.predicate != other.predicate || !this.predicate.equals(other.predicate)) {
+			if (this.predicate != other.predicate && !this.predicate.equals(other.predicate)) {
 				return false;
 			}
 			if (this.object != other.object && !this.object.equals(other.object)) {
@@ -221,5 +221,12 @@ public class Smusher {
 			hash = 13 * hash + this.object.hashCode();
 			return hash;
 		}
+
+		@Override
+		public String toString() {
+			return "("+predicate+", "+object+")";
+		}
+
+
 	};
 }
