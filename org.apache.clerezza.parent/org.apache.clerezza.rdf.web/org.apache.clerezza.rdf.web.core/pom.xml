@@ -55,5 +55,10 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.web.ontologies</artifactId>
 		</dependency>
+	 <dependency>
+	  <groupId>org.apache.clerezza</groupId>
+	  <artifactId>org.apache.clerezza.platform.dashboard.core</artifactId>
+	 </dependency>
 	</dependencies>
 </project>
+
