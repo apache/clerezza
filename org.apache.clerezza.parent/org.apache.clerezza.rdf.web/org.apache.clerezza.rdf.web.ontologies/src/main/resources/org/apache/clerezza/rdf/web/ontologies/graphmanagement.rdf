@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns="http://clerezza.org/2010/03/graph-management#"
+	xml:base="http://clerezza.org/2010/03/graph-management"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:skos="http://www.w3.org/2008/05/skos#"
+	xmlns:tcp="http://clerezza.org/2009/06/tcprovider#"
+>
+
+<!-- Ontology -->
+
+<owl:Ontology rdf:about="http://clerezza.org/2010/03/graph-management#">
+	<owl:versionInfo>Revision: 0.1</owl:versionInfo>
+	<dc:title xml:lang="en">
+		Ontology for Graph Management Page related concepts
+	</dc:title>
+</owl:Ontology>
+
+<!-- Classes -->
+<rdfs:Class rdf:about="#GraphManagementPage">
+	<rdf:type rdf:resource="owl:Class"/>
+	<rdfs:label xml:lang="en">GraphManagementPage</rdfs:label>
+	<skos:definition xml:lang="en">
+		A web page fro managing triple collections
+	</skos:definition>
+</rdfs:Class>
+
+<!-- Properties -->
+
+<rdf:Property rdf:about="#tripleCollection">
+	<rdf:type rdf:resource="owl:ObjectProperty" />
+	<rdfs:label xml:lang="en">tripleCollection</rdfs:label>
+	<skos:definition xml:lang="en">Points to a Triple Collection.
+	</skos:definition>
+	<rdfs:range rdf:resource="http://clerezza.org/2009/06/tcprovider#TripleCollection"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="#size">
+	<rdf:type rdf:resource="owl:DatatypeProperty" />
+	<rdfs:label xml:lang="en">size</rdfs:label>
+	<skos:definition xml:lang="en">The size (in triples) of a Triple Collection
+	</skos:definition>
+	<rdfs:domain rdf:resource="http://clerezza.org/2009/06/tcprovider#TripleCollection"/>
+</rdf:Property>
+
+</rdf:RDF>
+
