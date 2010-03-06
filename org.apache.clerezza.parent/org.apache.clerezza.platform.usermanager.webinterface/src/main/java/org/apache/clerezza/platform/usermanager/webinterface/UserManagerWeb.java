@@ -24,6 +24,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.AccessControlException;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -69,6 +71,7 @@ import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -215,11 +218,11 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		userList.addAll(sortedSet);
 
 		if (from == null || from < 0) {
-			logger.info("Query parameter from is null or negative, set to 1");
+			logger.debug("Query parameter from is null or negative, set to 1");
 			from = 0;
 		}
 		if (to == null || to < 0) {
-			logger.info("Query parameter to is null or negative, set to 10");
+			logger.debug("Query parameter to is null or negative, set to 10");
 			to = 10;
 		}
 		if (to > userList.size()) {
@@ -936,7 +939,12 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@Override
 	public Set<GlobalMenuItem> getMenuItems() {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-
+		try {
+			AccessController.checkPermission(new TcPermission(
+					SystemConfig.SYSTEM_GRAPH_URI.getUnicodeString(), "readwrite"));
+		} catch (AccessControlException e) {
+			return items;
+		}
 		items.add(new GlobalMenuItem("/admin/user-manager/", "UMR", "User Manager", 2,
 				"Main-Modules"));
 		return items;
