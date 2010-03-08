@@ -4,10 +4,13 @@
   <primitive>false</primitive>
   <delegateAnalysisEngineSpecifiers>
     <delegateAnalysisEngine key="TextKeywordExtractionAEDescriptor">
-      <import name="TextKeywordExtractionAEDescriptor"/>
+      <import location="TextKeywordExtractionAEDescriptor.xml"/>
     </delegateAnalysisEngine>
     <delegateAnalysisEngine key="OpenCalaisAnnotator">
-      <import name="OpenCalaisAnnotator"/>
+      <import location="OpenCalaisAnnotator.xml"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="TextLanguageDetectionAEDescriptor">
+      <import location="TextLanguageDetectionAEDescriptor.xml"/>
     </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>
@@ -21,6 +24,7 @@
       <fixedFlow>
         <node>OpenCalaisAnnotator</node>
         <node>TextKeywordExtractionAEDescriptor</node>
+        <node>TextLanguageDetectionAEDescriptor</node>
       </fixedFlow>
     </flowConstraints>
     <fsIndexCollection/>
