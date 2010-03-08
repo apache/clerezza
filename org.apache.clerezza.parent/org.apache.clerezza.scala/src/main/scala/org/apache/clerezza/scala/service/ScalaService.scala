@@ -188,7 +188,11 @@ package org.apache.clerezza.scala.service {
 					if (cause.isInstanceOf[ScriptException]) {
 						throw cause.asInstanceOf[ScriptException]
 					} else {
-						throw cause.asInstanceOf[RuntimeException]
+						if (cause.isInstanceOf[RuntimeException]) {
+							throw cause.asInstanceOf[RuntimeException]
+						} else {
+							throw new RuntimeException(cause)
+						}
 					}
 			}
 		}
