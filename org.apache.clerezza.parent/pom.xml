@@ -237,6 +237,32 @@
 					<groupId>net.sf.alchim</groupId>
 					<artifactId>yuicompressor-maven-plugin</artifactId>
 					<version>0.7.1</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>compress</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<!-- actually anything but js and css, this is awkward.
+						plugin developer contacted -->
+						<excludes>
+							<exclude>
+								**/*.jar
+							</exclude>
+							<exclude>
+								**/*.txt
+							</exclude>
+							<exclude>
+								**/*.properties
+							</exclude>
+							<exclude>
+								**/*.xml
+							</exclude>
+						</excludes>
+						<nosuffix>true</nosuffix>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -285,36 +311,11 @@
 				<groupId>org.codehaus.xsite</groupId>
 				<artifactId>xsite-maven-plugin</artifactId>
 			</plugin>
+			<!-- too much side effects on unrelated stuff
 			<plugin>
 				<groupId>net.sf.alchim</groupId>
 				<artifactId>yuicompressor-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compress</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<!-- actually anything but js and css, this is awkward
-					plugin developer contacted -->
-					<excludes>
-						<exclude>
-							**/*.jar
-						</exclude>
-						<exclude>
-							**/*.txt
-						</exclude>
-						<exclude>
-							**/*.properties
-						</exclude>
-						<exclude>
-							**/*.xml
-						</exclude>
-					</excludes>
-					<nosuffix>true</nosuffix>
-				</configuration>
-			</plugin>
+			</plugin> -->
 		</plugins>
 		<resources>
 			<resource>
