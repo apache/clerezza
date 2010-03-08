@@ -94,6 +94,13 @@ public class HierarchyTest{
 			exceptionThrown = true;
 		}
 		Assert.assertTrue(exceptionThrown);
+		try {
+			hierarchyService.createCollectionNode(fooResource);
+		} catch(IllegalArgumentException e) {
+			exceptionThrown = true;
+		}
+
+		Assert.assertTrue(exceptionThrown);
 		CollectionNode fooNode = (CollectionNode)hierarchyService.getHierarchyNode(foo);
 		List<HierarchyNode> fooMembers = fooNode.getMembers();
 		Assert.assertEquals(1, fooMembers.size());	
@@ -274,6 +281,12 @@ public class HierarchyTest{
 			resource.move(resource3.getParent(), "resource2", 0);
 			Assert.assertTrue(false);
 		} catch (NodeAlreadyExistsException ex) {}
+	}
+
+	@Test(expected=UnknownRootExcetpion.class)
+	public void missingRootTest() throws Exception{
+		HierarchyService hierarchyService = getHierarchyService();
+		hierarchyService.getHierarchyNode(newRootTest);
 	}
 
 	@Test

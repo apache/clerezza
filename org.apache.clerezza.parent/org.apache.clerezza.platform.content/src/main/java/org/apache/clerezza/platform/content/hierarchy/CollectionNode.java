@@ -89,6 +89,8 @@ public class CollectionNode extends HierarchyNode {
 				nodes.add(hierarchyService.getHierarchyNode(uri));
 			} catch (NodeDoesNotExistException ex) {
 				throw new RuntimeException(ex);
+			} catch (UnknownRootExcetpion ex) {
+				throw new RuntimeException(ex);
 			}
 		}
 		return Collections.unmodifiableList(nodes);
