@@ -255,7 +255,12 @@ public class GraphNode {
 
 				@Override
 				public Resource next() {
-					return triples.next().getObject();
+					final Triple triple = triples.next();
+					if (triple != null) {
+						return triple.getObject();
+					} else {
+						return null;
+					}
 				}
 
 				@Override
