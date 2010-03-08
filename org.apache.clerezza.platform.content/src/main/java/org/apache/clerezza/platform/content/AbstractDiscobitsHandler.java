@@ -27,6 +27,7 @@ import org.apache.clerezza.platform.content.hierarchy.HierarchyNode;
 import org.apache.clerezza.platform.content.hierarchy.HierarchyService;
 import org.apache.clerezza.platform.content.hierarchy.NodeAlreadyExistsException;
 import org.apache.clerezza.platform.content.hierarchy.NodeDoesNotExistException;
+import org.apache.clerezza.platform.content.hierarchy.UnknownRootExcetpion;
 
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -131,12 +132,14 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 		try {
 			HierarchyService hierarchyService = getHierarchyService();
 			if (hierarchyService == null) {
-				graphNode = new GraphNode(node, mGraph);				
+				graphNode = new GraphNode(node, mGraph);
 			} else {
 				graphNode = hierarchyService.getHierarchyNode((UriRef) node);
 				((HierarchyNode) graphNode).delete();
 			}
 		} catch (NodeDoesNotExistException ex) {
+			graphNode = new GraphNode(node, mGraph);
+		} catch (UnknownRootExcetpion ex) {
 			graphNode = new GraphNode(node, mGraph);
 		}
 		graphNode.deleteNodeContext();

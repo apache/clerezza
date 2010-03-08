@@ -157,6 +157,9 @@ public class HierarchyManager {
 			hierarchyNode = hierarchyService.getHierarchyNode(nodeUri);
 		} catch (NodeDoesNotExistException ex) {
 			return Response.status(Response.Status.NOT_FOUND).build();
+		} catch (UnknownRootExcetpion ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
+					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 
 		hierarchyNode.delete();
@@ -193,6 +196,9 @@ public class HierarchyManager {
 		} catch (IllegalArgumentException e) {
 			return Response.status(Response.Status.CONFLICT).entity(
 					targetCollection.getUnicodeString() + " is not a Collection.").
+					type(MediaType.TEXT_PLAIN_TYPE).build();
+		} catch (UnknownRootExcetpion ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		try {
@@ -232,6 +238,9 @@ public class HierarchyManager {
 			return move(nodeUri, parent.getNode(), pos, newName);
 		} catch (NodeDoesNotExistException ex) {
 			return Response.status(Response.Status.NOT_FOUND).build();
+		} catch (UnknownRootExcetpion ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
+					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		
 	}
@@ -258,6 +267,9 @@ public class HierarchyManager {
 		} catch (NodeDoesNotExistException ex) {
 			throw new WebApplicationException(
 					Response.status(Response.Status.BAD_REQUEST).build());
+		} catch (UnknownRootExcetpion ex) {
+			throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+					.entity(ex.toString()).type(MediaType.TEXT_PLAIN_TYPE).build());
 		}
 		MGraph result = new SimpleMGraph();
 		result.addAll(collectionNode.getNodeContext());
@@ -307,6 +319,9 @@ public class HierarchyManager {
 		} catch (NodeDoesNotExistException ex) {
 			throw new WebApplicationException(
 					Response.status(Response.Status.NOT_FOUND).build());
+		} catch (UnknownRootExcetpion ex) {
+			throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+					.entity(ex.toString()).type(MediaType.TEXT_PLAIN_TYPE).build());
 		}
 		return getMembersCount(collection).toString();
 	}

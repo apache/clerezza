@@ -87,10 +87,15 @@ public class HierarchyService {
 	 * specified resource.
 	 * @throws NodeDoesNotExistException Thrown if the specified node does not 
 	 *		exist.
+	 * @throws UnknownRootExcetpion Thrown if the base URI of the specified uri
+	 *		is not a known root of an hierarchy.
 	 * @param uri
 	 */
 	public HierarchyNode getHierarchyNode(UriRef uri)
-			throws NodeDoesNotExistException {
+			throws NodeDoesNotExistException, UnknownRootExcetpion {
+		if (!hasKnownRoot(uri)) {
+			throw new UnknownRootExcetpion(extractBaseUri(uri));
+		}
 		HierarchyNode hierarchyNode;
 		try {
 			CollectionNode collectionNode =
@@ -133,10 +138,15 @@ public class HierarchyService {
 	 *		exist.
 	 * @throws IllegalArgumentException Thrown if the node at the specified uri
 	 *		is not a CollectionNode.
+	 * @throws UnknownRootExcetpion Thrown if the base URI of the specified uri
+	 *		is not a known root of an hierarchy.
 	 * @param uri
 	 */
 	public CollectionNode getCollectionNode(UriRef uri)
-			throws NodeDoesNotExistException{
+			throws NodeDoesNotExistException, UnknownRootExcetpion{
+		if (!hasKnownRoot(uri)) {
+			throw new UnknownRootExcetpion(extractBaseUri(uri));
+		}
 		CollectionNode collectionNode;
 		try {
 			collectionNode =
@@ -226,18 +236,25 @@ public class HierarchyService {
 	 * the base URI of uri as new root.
 	 * @param uri The Uri to be checked.
 	 */
-	private void handleRootOfUri(UriRef uri) {
+	private void handleRootOfUri(UriRef uri) {		
+		if (hasKnownRoot(uri)) {
+			return;
+		}
+		UriRef baseUri = extractBaseUri(uri);
+		config.addBaseUri(baseUri);
+		addRoot(baseUri);
+	}
+
+	private boolean hasKnownRoot(UriRef uri) {
 		Iterator<CollectionNode> rootsIter = roots.iterator();
 		while (rootsIter.hasNext()) {
 			CollectionNode root = rootsIter.next();
 			UriRef rootUri = root.getNode();
 			if (uri.getUnicodeString().startsWith(rootUri.getUnicodeString())) {
-				return;
+				return true;
 			}
 		}
-		UriRef baseUri = extractBaseUri(uri);
-		config.addBaseUri(baseUri);
-		addRoot(baseUri);
+		return false;
 	}
 
 	private UriRef extractBaseUri(UriRef uriRef) {
@@ -272,6 +289,8 @@ public class HierarchyService {
 			UriRef parentCollectionUri = HierarchyUtils.
 					extractParentCollectionUri(node.getNode());
 			parentCollection = (CollectionNode) getHierarchyNode(parentCollectionUri);
+		} catch (UnknownRootExcetpion ex) {
+			throw new RuntimeException(ex);
 		} catch (NodeDoesNotExistException ex) {
 			try {
 				parentCollection = createCollectionNode(ex.getNodeUri());
