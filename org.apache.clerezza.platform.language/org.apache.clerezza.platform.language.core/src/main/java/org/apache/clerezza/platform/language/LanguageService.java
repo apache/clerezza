@@ -43,6 +43,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
+import org.apache.clerezza.rdf.ontologies.LINGVOJ;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
@@ -140,14 +141,31 @@ public class LanguageService {
 	public void addLanguage(UriRef languageUri) {
 		if (!languageListCache.contains(languageUri)) {
 			if(languageList.add(languageUri)) {
-				cgProvider.getContentGraph().
-						addAll(getLanguageContext(languageUri));
+				addToContentGraph(languageUri);
 			}
 			languageListCache.add(languageUri);
 		}
 	}
 
-	private Graph getLanguageContext(UriRef langUri) {
+	private void synchronizeContentGraph() {
+		for (Resource resource : languageListCache) {
+			addToContentGraph((UriRef)resource);
+		}
+	}
+	/**
+	 * Adds the langugae information for the specified language to the content
+	 * graph, if the content-graph contains no LINGVOJ.iso1 property for that suject.
+	 *
+	 * @param languageUri
+	 */
+	private void addToContentGraph(NonLiteral languageUri) {
+		final MGraph contentGraph = cgProvider.getContentGraph();
+		if (!contentGraph.filter(languageUri, LINGVOJ.iso1, null).hasNext()) {
+			contentGraph.addAll(getLanguageContext(languageUri));
+		}
+	}
+
+	private Graph getLanguageContext(NonLiteral langUri) {
 		Graph lingvojRdf = getLingvojGraph();
 		GraphNode languageNode = new GraphNode(langUri, lingvojRdf);
 		return languageNode.getNodeContext();
@@ -187,6 +205,8 @@ public class LanguageService {
 		if (languageListCache.size() == 0) {
 			addLanguage(new UriRef("http://www.lingvoj.org/lang/en"));
 		}
+		//this is to make sure the content graph contains the relevant data
+		synchronizeContentGraph();
 	}
 
 	private NonLiteral getListNode() {

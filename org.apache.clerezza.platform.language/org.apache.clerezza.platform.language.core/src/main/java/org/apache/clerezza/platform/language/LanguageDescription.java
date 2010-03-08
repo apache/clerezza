@@ -23,6 +23,7 @@ import org.apache.clerezza.rdf.core.Language;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.LINGVOJ;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -39,8 +40,12 @@ public class LanguageDescription {
 
 	LanguageDescription(GraphNode resource) {
 		this.resource = resource;
-		String iso1 = ((Literal)resource.getObjects(LINGVOJ.iso1).next()).
-				getLexicalForm();
+		Literal iso1Literal = (Literal) resource.getObjects(LINGVOJ.iso1).next();
+		if (iso1Literal == null) {
+			throw new RuntimeException("No iso1 code for "
+					+resource.getNode());
+		}
+		String iso1 = iso1Literal.getLexicalForm();
 		this.language = new Language(iso1);
 	}
 
