@@ -41,6 +41,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.ontologies.SCRIPT;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -83,6 +84,11 @@ public class ScriptExecution {
 	 * @scr.reference
 	 */
 	private TcManager tcManager;
+	
+	/**
+	 * @scr.reference
+	 */
+	private Parser parser;
 
 	private Map<ScriptLanguageDescription, List<ScriptEngineFactory>>
 			languageToFactoryMap =
@@ -216,6 +222,7 @@ public class ScriptExecution {
 		bindings.put("contentGraphProvider", cgProvider);
 		bindings.put("contentHandler", contentHandler);
 		bindings.put("tcManager", tcManager);
+		bindings.put("parser", parser);
 	}
 
 	private ScriptEngine getScriptEngine(String language, String languageVersion) {
