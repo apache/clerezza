@@ -34,6 +34,7 @@ import org.apache.clerezza.platform.content.hierarchy.CollectionNode;
 import org.apache.clerezza.platform.content.hierarchy.HierarchyNode;
 import org.apache.clerezza.platform.content.hierarchy.HierarchyService;
 import org.apache.clerezza.platform.content.hierarchy.NodeDoesNotExistException;
+import org.apache.clerezza.platform.content.hierarchy.UnknownRootExcetpion;
 import org.apache.clerezza.rdf.ontologies.MENU;
 import org.apache.clerezza.rdf.ontologies.RDF;
 
@@ -75,6 +76,9 @@ public class MenuManager {
 			node = hierarchyService.getHierarchyNode(hierarchyNode);
 		} catch (NodeDoesNotExistException ex) {
 			return getResourceNotExistingResponse(hierarchyNode);
+		} catch (UnknownRootExcetpion ex) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(ex.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		markHierarchyNode(node);
 		return Response.ok().build();
@@ -115,6 +119,9 @@ public class MenuManager {
 			node = hierarchyService.getHierarchyNode(hierarchyNode);
 		} catch (NodeDoesNotExistException ex) {
 			return getResourceNotExistingResponse(hierarchyNode);
+		} catch (UnknownRootExcetpion ex) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(ex.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		markHierarchyNodeInclusiveMembers(node);
 		return Response.ok().build();
@@ -147,6 +154,9 @@ public class MenuManager {
 			node = hierarchyService.getHierarchyNode(hierarchyNode);
 		} catch (NodeDoesNotExistException ex) {
 			return getResourceNotExistingResponse(hierarchyNode);
+		} catch (UnknownRootExcetpion ex) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(ex.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		unmarkHierarchyNode(node);
 		return Response.ok().build();
@@ -169,6 +179,9 @@ public class MenuManager {
 			node = hierarchyService.getHierarchyNode(hierarchyNode);
 		} catch (NodeDoesNotExistException ex) {
 			return getResourceNotExistingResponse(hierarchyNode);
+		} catch (UnknownRootExcetpion ex) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(ex.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		unmarkHierarchyNodeInclusiveMembers(node);
 		return Response.ok().build();
