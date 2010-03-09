@@ -65,8 +65,11 @@ AjaxOptions.prototype.error = function(XMLHttpRequest, textStatus, errorThrown) 
 		var errorXml = XMLHttpRequest.responseXML
 	} catch (err) {
 	}
+
 	if (!errorXml) {
-		errorXml = $(errorMessage)[0]
+		try {
+			errorXml = $(errorMessage)[0]
+		} catch (err) {}
 	}
 	if (errorXml) {
 		try {
@@ -76,6 +79,8 @@ AjaxOptions.prototype.error = function(XMLHttpRequest, textStatus, errorThrown) 
 	}
 	if (errorMessageFromXml) {
 		errorMessage = errorMessageFromXml
+	} else {
+		errorMessage = errorMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 	}
 	AlertMessage.show(function(){}, "The following error occured: " + errorMessage, "Error", "Ok");
 	statusMessage.remove(this.actionName);

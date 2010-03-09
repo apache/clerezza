@@ -28,7 +28,7 @@ function AlertMessage(){};
 /**
  * Creates and renders a dialox box.
  *
- * @param doFunction is a callback function which fired when the yes button is pressed
+ * @param yesHandler is a callback function which fired when the yes button is pressed
  * @param message
  * @param headerText
  * @param textYes
@@ -36,9 +36,9 @@ function AlertMessage(){};
  * 
  *
  */
-AlertMessage.show = function(handleYesFunction, message, headerText, textYes, textNo) {
+AlertMessage.show = function(yesHandler, message, headerText, textYes, textNo) {
 	var handleYes = function() {
-		doFunction();
+		yesHandler();
 		this.destroy();
 	};
 	var handleNo = function() {
@@ -84,8 +84,6 @@ AlertMessage.show = function(handleYesFunction, message, headerText, textYes, te
 		close: true,
 		modal: true,
 		zIndex: 100000,
-		text: message,
-
 		constraintoviewport: true,
 		buttons: buttonConfig
 	} );
@@ -94,6 +92,7 @@ AlertMessage.show = function(handleYesFunction, message, headerText, textYes, te
 	});
 
 	dialog.setHeader(headerText);
+	dialog.setBody(message);
 	dialog.render(document.body);
 	$("#tx-dialog").addClass("tx-window");
 	dialog.show();
