@@ -271,7 +271,10 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
     }
     catch {
       case e: java.lang.reflect.InvocationTargetException =>
-        throw new ScriptException(e.getTargetException.asInstanceOf[Exception])
+		e.getTargetException match {
+			case target : Exception  => throw new ScriptException(target)
+			case target : Throwable => throw target
+		}
       case e: Exception =>
         throw new ScriptException(e)
     }
