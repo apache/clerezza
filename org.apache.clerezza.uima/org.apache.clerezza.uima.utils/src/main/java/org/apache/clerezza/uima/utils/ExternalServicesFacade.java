@@ -29,7 +29,7 @@ public class ExternalServicesFacade {
 
     try {
       // analyze the document
-      uimaExecutor.analyzeDocument(document);
+      uimaExecutor.analyzeDocument(document,"TextKeywordExtractionAEDescriptor.xml");
 
       tags = new ArrayList<String>();
 
@@ -56,7 +56,7 @@ public class ExternalServicesFacade {
     try {
 
       // analyze the document
-      uimaExecutor.analyzeDocument(document);
+      uimaExecutor.analyzeDocument(document,"TextLanguageDetectionAEDescriptor.xml");
 
       // get execution results
       JCas jcas = uimaExecutor.getResults();
@@ -64,7 +64,7 @@ public class ExternalServicesFacade {
       // extract language Feature Structure using AlchemyAPI Annotator
       FeatureStructure languageFS = UIMAUtils.getSingletonFeatureStructure(LanguageFS.type, jcas);
 
-      language = languageFS.getStringValue(languageFS.getType().getFeatureByBaseName("text"));
+      language = languageFS.getStringValue(languageFS.getType().getFeatureByBaseName("language"));
 
     } catch (Exception e) {
       throw new UIMAException(e);
