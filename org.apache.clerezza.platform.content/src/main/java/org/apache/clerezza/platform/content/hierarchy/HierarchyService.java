@@ -85,7 +85,7 @@ public class HierarchyService {
 	/**
 	 * Returns the appropriate subclass of HierarchyNode according to the
 	 * specified resource.
-	 * @throws NodeDoesNotExistException Thrown if the specified node does not 
+	 * @throws NodeDoesNotExistException Thrown if the specified node does not
 	 *		exist.
 	 * @throws UnknownRootExcetpion Thrown if the base URI of the specified uri
 	 *		is not a known root of an hierarchy.
@@ -125,7 +125,7 @@ public class HierarchyService {
 							} else {
 								throw ex;
 							}
-                        }			
+                        }
 			if (!parent.getMembersRdf().contains(nodeUri)) {
 				throw new NodeDoesNotExistException(nodeUri);
 			}
@@ -134,7 +134,7 @@ public class HierarchyService {
 
 	/**
 	 * Returns the <code>CollectionNode</code> at the specified uri.
-	 * @throws NodeDoesNotExistException Thrown if the specified node does not 
+	 * @throws NodeDoesNotExistException Thrown if the specified node does not
 	 *		exist.
 	 * @throws IllegalArgumentException Thrown if the node at the specified uri
 	 *		is not a CollectionNode.
@@ -236,7 +236,7 @@ public class HierarchyService {
 	 * the base URI of uri as new root.
 	 * @param uri The Uri to be checked.
 	 */
-	private void handleRootOfUri(UriRef uri) {		
+	private void handleRootOfUri(UriRef uri) {
 		if (hasKnownRoot(uri)) {
 			return;
 		}
@@ -328,7 +328,7 @@ public class HierarchyService {
 	 * the base URI ('http://[host]/') of uri is added as root.
 	 *
 	 * @param uri the uri where the collection should be created.
-	 * @param posInParent the position of the collection in the memebers list of 
+	 * @param posInParent the position of the collection in the memebers list of
 	 *		its parent collection.
 	 * @throws NodeAlreadyExistsException Thrown if the specified node already
 	 *		exists.
@@ -344,7 +344,7 @@ public class HierarchyService {
 			collectionNode = new CollectionNode(uri, cgProvider.getContentGraph(), this);
 		} catch (UriException ex) {
 			throw new IllegalArgumentException(ex);
-		} 
+		}
 		addCollectionTypeTriple(collectionNode);
 		addToParent(collectionNode, posInParent);
 		addCreationProperties(collectionNode);
@@ -463,7 +463,7 @@ public class HierarchyService {
 
 	private void addCreationProperties(HierarchyNode node) {
 		GraphNode agentNode = getCreator();
-		if(!(node.getObjects(FOAF.maker).hasNext())) {
+		if(!(node.getObjects(FOAF.maker).hasNext() || agentNode == null)) {
 
 			Iterator<Triple> agents = node.getGraph().filter(null, PLATFORM.userName,
 					agentNode.getObjects(PLATFORM.userName).next());
@@ -478,13 +478,17 @@ public class HierarchyService {
 			node.getGraph().add(new TripleImpl(agent,
 					PLATFORM.userName, agentNode.getObjects(
 					PLATFORM.userName).next()));
-		} 
+		}
 		node.addProperty(DCTERMS.created,
 				LiteralFactory.getInstance().createTypedLiteral(new Date()));
 	}
 
 	protected GraphNode getCreator() {
-		return userManager.getUserGraphNode(UserUtil.getCurrentUserName());
+		String userName = UserUtil.getCurrentUserName();
+		if (userName != null) {
+			return userManager.getUserGraphNode(userName);
+		}
+		return null;
 	}
 
 	void deleteCreationProperties(HierarchyNode node) {
