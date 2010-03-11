@@ -23,8 +23,10 @@ import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Collections;
 import java.util.Iterator;
 import javax.security.auth.Subject;
+import org.apache.clerezza.platform.security.auth.PrincipalImpl;
 
 /**
  * Utility methods for retrieving user information.
@@ -67,11 +69,20 @@ public class UserUtil {
 			}
 			throw new RuntimeException(cause);
 		}
+		if (subject == null) {
+			return null;
+		}
 		Iterator<Principal> iter = subject.getPrincipals().iterator();
 		String name = null;
 		if (iter.hasNext()) {
 				name = iter.next().getName();
 		}
 		return name;
+	}
+
+	public static Subject createSubject(String userName) {
+		return new Subject(true,
+			Collections.singleton(new PrincipalImpl(userName)), Collections.EMPTY_SET,
+			Collections.EMPTY_SET);
 	}
 }

@@ -20,13 +20,14 @@ package org.apache.clerezza.platform.security.auth;
 
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-
 import java.util.Collections;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.security.auth.Subject;
+import org.apache.clerezza.platform.security.UserUtil;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
@@ -57,9 +58,7 @@ public class AuthenticatingFilter implements Filter {
 	private final Logger logger = LoggerFactory.getLogger(AuthenticatingFilter.class);
 	private SortedSet<WeightedAuthenticationMethod> methodList =
 			new TreeSet<WeightedAuthenticationMethod>(new WeightedAuthMethodComparator());
-	public static final Subject ANONYMOUS_SUBJECT = new Subject(true,
-			Collections.singleton(new PrincipalImpl("anonymous")), Collections.EMPTY_SET,
-			Collections.EMPTY_SET);
+	public static final Subject ANONYMOUS_SUBJECT = UserUtil.createSubject("anonymous");
 
 	@Override
 	public void handle(final Request request, final Response response,
@@ -86,8 +85,7 @@ public class AuthenticatingFilter implements Filter {
 		if (userName == null) {
 			subject = ANONYMOUS_SUBJECT;
 		} else {
-			subject = new Subject();
-			subject.getPrincipals().add(new PrincipalImpl(userName));
+			subject = UserUtil.createSubject(userName);
 		}
 		try {
 			Subject.doAsPrivileged(subject, new PrivilegedExceptionAction() {
