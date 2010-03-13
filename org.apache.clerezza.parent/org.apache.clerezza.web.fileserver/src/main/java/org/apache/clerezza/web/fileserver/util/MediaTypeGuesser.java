@@ -31,6 +31,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
+ * This uses a buil in mime.types file.<br/>
+ * Currently it doesn't implement java.net.FileNameMap, not does it uses the
+ * java specific mime.type mechanism as the URLConnection.getFileNameMap()
+ * method.
+ *
  * @author reto
  */
 public class MediaTypeGuesser {
@@ -38,6 +43,10 @@ public class MediaTypeGuesser {
 	static MediaTypeGuesser instance;
 	private final Logger logger = LoggerFactory.getLogger(MediaTypeGuesser.class);
 
+
+	/**
+	 * @return The singleton instance
+	 */
 	public static MediaTypeGuesser getInstance() {
 		if (instance == null) {
 			synchronized (MediaTypeGuesser.class) {
