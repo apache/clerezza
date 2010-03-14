@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.activation.UnsupportedDataTypeException;
 import javax.security.auth.Subject;
@@ -306,7 +307,7 @@ class ResponseProcessor {
 				}
 			}
 
-			private void writeTo(OutputStream firstByteActionOut, WritableByteChannel out)
+			private void writeTo(OutputStream firstByteActionOut, final WritableByteChannel out)
 					throws IOException{
 				try {
 					finalWriter.writeTo(finalEntity, finalEntity.getClass(), entityType,
@@ -316,9 +317,33 @@ class ResponseProcessor {
 					try {
 						BodyStoringResponse responseFake = new BodyStoringResponse(response);
 						JaxRsHandler.handleException(ex, request, responseFake);
-						MessageBody body = responseFake.getBody();
+						final MessageBody body = responseFake.getBody();
 						if (body != null) {
-							body.writeTo(out);
+							try {
+								//doing priviledged as this might invoke doAs to
+								//write the body as subject
+								AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+
+									@Override
+									public Subject run() throws IOException {
+										body.writeTo(out);
+										return null;
+									}
+								});
+							} catch (PrivilegedActionException privEx) {
+								Throwable cause = privEx.getCause();
+								if (cause instanceof IOException) {
+									throw (IOException)cause;
+								}
+								if (cause instanceof RuntimeException) {
+									throw (RuntimeException)cause;
+								}
+								if (cause instanceof Error) {
+									throw (Error)cause;
+								}
+								throw new RuntimeException(cause);
+							}
+							
 						}
 					} catch (HandlerException e) {
 						throw new RuntimeException(e);
