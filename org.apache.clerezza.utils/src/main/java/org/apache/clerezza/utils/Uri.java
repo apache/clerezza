@@ -1558,7 +1558,7 @@ public class Uri implements Cloneable, Comparable, Serializable {
         allowed_abs_path.or(abs_path);
         // allowed_abs_path.set('/');  // aleady included
         allowed_abs_path.andNot(percent);
-        allowed_abs_path.clear('+');
+        //allowed_abs_path.clear('+'); //legal according RFC2396
     }
 
 
@@ -1570,7 +1570,7 @@ public class Uri implements Cloneable, Comparable, Serializable {
     static {
         allowed_rel_path.or(rel_path);
         allowed_rel_path.clear('%');
-        allowed_rel_path.clear('+');
+        //allowed_rel_path.clear('+'); //legal according RFC2396
     }
 
 
