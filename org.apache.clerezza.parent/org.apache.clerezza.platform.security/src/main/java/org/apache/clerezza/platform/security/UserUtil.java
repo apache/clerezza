@@ -50,7 +50,8 @@ public class UserUtil {
 	 * <code>AccessControlContext</code>.
 	 * 
 	 * @param context
-	 * @return
+	 * @return the username of the current user or null if no
+	 * user name is associated with the provided <code>AccessControlContext</code>.
 	 */
 	public static String getUserName(final AccessControlContext context) {
 		Subject subject;		
