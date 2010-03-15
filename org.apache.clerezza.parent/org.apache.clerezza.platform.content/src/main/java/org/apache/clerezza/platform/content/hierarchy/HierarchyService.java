@@ -49,7 +49,6 @@ import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.utils.UriException;
 
 /**
  * The hierarchy service is an OSGi service that provides methods for managing
@@ -97,19 +96,14 @@ public class HierarchyService {
 			throw new UnknownRootExcetpion(extractBaseUri(uri));
 		}
 		HierarchyNode hierarchyNode;
-		try {
-			CollectionNode collectionNode =
-					new CollectionNode(uri, cgProvider.getContentGraph(), this);
-			if (collectionNode.isValid()) {
-				hierarchyNode = collectionNode;
-			} else {
-				hierarchyNode = new HierarchyNode(uri, cgProvider.getContentGraph(), this);
-			}
-
-		} catch (UriException ex) {
-			throw new IllegalArgumentException(ex);
+		CollectionNode collectionNode =
+				new CollectionNode(uri, cgProvider.getContentGraph(), this);
+		if (collectionNode.isValid()) {
+			hierarchyNode = collectionNode;
+		} else {
+			hierarchyNode = new HierarchyNode(uri, cgProvider.getContentGraph(), this);
 		}
-		checkExistence(hierarchyNode);
+	checkExistence(hierarchyNode);
 		return hierarchyNode;
 	}
 
@@ -153,8 +147,6 @@ public class HierarchyService {
 					new CollectionNode(uri, cgProvider.getContentGraph(), this);
 		} catch (IllegalArgumentException ex) {
 			throw new NodeDoesNotExistException(uri);
-		} catch (UriException ex) {
-			throw new IllegalArgumentException(ex);
 		}
 		checkExistence(collectionNode);
 		return collectionNode;
@@ -180,11 +172,7 @@ public class HierarchyService {
 		HierarchyUtils.ensureNonCollectionUri(uri);
 		handleRootOfUri(uri);
 		HierarchyNode hierarchyNode;
-		try {
-			hierarchyNode = new HierarchyNode(uri, cgProvider.getContentGraph(), this);
-		} catch (UriException ex) {
-			throw new IllegalArgumentException(ex);
-		}
+		hierarchyNode = new HierarchyNode(uri, cgProvider.getContentGraph(), this);
 		addToParent(hierarchyNode, posInParent);
 		addCreationProperties(hierarchyNode);
 		return hierarchyNode;
@@ -340,11 +328,7 @@ public class HierarchyService {
 		HierarchyUtils.ensureCollectionUri(uri);
 		handleRootOfUri(uri);
 		CollectionNode collectionNode;
-		try {
-			collectionNode = new CollectionNode(uri, cgProvider.getContentGraph(), this);
-		} catch (UriException ex) {
-			throw new IllegalArgumentException(ex);
-		}
+		collectionNode = new CollectionNode(uri, cgProvider.getContentGraph(), this);
 		addCollectionTypeTriple(collectionNode);
 		addToParent(collectionNode, posInParent);
 		addCreationProperties(collectionNode);
@@ -443,13 +427,9 @@ public class HierarchyService {
 	}
 
 	private void addRoot(UriRef baseUri) {
-		try {
-			CollectionNode node = new CollectionNode(baseUri, cgProvider.getContentGraph(), this);
-			addCollectionTypeTriple(node);
-			roots.add(node);
-		} catch (UriException ex) {
-			throw new IllegalArgumentException(ex);
-		}
+		CollectionNode node = new CollectionNode(baseUri, cgProvider.getContentGraph(), this);
+		addCollectionTypeTriple(node);
+		roots.add(node);
 	}
 
 	protected void deactivate(ComponentContext componentContext) {
