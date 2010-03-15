@@ -23,7 +23,6 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.utils.EncodedUriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.utils.UriException;
 import org.apache.clerezza.utils.UriUtil;
@@ -39,8 +38,8 @@ public class HierarchyNode extends GraphNode {
 	private HierarchyService hierarchyService;
 
 	HierarchyNode(UriRef hierarchyNode, TripleCollection graph,
-			HierarchyService hierarchyService) throws UriException {
-		super(new EncodedUriRef(hierarchyNode), graph);
+			HierarchyService hierarchyService) {
+		super(hierarchyNode, graph);
 		this.hierarchyService = hierarchyService;
 	}
 
@@ -103,7 +102,7 @@ public class HierarchyNode extends GraphNode {
 	 * Moves this node into the specified parent collection at the specified
 	 * position pos. Optionally you can specifiy a new name.
 	 *
-	 * @param newParentCollection the collection into which this node should be moved
+	 * @param newParent the collection into which this node should be moved
 	 * @param newName the new name of the moved node. Can be null.
 	 * @param pos the member position of the moved node in the members list of
 	 * the new parent collection.
@@ -112,7 +111,7 @@ public class HierarchyNode extends GraphNode {
 	 * @throws IllegalMoveException is thrown if the move operation is not allowed
 	 * @return the HierarchyNode at the new location
 	 */
-	public HierarchyNode move(CollectionNode newParentCollection, String newName, int pos)
+	public HierarchyNode move(CollectionNode newParent, String newName, int pos)
 			throws NodeAlreadyExistsException, IllegalMoveException {
 		String name;
 		try {
@@ -120,9 +119,9 @@ public class HierarchyNode extends GraphNode {
 		} catch (UriException ex) {
 			throw new RuntimeException(ex);
 		}
-		if (newParentCollection.equals(getParent())) {
+		if (newParent.equals(getParent())) {
 			UriRef nodeUri = getNode();
-			List<Resource> membersRdfList = newParentCollection.getMembersRdf();
+			List<Resource> membersRdfList = newParent.getMembersRdf();
 			int oldPos = membersRdfList.indexOf(nodeUri);			
 			if (oldPos < pos) {
 				pos -= 1;
@@ -135,7 +134,7 @@ public class HierarchyNode extends GraphNode {
 				return this;
 			}
 		}		
-		String newUriString = newParentCollection.getNode().getUnicodeString() +
+		String newUriString = newParent.getNode().getUnicodeString() +
 				name;
 		String alternativeUriString = newUriString;
 		if (this instanceof CollectionNode) {
@@ -145,7 +144,7 @@ public class HierarchyNode extends GraphNode {
 		}
 		UriRef newUri = new UriRef(newUriString);
 		UriRef alternativeUri = new UriRef(alternativeUriString);
-		List<Resource> parentMembers = newParentCollection.getMembersRdf();
+		List<Resource> parentMembers = newParent.getMembersRdf();
 		if (parentMembers.contains(newUri) || parentMembers.contains(alternativeUri)) {
 			HierarchyNode existingNode = null;
 			try {
@@ -166,7 +165,7 @@ public class HierarchyNode extends GraphNode {
 		deleteFromParent();
 
 		HierarchyNode movedNode = replaceWith(newUri);
-		newParentCollection.addMember(movedNode, pos);
+		newParent.addMember(movedNode, pos);
 		return movedNode;
 	}
 
@@ -192,11 +191,7 @@ public class HierarchyNode extends GraphNode {
 		}
 		UriRef newUri = (UriRef) replacement;
 		super.replaceWith(newUri);
-		try {
-			return new HierarchyNode(newUri, getGraph(), hierarchyService);
-		} catch (UriException ex) {
-			throw new IllegalArgumentException(ex);
-		}
+		return new HierarchyNode(newUri, getGraph(), hierarchyService);
 	}
 
 	/**

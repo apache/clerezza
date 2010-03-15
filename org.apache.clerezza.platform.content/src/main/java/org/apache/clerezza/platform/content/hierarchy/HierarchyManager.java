@@ -45,6 +45,9 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
+import org.apache.clerezza.rdf.utils.EncodedUriRef;
+import org.apache.clerezza.utils.UriException;
+import org.apache.clerezza.utils.UriUtil;
 
 
 /**
@@ -70,7 +73,8 @@ public class HierarchyManager {
 	 * Creates a new resource as a member of the specified parent collection.
 	 * It will be on the specified position in the members list of the parent,
 	 * if no position is specified, then it is appended to the end of the list.
-	 * The new resource will have the specified name.
+	 * The new resource will have the specified name. The specified URI and
+	 * the name will be encoded according RFC 1738.
 	 * This resource method has the path "createResource"
 	 * 
 	 * @param parentCollectionUri The uri of the parent collection.
@@ -85,19 +89,24 @@ public class HierarchyManager {
 			@FormParam(value = "pos") Integer pos,
 			@FormParam(value = "name") String name) {
 		HierarchyNode node = null;
-		try {			
+		try {
+			UriRef encodedParentCollectionUri = new EncodedUriRef(parentCollectionUri);
+			String encodedName = UriUtil.encodeWithinPath(name, "UTF-8");
 			if (pos == null) {
 				node = hierarchyService.
-						createNonCollectionNode(parentCollectionUri, name);
+						createNonCollectionNode(encodedParentCollectionUri, encodedName);
 			} else {
 				node = hierarchyService.
-						createNonCollectionNode(parentCollectionUri, name, pos);
+						createNonCollectionNode(encodedParentCollectionUri, encodedName, pos);
 			}
 		} catch (NodeAlreadyExistsException ex) {
 			return Response.status(Response.Status.CONFLICT).entity(ex.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		} catch (IllegalArgumentException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(e.toString()).
+					type(MediaType.TEXT_PLAIN_TYPE).build();
+		} catch (UriException ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		return Response.created(URI.create(node.getNode().getUnicodeString())).build();
@@ -107,7 +116,8 @@ public class HierarchyManager {
 	 * Creates a new collection as a member of the specified parent collection.
 	 * It will be on the specified position in the members list of the parent,
 	 * if no position is specified, then it is appended to the end of the list.
-	 * The new collection will have the specified name.
+	 * The new collection will have the specified name. The specified URI and
+	 * the name will be encoded according RFC 1738.
 	 * This resource method has the path "createCollection"
 	 *
 	 * @param parentCollectionUri The uri of the parent collection.
@@ -124,11 +134,12 @@ public class HierarchyManager {
 			@FormParam(value = "name") String name) {
 		CollectionNode node = null;
 		try {
-			
+			UriRef encodedParentCollectionUri = new EncodedUriRef(parentCollectionUri);
+			String encodedName = UriUtil.encodeWithinPath(name, "UTF-8");
 			if (pos == null) {
-				node = hierarchyService.createCollectionNode(parentCollectionUri, name);
+				node = hierarchyService.createCollectionNode(encodedParentCollectionUri, encodedName);
 			} else {
-				node = hierarchyService.createCollectionNode(parentCollectionUri, name, pos);
+				node = hierarchyService.createCollectionNode(encodedParentCollectionUri, encodedName, pos);
 			}
 		} catch (NodeAlreadyExistsException e) {
 			return Response.status(Response.Status.CONFLICT).entity(e.toString()).
@@ -136,12 +147,16 @@ public class HierarchyManager {
 		} catch (IllegalArgumentException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(e.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
+		} catch (UriException ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
+					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		return Response.created(URI.create(node.getNode().getUnicodeString())).build();
 	}
 
 	/**
-	 * Deletes the resource/collection of the specified URI.
+	 * Deletes the resource/collection of the specified URI. The specified URI
+	 * will be encoded according RFC 1738.
 	 * This resource method has the path "delete"
 	 *
 	 * @param nodeUri
@@ -154,25 +169,28 @@ public class HierarchyManager {
 	public Response delete(@FormParam(value = "nodeUri") UriRef nodeUri) {
 		HierarchyNode hierarchyNode;
 		try {
-			hierarchyNode = hierarchyService.getHierarchyNode(nodeUri);
+			hierarchyNode = hierarchyService.getHierarchyNode(new EncodedUriRef(nodeUri));
 		} catch (NodeDoesNotExistException ex) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		} catch (UnknownRootExcetpion ex) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
+		} catch (UriException ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
+					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
-
 		hierarchyNode.delete();
 		return Response.noContent().build();		
 	}
 
 	/**
 	 * Moves the node into the specified collection as the member at
-	 * the specified position pos. 
+	 * the specified position pos. The specified URIs and the new
+	 * name will be encoded according RFC 1738.
 	 * This resource method has the path "move"
 	 *
-	 * @param oldPos
-	 * @param newPos
+	 * @param target the node to be moved
+	 * @param newParent the parent into which the node will be moved
 	 * @param newName The new name of the moved node. This parameter is optionally.
 	 * @return if sucessfully moved then a Created (201) HTTP Response is returned.
 	 *		if the specified targetCollection is not a collection then a
@@ -182,45 +200,58 @@ public class HierarchyManager {
 	 */
 	@POST
 	@Path("move")
-	public Response move(@FormParam(value = "nodeUri") UriRef nodeUri,
-			@FormParam(value = "targetCollection") UriRef targetCollection,
+	public Response move(@FormParam(value = "targetUri") UriRef target,
+			@FormParam(value = "newParentUri") UriRef newParent,
 			@FormParam(value = "pos") Integer newPos,
 			@FormParam(value = "newName") String newName) {
-		HierarchyNode hierarchyNode;
-		CollectionNode targetCollectionNode;
+		HierarchyNode targetNode;
+		CollectionNode newParentNode;
 		try {
-			hierarchyNode = hierarchyService.getHierarchyNode(nodeUri);
-			targetCollectionNode = hierarchyService.getCollectionNode(targetCollection);
+			targetNode = hierarchyService.getHierarchyNode(
+					new EncodedUriRef(target));
+			newParentNode = hierarchyService.getCollectionNode(
+					new EncodedUriRef(newParent));
+		} catch (UriException ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
+					type(MediaType.TEXT_PLAIN_TYPE).build();
 		} catch (NodeDoesNotExistException ex) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		} catch (IllegalArgumentException e) {
 			return Response.status(Response.Status.CONFLICT).entity(
-					targetCollection.getUnicodeString() + " is not a Collection.").
+					newParent.getUnicodeString() + " is not a Collection.").
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		} catch (UnknownRootExcetpion ex) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		try {
-			hierarchyNode = hierarchyNode.move(targetCollectionNode, newName, newPos);
+			String encodedNewName = null;
+			if (newName != null) {
+				encodedNewName = UriUtil.encodeWithinPath(newName, "UTF-8");
+			}
+			targetNode = targetNode.move(newParentNode, encodedNewName, newPos);
 		} catch (NodeAlreadyExistsException ex) {
 			return Response.status(Response.Status.CONFLICT).entity(
-					nodeUri.getUnicodeString() + " already exists in " +
+					target.getUnicodeString() + " already exists in " +
 					"collection.").
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		} catch (IllegalMoveException ex) {
 			return Response.status(Response.Status.CONFLICT).entity(ex.getMessage()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
+		} catch (UriException ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
+					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		return Response.created(
-				URI.create(hierarchyNode.getNode().getUnicodeString())).build();
+				URI.create(targetNode.getNode().getUnicodeString())).build();
 	}
 	
 	/**
 	 * Renames the specified node to the given name. E.g. if you rename 
 	 * "http://localhost:8080/foo/bar" to "test" the new URI will be 
 	 * "http://localhost:8080/foo/test".
-	 * This resource method has the path "rename".
+	 * This resource method has the path "rename". The specified URI and
+	 * name will be encoded according RFC 1738.
 	 * 
 	 * @param newName The new name of the moved node.
 	 * @return if sucessfully renamed then a Created (201) HTTP Response is returned.
@@ -235,14 +266,13 @@ public class HierarchyManager {
 			HierarchyNode hierarchyNode = hierarchyService.getHierarchyNode(nodeUri);
 			CollectionNode parent = hierarchyNode.getParent();
 			int pos = parent.getMembers().indexOf(hierarchyNode);
-			return move(nodeUri, parent.getNode(), pos, newName);
+			return move(nodeUri, parent.getNode() , pos, newName);
 		} catch (NodeDoesNotExistException ex) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		} catch (UnknownRootExcetpion ex) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(ex.toString()).
 					type(MediaType.TEXT_PLAIN_TYPE).build();
-		}
-		
+		}		
 	}
 
 	/**
@@ -251,7 +281,8 @@ public class HierarchyManager {
 	 * If the specified hierarchy node is not collection node then a
 	 * WebApplicationException containing a Bad Request (400) HTTP Response is
 	 * thrown. The returned graph is enriched with HIERARCHY:membersNumber for
-	 * the contained collections.
+	 * the contained collections. The specified URI will be encoded according
+	 * RFC 1738.
 	 * This resource method has the path "getCollection"
 	 *
 	 * @param node a collection node
@@ -263,13 +294,16 @@ public class HierarchyManager {
 			@QueryParam(value = "collectionNode") UriRef node) {
 		CollectionNode collectionNode;
 		try {
-			collectionNode = hierarchyService.getCollectionNode(node);
+			collectionNode = hierarchyService.getCollectionNode(new EncodedUriRef(node));
 		} catch (NodeDoesNotExistException ex) {
 			throw new WebApplicationException(
 					Response.status(Response.Status.BAD_REQUEST).build());
 		} catch (UnknownRootExcetpion ex) {
 			throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
 					.entity(ex.toString()).type(MediaType.TEXT_PLAIN_TYPE).build());
+		} catch (UriException ex) {
+			throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).
+					entity(ex.toString()).type(MediaType.TEXT_PLAIN_TYPE).build());
 		}
 		MGraph result = new SimpleMGraph();
 		result.addAll(collectionNode.getNodeContext());
