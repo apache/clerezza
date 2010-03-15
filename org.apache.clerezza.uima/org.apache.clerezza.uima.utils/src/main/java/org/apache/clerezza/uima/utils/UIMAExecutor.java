@@ -4,6 +4,7 @@ import org.apache.clerezza.uima.utils.exception.ExecutionWithoutResultsException
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import java.util.HashMap;
@@ -12,7 +13,6 @@ import java.util.Map;
 /**
  * Executes a UIMA pipeline
  *
- * @author tommaso
  */
 public class UIMAExecutor {
 
@@ -73,11 +73,7 @@ public class UIMAExecutor {
      */
     public void analyzeDocument(String doc, String xmlPath, Map<String, Object> aeParameterSettings) throws AnalysisEngineProcessException {
         try {
-            AnalysisEngine engine = aeProvider.getAE(xmlPath);
-            // set runtime parameters
-            for (String parameter : aeParameterSettings.keySet()) {
-                engine.setConfigParameterValue(parameter, aeParameterSettings.get(parameter));
-            }
+            AnalysisEngine engine = aeProvider.getAE(xmlPath,aeParameterSettings);
             this.executeAE(engine, doc);
         } catch (ResourceInitializationException e) {
             throw new AnalysisEngineProcessException(e);

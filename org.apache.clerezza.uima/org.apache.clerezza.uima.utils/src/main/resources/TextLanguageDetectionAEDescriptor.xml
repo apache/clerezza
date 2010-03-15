@@ -4,7 +4,7 @@
   <primitive>true</primitive>
   <annotatorImplementationName>org.apache.uima.alchemy.annotator.TextLanguageDetectionAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
-    <name>TextCategorizationAEDescriptor</name>
+    <name>TextLanguageDetectionAEDescriptor</name>
     <description/>
     <version>1.0</version>
     <vendor/>
