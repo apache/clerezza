@@ -18,7 +18,10 @@
  */
 package org.apache.clerezza.platform.xhtml2html;
 
+import java.util.Iterator;
 import java.util.regex.Pattern;
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
 import org.osgi.service.component.ComponentContext;
 import org.wymiwyg.wrhapi.Handler;
 import org.wymiwyg.wrhapi.HandlerException;
@@ -26,6 +29,8 @@ import org.wymiwyg.wrhapi.HeaderName;
 import org.wymiwyg.wrhapi.Request;
 import org.wymiwyg.wrhapi.Response;
 import org.wymiwyg.wrhapi.filter.Filter;
+import org.wymiwyg.wrhapi.util.AcceptHeaderEntry;
+import org.wymiwyg.wrhapi.util.EnhancedRequest;
 
 /**
  * This Filter acts on client agents matching a pattern defined by the 
@@ -44,6 +49,16 @@ import org.wymiwyg.wrhapi.filter.Filter;
 public class Xhtml2HtmlFilter implements Filter {
 
 	private Pattern[] patterns;
+	final MimeType xhtmlMimeType;
+	final MimeType htmlMimeType;
+	{
+		try {
+			xhtmlMimeType = new MimeType("application", "xhtml+xml");
+			htmlMimeType = new MimeType("text", "html");
+		} catch (MimeTypeParseException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 
 	@Override
 	public void handle(Request request, Response response, Handler handler)
@@ -56,12 +71,30 @@ public class Xhtml2HtmlFilter implements Filter {
 	}
 
 	private boolean isApplicable(final Request request) throws HandlerException {
+		if (htmlPreferredInAccept(request)) {
+			return true;
+		}
 		final String[] userAgentStrings = request.getHeaderValues(HeaderName.USER_AGENT);
 		for (final String userAgentString : userAgentStrings) {
 			for (final Pattern pattern : patterns) {
 				if (pattern.matcher(userAgentString).matches()) {
 					return true;
 				}
+			}
+		}
+		return false;
+	}
+
+	private boolean htmlPreferredInAccept(Request request) throws HandlerException {
+		EnhancedRequest ehRequest = new EnhancedRequest(request);
+		Iterator<AcceptHeaderEntry> iter = ehRequest.getAccept();
+		while (iter.hasNext()) {
+			AcceptHeaderEntry entry = iter.next();
+			if (entry.getRange().match(xhtmlMimeType)) {
+				return false;
+			}
+			if (entry.getRange().match(htmlMimeType)) {
+				return true;
 			}
 		}
 		return false;
@@ -75,5 +108,7 @@ public class Xhtml2HtmlFilter implements Filter {
 			patterns[i] = Pattern.compile(patternStrings[i]);
 		}
 	}
+
+
 
 }
