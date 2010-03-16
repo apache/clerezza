@@ -94,7 +94,7 @@ public class MediaTypeProvider implements HeaderDelegate<MediaType> {
 
             return new MediaType(type,subType,params);
         } catch (ParseException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException("cannot parse "+header,ex);
         }
     }
 }
