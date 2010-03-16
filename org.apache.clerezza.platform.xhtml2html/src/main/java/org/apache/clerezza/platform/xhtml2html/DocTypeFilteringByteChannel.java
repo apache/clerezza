@@ -32,6 +32,7 @@ class DocTypeFilteringByteChannel implements WritableByteChannel {
 	
 	private final static byte[] DOCTYPE_DEF_BYTES = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> ".getBytes();
 	private final static byte[] DOCTYPE_TAG_BYTES = "<!DOCTYPE".getBytes();
+	private final static byte[] HTML_TAG_BYTES = "<html".getBytes();
 	private final static byte[]	XML_DECLARATION_BYTES = "<?xml".getBytes();
 	private final static byte GREATER_THAN = ">".getBytes()[0];
 	private final static byte SPACE = " ".getBytes()[0];
@@ -44,6 +45,8 @@ class DocTypeFilteringByteChannel implements WritableByteChannel {
 	private ResponseStatusInfo wrappedResponse;
 	private boolean isXmlDeclaration = true;
 	private boolean isNotADoctypeDef = false;
+	private boolean hasHtmlTag = false;
+	private boolean lookingForHtmlTag = true;
 	
 	public DocTypeFilteringByteChannel(WritableByteChannel byteChannel,
 			ResponseStatusInfo wrappedResponse) {
@@ -64,30 +67,41 @@ class DocTypeFilteringByteChannel implements WritableByteChannel {
 				}
 				if (arrayPosition == (DOCTYPE_TAG_BYTES.length - 1) &&
 						DOCTYPE_TAG_BYTES[arrayPosition] == b) {
-					writeToWrappedChannel(cachedBytes.toByteArray());
-					wrappedByteChannel.write(byteBuffer);
-					doctypeWritten = true;
+					WriteEverthingAndSetDoctypeWrittenToTrue(byteBuffer);
 					break;
 				}
 				if (arrayPosition < XML_DECLARATION_BYTES.length
 						&& XML_DECLARATION_BYTES[arrayPosition] != b) {
 					isXmlDeclaration = false;
 				}
+
+				if (lookingForHtmlTag) {
+					if (arrayPosition < HTML_TAG_BYTES.length
+							&& HTML_TAG_BYTES[arrayPosition] != b) {
+						lookingForHtmlTag = false;
+					}
+					if (arrayPosition >= HTML_TAG_BYTES.length) {
+						hasHtmlTag = true;
+					}
+				}
+				
 				if (arrayPosition >= XML_DECLARATION_BYTES.length && isXmlDeclaration) {
 					if (b == GREATER_THAN) {
 						arrayPosition = 0;
 						isNotADoctypeDef = false;
+						lookingForHtmlTag = true;
 						cachedBytes.reset(); // dump XML Declaration
-					}
+					}					
 					continue;
 				}
 				if (DOCTYPE_TAG_BYTES[arrayPosition] != b || isNotADoctypeDef) {
 					isNotADoctypeDef = true;
-					if (!isXmlDeclaration) {
+					if (!isXmlDeclaration && hasHtmlTag) {
 						writeToWrappedChannel(DOCTYPE_DEF_BYTES);						
-						writeToWrappedChannel(cachedBytes.toByteArray());
-						wrappedByteChannel.write(byteBuffer);
-						doctypeWritten = true;
+						WriteEverthingAndSetDoctypeWrittenToTrue(byteBuffer);
+						break;
+					} else if (!isXmlDeclaration && !hasHtmlTag && !lookingForHtmlTag){
+						WriteEverthingAndSetDoctypeWrittenToTrue(byteBuffer);
 						break;
 					}
 				}
@@ -97,6 +111,12 @@ class DocTypeFilteringByteChannel implements WritableByteChannel {
 		} else {
 			return wrappedByteChannel.write(byteBuffer);
 		}
+	}
+
+	private void WriteEverthingAndSetDoctypeWrittenToTrue(ByteBuffer byteBuffer) throws IOException {
+		writeToWrappedChannel(cachedBytes.toByteArray());
+		wrappedByteChannel.write(byteBuffer);
+		doctypeWritten = true;
 	}
 
 	@Override

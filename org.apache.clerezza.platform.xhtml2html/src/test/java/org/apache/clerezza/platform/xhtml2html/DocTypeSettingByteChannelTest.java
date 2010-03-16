@@ -38,18 +38,11 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
-				new ResponseStatusInfo() {
-
-			@Override
-			public boolean convertXhtml2Html() {
-				return true;
-			}
-
-		});
+		final WritableByteChannel channel = createDocTypeFilteringByteChannel(baos);
 		channel.write(ByteBuffer.wrap(someHtml.getBytes(UTF8)));
 		final String resultString = new String(baos.toByteArray(), UTF8);
 		Assert.assertTrue(resultString.startsWith("<!DOCTYPE"));
+		
 	}
 
 	/**
@@ -64,18 +57,10 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
-				new ResponseStatusInfo() {
-
-			@Override
-			public boolean convertXhtml2Html() {
-				return true;
-			}
-		});
+		final WritableByteChannel channel = createDocTypeFilteringByteChannel(baos);
 		int bytesWritten = channel.write(ByteBuffer.wrap(someHtml.substring(0, 20).getBytes(UTF8)));
 		bytesWritten += channel.write(ByteBuffer.wrap(someHtml.substring(20).getBytes(UTF8)));
 		final String resultString = new String(baos.toByteArray(), UTF8);
-		System.out.println(resultString);
 		Assert.assertEquals(someHtml.length(), bytesWritten);
 		Assert.assertTrue(resultString.contains("<!DOCTYPE"));
 		/* The test fails iff the ?xml is at another position than 0, not
@@ -95,14 +80,7 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
-				new ResponseStatusInfo() {
-
-			@Override
-			public boolean convertXhtml2Html() {
-				return true;
-			}
-		});
+		final WritableByteChannel channel = createDocTypeFilteringByteChannel(baos);
 		channel.write(ByteBuffer.wrap(someHtml.getBytes(UTF8)));
 		final String resultString = new String(baos.toByteArray(), UTF8);
 		Assert.assertTrue(resultString.contains("<!DOCTYPE"));
@@ -124,15 +102,7 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
-				new ResponseStatusInfo() {
-
-			@Override
-			public boolean convertXhtml2Html() {
-				return true;
-			}
-
-		});
+		final WritableByteChannel channel = createDocTypeFilteringByteChannel(baos);
 		channel.write(ByteBuffer.wrap(someHtml.getBytes(UTF8)));
 		final String resultString = new String(baos.toByteArray(), UTF8);
 		Assert.assertTrue(resultString.startsWith("<!DOCTYPE something"));
@@ -148,15 +118,7 @@ public class DocTypeSettingByteChannelTest  {
 				"</body>\n" +
 				"</html>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new DocTypeFilteringByteChannel(Channels.newChannel(baos),
-				new ResponseStatusInfo() {
-
-			@Override
-			public boolean convertXhtml2Html() {
-				return true;
-			}
-
-		});
+		final WritableByteChannel channel = createDocTypeFilteringByteChannel(baos);
 		final byte[] bytes = someHtml.getBytes(UTF8);
 		for (int i = 0; i < bytes.length; i++) {
 			ByteBuffer buf = ByteBuffer.allocate(1);
@@ -167,6 +129,46 @@ public class DocTypeSettingByteChannelTest  {
 		final String resultString = new String(baos.toByteArray(), UTF8);
 		Assert.assertTrue(resultString.startsWith("<!DOCTYPE something"));
 		Assert.assertFalse(resultString.substring(8).contains("<!DOCTYPE"));
+	}
+
+	@Test
+	public void notAddDoctypeIfHtmlNotComplete() throws Exception {
+		final String someHtmlSnippet =	"<body>\n" +
+				"hello" +
+				"</body>\n";
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final WritableByteChannel channel = createDocTypeFilteringByteChannel(baos);
+		channel.write(ByteBuffer.wrap(someHtmlSnippet.getBytes(UTF8)));
+		final String resultString = new String(baos.toByteArray(), UTF8);
+		Assert.assertEquals(someHtmlSnippet, resultString);
+	}
+
+	@Test
+	public void RemoveXmlDeclarationAndDotnotAddDoctypeIfHtmlNotComplete() throws Exception {
+		final String someHtmlSnippet =	"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n\n\n\n<body>\n" +
+				"hello" +
+				"</body>\n";
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final WritableByteChannel channel = createDocTypeFilteringByteChannel(baos);
+		channel.write(ByteBuffer.wrap(someHtmlSnippet.getBytes(UTF8)));
+		final String resultString = new String(baos.toByteArray(), UTF8);
+		/* The test fails iff the ?xml is at another position than 0, not
+		 * if its removed*/
+		if (resultString.contains("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>")) {
+			Assert.assertTrue(resultString.startsWith("<?xml"));
+		}
+		Assert.assertFalse(resultString.contains("<!DOCTYPE"));
+	}
+
+	private WritableByteChannel createDocTypeFilteringByteChannel(ByteArrayOutputStream baos) {
+		return new DocTypeFilteringByteChannel(Channels.newChannel(baos),
+				new ResponseStatusInfo() {
+
+			@Override
+			public boolean convertXhtml2Html() {
+				return true;
+			}
+		});
 	}
 
 }
