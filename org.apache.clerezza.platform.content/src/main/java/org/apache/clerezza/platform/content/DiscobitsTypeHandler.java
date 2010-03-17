@@ -166,10 +166,10 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 			final List<String> contentTypeHeaders = headers.getRequestHeader(HttpHeaders.CONTENT_TYPE);
 			if (contentTypeHeaders == null) {
 				logger.warn("Content-Type not specified");
-				String guessedContentType = MediaTypeGuesser.getInstance().guessTypeForName(
-						uriInfo.getAbsolutePath().toString()).toString();
-				contentType = guessedContentType == null ?
-					MediaType.APPLICATION_OCTET_STREAM : guessedContentType;
+				final MediaType guessTypeForName = MediaTypeGuesser.getInstance().
+						guessTypeForName(uriInfo.getAbsolutePath().toString());
+				contentType = guessTypeForName == null ?
+					MediaType.APPLICATION_OCTET_STREAM : guessTypeForName.toString();
 			} else {
 				contentType = contentTypeHeaders.get(0);
 			}
