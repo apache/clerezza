@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * This uses a buil in mime.types file.<br/>
+ * This uses a built in mime.types file.<br/>
  * Currently it doesn't implement java.net.FileNameMap, not does it uses the
  * java specific mime.type mechanism as the URLConnection.getFileNameMap()
  * method.
@@ -104,6 +104,6 @@ public class MediaTypeGuesser {
 		if (dotPos == -1) {
 			return null;
 		}
-		return getTypeForExtension(fileName.substring(dotPos+1));
+		return getTypeForExtension(fileName.substring(dotPos+1).toLowerCase());
 	}
 }
