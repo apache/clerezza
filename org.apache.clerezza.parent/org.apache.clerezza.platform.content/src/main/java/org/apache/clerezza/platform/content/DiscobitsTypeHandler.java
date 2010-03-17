@@ -35,14 +35,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.RuntimeDelegate;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -135,21 +133,8 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		if (infoDiscobit != null) {
 			return infoDiscobit;
 		} else {
-			if (mGraph.filter(uri, null, null).hasNext() ||
-					mGraph.filter(null, null, uri).hasNext()) {
-				return graphNode;
-			} else {
-				UriRef slashedUri = new UriRef(uri.getUnicodeString()+"/");
-				if (mGraph.filter(slashedUri, null, null).hasNext() ||
-					mGraph.filter(null, null, slashedUri).hasNext()) {
-					RedirectUtil.createSeeOtherResponse(
-							slashedUri.getUnicodeString(), uriInfo);
-				}
-			}
+			return checkIfOppositExistsAndRedirectIfSo(uri, uriInfo);
 		}
-		throw new WebApplicationException(RuntimeDelegate.getInstance()
-				.createResponseBuilder().status(Status.NOT_FOUND)
-				.entity("Sorry, we know nothing about this resource.").build());
 	}
 
 	
@@ -174,8 +159,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 				contentType = contentTypeHeaders.get(0);
 			}
 			
-		}
-	
+		}	
 		final UriRef infoDiscoBitUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		put(infoDiscoBitUri, MediaType.valueOf(contentType), data);
 		return Response.status(Status.CREATED).build();
@@ -194,9 +178,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	@MKCOL
 	public Object mkcol(@Context UriInfo uriInfo) {
 		UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
-		if (!nodeUri.getUnicodeString().endsWith("/")) {
-			nodeUri = new UriRef(nodeUri.getUnicodeString() + "/");
-		}
+		nodeUri = HierarchyUtils.makeCollectionUriRef(nodeUri);
 		try {
 			hierarchyService.createCollectionNode(nodeUri);
 		} catch (NodeAlreadyExistsException e) {
@@ -230,7 +212,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 			@Context HttpHeaders headers, DOMSource body) {
 		final UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			return checkIfCollectionExistsAndRedirectIfSo(nodeUri, uriInfo);
+			return checkIfOppositExistsAndRedirectIfSo(nodeUri, uriInfo);
 		}
 			Map<UriRef, PropertyMap> result;
 			try {
@@ -262,7 +244,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 						MediaType.APPLICATION_XML_TYPE).build();
 			} catch (NodeDoesNotExistException e) {
 				return Response.status(Status.NOT_FOUND).entity(
-						e.getMessage()).build();
+						e.getMessage()).type(MediaType.TEXT_PLAIN).build();
 			} catch (TransformerFactoryConfigurationError e) {
 				return Response.status(Status.BAD_REQUEST).build();
 			} catch (TransformerException e) {
@@ -311,7 +293,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	public Response proppatch(@Context UriInfo uriInfo, DOMSource body) {
 		UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			return checkIfCollectionExistsAndRedirectIfSo(nodeUri, uriInfo);
+			return checkIfOppositExistsAndRedirectIfSo(nodeUri, uriInfo);
 		}
 		try {
 			Document requestDoc = WebDavUtils.sourceToDocument(body);
@@ -336,7 +318,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 					MediaType.APPLICATION_XML_TYPE).build();
 		} catch (NodeDoesNotExistException e) {
 			return Response.status(Status.NOT_FOUND).entity(
-					e.getMessage()).build();
+					e.getMessage()).type(MediaType.TEXT_PLAIN).build();
 		}catch (ParserConfigurationException ex) {
 			throw new RuntimeException(ex);
 		} catch (TransformerFactoryConfigurationError ex) {
@@ -365,9 +347,14 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	 */
 	@MOVE
 	public Response move(@Context UriInfo uriInfo, @Context HttpHeaders headers) {
-		final UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
+		UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			return checkIfCollectionExistsAndRedirectIfSo(nodeUri, uriInfo);
+			UriRef oppositUri = HierarchyUtils.makeOppositeUriRef(nodeUri);
+			if(nodeAtUriExists(oppositUri)) {
+				nodeUri = oppositUri;
+			} else {
+				return Response.status(Status.NOT_FOUND).build();
+			}
 		}
 		HierarchyNode targetNode;
 		String overwriteHeader = null;
@@ -389,7 +376,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 				targetNode.move(newParentCollection, HierarchyUtils.getName(
 						new UriRef(newCollectionString)), newParentCollection
 						.getMembers().size());
-				return Response.created(new java.net.URI(newCollectionString))
+				return Response.created(new java.net.URI(nodeUri.getUnicodeString()))
 						.build();
 			} else {
 				logger.error("empty Destination header!");
@@ -436,20 +423,26 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	 */
 	@DELETE
 	public Response delete(@Context UriInfo uriInfo) {
-		final UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
+		UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			return checkIfCollectionExistsAndRedirectIfSo(nodeUri, uriInfo);
+			UriRef oppositUri = HierarchyUtils.makeOppositeUriRef(nodeUri);
+			if(nodeAtUriExists(oppositUri)) {
+				nodeUri = oppositUri;
+			} else {
+				return Response.status(Status.NOT_FOUND).entity(
+					uriInfo.getAbsolutePath()).type(MediaType.TEXT_PLAIN).build();
+			}
 		}
-		UriRef hierarchyNodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
+		
 		HierarchyNode hierarchyNode;
 		try {
-			hierarchyNode = hierarchyService.getHierarchyNode(hierarchyNodeUri);
+			hierarchyNode = hierarchyService.getHierarchyNode(nodeUri);
 		} catch (NodeDoesNotExistException e) {
 			return Response.status(Status.NOT_FOUND).entity(
-					uriInfo.getAbsolutePath()).build();
+					uriInfo.getAbsolutePath()).type(MediaType.TEXT_PLAIN).build();
 		} catch (UnknownRootExcetpion ex) {
 			return Response.status(Status.NOT_FOUND).entity(
-					uriInfo.getAbsolutePath()).build();
+					uriInfo.getAbsolutePath()).type(MediaType.TEXT_PLAIN).build();
 		}
 		hierarchyNode.delete();
 		return Response.ok().build();
@@ -469,7 +462,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	public Response options(@Context UriInfo uriInfo) {
 		final UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			return checkIfCollectionExistsAndRedirectIfSo(nodeUri, uriInfo);
+			return checkIfOppositExistsAndRedirectIfSo(nodeUri, uriInfo);
 		}
 			Response.ResponseBuilder builder = Response.ok();
 			builder.header(HeaderName.DAV.toString(), "1");
@@ -526,19 +519,14 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 				|| mGraph.filter(null, null, nodeUri).hasNext();
 	}
 
-	private Response checkIfCollectionExistsAndRedirectIfSo(UriRef nodeUri,
+	private Response checkIfOppositExistsAndRedirectIfSo(UriRef nodeUri,
 			UriInfo uriInfo) {
-		UriRef slashedUri = new UriRef(nodeUri.getUnicodeString() + "/");
-		if (collectionExists(slashedUri)) {
+		UriRef oppositUri = HierarchyUtils.makeOppositeUriRef(nodeUri);
+		System.out.println(oppositUri);
+		if (nodeAtUriExists(oppositUri)) {
 			return RedirectUtil.createSeeOtherResponse(
-					slashedUri.getUnicodeString(), uriInfo);
+					oppositUri.getUnicodeString(), uriInfo);
 		}
 		return Response.status(Status.NOT_FOUND).build();
-	}
-	
-	private boolean collectionExists(UriRef slashedUri) {
-		MGraph mGraph = getMGraph();
-		return mGraph.filter(slashedUri, null, null).hasNext() ||
-				mGraph.filter(null, null, slashedUri).hasNext();
 	}
 }

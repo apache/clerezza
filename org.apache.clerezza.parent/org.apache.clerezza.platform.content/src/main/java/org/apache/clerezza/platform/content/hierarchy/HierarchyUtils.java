@@ -52,6 +52,44 @@ public class HierarchyUtils {
 			throw new IllegalArgumentException(uri + " does not end with a slash");
 		}
 	}
+
+	/**
+	 * Makes a collection uri out of the specifed uri. If the provided uri is
+	 * already a collection uri (if it ends with '/') then it is returned
+	 * unchanged.
+	 * @param uri
+	 * @return
+	 */
+	public static UriRef makeCollectionUriRef(UriRef uri) {
+		String uriString = uri.getUnicodeString();
+		if (uriString.endsWith("/")) {
+			return uri;
+		} else {
+			return new UriRef(uriString + "/");
+		}
+	}
+
+	/**
+	 * If the specified uri is a collection uri, then a resource uri is returned.
+	 * If the specified uri is a resource uri, then a collection uri is returned.
+	 * @param uri
+	 * @return
+	 */
+	public static UriRef makeOppositeUriRef(UriRef uri) {
+		String uriString = uri.getUnicodeString();
+		if (uriString.endsWith("/")) {
+			return new UriRef(uriString.substring(0, uriString.length() - 1));
+		} else {
+			return new UriRef(uriString + "/");
+		}
+	}
+
+	/**
+	 * Returns the name contained in the specified uri. The name is the last
+	 * segment of the uri path.
+	 * @param uri
+	 * @return
+	 */
 	public static String getName(UriRef uri) {
 		String uriString = uri.getUnicodeString();
 		if (uriString.endsWith("/")) {
