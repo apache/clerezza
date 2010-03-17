@@ -38,4 +38,9 @@
         <rdfs:range rdf:resource="xsd:int"/>
     </owl:ObjectProperty>
 
+	<owl:ObjectProperty rdf:about="#parent">
+        <rdfs:comment>Points from a resource to its parent collection.</rdfs:comment>
+        <rdfs:range rdf:resource="#Collection"/>
+    </owl:ObjectProperty>
+
 </rdf:RDF>
