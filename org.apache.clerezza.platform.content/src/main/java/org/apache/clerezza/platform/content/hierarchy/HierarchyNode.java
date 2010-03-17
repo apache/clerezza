@@ -85,6 +85,7 @@ public class HierarchyNode extends GraphNode {
 	/**
 	 * Moves this node into the specified parent collection at the specified
 	 * position pos.
+	 *
 	 * @param newParentCollection the collection into which this node should be moved
 	 * @param pos the member position of the moved node in the members list of
 	 * the new parent collection.
@@ -93,7 +94,7 @@ public class HierarchyNode extends GraphNode {
 	 * @throws IllegalMoveException is thrown if the move operation is not allowed
 	 * @return the HierarchyNode at the new location
 	 */
-	public HierarchyNode move(CollectionNode newParentCollection, int pos) 
+	public HierarchyNode move(CollectionNode newParentCollection, int pos)
 			throws NodeAlreadyExistsException, IllegalMoveException {
 		return this.move(newParentCollection, null, pos);
 	}

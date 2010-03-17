@@ -25,14 +25,14 @@ import org.apache.clerezza.rdf.core.UriRef;
  *
  * @author mir
  */
-class HierarchyUtils {
+public class HierarchyUtils {
 
 	/**
 	 * Extracts the URI of the parent collection from the specified URI.
 	 * @param nodeUri
 	 * @return URI of the parent collection of the specified URI
 	 */
-	static UriRef extractParentCollectionUri(UriRef nodeUri) {
+	public static UriRef extractParentCollectionUri(UriRef nodeUri) {
 		String uri = nodeUri.getUnicodeString();
 		if (uri.endsWith("/")) {
 			uri = uri.substring(0, uri.length() - 1);
@@ -52,8 +52,7 @@ class HierarchyUtils {
 			throw new IllegalArgumentException(uri + " does not end with a slash");
 		}
 	}
-
-	static String getName(UriRef uri) {
+	public static String getName(UriRef uri) {
 		String uriString = uri.getUnicodeString();
 		if (uriString.endsWith("/")) {
 			uriString = uriString.substring(0, uriString.length() - 1);
