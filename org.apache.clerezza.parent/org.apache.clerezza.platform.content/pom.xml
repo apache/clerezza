@@ -86,6 +86,10 @@
 			<artifactId>org.apache.clerezza.platform.security</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>

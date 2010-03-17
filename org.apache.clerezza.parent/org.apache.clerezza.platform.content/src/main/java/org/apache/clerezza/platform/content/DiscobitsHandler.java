@@ -44,7 +44,8 @@ public interface DiscobitsHandler {
 
 	/**
 	 * Removes InfoDiscoBits (aka binary contents), other DiscoBits and
-	 * the context of the specified node.
+	 * the context of the specified node. If it is in a hierarchy then it
+	 * will be removed also form its container.
 	 * 
 	 * @param node
 	 */
