@@ -92,8 +92,14 @@ public class CollectionTypeHandler extends DiscobitsTypeHandler{
 	@GET
 	@Override
 	public GraphNode getResource(@Context UriInfo uriInfo) {
-		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
-		MGraph mGraph = new UnionMGraph(new SimpleMGraph(), cgProvider.getContentGraph());
+		final MGraph contentGraph = cgProvider.getContentGraph();
+		final String uriString = uriInfo.getAbsolutePath().toString();
+		final UriRef indexUri = new UriRef(uriString+"index");
+		if (contentGraph.filter(indexUri, null, null).hasNext()) {
+			return new GraphNode(indexUri, contentGraph);
+		}
+		final UriRef uri = new UriRef(uriString);
+		MGraph mGraph = new UnionMGraph(new SimpleMGraph(), contentGraph);
 		final GraphNode graphNode = new GraphNode(uri, mGraph);
 		graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
 
