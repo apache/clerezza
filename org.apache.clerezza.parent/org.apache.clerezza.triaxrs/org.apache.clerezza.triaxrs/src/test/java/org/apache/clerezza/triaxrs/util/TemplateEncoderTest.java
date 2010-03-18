@@ -28,7 +28,7 @@ public class TemplateEncoderTest {
 		String s = "/föö/{blüü}/blä{euo}+{";
 		String encoded = TemplateEncoder.encode(s, "utf-8");
 		System.out.println(encoded);
-		Assert.assertEquals("/f%C3%B6%C3%B6/{blüü}/bl%C3%A4{euo}%2B%7B", encoded);
+		Assert.assertEquals("/f%C3%B6%C3%B6/{blüü}/bl%C3%A4{euo}+%7B", encoded);
 	}
 
 	@Test
@@ -42,6 +42,6 @@ public class TemplateEncoderTest {
 	public void containsAlreadyEncodedCharsTest() throws Exception {
 		String s = "/++/%20 %20/äöü%GG";
 		String encoded = TemplateEncoder.encode(s, "utf-8");
-		Assert.assertEquals("/%2B%2B/%20%20%20/%C3%A4%C3%B6%C3%BC%25GG", encoded);
+		Assert.assertEquals("/++/%20%20%20/%C3%A4%C3%B6%C3%BC%25GG", encoded);
 	}
 }
