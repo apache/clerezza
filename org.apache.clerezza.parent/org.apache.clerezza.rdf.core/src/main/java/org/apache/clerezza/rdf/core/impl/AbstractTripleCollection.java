@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.core.impl;
 
 import java.util.AbstractCollection;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -134,6 +135,18 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 			dispatchEvent(new RemoveEvent(this, triple));
 		}
 		return success;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		boolean modified = false;
+		for (Iterator<? extends Object> it = c.iterator(); it.hasNext();) {
+			Object object = it.next();
+			if (remove(object)) {
+				modified = true;
+			}
+		}
+		return modified;
 	}
 
 	/**
