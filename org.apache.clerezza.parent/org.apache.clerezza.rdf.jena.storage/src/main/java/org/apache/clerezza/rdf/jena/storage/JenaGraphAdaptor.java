@@ -67,32 +67,47 @@ public class JenaGraphAdaptor extends AbstractMGraph {
 		final ExtendedIterator jenaIter = jenaGraph.find(tria2JenaUtil.convert2JenaNode(subject),
 				tria2JenaUtil.convert2JenaNode(predicate),
 				tria2JenaUtil.convert2JenaNode(object));
-		ArrayList<Triple> data = new ArrayList<Triple>();
-		while (jenaIter.hasNext()) {
-			data.add(jena2TriaUtil.convertTriple(
-						(com.hp.hpl.jena.graph.Triple)jenaIter.next()));
-		}
-		final Iterator<Triple> base = data.iterator();
 		return new Iterator<Triple>() {
 
-			Triple lastReturned = null;
+			private Triple lastReturned = null;
+			private Iterator<Triple> precached = null;
 
 			@Override
 			public boolean hasNext() {
-				return base.hasNext();
+				if (precached != null) {
+					return precached.hasNext();
+				} else {
+					return jenaIter.hasNext();
+				}
 			}
 
 			@Override
 			public Triple next() {
-				lastReturned = base.next();
+				if (precached != null) {
+					lastReturned =  precached.next();
+				} else {
+					lastReturned = jena2TriaUtil.convertTriple(
+							(com.hp.hpl.jena.graph.Triple)jenaIter.next());
+				}
 				return lastReturned;
 			}
 
 			@Override
 			public void remove() {
-				JenaGraphAdaptor.this.performRemove(lastReturned);
+				final Triple deleting = lastReturned;
+				if (precached == null) {
+					final ArrayList<Triple> data = new ArrayList<Triple>();
+					while (hasNext()) {
+						data.add(next());
+					}
+					precached = data.iterator();
+				}
+				//jenaIter.remove();
+				//JenaGraphAdaptor.this.performRemove(lastReturned);
+				jenaGraph.delete(tria2JenaUtil.convertTriple(deleting));
 			}
 		};
+
 	}
 
 	@Override
