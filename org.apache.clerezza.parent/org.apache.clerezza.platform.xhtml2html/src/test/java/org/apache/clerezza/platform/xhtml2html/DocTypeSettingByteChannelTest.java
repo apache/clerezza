@@ -144,7 +144,7 @@ public class DocTypeSettingByteChannelTest  {
 	}
 
 	@Test
-	public void RemoveXmlDeclarationAndDotnotAddDoctypeIfHtmlNotComplete() throws Exception {
+	public void removeXmlDeclarationAndDotnotAddDoctypeIfHtmlNotComplete() throws Exception {
 		final String someHtmlSnippet =	"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n\n\n\n<body>\n" +
 				"hello" +
 				"</body>\n";
