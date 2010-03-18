@@ -522,7 +522,6 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	private Response checkIfOppositExistsAndRedirectIfSo(UriRef nodeUri,
 			UriInfo uriInfo) {
 		UriRef oppositUri = HierarchyUtils.makeOppositeUriRef(nodeUri);
-		System.out.println(oppositUri);
 		if (nodeAtUriExists(oppositUri)) {
 			return RedirectUtil.createSeeOtherResponse(
 					oppositUri.getUnicodeString(), uriInfo);
