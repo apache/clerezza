@@ -133,6 +133,9 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		if (infoDiscobit != null) {
 			return infoDiscobit;
 		} else {
+			if (nodeAtUriExists(uri)) {
+				return new GraphNode(uri, mGraph);
+			}
 			return checkIfOppositExistsAndRedirectIfSo(uri, uriInfo);
 		}
 	}
