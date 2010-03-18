@@ -34,10 +34,10 @@ class DocTypeFilteringByteChannel implements WritableByteChannel {
 	private final static byte[] DOCTYPE_TAG_BYTES = "<!DOCTYPE".getBytes();
 	private final static byte[] HTML_TAG_BYTES = "<html".getBytes();
 	private final static byte[]	XML_DECLARATION_BYTES = "<?xml".getBytes();
-	private final static byte GREATER_THAN = ">".getBytes()[0];
-	private final static byte SPACE = " ".getBytes()[0];
-	private final static byte NEXTLINE = "\n".getBytes()[0];
-	private final static byte CARRIAGE_RETURN = "\r".getBytes()[0];
+	private final static byte GREATER_THAN = '>';
+	private final static byte SPACE = ' ';
+	private final static byte NEXTLINE = '\n';
+	private final static byte CARRIAGE_RETURN = '\r';
 	private WritableByteChannel wrappedByteChannel;
 	private boolean doctypeWritten = false;
 	private int arrayPosition = 0;
@@ -67,7 +67,7 @@ class DocTypeFilteringByteChannel implements WritableByteChannel {
 				}
 				if (arrayPosition == (DOCTYPE_TAG_BYTES.length - 1) &&
 						DOCTYPE_TAG_BYTES[arrayPosition] == b) {
-					WriteEverthingAndSetDoctypeWrittenToTrue(byteBuffer);
+					writeEverythingAndSetDoctypeWrittenToTrue(byteBuffer);
 					break;
 				}
 				if (arrayPosition < XML_DECLARATION_BYTES.length
@@ -98,10 +98,10 @@ class DocTypeFilteringByteChannel implements WritableByteChannel {
 					isNotADoctypeDef = true;
 					if (!isXmlDeclaration && hasHtmlTag) {
 						writeToWrappedChannel(DOCTYPE_DEF_BYTES);						
-						WriteEverthingAndSetDoctypeWrittenToTrue(byteBuffer);
+						writeEverythingAndSetDoctypeWrittenToTrue(byteBuffer);
 						break;
 					} else if (!isXmlDeclaration && !hasHtmlTag && !lookingForHtmlTag){
-						WriteEverthingAndSetDoctypeWrittenToTrue(byteBuffer);
+						writeEverythingAndSetDoctypeWrittenToTrue(byteBuffer);
 						break;
 					}
 				}
@@ -113,7 +113,7 @@ class DocTypeFilteringByteChannel implements WritableByteChannel {
 		}
 	}
 
-	private void WriteEverthingAndSetDoctypeWrittenToTrue(ByteBuffer byteBuffer) throws IOException {
+	private void writeEverythingAndSetDoctypeWrittenToTrue(ByteBuffer byteBuffer) throws IOException {
 		writeToWrappedChannel(cachedBytes.toByteArray());
 		wrappedByteChannel.write(byteBuffer);
 		doctypeWritten = true;
