@@ -37,10 +37,12 @@ object Preamble {
 	}
 
 	implicit def toFirstElement(c: CollectedIter[RichGraphNode])  = {
-		if (c.length > 0) {
+		if (c.length(1) > 0) {
 			c(0)
 		} else {
 			emptyLiteral
 		}
 	}
+
+
 }
