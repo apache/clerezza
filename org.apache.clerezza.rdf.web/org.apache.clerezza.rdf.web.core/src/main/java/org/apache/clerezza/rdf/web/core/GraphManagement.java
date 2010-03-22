@@ -112,7 +112,7 @@ public class GraphManagement implements GlobalMenuItemsProvider {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
 		try {
 			AccessController.checkPermission(
-					new GraphManagementPermission());
+					new GraphManagementAppPermission());
 		} catch (AccessControlException e) {
 			return items;
 		}

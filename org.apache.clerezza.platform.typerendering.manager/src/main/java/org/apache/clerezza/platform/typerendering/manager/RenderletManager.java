@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessControlException;
+import java.security.AccessController;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -67,6 +69,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
@@ -441,6 +444,12 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	@Override
 	public Set<GlobalMenuItem> getMenuItems() {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+		try {
+			AccessController.checkPermission(
+					new TcPermission("http://tpf.localhost/config.graph", "write"));
+		} catch (AccessControlException e) {
+			return items;
+		}
 		items.add(new GlobalMenuItem("/admin/renderlet-manager/", "RMR", "Renderlet Manager", 3,
 				"Main-Modules"));
 		return items;

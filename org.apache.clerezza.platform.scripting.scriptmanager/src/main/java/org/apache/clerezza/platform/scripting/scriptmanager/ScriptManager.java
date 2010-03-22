@@ -24,6 +24,8 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessControlException;
+import java.security.AccessController;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -68,6 +70,7 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -816,7 +819,13 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@Override
 	public Set<GlobalMenuItem> getMenuItems() {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-
+		try {
+			AccessController.checkPermission(
+					new TcPermission("http://tpf.localhost/content.graph", "write"));
+			AccessController.checkPermission(new ScriptManagerAppPermission());
+		} catch (AccessControlException e) {
+			return items;
+		}
 		items.add(new GlobalMenuItem("/admin/script-manager/", "SCM", "Script Manager", 1,
 				"Dev-Modules"));
 		return items;

@@ -26,10 +26,10 @@ import java.security.Permission;
  *
  * @author reto
  */
-public class GraphManagementPermission extends Permission {
+public class GraphManagementAppPermission extends Permission {
 
 
-	public GraphManagementPermission() {
+	public GraphManagementAppPermission() {
 		super("Graph Management permission");
 	}
 	/**
@@ -37,7 +37,7 @@ public class GraphManagementPermission extends Permission {
 	 * @param target ignored
 	 * @param action ignored
 	 */
-	public GraphManagementPermission(String target, String actions) {
+	public GraphManagementAppPermission(String target, String actions) {
 		super("Graph Management permission");
 	}
 
