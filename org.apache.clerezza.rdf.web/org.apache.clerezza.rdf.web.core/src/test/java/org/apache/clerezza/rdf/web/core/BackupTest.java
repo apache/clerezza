@@ -68,12 +68,12 @@ public class BackupTest {
 	private	static UriRef uri1 = new UriRef("http://localhost/test1/testuri");
 
 	private static String backupContentFileName = "triplecollections.nt";
-	private static Backup backup;
+	private static BackupMessageBodyWriter backup;
 	private static JenaParserProvider parser = new JenaParserProvider();
 
 	@Before
 	public void setUp() {
-		backup = new Backup();
+		backup = new BackupMessageBodyWriter();
 		backup.tcManager = new TestTcManager();
 		backup.serializer = Serializer.getInstance();
 		backup.serializer.bindSerializingProvider(
