@@ -60,7 +60,7 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 		if (!(o instanceof Triple)) {
 			return false;
 		}
-		Triple t = (Triple)o;
+		Triple t = (Triple) o;
 		return filter(t.getSubject(), t.getPredicate(), t.getObject()).hasNext();
 	}
 
@@ -114,7 +114,7 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 		}
 		return success;
 	}
-	
+
 	/**
 	 * A subclass of <code>AbstractTripleCollection</code> should override 
 	 * this method instead of <code>add</code> for graph event support to be
@@ -129,7 +129,7 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 
 	@Override
 	public boolean remove(Object o) {
-		Triple triple  = (Triple) o;
+		Triple triple = (Triple) o;
 		boolean success = performRemove(triple);
 		if (success) {
 			dispatchEvent(new RemoveEvent(this, triple));
@@ -158,7 +158,14 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 	 * @return
 	 */
 	protected boolean performRemove(Triple triple) {
-		return super.remove(triple);
+		Iterator<Triple> e = performFilter(null, null, null);
+		while (e.hasNext()) {
+			if (triple.equals(e.next())) {
+				e.remove();
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -170,7 +177,7 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 	 * @param type The type of modification
 	 */
 	protected void dispatchEvent(GraphEvent event) {
-		for(ListenerConfiguration config : listenerConfigs) {
+		for (ListenerConfiguration config : listenerConfigs) {
 			if (config.getFilter().match(event.getTriple())) {
 				delayedNotificator.sendEventToListener(config.getListener(), event);
 			}
@@ -203,8 +210,8 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 		delayedNotificator.removeDelayedListener(listener);
 	}
 
-
 	private static class ListenerConfiguration {
+
 		private GraphListener listener;
 		private FilterTriple filter;
 
@@ -226,7 +233,5 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 		FilterTriple getFilter() {
 			return filter;
 		}
-
-
 	}
 }
