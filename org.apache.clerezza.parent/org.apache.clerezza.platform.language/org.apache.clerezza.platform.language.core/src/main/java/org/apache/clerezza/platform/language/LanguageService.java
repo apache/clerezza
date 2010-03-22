@@ -27,11 +27,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.apache.clerezza.platform.config.PlatformConfig;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.config.SystemConfig;
-import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.osgi.service.component.ComponentContext;
@@ -63,10 +63,11 @@ public class LanguageService {
 	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
 	private MGraph systemGraph;
 
-	@Reference
-	private ContentGraphProvider cgProvider;
+	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
+	private MGraph configGraph;
 
-	/** this is linked to the system-graph, accessing requires respective
+	/**
+	 * this is linked to the system-graph, accessing requires respective
 	 * permission
 	 */
 	private List<Resource> languageList;
@@ -96,7 +97,7 @@ public class LanguageService {
 			UriRef language = (UriRef) languages.next();
 			langList.add(
 					new LanguageDescription(new GraphNode(language, 
-					cgProvider.getContentGraph())));
+					configGraph)));
 		}
 		return langList;
 	}
@@ -108,7 +109,7 @@ public class LanguageService {
 	 */
 	public LanguageDescription getDefaultLanguage() {
 		return new LanguageDescription(
-				new GraphNode(languageListCache.get(0), cgProvider.getContentGraph()));
+				new GraphNode(languageListCache.get(0), configGraph));
 	}
 
 	/**
@@ -141,7 +142,7 @@ public class LanguageService {
 	public void addLanguage(UriRef languageUri) {
 		if (!languageListCache.contains(languageUri)) {
 			if(languageList.add(languageUri)) {
-				addToContentGraph(languageUri);
+				addToConfigGraph(languageUri);
 			}
 			languageListCache.add(languageUri);
 		}
@@ -149,7 +150,7 @@ public class LanguageService {
 
 	private void synchronizeContentGraph() {
 		for (Resource resource : languageListCache) {
-			addToContentGraph((UriRef)resource);
+			addToConfigGraph((UriRef)resource);
 		}
 	}
 	/**
@@ -158,10 +159,9 @@ public class LanguageService {
 	 *
 	 * @param languageUri
 	 */
-	private void addToContentGraph(NonLiteral languageUri) {
-		final MGraph contentGraph = cgProvider.getContentGraph();
-		if (!contentGraph.filter(languageUri, LINGVOJ.iso1, null).hasNext()) {
-			contentGraph.addAll(getLanguageContext(languageUri));
+	private void addToConfigGraph(NonLiteral languageUri) {
+		if (!configGraph.filter(languageUri, LINGVOJ.iso1, null).hasNext()) {
+			configGraph.addAll(getLanguageContext(languageUri));
 		}
 	}
 

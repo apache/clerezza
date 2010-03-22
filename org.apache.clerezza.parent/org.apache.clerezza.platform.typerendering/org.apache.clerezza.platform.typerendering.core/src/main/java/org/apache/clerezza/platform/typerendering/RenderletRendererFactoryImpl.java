@@ -31,6 +31,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.ws.rs.core.MediaType;
+import org.apache.clerezza.platform.config.PlatformConfig;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
@@ -78,8 +79,10 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		GraphListener {
 
 	private Logger logger = LoggerFactory.getLogger(RenderletRendererFactoryImpl.class);
-	@Reference
-	private ContentGraphProvider contentGraphProvider;
+	
+	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
+	private MGraph configGraph;
+
 	private static final String RDF_TYPE_PRIO_LIST_URI =
 			"http://tpf.localhost/rdfTypePriorityList";
 	/**
@@ -113,7 +116,6 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		return AccessController.doPrivileged(new PrivilegedAction<RendererImpl>() {
 			@Override
 			public RendererImpl run() {
-				MGraph contentGraph = contentGraphProvider.getContentGraph();
 				SortedSet<RendererImpl> configurationList =
 						new TreeSet<RendererImpl>();
 				for (Resource prioRdfType : rdfTypePrioList) {
@@ -121,14 +123,14 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 						continue;
 					}
 					Iterator<Triple> renderletDefs =
-							contentGraph.filter(null, TYPERENDERING.renderedType, prioRdfType);
+							configGraph.filter(null, TYPERENDERING.renderedType, prioRdfType);
 					while (renderletDefs.hasNext()) {
 						NonLiteral renderletDef = renderletDefs.next().getSubject();
 						GraphNode renderletDefNode = new GraphNode(renderletDef,
-								contentGraph);
-						String renderingModeStr = getMode(contentGraph,
+								configGraph);
+						String renderingModeStr = getMode(configGraph,
 								renderletDef);
-						MediaType mediaTypeInGraph = getMediaType(contentGraph, renderletDef);
+						MediaType mediaTypeInGraph = getMediaType(configGraph, renderletDef);
 						int prio = -1;
 						for (int i = 0; i < acceptableMediaTypes.size(); i++) {
 							MediaType acceptableMediaType = acceptableMediaTypes.get(i);
@@ -141,13 +143,13 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 							continue;
 						}
 						if (RenderletRendererFactoryImpl.equals(renderingModeStr, mode)) {
-							final String renderletName = getRenderletName(contentGraph, renderletDef);
+							final String renderletName = getRenderletName(configGraph, renderletDef);
 							Renderlet renderlet = renderletMap.get(renderletName);
 							if (renderlet == null) {
 								throw new RenderletNotFoundException("Renderlet " + renderletName + " could not be loaded.");
 							}
 							configurationList.add(new RendererImpl(
-									getRenderingSpecification(contentGraph, renderletDef),
+									getRenderingSpecification(configGraph, renderletDef),
 									renderlet,
 									mode,
 									mediaTypeInGraph,
@@ -253,22 +255,19 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 			UriRef rdfType,
 			String mode,
 			MediaType mediaType, boolean builtIn) {
-		MGraph contentGraph = contentGraphProvider.getContentGraph();
-
-		removeExisting(rdfType, mode, mediaType, builtIn, contentGraph);
-
+		removeExisting(rdfType, mode, mediaType, builtIn, configGraph);
 		BNode renderletDefinition = new BNode();
-		GraphNode renderletDefinitionNode = new GraphNode(renderletDefinition, contentGraph);
-		contentGraph.add(new TripleImpl(renderletDefinition,
+		GraphNode renderletDefinitionNode = new GraphNode(renderletDefinition, configGraph);
+		configGraph.add(new TripleImpl(renderletDefinition,
 				TYPERENDERING.renderlet, LiteralFactory.getInstance().createTypedLiteral(renderlet)));
 		if (renderingSpecification != null) {
-			contentGraph.add(new TripleImpl(renderletDefinition,
+			configGraph.add(new TripleImpl(renderletDefinition,
 					TYPERENDERING.renderingSpecification, renderingSpecification));
 		}
-		contentGraph.add(new TripleImpl(renderletDefinition,
+		configGraph.add(new TripleImpl(renderletDefinition,
 				TYPERENDERING.renderedType, rdfType));
 
-		contentGraph.add(new TripleImpl(renderletDefinition,
+		configGraph.add(new TripleImpl(renderletDefinition,
 				TYPERENDERING.mediaType, LiteralFactory.getInstance().createTypedLiteral(mediaType.toString())));
 		renderletDefinitionNode.addProperty(RDF.type, TYPERENDERING.RenderletDefinition);
 
@@ -281,7 +280,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		}
 
 		if (mode != null) {
-			contentGraph.add(new TripleImpl(renderletDefinition,
+			configGraph.add(new TripleImpl(renderletDefinition,
 					TYPERENDERING.renderingMode, LiteralFactory.getInstance().createTypedLiteral(mode)));
 		}
 
@@ -352,12 +351,12 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 				(o1 != null) && o1.equals(o2);
 	}
 
-	protected void bindContentGraphProvider(ContentGraphProvider contentGraphProvider) {
-		this.contentGraphProvider = contentGraphProvider;
+	protected void bindConfigGraph(MGraph configGraph) {
+		this.configGraph = configGraph;
 	}
 
 	protected void unbindContentGraphProvider(ContentGraphProvider contentGraphProvider) {
-		this.contentGraphProvider = null;
+		this.configGraph = null;
 	}
 
 	protected void bindRenderlet(ServiceReference renderletRef) {
@@ -425,7 +424,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	 */
 	protected void activate(ComponentContext componentContext) {
 		graphChanged(null);
-		contentGraphProvider.getContentGraph().addGraphListener(this,
+		configGraph.addGraphListener(this,
 				new FilterTriple(null, RDF.first, null), 1000);
 		this.componentContext = componentContext;
 		registerRenderletsFromStore();
@@ -438,13 +437,12 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	 * @param componentContext
 	 */
 	protected void deactivate(ComponentContext componentContext) {
-		contentGraphProvider.getContentGraph().removeGraphListener(this);
+		configGraph.removeGraphListener(this);
 	}
 
 	@Override
 	public void graphChanged(List<GraphEvent> events) {
 		rdfTypePrioList = Collections.synchronizedList(
-				new RdfList(new UriRef(RDF_TYPE_PRIO_LIST_URI),
-				contentGraphProvider.getContentGraph()));
+				new RdfList(new UriRef(RDF_TYPE_PRIO_LIST_URI),	configGraph));
 	}
 }

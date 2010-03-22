@@ -53,9 +53,9 @@ import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.jaxrs.utils.form.FormFile;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
+import org.apache.clerezza.platform.config.PlatformConfig;
 import org.apache.clerezza.platform.content.DiscobitsHandler;
 import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
-import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
 import org.apache.clerezza.platform.typerendering.ontology.RENDERLETMANAGER;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
@@ -90,9 +90,9 @@ import org.apache.felix.scr.annotations.Services;
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/renderlet-manager")
 public class RenderletManager implements GlobalMenuItemsProvider{
-
-	@Reference
-	private ContentGraphProvider cgProvider;
+	
+	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
+	private MGraph configGraph;
 	@Reference
 	private DiscobitsHandler contentHandler;
 	@Reference
@@ -141,9 +141,8 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	@Path("overview")
 	public GraphNode overview(@Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
-		MGraph contentGraph = cgProvider.getContentGraph();
 		MGraph additionGraph = new SimpleMGraph();
-		UnionMGraph resultGraph = new UnionMGraph(additionGraph, contentGraph);
+		UnionMGraph resultGraph = new UnionMGraph(additionGraph, configGraph);
 		GraphNode resultNode = new GraphNode(new UriRef(
 				RdfTypePrioList), resultGraph);
 		resultNode.addProperty(RDF.type, RENDERLETMANAGER.RenderletManagerPage);
@@ -310,9 +309,8 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	public Response down(@FormParam("renderedType") UriRef renderedType,
 			@Context UriInfo uriInfo) throws URISyntaxException {
 		TrailingSlash.enforceNotPresent(uriInfo);
-		MGraph mGraph = cgProvider.getContentGraph();
 		List<Resource> rdfTypesPrioList = new RdfList(new UriRef(
-				RdfTypePrioList), mGraph);
+				RdfTypePrioList), configGraph);
 		final int index = rdfTypesPrioList.indexOf(renderedType);
 		if (index < rdfTypesPrioList.size() - 1) {
 			rdfTypesPrioList.remove(renderedType);
@@ -334,7 +332,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	public Response up(@FormParam("renderedType") UriRef renderedType,
 			@Context UriInfo uriInfo) throws URISyntaxException {
 		TrailingSlash.enforceNotPresent(uriInfo);
-		final MGraph mGraph = cgProvider.getContentGraph();
+		final MGraph mGraph = configGraph;
 		final List<Resource> rdfTypesPrioList = new RdfList(new UriRef(
 				RdfTypePrioList), mGraph);
 		final int index = rdfTypesPrioList.indexOf(renderedType);
@@ -363,14 +361,12 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 			@Context UriInfo uriInfo) throws URISyntaxException {
 		logger.info("remove item");
 		TrailingSlash.enforceNotPresent(uriInfo);
-		MGraph mGraph = cgProvider.getContentGraph();
-
 		List<Resource> renderletDefinitions = new RdfList(new UriRef(
-				RdfTypePrioList), mGraph);
-		final Resource resource = getDefinitionResource(mGraph, renderlet, 
+				RdfTypePrioList), configGraph);
+		final Resource resource = getDefinitionResource(configGraph, renderlet,
 				renderSpec, renderedType, renderingMode, mediaType);
 
-		GraphNode node = new GraphNode((NonLiteral) resource, mGraph);
+		GraphNode node = new GraphNode((NonLiteral) resource, configGraph);
 		node.deleteProperties(TYPERENDERING.renderlet);
 		node.deleteProperties(TYPERENDERING.renderingSpecification);
 		node.deleteProperties(TYPERENDERING.renderingMode);
@@ -413,12 +409,9 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 			@QueryParam("mediaType") String mediaType,
 			@Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
-		MGraph contentGraph = cgProvider.getContentGraph();
-
-		final Resource resource = getDefinitionResource(contentGraph, renderlet, 
+		final Resource resource = getDefinitionResource(configGraph, renderlet,
 				renderSpec, renderedType, renderingMode, mediaType);
-
-		GraphNode node = new GraphNode((NonLiteral) resource, contentGraph);
+		GraphNode node = new GraphNode((NonLiteral) resource, configGraph);
 		return node;
 	}
 
@@ -448,7 +441,6 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	@Override
 	public Set<GlobalMenuItem> getMenuItems() {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-
 		items.add(new GlobalMenuItem("/admin/renderlet-manager/", "RMR", "Renderlet Manager", 3,
 				"Main-Modules"));
 		return items;
