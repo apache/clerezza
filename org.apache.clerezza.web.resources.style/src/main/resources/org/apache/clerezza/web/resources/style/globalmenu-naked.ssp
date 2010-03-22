@@ -32,20 +32,24 @@ resultDocModifier.addScriptReference("/style/scripts/login.js");
 	<div id="tx-menu">
 	<ol>
 	{for (menuItem <- res/menu("globalMenu")!!) yield
-		<li><a href=
+		<li>
 			{
-					if ((menuItem/menu("path")).length > 0) {
-						menuItem/menu("path")*
-					} else {""}
-			}>{(menuItem/rdfs("label")*)}</a>
-			<ol>
-				 {
-					if ((menuItem/menu("children")).length > 0) {
-					for (childMenuItem <- menuItem/menu("children")!!) yield
-					<li><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a></li>
-					} else {}
-				 }
-			</ol>
+				if ((menuItem/menu("path")).length > 0) {
+					<a href={menuItem/menu("path")*}>{(menuItem/rdfs("label")*)}</a>
+				} else {
+					<a href="#" onclick="return false">{(menuItem/rdfs("label")*)}</a>
+				}
+			}
+			{
+				ifx ((menuItem/menu("children")).length > 0) {
+				<ol>
+					 {
+						for (childMenuItem <- menuItem/menu("children")!!) yield
+						<li><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a></li>
+					 }
+				</ol>
+				} 
+			}
 		</li>
 	}
 	</ol>
