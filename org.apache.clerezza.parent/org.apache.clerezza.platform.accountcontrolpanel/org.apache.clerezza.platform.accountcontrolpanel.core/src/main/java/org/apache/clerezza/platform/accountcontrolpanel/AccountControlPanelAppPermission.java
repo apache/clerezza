@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
  *
  */
 
-public class AccountControlAccessPermission extends Permission {
-	private final Logger logger = LoggerFactory.getLogger(AccountControlAccessPermission.class);
+public class AccountControlPanelAppPermission extends Permission {
+	private final Logger logger = LoggerFactory.getLogger(AccountControlPanelAppPermission.class);
 	private String accountName;
 
-	public AccountControlAccessPermission(String accountName, String actions)  {
+	public AccountControlPanelAppPermission(String accountName, String actions)  {
 		super(accountName);
 		this.accountName = accountName;
 	}
@@ -56,7 +56,7 @@ public class AccountControlAccessPermission extends Permission {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final AccountControlAccessPermission other = (AccountControlAccessPermission) obj;
+		final AccountControlPanelAppPermission other = (AccountControlPanelAppPermission) obj;
 		return accountName.equals(other.accountName);
 	}
 

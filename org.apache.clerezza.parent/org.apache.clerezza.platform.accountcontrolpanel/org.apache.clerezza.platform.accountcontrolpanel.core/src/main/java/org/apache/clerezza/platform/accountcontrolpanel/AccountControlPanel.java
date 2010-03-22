@@ -94,7 +94,6 @@ import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleLiteralFactory;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.OSGI;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
@@ -143,7 +142,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 		TrailingSlash.enforceNotPresent(uriInfo);
 		final String id = idP;
 		GraphNode graphNode;
-		AccessController.checkPermission(new AccountControlAccessPermission(id, ""));
+		AccessController.checkPermission(new AccountControlPanelAppPermission(id, ""));
 		try {
 			AccessController.checkPermission(new UserBundlePermission(id, ""));
 			graphNode = AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
@@ -299,7 +298,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 	public Response installBundle(@PathParam(value = "id") final String id,
 			MultiPartBody multiForm,
 			@Context UriInfo uriInfo) {
-		AccessController.checkPermission(new AccountControlAccessPermission(id, ""));
+		AccessController.checkPermission(new AccountControlPanelAppPermission(id, ""));
 		AccessController.checkPermission(new UserBundlePermission(id, ""));
 
 		FormFile[] formFiles = multiForm.getFormFileParameterValues("bundle");
@@ -419,7 +418,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 			@Context UriInfo uriInfo) {
 		final String id = idP;
 		final String bundleIdString = bundleIdStringP;
-		AccessController.checkPermission(new AccountControlAccessPermission(id, ""));
+		AccessController.checkPermission(new AccountControlPanelAppPermission(id, ""));
 		AccessController.checkPermission(new UserBundlePermission(id, ""));
 		logger.info("Start bundle {} ", id);
 
@@ -462,7 +461,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 			@Context UriInfo uriInfo) {
 		final String id = idP;
 		final String bundleIdString = bundleIdStringP;
-		AccessController.checkPermission(new AccountControlAccessPermission(id, ""));
+		AccessController.checkPermission(new AccountControlPanelAppPermission(id, ""));
 		AccessController.checkPermission(new UserBundlePermission(id, ""));
 		logger.info("Stop bundle {}", id);
 
@@ -504,7 +503,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 			@Context UriInfo uriInfo) {
 		final String id = idP;
 		final String bundleIdString = bundleIdStringP;
-		AccessController.checkPermission(new AccountControlAccessPermission(id, ""));
+		AccessController.checkPermission(new AccountControlPanelAppPermission(id, ""));
 		AccessController.checkPermission(new UserBundlePermission(id, ""));
 		logger.info("Uninstall bundle {}", id);
 
@@ -553,7 +552,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 			@FormParam("confirmNewPW") final String confirmNewPW,
 			@Context UriInfo uriInfo) {
 		final String id = idP;
-		AccessController.checkPermission(new AccountControlAccessPermission(id, ""));
+		AccessController.checkPermission(new AccountControlPanelAppPermission(id, ""));
 		AccessController.checkPermission(new ChangePasswordPermission(id, ""));
 		boolean changedPassword = false;
 		if (newPW.trim().equals(confirmNewPW.trim()) && checkPWStrings(oldPW, newPW)) {
@@ -676,7 +675,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 		String user = getUserName();
 		if (user != null) {
 			try {
-				AccessController.checkPermission(new AccountControlAccessPermission(user, ""));
+				AccessController.checkPermission(new AccountControlPanelAppPermission(user, ""));
 			} catch (AccessControlException e) {
 				return items;
 			}

@@ -21,6 +21,8 @@ package org.apache.clerezza.platform.concepts.core;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessControlException;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -54,6 +56,7 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
@@ -294,7 +297,12 @@ public class SimpleConceptProviderManager implements ConceptProviderManager,
 	@Override
 	public Set<GlobalMenuItem> getMenuItems() {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-
+		try {
+			AccessController.checkPermission(
+					new TcPermission("http://tpf.localhost/content.graph", "write"));
+		} catch (AccessControlException e) {
+			return items;
+		}
 		items.add(new GlobalMenuItem("/concepts/provider-manager/edit-concept-provider-list",
 				"CPM", "Concept Provider Manager", 5, "Main-Modules"));
 		return items;
