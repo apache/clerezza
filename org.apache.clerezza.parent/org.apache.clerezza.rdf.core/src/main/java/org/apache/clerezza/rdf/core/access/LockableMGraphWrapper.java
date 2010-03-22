@@ -66,7 +66,7 @@ class LockableMGraphWrapper implements LockableMGraph {
 	public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
 		readLock.lock();
 		try {
-			return new PreReadingIterator(wrapped.filter(subject, predicate, object), this);
+			return new LockingIterator(wrapped.filter(subject, predicate, object), lock);
 		} finally {
 			readLock.unlock();
 		}
@@ -93,6 +93,7 @@ class LockableMGraphWrapper implements LockableMGraph {
 	}
 
 	@Override
+	@SuppressWarnings("element-type-mismatch")
 	public boolean contains(Object o) {
 		readLock.lock();
 		try {
@@ -106,7 +107,7 @@ class LockableMGraphWrapper implements LockableMGraph {
 	public Iterator<Triple> iterator() {
 		readLock.lock();
 		try {
-			return new PreReadingIterator(wrapped.iterator(), this);
+			return new LockingIterator(wrapped.iterator(), lock);
 		} finally {
 			readLock.unlock();
 		}
