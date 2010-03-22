@@ -121,9 +121,8 @@ public class DashBoard implements GlobalMenuItemsProvider{
 	@Override
 	public Set<GlobalMenuItem> getMenuItems() {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-
-		items.add(new GlobalMenuItem("/dashboard", "DHB", "Overview", 1,
-				"Dashboard"));
+		items.add(new GlobalMenuItem("/dashboard", "DHB", "Dashboard", 10000,
+				null));
 		return items;
 	}
 
