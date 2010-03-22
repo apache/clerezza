@@ -20,8 +20,6 @@ package org.apache.clerezza.platform.typerendering;
 
 import java.util.ArrayList;
 import javax.ws.rs.ext.RuntimeDelegate;
-import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.triaxrs.delegate.RuntimeDelegateImpl;
@@ -38,17 +36,9 @@ public class RendereringManagerTest extends RendereringTest {
 	protected RenderletManager createNewRenderletManager() {
 		RenderletRendererFactoryImpl renderer = new RenderletRendererFactoryImpl();
 		manager = renderer;
-		renderer.rdfTypePrioList = new ArrayList<Resource>();
-	
-		final MGraph contentGraph = new SimpleMGraph(); 
-		ContentGraphProvider contentGraphProvider = new ContentGraphProvider() {
-			@Override
-			public MGraph getContentGraph() {
-				return contentGraph;
-			}
-		};
+		renderer.rdfTypePrioList = new ArrayList<Resource>();		
 		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
-		renderer.bindContentGraphProvider(contentGraphProvider);
+		renderer.bindConfigGraph(new SimpleMGraph());
 		renderer.registerRenderletService(renderletMockA.pid, renderletMockA);
 		renderer.registerRenderletService(renderletMockB.pid, renderletMockB);
 		return renderer;

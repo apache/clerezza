@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.config;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -31,6 +32,8 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -50,6 +53,23 @@ public class PlatformConfig {
 	private MGraph systemGraph;
 	private BundleContext context;
 	private static String DEFAULT_PORT = "8080";
+	private static final String CONFIG_GRAPH_STRING =
+			"http://tpf.localhost/config.graph";
+	public static final UriRef CONFIG_GRAPH_URI =
+			new UriRef(CONFIG_GRAPH_STRING);
+
+	/**
+	 * A filter that can be used to get the config graph as OSGi service,
+	 * that is provided by <code>org.apache.clerezza.rdf.core.access.TcManager</code>.
+	 */
+	public static final String CONFIG_GRAPH_FILTER =
+			"(name="+ CONFIG_GRAPH_STRING +")";
+
+	@Reference
+	private TcManager tcManager;
+
+	@Reference
+	private ContentGraphProvider cgProvider;
 
 
 	/**
@@ -116,16 +136,18 @@ public class PlatformConfig {
 		systemGraph.remove(new TripleImpl(getPlatformInstance(), PLATFORM.baseUri, baseUri));
 	}
 
-	/**
-	 * The activate method is called when SCR activates the component configuration.
-	 * 
-	 * @param componentContext
-	 */
 	protected void activate(ComponentContext componentContext) {
 		this.context = componentContext.getBundleContext();
+		try {
+			tcManager.getMGraph(CONFIG_GRAPH_URI);
+		} catch (NoSuchEntityException nsee) {
+			tcManager.createMGraph(CONFIG_GRAPH_URI);
+			cgProvider.addTemporaryAdditionGraph(CONFIG_GRAPH_URI);
+		}
 	}
 	
 	protected void deactivate(ComponentContext componentContext) {
 		this.context = null;
+		cgProvider.removeTemporaryAdditionGraph(CONFIG_GRAPH_URI);
 	}
 }

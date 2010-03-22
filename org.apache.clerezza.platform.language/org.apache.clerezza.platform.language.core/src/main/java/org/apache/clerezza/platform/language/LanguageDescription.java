@@ -23,7 +23,6 @@ import org.apache.clerezza.rdf.core.Language;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.LINGVOJ;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;

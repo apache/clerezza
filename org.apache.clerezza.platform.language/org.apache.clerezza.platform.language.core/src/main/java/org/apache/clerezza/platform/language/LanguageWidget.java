@@ -30,6 +30,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import org.apache.clerezza.platform.config.PlatformConfig;
 
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
@@ -37,7 +38,6 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.language.ontologies.LANGUAGE;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.UserContextProvider;
@@ -78,8 +78,9 @@ public class LanguageWidget implements UserContextProvider {
 
 	private FileServer fileServer;
 
-	@Reference
-	protected ContentGraphProvider cgProvider;
+	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
+	private MGraph configGraph;
+
 	@Reference
 	private RenderletManager renderletManager;
 	@Reference
@@ -123,12 +124,11 @@ public class LanguageWidget implements UserContextProvider {
 		TripleCollection graph = node.getGraph();
 		BNode listNode = new BNode();		
 		RdfList list = new RdfList(listNode, graph);
-		MGraph contentGraph = cgProvider.getContentGraph();
 		for (LanguageDescription languageDescription : languages) {
 			NonLiteral languageUri = (NonLiteral) languageDescription.getResource().getNode();
 			list.add(languageUri);
 			if (copyToNode) {
-			graph.addAll(new GraphNode(languageUri, contentGraph).
+			graph.addAll(new GraphNode(languageUri, configGraph).
 					getNodeContext());
 			}
 		}
@@ -138,7 +138,7 @@ public class LanguageWidget implements UserContextProvider {
 		graph.add(new TripleImpl(instance, PLATFORM.languages, listNode));
 		graph.add(new TripleImpl(listNode, RDF.type, LANGUAGE.LanguageList));
 		if (!copyToNode) {
-			node = new GraphNode(node.getNode(), new UnionMGraph(graph, contentGraph));
+			node = new GraphNode(node.getNode(), new UnionMGraph(graph, configGraph));
 		}
 		return node;
 	}
