@@ -18,50 +18,56 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
 
 /**
  * Wrapps an iterator<Triple> reading all elements to a cache on construction
  * and returning them from that cache.
  * @author reto
  */
-class PreReadingIterator implements Iterator<Triple> {
+class LockingIterator implements Iterator<Triple> {
 
 	private Iterator<Triple> base;
-	private final TripleCollection tc;
-	private Triple lastReturned;
+	private Lock readLock;
+	private Lock writeLock;
 
-	public PreReadingIterator(Iterator<Triple> iterator, TripleCollection tc) {
-		List<Triple> data = new ArrayList<Triple>();
-		while (iterator.hasNext()) {
-			data.add(iterator.next());
-		}
-		base = data.iterator();
-		this.tc = tc;
+	public LockingIterator(Iterator<Triple> iterator, ReadWriteLock lock) {
+		base = iterator;
+		readLock = lock.readLock();
+		writeLock = lock.writeLock();
 	}
 
 	@Override
 	public boolean hasNext() {
-		return base.hasNext();
+		readLock.lock();
+		try {
+			return base.hasNext();
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
 	public Triple next() {
-		lastReturned =  base.next();
-		return lastReturned;
+		readLock.lock();
+		try {
+			return base.next();
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
 	public void remove() {
-		if (lastReturned == null) {
-			throw new IllegalStateException();
+		writeLock.lock();
+		try {
+			base.remove();
+		} finally {
+			writeLock.unlock();
 		}
-		tc.remove(lastReturned);
-		lastReturned = null;
 	}
 
 }
