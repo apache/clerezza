@@ -20,5 +20,9 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>org.apache.clerezza.rdf.core</artifactId>
         </dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
     </dependencies>
 </project>
