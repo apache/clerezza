@@ -20,6 +20,7 @@
 		<sioc:has_function>
 			<perm:Role>
 				<dc:title>BasePermissionsRole</dc:title>
+				<rdf:type rdf:resource="http://clerezza.org/2008/10/permission#BaseRole"/>
 				<perm:hasPermission rdf:parseType="Resource">
 					<perm:javaPermissionEntry>(java.util.PropertyPermission "*" "read")</perm:javaPermissionEntry>
 				</perm:hasPermission>
@@ -39,7 +40,6 @@
 		</sioc:has_function>
 	</foaf:Agent>
 	<perm:Role>
-		<rdf:type rdf:resource="http://clerezza.org/2008/10/permission#BaseRole"/>
 		<dc:title>DefaultRole</dc:title>
 		<perm:hasPermission rdf:parseType="Resource">
 			<perm:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.AccountControlAccessPermission "{username}" "")</perm:javaPermissionEntry>
