@@ -19,25 +19,29 @@
 package org.apache.clerezza.rdf.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.Assert;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.core.test.RandomGraph;
 
 /**
  *
  * @author reto, mir
  */
 public class TestGraphNode {
-	
+
 	@Test
 	public void nodeContext() {
 		MGraph g = new SimpleMGraph();
@@ -56,7 +60,7 @@ public class TestGraphNode {
 		Assert.assertEquals(1, g.size());
 		Assert.assertFalse(n.getObjects(property2).hasNext());
 	}
-	
+
 	@Test
 	public void addNode() {
 		MGraph g = new SimpleMGraph();
@@ -67,7 +71,44 @@ public class TestGraphNode {
 		n.addProperty(property1, bNode2);
 		Assert.assertEquals(1, g.size());
 	}
-	
+
+	@Test
+	public void testGetSubjectAndObjectNodes() {
+		RandomGraph graph = new RandomGraph(5, 20, new SimpleMGraph());
+		for (int i = 0; i < 200; i++) {
+			graph.evolve();
+		}
+		for (int j = 0; j < 200; j++) {
+			Triple randomTriple = graph.getRandomTriple();
+			GraphNode node = new GraphNode(randomTriple.getSubject(), graph);
+			Iterator<UriRef> properties = node.getProperties();
+			while (properties.hasNext()) {
+				UriRef property = properties.next();
+				Set<Resource> objects = createSet(node.getObjects(property));
+				Iterator<GraphNode> objectNodes = node.getObjectNodes(property);
+				while (objectNodes.hasNext()) {
+					GraphNode graphNode = objectNodes.next();
+					Assert.assertTrue(objects.contains(graphNode.getNode()));
+				}
+			}
+		}
+
+		for (int j = 0; j < 200; j++) {
+			Triple randomTriple = graph.getRandomTriple();
+			GraphNode node = new GraphNode(randomTriple.getObject(), graph);
+			Iterator<UriRef> properties = node.getProperties();
+			while (properties.hasNext()) {
+				UriRef property = properties.next();
+				Set<Resource> subjects = createSet(node.getSubjects(property));
+				Iterator<GraphNode> subjectNodes = node.getSubjectNodes(property);
+				while (subjectNodes.hasNext()) {
+					GraphNode graphNode = subjectNodes.next();
+					Assert.assertTrue(subjects.contains(graphNode.getNode()));
+				}
+			}
+		}
+	}
+
 	@Test
 	public void getAvailableProperties(){
 		MGraph g = new SimpleMGraph();
@@ -97,9 +138,9 @@ public class TestGraphNode {
 		}
 		Assert.assertEquals(i, 4);
 		Assert.assertEquals(props.size(), 0);
-		
+
 	}
-	
+
 	@Test
 	public void deleteAll() {
 		MGraph g = new SimpleMGraph();
@@ -118,7 +159,7 @@ public class TestGraphNode {
 		n.deleteProperties(property1);
 		Assert.assertEquals(3, g.size());
 	}
-	
+
 	@Test
 	public void deleteSingleProperty() {
 		MGraph g = new SimpleMGraph();
@@ -137,7 +178,7 @@ public class TestGraphNode {
 		n.deleteProperty(property1, new PlainLiteralImpl("literal"));
 		Assert.assertEquals(4, g.size());
 	}
-	
+
 	@Test
 	public void replaceWith() {
 		MGraph initialGraph = new SimpleMGraph();
@@ -149,7 +190,7 @@ public class TestGraphNode {
 		UriRef newUriRef = new UriRef("http://example.org/newName");
 		Literal literal1 = new PlainLiteralImpl("literal");
 		Literal literal2 = new PlainLiteralImpl("bla bla");
-		
+
 		Triple triple1 = new TripleImpl(bNode1, property1, literal1);
 		Triple triple2 = new TripleImpl(bNode1, property2, property1);
 		Triple triple3 = new TripleImpl(bNode2, property2, bNode1);
@@ -162,7 +203,7 @@ public class TestGraphNode {
 		initialGraph.add(triple5);
 		GraphNode node = new GraphNode(property1,
 				new SimpleMGraph(initialGraph.iterator()));
-		
+
 		node.replaceWith(newUriRef, true);
 		Assert.assertEquals(5, node.getGraph().size());
 		Triple expectedTriple1 = new TripleImpl(bNode1, newUriRef, literal1);
@@ -185,7 +226,7 @@ public class TestGraphNode {
 		Triple expectedTriple5 = new TripleImpl(bNode1, property2, newBnode);
 		Triple expectedTriple6 = new TripleImpl(newBnode, property1, bNode2);
 		Triple expectedTriple7 = new TripleImpl(newBnode, property1, literal2);
-			
+
 		Assert.assertTrue(node.getGraph().contains(triple1));
 		Assert.assertTrue(node.getGraph().contains(expectedTriple5));
 		Assert.assertTrue(node.getGraph().contains(expectedTriple6));
@@ -205,6 +246,15 @@ public class TestGraphNode {
 		Assert.assertTrue(node.getGraph().contains(expectedTriple9));
 		Assert.assertTrue(node.getGraph().contains(expectedTriple10));
 		Assert.assertTrue(node.getGraph().contains(expectedTriple11));
+	}
+
+	private Set<Resource> createSet(Iterator<? extends Resource> resources) {
+		Set<Resource> set = new HashSet<Resource>();
+		while (resources.hasNext()) {
+			Resource resource = resources.next();
+			set.add(resource);
+		}
+		return set;
 	}
 
 }

@@ -59,7 +59,7 @@ public class GraphNode {
 
 	/**
 	 * Gets the graph the node represented by this instance is in
-	 * 
+	 *
 	 * @return the graph of this GraphNode
 	 */
 	public TripleCollection getGraph() {
@@ -68,7 +68,7 @@ public class GraphNode {
 
 	/**
 	 * Gets the unwrapped node
-	 * 
+	 *
 	 * @return the node represented by this GraphNode
 	 */
 	public Resource getNode() {
@@ -86,14 +86,14 @@ public class GraphNode {
 	}
 
 	/**
-	 * The context of a node are the triples containing a node 
+	 * The context of a node are the triples containing a node
 	 * as subject or object and recursively the context of the b-nodes in any
 	 * of these statements.
 	 *
 	 * The triples in the Graph returned by this method contain the same bnode
 	 * instances as in the original graph.
-	 * 
-	 * @return the context of the node represented by the instance 
+	 *
+	 * @return the context of the node represented by the instance
 	 */
 	public Graph getNodeContext() {
 		final HashSet<BNode> dontExpand = new HashSet<BNode>();
@@ -310,7 +310,7 @@ public class GraphNode {
 	/**
 	 * Count the number of triples in the underlying triple-collection
 	 * with this node as object and a specified property as predicate.
-	 * 
+	 *
 	 * @param property the property to be examined
 	 * @return the number of triples in the underlying triple-collection
 	 *		which meet the specified condition
@@ -351,12 +351,12 @@ public class GraphNode {
 		return getTypeSelectedObjects(property, UriRef.class);
 
 	}
-	
+
 	/**
 	 * Get all available properties as an {@link Iterator}<{@link UriRef}>.
 	 * You can use <code>getObjects(UriRef property)</code> to get the values of
 	 * each property
-	 * 
+	 *
 	 * @return an iterator over properties of this node
 	 */
 	public Iterator<UriRef> getProperties() {
@@ -388,7 +388,7 @@ public class GraphNode {
 	 * Get all inverse properties as an {@link Iterator}<{@link UriRef}>.
 	 * You can use <code>getSubject(UriRef property)</code> to get the values of
 	 * each inverse property
-	 * 
+	 *
 	 * @return an iterator over properties pointing to this node
 	 */
 	public Iterator<UriRef> getInverseProperties() {
@@ -397,7 +397,7 @@ public class GraphNode {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param triples
 	 * @returnan {@link Iterator}<{@link UriRef}> containing the predicates from
 	 * an {@link Iterator}<{@link Triple}>
@@ -535,6 +535,68 @@ public class GraphNode {
 			graph.addAll(newTriples);
 		}
 		return new GraphNode(replacement, graph);
+	}
+
+	/**
+	 * Returns a iterator containing all objects of the triples where this
+	 * graph node is the subject and has the specified property. The objects
+	 * are returned as <code>GraphNode</code>s.
+	 *
+	 * @param property
+	 * @return
+	 */
+	public Iterator<GraphNode> getObjectNodes(UriRef property) {
+		final Iterator<Resource> objects = this.getObjects(property);
+		return new Iterator<GraphNode>() {
+
+			@Override
+			public boolean hasNext() {
+				return objects.hasNext();
+			}
+
+			@Override
+			public GraphNode next() {
+				Resource object = objects.next();
+				return new GraphNode(object, graph);
+
+			}
+
+			@Override
+			public void remove() {
+				objects.remove();
+			}
+		};
+	}
+
+	/**
+	 * Returns a iterator containing all subjects of the triples where this
+	 * graph node is the object and has the specified property. The subjects
+	 * are returned as <code>GraphNode</code>s.
+	 *
+	 * @param property
+	 * @return
+	 */
+	public Iterator<GraphNode> getSubjectNodes(UriRef property) {
+		final Iterator<NonLiteral> subjects = this.getSubjects(property);
+		return new Iterator<GraphNode>() {
+
+			@Override
+			public boolean hasNext() {
+				return subjects.hasNext();
+			}
+
+			@Override
+			public GraphNode next() {
+				Resource object = subjects.next();
+				return new GraphNode(object, graph);
+
+			}
+
+			@Override
+			public void remove() {
+				subjects.remove();
+			}
+		};
 	}
 
 	/**
