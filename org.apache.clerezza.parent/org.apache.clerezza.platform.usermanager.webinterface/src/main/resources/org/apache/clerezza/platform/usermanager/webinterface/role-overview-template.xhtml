@@ -1,6 +1,7 @@
 def permission(s: Any) = new UriRef("http://clerezza.org/2008/10/permission#" + s)
 def umr(s: Any) = new UriRef("http://clerezza.org/2009/05/usermanager#" + s)
 def dc(s: Any) = new UriRef("http://purl.org/dc/elements/1.1/" + s)
+def rdf(s: Any) = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#" + s)
 
 resultDocModifier.addStyleSheet("js/fancybox/jquery.fancybox.css");
 resultDocModifier.addScriptReference("js/fancybox/jquery.fancybox-1.2.1.pack.js");
@@ -16,48 +17,58 @@ resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a hr
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="deleteButton" class="tx-button tx-button-remove" href="#">Remove</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton" class="tx-button tx-button-create" href="add-role.xhtml">Create</a></li>)
 
+		<div id="tx-content">
+			<div class="tx-panel">
 
+			</div>
 
-        <div id="tx-content">
-            <div class="tx-panel">
-                
-            </div>    
-            
-            <div class="tx-list">
-                <fieldset>
-                    <table>
+			<div class="tx-list">
+				<fieldset>
+					<table>
 						<colgroup>
 							<col width="40" />
 							<col width="40" />
 							<col width="80" />
 							<col width="100" />
 						</colgroup>
-                        <thead>
-                            <tr>
-                                <th colspan="2"><a href="">Name</a></th>
-                                <th><a href="">Special</a></th>
-                                <th><a href="">Permissions</a></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                
-                    {for (role <- (res/umr("role"))) yield {
-                    <tr id={role/dc("title")*}>
-                        <td>
-                            <input type="checkbox" value={role/dc("title")*} />
-                        </td>
-                        <td>{role/dc("title")*}</td>
-                        <td>
-                            <a href={"add-single-property?roleTitle=" + (role/dc("title")*)} >add single-valued property</a> /
-                            <a href={"add-multiple-property?roleTitle=" + (role/dc("title")*)} >add multiple-valued property</a> /
-                            <a href={"manage-custom-properties?role=" + (role/dc("title")*)} >manage customfields</a>
-                        </td>
-                        <td><a href={"manage-role-permissions?roleTitle=" + (role/dc("title")*)}>show permissions</a></td>
-                    </tr>
-                   }
-				   }
-                    </tbody>
-                    </table>
-                </fieldset> 
-            </div>
-        </div>
+						<thead>
+							<tr>
+								<th colspan="2"><a href="">Name</a></th>
+								<th><a href="">Special</a></th>
+								<th><a href="">Permissions</a></th>
+							</tr>
+						</thead>
+						<tbody>
+
+					{
+						for (role <- (res/umr("role"))) yield {
+							<tr id={role/dc("title")*}>
+								<td>
+									{
+										var isBaseRole:Boolean = false
+										for (rdfType <- (role/rdf("type"))) yield {
+											if (rdfType.getNode.equals(permission("BaseRole"))) {
+												isBaseRole = true;
+											} else {}
+										}
+										if (!isBaseRole) {
+											<input type="checkbox" 	value={role/dc("title")*}/>
+										} else {}
+
+									}
+								</td>
+								<td>{role/dc("title")*}</td>
+								<td>
+									<a href={"add-single-property?roleTitle=" + (role/dc("title")*)} >add single-valued property</a> /
+									<a href={"add-multiple-property?roleTitle=" + (role/dc("title")*)} >add multiple-valued property</a> /
+									<a href={"manage-custom-properties?role=" + (role/dc("title")*)} >manage customfields</a>
+								</td>
+								<td><a href={"manage-role-permissions?roleTitle=" + (role/dc("title")*)}>show permissions</a></td>
+							</tr>
+					   }
+					}
+					</tbody>
+					</table>
+				</fieldset>
+			</div>
+		</div>

@@ -103,29 +103,11 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Iterator<NonLiteral> getRoles() {
-		return getRoles(PERMISSION.Role);
-	}
-
-	private Iterator<NonLiteral> getRoles(UriRef type) {
-		final Iterator<Triple> triples =
-				systemGraph.filter(null, RDF.type, type);
-		return new Iterator<NonLiteral>() {
-
-			@Override
-			public boolean hasNext() {
-				return triples.hasNext();
-			}
-
-			@Override
-			public NonLiteral next() {
-				return triples.next().getSubject();
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
+		final Iterator<NonLiteral> rolesIter = getResourcesOfType(PERMISSION.Role);
+		if (!rolesIter.hasNext()) {
+			return rolesIter;
+		}
+		return rolesIter;
 	}
 
 	@Override
@@ -160,7 +142,15 @@ public class UserManagerImpl implements UserManager {
 		if (role == null) {
 			return;
 		}
+		if (isBaseRole(role)) {
+			return;
+		}
 		deleteTriplesOfASubject(role);
+	}
+
+	private boolean isBaseRole(NonLiteral role) {
+		GraphNode roleNode = new GraphNode(role, systemGraph);
+		return roleNode.hasProperty(RDF.type, PERMISSION.BaseRole);
 	}
 
 	private void deleteTriplesOfASubject(NonLiteral subject) {
@@ -340,18 +330,7 @@ public class UserManagerImpl implements UserManager {
 					new PlainLiteralImpl(pathPrefix)));
 		}
 		if (!assignedRoles.isEmpty()) {
-			for (String roleTitle : assignedRoles) {
-
-				// skip empty strings
-				if ((roleTitle == null) || (roleTitle.trim().length() == 0)) {
-					continue;
-				}
-				NonLiteral role = getRoleByTitle(roleTitle);
-				if (role == null) {
-					throw new RoleUnavailableException(roleTitle);
-				}
-				systemGraph.add(new TripleImpl(user, SIOC.has_function, role));
-			}
+			addRolesToUser(assignedRoles, user);
 		}
 	}
 
@@ -417,20 +396,28 @@ public class UserManagerImpl implements UserManager {
 		}
 		if (!assignedRoles.isEmpty()) {
 			userGraphNode.deleteProperties(SIOC.has_function);
-			for (String roleTitle : assignedRoles) {
-
-				// skip empty strings
-				if ((roleTitle == null) || (roleTitle.trim().length() == 0)) {
-					continue;
-				}
-				NonLiteral role = getRoleByTitle(roleTitle);
-				if (role == null) {
-					throw new RoleUnavailableException(roleTitle);
-				}
-				userGraphNode.addProperty(SIOC.has_function, role);
-			}
+			addRolesToUser(assignedRoles, (BNode)userGraphNode.getNode());
 			//refresh the policy so it will recheck the permissions
 			Policy.getPolicy().refresh();
+		}
+	}
+
+	private void addRolesToUser(List<String> assignedRoles, BNode user) throws RoleUnavailableException {
+		for (String roleTitle : assignedRoles) {
+			// skip empty strings
+			if ((roleTitle == null) || (roleTitle.trim().length() == 0)) {
+				continue;
+			}
+			NonLiteral role = getRoleByTitle(roleTitle);
+			if (role == null) {
+				throw new RoleUnavailableException(roleTitle);
+			}
+			systemGraph.add(new TripleImpl(user, SIOC.has_function, role));
+		}
+		Iterator<NonLiteral> baseRoles = getResourcesOfType(PERMISSION.BaseRole);
+		while (baseRoles.hasNext()) {
+			NonLiteral baseRole = baseRoles.next();
+			systemGraph.add(new TripleImpl(user, SIOC.has_function, baseRole));
 		}
 	}
 
@@ -460,7 +447,29 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Iterator<NonLiteral> getUsers() {
-		return getRoles(FOAF.Agent);
+		return getResourcesOfType(FOAF.Agent);
+	}
+
+	private Iterator<NonLiteral> getResourcesOfType(UriRef type) {
+		final Iterator<Triple> triples =
+				systemGraph.filter(null, RDF.type, type);
+		return new Iterator<NonLiteral>() {
+
+			@Override
+			public boolean hasNext() {
+				return triples.hasNext();
+			}
+
+			@Override
+			public NonLiteral next() {
+				return triples.next().getSubject();
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("Not supported yet.");
+			}
+		};
 	}
 
 	@Override

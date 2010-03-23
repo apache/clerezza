@@ -26,6 +26,13 @@
 		rights</skos:definition>
 	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2008/10/permission#" />
 </rdfs:Class>
+<rdfs:Class rdf:about="http://clerezza.org/2008/10/permission#BaseRole">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<rdfs:label xml:lang="en">Base Role</rdfs:label>
+	<skos:definition xml:lang="en">A base role is a set of connected
+		rights that every user automatically has.</skos:definition>
+	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2008/10/permission#" />
+</rdfs:Class>
 <rdfs:Class rdf:about="http://clerezza.org/2008/10/permission#Permission">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
 	<rdfs:label xml:lang="en">Permission</rdfs:label>

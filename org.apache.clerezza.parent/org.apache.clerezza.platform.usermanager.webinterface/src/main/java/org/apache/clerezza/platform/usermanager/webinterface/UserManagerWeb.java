@@ -316,7 +316,6 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		for (int i = 0; i < userRole.length; i++) {
 			userRoles.add(userRole[i]);
 		}
-
 		StringWriter writer = new StringWriter();
 		checkParamLength(writer, userName, "Username");
 		checkQuote(writer, userName, "Username");
@@ -325,14 +324,11 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		checkQuote(writer, pathPrefix, "Path-Prefix");
 		checkParamLength(writer, psw, "Password");
 		checkQuote(writer, psw, "Password");
-
 		String message = writer.toString();
 		if (!message.isEmpty()) {
 			returnInputErrorMessages(message);
 		}
-
 		userManager.storeUser(userName, email, psw, userRoles, pathPrefix);
-
 		MGraph contentGraph = cgProvider.getContentGraph();
 		NonLiteral user = new BNode();
 		contentGraph.add(new TripleImpl(user, RDF.type, FOAF.Agent));
