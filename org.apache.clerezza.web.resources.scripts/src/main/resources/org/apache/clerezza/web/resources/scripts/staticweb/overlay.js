@@ -77,7 +77,7 @@ Overlay.show = function(body, header, widthOverlay, heightOverlay) {
 	}	
 	
 	this.overlay.render(document.body);
-	$("#tx-assetsdetail").addClass("tx-window");
+	$("#tx-overlay").addClass("tx-window");
 	
 	// if overlay is closed the overlay is removed from dom (default is visibility: hidden)
 	this.overlay.hideEvent.subscribe(function() {
@@ -85,9 +85,9 @@ Overlay.show = function(body, header, widthOverlay, heightOverlay) {
 		this.resize.destroy();
 	});
 	
-	// Creates resize object, binding it to the 'tx-assetsdetail' <div>
+	// Creates resize object, binding it to the 'tx-overlay' <div>
 	
-	this.resize = new YAHOO.util.Resize("tx-assetsdetail", {
+	this.resize = new YAHOO.util.Resize("tx-overlay", {
 		handles: ["br"],
 		autoRatio: false,
 		status: false 
