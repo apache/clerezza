@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.scala.utils
 
 import rdf.utils.GraphNode
-import rdf.core.{UriRef, Resource, Literal}
+import rdf.core.{UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
 import java.util.Iterator
 import _root_.scala.collection.jcl.Conversions
 
@@ -67,6 +67,11 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 			}
 		}
 	}
+
+	 def as[T](clazz : Class[T]) : T= {
+		 LiteralFactory.getInstance().createObject(clazz,
+			 node.getNode().asInstanceOf[TypedLiteral])
+	 }
 
     /**
      * Operator syntax shortcut to get the <code>Resource</code> wrapped by this
