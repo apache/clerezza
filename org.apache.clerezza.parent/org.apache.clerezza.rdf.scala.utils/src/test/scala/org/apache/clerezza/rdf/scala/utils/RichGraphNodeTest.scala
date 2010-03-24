@@ -112,4 +112,12 @@ class RichGraphNodeTest {
 		Assert.assertEquals(johnUri, (node/SKOS.related%0!!).sort((a,b) => ((a*) > (b*)))(0)!)
 	}
 
+	@Test
+	def literalAsObject = {
+		val dateLiteral = new TypedLiteralImpl("2009-01-01T01:33:58Z",
+					new UriRef("http://www.w3.org/2001/XMLSchema#dateTime"))
+		val node = new GraphNode(dateLiteral, new SimpleMGraph())
+		Assert.assertNotNull(node.as(classOf[java.util.Date]))
+	}
+
 }
