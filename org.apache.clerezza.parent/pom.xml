@@ -359,6 +359,12 @@
 			<name>jena repository</name>
 			<url>http://openjena.org/repo/</url>
 		</repository>
+		<!--  group id org.scala-labg-osgi only available here -->
+		<repository>
+			<id>scala-tools.org</id>
+			<name>Scala-Tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<!-- for a version that fixes PAXEXAM-159 and 160 -->
