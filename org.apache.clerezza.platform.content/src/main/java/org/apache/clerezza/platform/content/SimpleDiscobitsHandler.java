@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.platform.content;
 
+import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import java.util.Set;
 import org.apache.clerezza.platform.content.hierarchy.HierarchyService;
 import org.apache.clerezza.rdf.core.MGraph;
