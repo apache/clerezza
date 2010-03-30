@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.clerezza.platform.content.MetaDataGenerator;
+import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
