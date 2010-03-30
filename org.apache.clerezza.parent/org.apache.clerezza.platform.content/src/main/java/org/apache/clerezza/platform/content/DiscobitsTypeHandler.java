@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.platform.content;
 
+import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;

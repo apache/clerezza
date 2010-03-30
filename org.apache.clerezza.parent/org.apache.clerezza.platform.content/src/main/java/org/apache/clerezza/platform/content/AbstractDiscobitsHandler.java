@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.platform.content;
 
+import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import java.util.HashSet;
 import java.util.Iterator;
 
