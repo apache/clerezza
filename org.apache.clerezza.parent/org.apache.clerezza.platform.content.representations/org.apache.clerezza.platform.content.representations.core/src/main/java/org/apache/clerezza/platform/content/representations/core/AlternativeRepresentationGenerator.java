@@ -33,7 +33,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.utils.imageprocessing.ImageProcessor;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.platform.content.MetaDataGenerator;
+import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.util.tracker.ServiceTracker;
 
