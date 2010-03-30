@@ -26,8 +26,8 @@ import javax.ws.rs.core.MediaType;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.platform.content.MetaDataGenerator;
 import org.apache.clerezza.rdf.core.LiteralFactory;
+import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import org.apache.clerezza.rdf.ontologies.EXIF;
 
 /**
