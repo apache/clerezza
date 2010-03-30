@@ -20,6 +20,7 @@
 
 a.tx-button:visited, a.tx-button:link  {
 	color: #ffffff;
+	text-decoration: none;
 }
 
 a.tx-button:active, a.tx-button:hover  {
