@@ -1,7 +1,5 @@
 package org.apache.clerezza.uima.utils;
 
-import org.apache.uima.UIMAException;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -45,7 +43,7 @@ public class ExternalServicesFacadeTest {
             assertTrue(tags != null);
             assertTrue(!tags.isEmpty());
             assertTrue(tags.size() == 1);
-            assertTrue(tags.get(0).equals("Queen Elizabeth"));
+            assertTrue(tags.get(0).equals("document"));
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getLocalizedMessage());

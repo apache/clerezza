@@ -1,25 +1,116 @@
 package org.apache.clerezza.uima.utils;
 
-import org.junit.Ignore;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.admin.CASFactory;
+import org.apache.uima.cas.admin.CASMgr;
+import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
+import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.jcas.tcas.DocumentAnnotation;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Testcase for {@link UIMAUtils}
- * 
- * @author tommaso
- * 
  */
-@Ignore
 public class UIMAUtilsTest {
+  private static final String DOCUMENT_TEXT = "the seerver will return a \"A concept with the same label and language already exists!\", so there are actually 2 issues:";
 
   @Test
-  public void testGetAllFSofAType() {
+  public void testGetAllFSofAnnotationType() {
+    try {
+      JCas cas = getCAS().getJCas();
+      cas.setDocumentText(DOCUMENT_TEXT);
+
+      FeatureStructure firstFeatureStructure = new TOP(cas);
+      cas.addFsToIndexes(firstFeatureStructure);
+      FeatureStructure secondFeatureStructure = new TOP(cas);
+      cas.addFsToIndexes(secondFeatureStructure);
+
+      List<FeatureStructure> featureStructures = UIMAUtils.getAllFSofType(TOP.type, cas);
+
+      assertTrue(featureStructures != null);
+      assertTrue(!featureStructures.isEmpty());
+      assertTrue(featureStructures.size() == 3); // two simple FSs and the DocumentAnnotation, both extend TOP
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail(e.toString());
+    }
 
   }
 
   @Test
-  public void testGetSingletonFeatureStructure() {
+  public void testGetAllAnnotationsofCustomType() {
+    try {
+      JCas cas = getCAS().getJCas();
+      cas.setDocumentText(DOCUMENT_TEXT);
 
+      Annotation simpleAnnotation = new Annotation(cas);
+      simpleAnnotation.setBegin(10);
+      simpleAnnotation.setEnd(24);
+      simpleAnnotation.addToIndexes();
+
+      Annotation secondSimpleAnnotation = new Annotation(cas);
+      secondSimpleAnnotation.setBegin(32);
+      secondSimpleAnnotation.setEnd(44);
+      secondSimpleAnnotation.addToIndexes();
+
+      List<Annotation> foundAnnotations = UIMAUtils.getAllAnnotationsOfType(DocumentAnnotation.type, cas);
+
+      assertTrue(foundAnnotations != null);
+      assertTrue(!foundAnnotations.isEmpty());
+      assertTrue(foundAnnotations.size() == 1);
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail(e.toString());
+    }
+
+  }
+
+
+
+
+  private static CAS getCAS() {
+    // Create an initial CASMgr from the factory.
+    CASMgr casMgr0 = CASFactory.createCAS();
+    CASMgr casMgr = null;
+    try {
+      // this call does nothing: because 2nd arg is null
+      CasCreationUtils.setupTypeSystem(casMgr0, (TypeSystemDescription) null);
+      // Create a writable type system.
+      TypeSystemMgr tsa = casMgr0.getTypeSystemMgr();
+
+      // Commit the type system.
+      ((CASImpl) casMgr0).commitTypeSystem();
+
+      casMgr = CASFactory.createCAS(tsa);
+
+      // Create the Base indexes.
+      casMgr.initCASIndexes();
+      // Commit the index repository.
+      FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
+
+      irm.commit();
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+    } catch (CASException e) {
+      e.printStackTrace();
+    }
+
+    // Create the default text Sofa and return CAS view
+    return casMgr.getCAS().getCurrentView();
   }
 
 }

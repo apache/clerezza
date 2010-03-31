@@ -1,16 +1,14 @@
 package org.apache.clerezza.uima.utils;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * Testcase for {@link AEProvider}
- * 
- * @author tommaso
  * 
  */
 public class AEProviderTest {
