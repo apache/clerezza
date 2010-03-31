@@ -1,13 +1,12 @@
 package org.apache.clerezza.uima.utils;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.Test;
-
 /**
  * Testcase for {@link UIMAExecutor}
- * @author tommaso
  *
  */
 public class UIMAExecutorTest {
