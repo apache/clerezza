@@ -22,6 +22,9 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 import org.wymiwyg.wrhapi.Handler;
 import org.wymiwyg.wrhapi.HandlerException;
@@ -46,6 +49,9 @@ import org.wymiwyg.wrhapi.util.EnhancedRequest;
  *
  * @author rbn
  */
+@Component
+@Service(Filter.class)
+@Property(name="pattern", value={".*MSIE.*"})
 public class Xhtml2HtmlFilter implements Filter {
 
 	private Pattern[] patterns;
