@@ -821,7 +821,8 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
 		try {
 			AccessController.checkPermission(
-					new TcPermission("http://tpf.localhost/content.graph", "write"));
+					new TcPermission("http://tpf.localhost/content.graph",
+					TcPermission.READWRITE));
 			AccessController.checkPermission(new ScriptManagerAppPermission());
 		} catch (AccessControlException e) {
 			return items;

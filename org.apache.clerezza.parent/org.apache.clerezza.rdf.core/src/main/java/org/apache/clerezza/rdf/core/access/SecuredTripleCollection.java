@@ -159,14 +159,16 @@ public class SecuredTripleCollection implements TripleCollection {
 	private void checkRead() {
 		SecurityManager security = System.getSecurityManager();
 		if (security != null) {
-			security.checkPermission(new TcPermission(name, "read"));
+			security.checkPermission(new TcPermission(name,
+					TcPermission.READ));
 		}
 	}
 
 	private void checkWrite() {
 		SecurityManager security = System.getSecurityManager();
 		if (security != null) {
-			security.checkPermission(new TcPermission(name, "write"));
+			security.checkPermission(new TcPermission(name, 
+					TcPermission.READWRITE));
 		}
 	}
 

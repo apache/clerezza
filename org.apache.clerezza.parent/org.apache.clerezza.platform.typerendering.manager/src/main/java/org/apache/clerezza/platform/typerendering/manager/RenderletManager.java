@@ -446,7 +446,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
 		try {
 			AccessController.checkPermission(
-					new TcPermission("http://tpf.localhost/config.graph", "write"));
+					new TcPermission("http://tpf.localhost/config.graph", TcPermission.READWRITE));
 		} catch (AccessControlException e) {
 			return items;
 		}
