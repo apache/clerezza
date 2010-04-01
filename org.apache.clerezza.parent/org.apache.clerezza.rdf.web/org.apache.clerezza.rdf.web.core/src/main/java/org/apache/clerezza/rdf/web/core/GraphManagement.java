@@ -117,7 +117,7 @@ public class GraphManagement implements GlobalMenuItemsProvider {
 			return items;
 		}
 		String path = "/admin/graph-management";
-		items.add(new GlobalMenuItem(path, "GM", "Graph Management", 5," System Tools"));
+		items.add(new GlobalMenuItem(path, "GM", "Graph Management", 5,"System Tools"));
 		return items;
 	}
 
