@@ -61,6 +61,7 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 	 * @throws org.wymiwyg.wrhapi.HandlerException
 	 * @throws org.apache.clerezza.platform.security.auth.NoSuchAgent
 	 */
+	@Override
 	public boolean authenticate(String userName, String password) throws HandlerException, NoSuchAgent
 	{
 		AccessController.checkPermission(new CheckAuthenticationPermission());
