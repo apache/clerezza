@@ -9,7 +9,7 @@
 	<artifactId>org.apache.clerezza.rdf.metadata</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
-	<name>Clerezza - SCB Metadada</name>
+	<name>Clerezza - SCB Metadata</name>
 	<description>An interface that specifies how to create meta data about data
 	depending on its media type.</description>
 	<dependencies>
