@@ -264,19 +264,22 @@ public class TcManager implements TcProvider {
 		}
 		Dictionary props = new Properties();
 		props.put("name", name.getUnicodeString());
-		String interfaceName;
+		String[] interfaceNames;
 		Object service;
 		if (triples instanceof MGraph) {
-			interfaceName = MGraph.class.getName();
+			interfaceNames = new String[]{
+				MGraph.class.getName(),
+				LockableMGraph.class.getName()
+			};
 			service = new MGraphServiceFactory(this, name);
 		} else if (triples instanceof Graph) {
-			interfaceName = Graph.class.getName();
+			interfaceNames = new String[]{Graph.class.getName()};
 			service = new GraphServiceFactory(this, name);
 		} else {
 			return null;
 		}
 		return componentContext.getBundleContext().registerService(
-				interfaceName, service, props);
+				interfaceNames, service, props);
 	}
 
 
