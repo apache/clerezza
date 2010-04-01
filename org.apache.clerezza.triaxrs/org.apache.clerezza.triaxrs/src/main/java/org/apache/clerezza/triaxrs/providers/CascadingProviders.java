@@ -29,6 +29,7 @@ import javax.ws.rs.ext.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.triaxrs.InjectionUtilities;
+import org.apache.clerezza.triaxrs.JaxRsHandler;
 import org.apache.clerezza.triaxrs.RootResources;
 import org.apache.clerezza.triaxrs.WebRequest;
 import org.apache.clerezza.triaxrs.WebRequestProxy;
@@ -81,7 +82,7 @@ public class CascadingProviders implements Providers {
 	private void injectContext(Object provider) {
 		WebRequest requestProxy = WebRequestProxy.createProxy();
 		try {
-			InjectionUtilities.injectFields(requestProxy, null, null, provider);
+			InjectionUtilities.injectFields(requestProxy, null, JaxRsHandler.providers, provider);
 		} catch (HandlerException ex) {
 			logger.debug("Exception {}", ex);
 			throw new RuntimeException(ex);
