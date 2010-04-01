@@ -51,7 +51,7 @@ import org.wymiwyg.wrhapi.util.EnhancedRequest;
  */
 @Component
 @Service(Filter.class)
-@Property(name="pattern", value={".*MSIE.*"})
+@Property(name="pattern", value={".*MSIE.*", ""})
 public class Xhtml2HtmlFilter implements Filter {
 
 	private Pattern[] patterns;

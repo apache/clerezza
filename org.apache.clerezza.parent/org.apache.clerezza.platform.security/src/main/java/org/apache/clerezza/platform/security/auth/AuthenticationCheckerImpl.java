@@ -44,7 +44,7 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM;
  * @author mir
  */
 @Component
-@Service(value=AuthenticationCheckerImpl.class)
+@Service(value=AuthenticationChecker.class)
 public class AuthenticationCheckerImpl implements AuthenticationChecker {
 
 	private final static Logger logger = LoggerFactory.getLogger(AuthenticationCheckerImpl.class);

@@ -244,7 +244,7 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr</artifactId>
 			<scope>provided</scope>
-			<version>1.4.0</version>
+			<version>1.0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
