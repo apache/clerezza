@@ -13,7 +13,6 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
 
@@ -29,7 +28,7 @@ public class UIMAUtilsTest {
   private static final String DOCUMENT_TEXT = "the seerver will return a \"A concept with the same label and language already exists!\", so there are actually 2 issues:";
 
   @Test
-  public void testGetAllFSofAnnotationType() {
+  public void testGetAllFSOfAnnotationType() {
     try {
       JCas cas = getCAS().getJCas();
       cas.setDocumentText(DOCUMENT_TEXT);
@@ -52,7 +51,7 @@ public class UIMAUtilsTest {
   }
 
   @Test
-  public void testGetAllAnnotationsofCustomType() {
+  public void testGetAllAnnotationsOfCustomType() {
     try {
       JCas cas = getCAS().getJCas();
       cas.setDocumentText(DOCUMENT_TEXT);
@@ -79,7 +78,40 @@ public class UIMAUtilsTest {
 
   }
 
+  @Test
+  public void testGetSingletonFS() {
+    try {
+      JCas cas = getCAS().getJCas();
+      cas.setDocumentText(DOCUMENT_TEXT);
+      FeatureStructure documentAnnotation = UIMAUtils.getSingletonFeatureStructure(DocumentAnnotation.type, cas);
+      assertTrue(documentAnnotation != null);
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail(e.toString());
+    }
+  }
 
+  @Test
+  public void testFailingGetSingletonFS() {
+    try {
+      JCas cas = getCAS().getJCas();
+      cas.setDocumentText(DOCUMENT_TEXT);
+      Annotation simpleAnnotation = new Annotation(cas);
+      simpleAnnotation.setBegin(10);
+      simpleAnnotation.setEnd(24);
+      simpleAnnotation.addToIndexes();
+
+      Annotation secondSimpleAnnotation = new Annotation(cas);
+      secondSimpleAnnotation.setBegin(32);
+      secondSimpleAnnotation.setEnd(44);
+      secondSimpleAnnotation.addToIndexes();
+
+      UIMAUtils.getSingletonFeatureStructure(Annotation.type, cas);
+      fail("should raise exception since there are 3 annotations of type Annotation");
+    } catch (Exception e) {
+      // if here, test passed
+    }
+  }
 
 
   private static CAS getCAS() {
@@ -88,7 +120,7 @@ public class UIMAUtilsTest {
     CASMgr casMgr = null;
     try {
       // this call does nothing: because 2nd arg is null
-      CasCreationUtils.setupTypeSystem(casMgr0, (TypeSystemDescription) null);
+      CasCreationUtils.setupTypeSystem(casMgr0, null);
       // Create a writable type system.
       TypeSystemMgr tsa = casMgr0.getTypeSystemMgr();
 
