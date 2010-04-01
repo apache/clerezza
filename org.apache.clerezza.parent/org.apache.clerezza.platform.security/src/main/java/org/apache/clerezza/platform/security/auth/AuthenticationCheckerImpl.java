@@ -1,0 +1,98 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.clerezza.platform.security.auth;
+
+import java.security.AccessController;
+import java.util.Iterator;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.clerezza.rdf.core.Literal;
+import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
+import org.apache.clerezza.rdf.ontologies.PERMISSION;
+import org.wymiwyg.wrhapi.HandlerException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.clerezza.platform.config.SystemConfig;
+import org.apache.clerezza.platform.security.PasswordUtil;
+import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.ontologies.PLATFORM;
+
+/**
+ * A service that checks if a provided username and password matches a
+ * username and password stored in the system graph
+ *
+ * @author mir
+ */
+@Component
+@Service(value=AuthenticationCheckerImpl.class)
+public class AuthenticationCheckerImpl implements AuthenticationChecker {
+
+	private final static Logger logger = LoggerFactory.getLogger(AuthenticationCheckerImpl.class);
+
+	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
+	private MGraph systemGraph;
+
+	/**
+	 * Checks if the provided username and password matches a username and
+	 * password stored in the system graph
+	 * @param userName
+	 * @param password
+	 * @return true if the password matched, false otherwise
+	 * @throws org.wymiwyg.wrhapi.HandlerException
+	 * @throws org.apache.clerezza.platform.security.auth.NoSuchAgent
+	 */
+	public boolean authenticate(String userName, String password) throws HandlerException, NoSuchAgent
+	{
+		AccessController.checkPermission(new CheckAuthenticationPermission());
+		NonLiteral agent = getAgentFromGraph(userName);
+		String storedPassword = getPasswordOfAgent(agent);
+		if (storedPassword.equals(PasswordUtil.convertPassword(password))) {
+			logger.debug("password matches");
+			return true;
+		} else {
+			logger.debug("password didn't match ");
+			return false;
+		}
+	}
+
+	private NonLiteral getAgentFromGraph(String userName) throws NoSuchAgent {
+		NonLiteral agent;
+		Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName, new PlainLiteralImpl(userName));
+		if (agents.hasNext()) {
+			agent = agents.next().getSubject();
+		} else {
+			logger.debug("no user {} in graph", userName);
+			throw new NoSuchAgent();
+		}
+		return agent;
+	}
+
+	private String getPasswordOfAgent(NonLiteral agent) {
+		String storedPassword = "";
+		Iterator<Triple> agentPassword = systemGraph.filter(agent, PERMISSION.passwordSha1, null);
+		if (agentPassword.hasNext()) {
+			storedPassword = ((Literal) agentPassword.next().getObject()).getLexicalForm();
+		}
+		return storedPassword;
+	}
+}
