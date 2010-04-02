@@ -33,6 +33,7 @@ public class SecuredMGraph extends SecuredTripleCollection implements LockableMG
 
 	SecuredMGraph(LockableMGraph wrapped, UriRef name) {
 		super(wrapped, name);
+		this.wrapped = wrapped;
 	}
 
 	@Override
