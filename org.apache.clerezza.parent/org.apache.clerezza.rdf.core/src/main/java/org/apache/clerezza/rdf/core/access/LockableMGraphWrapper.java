@@ -33,16 +33,23 @@ import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
 
 /**
+ * Wrappes an MGraph as a LockableMGraph, this class is used by TcManager to
+ * support TcProviders that do not privide <code>LockableMGraph</code>.
  *
  * @author rbn
  */
-class LockableMGraphWrapper implements LockableMGraph {
+public class LockableMGraphWrapper implements LockableMGraph {
 
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
 	private final MGraph wrapped;
 
+	/**
+	 * Constructs a LocalbleMGraph for an MGraph.
+	 *
+	 * @param providedMGraph a non-lockable mgraph
+	 */
 	public LockableMGraphWrapper(final MGraph providedMGraph) {
 		this.wrapped = providedMGraph;
 	}
