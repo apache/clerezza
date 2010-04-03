@@ -56,21 +56,27 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * @author mir
  */
 @Component
-@Service(value=HierarchyService.class)
+@Service(value = HierarchyService.class)
 public class HierarchyService {
 
 	@Reference
 	ContentGraphProvider cgProvider;
-
 	@Reference
 	PlatformConfig config;
-
 	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
 	MGraph systemGraph;
-
 	@Reference
 	private UserManager userManager;
+	
+	private GraphListener graphListener = new GraphListener() {
 
+		@Override
+		public void graphChanged(List<GraphEvent> events) {
+			for (GraphEvent event : events) {
+				addRoot((UriRef) event.getTriple().getObject());
+			}
+		}
+	};
 	private Set<CollectionNode> roots = new HashSet<CollectionNode>();
 
 	/**
@@ -103,23 +109,23 @@ public class HierarchyService {
 		} else {
 			hierarchyNode = new HierarchyNode(uri, cgProvider.getContentGraph(), this);
 		}
-	checkExistence(hierarchyNode);
+		checkExistence(hierarchyNode);
 		return hierarchyNode;
 	}
 
 	private void checkExistence(HierarchyNode node) throws NodeDoesNotExistException {
 		if (!getRoots().contains(node)) {
-                        CollectionNode parent;
-                        UriRef nodeUri = node.getNode();
-                        try {
-                            parent = node.getParent();
-                        } catch(RuntimeException ex){
-							if (ex.getCause() instanceof NodeDoesNotExistException) {
-								throw new NodeDoesNotExistException(nodeUri);
-							} else {
-								throw ex;
-							}
-                        }
+			CollectionNode parent;
+			UriRef nodeUri = node.getNode();
+			try {
+				parent = node.getParent();
+			} catch (RuntimeException ex) {
+				if (ex.getCause() instanceof NodeDoesNotExistException) {
+					throw new NodeDoesNotExistException(nodeUri);
+				} else {
+					throw ex;
+				}
+			}
 			if (!parent.getMembersRdf().contains(nodeUri)) {
 				throw new NodeDoesNotExistException(nodeUri);
 			}
@@ -137,7 +143,7 @@ public class HierarchyService {
 	 * @param uri
 	 */
 	public CollectionNode getCollectionNode(UriRef uri)
-			throws NodeDoesNotExistException, UnknownRootExcetpion{
+			throws NodeDoesNotExistException, UnknownRootExcetpion {
 		if (!hasKnownRoot(uri)) {
 			throw new UnknownRootExcetpion(extractBaseUri(uri));
 		}
@@ -274,8 +280,7 @@ public class HierarchyService {
 			throws NodeAlreadyExistsException {
 		CollectionNode parentCollection;
 		try {
-			UriRef parentCollectionUri = HierarchyUtils.
-					extractParentCollectionUri(node.getNode());
+			UriRef parentCollectionUri = HierarchyUtils.extractParentCollectionUri(node.getNode());
 			parentCollection = (CollectionNode) getHierarchyNode(parentCollectionUri);
 		} catch (UnknownRootExcetpion ex) {
 			throw new RuntimeException(ex);
@@ -404,7 +409,6 @@ public class HierarchyService {
 		return createCollectionNode(uri, -1);
 	}
 
-
 	protected void activate(ComponentContext componentContext) {
 		Iterator<UriRef> baseUris = config.getBaseUris().iterator();
 		while (baseUris.hasNext()) {
@@ -412,14 +416,7 @@ public class HierarchyService {
 			addRoot(baseUri);
 		}
 		//listening to newly added base-uris
-		final GraphListener graphListener  = new GraphListener() {
-			@Override
-			public void graphChanged(List<GraphEvent> events) {
-				for (GraphEvent event : events) {
-					addRoot((UriRef)event.getTriple().getObject());
-				}
-			}
-		};
+
 		systemGraph.addGraphListener(graphListener, new FilterTriple(null,
 				PLATFORM.baseUri, null));
 		systemGraph.addGraphListener(graphListener, new FilterTriple(null,
@@ -433,6 +430,7 @@ public class HierarchyService {
 	}
 
 	protected void deactivate(ComponentContext componentContext) {
+		systemGraph.removeGraphListener(graphListener);
 		roots.clear();
 	}
 
@@ -443,13 +441,13 @@ public class HierarchyService {
 
 	private void addCreationProperties(HierarchyNode node) {
 		GraphNode agentNode = getCreator();
-		if(!(node.getObjects(FOAF.maker).hasNext() || agentNode == null)) {
+		if (!(node.getObjects(FOAF.maker).hasNext() || agentNode == null)) {
 
 			Iterator<Triple> agents = node.getGraph().filter(null, PLATFORM.userName,
 					agentNode.getObjects(PLATFORM.userName).next());
 
 			NonLiteral agent = null;
-			if(agents.hasNext()) {
+			if (agents.hasNext()) {
 				agent = (NonLiteral) agents.next().getSubject();
 			} else {
 				agent = (NonLiteral) agentNode.getNode();
@@ -489,5 +487,4 @@ public class HierarchyService {
 	UriRef createNonCollectionUri(UriRef parentCollectionUri, String name) {
 		return new UriRef(parentCollectionUri.getUnicodeString() + name);
 	}
-
 }
