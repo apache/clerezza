@@ -32,6 +32,7 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -50,7 +51,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 public class PlatformConfig {
 
 	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
-	private MGraph systemGraph;
+	private LockableMGraph systemGraph;
 	private BundleContext context;
 	private static String DEFAULT_PORT = "8080";
 	private static final String CONFIG_GRAPH_STRING =
@@ -77,7 +78,7 @@ public class PlatformConfig {
 	 * @return the base URI of the Clerezza platform
 	 */
 	public UriRef getDefaultBaseUri() {
-		Iterator<Resource> triples = new GraphNode(getPlatformInstance(), systemGraph).
+		Iterator<Resource> triples = getPlatformInstance().
 				getObjects(PLATFORM.defaultBaseUri);
 		if (triples.hasNext()) {
 			return (UriRef) triples.next();
@@ -93,7 +94,18 @@ public class PlatformConfig {
 		}
 	}
 
-	private NonLiteral getPlatformInstance() throws RuntimeException {
+	/**
+	 * Returns the platforminstance as <code>GraphNode</code> of the system
+	 * graph (a LockableMGraph). Access controls applies to the system graph
+	 * instance underlying the <code>GraphNode</code>.
+	 *
+	 * @return
+	 */
+	public GraphNode getPlatformInstance() {
+		return new GraphNode(getPlatformInstanceResource(), systemGraph);
+	}
+
+	private NonLiteral getPlatformInstanceResource() {
 		Iterator<Triple> instances = systemGraph.filter(null, RDF.type, PLATFORM.Instance);
 		if (!instances.hasNext()) {
 			throw new RuntimeException("No Platform:Instance in system graph.");
@@ -107,7 +119,7 @@ public class PlatformConfig {
 	 * @return the base URI of the Clerezza platform
 	 */
 	public Set<UriRef> getBaseUris() {
-		Iterator<Resource> baseUrisIter = new GraphNode(getPlatformInstance(), systemGraph).
+		Iterator<Resource> baseUrisIter = getPlatformInstance().
 				getObjects(PLATFORM.baseUri);
 		Set<UriRef> baseUris = new HashSet<UriRef>();
 		while (baseUrisIter.hasNext()) {
@@ -124,7 +136,7 @@ public class PlatformConfig {
 	 * @param baseUri The base URI which will be added to the platform instance
 	 */
 	public void addBaseUri(UriRef baseUri) {
-		systemGraph.add(new TripleImpl(getPlatformInstance(), PLATFORM.baseUri, baseUri));
+		systemGraph.add(new TripleImpl(getPlatformInstanceResource(), PLATFORM.baseUri, baseUri));
 	}
 
 	/**
@@ -133,7 +145,7 @@ public class PlatformConfig {
 	 * @param baseUri The base URI which will be removed from the platform instance
 	 */
 	public void removeBaseUri(UriRef baseUri) {
-		systemGraph.remove(new TripleImpl(getPlatformInstance(), PLATFORM.baseUri, baseUri));
+		systemGraph.remove(new TripleImpl(getPlatformInstanceResource(), PLATFORM.baseUri, baseUri));
 	}
 
 	protected void activate(ComponentContext componentContext) {
