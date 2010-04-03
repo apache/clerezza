@@ -31,6 +31,7 @@ import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -301,7 +302,7 @@ public class HierarchyTest{
 			final SimpleMGraph systemGraph = new SimpleMGraph();
 			systemGraph.add(new TripleImpl(new BNode(),
 					RDF.type, PLATFORM.Instance));
-			bindSystemGraph(systemGraph);
+			bindSystemGraph(new LockableMGraphWrapper(systemGraph));
 		}
 		@Override
 		public Set<UriRef> getBaseUris() {
