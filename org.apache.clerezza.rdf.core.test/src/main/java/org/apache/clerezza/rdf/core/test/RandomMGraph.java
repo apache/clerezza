@@ -31,27 +31,38 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.commons.lang.RandomStringUtils;
 
 /**
- * A <code>MGraph</code> wrapper that allows randomly growing and shrinking of
+ * A <code>MGraph</code> wrapper that allows growing and shrinking of
  * the wrapped mgraph.
  *
  * @author mir
  */
-public class RandomGraph extends MGraphWrapper {
-	private int growthSpeed = 3;
+public class RandomMGraph extends MGraphWrapper {
+	
 	private int interconnectivity = 2;
 
-	public RandomGraph(MGraph mGraph) {
+	public RandomMGraph(MGraph mGraph, int interconnectivity) {
 		super(mGraph);
+		this.interconnectivity = interconnectivity;
 	}
 
-	public RandomGraph(int growthSpeed, int interconnectivity, MGraph mGraph) {
+	/**
+	 * Creates a new random mutual graph.
+	 *
+	 * @param initialSize Determines the initial size of the content graph
+	 * @param interconnectivity Determines the probability of using already existing
+	 *		resource when creating a new triple. The probability of using an existing
+	 *		resource over creating a new resouce is 1-(1/interconnectivity).
+	 * @param mGraph
+	 */
+	public RandomMGraph(int initialSize, int interconnectivity, MGraph mGraph) {
 		super(mGraph);
-		if (growthSpeed <= 0 || interconnectivity <= 0) {
+		if (interconnectivity <= 0) {
 			throw new IllegalArgumentException("growth speed and the interconnectivity "
 					+ "value have to be equals or highter one");
 		}
-		this.growthSpeed = growthSpeed;
 		this.interconnectivity = interconnectivity;
+
+		setupInitialSize(initialSize);
 	}
 
 	/**
@@ -61,7 +72,7 @@ public class RandomGraph extends MGraphWrapper {
 	 */
 	public Triple evolve() {
 		Triple triple;
-		int random = rollDice(growthSpeed);
+		int random = rollDice(2);
 		if (random == 0 && size() != 0) {
 			triple = getRandomTriple();
 			remove(triple);
@@ -71,14 +82,39 @@ public class RandomGraph extends MGraphWrapper {
 		}
 		return triple;
 	}
+
+	/**
+	 * Removes a random triple.
+	 *
+	 * @return the triple that was removed.
+	 */
+	public Triple removeRandomTriple() {
+		Triple randomTriple = getRandomTriple();
+		remove(randomTriple);
+		return randomTriple;
+	}
+
+	/**
+	 * Adds a random triple.
+	 *
+	 * @return the triple that was added.
+	 */
+	public Triple addRandomTriple() {
+		Triple randomTriple;
+		do {
+		 randomTriple = createRandomTriple();
+		} while(contains(randomTriple));
 		
+		add(randomTriple);
+		return randomTriple;
+	}
+	
 	private Triple createRandomTriple() {
 		return new TripleImpl(getSubject(), getPredicate(), getObject());
 	}
 
 	private NonLiteral getSubject() {
 		int random = rollDice(interconnectivity);
-		System.out.println("---->" + random);
 		if (size() == 0) {
 			random = 0;
 		}
@@ -176,7 +212,7 @@ public class RandomGraph extends MGraphWrapper {
 	}
 
 	/**
-	 * Returns a random triple.
+	 * Returns a random triple contained in the MGraph.
 	 */
 	public Triple getRandomTriple() {
 		int size = this.size();
@@ -191,5 +227,11 @@ public class RandomGraph extends MGraphWrapper {
 			}
 		}
 		return getRandomTriple();
+	}
+
+	private void setupInitialSize(int initialSize) {
+		for (int i = 0; i < initialSize; i++) {
+			addRandomTriple();
+		}
 	}
 }
