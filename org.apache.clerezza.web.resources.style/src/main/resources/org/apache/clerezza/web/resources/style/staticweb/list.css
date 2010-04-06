@@ -62,12 +62,12 @@
 }
 
 .tx-list ol.tx-size1 li div.tx-thumb img.tx-width  {
-	width: 150px;
+	width: 200px;
 	height: auto;
 }
 
 .tx-list ol.tx-size1 li div.tx-thumb img.tx-height  {
-	height: 150px;
+	height: 200px;
 	width: auto;
 }
 
@@ -82,12 +82,12 @@
 }
 
 .tx-list ol.tx-size2 li div.tx-thumb img.tx-width  {
-	width: 120px;
+	width: 150px;
 	height: auto;
 }
 
 .tx-list ol.tx-size2 li div.tx-thumb img.tx-height  {
-	height: 120px;
+	height: 150px;
 	width: auto;
 }
 

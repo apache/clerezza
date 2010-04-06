@@ -78,7 +78,7 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 
 	@Reference
 	private ImageProcessor imageProcessor;
-	@Property(value="100x100", description="Specifies the resolutions of alternative" +
+	@Property(value="100x100,200x200", description="Specifies the resolutions of alternative" +
 			" representations in the format [width]x[height]. Multiple resolutions" +
 			" are separated by comma (e.g. 100x100,30x30)")
 	public static final String RESOLUTIONS = "resolutions";
