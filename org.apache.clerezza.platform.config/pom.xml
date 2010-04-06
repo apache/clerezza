@@ -35,22 +35,10 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr.annotations</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.platform.dashboard.core</artifactId>
-        </dependency>
 		<dependency>
             <groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.web.fileserver</artifactId>
-        </dependency>
     </dependencies>
 </project>
 
