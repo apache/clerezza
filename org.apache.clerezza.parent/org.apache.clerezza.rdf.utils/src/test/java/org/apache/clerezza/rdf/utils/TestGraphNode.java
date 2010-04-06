@@ -34,7 +34,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.test.RandomGraph;
+import org.apache.clerezza.rdf.core.test.RandomMGraph;
 
 /**
  *
@@ -74,10 +74,7 @@ public class TestGraphNode {
 
 	@Test
 	public void testGetSubjectAndObjectNodes() {
-		RandomGraph graph = new RandomGraph(5, 20, new SimpleMGraph());
-		for (int i = 0; i < 200; i++) {
-			graph.evolve();
-		}
+		RandomMGraph graph = new RandomMGraph(500, 20, new SimpleMGraph());
 		for (int j = 0; j < 200; j++) {
 			Triple randomTriple = graph.getRandomTriple();
 			GraphNode node = new GraphNode(randomTriple.getSubject(), graph);
