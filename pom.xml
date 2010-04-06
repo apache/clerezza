@@ -30,7 +30,6 @@
 		<module>org.apache.clerezza.integrationtest.web</module>
 		<module>org.apache.clerezza.integrationtest.web.performance</module>
 		<module>org.apache.clerezza.internal.archetype</module>
-		<module>org.apache.clerezza.internal.process</module>
 		<module>org.apache.clerezza.jaxrs.extensions</module>
 		<module>org.apache.clerezza.jaxrs.rdf.providers</module>
 		<module>org.apache.clerezza.jaxrs.testutils</module>
@@ -546,11 +545,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza.ext</groupId>
-				<artifactId>org.mulgara</artifactId>
-				<version>0.3-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza.ext</groupId>
 				<artifactId>org.openrdf.sesame</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
@@ -572,11 +566,6 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.rdf.jena.tdb.storage</artifactId>
-				<version>0.5-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.mulgara.storage</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
