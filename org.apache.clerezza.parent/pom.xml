@@ -41,6 +41,7 @@
 		<module>org.apache.clerezza.platform.accountcontrolpanel</module>
 		<module>org.apache.clerezza.platform.concepts</module>
 		<module>org.apache.clerezza.platform.config</module>
+		<module>org.apache.clerezza.platform.config.gui</module>
 		<module>org.apache.clerezza.platform.content.imagemetadata</module>
 		<module>org.apache.clerezza.platform.content</module>
 		<module>org.apache.clerezza.platform.content.representations</module>
@@ -925,6 +926,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.config.gui</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.documentation</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
@@ -1093,6 +1099,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.maven-jaxrs-report-plugin</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>2.5.1</version>
 			</plugin>
 <!--			<plugin>
 				<groupId>org.apache.clerezza</groupId>
