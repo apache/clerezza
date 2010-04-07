@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
@@ -66,5 +67,11 @@ public class DiscobitTemplating {
 
 		renderletManager.registerRenderlet(TitledContentRenderlet.class.getName(),
 				null, DISCOBITS.TitledContent, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+
+		// registre renderlet for XMLLiteral datatype.
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+				new UriRef(getClass().getResource("XmlLiteral.ssp").toString()),
+				new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"), null,
+				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 	}
 }

@@ -97,15 +97,19 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 
 	@Override
 	public Renderer createRenderer(GraphNode resource, String mode, List<MediaType> acceptableMediaTypes) {
-		// extract rdf types
-		Set<UriRef> rdfTypes = new HashSet<UriRef>();
-		Iterator<UriRef> it = resource.getUriRefObjects(RDF.type);
-		while (it.hasNext()) {
-			final UriRef rdfType = it.next();
-			rdfTypes.add(rdfType);
+		Set<UriRef> types = new HashSet<UriRef>();
+		if (resource.getNode() instanceof TypedLiteral) {
+			types.add(((TypedLiteral) resource.getNode()).getDataType());
+		} else {
+			// extract rdf types
+			Iterator<UriRef> it = resource.getUriRefObjects(RDF.type);
+			while (it.hasNext()) {
+				final UriRef rdfType = it.next();
+				types.add(rdfType);
+			}
+			types.add(RDFS.Resource);
 		}
-		rdfTypes.add(RDFS.Resource);
-		return getRenderer(rdfTypes, mode, acceptableMediaTypes);
+		return getRenderer(types, mode, acceptableMediaTypes);
 	}
 
 	private RendererImpl getRenderer(final Set<UriRef> rdfTypes,

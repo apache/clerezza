@@ -39,6 +39,7 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -133,7 +134,6 @@ public abstract class RendereringTest {
 		
 		RenderletManager renderletManager = createNewRenderletManager();
 		MediaType mediaType = new MediaType ("application", "test");
-
 		renderletManager = createNewRenderletManager();
 		String result;
 		// register renderlet and rendering specification with no mode.
@@ -257,6 +257,16 @@ public abstract class RendereringTest {
 			Assert.assertTrue(false);
 		} catch (RenderletNotFoundException ex) {}
 	}
+
+	@Test
+	public void typedLiteralRenderingTest() throws Exception{
+		MediaType mediaType = new MediaType ("application", "test");
+		RenderletManager renderletManager = createNewRenderletManager();
+		renderletManager.registerRenderlet(renderletMockA.pid, renderSpecUriA, rdfTypeX, mode1, mediaType, true);
+		GraphNode typedLiteral = new GraphNode(new TypedLiteralImpl("bla", rdfTypeX), new SimpleMGraph());
+		String result = renderWithSetting(typedLiteral, mode1, mediaType);
+		Assert.assertEquals(renderletMockA.outputForRenderSpecUriA + mediaType.toString(), result);
+	}
 	
 	@Test
 	public void testGetMediaType() {
@@ -295,11 +305,16 @@ public abstract class RendereringTest {
 	
 	private List<MediaType> createMediaTypeList(MediaType... mediaTypes) {
 		return Arrays.asList(mediaTypes);
-	}	
-	
+	}
+
 	private String renderWithSetting(String mode, MediaType mediaType,
 			UriRef... types) throws IOException {
 		GraphNode resource = createGraphNode(types);
+		return renderWithSetting(resource, mode, mediaType);
+	}
+	
+	private String renderWithSetting(GraphNode resource, String mode, MediaType mediaType) throws IOException {
+		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Renderer renderer = getRendererFactory().createRenderer(resource, mode,
 				Collections.singletonList(mediaType));
