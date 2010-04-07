@@ -1,0 +1,14 @@
+import _root_.scala.xml._
+
+{
+	var elem:Elem = null
+	val lexicalForm:String = res*;
+	try {		
+		elem = XML.loadString(lexicalForm)
+		elem
+	} catch {
+	  case e: Exception =>
+		val elem:Elem = XML.loadString("<span>" + lexicalForm + "</span>")
+		elem
+	}
+}
