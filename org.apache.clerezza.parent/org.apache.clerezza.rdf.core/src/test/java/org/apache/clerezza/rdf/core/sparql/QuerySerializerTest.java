@@ -32,6 +32,7 @@ import org.apache.clerezza.rdf.core.sparql.query.Expression;
 import org.apache.clerezza.rdf.core.sparql.query.LiteralExpression;
 import org.apache.clerezza.rdf.core.sparql.query.ResourceOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
+import org.apache.clerezza.rdf.core.sparql.query.UriRefExpression;
 import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleAskQuery;
@@ -175,6 +176,35 @@ public class QuerySerializerTest {
 		queryPattern.addGraphPattern(bgp);
 		BinaryOperation constraint = new BinaryOperation("<",
 				price, new LiteralExpression(LiteralFactory.getInstance().createTypedLiteral(30.5)));
+		queryPattern.addConstraint(constraint);
+		selectQuery.setQueryPattern(queryPattern);
+
+		Assert.assertTrue(selectQuery.toString()
+				.replaceAll("( |\n)+", " ").trim().equals(queryString));
+	}
+
+	@Test
+	public void testUriRefExpression() {
+
+		final String queryString = "SELECT ?resource WHERE { " +
+				"?resource <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?myType . " +
+				"FILTER ((?resource) = (<http://example.org/ontology#special>)) " +
+				"}";
+
+		Variable resource = new Variable("resource");
+		SimpleSelectQuery selectQuery = new SimpleSelectQuery();
+		selectQuery.addSelection(resource);
+
+		Variable myType = new Variable("myType");
+		Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
+		triplePatterns.add(new SimpleTriplePattern(resource,
+				new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), myType));
+
+		SimpleBasicGraphPattern bgp = new SimpleBasicGraphPattern(triplePatterns);
+		SimpleGroupGraphPattern queryPattern = new SimpleGroupGraphPattern();
+		queryPattern.addGraphPattern(bgp);
+		BinaryOperation constraint = new BinaryOperation("=",
+				resource, new UriRefExpression(new UriRef("http://example.org/ontology#special")));
 		queryPattern.addConstraint(constraint);
 		selectQuery.setQueryPattern(queryPattern);
 

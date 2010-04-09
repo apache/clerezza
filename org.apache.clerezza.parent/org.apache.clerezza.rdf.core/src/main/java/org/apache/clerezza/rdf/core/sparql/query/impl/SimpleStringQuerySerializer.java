@@ -44,6 +44,7 @@ import org.apache.clerezza.rdf.core.sparql.query.ResourceOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 import org.apache.clerezza.rdf.core.sparql.query.UnaryOperation;
+import org.apache.clerezza.rdf.core.sparql.query.UriRefExpression;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,6 +218,8 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
 			appendCall(s, f.getName().getUnicodeString(), f.getArguements());
 		} else if (e instanceof LiteralExpression) {
 			appendLiteralExpression(s, (LiteralExpression) e);
+		} else if (e instanceof UriRefExpression) {
+			s.append(((UriRefExpression) e).getUriRef().toString());
 		}
 	}
 
