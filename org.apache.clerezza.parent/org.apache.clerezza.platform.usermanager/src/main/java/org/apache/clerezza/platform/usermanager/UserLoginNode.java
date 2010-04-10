@@ -54,16 +54,22 @@ public class UserLoginNode implements UserContextProvider {
 		GraphNode agent = AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
 			@Override
 			public GraphNode run() {
-				return userManager.getUserGraphNode(UserUtil.getUserName(context));
+				final String userName = UserUtil.getUserName(context);
+				if (userName == null) {
+					return null;
+				}
+				return userManager.getUserGraphNode(userName);
 			}
 		});
-		if (!(node.getObjects(PLATFORM.user).hasNext())) {
-			node.addProperty(PLATFORM.user, agent.getNode());
-		} else {
-			Resource user = node.getObjects(PLATFORM.user).next();
-			agent.replaceWith((NonLiteral) user);
+		if (agent != null) {
+			if (!(node.getObjects(PLATFORM.user).hasNext())) {
+				node.addProperty(PLATFORM.user, agent.getNode());
+			} else {
+				Resource user = node.getObjects(PLATFORM.user).next();
+				agent.replaceWith((NonLiteral) user);
+			}
+			node.getGraph().addAll(agent.getGraph());
 		}
-		node.getGraph().addAll(agent.getGraph());
 		return node;
 	}
 }
