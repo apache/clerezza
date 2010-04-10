@@ -23,6 +23,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.util.Context;
 import java.util.Iterator;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -107,6 +108,11 @@ class TcDatasetGraph implements DatasetGraph {
 
 	@Override
 	public void close() {
+	}
+
+	@Override
+	public Context getContext() {
+		return null;
 	}
 
 }
