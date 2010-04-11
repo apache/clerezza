@@ -153,9 +153,9 @@ public class PlatformConfig {
 		try {
 			tcManager.getMGraph(CONFIG_GRAPH_URI);
 		} catch (NoSuchEntityException nsee) {
-			tcManager.createMGraph(CONFIG_GRAPH_URI);
-			cgProvider.addTemporaryAdditionGraph(CONFIG_GRAPH_URI);
+			tcManager.createMGraph(CONFIG_GRAPH_URI);			
 		}
+		cgProvider.addTemporaryAdditionGraph(CONFIG_GRAPH_URI);
 	}
 	
 	protected void deactivate(ComponentContext componentContext) {
