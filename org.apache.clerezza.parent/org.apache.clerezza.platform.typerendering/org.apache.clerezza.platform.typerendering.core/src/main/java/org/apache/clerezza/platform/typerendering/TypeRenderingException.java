@@ -40,6 +40,14 @@ public abstract class TypeRenderingException extends RuntimeException{
 		this.context = context;
 	}
 
+	public TypeRenderingException(String message, URI renderingSpecification,
+			GraphNode renderNode, GraphNode context, Throwable cause) {
+		super(message, cause);
+		this.node = renderNode;
+		this.renderingSpecification = renderingSpecification;
+		this.context = context;
+	}
+
 
 	/**
 	 * Returns the <code>GraphNode</code> that should have been rendered with

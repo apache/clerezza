@@ -44,7 +44,7 @@ public class RenderingException extends TypeRenderingException {
 	public RenderingException(Exception cause, URI renderingSpecification,
 			GraphNode renderNode, GraphNode context) {
 		super(cause.getClass().getName() + ": " + cause.getMessage(), renderingSpecification,
-				renderNode, context);
+				renderNode, context, cause);
 		this.cause = cause;
 		this.renderingSpecification = renderingSpecification;
 	}

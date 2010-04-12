@@ -79,6 +79,7 @@ public class Style {
 				resourceDir.getFile());
 		fileServer = new FileServer(pathNode);
 		URL templateURL = getClass().getResource("globalmenu-naked.ssp");
+
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(templateURL.toString()), RDFS.Resource,
 				"menu", MediaType.APPLICATION_XHTML_XML_TYPE, true);

@@ -359,6 +359,12 @@
 			<name>Scala-Tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</repository>
+		<!-- for wrhapi snapshot -->
+		<repository>
+			<id>sonatype.snapshots</id>
+			<name>Sonatype snapshots</name>
+			<url>http://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<!-- for a version that fixes PAXEXAM-159 and 160 -->
@@ -780,7 +786,7 @@
 			<dependency>
 				<groupId>org.wymiwyg</groupId>
 				<artifactId>wrhapi</artifactId>
-				<version>0.8.1</version>
+				<version>0.8.2-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>

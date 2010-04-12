@@ -288,11 +288,13 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 					TYPERENDERING.renderingMode, LiteralFactory.getInstance().createTypedLiteral(mode)));
 		}
 
-		if (!rdfTypePrioList.contains(rdfType)) {
-			if (rdfType.equals(RDFS.Resource)) {
-				rdfTypePrioList.add(RDFS.Resource);
-			} else {
-				rdfTypePrioList.add(0, rdfType);
+		synchronized(this) {
+			if (!rdfTypePrioList.contains(rdfType)) {
+				if (rdfType.equals(RDFS.Resource)) {
+					rdfTypePrioList.add(RDFS.Resource);
+				} else {
+					rdfTypePrioList.add(0, rdfType);
+				}
 			}
 		}
 	}
@@ -446,7 +448,9 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 
 	@Override
 	public void graphChanged(List<GraphEvent> events) {
-		rdfTypePrioList = Collections.synchronizedList(
-				new RdfList(new UriRef(RDF_TYPE_PRIO_LIST_URI),	configGraph));
+		synchronized(this) {
+			rdfTypePrioList = Collections.synchronizedList(
+					new RdfList(new UriRef(RDF_TYPE_PRIO_LIST_URI),	configGraph));
+		}
 	}
 }

@@ -29,6 +29,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Map;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import javax.script.ScriptException;
 import javax.ws.rs.WebApplicationException;
@@ -125,7 +127,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			map.put("mode", String.class);			
 			String scriptName = extractFileName(renderingSpecification);
 			logger.debug("compiling script: " + scriptName);
-			CompiledScript cs = scalaService.interpretScalaScript(
+			final CompiledScript cs = scalaService.interpretScalaScript(
 					new String(baos.toByteArray(), "UTF-8"), map, scriptName, getByteHeaderLines());			
 			logger.debug("compiled");
 			final Map<String, Object> values = new HashMap<String, Object>();
@@ -133,7 +135,15 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			values.put("context", context);
 			values.put("renderer", callbackRenderer);
 			values.put("mode", mode);
-			os.write(toString(cs.execute(values)).getBytes("UTF-8"));
+			//The priviledged block is needed because of FELIX-2273
+			Object execResult = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+				@Override
+				public Object run() {
+					return cs.execute(values);
+				}
+			});
+			os.write(toString(execResult).getBytes("UTF-8"));
 			logger.debug("executed");
 			os.flush();
 			logger.debug("flushed");
@@ -169,7 +179,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		return byteHeaderLines;
 	}
 
-	private String toString(Object object) {
+	private static String toString(Object object) {
 		if (object instanceof Seq) {
 			return ((Seq)object).mkString();
 		} else {
