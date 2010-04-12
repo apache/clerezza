@@ -53,7 +53,7 @@ import org.apache.clerezza.rdf.utils.RdfList;
 @Service(UserContextProvider.class)
 @Reference(name="globalMenuItemsProvider",
 		cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
-		policy=ReferencePolicy.STATIC,
+		policy=ReferencePolicy.DYNAMIC,
 		referenceInterface=GlobalMenuItemsProvider.class)
 		
 public class ContextualMenuGenerator implements UserContextProvider {
