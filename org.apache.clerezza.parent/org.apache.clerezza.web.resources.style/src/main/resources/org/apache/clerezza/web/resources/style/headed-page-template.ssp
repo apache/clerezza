@@ -42,6 +42,12 @@ resultDocModifier.addScriptReference("/scripts/status-message.js");
 				<div class="tx-panel-tabs" id="tx-panel-tabs"></div>
 			</div>
 		</div>
-		{render(res,"naked")}
+		{
+			if (mode == null) {
+				render(res, "naked")
+			} else {
+				render(res, mode + "-naked")
+			}
+		}
 	</body>
 </html>

@@ -210,15 +210,15 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 		return RedirectUtil.createSeeOtherResponse("overview", uriInfo);
 	}
 
-	private Resource getDefinitionResource(MGraph mGraph, String renderlet,
+	private Resource getDefinitionResource(String renderlet,
 			UriRef renderSpec, UriRef renderedType, String renderingMode, String mediaType) {
 		if (renderlet != null) {
 			final Literal renderletLit = LiteralFactory.getInstance().createTypedLiteral(renderlet);
-			Iterator<Triple> triples = mGraph.filter(null, TYPERENDERING.renderlet,
+			Iterator<Triple> triples = configGraph.filter(null, TYPERENDERING.renderlet,
 					renderletLit);
 			while (triples.hasNext()) {
 				final NonLiteral resource = triples.next().getSubject();
-				if (matchProperty(mGraph, resource, renderSpec, renderedType, 
+				if (matchProperty(resource, renderSpec, renderedType, 
 						renderingMode, mediaType)) {
 					return resource;
 				}
@@ -227,21 +227,19 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 		throw new RuntimeException("No rendering defintion " + renderlet + "/" + renderSpec + "/" + renderedType + "/" + renderingMode);
 	}
 
-	private boolean matchProperty(MGraph contentGraph, NonLiteral renderletDef,
-			UriRef renderSpec, UriRef rdfType, String renderingMode,
-			String mediaType) {
-		String mode = getRenderingMode(contentGraph, renderletDef);
+	private boolean matchProperty(NonLiteral renderletDef, UriRef renderSpec,
+			UriRef rdfType, String renderingMode, String mediaType) {
+		String mode = getRenderingMode(renderletDef);
 		if (renderingMode.equals("")) {
 			renderingMode = null;
 		}
-		//contentGraph.filter(re, rdfType, renderletDef)
-		if (!contentGraph.contains(new TripleImpl(renderletDef,
+		if (!configGraph.contains(new TripleImpl(renderletDef,
 				TYPERENDERING.mediaType, LiteralFactory.getInstance()
 							.createTypedLiteral(mediaType)))) {
 			return false;
 		}
-		if (equals(renderSpec, getRenderSpecOfRenderletDefinition(contentGraph,
-				renderletDef)) && rdfType.equals(getRenderletRdfType(contentGraph, renderletDef)) && equals(renderingMode, mode)) {
+		if (equals(renderSpec, getRenderSpecOfRenderletDefinition(renderletDef)) 
+				&& rdfType.equals(getRenderletRdfType(renderletDef)) && equals(renderingMode, mode)) {
 			return true;
 		}
 		return false;
@@ -256,13 +254,11 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	 * Returns the renderering specification of the specified renderletManagerTemplateUrl definition. Returns null
 	 * if the renderletManagerTemplateUrl definition has no renderletManagerTemplateUrl.
 	 * 
-	 * @param contentGraph
 	 * @param renderletDef
 	 * @return
 	 */
-	private UriRef getRenderSpecOfRenderletDefinition(MGraph contentGraph,
-			Resource renderletDef) {
-		Iterator<Triple> renderletIter = contentGraph.filter(
+	private UriRef getRenderSpecOfRenderletDefinition(Resource renderletDef) {
+		Iterator<Triple> renderletIter = configGraph.filter(
 				(NonLiteral) renderletDef, TYPERENDERING.renderingSpecification, null);
 		if (renderletIter.hasNext()) {
 			return (UriRef) renderletIter.next().getObject();
@@ -273,13 +269,12 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	/**
 	 * Returns the renderletManagerTemplateUrl rdf-type of the specified renderletManagerTemplateUrl definition.
 	 * Returns null if the renderletManagerTemplateUrl definition has no renderletManagerTemplateUrl rdf-type.
-	 * 
-	 * @param contentGraph
+
 	 * @param renderletDef
 	 * @return
 	 */
-	private UriRef getRenderletRdfType(MGraph contentGraph, Resource renderletDef) {
-		Iterator<Triple> renderedTypeIter = contentGraph.filter(
+	private UriRef getRenderletRdfType(Resource renderletDef) {
+		Iterator<Triple> renderedTypeIter = configGraph.filter(
 				(NonLiteral) renderletDef, TYPERENDERING.renderedType, null);
 
 		if (renderedTypeIter.hasNext()) {
@@ -288,8 +283,8 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 		return null;
 	}
 
-	private String getRenderingMode(MGraph contentGraph, Resource renderletDef) {
-		Iterator<Triple> renderingModeIter = contentGraph.filter(
+	private String getRenderingMode(Resource renderletDef) {
+		Iterator<Triple> renderingModeIter = configGraph.filter(
 				(NonLiteral) renderletDef, TYPERENDERING.renderingMode, null);
 
 		if (renderingModeIter.hasNext()) {
@@ -366,7 +361,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 		TrailingSlash.enforceNotPresent(uriInfo);
 		List<Resource> renderletDefinitions = new RdfList(new UriRef(
 				RdfTypePrioList), configGraph);
-		final Resource resource = getDefinitionResource(configGraph, renderlet,
+		final Resource resource = getDefinitionResource(renderlet,
 				renderSpec, renderedType, renderingMode, mediaType);
 
 		GraphNode node = new GraphNode((NonLiteral) resource, configGraph);
@@ -412,7 +407,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 			@QueryParam("mediaType") String mediaType,
 			@Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
-		final Resource resource = getDefinitionResource(configGraph, renderlet,
+		final Resource resource = getDefinitionResource(renderlet,
 				renderSpec, renderedType, renderingMode, mediaType);
 		GraphNode node = new GraphNode((NonLiteral) resource, configGraph);
 		return node;

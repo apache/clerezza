@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.web.resources.style;
 
-import java.io.IOException;
 import java.net.URL;
 
 import javax.ws.rs.GET;
@@ -86,7 +85,7 @@ public class Style {
 
 		templateURL = getClass().getResource("headed-page-template.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), PLATFORM.HeadedPage, null,
+				new UriRef(templateURL.toString()), PLATFORM.HeadedPage, "(?!.*naked).*",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
 	}
