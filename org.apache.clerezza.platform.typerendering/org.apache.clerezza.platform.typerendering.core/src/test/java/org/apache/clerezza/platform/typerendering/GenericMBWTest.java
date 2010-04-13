@@ -137,7 +137,7 @@ public class GenericMBWTest {
 		RendereringManagerTest test = new RendereringManagerTest();
 		RenderletManager manager = test.createNewRenderletManager();
 		mediaType = new MediaType("application", "test");
-		manager.registerRenderlet(RendereringTest.renderletMockA.pid,
+ 		manager.registerRenderlet(RendereringTest.renderletMockA.pid,
 				RendereringTest.renderSpecUriA, TEST_RDF_TYPE, null, mediaType, true);
 		manager.registerRenderlet(RendereringTest.renderletMockB.pid,
 				RendereringTest.renderSpecUriA, TEST_RDF_TYPE, TEST_MODE, mediaType, true);
