@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.platform.config;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -27,7 +29,6 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
@@ -78,20 +79,25 @@ public class PlatformConfig {
 	 * @return the base URI of the Clerezza platform
 	 */
 	public UriRef getDefaultBaseUri() {
-		Iterator<Resource> triples = getPlatformInstance().
-				getObjects(PLATFORM.defaultBaseUri);
-		if (triples.hasNext()) {
-			return (UriRef) triples.next();
-		} else {
-			String port = context.getProperty("org.osgi.service.http.port");
-			if (port == null) {
-				port = DEFAULT_PORT;
+		return AccessController.doPrivileged(new PrivilegedAction<UriRef>() {
+
+			@Override
+			public UriRef run() {
+				Iterator<Resource> triples = getPlatformInstance().getObjects(PLATFORM.defaultBaseUri);
+				if (triples.hasNext()) {
+					return (UriRef) triples.next();
+				} else {
+					String port = context.getProperty("org.osgi.service.http.port");
+					if (port == null) {
+						port = DEFAULT_PORT;
+					}
+					if (port.equals("80")) {
+						return new UriRef("http://localhost/");
+					}
+					return new UriRef("http://localhost:" + port + "/");
+				}
 			}
-			if (port.equals("80")) {
-				return new UriRef("http://localhost/");
-			}
-			return new UriRef("http://localhost:" + port + "/");
-		}
+		});
 	}
 
 	/**
@@ -119,15 +125,23 @@ public class PlatformConfig {
 	 * @return the base URI of the Clerezza platform
 	 */
 	public Set<UriRef> getBaseUris() {
-		Iterator<Resource> baseUrisIter = getPlatformInstance().
-				getObjects(PLATFORM.baseUri);
-		Set<UriRef> baseUris = new HashSet<UriRef>();
-		while (baseUrisIter.hasNext()) {
-			UriRef baseUri = (UriRef) baseUrisIter.next();
-			baseUris.add(baseUri);
-		}
-		baseUris.add(getDefaultBaseUri());
-		return baseUris;
+
+		return AccessController.doPrivileged(new PrivilegedAction<Set<UriRef>>() {
+
+			@Override
+			public Set<UriRef> run() {
+				Iterator<Resource> baseUrisIter = getPlatformInstance().
+						getObjects(PLATFORM.baseUri);
+				Set<UriRef> baseUris = new HashSet<UriRef>();
+				while (baseUrisIter.hasNext()) {
+					UriRef baseUri = (UriRef) baseUrisIter.next();
+					baseUris.add(baseUri);
+				}
+				baseUris.add(getDefaultBaseUri());
+				return baseUris;
+			}
+		});
+
 	}
 
 	/**
