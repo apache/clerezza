@@ -144,7 +144,7 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
 			doListInitialization(tc);
 		}
 
-		private ExpandedNode(GraphNode node, NonLiteral value) {
+		private ExpandedNode(GraphNode node, Resource value) {
 			this.value = value;
 			this.node = node;
 			doListInitialization(node.getGraph());
@@ -267,7 +267,7 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
 	 * @param node  An RDF resource.
 	 */
 	public GraphNodeDataFieldResolver(GraphNode node, RenderingFunctions renderingFunctions) {
-		expandedNode = new ExpandedNode(node, (NonLiteral) node.getNode());
+		expandedNode = new ExpandedNode(node, node.getNode());
 		this.renderingFunctions = renderingFunctions;
 	}
 
