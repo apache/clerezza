@@ -68,25 +68,25 @@ public class ResourceTagger {
 		URL template = getClass().getResource("concept-existing-subjects.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(template.toURI().toString()),
-				RDFS.Resource, "concept-existing-subjects",
+				RDFS.Resource, "concept-existing-subjects-naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
 		template = getClass().getResource("concept-tagging.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(template.toURI().toString()),
-				RDFS.Resource, "concept-tagging",
+				RDFS.Resource, "concept-tagging-naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
 		template = getClass().getResource("concept-find-create.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(template.toURI().toString()),
-				RDFS.Resource, "concept-find-create",
+				RDFS.Resource, "concept-find-create-naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
 		template = getClass().getResource("selected-concepts.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(template.toURI().toString()),
-				RDFS.Resource, "selectedconcepts",
+				RDFS.Resource, "selectedconcepts-naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 	}
 

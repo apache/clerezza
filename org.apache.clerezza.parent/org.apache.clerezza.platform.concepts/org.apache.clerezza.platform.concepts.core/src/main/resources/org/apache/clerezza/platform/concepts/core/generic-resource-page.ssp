@@ -18,5 +18,5 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 	<h4>About: {res/cpt("resource")*}</h4>
 	<div><object width="80%" data={res/cpt("resource")*}></object></div>
 	<br/>
-	{render(res,"concept-tagging")}
+	{render(res,"concept-tagging-naked")}
 </div>
