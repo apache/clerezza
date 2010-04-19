@@ -30,7 +30,8 @@ import java.net.URI;
 import java.util.Map;
 import java.lang.reflect.Type;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import javax.script.ScriptException;
 import javax.ws.rs.WebApplicationException;
@@ -136,13 +137,25 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			values.put("renderer", callbackRenderer);
 			values.put("mode", mode);
 			//The priviledged block is needed because of FELIX-2273
-			Object execResult = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+			Object execResult = null;
+			try {
+				execResult = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
-				@Override
-				public Object run() {
-					return cs.execute(values);
+					@Override
+					public Object run() {
+						return cs.execute(values);
+					}
+				});
+			} catch (PrivilegedActionException ex) {
+				Exception cause = (Exception) ex.getCause();
+				if (cause instanceof ScriptException) {
+					throw (ScriptException) cause;
 				}
-			});
+				if (cause instanceof RuntimeException) {
+					throw (RuntimeException) cause;
+				}
+				throw new RuntimeException(cause);
+ 			}
 			os.write(toString(execResult).getBytes("UTF-8"));
 			logger.debug("executed");
 			os.flush();
