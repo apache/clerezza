@@ -4,7 +4,7 @@
   <primitive>true</primitive>
   <annotatorImplementationName>org.apache.uima.alchemy.annotator.TextKeywordExtractionAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
-    <name>TextCategorizationAEDescriptor</name>
+    <name>TextKeywordExtractionAEDescriptor</name>
     <description/>
     <version>1.0</version>
     <vendor/>
