@@ -75,9 +75,9 @@ public class ExternalServicesFacade {
     return language;
   }
 
-  public List<String> getCalaisEntities(String document) throws UIMAException {
+  public List<Annotation> getCalaisAnnotations(String document) throws UIMAException {
 
-    List<String> entities = new ArrayList<String>();
+    List<Annotation> calaisAnnotations = new ArrayList<Annotation>();
 
     try {
 
@@ -88,17 +88,12 @@ public class ExternalServicesFacade {
       JCas jcas = uimaExecutor.getResults();
 
       // extract entities using OpenCalaisAnnotator
-      List<Annotation> calaisAnnotations = UIMAUtils.getAllAnnotationsOfType(org.apache.uima.calais.BaseType.type, jcas);
-
-      // TODO should change return value to a list of richer type wrapping UIMA Annotations
-      for (Annotation calaisAnnotation : calaisAnnotations) {
-        entities.add(calaisAnnotation.getCoveredText());
-      }
+      calaisAnnotations = UIMAUtils.getAllAnnotationsOfType(org.apache.uima.calais.BaseType.type, jcas);
 
     } catch (Exception e) {
       throw new UIMAException(e);
     }
-    return entities;
+    return calaisAnnotations;
   }
 
   public Map<String, Object> getParameterSetting() {

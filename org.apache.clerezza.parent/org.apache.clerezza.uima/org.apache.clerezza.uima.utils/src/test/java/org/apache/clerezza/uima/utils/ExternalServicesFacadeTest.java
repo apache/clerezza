@@ -1,5 +1,6 @@
 package org.apache.clerezza.uima.utils;
 
+import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -52,18 +53,18 @@ public class ExternalServicesFacadeTest {
     }
 
     @Test
-    public void getCalaisEntities() {
+    public void getCalaisAnnotationsTest() {
         try {
             ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
             String licenseId = "g6h9zamsdtwhb93nc247ecrs";
             Map<String, Object> parameterSettings = new HashMap<String, Object>();
             parameterSettings.put("licenseID", licenseId);
             externalServicesFacade.setParameterSetting(parameterSettings);
-            List<String> entities = externalServicesFacade.getCalaisEntities(AN_ENGLISH_TEXT);
-            assertTrue(entities != null);
-            assertTrue(!entities.isEmpty());
-            assertTrue(entities.size() == 1);
-            assertTrue(entities.get(0).equals("Queen Elizabeth"));
+            List<Annotation> calaisAnnotations = externalServicesFacade.getCalaisAnnotations(AN_ENGLISH_TEXT);
+            assertTrue(calaisAnnotations != null);
+            assertTrue(!calaisAnnotations.isEmpty());
+            assertTrue(calaisAnnotations.size() == 1);
+            assertTrue(calaisAnnotations.get(0).getCoveredText().equals("Queen Elizabeth"));
         }
         catch (Exception e) {
             e.printStackTrace();
