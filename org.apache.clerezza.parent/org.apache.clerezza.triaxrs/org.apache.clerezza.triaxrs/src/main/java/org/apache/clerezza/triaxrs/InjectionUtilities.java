@@ -25,7 +25,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.ws.rs.CookieParam;
@@ -298,19 +300,21 @@ public class InjectionUtilities {
 			if (as.length == 0) {
 				continue;
 			}
+
 			boolean encodingDisabledForField = encodingDisabled || (fields[i].getAnnotation(
 					Encoded.class) != null);
 
 			Object fieldValue = getInjectionValueForAnnotation(request,
 					pathParams, providers, as,
 					fields[i].getType(), encodingDisabledForField);
-
-			try {
-				fields[i].set(instance, fieldValue);
-			} catch (IllegalAccessException iae) {
-				throw new HandlerException(iae);
+			if (fieldValue != null) {
+				try {
+					fields[i].set(instance, fieldValue);
+				} catch (IllegalAccessException iae) {
+					throw new HandlerException("setting "+fields[i]+" to "+fieldValue, iae);
+				}
+				logger.debug("set field value: {} to {}", fields[i], fieldValue);
 			}
-			logger.debug("set field value: {} to {}", fields[i], fieldValue);
 		}
 
 		logger.debug("Fields checked.");
