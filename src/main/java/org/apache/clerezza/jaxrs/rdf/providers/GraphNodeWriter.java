@@ -46,6 +46,13 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
+ * By default this returns a serialization of the context of the GraphNode.
+ *
+ * The expansion can be widened by using the query parameters xPropObj and
+ * xProSubj. These parameters specify property uris (both parameters might be
+ * repeated). For the specified properties their objects respectively subjects
+ * are expanded as if they were bnodes.
+ *
  * @scr.component
  * @scr.service interface="java.lang.Object"
  * @scr.property name="javax.ws.rs" type="Boolean" value="true"
