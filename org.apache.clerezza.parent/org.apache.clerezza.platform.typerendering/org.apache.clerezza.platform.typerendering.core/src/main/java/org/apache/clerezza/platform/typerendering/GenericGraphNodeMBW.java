@@ -81,8 +81,8 @@ policy = ReferencePolicy.DYNAMIC)
 @Produces("*/*")
 public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 
-	public static String MODE = "mode";
-
+	public static final String MODE = "mode";
+	
 	@Reference
 	RendererFactory rendererFactory;
 
