@@ -25,30 +25,25 @@ public class ExternalServicesFacade {
     this.uimaExecutor = new UIMAExecutor("ExtServicesAE.xml").withResults();
   }
 
-  public List<String> getTags(String document) throws UIMAException {
+  public List<FeatureStructure> getAlchemyAPITags(String document) throws UIMAException {
 
-    List<String> tags = null;
+    List<FeatureStructure> keywords = new ArrayList<FeatureStructure>();
 
     try {
       // analyze the document
       uimaExecutor.analyzeDocument(document, "TextKeywordExtractionAEDescriptor.xml", getParameterSetting());
 
-      tags = new ArrayList<String>();
-
       // get execution results
       JCas jcas = uimaExecutor.getResults();
 
       // get AlchemyAPI keywords extracted using UIMA
-      List<FeatureStructure> keywords = UIMAUtils.getAllFSofType(KeywordFS.type, jcas);
+      keywords = UIMAUtils.getAllFSofType(KeywordFS.type, jcas);
 
-      for (FeatureStructure keywordFS : keywords) {
-        tags.add(keywordFS.getStringValue(keywordFS.getType().getFeatureByBaseName("text")));
-      }
     } catch (Exception e) {
       throw new UIMAException(e);
     }
 
-    return tags;
+    return keywords;
   }
 
   public String getLanguage(String document) throws UIMAException {
