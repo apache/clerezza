@@ -1,5 +1,7 @@
 package org.apache.clerezza.uima.utils;
 
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
@@ -40,11 +42,14 @@ public class ExternalServicesFacadeTest {
             Map<String, Object> parameterSettings = new HashMap<String, Object>();
             parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
             externalServicesFacade.setParameterSetting(parameterSettings);
-            List<String> tags = externalServicesFacade.getTags(AN_ENGLISH_TEXT);
+            List<FeatureStructure> tags = externalServicesFacade.getAlchemyAPITags(AN_ENGLISH_TEXT);
             assertTrue(tags != null);
             assertTrue(!tags.isEmpty());
             assertTrue(tags.size() == 1);
-            assertTrue(tags.get(0).equals("document"));
+            FeatureStructure keyword = tags.get(0);
+            Type type = keyword.getType();
+            String tagText = keyword.getStringValue(type.getFeatureByBaseName("text"));
+            assertTrue(tagText!=null && tagText.equals("document"));
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getLocalizedMessage());
