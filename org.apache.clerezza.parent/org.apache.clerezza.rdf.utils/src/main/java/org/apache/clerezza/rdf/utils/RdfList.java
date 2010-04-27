@@ -20,7 +20,10 @@ package org.apache.clerezza.rdf.utils;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -42,7 +45,7 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  * for read operations (such as for immutable <code>TripleCollection</code>s) is
  * not problematic.
  *
- * @author rbn
+ * @author rbn, mir
  */
 public class RdfList extends AbstractList<Resource> {
 
@@ -77,6 +80,20 @@ public class RdfList extends AbstractList<Resource> {
 			}
 		}
 
+	}
+
+	/**
+	 * Get a list for the specified resource node. If the resource node does not
+	 * have rdf:first and rdf:rest properties an empty list is created by
+	 * specifying that the resource is owl:sameAs rdf:nil.
+	 *
+	 * If the list is modified using the created instance
+	 * <code>listResource</code> will always be the first list.
+	 *
+	 * @param listNode
+	 */
+	public RdfList(GraphNode listNode) {
+		this((NonLiteral)listNode.getNode(), listNode.getGraph());
 	}
 
 	private void expandTill(int pos) {
@@ -203,5 +220,96 @@ public class RdfList extends AbstractList<Resource> {
 
 	private Resource getFirstEntry(NonLiteral listResource) {
 		return tc.filter(listResource, RDF.first, null).next().getObject();
+	}
+
+	public NonLiteral getListResource() {
+		return firstList;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final RdfList other = (RdfList) obj;
+
+		if (!other.firstList.equals(this.firstList)) {
+			return false;
+		}
+
+		if (!other.tc.equals(this.tc)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return 17 * this.firstList.hashCode() + this.tc.hashCode();
+	}
+
+	/**
+	 * Returns the rdf lists of which the specified <code>GraphNode</code> is
+	 * an element of. Sublists of other lists are not returned.
+	 *
+	 * @param element
+	 * @return
+	 */
+	public static Set<RdfList> findContainingLists(GraphNode element) {
+		Set<GraphNode> listNodes = findContainingListNodes(element);
+		if (listNodes.isEmpty()) {
+			return null;
+		}
+
+		Set<RdfList> rdfLists = new HashSet<RdfList>();
+		for (Iterator<GraphNode> it = listNodes.iterator(); it.hasNext();) {
+			GraphNode listNode = it.next();
+			rdfLists.add(new RdfList(listNode));
+		}
+		return rdfLists;
+	}
+
+	/**
+	 * Returns a set of <code>GraphNode</code>S which are the first list nodes (meaning
+	 * they are not the beginning of a sublist) of the list containing the specified
+	 * <code>GraphNode</code> as an element.
+	 *
+	 * @param element
+	 * @return
+	 */
+	public static Set<GraphNode> findContainingListNodes(GraphNode element) {
+		Iterator<GraphNode> partOfaListNodesIter = element.getSubjectNodes(RDF.first);
+		if (!partOfaListNodesIter.hasNext()) {
+			return null;
+		}
+		Set<GraphNode> listNodes = new HashSet<GraphNode>();
+
+		while (partOfaListNodesIter.hasNext()) {
+			listNodes.addAll(findAllListNodes(partOfaListNodesIter.next()));
+		}
+		return listNodes;
+	}
+	
+	private static Set<GraphNode> findAllListNodes(GraphNode listPart) {
+		Iterator<GraphNode> invRestNodesIter;
+		Set<GraphNode> listNodes = new HashSet<GraphNode>();
+		do {
+			invRestNodesIter = listPart.getSubjectNodes(RDF.rest);
+			if (invRestNodesIter.hasNext()) {
+				listPart = invRestNodesIter.next();
+				while (invRestNodesIter.hasNext()) {
+					GraphNode graphNode = invRestNodesIter.next();
+					listNodes.addAll(findAllListNodes(graphNode));
+				}
+			} else {
+				listNodes.add(listPart);
+				break;
+			}
+		} while (true);
+		return listNodes;
 	}
 }

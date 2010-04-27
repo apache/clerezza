@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.utils;
 
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -133,5 +134,50 @@ public class RdfListTest {
 		list.remove(1);
 		Assert.assertEquals(2, tc.size());
 
+	}
+
+	@Test
+	public void findContainingListNodesAndfindContainingListsTest() {
+		TripleCollection tc = new SimpleMGraph();
+		GraphNode listA = new GraphNode(new UriRef("http:///listA"), tc);
+		GraphNode listB = new GraphNode(new UriRef("http:///listB"), tc);
+		BNode element1 = new BNode();
+		BNode element2 = new BNode();
+		BNode element3 = new BNode();
+		BNode element4 = new BNode();
+		BNode element5 = new BNode();
+
+		RdfList rdfListA = new RdfList(listA);
+		rdfListA.add(element1);
+		rdfListA.add(element2);
+		rdfListA.add(element3);
+		rdfListA.add(element4);
+
+		RdfList rdfListB = new RdfList(listB);
+		rdfListB.add(element2);
+		rdfListB.add(element4);
+		rdfListB.add(element5);
+
+		Set<GraphNode> containingListNodes = RdfList.findContainingListNodes(
+				new GraphNode(element3, tc));
+		Assert.assertEquals(1, containingListNodes.size());
+		Assert.assertTrue(containingListNodes.contains(listA));
+
+		Set<RdfList> containingLists = RdfList.findContainingLists(
+				new GraphNode(element3, tc));
+		Assert.assertEquals(1, containingLists.size());
+		Assert.assertTrue(containingLists.contains(rdfListA));
+
+		containingListNodes = RdfList.findContainingListNodes(
+				new GraphNode(element4, tc));
+		Assert.assertEquals(2, containingListNodes.size());
+		Assert.assertTrue(containingListNodes.contains(listA));
+		Assert.assertTrue(containingListNodes.contains(listB));
+
+		containingLists = RdfList.findContainingLists(
+				new GraphNode(element4, tc));
+		Assert.assertEquals(2, containingLists.size());
+		Assert.assertTrue(containingLists.contains(rdfListA));
+		Assert.assertTrue(containingLists.contains(rdfListB));
 	}
 }
