@@ -18,6 +18,8 @@ public class ExternalServicesFacadeTest {
 
     private static final String AN_ENGLISH_TEXT = "this is a document supposed to be recognized as written in the language of Queen Elizabeth";
 
+    private static final String CLEREZZA_RELATED_TEXT = "Clerezza is fully based on OSGi. OSGi is a very lightweight approach to offer the modularization and dynamism missing in standard Java. By using OSGi services it can also interoperate with Spring-DS or Peaberry applications";
+
     @Test
     public void getLanguageTest() {
         try {
@@ -72,6 +74,21 @@ public class ExternalServicesFacadeTest {
             assertTrue(calaisAnnotations.get(0).getCoveredText().equals("Queen Elizabeth"));
         }
         catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getLocalizedMessage());
+        }
+    }
+
+    @Test
+    public void getCategoryTest() {
+       try {
+            ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
+            Map<String, Object> parameterSettings = new HashMap<String, Object>();
+            parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
+            externalServicesFacade.setParameterSetting(parameterSettings);
+            String category = externalServicesFacade.getCategory(CLEREZZA_RELATED_TEXT);
+            assertEquals(category, "computer_internet");
+        } catch (Exception e) {
             e.printStackTrace();
             fail(e.getLocalizedMessage());
         }

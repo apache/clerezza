@@ -12,6 +12,9 @@
     <delegateAnalysisEngine key="TextLanguageDetectionAEDescriptor">
       <import name="TextLanguageDetectionAEDescriptor"/>
     </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="TextCategorizationAEDescriptor">
+      <import name="TextCategorizationAEDescriptor"/>
+    </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>
     <name>ExtServicesAE</name>
@@ -25,6 +28,7 @@
         <node>OpenCalaisAnnotator</node>
         <node>TextKeywordExtractionAEDescriptor</node>
         <node>TextLanguageDetectionAEDescriptor</node>
+        <node>TextCategorizationAEDescriptor</node>
       </fixedFlow>
     </flowConstraints>
     <fsIndexCollection/>

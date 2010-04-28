@@ -1,6 +1,7 @@
 package org.apache.clerezza.uima.utils;
 
 import org.apache.uima.UIMAException;
+import org.apache.uima.alchemy.ts.categorization.Category;
 import org.apache.uima.alchemy.ts.keywords.KeywordFS;
 import org.apache.uima.alchemy.ts.language.LanguageFS;
 import org.apache.uima.cas.FeatureStructure;
@@ -37,7 +38,7 @@ public class ExternalServicesFacade {
       JCas jcas = uimaExecutor.getResults();
 
       // get AlchemyAPI keywords extracted using UIMA
-      keywords = UIMAUtils.getAllFSofType(KeywordFS.type, jcas);
+      keywords.addAll(UIMAUtils.getAllFSofType(KeywordFS.type, jcas));
 
     } catch (Exception e) {
       throw new UIMAException(e);
@@ -83,12 +84,34 @@ public class ExternalServicesFacade {
       JCas jcas = uimaExecutor.getResults();
 
       // extract entities using OpenCalaisAnnotator
-      calaisAnnotations = UIMAUtils.getAllAnnotationsOfType(org.apache.uima.calais.BaseType.type, jcas);
+      calaisAnnotations.addAll(UIMAUtils.getAllAnnotationsOfType(org.apache.uima.calais.BaseType.type, jcas));
 
     } catch (Exception e) {
       throw new UIMAException(e);
     }
     return calaisAnnotations;
+  }
+
+  public String getCategory(String document) throws UIMAException {
+    String category = null;
+    try {
+
+      // analyze the document
+      uimaExecutor.analyzeDocument(document, "TextCategorizationAEDescriptor.xml", getParameterSetting());
+
+      // get execution results
+      JCas jcas = uimaExecutor.getResults();
+
+      // extract category Feature Structure using AlchemyAPI Annotator
+      FeatureStructure categoryFS = UIMAUtils.getSingletonFeatureStructure(Category.type, jcas);
+
+      category = categoryFS.getStringValue(categoryFS.getType().getFeatureByBaseName("text"));
+
+    } catch (Exception e) {
+      throw new UIMAException(e);
+    }
+    
+    return category;
   }
 
   public Map<String, Object> getParameterSetting() {
