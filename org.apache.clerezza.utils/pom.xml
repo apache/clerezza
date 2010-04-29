@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore-osgi</artifactId>
+			<artifactId>httpcore</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
