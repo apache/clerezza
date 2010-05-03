@@ -25,7 +25,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import org.apache.clerezza.web.fileserver.BundlePathNode;
 import org.apache.clerezza.web.fileserver.FileServer;
-import org.apache.felix.scr.annotations.Reference;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.ComponentContext;
 import org.wymiwyg.commons.util.dirbrowser.FilePathNode;
@@ -41,16 +40,34 @@ public class StaticWebResource {
 
 	private FileServer fileServer;
 
+	/**
+	 * Sets up the 'staticweb' folder in the bundle associated to the specified
+	 * scr component context.
+	 * 
+	 * @param context The scr component context of the bundle containing the
+	 *		'staticweb' path.
+	 */
 	protected void setupStaticWeb(ComponentContext context) {
 		setupStaticWeb(context, "staticweb", false);
 	}
 	
+	/**
+	 * Sets up a path in a bundle or file system to be exposed over a 
+	 * <code>org.apache.clerezza.web.fileserver.FileServer</code>. You can 
+	 * specify over the 'local' parameter if the specified path is within a 
+	 * bundle (false) or file system (true).	 * 
+	 * 
+	 * @param context The scr component context of the bundle containing the path. 
+	 *		Only needed if 'local' is false.
+	 * @param path the path where the file are to be exposed
+	 * @param local specifies if the path is within a bundle or the file system.
+	 */
 	protected void setupStaticWeb(ComponentContext context, String path, boolean local) {
-	Bundle bundle = context.getBundleContext().getBundle();
 		PathNode pathNode;
 		if (local) {
 			pathNode = new FilePathNode(path);
 		} else {
+			Bundle bundle = context.getBundleContext().getBundle();
 			URL resourceDir = getClass().getResource(path);
 			pathNode = new BundlePathNode(bundle, resourceDir.getPath());
 		}
