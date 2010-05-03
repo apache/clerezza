@@ -63,7 +63,7 @@ Overlay.show = function(body, header, widthOverlay, heightOverlay) {
 		autofillheight: "body",
 		context: ["content"]
 	});
-	
+
 	if (body.length) {
 		if (!body.substring) {
 			//as with results from jquery $-fucntion
@@ -124,6 +124,10 @@ Overlay.show = function(body, header, widthOverlay, heightOverlay) {
 		this.cfg.setProperty("height", panelHeight + "px");
 	}, this.overlay, true);
 
+	// set the tooltip string which is shown when the mouse pointer is over the
+	// "close"-icon
+	$(".container-close").attr("alt", "Close")
+	$(".container-close").attr("title", "Close")
 };
 
 Overlay.close = function() {
