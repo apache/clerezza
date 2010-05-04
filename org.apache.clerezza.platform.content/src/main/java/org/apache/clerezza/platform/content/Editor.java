@@ -68,7 +68,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 @Service(Object.class)
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("tools/editor")
-public class Editor {
+public class Editor extends FileServer {
 
 	@Reference
 	private ContentGraphProvider cgProvider;
@@ -78,7 +78,7 @@ public class Editor {
 
 	
 	private static final Logger logger = LoggerFactory.getLogger(Editor.class);
-	private FileServer fileServer;
+
 	private Providers providers;
 	private final MediaType rdfXmlType = MediaType.valueOf("application/rdf+xml");
 	
@@ -89,11 +89,7 @@ public class Editor {
 	 * @param context
 	 */
 	protected void activate(ComponentContext context) {
-		Bundle bundle = context.getBundleContext().getBundle();
-		URL directoryRes = DiscobitsTypeHandler.class.getResource("staticweb");
-		PathNode pathNode = new BundlePathNode(bundle, directoryRes.getPath());
-		logger.info("initializing fileserver for {} ({})", directoryRes, directoryRes.getFile());
-		fileServer = new FileServer(pathNode);
+		configure(context.getBundleContext());
 	}
 
 	
@@ -155,16 +151,9 @@ public class Editor {
 	@GET
 	public PathNode getStaticFile(@Context UriInfo uriInfo) {
 		TrailingSlash.enforcePresent(uriInfo);
-		final PathNode node = fileServer.getNode("disco.xhtml");
+		final PathNode node = getNode("disco.xhtml");
 		logger.debug("serving static {}", node);
 		return node;
 	}
 	
-	@GET
-	@Path("{path:.+}")
-	public PathNode getStaticFile(@PathParam("path") String path) {
-		final PathNode node = fileServer.getNode(path);
-		logger.debug("serving static {}", node);
-		return node;
-	}
 }
