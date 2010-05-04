@@ -545,10 +545,14 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 			logger.error("Exception {}", ex);
 			throw new WebApplicationException(500);
 		} catch (InvocationTargetException ex) {
-			logger.error("Exception {}", ex);
-			if (ex.getCause() instanceof AccessControlException) {
-				throw (AccessControlException) ex.getCause();
+			final Throwable cause = ex.getCause();
+			if (cause instanceof AccessControlException) {
+				throw (AccessControlException) cause;
 			}
+			if (cause instanceof WebApplicationException) {
+				throw (WebApplicationException) cause;
+			}
+			logger.error("Exception {}", ex);
 			throw new WebApplicationException(500);
 		}
 	}
