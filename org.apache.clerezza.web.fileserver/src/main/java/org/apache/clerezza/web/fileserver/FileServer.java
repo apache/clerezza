@@ -18,35 +18,95 @@
  */
 package org.apache.clerezza.web.fileserver;
 
+import java.io.File;
+import java.net.URL;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.wymiwyg.commons.util.dirbrowser.FilePathNode;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
+ * A utility class providing a FileServer that can be configured in different 
+ * ways. It provides an alternative to {@link AbstractFileServer} for jax-rs
+ * resources serviceng static files to override.
  *
  * @author reto
  */
 @Path("/")
-public class FileServer {
-	private PathNode pathNode;
+public class FileServer extends AbstractFileServer {
+	private PathNode rootPathNode;
 
+	/**
+	 * Construct a new instance that has to be configured using one of the 
+	 * configure-methods.
+	 */
+	public FileServer() {}
+
+	/**
+	 * creates a new instance configured with specified pathnode as root
+	 *
+	 * @param pathNode the root of the PathNode hierarchy
+	 */
 	public FileServer(PathNode pathNode) {
-		this.pathNode = pathNode;
+		this.rootPathNode = pathNode;
 	}
 
-	@Path("{path}")
-	public PathNode getNode(@PathParam("path") String path) {
-		String[] pathSections = path.split("/");
-		PathNode current = pathNode;
-		for (String pathSection : pathSections) {
-			current = current.getSubPath(pathSection);
-			if (!current.exists()) {
-				throw new WebApplicationException(404);
-			}
-		}
-		return current;
 
+	/**
+	 * configures the instance with the specified PathNode
+	 *
+	 * @param pathNode the root of the PathNode hierarchy
+	 */
+	public void configure(PathNode pathNode) {
+		this.rootPathNode = pathNode;
+	}
+
+	/**
+	 * Configures the instance to use the 'staticweb' folder next to (sub-)class
+	 * in the bundle associated to the specified context.
+	 *
+	 * @param context The scr component context of the bundle containing the
+	 *		'staticweb' directory where the subclass is located.
+	 */
+	public void configure(BundleContext context) {
+		configure(context, "staticweb");
+	}
+
+	/**
+	 * Sets up a path in a bundle or file system to be exposed over a
+	 * <code>org.apache.clerezza.web.fileserver.FileServer</code>. The path is
+	 * relative to the locationof the class.
+	 *
+	 * @param context The bundle context of the bundle containing the path.
+	 * @param path the path where the file are to be exposed
+	 */
+	public void configure(BundleContext context, String path) {
+		PathNode pathNode;
+		Bundle bundle = context.getBundle();
+		URL resourceDir = getClass().getResource(path);
+		pathNode = new BundlePathNode(bundle, resourceDir.getPath());
+		configure(pathNode);
+	}
+	/**
+	 * configures the instance to use the specified directory as root
+	 *
+	 * @param rootDir the root of the serverd hierarchy
+	 */
+	public void configure(File rootDir) {
+		configure(new FilePathNode(rootDir));
+	}
+
+	/**
+	 * resets the configuration
+	 */
+	public void reset() {
+		rootPathNode = null;
+	}
+
+	@Override
+	protected PathNode getRootNode() {
+		return rootPathNode;
 	}
 
 }
