@@ -18,15 +18,21 @@
  */
 package org.apache.clerezza.rdf.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
 import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
@@ -35,12 +41,16 @@ import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
  * 
  * @author hasan
  */
-public class UnionMGraph extends AbstractMGraph {
+public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
 
 	private TripleCollection[] baseTripleCollections;
+	private Lock readLock;
+	private Lock writeLock;
 
 	public UnionMGraph(TripleCollection... baseTripleCollections) {
 		this.baseTripleCollections = baseTripleCollections;
+		readLock = getPartialReadLock(0);
+		writeLock = createWriteLock();
 	}
 
 	@Override
@@ -59,10 +69,11 @@ public class UnionMGraph extends AbstractMGraph {
 			return new HashSet<Triple>(0).iterator();
 		}
 		return new Iterator<Triple>() {
+
 			int currentBaseTC = 0;
 			Iterator<Triple> currentBaseIter = baseTripleCollections[0].filter(
 					subject, predicate, object);
-            private Triple lastReturned;
+			private Triple lastReturned;
 
 			@Override
 			public boolean hasNext() {
@@ -86,11 +97,11 @@ public class UnionMGraph extends AbstractMGraph {
 
 			@Override
 			public void remove() {
-                if (lastReturned == null) {
-                    throw new IllegalStateException();
-                }
-                UnionMGraph.this.remove(lastReturned);
-                lastReturned = null;
+				if (lastReturned == null) {
+					throw new IllegalStateException();
+				}
+				UnionMGraph.this.remove(lastReturned);
+				lastReturned = null;
 			}
 		};
 	}
@@ -116,19 +127,19 @@ public class UnionMGraph extends AbstractMGraph {
 		if (!(obj.getClass().equals(getClass()))) {
 			return false;
 		}
-		UnionMGraph other = (UnionMGraph)obj;
+		UnionMGraph other = (UnionMGraph) obj;
 		Set<TripleCollection> otherGraphs =
 				new HashSet(Arrays.asList(other.baseTripleCollections));
 		Set<TripleCollection> thisGraphs =
 				new HashSet(Arrays.asList(baseTripleCollections));
-		return thisGraphs.equals(otherGraphs) &&
-				baseTripleCollections[0].equals(other.baseTripleCollections[0]);
+		return thisGraphs.equals(otherGraphs)
+				&& baseTripleCollections[0].equals(other.baseTripleCollections[0]);
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		for(TripleCollection graph : baseTripleCollections) {
+		for (TripleCollection graph : baseTripleCollections) {
 			hash += graph.hashCode();
 		}
 		hash *= baseTripleCollections[0].hashCode();
@@ -153,6 +164,134 @@ public class UnionMGraph extends AbstractMGraph {
 	public void removeGraphListener(GraphListener listener) {
 		for (TripleCollection tripleCollection : baseTripleCollections) {
 			tripleCollection.removeGraphListener(listener);
+		}
+	}
+
+	@Override
+	public ReadWriteLock getLock() {
+		return readWriteLock;
+	}
+	private ReadWriteLock readWriteLock = new ReadWriteLock() {
+
+		@Override
+		public Lock readLock() {
+			return readLock;
+		}
+
+		@Override
+		public Lock writeLock() {
+			return writeLock;
+		}
+	};
+
+
+	private Lock getPartialReadLock(int startPos) {
+		ArrayList<Lock> resultList = new ArrayList<Lock>();
+		for (int i = startPos; i < baseTripleCollections.length; i++) {
+			TripleCollection tripleCollection = baseTripleCollections[i];
+			if (tripleCollection instanceof LockableMGraph) {
+				final Lock lock = ((LockableMGraph) tripleCollection).getLock().readLock();
+				resultList.add(lock);
+			}
+		}
+		return new UnionLock(resultList.toArray(new Lock[resultList.size()]));
+	}
+
+	
+	private Lock createWriteLock() {
+		Lock partialReadLock =  getPartialReadLock(1);
+		if (baseTripleCollections[0] instanceof LockableMGraph) {
+			Lock baseWriteLock =
+					((LockableMGraph)baseTripleCollections[0]).getLock().writeLock();
+			return new UnionLock(baseWriteLock, partialReadLock);
+
+		} else {
+			return partialReadLock;
+		}
+	};
+
+
+	private static class UnionLock implements Lock {
+
+		Lock[] locks;
+		public UnionLock(Lock... locks) {
+			this.locks = locks;
+		}
+
+
+		@Override
+		public void lock() {
+			for(Lock lock : locks) {
+				lock.lock();
+			}
+		}
+
+		@Override
+		public void lockInterruptibly() throws InterruptedException {
+			Set<Lock> aquiredLocks = new HashSet<Lock>();
+			try {
+				for(Lock lock : locks) {
+					lock.lockInterruptibly();
+					aquiredLocks.add(lock);
+				}
+			} catch (InterruptedException e) {
+				for (Lock lock : aquiredLocks) {
+					lock.unlock();
+				}
+				throw e;
+			}
+		}
+
+		@Override
+		public boolean tryLock() {
+			Set<Lock> aquiredLocks = new HashSet<Lock>();
+			for(Lock lock : locks) {
+				if (!lock.tryLock()) {
+					for (Lock aquiredLock : aquiredLocks) {
+						aquiredLock.unlock();
+					}
+					return false;
+				}
+				aquiredLocks.add(lock);
+			}
+			return true;
+		}
+
+		@Override
+		public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+			Set<Lock> aquiredLocks = new HashSet<Lock>();
+			long timeInNanos = unit.convert(time, TimeUnit.NANOSECONDS);
+			long startTime = System.nanoTime();
+			try {
+				for(Lock lock : locks) {
+					if (!lock.tryLock((timeInNanos+startTime)-System.nanoTime(),
+							TimeUnit.NANOSECONDS)) {
+						for (Lock aquiredLock : aquiredLocks) {
+							aquiredLock.unlock();
+						}
+						return false;
+					}
+					aquiredLocks.add(lock);
+				}
+			} catch (InterruptedException e) {
+				for (Lock lock : aquiredLocks) {
+					lock.unlock();
+				}
+				throw e;
+			}
+			return true;
+		}
+
+		@Override
+		public void unlock() {
+			for(Lock lock : locks) {
+				lock.unlock();
+			}
+		}
+
+		@Override
+		public Condition newCondition() {
+			throw new UnsupportedOperationException("Conditions not supported.");
 		}
 	}
 }
