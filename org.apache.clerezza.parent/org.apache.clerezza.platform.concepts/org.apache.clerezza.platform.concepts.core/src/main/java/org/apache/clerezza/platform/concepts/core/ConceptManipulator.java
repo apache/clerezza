@@ -96,11 +96,11 @@ public class ConceptManipulator {
 					.entity("A concept with the same label and language already exists!")
 					.build();
 		}
-		String baseUri = platformConfig.getDefaultBaseUri().getUnicodeString();
-		UriRef concept = new UriRef(baseUri + "concept/" +
-				UriRefUtil.stripNonUriRefChars(prefLabel));
+		
+		UriRef concept = getConceptUriRef(platformConfig, prefLabel);
 		contentGraph.add(new TripleImpl(concept, RDF.type,
 				SKOS.Concept));
+		String baseUri = platformConfig.getDefaultBaseUri().getUnicodeString();
 		contentGraph.add(new TripleImpl(concept, SKOS.inScheme,
 				new UriRef(baseUri + FREE_CONCEPT_SCHEME)));
 		contentGraph.add(new TripleImpl(concept, SKOS.prefLabel, preferredLabel));
@@ -110,6 +110,12 @@ public class ConceptManipulator {
 		}
 		return Response.status(Status.CREATED).entity(concept.getUnicodeString())
 				.build();
+	}
+
+	static UriRef getConceptUriRef(PlatformConfig platformConfig, String prefLabel) {
+		String baseUri = platformConfig.getDefaultBaseUri().getUnicodeString();
+		return new UriRef(baseUri + "concept/" +
+				UriRefUtil.stripNonUriRefChars(prefLabel));
 	}
 }
 

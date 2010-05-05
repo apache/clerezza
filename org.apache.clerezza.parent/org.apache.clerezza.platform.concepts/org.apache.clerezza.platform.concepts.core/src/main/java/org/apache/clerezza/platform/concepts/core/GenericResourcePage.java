@@ -20,6 +20,7 @@ package org.apache.clerezza.platform.concepts.core;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -27,16 +28,13 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
-import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.clerezza.platform.concepts.ontologies.CONCEPTS;
+import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
@@ -44,19 +42,25 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.UnionMGraph;
+import org.apache.clerezza.utils.UriException;
+import org.apache.clerezza.web.fileserver.FileServer;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 
 /**
  * This JAX-RS resource can be used to show selected concepts of a resource.
  * The URI path of this service is /concepts/generic-resource.
- *
+ * 
  * @author tio
  */
 @Component
 @Service(Object.class)
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("/concepts/generic-resource")
-public class GenericResourcePage {
+public class GenericResourcePage extends FileServer {
 
 	@Reference
 	protected ContentGraphProvider cgProvider;
@@ -67,7 +71,9 @@ public class GenericResourcePage {
 
 	protected void activate(ComponentContext context)
 			throws URISyntaxException {
-
+		
+		configure(context.getBundleContext());
+		
 		URL template = getClass().getResource("generic-resource-page.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(template.toURI().toString()),
@@ -80,9 +86,9 @@ public class GenericResourcePage {
 	/**
 	 * Retrieves a resource and its associated concepts to be rendered with a template
 	 * registered for CONCEPTS.GenericResourcePage.
-	 *
+	 * 
 	 * @param uri specifies the uri of a resource
-	 *
+	 * 
 	 * @return GraphNode
 	 */
 	@GET

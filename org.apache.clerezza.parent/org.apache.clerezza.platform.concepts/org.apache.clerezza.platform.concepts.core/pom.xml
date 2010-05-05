@@ -67,5 +67,12 @@
 			<artifactId>org.apache.clerezza.triaxrs</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+			<version>0.9-incubating-SNAPSHOT</version>
+			<type>bundle</type>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 </project>
