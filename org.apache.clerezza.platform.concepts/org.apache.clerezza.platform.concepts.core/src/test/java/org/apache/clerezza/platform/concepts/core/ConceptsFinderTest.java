@@ -20,6 +20,8 @@ package org.apache.clerezza.platform.concepts.core;
 
 import java.util.Arrays;
 import java.util.List;
+import org.apache.clerezza.platform.config.PlatformConfig;
+import org.apache.clerezza.platform.concepts.ontologies.QUERYRESULT;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -98,6 +100,23 @@ public class ConceptsFinderTest {
 
 	@Before
 	public void setUp() {
+		final PlatformConfig platformConfig = new PlatformConfig() {
+
+			@Override
+			public UriRef getDefaultBaseUri() {
+				return new UriRef("http://testing.localhost/");
+			}
+			
+		};
+		final ContentGraphProvider cgProvider = new ContentGraphProvider() {
+
+			@Override
+			public MGraph getContentGraph() {
+				return new SimpleMGraph();
+			}
+
+		};
+
 		testedConceptProviderManager = new TestedConceptProviderManager();
 		testedConceptProviderManager.cgProvider = new ContentGraphProvider() {
 			@Override
@@ -105,23 +124,29 @@ public class ConceptsFinderTest {
 				return mGraph;
 			}
 		};
-		testedConceptsFinder = new TestedConceptsFinder();
+		testedConceptsFinder = new TestedConceptsFinder() {
+			{
+				bindPlatformConfig(platformConfig);
+				bindCgProvider(cgProvider);
+			}
+		};
 		testedConceptsFinder.conceptProviderManager =
 				testedConceptProviderManager;
+
 	}
 
 	@Test
 	public void testFindConcepts() {
 		testedConceptProviderManager.fillConceptProviderList();
 		GraphNode proposals = testedConceptsFinder.findConcepts("any");
-		Assert.assertTrue(proposals.countObjects(SKOS.member)==5);
-		Assert.assertTrue(proposals.hasProperty(SKOS.member, concept1a));
-		Assert.assertTrue(proposals.hasProperty(SKOS.member, concept1b));
-		Assert.assertTrue(proposals.hasProperty(SKOS.member, concept1c));
-		Assert.assertTrue(proposals.hasProperty(SKOS.member, concept1d));
-		Assert.assertTrue(proposals.hasProperty(SKOS.member, concept2a));
-		Assert.assertFalse(proposals.hasProperty(SKOS.member, concept2b));
-		Assert.assertFalse(proposals.hasProperty(SKOS.member, concept2c));
-		Assert.assertFalse(proposals.hasProperty(SKOS.member, concept2d));
+		Assert.assertEquals(5, proposals.countObjects(QUERYRESULT.concept));
+		Assert.assertTrue(proposals.hasProperty(QUERYRESULT.concept, concept1a));
+		Assert.assertTrue(proposals.hasProperty(QUERYRESULT.concept, concept1b));
+		Assert.assertTrue(proposals.hasProperty(QUERYRESULT.concept, concept1c));
+		Assert.assertTrue(proposals.hasProperty(QUERYRESULT.concept, concept1d));
+		Assert.assertTrue(proposals.hasProperty(QUERYRESULT.concept, concept2a));
+		Assert.assertFalse(proposals.hasProperty(QUERYRESULT.concept, concept2b));
+		Assert.assertFalse(proposals.hasProperty(QUERYRESULT.concept, concept2c));
+		Assert.assertFalse(proposals.hasProperty(QUERYRESULT.concept, concept2d));
 	}
 }

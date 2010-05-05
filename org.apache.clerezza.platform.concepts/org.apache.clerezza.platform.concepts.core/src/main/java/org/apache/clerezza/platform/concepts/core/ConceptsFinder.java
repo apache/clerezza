@@ -22,21 +22,21 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import org.apache.clerezza.platform.concepts.ontologies.QUERYRESULT;
 import org.apache.clerezza.platform.config.PlatformConfig;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Literal;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -50,6 +50,10 @@ import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.ontologies.SKOS;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 
 /**
@@ -63,9 +67,9 @@ import org.osgi.service.component.ComponentContext;
  * relation with this concept, but from a provider of lower priority.
  * Implicitly created {@link LocalConceptProvider} for free concepts has the
  * lowest priority.
- *
+ * 
  * The URI path of this service is /concepts/find.
- *
+ * 
  * @author hasan
  */
 @Component
@@ -84,7 +88,7 @@ public class ConceptsFinder {
 	private TcManager tcManager;
 
 	@Reference
-	protected ContentGraphProvider cgProvider;
+	private ContentGraphProvider cgProvider;
 
 	@Reference
 	private PlatformConfig platformConfig;
@@ -114,9 +118,9 @@ public class ConceptsFinder {
 	 * However, concepts from providers of lower priority are only considered if
 	 * they are not staying in an OWL:sameAs relation with concepts from
 	 * providers of higher priority.
-	 *
+	 * 
 	 * @param searchTerm
-	 *		The search term in form of a String.
+	 *            The search term in form of a String.
 	 * @return
 	 *		A GraphNode containing the search results.
 	 */
@@ -149,28 +153,65 @@ public class ConceptsFinder {
 		if (!freeConceptProviderFound && freeConceptProvider != null) {
 			retrieveConcepts(freeConceptProvider, first, resultNode, searchTerm);
 		}
-		resultNode.addProperty(RDF.type, SKOS.Collection);
+		addCreationOfNewFreeConceptSuggested(resultNode, searchTerm);
+		resultNode.addProperty(RDF.type, QUERYRESULT.QueryResult);
 		return resultNode;
 	}
 
-	private void retrieveConcepts(ConceptProvider conceptProvider, boolean first,
-			GraphNode resultNode, String searchTerm) {
+	/**
+	 * Adds a boolean value that answers whether the UI shall suggest to create
+	 * a new free concept. A new free concept may not be added if the has the
+	 * same base uri and search term. Therefore the consumer shall be suggested
+	 * not to propose creation.
+	 * 
+	 * @param resultNode
+	 *            the result node to add the property to
+	 * @param searchTerm
+	 *            the search term the data was searched for
+	 */
+	private void addCreationOfNewFreeConceptSuggested(GraphNode resultNode,
+			String searchTerm) {
+		UriRef conceptUriRef = ConceptManipulator.getConceptUriRef(
+				platformConfig, searchTerm);
+		resultNode.addProperty(QUERYRESULT.creationOfNewFreeConceptSuggested,
+				LiteralFactory.getInstance().createTypedLiteral(
+						!cgProvider.getContentGraph().contains(
+								new TripleImpl(conceptUriRef, RDF.type,
+										SKOS.Concept))));
+	}
+
+	/**
+	 * Retrieve concepts for the given search term.
+	 * 
+	 * @param conceptProvider
+	 *            the provider delivers concepts
+	 * @param first
+	 *            is this the first execution
+	 * @param resultNode
+	 *            the node to attach the concepts to
+	 * @param searchTerm
+	 *            the search term that the concepts have to match against
+	 */
+	private void retrieveConcepts(ConceptProvider conceptProvider,
+			boolean first, GraphNode resultNode, String searchTerm) {
 		MGraph resultMGraph = (MGraph) resultNode.getGraph();
 		Graph graph = conceptProvider.retrieveConcepts(searchTerm);
 		Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
 		if (first) {
 			while (concepts.hasNext()) {
-				resultNode.addProperty(SKOS.member, concepts.next().getSubject());
+				resultNode.addProperty(QUERYRESULT.concept, concepts.next()
+						.getSubject());
 			}
 			resultMGraph.addAll(graph);
 		} else {
 			while (concepts.hasNext()) {
 				NonLiteral concept = concepts.next().getSubject();
 				GraphNode conceptGraphNode = new GraphNode(concept, graph);
-				Iterator<Resource> sameAsConcepts =
-						conceptGraphNode.getObjects(OWL.sameAs);
-				if (!(hasSameAs(resultMGraph, concept) || hasAnyConcept(resultMGraph, sameAsConcepts))) {
-					resultNode.addProperty(SKOS.member, concept);
+				Iterator<Resource> sameAsConcepts = conceptGraphNode
+						.getObjects(OWL.sameAs);
+				if (!(hasSameAs(resultMGraph, concept) || hasAnyConcept(
+						resultMGraph, sameAsConcepts))) {
+					resultNode.addProperty(QUERYRESULT.concept, concept);
 					addConceptToResultMGraph(resultMGraph, conceptGraphNode);
 				}
 

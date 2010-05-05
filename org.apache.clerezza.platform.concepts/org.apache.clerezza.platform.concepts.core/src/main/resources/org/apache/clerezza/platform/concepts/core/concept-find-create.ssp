@@ -1,5 +1,14 @@
 resultDocModifier.addScriptReference("/scripts/ajax-options.js");
-resultDocModifier.addScriptReference("/static/concepts/scripts/concept-find-create.js");
+
+resultDocModifier.addScriptReference("/concepts/generic-resource/scripts/concept-find-create.js");
+resultDocModifier.addScriptReference("/concepts/generic-resource/scripts/jquery.rdfquery.core-1.0.js");
+
+resultDocModifier.addScriptReference("/scripts/alert-message.js");
+resultDocModifier.addScriptReference("/yui/2/yahoo-dom-event/yahoo-dom-event.js");
+resultDocModifier.addScriptReference("/yui/2/element/element-min.js");
+resultDocModifier.addScriptReference("/yui/2/container/container-min.js");
+resultDocModifier.addStyleSheet("/yui/2/container/assets/container-core.css");
+
 
 <div>Add Concepts</div>
 <form onsubmit="return ConceptFinder.search()" id="search-form">
