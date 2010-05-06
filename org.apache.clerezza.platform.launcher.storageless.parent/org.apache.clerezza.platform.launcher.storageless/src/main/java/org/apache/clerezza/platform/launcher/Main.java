@@ -265,16 +265,9 @@ public class Main implements BundleActivator {
 	}
 
 	private static String getCommaSeparatedListOfMavenRepos() {
-		return "http://scala-tools.org/repo-releases/," +
-				"http://repo.trialox.org/snapshot@snapshots@noreleases," +
-				"http://repo.trialox.org/release," +
-				"http://repo.trialox.org/ext," +
-				"http://openjena.org/repo/," +
-				"http://repository.ops4j.org/maven2/," +
-				"http://repo.aduna-software.org/maven2/releases," +
-				"http://wymiwyg.berlios.de/maven2/," +
-				"http://download.java.net/maven/2/," +
-				"http://repository.codehaus.org";
+		return "http://repository.apache.org/content/groups/snapshots-group@snapshots@noreleases,"+
+				"http://repo1.maven.org/maven2/,"+
+				"http://repository.ops4j.org/mvn-snapshots/@snapshots@noreleases";
 	}
 
 	private static void installBundlesForStartLevels(final BundleContext bundleContext,
