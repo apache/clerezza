@@ -353,17 +353,11 @@
 			<url>http://repository.apache.org/content/groups/snapshots-group</url>
 			<layout>default</layout>
 		</repository>
-		<!--  group id org.scala-labg-osgi only available here -->
+		<!--  group id org.scala-lang-osgi only available here -->
 		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
-		</repository>
-		<!-- for wrhapi snapshot -->
-		<repository>
-			<id>sonatype.snapshots</id>
-			<name>Sonatype snapshots</name>
-			<url>http://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
@@ -791,7 +785,7 @@
 			<dependency>
 				<groupId>org.wymiwyg</groupId>
 				<artifactId>wrhapi</artifactId>
-				<version>0.8.2-SNAPSHOT</version>
+				<version>0.8.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>
