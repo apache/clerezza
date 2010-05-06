@@ -106,7 +106,6 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<!-- org.apache.clerezza is all open source -->
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
 					<version>2.1.1</version>
@@ -266,7 +265,6 @@
 		</pluginManagement>
 		<plugins>
 			<plugin>
-				<!-- org.apache.clerezza is all open source -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 			</plugin>
