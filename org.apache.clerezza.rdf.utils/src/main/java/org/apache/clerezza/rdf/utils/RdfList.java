@@ -24,11 +24,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -74,12 +76,31 @@ public class RdfList extends AbstractList<Resource> {
 	public RdfList(NonLiteral listResource, TripleCollection tc) {
 		firstList = listResource;
 		this.tc = tc;
+		boolean addNilStmt;
+		if (tc instanceof LockableMGraph) {
+			LockableMGraph lg = (LockableMGraph) tc;
+			final Lock readLock = lg.getLock().readLock();
+			readLock.lock();
+			try {
+				addNilStmt = listIncomplete(listResource);
+			} finally {
+				readLock.unlock();
+			}
+		} else {
+			addNilStmt = listIncomplete(listResource);
+		}
+		if (addNilStmt) {
+			tc.add(new TripleImpl(listResource, OWL.sameAs, RDF_NIL));
+		}
+	}
+
+	private boolean listIncomplete(NonLiteral listResource) {
 		if (!tc.filter(listResource, RDF.first, null).hasNext()) {
 			if (!tc.filter(listResource, OWL.sameAs, RDF_NIL).hasNext()) {
-				tc.add(new TripleImpl(listResource, OWL.sameAs, RDF_NIL));
+				return true;
 			}
 		}
-
+		return false;
 	}
 
 	/**
