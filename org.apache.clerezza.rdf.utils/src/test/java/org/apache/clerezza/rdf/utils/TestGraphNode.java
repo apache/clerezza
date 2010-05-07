@@ -245,6 +245,20 @@ public class TestGraphNode {
 		Assert.assertTrue(node.getGraph().contains(expectedTriple11));
 	}
 
+	@Test
+	public void equality() {
+		MGraph g = new SimpleMGraph();
+		BNode bNode1 = new BNode() {};
+		BNode bNode2 = new BNode() {};
+		UriRef property1 = new UriRef("http://example.org/property1");
+		GraphNode n = new GraphNode(bNode1, g);
+		n.addProperty(property1, bNode2);
+		Assert.assertTrue(n.equals(new GraphNode(bNode1, g)));
+		Assert.assertFalse(n.equals(new GraphNode(bNode2, g)));
+		GraphNode n2 = null;
+		Assert.assertFalse(n.equals(n2));
+	}
+
 	private Set<Resource> createSet(Iterator<? extends Resource> resources) {
 		Set<Resource> set = new HashSet<Resource>();
 		while (resources.hasNext()) {

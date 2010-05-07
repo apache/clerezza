@@ -607,7 +607,7 @@ public class GraphNode {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj.getClass().equals(getClass()))) {
+		if (obj == null || !(obj.getClass().equals(getClass()))) {
 			return false;
 		}
 		GraphNode other = (GraphNode)obj;
