@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -51,6 +52,9 @@ class GroupMappingIterator<T,U> implements Iterator<Map<T, U>> {
 	}
 
 	private GroupMappingIterator(Map<Set<T>, Set<U>> matchingGroups) {
+		if (matchingGroups.size() == 0) {
+			throw new IllegalArgumentException("matchingGroups must not be empty");
+		}
 		restMap = new HashMap<Set<T>, Set<U>>();
 		boolean first = true;
 		for (Map.Entry<Set<T>, Set<U>> entry : matchingGroups.entrySet()) {
@@ -73,14 +77,16 @@ class GroupMappingIterator<T,U> implements Iterator<Map<T, U>> {
 
 	@Override
 	public Map<T, U> next() {
-		Map<T, U> restPart = currentRestPartIter.next();
-		if (restPart == null) {
+		Map<T, U> restPart;
+		if (currentRestPartIter.hasNext()) {
+			restPart = currentRestPartIter.next();
+		} else {
 			if (firstPartIter.hasNext()) {
 				currentFirstPart = firstPartIter.next();
-				currentRestPartIter = new GroupMappingIterator<T, U>(restMap);
+				currentRestPartIter = create(restMap);
 				restPart = currentRestPartIter.next();
 			} else {
-				return null;
+				throw new NoSuchElementException();
 			}
 		}
 		Map<T, U> result = new HashMap<T, U>(restPart);
