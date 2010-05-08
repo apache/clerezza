@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -56,6 +57,9 @@ class PermutationIterator<T> implements Iterator<List<T>> {
 	@Override
 	public List<T> next() {
 		List<T> result = next;
+		if (result == null) {
+			throw new NoSuchElementException();
+		}
 		prepareNext();
 		return result;
 	}
