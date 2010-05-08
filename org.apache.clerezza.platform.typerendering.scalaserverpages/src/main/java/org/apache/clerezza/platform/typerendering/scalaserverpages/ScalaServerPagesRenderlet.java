@@ -156,7 +156,9 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 				}
 				throw new RuntimeException(cause);
  			}
-			os.write(toString(execResult).getBytes("UTF-8"));
+			if (execResult != null) {
+				os.write(toString(execResult).getBytes("UTF-8"));
+			}
 			logger.debug("executed");
 			os.flush();
 			logger.debug("flushed");
