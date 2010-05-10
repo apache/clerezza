@@ -20,6 +20,8 @@ package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -168,6 +170,15 @@ public class Serializer {
 
 	private void refreshProviderMap() {
 		final Map<String, SerializingProvider> newProviderMap = new HashMap<String, SerializingProvider>();
+		//we want more generic providers first so they get overridden by more specific ones
+		Collections.sort(providerList, new Comparator<SerializingProvider>() {
+
+			@Override
+			public int compare(SerializingProvider s1, SerializingProvider s2) {
+				return getFormatIdentifiers(s2).length - getFormatIdentifiers(s1).length;
+			}
+
+		});
 		for (SerializingProvider provider : providerList) {
 			String[] formatIdentifiers = getFormatIdentifiers(provider);
 			for (String formatIdentifier : formatIdentifiers) {
