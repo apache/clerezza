@@ -40,6 +40,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.RdfList;
+import org.apache.felix.scr.annotations.ReferencePolicy;
 
 /**
  * @author rbn
@@ -50,7 +51,8 @@ import org.apache.clerezza.rdf.utils.RdfList;
 	@Reference(name="typeHandler",
 		cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
 		referenceInterface=Object.class,
-		target="(org.apache.clerezza.platform.typehandler=true)"),
+		target="(org.apache.clerezza.platform.typehandler=true)",
+		policy=ReferencePolicy.DYNAMIC),
 	@Reference(name="systemGraph",
 		cardinality=ReferenceCardinality.MANDATORY_UNARY,
 		referenceInterface=MGraph.class,
