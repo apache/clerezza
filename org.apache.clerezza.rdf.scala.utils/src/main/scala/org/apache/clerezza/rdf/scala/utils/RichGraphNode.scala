@@ -22,6 +22,7 @@ import rdf.utils.GraphNode
 import rdf.core.{UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
 import java.util.Iterator
 import _root_.scala.collection.jcl.Conversions
+import _root_.scala.reflect.Manifest
 
 class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGraph) {
     /**
@@ -39,22 +40,22 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
     }
 
     /**
-    * returns a List with the elements of the rdf:List represented by this node
-    */
+	 * returns a List with the elements of the rdf:List represented by this node
+	 */
     def !! = (for (listElem <- Conversions.convertList(node.asList)) yield {
-    	new RichGraphNode(new GraphNode(listElem, node.getGraph))
-    }).toList
+			new RichGraphNode(new GraphNode(listElem, node.getGraph))
+		}).toList
 
     /**
-    * returns the specified index from the rdf:List represenetd by this node
-    */
+	 * returns the specified index from the rdf:List represenetd by this node
+	 */
     def %!!(index: Int) = new RichGraphNode(new GraphNode(node.asList.get(index),
                                                           node.getGraph))
 
 	/**
-	* returns the lexical form of literals, the unicode-string for UriRef for
-	* BNodes the value returned by toString
-	*/
+	 * returns the lexical form of literals, the unicode-string for UriRef for
+	 * BNodes the value returned by toString
+	 */
 	def * = {
 		val wrappedNode = node.getNode();
 		if (wrappedNode.isInstanceOf[Literal]) {
@@ -68,10 +69,17 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 		}
 	}
 
-	 def as[T](clazz : Class[T]) : T= {
-		 LiteralFactory.getInstance().createObject(clazz,
-			 node.getNode().asInstanceOf[TypedLiteral])
-	 }
+	private def asClass[T](clazz : Class[T]) : T= {
+		LiteralFactory.getInstance().createObject(clazz,
+												  node.getNode().asInstanceOf[TypedLiteral])
+	}
+
+	/**
+	 * returns the literal represenetd by this node as instance of the spcified type
+	 */
+	def as[T](implicit m: Manifest[T]): T = {
+		asClass(m.erasure.asInstanceOf[Class[T]])
+	}
 
     /**
      * Operator syntax shortcut to get the <code>Resource</code> wrapped by this
