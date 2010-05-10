@@ -3,6 +3,7 @@ package org.apache.clerezza.uima.metadatagenerator;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
+import org.apache.clerezza.rdf.ontologies.DC;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.uima.utils.ExternalServicesFacade;
@@ -31,10 +32,18 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
       try {
         //add language to the document
         addLanguage(node, data);
+        addCategory(node, data);
+        
       } catch (Throwable e) {
         // quietly react to errors
       }
     }
+  }
+
+  private void addCategory(GraphNode node, byte[] data) throws UIMAException {
+    // get category to bind it to the node
+    String category = facade.getCategory(data.toString());
+    addStringLiteral(category, node, DC.subject);
   }
 
   private void addLanguage(GraphNode node, byte[] data) throws UIMAException {
