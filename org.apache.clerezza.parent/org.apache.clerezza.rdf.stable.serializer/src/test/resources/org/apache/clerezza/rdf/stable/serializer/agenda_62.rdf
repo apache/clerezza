@@ -1,0 +1,2045 @@
+<?xml version="1.0"?>
+<r:RDF xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:cal="http://www.w3.org/2002/12/cal/ical#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <cal:Vcalendar>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>IEPG Meeting</cal:summary>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-06T10:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-06T17:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Registration</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-06T12:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-06T19:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Newcomer's Training</cal:summary>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-06T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-06T14:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Introduction to Working Group Leadership</cal:summary>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-06T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-06T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Routing, Bridging and Switching: A Tutorial</cal:summary>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-06T15:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-06T17:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>How to Write an RFC</cal:summary>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-06T15:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-06T17:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Welcome Reception</cal:summary>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-06T17:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-06T19:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>IETF Registration</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T08:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Continental Breakfast</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T08:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Morning Sessions</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: apparea</cal:summary>
+        <cal:description>Applications Open Area Meeting</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: autoconf</cal:summary>
+        <cal:description>Ad hoc Network Configuration BOF</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: mboned</cal:summary>
+        <cal:description>MBONE Deployment WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: forces</cal:summary>
+        <cal:description>Forwarding and Control Element Separation WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: mobike</cal:summary>
+        <cal:description>IKEv2 Mobility and Multihoming WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: sacred</cal:summary>
+        <cal:description>Securely Available Credentials WG - CANCELLED</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: avt</cal:summary>
+        <cal:description>Audio/Video Transport WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: behave</cal:summary>
+        <cal:description>Behavior Engineering for Hindrance Avoidance WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T11:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions I</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: simple</cal:summary>
+        <cal:description>SIP for Instant Messaging and Presence Leveraging Extensions WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>GEN: ipr</cal:summary>
+        <cal:description>Intellectual Property Rights WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: ipoib</cal:summary>
+        <cal:description>IP Over Infiniband WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: l3vpn</cal:summary>
+        <cal:description>Layer 3 Virtual Private Network WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: adslmib</cal:summary>
+        <cal:description>ADSL MIB WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: rtgwg</cal:summary>
+        <cal:description>Routing Area Working Group</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: btns</cal:summary>
+        <cal:description>Better-Than-Nothing Security BOF</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: dccp</cal:summary>
+        <cal:description>Datagram Congestion Control Protocol WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break (Refreshments provided)</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions II</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: sieve</cal:summary>
+        <cal:description>Sieve Mail Filtering Language WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: dna</cal:summary>
+        <cal:description>Detecting Network Attachment WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: tc</cal:summary>
+        <cal:description>Tunneling Configuration BOF</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: capwap</cal:summary>
+        <cal:description>Control and Provisioning of Wireless Access Points WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: pce</cal:summary>
+        <cal:description>Path Computation Element WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: pki4ipsec</cal:summary>
+        <cal:description>Profiling Use of PKI in IPSEC WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: tsvwg</cal:summary>
+        <cal:description>Transport Area WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T17:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Evening Sessions</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: ipdvb</cal:summary>
+        <cal:description>IP over DVB WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: mip6</cal:summary>
+        <cal:description>Mobility for IPv6 WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: dnsop</cal:summary>
+        <cal:description>Domain Name System Operations WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: rtgarea</cal:summary>
+        <cal:description>Routing Area Meeting</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: isms</cal:summary>
+        <cal:description>Integrated Security Model for SNMP WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: ippm</cal:summary>
+        <cal:description>IP Performance Metrics WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: nfsv4</cal:summary>
+        <cal:description>Network File System Version 4 WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: sip</cal:summary>
+        <cal:description>Session Initiation Protocol WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-07T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-07T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>IETF Registration</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T08:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T18:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Continental Breakfast</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T08:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Morning Sessions</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: simple</cal:summary>
+        <cal:description>SIP for Instant Messaging and Presence Leveraging Extensions WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: 6lowpan</cal:summary>
+        <cal:description>IPv6 over Low Power WPAN BOF</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: bmwg</cal:summary>
+        <cal:description>Benchmarking Methodology WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: netconf</cal:summary>
+        <cal:description>Network Configuration WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: ccamp</cal:summary>
+        <cal:description>Common Control and Measurement Plan WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: openpgp</cal:summary>
+        <cal:description>An Open Specification for Pretty Good Privacy WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: ips</cal:summary>
+        <cal:description>IP Storage WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T11:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions I</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: slrrp</cal:summary>
+        <cal:description>Simple Lightweight RFID Reader Protocol BOF</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: ipv6</cal:summary>
+        <cal:description>IP Version 6 WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: l2vpn</cal:summary>
+        <cal:description>Layer 2 Virtual Private Network WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>IRTF: mobopts</cal:summary>
+        <cal:description>IP Mobility Optimizations RG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: ospf</cal:summary>
+        <cal:description>Open Shortest Path First WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: pkix</cal:summary>
+        <cal:description>Public Key Infrastructure X.509 WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: rserpool</cal:summary>
+        <cal:description>Reliable Server Pooling WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: sip</cal:summary>
+        <cal:description>Session Initiation Protocol WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break (Refreshments provided)</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions II</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: mboned</cal:summary>
+        <cal:description>MBONE Deployment WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: multi6</cal:summary>
+        <cal:description>Site Multihoming for IPv6 WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: rpsec</cal:summary>
+        <cal:description>Routing Protocol Security Requirements WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: sasl</cal:summary>
+        <cal:description>Simple Authentication and Security Layer WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: pmtud</cal:summary>
+        <cal:description>Path MTU Discovery WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: speechsc</cal:summary>
+        <cal:description>Speech Services Control WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions III</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: opes</cal:summary>
+        <cal:description>Open Pluggable Edge Services WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: magma</cal:summary>
+        <cal:description>Multicast &amp; Anycast Group Membership WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: ipcdn</cal:summary>
+        <cal:description>IP Over Cable Data Network WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: isis</cal:summary>
+        <cal:description>IS-IS for IP Internets WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: enroll</cal:summary>
+        <cal:description>Credential and Provisioning WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: nsis</cal:summary>
+        <cal:description>Next Steps in Signaling WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: rddp</cal:summary>
+        <cal:description>Remote Direct Data Placement WG - CANCELLED</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: xcon</cal:summary>
+        <cal:description>Centralized Conferencing WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-08T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-08T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>IETF Registration</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T08:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Continental Breakfast</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T08:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Morning Sessions</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: webdav</cal:summary>
+        <cal:description>WWW Distributed Authoring and Versioning WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: dnsext</cal:summary>
+        <cal:description>DNS Extensions WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: pana</cal:summary>
+        <cal:description>Protocol for Carrying Authentication for Network Access WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: v6ops</cal:summary>
+        <cal:description>IPv6 Operations WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: mpls</cal:summary>
+        <cal:description>MultiProtocol Label Switching WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: krbwg</cal:summary>
+        <cal:description>Kerberos WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: ecrit</cal:summary>
+        <cal:description>Emergency Context Resolution with Internet Technologies WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T11:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions I</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: lemonade</cal:summary>
+        <cal:description>Enhancements to Internet Email to Support Diverse Service Environments WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: hip</cal:summary>
+        <cal:description>Host Identity Protocol WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: ntp</cal:summary>
+        <cal:description>Network Time Protocol BOF</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: opsec</cal:summary>
+        <cal:description>Operational Security Capabilities for IP Network Infrastructure WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: idr</cal:summary>
+        <cal:description>Inter-Domain Routing WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: kitten</cal:summary>
+        <cal:description>GSS-API Next Generation WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: avt</cal:summary>
+        <cal:description>Audio/Video Transport WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: enum</cal:summary>
+        <cal:description>Telephone Number Mapping WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break (Refreshments provided)</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions II</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: geopriv</cal:summary>
+        <cal:description>Geographic Location/Privacy WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: nemo</cal:summary>
+        <cal:description>Network Mobility WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: pwe3</cal:summary>
+        <cal:description>Pseudo Wire Emulation Edge to Edge WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>IRTF: dtnrg</cal:summary>
+        <cal:description>Delay Tolerant Networking Research Group</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: radext</cal:summary>
+        <cal:description>Radius Extensions WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: pim</cal:summary>
+        <cal:description>Protocol Independent Multicast WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: inch</cal:summary>
+        <cal:description>Extended Incident Handling WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T17:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T19:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Plenary - IESG Plenary</cal:summary>
+        <cal:location>Salon DEFG</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Plenary: </cal:summary>
+        <cal:description>     - Welcome, and introduction - IETF Chair
+     - State of operations:
+         IESG operations (Allison Mankin, Bill Fenner)
+     - NomCom report
+     - Update from the PROTO work
+     - IAB operations update
+         IRTF Chair report
+         RFC Editor report
+         IANA report
+     - Administative Activities
+         - IETF AdminRest: Status report from transition team
+     - IESG Open Plenary
+</cal:description>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Late Night Session</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T22:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T23:59</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>PGP: Key</cal:summary>
+        <cal:description>Signing</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-09T22:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-09T23:59</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>IETF Registration</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T08:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Continental Breakfast</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T08:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Morning Sessions</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: imapext</cal:summary>
+        <cal:description>Internet Message Access Protocol Extension WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: dhc</cal:summary>
+        <cal:description>Dynamic Host Configuration WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: eap</cal:summary>
+        <cal:description>Extensible Authentication Protocol WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: grow</cal:summary>
+        <cal:description>Global Routing Operations WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: manet</cal:summary>
+        <cal:description>Mobile Ad-hoc Networks WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: msec</cal:summary>
+        <cal:description>Multicast Security WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: sipping</cal:summary>
+        <cal:description>Session Initiation Proposal Investigation WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T09:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T11:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions I</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: calsify</cal:summary>
+        <cal:description>Calendaring and Scheduling Simplification BOF</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: icos</cal:summary>
+        <cal:description>IP Configuration Security BOF</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: trill</cal:summary>
+        <cal:description>Transparent Interconnection of Lots of Links BOF</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: rmonmib</cal:summary>
+        <cal:description>Remote Network Monitoring WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: secsh</cal:summary>
+        <cal:description>Secure Shell WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: nsis</cal:summary>
+        <cal:description>Next Steps in Signaling WG</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: tcpm</cal:summary>
+        <cal:description>TCP Maintenance and Minor Extensions WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: xcon</cal:summary>
+        <cal:description>Centralized Conferencing WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T13:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break (Refreshments provided)</cal:summary>
+        <cal:location>Ballroom Foyer, 3rd Floor</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:00</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions II</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: ldapbis</cal:summary>
+        <cal:description>LDAP (v3) Revision WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>GEN: newtrk</cal:summary>
+        <cal:description>New IETF Standards Track Discussion WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: dna</cal:summary>
+        <cal:description>Detecting Network Attachment WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: ipfix</cal:summary>
+        <cal:description>IP Flow Information Export WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>RTG: bfd</cal:summary>
+        <cal:description>Bidirectional Forwarding Detection WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: saag</cal:summary>
+        <cal:description>Open Security Area Directorate</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: mmusic</cal:summary>
+        <cal:description>Multiparty Multimedia Session Control WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T15:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Afternoon Sessions III</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: crisp</cal:summary>
+        <cal:description>Cross Registry Information Service Protocol WG</cal:description>
+        <cal:location>Carver</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>APP: lemonade</cal:summary>
+        <cal:description>Enhancements to Internet Email to Support Diverse Service Environments WG</cal:description>
+        <cal:location>Rochester</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>GEN: newtrk</cal:summary>
+        <cal:description>New IETF Standards Track Discussion WG</cal:description>
+        <cal:location>Salon A</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: dna</cal:summary>
+        <cal:description>Detecting Network Attachment WG</cal:description>
+        <cal:location>Salon E</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>INT: mip4</cal:summary>
+        <cal:description>Mobility for IPv4 WG</cal:description>
+        <cal:location>Duluth</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>OPS: psamp</cal:summary>
+        <cal:description>Packet Sampling WG</cal:description>
+        <cal:location>Salon G</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>SEC: saag</cal:summary>
+        <cal:description>Open Security Area Directorate</cal:description>
+        <cal:location>Salon D</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>TSV: mmusic</cal:summary>
+        <cal:description>Multiparty Multimedia Session Control WG</cal:description>
+        <cal:location>Salon F</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T16:45</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:45</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Break</cal:summary>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T17:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T19:30</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Plenary - IAB Plenary</cal:summary>
+        <cal:location>Salon DEFG</cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+    <cal:component>
+      <cal:Vevent>
+        <cal:summary>Plenary: </cal:summary>
+        <cal:description>    - Welcome, and introduction - IAB Chair
+         IAB Chair report
+    - IRTF presentation: HIP
+    - Technical topic:  (Boeing presentation)
+    - IAB Open Plenary
+</cal:description>
+        <cal:location></cal:location>
+        <cal:dtstart r:parseType="Resource">
+          <cal:dateTime>2005-03-10T19:30</cal:dateTime>
+        </cal:dtstart>
+        <cal:dtend r:parseType="Resource">
+          <cal:dateTime>2005-03-10T22:00</cal:dateTime>
+        </cal:dtend>
+      </cal:Vevent>
+    </cal:component>
+  </cal:Vcalendar>
+</r:RDF>

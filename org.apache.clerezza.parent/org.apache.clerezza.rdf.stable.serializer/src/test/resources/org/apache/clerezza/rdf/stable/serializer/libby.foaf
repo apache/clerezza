@@ -1,0 +1,581 @@
+<?xml version="1.0"?>
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:rss="http://purl.org/rss/1.0/"
+        xmlns:foaf="http://xmlns.com/foaf/0.1/"
+        xmlns="http://xmlns.com/foaf/0.1/"
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:wot="http://xmlns.com/wot/0.1/"
+        xmlns:wn="http://xmlns.com/wordnet/1.6/"
+	xmlns:ical="http://www.w3.org/2002/12/cal/ical#"
+        xmlns:cert="http://www.w3.org/ns/auth/cert#"
+        xmlns:rsa="http://www.w3.org/ns/auth/rsa#"
+ >
+
+	<rsa:RSAPublicKey>
+		<rsa:public_exponent cert:decimal="65537" />
+		<rsa:modulus cert:hex="a6ba714e909a05a437bafc269b2cdda72a318fbab610aac95f74207ca2288c78cb95e48b78fcb6fdd63971375d11076483413a70ef9647867d5f9faa1c0f726252b793ab5407bed90f17e50bd0482b42c5f569fda5c4ad7d62bfeaa777f6799a7772dde8ff62f0e07ab29d11f70fac9ee79c4108914f020347319f58622f18f5" />
+		<cert:identity>
+			<foaf:Person rdf:about="http://swordfish.rdfweb.org/people/libby/rdfweb/webwho.xrdf#me" />
+		</cert:identity>
+	</rsa:RSAPublicKey>
+
+<rdf:Description rdf:about="http://swordfish.rdfweb.org/people/libby/rdfweb/webwho.xrdf">
+<foaf:maker>
+<foaf:Person>
+<foaf:name>Libby Miller</foaf:name>
+<foaf:nick>libby</foaf:nick>
+<foaf:mbox_sha1sum>01e253737c46286ff7cc1183be05ab64fea15438</foaf:mbox_sha1sum>
+<foaf:mbox_sha1sum>f68e81ac6289ffd7391bd2c53ab1dc6447d09a2e</foaf:mbox_sha1sum>
+<foaf:mbox_sha1sum>80f78952ba7c71bc9a0a38de415692922a3f6024</foaf:mbox_sha1sum>
+<foaf:mbox_sha1sum>289d4d44325d0b0218edc856c8c3904fa3fd2875</foaf:mbox_sha1sum>
+<foaf:mbox_sha1sum>f68e81ac6289ffd7391bd2c53ab1dc6447d09a2e</foaf:mbox_sha1sum>
+<foaf:mbox_sha1sum>01e253737c46286ff7cc1183be05ab64fea15438</foaf:mbox_sha1sum>
+<foaf:depiction rdf:resource="http://swordfish.rdfweb.org/people/libby/libby.jpg" />
+
+
+<!--
+<rdfs:seeAlso>
+	<ical:Vcalendar
+rdf:about="http://ilrt.org/people/libby/calendar/exportrred20030414.rdf"/>
+</rdfs:seeAlso>
+-->
+
+<foaf:homepage rdf:resource="http://nicecupoftea.org"/>
+<foaf:weblog rdf:resource="http://planb.nicecupoftea.org/"/>
+
+<rdfs:seeAlso rdf:resource="http://swordfish.rdfweb.org/people/libby/rdfweb/libby-biblio.rdf" />
+<rdfs:seeAlso rdf:resource="http://swordfish.rdfweb.org/people/libby/rdfweb/libby-foaf.rdf"/>
+<rdfs:seeAlso
+rdf:resource="http://swordfish.rdfweb.org/discovery/2001/08/codepict/scutterplan.rdf"/>
+
+<foaf:workplaceHomepage rdf:resource="http://www.joost.com"/>
+
+<foaf:interest rdf:resource="http://dev.joost.com/widgets/"/>
+<foaf:interest rdf:resource="http://rdfweb.org"/>
+<foaf:interest rdf:resource="http://lists.w3.org/Archives/Public/www-rdf-calendar/"/>
+<foaf:interest rdf:resource="http://lists.w3.org/Archives/Public/www-rdf-rules/" />
+<foaf:interest rdf:resource="http://rdfweb.org/people/damian/2001/10/RDFAuthor/" />
+<foaf:interest rdf:resource="http://www.w3.org/RDF/" />
+<foaf:interest rdf:resource="http://www.w3.org/2000/01/sw/" />
+
+
+<foaf:currentProject>
+	<foaf:Project>
+		<dc:title>RDFWeb codepiction</dc:title>
+		<dc:description>A demonstrator of codepiction of people in photos in RDFWeb</dc:description>
+		<dc:identifier rdf:resource="http://swordfish.rdfweb.org/discovery/2001/08/codepict/"/>
+	</foaf:Project>
+</foaf:currentProject>
+
+<foaf:subscribesTo
+rdf:resource="http://www.economics.ltsn.ac.uk/events/events.xml"/>
+
+ <wot:accountInfo>
+  <wot:WebAccount>
+   <wot:accountName>General use</wot:accountName>
+   <wot:accountDescription>A general purpose low security login for
+photos, files etc.</wot:accountDescription>
+   <wot:userid>libby</wot:userid>
+   <wot:cryptedPassword>liJPZp286OEMEl</wot:cryptedPassword>
+   <wot:passwordHint>(this should be encrypted to the users public
+key?</wot:passwordHint>
+  </wot:WebAccount>
+ </wot:accountInfo>
+
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>f30065df6b58584bd16373eee43c9f8e2ffb9a76</mbox_sha1sum>
+<mbox_sha1sum>89a38611df70f827f2c7c13c334bd48cbe0dc97b</mbox_sha1sum>
+<name>Damian Steer</name>
+<foaf:nick>shellac</foaf:nick>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+ <Person>
+<mbox_sha1sum>362ce75324396f0aa2d3e5f1246f40bf3bb44401</mbox_sha1sum>
+<mbox_sha1sum>748934f32135cfcf6f8c06e253c53442721e15e7</mbox_sha1sum>
+<name>Dan Brickley</name>
+<foaf:nick>danbri</foaf:nick>
+<foaf:nick>bandri</foaf:nick>
+</Person>
+
+</foaf:knows>
+<foaf:knows>
+ <Person>
+<mbox_sha1sum>eda070d04d7495fa13e43cf964526d62b60a0566</mbox_sha1sum>
+<name>Max Froumentin</name>
+<foaf:nick>maxf</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>0a5eaa538253e5f5fdecf0c81065052f18f0ab25</mbox_sha1sum>
+<name>Craig Dibble</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>46554fe08bec8edd3e94281377d641666ce7ecb5</mbox_sha1sum>
+<name>Martin Poulter</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>1839a1cc2e719a85ea7d9007f587b2899cd94064</mbox_sha1sum>
+<name>Amy van der Hiel</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>35022e505e6a64c05837eccf4beb5d8f981a4e5a</mbox_sha1sum>
+<mbox_sha1sum>1cf334c4f66a790b9b388768d4f07e1efea40773</mbox_sha1sum>
+<name>Jim Ley</name>
+<foaf:nick>jibberjim</foaf:nick>
+
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Chris Croome</name>
+<mbox_sha1sum>3622df31544ccc1c46c014195083f36f9a99a348</mbox_sha1sum>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Nadia Heninger</name>
+<mbox_sha1sum>584328833bca45b9342e976291f1b55ca8d405cd</mbox_sha1sum>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Earle Martin</name>
+<mbox_sha1sum>f31433ec4215e283bb07d19aa17779ad5245c796</mbox_sha1sum>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Nick Gibbins</name>
+<mbox_sha1sum>28339a9a36ee4e330da9613958efb89e2961c6cb</mbox_sha1sum>
+<foaf:nick>nmg</foaf:nick>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Leigh Dodds</name>
+<mbox_sha1sum>1bca73e5c6916c738d6ec7cc0597ad0e395e7ace</mbox_sha1sum>
+<foaf:nick>ldodds</foaf:nick>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Jonathan Chetwynd</name>
+<mbox_sha1sum>fa39428e74171a48bf7a52c737b59b290ac3c9fe</mbox_sha1sum>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Daniel Krech</name>
+<mbox_sha1sum>3665f4f2370ddd6358da4062f3293f6dc7f39b7c</mbox_sha1sum>
+<foaf:nick>eikeon</foaf:nick>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>P&#228;r Lanner&#246;</name>
+<mbox_sha1sum>2482e2c8a03f35a41782e0f8d620f715b944003a</mbox_sha1sum>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>878573be8bbd41dba97f9f376d29c29533fcb299</mbox_sha1sum>
+<name>Matt Biddulph</name>
+<foaf:nick>mattb</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+<Person>
+<mbox_sha1sum>f0e7ea3139fbe45e76b904bdb755fb0b9fce2572</mbox_sha1sum>
+<name>Matthew Miller</name>
+</Person>
+
+
+
+</foaf:knows>
+<foaf:knows>
+ <Person>
+<mbox_sha1sum>542ebbcab0da94d1a5f5d6f1cb6ac9e8a9d9158e</mbox_sha1sum>
+<name>Sarah Miller</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>4829af19130151de1c4def299d73d33f33dee0fb</mbox_sha1sum>
+<name>Jo Walsh</name>
+<foaf:nick>zool</foaf:nick>
+</Person>
+</foaf:knows>
+
+<foaf:knows>
+ <Person>
+<mbox_sha1sum>c66b1cf8ee172f06b7b41f9e6257623ba14eab5f</mbox_sha1sum>
+<name>Sean B. Palmer</name>
+<foaf:nick>sbp</foaf:nick>
+</Person>
+
+</foaf:knows>
+
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>9f33f246b39a77c1fdff99df1938ef5dac8b20e9</mbox_sha1sum>
+<name>Liz Dibble</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+ <Person>
+
+ <mbox_sha1sum>632054bd9d1d119f99d6858ef64d3f13a3caab87</mbox_sha1sum>
+<name>Liz Turner</name>
+<foaf:nick>ephidrina</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>7e572a9e12f2e2fac40039b3986a59daf47c9de6</mbox_sha1sum>
+<name>Big James</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>fd991c34194a4428e70cdcc8068deaa6f35464fe</mbox_sha1sum>
+<name>Edd Dumbill</name>
+<foaf:nick>edd</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>8e26096857d5a99f23bff38a520892e336b56f7d</mbox_sha1sum>
+<name>William Loughborough</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>26cbe7a75effa2ccc5c144a43fc57e19b292393e</mbox_sha1sum>
+<name>Wendy Chisholm</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>a74399757727c5f4a48e63921b8cc206f73d5fe</mbox_sha1sum>
+<name>Charles McCathieNevile</name>
+<foaf:nick>chaals</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>970987f991961f2553a1bf2574166fa29befbccb</mbox_sha1sum>
+<name>Dave Beckett</name>
+<foaf:nick>dajobe</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>702f38a6bae2aa171191a71e2769f4daf3ef8833</mbox_sha1sum>
+<name>Liddy Nevile</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>867ac51a36819bbc36620c41edecdc1372fb75dc</mbox_sha1sum>
+<name>Jan Grant</name>
+<foaf:nick>jang</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>8ff4ac9258e86bf5b5df2e8db23672e023c5d9dc</mbox_sha1sum>
+<name>Paul Shabajee</name>
+<foaf:nick>pshab</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>8f2f0c59ae2203bd238093e01c3954d10f90b1fb</mbox_sha1sum>
+<name>Kate Sharp</name>
+<foaf:nick>kates</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>e2d67791b2a0ce3441c0c770f94daa130b4e6d95</mbox_sha1sum>
+<mbox_sha1sum>5697bf372610b25e0058f5f62cc75276d9606d44</mbox_sha1sum>
+<name>Eric Prud'hommeaux</name>
+<foaf:nick>ericp</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>69b6e650e8223013c086b0c7b275037a6c6be8eb</mbox_sha1sum>
+<name>Margaret Hart</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>94b6eb0c835f928c5ed565dc3ed1a355ac1b41e5</mbox_sha1sum>
+<name>Dan Connolly</name>
+<foaf:nick>danc</foaf:nick>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>7ebde4f3ecdd8ff3899cf268d20c0227bd23602f</mbox_sha1sum>
+<name>David Miller</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+<Person>
+<mbox_sha1sum>fd1c7fa497930b8b24e3998927fcebe63509ef20</mbox_sha1sum>
+<name>Eric Miller</name>
+</Person>
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>1a29b5b983c8e5fc1f953eccfd384496c3ddc161</mbox_sha1sum>
+<name>Judith Miller</name>
+</Person>
+
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Lars Marius Garshol</name>
+<mbox_sha1sum>a598db95e98e4c9e88d0b5f6741106df16ef139b</mbox_sha1sum>
+<foaf:nick>larsbot</foaf:nick>
+</Person>
+</foaf:knows>
+
+
+<foaf:knows>
+<Person>
+ <mbox_sha1sum>917a511baeebf5adb3265fd5323fa7bc516f2852</mbox_sha1sum>
+<name>Kal Ahmed</name>
+</Person>
+</foaf:knows>
+
+
+<foaf:knows>
+<Person>
+<mbox_sha1sum>fdbafa77a1c811b1f9dd1b73c701ee281bfbdf69</mbox_sha1sum>
+<name>Mary Nishikawa</name>
+</Person>
+</foaf:knows>
+
+
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>feb7e9a206907a123e3f66d276b79549f1a7f3de</mbox_sha1sum>
+<name>Aaron Swartz</name>
+<foaf:nick>aaronsw</foaf:nick>
+</Person>
+
+</foaf:knows>
+<foaf:knows>
+
+ <Person>
+<mbox_sha1sum>f87f3b42808adf5e7f60c5df0eb98e1091d7d222</mbox_sha1sum>
+<name>Nicole Sullivan</name>
+<foaf:nick>nicole</foaf:nick>
+</Person>
+
+</foaf:knows>
+
+<foaf:knows>
+<Person>
+<name>Alberto Reggiori</name>
+<mbox_sha1sum>e2a4008e49a394a2d46150b7d6488cd52be327e1</mbox_sha1sum>
+<mbox_sha1sum>1fe426b4986ce38f3be5aa84f4db5193302000c6</mbox_sha1sum>
+<rdfs:seeAlso
+rdf:resource="http://www.asemantics.com/people/alberto.rdf"/>
+<foaf:nick>alberto</foaf:nick>
+</Person>
+</foaf:knows>
+
+
+<foaf:knows>
+<foaf:Person>
+<foaf:mbox_sha1sum>b2cee56f16bc7ce9c1a3f594588056119f25e2e2</foaf:mbox_sha1sum>
+<foaf:mbox_sha1sum>21477c8c0299c976e64b729c8f09fc3f8be307f2</foaf:mbox_sha1sum>
+<foaf:name>Dirk-Willem van Gulik</foaf:name>
+<rdfs:seeAlso
+rdf:resource="http://www.asemantics.com/people/dirkx.rdf"/>
+<foaf:nick>dirkx</foaf:nick>
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+<foaf:Person>
+<foaf:mbox_sha1sum>56dbb0962ec28e8d3f77868a0ef9ba70f09f9a92</foaf:mbox_sha1sum>
+<foaf:name>Zavisa Bjelogrlic</foaf:name>
+<rdfs:seeAlso rdf:resource="http://www.asemantics.com/people/zac.rdf"/>
+<foaf:nick>binzac</foaf:nick>
+
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+<foaf:Person>
+<foaf:mbox_sha1sum>31c52c8f19a0c1c79addf0e87d80418ece756865</foaf:mbox_sha1sum>
+<foaf:name>David Norheim</foaf:name>
+<rdfs:seeAlso
+rdf:resource="http://www.asemantics.com/people/david.rdf"/>
+</foaf:Person>
+</foaf:knows>
+
+
+<foaf:knows>
+ <foaf:Person>
+<foaf:mbox_sha1sum>669fe353dbef63d12ba11f69ace8acbec1ac8b17</foaf:mbox_sha1sum>
+<foaf:name>Danny Ayers</foaf:name>
+<foaf:nick>danja</foaf:nick>
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+ <foaf:Person>
+<foaf:mbox_sha1sum>6bdc3a6be4cc72c578d4ab01a618bbd9563bcd5b</foaf:mbox_sha1sum>
+<foaf:name>Graham Klyne</foaf:name>
+<foaf:nick>gk</foaf:nick>
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+ <foaf:Person>
+<foaf:mbox_sha1sum>ffff2cddff6ce89ad0d25ffccc4f0051caf8d6e0</foaf:mbox_sha1sum>
+<foaf:name>Masahide Kanzaki</foaf:name>
+<foaf:nick>masaka</foaf:nick>
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+ <foaf:Person>
+<foaf:mbox_sha1sum>44bc4fed584a2d1ac8fc55206db67656165d67fd</foaf:mbox_sha1sum>
+<foaf:name>Steve Harris</foaf:name>
+<foaf:nick>swh</foaf:nick>
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+ <foaf:Person>
+<foaf:mbox_sha1sum>65b983bb397fb71849da910996741752ace8369b</foaf:mbox_sha1sum>
+<foaf:name>Morten Frederiksen</foaf:name>
+<foaf:nick>mortenf</foaf:nick>
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+ <foaf:Person>
+<foaf:mbox_sha1sum>dae368b5acd44c3cbe9ba8d25c1e54df3391ea8c</foaf:mbox_sha1sum>
+<foaf:name>Jipp</foaf:name>
+<foaf:nick>jipp</foaf:nick>
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+ <foaf:Person>
+<foaf:mbox_sha1sum>f80a0f19d2a0897b89f48647b2fb5ca1f0bc1cb8</foaf:mbox_sha1sum>
+<foaf:name>Greg Williams</foaf:name>
+<foaf:nick>kasei</foaf:nick>
+</foaf:Person>
+</foaf:knows>
+
+<foaf:knows>
+ <foaf:Person>
+<foaf:mbox_sha1sum>927ed281057a507d882338eb57f74551f6771325</foaf:mbox_sha1sum>
+<foaf:name>Ludovic Hirlimann</foaf:name>
+<foaf:nick>lhirlimann</foaf:nick>
+<rdfs:seeAlso rdf:resource="http://perso.hirlimann.net/~ludo/foaf.rdf"/>
+</foaf:Person>
+</foaf:knows>
+
+
+<rdfs:seeAlso>
+	<wn:Gallery-3 rdf:about="http://libby.asemantics.com/2005/04/pictures/2005-04-11.rdf">
+	<dc:title>Rome and the day before sparqling</dc:title>
+	</wn:Gallery-3>
+</rdfs:seeAlso>
+
+<rdfs:seeAlso>
+	<wn:Gallery-3 rdf:about="http://libby.asemantics.com/2005/04/pictures/2005-04-12.rdf">
+	<dc:title>Sparqling days in Monte Sansavino</dc:title>
+	</wn:Gallery-3>
+</rdfs:seeAlso>
+
+<rdfs:seeAlso>
+	<wn:Gallery-3 rdf:about="http://libby.asemantics.com/2005/04/pictures/2005-04-13.rdf">
+	<dc:title>More Sparqling fun</dc:title>
+	</wn:Gallery-3>
+</rdfs:seeAlso>
+
+<rdfs:seeAlso>
+	<wn:Gallery-3 rdf:about="http://libby.asemantics.com/2005/04/pictures/2005-04-14.rdf">
+	<dc:title>post sparql-relaxation</dc:title>
+	</wn:Gallery-3>
+
+</rdfs:seeAlso>
+<rdfs:seeAlso>
+	<wn:Gallery-3 rdf:about="http://libby.asemantics.com/2005/04/pictures/2005-04-15.rdf">
+	<dc:title>Sightseeing - Sienna</dc:title>
+	</wn:Gallery-3>
+
+</rdfs:seeAlso>
+<rdfs:seeAlso>
+	<wn:Gallery-3 rdf:about="http://libby.asemantics.com/2005/04/pictures/2005-04-16.rdf">
+	<dc:title>Via Cassia to Rome</dc:title>
+	</wn:Gallery-3>
+
+</rdfs:seeAlso>
+
+
+</foaf:Person>
+
+</foaf:maker>
+
+</rdf:Description>
+</rdf:RDF>
