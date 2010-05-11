@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Literal;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -36,7 +37,6 @@ import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
-
 
 /**
  * This class represents a node in the context of a graph. It provides
@@ -425,6 +425,18 @@ public class GraphNode {
 	}
 
 	/**
+	 * Coverts the value into a typed literals and sets it as object of the
+	 * specified property
+	 *
+	 * @param property the predicate of the triple to be created
+	 * @param value the value of the typed literal object
+	 */
+	public void addPropertyValue(UriRef property, Object value) {
+		addProperty(property,
+				LiteralFactory.getInstance().createTypedLiteral(value));
+	}
+
+	/**
 	 * creates and returns an <code>RdfList</code> for the node and
 	 * TripleCollection represented by this object.
 	 *
@@ -432,7 +444,7 @@ public class GraphNode {
 	 */
 	public List<Resource> asList() {
 		if (resource instanceof NonLiteral) {
-			return new RdfList((NonLiteral)resource, graph);
+			return new RdfList((NonLiteral) resource, graph);
 		} else {
 			throw new RuntimeException("Literals cannot be the subject of a List");
 		}
@@ -466,7 +478,7 @@ public class GraphNode {
 	 */
 	public void deleteProperty(UriRef predicate, Resource object) {
 		if (resource instanceof NonLiteral) {
-			graph.remove(new TripleImpl((NonLiteral)resource, predicate, object));
+			graph.remove(new TripleImpl((NonLiteral) resource, predicate, object));
 		}
 	}
 
@@ -474,7 +486,6 @@ public class GraphNode {
 	public String toString() {
 		return resource.toString();
 	}
-
 
 	/**
 	 * Replaces the graph node resouce with the specified <code>NonLiteral</code>.
@@ -497,7 +508,7 @@ public class GraphNode {
 	public GraphNode replaceWith(NonLiteral replacement, boolean checkPredicates) {
 		MGraph newTriples = new SimpleMGraph();
 		if (!(resource instanceof Literal)) {
-			Iterator<Triple> subjectTriples = graph.filter((NonLiteral)resource, null,
+			Iterator<Triple> subjectTriples = graph.filter((NonLiteral) resource, null,
 					null);
 			while (subjectTriples.hasNext()) {
 				Triple triple = subjectTriples.next();
@@ -521,8 +532,8 @@ public class GraphNode {
 		graph.addAll(newTriples);
 		newTriples.clear();
 
-		if (checkPredicates && replacement instanceof UriRef &&
-				resource instanceof UriRef) {
+		if (checkPredicates && replacement instanceof UriRef
+				&& resource instanceof UriRef) {
 			Iterator<Triple> predicateTriples = graph.filter(null,
 					(UriRef) resource, null);
 			while (predicateTriples.hasNext()) {
@@ -610,9 +621,9 @@ public class GraphNode {
 		if (obj == null || !(obj.getClass().equals(getClass()))) {
 			return false;
 		}
-		GraphNode other = (GraphNode)obj;
-		return getNode().equals(other.getNode()) &&
-				getGraph().equals(other.getGraph());
+		GraphNode other = (GraphNode) obj;
+		return getNode().equals(other.getNode())
+				&& getGraph().equals(other.getGraph());
 	}
 
 	@Override
