@@ -76,8 +76,17 @@ a.tx-icon {
 }
 
 /* modify color */
+.tx-icon-modify {
+	background: url(./images/icons/btn-modify.png) center no-repeat;
+	border: solid 1px;
+	border-color: #2f8695 #368e9d #368e9d #487d9d;
+	height: 18px;
+	width: 19px;
+}
+
+/* @deprecated use tx-icon-modify */
 .tx-icon-edit {
-	background: url(./images/icons/btn-edit.png) center no-repeat;
+	background: url(./images/icons/btn-modify.png) center no-repeat;
 	border: solid 1px;
 	border-color: #2f8695 #368e9d #368e9d #487d9d;
 	height: 18px;
