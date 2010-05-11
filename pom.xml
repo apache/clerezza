@@ -91,6 +91,7 @@
 		<module>org.apache.clerezza.scala</module>
 		<module>org.apache.clerezza.templating</module>
 		<module>org.apache.clerezza.templating.seedsnipe</module>
+		<module>org.apache.clerezza.tools.offline</module>
 		<module>org.apache.clerezza.triaxrs</module>
 		<module>org.apache.clerezza.uima</module>
 		<module>org.apache.clerezza.utils.customproperty</module>
@@ -810,6 +811,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.templating.seedsnipe</artifactId>
 				<version>0.8-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.tools.offline</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
