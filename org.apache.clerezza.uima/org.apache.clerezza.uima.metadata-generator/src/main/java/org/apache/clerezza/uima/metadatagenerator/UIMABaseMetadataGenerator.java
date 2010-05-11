@@ -1,7 +1,5 @@
 package org.apache.clerezza.uima.metadatagenerator;
 
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import org.apache.clerezza.rdf.ontologies.DC;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
@@ -30,8 +28,9 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
     // FIXME only TEXT_PLAIN, also different MediaTypes should be served
     if (MediaType.TEXT_PLAIN.equals(mediaType.getType())) {
       try {
-        //add language to the document
+        // add language to the document
         addLanguage(node, data);
+        // add wide purpose subject to the document
         addCategory(node, data);
         
       } catch (Throwable e) {
@@ -43,17 +42,13 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
   private void addCategory(GraphNode node, byte[] data) throws UIMAException {
     // get category to bind it to the node
     String category = facade.getCategory(data.toString());
-    addStringLiteral(category, node, DC.subject);
+    node.addPropertyValue(DC.subject,category);
   }
 
   private void addLanguage(GraphNode node, byte[] data) throws UIMAException {
     // get language to bind to the node
     String language = facade.getLanguage(data.toString());
-    addStringLiteral(language, node, DCTERMS.language);
-  }
-
-  private void addStringLiteral(String value, GraphNode node, UriRef uriRef) {
-    node.addProperty(uriRef, LiteralFactory.getInstance().createTypedLiteral(value));
+    node.addPropertyValue(DCTERMS.language,language);
   }
 
 }
