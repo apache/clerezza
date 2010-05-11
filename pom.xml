@@ -92,6 +92,7 @@
 		<module>org.apache.clerezza.templating</module>
 		<module>org.apache.clerezza.templating.seedsnipe</module>
 		<module>org.apache.clerezza.triaxrs</module>
+		<module>org.apache.clerezza.uima</module>
 		<module>org.apache.clerezza.utils.customproperty</module>
 		<module>org.apache.clerezza.utils.imagemagick</module>
 		<module>org.apache.clerezza.utils.imageprocessing</module>
@@ -1013,6 +1014,11 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.rdf.metadata</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.uima</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
