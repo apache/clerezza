@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:contact="http://www.w3.org/2000/10/swap/pim/contact#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:h="http://www.w3.org/1999/xhtml"
+         xmlns:ep="http://www.snee.com/ns/ep">
+
+     <rdf:Description rdf:about="">
+          <dc:creator>Bob DuCharme</dc:creator>
+          <dc:description>Metadata about Elvis impersonators scraped from 
+http://www.gigmasters.com/ElvisImpersonator/ElvisImpersonator.asp and 
+http://dir.yahoo.com/Entertainment/Music/Artists/By_Genre/Rock_and_Pop/Presley__Elvis__1935_1977_/Impersonators/ in March of 2005. At last, the semantic web is complete. See also http://members.terracom.net/~bbibo/biboland/elvi/hall1.htm, which has lots of great non-Elvises. More at http://www.elvistribute.us/impersonators/.</dc:description>
+          <dc:rights rdf:resource="http://creativecommons.org/licenses/by-nc-sa/2.0/"/>
+     </rdf:Description>
+     <rdf:Description rdf:about="http://www.gigmasters.com/DJ/BILLMCGRATH/">
+          <ep:name>One Night With You Productions</ep:name>
+          <ep:location>Schenectady, New York</ep:location>
+          <ep:category>DJ, Elvis Impersonator, Elvis Impersonator, Emcee, Impersonator, Karaoke, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Birthday Parties, Casinos, Christmas Parties, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Picnic, Private Parties, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Weddings</ep:available-for>
+          <ep:year-established>2000</ep:year-established>
+          <ep:pay-range>$500-$9200 per event</ep:pay-range>
+          <ep:influences>ALL ENTERTAINING ARTIST SUCH AS DEAN MARTIN, FRANK SINATRA, ELVIS PRESLEY AND ALL THE UNFORGETABLE ONES THAT JUST CANT BE REPLACED TODAY.</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=11593&amp;sequenceID=1" dc:title="Bill McGrath"/>
+          <dc:description>IF YOUR LOOKING FOR A DIFFERENT STYLE OF ENTERTAINING ,WELL YOU CAME TO THE RIGHT SITE. WELCOME TO ONE NIGHT WITH YOU PRODUCTIONS. IF YOU NEED AN EXCITING NIGHT TO ENTERTAIN YOUR GUEST, WELL WE DO IT ALL.FULL LAS VEGAS STYLE SHOWS PROFESIONALY EMCEED WITH TRIBUTE ARTIST ROY ORBISON, CONNIE FRANCIS, FRANK SINATRA, TONY BENNET AND OUR EXCLUSIVE ONE OF KIND ELVIS MR. BILL MCGRATH. YOU WILL BE AMAZED NO DOUBT.&gt; WE SET UP THE SOUND THE STAGE AND THE LIGHTING,WE ALSO PROVIDE FULL DJ SERVICE TO KEEP THE MUSIC FLOWING WHILE YOUR GUEST ARE ENJOYING THERE DINNER. WHAT MORE COULD YOU ASK FOR.&gt; THATS JUST ONE OF OUR SERVICES WE OFFER FULL DJ SERVICE FOR WEDDINGS , CORPERATE PARTIES,ANY OCCASION PROFESIONALY DONE AND DRESSED TO IMPRESS .&gt;BILL MCGRATH HAS ONE SEVERAL AWARDS FOR HIS PERFORMANCES AND IS NOW KNOWN WORLD WIDE. HE HAS BEEN TO CBS STUDIOS IN HOLLYWOOD FOR ADDITIONS AND WILL BE IN LAS VEGAS IN JANUARY 2005. BILL HAS PERFORMED AT HARRAHS,FITZGERALDS AND THE BARBURRY COAST IN LAS VEGAS. THERE IS A VIDEO OF JUST SOME OF THE PLACES BILL HAS BEEN IN 2004 JUST CLICK ON THE VIDEO ICON. WE ARE LOOKING FORWARD TO PERFORM FOR YOU AT YOUR NEXT BIRTHDAY OR BIG CASINO BILL LOVES TO PERFORM AND IT SHOWS. WELL WHAT ARE YOU WAITING FOR ? CALL TODAY!!!!!!!!!!!!!</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/dj/RememberWhen/">
+          <ep:name>Legends Tribute Show - Remember When DJ</ep:name>
+          <ep:location>Northeast, Maryland</ep:location>
+          <ep:category>DJ, Elvis Impersonator, Karaoke</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Movie Soundtracks, Picnic, Private Parties, Resorts, Restaurants, Reunions, Ski Lodges, Sorority Function, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1999</ep:year-established>
+          <ep:pay-range>$350-$1000 per event</ep:pay-range>
+          <ep:influences>Elvis Presley, Marty Robbins, John Denver, Jim Croce, Gene Watson</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14297&amp;sequenceID=1" dc:title="Sample"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14297&amp;sequenceID=2" dc:title="Sample"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14297&amp;sequenceID=3" dc:title="Sample"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14297&amp;sequenceID=4" dc:title="Sample"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14297&amp;sequenceID=5" dc:title="Sample"/>
+          <dc:description>1. I am a singer that performs (Live Legends Tribute show) by doing the songs of legendary singers such as Elvis Presley, Buddy Holly, John Denver, Gene Pitney, Bobby Vinton, Marty Robbins, Jim Croce, Gene Watson and others about 2 hours in length. 2. I do an (Elvis Tribute) show usually 30 minutes to an hour. 3. DJ services playing the hits of the 50's 60's 70's with a few songs from the forties and a selection from the 80's to present. 4. Booking can be for a stand alone Elvis Tribute show - Live Tribute Show or DJ services or a combination of Tribute show with DJ service add Karaoke and have a great and fun time.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/elvis/ChuckBaril/">
+          <ep:name>Chuck Baril</ep:name>
+          <ep:location>Nashville, Tennessee</ep:location>
+          <ep:category>Elvis Impersonator</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>2002</ep:year-established>
+          <ep:pay-range>$300-$2400 per event</ep:pay-range>
+          <ep:influences>Elvis, Donny Osmond, Barry Manilow, Pebo Bryson, James Ingram, George Benson, and George Strait</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15070&amp;sequenceID=1" dc:title="Heartbreak Hotel"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15070&amp;sequenceID=2" dc:title="Teddy Bear"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15070&amp;sequenceID=3" dc:title="You Gave Me A Mountain"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15070&amp;sequenceID=4" dc:title="Its Now Or Never"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15070&amp;sequenceID=5" dc:title="An American Trilogy"/>
+          <dc:description>Chuck Baril is a native of Detroit, Michigan, and it was there on New Year’s Eve in 1975 when his destiny was set. At the Pontiac Silverdome, Elvis performed an amazing concert to an audience of 60,000 screaming fans along with one young impressionable young man who decided that night that he too would become a singer. He began singing as a young child and has sung and recorded many styles of music over the years. Three of the songs he has written and recorded have been played on 90 radio stations in 11 states. But Chuck has come back to his first love, Elvis’ recordings, because that is what he loves most and does best.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/elvis/DukeHicks/">
+          <ep:name>Duke Hicks</ep:name>
+          <ep:location>Mesa, Arizona</ep:location>
+          <ep:category>Elvis Impersonator, Tribute Band</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1983</ep:year-established>
+          <ep:pay-range>$250-$1000 per event</ep:pay-range>
+          <ep:influences>Elvis Presley</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=1" dc:title="CC Rider"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=2" dc:title="Dont Be Cruel"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=3" dc:title="Teddy Bear"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=4" dc:title="Fever"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=5" dc:title="Suspicious Minds"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=6" dc:title="The Wonder of YOu"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=7" dc:title="Tiger Man"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=8" dc:title="Steatroller Blues"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=9" dc:title="Hound Dog"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14367&amp;sequenceID=10" dc:title="My Way"/>
+          <dc:description>Been performing Elvis tribute shows for 10 yrs. Having been in the music business for twenty years Duke knows how to please the audience. Duke started doing his tribute shows after several request from the audience members to do more and more of Elvis' songs and a request for him to do an Elvis Tribute Show. Duke has been asked several times if he is lip-syching to Elvis' songs and the answer is absolutely NO. The sound and stage presence is so close to 'The King' that it has startled many.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/elvis/ElvisByDano/">
+          <ep:name>ELVIS by Dano</ep:name>
+          <ep:location>Federal Way, Washington</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>2002</ep:year-established>
+          <ep:pay-range>$200-$1000 per event</ep:pay-range>
+          <ep:influences>Elvis and some great tribute artists.</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15241&amp;sequenceID=1" dc:title="All Shook Up"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15241&amp;sequenceID=2" dc:title="Love Me Tender"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15241&amp;sequenceID=3" dc:title="One of Dano's intros"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15241&amp;sequenceID=4" dc:title="Treat Me Nice"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=15241&amp;sequenceID=5" dc:title="Loving You  (hear more tunes at elvisbydano.com)"/>
+          <dc:description>For a great time at your next event, how about ELVIS by Dano? His main goal is to provide a show that reflects the raw energy, passion, and humor that The King once shared with us. Dano, being a huge Elvis fan since his eleventh year, has loved singing along with The Man his entire adult life. He started to impersonate Elvis in public about 1995, and his first long solo performance, with a full set of songs, was at a church social in 2002. Dano was also a seven year member of a classic rock band and often contributed an Elvis act that audiences always truly enjoyed. Starting in February, 2004 he has performed in many solo shows for benefits, auctions, various parties , a Theme Park, as well as much time donated to entertain the elderly. He uses quality audio equipment with great sounding background tracks. Longer travel distances will be considered. Contact Dano today if you want your next party 'all shook up'!!!</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/elvis/ElvisImpersonator/">
+          <ep:name>Elvis Impersonator - Donnie Roberts</ep:name>
+          <ep:location>Austin, Texas</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>2002</ep:year-established>
+          <ep:pay-range>$150-$6800 per event</ep:pay-range>
+          <ep:influences>Elvis Presley himself, and my wife Kathy.</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12062&amp;sequenceID=1" dc:title="You Gave Me A Mountain"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12062&amp;sequenceID=2" dc:title="Memories"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12062&amp;sequenceID=3" dc:title="In the Ghetto"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12062&amp;sequenceID=4" dc:title="Can't help falling in love"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12062&amp;sequenceID=6" dc:title="Loving you"/>
+          <dc:description>Donnie Roberts is from Austin, Texas.He is a great performer with an outstanding voice and has been performing his tribute to Elvis since 2002 throughtout Texas and the Country.He is a member of PEIA (Professional Elvis Impersonators Association).Donnie considers it an extreme honor to perform his Elvis tribute. His shows are Professional and are suitable for all ages. Donnie displays his appealing talents with his re-creation of the Las Vegas concert years. Not only is Donnie talented, he donates his time to charitable events and fundraisers. Donnie has become well known in Austin, with numerous successful performances/apperances to his credit including TV, and apperances on KTBC FOX morning show, and KENS5 Good Morning SA. (Live band available upon request with a two hour minimum) His dedication to perform a first rate show will definitely have an impact and will be remembered for a long, long time.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/elvis/Roy/">
+      <ep:name>Roy</ep:name>
+      <ep:location>Polkton, North Carolina</ep:location>
+      <ep:category>Elvis Impersonator</ep:category>
+      <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+      <ep:year-established>1980</ep:year-established>
+      <ep:pay-range>$150-$1000 per event</ep:pay-range>
+      <ep:influences>ELVIS HAS ALWAYS HAD AN IMPACT ONMY LIFE. 1. BECAUSE I HAVE ALWAYS ENJOYED HIS MUSIC. 2. I AM TOLD I AM DISTANTLY RELATED TO ELVIS ON MY MOTHERS SIDE OF THE FAMILY. BUT GOD, IS THE MAJOR INFLUENCE IN MY LIFE, BECAUSE I DON'T KNOW WHERE I WOULD BE WITHOUT</ep:influences>
+      <dc:description>I AM THE ELVIS LOOK A LIKE AND IMPERSONATOR YOU ARE LOOKING FOR. I DO NOT LIP SING. I USE MY NATURAL VOICE AND HAVE THE NATURAL LOOKS. WITH THE BLACK HAIR AND SIDEBURNS. YES YOU GET IT ALL, NOTHING FAKE HERE. I EVEN PLAY A GUITAR. I HAVE PERFORMED AT MANY CHURCHES SINGING GOSPEL MUSIC AND ELVIS CONCERTS. I HAVE PERFORMED AT HOTEL FUNCTIONS, FAIRS, RESTAURANTS AND A NUMBER OF OTHER PLACES. I WILL GIVE YOU 110% OF MYSELF. I ENJOY SINGING AND PERFORMING. BUT, LIKE ELVIS I ALSO HAVE A LOVE FOR GOSPEL MUSIC. I AM A GOD FEARING CHRISTIAN. I LOVE GOING TO THE NURSING HOMES, HOSPITALS AND PERFORMING AT FUNDRAISERS TO BE A BLESSING AND A HELP TO OTHERS. I DO USE SCARVES AND THROW TEDDY BEARS AND MAKE PEOPLE FEEL SPECIAL, BECAUSE THEY ARE. I PERFORM A LOT OF THE ELVIS 70'S STYLE MUSIC, CONCERT STYLE, AND BLEND IN SOME OF THE OLDER STYLE MUSIC AS WELL. WITH GOSPEL MUSIC NOT ONLY DO I SING ELVIS'S SONGS BUT I DO SOME OF MICHAEL COMBS, CARROLL ROBERSON AND OTHERS. RESTAURANTS, WEDDINGS, SPECIAL EVENTS, PARTIES, TOWN CELEBRATIONS, CHURCH PROGRAMS OR WHATEVER THE OCCASION. I BELIEVE I AM THE IMPERSONATOR AND GOSPEL SINGER YOU NEED.</dc:description>
+   </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/elvis/bobjames/">
+          <ep:name>Bob James</ep:name>
+          <ep:location>West Palm Beach, Florida</ep:location>
+          <ep:category>Elvis Impersonator</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>2002</ep:year-established>
+          <ep:pay-range>$100-$3200 per event</ep:pay-range>
+          <ep:influences>Elvis Elvis Elvis! I also do a Neil Diamond tribute as well, and have been a DJ, MC, and musician for many years.</ep:influences>
+          <dc:description>Bob James has been entertaining Elvis fans for several years, and has performed all over North America, including Las Vegas, Niagara Falls, Branson, Memphis, New York, Miami, and Montreal. Bob was the winner of the 2005 South Florida Fair impersonators contest, and was a finalist in the 2004 Images Of The King contest in Memphis, TN., ranking him as one of the top 25 Elvis impersonators in the world. He’s also made TV appearances on WGRZ TV in Buffalo, The UPN Network, and CTV Channel 9 in Toronto, and has appeared in feature articles in the Miami Herald, and Sass Magazine.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/elvis/stingray/">
+          <ep:name>Stingray</ep:name>
+          <ep:location>Massapequa, New York</ep:location>
+          <ep:category>Elvis Impersonator</ep:category>
+          <ep:available-for> Clubs, Weddings, Casinos, Temples, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Bachelor Parties, Christenings, Bachelorette Parties, Picnic, Christmas Parties, Private Parties, Bar Mitzvahs, Fraternity Functions, Corporate Functions, Movie Soundtracks, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Hotels, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs, Ski Lodges, Sorority Function, Birthday Parties, Awards Nights, Bat Mitzvahs, Fund Raisers, Anniversaries</ep:available-for>
+          <ep:year-established>1988</ep:year-established>
+          <ep:pay-range>$500-$10000 per night</ep:pay-range>
+          <ep:influences>ELVIS.</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=1" dc:title="Suspicious Minds"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=2" dc:title="My Way"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=3" dc:title="C.C. Rider"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=4" dc:title="In The Ghetto"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=5" dc:title="Love Me"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=6" dc:title="American Trilogy"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=7" dc:title="Promised Land"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=8" dc:title="If I can dream"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10619&amp;sequenceID=9" dc:title="The Wonder of You"/>
+          <dc:description>STINGRAY is an exciting and innovative performer who has been singing in and around the New York area for the past ten years. He features a unique style having mastered many favorites from the 1940’s Ballads to the present day Rock and Roll. With his personal band, The Delta Rays he performs an authentic showcase of Elvis Presley Hits that is unparalleled.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/emcee/DannySpinosaEntertainment/">
+          <ep:name>Danny Spinosa Entertainment</ep:name>
+          <ep:location>Memphis, Tennessee</ep:location>
+          <ep:category>Elvis Impersonator, Emcee, Impersonator, Model</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Banquets, Casinos, Christmas Parties, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fund Raisers, Grand Openings, Hotels, Movie Soundtracks, Private Parties, Resorts, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1995</ep:year-established>
+          <ep:pay-range>$700-$4000 per event</ep:pay-range>
+          <ep:influences>Elvis, Carl Perkins, Tom Jones, Roy Orbison</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=1" dc:title="Memphis Of Elvis Video Sample"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=2" dc:title="Can't Help Falling In Love"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=3" dc:title="Treat Me Nice"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=4" dc:title="Memories"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=5" dc:title="Burning Love"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=6" dc:title="Love Me Tender"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=7" dc:title="Teddy Bear/Don't Be Cruel"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=8" dc:title="All Shook Up"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14986&amp;sequenceID=9" dc:title="In The Getto"/>
+          <dc:description>Danny Spinosa was born &amp; raised in Memphis, Tn. He grew up in Graceland Subdivision behind the Graceland Mansion, Danny had many encounters with Elvis himself. He first started performing Elvis songs at the age of four at his parents Italian Restaurant in Memphis. For those of you that loved Elvis &amp; still do, keep the memory alive with an Elvis Entertainer such as Danny Spinosa. Whether it is a corporate party, Wedding, or any special occasion, this form of entertainment will add excitement to any event. Danny has opened &amp; performed with local &amp; legendary artists such as: Carl Perkins, B.B. King, Tracy Byrd, The Platters, Ruby Wilson, Joyce Cobb, Foster Brooks, Charlie Pride, Jason D. Williams, Ben Culley (Soul Survivor of Otis Redding Band), Gary Collins &amp; Mary Ann Mobley. Danny was recently featured on ESPN Network to represent Memphis &amp; Beale St. He was a performer &amp; special guest on The Rick &amp; Bubba Show &amp; on Home Plate TV show with Turner South &amp; a full page lay-out in Southern Living Magazine. Danny Spinosa's superior voice &amp; talent is sure to please all ages &amp; bring everone's memory of Elvis back to life.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/emcee/ElvisTributeArtist/">
+          <ep:name>Elvis Tribute Artist - Michael Rocha</ep:name>
+          <ep:location>Mesa, Arizona</ep:location>
+          <ep:category>DJ, Elvis Impersonator, Emcee, Impersonator, Karaoke, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>2003</ep:year-established>
+          <ep:pay-range>$100-$2000 per event</ep:pay-range>
+          <ep:influences>Born and raised under the influence of 'The King of Rock-n-Roll' - Elvis Presley - -TCB-(Taking Care of Business) and Southern Hospitality Music, Music, Music of all Styles and Genre</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13257&amp;sequenceID=1" dc:title="DemoClip-EIMR-GR"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13257&amp;sequenceID=2" dc:title="DemoClip-EMR-WF"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13257&amp;sequenceID=3" dc:title="Blue Suede Shoes"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13257&amp;sequenceID=4" dc:title="Demo-Party Mix-(3:02 sec)"/>
+          <dc:description>DJ music service for all genre types(20s,30s,40,50s,60s,70s,80s,90s-2000) Elvis tribute service,private,corporate and public activities/events. Licensed Minister wedding ceremonies and receptions. '68 Comeback Special &amp; Tribute...Early-Latter Years and requested arrangements. *All occasions* If you can't marry Elvis, let Elvis marry you!</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/DJ/JukeBoxExpressPresents/">
+      <ep:name>Juke Box Express Presents You Be The Star</ep:name>
+      <ep:location>Kingston, New York</ep:location>
+      <ep:category>Karaoke, Elvis Impersonator, DJ, Impersonator</ep:category>
+      <ep:available-for> Clubs, Weddings, Casinos, Temples, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Showers, Bachelor Parties, Christenings, Bachelorette Parties, Picnic, Christmas Parties, Private Parties, Bar Mitzvahs, Fraternity Functions, Corporate Functions, Festivals, Community Events, Conventions, Coffee Shops, Hotels, Church Services, Restaurants, Resorts, Reunions, Proms, Country Clubs, Ski Lodges, Sorority Function, Birthday Parties, Awards Nights, Bat Mitzvahs, Fund Raisers, Anniversaries</ep:available-for>
+      <ep:year-established>1984</ep:year-established>
+      <ep:pay-range>$400-$2000 per event</ep:pay-range>
+      <ep:influences>Not Available</ep:influences>
+      <dc:description>This is your one stop shop for all your party needs! YOU BE THE STAR!!with our karaoke DJ show .Our hosts have over 20 yrs in the business and have performed in national groupes ,our DJs are singers and entertainers who love to perform!! CALL US TODAY for all party needs ! We offer specialized theme nite shows,country,oldies,Rock n Roll and our famous ''Elvis the tribute''starring Joe 'Elvis'Borelli,whether its a back yard BBQ or a wedding at the Ritz .''Give us a call we do it all!!</dc:description>
+   </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/emcee/MikeViselli/">
+          <ep:name>Michael Viselli</ep:name>
+          <ep:location>Boston, Massachusetts</ep:location>
+          <ep:category>Impersonator, Singing Telegrams, Elvis Impersonator</ep:category>
+          <ep:available-for> Clubs, Weddings, Private Parties, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Hotels, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs, Ski Lodges, Sorority Function, Birthday Parties, Awards Nights, Fund Raisers, Anniversaries, Casinos, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Showers, Christenings, Bachelorette Parties, Christmas Parties</ep:available-for>
+          <ep:year-established>1985</ep:year-established>
+          <ep:pay-range>$350-$7600 per event</ep:pay-range>
+          <ep:influences>Mike Viselli has been influenced by artists such as Elvis Presley,Frank Sinatra, Dean Martin,Roy Orbison,Mario Lanza and many other classic vocalists of our time past and present. -'Elvis was the true pioneer of the entertainment industry'. 'I tru</ep:influences>
+          <dc:description>THE KING RETURNS!</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/emcee/TheSoundOfElvis/">
+          <ep:name>Larry D Sanders.The Sound Of Elvis</ep:name>
+          <ep:location>Chino Hills, California</ep:location>
+          <ep:category>Costumed Characters, Dancer, Elvis Impersonator, Emcee, Impersonator, Karaoke, Model, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1999</ep:year-established>
+          <ep:pay-range>$400-$5200 per event</ep:pay-range>
+          <ep:influences>Elvis, Buddy Holly,Gene Vincent, Eddie Cochran.</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14259&amp;sequenceID=1" dc:title="Let It Be Me"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14259&amp;sequenceID=2" dc:title="My Boy"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14259&amp;sequenceID=3" dc:title="The Wonder Of You"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14259&amp;sequenceID=4" dc:title="My Way"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14259&amp;sequenceID=5" dc:title="Separate Ways"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14259&amp;sequenceID=6" dc:title="Viva Las Vegas"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14259&amp;sequenceID=7" dc:title="Moody Blue"/>
+          <dc:description>Elvis impersonator/Actor/Tribute singer Larry D Sanders is fast becoming one of the most sought after Elvis Tribute artists in California. After each show people are just so amazed he sounds so much like Elvis they are sometimes left stunned.And he is continuing to amaze and thrill all who attend his performances. Of course Larry also adds some of his own personality to his performance ,and the end result is a show that you will completely enjoy and remember with very fond memories.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/entertainer/BillJBrooks/">
+          <ep:name>Bill J. Brooks</ep:name>
+          <ep:location>Mantachie, Mississippi</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1978</ep:year-established>
+          <ep:pay-range>$400-$1600 per event</ep:pay-range>
+          <ep:influences>ELVIS PRESLEY, BOBBY VINTON ,ROY ORBISON, RONNIE MILLSAP , WAYLAN JENNINGS , CONWAY TWITTY , JACKIE WILSON AND DION</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12385&amp;sequenceID=1" dc:title="Video Clip 1"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12385&amp;sequenceID=2" dc:title="Video Clip 2"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12385&amp;sequenceID=3" dc:title="Video Clip 3"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12385&amp;sequenceID=4" dc:title="Video Clip 4"/>
+          <dc:description>I actually do several things . I have an oldies show ( featuring 50's &amp; 60's music . I also do a full dress vegas style tribute to Elvis . also I do a full dress Elvis gospel &amp; inspirational concert for church's and civic groups and I have a christian country/ southern gospel ministry .</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/entertainer/JustinHeinreich/">
+      <ep:name>Justin Heinreich</ep:name>
+      <ep:location>Las Vegas, Nevada</ep:location>
+      <ep:category>Elvis Impersonator, Impersonator</ep:category>
+      <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+      <ep:year-established>2003</ep:year-established>
+      <ep:pay-range>$200-$400 per hour</ep:pay-range>
+      <ep:influences>Not Available</ep:influences>
+      <dc:description>I perform in shows at the Elvis-A Rama Museum Las Vegas. I have also taken 1st and 3rd place in local contests around Las Vegas. I have loved to do Elvis impersinations ever since I was 16. I have trained hard on my vocals and dance steps to perfect my impersonation of the king.</dc:description>
+   </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/entertainer/TimRowland/">
+          <ep:name>E.T Rowland</ep:name>
+          <ep:location>Memphis, Tennessee</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator, Impressionist, Public Speaker, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Banquets, Bar Mitzvahs, Birthday Parties, Casinos, Church Services, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fund Raisers, Grand Openings, Hotels, Jingles, Movie Soundtracks, Private Parties, Resorts, Restaurants, Reunions, Ski Lodges, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>2000</ep:year-established>
+          <ep:pay-range>$150-$6000 per event</ep:pay-range>
+          <ep:influences>Ofcourse, Elvis has been a great inspiration for me! Also, Rich little..I grew up watching him imitate all of the legendary performers on television.</ep:influences>
+          <dc:description>Tim Rowland is regarded by many as the best Elvis Tribute Artist working today! Sharing the same physical measurements as the late Presley, height, weight and facial characteristics combine to make Tim's Elvis impersonation strikingly similar. But the most important atribute that Tim definately has in common with the King of Rock N' Roll is his magnificent voice, which is so eerily close to that of Elvis, Tim has often been accused of lip synching to recordings of Presley's! Countless fans have described his act as containing the very spirit of Elvis. Tim</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impersonator/DavidelvisEastwood/">
+          <ep:name>David 'Elvis' Eastwood</ep:name>
+          <ep:location>Fort Myers, Florida</ep:location>
+          <ep:category>Elvis Impersonator, DJ, Impersonator</ep:category>
+          <ep:available-for> Clubs, Weddings, Christmas Parties, Private Parties, Corporate Functions, Festivals, Community Events, Conventions, Coffee Shops, Hotels, Restaurants, Resorts, Cruise Ships, Reunions, Country Clubs, Birthday Parties, Fund Raisers, Anniversaries, Casinos, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Bachelorette Parties, Picnic</ep:available-for>
+          <ep:year-established>1984</ep:year-established>
+          <ep:pay-range>$150-$600 per event</ep:pay-range>
+          <ep:influences>'Elvis Tribute Artist</ep:influences>
+          <dc:description>Eastwood Productions now provides 'Elvis at your Door' Singing Telegrams, for whatever your party occasion, and at your location. David also provides the following packages:</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impersonator/ElvisE/">
+          <ep:name>Elvis Tribute Artist - Elvis E</ep:name>
+          <ep:location>Potomac, Maryland</ep:location>
+          <ep:category>Costumed Characters, Elvis Impersonator, Impersonator, Karaoke</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Birthday Parties, Casinos, Christmas Parties, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Weddings</ep:available-for>
+          <ep:year-established>1996</ep:year-established>
+          <ep:pay-range>$150-$600 per event</ep:pay-range>
+          <ep:influences>The King of Rock 'n Roll</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=1" dc:title="A Big Hunk O Love - Elvis E"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=2" dc:title="Blue Suede Shoes - Elvis E"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=3" dc:title="That's All Right - Elvis E"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=4" dc:title="Steamroller Blues1 - Elvis E"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=5" dc:title="Steamroller Blues2 - Elvis E"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=6" dc:title="Suspicious Minds - Elvis E"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=7" dc:title="C.C. Rider1 at All Shook Up"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=8" dc:title="C.C. Rider2 at All Shook Up"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=9" dc:title="It's Over/Blue Suede Shoes"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13460&amp;sequenceID=10" dc:title="Blue Suede Shoes - Elvis E"/>
+          <dc:description>I pay tribute to the King of Rock 'n Roll by appearing as 'Elvis E' at your corporate event, reception or party.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impersonator/ElvisImpersonatorelvisThrasher/">
+          <ep:name>Elvis Impersonator/Elvis Thrasher</ep:name>
+          <ep:location>Oklahoma City, Oklahoma</ep:location>
+          <ep:category>Model, Singing Telegrams, Costumed Characters, Karaoke, Elvis Impersonator, DJ, Impersonator, Emcee, Impressionist</ep:category>
+          <ep:available-for> Clubs, Weddings, Ski Lodges, Sorority Function, Birthday Parties, Awards Nights, Bat Mitzvahs, Fund Raisers, Anniversaries, Casinos, Temples, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Showers, Bachelor Parties, Christenings, Bachelorette Parties, Funerals, Picnic, Christmas Parties, Private Parties, Bar Mitzvahs, Fraternity Functions, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Coffee Shops, Hotels, Church Services, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs</ep:available-for>
+          <ep:year-established>1997</ep:year-established>
+          <ep:pay-range>$300-$3200 per event</ep:pay-range>
+          <ep:influences>ELVIS,COUNTRY, GOSPEL AND CLASSIC ROCK</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12919&amp;sequenceID=1" dc:title="Always On My Mind"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12919&amp;sequenceID=2" dc:title="Blue Suede Shoes"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12919&amp;sequenceID=3" dc:title="Don't Cry Daddy"/>
+          <dc:description>WORLD CLASS ELVIS IMPERSONATOR AND D.J. WITH LIVE BAND AVAILABLE FOR LARGER EVENTS.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impersonator/JosephJohnEigo/">
+          <ep:name>Joseph John Eigo</ep:name>
+          <ep:location>Round Top, New York</ep:location>
+          <ep:category>Impersonator, Elvis Impersonator</ep:category>
+          <ep:available-for> Clubs, Weddings, Private Parties, Fraternity Functions, Corporate Functions, Movie Soundtracks, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Hotels, Church Services, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs, Ski Lodges, Birthday Parties, Awards Nights, Fund Raisers, Anniversaries, Casinos, Dinner Dances, Grand Openings, Banquets, Picnic, Christmas Parties</ep:available-for>
+          <ep:year-established>1980</ep:year-established>
+          <ep:pay-range>$800-$10000 per event</ep:pay-range>
+          <ep:influences>Elvis Presley----and many more performers...</ep:influences>
+          <dc:description>When it comes to a Great Voice &amp; Showmanship you just found it ! Joseph John Eigo is a Professional Elvis Entertainer with the voice, the look and charisma of the King of Rock 'N Roll, Elvis Presley. He mingles with the audience; A true Master Showman!. Close your eyes, listen to him sing and you'll think Elvis is really in the building!. He performs wedding ceremonies and entertains at reception(s)! Joseph John has Charisma with a capitol 'C', this is the reason fans keep coming back for more! He doesn't lip-sync to recreate the King. It's his own voice...If your planning a party, please allow our staff to help you make it a memorable one. From a Sweet Sixteen Party to a Wedding, Joseph John Eigo can cover it all! Joseph John Eigo can even legally marry you love birds.... So why go to Vegas... Simply stated it's the most authentic Elvis Presley production on the East Coast with a spectacular light show and superior sound...Joseph John Eigo takes you back to the Las Vegas years when Elvis was performing at the World's best showroom. Joseph John dresses in authentic replica jumpsuits just like the KING. Even suits Elvis would have dressed in today. Joseph John's track record speaks for itself. From Theatre's, Concert Halls, City events, 1980's performance in Memphis Tenn. on Beale St. Elvis' hometown. Now a performance stop for many Elvis performers. Fans just respond by sayin... BRAVO!! Many fans have said in writing to us it was a dream-come-true experience they never though would be possible. Please visit our website... or call our production hotline: and one of our staff members will get back with you. Thankyouverymuch hope to sing for you soon! And remember no fake statements about our show.. the proof is witness this man's performance, See &amp; Hear for yourself... TBA Production</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impersonator/RalphElizondo/">
+          <ep:name>Ralph Elizondo, ELVIS 50'S TO 70'S</ep:name>
+          <ep:location>Houston, Texas</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator, Impressionist, Photographer, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1996</ep:year-established>
+          <ep:pay-range>$200-$6400 per event</ep:pay-range>
+          <ep:influences>I started watching Elvis movies &amp; never stopped due to my mother's influence as a child. Consequently, my shows often reflect the many themes of Elvis movies. My father &amp; grandfather are both famous musicians. So music has always been a part of my life.</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12809&amp;sequenceID=1" dc:title="Rock-A-Hulababy"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12809&amp;sequenceID=2" dc:title="Don't Be Cruel"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12809&amp;sequenceID=3" dc:title="G.I. Blues"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12809&amp;sequenceID=4" dc:title="You Can't Say No In Acapulco"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12809&amp;sequenceID=5" dc:title="Don't Be Cruel"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12809&amp;sequenceID=6" dc:title="You Can's Say No to Aculpulco"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12809&amp;sequenceID=7" dc:title="GI Blues"/>
+          <dc:description>RALPH,is ranked among the top 10 Elvis Impersonators in the world. Gaining worldwide recognition for his authenticity in voice,dance moves &amp; versatility in style capturing Elvis in all era's from the 50's to the 70's (appeared on national TV shows CNN &amp; Entertainment Tonight). The only Texas Elvis selected to be a member of the elite EEN booking agency( an all Elvis booking agency out of Chicago representing only the very best Elvis Impersonators in the world, endorsed by Graceland ). Ralph recently won FIRST place in a regional 'Images of The King' contest,qualifying him as a world finalist in Memphis 2004 ( AT THE WORLD FINALS RANKING AMONG THE TOP 10 WORLD WIDE). Ralph is also a 3 time FIRST place winner at the 'Hard Rock Houston Annual Elvis Contest'(2003, 2002, 2000 every year he entered the contest). During the 25th Anniversary Vigil in Memphis, Scotland radio featured Ralph singing live in a 30 minute radio show and the fans went crazy! Ralph has an impressive show with a large selection of costumes including: Jailhouse Rock, Gold Lame, G.I. Blues, Blue Hawaii, Black Leather, Blue Owl Jumpsuit, Burning Love Jumpsuit and many more. Equally impressive is the endless repertoire of songs Ralph offers his audience (over 250) and dance moves that always elicit screams. Ralph also has an incredible stage presence and a connection with the audience that is seldom seen (from the smallest audience to a large concert). He is very comfortable with people and easily makes everyone in the audience feel important. He has performed all over the United States in many different types of venues (casino's, concerts, benefits, dinner theaters, conventions, weddings, church's, private parties, and corporate events to name a few). Most recently Ralph has been performing for LAKEWOOD CHURCH in Houston and will soon be releasing his first Gospel CD (earlier this year 'A Tribute To Elvis In The Early Years' CD was released'). Ralph is in demand because of his authenticity, ability to capture an audience, versatility, and awesome Elvis dance moves. Those closest to Elvis say the following about Ralph: ( All have praised him with very positive reviews!!! )</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/Entertainer/All4FunElvisImpersonatorsChicago/">
+          <ep:name>All4Fun Entertainment</ep:name>
+          <ep:location>Chicago, Illinois</ep:location>
+          <ep:category>Caricaturist, Clown, Costumed Characters, Dancer, DJ, Elvis Impersonator, Face Painting, Impersonator, Karaoke, Model, Photographer, Santa Claus, Singing Telegrams, Videographer</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1988</ep:year-established>
+          <ep:pay-range>$0-$1200 per event</ep:pay-range>
+          <ep:influences>We provide professional Tribute Artists, Singing Telegrams, Family Entertainment for luaus, birthdays, anniversaries. wedding and Karaoke Disc Jockeys. Elvis Aloha Luau Show with Hula Dancer.Discount on-line party store.</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=1" dc:title="E.Elvis Chicago: Corporate Office Awards"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=2" dc:title="E Elvis Chicago: Viva Las Vegas"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=3" dc:title="R.Elvis New York: College Performace"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=4" dc:title="Relvis New York: Fool Such As I"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=5" dc:title="Relvis New York: Girl Happy"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=6" dc:title="E Elvis ABC News 7 Chicago At The Office"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=7" dc:title="Elvis Birthday Party /  R Elvis New York Jan. 8, 2004 "/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=8" dc:title="E. Elvis Black Leather (T1, Cable,Or Broadband Required)"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=9" dc:title="E. Elvis Always On My Mind"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10684&amp;sequenceID=10" dc:title="More Information !!"/>
+          <dc:description>Elvis,Marilyn,Sinatra,Madonna,Impersonators serving Chicago and New York. Singing Telegrams,Clowns, Hula, Belly Dancers, Disc Jockey and Karaoke On-line balloon,flower delivery, discount on-line party supply, childrens' party supply store. Please use our on-line form or call the number listed below for more information. Pictures : E.Elvis Chicago top right R.Elvis New York center right</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impersonator/SteveConnollyA/">
+          <ep:name>Steve Connolly - 'A Tribute To Elvis'</ep:name>
+          <ep:location>Las Vegas, Nevada</ep:location>
+          <ep:category>Model, Elvis Impersonator, Impersonator, Emcee, Impressionist</ep:category>
+          <ep:available-for> Clubs, Weddings, Sorority Function, Birthday Parties, Awards Nights, Bat Mitzvahs, Fund Raisers, Anniversaries, Casinos, Temples, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Showers, Bachelor Parties, Christenings, Bachelorette Parties, Funerals, Picnic, Christmas Parties, Private Parties, Bar Mitzvahs, Fraternity Functions, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Coffee Shops, Hotels, Church Services, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs, Ski Lodges</ep:available-for>
+          <ep:year-established>1993</ep:year-established>
+          <ep:pay-range>$1000-$10000 per event</ep:pay-range>
+          <ep:influences>My influence is the musicianship, stage presence, and style of Elvis Presley. Add to this an understanding of the Stadium style of 70's 80's and 90's groups and the complexities of Las Vegas Shows.</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10688&amp;sequenceID=1" dc:title="Jailhouse Rock"/>
+          <dc:description>Steve Connolly's million dollar Las Vegas production show on the Strip at Bally's convinced many he was the Best Elvis Impersonator. Elvis's original backup singers, The Jordanaires, caught the show and were overwhelmed ( see website). The Las Vegas Press, and the LA Times both declared that Steve was the Ultimate in Elvis Entertainment. In fact, Bobby Morris, Elvis's first conductor at the Hilton said that Steve was truly the Best Impressionist of Elvis. So why does Steve Connolly - a songwriter,musician, art school graduate, and church muralist decide to do an Elvis Tribute? Steve puts it this way: 'Elvis Presley was a performer whose music can still top the charts today in country and pop. In fact,Leonard Bernstein, John Lennon, Bruce Springsteen, Bono of U2, and even Bob Dylan all declare that Elvis is the ultimate 20th Century American cultural icon. So, if my mission is to entertain audiences as completely as possible, why not re-create a COMPLETE experience of Elvis Presley's performance so that audiences experience not just the music of Elvis Presley but grasp the total 'Spirit of the King.'' Given that motive, Steve decided to PERFORM with all of the athleticism, musical virtuosity, humor, and sexual energy of Elvis at his most vital (think ' 68 comeback special - black leather and guitar). Since Steve is also an accomplished guitarist, the response to this style of Elvis entertainment in Las Vegas has been exceptional. Over 3,000 performances at the MGM, Riviera, Caesar's, Alladin, Bellagio, Bally's, and Fitzgerald's. Too many film and TV appearances to mention. Even today Steve remains the only entertainer depicting Elvis to have his own show run daily in a major room (the Jubilee Theater) at a major Strip Casino (Bally's 1999 show 'Love Him Tender'). The Bally's show led longtime Las Vegas entertainment writer Joe Delaney to note how Steve was capable of fully entertaining the audience even as a humorist in Elvis's style and was in fact 'perhaps the best of the Elvis depictors.' Fans of Steve's version of Elvis Entertainment include well-known musicians: Steven Tyler of Aerosmith, Kenny Loggins, Mic Fleetwood of Fleetwood Mac and Paul Revere of the Raiders. All have publicly recognized Steve as the 'Best Elvis' entertainer. In 1999 Steve won the 'Super Bowl' of Elvis contests in Las Vegas: officially giving him the title, 'Best Elvis in Las Vegas'. In 2003 Steve Connolly was selected by the prestigious Berklee School of Music to perform his Tribute to a sold out crowd - a first for an Elvis Impersonator! Just recently Steve was inspired by his experience with Elvis's music to write his own songs recorded on his CD, 'Truth' and released nationally. It has sold several thousand copies in only six months. Unfortunately, Elvis himself can not be with us for a live performance but Steve Connolly can bring the spirit of the experience to you for an unforgettable event.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impersonator/VictorSolimineElvisLegend/">
+          <ep:name>Victor Solimine 'Elvis Legend Continues'</ep:name>
+          <ep:location>Austin, Texas</ep:location>
+          <ep:category>Elvis Impersonator</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christmas Parties, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Sorority Function, Weddings</ep:available-for>
+          <ep:year-established>1980</ep:year-established>
+          <ep:pay-range>$150-$4800 per event</ep:pay-range>
+          <ep:influences>Elvis of course, his movies and concerts. Plus my loving wife, Deanna.</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=1" dc:title="Don't Be Cruel"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=2" dc:title="Viva Las Vegas"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=3" dc:title="I Want You"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=4" dc:title="Teddy Bear"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=5" dc:title="Suspicious Minds"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=6" dc:title="Can't Help Falling In Love"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=7" dc:title="Proud Mary"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=8" dc:title="Blue Suede Shoes"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12892&amp;sequenceID=9" dc:title="Blue Hawaii"/>
+          <dc:description>'All the rest are just Impersonators'. Victor Solimine of Austin, Texas, performing Elvis impersonator/tribute artist sings live renditions of popular Elvis songs. After 23 years as an Elvis tribute artist, he remains the number one sure crowd pleaser for any occasion. He also now performs legal, non-denominational wedding ceremonies. He looks and sounds like Elvis more than any other impersonator. His interactive performance swoons the women, children and men alike. Victor has won 1st place in all 5 Elvis impersonator contests in Texas that he had entered. He has an assortment of colorful, dynamic custom made costumes all fashioned after the real thing. His love of the audience and his customers drives him to ensure the best performance that is sure to live up to your expectations. His performance includes singing, posing for pictures with the party members, signing autographs and mingling with the crowd. Victor has a 13 song souvenir CD available, (Elvis songs sung exclusively by Victor), at a discount price with any booking. One Teddy bear will be given to the guest of honor during the singing of 'Teddy Bear'. An Elvis scarf will also be given to the guest of honor. With over 1,000 performances under his rhinestone-studded belt, you can't help but think, it can't get any better than this. Prices vary according to distance and length of show. For larger events, you may use your own DJ and sound system using Victor's background accompaniment CD music, or for smaller events we can provide our own professional sound system operated by his wife.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impersonator/WallyTiemerAsElvis/">
+          <ep:name>Wally Tiemer As Elvis Gold and The Extrodinares</ep:name>
+          <ep:location>Vancouver, British Columbia</ep:location>
+          <ep:category>Model, Elvis Impersonator, Impersonator</ep:category>
+          <ep:available-for> Clubs, Weddings, Bachelorette Parties, Christmas Parties, Private Parties, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Festivals, Community Events, Conventions, Hotels, Restaurants, Resorts, Cruise Ships, Reunions, Country Clubs, Ski Lodges, Birthday Parties, Awards Nights, Bat Mitzvahs, Fund Raisers, Anniversaries, Casinos, Dinner Dances, Grand Openings</ep:available-for>
+          <ep:year-established>1999</ep:year-established>
+          <ep:pay-range>$600-$10000 per event</ep:pay-range>
+          <ep:influences>Elvis Presley, Roy Orbison, Jerry Lee, Buddy Holly</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12251&amp;sequenceID=1" dc:title="Demo Video"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12251&amp;sequenceID=2" dc:title="Bridge Over Troubled Water"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12251&amp;sequenceID=3" dc:title="Can't Help Falling In Love"/>
+          <dc:description>International performer and award winner, Wally Tiemer as Elvis Gold has taken the country by storm with his tribute to the King. From the age of six, when he received his first guitar, to today, Wally has studied and perfected his tribute to Elvis to be one of the most sought after top professional Elvis Tribute Artists. Wally is well known as a great entertainer and has a charm, charisma and natural rapport with the audience. His uncanny resemblance to Elvis with his powerful voice, looks, authentic costumes and dynamic personality leaves audiences with an unforgettable, undeniable feeling of experiencing the magic that was the King of Rock ‘n Roll.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impressionist/BillyWaydeLegendsShow/">
+          <ep:name>Billy Wayde' Legends Show</ep:name>
+          <ep:location>Freeport /houston, Texas</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator, Impressionist, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1988</ep:year-established>
+          <ep:pay-range>$250-$5600 per event</ep:pay-range>
+          <ep:influences>As a boy and teenager, Billy Wayde loved to listen to the blues and Elvis songs.He was Greatly influenced by a wonderful sweet MOM!, who just happened to be a singer and song writer.</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13959&amp;sequenceID=1" dc:title="Viva Las Vegas"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13959&amp;sequenceID=2" dc:title="Heart Break Hotel"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13959&amp;sequenceID=3" dc:title="Burning Love"/>
+          <dc:description>BILLY WAYDE is ranked among the top Elvis performers world wide. He has the uncanny look and vocal ability of Elvis. BILLY WAYDE the only and original tribute artist hand picked by Dean Scott out of vegas (freind of Elvis)from a vast number of other Elvis performers to be in an exclusive legends show at the sands in Houston, where he still performs. He also performs at Lake Theater regularly. HE has 16 first place wins in Elvis contests. HE has a complete las vegas type legends show which have had complete sell out performances. Billy Wayde does the raw black leather 68 comeback, Thats The Way It Is,Aloha From Hawaii and much more. On board the Legends Show with a complete Las Vagas lighted back drop are as follows:Tom Jones( an awesome talent), Marilyn Monroe(worked for MGM studios), Jerry Lee Lewis( great voice and look alike) and many more. SO book BILLY WAYDE or the whole legends show. No party, or coorp.. event is to small. We will go any where to meet your needs!LOOK FOR OUR ELVIS LEGENDS SHOW COMING JAN. 7th AT THE PALSTINE CIVIC CENTER IN PALISTINE TX. AND THE 8th IN HISTORIC HUNTSVILLE TX. AT THE TOWN THEATER.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impressionist/DavidCrews/">
+          <ep:name>Memphis' Most Requested Elvis Entertainer</ep:name>
+          <ep:location>Memphis, Tennessee</ep:location>
+          <ep:category>Elvis Impersonator, Live Band</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1996</ep:year-established>
+          <ep:pay-range>$350-$6400 per event</ep:pay-range>
+          <ep:influences>Elvis Presley, R &amp; B Artists, Rock and Roll, Blues, Country, Gospel, and all the legends of music</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12875&amp;sequenceID=1" dc:title="Let It Be Me"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12875&amp;sequenceID=2" dc:title="Love Me Tender"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12875&amp;sequenceID=3" dc:title="I Just Can't Help Believin'"/>
+          <dc:description>Considered by fans and critics alike, Memphis' Most Requested and Booked Elvis Tribute Show stars David Crews and The Sweet Sensations. Specializing in convention, corporate and special event entertainment, David Crews can entertain at your event whether it is a small venue or up to 3000.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impressionist/ElvisImpersonatorElvisTribute/">
+          <ep:name>Johnny Thompson</ep:name>
+          <ep:location>Las Vegas, Nevada</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator, Impressionist</ep:category>
+          <ep:available-for> Clubs, Weddings, Private Parties, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Festivals, Community Events, Conventions, Hotels, Restaurants, Resorts, Cruise Ships, Country Clubs, Ski Lodges, Birthday Parties, Awards Nights, Fund Raisers, Anniversaries, Casinos, Dinner Dances, Grand Openings, Banquets</ep:available-for>
+          <ep:year-established>1994</ep:year-established>
+          <ep:pay-range>$500-$5200 per event</ep:pay-range>
+          <ep:influences>Elvis Presley. Ive studied Elvis for over 12 years and thousands of hours to recreate his personality, voice and moves on stage.</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12781&amp;sequenceID=1" dc:title="68 Medley - Heart Break/Hound Dog/ All Shook Up"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12781&amp;sequenceID=2" dc:title="Love Me Tender"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12781&amp;sequenceID=3" dc:title="In The Ghetto"/>
+          <dc:description>JOHNNY THOMPSON Johnny is considered to be the Best Elvis Impersonator in the world by those who knew Elvis Best! The Laste AL Dvorin and his family considered Johnnys show as 'Magnificient', Johnny has worked with Elvis Back-up singers, The Jordanaires, Charlie Hodge and others of Elvis Memphis Mafia. Johnny is currently strarring at the Plaza Hotel and Casino in Las Vegas, where D.W. Barrick, owner of 5 casisnos, considers Johnny the absolute Best! Larry Mannetti of ' Magnum P.I. Fame, (played Rick)is the VP of Entertainment at the Plaza Hotel and considers Johnny the Best Elvis in the Business!</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impressionist/GeorgeAustin/">
+          <ep:name>George Austin</ep:name>
+          <ep:location>Williamsburg, Virginia</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator, Impressionist, Public Speaker, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Grand Openings, Hotels, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Sorority Function, Weddings</ep:available-for>
+          <ep:year-established>1994</ep:year-established>
+          <ep:pay-range>$200-$600 per event</ep:pay-range>
+          <ep:influences>Elvis, Sinatra, Dean Martin, Nat King Cole, Robert Goulet, all the great crooners of our generation. The great and many different voices of George Austin. I give out Elvis Scarves, Teddy Bears and autographed CD's at the Shows. Tuxedo Show for Sinatra &amp; C</ep:influences>
+          <dc:description>The very best of Elvis Presley and the many voices of Frank Sinatra. The only Singer that can perform the many voices into one show. One hour Elvis and One Hour Sinatra, Dean Martin, Nat King Cole and many more of the famous singers of our era. A musical salute from George Austin, Virginia's Tribute Artist. Playing at the Marriott, and many other venues in Virginia and Maryland area. The shows that everyone is talking about. The rates the very best in the business. I will tailor my show to fit your economic dollar. Private parties, civic, clubs, organizations, retirements and many more. I can perform shows that will bring back many pleasant memories. I sound just like ELVIS and will provide complimentary CD to prove this claim. Dean Martin,and Nat King Cole. This is a show that you will be talking about for many years. I have performed at many venues around the Eastern Seaboard. My prices are the best in the industry.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impressionist/PatrickJohnson/">
+          <ep:name>Patrick Johnson</ep:name>
+          <ep:location>Buffalo, New York</ep:location>
+          <ep:category>Elvis Impersonator, Tribute Band</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1995</ep:year-established>
+          <ep:pay-range>$500-$5200 per event</ep:pay-range>
+          <ep:influences>ELVIS</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=1" dc:title="Suspicious Minds  Live"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=2" dc:title="Baby I Don't Care"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=3" dc:title="Don't Be Cruel"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=4" dc:title="Trouble  Live"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=5" dc:title="Lead Me Guide Me"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=6" dc:title="Kentucky Rain"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=7" dc:title="Teddy Bear"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=8" dc:title="Amazing Grace"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=14443&amp;sequenceID=9" dc:title="Stuck On You"/>
+          <dc:description>Patrick Johnson, originally from Ireland, relocated to the US and now resides in Lake View, NY. Like many other Elvis tribute artists, Patrick's “Tribute to Elvis” started in the karaoke ranks and has now progressed into a full Elvis tribute show. Patrick’s good looks and audience appeal have helped push him to the top of his craft. With a powerful and dynamic voice, he is able to captivate his audience both young and old alike. He has donated much of his time and talent in doing numerous shows to benefit the physically and mentally handicapped of Western New York; Mercy Flight and the Madison McCarthy Cardiac Care Coalition For Children. His recent accomplishments include runner up in the 1st Annual Buffalo Elvissss Fest, held in Orchard Park of January 2003 and later in September of that year, he became the Grand Champion of the Buffalo Elvissss Fest held in Blasdell, NY. Patrick was very honored when The Elvis Tribute Artist radio 'Ladyluckmusic.com' picked his recording of 'Amazing Grace' to pay tribute to 911 in September of last year. Patrick has also played for “ A Night with Elvis” Follow that Dream Productions; Fort Erie, Canada. –“Trelvis show “ Elvissss Productions; Jamestown, NY. –“Party on the Parkway” Cystic Fibrosis Foundation; Houston, TX. –“ The King Of Rock-n-Roll Returns” Milford Oyster Festival Milford, CT-Senior Olympics; Scioto County Fairgrounds Lucasville, Ohio.-TV Cogeco Cable 10 ,Canadian TV. Lady Luck Music Elvis Tribute Showcase - Montreal , Canada. heard on The Rockin' Richard Show WNHU 88.7FM New Haven ,CT. “A Tribute To Elvis” FTD Canada Productions;Port Colborne, Canada. Fun Time Productions- Lockport, NY</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impressionist/RandyElvisWalker/">
+      <ep:name>Randy Elvis Walker</ep:name>
+      <ep:location>Pembroke Pines, Florida</ep:location>
+      <ep:category>Singing Telegrams, Auctioneer, Elvis Impersonator, Impersonator, Emcee, Impressionist</ep:category>
+      <ep:available-for> Clubs, Weddings, Sorority Function, Birthday Parties, Awards Nights, Bat Mitzvahs, Fund Raisers, Anniversaries, Casinos, Temples, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Showers, Bachelor Parties, Christenings, Bachelorette Parties, Funerals, Picnic, Christmas Parties, Private Parties, Bar Mitzvahs, Fraternity Functions, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Coffee Shops, Hotels, Church Services, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs, Ski Lodges</ep:available-for>
+      <ep:year-established>1971</ep:year-established>
+      <ep:pay-range>$300-$2000 per hour</ep:pay-range>
+      <ep:influences>Elvis! Elvis! Elvis! My Wife Alecia, My Mom Donna, and My Brother Tim</ep:influences>
+      <dc:description>Randy Elvis Walker, 'The Voice of Elvis'. Randy's energetic &amp; exciting shows serenade all occasions Internationally. Randy brings to life 'The King of Rock &amp; Roll' in his performances. You'll feel like you're in the room with the one and only when he sings your favorite Elvis hits like, 'Love Me Tender,' 'Heartbreak Hotel,' and many, many more!</dc:description>
+   </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impressionist/TributeToTheStars/">
+          <ep:name>Tribute To The Stars</ep:name>
+          <ep:location>Charlotte, North Carolina</ep:location>
+          <ep:category>Photographer, Videographer, Singing Telegrams, Costumed Characters, Karaoke, Elvis Impersonator, DJ, Comedian, Magician, Impersonator, Emcee, Impressionist</ep:category>
+          <ep:available-for> Clubs, Weddings, Ski Lodges, Sorority Function, Birthday Parties, Awards Nights, Bat Mitzvahs, Fund Raisers, Anniversaries, Casinos, Temples, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Showers, Bachelor Parties, Christenings, Bachelorette Parties, Picnic, Christmas Parties, Private Parties, Bar Mitzvahs, Fraternity Functions, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Festivals, Community Events, Conventions, Coffee Shops, Hotels, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs</ep:available-for>
+          <ep:year-established>2002</ep:year-established>
+          <ep:pay-range>$150-$1200 per event</ep:pay-range>
+          <ep:influences>Cher, Neil Diamond, Motown, Shanya Twain, Reba, Elvis, Blues Brothers.</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10913&amp;sequenceID=1" dc:title="Diane Bowden (Cher) Believe"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10913&amp;sequenceID=2" dc:title="AJ Gifford (MC) My Girl"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10913&amp;sequenceID=3" dc:title="Blues Brothers (AJ Gifford &amp; Chad Champion)"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10913&amp;sequenceID=4" dc:title="AJ Gifford - Crying"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10913&amp;sequenceID=5" dc:title="Diane Bowden - Believe"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10913&amp;sequenceID=6" dc:title="Kathy Salley as Shanya Twain"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10913&amp;sequenceID=7" dc:title="Wayne Brockwell as &#34;Elvis&#34;"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=10913&amp;sequenceID=8" dc:title="Steve Hackney as &#34;Neil Diamond&#34;"/>
+          <dc:description>Tribute to the Stars Entertainment specializes in providing talented look-alike artists for your special event. There is no function too big or small, book 1 or all of our entertainer, from singing telegrams, private parties, corporate events, trade shows, to full-scale productions. Our talented performers not only sound like the original stars, they resemble and act like them also! You can choose from a large variety of specialty acts featuring legends like Elvis, Cher, the Blues Brothers, Neil Diamond, Shanya Twain, Reba, and many, many more...Also, if you're looking for a mix of artists, we can provide you with our spectacular Tribute show which features a number of our performers.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/Entertainer/JeffStanulis/">
+          <ep:name>Jeff Stanulis</ep:name>
+          <ep:location>Las Vegas, Nevada</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator</ep:category>
+          <ep:available-for> Clubs, Weddings, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Bachelorette Parties, Funerals, Picnic, Christmas Parties, Private Parties, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Hotels, Church Services, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs, Ski Lodges, Birthday Parties, Awards Nights, Fund Raisers, Anniversaries, Casinos</ep:available-for>
+          <ep:year-established>1977</ep:year-established>
+          <ep:pay-range>$250-$10000 per event</ep:pay-range>
+          <ep:influences>ELVIS, and the entire history of Rock-N-Roll!</ep:influences>
+          <dc:description>Jeff has been performing as Elvis since the age of 10. He portrays the 'Early Vegas Jumpsuit Elvis'(1969-1974). In addition to various performances in Las Vegas and around the country, Jeff has performed in over 1,000 Las Vegas wedding ceremonies in a vast array of wedding chapels. His repetoire includes a majority of the 439 songs Elvis recorded! -Jeff prides himself in keeping the legend alive by keeping his potrayal as accurate and authentic as possible-out of respect to the King's memory. Jeff's loyal and loving tribute, and his meticulous attention to detail, truly inspire and invoke the Spirit of Elvis himself. From Las Vegas wedding celebrations, Meet/Greets, Brief Appearances, Conventions, etc., to the ultimate live performance, Jeff guarantees your event will be performed with unaltering professionalism, courtesy, style, &amp; class.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/impressionist/worldclasselvis/">
+          <ep:name>Michael OConnor - worldclasselvis</ep:name>
+          <ep:location>Philadelphia, Pennsylvania</ep:location>
+          <ep:category>Costumed Characters, Elvis Impersonator, Impersonator, Impressionist, Karaoke, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Ski Lodges, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1977</ep:year-established>
+          <ep:pay-range>$350-$2400 per night</ep:pay-range>
+          <ep:influences>Elvis,My Grandmother,Ronnie Mcdowell,Larry Seth (Big EL)Orion</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=1" dc:title="Suspicious minds"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=2" dc:title="Hurt"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=3" dc:title="Little less Conversation"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=4" dc:title="20 days and twenty nights"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=5" dc:title="Proud Mary"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=6" dc:title="Walk a mile in my shoes"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=7" dc:title="How Great thou Art"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=8" dc:title="Trouble"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=9" dc:title="Burning Love"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9991&amp;sequenceID=10" dc:title="One Night"/>
+          <dc:description>Here is a brief history of Michaels accomplishments and list of some of his past client's. Michael is excited that wpen radio and the Elvis only hour in Philadelphia are now a proud sponsor for all his public performances. And he also has personaly been endorsed by the world famous blackwood brothers quartet that played with Elvis. We Gaurantee a top quality Performance without the cost. Michael OConnor was ranked in the top 20 Elvis Tribute Artists in the world in 2002. His vocal credits include: An Atlantic City Casino the Federal Government,US Military And Hilton hotel's Corporate.The main VFW Convention in Wildwood NJ.He also opened for the world renowned music group the lettermen.And some corporate clients have been Dupont,Sisco Systems he performed in New yorks time square at the double tree hotel. Last year Michael performed at Dutch Wonderland 8 shows on mothers day weekend.And Idlewild Park in upstate Pennsylvania from July 19th-23rd 2004 2 shows each day.Plus he has performed at many private and corporate events he also just performed in Memphis during Elvis week for 3 consecutive days.During Elvis week August 10th-12th 2004 At the very first and only VFW post to be named after Elvis. (What some others have said about Michael and his shows) You won’t Believe your eyes Michael is a truly amazing and gifted Entertainer!!!! ( It Has been said it's like your watching the real thing both in looks and sound even mannerisms) and it is totally natural. He even captures Elvis's natural Charisma when he performs but Michael is very down to earth and a total professional.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/magic/MarioManzini/">
+          <ep:name>Mario Manzini - 'Guinness Champion'</ep:name>
+          <ep:location>Columbia, Missouri</ep:location>
+          <ep:category>Elvis Impersonator, Fire Eater, Impersonator, Magician, Model, Public Speaker</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1984</ep:year-established>
+          <ep:pay-range>$400-$5200 per event</ep:pay-range>
+          <ep:influences>Marios' 3 influences were Harry Houdini worlds' greatest Escape Artist &amp; Magician; Elvis Presley worlds' greatest singer; &amp; Al Jolson who was the # 1 singer of his time in the 1920s. He saw the Jolson Story at least 50 times.</ep:influences>
+          <dc:description>MAGICIAN-ESCAPE ARTIST-ILLUSIONIST-ELVIS-AL JOLSON.We can make your next event UNFORGETTABLE &amp; FUN!We have 4 separate shows available for you to chose from.#1:Tribute To HOUDINI Escapology/Illusion.#2:Comedy Magic/Illusion show.#3:Tribute To ELVIS show.#4:AL JOLSON show.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/music/ElvisTributeArtist/">
+          <ep:name>Elvis Tribute Artist</ep:name>
+          <ep:location>Bellingham, Washington</ep:location>
+          <ep:category>Dancer, Elvis Impersonator, Elvis Impersonator, Impersonator, Karaoke, Limousine, Model, Singing Telegrams, Valet Parker</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1985</ep:year-established>
+          <ep:pay-range>$250-$8800 per event</ep:pay-range>
+          <ep:influences>Elvis Presley</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12894&amp;sequenceID=1" dc:title="Let It Be Me"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12894&amp;sequenceID=2" dc:title="American Trilogy"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12894&amp;sequenceID=3" dc:title="I beg of you"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12894&amp;sequenceID=4" dc:title="I was the one"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=12894&amp;sequenceID=5" dc:title="What now, what next"/>
+          <dc:description>Westcoast based Elvis Entertainer/Tribute Artist, representing the Kings' best years physically and vocally available for events/concerts/shows of all kinds. From private, public and corporate functions to car shows, festivals, cruises, casinos fundraisers, races etc. Solo or band performances available. Performances include gifts for your guests. Meet and greets, photo sessions and more. Elvis is a favorite at any event for every age group- Always! Complete information at www.soundofelvis.com</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/rock/EddieFalconElvisImpersonator/">
+          <ep:name>Eddie Falcon, Elvis Impersonator</ep:name>
+          <ep:location>Saint Louis, Missouri</ep:location>
+          <ep:category>Elvis Impersonator, DJ, Impersonator, Emcee</ep:category>
+          <ep:available-for> Clubs, Weddings, Fund Raisers, Anniversaries, Casinos, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Picnic, Christmas Parties, Private Parties, Bar Mitzvahs, Corporate Functions, Jingles, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Coffee Shops, Hotels, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs, Ski Lodges, Birthday Parties, Awards Nights, Bat Mitzvahs</ep:available-for>
+          <ep:year-established>2001</ep:year-established>
+          <ep:pay-range>$300-$2800 per event</ep:pay-range>
+          <ep:influences>The Music of Elvis Presley, Rock n Roll</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13006&amp;sequenceID=1" dc:title="Kentucky Rain"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13006&amp;sequenceID=2" dc:title="For The Heart"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13006&amp;sequenceID=3" dc:title="Steamroller Blues"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13006&amp;sequenceID=4" dc:title="Help Me"/>
+          <dc:description>Eddie Falcon, Elvis Tribute Artist. Available for large or small venues, with band or professionally recorded background tracks. Exacting vocals, authentic reproduction costuming and electrifying moves complete the illusion of the 70's Vegas Elvis. Regularly plays casinos in Lake Tahoe, festivals and large events. Based in Missouri, but will travel Nationwide. Eddie can tailor his show to complement your event. Choose from a catalog of over 500 songs.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/rock/GeneELVIS/">
+      <ep:name>Gene DiNapoli</ep:name>
+      <ep:location>Bronx, New York</ep:location>
+      <ep:category>DJ, Elvis Impersonator, Emcee, Impersonator, Public Speaker, Singing Telegrams</ep:category>
+      <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christenings, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+      <ep:year-established>1980</ep:year-established>
+      <ep:pay-range>$300-$3600 per event</ep:pay-range>
+      <ep:influences>Not Available</ep:influences>
+      <dc:description>My name is Gene and I do a variety of entertainment. I do an Elvis act and a Blues Brothers act.I SING IN MY OWN VOICE AND HAVE MY OWN REAL HAIR AND SIDEBURNS WHICH MAY SEEM FUNNY BUT ALOT OF GUYS DO NOT . i have won many contests in the past 10 years. I AM ALSO A DJ and karaoke HOST and also book many forms of entertainment for any event.I HAVE MANY IMPERSONATORS AVAILIBLE.I CAN ALSO PRODUCE SHOWS FOR ORGINIZATIONS, SUCH AS OLDIES SHOWS, COMEDY AND A LAS VEGAS SHOW.EMAIL FOR MORE INFO</dc:description>
+   </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/rock/GeorgeTobar/">
+          <ep:name>George Tobar</ep:name>
+          <ep:location>Miami, Florida</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Banquets, Birthday Parties, Casinos, Christmas Parties, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Ski Lodges, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>2001</ep:year-established>
+          <ep:pay-range>$150-$3600 per event</ep:pay-range>
+          <ep:influences>Elvis Presley</ep:influences>
+          <dc:description>George performs as Elvis, LAS VEGAS STYLE.....He performs at birthday parties, Luaus, corporate events, weddings, dinner shows, surprise parties, meet &amp; greet, and singing telegrams.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/rock/MarkWCurranVariety/">
+          <ep:name>Elvis Impersonator Mark W. Curran</ep:name>
+          <ep:location>Simi Valley, California</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator</ep:category>
+          <ep:available-for> Clubs, Weddings, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Showers, Bachelor Parties, Christenings, Bachelorette Parties, Funerals, Picnic, Private Parties, Corporate Functions, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Coffee Shops, Hotels, Church Services, Restaurants, Resorts, Cruise Ships, Reunions, Country Clubs, Ski Lodges, Sorority Function, Birthday Parties, Awards Nights, Fund Raisers, Anniversaries, Casinos, Temples</ep:available-for>
+          <ep:year-established>1976</ep:year-established>
+          <ep:pay-range>$500-$1000 per night</ep:pay-range>
+          <ep:influences>Elvis Presley Everly Brothers Beatles Beach Boys The Four Seasons James Taylor America Elton John Vince Gill Chuck Berry The Duprees The Drifters</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9002&amp;sequenceID=1" dc:title="Fame And Fortune "/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9002&amp;sequenceID=2" dc:title="I'll Remember You "/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9002&amp;sequenceID=3" dc:title="Blue Hawaii"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9002&amp;sequenceID=4" dc:title="Mark W. Curran Elvis Video Demo"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9002&amp;sequenceID=5" dc:title=""/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9002&amp;sequenceID=6" dc:title="In The Ghetto"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9002&amp;sequenceID=7" dc:title="Viva Las Vegas "/>
+          <dc:description>Los Angeles Elvis Impersonator Mark W. Curran Makes Your Party FUN! Los Angeles Elvis Look-A-Like Mark W. Curran is the perfect choice for any event calling for a dynamic Elvis impersonator/lookalike performer.</dc:description>
+     </rdf:Description>
+
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/Entertainer/JoeElvisBorelli/">
+          <ep:name>Joe 'Elvis' Borelli</ep:name>
+          <ep:location>Kingston, New York</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator</ep:category>
+          <ep:available-for> Clubs, Weddings, Anniversaries, Casinos, Dinner Dances, Graduation Parties, Grand Openings, Banquets, Showers, Bachelor Parties, Christenings, Bachelorette Parties, Picnic, Christmas Parties, Private Parties, Bar Mitzvahs, Fraternity Functions, Corporate Functions, Jingles, Movie Soundtracks, TV Soundtracks, Studio Session, Festivals, Community Events, Conventions, Hotels, Restaurants, Resorts, Cruise Ships, Reunions, Proms, Country Clubs, Ski Lodges, Sorority Function, Birthday Parties, Awards Nights, Fund Raisers</ep:available-for>
+          <ep:year-established>1984</ep:year-established>
+          <ep:pay-range>$500-$2800 per event</ep:pay-range>
+          <ep:influences>As a child growing up in upstate NY i listened to so many artists Jackie Wilson,Chuck Berry,Jerry Lee Lewis,Bobbie Darren and of course the King himself and found that not only can they sing but they all have a differant stage presents and style and that</ep:influences>
+          <dc:description>This show is a must see for all true Elvis fans ! Joe's Elvis like vocals &amp; stage presents will blow you away.This show has been seen all over the country including a once a yr. stop on Beal st. in Memphis tn.during the Kings birhday tribute .Joe has opened for &amp;performed with the Drifters,Coasters,Chuck Berry,Jerry Lee Lewis just to name a few .He is called New Yorks Premier entertainer by the one and only Cousin Brucie from CBS FM..And most recently appeared on NBC'S #1 talk show The'Today Show'the show can be made to fit all budgets and venues it is available with the Runaways band with former members of Del Shannons group,or it can be done with profesional tracks !Wether its a corporate party,wedding,county fair,or just a saturday nite at the hop this is a show to see...</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/artists/BradCrum/">
+          <ep:name>Brad Crum</ep:name>
+          <ep:location>Halifax, Pennsylvania</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator, Impressionist, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelor Parties, Bachelorette Parties, Banquets, Bar Mitzvahs, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1969</ep:year-established>
+          <ep:pay-range>$300-$2400 per event</ep:pay-range>
+          <ep:influences>Gene Pitney was a main influence on my style because of his powerful voice. Of course, Elvis was another main influence for his smooth, seductive voice and mannerism. Other groups such as Styx, Queen and Boston because of their vocal range and their sing</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13647&amp;sequenceID=1" dc:title="Love Me Tender"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13647&amp;sequenceID=2" dc:title="You Gave Me A Mountain"/>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13647&amp;sequenceID=3" dc:title="Short Clips Video"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13647&amp;sequenceID=4" dc:title="Lawdy Miss Clawdy"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13647&amp;sequenceID=5" dc:title="Devil In Disquise"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13647&amp;sequenceID=6" dc:title="Amazing Grace"/>
+          <dc:description>Brad has the looks, the moves and the voice -- that’s why he is the #1 Elvis Tribute Artist in Pennsylvania. Brad has won awards in every competition he has entered. He recently performed three packed shows at Carlisle First Night New Year's Eve event. In addition to numerous performances throughout Pennsylvania, Brad has performed in places such as Branson Misouri, Key West Florida, and Shanghai China, as well as other locations throughout the U.S. When Brad hits the stage, his strong vocals and top showmanship skills are a guaranteed crowd pleaser. With bona fide outfits, genuine Elvis style hair and sideburns, and a 3-1/2 octave vocal range, this act is truly a fitting tribute to the King. Brad’s performances are so authentic that his jumpsuits were even created by the costume designers of the Warner Brothers film, 3000 Miles to Graceland! Best known locally as the leader and drummer of the veteran band, East Coast Invasion (now known as ECI Rock), Brad has been honing his Presley tribute show for three years. He has been singing Elvis songs since the days of the original King in the 1960s. Unlike other performers who may do impersonations for laughs or lip sync Elvis’ hits, Brad is the real deal and insists on singing Elvis’ music straight. Brad creates a unique show each time and no two shows are the same.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/artists/ChadChampionsTributeto/">
+          <ep:name>Chad Champion Elvis Tribute Artist</ep:name>
+          <ep:location>Charlotte, North Carolina</ep:location>
+          <ep:category>Costumed Characters, Elvis Impersonator, Emcee, Impersonator, Impressionist, Singing Telegrams</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Casinos, Christmas Parties, Church Services, Clubs, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Graduation Parties, Grand Openings, Hotels, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1999</ep:year-established>
+          <ep:pay-range>$150-$1000 per event</ep:pay-range>
+          <ep:influences>There is only one....and I'm sure you can guess who.</ep:influences>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9429&amp;sequenceID=1" dc:title="In The Ghetto"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9429&amp;sequenceID=2" dc:title="Burning Love"/>
+          <ep:audio-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=9429&amp;sequenceID=3" dc:title="My Way"/>
+          <dc:description>Chad Champion portrays Elvis as he was in the early 70's, otherwise known as 'the Vegas years. He sings songs from Elvis' records, movies, and concerts, and recreates the Elvis moves and magic. In addition to the 70's jumpsuits, Chad can also perform in the black leather outfit from the 68 Comeback or appear as the 'Gold Lame' young Elvis from the 50's. Whether it be a birthday, anniversary, wedding, or any other special event, Chad performs for all ages for all occassions. He provides a high-energy, audience interactive show that you will not forget.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/artists/DannyVernon/">
+          <ep:name>Danny Vernon as Elvis</ep:name>
+          <ep:location>Edgewood, Washington</ep:location>
+          <ep:category>Elvis Impersonator, Impersonator</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Birthday Parties, Casinos, Christmas Parties, Clubs, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fund Raisers, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Studio Session, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>1999</ep:year-established>
+          <ep:pay-range>$500-$10000 per event</ep:pay-range>
+          <ep:influences>Not Available</ep:influences>
+          <ep:video-sample rdf:resource="http://www.gigmasters.com/hear_audio.asp?rowid=13499&amp;sequenceID=1" dc:title="Hound Dog ( For more exciting Danny Vernon  video please visit www.dannyvernon.com,  then hire through Gig Masters) Thanks!"/>
+          <dc:description>Award winning Danny Vernon is known for for his high energy 'Illusion of Elvis' shows that focus on connecting with his audience on many levels. He was recently judged by Elvis' own inner circle of friends as the best young Elvis in Palm Springs CA. Judges inlcuded were Charlie Hodge (Elvis'close friend), Sonny West (life long bodyguard), Estelle Brown (Sweet Inspirations), and the late Mr.Al 'Elvis has left the building' Dvorin.</dc:description>
+     </rdf:Description>
+
+     <rdf:Description rdf:about="http://www.gigmasters.com/country/HarveyMcfadden/">
+          <ep:name>Harvey McFadden</ep:name>
+          <ep:location>Pointblank (near Houston), Texas</ep:location>
+          <ep:category>Elvis Impersonator</ep:category>
+          <ep:available-for> Anniversaries, Awards Nights, Bachelorette Parties, Banquets, Bar Mitzvahs, Bat Mitzvahs, Birthday Parties, Christenings, Christmas Parties, Church Services, Coffee Shops, Community Events, Conventions, Corporate Functions, Country Clubs, Cruise Ships, Dinner Dances, Festivals, Fraternity Functions, Fund Raisers, Funerals, Graduation Parties, Grand Openings, Hotels, Jingles, Movie Soundtracks, Picnic, Private Parties, Proms, Resorts, Restaurants, Reunions, Showers, Ski Lodges, Sorority Function, Studio Session, Temples, TV Soundtracks, Weddings</ep:available-for>
+          <ep:year-established>2000</ep:year-established>
+          <ep:pay-range>$250-$4800 per event</ep:pay-range>
+          <ep:influences>Elvis, Marty Robbins, Jim Reeves, Faron Young, Conway Twitty.</ep:influences>
+          <dc:description>Professional, experienced Elvis Tribute Artist. Appearances include Branson, Birmingham, New Orleans, Austin, Palestine, Houston, Katy, Coldspring, Huntsville, Ft. Worth, and more. Three times on KHOU TV-Ch11 Morning Show. Numerous songs broadcast on Ladyluckmusic.com ETA Radio. Over 50 performances in both 2003 and 2004. From private parties to big stage concerts - ready to meet your entertainment needs. (Please e-mail for recent year's schedule which inludes reference phone numbers.)</dc:description>
+     </rdf:Description>
+
+
+<rdf:Description rdf:about="http://www.extremeelvis.com" dc:title="eXtreme Elvis">
+  <dc:description>GG Allin meets Elvis Presley in the fever dreams of Artaud.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.flyingelvi.com" dc:title="Flying Elvi, The">
+  <dc:description>group of daredevil, skydiving Elvis Presley impersonators will "drop" in on your event and put on the stage show of your life!</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://members.aol.com/elvezco" dc:title="El Vez">
+  <dc:description>official site for the Mexican Elvis.</dc:description>
+</rdf:Description>
+
+
+<rdf:Description rdf:about="http://www.chineseelvis.com" dc:title="Hyu, Paul Courtenay">
+  <dc:description>UK-based Chinese Elvis impersonator  "The King of Wok'n'Roll."</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.algonet.se/~pergunne/eilert.html>Pilarm, Eilert">
+  <dc:description>Sweden's most original interpreter of songs made famous by Elvis Presley.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.ElvisEntertainers.com" dc:title="Elvis Entertainers Network">
+  <dc:description>offers Elvis tribute artists across the United States and parts of Canada.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.elvisentertainmentofmphs.com" dc:title="Crews, David">
+
+  <dc:description>Elvis tribute singer specializing in convention and corporate entertainment for Memphis, TN.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.chrismacdonaldselvis.com" dc:title="MacDonald, Chris">
+  <dc:description>photos, sound clips, newspaper reviews, and booking information for his Memories of Elvis tribute show.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.thedreamking.com" dc:title="Carlini, Trent"/>
+
+<rdf:Description rdf:about="http://www.eimpersonators.com" dc:title="Eimpersonators.com">
+  <dc:description>online resource for Elvis tribute artists. Includes a list of entertainers, vendor resources, and more.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.deanvegas.com" dc:title="Dean Vegas">
+
+  <dc:description>the Aussie Elvis. Site includes his story, tour dates, and merchandise.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.bestelvisinvegas.com" dc:title="Powers, Eddie">
+  <dc:description>memories never die if someone is willing to keep them alive.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://members.aol.com/iljat/em.htm>Miles, Eddie">
+  <dc:description>has photos, soundclips, and concert information.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.davidlomond.com" dc:title="Lomond, David">
+  <dc:description>the big kahuna of Elvis and Polynesian entertainment.</dc:description>
+</rdf:Description>
+
+
+<rdf:Description rdf:about="http://www.tcbelvisstyle.com" dc:title="Monteith, Chris">
+  <dc:description>taking care of business, Elvis style. Also offers karaoke and DJ services.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.roryallen.com" dc:title="Allen, Rory">
+  <dc:description>casino entertainer and Elvis tribute artist.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.vivaelvis.co.uk" dc:title="Viva Elvis Tribute Show">
+  <dc:description>Elvis Presley tribute show available for corporate events, weddings, parties, private functions, and cabaret. Includes music samples and contact page.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.elvis-vegas.com" dc:title="Garon, Jesse">
+
+  <dc:description>Elvis impersonator.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.mixedcompany.com/elvis.html" dc:title="Phillips, Mark"/>
+
+<rdf:Description rdf:about="http://www.TheKingLives.com" dc:title="Parker, Kraig">
+  <dc:description>the King lives.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.michaelvegas.com" dc:title="Vegas, Michael">
+  <dc:description>recreates Elvis Presley stage shows from the Las Vegas era (1970's) backed by the TCB Band.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.johnnylovett.com" dc:title="Lovett, Johnny">
+
+  <dc:description>includes sound clips, touring information, and pictures for Elvis tribute artist.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.elvis2.com" dc:title="Lambert, Billy">
+  <dc:description>UK-based Elvis impersonator available for concerts, weddings, cruises, and functions.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.kimbridges.co.uk" dc:title="Bridges, Kim">
+  <dc:description>media appearances, sounds, and biography from the British Elvis Presley impersonator.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.reflectionsofelvis.com" dc:title="Castleberry, David">
+  <dc:description>offers Vegas-style Elvis impersonation show.</dc:description>
+</rdf:Description>
+
+
+<rdf:Description rdf:about="http://www.all4funchgo.bizland.com" dc:title="Elvis Impersonators">
+  <dc:description>providing Elvis impersonators for parties, singing telegrams, and corporate events serving the Chicago metro area.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.texaselvisexplosion.com" dc:title="Texas Elvis Explosion">
+  <dc:description>group of Elvis impersonators in Texas available for events and functions.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.idleelvis.co.uk" dc:title="Idle Elvis, The">
+  <dc:description>offers news, upcoming gigs, and photos of the impersonator.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.spiritoftheking.com" dc:title="Connolly, Steve">
+
+  <dc:description>Elvis impersonator doing shows in Las Vegas as well as weddings and other concerts nationwide.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.garyjay.co.uk" dc:title="Jay, Gary">
+  <dc:description>U.K. based Elvis impersonator who offers showgirls and a "The Songs He Never Sang" segment.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.elvis4uk.co.uk" dc:title="Rockafella, Louis">
+  <dc:description>covering all eras of Elvis' career from 50's Rock 'n' Roll, 60's Movies, and 70's Vegas style.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://members.aol.com/tcb4ep>Alan, Scott">
+  <dc:description>available for bookings.</dc:description>
+</rdf:Description>
+
+
+<rdf:Description rdf:about="http://www.elvis-impersonator.com" dc:title="Evans, Roy">
+  <dc:description>offers pictures and discography of the Elvis impersonator. Available for bookings in the U.K.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.elvishawaiiantribute.com" dc:title="Purnell, Rich">
+  <dc:description>recreating the magic of Elvis in Hawaii. A tribute to Presley's music with a Polynesian theme.</dc:description>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.geocities.com/chancetinder" dc:title="Tinder, Chance">
+  <dc:description>Elvis impersonator mixing the white jumpsuit of Presley's later years with the energy and charisma of the early King.</dc:description>
+</rdf:Description>
+
+</rdf:RDF>
