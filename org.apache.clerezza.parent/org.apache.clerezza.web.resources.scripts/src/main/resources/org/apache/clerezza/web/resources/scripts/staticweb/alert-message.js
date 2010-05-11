@@ -38,7 +38,9 @@ function AlertMessage(){};
  */
 AlertMessage.show = function(yesHandler, message, headerText, textYes, textNo) {
 	var handleYes = function() {
-		yesHandler();
+		if (yesHandler) {
+			yesHandler();
+		}
 		this.destroy();
 	};
 	var handleNo = function() {
