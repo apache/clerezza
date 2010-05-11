@@ -25,7 +25,7 @@ import java.security.Permission;
  *
  * @author reto
  */
-class ConceptProviderManagerAppPermission extends Permission {
+public class ConceptProviderManagerAppPermission extends Permission {
 
 	public ConceptProviderManagerAppPermission() {
 		super("Graph Management permission");
