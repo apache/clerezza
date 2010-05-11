@@ -202,6 +202,8 @@ public class SimpleConceptProviderManager implements ConceptProviderManager,
 	@GET
 	@Path("edit-concept-provider-list")
 	public GraphNode getProviderList(@Context UriInfo uriInfo) {
+		AccessController.checkPermission(
+				new ConceptProviderManagerAppPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 		MGraph contentGraph = cgProvider.getContentGraph();
 		MGraph resultGraph = new SimpleMGraph();
@@ -301,6 +303,12 @@ public class SimpleConceptProviderManager implements ConceptProviderManager,
 			AccessController.checkPermission(
 					new TcPermission("http://tpf.localhost/content.graph", 
 					TcPermission.READWRITE));
+		} catch (AccessControlException e) {
+			return items;
+		}
+		try {
+			AccessController.checkPermission(
+					new ConceptProviderManagerAppPermission());
 		} catch (AccessControlException e) {
 			return items;
 		}
