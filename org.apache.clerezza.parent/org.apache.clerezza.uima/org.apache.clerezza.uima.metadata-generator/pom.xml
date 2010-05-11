@@ -5,7 +5,7 @@
   <artifactId>org.apache.clerezza.uima.metadata-generator</artifactId>
   <version>0.1-incubating-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <name>Apache Clerezza UIMA extension for metadata generation </name>
+  <name>Clerezza - Apache Clerezza UIMA extension for metadata generation </name>
   <description>Apache Clerezza UIMA extension for metadata generation </description>
   <parent>
     <groupId>org.apache.clerezza</groupId>
