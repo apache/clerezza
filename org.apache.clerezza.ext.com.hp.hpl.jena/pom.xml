@@ -58,10 +58,8 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;artifactId=!commons-logging</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-						<Import-Package>!com.hp.hpl.jena.test,!com.hp.hpl.jena.*.test,
-						!com.hp.hpl.*.junit,
-						!junit.*,!org.apache.xml.resolver.*,!sun.*,
-						!org.junit.*,
+						<Import-Package>!com.hp.hpl.jena.*.test,
+						!org.apache.xml.resolver.*,!sun.*,
 						!com.sun.msv.*,
 						!com.sun.jdmk.*,
 						!javax.jms.*,
