@@ -82,7 +82,7 @@ public class TypeRenderingExceptionMapper implements ExceptionMapper<TypeRenderi
 		renderletManager.registerRenderlet(
 				"org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet",
 				new UriRef(template.toURI().toString()),
-				TYPERENDERING.Exception, "*",
+				TYPERENDERING.Exception, ".*",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 	}
 }
