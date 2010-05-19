@@ -61,6 +61,12 @@ public interface TripleCollection extends Collection<Triple> {
 	 * typically provide an empty implementation, they shall not throw an
 	 * exception.
 	 *
+	 * Implementation of which the triples change over time without add- and
+	 * remove-methods being called (e.g. implementation dynamically generating
+	 * their triples on invocation of the filer-method) may choose not to, or
+	 * only partially propagate their changes to the listener. They should
+	 * describe the behavior in the documentation of the class.
+	 *
 	 * If delay is 0 notification will happen synchroneously.
 	 *
 	 * @param listener The listener that will be notified
