@@ -7,9 +7,13 @@ def render(resource : GraphNode, mode : String) = {
     def parseNodeSeq(string : String)  = {
         _root_.scala.xml.XML.loadString("<elem>"+string+"</elem>").child
     }
-    val baos = new java.io.ByteArrayOutputStream
-    renderer.render(resource, context, mode, baos)
-    parseNodeSeq(new String(baos.toByteArray))
+	val baos = new java.io.ByteArrayOutputStream
+	try {
+		renderer.render(resource, context, mode, baos)
+	} catch {
+		case e: Exception => baos.write(<div class="exception">{e.toString}</div>.toString.getBytes)
+	}
+	parseNodeSeq(new String(baos.toByteArray))
 }
 def ifx[T](con:  => Boolean)(f: => T) :  T = {
 	if (con) f else null.asInstanceOf[T]
