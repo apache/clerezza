@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+    <scr:component enabled="true" immediate="true" name="org.apache.clerezza.scala.console.InterpreterService">
+        <implementation class="org.apache.clerezza.scala.console.InterpreterService"/>
+        <property name="service.pid" value="org.apache.clerezza.scala.console.InterpreterService"/>
+    </scr:component>
+	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.scala.console.InterpreterFactory">
+        <implementation class="org.apache.clerezza.scala.console.InterpreterFactory"/>
+		<service servicefactory="false">
+            <provide interface="org.apache.clerezza.scala.console.InterpreterFactory"/>
+        </service>
+        <property name="service.pid" value="org.apache.clerezza.scala.console.InterpreterFactory"/>
+    </scr:component>
+	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.scala.console.ScriptEngineFactory">
+        <implementation class="org.apache.clerezza.scala.console.ScriptEngineFactory"/>
+		<service servicefactory="false">
+            <provide interface="javax.script.ScriptEngineFactory"/>
+        </service>
+        <property name="service.pid" value="org.apache.clerezza.scala.console.ScriptEngineFactory"/>
+		<reference name="interpreterFactory"
+				interface="org.apache.clerezza.scala.console.InterpreterFactory"
+				cardinality="1..1"
+				bind="bindInterpreterFactory" unbind="unbindInterpreterFactory"/>
+    </scr:component>
+	<!-- <scr:component enabled="true" immediate="true" name="org.apache.clerezza.scala.console.Launcher">
+        <implementation class="org.apache.clerezza.scala.console.Launcher"/>
+        <property name="service.pid" value="org.apache.clerezza.scala.console.Launcher"/>
+    </scr:component> -->
+</components>
