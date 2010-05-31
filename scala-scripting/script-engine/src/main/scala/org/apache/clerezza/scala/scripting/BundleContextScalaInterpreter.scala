@@ -18,71 +18,72 @@
  */
 package org.apache.clerezza.scala.scripting;
 
-
-
-import org.apache.felix.scr.annotations.Component;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.framework.BundleContext
 import org.osgi.framework.Bundle
 import java.io.{File, PrintWriter}
-import java.util.{ArrayList, Arrays};
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
 import scala.tools.nsc.io.{AbstractFile, PlainFile}
 import scala.tools.nsc.util._
-import scala.tools.nsc.symtab.SymbolLoaders
+import java.io.PrintWriter
 import java.net._
-import scala.tools.nsc.reporters.ConsoleReporter
+import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
 import scala.tools.util.PathResolver
-import scala.tools.nsc.util.{ClassPath, JavaClassPath}
 
 
-class BundleContextScalaInterpreter(bundles: Array[Bundle], out: PrintWriter)
+
+class BundleContextScalaInterpreter(bundleContext : BundleContext, out: PrintWriter)
 		extends Interpreter(new Settings, out) {
 
-	def this(bundles: Array[Bundle]) = {
-		this(bundles, new PrintWriter(System.out))
+	def this(bundleContext : BundleContext) = {
+		this(bundleContext, new PrintWriter(System.out))
 	}
-	protected val PATH_SEPARATOR = System.getProperty("path.separator")
 
 	override lazy val classLoader: AbstractFileClassLoader = {
 		new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
 	}
 	override protected def newCompiler(settings: Settings, reporter: Reporter) = {
 		settings.outputDirs setSingleOutput virtualDirectory
-		new Global(settings, reporter) {
-			private lazy val _classPath: ClassPath[AbstractFile] = {
+		new BundleContextScalaCompiler(bundleContext, settings, reporter)
+	}
+}
 
-				val classPathOrig: ClassPath[AbstractFile]  = new PathResolver(settings).result
+/*
+ * unfortunately there seems to be no way to change the classpath, so this doesn't
+ * listen to BunldeEvents
+ */
+class BundleContextScalaCompiler(bundleContext : BundleContext,
+		settings: Settings, reporter: Reporter)
+		extends Global(settings, reporter) {
+	
 
-				val classPathAbstractFiles = for (bundle <- bundles;
-						val url = bundle.getResource("/");
-						if url != null) yield {
-					if ("file".equals(url.getProtocol())) {
-						new PlainFile(new File(url.toURI()))
-					}
-					else {
-						BundleFS.create(bundle);
-					}
-				}
-				val classPaths: List[ClassPath[AbstractFile]] = (for (abstractFile <- classPathAbstractFiles)
-					yield {
-						new DirectoryClassPath(abstractFile, classPathOrig.context)
-					}) toList
+	override lazy val classPath: ClassPath[AbstractFile] = {
 
-			   val classPath = new MergedClassPath[AbstractFile](classPathOrig :: classPaths,
-							classPathOrig.context)
-				classPath
+		val classPathOrig: ClassPath[AbstractFile]  = new PathResolver(settings).result
+		var bundles: Array[Bundle] = bundleContext.getBundles
+		val classPathAbstractFiles = for (bundle <- bundles;
+										  val url = bundle.getResource("/");
+										  if url != null) yield {
+			if ("file".equals(url.getProtocol())) {
+				new PlainFile(new File(url.toURI()))
 			}
-			override lazy val classPath: ClassPath[_] = {
-				_classPath
-			}
-
-			override def rootLoader: LazyType = {
-
-				new loaders.JavaPackageLoader(_classPath)
+			else {
+				BundleFS.create(bundle);
 			}
 		}
+		val classPaths: List[ClassPath[AbstractFile]] = (for (abstractFile <- classPathAbstractFiles)
+			yield {
+					new DirectoryClassPath(abstractFile, classPathOrig.context)
+				}) toList
+
+		new MergedClassPath[AbstractFile](classPathOrig :: classPaths,
+			   classPathOrig.context)
+
+	}
+
+	override def rootLoader: LazyType = {
+		new loaders.JavaPackageLoader(classPath)
 	}
 }
 

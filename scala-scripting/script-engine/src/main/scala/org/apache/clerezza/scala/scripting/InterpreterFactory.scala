@@ -21,6 +21,7 @@ package org.apache.clerezza.scala.scripting;
 
 
 import org.apache.felix.scr.annotations.Component;
+import org.osgi.framework.BundleContext
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.Bundle
 import java.io.{File, PrintWriter}
@@ -40,18 +41,20 @@ import scala.tools.nsc.util.{ClassPath, JavaClassPath}
 class InterpreterFactory() {
 	
 	protected var bundles: Array[Bundle] = null
+	protected var bundleContext : BundleContext = null;
 
 	def activate(componentContext: ComponentContext)= {
-		bundles = componentContext.getBundleContext.getBundles
-		//TODO register listener for bunle-changed events
+		bundleContext = componentContext.getBundleContext
 	}
 
 	def deactivate(componentContext: ComponentContext) = {
-		bundles = null
+		bundleContext = null
 	}
 
-	def createInterpreter(out: PrintWriter) : Interpreter =
-		new BundleContextScalaInterpreter(bundles, out)
+	def createInterpreter(out: PrintWriter) : Interpreter = {
+		val i = new BundleContextScalaInterpreter(bundleContext, out)
+		i
+	}
 
 	
 }

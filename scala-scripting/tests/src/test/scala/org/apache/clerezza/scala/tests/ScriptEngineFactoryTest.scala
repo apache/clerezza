@@ -120,6 +120,23 @@ s"""
 
 	}
 
+	@Test
+	def classFromNewlyAddedBundle(): Unit =  {
+		val s = "hello"
+		val engine = factory.getScriptEngine
+		val bindings = engine.createBindings
+		bindings.put("s",s)
+		Assert.assertEquals(s, engine.eval("s", bindings))
+		bundleContext.installBundle("http://repo2.maven.org/maven2/org/wymiwyg/wrhapi/0.8.2/wrhapi-0.8.2.jar");
+		println("sleeping")
+		Thread.sleep(1000)
+		val script = """
+import org.wymiwyg.wrhapi._
+val h : Handler = null
+s"""
+		Assert.assertEquals(s, engine.eval(script, bindings))
+	}
+
 	//This seems hard to realize before https://lampsvn.epfl.ch/trac/scala/ticket/3513 is fixed
 	/*@Test
 	def checkException(): Unit =  {

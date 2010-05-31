@@ -21,6 +21,8 @@ package org.apache.clerezza.scala.scripting;
 
 
 import org.apache.felix.scr.annotations.Component;
+import org.osgi.framework.BundleEvent
+import org.osgi.framework.BundleListener
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.Bundle
 import java.io.{File, PrintWriter, Reader, StringWriter}
@@ -40,9 +42,25 @@ import javax.script.{ScriptEngineFactory => JavaxEngineFactory, ScriptEngine, Ab
 import scala.actors.Actor
 import scala.actors.Actor._
 
-class ScriptEngineFactory() extends  JavaxEngineFactory {
+class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 
-	var interpreter : Interpreter = null;
+
+	def bundleChanged(event: BundleEvent) = {
+		MyScriptEngine.interpreterAction ! ScriptEngineFactory.RefreshInterpreter
+	}
+
+	var factory: InterpreterFactory = null
+	var _interpreter : Interpreter = null;
+	def interpreter = {
+		if (_interpreter == null) {
+			this.synchronized {
+				if (_interpreter == null) {
+					_interpreter = factory.createInterpreter(new PrintWriter(System.out))
+				}
+			}
+		}
+		_interpreter
+	}
 
 
 	//methods from ScriptEngineFactory
@@ -73,19 +91,22 @@ class ScriptEngineFactory() extends  JavaxEngineFactory {
 	override def getScriptEngine : ScriptEngine = MyScriptEngine
 
 	def activate(componentContext: ComponentContext)= {
-
+		val bundleContext = componentContext.getBundleContext
+		bundleContext.addBundleListener(this)
 	}
 
 	def deactivate(componentContext: ComponentContext) = {
-
+		val bundleContext = componentContext.getBundleContext
+		bundleContext.removeBundleListener(this)
 	}
 
 	def bindInterpreterFactory(f: InterpreterFactory) = {
-		interpreter = f.createInterpreter(new PrintWriter(System.out))
+		factory = f
 	}
 
 	def unbindInterpreterFactory(f: InterpreterFactory) = {
-		interpreter = null
+		factory = null
+		_interpreter = null
 	}
 	/** Inner object as it accesse interpreter
 	 */
@@ -110,24 +131,31 @@ class ScriptEngineFactory() extends  JavaxEngineFactory {
 							//not yet threadsafe, but the test isn't failing
 							//should pass jobs to actor that guarantees they are executed sequentially
 							//and binding to not inferfere
-							val jTypeMap : java.util.Map[String, java.lang.reflect.Type] =
+							try {
+								val jTypeMap : java.util.Map[String, java.lang.reflect.Type] =
 								new java.util.HashMap[String, java.lang.reflect.Type]()
-							val valueMap = new java.util.HashMap[String, Any]()
-							import _root_.scala.collection.JavaConversions._
-							for (scope <- context.getScopes;
-								 if (context.getBindings(scope.intValue) != null);
-								 entry <- context.getBindings(scope.intValue)) {
-								interpreter.bind(entry._1,
-												 getAccessibleClass(entry._2.getClass).getName, entry._2)
+									val valueMap = new java.util.HashMap[String, Any]()
+								import _root_.scala.collection.JavaConversions._
+								for (scope <- context.getScopes;
+									 if (context.getBindings(scope.intValue) != null);
+									 entry <- context.getBindings(scope.intValue)) {
+									interpreter.bind(entry._1,
+													 getAccessibleClass(entry._2.getClass).getName, entry._2)
+								}
+								val result = interpreter.eval[Object](script) match   {
+									case Some(x) => x
+									case None => null
+								}
+								if (interpreter.reporter.hasErrors) {
+									throw new ScriptException("some error","script-file",1)
+								}
+								sender ! result
+							} catch {
+								case e => sender ! ScriptEngineFactory.ActorException(e)
 							}
-							val result = interpreter.eval[Object](script) match   {
-								case Some(x) => x
-								case None => null
-							}
-							if (interpreter.reporter.hasErrors) {
-								throw new ScriptException("some error","script-file",1)
-							}
-							sender ! result
+						}
+						case ScriptEngineFactory.RefreshInterpreter => {
+								_interpreter = null;
 						}
 					}
 				}
@@ -141,6 +169,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory {
 				case x => throw new RuntimeException("Timeout executing script")
 			}*/
 			interpreterAction !? ((script, context)) match {
+				case ScriptEngineFactory.ActorException(e) => throw e
 				case x : Object => x
 			}
 		}
@@ -186,4 +215,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory {
 	}
 }
 
-
+object ScriptEngineFactory {
+	case class ActorException(e: Throwable);
+	case object RefreshInterpreter;
+}
