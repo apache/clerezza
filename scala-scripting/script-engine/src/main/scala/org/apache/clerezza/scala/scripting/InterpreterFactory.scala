@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.scala.console;
+package org.apache.clerezza.scala.scripting;
 
 
 

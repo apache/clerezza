@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.scala.console;
+package org.apache.clerezza.scala.scripting;
 
 
 
@@ -48,42 +48,41 @@ class BundleContextScalaInterpreter(bundles: Array[Bundle], out: PrintWriter)
 	override lazy val classLoader: AbstractFileClassLoader = {
 		new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
 	}
-		override protected def newCompiler(settings: Settings, reporter: Reporter) = {
-			reporter.info(scala.tools.nsc.util.NoPosition, "new Compiler", true)
-			settings.outputDirs setSingleOutput virtualDirectory
-			new Global(settings, reporter) {
-				private lazy val _classPath: ClassPath[AbstractFile] = {
+	override protected def newCompiler(settings: Settings, reporter: Reporter) = {
+		settings.outputDirs setSingleOutput virtualDirectory
+		new Global(settings, reporter) {
+			private lazy val _classPath: ClassPath[AbstractFile] = {
 
-					val classPathOrig: ClassPath[AbstractFile]  = new PathResolver(settings).result
+				val classPathOrig: ClassPath[AbstractFile]  = new PathResolver(settings).result
 
-					val classPathAbstractFiles = for (bundle <- bundles;
-							val url = bundle.getResource("/");
-							if url != null) yield {
-						if ("file".equals(url.getProtocol())) {
-							new PlainFile(new File(url.toURI()))
-						}
-						else {
-							BundleFS.create(bundle);
-						}
+				val classPathAbstractFiles = for (bundle <- bundles;
+						val url = bundle.getResource("/");
+						if url != null) yield {
+					if ("file".equals(url.getProtocol())) {
+						new PlainFile(new File(url.toURI()))
 					}
-					val classPaths: List[ClassPath[AbstractFile]] = (for (abstractFile <- classPathAbstractFiles)
-						yield {
-							new DirectoryClassPath(abstractFile, classPathOrig.context)
-						}) toList
+					else {
+						BundleFS.create(bundle);
+					}
+				}
+				val classPaths: List[ClassPath[AbstractFile]] = (for (abstractFile <- classPathAbstractFiles)
+					yield {
+						new DirectoryClassPath(abstractFile, classPathOrig.context)
+					}) toList
 
-				   val classPath = new MergedClassPath[AbstractFile](classPathOrig :: classPaths,
-								classPathOrig.context)
-					classPath
-				}
-				override lazy val classPath: ClassPath[_] = {
-					_classPath
-				}
+			   val classPath = new MergedClassPath[AbstractFile](classPathOrig :: classPaths,
+							classPathOrig.context)
+				classPath
+			}
+			override lazy val classPath: ClassPath[_] = {
+				_classPath
+			}
 
-				override def rootLoader: LazyType = {
-		
-					new loaders.JavaPackageLoader(_classPath)
-				}
+			override def rootLoader: LazyType = {
+
+				new loaders.JavaPackageLoader(_classPath)
 			}
 		}
 	}
+}
 

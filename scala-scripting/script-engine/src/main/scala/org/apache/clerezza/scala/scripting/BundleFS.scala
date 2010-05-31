@@ -21,9 +21,9 @@ import scala.tools.nsc.io.AbstractFile
 import java.io.{File, InputStream, OutputStream, IOException}
 import java.net.URL
 import org.osgi.framework.Bundle
-import org.apache.clerezza.scala.console.Utils.{valueOrElse, nullOrElse}
+import org.apache.clerezza.scala.scripting.Utils.{valueOrElse, nullOrElse}
 
-package org.apache.clerezza.scala.console {
+package org.apache.clerezza.scala.scripting {
 
 
 

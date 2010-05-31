@@ -60,6 +60,12 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+
+					<args>
+						<arg>-deprecation</arg>
+					</args>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

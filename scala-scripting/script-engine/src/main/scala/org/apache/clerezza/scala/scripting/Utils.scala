@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.clerezza.scala.console
+package org.apache.clerezza.scala.scripting
 
 /**
  * General purpose utility functions
  */
-object Utils{
+object Utils {
 
   /**
    * Evaluate <code>f</code> on <code>s</code> if <code>s</code> is not null.
@@ -27,7 +27,7 @@ object Utils{
    * @param f
    * @return <code>f(s)</code> if s is not <code>null</code>, <code>null</code> otherwise.
    */
-  protected[console] def nullOrElse[S, T](s: S)(f: S => T): T =
+  protected[scripting] def nullOrElse[S, T](s: S)(f: S => T): T =
     if (s == null) null.asInstanceOf[T]
     else f(s)
 
@@ -36,7 +36,7 @@ object Utils{
    * @param default
    * @return <code>t</code> or <code>default</code> if <code>null</code>.
    */
-  protected[console] def valueOrElse[T](t: T)(default: => T) =
+  protected[scripting] def valueOrElse[T](t: T)(default: => T) =
     if (t == null) default
     else t
 
@@ -46,7 +46,7 @@ object Utils{
    * @returns <code>Some(value)</code> if value is not <code>null</code>,
    * <code>None</code> otherwise.
    */
-    protected[console] def option[T](value: T): Option[T] =
+    protected[scripting] def option[T](value: T): Option[T] =
     if (null == value) None else Some(value)
 
 }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.scala.console;
+package org.apache.clerezza.scala.scripting;
 
 
 
@@ -36,8 +36,9 @@ import scala.tools.nsc.reporters.Reporter
 import scala.tools.util.PathResolver
 import scala.tools.nsc.util.{ClassPath, JavaClassPath}
 import javax.script.ScriptContext
-import javax.script.{ScriptEngineFactory => JavaxEngineFactory, ScriptEngine, AbstractScriptEngine, Bindings, SimpleBindings}
-
+import javax.script.{ScriptEngineFactory => JavaxEngineFactory, ScriptEngine, AbstractScriptEngine, Bindings, SimpleBindings, ScriptException}
+import scala.actors.Actor
+import scala.actors.Actor._
 
 class ScriptEngineFactory() extends  JavaxEngineFactory {
 
@@ -98,22 +99,49 @@ class ScriptEngineFactory() extends  JavaxEngineFactory {
 			}
 			eval(scriptStringWriter.toString, context)
 		}
-		override def eval(script : String, context : ScriptContext) : Object = {
-			//not yet threadsafe
-			val jTypeMap : java.util.Map[String, java.lang.reflect.Type] =
-				new java.util.HashMap[String, java.lang.reflect.Type]()
-			val valueMap = new java.util.HashMap[String, Any]()
-			import _root_.scala.collection.JavaConversions._
-			for (scope <- context.getScopes;
-					if (context.getBindings(scope.intValue) != null);
-					entry <- context.getBindings(scope.intValue)) {
-				interpreter.bind(entry._1,
-								 getAccessibleClass(entry._2.getClass).getName, entry._2)
-			}
 
-			interpreter.eval[Object](script) match   {
-				case Some(x) => x
-				case None => null
+		lazy val interpreterAction = actor {
+				//not using loop { react {, as this method doesn't seem to guarantee
+				//asynchronous execution
+				//also using react with a final invocation of act() different exception from interprter.bind have been seen
+				while(true) {
+					receive {
+						case (script : String, context : ScriptContext) => {
+							//not yet threadsafe, but the test isn't failing
+							//should pass jobs to actor that guarantees they are executed sequentially
+							//and binding to not inferfere
+							val jTypeMap : java.util.Map[String, java.lang.reflect.Type] =
+								new java.util.HashMap[String, java.lang.reflect.Type]()
+							val valueMap = new java.util.HashMap[String, Any]()
+							import _root_.scala.collection.JavaConversions._
+							for (scope <- context.getScopes;
+								 if (context.getBindings(scope.intValue) != null);
+								 entry <- context.getBindings(scope.intValue)) {
+								interpreter.bind(entry._1,
+												 getAccessibleClass(entry._2.getClass).getName, entry._2)
+							}
+							val result = interpreter.eval[Object](script) match   {
+								case Some(x) => x
+								case None => null
+							}
+							if (interpreter.reporter.hasErrors) {
+								throw new ScriptException("some error","script-file",1)
+							}
+							sender ! result
+						}
+					}
+				}
+		}
+
+
+		override def eval(script : String, context : ScriptContext) : Object = {
+			/*val timeout = 180*1000
+			interpreterAction !? (timeout, (script, context)) match {
+				case Some(x : Object) => x
+				case x => throw new RuntimeException("Timeout executing script")
+			}*/
+			interpreterAction !? ((script, context)) match {
+				case x : Object => x
 			}
 		}
 		override def getFactory() = ScriptEngineFactory.this

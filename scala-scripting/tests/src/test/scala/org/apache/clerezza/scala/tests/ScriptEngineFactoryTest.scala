@@ -32,8 +32,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.exam.Inject;
 import org.osgi.framework.BundleContext;
-import javax.script.ScriptEngineFactory
-import org.osgi.util.tracker.ServiceTracker;
+import javax.script.{ScriptEngineFactory, Bindings, ScriptException}
+import org.osgi.util.tracker.ServiceTracker
+import scala.actors.Actor
+import scala.math.random
 
 
 /**
@@ -50,13 +52,12 @@ class ScriptEngineFactoryTest {
 	
 	private var webServerExist = false;
 
-	private var scriptEngineFactory: ScriptEngineFactory = null;
+	private var factory: ScriptEngineFactory = null;
 
 	@Before
 	def getService() : Unit = {
 		/*webServerExist = waitForWebserver();*/
-		scriptEngineFactory = waitFor(classOf[ScriptEngineFactory], 300000);
-		println("Got: "+scriptEngineFactory)
+		factory = waitFor(classOf[ScriptEngineFactory], 300000);
 	}
 
 	private def waitFor[T](aClass: Class[T], timeout: Long): T = {
@@ -70,9 +71,67 @@ class ScriptEngineFactoryTest {
 
 	@Test
 	def checkEngine(): Unit =  {
-		Assert.assertNotNull(scriptEngineFactory)
+		Assert.assertNotNull(factory)
+		Assert.assertEquals("Scala Scripting Engine for OSGi", factory.getEngineName);
+		val s = "hello"
+		val engine = factory.getScriptEngine
+		Assert.assertEquals(s, engine.eval("\""+s+"\""))
+		val bindings = engine.createBindings
+		bindings.put("s",s)
+		Assert.assertEquals(s, engine.eval("s", bindings))
 	}
 
+	@Test
+	def testConcurrency : Unit = {
+		import scala.actors.Actor._
+		val actorsCount = 5
+		val iterationsCount = 9
+		val testRunner = self
+		for (i <- 1 to actorsCount) {
+			object ValueVerifier extends Actor {
+				def act() {
+					try {
+						for (i <- 1 to iterationsCount) {
+							val s = "r: "+random.toString
+							val engine = factory.getScriptEngine
+							val bindings = engine.createBindings
+							bindings.put("s",s)
+							val script = """
+import scala.math.random
+Thread.sleep((random*10).toInt)
+s"""
+							testRunner ! (s, engine.eval(script, bindings))
+						}
+					} catch {
+						case t => testRunner ! t
+					}
+				}
+			}
+			ValueVerifier.start()
+		}
+		for (i <- 1 to (actorsCount*iterationsCount)) {
+			self.receive {
+				case (expected, got) => {
+						Assert.assertEquals(expected, got)
+				}
+				case t : Throwable => throw t
+			}
+		}
+
+	}
+
+	//This seems hard to realize before https://lampsvn.epfl.ch/trac/scala/ticket/3513 is fixed
+	/*@Test
+	def checkException(): Unit =  {
+		val s = """val s="hello"
+		illegal.do"""
+		val engine = factory.getScriptEngine
+		try {
+			Assert.assertEquals("should have exception",engine.eval(s))
+		} catch {
+			case e : ScriptException => Assert.assertEquals(2, e.getLineNumber)
+		}
+	}*/
 }
 
 object ScriptEngineFactoryTest {
