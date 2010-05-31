@@ -211,7 +211,7 @@
 				<plugin>
 					<groupId>org.ops4j.pax.exam</groupId>
 					<artifactId>maven-paxexam-plugin</artifactId>
-					<version>1.2.1-SNAPSHOT</version>
+					<version>1.2.0</version>
 					<executions>
 						<execution>
 							<id>generate-depends-file</id>
@@ -339,7 +339,7 @@
 				<updatePolicy>always</updatePolicy>
 				<checksumPolicy>warn</checksumPolicy>
 			</snapshots>
-			<url>http://repository.ops4j.org/mvn-snapshots/</url>
+			<url>http://repo1.maven.org/maven2/</url>
 			<layout>default</layout>
 		</repository>
 		<!-- neede by fix of PAXEXAM-160 -->
@@ -365,7 +365,7 @@
 		<pluginRepository>
 			<id>ops4j-plugin-snapshot</id>
 			<name>ops4j.org snapshot repository</name>
-			<url>http://repository.ops4j.org/mvn-snapshots/</url>
+			<url>http://repo1.maven.org/maven2/</url>
 		</pluginRepository>
 		<!-- needed by fix of PAXEXAM-160 -->
 		<pluginRepository>
@@ -478,24 +478,24 @@
 			<dependency>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>pax-exam</artifactId>
-				<version>1.2.1-SNAPSHOT</version>
+				<version>1.2.0</version>
 			</dependency>
 			<!-- this is a dependecy of pax-exam, enforcing latest version
 			to get latest felix -->
 			<dependency>
 				<groupId>org.ops4j.pax.runner</groupId>
 				<artifactId>pax-runner-no-jcl</artifactId>
-				<version>1.5.0-SNAPSHOT</version>
+				<version>1.4.0</version>
 		    </dependency>
 			<dependency>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>pax-exam-junit</artifactId>
-				<version>1.2.1-SNAPSHOT</version>
+				<version>1.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>pax-exam-container-default</artifactId>
-				<version>1.2.1-SNAPSHOT</version>
+				<version>1.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.script.jruby</groupId>
