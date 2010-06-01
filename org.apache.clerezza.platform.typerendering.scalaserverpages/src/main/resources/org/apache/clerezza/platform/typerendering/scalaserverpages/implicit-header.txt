@@ -13,7 +13,7 @@ def render(resource : GraphNode, mode : String) = {
 	} catch {
 		case e: Exception => baos.write(<div class="exception">{e.toString}</div>.toString.getBytes)
 	}
-	parseNodeSeq(new String(baos.toByteArray))
+	parseNodeSeq(new String(baos.toByteArray, "utf-8"))
 }
 def ifx[T](con:  => Boolean)(f: => T) :  T = {
 	if (con) f else null.asInstanceOf[T]
