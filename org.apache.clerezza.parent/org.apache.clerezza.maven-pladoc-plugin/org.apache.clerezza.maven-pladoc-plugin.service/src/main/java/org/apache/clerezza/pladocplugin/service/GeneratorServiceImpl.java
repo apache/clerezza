@@ -20,7 +20,6 @@ package org.apache.clerezza.pladocplugin.service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,8 +58,8 @@ public class GeneratorServiceImpl implements GeneratorService {
 	Parser parser;
 	@Reference
 	RendererFactory rendererFactory;
-	/** this is just to activate Triaxrs in order for MediaType to work
-	 *
+	/**
+	 * this is just to activate Triaxrs in order for MediaType to work
 	 */
 	@Reference
 	Handler triaxrs;
@@ -88,11 +87,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 				in.close();
 			}
 			process(documentationGraph, outputDir);
-
-
-
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			ex.printStackTrace(System.out);
 			throw new RuntimeException(ex);
 		}
@@ -134,7 +129,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 			FileOutputStream out = new FileOutputStream(outFile);
 			try {
 				System.out.println("writing " + outFile);
-				renderer.render(docRootNode, docRootNode, out);
+				renderer.render(docRootNode, docRootNode, null, null, out);
 			} finally {
 				out.close();
 			}

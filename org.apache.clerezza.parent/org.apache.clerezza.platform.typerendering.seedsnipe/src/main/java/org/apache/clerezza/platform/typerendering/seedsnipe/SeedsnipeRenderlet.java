@@ -51,7 +51,7 @@ public class SeedsnipeRenderlet implements Renderlet{
 			CallbackRenderer callbackRenderer,
 			URI renderingSpecification,
 			String mode,
-			MediaType mediaType,
+			MediaType mediaType, RequestProperties requestProperties,
 			OutputStream os) throws IOException {
 		try {
 			RenderingFunctions renderingFunctions = new WebRenderingFunctions(

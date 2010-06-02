@@ -23,6 +23,8 @@ import java.io.OutputStream;
 
 import java.net.URI;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -32,6 +34,30 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * @author daniel, mir, reto
  */
 public interface Renderlet {
+
+	/**
+	 * A class repressing properties of the http request within which the
+	 * Renderlet is used
+	 */
+	static class RequestProperties {
+		private UriInfo uriInfo;
+		private MultivaluedMap<String, Object> httpHeaders;
+
+		public RequestProperties(UriInfo uriInfo, 
+				MultivaluedMap<String, Object> httpHeaders) {
+			this.uriInfo = uriInfo;
+			this.httpHeaders = httpHeaders;
+		}
+
+		public MultivaluedMap<String, Object>  getHttpHeaders() {
+			return httpHeaders;
+		}
+
+		public UriInfo getUriInfo() {
+			return uriInfo;
+		}
+
+	}
 	
 	/**
 	 * Renders the data from <code>res</code> with a appropriate rendering
@@ -44,6 +70,7 @@ public interface Renderlet {
 	 * @param mediaType  the media type this media produces (a part of)
 	 * @param mode  the mode this Renderlet was invoked with, this is mainly used
 	 * so that the callbackeRenderer can be claeed inheriting the mode.
+	 * @param requestProperties properties of the http request, may be null
 	 * @param os  where the output will be written to.
 	 */
 	public void render(GraphNode res,
@@ -52,5 +79,6 @@ public interface Renderlet {
 			URI renderingSpecification,
 			String mode,
 			MediaType mediaType,
+			RequestProperties requestProperties,
 			OutputStream os) throws IOException;
 }

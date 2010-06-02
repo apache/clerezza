@@ -152,7 +152,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 							renderlet,
 							mode,
 							mediaTypeInGraph,
-							prio, new CallbackRendererImpl(RenderletRendererFactoryImpl.this, mediaTypeInGraph),
+							prio, RenderletRendererFactoryImpl.this,
 							renderletDef.isBuiltIn()));
 				}
 			}

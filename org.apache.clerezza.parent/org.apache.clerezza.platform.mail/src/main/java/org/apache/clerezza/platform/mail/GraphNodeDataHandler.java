@@ -122,7 +122,7 @@ public class GraphNodeDataHandler extends DataHandler{
 
 	@Override
 	public void writeTo(OutputStream os) throws IOException {
-		renderer.render(graphNode, null, os);
+		renderer.render(graphNode, null, null, null, os);
 	}
 
 

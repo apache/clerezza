@@ -24,6 +24,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -37,18 +39,19 @@ class RendererImpl implements Renderer, Comparable {
 	private Renderlet renderlet = null;
 	private MediaType mediaType = null;
 	private int prio;
-	private CallbackRenderer callbackRenderer;
+	//private CallbackRenderer callbackRenderer;
 	private boolean builtIn;
 	private String mode;
+	private final RenderletRendererFactoryImpl renderletRendererFactoryImpl;
 
 	RendererImpl(UriRef renderingSpecification,
 			Renderlet renderlet, String mode, MediaType mediaType, int prio,
-			CallbackRenderer callbackRenderer, boolean builtIn) {
+			RenderletRendererFactoryImpl renderletRendererFactoryImpl, boolean builtIn) {
 		this.renderlet = renderlet;
 		this.mediaType = mediaType;
 		this.mode = mode;
 		this.prio = prio;
-		this.callbackRenderer = callbackRenderer;
+		this.renderletRendererFactoryImpl = renderletRendererFactoryImpl;
 		this.builtIn = builtIn;
 		if (renderingSpecification != null) {
 			try {
@@ -80,10 +83,16 @@ class RendererImpl implements Renderer, Comparable {
 	}
 
 	@Override
-	public void render(GraphNode resource, GraphNode context, OutputStream os)
-		throws IOException {
+	public void render(GraphNode resource, GraphNode context, UriInfo uriInfo,
+			MultivaluedMap<String, Object> httpHeaders,
+			OutputStream entityStream) throws IOException {
+			CallbackRenderer callbackRenderer =
+					new CallbackRendererImpl(renderletRendererFactoryImpl,
+					uriInfo, httpHeaders, mediaType);
 			renderlet.render(resource, context, callbackRenderer,
-				renderSpecUri, mode, mediaType, os);
+				renderSpecUri, mode, mediaType,
+				new Renderlet.RequestProperties(uriInfo, httpHeaders),
+				entityStream);
 	}
 
 	@Override
@@ -106,4 +115,5 @@ class RendererImpl implements Renderer, Comparable {
 			return 1;
 		}
 	}
+
 }

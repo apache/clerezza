@@ -33,9 +33,11 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
+import java.util.logging.Level;
 import javax.script.ScriptException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.typerendering.CallbackRenderer;
@@ -66,6 +68,14 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	private ScalaService scalaService;
 	private static final Logger logger = LoggerFactory.getLogger(ScalaServerPagesRenderlet.class);
 	private int byteHeaderLines = 0;
+	private Type multiStringObjectMapType;
+	{
+		try {
+			multiStringObjectMapType = RequestProperties.class.getMethod("getHttpHeaders", new Class[0]).getReturnType();
+		} catch (NoSuchMethodException ex) {
+			throw new RuntimeException(ex);
+		} 
+	}
 
 	/**
 	 * Default constructor as for usage as OSGi service
@@ -108,7 +118,8 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	@Override
 	public void render(GraphNode res, GraphNode context,
 			CallbackRenderer callbackRenderer, URI renderingSpecification,
-			String mode, MediaType mediaType, OutputStream os) throws IOException {
+			String mode, MediaType mediaType,
+			RequestProperties requestProperties, OutputStream os) throws IOException {
 		try {
 			logger.debug("ScalaServerPagesRenderlet rendering");
 			final InputStream in = renderingSpecification.toURL().openStream();
@@ -125,7 +136,12 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			map.put("res", GraphNode.class);
 			map.put("context", GraphNode.class);
 			map.put("renderer", CallbackRenderer.class);
-			map.put("mode", String.class);			
+			map.put("mode", String.class);
+			if (requestProperties != null) {
+				map.put("uriInfo", UriInfo.class);
+				//ignoring as parameterized types are not yet supported
+				//map.put("httpHeaders", multiStringObjectMapType);
+			}
 			String scriptName = extractFileName(renderingSpecification);
 			logger.debug("compiling script: " + scriptName);
 			final CompiledScript cs = scalaService.interpretScalaScript(
@@ -136,6 +152,10 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			values.put("context", context);
 			values.put("renderer", callbackRenderer);
 			values.put("mode", mode);
+			if (requestProperties != null) {
+				values.put("uriInfo", requestProperties.getUriInfo());
+				//values.put("httpHeaders", requestProperties.getHttpHeaders());
+			}
 			//The priviledged block is needed because of FELIX-2273
 			Object execResult = null;
 			try {
@@ -206,4 +226,5 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		String path = renderingSpecification.getPath();
 		return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
 	}
+
 }

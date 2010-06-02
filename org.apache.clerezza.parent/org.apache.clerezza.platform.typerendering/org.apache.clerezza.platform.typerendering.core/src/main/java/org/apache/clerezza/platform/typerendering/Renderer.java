@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -61,8 +63,11 @@ public interface Renderer  {
 	 *
 	 * @param res  RDF resource to be rendered with the template.
 	 * @param context RDF resource providing a redering context.
+	 * @param uriInfo the uriInfo of the request, the renderlet may use
+	 * @param httpHeaders the http-headers of the request
 	 * @param os  where the output will be written to.
 	 */
-	public void render(GraphNode resource, GraphNode context, OutputStream os)
+	public void render(GraphNode node, GraphNode userContext, UriInfo uriInfo,
+			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException;
 }
