@@ -77,7 +77,8 @@ public abstract class RendereringTest {
 		@Override
 		public void render(GraphNode res, GraphNode context, 
 				CallbackRenderer callbackRenderer, URI renderingSpecification,
-				String mode, MediaType mediaType, OutputStream os) {
+				String mode, MediaType mediaType, 
+				Renderlet.RequestProperties requestProperties, OutputStream os) {
 			try {
 				String engineOutput = "";
 
@@ -321,7 +322,7 @@ public abstract class RendereringTest {
 		if (renderer == null) {
 			throw new WebApplicationException();
 		}
-		renderer.render(resource, null, baos);
+		renderer.render(resource, null, null, null, baos);
 		return baos.toString();
 	}	
 	

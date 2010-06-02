@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -32,8 +34,13 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 public class CallbackRendererImpl implements CallbackRenderer {
 	private List<MediaType> mediaTypeList;
 	RenderletRendererFactoryImpl manager;
+	private final UriInfo uriInfo;
+	private final MultivaluedMap<String, Object> httpHeaders;
 
-	CallbackRendererImpl(RenderletRendererFactoryImpl manager, MediaType mediaType) {
+	CallbackRendererImpl(RenderletRendererFactoryImpl manager, UriInfo uriInfo,
+			MultivaluedMap<String, Object> httpHeaders, MediaType mediaType) {
+		this.uriInfo = uriInfo;
+		this.httpHeaders = httpHeaders;
 		this.mediaTypeList = Collections.singletonList(mediaType);
 		this.manager = manager;
 	}
@@ -46,7 +53,7 @@ public class CallbackRendererImpl implements CallbackRenderer {
 			throw new RuntimeException("no renderer could be created for "+
 					resource+" (in "+resource.getNodeContext()+"), "+mode+","+mediaTypeList);
 		}
-		renderer.render(resource, context, os);
+		renderer.render(resource, context, uriInfo, httpHeaders, os);
 	}
 
 }

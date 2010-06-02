@@ -144,6 +144,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
   }
   
   private def getScriptVariableInitialization(bindings: Map[String, Type]) = {
+	  //TODO add type parameterization
    (for ((key,value) <- bindings) yield {
      "val " + key + " =  bindings.get(\""+key+"\").get.asInstanceOf["+value.asInstanceOf[Class[AnyRef]].getName+"]"
    }).mkString(";"+NL)

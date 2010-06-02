@@ -37,6 +37,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -111,6 +112,7 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 		this.uriInfo = uriInfo;
 	}
 
+
 	@Context
 	public void setHttpHeaders(HttpHeaders headers) {
 		this.headers = headers;
@@ -135,7 +137,8 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 			throws IOException, WebApplicationException {
 		String mode = getRenderingMode();
 
-		Renderer renderer = rendererFactory.createRenderer(node, mode, headers.getAcceptableMediaTypes());
+		Renderer renderer = rendererFactory.createRenderer(node, mode,
+				headers.getAcceptableMediaTypes());
 
 		if (renderer == null) {
 			throw new WebApplicationException(
@@ -143,12 +146,12 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 		}
 		httpHeaders.add(HttpHeaders.CONTENT_TYPE, renderer.getMediaType());
 		if (!renderer.getMediaType().equals(MediaType.APPLICATION_XHTML_XML_TYPE)) {
-			renderer.render(node, getUserContext(), entityStream);
+			renderer.render(node, getUserContext(), uriInfo, httpHeaders, entityStream);
 		} else {
 			ResultDocModifier.init();
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				renderer.render(node, getUserContext(), baos);
+				renderer.render(node, getUserContext(), uriInfo, httpHeaders, baos);
 				final byte[] bytes = baos.toByteArray();
 				if (!ResultDocModifier.getInstance().isModified()) {
 					entityStream.write(bytes);

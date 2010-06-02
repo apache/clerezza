@@ -64,7 +64,7 @@ public class TitledContentRenderlet implements Renderlet {
 			CallbackRenderer callbackRenderer,
 			URI renderingSpecification,
 			String mode,
-			MediaType mediaType,
+			MediaType mediaType, RequestProperties requestProperties,
 			OutputStream os) throws IOException {
 		PrintWriter writer = new PrintWriter(os);
 		List<GraphNode> containedNodes = getContainedNodes(res);
