@@ -62,7 +62,7 @@ public class GenericTest {
 		ByteArrayOutputStream baosRendered = new ByteArrayOutputStream();
 		renderlet.render(res, null, null,
 				getClass().getResource(template).toURI(),
-				null, null, baosRendered);
+				null, null, null, baosRendered);
 		ByteArrayOutputStream baosExpected = new ByteArrayOutputStream();
 		InputStream expectedIn = getClass().getResourceAsStream(expected);
 		for (int ch = expectedIn.read(); ch != -1; ch = expectedIn.read()) {
