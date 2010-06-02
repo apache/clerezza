@@ -38,6 +38,7 @@
     </dependencies>
   </dependencyManagement>
   <repositories>
+    <!-- need this m2-incubating repo for uimaj-ep-runtime until 2.3.1-SNAPSHOT is available on Apache snapshot repo -->
     <repository>
       <id>ApacheIncubatorRepository</id>
       <url>
