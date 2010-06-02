@@ -34,9 +34,11 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.Language;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -115,7 +117,8 @@ public class LanguageService {
 	/**
 	 * Returns a set containg all language uris which are in the
 	 * <http://www.lingvoj.org/lingvoj> graph which is included in this bundle.
-	 * @return a set containing all language uris
+	 * @return a set containing all language uris. This uris can be used to 
+	 * add the language to Clerezza over the addLanguage()-method in this class.
 	 */
 	public Set<UriRef> getAllLanguages() {
 		Set<UriRef> result = new HashSet<UriRef>();
@@ -127,6 +130,35 @@ public class LanguageService {
 			result.add(languageUri);
 		}
 		return result;
+	}
+
+	/**
+	 * Returns a language uri of a language which has a label containing the
+	 * specified languageName. The label itself is in the language specified through
+	 * inLanguage. If inLanguage is null, then all labels of a language of searched.
+	 * If no language was found in the <http://www.lingvoj.org/lingvoj>
+	 * graph, then null is returned. The returned uri can be used to
+	 * add the language to Clerezza over the addLanguage()-method in this class.
+	 * @return a language uris
+	 */
+	public UriRef getLanguage(String languageName, Language inLanguage) {
+		Graph lingvojGraph = getLingvojGraph();
+		Iterator<Triple> languages = lingvojGraph.filter(null, RDFS.isDefinedBy,
+				null);
+		while (languages.hasNext()) {
+			GraphNode languageNode = new GraphNode((UriRef) languages.next().getSubject(),
+					lingvojGraph);
+			Iterator<Resource> labels = languageNode.getObjects(RDFS.label);
+			while (labels.hasNext()) {
+				PlainLiteral label = (PlainLiteral) labels.next();
+				if (label.getLanguage().equals(inLanguage) || inLanguage == null) {
+					if (label.getLexicalForm().contains(languageName)) {
+						return (UriRef) languageNode.getNode();
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
