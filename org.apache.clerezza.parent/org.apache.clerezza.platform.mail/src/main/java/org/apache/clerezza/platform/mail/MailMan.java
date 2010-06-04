@@ -26,9 +26,9 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 
 
 /**
- * Subclasses of this interface provide methods for sending emails and 
- * especially emails to platform users.
- *
+ * Implementations provide methods for sending emails, in particular to platform
+ * users.
+ * 
  * @author mir
  */
 public interface MailMan {
@@ -121,11 +121,33 @@ public interface MailMan {
 	 * but not visible to other recipients.
 	 * @param subject the subject of the message
 	 * @param message the message to be sent
+	 * @deprecated use javax.mail with the session returned by MailSessionFactory
 	 */
+	@Deprecated
 	public void sendEmail(InternetAddress from, InternetAddress to,
 			InternetAddress[] cc, InternetAddress[] bcc, String subject,
 			String message) throws MessagingException;
-	
+
+	/**
+     * Sends an message with the specified subject to the specified
+     * <code>Adress</code> to and carbon copies to the <code>Adress<code>es
+     * cc and bcc (Not visible to other recipients). Cc and bcc can be null, all
+     * other parameter has to be specified.
+     * @author oliver straesser
+     * @param from sender address
+     * @param to recipient address
+     * @param cc addresess to which copies of the message will be sent to
+     * @param bcc addreses to which copies of the message will be sent to,
+     * but not visible to other recipients.
+     * @param subject the subject of the message
+     * @param message the message to be sent
+	 * @deprecated use javax.mail with the session returned by MailSessionFactory
+     */
+	@Deprecated
+    public void sendEmail(InternetAddress from, InternetAddress to,
+            InternetAddress[] cc, InternetAddress[] bcc, String subject,
+            String message, String mediaType) throws MessagingException;
+
 	/**
 	 * Sends the rendered <code>GraphNode</code> with the specified subject to the specified
 	 * <code>Adress</code> to and carbon copies to the <code>Adress<code>es
