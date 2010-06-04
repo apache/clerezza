@@ -225,12 +225,12 @@ public class TriaxrsPrefixManager implements BundlePrefixManager {
 	}
 
 	protected void bindConfigurationAdmin(ConfigurationAdmin configAdmin) {
-		logger.info("Binding configuration admin");
+		logger.debug("Binding configuration admin");
 		this.configAdmin = configAdmin;
 	}
 
 	protected void unbindConfigurationAdmin(ConfigurationAdmin configAdmin) {
-		logger.info("Unbinding configuration admin");
+		logger.debug("Unbinding configuration admin");
 	}
 
 	/**

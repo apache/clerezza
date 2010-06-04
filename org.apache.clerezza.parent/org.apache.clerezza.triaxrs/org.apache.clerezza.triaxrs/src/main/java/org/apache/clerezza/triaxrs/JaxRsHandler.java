@@ -182,7 +182,7 @@ public class JaxRsHandler implements Handler {
 	}
 	
 	protected void bindBundlePrefixManager(BundlePrefixManager prefixManager) {
-		logger.info("Binding bundle prefix manager");
+		logger.debug("Binding bundle prefix manager");
 		configLock.writeLock().lock();
 		try {
 			this.prefixManager = prefixManager;
@@ -193,7 +193,7 @@ public class JaxRsHandler implements Handler {
 	}
 	
 	protected void unbindBundlePrefixManager(BundlePrefixManager prefixManager) {
-		logger.info("Unbinding bundle prefix manager");
+		logger.debug("Unbinding bundle prefix manager");
 		configLock.writeLock().lock();
 		try {
 			this.prefixManager = null;
@@ -209,7 +209,7 @@ public class JaxRsHandler implements Handler {
 	 *            The new JAX-RS component to bind.
 	 */
 	protected void bindComponent(ServiceReference serviceReference) {
-		logger.info("Bind component of bundle {}", serviceReference
+		logger.debug("Bind component of bundle {}", serviceReference
 				.getBundle().getSymbolicName());
 		configLock.writeLock().lock();
 		try {
@@ -251,8 +251,8 @@ public class JaxRsHandler implements Handler {
 						component);
 			}
 		} else {
-			logger.info("Register resource {} to path {}", component.getClass().getName(), pathPrefix);
-			logger.info("Path value {} ", path.value());
+			logger.info("Register resource {} to path {}{}", 
+					new Object[]{component.getClass().getName(), pathPrefix, path.value()});
 			collectHttpMethods(component.getClass());
 			final RootResourceDescriptor descriptor = new RootResourceDescriptor(
 					clazz, component, pathPrefix + path.value(), providers);
