@@ -253,13 +253,6 @@ public class Main implements BundleActivator {
 		if (port != null) {
 			configProps.put("org.osgi.service.http.port", port);
 		}
-		configProps.put("org.osgi.framework.system.packages.extra",
-				"sun.rmi.server;sun.rmi.transport;sun.rmi.transport.tcp;"
-						+ "sun.rmi.registry;com.sun.jndi.rmi.registry;"
-						+ "sun.io;"
-						+ "com.sun.jmx;" 
-						+ "sun.misc;"
-						+ "com.sun.net.ssl.internal.ssl;com.sun.net.ssl");
 		configProps.put("org.ops4j.pax.url.mvn.repositories", getCommaSeparatedListOfMavenRepos());
 
 
