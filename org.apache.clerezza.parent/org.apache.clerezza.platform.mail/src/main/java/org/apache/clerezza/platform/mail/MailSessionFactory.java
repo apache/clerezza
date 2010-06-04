@@ -25,6 +25,7 @@ import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 
@@ -40,36 +41,31 @@ public class MailSessionFactory {
 	/**
 	 * Service property
 	 *
-	 * @scr.property value="false"
-	 *               description="Specifies if TLS (SSL) encryption is used."
 	 */
+	@Property(value="false", description="Specifies if TLS (SSL) encryption is used.")
 	public static final String MAIL_USE_TLS = "useTLS";
 	/**
 	 * Service property
 	 *
-	 * @scr.property value="smtp.myHost.org"
-	 *               description="Specifies the SMTP host."
 	 */
+	@Property(value="localhost", description="Specifies the SMTP host.")
 	public static final String MAIL_SMTP_HOST = "smtpHost";
 	/**
 	 * Service property
-	 *
-	 * @scr.property value="25" description="Specifies the SMTP port."
 	 */
+	@Property(value="25", description="Specifies the SMTP port.")
 	public static final String MAIL_SMTP_PORT = "smtpPort";
 	/**
 	 * Service property
 	 *
-	 * @scr.property value="myPassword" description=
-	 *               "Specifies the authentication password (plain text) for SMTP."
 	 */
+	@Property(value="myPassword", description="Specifies the authentication password for SMTP.")
 	public static final String MAIL_SMTP_PASSWORD = "smtpPassword";
 	/**
 	 * Service property
 	 *
-	 * @scr.property value="myUserName"
-	 *               description="Specifies the User to authenticate for SMTP."
 	 */
+	@Property(value="myUserName", description="Specifies the User to authenticate for SMTP.")
 	public static final String MAIL_SMTP_USER = "smtpUser";
 
 	private Properties properties;
