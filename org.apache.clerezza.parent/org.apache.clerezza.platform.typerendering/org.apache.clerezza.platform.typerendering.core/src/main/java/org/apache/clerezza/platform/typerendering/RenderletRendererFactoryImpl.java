@@ -84,8 +84,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	private static final String RDF_TYPE_PRIO_LIST_URI =
 			"http://tpf.localhost/rdfTypePriorityList";
 
-	private Map<UriRef, RenderletDefinition[]> type2DefinitionMap = 
-			Collections.synchronizedMap(new HashMap<UriRef, RenderletDefinition[]>());
+	private Map<UriRef, RenderletDefinition[]> type2DefinitionMap = null;
 	/**
 	 * Mapping of service pid's of renderlets to the service objects.
 	 */
@@ -121,7 +120,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 			if (!rdfTypes.contains(prioRdfType)) {
 				continue;
 			}
-			RenderletDefinition[] renderletDefs = type2DefinitionMap.get(prioRdfType);
+			RenderletDefinition[] renderletDefs = getType2DefinitionMap().get(prioRdfType);
 			if (renderletDefs == null) {
 				continue;
 			}
@@ -207,7 +206,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 				}
 			}
 		}
-		setupType2DefinitionMap();
+		type2DefinitionMap = null;
 	}
 
 	private void removeExisting(UriRef rdfType, String mode,
@@ -228,16 +227,19 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 
 	private GraphNode findDefinition(UriRef rdfType, String mode,
 			MediaType mediaType, boolean builtIn) {
-		RenderletDefinition[] renderletDefs = type2DefinitionMap.get(rdfType);
-		if (renderletDefs == null) {
-			return null;
+
+		//keeping this independent of typedefinitionmap to allow better performance
+		List<RenderletDefinition> definitionList = new ArrayList<RenderletDefinition>();
+		Iterator<Triple> renderletDefsTriple =
+				configGraph.filter(null, TYPERENDERING.renderedType, rdfType);
+		while (renderletDefsTriple.hasNext()) {
+			definitionList.add(
+					new RenderletDefinition((BNode) renderletDefsTriple.next().getSubject(),
+					configGraph));
 		}
-		for (RenderletDefinition renderletDef : renderletDefs) {
+		for (RenderletDefinition renderletDef : definitionList) {
 
 			if (builtIn && !renderletDef.isBuiltIn()) {
-				continue;
-			}
-			if (!rdfType.equals(renderletDef.getRdfType())) {
 				continue;
 			}
 			if (!equals(mediaType, renderletDef.getMediaType())) {
@@ -325,11 +327,21 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 				new FilterTriple(null, RDF.first, null), 1000);
 		this.componentContext = componentContext;
 		registerRenderletsFromStore();
-		setupType2DefinitionMap();
 	}
 
-	private void setupType2DefinitionMap() {
-		type2DefinitionMap.clear();
+	private Map<UriRef, RenderletDefinition[]> getType2DefinitionMap() {
+		if (type2DefinitionMap == null) {
+			synchronized(this) {
+				if (type2DefinitionMap == null) {
+					createType2DefinitionMap();
+				}
+			}
+		}
+		return type2DefinitionMap;
+	}
+
+	private void createType2DefinitionMap() {
+		type2DefinitionMap = new HashMap<UriRef, RenderletDefinition[]>(50);
 		for (Resource prioRdfType : rdfTypePrioList) {
 			Iterator<Triple> renderletDefs =
 					configGraph.filter(null, TYPERENDERING.renderedType, prioRdfType);
