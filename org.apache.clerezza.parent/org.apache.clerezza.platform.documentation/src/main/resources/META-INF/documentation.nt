@@ -1,0 +1,47 @@
+<bundle:///intro-content-el/0> <http://discobits.org/ontology#infoBit> "Any bundle may provide some user documentation. This documentation is provided by a file named \"documentation.nt\" in the META-INF directory of the bundle-jar. This file can provide multiple documentation resources described using the discobits ontology. The resources have UriRefs starting with \"bundle:///\", this will be replaced with http://&lt;hostname&gt;/bundle-doc/&lt;Bundle-SymbolicName&gt; by the documentation aggregator which provides the graph http://tpf.localhost/documentation.graph containing the documentation of all installed bundles. To reference a documentation entry from another bundle the bundle-uri can contain a Borundle-SymbolicName after the second slash, e.g. bundle://org.apache.clerezza.platform.content/intro."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/1> <http://discobits.org/ontology#infoBit> "By convention any bundle documentation provides a resource named bundle:///intro introducing the functionality of the bundle."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/2-content-el/0> <http://discobits.org/ontology#infoBit> "The recommended way to create and edit the documentation of a bundle is as follows:<ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>Launch clerezza (in the following we assume its running on localhost:8080)</li><li>Install and start the stable n-triples serialization provider (to make the stored files more suitable for version control) by entering on the commmand line: <code>start mvn:org.apache.clerezza/org.apache.clerezza.rdf.stable.serializer</code></li>\n<li>Install and start the file storage provider(to access local rdf files as named graphs)  by entering on the commmand line: <code>start mvn:org.apache.clerezza/org.apache.clerezza.rdf.file.storage</code><code></code></li><li>If it doesn't exist yet create an empty file src/main/resources/META-INF/documentation.nt in the project to be documented and </li><li>Open http://localhost:8080/tools/editor/, enter the file-uri of the previously created file as Graph and a bundle-uri (such as bundle:///intro) as resource</li><li>edit, save, ship your bundle</li></ul>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/2-content-el/0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/2-content> <http://discobits.org/ontology#contains> _:d220657c187b6f99706e4719dd5f78891 . 
+<bundle:///intro-content-el/2-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#OrderedContent> .
+<bundle:///intro-content-el/2-title> <http://discobits.org/ontology#infoBit> "Writing Documentation"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/2-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/2> <http://discobits.org/ontology#contains> _:24e6fa9d86686dcbfb52b5127751bae61 . 
+<bundle:///intro-content-el/2> <http://discobits.org/ontology#contains> _:4323ccab3a7cc9e8efac0bc9acb7a9631 . 
+<bundle:///intro-content-el/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:1b0636249474bcd2765ae5c9853a35851 . 
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:1e27a3b4f21eada7ec61fd7c55f2bd221 . 
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:4596d79d6be3785fa70a26340c95ee351 . 
+<bundle:///intro-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#OrderedContent> .
+<bundle:///intro-title> <http://discobits.org/ontology#infoBit> "Platform Documentation Aggregator"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro> <bundle:///nullafter> <bundle://org.apache.clerezza.platform.content/discobits-editor> .
+<bundle:///intro> <http://discobits.org/ontology#contains> _:566a75916142ac411441d067f09a49f71 . 
+<bundle:///intro> <http://discobits.org/ontology#contains> _:e3ec06c4352a2370e8bf5d67e15092151 . 
+<bundle:///intro> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+_:1b0636249474bcd2765ae5c9853a35851 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/1> . 
+_:1b0636249474bcd2765ae5c9853a35851 <http://discobits.org/ontology#pos> "1" . 
+_:1b0636249474bcd2765ae5c9853a35851 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:1e27a3b4f21eada7ec61fd7c55f2bd221 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/0> . 
+_:1e27a3b4f21eada7ec61fd7c55f2bd221 <http://discobits.org/ontology#pos> "0" . 
+_:1e27a3b4f21eada7ec61fd7c55f2bd221 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:24e6fa9d86686dcbfb52b5127751bae61 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/2-content> . 
+_:24e6fa9d86686dcbfb52b5127751bae61 <http://discobits.org/ontology#pos> "1" . 
+_:24e6fa9d86686dcbfb52b5127751bae61 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:4323ccab3a7cc9e8efac0bc9acb7a9631 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/2-title> . 
+_:4323ccab3a7cc9e8efac0bc9acb7a9631 <http://discobits.org/ontology#pos> "0" . 
+_:4323ccab3a7cc9e8efac0bc9acb7a9631 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:4596d79d6be3785fa70a26340c95ee351 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/2> . 
+_:4596d79d6be3785fa70a26340c95ee351 <http://discobits.org/ontology#pos> "2" . 
+_:4596d79d6be3785fa70a26340c95ee351 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:566a75916142ac411441d067f09a49f71 <http://discobits.org/ontology#holds> <bundle:///intro-content> . 
+_:566a75916142ac411441d067f09a49f71 <http://discobits.org/ontology#pos> "1" . 
+_:566a75916142ac411441d067f09a49f71 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:d220657c187b6f99706e4719dd5f78891 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/2-content-el/0> . 
+_:d220657c187b6f99706e4719dd5f78891 <http://discobits.org/ontology#pos> "0" . 
+_:d220657c187b6f99706e4719dd5f78891 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:e3ec06c4352a2370e8bf5d67e15092151 <http://discobits.org/ontology#holds> <bundle:///intro-title> . 
+_:e3ec06c4352a2370e8bf5d67e15092151 <http://discobits.org/ontology#pos> "0" . 
+_:e3ec06c4352a2370e8bf5d67e15092151 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
