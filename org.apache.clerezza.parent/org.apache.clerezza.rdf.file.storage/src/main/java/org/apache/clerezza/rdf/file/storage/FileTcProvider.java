@@ -121,7 +121,11 @@ public class FileTcProvider implements WeightedTcProvider {
 		initialize();
 		MGraph mGraph = uriRef2MGraphMap.get(name);
 		if (mGraph == null) {
-			File file = new File(URI.create(name.getUnicodeString()));
+			final String uriString = name.getUnicodeString();
+			if (!uriString.startsWith("file:")) {
+				throw new NoSuchEntityException(name);
+			}
+			File file = new File(URI.create(uriString));
 			if (file.exists()) {
 				return createMGraph(name);
 			} else {
