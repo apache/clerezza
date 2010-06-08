@@ -37,6 +37,7 @@
 		<module>org.apache.clerezza.maven-jaxrs-report-plugin</module>
 		<module>org.apache.clerezza.maven-ontologies-plugin</module>
 		<module>org.apache.clerezza.maven-pladoc-plugin</module>
+		<module>org.apache.clerezza.platform</module>
 		<module>org.apache.clerezza.platform.accountcontrolpanel</module>
 		<module>org.apache.clerezza.platform.concepts</module>
 		<module>org.apache.clerezza.platform.config</module>
@@ -626,6 +627,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.jaxrs.testutils</artifactId>
 				<version>0.9-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>

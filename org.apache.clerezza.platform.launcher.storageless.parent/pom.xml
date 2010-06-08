@@ -112,6 +112,11 @@
 		-->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.usermanager</artifactId>
 			<scope>runtime</scope>
 		</dependency>
