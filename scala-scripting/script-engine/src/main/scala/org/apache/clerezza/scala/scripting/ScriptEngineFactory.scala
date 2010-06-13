@@ -21,24 +21,30 @@ package org.apache.clerezza.scala.scripting;
 
 
 import org.apache.felix.scr.annotations.Component;
+import org.osgi.framework.BundleContext
 import org.osgi.framework.BundleEvent
 import org.osgi.framework.BundleListener
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.Bundle
 import java.io.{File, PrintWriter, Reader, StringWriter}
 import java.util.{ArrayList, Arrays};
+//import scala.collection.immutable.Map
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
-import scala.tools.nsc.io.{AbstractFile, PlainFile}
+import scala.tools.nsc.io.{AbstractFile, PlainFile, VirtualDirectory}
 import scala.tools.nsc.util._
 import scala.tools.nsc.symtab.SymbolLoaders
 import java.net._
+import scala.tools.nsc.reporters.ConsoleReporter
+import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.reporters.Reporter
 import scala.tools.util.PathResolver
 import scala.tools.nsc.util.{ClassPath, JavaClassPath}
 import javax.script.ScriptContext
-import javax.script.{ScriptEngineFactory => JavaxEngineFactory, ScriptEngine, AbstractScriptEngine, Bindings, SimpleBindings, ScriptException}
+import javax.script.{ScriptEngineFactory => JavaxEngineFactory, Compilable, 
+					 CompiledScript, ScriptEngine, AbstractScriptEngine, Bindings,
+					 SimpleBindings, ScriptException}
 import scala.actors.Actor
 import scala.actors.Actor._
 
@@ -51,6 +57,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 
 	var factory: InterpreterFactory = null
 	var _interpreter : Interpreter = null;
+	private var bundleContext: BundleContext = null
 	def interpreter = {
 		if (_interpreter == null) {
 			this.synchronized {
@@ -91,12 +98,12 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 	override def getScriptEngine : ScriptEngine = MyScriptEngine
 
 	def activate(componentContext: ComponentContext)= {
-		val bundleContext = componentContext.getBundleContext
+		bundleContext = componentContext.getBundleContext
 		bundleContext.addBundleListener(this)
 	}
 
 	def deactivate(componentContext: ComponentContext) = {
-		val bundleContext = componentContext.getBundleContext
+		bundleContext = componentContext.getBundleContext
 		bundleContext.removeBundleListener(this)
 	}
 
@@ -110,7 +117,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 	}
 	/** Inner object as it accesse interpreter
 	 */
-	object MyScriptEngine extends AbstractScriptEngine() {
+	object MyScriptEngine extends AbstractScriptEngine() with Compilable {
 		override def eval(script : Reader, context : ScriptContext) : Object = {
 			val scriptStringWriter = new StringWriter()
 			var ch = script.read
@@ -175,6 +182,62 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 		}
 		override def getFactory() = ScriptEngineFactory.this
 		override def createBindings() : Bindings = new SimpleBindings
+
+		override def compile(script: Reader): CompiledScript = {
+			val scriptStringWriter = new StringWriter()
+			var ch = script.read
+			while (ch != -1) {
+				scriptStringWriter.write(ch)
+				ch = script.read
+			}
+			compile(scriptStringWriter.toString)
+		}
+
+		val virtualDirectory = new VirtualDirectory("(memory)", None)
+		var classCounter = 0
+
+		override def compile(script: String): CompiledScript = {
+			val objectName = "CompiledScript"+classCounter
+			classCounter += 1
+			val classCode = "object " + objectName + """ {
+				|	def run($: Map[String, Object]) = {
+				|""".stripMargin + script +"""
+				|	}
+				|}""".stripMargin
+			val sources: List[SourceFile] = List(new BatchSourceFile("<script>", classCode))
+			(new compiler.Run).compileSources(sources)
+
+			new CompiledScript() {
+				override def eval(context: ScriptContext) = {
+					var map = Map[String, Object]()
+					import _root_.scala.collection.JavaConversions._
+					for (	scope <- context.getScopes;
+							if (context.getBindings(scope.intValue) != null);
+							entry <- context.getBindings(scope.intValue)) {
+						map = map + (entry._1 -> entry._2)
+					}
+					val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
+					val runMethod = classLoader.findClass(objectName).getMethod("run", classOf[Map[String, Object]])
+					runMethod.invoke(null, map)
+				}
+				override def getEngine = MyScriptEngine.this
+			}
+		}
+
+		
+
+		lazy val compiler = {
+			val settings = new Settings	
+			settings.outputDirs setSingleOutput virtualDirectory
+			val out = new PrintWriter(System.out)
+			new BundleContextScalaCompiler(bundleContext, settings,										   
+			new ConsoleReporter(settings, null, out) {
+				override def printMessage(msg: String) {
+					out println msg
+					out.flush()
+				}
+			})
+		}
 
 		/**
 		 * returns an accessible class or interface that is implemented by class,
