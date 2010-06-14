@@ -19,6 +19,7 @@
 package org.apache.clerezza.triaxrs.mock;
 
 import java.net.InetAddress;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -130,9 +131,11 @@ public class RequestImpl implements Request {
     public void setScheme(URIScheme scheme) {
         this.scheme = scheme;
     }
+
+	public X509Certificate[] getCertificates() {
+		return null;
+	}
     
   
 }
-
-// $Log: $
 
