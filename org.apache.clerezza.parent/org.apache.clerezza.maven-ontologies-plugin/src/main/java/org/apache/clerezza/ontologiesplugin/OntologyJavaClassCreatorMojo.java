@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -185,10 +186,13 @@ public class OntologyJavaClassCreatorMojo extends AbstractMojo {
 		dir.mkdirs();
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new File(rootPath + pathToJavaClass + className + ".java"));
+			out = new PrintWriter(new File(rootPath + pathToJavaClass + className + ".java"), "utf-8");
 		} catch (FileNotFoundException e) {
 			getLog().error(e.getMessage(), e);
 			return;
+		} catch (UnsupportedEncodingException e) {
+			getLog().error(e.getMessage(), e);
+			throw new RuntimeException("utf-8 not supported!");
 		}
 		try {
 			schemaGen.writeClass(out);
