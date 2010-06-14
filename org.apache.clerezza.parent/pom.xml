@@ -791,17 +791,17 @@
 			<dependency>
 				<groupId>org.wymiwyg</groupId>
 				<artifactId>wrhapi</artifactId>
-				<version>0.8.2</version>
+				<version>0.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>
 				<artifactId>wrhapi-osgi</artifactId>
-				<version>0.3</version>
+				<version>0.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>
 				<artifactId>wrhapi-jetty</artifactId>
-				<version>0.8.1</version>
+				<version>0.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>

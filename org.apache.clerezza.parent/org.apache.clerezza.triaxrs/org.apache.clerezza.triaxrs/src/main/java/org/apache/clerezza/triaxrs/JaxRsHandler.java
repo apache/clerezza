@@ -467,6 +467,9 @@ public class JaxRsHandler implements Handler {
 	public void handle(Request origRequest, Response response)
 			throws HandlerException {
 
+		//DEBUG
+		logger.info("Client certificates "+origRequest.getCertificates());
+
 		WebRequest request = new WebRequestImpl(origRequest, providers);
 		localRequest.set(request);
 
