@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Map;
@@ -34,7 +35,12 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.logging.Level;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
+import javax.script.SimpleBindings;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
@@ -44,11 +50,12 @@ import org.apache.clerezza.platform.typerendering.CallbackRenderer;
 import org.apache.clerezza.platform.typerendering.RenderingException;
 import org.apache.clerezza.platform.typerendering.Renderlet;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.scala.service.CompiledScript;
-import org.apache.clerezza.scala.service.ScalaService;
 import org.apache.clerezza.platform.typerendering.RenderingspecificationException;
 import org.apache.clerezza.platform.typerendering.TypeRenderingException;
-import scala.Seq;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import scala.collection.Seq;
 
 /**
  * 
@@ -56,16 +63,16 @@ import scala.Seq;
  * 
  * @author rbn, pmg
  *  
- * @scr.component
- * @scr.service interface="org.apache.clerezza.platform.typerendering.Renderlet"
  * 
  */
+@Component
+@Service(Renderlet.class)
 public class ScalaServerPagesRenderlet implements Renderlet {
 
-	/**
-	 * @scr.reference
-	 */
-	private ScalaService scalaService;
+
+	@Reference(target="(javax.script.language=scala)")
+	private ScriptEngineFactory scalaScriptEngineFactory;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ScalaServerPagesRenderlet.class);
 	private int byteHeaderLines = 0;
 	private Type multiStringObjectMapType;
@@ -83,14 +90,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	public ScalaServerPagesRenderlet() {
 	}
 
-	/**
-	 * constructor used by tests
-	 * 
-	 * @param scalaService
-	 */
-	ScalaServerPagesRenderlet(ScalaService scalaService) {
-		this.scalaService = scalaService;
-	}
+
 
 	private final String lineSeparator = System.getProperty("line.separator");
 	private final byte[] byteHeader;
@@ -115,6 +115,9 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 
 	private final byte[] byteCloser = (';' + lineSeparator).getBytes();
 
+	//TODO a map with SoftReferences as keys
+	private Map<byte[], CompiledScript> compiledScripts = new HashMap<byte[], CompiledScript>();
+	
 	@Override
 	public void render(GraphNode res, GraphNode context,
 			CallbackRenderer callbackRenderer, URI renderingSpecification,
@@ -132,22 +135,13 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			}
 			//add the closing ";" 
 			baos.write(byteCloser);
-			final Map<String, Type> map = new HashMap<String, Type>();
-			map.put("res", GraphNode.class);
-			map.put("context", GraphNode.class);
-			map.put("renderer", CallbackRenderer.class);
-			map.put("mode", String.class);
-			if (requestProperties != null) {
-				map.put("uriInfo", UriInfo.class);
-				//ignoring as parameterized types are not yet supported
-				//map.put("httpHeaders", multiStringObjectMapType);
-			}
 			String scriptName = extractFileName(renderingSpecification);
 			logger.debug("compiling script: " + scriptName);
-			final CompiledScript cs = scalaService.interpretScalaScript(
-					new String(baos.toByteArray(), "UTF-8"), map, scriptName, getByteHeaderLines());			
+			final byte[] scriptBytes = baos.toByteArray();
+			final CompiledScript cs = getCompiledScript(scriptBytes);
+			
 			logger.debug("compiled");
-			final Map<String, Object> values = new HashMap<String, Object>();
+			final SimpleBindings values = new SimpleBindings();
 			values.put("res", res);
 			values.put("context", context);
 			values.put("renderer", callbackRenderer);
@@ -163,7 +157,11 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 
 					@Override
 					public Object run() {
-						return cs.execute(values);
+						try {
+							return cs.eval(values);
+						} catch (ScriptException ex) {
+							throw new RuntimeException(ex);
+						}
 					}
 				});
 			} catch (PrivilegedActionException ex) {
@@ -226,5 +224,21 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		String path = renderingSpecification.getPath();
 		return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
 	}
+
+	private CompiledScript getCompiledScript(byte[] scriptBytes) throws ScriptException {
+		CompiledScript cs = compiledScripts.get(scriptBytes);
+		if (cs == null) {
+			try {
+				cs = ((Compilable)scalaScriptEngineFactory.getScriptEngine())
+						.compile(new String(scriptBytes, "UTF-8"));
+			} catch (UnsupportedEncodingException ex) {
+				throw new RuntimeException(ex);
+			}
+			compiledScripts.put(scriptBytes, cs);
+		}
+		return cs;
+	}
+
+
 
 }

@@ -1,3 +1,0 @@
-
-
-Contains software developed by the Apache Sling project http://sling.apache.org/

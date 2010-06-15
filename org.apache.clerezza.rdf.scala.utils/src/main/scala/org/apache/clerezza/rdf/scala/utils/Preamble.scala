@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
-import rdf.utils.GraphNode
-import rdf.core._
+import org.apache.clerezza.rdf.utils.GraphNode
+import org.apache.clerezza.rdf.core._
 
 /**
 * This object provides the implicit conversions. Typically this is used by

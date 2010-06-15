@@ -21,10 +21,10 @@ package org.apache.clerezza.rdf.scala.utils
 import java.util.Iterator
 import _root_.scala.collection
 import collection.mutable._
-import collection.jcl.Conversions._
-import collection.jcl.Buffer
+import collection.immutable
+import _root_.scala.collection.JavaConversions._
 
-class CollectedIter[T](iter: Iterator[T]) extends Seq[T] {
+class CollectedIter[T](iter: Iterator[T]) extends immutable.Seq[T] {
 
 	def this(jList : java.util.List[T]) = this(jList.iterator())
 	
@@ -44,8 +44,8 @@ class CollectedIter[T](iter: Iterator[T]) extends Seq[T] {
 	* returns a new fully expanded and sorted CollectedIter
 	*/
 	def sort(lt : (T,T) => Boolean) = {
-		new CollectedIter(java.util.Arrays.asList(
-				elements.toList.sort(lt).toArray: _*))
+		val sortedElems = iterator.toList.sortWith(lt)
+		new CollectedIter[T](sortedElems)
 	}
 
     /**
@@ -81,8 +81,8 @@ class CollectedIter[T](iter: Iterator[T]) extends Seq[T] {
         }
     }
 
-    override def elements = {
+    override def iterator = {
     	ensureReadTill(Integer.MAX_VALUE)
-        collectedElems.elements
+        collectedElems.iterator
     }
 }

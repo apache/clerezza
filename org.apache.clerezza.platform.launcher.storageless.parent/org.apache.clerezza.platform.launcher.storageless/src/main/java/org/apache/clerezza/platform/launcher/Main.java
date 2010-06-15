@@ -255,6 +255,13 @@ public class Main implements BundleActivator {
 		}
 		configProps.put("org.ops4j.pax.url.mvn.repositories", getCommaSeparatedListOfMavenRepos());
 
+		String extraPackages = (String) configProps.get("org.osgi.framework.system.packages.extra");
+		if (extraPackages == null) {
+			extraPackages = "";
+		}
+		configProps.put("org.osgi.framework.system.packages.extra",
+				"sun.misc;"
+				+ extraPackages);
 
 		return configProps;
 
