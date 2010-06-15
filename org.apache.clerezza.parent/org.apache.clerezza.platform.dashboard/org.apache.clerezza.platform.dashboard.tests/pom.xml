@@ -153,11 +153,7 @@
 			<artifactId>com.ibm.icu</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.scala</artifactId>
-			<scope>provided</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm-all</artifactId>
@@ -170,15 +166,18 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.scala-lang-osgi</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>2.7.5</version>
+			<groupId>org.apache.clerezza.scala</groupId>
+			<artifactId>scala-library-osgi</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.scala-lang-osgi</groupId>
-			<artifactId>scala-compiler</artifactId>
-			<version>2.7.5</version>
+			<groupId>org.apache.clerezza.scala</groupId>
+			<artifactId>scala-compiler-osgi</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza.scala</groupId>
+			<artifactId>script-engine</artifactId>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

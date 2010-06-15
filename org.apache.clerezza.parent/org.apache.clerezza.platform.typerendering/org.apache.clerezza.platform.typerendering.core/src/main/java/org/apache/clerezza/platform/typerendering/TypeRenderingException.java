@@ -34,7 +34,7 @@ public abstract class TypeRenderingException extends RuntimeException{
 
 	public TypeRenderingException(String message, URI renderingSpecification,
 			GraphNode renderNode, GraphNode context) {
-		super(message);
+		super(message+" in "+renderingSpecification);
 		this.node = renderNode;
 		this.renderingSpecification = renderingSpecification;
 		this.context = context;

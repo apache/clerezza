@@ -20,6 +20,7 @@
 			<dependency>
 				<groupId>org.scala-lang</groupId>
 				<artifactId>scala-library</artifactId>
+<!-- test failures with RC>2, see http://groups.google.com/group/scalatest-users/browse_thread/thread/1c68b6ebba676bc8 -->
 				<version>2.8.0.RC2</version>
 			</dependency>
 			<dependency>

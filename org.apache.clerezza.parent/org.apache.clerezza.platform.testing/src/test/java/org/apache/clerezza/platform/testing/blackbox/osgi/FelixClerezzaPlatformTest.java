@@ -107,8 +107,8 @@ public class FelixClerezzaPlatformTest {
 				"org.apache.clerezza.platform.graphprovider.content").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.templating").versionAsInProject(),
-				mavenBundle().groupId("org.apache.clerezza").artifactId(
-				"org.apache.clerezza.scala").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza.scala").artifactId(
+				"script-engine").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.typerendering.scalaserverpages").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(

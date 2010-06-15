@@ -35,7 +35,7 @@
 						<Embed-Dependency>*</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>
                         <Export-Package>scala.*</Export-Package>
-						<Import-Package>!ch.epfl.lamp.*,!sun.*,
+						<Import-Package>!sun.*,
 						!org.apache.tools.ant,!jline</Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>

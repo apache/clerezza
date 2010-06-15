@@ -18,10 +18,11 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
-import rdf.utils.GraphNode
-import rdf.core.{UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
+import org.apache.clerezza.rdf.utils.GraphNode
+import org.apache.clerezza.rdf.core.{UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
 import java.util.Iterator
-import _root_.scala.collection.jcl.Conversions
+import _root_.scala.collection.JavaConversions
+import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
 
 class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGraph) {
@@ -42,7 +43,7 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
     /**
 	 * returns a List with the elements of the rdf:List represented by this node
 	 */
-    def !! = (for (listElem <- Conversions.convertList(node.asList)) yield {
+    def !! = (for (listElem <- node.asList) yield {
 			new RichGraphNode(new GraphNode(listElem, node.getGraph))
 		}).toList
 

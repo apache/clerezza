@@ -17,6 +17,7 @@
             <provide interface="javax.script.ScriptEngineFactory"/>
         </service>
         <property name="service.pid" value="org.apache.clerezza.scala.scripting.ScriptEngineFactory"/>
+		<property name="javax.script.language" value="scala" />
 		<reference name="interpreterFactory"
 				interface="org.apache.clerezza.scala.scripting.InterpreterFactory"
 				cardinality="1..1"

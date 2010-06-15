@@ -193,39 +193,11 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 			compile(scriptStringWriter.toString)
 		}
 
-		val virtualDirectory = new VirtualDirectory("(memory)", None)
+		
 		var classCounter = 0
 
-		override def compile(script: String): CompiledScript = {
-			val objectName = "CompiledScript"+classCounter
-			classCounter += 1
-			val classCode = "object " + objectName + """ {
-				|	def run($: Map[String, Object]) = {
-				|""".stripMargin + script +"""
-				|	}
-				|}""".stripMargin
-			val sources: List[SourceFile] = List(new BatchSourceFile("<script>", classCode))
-			(new compiler.Run).compileSources(sources)
-
-			new CompiledScript() {
-				override def eval(context: ScriptContext) = {
-					var map = Map[String, Object]()
-					import _root_.scala.collection.JavaConversions._
-					for (	scope <- context.getScopes;
-							if (context.getBindings(scope.intValue) != null);
-							entry <- context.getBindings(scope.intValue)) {
-						map = map + (entry._1 -> entry._2)
-					}
-					val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
-					val runMethod = classLoader.findClass(objectName).getMethod("run", classOf[Map[String, Object]])
-					runMethod.invoke(null, map)
-				}
-				override def getEngine = MyScriptEngine.this
-			}
-		}
-
-		
-
+		val virtualDirectory = new VirtualDirectory("(memory)", None)
+		val msgWriter = new StringWriter
 		lazy val compiler = {
 			val settings = new Settings	
 			settings.outputDirs setSingleOutput virtualDirectory
@@ -233,11 +205,48 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 			new BundleContextScalaCompiler(bundleContext, settings,										   
 			new ConsoleReporter(settings, null, out) {
 				override def printMessage(msg: String) {
-					out println msg
-					out.flush()
+					msgWriter write msg
+					//out.flush()
 				}
 			})
 		}
+		
+		override def compile(script: String): CompiledScript = {
+			//inefficient but thread safe
+			compiler.synchronized {
+				val objectName = "CompiledScript"+classCounter
+				classCounter += 1
+				val classCode = "object " + objectName + """ {
+					|	def run($: Map[String, Object]) = {
+					|""".stripMargin + script +"""
+					|	}
+					|}""".stripMargin
+				val sources: List[SourceFile] = List(new BatchSourceFile("<script>", classCode))
+				(new compiler.Run).compileSources(sources)
+				if (compiler.reporter.hasErrors) {
+					throw new ScriptException(msgWriter.toString, "script", -1);
+				}
+				new CompiledScript() {
+					override def eval(context: ScriptContext) = {
+						var map = Map[String, Object]()
+						import _root_.scala.collection.JavaConversions._
+						for (	scope <- context.getScopes;
+								if (context.getBindings(scope.intValue) != null);
+								entry <- context.getBindings(scope.intValue)) {
+							map = map + (entry._1 -> entry._2)
+						}
+						val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
+						val runMethod = classLoader.findClass(objectName).getMethod("run", classOf[Map[String, Object]])
+						runMethod.invoke(null, map)
+					}
+					override def getEngine = MyScriptEngine.this
+				}
+			}
+		}
+
+		
+
+		
 
 		/**
 		 * returns an accessible class or interface that is implemented by class,

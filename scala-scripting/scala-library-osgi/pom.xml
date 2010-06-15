@@ -30,6 +30,7 @@
 						<Embed-Dependency>*</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>
 						<Export-Package>scala.*</Export-Package>
+						<Import-Package>!sun.misc, * </Import-Package>
 						<!-- <DynamicImport-Package>*</DynamicImport-Package> -->
 					</instructions>
 				</configuration>

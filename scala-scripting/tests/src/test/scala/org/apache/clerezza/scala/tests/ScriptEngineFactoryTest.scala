@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.exam.Inject;
 import org.osgi.framework.BundleContext;
-import javax.script.{ScriptEngineFactory, Bindings, ScriptException}
+import javax.script.{ScriptEngineFactory, Bindings, ScriptException, Compilable}
 import org.osgi.util.tracker.ServiceTracker
 import scala.actors.Actor
 import scala.math.random
@@ -128,13 +128,21 @@ s"""
 		bindings.put("s",s)
 		Assert.assertEquals(s, engine.eval("s", bindings))
 		bundleContext.installBundle("http://repo2.maven.org/maven2/org/wymiwyg/wrhapi/0.8.2/wrhapi-0.8.2.jar");
-		println("sleeping")
-		Thread.sleep(1000)
+		Thread.sleep(100)
 		val script = """
-import org.wymiwyg.wrhapi._
-val h : Handler = null
-s"""
+		|import org.wymiwyg.wrhapi._
+		|val h : Handler = null
+		|s""".stripMargin
 		Assert.assertEquals(s, engine.eval(script, bindings))
+	}
+
+	@Test
+	def compiledScript(): Unit = {
+		val string = "hello"
+		val script = "\""+string+"\""
+		val engine = factory.getScriptEngine.asInstanceOf[Compilable]
+		val compiledScript = engine.compile(script)
+		Assert.assertEquals(string, compiledScript.eval())
 	}
 
 	//This seems hard to realize before https://lampsvn.epfl.ch/trac/scala/ticket/3513 is fixed

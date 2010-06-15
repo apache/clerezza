@@ -18,10 +18,10 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
-import rdf.utils._
-import rdf.core._
-import rdf.core.impl._
-import rdf.ontologies._
+import org.apache.clerezza.rdf.utils._
+import org.apache.clerezza.rdf.core._
+import org.apache.clerezza.rdf.core.impl._
+import org.apache.clerezza.rdf.ontologies._
 import org.junit._
 import Preamble._
 
@@ -100,9 +100,9 @@ class RichGraphNodeTest {
 		Assert.assertEquals(new PlainLiteralImpl("foo"),(node/SKOS.related).asList().get(1))
 		Assert.assertEquals(new PlainLiteralImpl("foo"), (node/SKOS.related%0!!)(1)!)
 		Assert.assertEquals(new PlainLiteralImpl("foo"),
-							(for (value <- node/SKOS.related%0!!) yield value!)(1))
+							(for (value <- node/SKOS.related%0!!) yield value!).toList(1))
 		Assert.assertEquals(new PlainLiteralImpl("bar"),
-							(for (value <- node/SKOS.related%0!!) yield value!)(2))
+							(for (value <- node/SKOS.related%0!!) yield value!).toList(2))
 		Assert.assertEquals(new PlainLiteralImpl("foo"), node/SKOS.related%0%!!1!)
 	}
 

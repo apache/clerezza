@@ -75,15 +75,18 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.scala-lang-osgi</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
+			<groupId>org.apache.clerezza.scala</groupId>
+			<artifactId>scala-library-osgi</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.scala-lang-osgi</groupId>
-			<artifactId>scala-compiler</artifactId>
-			<version>${scala.version}</version>
+			<groupId>org.apache.clerezza.scala</groupId>
+			<artifactId>scala-compiler-osgi</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza.scala</groupId>
+			<artifactId>script-engine</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -282,10 +285,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.scala</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.templating</artifactId>
 			<scope>runtime</scope>
 		</dependency>
@@ -436,12 +435,6 @@
 		</dependency>
 	</dependencies>
 	<repositories>
-		<repository>
-			<!-- org.scala-lang-osgi is not in central repo -->
-			<id>scala-tools</id>
-			<name>Scala tools</name>
-			<url>http://scala-tools.org/repo-releases/</url>
-		</repository>
 		<repository>
 			<id>sun</id>
 			<name>sun java repository</name>
