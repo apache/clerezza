@@ -39,6 +39,10 @@ import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
 
 /**
  * 
+ * This class represents the union of multiple triple collections. A 
+ * UnionGraph appears like a merge of the different graphs (see. 
+ * http://www.w3.org/TR/rdf-mt/#graphdefs).
+ * 
  * @author hasan
  */
 public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
@@ -47,6 +51,12 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
 	private Lock readLock;
 	private Lock writeLock;
 
+	/**
+	 * Constructs a UnionMGraph over the specified baseTripleCollections. Write
+	 * and delete operations are forwarded to the first baseTripleCollections. 
+	 * 
+	 * @param baseTripleCollections the baseTripleCollections
+	 */
 	public UnionMGraph(TripleCollection... baseTripleCollections) {
 		this.baseTripleCollections = baseTripleCollections;
 		readLock = getPartialReadLock(0);
