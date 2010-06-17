@@ -27,6 +27,8 @@ import java.net.URLEncoder;
 import java.security.AccessControlException;
 import java.security.AccessController;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -281,11 +283,6 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		resultGraph.add(new TripleImpl(addUserPage, RDF.type,
 				PLATFORM.HeadedPage));
 
-		Iterator<NonLiteral> roles = userManager.getRoles();
-		while (roles.hasNext()) {
-			resultGraph.add(new TripleImpl(addUserPage, USERMANAGER.role, roles
-					.next()));
-		}
 		MGraph contentGraph = cgProvider.getContentGraph();
 		Iterator<Triple> formFields = contentGraph.filter(null, RDF.type,
 				USERMANAGER.UserFormField);
@@ -297,8 +294,10 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		}
 
 
-		return new GraphNode(addUserPage, new UnionMGraph(
+		GraphNode result = new GraphNode(addUserPage, new UnionMGraph(
 				resultGraph, systemGraph, contentGraph));
+		addAvailableRoles(result);
+		return result;
 	}
 
 	@POST
@@ -585,11 +584,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 					USERMANAGER.UpdateUserPage));
 			resultGraph.add(new TripleImpl(updateUserPage, RDF.type,
 					PLATFORM.HeadedPage));
-			Iterator<NonLiteral> roles = userManager.getRoles();
-			while (roles.hasNext()) {
-				resultGraph.add(new TripleImpl(updateUserPage,
-						USERMANAGER.role, roles.next()));
-			}
+			
 
 			MGraph contentGraph = cgProvider.getContentGraph();
 			resultGraph.add(new TripleImpl(updateUserPage, USERMANAGER.user,
@@ -621,8 +616,10 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 							CUSTOMPROPERTY.actualvalues, value));
 				}
 			}
-			return new GraphNode(updateUserPage,
+			GraphNode result =  new GraphNode(updateUserPage,
 					new UnionMGraph(resultGraph, systemGraph, contentGraph));
+			addAvailableRoles(result);
+			return result;
 		}
 		throw new WebApplicationException(Response.status(Status.NOT_FOUND)
 				.entity("User " + userName + "does not exist in our database")
@@ -636,20 +633,19 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			throws UnsupportedEncodingException {
 
 		String userName = getTextParamValueOfForm(form, 0, "userName");
-		String email = getTextParamValueOfForm(form, 0, "email");
 		String pathPrefix = getTextParamValueOfForm(form, 0, "pathPrefix");
 		String[] userRole = form.getTextParameterValues("userRoles");
-		List<String> userRoles = new ArrayList<String>();
-		for (int i = 0; i < userRole.length; i++) {
-			userRoles.add(userRole[i]);
+		List<String> userRoleList = Arrays.asList(userRole);
+		String email = getTextParamValueOfForm(form, 0, "email");
+		if (email != null) {
+			email = email.replaceAll("mailto:", "");
 		}
-		email = email.replaceAll("mailto:", "");
-		NonLiteral user = userManager.getUserByName(userName);
+		NonLiteral user = (NonLiteral) userManager.getUserInSystemGraph(userName).getNode();
 		if (user != null) {
-			userManager.updateUser(userName, email, null, userRoles,
+			userManager.updateUser(userName, email, null, userRoleList,
 					pathPrefix);
 			MGraph contentGraph = cgProvider.getContentGraph();
-			saveCustomUserInformation(contentGraph, userName, userRoles, form);
+			saveCustomUserInformation(contentGraph, userName, userRoleList, form);
 			return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
 		}
 		return Response.status(Status.NOT_FOUND).entity(
@@ -673,16 +669,12 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				USERMANAGER.RoleOverviewPage));
 		resultGraph.add(new TripleImpl(roleOverviewPage, RDF.type,
 				PLATFORM.HeadedPage));
-
-		Iterator<NonLiteral> roles = userManager.getRoles();
-
-		while (roles.hasNext()) {
-			resultGraph.add(new TripleImpl(roleOverviewPage, USERMANAGER.role,
-					roles.next()));
-		}
 		
-		return new GraphNode(roleOverviewPage,
+		GraphNode result =  new GraphNode(roleOverviewPage,
 				new UnionMGraph(resultGraph, systemGraph));
+		addAvailableRoles(result);
+		return result;
+		
 	}
 
 	/**
@@ -944,5 +936,12 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		items.add(new GlobalMenuItem("/admin/user-manager/", "UMR", "User Manager", 2,
 				"Main-Modules"));
 		return items;
+	}
+
+	private void addAvailableRoles(GraphNode result) {
+		Iterator<NonLiteral> roles = userManager.getRoles();
+		while (roles.hasNext()) {
+			result.addProperty(USERMANAGER.role, roles.next());
+		}
 	}
 }

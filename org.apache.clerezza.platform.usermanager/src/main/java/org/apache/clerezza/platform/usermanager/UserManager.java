@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.platform.usermanager;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public interface UserManager {
 
 	/**
 	 *
-	 * @return Iterator defining all roles
+	 * @return Iterator defining all roles, except base roles
 	 */
 	public Iterator<NonLiteral> getRoles();
 
@@ -130,15 +131,16 @@ public interface UserManager {
 			List<String> assignedRoles, String pathPrefix);
 
 	/**
-	 *
+	 * Updates the user with the specified userName
+	 * 
 	 * @param name, may not be null
-	 * @param email
+	 * @param email the email address (note that this is not the mailto-uri)
 	 * @param password
 	 * @param assignedRoles
 	 * @param pathPrefix
 	 */
 	public void updateUser(String name, String email, String password,
-			List<String> assignedRoles, String pathPrefix);
+			Collection<String> assignedRoles, String pathPrefix);
 
 	/**
 	 *	Checks if the username exists
