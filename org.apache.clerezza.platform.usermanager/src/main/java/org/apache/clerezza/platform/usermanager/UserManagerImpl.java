@@ -405,13 +405,13 @@ public class UserManagerImpl implements UserManager {
 		}
 		if (!assignedRoles.isEmpty()) {
 			userGraphNode.deleteProperties(SIOC.has_function);
-			addRolesToUser(assignedRoles, (BNode)userGraphNode.getNode());
+			addRolesToUser(assignedRoles, (NonLiteral) userGraphNode.getNode());
 			//refresh the policy so it will recheck the permissions
 			Policy.getPolicy().refresh();
 		}
 	}
 
-	private void addRolesToUser(Collection<String> assignedRoles, BNode user) throws RoleUnavailableException {
+	private void addRolesToUser(Collection<String> assignedRoles, NonLiteral user) throws RoleUnavailableException {
 		for (String roleTitle : assignedRoles) {
 			// skip empty strings
 			if ((roleTitle == null) || (roleTitle.trim().length() == 0)) {
