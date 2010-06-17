@@ -43,7 +43,7 @@ import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
  */
 @Component
 public class SystemConfig {
-	public static final String CONFIG_FILE = "/META-INF/config.rdf";
+	public static final String CONFIG_FILE = "default-system-graph.rdf";
 		
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
