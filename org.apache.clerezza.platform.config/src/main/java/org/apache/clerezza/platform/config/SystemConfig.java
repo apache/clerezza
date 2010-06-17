@@ -86,7 +86,7 @@ public class SystemConfig {
 		}
 		try {
 			return parser.parse(config.openStream(),
-					SupportedFormat.RDF_XML);
+					SupportedFormat.RDF_XML, null);
 		} catch (IOException ex) {
 			logger.warn("Cannot parse coniguration at URL: {}", config);
 			throw new RuntimeException(ex);
