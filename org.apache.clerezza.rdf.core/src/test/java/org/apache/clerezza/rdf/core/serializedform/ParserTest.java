@@ -72,7 +72,7 @@ public class ParserTest {
 	static class ParsingProviderA implements ParsingProvider {
 
 		@Override
-		public Graph parse(InputStream serializedGraph, String formatIdentifier) {
+		public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 			providerAInvoked = true;
 			return null;
 		}
@@ -81,7 +81,7 @@ public class ParserTest {
 	static class ParsingProviderB implements ParsingProvider {
 
 		@Override
-		public Graph parse(InputStream serializedGraph, String formatIdentifier) {
+		public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 			providerBInvoked = true;
 			return null;
 		}

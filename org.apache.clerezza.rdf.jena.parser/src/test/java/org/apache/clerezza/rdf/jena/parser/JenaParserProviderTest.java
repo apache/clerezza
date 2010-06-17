@@ -42,8 +42,8 @@ public class JenaParserProviderTest {
 		ParsingProvider provider = new JenaParserProvider();
 		InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
 		InputStream turtleIn = getClass().getResourceAsStream("test-04.ttl");
-		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt");
-		Graph graphFromTurtle = provider.parse(turtleIn, "text/turtle");
+		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt", null);
+		Graph graphFromTurtle = provider.parse(turtleIn, "text/turtle", null);
 		//due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just check
 		//that the two graphs are equals
 		Assert.assertEquals(graphFromNTriples.size(), graphFromTurtle.size());
@@ -62,8 +62,8 @@ public class JenaParserProviderTest {
 		ParsingProvider provider = new JenaParserProvider();
 		InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
 		InputStream rdfIn = getClass().getResourceAsStream("test-04.rdf");
-		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt");
-		Graph graphFromTurtle = provider.parse(rdfIn, "application/rdf+xml");
+		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt", null);
+		Graph graphFromTurtle = provider.parse(rdfIn, "application/rdf+xml", null);
 		//due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just check
 		//that the two graphs are equals
 		Assert.assertEquals(graphFromNTriples.size(), graphFromTurtle.size());
@@ -79,8 +79,8 @@ public class JenaParserProviderTest {
 		ParsingProvider provider = new JenaParserProvider();
 		InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
 		InputStream turtleIn = getClass().getResourceAsStream("test-04.ttl");
-		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt");
-		Graph graphFromTurtle = provider.parse(turtleIn, "text/turtle;charset=UTF-");
+		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt", null);
+		Graph graphFromTurtle = provider.parse(turtleIn, "text/turtle;charset=UTF-", null);
 		//due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just check
 		//that the two graphs are equals
 		Assert.assertEquals(graphFromNTriples.size(), graphFromTurtle.size());
