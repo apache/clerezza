@@ -111,14 +111,14 @@ public class BackupTest {
 						baos.toByteArray());
 				if (entryName.equals(folder+testGraphFileName + ".nt")) {
 					downloadedTestGraphX = parser.parse(serializedGraph,
-							SupportedFormat.N_TRIPLE);
+							SupportedFormat.N_TRIPLE, null);
 				} else if (entryName.startsWith(folder+testGraphFileName)) {
 					downloadedTestGraphY = parser.parse(serializedGraph,
-							SupportedFormat.N_TRIPLE);
+							SupportedFormat.N_TRIPLE, null);
 				}
 				if (entryName.equals(backupContentFileName)) {
 					downloadedBackupContentsGraph = parser.parse(serializedGraph,
-							SupportedFormat.N_TRIPLE);
+							SupportedFormat.N_TRIPLE, null);
 				}
 				baos.flush();
 				baos.close();
