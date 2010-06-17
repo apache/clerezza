@@ -24,8 +24,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Policy;
 import java.security.PrivilegedAction;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -103,11 +106,18 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Iterator<NonLiteral> getRoles() {
-		final Iterator<NonLiteral> rolesIter = getResourcesOfType(PERMISSION.Role);
-		if (!rolesIter.hasNext()) {
-			return rolesIter;
+		final Iterator<NonLiteral> allRolesIter = getResourcesOfType(PERMISSION.Role);
+		final Set<NonLiteral> allRolesSet = new HashSet<NonLiteral>();
+		while (allRolesIter.hasNext()) {
+			allRolesSet.add(allRolesIter.next());
 		}
-		return rolesIter;
+		final Set<NonLiteral> nonBaseRolesSet = new HashSet<NonLiteral>();
+		for (NonLiteral role : allRolesSet) {
+			if (!systemGraph.filter(role, RDF.type, PERMISSION.BaseRole).hasNext()) {
+				nonBaseRolesSet.add(role);
+			}
+		}
+		return nonBaseRolesSet.iterator();
 	}
 
 	@Override
@@ -365,12 +375,11 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUser(String name, String email, String password,
-			List<String> assignedRoles, String pathPrefix) {
+			Collection<String> assignedRoles, String pathPrefix) {
 
 		if (name == null) {
-			return;
+			throw new IllegalArgumentException("userName may not be null");
 		}
-
 		NonLiteral user = getUserByUserName(name);
 		if (user == null) {
 			throw new UserNotExistsException(name);
@@ -402,7 +411,7 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	private void addRolesToUser(List<String> assignedRoles, BNode user) throws RoleUnavailableException {
+	private void addRolesToUser(Collection<String> assignedRoles, BNode user) throws RoleUnavailableException {
 		for (String roleTitle : assignedRoles) {
 			// skip empty strings
 			if ((roleTitle == null) || (roleTitle.trim().length() == 0)) {
@@ -413,11 +422,6 @@ public class UserManagerImpl implements UserManager {
 				throw new RoleUnavailableException(roleTitle);
 			}
 			systemGraph.add(new TripleImpl(user, SIOC.has_function, role));
-		}
-		Iterator<NonLiteral> baseRoles = getResourcesOfType(PERMISSION.BaseRole);
-		while (baseRoles.hasNext()) {
-			NonLiteral baseRole = baseRoles.next();
-			systemGraph.add(new TripleImpl(user, SIOC.has_function, baseRole));
 		}
 	}
 

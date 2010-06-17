@@ -44,9 +44,11 @@ import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.SIOC;
 
 /**
@@ -194,6 +196,10 @@ public class UserAwarePolicy extends Policy {
 					.getObject();
 			result.addAll(getPermissionEntriesOfARole(anotherRole, userName));
 		}
+		Iterator<NonLiteral> baseRoles = getResourcesOfType(PERMISSION.BaseRole);
+		while(baseRoles.hasNext()) {
+			result.addAll(getPermissionEntriesOfARole(baseRoles.next(), userName));
+		}
 		return result;
 	}
 
@@ -229,4 +235,27 @@ public class UserAwarePolicy extends Policy {
 		}
 		return result;
 	}
+	
+	private Iterator<NonLiteral> getResourcesOfType(UriRef type) {
+		final Iterator<Triple> triples =
+				systemGraph.filter(null, RDF.type, type);
+		return new Iterator<NonLiteral>() {
+
+			@Override
+			public boolean hasNext() {
+				return triples.hasNext();
+			}
+
+			@Override
+			public NonLiteral next() {
+				return triples.next().getSubject();
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("Not supported yet.");
+			}
+		};
+	}
+
 }
