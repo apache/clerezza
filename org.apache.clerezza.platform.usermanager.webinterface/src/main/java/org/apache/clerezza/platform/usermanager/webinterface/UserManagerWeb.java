@@ -622,7 +622,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			return result;
 		}
 		throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-				.entity("User " + userName + "does not exist in our database")
+				.entity("User " + userName + " does not exist in our database")
 				.build());
 	}
 

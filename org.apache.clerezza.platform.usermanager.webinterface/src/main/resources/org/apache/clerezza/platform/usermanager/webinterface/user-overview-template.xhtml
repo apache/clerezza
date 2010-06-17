@@ -44,17 +44,18 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 					</tr>
 				</thead>
 				<tbody>
-                    {for (user <- (res!!)) yield {
+                    {import java.net._
+					for (user <- (res!!)) yield {
 					<tr id={user/platform("userName")*}>
                         <td>
                             <input type="checkbox" value={user/platform("userName")*} />
                         </td>
-                        <td><a href={"update-user?userName=" + (user/platform("userName")*)}>{user/platform("userName")*}</a></td>
+                        <td><a href={"update-user?userName=" + URLEncoder.encode(user/platform("userName")*, "utf-8")}>{user/platform("userName")*}</a></td>
                         <td>{user/foaf("mbox")*}</td>
                         <td>{user/osgi("agent_path_prefix")*}</td>
                         <td>{user/permission("passwordSha1")*}</td>
                         <td>{for (title <- (user/sioc("has_function"))) yield {  title/dc("title")* }}</td>
-                        <td><a href={"manage-user-permissions?userName=" + (user/platform("userName")*)}>show permissions</a></td>
+                        <td><a href={"manage-user-permissions?userName=" + URLEncoder.encode(user/platform("userName")*, "utf-8")}>show permissions</a></td>
                     </tr>
                     }}
 				</tbody>
