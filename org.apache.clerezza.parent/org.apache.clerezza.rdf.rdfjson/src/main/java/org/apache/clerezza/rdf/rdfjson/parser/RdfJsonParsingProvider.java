@@ -57,7 +57,7 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
-	public Graph parse(InputStream serializedGraph, String formatIdentifier) {
+	public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 
 		MGraph mGraph = new SimpleMGraph();
 		JSONParser parser = new JSONParser();
