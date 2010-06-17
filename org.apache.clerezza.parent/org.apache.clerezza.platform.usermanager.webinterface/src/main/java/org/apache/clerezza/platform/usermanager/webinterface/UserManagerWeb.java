@@ -673,6 +673,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		GraphNode result =  new GraphNode(roleOverviewPage,
 				new UnionMGraph(resultGraph, systemGraph));
 		addAvailableRoles(result);
+		addBaseRoles(result);
 		return result;
 		
 	}
@@ -942,6 +943,13 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		Iterator<NonLiteral> roles = userManager.getRoles();
 		while (roles.hasNext()) {
 			result.addProperty(USERMANAGER.role, roles.next());
+		}
+	}
+
+	private void addBaseRoles(GraphNode result) {
+		Iterator<Triple> baseRoles = systemGraph.filter(null, RDF.type, PERMISSION.BaseRole);
+		if (baseRoles.hasNext()) {
+			result.addProperty(USERMANAGER.role, baseRoles.next().getSubject());
 		}
 	}
 }
