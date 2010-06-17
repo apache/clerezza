@@ -214,7 +214,7 @@ public class LanguageService {
 		}
 		try {
 			lingvojGraph = parser.parse(config.openStream(),
-					SupportedFormat.RDF_XML);
+					SupportedFormat.RDF_XML, null);
 			softLingvojGraph = new SoftReference<Graph>(lingvojGraph);
 			return lingvojGraph;
 		} catch (IOException ex) {

@@ -29,6 +29,7 @@ import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
@@ -54,12 +55,17 @@ import org.apache.clerezza.rdf.core.serializedform.UnsupportedParsingFormatExcep
 public class JenaParserProvider implements ParsingProvider {
 
 	@Override
-	public Graph parse(InputStream serializedGraph, String formatIdentifier) {
+	public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 		String jenaFormat = getJenaFormat(formatIdentifier);
 		MGraph mResult = new SimpleMGraph();
 		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mResult);
 		Model model = ModelFactory.createModelForGraph(graph);
-		String base = "urn:x-relative:";
+		String base;
+		if (baseUri == null) {
+			base = "urn:x-relative:";
+		} else {
+			base = baseUri.getUnicodeString();
+		}
 		model.read(serializedGraph, base, jenaFormat);
 		return mResult.getGraph();
 	}

@@ -30,6 +30,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.UriRef;
 
 /**
  * This singleton class provides a method <code>parse</code> to transform 
@@ -122,6 +123,10 @@ public class Parser {
 	 */
 	public Graph parse(InputStream serializedGraph,
 			String formatIdentifier) throws UnsupportedFormatException {
+		return parse(serializedGraph, formatIdentifier, null);
+	}
+	public Graph parse(InputStream serializedGraph,
+			String formatIdentifier, UriRef baseUri) throws UnsupportedFormatException {
 		String deParameterizedIdentifier;
 		int semicolonPos = formatIdentifier.indexOf(';');
 		if (semicolonPos > -1) {
@@ -133,7 +138,7 @@ public class Parser {
 		if (provider == null) {
 			throw new UnsupportedParsingFormatException(formatIdentifier);
 		}
-		return provider.parse(serializedGraph, formatIdentifier);
+		return provider.parse(serializedGraph, formatIdentifier, baseUri);
 	}
 	
 	/**
