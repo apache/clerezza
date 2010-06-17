@@ -41,7 +41,7 @@ public class RdfJsonParserProviderTest {
 	public void testParser() {
 		ParsingProvider provider = new RdfJsonParsingProvider();
 		InputStream jsonIn = getClass().getResourceAsStream("test.json");
-		Graph graphFromJsonRdf = provider.parse(jsonIn, "application/rdf+json");
+		Graph graphFromJsonRdf = provider.parse(jsonIn, "application/rdf+json", null);
 		Assert.assertEquals(graphFromJsonRdf.size(), 6);
 		Iterator<Triple> triples = graphFromJsonRdf.filter(new UriRef("http://base/child1"), null, null);
 		while(triples.hasNext()) {

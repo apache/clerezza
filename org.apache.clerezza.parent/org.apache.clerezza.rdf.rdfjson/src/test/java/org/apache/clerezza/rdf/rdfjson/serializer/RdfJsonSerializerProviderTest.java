@@ -80,7 +80,7 @@ public class RdfJsonSerializerProviderTest {
 		ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph
 				.toByteArray());
 		Graph graphFromJsonRdf = parsingProvider.parse(jsonIn,
-				"application/rdf+json");
+				"application/rdf+json", null);
 		Assert.assertEquals(graphFromJsonRdf.size(), 6);
 
 	}
