@@ -20,11 +20,14 @@ package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.apache.clerezza.rdf.core.Graph;
 
@@ -131,6 +134,14 @@ public class Parser {
 			throw new UnsupportedParsingFormatException(formatIdentifier);
 		}
 		return provider.parse(serializedGraph, formatIdentifier);
+	}
+	
+	/**
+	 * Get a set of supported formats
+	 * @return a set if stings identifying formats (usually the MIME-type)
+	 */
+	public Set<String> getSupportedFormats() {
+		return Collections.unmodifiableSet(providerMap.keySet());
 	}
 
 	/**
