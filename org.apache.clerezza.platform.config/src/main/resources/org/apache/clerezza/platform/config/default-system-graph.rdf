@@ -42,7 +42,7 @@
 	<perm:Role>
 		<dc:title>DefaultRole</dc:title>
 		<perm:hasPermission rdf:parseType="Resource">
-			<perm:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.AccountControlAccessPermission "{username}" "")</perm:javaPermissionEntry>
+			<perm:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.AccountControlPanelAppPermission "{username}" "")</perm:javaPermissionEntry>
 		</perm:hasPermission>
 		<perm:hasPermission rdf:parseType="Resource">
 			<perm:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.ChangePasswordPermission "{username}" "")</perm:javaPermissionEntry>
