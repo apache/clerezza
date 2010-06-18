@@ -21,6 +21,10 @@ package org.apache.clerezza.platform;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import javax.script.Compilable;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptException;
 import org.apache.felix.scr.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +59,9 @@ import org.apache.felix.scr.annotations.ReferencePolicy;
 		target="(javax.ws.rs=true)")
 public class BootMonitor {
 
+	@Reference(target="(javax.script.language=scala)")
+	private ScriptEngineFactory scalaScriptEngineFactory;
+	
 	private Set<Object> rootResources =
 			Collections.synchronizedSet(new HashSet<Object>());
 
@@ -74,6 +81,12 @@ public class BootMonitor {
 					int lastSize = 0;
 					for (int i = 0; i < 100; i++) {
 						if (rootResources.size() == lastSize) {
+							//compile a script to initialize scala-compiler (needed by scal a server pages)
+							try {
+								((Compilable)scalaScriptEngineFactory.getScriptEngine()).compile("println(\"helo\")");
+							} catch (ScriptException ex) {
+								logger.warn(ex.toString());
+							}
 							started = true;
 							logger.info("The Apache Clerezza Platform is now operational.");
 							return;
