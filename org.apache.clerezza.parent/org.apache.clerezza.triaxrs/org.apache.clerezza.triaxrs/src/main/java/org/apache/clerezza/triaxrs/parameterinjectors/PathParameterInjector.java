@@ -29,6 +29,7 @@ import javax.ws.rs.ext.Providers;
 
 import org.apache.clerezza.triaxrs.WebRequest;
 import org.apache.clerezza.triaxrs.util.PathSegmentImpl;
+import org.apache.clerezza.triaxrs.util.uri.UriComponent;
 
 /**
  *
@@ -41,25 +42,38 @@ public class PathParameterInjector implements ParameterInjector<PathParam> {
 			Providers providers, Type parameterType, PathParam annotation,
 			final boolean encodingDisabled, String defaultValue)
 			throws UnsupportedFieldType {
-		
+
 		//TODO should allow multiple path-segments with same name
 		String value = pathParam.get(annotation.value());
 		List<String> stringValues = new ArrayList<String>();
-		if(value == null || value.equals("") && defaultValue != null){
+		if (value == null || value.equals("") && defaultValue != null) {
 			value = defaultValue;
 		}
+		
 		stringValues.add(value);
 
 		return (T) ConversionUtil.convert(stringValues, parameterType,
 				new ConversionUtil.Convertor<PathSegment>() {
 
-			@Override
-			public PathSegment convert(String string) {
-				if (string == null) return null;
-				return PathSegmentImpl.parse(string, encodingDisabled);
-			}
+					@Override
+					public PathSegment convert(String string) {
+						if (string == null) {
+							return null;
+							
+						}
+						return PathSegmentImpl.parse(string, encodingDisabled);
+					}
+				},
+				new ConversionUtil.Convertor<String>() {
 
-		});
+					@Override
+					public String convert(String string) {						
+						if (encodingDisabled) {
+							return string;
+						} else {
+							return UriComponent.decode(string, UriComponent.Type.PATH_SEGMENT);
+						}
+					}
+				});
 	}
-
 }

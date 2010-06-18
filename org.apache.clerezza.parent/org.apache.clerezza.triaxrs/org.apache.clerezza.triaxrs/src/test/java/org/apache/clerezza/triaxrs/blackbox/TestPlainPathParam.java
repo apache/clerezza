@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.triaxrs.blackbox;
 
+import java.net.URLEncoder;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
@@ -53,10 +54,9 @@ public class TestPlainPathParam {
 	}
 
 	@Test
-	public void testQueryParam() throws Exception {
+	public void testPathParam() throws Exception {
 
 		JaxRsHandler handler = HandlerCreator.getHandler(MyResource.class);
-
 		Request requestMock = EasyMock.createNiceMock(Request.class);
 		Response responseMock = EasyMock.createNiceMock(Response.class);
 		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
@@ -64,6 +64,26 @@ public class TestPlainPathParam {
 		String value1 = "foo";
 		String value2 = "bar";
 		expect(requestURI.getPath()).andReturn("/prefix/"+value1+"/"+value2).anyTimes();
+		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
+		replay(requestMock);
+		replay(requestURI);
+		replay(responseMock);
+		handler.handle(requestMock, responseMock);
+		assertEquals(value1, handlePathParamValue1);
+		assertEquals(value2, handlePathParamValue2);
+	}
+	
+	@Test
+	public void testPathParamDecoding() throws Exception {
+
+		JaxRsHandler handler = HandlerCreator.getHandler(MyResource.class);
+		Request requestMock = EasyMock.createNiceMock(Request.class);
+		Response responseMock = EasyMock.createNiceMock(Response.class);
+		expect(requestMock.getMethod()).andReturn(Method.GET).anyTimes();
+		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
+		String value1 = "f#o";
+		String value2 = "b/a/r";
+		expect(requestURI.getPath()).andReturn("/prefix/"+URLEncoder.encode(value1,"utf-8")+"/"+URLEncoder.encode(value2, "utf-8")).anyTimes();
 		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
