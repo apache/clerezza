@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.AccessControlContext;
 import java.security.AccessControlException;
 import java.security.AccessController;
@@ -679,9 +680,13 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 			} catch (AccessControlException e) {
 				return items;
 			}
-			String path = "/user/" + user + "/control-panel/";
-			items.add(new GlobalMenuItem(path, "ACP", "Account Control Panel", 5,
-					"Main-Modules"));
+			try {
+				String path = "/user/" + URLEncoder.encode(user, "utf-8") + "/control-panel/";
+				items.add(new GlobalMenuItem(path, "ACP", "Account Control Panel", 5,
+						"Main-Modules"));
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		
 		return items;
