@@ -53,6 +53,7 @@ class Activator() {
 	
 	protected def activate(context: ComponentContext) = {	
 		val bundleContext = context.getBundleContext
+		//TODO set jvm default ca-store
 		val sslContextFactory = new X509SSLContextFactory(
                 getServerCertKeyStore(context), getKeyStorePassword(bundleContext),
                 getServerCertKeyStore(context));//getCaKeyStore());
@@ -65,13 +66,6 @@ class Activator() {
 		println("Registered SSLContext+")
 	}
 	
-	def  getCaKeyStore() : KeyStore = {
-        val ks = KeyStore.getInstance("JKS");
-        val ksis = new FileInputStream("/home/reto/cacert.jks");
-        ks.load(ksis, "testtest".toCharArray());
-        ksis.close();
-        return ks;
-    }
 	
 	def getServerCertKeyStore(context: ComponentContext): KeyStore = {
 		val bundleContext = context.getBundleContext
