@@ -47,15 +47,10 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
 	
 	def authenticate(request: Request): String = {
 		val certificates = request.getCertificates()
-		println(certificates)
 		if ((certificates == null) || (certificates.length == 0)) {
 			return null
 		} else {
 			val webIdUriRefs = CertUtilities.getClaimedWebIds(certificates)
-			/*val webIds = for(principal <- x509Claim.getPrincipals) yield {
-				new UriRef(principal.getUri.toString)
-			}*/
-		 //descriptionProvider.getWebDescription
 			webIdUriRefs(0).getUnicodeString
 		}
 	}
