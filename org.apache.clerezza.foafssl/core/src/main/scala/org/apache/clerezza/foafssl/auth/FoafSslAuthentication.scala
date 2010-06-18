@@ -25,7 +25,6 @@ import org.apache.clerezza.platform.security.auth._
 import org.apache.clerezza.rdf.core._
 import org.wymiwyg.wrhapi.Request
 import org.wymiwyg.wrhapi.Response
-import net.java.dev.sommer.foafssl.claims._
 
 
 /**
