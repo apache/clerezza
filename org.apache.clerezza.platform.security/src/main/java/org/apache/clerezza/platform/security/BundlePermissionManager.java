@@ -63,10 +63,11 @@ import org.apache.clerezza.rdf.core.MGraph;
  */
 
 @Component
-public class PermissionManager implements BundleListener {
+public class BundlePermissionManager implements BundleListener {
 
-	final Logger logger = LoggerFactory.getLogger(PermissionManager.class);
+	final Logger logger = LoggerFactory.getLogger(BundlePermissionManager.class);
 
+	
 	@Reference
 	private ConditionalPermissionAdmin cpa;
 	private static final String ALL_EXCEPT_USER_BUNDLES_CPINAME = "allExceptUserBundles";
@@ -83,7 +84,7 @@ public class PermissionManager implements BundleListener {
 	}
 
 	private PermissionDefinitions permissionDefinitions;
-	private Policy originalPolicy;
+	
 
 	/**
 	 *
@@ -128,21 +129,13 @@ public class PermissionManager implements BundleListener {
 				updateFromSystemGraph(bundleLocation);
 			}
 		}
-		setUserAwarePolicy();
 	}
 
-	private void setUserAwarePolicy() {
-		logger.debug("Set user aware policy");
-		//keep the original policy for resetting it at deactivation()
-		originalPolicy = Policy.getPolicy();
 
-		Policy.setPolicy(new UserAwarePolicy(systemGraph));
-	}
 
 	protected void deactivate(final ComponentContext cCtx) throws Exception {
 		logger.debug("Permission manager being deactivated");
 		cCtx.getBundleContext().removeBundleListener(this);
-		Policy.setPolicy(originalPolicy);
 	}
 
 	/**

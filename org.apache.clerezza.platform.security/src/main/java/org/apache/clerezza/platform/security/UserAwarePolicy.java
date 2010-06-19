@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.clerezza.platform.config.SystemConfig;
 
 import org.osgi.service.permissionadmin.PermissionInfo;
 
@@ -50,14 +51,23 @@ import org.apache.clerezza.rdf.ontologies.PERMISSION;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.SIOC;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * 
  * @author mir
  */
+@Component
+@Service(UserAwarePolicy.class)
 public class UserAwarePolicy extends Policy {
 
 	final Logger logger = LoggerFactory.getLogger(UserAwarePolicy.class);
+	
+	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
+	private MGraph systemGraph;
+	
 	/**
 	 * Stores the mapping between a String describing the permission and the
 	 * described <code>Permission</code> object.
@@ -69,12 +79,9 @@ public class UserAwarePolicy extends Policy {
 	 */
 	private UserPermissionsCache cache = new UserPermissionsCache();
 
-	private MGraph systemGraph;
-
 	private Policy originalPolicy;
 
-	public UserAwarePolicy(MGraph systemGraph) {
-		this.systemGraph = systemGraph;
+	public UserAwarePolicy() {
 		this.originalPolicy = Policy.getPolicy();
 	}
 	
@@ -182,7 +189,7 @@ public class UserAwarePolicy extends Policy {
 	 * are his/her own permissions and the permissions of his roles
 	 * 
 	 */
-	List<String> getAllPermissionsOfAUserByName(String userName)
+	private List<String> getAllPermissionsOfAUserByName(String userName)
 			throws UserUnregisteredException {
 
 		NonLiteral user = getUserByName(userName);
