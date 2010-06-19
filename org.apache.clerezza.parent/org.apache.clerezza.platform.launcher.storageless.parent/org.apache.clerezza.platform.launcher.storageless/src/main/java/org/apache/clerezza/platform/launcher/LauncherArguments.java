@@ -42,4 +42,26 @@ public interface LauncherArguments {
 	@CommandLine(longName = "port", shortName = {"P"}, required = false,
 	description = "The port on which the default webservice shall listen")
 	public String getPort();
+	
+	@CommandLine(longName = "https_port", shortName = {}, required = false,
+	description = "The port on which the https secure webserver shall listen")
+	public String getSecurePort();
+	
+	@CommandLine(longName = "https_keystore_path", shortName = {}, required = false,
+	description = "The folder with the keystore for https")
+	public String getKeyStorePath();
+	
+	@CommandLine(longName = "https_keystore_password", shortName = {}, required = false,
+	description = "The folder with the keystore for https")
+	public String getKeyStorePassword();
+	
+	@CommandLine(longName = "https_keystore_type", shortName = {}, required = false,
+	description = "The type of the key-store")
+	public String getKeyStoreType();
+	
+	@CommandLine(longName = "https_keystore_clientauth", shortName = {}, required = false,
+	description = "Client Auth request, one of \"none\", \"want\" or \"need\"")
+	public String getClientAuth();
+	
+	
 }
