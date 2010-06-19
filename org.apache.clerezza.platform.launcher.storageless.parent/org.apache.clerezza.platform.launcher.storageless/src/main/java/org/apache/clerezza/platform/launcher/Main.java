@@ -241,28 +241,80 @@ public class Main implements BundleActivator {
 
 		Properties configProps = new Properties();
 		configProps.putAll(System.getProperties());
-		String argLogLevel = arguments.getLogLevel();
-		if (argLogLevel == null) {
-			argLogLevel = "INFO";
+		{
+			String argLogLevel = arguments.getLogLevel();
+			if (argLogLevel == null) {
+				argLogLevel = "INFO";
+			}
+			System.out.println("setting log-level to: " + argLogLevel);
+			configProps.put("org.ops4j.pax.logging.DefaultServiceLog.level",
+					argLogLevel);
 		}
-		System.out.println("setting log-level to: " + argLogLevel);
-		configProps.put("org.ops4j.pax.logging.DefaultServiceLog.level",
-				argLogLevel);
-
-		final String port = arguments.getPort();
-		if (port != null) {
-			configProps.put("org.osgi.service.http.port", port);
+		{
+			final String port = arguments.getPort();
+			if (port != null) {
+				configProps.put("org.osgi.service.http.port", port);
+			}
+			configProps.put("org.ops4j.pax.url.mvn.repositories", getCommaSeparatedListOfMavenRepos());
 		}
-		configProps.put("org.ops4j.pax.url.mvn.repositories", getCommaSeparatedListOfMavenRepos());
-
-		String extraPackages = (String) configProps.get("org.osgi.framework.system.packages.extra");
-		if (extraPackages == null) {
-			extraPackages = "";
+		{
+			String extraPackages = (String) configProps.get("org.osgi.framework.system.packages.extra");
+			if (extraPackages == null) {
+				extraPackages = "";
+			}
+			configProps.put("org.osgi.framework.system.packages.extra",
+					"sun.misc;"
+					+ extraPackages);
 		}
-		configProps.put("org.osgi.framework.system.packages.extra",
-				"sun.misc;"
-				+ extraPackages);
 
+	//public static final String CONTEXT_PROPERTY_HTTP_PORT_SECURE = "";
+		boolean httpsEnabled = false;
+		{
+			
+			final String httpsPort = arguments.getSecurePort();
+			if (httpsPort != null) {
+				configProps.put("org.osgi.service.http.port.secure", httpsPort);
+				httpsEnabled = true;
+			}
+		}
+		{
+			
+			final String keyStorePath = arguments.getKeyStorePath();
+			if (keyStorePath != null) {
+				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.path", keyStorePath);
+				httpsEnabled = true;
+			}
+		}
+		{
+			
+			final String keyStorePassword = arguments.getKeyStorePath();
+			if (keyStorePassword != null) {
+				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.password", keyStorePassword);
+				httpsEnabled = true;
+			}
+		}
+		{
+			
+			final String keyStoreType = arguments.getKeyStoreType();
+			if (keyStoreType != null) {
+				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.type", keyStoreType);
+				httpsEnabled = true;
+			}
+		}
+		
+		{
+			
+			final String clientAuth = arguments.getClientAuth();
+			if (clientAuth != null) {
+				configProps.put("org.wymiwyg.jetty.httpservice.clientauth", clientAuth);
+				httpsEnabled = true;
+			}
+		}
+		
+		if (httpsEnabled) {
+			configProps.put("org.osgi.service.http.secure.enabled", "true");
+		}
+		
 		return configProps;
 
 	}
