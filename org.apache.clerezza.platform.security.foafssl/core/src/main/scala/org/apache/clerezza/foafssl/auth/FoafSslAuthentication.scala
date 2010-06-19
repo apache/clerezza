@@ -19,7 +19,7 @@
 
 package org.apache.clerezza.foafssl.auth
 
-import org.apache.clerezza.foafssl.CertUtilities
+import org.apache.clerezza.foafssl.Utilities
 import org.apache.clerezza.foafssl.WebDescriptionProvider
 import org.apache.clerezza.platform.security.auth._
 import org.apache.clerezza.rdf.core._
@@ -49,8 +49,8 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
 		if ((certificates == null) || (certificates.length == 0)) {
 			return null
 		} else {
-			val webIdUriRefs = CertUtilities.getClaimedWebIds(certificates)
-			webIdUriRefs(0).getUnicodeString
+			val webIdUriRefs = Utilities.getClaimedWebIds(certificates)
+			Utilities.cretateUsernameForWebId(webIdUriRefs(0))
 		}
 	}
 
