@@ -69,19 +69,16 @@ public class URITemplate implements Comparable<URITemplate> {
 
 	public URITemplate(String rawTemplateString) {
 		try {
-			rawTemplateString = TemplateEncoder.encode(rawTemplateString, "UTF-8");
+			this.templateString = TemplateEncoder.encode(rawTemplateString, "UTF-8");
 		} catch (UriException ex) {
 			throw new RuntimeException(ex);
-		}
-		if ((rawTemplateString.length() > 0) && (rawTemplateString.charAt(0) == '/')) {
-			this.templateString = rawTemplateString.substring(1);
-		} else {
-			this.templateString = rawTemplateString;
 		}
 		StringReader stringReader = new StringReader(templateString);
 		boolean readingVariableName = false;
 		StringWriter sectionWriter = new StringWriter();
+		
 		try {
+			boolean ommitNextCharIfSlash = true;
 			for (int ch = stringReader.read(); ch != -1; ch = stringReader
 					.read()) {
 
@@ -109,7 +106,12 @@ public class URITemplate implements Comparable<URITemplate> {
 						capturingGroups++;
 						sectionWriter = new StringWriter();
 						readingVariableName = false;
+						ommitNextCharIfSlash = true;
 					} else {
+						if (ommitNextCharIfSlash) {
+							ommitNextCharIfSlash = false;
+							if (ch == '/') continue;
+						}
 						sectionWriter.write(ch);
 					}
 

@@ -42,7 +42,7 @@ public class TestPlainPathParam {
 	private static String handlePathParamValue1;
 	private static String handlePathParamValue2;
 
-	@Path("/prefix/{value1}")
+	@Path("/prefix/{value1}/fix")
 	public static class MyResource {
 
 		@GET
@@ -63,7 +63,7 @@ public class TestPlainPathParam {
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		String value1 = "foo";
 		String value2 = "bar";
-		expect(requestURI.getPath()).andReturn("/prefix/"+value1+"/"+value2).anyTimes();
+		expect(requestURI.getPath()).andReturn("/prefix/"+value1+"/fix/"+value2).anyTimes();
 		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
@@ -83,7 +83,7 @@ public class TestPlainPathParam {
 		RequestURI requestURI = EasyMock.createNiceMock(RequestURI.class);
 		String value1 = "f#o";
 		String value2 = "b/a/r";
-		expect(requestURI.getPath()).andReturn("/prefix/"+URLEncoder.encode(value1,"utf-8")+"/"+URLEncoder.encode(value2, "utf-8")).anyTimes();
+		expect(requestURI.getPath()).andReturn("/prefix/"+URLEncoder.encode(value1,"utf-8")+"/fix/"+URLEncoder.encode(value2, "utf-8")).anyTimes();
 		expect(requestMock.getRequestURI()).andReturn(requestURI).anyTimes();
 		replay(requestMock);
 		replay(requestURI);
