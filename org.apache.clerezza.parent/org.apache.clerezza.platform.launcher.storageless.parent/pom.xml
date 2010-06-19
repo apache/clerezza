@@ -109,6 +109,11 @@
 			<artifactId>httpcore-osgi</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jsslutils</groupId>
+			<artifactId>jsslutils</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
 		<!--
 			Clerezza Bundles
@@ -261,6 +266,16 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.security.conditions</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.security.foafssl.core</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>

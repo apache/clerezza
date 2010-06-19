@@ -24,7 +24,7 @@ import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import java.security.interfaces.RSAPublicKey
 import javax.net.ssl.X509TrustManager;
-import org.apache.clerezza.foafssl.CertUtilities
+import org.apache.clerezza.foafssl.Utilities
 import org.apache.clerezza.foafssl.WebDescriptionProvider
 import org.apache.clerezza.foafssl.ontologies.CERT
 import org.apache.clerezza.foafssl.ontologies.RSA
@@ -74,7 +74,7 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 		new TrustAllClientsWrappingTrustManager(
 			trustManager) {
 			override def checkClientTrusted(chain: Array[X509Certificate], authType: String): Unit = {
-				val webIdUriRefs = CertUtilities.getClaimedWebIds(chain)
+				val webIdUriRefs = Utilities.getClaimedWebIds(chain)
 				if (webIdUriRefs.length == 0) {
 					trustManager.checkClientTrusted(chain, authType)
 				} else {
@@ -104,12 +104,10 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 	}
 	
 	def createSystemUserDescription(webDescription: GraphNode) = {
-		val result = new SimpleMGraph(webDescription.getNodeContext)
-		//TODO remove at leaf platform usernames
+		val result = new SimpleMGraph()
 		val webId = webDescription.getNode.asInstanceOf[UriRef]
 		result.add(new TripleImpl(webId, PLATFORM.userName, 
-															new PlainLiteralImpl(webId.getUnicodeString)))
-															//LiteralFactory.getInstance.createTypedLiteral(webId.getUnicodeString)))
+															new PlainLiteralImpl(Utilities.cretateUsernameForWebId(webId))))
 		result.add(new TripleImpl(webId, RDF.`type` , 
 															FOAF.Agent))
 		result

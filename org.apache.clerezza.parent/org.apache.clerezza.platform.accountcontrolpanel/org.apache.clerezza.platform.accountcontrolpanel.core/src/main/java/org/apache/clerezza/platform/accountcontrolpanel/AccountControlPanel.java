@@ -559,47 +559,53 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 		if (newPW.trim().equals(confirmNewPW.trim()) && checkPWStrings(oldPW, newPW)) {
 			changedPassword = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 
+				private String getCurrentPassword(NonLiteral agent) {
+					String currentPassword = null;
+					Iterator<Triple> oldPWTriple = systemGraph.filter(agent,
+							PERMISSION.passwordSha1, null);
+					if (oldPWTriple.hasNext()) {
+						Literal currentPWLiteral = (Literal) oldPWTriple.next().getObject();
+						currentPassword = currentPWLiteral.getLexicalForm();
+					}
+					return currentPassword;
+				}
+				
 				@Override
 				public Boolean run() {
 					final NonLiteral agent = getAgent(id);
 					// The encoded current password which the user typed in 
 					String encodedOlpPW = getEncodedPW(oldPW);
 					// The current password which is in the system graph
-					String currentPassword = null;
-					Iterator<Triple> oldPWTriple = systemGraph.filter(agent,
-							PERMISSION.passwordSha1, null);
-					if (oldPWTriple.hasNext()) {
-						/*
-						 * The Clerezza WCMS Ontologies expect the Object to be a
-						 * Literal
-						 */
-						Literal currentPWLiteral = (Literal) oldPWTriple.next().getObject();
-						currentPassword = currentPWLiteral.getLexicalForm();
-					}
-					if (currentPassword.equals(encodedOlpPW)) {
-						removeOldPwAndAddNewPW(agent, currentPassword, newPW);
-						return true;
-					} else {
+					String currentPassword = getCurrentPassword(agent);
+					if ((currentPassword != null) && !currentPassword.equals(encodedOlpPW)) {
 						logger.info("Typed wrong current password!");
 						return false;
+					} else {
+						removeOldPwAndAddNewPW(agent, currentPassword, newPW);
+						return true;
 					}
 				}
 
 				private void removeOldPwAndAddNewPW(NonLiteral agent, String currentPassword,
 						String newPW) {
-					Triple oldPWTriple = new TripleImpl(agent,
-							PERMISSION.passwordSha1, new PlainLiteralImpl(
-							currentPassword));
 					Triple newPWTriple = new TripleImpl(agent,
 							PERMISSION.passwordSha1,
 							new PlainLiteralImpl(getEncodedPW(newPW)));
-					systemGraph.remove(oldPWTriple);
-					logger.debug("removed old password from systemgraph");
+					if (currentPassword != null) {
+						Triple oldPWTriple = new TripleImpl(agent,
+							PERMISSION.passwordSha1, new PlainLiteralImpl(
+							currentPassword));
+						systemGraph.remove(oldPWTriple);
+						logger.debug("removed old password from systemgraph");
+					}
 					systemGraph.add(newPWTriple);
 					logger.debug("user " + id + " changed password");
 				}
 
 				private String getEncodedPW(String password) {
+					if (password == null) {
+						return null;
+					}
 					try {
 						return bytes2HexString(MessageDigest.getInstance("SHA1").digest(
 								password.getBytes("UTF-8")));
@@ -637,7 +643,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 	 * checks if the typed strings are valid
 	 */
 	private boolean checkPWStrings(String oldPW, String newPW) {
-		if (oldPW.length() == 0 || newPW.length() == 0) {
+		if (newPW.length() == 0) {
 			return false;
 		}
 		return true;

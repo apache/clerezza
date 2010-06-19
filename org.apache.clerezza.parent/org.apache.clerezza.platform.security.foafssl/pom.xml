@@ -6,10 +6,10 @@
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.foafssl</artifactId>
+	<artifactId>org.apache.clerezza.platform.security.foafssl</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1-SNAPSHOT</version>
-	<name>Clerezza - foaf+ssl</name>
+	<version>0.1-incubating-SNAPSHOT</version>
+	<name>Clerezza - Platform Security foaf+ssl</name>
 	<modules>
 		<module>ontologies</module>
 		<module>core</module>

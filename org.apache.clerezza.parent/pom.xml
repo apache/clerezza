@@ -59,6 +59,7 @@
 		<module>org.apache.clerezza.platform.scripting.scriptmanager</module>
 		<module>org.apache.clerezza.platform.security.auth.basic</module>
 		<module>org.apache.clerezza.platform.security.auth.cookie</module>
+		<module>org.apache.clerezza.platform.security.foafssl</module>
 		<module>org.apache.clerezza.platform.security.conditions</module>
 		<module>org.apache.clerezza.platform.security</module>
 		<module>org.apache.clerezza.platform.testing</module>
@@ -480,7 +481,7 @@
 				<groupId>org.ops4j.pax.runner</groupId>
 				<artifactId>pax-runner-no-jcl</artifactId>
 				<version>1.4.0</version>
-		    </dependency>
+			</dependency>
 			<dependency>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>pax-exam-junit</artifactId>
@@ -692,19 +693,19 @@
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-					<groupId>org.apache.clerezza.scala</groupId>
-					<artifactId>scala-library-osgi</artifactId>
-					<version>0.1-incubating-SNAPSHOT</version>
+				<groupId>org.apache.clerezza.scala</groupId>
+				<artifactId>scala-library-osgi</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-					<groupId>org.apache.clerezza.scala</groupId>
-					<artifactId>scala-compiler-osgi</artifactId>
-					<version>0.1-incubating-SNAPSHOT</version>
+				<groupId>org.apache.clerezza.scala</groupId>
+				<artifactId>scala-compiler-osgi</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-					<groupId>org.apache.clerezza.scala</groupId>
-					<artifactId>script-engine</artifactId>
-					<version>0.1-incubating-SNAPSHOT</version>
+				<groupId>org.apache.clerezza.scala</groupId>
+				<artifactId>script-engine</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
@@ -790,6 +791,26 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.typehandlerspace</artifactId>
 				<version>0.8-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.security.foafssl.core</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jsslutils</groupId>
+				<artifactId>jsslutils</artifactId>
+				<version>1.0.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wymiwyg</groupId>
+				<artifactId>jetty-osgi-httpservice</artifactId>
+				<version>0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>

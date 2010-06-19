@@ -27,7 +27,7 @@ import org.apache.clerezza.rdf.core.UriRef
  *
  * @author Reto Bachmann-Gmür, Henry Story
  */
-object CertUtilities {
+object Utilities {
 	
 	/**
 	 * same as getClaimedWebIds(chain(0))
@@ -72,5 +72,9 @@ object CertUtilities {
 		}
 		return result
 	}
+	
+	def cretateUsernameForWebId(webId: UriRef) = {
+		webId.getUnicodeString.replace(":", "");
+	} 
 
 }

@@ -26,6 +26,7 @@ import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException
 import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.rdf.core.serializedform.Parser
+import org.apache.clerezza.rdf.core.serializedform.SupportedFormat
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.osgi.service.component.ComponentContext
@@ -71,7 +72,16 @@ class WebDescriptionProvider {
 	lazy val acceptHeader = {
 		import scala.collection.JavaConversions._
 		(for (f <- parser.getSupportedFormats) yield {
-					f+"; q=1.0,"
+				val qualityOfFormat = {
+					f match {
+						//the default format
+						case SupportedFormat.RDF_XML => "1.0";
+						//n3 is a bit less well defined and/or many parsers supports only subsets
+						case SupportedFormat.N3 => "0.5";
+						case _ => "0.8";
+					}
+				}
+				f+"; q="+qualityOfFormat+","
 		}).mkString +" *; q=.1"
 	}
 	
