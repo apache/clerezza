@@ -79,7 +79,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 	override def getMimeTypes() = java.util.Collections.singletonList("application/x-scala")
 	override def getNames() = java.util.Collections.singletonList("scala")
 	override def getLanguageName() = "Scala"
-	override def getLanguageVersion ="2.8.0.RC2"
+	override def getLanguageVersion ="2.8.0.RC5"
 	override def getParameter(key : String) = {
 		key match {
 			case ScriptEngine.ENGINE => getEngineName
