@@ -9,7 +9,7 @@
 	<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>CClerezza - Platform Security foaf+ssl Ontologies</name>
+	<name>Clerezza - Platform Security foaf+ssl Ontologies</name>
 	<description>
 		Fafo + Ssl Ontologies
 	</description>
