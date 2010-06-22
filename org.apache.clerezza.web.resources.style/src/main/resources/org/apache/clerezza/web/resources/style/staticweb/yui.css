@@ -19,7 +19,7 @@
 
 /*  window  */
 .tx-window .hd { 
-    overflow: auto; 
+    overflow: none; 
     padding:  0.4em 0.8em; 
 	color: #ffffff;
 	font-size: 1.8em;
