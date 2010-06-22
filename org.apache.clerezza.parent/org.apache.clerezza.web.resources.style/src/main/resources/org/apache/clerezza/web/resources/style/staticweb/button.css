@@ -4,7 +4,7 @@
 	padding: 0.2em 0.8em;
 	text-align: center;
 	min-width: 5em;
-	display: block;
+	display: inline-block;
 	line-height: 1.1em;
 	height: 1.1em;
 	-moz-border-radius: 3px; 

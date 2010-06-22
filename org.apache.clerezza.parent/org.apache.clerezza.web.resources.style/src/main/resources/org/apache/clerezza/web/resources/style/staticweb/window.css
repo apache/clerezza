@@ -3,6 +3,7 @@
 	background-color: #eceded;
 	border: none; 
 	overflow: hidden; 
+	line-height: 1.7em;
 }
 
 .tx-window .tx-line {
@@ -30,6 +31,10 @@
 	font-weight: normal;
 }
 
+.tx-window dl.tx-full dt {
+	width: 13em;
+}
+
 .tx-window dd {
 	width: 15em;
 	float: left;
@@ -37,6 +42,9 @@
 	margin: 0;
 }
 
+.tx-window dl.tx-full dd {
+	width: 30em;
+}
 
 .tx-window-actions {
 	clear: both;
@@ -46,6 +54,7 @@
 	padding: 0.4em 0.8em;
 	text-align: center;
 }
+
 
 .tx-window-content {
 	background-image: url(./images/bg/fade-tab-status.png);
@@ -81,3 +90,24 @@
 	float: left;
 	margin-right: 1.6em;
 }
+
+.tx-window-status {
+	clear: both;
+	background-color: #c2b54f;
+	padding: 0.4em 0.8em;
+	text-align: left;
+	color: #ffffff;
+
+}
+
+.tx-window-status-desc {
+	color: #333333;
+	margin-bottom: 0.3em;
+	
+}
+
+.tx-window-status-desc strong {
+	color: #333333;
+	font-size: 1.3em;
+}
+
