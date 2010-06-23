@@ -7,7 +7,6 @@ $.fn.menu = function(settings)
 		timer: 500
 	};
 	
-	
   	var settings  = $.extend(defaults, settings);
 	settings.linkElements = this.find("> ol > li");
 	settings.menuItem = 0;
@@ -17,13 +16,21 @@ $.fn.menu = function(settings)
 	{
 		menuClearTimer();
 		menuClose();
-		settings.menuItem = wrappedSet.find("ol").show();
+		wrappedSet.addClass("active");
+		settings.menuItem = wrappedSet.find("div").show();
+		settings.menuItem.find("> ol > li").bind("mouseover",function(){
+			$(this).addClass("active");
+		});
+		settings.menuItem.find("> ol > li").bind("mouseout",function(){
+			$(this).removeClass("active");
+		});		
 	}
 	
 	var menuClose = function()
-	{
+	{	
 		if (settings.menuItem)
 		{
+			settings.linkElements.removeClass("active");
 			settings.menuItem.hide();
 		}	
 	}
@@ -44,7 +51,6 @@ $.fn.menu = function(settings)
 	
 	$(settings.linkElements).bind("mouseover",function(){
 		menuOpen($(this));
-		
 	});
 	$(settings.linkElements).bind("mouseout",menuSetTimer);
 	
