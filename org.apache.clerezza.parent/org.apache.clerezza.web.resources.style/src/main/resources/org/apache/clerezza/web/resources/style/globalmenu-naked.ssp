@@ -42,12 +42,15 @@ resultDocModifier.addScriptReference("/style/scripts/login.js");
 			}
 			{
 				ifx ((menuItem/menu("children")).length > 0) {
-				<ol>
-					 {
-						for (childMenuItem <- menuItem/menu("children")!!) yield
-						<li><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a></li>
-					 }
-				</ol>
+				<div>
+					<h4></h4>
+					<ol>
+						 {
+							for (childMenuItem <- menuItem/menu("children")!!) yield
+							<li class="clearfix"><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a><span></span></li>
+						 }
+					</ol>
+				</div>
 				} 
 			}
 		</li>
