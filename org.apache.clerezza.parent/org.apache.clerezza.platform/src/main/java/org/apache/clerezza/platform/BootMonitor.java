@@ -21,7 +21,6 @@ package org.apache.clerezza.platform;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.script.Compilable;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
@@ -31,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * This component logs a message when Apache Clerezza was launched successfully.
@@ -50,50 +50,61 @@ import org.apache.felix.scr.annotations.ReferencePolicy;
  *
  * see thread starting at http://www.mail-archive.com/users@felix.apache.org/msg07647.html
  */
-
-@Component(enabled=true, immediate=true)
-@Reference(name="jaxrsResource",
-		cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
-		policy=ReferencePolicy.DYNAMIC,
-		referenceInterface=Object.class,
-		target="(javax.ws.rs=true)")
+@Component(enabled = true, immediate = true)
+@Reference(name = "jaxrsResource",
+cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE,
+policy = ReferencePolicy.DYNAMIC,
+referenceInterface = Object.class,
+target = "(javax.ws.rs=true)")
 public class BootMonitor {
 
-	@Reference(target="(javax.script.language=scala)")
+	@Reference(target = "(javax.script.language=scala)")
 	private ScriptEngineFactory scalaScriptEngineFactory;
-	
 	private Set<Object> rootResources =
 			Collections.synchronizedSet(new HashSet<Object>());
-
 	/**
 	 * true when the user has been notified that clerezza started
 	 */
-	private boolean started = false;
-
+	private boolean clerezzaStarted = false;
+	private volatile boolean activated = false;
 	private final Logger logger = LoggerFactory.getLogger(BootMonitor.class);
+
+	protected void activate(ComponentContext context) {
+		//compile a script to initialize scala-compiler (needed by scal a server pages)
+		Thread t = new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					((Compilable) scalaScriptEngineFactory.getScriptEngine()).compile("println(\"helo\")");
+				} catch (ScriptException ex) {
+					logger.warn(ex.toString());
+				}
+				activated = true;
+			}
+		};
+		t.start();
+	}
 
 	protected void bindJaxrsResource(Object p) {
 		rootResources.add(p);
-		if (!started && (rootResources.size() == 35)) {
+		if (!clerezzaStarted && (rootResources.size() == 35)) {
 			Thread t = new Thread() {
+
 				@Override
 				public void run() {
 					int lastSize = 0;
 					for (int i = 0; i < 100; i++) {
 						if (rootResources.size() == lastSize) {
-							//compile a script to initialize scala-compiler (needed by scal a server pages)
-							try {
-								((Compilable)scalaScriptEngineFactory.getScriptEngine()).compile("println(\"helo\")");
-							} catch (ScriptException ex) {
-								logger.warn(ex.toString());
+							clerezzaStarted = true;
+							if (activated) {
+								logger.info("The Apache Clerezza Platform is now operational.");
+								return;
 							}
-							started = true;
-							logger.info("The Apache Clerezza Platform is now operational.");
-							return;
 						}
 						lastSize = rootResources.size();
 						try {
-							Thread.sleep(1000);
+							Thread.sleep(500);
 						} catch (InterruptedException ex) {
 							throw new RuntimeException();
 						}
@@ -107,5 +118,4 @@ public class BootMonitor {
 	protected void unbindJaxrsResource(Object p) {
 		rootResources.remove(p);
 	}
-
 }
