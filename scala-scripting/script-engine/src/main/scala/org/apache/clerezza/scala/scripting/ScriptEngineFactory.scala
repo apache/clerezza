@@ -27,6 +27,7 @@ import org.osgi.framework.BundleListener
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.Bundle
 import java.io.{File, PrintWriter, Reader, StringWriter}
+import java.security.PrivilegedActionException
 import java.security.AccessController
 import java.security.PrivilegedAction
 import java.util.{ArrayList, Arrays};
@@ -218,40 +219,44 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 		}
 		
 		override def compile(script: String): CompiledScript = {
-			AccessController.doPrivileged(new PrivilegedAction[CompiledScript]() {
+			try {
+				AccessController.doPrivileged(new PrivilegedAction[CompiledScript]() {
 				override def run() =  {
-					//inefficient but thread safe
-					compiler.synchronized {
-						val objectName = "CompiledScript"+classCounter
-						classCounter += 1
-						val classCode = "object " + objectName + """ {
-							|	def run($: Map[String, Object]) = {
-							|""".stripMargin + script +"""
-							|	}
-							|}""".stripMargin
-						val sources: List[SourceFile] = List(new BatchSourceFile("<script>", classCode))
-						(new compiler.Run).compileSources(sources)
-						if (compiler.reporter.hasErrors) {
-							throw new ScriptException(msgWriter.toString, "script", -1);
-						}
-						new CompiledScript() {
-							override def eval(context: ScriptContext) = {
-								var map = Map[String, Object]()
-								import _root_.scala.collection.JavaConversions._
-								for (	scope <- context.getScopes;
-										if (context.getBindings(scope.intValue) != null);
-										entry <- context.getBindings(scope.intValue)) {
-									map = map + (entry._1 -> entry._2)
-								}
-								val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
-								val runMethod = classLoader.findClass(objectName).getMethod("run", classOf[Map[String, Object]])
-								runMethod.invoke(null, map)
+						//inefficient but thread safe
+						compiler.synchronized {
+							val objectName = "CompiledScript"+classCounter
+							classCounter += 1
+							val classCode = "object " + objectName + """ {
+								|	def run($: Map[String, Object]) = {
+								|""".stripMargin + script +"""
+								|	}
+								|}""".stripMargin
+							val sources: List[SourceFile] = List(new BatchSourceFile("<script>", classCode))
+							(new compiler.Run).compileSources(sources)
+							if (compiler.reporter.hasErrors) {
+								throw new ScriptException(msgWriter.toString, "script", -1);
 							}
-							override def getEngine = MyScriptEngine.this
+							new CompiledScript() {
+								override def eval(context: ScriptContext) = {
+									var map = Map[String, Object]()
+									import _root_.scala.collection.JavaConversions._
+									for (	scope <- context.getScopes;
+											if (context.getBindings(scope.intValue) != null);
+											entry <- context.getBindings(scope.intValue)) {
+										map = map + (entry._1 -> entry._2)
+									}
+									val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
+									val runMethod = classLoader.findClass(objectName).getMethod("run", classOf[Map[String, Object]])
+									runMethod.invoke(null, map)
+								}
+								override def getEngine = MyScriptEngine.this
+							}
 						}
 					}
-				}
-			})
+				})
+			} catch {
+				case e: PrivilegedActionException => throw e.getCause
+			}
 		}
 
 		

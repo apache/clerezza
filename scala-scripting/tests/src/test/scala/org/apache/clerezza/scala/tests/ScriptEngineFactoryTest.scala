@@ -144,6 +144,14 @@ s"""
 		val compiledScript = engine.compile(script)
 		Assert.assertEquals(string, compiledScript.eval())
 	}
+	
+	@Test(expected=classOf[ScriptException])
+	def compileErrorScript(): Unit = {
+		val string = "hello"
+		val script = "this is not real scala !"
+		val engine = factory.getScriptEngine.asInstanceOf[Compilable]
+		val compiledScript = engine.compile(script)
+	}
 
 	//This seems hard to realize before https://lampsvn.epfl.ch/trac/scala/ticket/3513 is fixed
 	/*@Test
