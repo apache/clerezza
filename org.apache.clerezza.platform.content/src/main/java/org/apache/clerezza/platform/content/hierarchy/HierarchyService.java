@@ -18,37 +18,27 @@
  */
 package org.apache.clerezza.platform.content.hierarchy;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import org.apache.clerezza.rdf.core.event.GraphEvent;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.config.PlatformConfig;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.security.UserUtil;
 import org.apache.clerezza.platform.usermanager.UserManager;
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.*;
 import org.apache.clerezza.rdf.core.event.FilterTriple;
+import org.apache.clerezza.rdf.core.event.GraphEvent;
 import org.apache.clerezza.rdf.core.event.GraphListener;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.ontologies.DCTERMS;
-import org.apache.clerezza.rdf.ontologies.FOAF;
-import org.apache.clerezza.rdf.ontologies.HIERARCHY;
-import org.apache.clerezza.rdf.ontologies.PLATFORM;
-import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.clerezza.rdf.ontologies.*;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.ComponentContext;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
 
 /**
  * The hierarchy service is an OSGi service that provides methods for managing
@@ -442,20 +432,27 @@ public class HierarchyService {
 	private void addCreationProperties(HierarchyNode node) {
 		GraphNode agentNode = getCreator();
 		if (!(node.getObjects(FOAF.maker).hasNext() || agentNode == null)) {
+      Lock lock = node.readLock();
+      try {
+        lock.lock();
+        Iterator<Triple> agents = node.getGraph().filter(null, PLATFORM.userName,
+            agentNode.getObjects(PLATFORM.userName).next());
 
-			Iterator<Triple> agents = node.getGraph().filter(null, PLATFORM.userName,
-					agentNode.getObjects(PLATFORM.userName).next());
+        NonLiteral agent = null;
+        if (agents.hasNext()) {
+          agent = (NonLiteral) agents.next().getSubject();
+        } else {
+          agent = (NonLiteral) agentNode.getNode();
+        }
+        node.addProperty(FOAF.maker, agent);
+        node.getGraph().add(new TripleImpl(agent,
+            PLATFORM.userName, agentNode.getObjects(
+            PLATFORM.userName).next()));
+      }
+      finally{
+        lock.unlock();
+      }
 
-			NonLiteral agent = null;
-			if (agents.hasNext()) {
-				agent = (NonLiteral) agents.next().getSubject();
-			} else {
-				agent = (NonLiteral) agentNode.getNode();
-			}
-			node.addProperty(FOAF.maker, agent);
-			node.getGraph().add(new TripleImpl(agent,
-					PLATFORM.userName, agentNode.getObjects(
-					PLATFORM.userName).next()));
 		}
 		node.addProperty(DCTERMS.created,
 				LiteralFactory.getInstance().createTypedLiteral(new Date()));
