@@ -16,6 +16,7 @@
   <modules>
     <module>org.apache.clerezza.uima.metadata-generator</module>
     <module>org.apache.clerezza.uima.utils</module>
+    <module>org.apache.clerezza.uima.ontologies</module>
   </modules>
   <dependencies>
     <dependency>
