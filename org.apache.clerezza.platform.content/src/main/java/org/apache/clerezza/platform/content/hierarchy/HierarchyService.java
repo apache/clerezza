@@ -432,7 +432,7 @@ public class HierarchyService {
 	private void addCreationProperties(HierarchyNode node) {
 		GraphNode agentNode = getCreator();
 		if (!(node.getObjects(FOAF.maker).hasNext() || agentNode == null)) {
-      Lock lock = node.readLock();
+      Lock lock = node.writeLock();
       try {
         lock.lock();
         Iterator<Triple> agents = node.getGraph().filter(null, PLATFORM.userName,
