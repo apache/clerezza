@@ -18,25 +18,13 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.*;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+
+import java.util.*;
+import java.util.concurrent.locks.Lock;
 
 /**
  * This class represents a node in the context of a graph. It provides
@@ -630,4 +618,39 @@ public class GraphNode {
 	public int hashCode() {
 		return 13 * getNode().hashCode() + getGraph().hashCode();
 	}
+
+  /**
+   * @return a ReadLock if the underlying Graph is a LockableMGraph it returns its lock, otherwise null
+   */
+  public Lock readLock() {
+    if (getGraph() instanceof LockableMGraph) {
+      return ((LockableMGraph) getGraph()).getLock().readLock();
+    }
+    return new FakeLock();
+  }
+
+  /**
+   *
+   * @return
+   */
+  public Lock writeLock() {
+    if (getGraph() instanceof LockableMGraph) {
+      return ((LockableMGraph) getGraph()).getLock().writeLock();
+    }
+    return new FakeLock();
+  }
+
+  private static class FakeLock implements Lock {
+    public void lock(){}
+
+    public void lockInterruptibly() throws java.lang.InterruptedException {}
+
+    public boolean tryLock() {return false;}
+
+    public boolean tryLock(long l, java.util.concurrent.TimeUnit timeUnit) throws java.lang.InterruptedException {return false;}
+
+    public void unlock(){}
+
+    public java.util.concurrent.locks.Condition newCondition() {return null;}
+  }
 }
