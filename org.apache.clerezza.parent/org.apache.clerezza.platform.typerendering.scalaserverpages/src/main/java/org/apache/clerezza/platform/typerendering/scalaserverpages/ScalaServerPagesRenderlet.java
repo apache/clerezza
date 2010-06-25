@@ -116,7 +116,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	private final byte[] byteCloser = (';' + lineSeparator).getBytes();
 
 	//TODO a map with SoftReferences as keys
-	private Map<byte[], CompiledScript> compiledScripts = new HashMap<byte[], CompiledScript>();
+	private Map<String, CompiledScript> compiledScripts = new HashMap<String, CompiledScript>();
 	
 	@Override
 	public void render(GraphNode res, GraphNode context,
@@ -226,15 +226,17 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	}
 
 	private CompiledScript getCompiledScript(byte[] scriptBytes) throws ScriptException {
-		CompiledScript cs = compiledScripts.get(scriptBytes);
+		String scriptString;
+		try {
+			scriptString = new String(scriptBytes, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		}
+		CompiledScript cs = compiledScripts.get(scriptString);
 		if (cs == null) {
-			try {
-				cs = ((Compilable)scalaScriptEngineFactory.getScriptEngine())
-						.compile(new String(scriptBytes, "UTF-8"));
-			} catch (UnsupportedEncodingException ex) {
-				throw new RuntimeException(ex);
-			}
-			compiledScripts.put(scriptBytes, cs);
+			cs = ((Compilable)scalaScriptEngineFactory.getScriptEngine())
+					.compile(scriptString);
+			compiledScripts.put(scriptString, cs);
 		}
 		return cs;
 	}
