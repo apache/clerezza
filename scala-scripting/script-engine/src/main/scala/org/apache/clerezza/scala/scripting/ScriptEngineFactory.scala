@@ -234,6 +234,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 							val sources: List[SourceFile] = List(new BatchSourceFile("<script>", classCode))
 							(new compiler.Run).compileSources(sources)
 							if (compiler.reporter.hasErrors) {
+								compiler.reporter.reset
 								throw new ScriptException(msgWriter.toString, "script", -1);
 							}
 							new CompiledScript() {

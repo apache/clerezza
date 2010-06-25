@@ -159,6 +159,20 @@ s"""
 		val compiledScript = engine.compile(script)
 	}
 
+	
+	def compileNormalAfterErrorScript(): Unit = {
+		val script = "this is not real scala !"
+		val engine = factory.getScriptEngine.asInstanceOf[Compilable]
+		try {
+			val compiledScript = engine.compile(script)
+		} catch {
+			case e => Assert.assertEquals(classOf[ScriptException], e.getClass)
+		}
+		val string = "hello"
+		val script2 = "\""+string+"\""
+		val compiledScript2 = engine.compile(script2)
+		Assert.assertEquals(string, compiledScript2.eval())
+	}
 	//This seems hard to realize before https://lampsvn.epfl.ch/trac/scala/ticket/3513 is fixed
 	/*@Test
 	def checkException(): Unit =  {
@@ -187,7 +201,7 @@ object ScriptEngineFactoryTest {
 				webProfile(),
 				junitBundles(),
 				frameworks(
-				felix()),
+					felix()),
 				systemProperty("org.osgi.service.http.port").value(
 				Integer.toString(testHttpPort)));
 	}
