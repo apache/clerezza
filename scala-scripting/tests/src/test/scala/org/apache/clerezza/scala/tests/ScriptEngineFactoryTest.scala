@@ -147,8 +147,14 @@ s"""
 	
 	@Test(expected=classOf[ScriptException])
 	def compileErrorScript(): Unit = {
-		val string = "hello"
 		val script = "this is not real scala !"
+		val engine = factory.getScriptEngine.asInstanceOf[Compilable]
+		val compiledScript = engine.compile(script)
+	}
+	
+	@Test(expected=classOf[ScriptException])
+	def compileUnfinishedScript(): Unit = {
+		val script = "if (true) {"
 		val engine = factory.getScriptEngine.asInstanceOf[Compilable]
 		val compiledScript = engine.compile(script)
 	}
