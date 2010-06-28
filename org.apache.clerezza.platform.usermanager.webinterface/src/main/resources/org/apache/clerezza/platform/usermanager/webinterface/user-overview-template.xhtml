@@ -61,17 +61,20 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 				</tbody>
 			</table>
 		</fieldset>
-	</div>
-	{if (!((res/list("indexFrom")*).equals(""))) {
+	<br/>
+	{
+	if (!((res/list("indexFrom")*).equals(""))) {
 		if (!((res/list("indexFrom")*).equals("0"))) {
-			<a href={res/list("predecessor")*}>Prev Page</a>
+			<a href={res/list("predecessor")*}>prev</a>
 		} else {
 			<div></div>
 		}
-		} else { <div></div> }
+	} else { <div></div> }}
+	{
 	if (!((res/list("indexTo")*).equals((res/list("length")*)))) {
-		<a href="${list:successor}">Next Page</a>
+		<a href={res/list("successor")*}>| next</a>
 	} else {
 		<div></div>
 	}}
+	</div>
 </div>
