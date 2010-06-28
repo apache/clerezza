@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -43,6 +44,8 @@ import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -63,7 +66,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 public class UserManagerImpl implements UserManager {
 
 	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
-	private MGraph systemGraph;
+	private LockableMGraph systemGraph;
 
 	@Reference
 	private ContentGraphProvider cgProvider;
@@ -79,22 +82,33 @@ public class UserManagerImpl implements UserManager {
 			return;
 		}
 		BNode role = new BNode();
-
-		systemGraph.add(new TripleImpl(role, RDF.type, PERMISSION.Role));
-		systemGraph.add(new TripleImpl(role, DC.title,
-				new PlainLiteralImpl(title)));
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			systemGraph.add(new TripleImpl(role, RDF.type, PERMISSION.Role));
+			systemGraph.add(new TripleImpl(role, DC.title,
+					new PlainLiteralImpl(title)));
+		} finally {
+			writeLock.unlock();
+		}
 	}
 
 	@Override
 	public NonLiteral getRoleByTitle(String title) {
-		Iterator<Triple> triples = systemGraph.filter(null, DC.title,
-				new PlainLiteralImpl(title));
-		NonLiteral role = null;
-		while (triples.hasNext()) {
-			role = triples.next().getSubject();
-			if (systemGraph.filter(role, RDF.type, PERMISSION.Role).hasNext()) {
-				return role;
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> triples = systemGraph.filter(null, DC.title,
+					new PlainLiteralImpl(title));
+			NonLiteral role = null;
+			while (triples.hasNext()) {
+				role = triples.next().getSubject();
+				if (systemGraph.filter(role, RDF.type, PERMISSION.Role).hasNext()) {
+					return role;
+				}
 			}
+		} finally {
+			readLock.unlock();
 		}
 		return null;
 	}
@@ -106,40 +120,40 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Iterator<NonLiteral> getRoles() {
-		final Iterator<NonLiteral> allRolesIter = getResourcesOfType(PERMISSION.Role);
-		final Set<NonLiteral> allRolesSet = new HashSet<NonLiteral>();
-		while (allRolesIter.hasNext()) {
-			allRolesSet.add(allRolesIter.next());
-		}
-		final Set<NonLiteral> nonBaseRolesSet = new HashSet<NonLiteral>();
-		for (NonLiteral role : allRolesSet) {
-			if (!systemGraph.filter(role, RDF.type, PERMISSION.BaseRole).hasNext()) {
-				nonBaseRolesSet.add(role);
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			final Iterator<NonLiteral> allRolesIter = getResourcesOfType(PERMISSION.Role);
+			final Set<NonLiteral> allRolesSet = new HashSet<NonLiteral>();
+			while (allRolesIter.hasNext()) {
+				allRolesSet.add(allRolesIter.next());
 			}
-		}
-		return nonBaseRolesSet.iterator();
+			final Set<NonLiteral> nonBaseRolesSet = new HashSet<NonLiteral>();
+			for (NonLiteral role : allRolesSet) {
+				if (!systemGraph.filter(role, RDF.type, PERMISSION.BaseRole).hasNext()) {
+					nonBaseRolesSet.add(role);
+				}
+			}
+			return nonBaseRolesSet.iterator();
+		} finally {
+			readLock.unlock();
+		}		
 	}
 
 	@Override
 	public Iterator<NonLiteral> getRolesOfUser(NonLiteral user){
-		final Iterator<Triple> triples = systemGraph.filter(user,SIOC.has_function, null);
-		return new Iterator<NonLiteral>() {
-
-			@Override
-			public boolean hasNext() {
-				return triples.hasNext();
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			final Iterator<Triple> triples = systemGraph.filter(user,SIOC.has_function, null);
+			Set<NonLiteral> userRoles = new HashSet<NonLiteral>();
+			while (triples.hasNext()) {
+				userRoles.add((NonLiteral) triples.next().getObject());
 			}
-
-			@Override
-			public NonLiteral next() {
-				return (NonLiteral)triples.next().getObject();
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
+			return userRoles.iterator();
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
@@ -160,13 +174,25 @@ public class UserManagerImpl implements UserManager {
 
 	private boolean isBaseRole(NonLiteral role) {
 		GraphNode roleNode = new GraphNode(role, systemGraph);
-		return roleNode.hasProperty(RDF.type, PERMISSION.BaseRole);
+		Lock readLock = roleNode.readLock();
+		readLock.lock();
+		try {
+			return roleNode.hasProperty(RDF.type, PERMISSION.BaseRole);
+		} finally {
+			readLock.unlock();
+		}
+		
 	}
 
 	private void deleteTriplesOfASubject(NonLiteral subject) {
-		Iterator<Triple> triples = systemGraph.filter(subject, null, null);
-		while (triples.hasNext()) {
-			systemGraph.remove(triples.next());
+		Lock writeLock = systemGraph.getLock().writeLock();
+		try {
+			Iterator<Triple> triples = systemGraph.filter(subject, null, null);
+			while (triples.hasNext()) {
+				systemGraph.remove(triples.next());
+			}
+		} finally {
+			writeLock.unlock();
 		}
 	}
 
@@ -192,12 +218,18 @@ public class UserManagerImpl implements UserManager {
 		if (permissionEntries.isEmpty()) {
 			return;
 		}
-		for (String permissionEntry : permissionEntries) {
-			if (permissionEntry.trim().length() == 0) {
-				continue;
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			for (String permissionEntry : permissionEntries) {
+				if (permissionEntry.trim().length() == 0) {
+					continue;
+				}
+				systemGraph.add(new TripleImpl(role, PERMISSION.hasPermission,
+						getPermissionOfAJavaPermEntry(permissionEntry)));
 			}
-			systemGraph.add(new TripleImpl(role, PERMISSION.hasPermission,
-					getPermissionOfAJavaPermEntry(permissionEntry)));
+		} finally {
+			writeLock.unlock();
 		}
 		//refresh the policy so it will recheck the permissions
 		Policy.getPolicy().refresh();
@@ -214,39 +246,45 @@ public class UserManagerImpl implements UserManager {
 	private NonLiteral getPermissionOfAJavaPermEntry(
 			String permissionString) {
 		PlainLiteral javaPermEntry = new PlainLiteralImpl(permissionString);
-		Iterator<Triple> javaPermTriples = systemGraph.filter(null,
-				PERMISSION.javaPermissionEntry, javaPermEntry);
-		if (javaPermTriples.hasNext()) {
-			return javaPermTriples.next().getSubject();
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> javaPermTriples = systemGraph.filter(null,
+					PERMISSION.javaPermissionEntry, javaPermEntry);
+			if (javaPermTriples.hasNext()) {
+				return javaPermTriples.next().getSubject();
+			}
+		} finally {
+			readLock.unlock();
 		}
-		BNode result = new BNode();
-		systemGraph.add(new TripleImpl(result,
-				PERMISSION.javaPermissionEntry, javaPermEntry));
-		return result;
+
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			BNode result = new BNode();
+			systemGraph.add(new TripleImpl(result,
+					PERMISSION.javaPermissionEntry, javaPermEntry));
+			return result;
+		} finally {
+			writeLock.unlock();
+		}
 	}
 
 	@Override
-	public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role) {
-
-		final Iterator<Triple> triples = systemGraph.filter(role,
-				PERMISSION.hasPermission, null);
-		return new Iterator<NonLiteral>() {
-
-			@Override
-			public boolean hasNext() {
-				return triples.hasNext();
+	public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role) {	
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			final Iterator<Triple> triples = systemGraph.filter(role,
+					PERMISSION.hasPermission, null);
+			Set<NonLiteral> permissions = new HashSet<NonLiteral>();
+			while (triples.hasNext()) {
+				permissions.add((NonLiteral) triples.next().getObject());
 			}
-
-			@Override
-			public NonLiteral next() {
-				return (NonLiteral) triples.next().getObject();
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
+			return permissions.iterator();
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
@@ -271,10 +309,16 @@ public class UserManagerImpl implements UserManager {
 		if (permissionEntries.isEmpty()) {
 			return;
 		}
-		for (String permissionEntry : permissionEntries) {
-			NonLiteral permission = getPermissionOfAJavaPermEntry(permissionEntry);
-			systemGraph.remove(new TripleImpl(role, PERMISSION.hasPermission,
-					permission));
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			for (String permissionEntry : permissionEntries) {
+				NonLiteral permission = getPermissionOfAJavaPermEntry(permissionEntry);
+				systemGraph.remove(new TripleImpl(role, PERMISSION.hasPermission,
+						permission));
+			}
+		} finally {
+			writeLock.unlock();
 		}
 		//refresh the policy so it will recheck the permissions
 		Policy.getPolicy().refresh();
@@ -295,7 +339,13 @@ public class UserManagerImpl implements UserManager {
 			return;
 		}
 		GraphNode graphNode = new GraphNode(role, systemGraph);
-		graphNode.deleteProperties(PERMISSION.hasPermission);
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			graphNode.deleteProperties(PERMISSION.hasPermission);
+		} finally {
+			writeLock.unlock();
+		}		
 		//refresh the policy so it will recheck the permissions
 		Policy.getPolicy().refresh();
 	}
@@ -318,30 +368,37 @@ public class UserManagerImpl implements UserManager {
 			}
 		}
 		BNode user = new BNode();
-		systemGraph.add(new TripleImpl(user, RDF.type, FOAF.Agent));
-		systemGraph.add(new TripleImpl(user, PLATFORM.userName,
-				new PlainLiteralImpl(name)));
-		if (email != null) {
-			systemGraph.add(new TripleImpl(user, FOAF.mbox,
-					new UriRef("mailto:" + email)));
-		}
-		if (password != null) {
-			try {
-				String pswSha1 = bytes2HexString(MessageDigest.getInstance("SHA1").digest(password.getBytes("UTF-8")));
-				systemGraph.add(new TripleImpl(user, PERMISSION.passwordSha1, new PlainLiteralImpl(pswSha1)));
-			} catch (UnsupportedEncodingException ex) {
-				throw new RuntimeException(ex);
-			} catch (NoSuchAlgorithmException ex) {
-				throw new RuntimeException(ex);
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			systemGraph.add(new TripleImpl(user, RDF.type, FOAF.Agent));
+			systemGraph.add(new TripleImpl(user, PLATFORM.userName,
+					new PlainLiteralImpl(name)));
+			if (email != null) {
+				systemGraph.add(new TripleImpl(user, FOAF.mbox,
+						new UriRef("mailto:" + email)));
 			}
+			if (password != null) {
+				try {
+					String pswSha1 = bytes2HexString(MessageDigest.getInstance("SHA1").digest(password.getBytes("UTF-8")));
+					systemGraph.add(new TripleImpl(user, PERMISSION.passwordSha1, new PlainLiteralImpl(pswSha1)));
+				} catch (UnsupportedEncodingException ex) {
+					throw new RuntimeException(ex);
+				} catch (NoSuchAlgorithmException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+			if (pathPrefix != null && pathPrefix.trim().length() != 0) {
+				systemGraph.add(new TripleImpl(user, OSGI.agent_path_prefix,
+						new PlainLiteralImpl(pathPrefix)));
+			}
+			if (!assignedRoles.isEmpty()) {
+				addRolesToUser(assignedRoles, user);
+			}			
+		} finally {
+			writeLock.unlock();
 		}
-		if (pathPrefix != null && pathPrefix.trim().length() != 0) {
-			systemGraph.add(new TripleImpl(user, OSGI.agent_path_prefix,
-					new PlainLiteralImpl(pathPrefix)));
-		}
-		if (!assignedRoles.isEmpty()) {
-			addRolesToUser(assignedRoles, user);
-		}
+		
 	}
 
 	/**
@@ -359,18 +416,24 @@ public class UserManagerImpl implements UserManager {
 		if (email == null) {
 			return null;
 		}
-		Iterator<Triple> triples = systemGraph.filter(null, FOAF.mbox,
-				new UriRef("mailto:" + email));
-		if (!triples.hasNext()) {
-			return null;
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> triples = systemGraph.filter(null, FOAF.mbox,
+					new UriRef("mailto:" + email));
+			if (!triples.hasNext()) {
+				return null;
+			}
+			NonLiteral user = triples.next().getSubject();
+			triples = systemGraph.filter(user, PLATFORM.userName, null);
+			if (!triples.hasNext()) {
+				throw new UserHasNoNameException("User with email address" + email
+						+ " does not have a name");
+			}
+			return ((PlainLiteral) triples.next().getObject()).getLexicalForm();
+		} finally {
+			readLock.unlock();
 		}
-		NonLiteral user = triples.next().getSubject();
-		triples = systemGraph.filter(user, PLATFORM.userName, null);
-		if (!triples.hasNext()) {
-			throw new UserHasNoNameException("User with email address" + email +
-					" does not have a name");
-		}
-		return ((PlainLiteral) triples.next().getObject()).getLexicalForm();
 	}
 
 	@Override
@@ -385,29 +448,35 @@ public class UserManagerImpl implements UserManager {
 			throw new UserNotExistsException(name);
 		}
 		GraphNode userGraphNode = new GraphNode(user, systemGraph);
-		if (email != null) {
-			updateProperty(userGraphNode, FOAF.mbox, new UriRef("mailto:" + email));
-		}
-
-		if (password != null) {
-			try {
-				String pswSha1 = bytes2HexString(MessageDigest.getInstance("SHA1").digest(password.getBytes("UTF-8")));
-				updateProperty(userGraphNode, PERMISSION.passwordSha1, new PlainLiteralImpl(pswSha1));
-			} catch (UnsupportedEncodingException ex) {
-				throw new RuntimeException(ex);
-			} catch (NoSuchAlgorithmException ex) {
-				throw new RuntimeException(ex);
+		Lock writeLock = userGraphNode.writeLock();
+		writeLock.lock();
+		try {
+			if (email != null) {
+				updateProperty(userGraphNode, FOAF.mbox, new UriRef("mailto:" + email));
 			}
-		}
-		if (pathPrefix != null && pathPrefix.trim().length() != 0) {
-			updateProperty(userGraphNode, OSGI.agent_path_prefix,
-					new PlainLiteralImpl(pathPrefix));
-		}
-		if (!assignedRoles.isEmpty()) {
-			userGraphNode.deleteProperties(SIOC.has_function);
-			addRolesToUser(assignedRoles, (NonLiteral) userGraphNode.getNode());
-			//refresh the policy so it will recheck the permissions
-			Policy.getPolicy().refresh();
+
+			if (password != null) {
+				try {
+					String pswSha1 = bytes2HexString(MessageDigest.getInstance("SHA1").digest(password.getBytes("UTF-8")));
+					updateProperty(userGraphNode, PERMISSION.passwordSha1, new PlainLiteralImpl(pswSha1));
+				} catch (UnsupportedEncodingException ex) {
+					throw new RuntimeException(ex);
+				} catch (NoSuchAlgorithmException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+			if (pathPrefix != null && pathPrefix.trim().length() != 0) {
+				updateProperty(userGraphNode, OSGI.agent_path_prefix,
+						new PlainLiteralImpl(pathPrefix));
+			}
+			if (!assignedRoles.isEmpty()) {
+				userGraphNode.deleteProperties(SIOC.has_function);
+				addRolesToUser(assignedRoles, (NonLiteral) userGraphNode.getNode());
+				//refresh the policy so it will recheck the permissions
+				Policy.getPolicy().refresh();
+			}
+		} finally {
+			writeLock.unlock();
 		}
 	}
 
@@ -432,16 +501,26 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean nameExists(String name) {
-
-		return systemGraph.filter(null, PLATFORM.userName,
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			return systemGraph.filter(null, PLATFORM.userName,
 				new PlainLiteralImpl(name)).hasNext();
+		} finally {
+			readLock.unlock();
+		}		
 	}
 
 	@Override
 	public boolean emailExists(String email) {
-
-		return systemGraph.filter(null, FOAF.mbox,
-				new UriRef("mailto:" + email)).hasNext();
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			return systemGraph.filter(null, FOAF.mbox,
+					new UriRef("mailto:" + email)).hasNext();
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
@@ -454,26 +533,19 @@ public class UserManagerImpl implements UserManager {
 		return getResourcesOfType(FOAF.Agent);
 	}
 
-	private Iterator<NonLiteral> getResourcesOfType(UriRef type) {
-		final Iterator<Triple> triples =
-				systemGraph.filter(null, RDF.type, type);
-		return new Iterator<NonLiteral>() {
-
-			@Override
-			public boolean hasNext() {
-				return triples.hasNext();
+	private Iterator<NonLiteral> getResourcesOfType(UriRef type) {		
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			final Iterator<Triple> triples = systemGraph.filter(null, RDF.type, type);
+			Set<NonLiteral> userRoles = new HashSet<NonLiteral>();
+			while (triples.hasNext()) {
+				userRoles.add(triples.next().getSubject());
 			}
-
-			@Override
-			public NonLiteral next() {
-				return triples.next().getSubject();
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
+			return userRoles.iterator();
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
@@ -558,12 +630,18 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public GraphNode getUserInContentGraph(final String name) {
-		final MGraph contentGraph = cgProvider.getContentGraph();
+		final LockableMGraph contentGraph = (LockableMGraphWrapper) cgProvider.getContentGraph();
 		Iterator<Triple> triples = contentGraph.filter(null, PLATFORM.userName,
 				new PlainLiteralImpl(name));
 		GraphNode resultNode = null;
 		if (triples.hasNext()) {
-			resultNode = new GraphNode(triples.next().getSubject(), contentGraph);
+			Lock readLock = contentGraph.getLock().readLock();
+			readLock.lock();
+			try {
+				resultNode = new GraphNode(triples.next().getSubject(), contentGraph);
+			} finally {
+				readLock.unlock();
+			}			
 		} else {
 			NonLiteral user = AccessController.doPrivileged(
 					new PrivilegedAction<NonLiteral>() {
@@ -574,9 +652,16 @@ public class UserManagerImpl implements UserManager {
 						}
 					});
 			if (user != null) {
-				resultNode = new GraphNode(new BNode(), contentGraph);
+				Lock writeLock = contentGraph.getLock().writeLock();
+				writeLock.lock();
+				try {
+					resultNode = new GraphNode(new BNode(), contentGraph);
 				resultNode.addProperty(PLATFORM.userName,
 						new PlainLiteralImpl(name));
+				} finally {
+					writeLock.unlock();
+				}
+				
 			}
 		}
 		return resultNode;
@@ -597,11 +682,18 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private NonLiteral getUserByUserName(String name) {
-		Iterator<Triple> triples = systemGraph.filter(null, PLATFORM.userName,
-				new PlainLiteralImpl(name));
-		if (triples.hasNext()) {
-			return triples.next().getSubject();
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> triples = systemGraph.filter(null, PLATFORM.userName,
+					new PlainLiteralImpl(name));
+			if (triples.hasNext()) {
+				return triples.next().getSubject();
+			}
+			return null;
+		} finally {
+			readLock.unlock();
 		}
-		return null;
+
 	}
 }
