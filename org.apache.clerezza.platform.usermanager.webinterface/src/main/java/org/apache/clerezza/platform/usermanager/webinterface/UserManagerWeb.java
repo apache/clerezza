@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.locks.Lock;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -73,6 +74,7 @@ import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
@@ -114,7 +116,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 public class UserManagerWeb implements GlobalMenuItemsProvider {
 	
 	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
-	private MGraph systemGraph;
+	private LockableMGraph systemGraph;
 
 	@Reference
 	private RenderletManager renderletManager;
@@ -213,8 +215,14 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		Iterator<NonLiteral> users = userManager.getUsers();
 		SortedSet<GraphNode> sortedSet = new TreeSet<GraphNode>(
 				new UserComparator());
-		while (users.hasNext()) {
-			sortedSet.add(new GraphNode(users.next(), systemGraph));
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			while (users.hasNext()) {
+				sortedSet.add(new GraphNode(users.next(), systemGraph));
+			}
+		} finally {
+			readLock.unlock();
 		}
 		List<GraphNode> userList = new ArrayList<GraphNode>();
 		userList.addAll(sortedSet);
@@ -283,16 +291,19 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		resultGraph.add(new TripleImpl(addUserPage, RDF.type,
 				PLATFORM.HeadedPage));
 
-		MGraph contentGraph = cgProvider.getContentGraph();
-		Iterator<Triple> formFields = contentGraph.filter(null, RDF.type,
-				USERMANAGER.UserFormField);
-		while (formFields.hasNext()) {
-			resultGraph
-					.add(new TripleImpl(addUserPage,
-							CUSTOMPROPERTY.customfield, formFields.next()
-									.getSubject()));
+		LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
+		Lock readLock = contentGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> formFields = contentGraph.filter(null, RDF.type,
+					USERMANAGER.UserFormField);
+			while (formFields.hasNext()) {
+				resultGraph.add(new TripleImpl(addUserPage,
+						CUSTOMPROPERTY.customfield, formFields.next().getSubject()));
+			}
+		} finally {
+			readLock.unlock();
 		}
-
 
 		GraphNode result = new GraphNode(addUserPage, new UnionMGraph(
 				resultGraph, systemGraph, contentGraph));
@@ -328,38 +339,48 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			returnInputErrorMessages(message);
 		}
 		userManager.storeUser(userName, email, psw, userRoles, pathPrefix);
-		MGraph contentGraph = cgProvider.getContentGraph();
+		LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 		NonLiteral user = new BNode();
-		contentGraph.add(new TripleImpl(user, RDF.type, FOAF.Agent));
-		contentGraph.add(new TripleImpl(user, PLATFORM.userName, new PlainLiteralImpl(
-				userName)));
+		
+		Lock writeLock = contentGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			contentGraph.add(new TripleImpl(user, RDF.type, FOAF.Agent));
+			contentGraph.add(new TripleImpl(user, PLATFORM.userName, new PlainLiteralImpl(
+					userName)));
+		} finally {
+			writeLock.unlock();
+		}
 
 		saveCustomUserInformation(contentGraph, userName, userRoles, form);
 		return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
 	}
 
-	private void saveCustomUserInformation(MGraph contentGraph,
+	private void saveCustomUserInformation(LockableMGraph contentGraph,
 			String userName, List<String> roles, MultiPartBody form) {
 		NonLiteral user = getCustomUser(contentGraph, userName);
 		if (user != null) {
 			for (int i = 0; i < roles.size(); i++) {
 				NonLiteral collection = customPropertyManager
 						.getCustomPropertyCollection(PERMISSION.Role, roles
-								.get(i));
-				ArrayList<UriRef> customproperties = customPropertyManager
-						.getPropertiesOfCollection(collection);
+		.get(i));
+				ArrayList<UriRef> customproperties = customPropertyManager.getPropertiesOfCollection(collection);
 				for (UriRef property : customproperties) {
-					String[] values = form.getTextParameterValues(property
-							.getUnicodeString());
-					Iterator<Triple> actualValues = contentGraph.filter(user,
-							property, null);
-					while (actualValues.hasNext()) {
-						contentGraph.remove(actualValues.next());
-					}
-					for (int k = 0; k < values.length; k++) {
-						contentGraph.add(new TripleImpl(user, property,
-								LiteralFactory.getInstance()
-										.createTypedLiteral(values[k])));
+					String[] values = form.getTextParameterValues(property.getUnicodeString());
+					Lock writeLock = contentGraph.getLock().writeLock();
+					writeLock.lock();
+					try {
+						Iterator<Triple> actualValues = contentGraph.filter(user,
+								property, null);
+						while (actualValues.hasNext()) {
+							contentGraph.remove(actualValues.next());
+						}
+						for (int k = 0; k < values.length; k++) {
+							contentGraph.add(new TripleImpl(user, property,
+									LiteralFactory.getInstance().createTypedLiteral(values[k])));
+						}
+					} finally {
+						writeLock.unlock();
 					}
 				}
 			}
@@ -368,13 +389,19 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		}
 	}
 
-	private NonLiteral getCustomUser(MGraph contentGraph, String userName) {
-		Iterator<Triple> users = contentGraph.filter(null, PLATFORM.userName,
-				new PlainLiteralImpl(userName.trim()));
-		if (users.hasNext()) {
-			return users.next().getSubject();
-		} else {
-			return null;
+	private NonLiteral getCustomUser(LockableMGraph contentGraph, String userName) {
+		Lock readLock = contentGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> users = contentGraph.filter(null, PLATFORM.userName,
+					new PlainLiteralImpl(userName.trim()));
+			if (users.hasNext()) {
+				return users.next().getSubject();
+			} else {
+				return null;
+			}
+		} finally {
+			readLock.unlock();
 		}
 	}
 
@@ -391,7 +418,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@QueryParam(value = "roles") String roles,
 			@QueryParam(value = "user") String userName,
 			@Context UriInfo uriInfo) throws ParseException {
-		MGraph contentGraph = cgProvider.getContentGraph();
+		LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral node = new BNode();
 
@@ -415,19 +442,26 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 		for (NonLiteral customField : customfields) {
 			UriRef property = customPropertyManager
-					.getCustomFieldProperty(customField);
+	.getCustomFieldProperty(customField);
 
 			if (userName != null && !userName.equals("")
 					&& userName.trim().length() > 0) {
 				NonLiteral user = getCustomUser(contentGraph, userName);
 				if (user != null) {
-					Iterator<Triple> values = contentGraph.filter(user,
-							property, null);
-					while (values.hasNext()) {
-						Resource value = values.next().getObject();
-						resultGraph.add(new TripleImpl(customField,
-								CUSTOMPROPERTY.actualvalues, value));
+					Lock readLock = contentGraph.getLock().readLock();
+					readLock.lock();
+					try {
+						Iterator<Triple> values = contentGraph.filter(user,
+								property, null);
+						while (values.hasNext()) {
+							Resource value = values.next().getObject();
+							resultGraph.add(new TripleImpl(customField,
+									CUSTOMPROPERTY.actualvalues, value));
+						}
+					} finally {
+						readLock.unlock();
 					}
+
 				}
 			}
 			resultGraph.add(new TripleImpl(node, CUSTOMPROPERTY.customfield,
@@ -467,13 +501,18 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@Context UriInfo uriInfo) {
 
 		checkUserParam(userName);
-		MGraph contentGraph = cgProvider.getContentGraph();
+		LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 		NonLiteral user = getCustomUser(contentGraph, userName);
 		if (user != null) {
-			Iterator<Triple> userTriples = contentGraph
-					.filter(user, null, null);
-			while (userTriples.hasNext()) {
-				contentGraph.remove(userTriples.next());
+			Lock readLock = contentGraph.getLock().readLock();
+			readLock.lock();
+			try {
+				Iterator<Triple> userTriples = contentGraph.filter(user, null, null);
+				while (userTriples.hasNext()) {
+					contentGraph.remove(userTriples.next());
+				}
+			} finally {
+				readLock.unlock();
 			}
 			userManager.deleteUser(userName);
 			return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
@@ -586,7 +625,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 					PLATFORM.HeadedPage));
 			
 
-			MGraph contentGraph = cgProvider.getContentGraph();
+			LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 			resultGraph.add(new TripleImpl(updateUserPage, USERMANAGER.user,
 					user));
 
@@ -604,26 +643,29 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			for (NonLiteral customfield : customfields) {
 				resultGraph.add(new TripleImpl(updateUserPage,
 						CUSTOMPROPERTY.customfield, customfield));
-				UriRef property = customPropertyManager
-						.getCustomFieldProperty(customfield);
+				UriRef property = customPropertyManager.getCustomFieldProperty(customfield);
 				NonLiteral contentUser = getCustomUser(contentGraph, userName);
-				Iterator<Triple> values = contentGraph.filter(contentUser,
-						property, null);
-				while (values.hasNext()) {
-					PlainLiteral value = (PlainLiteral) values.next()
-							.getObject();
-					resultGraph.add(new TripleImpl(customfield,
-							CUSTOMPROPERTY.actualvalues, value));
+
+				Lock readLock = contentGraph.getLock().readLock();
+				readLock.lock();
+				try {
+					Iterator<Triple> values = contentGraph.filter(contentUser,
+							property, null);
+					while (values.hasNext()) {
+						PlainLiteral value = (PlainLiteral) values.next().getObject();
+						resultGraph.add(new TripleImpl(customfield,
+								CUSTOMPROPERTY.actualvalues, value));
+					}
+				} finally {
+					readLock.unlock();
 				}
 			}
-			GraphNode result =  new GraphNode(updateUserPage,
+			GraphNode result = new GraphNode(updateUserPage,
 					new UnionMGraph(resultGraph, systemGraph, contentGraph));
 			addAvailableRoles(result);
 			return result;
 		}
-		throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-				.entity("User " + userName + " does not exist in our database")
-				.build());
+		throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("User " + userName + " does not exist in our database").build());
 	}
 
 	@POST
@@ -644,7 +686,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		if (user != null) {
 			userManager.updateUser(userName, email, null, userRoleList,
 					pathPrefix);
-			MGraph contentGraph = cgProvider.getContentGraph();
+			LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 			saveCustomUserInformation(contentGraph, userName, userRoleList, form);
 			return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
 		}
@@ -947,9 +989,15 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	}
 
 	private void addBaseRoles(GraphNode result) {
-		Iterator<Triple> baseRoles = systemGraph.filter(null, RDF.type, PERMISSION.BaseRole);
-		if (baseRoles.hasNext()) {
-			result.addProperty(USERMANAGER.role, baseRoles.next().getSubject());
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> baseRoles = systemGraph.filter(null, RDF.type, PERMISSION.BaseRole);
+			if (baseRoles.hasNext()) {
+				result.addProperty(USERMANAGER.role, baseRoles.next().getSubject());
+			}
+		} finally {
+			readLock.unlock();
 		}
 	}
 }
