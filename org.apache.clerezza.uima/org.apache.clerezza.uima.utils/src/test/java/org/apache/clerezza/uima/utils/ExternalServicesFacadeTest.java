@@ -20,6 +20,8 @@ public class ExternalServicesFacadeTest {
 
     private static final String CLEREZZA_RELATED_TEXT = "Clerezza is fully based on OSGi. OSGi is a very lightweight approach to offer the modularization and dynamism missing in standard Java. By using OSGi services it can also interoperate with Spring-DS or Peaberry applications";
 
+    private static final String ANOTHER_ENGLISH_TEXT ="President Obama vows to \"make BP pay\" for the Gulf oil spill, and says the US must end its fossil fuel \"addiction\".";
+
     @Test
     public void getLanguageTest() {
         try {
@@ -67,11 +69,15 @@ public class ExternalServicesFacadeTest {
             Map<String, Object> parameterSettings = new HashMap<String, Object>();
             parameterSettings.put("licenseID", licenseId);
             externalServicesFacade.setParameterSetting(parameterSettings);
-            List<Annotation> calaisAnnotations = externalServicesFacade.getCalaisAnnotations(AN_ENGLISH_TEXT);
+            List<Annotation> calaisAnnotations = externalServicesFacade.getCalaisAnnotations(ANOTHER_ENGLISH_TEXT);
             assertTrue(calaisAnnotations != null);
             assertTrue(!calaisAnnotations.isEmpty());
-            assertTrue(calaisAnnotations.size() == 1);
-            assertTrue(calaisAnnotations.get(0).getCoveredText().equals("Queen Elizabeth"));
+            for (Annotation annotation : calaisAnnotations) {
+              assertTrue(annotation.getType()!=null && annotation.getType().getName()!=null);
+              assertTrue(annotation.getBegin()>0);
+              assertTrue(annotation.getEnd()>0);
+              assertTrue(annotation.getCoveredText()!=null);
+            }
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -5,17 +5,19 @@ import org.apache.clerezza.rdf.ontologies.DC;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.uima.utils.ExternalServicesFacade;
+import org.apache.clerezza.uima.utils.UIMAUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.uima.UIMAException;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.tcas.Annotation;
 
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
- * 
  * An implementation of <code>MetaDataGenerator</code> generates meta data about specified data
- * depending on its media type using UIMA.
- * 
+ * depending on its media type using Apache UIMA.
  */
 @Component()
 @Service(MetaDataGenerator.class)
@@ -30,11 +32,15 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
       try {
         // add language to the document
         addLanguage(node, data);
+
         // add wide purpose subject to the document
         addCategory(node, data);
-        
+
+        // add calais annotations' nodes
+        addCalaisAnnotations(node, data);
+
       } catch (Throwable e) {
-        // quietly react to errors
+        e.printStackTrace();
       }
     }
   }
@@ -42,13 +48,28 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
   private void addCategory(GraphNode node, byte[] data) throws UIMAException {
     // get category to bind it to the node
     String category = facade.getCategory(data.toString());
-    node.addPropertyValue(DC.subject,category);
+    node.addPropertyValue(DC.subject, category);
   }
 
   private void addLanguage(GraphNode node, byte[] data) throws UIMAException {
-    // get language to bind to the node
+    // get language to bind it to the node
     String language = facade.getLanguage(data.toString());
-    node.addPropertyValue(DCTERMS.language,language);
+    node.addPropertyValue(DCTERMS.language, language);
+  }
+
+  private void addCalaisAnnotations(GraphNode existingNode, byte[] data) throws UIMAException {
+    // analyze document text and get the corresponding OpenCalais annotations
+    List<Annotation> calaisAnnotations = facade.getCalaisAnnotations(data.toString());
+    // convert annotations to nodes inside the current graph
+    UIMAUtils.enhanceNode(existingNode, calaisAnnotations);
+
+  }
+
+  private void addAlchemyAPIEntities(GraphNode existingNode, byte[] data) throws UIMAException {
+    // analyze document text and get the corresponding AlchemyAPI Tags
+    List<FeatureStructure> alchemyAPIEntities = facade.getAlchemyAPITags(data.toString());
+    // convert entities to nodes inside the current graph
+    UIMAUtils.enhanceNode(existingNode, alchemyAPIEntities);
   }
 
 }

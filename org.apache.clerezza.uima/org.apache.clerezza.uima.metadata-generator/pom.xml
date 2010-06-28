@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
   <artifactId>org.apache.clerezza.uima.metadata-generator</artifactId>
   <version>0.1-incubating-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <name>Clerezza - Apache Clerezza UIMA extension for metadata generation </name>
-  <description>Apache Clerezza UIMA extension for metadata generation </description>
+  <name>Clerezza - Apache Clerezza UIMA extension for metadata generation</name>
+  <description>Apache Clerezza UIMA extension for metadata generation</description>
   <parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>org.apache.clerezza.uima</artifactId>
@@ -20,6 +20,11 @@
     <dependency>
       <groupId>org.apache.clerezza</groupId>
       <artifactId>org.apache.clerezza.uima.utils</artifactId>
+      <version>0.1-incubating-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.clerezza</groupId>
+      <artifactId>org.apache.clerezza.uima.ontologies</artifactId>
       <version>0.1-incubating-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -49,4 +54,18 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>org.apache.clerezza.uima.*</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
