@@ -27,27 +27,28 @@ import org.osgi.framework.BundleListener
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.Bundle
 import java.io.{File, PrintWriter, Reader, StringWriter}
+import java.lang.reflect.InvocationTargetException
+import java.net._
 import java.security.PrivilegedActionException
 import java.security.AccessController
 import java.security.PrivilegedAction
 import java.util.{ArrayList, Arrays};
+import javax.script.ScriptContext
+import javax.script.{ScriptEngineFactory => JavaxEngineFactory, Compilable, 
+					 CompiledScript, ScriptEngine, AbstractScriptEngine, Bindings,
+					 SimpleBindings, ScriptException}
 //import scala.collection.immutable.Map
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
 import scala.tools.nsc.io.{AbstractFile, PlainFile, VirtualDirectory}
 import scala.tools.nsc.util._
 import scala.tools.nsc.symtab.SymbolLoaders
-import java.net._
 import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.reporters.Reporter
 import scala.tools.util.PathResolver
 import scala.tools.nsc.util.{ClassPath, JavaClassPath}
-import javax.script.ScriptContext
-import javax.script.{ScriptEngineFactory => JavaxEngineFactory, Compilable, 
-					 CompiledScript, ScriptEngine, AbstractScriptEngine, Bindings,
-					 SimpleBindings, ScriptException}
 import scala.actors.Actor
 import scala.actors.Actor._
 
@@ -248,7 +249,11 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 									}
 									val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
 									val runMethod = classLoader.findClass(objectName).getMethod("run", classOf[Map[String, Object]])
-									runMethod.invoke(null, map)
+									try {
+										runMethod.invoke(null, map)
+									} catch {
+										case e: InvocationTargetException => throw e.getCause
+									}
 								}
 								override def getEngine = MyScriptEngine.this
 							}
