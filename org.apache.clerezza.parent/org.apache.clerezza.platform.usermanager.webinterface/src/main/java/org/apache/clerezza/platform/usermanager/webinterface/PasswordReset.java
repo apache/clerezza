@@ -24,6 +24,7 @@ import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 import javax.mail.MessagingException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -55,6 +56,7 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -86,7 +88,7 @@ public class PasswordReset {
 	private MailMan mailMan;
 
 	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
-	private MGraph systemGraph;
+	private LockableMGraph systemGraph;
 
 	/**
 	 * Service property
@@ -147,9 +149,16 @@ public class PasswordReset {
 							"User name and email address don't match");
 				}
 				try {
-					Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName,
-							new PlainLiteralImpl(userName));
-					NonLiteral agent = agents.next().getSubject();
+					NonLiteral agent;
+					Lock readLock = systemGraph.getLock().readLock();
+					readLock.lock();
+					try {
+						Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName,
+								new PlainLiteralImpl(userName));
+						agent = agents.next().getSubject();
+					} finally {
+						readLock.unlock();
+					}
 					MGraph temporary = new SimpleMGraph();
 					temporary.add(new TripleImpl(agent, PERMISSION.password,
 							new PlainLiteralImpl(newPassword)));
