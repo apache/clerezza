@@ -45,7 +45,6 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -630,7 +629,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public GraphNode getUserInContentGraph(final String name) {
-		final LockableMGraph contentGraph = (LockableMGraphWrapper) cgProvider.getContentGraph();
+		final LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 		Iterator<Triple> triples = contentGraph.filter(null, PLATFORM.userName,
 				new PlainLiteralImpl(name));
 		GraphNode resultNode = null;
