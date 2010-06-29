@@ -71,8 +71,12 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 	}
 
 	private def asClass[T](clazz : Class[T]) : T= {
-		LiteralFactory.getInstance().createObject(clazz,
-												  node.getNode().asInstanceOf[TypedLiteral])
+		val typedLiteral = node.getNode().asInstanceOf[TypedLiteral]
+		clazz match {
+			case c if(c == classOf[Boolean])  => LiteralFactory.getInstance().createObject(
+					classOf[java.lang.Boolean], typedLiteral).booleanValue.asInstanceOf[T]
+			case _ => LiteralFactory.getInstance().createObject(clazz, typedLiteral)
+		}
 	}
 
 	/**
