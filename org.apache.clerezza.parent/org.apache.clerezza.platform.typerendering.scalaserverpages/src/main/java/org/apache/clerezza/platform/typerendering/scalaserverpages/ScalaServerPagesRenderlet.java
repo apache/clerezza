@@ -136,11 +136,10 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			//add the closing ";" 
 			baos.write(byteCloser);
 			String scriptName = extractFileName(renderingSpecification);
-			logger.debug("compiling script: " + scriptName);
+			logger.debug("getting CompiledScript for: {}", scriptName);
 			final byte[] scriptBytes = baos.toByteArray();
 			final CompiledScript cs = getCompiledScript(scriptBytes);
 			
-			logger.debug("compiled");
 			final SimpleBindings values = new SimpleBindings();
 			values.put("res", res);
 			values.put("context", context);
@@ -156,33 +155,33 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 				execResult = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
 					@Override
-					public Object run() {
-						try {
-							return cs.eval(values);
-						} catch (ScriptException ex) {
-							throw new RuntimeException(ex);
-						}
+					public Object run() throws ScriptException {
+						return cs.eval(values);
 					}
 				});
 			} catch (PrivilegedActionException ex) {
 				Exception cause = (Exception) ex.getCause();
+				logger.debug("Exception executing ScalaServerPage Script", cause);
 				if (cause instanceof ScriptException) {
 					throw (ScriptException) cause;
 				}
-				if (cause instanceof RuntimeException) {
-					throw (RuntimeException) cause;
-				}
 				throw new RuntimeException(cause);
- 			}
-			if (execResult != null) {
-				os.write(toString(execResult).getBytes("UTF-8"));
+ 			} catch (RuntimeException ex) {
+				logger.debug("RuntimeException executing ScalaServerPage Script", ex);
+				throw ex;
 			}
-			logger.debug("executed");
+			if (execResult != null) {
+				String sspResult = toString(execResult);
+				logger.debug("executed ssp, result: {} (for {})", sspResult, scriptName);
+				os.write(sspResult.getBytes("UTF-8"));
+			}
+			
 			os.flush();
 			logger.debug("flushed");
 		} catch (MalformedURLException ex) {
 			throw new WebApplicationException(ex);
 		} catch (ScriptException ex) {
+			logger.debug("ScriptException rendering ScalaServerPage: ", ex);
 			Exception cause = (Exception) ex.getCause();
 			if (cause != null) {
 				if (cause instanceof TypeRenderingException) {

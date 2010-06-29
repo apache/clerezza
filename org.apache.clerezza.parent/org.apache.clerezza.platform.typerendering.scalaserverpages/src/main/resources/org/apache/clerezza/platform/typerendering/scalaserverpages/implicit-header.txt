@@ -4,6 +4,7 @@ import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.platform.typerendering.CallbackRenderer
+import java.io.{PrintWriter, OutputStreamWriter}
 import javax.ws.rs.core.UriInfo
 
 val renderer = $("renderer").asInstanceOf[CallbackRenderer]
@@ -20,7 +21,13 @@ def render(resource : GraphNode, mode : String) = {
 	try {
 		renderer.render(resource, context, mode, baos)
 	} catch {
-		case e: Exception => baos.write(<div class="exception">{e.toString}</div>.toString.getBytes)
+		case e: Exception => {
+				val exWriter = new java.io.StringWriter
+				val pw = new PrintWriter(exWriter)
+				e.printStackTrace(pw)
+				pw.flush()
+				baos.write(<div class="exception">{exWriter.toString}</div>.toString.getBytes)		
+			}
 	}
 	parseNodeSeq(new String(baos.toByteArray, "utf-8"))
 }
