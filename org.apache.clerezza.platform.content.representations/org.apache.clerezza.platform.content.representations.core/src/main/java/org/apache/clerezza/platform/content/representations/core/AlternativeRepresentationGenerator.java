@@ -25,7 +25,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.content.DiscobitsHandler;
-import org.apache.clerezza.platform.content.InfoDiscobit;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -35,7 +34,6 @@ import org.apache.clerezza.utils.imageprocessing.ImageProcessor;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
-import org.apache.felix.scr.annotations.Services;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -49,11 +47,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author mir
  */
 @Component(metatype=true)
-@Services({
-	@Service(MetaDataGenerator.class),
-	@Service(AlternativeRepresentationGenerator.class)
-})
-
+@Service(MetaDataGenerator.class)
 public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 
 	private static class Resolution {
@@ -71,17 +65,6 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 			String[] widthAndHeight = resoulutionString.split("x");
 			width = new Integer(widthAndHeight[0]);
 			height = new Integer(widthAndHeight[1]);
-		}
-
-		/**
-		 * A Resolution with the specified width and height.
-		 *
-		 * @param width
-		 * @param height
-		 */
-		public Resolution(int width, int height) {
-			this.width = width;
-			this.height = height;
 		}
 
 		public int getHeight() {
@@ -147,50 +130,29 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 			return;
 		}
 		if (mediaType.getType().startsWith("image")) {
-			generateAlternativeImages(data, mediaType, node);
-		}
-	}
-	
-	public UriRef generateAlternativeImage(GraphNode infoBitNode, int width, int height) {
-		try {
-			isAltRepresentation.set(Boolean.TRUE);
-			InfoDiscobit infoBit = new InfoDiscobit(infoBitNode);
-			BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(infoBit.getData()));
-			return generateAlternativeImage(buffImage, new Resolution(width, height), 
-					MediaType.valueOf(infoBit.getContentType()), infoBitNode);
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			isAltRepresentation.set(Boolean.FALSE);
-		}
-	}
-
-	private void generateAlternativeImages(byte[] data, MediaType mediaType, GraphNode node) throws RuntimeException {
-		try {
-			isAltRepresentation.set(Boolean.TRUE);
-			BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(data));
-			int imgWidth = buffImage.getWidth();
-			int imgHeigth = buffImage.getHeight();
-			for (Resolution resolution : resolutions) {
-				if (imgWidth > resolution.getWidth() || imgHeigth > resolution.getHeight()) {
-					generateAlternativeImage( buffImage, resolution, mediaType, node);
+			try {
+				isAltRepresentation.set(Boolean.TRUE);
+				BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(data));
+				int imgWidth = buffImage.getWidth();
+				int imgHeigth = buffImage.getHeight();
+				for (Resolution resolution : resolutions) {
+					if (imgWidth > resolution.getWidth() ||
+							imgHeigth > resolution.getHeight()){
+						BufferedImage alternativeImage = imageProcessor.makeAThumbnail(
+								buffImage, resolution.getWidth(), resolution.getHeight());
+						byte[] alternativeImageBytes = bufferedImage2ByteArray(alternativeImage, mediaType);
+						DiscobitsHandler contentHandler = (DiscobitsHandler)discobitTracker.getService();
+						UriRef thumbnailUri = createThumbnailUri((UriRef) node.getNode(), alternativeImage);
+						contentHandler.put(thumbnailUri, mediaType, alternativeImageBytes);
+						node.addProperty(DISCOBITS.thumbnail, thumbnailUri);
+					}
 				}
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			} finally {
+				isAltRepresentation.set(Boolean.FALSE);
 			}
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			isAltRepresentation.set(Boolean.FALSE);
 		}
-	}
-
-	private UriRef generateAlternativeImage(BufferedImage buffImage, Resolution resolution, MediaType mediaType, GraphNode node) throws IOException {
-		BufferedImage alternativeImage = imageProcessor.makeAThumbnail(buffImage, resolution.getWidth(), resolution.getHeight());
-		byte[] alternativeImageBytes = bufferedImage2ByteArray(alternativeImage, mediaType);
-		DiscobitsHandler contentHandler = (DiscobitsHandler) discobitTracker.getService();
-		UriRef thumbnailUri = createThumbnailUri((UriRef) node.getNode(), alternativeImage);
-		contentHandler.put(thumbnailUri, mediaType, alternativeImageBytes);
-		node.addProperty(DISCOBITS.thumbnail, thumbnailUri);
-		return thumbnailUri;
 	}
 
 	private byte[] bufferedImage2ByteArray(BufferedImage image,
