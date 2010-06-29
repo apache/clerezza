@@ -19,7 +19,9 @@
 
 package org.apache.clerezza.utils;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Flattens an Iterator of Iterators to an Iterator
@@ -28,7 +30,7 @@ import java.util.Iterator;
  */
 public class IteratorMerger<T> implements Iterator<T> {
 
-	private final Iterator<Iterator<T>> baseIterators;
+	private Iterator<Iterator<T>> baseIterators;
 	private Iterator<T> current;
 
 	/**
@@ -37,6 +39,31 @@ public class IteratorMerger<T> implements Iterator<T> {
 	 * @param baseIterators
 	 */
 	public IteratorMerger(Iterator<Iterator<T>> baseIterators) {
+		init(baseIterators);
+	}
+
+	public IteratorMerger(Collection<Collection<T>> setOfSet) {
+		final Iterator<Collection<T>> setIter = setOfSet.iterator();
+		init(new Iterator<Iterator<T>>() {
+
+			@Override
+			public boolean hasNext() {
+				return setIter.hasNext();
+			}
+
+			@Override
+			public Iterator<T> next() {
+				return setIter.next().iterator();
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("Not supported yet.");
+			}
+		});
+	}
+
+	private void init(Iterator<Iterator<T>> baseIterators) {
 		this.baseIterators = baseIterators;
 		current = baseIterators.next();
 	}
