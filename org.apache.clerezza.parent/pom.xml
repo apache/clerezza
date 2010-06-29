@@ -37,6 +37,7 @@
 		<module>org.apache.clerezza.maven-jaxrs-report-plugin</module>
 		<module>org.apache.clerezza.maven-ontologies-plugin</module>
 		<module>org.apache.clerezza.maven-pladoc-plugin</module>
+		<module>org.apache.clerezza.permissiondescriptions</module>
 		<module>org.apache.clerezza.platform</module>
 		<module>org.apache.clerezza.platform.accountcontrolpanel</module>
 		<module>org.apache.clerezza.platform.concepts</module>
@@ -1055,6 +1056,11 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.uima</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
