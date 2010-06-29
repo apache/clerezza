@@ -21,7 +21,6 @@ package org.apache.clerezza.utils;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Flattens an Iterator of Iterators to an Iterator
@@ -42,8 +41,14 @@ public class IteratorMerger<T> implements Iterator<T> {
 		init(baseIterators);
 	}
 
-	public IteratorMerger(Collection<Collection<T>> setOfSet) {
-		final Iterator<Collection<T>> setIter = setOfSet.iterator();
+	/**
+	 * Constructs an iterator that iterates over all elements of the collections
+	 * contained in the collection.
+	 * 
+	 * @param collectionOfCollections
+	 */
+	public IteratorMerger(Collection<Collection<T>> collectionOfCollections) {
+		final Iterator<Collection<T>> setIter = collectionOfCollections.iterator();
 		init(new Iterator<Iterator<T>>() {
 
 			@Override
