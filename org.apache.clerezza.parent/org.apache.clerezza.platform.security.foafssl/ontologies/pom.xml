@@ -11,7 +11,7 @@
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Security foaf+ssl Ontologies</name>
 	<description>
-		Fafo + Ssl Ontologies
+		Foaf + Ssl Ontologies
 	</description>
 	<dependencies>
 		<dependency>
