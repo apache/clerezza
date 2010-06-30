@@ -25,6 +25,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -72,10 +73,13 @@ public class ThumbnailService implements BundleListener{
 	ContentGraphProvider cgProvider;
 	@Reference
 	PlatformConfig config;
+	@Reference
+	AlternativeRepresentationGenerator altRepGen;
+
 	private static final Logger log = LoggerFactory.getLogger(ThumbnailService.class);
 	private BundleContext bundleContext;
 	private String STATICWEB_PATH = "/org/apache/clerezza/web/resources/style/staticweb/";
-	private String BASE_PATH = STATICWEB_PATH + "images/icons/mediatype/";
+	private String MEDIA_TYPE_BASE_PATH = STATICWEB_PATH + "images/icons/mediatype/";
 	private Bundle cachedStyleBundle = null;
 	private Map<MediaType, String> mediaTypeIconUriCache =
 			Collections.synchronizedMap(new HashMap<MediaType, String>());
@@ -97,9 +101,11 @@ public class ThumbnailService implements BundleListener{
 	 * maximum width and height can optionally be specified over the query parameters
 	 * "width" and "height". If more than one acceptable thumbnail is available
 	 * then the thumbnail uri of the thumbnail with the highest resolution
-	 * (width * height) is returned. If no thumbnail is available then the uri of
-	 * the icon representing the media type is returned. If also no media type
-	 * icon is available the uri to default icon is returned.
+	 * (width * height) is returned. If no thumbnail is available and the logged
+	 * in user has the write permission for the content graph, then an attempt is
+	 * made to create the thumbnail on the fly. If this fails or the write permission
+	 * is missing, then the uri of the icon representing the media type is returned.
+	 * If also no media type icon is available the uri to default icon is returned.
 	 * @param infoBitUri the uri of the infoDiscoBit of which the thumbnail uri should be returned
 	 * @param height the maximum height that the thumbnail has
 	 * @param width the maximum width that the thumbnail has
@@ -107,9 +113,8 @@ public class ThumbnailService implements BundleListener{
 	 */
 	@GET
 	public Response getThumbnailUri(@QueryParam("uri") UriRef infoBitUri,
-			@QueryParam("width") Integer width,
-			@QueryParam("height") Integer height,
-						@Context UriInfo uriInfo) {
+			@QueryParam("width") Integer width,	@QueryParam("height") Integer height,
+			@Context UriInfo uriInfo) {
 		if ((width == null) && (height == null)) {
 			throw new WebApplicationException(new IllegalArgumentException("height and/or width must be specified"),
 					Response.Status.BAD_REQUEST);
@@ -125,11 +130,23 @@ public class ThumbnailService implements BundleListener{
 		if (thumbnailUri != null) {
 			return Response.seeOther(
 					URI.create((thumbnailUri).getUnicodeString())).build();
-		}
+		}		
+		
 		Iterator<Resource> mediaTypes = infoBitNode.getObjects(DISCOBITS.mediaType);
 		if (mediaTypes.hasNext()) {
 			MediaType mediaType = MediaType.valueOf(LiteralFactory.getInstance().createObject(
 					String.class, (TypedLiteral) mediaTypes.next()));
+			// if the infoBit is an image, create a thumbnail on the fly.
+			if (mediaType.getType().startsWith("image")) {
+				try {
+					thumbnailUri = altRepGen.generateAlternativeImage(infoBitNode, width,
+							height);
+					return RedirectUtil.createSeeOtherResponse(thumbnailUri.getUnicodeString(), uriInfo);
+				} catch (Exception ex) {
+					// Was worth a try. eLets go on
+				}
+			}
+
 			String iconUri = mediaTypeIconUriCache.get(mediaType);
 			if (iconUri == null) {
 				iconUri = getMediaTypeIconUri(mediaType);
@@ -146,7 +163,7 @@ public class ThumbnailService implements BundleListener{
 		if (styleBundle == null) {
 			throw new RuntimeException("no style bundle found");
 		}
-		String path = BASE_PATH + mediaType.getType() + "/";
+		String path = MEDIA_TYPE_BASE_PATH + mediaType.getType() + "/";
 		Enumeration entries = styleBundle.findEntries(path,
 				mediaType.getSubtype() + ".*", false);
 		String iconUri = createIconUri(entries);
@@ -162,7 +179,7 @@ public class ThumbnailService implements BundleListener{
 	}
 
 	private String getDefaultIconUrl(Bundle bundle) {
-		Enumeration entries = bundle.findEntries(BASE_PATH, "any.*", false);
+		Enumeration entries = bundle.findEntries(MEDIA_TYPE_BASE_PATH, "any.*", false);
 		String iconUri = createIconUri(entries);
 		if (iconUri != null) {
 			return iconUri;
@@ -186,16 +203,22 @@ public class ThumbnailService implements BundleListener{
 		}
 		UriRef resultThumbnailUri = null;
 		int pixels = 0;
-		Iterator<Resource> thumbnails = infoBitNode.getObjects(DISCOBITS.thumbnail);
-		while (thumbnails.hasNext()) {
-			UriRef thumbnailUri = (UriRef) thumbnails.next();
-			GraphNode thumbnailNode = new GraphNode(thumbnailUri,
-					cgProvider.getContentGraph());
-			int thumbnailPixels = getSurfaceSizeIfFitting(thumbnailNode, width, height);
-			if (thumbnailPixels > pixels) {
-				resultThumbnailUri = thumbnailUri;
-				pixels = thumbnailPixels;
+		Lock readLock = infoBitNode.readLock();
+		readLock.lock();
+		try {
+			Iterator<Resource> thumbnails = infoBitNode.getObjects(DISCOBITS.thumbnail);
+			while (thumbnails.hasNext()) {
+				UriRef thumbnailUri = (UriRef) thumbnails.next();
+				GraphNode thumbnailNode = new GraphNode(thumbnailUri,
+						cgProvider.getContentGraph());
+				int thumbnailPixels = getSurfaceSizeIfFitting(thumbnailNode, width, height);
+				if (thumbnailPixels > pixels) {
+					resultThumbnailUri = thumbnailUri;
+					pixels = thumbnailPixels;
+				}
 			}
+		} finally {
+			readLock.unlock();
 		}
 		return resultThumbnailUri;
 	}
@@ -208,7 +231,7 @@ public class ThumbnailService implements BundleListener{
 		Iterator<Resource> exifWidths = infoBitNode.getObjects(EXIF.width);
 		Iterator<Resource> exifHeights = infoBitNode.getObjects(EXIF.height);
 		if (!exifWidths.hasNext() || !exifHeights.hasNext()) {
-			log.warn(infoBitNode.getNode() + " doesn't have exif:width and exif:heigh");
+			log.warn(infoBitNode.getNode() + " doesn't have exif:width and exif:height");
 			return -1;
 		}
 		Integer thumbnailWidth = LiteralFactory.getInstance().createObject(
@@ -225,14 +248,20 @@ public class ThumbnailService implements BundleListener{
 	 * returns true if infoBitNode is an image and fits
 	 */
 	private boolean isFittingImage(GraphNode infoBitNode, Integer width, Integer height) {
-		final Iterator<Literal> mediaTypesIter = infoBitNode.getLiterals(DISCOBITS.mediaType);
-		if (!mediaTypesIter.hasNext()) {
-			return false;
-		}
-		if (mediaTypesIter.next().getLexicalForm().startsWith("image")) {
-			return getSurfaceSizeIfFitting(infoBitNode, width, height) > -1;
-		} else {
-			return false;
+		Lock readLock = infoBitNode.readLock();
+		readLock.lock();
+		try {
+			final Iterator<Literal> mediaTypesIter = infoBitNode.getLiterals(DISCOBITS.mediaType);
+			if (!mediaTypesIter.hasNext()) {
+				return false;
+			}
+			if (mediaTypesIter.next().getLexicalForm().startsWith("image")) {
+				return getSurfaceSizeIfFitting(infoBitNode, width, height) > -1;
+			} else {
+				return false;
+			}
+		} finally {
+			readLock.unlock();
 		}
 	}
 
