@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author mir
  */
-@Component()
+@Component(immediate=true)
 @Service(PermissionGatherer.class)
 @Reference(name="permissionProvider", policy=ReferencePolicy.DYNAMIC,
 	referenceInterface=PermissionDescriptionsProvider.class, cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE)
@@ -130,11 +130,12 @@ public class PermissionGatherer implements BundleListener {
 			Bundle bundle = serviceReference.getBundle();
 
 			Collection<PermissionDescripton> permissionDescriptiors =
-				bundle2PermissionDescriptorsMap.get(bundle);
-
-			permissionDescriptiors.removeAll(permissionProvider.getPermissionDescriptors());
-			if (permissionDescriptiors.isEmpty()) {
-				bundle2PermissionDescriptorsMap.remove(bundle);
+					bundle2PermissionDescriptorsMap.get(bundle);
+			if (permissionDescriptiors != null) {
+				permissionDescriptiors.removeAll(permissionProvider.getPermissionDescriptors());
+				if (permissionDescriptiors.isEmpty()) {
+					bundle2PermissionDescriptorsMap.remove(bundle);
+				}
 			}
 		}
 
@@ -146,12 +147,14 @@ public class PermissionGatherer implements BundleListener {
 		if (permissionProvider == null) {
 			return;
 		}
+		Bundle bundle = serviceReference.getBundle();
 		Collection<PermissionDescripton> permissionDescriptiors =
-				bundle2PermissionDescriptorsMap.get(serviceReference.getBundle());
+				bundle2PermissionDescriptorsMap.get(bundle);
 		if (permissionDescriptiors == null) {
 			permissionDescriptiors = new HashSet<PermissionDescripton>();
 		}
 		permissionDescriptiors.addAll(permissionProvider.getPermissionDescriptors());
+		bundle2PermissionDescriptorsMap.put(bundle, permissionDescriptiors);
 
 	}
 
