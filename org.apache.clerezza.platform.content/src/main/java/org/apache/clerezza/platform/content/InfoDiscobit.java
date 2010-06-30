@@ -33,7 +33,7 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  *
  * @author reto
  */
-class InfoDiscobit {
+public class InfoDiscobit {
 
 	private GraphNode infoBit;
 
@@ -43,7 +43,7 @@ class InfoDiscobit {
 	 * @param infoBit
 	 * @return an instance of InfoDiscobit or null if node is not an InfoDiscoBit
 	 */
-	static InfoDiscobit createInstance(GraphNode node) {
+	public static InfoDiscobit createInstance(GraphNode node) {
 		Iterator<Resource> types = node.getObjects(RDF.type);
 		while(types.hasNext()) {
 			if (types.next().equals(DISCOBITS.InfoDiscoBit)){
@@ -53,7 +53,7 @@ class InfoDiscobit {
 		return null;
 	}
 
-	private InfoDiscobit(GraphNode infoBit) {
+	InfoDiscobit(GraphNode infoBit) {
 		this.infoBit = infoBit;
 	}
 
