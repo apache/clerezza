@@ -20,6 +20,7 @@
 package org.apache.clerezza.platform.scripting.scriptmanager;
 
 import java.security.Permission;
+import org.apache.clerezza.permissiondescriptions.PermissionInfo;
 
 /**
  * Permission to use the Script-Manager page. Note that the user
@@ -27,6 +28,8 @@ import java.security.Permission;
  *
  * @author mir
  */
+@PermissionInfo(value="Script Manager Access Permission", description="Grants access " +
+	"to the Script Manager")
 public class ScriptManagerAppPermission extends Permission{
 
 	public ScriptManagerAppPermission() {

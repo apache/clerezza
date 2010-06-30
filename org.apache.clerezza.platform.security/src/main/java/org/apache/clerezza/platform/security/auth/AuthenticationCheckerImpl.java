@@ -55,6 +55,7 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 	/**
 	 * Checks if the provided username and password matches a username and
 	 * password stored in the system graph
+	 *
 	 * @param userName
 	 * @param password
 	 * @return true if the password matched, false otherwise
