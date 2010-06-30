@@ -448,6 +448,11 @@
 			<artifactId>org.apache.clerezza.rdf.metadata</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
