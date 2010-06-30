@@ -40,7 +40,10 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.security</artifactId>
-			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
 		</dependency>
 	</dependencies>
 </project>

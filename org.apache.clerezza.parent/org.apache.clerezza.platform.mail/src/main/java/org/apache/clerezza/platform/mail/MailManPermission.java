@@ -18,15 +18,13 @@
  */
 package org.apache.clerezza.platform.mail;
 
-import java.security.AccessController;
 import java.security.Permission;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import javax.security.auth.Subject;
+import org.apache.clerezza.platform.security.UserUtil;
 
 /**
  * A permission to send e-mails as a specific user.
@@ -80,7 +78,7 @@ public class MailManPermission extends Permission {
 		}
 
 		if (namePattern.equals(SELF_ACTION)) {
-			String userName = getUserName();
+			String userName = UserUtil.getCurrentUserName();
 			if (userName == null) {
 				return false;
 			}
@@ -133,19 +131,5 @@ public class MailManPermission extends Permission {
 			}					
 		}
 		return sb.toString();
-	}
-
-	private String getUserName() {
-		Subject subject = Subject.getSubject(AccessController.getContext());
-		if (subject == null) {
-			return null;
-		}
-		Iterator<Principal> iter = subject.getPrincipals().iterator();
-		String name = null;
-
-		if (iter.hasNext()) {
-			name = iter.next().getName();
-		}
-		return name;
 	}
 }

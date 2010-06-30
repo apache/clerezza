@@ -19,11 +19,15 @@
 package org.apache.clerezza.platform.security.auth;
 
 import java.security.Permission;
+import org.apache.clerezza.permissiondescriptions.PermissionInfo;
 
 /**
  *
  * @author mir
  */
+@PermissionInfo(value="Authentication Checker Permission", description=" Grants permission " +
+	"to use the AuthenticationChecker service which checks if a provided username " +
+	"and password matches a username and password stored in the system graph")
 public class CheckAuthenticationPermission extends Permission {
 
 	public CheckAuthenticationPermission() {

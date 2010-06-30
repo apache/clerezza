@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.web.core;
 
 import java.security.Permission;
+import org.apache.clerezza.permissiondescriptions.PermissionInfo;
 
 /**
  * Permission to use the Graph-Management page. Nothe that the user
@@ -26,6 +27,8 @@ import java.security.Permission;
  *
  * @author reto
  */
+@PermissionInfo(value="Graph Management Access Permission", description="Grants access " +
+	"to the Graph Management page")
 public class GraphManagementAppPermission extends Permission {
 
 
