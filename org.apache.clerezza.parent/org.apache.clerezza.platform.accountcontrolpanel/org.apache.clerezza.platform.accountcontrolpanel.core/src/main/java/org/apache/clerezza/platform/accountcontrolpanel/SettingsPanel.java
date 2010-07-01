@@ -23,16 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.security.AccessControlContext;
 import java.security.AccessControlException;
 import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,7 +36,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.security.auth.Subject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -62,8 +56,6 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.felix.scr.annotations.Services;
-import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.service.cm.Configuration;
@@ -79,7 +71,6 @@ import org.apache.clerezza.jaxrs.utils.form.FormFile;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL;
 import org.apache.clerezza.platform.config.SystemConfig;
-import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
@@ -110,22 +101,19 @@ import org.apache.clerezza.triaxrs.prefixmanager.TriaxrsPrefixManager;
  * @author mir, hasan
  */
 @Component
-@Services({
-	@Service(value = Object.class),
-	@Service(value = GlobalMenuItemsProvider.class)
-})
+@Service(value = Object.class)
 @Property(name = "javax.ws.rs", boolValue = true)
 @Reference(name = "configurationAdmin", cardinality = ReferenceCardinality.OPTIONAL_UNARY,
 policy = ReferencePolicy.DYNAMIC, referenceInterface = ConfigurationAdmin.class)
-@Path("/user/{id}")
-public class AccountControlPanel implements GlobalMenuItemsProvider{
+@Path("/user/{id}/control-panel")
+public class SettingsPanel {
 
 	private ComponentContext componentContext;
 	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
 	private MGraph systemGraph; // System graph for user data access
 	@Reference
 	private RenderletManager renderletManager;
-	private final Logger logger = LoggerFactory.getLogger(AccountControlPanel.class);
+	private final Logger logger = LoggerFactory.getLogger(SettingsPanel.class);
 	private ConfigurationAdmin configAdmin;
 
 	/**
@@ -136,8 +124,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 	 * 
 	 */
 	@GET
-	@Path("control-panel")
-	public GraphNode mainpage(@PathParam(value = "id") String idP,
+	public GraphNode settingsPage(@PathParam(value = "id") String idP,
 			@QueryParam("changedPassword") String changedPassword,
 			@Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
@@ -175,7 +162,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 			graphNode.addProperty(CONTROLPANEL.changedPassword,
 				new PlainLiteralImpl("false"));
 		}
-		graphNode.addProperty(RDF.type, CONTROLPANEL.AccountControlPage);
+		graphNode.addProperty(RDF.type, CONTROLPANEL.SettingsPage);
 		graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
 		return graphNode;
 	}
@@ -294,7 +281,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 	 *
 	 */
 	@POST
-	@Path("control-panel/install-bundle")
+	@Path("install-bundle")
 	@Consumes
 	public Response installBundle(@PathParam(value = "id") final String id,
 			MultiPartBody multiForm,
@@ -413,7 +400,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 	 * 
 	 */
 	@POST
-	@Path("control-panel/start-bundle")
+	@Path("start-bundle")
 	public Response startBundle(@PathParam(value = "id") String idP,
 			@FormParam("bundleId") String bundleIdStringP,
 			@Context UriInfo uriInfo) {
@@ -456,7 +443,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 	 * 
 	 */
 	@POST
-	@Path("control-panel/stop-bundle")
+	@Path("stop-bundle")
 	public Response stopBundle(@PathParam(value = "id") String idP,
 			@FormParam("bundleId") String bundleIdStringP,
 			@Context UriInfo uriInfo) {
@@ -498,7 +485,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 	 * 
 	 */
 	@POST
-	@Path("control-panel/uninstall-bundle")
+	@Path("uninstall-bundle")
 	public Response uninstallBundle(@PathParam(value = "id") String idP,
 			@FormParam("bundleId") String bundleIdStringP,
 			@Context UriInfo uriInfo) {
@@ -546,7 +533,7 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 	 * @return
 	 */
 	@POST
-	@Path("control-panel/change-password")
+	@Path("change-password")
 	public Response changePassword(@PathParam(value = "id") String idP,
 			@FormParam("oldPW") final String oldPW,
 			@FormParam("newPW") final String newPW,
@@ -651,15 +638,14 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 
 	/**
 	 * The activate method is called when SCR activates the component configuration.
-	 * This method gets the system graph or create a new one if it doesn't exist.
 	 * 
 	 * @param componentContext
 	 */
 	protected void activate(ComponentContext componentContext) {
 		this.componentContext = componentContext;
-		URL templateURL = getClass().getResource("control-panel.ssp");
+		URL templateURL = getClass().getResource("settings-panel.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), CONTROLPANEL.AccountControlPage,
+				new UriRef(templateURL.toString()), CONTROLPANEL.SettingsPage,
 				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
 		logger.info("Account Control Panel activated.");
@@ -675,52 +661,4 @@ public class AccountControlPanel implements GlobalMenuItemsProvider{
 		this.configAdmin = null;
 	}
 
-	@Override
-	public Set<GlobalMenuItem> getMenuItems() {
-		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-
-		String user = getUserName();
-		if (user != null) {
-			try {
-				AccessController.checkPermission(new AccountControlPanelAppPermission(user, ""));
-			} catch (AccessControlException e) {
-				return items;
-			}
-			try {
-				String path = "/user/" + URLEncoder.encode(user, "utf-8") + "/control-panel/";
-				items.add(new GlobalMenuItem(path, "ACP", "Account Control Panel", 5,
-						"Main-Modules"));
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-		return items;
-	}
-
-	private String getUserName() {
-		Subject subject;
-		final AccessControlContext context = AccessController.getContext();
-		try {
-			subject = AccessController.doPrivileged(new PrivilegedExceptionAction<Subject>() {
-
-				@Override
-				public Subject run() throws Exception {
-					return Subject.getSubject(context);
-				}
-			});
-		} catch (PrivilegedActionException ex) {
-			Exception cause = (Exception)ex.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
-			}
-			throw new RuntimeException(cause);
-		}
-		Iterator<Principal> iter = subject.getPrincipals().iterator();
-		String name = null;
-		if (iter.hasNext()) {
-				name = iter.next().getName();
-		}
-		return name;
-	}
 }

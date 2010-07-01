@@ -20,7 +20,7 @@
 package org.apache.clerezza.foafssl.auth
 
 import org.apache.clerezza.foafssl.Utilities
-import org.apache.clerezza.foafssl.WebDescriptionProvider
+import org.apache.clerezza.platform.users.WebDescriptionProvider
 import org.apache.clerezza.platform.security.auth._
 import org.apache.clerezza.rdf.core._
 import org.wymiwyg.wrhapi.Request

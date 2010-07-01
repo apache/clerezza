@@ -2,16 +2,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.platform.security.foafssl</artifactId>
+		<artifactId>org.apache.clerezza.platform.users</artifactId>
 		<version>0.1-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.security.foafssl.core</artifactId>
+	<artifactId>org.apache.clerezza.platform.users.core</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>Clerezza - Platform Security foaf+ssl Core</name>
+	<name>Clerezza - Platform Users Core</name>
 	<description>
-		Foaf + Ssl Core
+		User Graphs Core
 	</description>
 
 	<dependencies>
@@ -35,13 +35,10 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.users.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
@@ -62,6 +59,12 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.specs</groupId>
+			<artifactId>specs</artifactId>
+			<version>1.2.5</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -94,9 +97,9 @@
 				<configuration>
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>!org.apache.clerezza.foafssl.ontologies,
-								org.apache.clerezza.foafssl.*</Export-Package>
-						<Bundle-SymbolicName>org.apache.clerezza.foafssl</Bundle-SymbolicName>
+						<Export-Package>!org.apache.clerezza.platform.users.ontologies,
+								org.apache.clerezza.platform.users</Export-Package>
+						<Bundle-SymbolicName>org.apache.clerezza.platform.users.core</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
 			</plugin>

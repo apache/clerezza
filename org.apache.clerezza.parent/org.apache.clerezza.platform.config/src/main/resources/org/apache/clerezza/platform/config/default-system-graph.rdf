@@ -4,7 +4,8 @@
 		xmlns:foaf="http://xmlns.com/foaf/0.1/"
 		xmlns:dc="http://purl.org/dc/elements/1.1/"
 		xmlns:sioc="http://rdfs.org/sioc/ns#"
-		xmlns:plat="http://clerezza.org/2009/08/platform#">
+		xmlns:plat="http://clerezza.org/2009/08/platform#"
+		xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
 	<perm:Role>
 		<dc:title>CommunityUser</dc:title>
 		<perm:hasPermission rdf:parseType="Resource">
@@ -20,6 +21,7 @@
 		<sioc:has_function>
 			<perm:Role>
 				<dc:title>BasePermissionsRole</dc:title>
+				<rdfs:comment>Every user implicitely has this role as this is a perm:BaseRole</rdfs:comment>
 				<rdf:type rdf:resource="http://clerezza.org/2008/10/permission#BaseRole"/>
 				<perm:hasPermission rdf:parseType="Resource">
 					<perm:javaPermissionEntry>(java.util.PropertyPermission "*" "read")</perm:javaPermissionEntry>
@@ -41,6 +43,7 @@
 	</foaf:Agent>
 	<perm:Role>
 		<dc:title>DefaultRole</dc:title>
+		<rdfs:comment>A role regular users typically have</rdfs:comment>
 		<perm:hasPermission rdf:parseType="Resource">
 			<perm:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.AccountControlPanelAppPermission "{username}" "")</perm:javaPermissionEntry>
 		</perm:hasPermission>

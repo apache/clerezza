@@ -71,6 +71,7 @@
 		<module>org.apache.clerezza.platform.typerendering.seedsnipe</module>
 		<module>org.apache.clerezza.platform.usermanager</module>
 		<module>org.apache.clerezza.platform.usermanager.webinterface</module>
+		<module>org.apache.clerezza.platform.users</module>
 		<module>org.apache.clerezza.platform.xhtml2html</module>
 		<module>org.apache.clerezza.rdf.core</module>
 		<module>org.apache.clerezza.rdf.core.test</module>
@@ -782,6 +783,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.security.auth.basic</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.users.core</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>

@@ -60,6 +60,8 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	final private static UriRef xsdDouble =
 			new UriRef("http://www.w3.org/2001/XMLSchema#double");
+	final private static UriRef xsdAnyURI =
+			new UriRef("http://www.w3.org/2001/XMLSchema#anyURI");
 
 	final static Class<? extends byte[]> byteArrayType;
 	static {
@@ -208,6 +210,24 @@ public class SimpleLiteralFactory extends LiteralFactory {
 			return new Double(literal.getLexicalForm());
 		}
 	}
+	
+	private static class UriRefConverter implements TypeConverter<UriRef> {
+
+
+
+		@Override
+		public TypedLiteral createTypedLiteral(UriRef value) {
+			return new TypedLiteralImpl(value.getUnicodeString(), xsdAnyURI);
+		}
+
+		@Override
+		public UriRef createObject(TypedLiteral literal) {
+			if (!literal.getDataType().equals(xsdAnyURI)) {
+				throw new InvalidLiteralTypeException(UriRef.class, literal.getDataType());
+			}
+			return new UriRef(literal.getLexicalForm());
+		}
+	}
 
 	private static Map<Class<?>, TypeConverter<?>> typeConverterMap = new HashMap<Class<?>, TypeConverter<?>>();
 
@@ -219,6 +239,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 		typeConverterMap.put(Integer.class, new IntegerConverter());
 		typeConverterMap.put(Long.class, new LongConverter());
 		typeConverterMap.put(Double.class, new DoubleConverter());
+		typeConverterMap.put(UriRef.class, new UriRefConverter());
 	}
 
 

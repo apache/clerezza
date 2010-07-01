@@ -24,6 +24,9 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 
 /**
+ * A SecuredMGraph is a LockableMGraph that wraps a LockableMGraph checking each
+ * access for the rights on a the graph for which the uri is passed to the 
+ * constructor.
  *
  * @author mir
  */
@@ -31,7 +34,7 @@ public class SecuredMGraph extends SecuredTripleCollection implements LockableMG
 
 	private LockableMGraph wrapped;
 
-	SecuredMGraph(LockableMGraph wrapped, UriRef name) {
+	public SecuredMGraph(LockableMGraph wrapped, UriRef name) {
 		super(wrapped, name);
 		this.wrapped = wrapped;
 	}
