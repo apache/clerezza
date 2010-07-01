@@ -64,6 +64,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.triaxrs</artifactId>
 			<scope>test</scope>
 		</dependency>

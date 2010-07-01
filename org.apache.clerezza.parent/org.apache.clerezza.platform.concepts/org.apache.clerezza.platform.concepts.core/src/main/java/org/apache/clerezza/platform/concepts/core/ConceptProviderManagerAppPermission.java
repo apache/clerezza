@@ -18,6 +18,7 @@
 package org.apache.clerezza.platform.concepts.core;
 
 import java.security.Permission;
+import org.apache.clerezza.permissiondescriptions.PermissionInfo;
 
 /**
  * Permssion to use an application to Manage Concept-Providers. Note that the
@@ -25,6 +26,8 @@ import java.security.Permission;
  *
  * @author reto
  */
+@PermissionInfo(value="Concept Provider Manager Access Permission", description="Grants access " +
+	"to the Concept Provider Manager page")
 public class ConceptProviderManagerAppPermission extends Permission {
 
 	public ConceptProviderManagerAppPermission() {
