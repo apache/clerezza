@@ -1,0 +1,88 @@
+import scala.xml.NodeBuffer
+import scala.collection.mutable.ListBuffer
+def cp(s: Any) = new UriRef("http://clerezza.org/2009/03/controlpanel#"+s)
+def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#" + s)
+resultDocModifier.addStyleSheet("profile/style/profile.css");
+resultDocModifier.addScriptReference("profile/scripts/profile.js");
+resultDocModifier.setTitle("Account Control Panel");
+resultDocModifier.addNodes2Elem("tx-module", <h1>Account Control Panel</h1>);
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Profile</a></li>);
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="control-panel">Settings</a></li>);
+
+val agent = res/FOAF.primaryTopic
+
+def createWebId() = {
+	<h3>Associate Profile to Web-id</h3>
+	<div id="newOrExistingSelection">
+		<p>Your profile is not currently associated to a Web-ID. A Web-ID allows you 
+		to link your friends as well as to log-in to many sites (supporting foaf+ssl
+		or open-id).</p>
+		<p>You may either create a new Web-Id or associate your account to an 
+		existing Web-Id. Only creating a Web-Id here will allow you to manage your
+		profile here.</p>
+		<form action="#" id="associateSelection">
+			<button id="newWebIdButton">Create a new Web-Id</button>
+			<button id="existingWebIdButton">I already have a Web-ID and want to use it</button>
+		</form>
+	</div>
+	<div id="createNewWebId">
+		<p>You have chosen to create a new Web-Id.</p>
+		<p>The Web-ID will be created as follows:<br/>
+			<ol>
+				<li>Web-Id: {res/cp("suggestedPPDUri")*}#me</li>
+				<li>Perfonal-Profile Document: http://localhost/user/admin/profile</li>
+			</ol>
+		</p>
+		<form method="post" action="profile/create-new-web-id">
+			<input value="Create it!" type="submit"/>
+		</form>
+	</div>
+	<div id="setExistingWebId">
+		<p>Please enter your Web-Id, if your Web-Id supports Foaf+SSL you will 
+		be able to use it to log in to this site.</p>
+		<form method="post" action="profile/set-existing-webid">
+			<label for="webid">Web-Id</label> <input type="text" name="webid" size="80" title="Web-ID"/><br/>
+			<input value="Associate Profile to Web-Id" type="submit"/><p />
+		</form>
+	</div>
+	
+}
+
+def existingWebId() = {
+	if ((res/cp("isLocalProfile")).as[Boolean]) {
+		existingLocalWebId()
+	} else {
+		roamingUser()
+	}
+}
+
+
+def existingLocalWebId() = {
+	<h3>Manage your profile</h3>
+	<p>Here you can change your public profile.</p>
+	<form method="post" action="profile/modify">
+		<input type="hidden" name="webId" value={agent*}/>
+		<label for="name">name</label><input type="text" name="name" value={agent/FOAF.name*}/><br/>
+		<label for="description">description</label><textarea name="description"
+		>{agent/DC.description*}</textarea><br/>
+		<input value="Modify" type="submit"/><p />
+	</form>
+}
+
+def roamingUser() = {
+	<h3>Using remote profile</h3>
+	<p>{agent/FOAF.nick*}, you have accessed this site using you Web-Id {"<"+(agent*)+">"} which has not been 
+	created on this site. To edit your profile you should visit the site issuing the
+	profile.</p>
+}
+
+<div id="tx-content">
+	<h2>Personal Profile</h2>
+	
+	{
+		agent! match {
+			case _: BNode => createWebId()
+			case _: UriRef => existingWebId()
+		}
+	}
+</div>

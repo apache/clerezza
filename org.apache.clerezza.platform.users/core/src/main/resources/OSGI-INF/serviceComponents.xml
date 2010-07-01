@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+
+	<scr:component enabled="true" name="org.apache.clerezza.platform.users.UserGraphAcessPermissionProviderr">
+		<implementation class="org.apache.clerezza.platform.users.UserGraphAcessPermissionProvider"/>
+		<service servicefactory="false">
+			<provide interface="org.apache.clerezza.platform.security.WebIdBasedPermissionProvider"/>
+		</service>
+	</scr:component>
+	<scr:component enabled="true" name="org.apache.clerezza.platform.users.WebDescriptionProvider">
+		<implementation class="org.apache.clerezza.platform.users.WebDescriptionProvider"/>
+		<service servicefactory="false">
+			<provide interface="org.apache.clerezza.platform.users.WebDescriptionProvider"/>
+		</service>
+		<reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
+		cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
+		<reference name="webIdGraphsService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
+		cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
+	</scr:component>
+	<scr:component enabled="true" name="org.apache.clerezza.platform.users.WebIdGraphsService">
+		<implementation class="org.apache.clerezza.platform.users.WebIdGraphsService"/>
+		<service servicefactory="false">
+			<provide interface="org.apache.clerezza.platform.users.WebIdGraphsService"/>
+		</service>
+		<reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
+		cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
+		<reference name="parser" interface="org.apache.clerezza.rdf.core.serializedform.Parser"
+		cardinality="1..1" policy="static" bind="bindParser" unbind="unbindParser"/>
+		<reference name="platformConfig" interface="org.apache.clerezza.platform.config.PlatformConfig"
+		cardinality="1..1" policy="static" bind="bindPlatformConfig" unbind="unbindPlatformConfig"/>
+		<!-- <reference name="tcManager" interface="org.apache.clerezza.platform.users.WebDescriptionProvider"
+		cardinality="1..1" policy="static" bind="bindWebDescriptionProvider" unbind="unbindWebDescriptionProvider"/> -->
+	</scr:component>
+</components>

@@ -31,9 +31,11 @@ import java.security.ProtectionDomain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.clerezza.platform.config.SystemConfig;
 
 import org.osgi.service.permissionadmin.PermissionInfo;
@@ -53,6 +55,8 @@ import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.SIOC;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
 
 /**
@@ -61,6 +65,10 @@ import org.apache.felix.scr.annotations.Service;
  */
 @Component
 @Service(UserAwarePolicy.class)
+@Reference(name = "webIdPermissionProvider",
+cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE,
+policy = ReferencePolicy.DYNAMIC,
+referenceInterface = WebIdBasedPermissionProvider.class)
 public class UserAwarePolicy extends Policy {
 
 	final Logger logger = LoggerFactory.getLogger(UserAwarePolicy.class);
@@ -80,6 +88,8 @@ public class UserAwarePolicy extends Policy {
 	private UserPermissionsCache cache = new UserPermissionsCache();
 
 	private Policy originalPolicy;
+	private Set<WebIdBasedPermissionProvider> permissionProviders = 
+			new HashSet<WebIdBasedPermissionProvider>();
 
 	public UserAwarePolicy() {
 		this.originalPolicy = Policy.getPolicy();
@@ -193,19 +203,19 @@ public class UserAwarePolicy extends Policy {
 			throws UserUnregisteredException {
 
 		NonLiteral user = getUserByName(userName);
-		List<String> result = getPermissionEntriesOfARole(user, userName);
-
+		
+		List<String> result = getPermissionEntriesOfAUser(user, userName);
 		Iterator<Triple> roleTriples = systemGraph.filter(user,
 				SIOC.has_function, null);
 
 		while (roleTriples.hasNext()) {
 			NonLiteral anotherRole = (NonLiteral) roleTriples.next()
 					.getObject();
-			result.addAll(getPermissionEntriesOfARole(anotherRole, userName));
+			result.addAll(getPermissionEntriesOfARole(anotherRole, userName, user));
 		}
 		Iterator<NonLiteral> baseRoles = getResourcesOfType(PERMISSION.BaseRole);
 		while(baseRoles.hasNext()) {
-			result.addAll(getPermissionEntriesOfARole(baseRoles.next(), userName));
+			result.addAll(getPermissionEntriesOfARole(baseRoles.next(), userName, user));
 		}
 		return result;
 	}
@@ -221,7 +231,17 @@ public class UserAwarePolicy extends Policy {
 		throw new UserUnregisteredException(userName);
 	}
 
-	private List<String> getPermissionEntriesOfARole(NonLiteral role, String userName) {
+	private List<String> getPermissionEntriesOfAUser(NonLiteral user, String userName) {
+		List<String> result = getPermissionEntriesOfARole(user, userName, user);
+		if (user instanceof UriRef) {
+			for (WebIdBasedPermissionProvider p : permissionProviders) {
+				result.addAll(p.getPermissions((UriRef)user));
+			}
+		}
+		return result;
+	}
+	//note that users are roles too
+	private List<String> getPermissionEntriesOfARole(NonLiteral role, String userName, NonLiteral user) {
 		List<String> result = new ArrayList<String>();
 		Iterator<Triple> permsForRole = systemGraph.filter(role,
 				PERMISSION.hasPermission, null);
@@ -263,6 +283,16 @@ public class UserAwarePolicy extends Policy {
 				throw new UnsupportedOperationException("Not supported yet.");
 			}
 		};
+	}
+	
+	protected void bindWebIdPermissionProvider(WebIdBasedPermissionProvider p) {
+		permissionProviders.add(p);
+		refresh();
+	}
+	
+	protected void unbindWebIdPermissionProvider(WebIdBasedPermissionProvider p) {
+		permissionProviders.remove(p);
+		refresh();
 	}
 
 }

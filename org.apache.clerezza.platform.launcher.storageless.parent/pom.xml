@@ -440,6 +440,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.users.core</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.utils</artifactId>
 			<scope>runtime</scope>
 		</dependency>

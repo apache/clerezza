@@ -30,6 +30,9 @@ import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
 
 /**
+ * A Secured triple collection wraps a triple collection checking each access
+ * for the rights on a the graph for which the uri is passed to the 
+ * constructor.
  *
  * @author mir
  */
@@ -38,7 +41,7 @@ public class SecuredTripleCollection implements TripleCollection {
 	private TripleCollection wrapped;
 	private String name;
 
-	SecuredTripleCollection(TripleCollection wrapped, UriRef name) {
+	public SecuredTripleCollection(TripleCollection wrapped, UriRef name) {
 		this.wrapped = wrapped;
 		this.name = name.getUnicodeString();
 	}

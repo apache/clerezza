@@ -11,7 +11,7 @@
 		<service servicefactory="false">
 			<provide interface="org.apache.clerezza.platform.security.auth.WeightedAuthenticationMethod"/>
 		</service>
-		<reference name="tcManager" interface="org.apache.clerezza.foafssl.WebDescriptionProvider"
+		<reference name="webDescriptionProvider" interface="org.apache.clerezza.platform.users.WebDescriptionProvider"
 		cardinality="1..1" policy="static" bind="bindWebDescriptionProvider" unbind="unbindWebDescriptionProvider"/>
 		<!-- <reference name="conceptProviderManager"
 		interface="org.apache.clerezza.platform.concepts.core.ConceptProviderManager"
@@ -25,18 +25,10 @@
 		<service servicefactory="false">
 			<provide interface="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"/>
 		</service>
-		<reference name="tcManager" interface="org.apache.clerezza.foafssl.WebDescriptionProvider"
+		<reference name="tcManager" interface="org.apache.clerezza.platform.users.WebDescriptionProvider"
 		cardinality="1..1" policy="static" bind="bindWebDescriptionProvider" unbind="unbindWebDescriptionProvider"/>
 		<reference name="systemGraph" interface="org.apache.clerezza.rdf.core.access.LockableMGraph" 
 		cardinality="1..1" policy="static" target="(name=http://tpf.localhost/system.graph)" 
 		bind="bindSystemGraph" unbind="unbindSystemGraph"/>
-	</scr:component>
-	<scr:component enabled="true" name="org.apache.clerezza.foafssl.WebDescriptionProvider">
-		<implementation class="org.apache.clerezza.foafssl.WebDescriptionProvider"/>
-		<service servicefactory="false">
-			<provide interface="org.apache.clerezza.foafssl.WebDescriptionProvider"/>
-		</service>
-		<reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
-		cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
 	</scr:component>
 </components>

@@ -25,7 +25,7 @@ import java.security.cert.X509Certificate
 import java.security.interfaces.RSAPublicKey
 import javax.net.ssl.X509TrustManager;
 import org.apache.clerezza.foafssl.Utilities
-import org.apache.clerezza.foafssl.WebDescriptionProvider
+import org.apache.clerezza.platform.users.WebDescriptionProvider
 import org.apache.clerezza.foafssl.ontologies.CERT
 import org.apache.clerezza.foafssl.ontologies.RSA
 import org.apache.clerezza.rdf.core.Literal
@@ -35,6 +35,7 @@ import org.apache.clerezza.rdf.core.Resource
 import org.apache.clerezza.rdf.core.TripleCollection
 import org.apache.clerezza.rdf.core.TypedLiteral
 import org.apache.clerezza.rdf.core.UriRef
+import org.apache.clerezza.rdf.core.access.LockableMGraph
 import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
@@ -62,11 +63,11 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 	
 	private var systemGraph: MGraph = null
 	
-	protected def bindSystemGraph(g: MGraph) {
+	protected def bindSystemGraph(g: LockableMGraph) {
 		systemGraph = g
 	}
 	
-	protected def unbindSystemGraph(g: MGraph) {
+	protected def unbindSystemGraph(g: LockableMGraph) {
 		systemGraph = null
 	}
 	
