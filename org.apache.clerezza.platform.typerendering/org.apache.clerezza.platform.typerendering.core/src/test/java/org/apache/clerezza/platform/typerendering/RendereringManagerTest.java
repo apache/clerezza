@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.typerendering;
 import java.util.ArrayList;
 import javax.ws.rs.ext.RuntimeDelegate;
 import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.triaxrs.delegate.RuntimeDelegateImpl;
 
@@ -38,7 +39,7 @@ public class RendereringManagerTest extends RendereringTest {
 		manager = renderer;
 		renderer.rdfTypePrioList = new ArrayList<Resource>();		
 		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
-		renderer.bindConfigGraph(new SimpleMGraph());
+		renderer.bindConfigGraph(new LockableMGraphWrapper(new SimpleMGraph()));
 		renderer.registerRenderletService(renderletMockA.pid, renderletMockA);
 		renderer.registerRenderletService(renderletMockB.pid, renderletMockB);
 		return renderer;
