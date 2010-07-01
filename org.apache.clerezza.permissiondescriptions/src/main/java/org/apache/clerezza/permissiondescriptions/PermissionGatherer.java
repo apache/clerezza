@@ -160,6 +160,8 @@ public class PermissionGatherer implements BundleListener {
 
 	protected void deactivate(final ComponentContext componentContext) {
 		componentContext.getBundleContext().removeBundleListener(this);
+		bundle2PermissionClassesMap.clear();
+		bundle2PermissionDescriptorsMap.clear();
 	}
 
 	@Override

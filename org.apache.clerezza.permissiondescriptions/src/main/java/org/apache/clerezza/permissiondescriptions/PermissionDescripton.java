@@ -80,5 +80,38 @@ public class PermissionDescripton {
 	public String getJavaPermissionString() {
 		return javaPermissionString ;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final PermissionDescripton other = (PermissionDescripton) obj;
+		if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+			return false;
+		}
+		if ((this.description == null) ? (other.description != null) : !this.description.equals(other.description)) {
+			return false;
+		}
+		if ((this.javaPermissionString == null) ? (other.javaPermissionString != null) : !this.javaPermissionString.equals(other.javaPermissionString)) {
+			return false;
+		}
+		if (this.iconUri != other.iconUri && (this.iconUri == null || !this.iconUri.equals(other.iconUri))) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash = 41 * hash + (this.name != null ? this.name.hashCode() : 0);
+		hash = 41 * hash + (this.description != null ? this.description.hashCode() : 0);
+		hash = 41 * hash + (this.javaPermissionString != null ? this.javaPermissionString.hashCode() : 0);
+		hash = 41 * hash + (this.iconUri != null ? this.iconUri.hashCode() : 0);
+		return hash;
+	}
 }
