@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
@@ -50,6 +51,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -79,7 +81,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	private Logger logger = LoggerFactory.getLogger(RenderletRendererFactoryImpl.class);
 	
 	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
-	private MGraph configGraph;
+	private LockableMGraph configGraph;
 
 	private static final String RDF_TYPE_PRIO_LIST_URI =
 			"http://tpf.localhost/rdfTypePriorityList";
@@ -168,43 +170,49 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 			UriRef rdfType,
 			String mode,
 			MediaType mediaType, boolean builtIn) {
-		removeExisting(rdfType, mode, mediaType, builtIn);
-		BNode renderletDefinition = new BNode();
-		GraphNode renderletDefinitionNode = new GraphNode(renderletDefinition, configGraph);
-		configGraph.add(new TripleImpl(renderletDefinition,
-				TYPERENDERING.renderlet, LiteralFactory.getInstance().createTypedLiteral(renderlet)));
-		if (renderingSpecification != null) {
+		Lock l = configLock.writeLock();
+		l.lock();
+		try {
+			removeExisting(rdfType, mode, mediaType, builtIn);
+			BNode renderletDefinition = new BNode();
+			GraphNode renderletDefinitionNode = new GraphNode(renderletDefinition, configGraph);
 			configGraph.add(new TripleImpl(renderletDefinition,
-					TYPERENDERING.renderingSpecification, renderingSpecification));
-		}
-		configGraph.add(new TripleImpl(renderletDefinition,
-				TYPERENDERING.renderedType, rdfType));
-
-		configGraph.add(new TripleImpl(renderletDefinition,
-				TYPERENDERING.mediaType, LiteralFactory.getInstance().createTypedLiteral(mediaType.toString())));
-		renderletDefinitionNode.addProperty(RDF.type, TYPERENDERING.RenderletDefinition);
-
-		if (builtIn) {
-			renderletDefinitionNode.addProperty(RDF.type,
-					TYPERENDERING.BuiltInRenderletDefinition);
-		} else {
-			renderletDefinitionNode.addProperty(RDF.type,
-					TYPERENDERING.CustomRenderletDefinition);
-		}
-
-		if (mode != null) {
+					TYPERENDERING.renderlet, LiteralFactory.getInstance().createTypedLiteral(renderlet)));
+			if (renderingSpecification != null) {
+				configGraph.add(new TripleImpl(renderletDefinition,
+						TYPERENDERING.renderingSpecification, renderingSpecification));
+			}
 			configGraph.add(new TripleImpl(renderletDefinition,
-					TYPERENDERING.renderingMode, LiteralFactory.getInstance().createTypedLiteral(mode)));
-		}
+					TYPERENDERING.renderedType, rdfType));
 
-		synchronized(this) {
-			if (!rdfTypePrioList.contains(rdfType)) {
-				if (rdfType.equals(RDFS.Resource)) {
-					rdfTypePrioList.add(RDFS.Resource);
-				} else {
-					rdfTypePrioList.add(0, rdfType);
+			configGraph.add(new TripleImpl(renderletDefinition,
+					TYPERENDERING.mediaType, LiteralFactory.getInstance().createTypedLiteral(mediaType.toString())));
+			renderletDefinitionNode.addProperty(RDF.type, TYPERENDERING.RenderletDefinition);
+
+			if (builtIn) {
+				renderletDefinitionNode.addProperty(RDF.type,
+						TYPERENDERING.BuiltInRenderletDefinition);
+			} else {
+				renderletDefinitionNode.addProperty(RDF.type,
+						TYPERENDERING.CustomRenderletDefinition);
+			}
+
+			if (mode != null) {
+				configGraph.add(new TripleImpl(renderletDefinition,
+						TYPERENDERING.renderingMode, LiteralFactory.getInstance().createTypedLiteral(mode)));
+			}
+
+			synchronized(this) {
+				if (!rdfTypePrioList.contains(rdfType)) {
+					if (rdfType.equals(RDFS.Resource)) {
+						rdfTypePrioList.add(RDFS.Resource);
+					} else {
+						rdfTypePrioList.add(0, rdfType);
+					}
 				}
 			}
+		} finally {
+			l.unlock();
 		}
 		type2DefinitionMap = null;
 	}
@@ -230,12 +238,18 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 
 		//keeping this independent of typedefinitionmap to allow better performance
 		List<RenderletDefinition> definitionList = new ArrayList<RenderletDefinition>();
-		Iterator<Triple> renderletDefsTriple =
-				configGraph.filter(null, TYPERENDERING.renderedType, rdfType);
-		while (renderletDefsTriple.hasNext()) {
-			definitionList.add(
-					new RenderletDefinition((BNode) renderletDefsTriple.next().getSubject(),
-					configGraph));
+		Lock l = configGraph.getLock().readLock();
+		l.lock();
+		try {
+			Iterator<Triple> renderletDefsTriple =
+					configGraph.filter(null, TYPERENDERING.renderedType, rdfType);
+			while (renderletDefsTriple.hasNext()) {
+				definitionList.add(
+						new RenderletDefinition((BNode) renderletDefsTriple.next().getSubject(),
+						configGraph));
+			}
+		} finally {
+			l.unlock();
 		}
 		for (RenderletDefinition renderletDef : definitionList) {
 
@@ -286,7 +300,8 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 
 	protected void unbindRenderlet(ServiceReference renderletRef) {
 		logger.info("Unbind renderlet of bundle {}", renderletRef.getBundle().getSymbolicName());
-		configLock.writeLock().lock();
+		Lock l = configLock.writeLock();
+		l.unlock();
 		try {
 			if (!renderletRefStore.remove(renderletRef)) {
 				String servicePid = (String) renderletRef.getProperty(Constants.SERVICE_PID);
@@ -294,7 +309,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 				unregisterRenderletService(servicePid, renderlet);
 			}
 		} finally {
-			configLock.writeLock().unlock();
+			l.unlock();
 		}
 	}
 
@@ -374,11 +389,11 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		}
 	}
 
-	protected void bindConfigGraph(MGraph configGraph) {
+	protected void bindConfigGraph(LockableMGraph configGraph) {
 		this.configGraph = configGraph;
 	}
 
-	protected void unbindConfigGraph(MGraph configGraph) {
+	protected void unbindConfigGraph(LockableMGraph configGraph) {
 		this.configGraph = null;
 	}
 }
