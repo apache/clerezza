@@ -28,7 +28,6 @@ import java.security.AccessControlException;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -56,6 +55,8 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
+import org.apache.clerezza.permissiondescriptions.PermissionDescripton;
+import org.apache.clerezza.permissiondescriptions.PermissionGatherer;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
 import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
@@ -80,6 +81,7 @@ import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.sparql.ParseException;
+import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.LIST;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
@@ -122,6 +124,9 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	private RenderletManager renderletManager;
 
 	@Reference
+	private PermissionGatherer permGatherer;
+
+	@Reference
 	private ContentGraphProvider cgProvider;
 
 	@Reference
@@ -145,7 +150,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"user-overview-template.xhtml").toURI().toString()),
+				"user-overview-template.xhtml").toURI().toString()),
 				USERMANAGER.UserOverviewPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
@@ -158,8 +163,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				USERMANAGER.UserPermissionPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource("update-user-template.xhtml")
-						.toURI().toString()), USERMANAGER.UpdateUserPage, "naked",
+				new UriRef(getClass().getResource(
+				"update-user-template.xhtml").toURI().toString()), USERMANAGER.UpdateUserPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
@@ -168,12 +173,12 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"role-overview-template.xhtml").toURI().toString()),
+				"role-overview-template.xhtml").toURI().toString()),
 				USERMANAGER.RoleOverviewPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"role-permission-template.xhtml").toURI().toString()),
+				"role-permission-template.xhtml").toURI().toString()),
 				USERMANAGER.RolePermissionPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
@@ -544,6 +549,22 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral userPermissionPage = new BNode();
+		Iterator<PermissionDescripton> permDescs = permGatherer.getAllPermissionDescriptors();
+		while(permDescs.hasNext()) {
+			PermissionDescripton desc = permDescs.next();
+			BNode providedPermission = new BNode();
+			resultGraph.add(new TripleImpl(userPermissionPage,
+					USERMANAGER.permission, providedPermission));
+
+			resultGraph.add(new TripleImpl(providedPermission,
+					PERMISSION.javaPermissionEntry, new PlainLiteralImpl(desc.getJavaPermissionString())));
+
+			resultGraph.add(new TripleImpl(providedPermission,
+					DCTERMS.title, new PlainLiteralImpl(desc.getSimpleName())));
+
+			resultGraph.add(new TripleImpl(providedPermission,
+					DCTERMS.description, new PlainLiteralImpl(desc.getDescription())));
+		}	
 		resultGraph.add(new TripleImpl(userPermissionPage, RDF.type,
 				PLATFORM.HeadedPage));
 		resultGraph.add(new TripleImpl(userPermissionPage, RDF.type,
@@ -555,10 +576,6 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 					USERMANAGER.user, user));
 			Iterator<NonLiteral> permissions = userManager
 					.getPermissionsOfUser(user);
-			while (permissions.hasNext()) {
-				resultGraph.add(new TripleImpl(userPermissionPage,
-						USERMANAGER.permission, permissions.next()));
-			}
 			return new GraphNode(userPermissionPage, new UnionMGraph(
 					resultGraph, systemGraph));
 			
@@ -566,6 +583,22 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		throw new WebApplicationException(Response.status(Status.NOT_FOUND)
 				.entity("User " + userName + "does not exist in our database")
 				.build());
+	}
+
+	/**
+	 * update user permissionEntries
+	 */
+	@POST
+	@Path("update-user-permissions")
+	public Response updateUserPermissions(
+			@FormParam(value = "name") String userName,
+			@FormParam(value = "permEntries") List<String> permissionEntries,
+			@Context UriInfo uriInfo) {
+		checkUserParam(userName);
+		userManager.deleteAllPermissionsOfUser(userName);
+		userManager.assignPermissionsToUser(userName, permissionEntries);
+		return Response.status(Status.CREATED).build();
+	
 	}
 
 	/**
@@ -786,6 +819,20 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral rolePermissionPage = new BNode();
+		Iterator<PermissionDescripton> permDescs = permGatherer.getAllPermissionDescriptors();
+		while(permDescs.hasNext()) {
+			PermissionDescripton desc = permDescs.next();
+			BNode providedPermission = new BNode();
+			resultGraph.add(new TripleImpl(rolePermissionPage,
+					USERMANAGER.permission, providedPermission));
+			resultGraph.add(new TripleImpl(providedPermission,
+					PERMISSION.javaPermissionEntry, new PlainLiteralImpl(desc.getJavaPermissionString())));
+			resultGraph.add(new TripleImpl(providedPermission,
+					DCTERMS.title, new PlainLiteralImpl(desc.getSimpleName())));
+			resultGraph.add(new TripleImpl(providedPermission,
+					DCTERMS.description, new PlainLiteralImpl(desc.getDescription())));
+		}
+
 		resultGraph.add(new TripleImpl(rolePermissionPage, RDF.type,
 				PLATFORM.HeadedPage));
 		resultGraph.add(new TripleImpl(rolePermissionPage, RDF.type,
@@ -795,15 +842,13 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		if (role != null) {
 			resultGraph.add(new TripleImpl(rolePermissionPage,
 					USERMANAGER.role, role));
-			Iterator<NonLiteral> permissions = userManager
-					.getPermissionsOfRole(role);
-			while (permissions.hasNext()) {
-				resultGraph.add(new TripleImpl(rolePermissionPage,
-						USERMANAGER.permission, permissions.next()));
-			}
+			return new GraphNode(rolePermissionPage, new UnionMGraph(
+					resultGraph, systemGraph));
+
 		}
-		return new GraphNode(rolePermissionPage, new UnionMGraph(resultGraph,
-				systemGraph));
+		throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+				.entity("Role " + role + "does not exist in our database")
+				.build());
 	}
 
 	/**
@@ -847,6 +892,25 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			throw new RuntimeException(ex);
 		}
 	}
+
+	/**
+	 * update role permissionEntries
+	 */
+	@POST
+	@Path("update-role-permissions")
+	public Response updateRolePermissions(
+			@FormParam(value = "roleTitle") String title,
+			@FormParam(value = "permEntries") List<String> permissionEntries,
+			@Context UriInfo uriInfo) {
+
+		checkRoleParam(title);
+		userManager.deleteAllPermissionsOfRole(title);
+		userManager.assignPermissionsToRole(title, permissionEntries);
+
+		return Response.status(Status.CREATED).build();
+		
+	}
+
 
 	@GET
 	@Path("add-single-property")
@@ -963,8 +1027,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@Path("{path:.+}")
 	public PathNode getStaticFile(@PathParam("path") String path) {
 		final PathNode node = fileServer.getNode(path);
-		return node;
-
+		return node;	
 	}
 
 	@Override
