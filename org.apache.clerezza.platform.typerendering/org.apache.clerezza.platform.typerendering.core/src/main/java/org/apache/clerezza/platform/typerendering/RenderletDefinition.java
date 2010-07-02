@@ -17,6 +17,7 @@
 package org.apache.clerezza.platform.typerendering;
 
 import java.util.Iterator;
+import java.util.concurrent.locks.Lock;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
@@ -28,6 +29,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -45,9 +47,9 @@ public class RenderletDefinition {
 	private Pattern modePattern;
 	private MediaType mediaType;
 	private boolean builtIn;
-	private MGraph configGraph;
+	private LockableMGraph configGraph;
 
-	public RenderletDefinition(BNode renderletDefinition, MGraph configGraph) {
+	public RenderletDefinition(BNode renderletDefinition, LockableMGraph configGraph) {
 		this.configGraph = configGraph;
 		this.rederletDefinition = renderletDefinition;
 		renderlet = getRenderletName(renderletDefinition);
@@ -145,13 +147,19 @@ public class RenderletDefinition {
 
 	private String getRenderletName(Resource renderletDef) {
 
-		Iterator<Triple> renderletModeIter = configGraph.filter(
-				(NonLiteral) renderletDef, TYPERENDERING.renderlet, null);
-		if (renderletModeIter.hasNext()) {
-			TypedLiteral renderletMode = (TypedLiteral) renderletModeIter.next().getObject();
-			String renderletName = LiteralFactory.getInstance().createObject(String.class,
-					renderletMode);
-			return renderletName;
+		Lock l = configGraph.getLock().readLock();
+		l.lock();
+		try {
+			Iterator<Triple> renderletModeIter = configGraph.filter(
+					(NonLiteral) renderletDef, TYPERENDERING.renderlet, null);
+			if (renderletModeIter.hasNext()) {
+				TypedLiteral renderletMode = (TypedLiteral) renderletModeIter.next().getObject();
+				String renderletName = LiteralFactory.getInstance().createObject(String.class,
+						renderletMode);
+				return renderletName;
+			}
+		} finally {
+			l.unlock();
 		}
 		return null;
 	}
