@@ -61,12 +61,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.specs</groupId>
-			<artifactId>specs</artifactId>
-			<version>1.2.5</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
