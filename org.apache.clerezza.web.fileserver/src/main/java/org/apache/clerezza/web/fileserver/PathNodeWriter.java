@@ -32,19 +32,33 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.ComponentContext;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
  *
  * @author reto
- * 
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
  */
+@Component
+@Service(value = Object.class)
+@Property(name = "javax.ws.rs", boolValue = true)
 @Provider
 public class PathNodeWriter implements MessageBodyWriter<PathNode> {
+
+	@Property(value="600", description="Specifies the value of the max-age field"
+		+ "set in the cache-control header, as per RFC 2616 this is a number of "
+		+ "seconds")
+	public static final String MAX_AGE = "max-age";
+
 	private final Logger logger = LoggerFactory.getLogger(PathNodeWriter.class);
+	private String cacheControlHeaderValue = "max-age:";
+
+	protected void activate(ComponentContext context) {
+		cacheControlHeaderValue = "max-age="+(String) context.getProperties().get(MAX_AGE);
+	}
 
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -69,6 +83,11 @@ public class PathNodeWriter implements MessageBodyWriter<PathNode> {
 				httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, guessedMediaType);
 				logger.debug("Set media-type to: {}", guessedMediaType);
 			}
+		}
+		if (!httpHeaders.containsKey(HttpHeaders.CACHE_CONTROL)) {
+			httpHeaders.putSingle(HttpHeaders.CACHE_CONTROL, cacheControlHeaderValue);
+		} else {
+			logger.debug("httpHeaders already contain CACHE_CONTROL");
 		}
 		InputStream in = t.getInputStream();
 		for (int ch = in.read(); ch != -1; ch = in.read()) {
