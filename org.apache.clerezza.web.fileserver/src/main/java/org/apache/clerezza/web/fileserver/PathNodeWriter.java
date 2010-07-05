@@ -42,13 +42,13 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  *
  * @author reto
  */
-@Component
+@Component(metatype=true)
 @Service(value = Object.class)
 @Property(name = "javax.ws.rs", boolValue = true)
 @Provider
 public class PathNodeWriter implements MessageBodyWriter<PathNode> {
 
-	@Property(value="600", description="Specifies the value of the max-age field"
+	@Property(value="600", label="Max-Age", description="Specifies the value of the max-age field"
 		+ "set in the cache-control header, as per RFC 2616 this is a number of "
 		+ "seconds")
 	public static final String MAX_AGE = "max-age";
