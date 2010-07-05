@@ -4,8 +4,19 @@ def dc(s: Any) = new UriRef("http://purl.org/dc/elements/1.1/" + s)
 def rdf(s: Any) = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#" + s)
 def rdfs(s: Any) = new UriRef("http://www.w3.org/2000/01/rdf-schema#" + s)
 
-resultDocModifier.addStyleSheet("js/fancybox/jquery.fancybox.css");
-resultDocModifier.addScriptReference("js/fancybox/jquery.fancybox-1.2.1.pack.js");
+resultDocModifier.addStyleSheet("/yui/2/container/assets/container-core.css");
+
+resultDocModifier.addScriptReference("/yui/2/yahoo-dom-event/yahoo-dom-event.js");
+resultDocModifier.addScriptReference("/yui/2/animation/animation-min.js");
+resultDocModifier.addScriptReference("/yui/2/dragdrop/dragdrop-min.js");
+resultDocModifier.addScriptReference("/yui/2/logger/logger-min.js");
+resultDocModifier.addScriptReference("/yui/2/element/element-min.js");
+resultDocModifier.addScriptReference("/yui/2/container/container-min.js");
+resultDocModifier.addScriptReference("/yui/2/resize/resize-min.js")
+
+resultDocModifier.addScriptReference("/scripts/alert-message.js");
+resultDocModifier.addScriptReference("/scripts/ajax-options.js");
+resultDocModifier.addScriptReference("/scripts/overlay.js");
 resultDocModifier.addScriptReference("js/usermanager-role-overview.js");
 
 resultDocModifier.setTitle("User Manager");

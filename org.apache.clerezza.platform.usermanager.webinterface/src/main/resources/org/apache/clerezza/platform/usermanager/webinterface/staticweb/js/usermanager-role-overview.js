@@ -17,7 +17,7 @@ RoleManager.initButtons = function() {
 				});
 				options.type = "POST";
 				options.url = "./delete-role";
-				options.data = {"title": title};
+				options.data = {"roleTitle": title};
 				$.ajax(options);
 				counter++;
 			});
