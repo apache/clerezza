@@ -54,18 +54,7 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="showPermi
 							<tr id={role/dc("title")*}>
 								<td>
 									{
-										var isBaseRole:Boolean = false
-										for (rdfType <- (role/rdf("type"))) yield {
-											if (rdfType.getNode.equals(permission("BaseRole"))) {
-												isBaseRole = true;
-											} else {}
-										}
-										if (!isBaseRole) {
-											<input type="checkbox" 	value={role/dc("title")*}/>
-										} else {
-											<input type="checkbox" disabled="disabled"	value={role/dc("title")*}/>
-										}
-
+										<input type="checkbox" 	value={role/dc("title")*}/>
 									}
 								</td>
 								<td>{role/dc("title")*}</td>

@@ -16,7 +16,7 @@ resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li  class="tx-active"><a h
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="editButton" class="tx-button tx-button-generic" href="list-roles">Back to Overview</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="saveButton" class="tx-button tx-button-create tx-inactive" href="#">Save Permissions</a></li>);
 
-var allRolePermissions = "Permissions:";
+var allRolePermissions = "";
 for (perm <- (res/umr("role")/permission("hasPermission"))) {
 	allRolePermissions = allRolePermissions + "," + (perm/permission("javaPermissionEntry")*)
 }
@@ -39,11 +39,11 @@ for (perm <- (res/umr("role")/permission("hasPermission"))) {
 				</thead>
 				<tbody>
 				{for (perm <- (res/umr("permission"))) yield {
+				val javaPermission = (perm/permission("javaPermissionEntry")*);
 				<tr>
-					<td>{
-						val javaPermission = (perm/permission("javaPermissionEntry")*);
-						
+					<td>{			
 						if(allRolePermissions.contains(javaPermission)) {
+							allRolePermissions = allRolePermissions.replace("," + javaPermission, "")
 							<input type="checkbox" checked="checked" name="permEntries" value={javaPermission} />
 						} else {
 							<input type="checkbox" name="permEntries" value={javaPermission} />
@@ -54,8 +54,21 @@ for (perm <- (res/umr("role")/permission("hasPermission"))) {
 
 					<td><span style="line-height: 1.5em;">{perm/dct("title")*}</span></td>
 					<td><span style="line-height: 1.5em;">{perm/dct("description")*}</span></td>
-					<td><span style="line-height: 1.5em;">{perm/permission("javaPermissionEntry")*}</span></td>
+					<td><span style="line-height: 1.5em;">{javaPermission}</span></td>
 				</tr>
+				}
+				}
+				{
+				val otherRolePermissions = allRolePermissions.split(",")
+				for(perm <-  otherRolePermissions) yield {
+					ifx(!perm.equals("")) {
+					<tr>
+						<td><input type="checkbox" checked="checked" name="permEntries" value={perm} /></td>
+						<td><span style="line-height: 1.5em;"></span></td>
+						<td><span style="line-height: 1.5em;"></span></td>
+						<td><span style="line-height: 1.5em;">{perm}</span></td>
+					</tr>
+					}
 				}
 				}
 				</tbody>

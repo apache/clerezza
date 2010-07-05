@@ -12,14 +12,18 @@ RoleManager.initButtons = function() {
 			var counter = 1;
 			activatedCheckBoxes.each(function() {
 				var title = $(this).val();
-				var options = new AjaxOptions("delete-role-" + counter, "deleting role ", function(data) {
-					$("#" + title).remove();
-				});
-				options.type = "POST";
-				options.url = "./delete-role";
-				options.data = {"roleTitle": title};
-				$.ajax(options);
-				counter++;
+				if(title != "BasePermissionsRole") {
+					var options = new AjaxOptions("delete-role-" + counter, "deleting role ", function(data) {
+						$("#" + title).remove();
+					});
+					options.type = "POST";
+					options.url = "./delete-role";
+					options.data = {"roleTitle": title};
+					$.ajax(options);
+					counter++;
+				} else {
+					AlertMessage.show(undefined, "Could not delete BasePermissionsRole", "Alert", "Ok");
+				}
 			});
 		}
 	});

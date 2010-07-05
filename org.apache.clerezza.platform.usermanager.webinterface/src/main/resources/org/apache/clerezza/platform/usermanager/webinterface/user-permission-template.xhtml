@@ -17,14 +17,16 @@ resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="list-roles">Ro
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="backButton" class="tx-button tx-button-generic" href="list-users">Back to Overview</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="saveButton" class="tx-button tx-button-create tx-inactive" href="#">Save Permissions</a></li>);
 
-var allUserPermissions = "Permissions:";
+var allUserPermissions = "";
 for (perm <- (res/umr("user")/permission("hasPermission"))) {
 	allUserPermissions = allUserPermissions + "," + (perm/permission("javaPermissionEntry")*)
 }
 
-var rolePermissions = "Permissions:";
+var rolePermissions = "";
 for (role <- (res/umr("user")/sioc("has_function"))) {
-	rolePermissions = rolePermissions + "," + (role/permission("hasPermission")/permission("javaPermissionEntry")*);
+	for (rolePerm <- (role/permission("hasPermission"))) {
+		rolePermissions = rolePermissions + "," + (rolePerm/permission("javaPermissionEntry")*);
+	}
 }
 
         <div id="tx-content">
@@ -46,13 +48,15 @@ for (role <- (res/umr("user")/sioc("has_function"))) {
 				</thead>
 				<tbody>
 				{for (perm <- (res/umr("permission"))) yield {
+				val javaPermission = (perm/permission("javaPermissionEntry")*);
 				<tr>
-					<td>{
-						val javaPermission = (perm/permission("javaPermissionEntry")*);
+					<td>{				
 						if(rolePermissions.contains(javaPermission)) {
+							rolePermissions = rolePermissions.replace("," + javaPermission, "")
 							<input type="checkbox" checked="checked" disabled="disabled" value={javaPermission} />
 						} else {
 							if(allUserPermissions.contains(javaPermission)) {
+								allUserPermissions = allUserPermissions.replace("," + javaPermission, "")
 								<input type="checkbox" checked="checked" name="permEntries" value={javaPermission} />
 							} else {
 								<input type="checkbox" name="permEntries" value={javaPermission} />
@@ -63,8 +67,34 @@ for (role <- (res/umr("user")/sioc("has_function"))) {
 
 					<td><span style="line-height: 1.5em;">{perm/dct("title")*}</span></td>
 					<td><span style="line-height: 1.5em;">{perm/dct("description")*}</span></td>
-					<td><span style="line-height: 1.5em;">{perm/permission("javaPermissionEntry")*}</span></td>
+					<td><span style="line-height: 1.5em;">{javaPermission}</span></td>
 				</tr>
+				}
+				}
+				{
+				val otherUserPermissions = allUserPermissions.split(",")
+				for(perm <-  otherUserPermissions) yield {
+					ifx(!perm.equals("")) {
+					<tr>
+						<td><input type="checkbox" checked="checked" name="permEntries" value={perm} /></td>
+						<td><span style="line-height: 1.5em;"></span></td>
+						<td><span style="line-height: 1.5em;"></span></td>
+						<td><span style="line-height: 1.5em;">{perm}</span></td>
+					</tr>
+					}
+				}
+				}
+				{
+				val otherRolePermissions = rolePermissions.split(",")
+				for(perm <-  otherRolePermissions) yield {
+					ifx(!perm.equals("")) {
+					<tr>
+						<td><input type="checkbox" checked="checked" disabled="disabled" name="permEntries" value={perm} /></td>
+						<td><span style="line-height: 1.5em;"></span></td>
+						<td><span style="line-height: 1.5em;"></span></td>
+						<td><span style="line-height: 1.5em;">{perm}</span></td>
+					</tr>
+					}
 				}
 				}
 				</tbody>
