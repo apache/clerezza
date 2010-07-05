@@ -54,7 +54,7 @@ public class PathNodeWriter implements MessageBodyWriter<PathNode> {
 	public static final String MAX_AGE = "max-age";
 
 	private final Logger logger = LoggerFactory.getLogger(PathNodeWriter.class);
-	private String cacheControlHeaderValue = "max-age:";
+	private String cacheControlHeaderValue;
 
 	protected void activate(ComponentContext context) {
 		cacheControlHeaderValue = "max-age="+(String) context.getProperties().get(MAX_AGE);
