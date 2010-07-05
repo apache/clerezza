@@ -509,15 +509,16 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 		NonLiteral user = getCustomUser(contentGraph, userName);
 		if (user != null) {
-			Lock readLock = contentGraph.getLock().readLock();
-			readLock.lock();
+			Lock writeLock = contentGraph.getLock().writeLock();
+			writeLock.lock();
 			try {
 				Iterator<Triple> userTriples = contentGraph.filter(user, null, null);
 				while (userTriples.hasNext()) {
-					contentGraph.remove(userTriples.next());
+					userTriples.next();
+					userTriples.remove();
 				}
 			} finally {
-				readLock.unlock();
+				writeLock.unlock();
 			}
 			userManager.deleteUser(userName);
 			return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);

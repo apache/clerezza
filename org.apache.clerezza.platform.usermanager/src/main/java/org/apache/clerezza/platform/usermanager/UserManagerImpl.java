@@ -185,10 +185,12 @@ public class UserManagerImpl implements UserManager {
 
 	private void deleteTriplesOfASubject(NonLiteral subject) {
 		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
 		try {
 			Iterator<Triple> triples = systemGraph.filter(subject, null, null);
 			while (triples.hasNext()) {
-				systemGraph.remove(triples.next());
+				triples.next();
+				triples.remove();
 			}
 		} finally {
 			writeLock.unlock();
