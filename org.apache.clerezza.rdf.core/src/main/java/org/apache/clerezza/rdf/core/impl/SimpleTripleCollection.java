@@ -86,9 +86,7 @@ class SimpleTripleCollection extends AbstractTripleCollection {
 		}
 
 		private void invalidate() {
-			if (checkConcurrency) {
-				isValid = false;
-			}
+			isValid = false;
 		}
 	}	
 	
@@ -165,7 +163,9 @@ class SimpleTripleCollection extends AbstractTripleCollection {
 
 			final Iterator<Triple> listIter = tripleList.iterator();
 			SimpleIterator resultIter = new SimpleIterator(listIter);
-			iterators.add(new SoftReference<SimpleIterator>(resultIter));
+			if (checkConcurrency) {
+				iterators.add(new SoftReference<SimpleIterator>(resultIter));
+			}
 			return resultIter;
 		}
 	}
