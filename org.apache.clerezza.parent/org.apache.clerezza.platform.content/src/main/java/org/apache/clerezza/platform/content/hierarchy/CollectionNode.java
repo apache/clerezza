@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -48,7 +49,12 @@ public class CollectionNode extends HierarchyNode {
 	}
 
 	boolean isValid() {
-		return this.hasProperty(RDF.type, HIERARCHY.Collection);
+		readLock().lock();
+		try {
+			return this.hasProperty(RDF.type, HIERARCHY.Collection);
+		} finally {
+			readLock().unlock();
+		}
 	}
 
 	/**
@@ -78,19 +84,24 @@ public class CollectionNode extends HierarchyNode {
 	 * @return
 	 */
 	public List<HierarchyNode> getMembers() {
+		List<HierarchyNode> nodes;
 		List<Resource> membersListRdf = getMembersRdf();
-		List<HierarchyNode> nodes =
-				new ArrayList<HierarchyNode>(membersListRdf.size());
-		Iterator<Resource> membersIter = membersListRdf.iterator();
-		while (membersIter.hasNext()) {
-			UriRef uri = (UriRef) membersIter.next();
-			try {
-				nodes.add(hierarchyService.getHierarchyNode(uri));
-			} catch (NodeDoesNotExistException ex) {
-				throw new RuntimeException(ex);
-			} catch (UnknownRootExcetpion ex) {
-				throw new RuntimeException(ex);
+		readLock().lock();
+		try {
+			nodes =	new ArrayList<HierarchyNode>(membersListRdf.size());
+			Iterator<Resource> membersIter = membersListRdf.iterator();
+			while (membersIter.hasNext()) {
+				UriRef uri = (UriRef) membersIter.next();
+				try {
+					nodes.add(hierarchyService.getHierarchyNode(uri));
+				} catch (NodeDoesNotExistException ex) {
+					throw new RuntimeException(ex);
+				} catch (UnknownRootExcetpion ex) {
+					throw new RuntimeException(ex);
+				}
 			}
+		} finally {
+			readLock().unlock();
 		}
 		return Collections.unmodifiableList(nodes);
 	}
@@ -100,15 +111,30 @@ public class CollectionNode extends HierarchyNode {
 	 * @return
 	 */
 	List<Resource> getMembersRdf() {
-		Iterator<Resource> members = this.getObjects(HIERARCHY.members);
-		RdfList membersList;
-		if (members.hasNext()) {
-			membersList = new RdfList((BNode)members.next(), getGraph());
-		} else {
-			BNode newMembers = new BNode();
-			this.addProperty(HIERARCHY.members, newMembers);
-			membersList = new RdfList(newMembers, getGraph());
+		RdfList membersList = null;
+		Lock readLock = readLock();
+		readLock.lock();
+		try {
+			Iterator<Resource> members = this.getObjects(HIERARCHY.members);
+			if (members.hasNext()) {
+				membersList = new RdfList((BNode) members.next(), getGraph());
+			}
+		} finally {
+			readLock.unlock();
 		}
+		if (membersList == null) {
+			BNode newMembers = new BNode();
+			Lock writLock = writeLock();
+			writLock.lock();
+			try {
+				this.addProperty(HIERARCHY.members, newMembers);
+				membersList = new RdfList(newMembers, getGraph());				
+			} finally {
+				writLock.unlock();
+			}
+			
+		}
+
 		return membersList;
 	}
 
@@ -163,16 +189,22 @@ public class CollectionNode extends HierarchyNode {
 
 	@Override
 	public void delete() {
-		List<HierarchyNode> members = getMembers();
-		Iterator<HierarchyNode> membersIter = members.iterator();
-		while (membersIter.hasNext()) {
-			HierarchyNode hierarchyNode = membersIter.next();
-			hierarchyNode.delete();
-		}
-		deleteCollection();
-		super.delete();
-		if (hierarchyService.getRoots().contains(this)) {
-			hierarchyService.removeRoot(this);
+		Lock writeLock = writeLock();
+		writeLock.lock();
+		try {
+			List<HierarchyNode> members = getMembers();
+			Iterator<HierarchyNode> membersIter = members.iterator();
+			while (membersIter.hasNext()) {
+				HierarchyNode hierarchyNode = membersIter.next();
+				hierarchyNode.delete();
+			}
+			deleteCollection();
+			super.delete();
+			if (hierarchyService.getRoots().contains(this)) {
+				hierarchyService.removeRoot(this);
+			}
+		} finally {
+			writeLock.unlock();
 		}
 	}
 

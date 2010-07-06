@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
@@ -85,5 +86,22 @@ public class SimpleTripleCollectionTest {
 			iter.remove();
 		}
 		Assert.assertEquals(3, stc.size());
-	}	
+	}
+
+	@Test(expected=ConcurrentModificationException.class)
+	public void remove() {
+		SimpleTripleCollection stc = new SimpleTripleCollection();
+		stc.setCheckConcurrency(true);
+		stc.add(triple1);
+		stc.add(triple2);
+		stc.add(triple3);
+		stc.add(triple4);
+		stc.add(triple5);
+		Iterator<Triple> iter = stc.filter(uriRef1, null, null);
+		while (iter.hasNext()) {
+			Triple triple = iter.next();
+			stc.remove(triple);
+		}
+		Assert.assertEquals(3, stc.size());
+	}
 }
