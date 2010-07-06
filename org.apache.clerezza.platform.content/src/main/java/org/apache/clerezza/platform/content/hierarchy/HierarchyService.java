@@ -116,8 +116,14 @@ public class HierarchyService {
 					throw ex;
 				}
 			}
-			if (!parent.getMembersRdf().contains(nodeUri)) {
-				throw new NodeDoesNotExistException(nodeUri);
+			Lock parentReadLock = parent.readLock();
+			parentReadLock.lock();
+			try {
+				if (!parent.getMembersRdf().contains(nodeUri)) {
+					throw new NodeDoesNotExistException(nodeUri);
+				}
+			} finally {
+				parentReadLock.unlock();
 			}
 		}
 	}
@@ -169,8 +175,14 @@ public class HierarchyService {
 		handleRootOfUri(uri);
 		HierarchyNode hierarchyNode;
 		hierarchyNode = new HierarchyNode(uri, cgProvider.getContentGraph(), this);
-		addToParent(hierarchyNode, posInParent);
-		addCreationProperties(hierarchyNode);
+		Lock writeLocke = hierarchyNode.writeLock();
+		writeLocke.lock();
+		try {
+			addToParent(hierarchyNode, posInParent);
+			addCreationProperties(hierarchyNode);
+		} finally {
+			writeLocke.lock();
+		}
 		return hierarchyNode;
 	}
 
@@ -324,9 +336,15 @@ public class HierarchyService {
 		handleRootOfUri(uri);
 		CollectionNode collectionNode;
 		collectionNode = new CollectionNode(uri, cgProvider.getContentGraph(), this);
-		addCollectionTypeTriple(collectionNode);
-		addToParent(collectionNode, posInParent);
-		addCreationProperties(collectionNode);
+		Lock writeLocke = collectionNode.writeLock();
+		writeLocke.lock();
+		try {
+			addCollectionTypeTriple(collectionNode);
+			addToParent(collectionNode, posInParent);
+			addCreationProperties(collectionNode);
+		} finally {
+			writeLocke.unlock();
+		}
 		return collectionNode;
 	}
 
@@ -415,8 +433,14 @@ public class HierarchyService {
 
 	private void addRoot(UriRef baseUri) {
 		CollectionNode node = new CollectionNode(baseUri, cgProvider.getContentGraph(), this);
-		addCollectionTypeTriple(node);
-		roots.add(node);
+		Lock writeLock = node.writeLock();
+		writeLock.lock();
+		try {
+			addCollectionTypeTriple(node);
+			roots.add(node);
+		} finally {
+			writeLock.unlock();
+		}		
 	}
 
 	protected void deactivate(ComponentContext componentContext) {

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,10 +32,12 @@ import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.core.test.LockableMGraphWrapperForTesting;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -62,8 +65,8 @@ public class HierarchyTest{
 	private UriRef newRoot = new UriRef("http://newRoot/");
 	private UriRef newRootTest = new UriRef("http://newRoot/test/");
 	private UriRef newRoot2Resource = new UriRef("http://newRoot2/resource");
-	private UriRef newRoot2 = new UriRef("http://newRoot2/"); 
-
+	private UriRef newRoot2 = new UriRef("http://newRoot2/");
+		
 	@Test
 	public void listPositionTest() throws Exception{
 		HierarchyService hierarchyService = getHierarchyService();
@@ -288,8 +291,12 @@ public class HierarchyTest{
 		Assert.assertTrue(exceptionThrown);
 	}
 	
-	private static class MyContentGraphProvider extends ContentGraphProvider {
-		private MGraph graph = new SimpleMGraph();
+	private class MyContentGraphProvider extends ContentGraphProvider {
+		SimpleMGraph contentGraph = new SimpleMGraph();
+		{
+			contentGraph.setCheckConcurrency(true);
+		}
+		private MGraph graph = new LockableMGraphWrapperForTesting(contentGraph);
 		@Override
 		public MGraph getContentGraph() {
 			return graph;
@@ -321,7 +328,14 @@ public class HierarchyTest{
 		hierarchyService.systemGraph = systemGraph;
 		Triple rootTriple = new TripleImpl(root,
 			RDF.type, HIERARCHY.Collection);
-		myCgProvider.getContentGraph().add(rootTriple);
+		LockableMGraph lockableContentGraph = (LockableMGraph) myCgProvider.getContentGraph();
+		Lock writeLock = lockableContentGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			lockableContentGraph.add(rootTriple);
+		} finally {
+			writeLock.unlock();
+		}
 		hierarchyService.activate(null);
 		return hierarchyService;
 	}

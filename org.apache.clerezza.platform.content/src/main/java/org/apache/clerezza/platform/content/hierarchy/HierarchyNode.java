@@ -19,6 +19,7 @@
 package org.apache.clerezza.platform.content.hierarchy;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.TripleCollection;
@@ -120,23 +121,31 @@ public class HierarchyNode extends GraphNode {
 		} catch (UriException ex) {
 			throw new RuntimeException(ex);
 		}
-		if (newParent.equals(getParent())) {
-			UriRef nodeUri = getNode();
-			List<Resource> membersRdfList = newParent.getMembersRdf();
-			int oldPos = membersRdfList.indexOf(nodeUri);			
-			if (oldPos < pos) {
-				pos -= 1;
-			}			
-			if (name.equals(getName())) {				
-				if (oldPos != pos) {
-					membersRdfList.remove(nodeUri);
-					membersRdfList.add(pos, nodeUri);
-				}				
-				return this;
+
+		Lock writeLock = writeLock();
+		writeLock.lock();
+		try {
+			if (newParent.equals(getParent())) {
+				UriRef nodeUri = getNode();
+				List<Resource> membersRdfList = newParent.getMembersRdf();
+				int oldPos = membersRdfList.indexOf(nodeUri);
+				if (oldPos < pos) {
+					pos -= 1;
+				}
+				if (name.equals(getName())) {
+					if (oldPos != pos) {
+						membersRdfList.remove(nodeUri);
+						membersRdfList.add(pos, nodeUri);
+					}
+					return this;
+				}
 			}
-		}		
-		String newUriString = newParent.getNode().getUnicodeString() +
-				name;
+		} finally {
+			writeLock.unlock();
+		}
+		String newUriString = newParent.getNode().getUnicodeString()
+				+ name;
+
 		String alternativeUriString = newUriString;
 		if (this instanceof CollectionNode) {
 			newUriString += "/";
@@ -146,28 +155,39 @@ public class HierarchyNode extends GraphNode {
 		UriRef newUri = new UriRef(newUriString);
 		UriRef alternativeUri = new UriRef(alternativeUriString);
 		List<Resource> parentMembers = newParent.getMembersRdf();
-		if (parentMembers.contains(newUri) || parentMembers.contains(alternativeUri)) {
-			HierarchyNode existingNode = null;
-			try {
+		Lock newParentReadLock = newParent.readLock();
+		newParentReadLock.lock();
+		try {
+			if (parentMembers.contains(newUri) || parentMembers.contains(alternativeUri)) {
+				HierarchyNode existingNode = null;
 				try {
-					existingNode = hierarchyService.getHierarchyNode(newUri);
-				} catch (NodeDoesNotExistException ex) {
 					try {
-						existingNode = hierarchyService.getHierarchyNode(alternativeUri);
-					} catch (NodeDoesNotExistException e) {
-						throw new RuntimeException(ex);
+						existingNode = hierarchyService.getHierarchyNode(newUri);
+					} catch (NodeDoesNotExistException ex) {
+						try {
+							existingNode = hierarchyService.getHierarchyNode(alternativeUri);
+						} catch (NodeDoesNotExistException e) {
+							throw new RuntimeException(ex);
+						}
 					}
+				} catch (UnknownRootExcetpion ex) {
+					throw new RuntimeException(ex);
 				}
-			} catch (UnknownRootExcetpion ex) {
-				throw new RuntimeException(ex);
+				throw new NodeAlreadyExistsException(existingNode);
 			}
-			throw new NodeAlreadyExistsException(existingNode);
+		} finally {
+			newParentReadLock.unlock();
 		}
-		deleteFromParent();
+		writeLock().lock();
+		try {
+			deleteFromParent();
 
-		HierarchyNode movedNode = replaceWith(newUri);
-		newParent.addMember(movedNode, pos);
-		return movedNode;
+			HierarchyNode movedNode = replaceWith(newUri);
+			newParent.addMember(movedNode, pos);
+			return movedNode;
+		} finally {
+			writeLock().unlock();
+		}
 	}
 
 	/**

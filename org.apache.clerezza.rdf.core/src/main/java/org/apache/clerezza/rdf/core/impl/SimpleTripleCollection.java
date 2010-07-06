@@ -18,8 +18,11 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -41,13 +44,62 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 class SimpleTripleCollection extends AbstractTripleCollection {
 
-	Set<Triple> triples;
+	final Set<Triple> triples;
 
+	private boolean checkConcurrency = false;
+
+	class SimpleIterator implements Iterator<Triple> {
+
+		private Iterator<Triple> listIter;
+		private boolean isValid = true;
+
+		public SimpleIterator(Iterator<Triple> listIter) {
+			this.listIter = listIter;
+		}
+		private Triple currentNext;
+
+		@Override
+		public boolean hasNext() {
+			checkValidity();
+			return listIter.hasNext();
+		}
+
+		@Override
+		public Triple next() {
+			checkValidity();
+			currentNext = listIter.next();
+			return currentNext;
+		}		
+
+		@Override
+		public void remove() {
+			checkValidity();
+			listIter.remove();
+			triples.remove(currentNext);			
+			invalidateIterators(this);			
+		}
+
+		private void checkValidity() throws ConcurrentModificationException {
+			if (checkConcurrency && !isValid) {
+				throw new ConcurrentModificationException();
+			}
+		}
+
+		private void invalidate() {
+			if (checkConcurrency) {
+				isValid = false;
+			}
+		}
+	}	
+	
+	private Set<SoftReference<SimpleIterator>> iterators = 
+			Collections.synchronizedSet(new HashSet<SoftReference<SimpleIterator>>());
+	
 	/**
 	 * Creates an empty SimpleTripleCollection
 	 */
 	public SimpleTripleCollection() {
-		triples = new HashSet<Triple>();
+		triples = Collections.synchronizedSet(new HashSet<Triple>());
 	}
 
 	/**
@@ -91,53 +143,69 @@ class SimpleTripleCollection extends AbstractTripleCollection {
 
 	@Override
 	public Iterator<Triple> performFilter(final NonLiteral subject, final UriRef predicate, final Resource object) {
-		Iterator<Triple> baseIter = triples.iterator();
 		final List<Triple> tripleList = new ArrayList<Triple>();
-		while (baseIter.hasNext()) {
-			Triple triple = baseIter.next();
-			if ((subject != null) &&
-				(!triple.getSubject().equals(subject))) {
+		synchronized (triples) {
+			Iterator<Triple> baseIter = triples.iterator();
+			while (baseIter.hasNext()) {
+				Triple triple = baseIter.next();
+				if ((subject != null)
+						&& (!triple.getSubject().equals(subject))) {
 					continue;
 				}
-				if ((predicate != null) &&
-						(!triple.getPredicate().equals(predicate))) {
+				if ((predicate != null)
+						&& (!triple.getPredicate().equals(predicate))) {
 					continue;
 				}
-				if ((object != null) &&
-						(!triple.getObject().equals(object))) {
+				if ((object != null)
+						&& (!triple.getObject().equals(object))) {
 					continue;
 				}
-			tripleList.add(triple);			
+				tripleList.add(triple);
+			}
+
+			final Iterator<Triple> listIter = tripleList.iterator();
+			SimpleIterator resultIter = new SimpleIterator(listIter);
+			iterators.add(new SoftReference<SimpleIterator>(resultIter));
+			return resultIter;
 		}
-		
-		final Iterator<Triple> listIter = tripleList.iterator();
-		
-		return new Iterator<Triple>() {
-
-			private Triple currentNext;
-			
-			@Override
-			public boolean hasNext() {
-				return listIter.hasNext();
-			}
-
-			@Override
-			public Triple next() {
-				currentNext = listIter.next();
-				return currentNext;
-			}
-
-			@Override
-			public void remove() {
-				listIter.remove();
-				triples.remove(currentNext);
-			}			
-		};
 	}
 
 
 	@Override
 	public boolean performAdd(Triple e) {
-		return triples.add(e);
+		boolean modified = triples.add(e);
+		if (modified) {
+			invalidateIterators(null);
+		}
+		return modified;
+	}
+	
+	private void invalidateIterators(SimpleIterator caller) {
+		if (!checkConcurrency) {
+			return;
+		}
+		Set<SoftReference> oldReferences = new HashSet<SoftReference>();
+		for (SoftReference<SimpleTripleCollection.SimpleIterator> softReference : iterators) {
+			SimpleIterator simpleIterator = softReference.get();
+			if (simpleIterator == null) {
+				oldReferences.add(softReference);
+				continue;
+			}
+			if (simpleIterator != caller) {
+				simpleIterator.invalidate();
+			}			
+		}
+		iterators.removeAll(oldReferences);
+	}
+
+	/**
+	 * Specifies whether or not to throw <code>ConcurrentModificationException</code>s,
+	 * if this simple triple collection is modified concurrently. Concurrency
+	 * check is set to false by default.
+	 *
+	 * @param bool Specifies whether or not to check concurrent modifications.
+	 */
+	public void setCheckConcurrency(boolean bool) {
+		checkConcurrency = bool;
 	}
 }
