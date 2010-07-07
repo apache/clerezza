@@ -72,15 +72,12 @@ public class ExternalServicesFacadeTest {
             List<Annotation> calaisAnnotations = externalServicesFacade.getCalaisAnnotations(ANOTHER_ENGLISH_TEXT);
             assertTrue(calaisAnnotations != null);
             assertTrue(!calaisAnnotations.isEmpty());
-            // TODO enable this part again once OpenCalais issue gets fixed
-            /*
             for (Annotation annotation : calaisAnnotations) {
               assertTrue(annotation.getType()!=null && annotation.getType().getName()!=null);
               assertTrue(annotation.getBegin()>0);
               assertTrue(annotation.getEnd()>0);
               assertTrue(annotation.getCoveredText()!=null);
             }
-            */
         }
         catch (Exception e) {
             e.printStackTrace();
