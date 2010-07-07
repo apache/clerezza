@@ -181,7 +181,7 @@ public class HierarchyService {
 			addToParent(hierarchyNode, posInParent);
 			addCreationProperties(hierarchyNode);
 		} finally {
-			writeLocke.lock();
+			writeLocke.unlock();
 		}
 		return hierarchyNode;
 	}
@@ -456,26 +456,25 @@ public class HierarchyService {
 	private void addCreationProperties(HierarchyNode node) {
 		GraphNode agentNode = getCreator();
 		if (!(node.getObjects(FOAF.maker).hasNext() || agentNode == null)) {
-      Lock lock = node.writeLock();
-      try {
-        lock.lock();
-        Iterator<Triple> agents = node.getGraph().filter(null, PLATFORM.userName,
-            agentNode.getObjects(PLATFORM.userName).next());
+			Lock lock = node.writeLock();
+			try {
+				lock.lock();
+				Iterator<Triple> agents = node.getGraph().filter(null, PLATFORM.userName,
+						agentNode.getObjects(PLATFORM.userName).next());
 
-        NonLiteral agent = null;
-        if (agents.hasNext()) {
-          agent = (NonLiteral) agents.next().getSubject();
-        } else {
-          agent = (NonLiteral) agentNode.getNode();
-        }
-        node.addProperty(FOAF.maker, agent);
-        node.getGraph().add(new TripleImpl(agent,
-            PLATFORM.userName, agentNode.getObjects(
-            PLATFORM.userName).next()));
-      }
-      finally{
-        lock.unlock();
-      }
+				NonLiteral agent = null;
+				if (agents.hasNext()) {
+					agent = (NonLiteral) agents.next().getSubject();
+				} else {
+					agent = (NonLiteral) agentNode.getNode();
+				}
+				node.addProperty(FOAF.maker, agent);
+				node.getGraph().add(new TripleImpl(agent,
+						PLATFORM.userName, agentNode.getObjects(
+						PLATFORM.userName).next()));
+			} finally {
+				lock.unlock();
+			}
 
 		}
 		node.addProperty(DCTERMS.created,
