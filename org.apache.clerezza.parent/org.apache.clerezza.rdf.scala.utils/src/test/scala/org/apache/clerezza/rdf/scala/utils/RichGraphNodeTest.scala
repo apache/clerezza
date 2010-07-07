@@ -30,12 +30,13 @@ class RichGraphNodeTest {
 	private val johnUri = new UriRef("http://example.org/john")
 	private val susanneUri = new UriRef("http://example.org/susanne")
 	private val listUri = new UriRef("http://example.org/list")
+	private val greetingsUri = new UriRef("http://example.org/greetings")
 	private val billBNode = new BNode()
 	private var node : GraphNode = null;
+	private var mGraph = new SimpleMGraph()
 
 	@Before
 	def prepare() = {
-		val mGraph = new SimpleMGraph()
 		mGraph.add(new TripleImpl(johnUri, FOAF.name, new PlainLiteralImpl("John")));
 		mGraph.add(new TripleImpl(johnUri, FOAF.nick, new PlainLiteralImpl("johny")));
 		mGraph.add(new TripleImpl(johnUri, FOAF.name, new PlainLiteralImpl("Johnathan Guller")));
@@ -50,6 +51,12 @@ class RichGraphNodeTest {
 		rdfList.add(new PlainLiteralImpl("foo"))
 		rdfList.add(new PlainLiteralImpl("bar"))
 		mGraph.add(new TripleImpl(johnUri, SKOS.related, listUri))
+		val litEn = new PlainLiteralImpl("hello",
+					new Language("en"))
+		val litFr = new PlainLiteralImpl("satul",
+					new Language("fr"))
+		mGraph.add(new TripleImpl(greetingsUri, RDF.value, litEn))
+		mGraph.add(new TripleImpl(greetingsUri, RDF.value, litFr))
 		node = new GraphNode(johnUri, mGraph)
 	}
 
@@ -118,6 +125,14 @@ class RichGraphNodeTest {
 					new UriRef("http://www.w3.org/2001/XMLSchema#dateTime"))
 		val node = new GraphNode(dateLiteral, new SimpleMGraph())
 		Assert.assertNotNull(node.as[java.util.Date])
+	}
+
+	@Test
+	def literalLanguage = {
+		node = new GraphNode(greetingsUri, mGraph)
+		val lang = new Language("en")
+		val enValue = (node/RDF.value).find(l=>(l!).asInstanceOf[PlainLiteral].getLanguage == lang).get
+		Assert.assertEquals("hello", enValue*)
 	}
 
 }
