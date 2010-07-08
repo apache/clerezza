@@ -8,6 +8,7 @@ import org.apache.clerezza.uima.utils.ExternalServicesFacade;
 import org.apache.clerezza.uima.utils.UIMAUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Services;
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -19,8 +20,11 @@ import java.util.List;
  * An implementation of <code>MetaDataGenerator</code> generates meta data about specified data
  * depending on its media type using Apache UIMA.
  */
-@Component()
-@Service(MetaDataGenerator.class)
+@Component(metatype=true)
+@Services({
+  @Service(MetaDataGenerator.class),
+  @Service(UIMABaseMetadataGenerator.class)
+})
 public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
   private ExternalServicesFacade facade = new ExternalServicesFacade();
@@ -38,6 +42,9 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
         // add calais annotations' nodes
         addCalaisAnnotations(node, data);
+
+        // add alchemyAPI's annotations' nodes
+        addAlchemyAPIEntities(node,data);
 
       } catch (Throwable e) {
         e.printStackTrace();
