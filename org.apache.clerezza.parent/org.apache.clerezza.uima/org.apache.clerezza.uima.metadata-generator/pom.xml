@@ -53,6 +53,10 @@
       <artifactId>org.apache.clerezza.jaxrs.testutils</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-runtime</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
