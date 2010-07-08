@@ -110,7 +110,9 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
 				if (lastReturned == null) {
 					throw new IllegalStateException();
 				}
-				currentBaseIter.remove();
+				if (currentBaseTC == 0) {
+					currentBaseIter.remove();
+				}
 				lastReturned = null;
 			}
 		};
