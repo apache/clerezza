@@ -29,8 +29,8 @@ import java.util.Iterator;
  */
 public class IteratorMerger<T> implements Iterator<T> {
 
-	private Iterator<Iterator<T>> baseIterators;
-	private Iterator<T> current;
+	protected Iterator<Iterator<T>> baseIterators;
+	protected Iterator<T> current;
 
 	/**
 	 * constructs an iterator that will return the elements of the baseIterators
