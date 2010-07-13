@@ -53,6 +53,7 @@ import org.apache.clerezza.rdf.ontologies.PERMISSION;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.SIOC;
+import org.apache.clerezza.utils.security.PermissionParser;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
@@ -146,46 +147,20 @@ public class UserAwarePolicy extends Policy {
 				for (String permissionStr : permissions) {
 					logger.debug("Add permission {}", permissionStr);
 					Permission perm = permissionMap.get(permissionStr);
-
 					// make new permission, if the required
 					// <code>Permission</code> object is not in the map.
 					if (perm == null) {
-						PermissionInfo permissionInfo;
 						try {
-							permissionInfo = new PermissionInfo(
-									permissionStr);
+							perm = PermissionParser.getPermission(permissionStr,
+									getClass().getClassLoader());
 						} catch (IllegalArgumentException e) {
 							logger.error("parsing "+permissionStr,e);
 							continue;
-						}
-
-						try {
-							Class clazz = Class.forName(permissionInfo
-									.getType());
-							Constructor<?> constructor = clazz.getConstructor(
-									String.class, String.class);
-							perm = (Permission) constructor.newInstance(
-									permissionInfo.getName(), permissionInfo
-											.getActions());
-							permissionMap.put(permissionStr, perm);
-						} catch (InstantiationException ie) {
-							logger.warn("{}", ie);
-							continue;
-						} catch (ClassNotFoundException cnfe) {
-							logger.warn("{}", cnfe);
-							continue;
-						} catch (NoSuchMethodException nsme) {
-							logger.warn("{}", nsme);
-							continue;
-						} catch (InvocationTargetException ite) {
-							logger.warn("{}", ite);
-							continue;
-						} catch (IllegalAccessException iae) {
-							logger.warn("{}", iae);
+						} catch (RuntimeException e) {
+							logger.error("instantiating "+permissionStr,e);
 							continue;
 						}
 					}
-
 					result.add(perm);
 				}
 				return null;
