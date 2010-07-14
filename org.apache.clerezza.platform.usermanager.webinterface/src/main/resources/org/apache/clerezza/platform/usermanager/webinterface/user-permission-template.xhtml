@@ -32,8 +32,8 @@ for (role <- (res/umr("user")/sioc("has_function"))) {
         <div id="tx-content">
 			
         <div class="tx-tree">
-			
-			<h2>List of Permissions for user {res/umr("user")/platform("userName")*}</h2>
+			<div class="tx-edit">
+			<h3>List of Permissions for user {res/umr("user")/platform("userName")*}</h3>
 			<br/>
 			<form id="form1">
 			<input type="hidden" name="name" value={res/umr("user")/platform("userName")*} />
@@ -113,5 +113,6 @@ for (role <- (res/umr("user")/sioc("has_function"))) {
 			</form>
 			<br/>
 			<br/>
+			</div>
         </div>
         </div>

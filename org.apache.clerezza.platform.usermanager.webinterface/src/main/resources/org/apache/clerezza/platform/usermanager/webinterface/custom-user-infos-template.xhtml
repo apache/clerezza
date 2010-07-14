@@ -1,10 +1,11 @@
 		${ns:umr=http://clerezza.org/2009/05/usermanager#}
 		${ns:cp=http://clerezza.org/2009/06/custompropery#}
 			
-			<fieldset>	
-				<legend>Custom User Information</legend>
+
 				${loop}
-					<label>${cp:customfield/cp:presentationlabel}
+					<li class="tx-line" style="background-image: none">
+					<label >${cp:customfield/cp:presentationlabel}:</label>
+						<span class="tx-item">
 					${if cp:customfield/cp:value}
 						${if cp:customfield/cp:multiselectable = "multiple"}
 							<select id="${cp:customfield/cp:property}" name="${cp:customfield/cp:property}" size="3" multiple="multiple">
@@ -22,6 +23,7 @@
 					${else}	
 						<input name="${cp:customfield/cp:property}" type="text" maxlength="${cp:customfield/cp:length}" value="${if cp:customfield/cp:actualvalues}${cp:customfield/cp:actualvalues}${/if}" />
 					${/if}
-					</label><br />
+						</span>
+					</li>
 				${/loop}
-			</fieldset> 
+

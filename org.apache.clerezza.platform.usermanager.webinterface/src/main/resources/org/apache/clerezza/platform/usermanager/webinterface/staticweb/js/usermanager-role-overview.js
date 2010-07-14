@@ -35,6 +35,15 @@ RoleManager.initButtons = function() {
 		}
 
 	});
+
+	$("#manageCustomFieldsButton").bind("click", function() {
+		if(!$(this).hasClass("tx-inactive")){
+			var activatedCheckBox = $(".tx-tree input[type=checkbox]:checked")
+			document.location = "manage-custom-properties?role=" + activatedCheckBox.val();
+
+		}
+
+	});
 	$("#saveButton").bind("click", function() {
 		$("#form1")[0].submit();
 	});
@@ -50,11 +59,14 @@ function buttonVisibilty() {
 	if (activatedCheckBoxes == 1) {
 		$("#deleteButton").removeClass("tx-inactive");
 		$("#showPermissionsButton").removeClass("tx-inactive");
+		$("#manageCustomFieldsButton").removeClass("tx-inactive");
 	} else if (activatedCheckBoxes > 1) {
 		$("#deleteButton").removeClass("tx-inactive");
 		$("#showPermissionsButton").addClass("tx-inactive");
+		$("#manageCustomFieldsButton").addClass("tx-inactive");
 	} else {
 		$("#deleteButton").addClass("tx-inactive");
 		$("#showPermissionsButton").addClass("tx-inactive");
+		$("#manageCustomFieldsButton").addClass("tx-inactive");
 	}
 }
