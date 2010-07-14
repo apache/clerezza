@@ -68,6 +68,7 @@ import org.apache.clerezza.platform.usermanager.UserComparator;
 import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.platform.usermanager.webinterface.ontology.USERMANAGER;
 import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
@@ -81,6 +82,7 @@ import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.sparql.ParseException;
+import org.apache.clerezza.rdf.ontologies.DC;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.LIST;
@@ -155,8 +157,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource("add-user-template.xhtml")
-						.toURI().toString()), USERMANAGER.AddUserPage, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+						.toURI().toString()), 
+				USERMANAGER.AddUserPage, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"user-permission-template.xhtml").toURI().toString()),
@@ -164,8 +166,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-				"update-user-template.xhtml").toURI().toString()), USERMANAGER.UpdateUserPage, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				"update-user-template.xhtml").toURI().toString()),
+				USERMANAGER.UpdateUserPage, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
 						"custom-property-template.xhtml").toURI().toString()),
@@ -183,19 +185,18 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"add-single-property-template.xhtml").toURI()
-						.toString()), USERMANAGER.SingleCustomPropertyPage,
-				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+						"add-single-property-template.xhtml").toURI().toString()),
+				USERMANAGER.SingleCustomPropertyPage,"naked",
+				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"add-multiple-property-template.xhtml").toURI()
-						.toString()), USERMANAGER.MultipleCustomPropertyPage,
+						"add-multiple-property-template.xhtml").toURI().toString()),
+				USERMANAGER.MultipleCustomPropertyPage,
 				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager
 				.registerRenderlet(SeedsnipeRenderlet.class.getName(),
 						new UriRef(getClass().getResource(
-								"custom-user-infos-template.xhtml").toURI()
-								.toString()),
+								"custom-user-infos-template.xhtml").toURI().toString()),
 						USERMANAGER.CustomUserInformationPage, "naked",
 						MediaType.APPLICATION_XHTML_XML_TYPE, true);
 	}
@@ -747,9 +748,12 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				PLATFORM.HeadedPage));
 		
 		GraphNode result =  new GraphNode(roleOverviewPage,
-				new UnionMGraph(resultGraph, systemGraph));
+				new UnionMGraph(resultGraph, systemGraph, cgProvider.getContentGraph()));
 		addAvailableRoles(result);
 		addBaseRoles(result);
+
+
+
 		return result;
 		
 	}
@@ -963,7 +967,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@Path("add-multiple-property")
 	@Produces("text/plain")
 	public Response addMultipleCustomField(
-			@FormParam(value = "mediaType") String title,
+			@FormParam(value = "title") String title,
 			@FormParam(value = "label") String label,
 			@FormParam(value = "property") String property,
 			@FormParam(value = "multiselect") String multiselect,
@@ -1028,7 +1032,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@Path("{path:.+}")
 	public PathNode getStaticFile(@PathParam("path") String path) {
 		final PathNode node = fileServer.getNode(path);
-		return node;	
+		return node;
 	}
 
 	@Override
@@ -1048,7 +1052,9 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	private void addAvailableRoles(GraphNode result) {
 		Iterator<NonLiteral> roles = userManager.getRoles();
 		while (roles.hasNext()) {
-			result.addProperty(USERMANAGER.role, roles.next());
+			GraphNode role = new GraphNode(roles.next(), systemGraph);
+			result.addProperty(USERMANAGER.role, role.getNode());
+			addCustomPropertiesOfRole(role, result);
 		}
 	}
 
@@ -1058,10 +1064,24 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		try {
 			Iterator<Triple> baseRoles = systemGraph.filter(null, RDF.type, PERMISSION.BaseRole);
 			if (baseRoles.hasNext()) {
-				result.addProperty(USERMANAGER.role, baseRoles.next().getSubject());
+				GraphNode baseRole = new GraphNode(baseRoles.next().getSubject(), systemGraph);
+				result.addProperty(USERMANAGER.role, baseRole.getNode());
+				addCustomPropertiesOfRole(baseRole, result);
 			}
 		} finally {
 			readLock.unlock();
 		}
+	}
+	private void addCustomPropertiesOfRole(GraphNode role, GraphNode result) {
+		Iterator<Literal> titles = role.getLiterals(DC.title);
+		String title = "";
+		if(titles.hasNext()) {
+			title = titles.next().getLexicalForm();
+		}
+		NonLiteral customFieldCollection = customPropertyManager.getCustomPropertyCollection(PERMISSION.Role, title);
+		result.getGraph().add(new TripleImpl((NonLiteral) role.getNode(), USERMANAGER.custominformation,
+					customFieldCollection));
+	
+		
 	}
 }

@@ -12,35 +12,60 @@ resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="list-roles">Ro
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="editButton" class="tx-button tx-button-generic" href="list-users">Back to Overview</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton" class="tx-button tx-button-create" href="javascript:saveUser()">Save</a></li>);
 
-
-
-		
-
-        <div id="tx-content">
-            <div class="tx-panel">
-            </div>    
+        <div id="tx-content">  
             
-            <div class="tx-list" id="tx-list">
-                <form id="userform" name="userform" action="add-user" method="post" style="width:600px; float:left; margin-right:50px; text-align:right" enctype="multipart/form-data">
-                <div style="float:left; width:300px;">
-                    <fieldset border="1px">	
-                        <legend>Basic User Information</legend>
-                        <label>Username: <input name="userName" type="text"/></label><br />	
-                        <label>Email: <input name="email" type="text"/></label><br />
-                        <label>Path Prefix: <input name="pathPrefix" type="text"/></label><br />
-                        <label>Password: <input name="psw" type="password"/></label><br />
-                        <label>User Roles: 
-                            <select name="userRoles" id="userRoles" size="3" multiple="multiple">
-                                {for (role <- (res/umr("role"))) yield {
-                                    <option>{role/dc("title")*}</option>
-                                }
-								}
-                            </select>
-                        </label><br />
-                        <a href="javascript:refreshCustomInformation(null)">add custom information</a>
+            <div class="tx-tree" id="tx-tree">
+				<div class="tx-edit">
+				<h3 class="tx-edit-header">Add new User</h3>
+				<br/>
+                <form id="userform" name="userform" action="add-user" method="post" enctype="multipart/form-data">
+                    <fieldset>	
+						<ol style="display: block;">
+
+
+							<li class="tx-line" style="background-image: none">
+								<label >Username:</label>
+								<span class="tx-item">
+									<input name="userName" type="text"/>
+								</span>
+							</li>
+							<li class="tx-line" style="background-image: none">
+								<label >Email:</label>
+								<span class="tx-item">
+									<input name="email" type="text"/>
+								</span>
+							</li>
+							<li class="tx-line" style="background-image: none">
+								<label >Path Prefix:</label>
+								<span class="tx-item">
+									<input name="pathPrefix" type="text"/>
+								</span>
+							</li>
+							<li class="tx-line" style="background-image: none">
+								<label >Password:</label>
+								<span class="tx-item">
+									<input name="psw" type="password"/>
+								</span>
+							</li>
+							<li class="tx-line" style="background-image: none; height: 6em;">
+								<label >User Roles:</label>
+								<span class="tx-item">
+									<select name="userRoles" id="userRoles" size="3" multiple="multiple">
+										{for (role <- (res/umr("role"))) yield {
+											<option>{role/dc("title")*}</option>
+										}
+										}
+									</select>
+								</span>
+							</li>
+							
+
+						</ol>
+						<br/>
+						<br/>
+						<br/>
                     </fieldset> 
-                </div>
-                <div id="custominfos" style="float:right;  width:250px;"></div>
                 </form>
+				</div>
             </div>
          </div>

@@ -23,8 +23,8 @@ for (perm <- (res/umr("role")/permission("hasPermission"))) {
 
 	<div id="tx-content">
         <div class="tx-tree">
-			
-			<h2>List of Permissions for role {res/umr("role")/dc("title")*}</h2>
+			<div class="tx-edit">
+			<h3>List of Permissions for role {res/umr("role")/dc("title")*}</h3>
 			<br/>
 			<form id="form1">
 			<input type="hidden" name="roleTitle" value={res/umr("role")/dc("title")*} />
@@ -86,5 +86,6 @@ for (perm <- (res/umr("role")/permission("hasPermission"))) {
 			</form>
 			<br/>
 			<br/>
+			</div>
         </div>
 	</div>

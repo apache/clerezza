@@ -1,7 +1,21 @@
 def umr(s: Any) = new UriRef("http://clerezza.org/2009/05/usermanager#" + s)
 def cp(s: Any) = new UriRef("http://clerezza.org/2009/06/custompropery#" + s)
+def dc(s: Any) = new UriRef("http://purl.org/dc/elements/1.1/" + s)
 
-resultDocModifier.addScriptReference("js/usermanager.js");
+resultDocModifier.addStyleSheet("/yui/2/container/assets/container-core.css");
+
+resultDocModifier.addScriptReference("/yui/2/yahoo-dom-event/yahoo-dom-event.js");
+resultDocModifier.addScriptReference("/yui/2/animation/animation-min.js");
+resultDocModifier.addScriptReference("/yui/2/dragdrop/dragdrop-min.js");
+resultDocModifier.addScriptReference("/yui/2/logger/logger-min.js");
+resultDocModifier.addScriptReference("/yui/2/element/element-min.js");
+resultDocModifier.addScriptReference("/yui/2/container/container-min.js");
+resultDocModifier.addScriptReference("/yui/2/resize/resize-min.js")
+
+resultDocModifier.addScriptReference("/scripts/alert-message.js");
+resultDocModifier.addScriptReference("/scripts/ajax-options.js");
+resultDocModifier.addScriptReference("/scripts/overlay.js");
+resultDocModifier.addScriptReference("js/usermanager-custom-property.js");
 
 resultDocModifier.setTitle("User Manager");
 resultDocModifier.addNodes2Elem("tx-module", <h1>User Manager</h1>);
@@ -9,45 +23,45 @@ resultDocModifier.addNodes2Elem("tx-module", <h1>User Manager</h1>);
 resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="list-users">Users</a></li>);
 resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="list-roles">Roles</a></li>);
 
-resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="editButton" class="tx-button tx-button-generic" href="list-roles">Back to Overview</a></li>);
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="backButton" class="tx-button tx-button-generic" href="list-roles">Back to Overview</a></li>);
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="deleteButton" class="tx-button tx-button-remove" href="#">Delete</a></li>);
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addSingleButton" class="tx-button tx-button-create" href="#">Create Single Value Property</a></li>);
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addMultipleButton" class="tx-button tx-button-create" href="#">Create Multiple Value Property</a></li>);
 
 
 
         <div id="tx-content">
-			<script type="text/javascript">
-				$(document).ready(function() {{
-					$("#deleteButton").bind("click", function() {{
-						$("form").submit();
-					}});
-				}});
-			</script>
-            <div class="list">
-            <table>
+            <div class="tx-tree">
+			<div class="tx-edit">
+			<h3>{"Custom Fields of " + (res/umr("role")*)}</h3>
+            <table id={(res/umr("role")*)}>
+				<colgroup>
+					<col width="10" />
+					<col />
+					<col width="200" />
+					<col width="150" />
+					<col width="150" />
+				</colgroup>
                 <tr align="center">
+					<th></th>
                     <th>Label</th>
-                    <th>URI</th>
-                    <th></th>
+                    <th>Uri</th>
+                    <th>Max. Characters</th>
+					<th>Select Multiple Values</th>
                 </tr>
                { for (customfield <- (res/cp("customfield"))) yield {
-                <tr>
+                <tr id={customfield/cp("presentationlabel")*}>
+					<td>
+						<input type="checkbox" 	value={customfield/cp("property")*}/>
+					</td>
                     <td>{customfield/cp("presentationlabel")*}</td>
                     <td>{customfield/cp("property")*}</td>
-                    <td>
-                        <form action="delete-custom-field" method="post">
-                            <div>
-                                <input name="property" type="hidden" value={customfield/cp("property")*} />
-                                <input name="role" type="hidden" value={customfield/umr("role")*} />
-								<input type="submit" value="delete"/>
-                            </div>
-                        </form>
-                    </td>
+                    <td>{customfield/cp("length")*}</td>
+					<td>{if((customfield/cp("multiselectable")*).equals("multiple")){ "true" } else {"false"}}</td>
                 </tr>
                 }
 				}
             </table>
-            <div>
-                <a href={"add-single-property?roleTitle="+ (res/umr("role")*)}>add single-valued property</a>/
-                <a href={"add-multiple-property?roleTitle="+ (res/umr("role")*)}>add multiple-valued property</a>
             </div>
-            </div>
+			</div>
         </div>

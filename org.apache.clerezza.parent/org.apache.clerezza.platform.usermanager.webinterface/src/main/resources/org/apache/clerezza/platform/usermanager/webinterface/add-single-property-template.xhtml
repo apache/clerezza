@@ -6,7 +6,7 @@ resultDocModifier.addNodes2Elem("tx-module", <h1>User Manager</h1>);
 resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="list-users">Users</a></li>);
 resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="list-roles">Roles</a></li>);
 
-resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="deleteButton" class="tx-button tx-button-generic" href="list-roles">Back to Overview</a></li>);
+resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="deleteButton" class="tx-button tx-button-generic" href={"manage-custom-properties?role=" + (res/umr("role")*)}>Back to Custom Fields</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton" class="tx-button tx-button-create" href="#">Save</a></li>);
 
 
@@ -18,12 +18,35 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 					}});
 				}});
 			</script>
-            <div class="tx-list">
-            <form action="add-single-property" id="add-custom-field-form" method="post"><fieldset>
-            <input type="hidden" name="title" value={res/umr("role")*} /><div style="list-style:none;" align="left">
-            <label for="property">Property</label><br /><input id="property" name="property" size="30" type="text" value="" /><br />
-            <label for="label">Label</label><br /><input id="label" name="label" type="text" value="" /><br />
-            <label for="length">Length</label><br /><input id="length" name="length" type="text" value="" /><br />
-            </div></fieldset></form>
+
+            <div class="tx-tree">
+				<div class="tx-edit">
+				<h3 class="tx-edit-header">{"Add Single Value Property to " + (res/umr("role")*)}</h3>
+				<br/>
+				<form action="add-single-property" id="add-custom-field-form" method="post"><fieldset>
+				<input type="hidden" name="title" value={res/umr("role")*} />
+				<ol style="display: block;">	
+					<li class="tx-line" style="background-image: none">
+						<label >Property:</label>
+						<span class="tx-item">
+							<input type="text" id="property" name="property" size="30" value=""/>&#160;(e.g. http://foo.bar)
+						</span>
+					</li>
+					<li class="tx-line" style="background-image: none">
+						<label >Label:</label>
+						<span class="tx-item">
+							<input id="label" name="label" type="text" value="" />
+						</span>
+
+					</li>
+					<li class="tx-line" style="background-image: none">
+						<label >Length:</label>
+						<span class="tx-item">
+							<input id="length" name="length" type="text" value="" />&#160;(e.g. 20)
+						</span>
+					</li>
+				</ol>
+				</fieldset></form>
+            </div>
             </div>
         </div>
