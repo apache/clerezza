@@ -13,7 +13,21 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="editButto
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton" class="tx-button tx-button-create" href="javascript:saveUser()">Save</a></li>);
 
         <div id="tx-content">  
-            
+            <script type="text/javascript">
+
+				$(document).ready(function() {{
+
+					refreshCustomInformation(null);
+
+					 $("#userRoles option").each(function() {{
+						$(this).bind("click", function() {{
+							refreshCustomInformation(null);
+						}});
+					 }});
+				}});
+
+				var multiplefield = new Array();
+			</script>
             <div class="tx-tree" id="tx-tree">
 				<div class="tx-edit">
 				<h3 class="tx-edit-header">Add new User</h3>
@@ -58,7 +72,7 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 									</select>
 								</span>
 							</li>
-							
+							<div id="custominfos"></div>
 
 						</ol>
 						<br/>

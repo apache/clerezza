@@ -63,7 +63,6 @@ import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
-import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
 import org.apache.clerezza.platform.usermanager.UserComparator;
 import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.platform.usermanager.webinterface.ontology.USERMANAGER;
@@ -194,7 +193,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				USERMANAGER.MultipleCustomPropertyPage,
 				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager
-				.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+				.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 						new UriRef(getClass().getResource(
 								"custom-user-infos-template.xhtml").toURI().toString()),
 						USERMANAGER.CustomUserInformationPage, "naked",
