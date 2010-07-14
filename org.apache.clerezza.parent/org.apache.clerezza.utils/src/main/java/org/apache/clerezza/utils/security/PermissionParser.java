@@ -28,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Provides a utility method to instantiate a permission given its string 
+ * representation as returned by <code>java security.Permission.toString</code>.
  *
  * @author reto
  */
@@ -35,6 +37,25 @@ public class PermissionParser {
 
 	final static Logger logger = LoggerFactory.getLogger(PermissionParser.class);
 
+	/**
+	 * Parsers permissionDescription and instantiates the permission using
+	 * the ClassLoader of this class.
+	 *  
+	 * @param permissionDescription
+	 * @return
+	 */
+	public static Permission getPermission(String permissionDescription) {
+		return getPermission(permissionDescription, PermissionParser.class.getClassLoader());
+	}
+
+	/**
+	 * Parsers permissionDescription and instantiates the permission using
+	 * classLoader.
+	 *
+	 * @param permissionDescription
+	 * @param classLoader
+	 * @return
+	 */
 	public static Permission getPermission(String permissionDescription, ClassLoader classLoader) {
 		PermissionInfo permissionInfo = new PermissionInfo(
 					permissionDescription);
