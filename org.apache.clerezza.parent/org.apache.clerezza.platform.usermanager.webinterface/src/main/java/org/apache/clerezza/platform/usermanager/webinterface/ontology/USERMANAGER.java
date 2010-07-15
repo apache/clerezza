@@ -61,16 +61,9 @@ public class USERMANAGER {
 	
 	/**
 	 * * An RDF type denoting that the subject of this type is connected to 
-	 * information needed to present a web page for adding a single customproperty to a role.
+	 * information needed to present a web page for adding a customproperty to a role.
 	 */
-	public static final UriRef SingleCustomPropertyPage = new UriRef("http://clerezza.org/2009/05/usermanager#SingleCustomPropertyPage");
-	
-	/**
-	 * * An RDF type denoting that the subject of this type is connected to 
-	 * information needed to present a web page for adding a multiple customproperty to a role.
-	 */
-	public static final UriRef MultipleCustomPropertyPage = new UriRef("http://clerezza.org/2009/05/usermanager#MultipleCustomPropertyPage");
-	
+	public static final UriRef AddCustomPropertyPage = new UriRef("http://clerezza.org/2009/05/usermanager#AddCustomPropertyPage");
 	
 	/**
 	 * An RDF type denoting that the subject of this type is connected to 
