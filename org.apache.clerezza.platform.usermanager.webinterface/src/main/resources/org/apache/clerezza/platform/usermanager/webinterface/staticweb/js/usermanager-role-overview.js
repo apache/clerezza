@@ -8,23 +8,12 @@ RoleManager.initButtons = function() {
 
 	$("#deleteButton").bind("click", function() {
 		if(!$(this).hasClass("tx-inactive")){
-			var activatedCheckBoxes = $(".tx-tree input[type=checkbox]:checked")
-			var counter = 1;
-			activatedCheckBoxes.each(function() {
-				var title = $(this).val();
-				if(title != "BasePermissionsRole") {
-					var options = new AjaxOptions("delete-role-" + counter, "deleting role ", function(data) {
-						$("#" + title).remove();
-					});
-					options.type = "POST";
-					options.url = "./delete-role";
-					options.data = {"roleTitle": title};
-					$.ajax(options);
-					counter++;
-				} else {
-					AlertMessage.show(undefined, "Could not delete BasePermissionsRole", "Alert", "Ok");
-				}
-			});
+			var activatedCheckBoxes = $(".tx-tree input[type=checkbox]:checked");
+			var role = "role";
+			if(activatedCheckBoxes.length > 1) {
+				role = "roles";
+			}
+			AlertMessage.show(RoleManager.deleteRoles, "Do you want to delete the selected " + role + "?", "Delete Roles");
 		}
 	});
 
@@ -51,6 +40,26 @@ RoleManager.initButtons = function() {
 
 	$("input[type=checkbox]").bind("click", function() {
 		buttonVisibilty();
+	});
+}
+
+RoleManager.deleteRoles = function() {
+	var activatedCheckBoxes = $(".tx-tree input[type=checkbox]:checked")
+	var counter = 1;
+	activatedCheckBoxes.each(function() {
+		var title = $(this).val();
+		if(title != "BasePermissionsRole") {
+			var options = new AjaxOptions("delete-role-" + counter, "deleting role ", function(data) {
+				$("#" + title).remove();
+			});
+			options.type = "POST";
+			options.url = "./delete-role";
+			options.data = {"roleTitle": title};
+			$.ajax(options);
+			counter++;
+		} else {
+			AlertMessage.show(undefined, "Could not delete BasePermissionsRole", "Alert", "Ok");
+		}
 	});
 }
 

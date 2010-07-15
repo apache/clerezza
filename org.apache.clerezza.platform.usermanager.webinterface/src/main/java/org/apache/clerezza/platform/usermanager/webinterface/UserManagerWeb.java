@@ -184,14 +184,9 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"add-single-property-template.xhtml").toURI().toString()),
-				USERMANAGER.SingleCustomPropertyPage,"naked",
+						"add-property-template.xhtml").toURI().toString()),
+				USERMANAGER.AddCustomPropertyPage,"naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource(
-						"add-multiple-property-template.xhtml").toURI().toString()),
-				USERMANAGER.MultipleCustomPropertyPage,
-				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager
 				.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 						new UriRef(getClass().getResource(
@@ -434,7 +429,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 		ArrayList<NonLiteral> customfields = new ArrayList<NonLiteral>();
 
-		if (roles != "" && roles.trim().length() > 0) {
+		if (!roles.equals("") && roles.trim().length() > 0) {
 			String[] rolesArray = roles.split(",");
 			for (int i = 0; i < rolesArray.length; i++) {
 				NonLiteral collection = customPropertyManager
@@ -917,29 +912,13 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 
 	@GET
-	@Path("add-single-property")
+	@Path("add-property")
 	public GraphNode getAddSinglePropertyPage(
 			@QueryParam(value = "roleTitle") String role) {
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral node = new BNode();
 		resultGraph.add(new TripleImpl(node, RDF.type,
-				USERMANAGER.SingleCustomPropertyPage));
-		resultGraph.add(new TripleImpl(node, RDF.type,
-				PLATFORM.HeadedPage));
-
-		resultGraph.add(new TripleImpl(node, USERMANAGER.role,
-				new PlainLiteralImpl(role)));
-		return new GraphNode(node, resultGraph);
-	}
-
-	@GET
-	@Path("add-multiple-property")
-	public GraphNode getAddMultiplePropertyPage(
-			@QueryParam(value = "roleTitle") String role) {
-		MGraph resultGraph = new SimpleMGraph();
-		NonLiteral node = new BNode();
-		resultGraph.add(new TripleImpl(node, RDF.type,
-				USERMANAGER.MultipleCustomPropertyPage));
+				USERMANAGER.AddCustomPropertyPage));
 		resultGraph.add(new TripleImpl(node, RDF.type,
 				PLATFORM.HeadedPage));
 
@@ -959,7 +938,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		UriRef propertyUri = new UriRef(property);
 		customPropertyManager.addSingleCustomField(PERMISSION.Role, title,
 				label, propertyUri, length, 1);
-		return RedirectUtil.createSeeOtherResponse("list-roles", uriInfo);
+		return RedirectUtil.createSeeOtherResponse("manage-custom-properties?role=" + title, uriInfo);
 	}
 
 	@POST
@@ -975,7 +954,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		UriRef propertyUri = new UriRef(property);
 		customPropertyManager.addMultipleCustomField(PERMISSION.Role, title,
 				label, propertyUri, multiselect, selectablevalues, 1);
-		return RedirectUtil.createSeeOtherResponse("list-roles", uriInfo);
+		return RedirectUtil.createSeeOtherResponse("manage-custom-properties?role=" + title, uriInfo);
 	}
 
 	@POST

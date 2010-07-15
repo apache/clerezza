@@ -9,19 +9,12 @@ UserManager.initButtons = function() {
 
 	$("#deleteButton").bind("click", function() {
 		if(!$(this).hasClass("tx-inactive")){
-			var activatedCheckBoxes = $(".tx-tree input[type=checkbox]:checked")
-			var counter = 1;
-			activatedCheckBoxes.each(function() {
-				var name = $(this).val();
-				var options = new AjaxOptions("delete-user-" + counter, "deleting user ", function(data) {
-					$("#" + name).remove();
-				});
-				options.type = "POST";
-				options.url = "./delete-user";
-				options.data = {"userName": name};
-				$.ajax(options);
-				counter++;
-			});
+			var activatedCheckBoxes = $(".tx-tree input[type=checkbox]:checked");
+			var user = "user";
+			if(activatedCheckBoxes.length > 1) {
+				user = "users";
+			}
+			AlertMessage.show(UserManager.deleteUsers, "Do you want to delete the selected " + user + "?", "Delete Users");
 		}
 	});
 	$("#editButton").bind("click", function() {
@@ -42,6 +35,22 @@ UserManager.initButtons = function() {
 
 	$("input[type=checkbox]").bind("click", function() {
 		buttonVisibilty();
+	});
+}
+
+UserManager.deleteUsers = function() {
+	var activatedCheckBoxes = $(".tx-tree input[type=checkbox]:checked")
+	var counter = 1;
+	activatedCheckBoxes.each(function() {
+		var name = $(this).val();
+		var options = new AjaxOptions("delete-user-" + counter, "deleting user ", function(data) {
+			$("#" + name).remove();
+		});
+		options.type = "POST";
+		options.url = "./delete-user";
+		options.data = {"userName": name};
+		$.ajax(options);
+		counter++;
 	});
 }
 
