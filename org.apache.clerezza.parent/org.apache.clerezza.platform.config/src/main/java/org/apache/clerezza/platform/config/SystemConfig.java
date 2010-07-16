@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.config;
 
 import java.io.IOException;
 import java.net.URL;
+import org.apache.clerezza.platform.Constants;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.osgi.service.component.ComponentContext;
@@ -47,18 +48,19 @@ public class SystemConfig {
 		
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private static final String SYSTEM_GRAPH_STRING =
-			"http://tpf.localhost/system.graph";
-	
-	public static final UriRef SYSTEM_GRAPH_URI =
-			new UriRef(SYSTEM_GRAPH_STRING);
+	/**
+	 *
+	 * @deprecated use org.apache.clerezza.platform.Contants instead
+	 */
+	@Deprecated
+	public static final UriRef SYSTEM_GRAPH_URI = Constants.SYSTEM_GRAPH_URI;
 
 	/**
 	 * A filter that can be used to get the system graph as OSGi service,
 	 * that is provided by <code>org.apache.clerezza.rdf.core.access.TcManager</code>.
 	 */
 	public static final String SYSTEM_GRAPH_FILTER =
-			"(name="+ SYSTEM_GRAPH_STRING +")";
+			"(name="+ Constants.SYSTEM_GRAPH_URI_STRING +")";
 	public static final String PARSER_FILTER =
 			"(supportedFormat=" + SupportedFormat.RDF_XML +")";
 
@@ -70,9 +72,9 @@ public class SystemConfig {
 
 	protected void activate(ComponentContext componentContext) {
 		try {
-			tcManager.getMGraph(SYSTEM_GRAPH_URI);
+			tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI);
 		} catch (NoSuchEntityException nsee) {
-			MGraph systemGraph = tcManager.createMGraph(SYSTEM_GRAPH_URI);
+			MGraph systemGraph = tcManager.createMGraph(Constants.SYSTEM_GRAPH_URI);
 			Graph configGraph = readConfigGraphFile();
 			logger.info("Add initial configuration to system graph");
 			systemGraph.addAll(configGraph);
