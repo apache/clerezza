@@ -18,12 +18,14 @@
  */
 package org.apache.clerezza.utils.security;
 
+import java.io.IOException;
+import java.io.PushbackReader;
+import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.Permission;
 
 
-import org.osgi.service.permissionadmin.PermissionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,15 +59,13 @@ public class PermissionParser {
 	 * @return
 	 */
 	public static Permission getPermission(String permissionDescription, ClassLoader classLoader) {
-		PermissionInfo permissionInfo = new PermissionInfo(
-					permissionDescription);
-
+		PermissionInfo permissionInfo = parse(permissionDescription);
 		try {
-			Class clazz = classLoader.loadClass(permissionInfo.getType());
+			Class clazz = classLoader.loadClass(permissionInfo.className);
 			Constructor<?> constructor = clazz.getConstructor(
 					String.class, String.class);
 			return (Permission) constructor.newInstance(
-					permissionInfo.getName(), permissionInfo.getActions());
+					permissionInfo.name, permissionInfo.actions);
 		} catch (InstantiationException ie) {
 			logger.warn("{}", ie);
 			throw new RuntimeException(ie);
@@ -82,5 +82,107 @@ public class PermissionParser {
 			logger.warn("{}", iae);
 			throw new RuntimeException(iae);
 		}
+	}
+
+	private static PermissionInfo parse(String permissionDescription) {
+		StringReader reader = new StringReader(permissionDescription);
+		try {
+			return parse(reader);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private static PermissionInfo parse(StringReader reader) throws IOException {
+		PermissionInfo result = new PermissionInfo();
+		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+			if (ch == ' ') {
+				continue;
+			}
+			if (ch =='(') {
+				parseFromClassName(reader, result);
+				break;
+			} else {
+				throw new IllegalArgumentException("Permission description does not start with '('");
+			}
+		}
+		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+			if (ch != ' ') {
+				throw new IllegalArgumentException("Unparsable characters after closing ')'");
+			}
+		}
+		return result;
+	}
+
+	private static void parseFromClassName(StringReader StringReader, PermissionInfo result) throws IOException {
+		PushbackReader reader = new PushbackReader(StringReader, 1);
+		result.className = readSection(reader);
+		result.name = readSection(reader);
+		result.actions = readSection(reader);
+		byte closingBracketsCount = 0;
+		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+			if (ch == ' ')  {
+				continue;
+			}
+			if (ch == ')')  {
+				closingBracketsCount++;
+				if (closingBracketsCount > 1) {
+					throw new IllegalArgumentException("more than 1 closing bracket");
+				}
+				continue;
+			}
+			else {
+				throw new IllegalArgumentException("illegal character at this position: "+ch);
+			}
+		}
+	}
+
+	private static String readSection(PushbackReader reader) throws IOException {
+		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+			if (ch == ' ')  {
+				continue;
+			} else {
+				reader.unread(ch);
+				return readSectionWithNoHeadingSpace(reader);
+			}
+		}
+		return null;
+	}
+
+	private static String readSectionWithNoHeadingSpace(PushbackReader reader) throws IOException {
+		StringBuilder sectionWriter = new StringBuilder();
+		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+			if (ch == '"')  {
+				if (sectionWriter.length() > 0) {
+					throw new IllegalArgumentException("Quote at wrong position, characters before quote: "+sectionWriter.toString());
+				}
+				sectionWriter = null;
+				return readTillQuote(reader);
+			}
+			if (ch == ' ') {
+				return sectionWriter.toString();
+			}
+			if (ch  == ')') {
+				reader.unread(ch);
+				return sectionWriter.toString();
+			}
+			sectionWriter.append((char)ch);
+		}
+		throw new IllegalArgumentException("missing closing bracket (')')");
+	}
+
+	private static String readTillQuote(PushbackReader reader) throws IOException {
+		StringBuilder sectionWriter = new StringBuilder();
+		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+			if (ch == '"')  {
+				return sectionWriter.toString();
+			}
+			sectionWriter.append((char)ch);
+		}
+		throw new IllegalArgumentException("missing closing quote ('=')");
+	}
+
+	private static class PermissionInfo {
+		String className, name, actions;
 	}
 }
