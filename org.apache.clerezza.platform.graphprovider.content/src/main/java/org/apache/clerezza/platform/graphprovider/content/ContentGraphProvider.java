@@ -23,6 +23,7 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.apache.clerezza.platform.Constants;
 
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -49,15 +50,6 @@ import org.apache.clerezza.rdf.utils.UnionMGraph;
  */
 public class ContentGraphProvider {
 
-	/**
-	 * Service property header which specifies the URI of the graph used by
-	 * Discobits
-	 * 
-	 * @scr.property type="String" value="http://tpf.localhost/content.graph"
-	 *               description
-	 *               ="Specifies the URI of the graph used by Discobits."
-	 */
-	public static final String DISCOBITS_GRAPH_URI_PROPERTY = "Discobits_graph_URI";
 
 	/**
 	 * Service property header, which contains the URIs of additional
@@ -75,10 +67,7 @@ public class ContentGraphProvider {
 	 */
 	private TcManager tcManager;
 
-	/**
-	 * The URI which is specified in the service property "Discobits_graph_URI"
-	 */
-	private UriRef graphUri;
+
 
 	/**
 	 * The URIs of the read-only addition-<code>TripleCollection</code>s
@@ -88,13 +77,10 @@ public class ContentGraphProvider {
 	private ReentrantReadWriteLock configLock = new ReentrantReadWriteLock();
 
 	protected void activate(ComponentContext context) {
-		Dictionary<?, ?> properties = context.getProperties();
-		graphUri = new UriRef((String) properties
-				.get(DISCOBITS_GRAPH_URI_PROPERTY));
 		try {
-			tcManager.getMGraph(graphUri);
+			tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
 		} catch (NoSuchEntityException nsee) {
-			tcManager.createMGraph(graphUri);
+			tcManager.createMGraph(Constants.CONTENT_GRAPH_URI);
 		}
 		String[] additionUriStrings = (String[]) context.getProperties().get(
 				CONTENT_ADDITIONS);
@@ -110,7 +96,7 @@ public class ContentGraphProvider {
 		try {
 			TripleCollection[] united = new TripleCollection[additions.length + 1];
 			int i = 0;
-			united[i++] = tcManager.getMGraph(graphUri);
+			united[i++] = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
 			for (UriRef uriRef : additions) {
 				united[i++] = tcManager.getTriples(uriRef);
 			}
