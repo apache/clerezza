@@ -25,6 +25,10 @@
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.utils</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>

@@ -26,6 +26,7 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Permissions;
 import java.security.Policy;
+import java.util.Collections;
 import java.util.PropertyPermission;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -34,6 +35,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedDummy;
@@ -75,10 +77,12 @@ public class SecurityTest {
 				result.add(new TcPermission("http://example.org/graph/alreadyexists", "readwrite"));
 				result.add(new TcPermission("http://example.org/read/graph", "read"));
 				result.add(new TcPermission("http://example.org/area/allowed/*", "readwrite"));
+				result.add(new TcPermission("http://zz.localhost/graph-access.graph", "readwrite"));
 				//result.add(new AllPermission());
 				result.add(new RuntimePermission("*"));
 				result.add(new ReflectPermission("suppressAccessChecks"));
-				result.add(new PropertyPermission("user.timezone", "read"));
+				result.add(new PropertyPermission("*", "read"));
+				//(java.util.PropertyPermission line.separator read)
 				result.add(new FilePermission("/-", "read,write"));
 				return result;
 			}
@@ -124,6 +128,39 @@ public class SecurityTest {
 	@Test(expected=AccessControlException.class)
 	public void testAcessForbiddenGraph() {
 		TcManager.getInstance().getGraph(new UriRef("http://example.org/forbidden"));
+	}
+
+	@Test(expected=NoSuchEntityException.class)
+	public void testCustomPermissions() {
+		UriRef graphUri = new UriRef("http://example.org/custom");
+		TcManager.getInstance().getTcAccessController().setRequiredReadPermissions(graphUri,
+				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
+		//new FilePermission("/etc", "write").toString()));
+		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));
+		System.out.print(ag.toString());
+		TcManager.getInstance().getMGraph(graphUri);
+	}
+
+	@Test(expected=AccessControlException.class)
+	public void testCustomPermissionsIncorrect() {
+		UriRef graphUri = new UriRef("http://example.org/custom");
+		TcManager.getInstance().getTcAccessController().setRequiredReadPermissions(graphUri,
+				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
+		//new FilePermission("/etc", "write").toString()));
+		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));
+		System.out.print(ag.toString());
+		TcManager.getInstance().createMGraph(graphUri);
+	}
+
+	@Test
+	public void testCustomReadWritePermissions() {
+		UriRef graphUri = new UriRef("http://example.org/read-write-custom");
+		TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissions(graphUri,
+				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
+		//new FilePermission("/etc", "write").toString()));
+		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));
+		System.out.print(ag.toString());
+		TcManager.getInstance().createMGraph(graphUri);
 	}
 	
 	@Test(expected=EntityAlreadyExistsException.class)

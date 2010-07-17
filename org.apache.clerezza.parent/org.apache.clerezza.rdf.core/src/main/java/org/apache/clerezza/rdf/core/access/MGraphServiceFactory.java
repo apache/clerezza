@@ -22,6 +22,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 
 /**
  * @see <a href="http://www.osgi.org/javadoc/r4v41/org/osgi/framework/ServiceFactory.html">
@@ -33,15 +34,18 @@ public class MGraphServiceFactory implements ServiceFactory {
 	
 	private TcManager tcManager;
 	private UriRef name;
+	private final TcAccessController tcAccessController;
 
-	MGraphServiceFactory(TcManager tcManager, UriRef name) {
+	MGraphServiceFactory(TcManager tcManager, UriRef name,
+			TcAccessController tcAccessController) {
 		this.tcManager = tcManager;
 		this.name = name;
+		this.tcAccessController = tcAccessController;
 	}
 
 	@Override
 	public Object getService(Bundle arg0, ServiceRegistration arg1) {
-		return new SecuredMGraph(tcManager.getMGraph(name), name);
+		return new SecuredMGraph(tcManager.getMGraph(name), name, tcAccessController);
 	}
 
 	@Override
