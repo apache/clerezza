@@ -25,6 +25,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
@@ -38,12 +39,15 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  */
 public class SecuredTripleCollection implements TripleCollection {
 
-	private TripleCollection wrapped;
-	private String name;
+	private final TripleCollection wrapped;
+	private final UriRef name;
+	private final TcAccessController tcAccessController;
 
-	public SecuredTripleCollection(TripleCollection wrapped, UriRef name) {
+	public SecuredTripleCollection(TripleCollection wrapped, UriRef name,
+			TcAccessController tcAccessController) {
 		this.wrapped = wrapped;
-		this.name = name.getUnicodeString();
+		this.name = name;
+		this.tcAccessController = tcAccessController;
 	}
 
 	@Override
@@ -160,19 +164,11 @@ public class SecuredTripleCollection implements TripleCollection {
 	}
 
 	private void checkRead() {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			security.checkPermission(new TcPermission(name,
-					TcPermission.READ));
-		}
+		tcAccessController.checkReadPermission(name);
 	}
 
 	private void checkWrite() {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			security.checkPermission(new TcPermission(name, 
-					TcPermission.READWRITE));
-		}
+		tcAccessController.checkReadWritePermission(name);
 	}
 
 	@Override

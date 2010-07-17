@@ -21,6 +21,7 @@ package org.apache.clerezza.rdf.core.access;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 
 /**
@@ -34,8 +35,9 @@ public class SecuredMGraph extends SecuredTripleCollection implements LockableMG
 
 	private LockableMGraph wrapped;
 
-	public SecuredMGraph(LockableMGraph wrapped, UriRef name) {
-		super(wrapped, name);
+	public SecuredMGraph(LockableMGraph wrapped, UriRef name,
+			TcAccessController tcAccessController) {
+		super(wrapped, name,  tcAccessController);
 		this.wrapped = wrapped;
 	}
 

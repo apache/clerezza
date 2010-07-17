@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedTripleCollection;
 
@@ -43,6 +42,8 @@ import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcAccessController;
+import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
 import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
@@ -51,6 +52,11 @@ import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.QueryEngine;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * This class implements <code>TcManager</code>, delegating the actual
@@ -74,18 +80,19 @@ import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
  *
  * @author reto, mir, hasan
  * 
- * @scr.component
- * @scr.service interface="org.apache.clerezza.rdf.core.access.TcManager"
- * @scr.reference name="weightedTcProvider" cardinality="1..n"
- *                policy="dynamic"
- *                interface="org.apache.clerezza.rdf.core.access.WeightedTcProvider"
- * 
  */
+@Component
+@Service(TcManager.class)
+@Reference(name="weightedTcProvider", policy=ReferencePolicy.DYNAMIC,
+		referenceInterface=WeightedTcProvider.class,
+		cardinality=ReferenceCardinality.MANDATORY_MULTIPLE)
 public class TcManager implements TcProvider {
 
 	private SortedSet<WeightedTcProvider> providerList = new TreeSet<WeightedTcProvider>(
 			new WeightedProviderComparator());
 	private static volatile TcManager instance;
+
+	private TcAccessController tcAccessController = new TcAccessController(this);
 
 	/**
 	 * Mapping to LockableMGraph's and ServiceRegistration using their URI's as key.
@@ -271,10 +278,10 @@ public class TcManager implements TcProvider {
 				MGraph.class.getName(),
 				LockableMGraph.class.getName()
 			};
-			service = new MGraphServiceFactory(this, name);
+			service = new MGraphServiceFactory(this, name, tcAccessController);
 		} else if (triples instanceof Graph) {
 			interfaceNames = new String[]{Graph.class.getName()};
-			service = new GraphServiceFactory(this, name);
+			service = new GraphServiceFactory(this, name, tcAccessController);
 		} else {
 			return null;
 		}
@@ -326,11 +333,7 @@ public class TcManager implements TcProvider {
 
 	@Override
 	public Graph getGraph(UriRef name) throws NoSuchEntityException {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			security.checkPermission(new TcPermission(name.getUnicodeString(),
-					"read"));
-		}
+		tcAccessController.checkReadPermission(name);
 		for (TcProvider provider : providerList) {
 			try {
 				return provider.getGraph(name);
@@ -345,16 +348,11 @@ public class TcManager implements TcProvider {
 
 	@Override
 	public LockableMGraph getMGraph(UriRef name) {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			try {
-				security.checkPermission(new TcPermission(name
-						.getUnicodeString(), "readwrite"));
-			} catch (AccessControlException e) {
-				security.checkPermission(new TcPermission(name
-						.getUnicodeString(), "read"));
-				return new WriteBlockedMGraph(getUnsecuredMGraph(name));
-			}
+		try {
+			tcAccessController.checkReadWritePermission(name);
+		} catch (AccessControlException e) {
+			tcAccessController.checkReadPermission(name);
+			return new WriteBlockedMGraph(getUnsecuredMGraph(name));
 		}
 		return getUnsecuredMGraph(name);
 	}
@@ -412,17 +410,12 @@ public class TcManager implements TcProvider {
 
 	@Override
 	public TripleCollection getTriples(UriRef name) {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			try {
-				security.checkPermission(new TcPermission(name
-						.getUnicodeString(), "readwrite"));
-			} catch (AccessControlException e) {
-				security.checkPermission(new TcPermission(name
-						.getUnicodeString(), "read"));
-				return new WriteBlockedTripleCollection(
-						getUnsecuredTriples(name));
-			}
+		try {
+			tcAccessController.checkReadWritePermission(name);
+		} catch (AccessControlException e) {
+			tcAccessController.checkReadPermission(name);
+			return new WriteBlockedTripleCollection(
+					getUnsecuredTriples(name));
 		}
 		return getUnsecuredTriples(name);
 	}
@@ -451,11 +444,7 @@ public class TcManager implements TcProvider {
 	@Override
 	public LockableMGraph createMGraph(UriRef name)
 			throws UnsupportedOperationException {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			security.checkPermission(new TcPermission(name.getUnicodeString(),
-					"readwrite"));
-		}
+		tcAccessController.checkReadWritePermission(name);
 		for (WeightedTcProvider provider : providerList) {
 			try {
 				MGraph providedMGraph = provider.createMGraph(name);
@@ -486,11 +475,7 @@ public class TcManager implements TcProvider {
 
 	@Override
 	public Graph createGraph(UriRef name, TripleCollection triples) {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			security.checkPermission(new TcPermission(name.getUnicodeString(),
-					"readwrite"));
-		}
+		tcAccessController.checkReadWritePermission(name);
 		for (WeightedTcProvider provider : providerList) {
 			try {
 				Graph result = provider.createGraph(name, triples);
@@ -515,11 +500,7 @@ public class TcManager implements TcProvider {
 
 	@Override
 	public void deleteTripleCollection(UriRef name) {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			security.checkPermission(new TcPermission(name.getUnicodeString(),
-					"readwrite"));
-		}
+		tcAccessController.checkReadWritePermission(name);
 		for (TcProvider provider : providerList) {
 			try {
 				provider.deleteTripleCollection(name);
@@ -591,8 +572,7 @@ public class TcManager implements TcProvider {
 		Set<UriRef> result = new HashSet<UriRef>();
 		for (UriRef name : tcNames) {
 			try {
-				security.checkPermission(new TcPermission(name
-						.getUnicodeString(), "read"));
+				tcAccessController.checkReadPermission(name);
 			} catch (AccessControlException e) {
 				continue;
 			}
@@ -717,6 +697,14 @@ public class TcManager implements TcProvider {
 		} else {
 			throw new NoQueryEngineException();
 		}
+	}
+
+	/**
+	 * @return the TcAccessController that can be used to set the permissions
+	 * needed to access a Triple Collection
+	 */
+	public TcAccessController getTcAccessController() {
+		return tcAccessController;
 	}
 
 	/**

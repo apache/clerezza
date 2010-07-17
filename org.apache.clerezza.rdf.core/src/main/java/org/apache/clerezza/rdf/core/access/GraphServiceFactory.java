@@ -23,6 +23,7 @@ import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 
 /**
@@ -33,18 +34,22 @@ import org.apache.clerezza.rdf.core.impl.SimpleGraph;
  */
 public class GraphServiceFactory implements ServiceFactory {
 	
-	private TcManager tcManager;
-	private UriRef name;
+	private final TcManager tcManager;
+	private final UriRef name;
+	private final TcAccessController tcAccessController;
 
-	GraphServiceFactory(TcManager tcManager, UriRef name) {
+	GraphServiceFactory(TcManager tcManager, UriRef name,
+			TcAccessController tcAccessController) {
 		this.tcManager = tcManager;
 		this.name = name;
+		this.tcAccessController = tcAccessController;
 	}
 
 	@Override
 	public Object getService(Bundle arg0, ServiceRegistration arg1) {
 		TripleCollection tc = 
-				new SecuredTripleCollection(tcManager.getGraph(name), name);
+				new SecuredTripleCollection(tcManager.getGraph(name), name,
+				tcAccessController);
 		return new SimpleGraph(tc);
 	}
 
