@@ -166,7 +166,7 @@ public class PlatformConfigGui implements GlobalMenuItemsProvider {
 			return items;
 		}
 		items.add(new GlobalMenuItem("/admin/configuration", "Configuration", "Configuration", 2,
-				"System Tools"));
+				"Administration"));
 		return items;
 	}
 
