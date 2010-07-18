@@ -17,6 +17,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
 		</dependency>
 		<dependency>
