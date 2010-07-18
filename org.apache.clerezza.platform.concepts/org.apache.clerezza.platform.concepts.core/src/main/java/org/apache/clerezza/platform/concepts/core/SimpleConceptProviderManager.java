@@ -313,7 +313,7 @@ public class SimpleConceptProviderManager implements ConceptProviderManager,
 			return items;
 		}
 		items.add(new GlobalMenuItem("/concepts/provider-manager/edit-concept-provider-list",
-				"CPM", "Concept Provider Manager", 5, "Main-Modules"));
+				"CPM", "Concept Providers", 5, "Administration"));
 		return items;
 	}
 }
