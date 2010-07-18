@@ -66,7 +66,7 @@ public class MenuItemProvider implements GlobalMenuItemsProvider{
 			try {
 				String path = "/user/" + URLEncoder.encode(userName, "utf-8") + "/control-panel";
 				items.add(new GlobalMenuItem(path, "ACP", "Account Control Panel", 5,
-						"Main-Modules"));
+						"Administration"));
 			} catch (UnsupportedEncodingException e) {
 				throw new RuntimeException(e);
 			}
