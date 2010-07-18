@@ -301,7 +301,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	protected void unbindRenderlet(ServiceReference renderletRef) {
 		logger.info("Unbind renderlet of bundle {}", renderletRef.getBundle().getSymbolicName());
 		Lock l = configLock.writeLock();
-		l.unlock();
+		l.lock();
 		try {
 			if (!renderletRefStore.remove(renderletRef)) {
 				String servicePid = (String) renderletRef.getProperty(Constants.SERVICE_PID);
