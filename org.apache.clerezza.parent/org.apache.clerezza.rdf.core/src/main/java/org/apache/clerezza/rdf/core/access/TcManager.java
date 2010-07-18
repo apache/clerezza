@@ -103,9 +103,9 @@ public class TcManager implements TcProvider {
 	private Map<UriRef, GraphHolder> synchronizedLockableMGraphCache = Collections
 			.synchronizedMap(new HashMap<UriRef, GraphHolder>());
 
-	/**
-	 * @scr.reference cardinality="0..1"
-	 */
+
+	@Reference(policy=ReferencePolicy.DYNAMIC,
+			cardinality=ReferenceCardinality.MANDATORY_UNARY)
 	protected QueryEngine queryEngine;
 
 	private ComponentContext componentContext;
