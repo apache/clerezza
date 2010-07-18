@@ -67,7 +67,7 @@ import org.osgi.service.component.ComponentContext;
 	@Service(value = GlobalMenuItemsProvider.class)
 })
 @Property(name="javax.ws.rs", boolValue=true)
-@Path("/admin/graph-management")
+@Path("/admin/graphs")
 public class GraphManagement implements GlobalMenuItemsProvider {
 
 	@Reference
@@ -116,8 +116,8 @@ public class GraphManagement implements GlobalMenuItemsProvider {
 		} catch (AccessControlException e) {
 			return items;
 		}
-		String path = "/admin/graph-management";
-		items.add(new GlobalMenuItem(path, "GM", "Graph Management", 5,"System Tools"));
+		String path = "/admin/graphs";
+		items.add(new GlobalMenuItem(path, "GM", "Graphs", 5,"Administration"));
 		return items;
 	}
 
