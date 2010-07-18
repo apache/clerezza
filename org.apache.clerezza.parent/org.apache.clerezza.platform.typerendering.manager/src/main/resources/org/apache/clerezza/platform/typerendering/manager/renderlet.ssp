@@ -1,7 +1,7 @@
 def typerendering(s: Any) = new UriRef("http://clerezza.org/2009/04/typerendering#"+s)
 <html xmlns="http://www.w3.org/1999/xhtml" id="tx-html">
 	<head>
-		<title>Renderlet Manager</title>
+		<title>Renderlets</title>
 		
         <link href="/style/_css/style.css" media="screen" rel="stylesheet" type="text/css" />
 	

@@ -91,7 +91,7 @@ import org.apache.felix.scr.annotations.Services;
 	@Service(GlobalMenuItemsProvider.class)
 })
 @Property(name="javax.ws.rs", boolValue=true)
-@Path("/admin/renderlet-manager")
+@Path("/admin/renderlets")
 public class RenderletManager implements GlobalMenuItemsProvider{
 	
 	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
@@ -130,7 +130,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 		if (uriInfo.getAbsolutePath().toString().endsWith("/")) {
 			return RedirectUtil.createSeeOtherResponse("overview", uriInfo);
 		}
-		return RedirectUtil.createSeeOtherResponse("renderlet-manager/overview",
+		return RedirectUtil.createSeeOtherResponse("renderlets/overview",
 				uriInfo);
 	}
 
@@ -144,6 +144,8 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	@Path("overview")
 	public GraphNode overview(@Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
+		AccessController.checkPermission(new RenderletManagerAccessPermission());
+
 		MGraph additionGraph = new SimpleMGraph();
 		UnionMGraph resultGraph = new UnionMGraph(additionGraph, configGraph);
 		GraphNode resultNode = new GraphNode(new UriRef(
@@ -167,6 +169,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	@Path("submit-renderlet")
 	public Response submitRenderlet(MultiPartBody form, @Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
+		AccessController.checkPermission(new RenderletManagerAccessPermission());
 		String type = form.getTextParameterValues("renderedType")[0];
 		String mode = form.getTextParameterValues("renderingMode")[0];
 		MediaType mediaType = MediaType.valueOf(form.getTextParameterValues("mediaType")[0]);
@@ -307,6 +310,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	public Response down(@FormParam("renderedType") UriRef renderedType,
 			@Context UriInfo uriInfo) throws URISyntaxException {
 		TrailingSlash.enforceNotPresent(uriInfo);
+		AccessController.checkPermission(new RenderletManagerAccessPermission());
 		List<Resource> rdfTypesPrioList = new RdfList(new UriRef(
 				RdfTypePrioList), configGraph);
 		final int index = rdfTypesPrioList.indexOf(renderedType);
@@ -330,6 +334,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	public Response up(@FormParam("renderedType") UriRef renderedType,
 			@Context UriInfo uriInfo) throws URISyntaxException {
 		TrailingSlash.enforceNotPresent(uriInfo);
+		AccessController.checkPermission(new RenderletManagerAccessPermission());
 		final MGraph mGraph = configGraph;
 		final List<Resource> rdfTypesPrioList = new RdfList(new UriRef(
 				RdfTypePrioList), mGraph);
@@ -356,9 +361,10 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 			@FormParam("renderedType") UriRef renderedType,
 			@FormParam("renderingMode") String renderingMode,
 			@FormParam("mediaType") String mediaType,
-			@Context UriInfo uriInfo) throws URISyntaxException {
-		logger.info("remove item");
+			@Context UriInfo uriInfo) throws URISyntaxException {	
 		TrailingSlash.enforceNotPresent(uriInfo);
+		AccessController.checkPermission(new RenderletManagerAccessPermission());
+		logger.info("remove item");
 		List<Resource> renderletDefinitions = new RdfList(new UriRef(
 				RdfTypePrioList), configGraph);
 		final Resource resource = getDefinitionResource(renderlet,
@@ -385,6 +391,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	@Path("install-renderlet-form")
 	public GraphNode installRenderletForm(@Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
+		AccessController.checkPermission(new RenderletManagerAccessPermission());
 		MGraph resultGraph = new SimpleMGraph();
 		GraphNode resultNode = new GraphNode(new UriRef(
 				RdfTypePrioList), resultGraph);
@@ -407,6 +414,7 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 			@QueryParam("mediaType") String mediaType,
 			@Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
+		AccessController.checkPermission(new RenderletManagerAccessPermission());
 		final Resource resource = getDefinitionResource(renderlet,
 				renderSpec, renderedType, renderingMode, mediaType);
 		GraphNode node = new GraphNode((NonLiteral) resource, configGraph);
@@ -440,13 +448,14 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 	public Set<GlobalMenuItem> getMenuItems() {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
 		try {
+			AccessController.checkPermission(new RenderletManagerAccessPermission());
 			AccessController.checkPermission(
 					new TcPermission("http://tpf.localhost/config.graph", TcPermission.READWRITE));
 		} catch (AccessControlException e) {
 			return items;
 		}
-		items.add(new GlobalMenuItem("/admin/renderlet-manager/", "RMR", "Renderlet Manager", 3,
-				"Main-Modules"));
+		items.add(new GlobalMenuItem("/admin/renderlets/", "RMR", "Renderlets", 3,
+				"Administration"));
 		return items;
 	}
 }
