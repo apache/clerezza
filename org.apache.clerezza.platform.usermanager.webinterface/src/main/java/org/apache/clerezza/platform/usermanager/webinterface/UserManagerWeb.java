@@ -115,7 +115,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 	@Service(value=GlobalMenuItemsProvider.class)
 })
 @Property(name="javax.ws.rs", boolValue=true)
-@Path("/admin/user-manager")
+@Path("/admin/users")
 public class UserManagerWeb implements GlobalMenuItemsProvider {
 	
 	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
@@ -200,7 +200,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		if (uriInfo.getAbsolutePath().toString().endsWith("/")) {
 			return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
 		}
-		return RedirectUtil.createSeeOtherResponse("user-manager/list-users",
+		return RedirectUtil.createSeeOtherResponse("users/list-users",
 				uriInfo);
 	}
 
@@ -1022,8 +1022,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		} catch (AccessControlException e) {
 			return items;
 		}
-		items.add(new GlobalMenuItem("/admin/user-manager/", "UMR", "User Manager", 2,
-				"Main-Modules"));
+		items.add(new GlobalMenuItem("/admin/users/", "UMR", "Users", 2,
+				"Administration"));
 		return items;
 	}
 
