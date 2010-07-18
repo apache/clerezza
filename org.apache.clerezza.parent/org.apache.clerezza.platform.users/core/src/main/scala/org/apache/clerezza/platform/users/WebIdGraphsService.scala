@@ -22,6 +22,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.security.AccessController
 import java.security.PrivilegedAction
+import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.config.SystemConfig
 import org.apache.clerezza.rdf.core.MGraph
@@ -29,6 +30,7 @@ import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException
 import org.apache.clerezza.rdf.core.access.SecuredMGraph
 import org.apache.clerezza.rdf.core.access.TcManager
+import org.apache.clerezza.rdf.core.access.security.TcPermission
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 import org.apache.clerezza.rdf.core.serializedform.Parser
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat
@@ -144,7 +146,13 @@ class WebIdGraphsService() {
 			val g = tcManager.getMGraph(localGraphUri)
 			g
 		} catch {
-			case e: NoSuchEntityException => tcManager.createMGraph(localGraphUri)
+			case e: NoSuchEntityException => {
+					import scala.collection.JavaConversions._
+					tcManager.getTcAccessController.
+					setRequiredReadWritePermissions(localGraphUri,
+					List(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString))
+					tcManager.createMGraph(localGraphUri)
+			}
 		}
 		
 		lazy val representationGraphUri = {
@@ -217,7 +225,7 @@ class WebIdGraphsService() {
 						} else {
 							new UnionMGraph(localGraph, localCache, systemTriples)
 						}
-						new SecuredMGraph(unionGraph, localGraphUri)
+						new SecuredMGraph(unionGraph, localGraphUri, tcManager.getTcAccessController)
 					}
 			})
 		}
