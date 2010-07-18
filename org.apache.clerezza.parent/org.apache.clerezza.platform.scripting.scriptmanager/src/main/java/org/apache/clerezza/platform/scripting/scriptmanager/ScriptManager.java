@@ -92,7 +92,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
  *
- * Script Manager (/admin/script-manager)
+ * Script Manager (/admin/scripting)
  *
  * Allows to install, delete, edit and execute script using a web front end.
  *
@@ -106,7 +106,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 	@Service(value=GlobalMenuItemsProvider.class)
 })
 @Property(name="javax.ws.rs", boolValue=true)
-@Path("/admin/script-manager")
+@Path("/admin/scripting")
 public class ScriptManager implements GlobalMenuItemsProvider{
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -191,7 +191,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 					"script-overview", uriInfo);
 		}
 		return RedirectUtil.createSeeOtherResponse(
-				"script-manager/script-overview", uriInfo);
+				"scripting/script-overview", uriInfo);
 	}
 
 	/**
@@ -827,8 +827,8 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 		} catch (AccessControlException e) {
 			return items;
 		}
-		items.add(new GlobalMenuItem("/admin/script-manager/", "SCM", "Script Manager", 1,
-				"Dev-Modules"));
+		items.add(new GlobalMenuItem("/admin/scripting/", "SCM", "Scripting", 1,
+				"Development"));
 		return items;
 	}
 }
