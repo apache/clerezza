@@ -19,6 +19,7 @@
 
 package org.apache.clerezza.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -70,7 +71,11 @@ public class IteratorMerger<T> implements Iterator<T> {
 
 	private void init(Iterator<Iterator<T>> baseIterators) {
 		this.baseIterators = baseIterators;
-		current = baseIterators.next();
+		if (baseIterators.hasNext()) {
+			current = baseIterators.next();
+		} else {
+			current = new ArrayList<T>(0).iterator();
+		}
 	}
 
 	private void updateCurrentIfNeeded() {
