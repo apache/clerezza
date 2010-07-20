@@ -47,7 +47,7 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
         addAlchemyAPIEntities(node,data);
 
       } catch (Throwable e) {
-        e.printStackTrace();
+        // do nothing
       }
     }
   }
