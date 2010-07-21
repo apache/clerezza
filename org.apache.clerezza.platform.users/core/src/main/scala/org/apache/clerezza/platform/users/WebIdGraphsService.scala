@@ -149,7 +149,7 @@ class WebIdGraphsService() {
 			case e: NoSuchEntityException => {
 					import scala.collection.JavaConversions._
 					tcManager.getTcAccessController.
-					setRequiredReadPermissions(localGraphUri,
+					setRequiredReadPermissionStrings(localGraphUri,
 					List(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString))
 					tcManager.createMGraph(localGraphUri)
 			}
