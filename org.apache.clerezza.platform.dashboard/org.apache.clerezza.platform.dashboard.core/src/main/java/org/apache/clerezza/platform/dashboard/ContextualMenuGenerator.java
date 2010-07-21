@@ -40,6 +40,7 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.RdfList;
@@ -153,6 +154,11 @@ public class ContextualMenuGenerator implements UserContextProvider {
 			final String label = menu.root.getLabel();
 			Literal labelLiteral = new PlainLiteralImpl(label);
 			mGraph.add(new TripleImpl(node, RDFS.label,labelLiteral));
+			final String description = menu.root.getDescription();
+			if (description != null) {
+				Literal descLiteral = new PlainLiteralImpl(description);
+				mGraph.add(new TripleImpl(node, DCTERMS.description, descLiteral));
+			}
 			final String path = menu.root.getPath();
 			if (path != null) {
 				Literal pathLiteral = LiteralFactory.getInstance().
@@ -180,6 +186,11 @@ public class ContextualMenuGenerator implements UserContextProvider {
 			final String label = item.getLabel();
 			Literal labelLiteral = new PlainLiteralImpl(label);
 			mGraph.add(new TripleImpl(node, RDFS.label,labelLiteral));
+			final String description = item.getDescription();
+			if (description != null) {
+				Literal descLiteral = new PlainLiteralImpl(description);
+				mGraph.add(new TripleImpl(node, DCTERMS.description, descLiteral));
+			}
 			final String path = item.getPath();
 			if (path != null) {
 				Literal pathLiteral = LiteralFactory.getInstance().
