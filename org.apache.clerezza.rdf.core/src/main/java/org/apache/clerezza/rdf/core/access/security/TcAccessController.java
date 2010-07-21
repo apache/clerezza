@@ -169,7 +169,15 @@ public class TcAccessController {
 		}
 	}
 
-	private Collection<Permission> getRequiredReadPermissions(UriRef tripleCollectionUri) {
+	/**
+	 * Get the set of permissions required for read access to the
+	 * triple-collection, the set may be empty meaning that the default
+	 * TCPermission is required.
+	 *
+	 * @param tripleCollectionUri
+	 * @return the collection of permissions
+	 */
+	public Collection<Permission> getRequiredReadPermissions(UriRef tripleCollectionUri) {
 		Collection<Permission> result = readPermissionCache.get(tripleCollectionUri);
 		if (result == null) {
 			result = new ArrayList<Permission>();
@@ -182,7 +190,15 @@ public class TcAccessController {
 		return result;
 	}
 
-	private Collection<Permission> getRequiredReadWritePermissions(UriRef tripleCollectionUri) {
+	/**
+	 * Get the set of permissions required for read-write access to the
+	 * triple-collection, the set may be empty meaning that the default
+	 * TCPermission is required.
+	 *
+	 * @param tripleCollectionUri
+	 * @return the collection of permissions
+	 */
+	public Collection<Permission> getRequiredReadWritePermissions(UriRef tripleCollectionUri) {
 		Collection<Permission> result = readWritePermissionCache.get(tripleCollectionUri);
 		if (result == null) {
 			result = new ArrayList<Permission>();
