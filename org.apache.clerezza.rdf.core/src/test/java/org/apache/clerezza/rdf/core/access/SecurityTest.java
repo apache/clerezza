@@ -133,7 +133,7 @@ public class SecurityTest {
 	@Test(expected=NoSuchEntityException.class)
 	public void testCustomPermissions() {
 		UriRef graphUri = new UriRef("http://example.org/custom");
-		TcManager.getInstance().getTcAccessController().setRequiredReadPermissions(graphUri,
+		TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
 				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
 		//new FilePermission("/etc", "write").toString()));
 		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));
@@ -144,7 +144,7 @@ public class SecurityTest {
 	@Test(expected=AccessControlException.class)
 	public void testCustomPermissionsIncorrect() {
 		UriRef graphUri = new UriRef("http://example.org/custom");
-		TcManager.getInstance().getTcAccessController().setRequiredReadPermissions(graphUri,
+		TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
 				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
 		//new FilePermission("/etc", "write").toString()));
 		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));
@@ -155,7 +155,7 @@ public class SecurityTest {
 	@Test
 	public void testCustomReadWritePermissions() {
 		UriRef graphUri = new UriRef("http://example.org/read-write-custom");
-		TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissions(graphUri,
+		TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissionStrings(graphUri,
 				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
 		//new FilePermission("/etc", "write").toString()));
 		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));

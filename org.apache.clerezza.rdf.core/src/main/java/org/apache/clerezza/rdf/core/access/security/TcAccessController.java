@@ -129,7 +129,7 @@ public class TcAccessController {
 	 * @param tripleCollectionUri
 	 * @param permissionDescriptions
 	 */
-	public void setRequiredReadPermissions(UriRef tripleCollectionUri,
+	public void setRequiredReadPermissionStrings(UriRef tripleCollectionUri,
 			Collection<String> permissionDescriptions) {
 		readPermissionCache.remove(tripleCollectionUri);
 		final LockableMGraph permissionMGraph = getOrCreatePermisionGraph();
@@ -146,6 +146,22 @@ public class TcAccessController {
 	}
 
 	/**
+	 * Set the set of permissions required for read access to a triple-collection, if
+	 * the set is non-empty the default TCPermisson is no longer required.
+	 *
+	 * @param tripleCollectionUri
+	 * @param permissionDescriptions
+	 */
+	public void setRequiredReadPermissions(UriRef tripleCollectionUri,
+			Collection<Permission> permissions) {
+		Collection<String> permissionStrings = new ArrayList<String>();
+		for (Permission permission : permissions) {
+			permissionStrings.add(permission.toString());
+		}
+		setRequiredReadPermissionStrings(tripleCollectionUri, permissionStrings);
+	}
+
+	/**
 	 * Set the set of permissions required for read-write access to a
 	 * triple-collection, if
 	 * the set is non-empty the default TCPermisson is no longer required.
@@ -153,7 +169,7 @@ public class TcAccessController {
 	 * @param tripleCollectionUri
 	 * @param permissionDescriptions
 	 */
-	public void setRequiredReadWritePermissions(UriRef tripleCollectionUri,
+	public void setRequiredReadWritePermissionStrings(UriRef tripleCollectionUri,
 			Collection<String> permissionDescriptions) {
 		readWritePermissionCache.remove(tripleCollectionUri);
 		final LockableMGraph permissionMGraph = getOrCreatePermisionGraph();
@@ -167,6 +183,23 @@ public class TcAccessController {
 		} finally {
 			l.unlock();
 		}
+	}
+
+	/**
+	 * Set the set of permissions required for read-write access to a
+	 * triple-collection, if
+	 * the set is non-empty the default TCPermisson is no longer required.
+	 *
+	 * @param tripleCollectionUri
+	 * @param permissionDescriptions
+	 */
+	public void setRequiredReadWritePermissions(UriRef tripleCollectionUri,
+			Collection<Permission> permissions) {
+		Collection<String> permissionStrings = new ArrayList<String>();
+		for (Permission permission : permissions) {
+			permissionStrings.add(permission.toString());
+		}
+		setRequiredReadWritePermissionStrings(tripleCollectionUri, permissionStrings);
 	}
 
 	/**
