@@ -30,7 +30,15 @@ import java.util.Iterator;
  */
 public class IteratorMerger<T> implements Iterator<T> {
 
+	/**
+	 * This is the iterator of the merged iterators.
+	 */
 	protected Iterator<Iterator<T>> baseIterators;
+	
+	/**
+	 * This is the current iterator of the merged iterators. Over this iterator
+	 * iterates the merged iterator currently.
+	 */
 	protected Iterator<T> current;
 
 	/**
