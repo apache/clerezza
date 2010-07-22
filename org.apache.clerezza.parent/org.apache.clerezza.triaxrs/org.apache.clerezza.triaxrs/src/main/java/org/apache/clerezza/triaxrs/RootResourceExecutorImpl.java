@@ -561,19 +561,14 @@ public class RootResourceExecutorImpl implements RootResourceExecutor {
 			Set<Method> candidateMethods) {
         
 		ResponseBuilder builder = Response.ok();
-		List<Annotation> annotationList = new ArrayList<Annotation>();
+		final Set<String> supportedMethods = new HashSet<String>();
 		for (Method candidateMethod : candidateMethods) {
 			Annotation[] declaredAnnotations = candidateMethod.getDeclaredAnnotations();
 			for (Annotation annotation : declaredAnnotations) {
-				annotationList.add(annotation);
-			}
-		}
-
-		final Set<String> supportedMethods = new HashSet<String>();	
-		for (Annotation annotation : annotationList) {
-			final HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
-			if (httpMethod != null) {
-				supportedMethods.add(httpMethod.value());
+				final HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
+				if (httpMethod != null) {
+					supportedMethods.add(httpMethod.value());
+				}
 			}
 		}
 		final String allowHeader = concateNameWithComa(supportedMethods);
