@@ -29,7 +29,8 @@
 		<h1>Tutorial 1: Exploring and aggregating RDF data with SCB</h1>
 		<p>Author: Reto Bachmann-Gmür - clerezza.org</p>
 		<p>Contributor: Hasan - clerezza.org</p>
-		<p>Date: 2009-01-25</p>
+		<p>Update : Florent - apache.org</p>
+		<p>Date: 2010-06-14</p>
 		<h2>Table of Contents</h2>
 		<p>
 			<a href="#objective">1. Objective</a>
@@ -133,20 +134,19 @@ $ mvn archetype:generate --batch-mode \
 			<code>project</code> in your pom.xml:
 		</p>
 		<blockcode>
-&lt;repositories>
-	&lt;repository>
-		&lt;id>clerezza-release&lt;/id>
-		&lt;name>clerezza.org distribution repository&lt;/name>
-		&lt;url>http://repo.trialox.org/release&lt;/url>
-		&lt;layout>default&lt;/layout>
-	&lt;/repository>
-	&lt;repository>
-		&lt;id>clerezza-snapshot&lt;/id>
-		&lt;name>clerezza.org snapshot repository&lt;/name>
-		&lt;url>http://repo.trialox.org/snapshot&lt;/url>
-		&lt;layout>default&lt;/layout>
-	&lt;/repository>
-&lt;/repositories>
+
+  &lt;repositories>
+    &lt;repository>
+      &lt;id>apache&lt;/id>
+      &lt;name>apache repository&lt;/name>
+      &lt;snapshots>
+	&lt;updatePolicy>always&lt;/updatePolicy>
+	&lt;checksumPolicy>warn&lt;/checksumPolicy>
+      &lt;/snapshots>
+      &lt;url>http://repository.apache.org/content/groups/snapshots-group&lt;/url>
+      &lt;layout>default&lt;/layout>
+    &lt;/repository>
+  &lt;/repositories>
 		</blockcode>
 
 		<p>
@@ -163,27 +163,27 @@ $ mvn archetype:generate --batch-mode \
 		</p>
 		<blockcode>
 &lt;dependency&gt;
-	&lt;groupId&gt;org.clerezza&lt;/groupId&gt;
-	&lt;artifactId&gt;org.clerezza.rdf.core&lt;/artifactId&gt;
-	&lt;version&gt;0.5-SNAPSHOT&lt;/version&gt;
+	&lt;groupId&gt;org.apache.clerezza&lt;/groupId&gt;
+	&lt;artifactId&gt;org.apache.clerezza.rdf.core&lt;/artifactId&gt;
+	&lt;version&gt;0.12-incubating-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
-	&lt;groupId&gt;org.clerezza&lt;/groupId&gt;
-	&lt;artifactId&gt;org.clerezza.rdf.utils&lt;/artifactId&gt;
-	&lt;version&gt;0.5-SNAPSHOT&lt;/version&gt;
+	&lt;groupId&gt;org.apache.clerezza&lt;/groupId&gt;
+	&lt;artifactId&gt;org.apache.clerezza.rdf.utils&lt;/artifactId&gt;
+	&lt;version&gt;0.13-incubating-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
-	&lt;groupId&gt;org.clerezza&lt;/groupId&gt;
-	&lt;artifactId&gt;org.clerezza.rdf.ontologies&lt;/artifactId&gt;
-	&lt;version&gt;0.3-SNAPSHOT&lt;/version&gt;
+	&lt;groupId&gt;org.apache.clerezza&lt;/groupId&gt;
+	&lt;artifactId&gt;org.apache.clerezza.rdf.ontologies&lt;/artifactId&gt;
+	&lt;version&gt;0.11-incubating-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 		</blockcode>
 
 		<p class="note">
 			The set version numbers were the latest at time of writing to
 			find the latest release or snapshot version check
-			http://repo.trialox.org/release/org/clerezza/
-			respectively http://repo.trialox.org/snapshot/org/clerezza/.
+			https://repository.apache.org/content/repositories/releases/
+			respectively https://repository.apache.org/content/repositories/snapshots/.
 		</p>
 
 		<p>
@@ -191,35 +191,36 @@ $ mvn archetype:generate --batch-mode \
 			to run the application. However as SCB provides mainly interfaces
 			to exchangeable implementations we should add some runtime dependencies:
 		</p>
-		<div class="note">
+		<!-- NOTE : think this comment is not still valid
+		     <div class="note">
 			At the time of writing this a bug in the maven exec-plugin prevents us
 			from declaring these dependencies as what they actually are, so
 			the runtime scope is commented out.
-		</div>
+		</div>-->
 		<blockcode>
 &lt;dependency>
-	&lt;groupId>org.clerezza&lt;/groupId>
-	&lt;artifactId>org.clerezza.rdf.jena.parser&lt;/artifactId>
-	&lt;version>0.2-SNAPSHOT&lt;/version>
-	&lt;!-- &lt;scope>runtime&lt;/scope> -->
+	&lt;groupId>org.apache.clerezza&lt;/groupId>
+	&lt;artifactId>org.apache.clerezza.rdf.jena.parser&lt;/artifactId>
+	&lt;version>0.10-incubating-SNAPSHOT&lt;/version>
+	&lt;scope>runtime&lt;/scope>
 &lt;/dependency>
 &lt;dependency>
-	&lt;groupId>org.clerezza&lt;/groupId>
-	&lt;artifactId>org.clerezza.rdf.jena.serializer&lt;/artifactId>
-	&lt;version>0.2-SNAPSHOT&lt;/version>
-	&lt;!-- &lt;scope>runtime&lt;/scope> -->
+	&lt;groupId>org.apache.clerezza&lt;/groupId>
+	&lt;artifactId>org.apache.clerezza.rdf.jena.serializer&lt;/artifactId>
+	&lt;version>0.9-incubating-SNAPSHOT&lt;/version>
+	&lt;scope>runtime&lt;/scope>
 &lt;/dependency>
 &lt;dependency>
 	&lt;groupId>org.slf4j&lt;/groupId>
 	&lt;artifactId>slf4j-simple&lt;/artifactId>
 	&lt;version>1.5.5&lt;/version>
-	&lt;!-- &lt;scope>runtime&lt;/scope> -->
+	&lt;scope>runtime&lt;/scope>
 &lt;/dependency>
 &lt;dependency>
-	&lt;groupId>org.clerezza&lt;/groupId>
-	&lt;artifactId>org.clerezza.rdf.simple.storage&lt;/artifactId>
-	&lt;version>0.2-SNAPSHOT&lt;/version>
-	&lt;!-- &lt;scope>runtime&lt;/scope> -->
+	&lt;groupId>org.apache.clerezza&lt;/groupId>
+	&lt;artifactId>org.apache.clerezza.rdf.simple.storage&lt;/artifactId>
+	&lt;version>0.7-incubating-SNAPSHOT&lt;/version>
+	&lt;scope>runtime&lt;/scope>
 &lt;/dependency>
 		</blockcode>
 
@@ -237,28 +238,35 @@ $ mvn archetype:generate --batch-mode \
 		</p>
 		<blockcode>
 &lt;build>
+   &lt;pluginManagement>
 	&lt;plugins>
 		&lt;plugin>
 			&lt;groupId>org.apache.maven.plugins&lt;/groupId>
 			&lt;artifactId>maven-compiler-plugin&lt;/artifactId>
+                        &lt;version>2.0.2&lt;/version>
 			&lt;configuration>
 				&lt;source>1.6&lt;/source>
 				&lt;target>1.6&lt;/target>
+                                &lt;encoding>utf-8&lt;/encoding>
 			&lt;/configuration>
 		&lt;/plugin>
 	&lt;/plugins>
+  &lt;/pluginManagement>
 &lt;/build>
 		</blockcode>
 
+		<p>
+		  Try an "$mvn compile" command, build successful will apear.
+		</p> 
 
 		<p>
-			Enough configuration, lets get our hands dirty and write some code.
+		  Enough configuration, lets get our hands dirty and write some code.
 		</p>
 
 		<h2 id="functionality">3. Creating a Graph and loading Data</h2>
 		<p>
-			In RDF Graphs are collections of triples, strictly speaking graphs
-			are immutable, if you add or remove a triple its a new graph. For
+			In RDF, Graphs are collections of triples. Strictly speaking graphs
+			are immutable : if you add or remove a triple its a new graph. For
 			that SCB distinguishes between two types of
 			<code>TripleCollection</code>s: <code>Graph</code> and
 			<code>MGraph</code> where 'M' stands for "mutable". The MGraph
@@ -283,8 +291,8 @@ $ mvn archetype:generate --batch-mode \
 			we create an <code>MGraph</code> with the following code:
 		</p>
 		<blockcode>
-import org.clerezza.rdf.core.*;
-import org.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.*;
+import org.apache.clerezza.rdf.core.access.TcManager;
 
 ...
 
@@ -354,7 +362,7 @@ final InputStream inputStream = con.getInputStream();
 		</div>
 		<p>
 			Now that we have an InputStream from which rdf/xml can be read we
-			use <code>org.clerezza.rdf.core.serializedform.Parser</code> to
+			use <code>org.apache.clerezza.rdf.core.serializedform.Parser</code> to
 			convert it to a graph:
 		</p>
 		<blockcode>
@@ -413,7 +421,7 @@ while (typeTriples.hasNext()) {
 		statement contains a blank node its context is included as well
 		[<a href="#ref5">5</a>].</p>
 		<p>The context can easily be accessed by using the <code>GraphNode</code>
-		class in the org.clerezza.rdf.utils package.</p>
+		class in the org.apache.clerezza.rdf.utils package.</p>
 		<blockcode>
 public Graph getCurrentContext() {
 	return new GraphNode(new UriRef(selectedUri), mGraph).getNodeContext();
@@ -429,7 +437,7 @@ public Graph getCurrentContext() {
 		java code</a> creates a swing frame with a table containing the context
 		of a selected resource. By default, when clicking on a named resource that
 		is the subject or object of a statement, the context of this resource is
-		shown. By clicking on the button "Loadre Context from Web" the resource
+		shown. By clicking on the button "Load Context from Web" the resource
 		is dereferenced and the triples are added to the local store.</p>
 		<h2 id="further">7. Taking it further</h2>
 		<p>A trivially achievable improvement of the example application would
@@ -437,13 +445,13 @@ public Graph getCurrentContext() {
 		<p>By adding the sesame persitent storage provider to the runtime classpath
 		of the application our <code>MGraph</code> is stored in a sesame store
 		[<a href="#ref8">8</a>] (this obsolotes the dependency on
-		<code>org.clerezza.rdf.sesame.storage</code>).
+		<code>org.apache.clerezza.rdf.sesame.storage</code>).
 		</p>
 		<blockcode>
 &lt;dependency>
-	&lt;groupId>org.clerezza&lt;/groupId>
-	&lt;artifactId>org.clerezza.rdf.sesame.storage&lt;/artifactId>
-	&lt;version>0.7-SNAPSHOT&lt;/version>
+	&lt;groupId>org.apache.clerezza&lt;/groupId>
+	&lt;artifactId>org.apache.clerezza.rdf.sesame.storage&lt;/artifactId>
+	&lt;version>0.13-incubating-SNAPSHOT&lt;/version>
 	&lt;!-- &lt;scope>runtime&lt;/scope> -->
 &lt;/dependency>
 		</blockcode>
@@ -460,8 +468,8 @@ try {
 }
 		</blockcode>
 		<p>If anything is unclear or you'd like to take it even further, ask
-		about it on our mailing list <a href="http://lists.trialox.org/mailman/listinfo/users">
-		http://lists.trialox.org/mailman/listinfo/users/</a></p>
+		about it on our mailing list <a href="http://mail-archives.apache.org/mod_mbox/incubator-clerezza-dev/">
+		http://mail-archives.apache.org/mod_mbox/incubator-clerezza-dev/</a></p>
 		<h2 id="references">8. References</h2>
 		<p id="ref1">[1] W3C: Resource Description Framework (RDF): Concepts and Abstract Syntax; 2004,
 			<a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/</a>
