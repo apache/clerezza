@@ -6,6 +6,8 @@ def dc(s: Any) = new UriRef("http://purl.org/dc/elements/1.1/" + s)
 def umr(s: Any) = new UriRef("http://clerezza.org/2009/05/usermanager#" + s)
 def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#" + s)
 
+resultDocModifier.addScriptReference("/scripts/alert-message.js");
+resultDocModifier.addScriptReference("/scripts/ajax-options.js");
 resultDocModifier.addScriptReference("js/usermanager.js");
 
 resultDocModifier.setTitle("Users");
@@ -34,9 +36,9 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 					
 					refreshCustomInformation({"'" + (res/umr("user")/platform("userName")*) + "'"});
 
-					 $("#userRoles option").each(function() {{
-						$(this).bind("click", function() {{
-							refreshCustomInformation({"'" + (res/umr("user")/platform("userName")*)  + "'"});
+					 $("#userRoles").change(function() {{
+						$("#userRoles option:selected").each(function() {{
+							refreshCustomInformation(null);
 						}});
 					 }});
 				}});
