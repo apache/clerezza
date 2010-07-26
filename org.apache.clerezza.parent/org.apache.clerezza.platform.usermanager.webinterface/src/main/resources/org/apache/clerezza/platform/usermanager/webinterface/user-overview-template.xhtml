@@ -63,7 +63,7 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 					for (user <- (res!!)) yield {
 					<tr id={user/platform("userName")*}>
                         <td>
-                            <input type="checkbox" value={user/platform("userName")*} />
+                            <input type="checkbox" value={URLEncoder.encode(user/platform("userName")*, "utf-8")} />
                         </td>
                         <td><a href={"update-user?userName=" + URLEncoder.encode(user/platform("userName")*, "utf-8")}>{user/platform("userName")*}</a></td>
                         <td>{(user/foaf("givenName")*) + " " + (user/foaf("familyName")*)}</td>
