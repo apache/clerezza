@@ -114,7 +114,14 @@
 			<artifactId>jsslutils</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
+		<dependency>
+            <groupId>net.rootdev</groupId>
+            <artifactId>java-rdfa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.rootdev</groupId>
+            <artifactId>java-rdfa-htmlparser</artifactId>
+        </dependency>
 		<!--
 			Clerezza Bundles
 		-->
@@ -201,6 +208,11 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.jena.serializer</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.rdf.rdfa</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
