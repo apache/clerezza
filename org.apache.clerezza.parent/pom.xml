@@ -87,6 +87,7 @@
 		<module>org.apache.clerezza.rdf.jena.tdb.storage</module>
 		<module>org.apache.clerezza.rdf.ontologies</module>
 		<module>org.apache.clerezza.rdf.metadata</module>
+		<module>org.apache.clerezza.rdf.rdfa</module>
 		<module>org.apache.clerezza.rdf.rdfjson</module>
 		<module>org.apache.clerezza.rdf.scala.utils</module>
 		<module>org.apache.clerezza.rdf.schemagen</module>
@@ -768,6 +769,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.rdf.rdfa</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.rdf.rdfjson</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
@@ -1080,6 +1086,16 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>net.rootdev</groupId>
+				<artifactId>java-rdfa</artifactId>
+				<version>0.4.2-RC2</version>
+			</dependency>
+			<dependency>
+				<groupId>net.rootdev</groupId>
+				<artifactId>java-rdfa-htmlparser</artifactId>
+				<version>0.4.2-RC2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
