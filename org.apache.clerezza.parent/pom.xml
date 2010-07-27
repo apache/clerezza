@@ -49,6 +49,7 @@
 		<module>org.apache.clerezza.platform.dashboard</module>
 		<module>org.apache.clerezza.platform.documentation</module>
 		<module>org.apache.clerezza.platform.documentation.viewer</module>
+		<module>org.apache.clerezza.platform.enrichment</module>
 		<module>org.apache.clerezza.platform.graphprovider.content</module>
 		<module>org.apache.clerezza.platform.language</module>
 		<module>org.apache.clerezza.platform.launcher.sesame</module>
@@ -75,6 +76,7 @@
 		<module>org.apache.clerezza.platform.xhtml2html</module>
 		<module>org.apache.clerezza.rdf.core</module>
 		<module>org.apache.clerezza.rdf.core.test</module>
+		<module>org.apache.clerezza.rdf.enrichment</module>
 		<module>org.apache.clerezza.rdf.file.storage</module>
 		<module>org.apache.clerezza.rdf.jena.commons</module>
 		<module>org.apache.clerezza.rdf.jena.facade</module>
@@ -556,6 +558,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.rdf.enrichment</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.rdf.simple.storage</artifactId>
 				<version>0.7-incubating-SNAPSHOT</version>
 			</dependency>
@@ -648,6 +655,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.dashboard.ontologies</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.enrichment</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
