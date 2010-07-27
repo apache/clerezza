@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>org.apache.clerezza.parent</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.2-incubating-SNAPSHOT</version>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>org.apache.clerezza.rdf.rdfa</artifactId>
+    <packaging>bundle</packaging>
+    <version>0.1-incubating-SNAPSHOT</version>
+    <name>Clerezza - SCB RDFa parsing support</name>
+    <description>
+        A SAX-based parser for RDFa 
+    </description>
+    <inceptionYear>2010</inceptionYear>
+    <developers>
+        <developer>
+            <name>Henry Story</name>
+            <email>henry.story@bblfish.net</email>
+            <organization>Sun Microsystems</organization>
+            <organizationUrl>http://sun.com/</organizationUrl>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>org.apache.clerezza.rdf.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.rootdev</groupId>
+            <artifactId>java-rdfa</artifactId>
+            <version>0.4.2-RC2</version>
+        </dependency>
+        <dependency>
+            <groupId>net.rootdev</groupId>
+            <artifactId>java-rdfa-htmlparser</artifactId>
+            <version>0.4.2-RC2</version>
+        </dependency>
+        <dependency>
+            <groupId>nu.validator.htmlparser</groupId>
+            <artifactId>htmlparser</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <!-- see http://weblogs.java.net/blog/kohsuke/archive/2009/03/my_project_of_t.html
+		not in central repo
+		<dependency>
+            <groupId>org.kohsuke.metainf-services</groupId>
+            <artifactId>metainf-services</artifactId>
+            <version>1.1</version>
+        </dependency> -->
+    </dependencies>
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
