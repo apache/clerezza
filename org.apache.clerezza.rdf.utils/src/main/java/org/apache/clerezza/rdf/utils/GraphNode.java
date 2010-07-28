@@ -85,11 +85,36 @@ public class GraphNode {
 	 */
 	public Graph getNodeContext() {
 		final HashSet<BNode> dontExpand = new HashSet<BNode>();
-		if (resource instanceof BNode) {
-			dontExpand.add((BNode) resource);
+		if (resource instanceof UriRef) {
+			return getContextOf((UriRef) resource, dontExpand).getGraph();
+		} else {
+			if (resource instanceof BNode) {
+				dontExpand.add((BNode) resource);
+			}
 		}
 		return getContextOf(resource, dontExpand).getGraph();
 
+	}
+
+	private MGraph getContextOf(UriRef node, final Set<BNode> dontExpand) {
+		final String uriPrefix = node.getUnicodeString()+'#';
+		return getContextOf(node, new Acceptor() {
+
+			@Override
+			public boolean expand(Resource resource) {
+				if (resource instanceof BNode) {
+					BNode bNodeObject = (BNode) resource;
+					if (!dontExpand.contains(bNodeObject)) {
+						dontExpand.add(bNodeObject);
+						return true;
+					}
+				}
+				if (resource instanceof UriRef) {
+					return ((UriRef)resource).getUnicodeString().startsWith(uriPrefix);
+				}
+				return false;
+			}
+		});
 	}
 
 	/**
@@ -100,7 +125,27 @@ public class GraphNode {
 	 * is a BNode it should be contained (potentially faster)
 	 * @return the context of a node
 	 */
-	private MGraph getContextOf(Resource node, Set<BNode> dontExpand) {
+	private MGraph getContextOf(Resource node, final Set<BNode> dontExpand) {
+		return getContextOf(node, new Acceptor() {
+
+			@Override
+			public boolean expand(Resource resource) {
+				if (resource instanceof BNode) {
+					BNode bNodeObject = (BNode) resource;
+					if (!dontExpand.contains(bNodeObject)) {
+						dontExpand.add(bNodeObject);
+						return true;
+					}
+				}
+				return false;
+			}
+		});
+	}
+
+	private interface Acceptor {
+		boolean expand(Resource resource);
+	}
+	private MGraph getContextOf(Resource node, Acceptor acceptor) {
 		MGraph result = new SimpleMGraph();
 		if (node instanceof NonLiteral) {
 			Iterator<Triple> forwardProperties = graph.filter((NonLiteral) node, null, null);
@@ -108,12 +153,8 @@ public class GraphNode {
 				Triple triple = forwardProperties.next();
 				result.add(triple);
 				Resource object = triple.getObject();
-				if (object instanceof BNode) {
-					BNode bNodeObject = (BNode) object;
-					if (!dontExpand.contains(bNodeObject)) {
-						dontExpand.add(bNodeObject);
-						result.addAll(getContextOf(bNodeObject, dontExpand));
-					}
+				if (acceptor.expand(object)) {
+					result.addAll(getContextOf(object, acceptor));
 				}
 			}
 		}
@@ -122,12 +163,8 @@ public class GraphNode {
 			Triple triple = backwardProperties.next();
 			result.add(triple);
 			NonLiteral subject = triple.getSubject();
-			if (subject instanceof BNode) {
-				BNode bNodeSubject = (BNode) subject;
-				if (!dontExpand.contains(bNodeSubject)) {
-					dontExpand.add(bNodeSubject);
-					result.addAll(getContextOf(bNodeSubject, dontExpand));
-				}
+			if (acceptor.expand(subject)) {
+				result.addAll(getContextOf(subject, acceptor));
 			}
 		}
 		return result;
@@ -619,38 +656,48 @@ public class GraphNode {
 		return 13 * getNode().hashCode() + getGraph().hashCode();
 	}
 
-  /**
-   * @return a ReadLock if the underlying Graph is a LockableMGraph it returns its lock, otherwise null
-   */
-  public Lock readLock() {
-    if (getGraph() instanceof LockableMGraph) {
-      return ((LockableMGraph) getGraph()).getLock().readLock();
-    }
-    return new FakeLock();
-  }
+	/**
+	 * @return a ReadLock if the underlying Graph is a LockableMGraph it returns its lock, otherwise null
+	 */
+	public Lock readLock() {
+		if (getGraph() instanceof LockableMGraph) {
+			return ((LockableMGraph) getGraph()).getLock().readLock();
+		}
+		return new FakeLock();
+	}
 
-  /**
-   *
-   * @return
-   */
-  public Lock writeLock() {
-    if (getGraph() instanceof LockableMGraph) {
-      return ((LockableMGraph) getGraph()).getLock().writeLock();
-    }
-    return new FakeLock();
-  }
+	/**
+	 *
+	 * @return
+	 */
+	public Lock writeLock() {
+		if (getGraph() instanceof LockableMGraph) {
+			return ((LockableMGraph) getGraph()).getLock().writeLock();
+		}
+		return new FakeLock();
+	}
 
-  private static class FakeLock implements Lock {
-    public void lock(){}
+	private static class FakeLock implements Lock {
 
-    public void lockInterruptibly() throws java.lang.InterruptedException {}
+		public void lock() {
+		}
 
-    public boolean tryLock() {return false;}
+		public void lockInterruptibly() throws java.lang.InterruptedException {
+		}
 
-    public boolean tryLock(long l, java.util.concurrent.TimeUnit timeUnit) throws java.lang.InterruptedException {return false;}
+		public boolean tryLock() {
+			return false;
+		}
 
-    public void unlock(){}
+		public boolean tryLock(long l, java.util.concurrent.TimeUnit timeUnit) throws java.lang.InterruptedException {
+			return false;
+		}
 
-    public java.util.concurrent.locks.Condition newCondition() {return null;}
-  }
+		public void unlock() {
+		}
+
+		public java.util.concurrent.locks.Condition newCondition() {
+			return null;
+		}
+	}
 }
