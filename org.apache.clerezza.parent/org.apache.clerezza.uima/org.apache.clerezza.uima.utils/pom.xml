@@ -70,8 +70,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>org.apache.uima.*,*</Import-Package>
-            <Export-Package>org.apache.clerezza.uima.*</Export-Package>
+            <Export-Package>org.apache.clerezza.uima.utils.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>
