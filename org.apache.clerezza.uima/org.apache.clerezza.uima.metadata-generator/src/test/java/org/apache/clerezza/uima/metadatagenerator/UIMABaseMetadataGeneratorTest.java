@@ -32,8 +32,8 @@ public class UIMABaseMetadataGeneratorTest {
       String textToAnalyze = "Italy, the defending champions and four-time World Cup winners, suffer a shock World Cup defeat to Slovakia, who win a remarkable game 3-2 to book their place in the last 16";
       MGraph mGraph = new SimpleMGraph();
       GraphNode node = new GraphNode(new UriRef("test"), mGraph.getGraph());
-      MediaType mediaType = MediaType.valueOf("multipart/form-data; boundary=AaB03x");
-      baseMetadataGenerator.generate(node, textToAnalyze.getBytes(), mediaType);
+      MediaType wrongMediaType = MediaType.valueOf("multipart/form-data; boundary=AaB03x");
+      baseMetadataGenerator.generate(node, textToAnalyze.getBytes(), wrongMediaType);
     } catch (Exception e) {
       fail(e.getLocalizedMessage());
     }

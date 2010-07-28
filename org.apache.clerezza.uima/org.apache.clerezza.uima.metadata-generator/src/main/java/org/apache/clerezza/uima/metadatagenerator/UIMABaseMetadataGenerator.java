@@ -20,10 +20,10 @@ import java.util.List;
  * An implementation of <code>MetaDataGenerator</code> generates meta data about specified data
  * depending on its media type using Apache UIMA.
  */
-@Component(metatype=true)
+@Component(metatype = true)
 @Services({
-  @Service(MetaDataGenerator.class),
-  @Service(UIMABaseMetadataGenerator.class)
+        @Service(MetaDataGenerator.class),
+        @Service(UIMABaseMetadataGenerator.class)
 })
 public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
@@ -31,52 +31,68 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
   @Override
   public void generate(GraphNode node, byte[] data, MediaType mediaType) {
-    // FIXME only TEXT_PLAIN, also different MediaTypes should be served
-    if (MediaType.TEXT_PLAIN.equals(mediaType.getType())) {
-      try {
-        // add language to the document
-        addLanguage(node, data);
+    try {
+      String text = getTextToAnalyze(data, mediaType);
 
-        // add wide purpose subject to the document
-        addCategory(node, data);
+      // add language to the document
+      addLanguage(node, text);
 
-        // add calais annotations' nodes
-        addCalaisAnnotations(node, data);
+      // add wide purpose subject to the document
+      addCategory(node, text);
 
-        // add alchemyAPI's annotations' nodes
-        addAlchemyAPIEntities(node,data);
+      // add calais annotations' nodes
+      addCalaisAnnotations(node, text);
 
-      } catch (Throwable e) {
-        // do nothing
-      }
+      // add alchemyAPI's annotations' nodes
+      addAlchemyAPIEntities(node, text);
+
+    } catch (Throwable e) {
+      // do nothing
     }
   }
 
-  private void addCategory(GraphNode node, byte[] data) throws UIMAException {
+  private String getTextToAnalyze(byte[] data, MediaType mediaType) throws UnsupportedMediaTypeException {
+    String text = null;
+    if (MediaType.TEXT_PLAIN.equals(mediaType)) {
+      text = new String(data);
+    }
+    if (text == null) {
+      throw new UnsupportedMediaTypeException(mediaType.getType());
+    }
+    return text;
+  }
+
+
+  private void addCategory(GraphNode node, String data) throws UIMAException {
     // get category to bind it to the node
-    String category = facade.getCategory(data.toString());
+    String category = facade.getCategory(data);
     node.addPropertyValue(DC.subject, category);
   }
 
-  private void addLanguage(GraphNode node, byte[] data) throws UIMAException {
+  private void addLanguage(GraphNode node, String data) throws UIMAException {
     // get language to bind it to the node
-    String language = facade.getLanguage(data.toString());
+    String language = facade.getLanguage(data);
     node.addPropertyValue(DCTERMS.language, language);
   }
 
-  private void addCalaisAnnotations(GraphNode existingNode, byte[] data) throws UIMAException {
+  private void addCalaisAnnotations(GraphNode existingNode, String data) throws UIMAException {
     // analyze document text and get the corresponding OpenCalais annotations
-    List<Annotation> calaisAnnotations = facade.getCalaisAnnotations(data.toString());
+    List<Annotation> calaisAnnotations = facade.getCalaisAnnotations(data);
     // convert annotations to nodes inside the current graph
     UIMAUtils.enhanceNode(existingNode, calaisAnnotations);
 
   }
 
-  private void addAlchemyAPIEntities(GraphNode existingNode, byte[] data) throws UIMAException {
+  private void addAlchemyAPIEntities(GraphNode existingNode, String data) throws UIMAException {
     // analyze document text and get the corresponding AlchemyAPI Tags
-    List<FeatureStructure> alchemyAPIEntities = facade.getAlchemyAPITags(data.toString());
+    List<FeatureStructure> alchemyAPIEntities = facade.getAlchemyAPITags(data);
     // convert entities to nodes inside the current graph
     UIMAUtils.enhanceNode(existingNode, alchemyAPIEntities);
   }
 
+  private class UnsupportedMediaTypeException extends Throwable {
+    private UnsupportedMediaTypeException(String s) {
+      super(s);
+    }
+  }
 }
