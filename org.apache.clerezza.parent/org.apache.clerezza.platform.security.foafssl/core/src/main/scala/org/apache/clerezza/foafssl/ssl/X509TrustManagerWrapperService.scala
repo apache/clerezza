@@ -19,6 +19,8 @@
 
 package org.apache.clerezza.foafssl.ssl
 
+import java.io.ByteArrayOutputStream
+import java.math.BigInteger
 import java.security.PublicKey
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
@@ -28,9 +30,11 @@ import org.apache.clerezza.foafssl.Utilities
 import org.apache.clerezza.platform.users.WebDescriptionProvider
 import org.apache.clerezza.foafssl.ontologies.CERT
 import org.apache.clerezza.foafssl.ontologies.RSA
+import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.rdf.core.Literal
 import org.apache.clerezza.rdf.core.LiteralFactory
 import org.apache.clerezza.rdf.core.MGraph
+import org.apache.clerezza.rdf.core.NoConvertorException
 import org.apache.clerezza.rdf.core.Resource
 import org.apache.clerezza.rdf.core.TripleCollection
 import org.apache.clerezza.rdf.core.TypedLiteral
@@ -40,6 +44,7 @@ import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 import org.apache.clerezza.rdf.core.impl.TripleImpl
+import org.apache.clerezza.rdf.core.serializedform.{Serializer, SupportedFormat}
 import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils._
 import org.apache.clerezza.rdf.ontologies.FOAF
@@ -48,9 +53,11 @@ import org.apache.clerezza.rdf.ontologies.RDF
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.jsslutils.sslcontext.X509TrustManagerWrapper
 import org.jsslutils.sslcontext.trustmanagers.TrustAllClientsWrappingTrustManager
+import org.slf4j.LoggerFactory;
 
 class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
-	
+
+	private val logger = LoggerFactory.getLogger(classOf[X509TrustManagerWrapperService])
 	private var descriptionProvider: WebDescriptionProvider = null;
 
 	protected def bindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
@@ -89,7 +96,7 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 		}
 	}
 	
-	private val systemGraphUri = new UriRef("http://tpf.localhost/system.graph")
+	private val systemGraphUri = Constants.SYSTEM_GRAPH_URI;
 	
 	private def verify(uriRef: UriRef, publicKey: PublicKey): Unit = {
 		var webDescription = descriptionProvider.getWebDescription(uriRef, false)
@@ -164,11 +171,24 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 			}
 		}
 	 
-	 private def verify(webId: UriRef, publicKey: RSAPublicKey, tc: TripleCollection): Boolean = {
-		 val result = getPublicKeysInGraph(webId, tc).contains(
-			 (new BigInt(publicKey.getModulus), new BigInt(publicKey.getPublicExponent)))
-			result
+	private def verify(webId: UriRef, publicKey: RSAPublicKey, tc: TripleCollection): Boolean = {
+		val publicKeysInGraph = getPublicKeysInGraph(webId, tc)
+		val publicKeyTuple = (new BigInt(publicKey.getModulus), new BigInt(publicKey.getPublicExponent))
+		val result = publicKeysInGraph.contains(publicKeyTuple)
+		if (logger.isDebugEnabled) {
+			if (!result) {
+				val baos = new ByteArrayOutputStream
+				Serializer.getInstance.serialize(baos, tc, SupportedFormat.TURTLE);
+				logger.debug("no mathing key in: \n{}", new String(baos.toByteArray));
+				logger.debug("the public key is not among the "+
+					publicKeysInGraph.size+" keys in the profile graph of size "+
+					tc.size)
+				logger.debug("PublicKey: "+publicKeyTuple)
+				publicKeysInGraph.foreach(k => logger.debug("PublikKey in graph: "+ k))
+			}
 		}
+		result
+	}
 
 		/**
 	  * @return the integer value if r is a typedLiteral of cert:hex or cert:decimal,
@@ -201,10 +221,15 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 		}
 	}
 	private def intValueOfTypedLiteral(l: TypedLiteral): Option[BigInt] = {
-		(l.getLexicalForm, l.getDataType) match {
-			case (lf, CERT.hex) => Some(intValueOfHexString(lf))
-			case (lf, CERT.decimal) => Some(BigInt(lf))
-			case _ => None
+		try {
+			(l.getLexicalForm, l.getDataType) match {
+				case (lf, CERT.hex) => Some(intValueOfHexString(lf))
+				case (lf, CERT.decimal) => Some(BigInt(lf))
+				case _ => Some(new BigInt(LiteralFactory.getInstance.createObject(classOf[BigInteger], l)))
+			}
+		} catch {
+			case e: NoConvertorException => None
+			case e => throw e
 		}
 	}
 	
