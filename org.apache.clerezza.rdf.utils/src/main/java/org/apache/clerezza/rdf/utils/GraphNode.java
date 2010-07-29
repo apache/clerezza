@@ -84,30 +84,23 @@ public class GraphNode {
 	 * @return the context of the node represented by the instance
 	 */
 	public Graph getNodeContext() {
-		final HashSet<BNode> dontExpand = new HashSet<BNode>();
+		final HashSet<Resource> dontExpand = new HashSet<Resource>();
+		dontExpand.add(resource);
 		if (resource instanceof UriRef) {
 			return getContextOf((UriRef) resource, dontExpand).getGraph();
-		} else {
-			if (resource instanceof BNode) {
-				dontExpand.add((BNode) resource);
-			}
 		}
 		return getContextOf(resource, dontExpand).getGraph();
 
 	}
 
-	private MGraph getContextOf(UriRef node, final Set<BNode> dontExpand) {
+	private MGraph getContextOf(UriRef node, final Set<Resource> dontExpand) {
 		final String uriPrefix = node.getUnicodeString()+'#';
-		return getContextOf(node, new Acceptor() {
+		return getContextOf(node, dontExpand, new Acceptor() {
 
 			@Override
 			public boolean expand(Resource resource) {
 				if (resource instanceof BNode) {
-					BNode bNodeObject = (BNode) resource;
-					if (!dontExpand.contains(bNodeObject)) {
-						dontExpand.add(bNodeObject);
-						return true;
-					}
+					return true;
 				}
 				if (resource instanceof UriRef) {
 					return ((UriRef)resource).getUnicodeString().startsWith(uriPrefix);
@@ -125,17 +118,13 @@ public class GraphNode {
 	 * is a BNode it should be contained (potentially faster)
 	 * @return the context of a node
 	 */
-	private MGraph getContextOf(Resource node, final Set<BNode> dontExpand) {
-		return getContextOf(node, new Acceptor() {
+	private MGraph getContextOf(Resource node, final Set<Resource> dontExpand) {
+		return getContextOf(node, dontExpand, new Acceptor() {
 
 			@Override
 			public boolean expand(Resource resource) {
 				if (resource instanceof BNode) {
-					BNode bNodeObject = (BNode) resource;
-					if (!dontExpand.contains(bNodeObject)) {
-						dontExpand.add(bNodeObject);
-						return true;
-					}
+					return true;
 				}
 				return false;
 			}
@@ -145,7 +134,7 @@ public class GraphNode {
 	private interface Acceptor {
 		boolean expand(Resource resource);
 	}
-	private MGraph getContextOf(Resource node, Acceptor acceptor) {
+	private MGraph getContextOf(Resource node, final Set<Resource> dontExpand, Acceptor acceptor) {
 		MGraph result = new SimpleMGraph();
 		if (node instanceof NonLiteral) {
 			Iterator<Triple> forwardProperties = graph.filter((NonLiteral) node, null, null);
@@ -153,8 +142,9 @@ public class GraphNode {
 				Triple triple = forwardProperties.next();
 				result.add(triple);
 				Resource object = triple.getObject();
-				if (acceptor.expand(object)) {
-					result.addAll(getContextOf(object, acceptor));
+				if (acceptor.expand(object) && !dontExpand.contains(object)) {
+					dontExpand.add(object);
+					result.addAll(getContextOf(object, dontExpand, acceptor));
 				}
 			}
 		}
@@ -163,8 +153,9 @@ public class GraphNode {
 			Triple triple = backwardProperties.next();
 			result.add(triple);
 			NonLiteral subject = triple.getSubject();
-			if (acceptor.expand(subject)) {
-				result.addAll(getContextOf(subject, acceptor));
+			if (acceptor.expand(subject) && !dontExpand.contains(subject)) {
+				dontExpand.add(subject);
+				result.addAll(getContextOf(subject, dontExpand, acceptor));
 			}
 		}
 		return result;
