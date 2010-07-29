@@ -22,7 +22,7 @@
         <foaf:maker rdf:resource="http://bblfish.net/people/henry/card#me"/>
     </owl:Ontology>
 
-    <rdf:Description rdf:about="rsa#RSAKey">
+    <Class rdf:about="rsa#RSAKey">
         <comment>
     The union of the public and private components of an RSAKey.
     Usually those pieces are not kept together
@@ -30,9 +30,9 @@
 
         <subClassOf rdf:resource="cert#Key"/>
         <vs:term_status>unstable</vs:term_status>
-    </rdf:Description>
+    </Class>
 
-    <rdf:Description rdf:about="rsa#RSAPrivateKey">
+    <Class rdf:about="rsa#RSAPrivateKey">
         <comment>
     A Private Key in the RSA framework 
     </comment>
@@ -41,9 +41,9 @@
         <subClassOf rdf:resource="cert#PrivateKey"/>
         <subClassOf rdf:resource="rsa#RSAKey"/>
         <vs:term_status>unstable</vs:term_status>
-    </rdf:Description>
+    </Class>
 
-    <rdf:Description rdf:about="rsa#RSAPublicKey">
+    <Class rdf:about="rsa#RSAPublicKey">
         <comment>
     The RSA public key.  Padded message m are encrypted by applying the function
       modulus(power(m,exponent),modulus)
@@ -53,7 +53,7 @@
         <subClassOf rdf:resource="cert#PublicKey"/>
         <subClassOf rdf:resource="rsa#RSAKey"/>
         <vs:term_status>unstable</vs:term_status>
-    </rdf:Description>
+    </Class>
 
     <rdf:Property rdf:about="rsa#modulus">
         <comment>    
