@@ -34,6 +34,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,6 +62,7 @@ import org.apache.clerezza.triaxrs.util.AcceptHeader;
 import org.apache.clerezza.triaxrs.util.FirstByteActionOutputStream;
 import org.apache.clerezza.triaxrs.util.MediaTypeComparator;
 import org.apache.clerezza.triaxrs.util.BodyStoringResponse;
+import org.apache.clerezza.triaxrs.util.InconsistentMediaTypeComparator;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
 import org.wymiwyg.wrhapi.MessageBody;
@@ -139,25 +141,36 @@ class ResponseProcessor {
 		}
 		final List<MediaType> expandedMethodProducibleMediaTypesList = expandListWithConcreterTypesFromAccept(methodProducibleMediaTypesList, acceptHeader);
 		MessageBodyWriter<Object> writer = null;
-		Collections.sort(expandedMethodProducibleMediaTypesList,
-				new MediaTypeComparator(acceptHeader));
+		List<Set<MediaType>> expandedMethodProducibleMediaTypeClasses
+				= getSortedClasses(expandedMethodProducibleMediaTypesList,
+				new InconsistentMediaTypeComparator(acceptHeader));
 		Collections.sort(methodProducibleMediaTypesList,
 				new MediaTypeComparator(acceptHeader));
 		MediaType relevantMethodProducibleType = null;
 
-		for (MediaType mediaType : expandedMethodProducibleMediaTypesList) {
-			writer = (MessageBodyWriter<Object>) JaxRsHandler.providers.getMessageBodyWriter(entity.getClass(), entityType,
-					annotations, mediaType);
-			if (writer != null) {
-				for (MediaType methodMediaType : methodProducibleMediaTypesList) {
-					if (methodMediaType.isCompatible(mediaType)) {
-						relevantMethodProducibleType = methodMediaType;
-						break;
+		for (Set<MediaType> preferenceClass : expandedMethodProducibleMediaTypeClasses) {
+			int lastWriterConcreteness = -1;
+			for (MediaType mediaType : preferenceClass) {
+				MessageBodyWriter<Object> currentWriter = (MessageBodyWriter<Object>) JaxRsHandler.providers.getMessageBodyWriter(entity.getClass(), entityType,
+						annotations, mediaType);
+				if (currentWriter != null) {
+					int writerConcreteness = getWriterConcreteness(currentWriter, mediaType);
+					if (writerConcreteness > lastWriterConcreteness) {
+						for (MediaType methodMediaType : methodProducibleMediaTypesList) {
+							if (methodMediaType.isCompatible(mediaType)) {
+								relevantMethodProducibleType = methodMediaType;
+								break;
+							}
+						}
+						writer = currentWriter;
 					}
 				}
+			}
+			if (writer != null) {
 				break;
 			}
 		}
+
 
 		if (writer == null) {
 			for (MediaType mediaType : expandedMethodProducibleMediaTypesList) {
@@ -229,7 +242,7 @@ class ResponseProcessor {
 			}
 		}
 
-		if (acceptHeader.getAcceptingMediaType(mediaType) == null) {
+		if (acceptHeader.getAcceptingMediaType(mediaType).isEmpty()) {
 			if (!mediaType.equals(MediaType.TEXT_HTML_TYPE)) {
 				throw new WebApplicationException(406);
 			}
@@ -356,11 +369,10 @@ class ResponseProcessor {
 	private static List<MediaType> expandListWithConcreterTypesFromAccept(List<MediaType> mediaTypesList, AcceptHeader acceptHeader) {
 		Collection<MediaType> addition = new HashSet<MediaType>();
 		for (MediaType mediaType : mediaTypesList) {
-			MediaType acceptingType = acceptHeader.getAcceptingMediaType(mediaType);
-
-			if ((acceptingType != null) && 
-					(MediaTypeComparator.compareByWildCardCount(acceptingType, mediaType) == -1)) {
-				addition.add(acceptingType);
+			for (MediaType acceptingType : acceptHeader.getAcceptingMediaType(mediaType)) {
+				if (MediaTypeComparator.compareByWildCardCount(acceptingType, mediaType) == -1) {
+					addition.add(acceptingType);
+				}
 			}
 		}
 		final List<MediaType> result = new ArrayList<MediaType>();
@@ -477,5 +489,68 @@ class ResponseProcessor {
 		}
 		return new MediaType(mediaType.getType(), mediaType.getSubtype(),
 				resultParams);
+	}
+
+	/**
+	 *
+	 * @param <T>
+	 * @param collection
+	 * @param comparator
+	 * @return a list containing sets of instances for which the comparator returns 0
+	 * in oder
+	 */
+	private static <T> List<Set<T>> getSortedClasses(Collection<T> collection,
+			Comparator<T> comparator) {
+		List<Set<T>> result = new ArrayList<Set<T>>();
+		if (collection.size() > 0) {
+			Set<T> pivotSet = new HashSet<T>();
+			Collection<T> before = new ArrayList<T>();
+			Collection<T> after = new ArrayList<T>();
+			Iterator<T> iterator = collection.iterator();
+			T pivot = iterator.next();
+			pivotSet.add(pivot);
+			while (iterator.hasNext()) {
+				T next = iterator.next();
+				int comparison = comparator.compare(next, pivot);
+				if (comparison > 0) {
+					after.add(next);
+				} else {
+					if (comparison < 0) {
+						before.add(next);
+					} else {
+						pivotSet.add(next);
+					}
+				}
+			}
+			result.addAll(getSortedClasses(before, comparator));
+			result.add(pivotSet);
+			result.addAll(getSortedClasses(after, comparator));
+		}
+		return result;
+
+	}
+
+	/**
+	 * 
+	 * @param writer
+	 * @param mediaType
+	 * @return 0 is mediaType ismatched only by wildcard in the @Produces of writer,
+	 *	 1, if the supertype is concrete, 2 if the subtype is concrete too
+	 */
+	private static int getWriterConcreteness(MessageBodyWriter<Object> writer, MediaType mediaType) {
+		Produces produces = writer.getClass().getAnnotation(Produces.class);
+		int result = 0;
+		if (produces != null) {
+			for (String producedValue : produces.value()) {
+				MediaType producesType = MediaType.valueOf(producedValue);
+				if (producesType.isCompatible(mediaType)) {
+					int concreteness = 2 - MediaTypeComparator.countWildChars(producesType);
+					if (concreteness > result) {
+						result = concreteness;
+					}
+				}
+			}
+		}
+		return result;
 	}
 }
