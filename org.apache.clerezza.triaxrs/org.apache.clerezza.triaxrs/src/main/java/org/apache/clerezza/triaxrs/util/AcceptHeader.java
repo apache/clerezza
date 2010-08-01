@@ -19,7 +19,9 @@
 package org.apache.clerezza.triaxrs.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -123,13 +125,27 @@ public class AcceptHeader {
 		return 0;
 	}
 
-	public MediaType getAcceptingMediaType(MediaType type) {
+	/**
+	 *
+	 * @param type
+	 * @return the media-types in the accept header that are would best accept
+	 * type, i.e. all pattern with the highest same q-value accepting type are
+	 * returned
+	 */
+	public Set<MediaType> getAcceptingMediaType(MediaType type) {
+		Set<MediaType> result = new HashSet<MediaType>();
+		double currentQValue = 0;
 		for (AcceptHeaderEntry acceptHeaderEntry : entries) {
 			if (acceptHeaderEntry.mediaType.isCompatible(type)) {
-				return acceptHeaderEntry.mediaType;
+				if (acceptHeaderEntry.quality >= currentQValue) {
+					currentQValue = acceptHeaderEntry.quality;
+					result.add(acceptHeaderEntry.mediaType);
+				} else {
+					break;
+				}
 			}
 		}
-		return null;
+		return result;
 	}
 
 	/**

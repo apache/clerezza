@@ -23,8 +23,10 @@ import java.util.Comparator;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Uses wirldcard as firts key and q-value as second key (for selecting 
- * server-side entities as jax-rs spec ignores q-value in annotations.
+ * Sorts media types in accordance with an accept-header, falling back to literal
+ * sorting to guarantee constistency.
+ *
+ * Also provides static Utility methods for Media Type comparison.
  *
  * @author reto
  */
