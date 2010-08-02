@@ -35,7 +35,7 @@ import org.osgi.service.component.ComponentContext;
  *
  * @author reto
  */
-@Component
+@Component(metatype=true)
 @Service(MailSessionFactory.class)
 public class MailSessionFactory {
 	/**
