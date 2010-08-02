@@ -37,6 +37,8 @@ import org.osgi.service.component.ComponentContext;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 
@@ -482,9 +484,15 @@ public class HierarchyService {
 	}
 
 	protected GraphNode getCreator() {
-		String userName = UserUtil.getCurrentUserName();
+		final String userName = UserUtil.getCurrentUserName();
 		if (userName != null) {
-			return userManager.getUserGraphNode(userName);
+			return AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
+
+				@Override
+				public GraphNode run() {
+					return userManager.getUserGraphNode(userName);
+				}
+			});
 		}
 		return null;
 	}
