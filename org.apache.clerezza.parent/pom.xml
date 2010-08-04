@@ -548,6 +548,11 @@
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.clerezza.ext</groupId>
+				<artifactId>org.im4java</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.rdf.utils</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
