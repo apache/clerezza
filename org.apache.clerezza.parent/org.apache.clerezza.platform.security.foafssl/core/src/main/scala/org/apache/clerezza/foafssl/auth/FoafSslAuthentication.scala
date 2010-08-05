@@ -50,7 +50,12 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
 			return null
 		} else {
 			val webIdUriRefs = Utilities.getClaimedWebIds(certificates)
-			Utilities.cretateUsernameForWebId(webIdUriRefs(0))
+			if (webIdUriRefs.size > 0) {
+				Utilities.cretateUsernameForWebId(webIdUriRefs(0))
+			} else {
+				null
+			}
+			
 		}
 	}
 
