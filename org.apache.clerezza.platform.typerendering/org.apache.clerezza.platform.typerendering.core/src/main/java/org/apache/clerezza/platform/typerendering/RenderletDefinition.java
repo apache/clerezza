@@ -49,7 +49,14 @@ public class RenderletDefinition {
 	private boolean builtIn;
 	private LockableMGraph configGraph;
 
-	public RenderletDefinition(BNode renderletDefinition, LockableMGraph configGraph) {
+	/**
+	 * creates A RenderletDefinition.
+	 * This constructor expects configGraph to be read-locked
+	 *
+	 * @param renderletDefinition
+	 * @param configGraph
+	 */
+	RenderletDefinition(BNode renderletDefinition, LockableMGraph configGraph) {
 		this.configGraph = configGraph;
 		this.rederletDefinition = renderletDefinition;
 		renderlet = getRenderletName(renderletDefinition);

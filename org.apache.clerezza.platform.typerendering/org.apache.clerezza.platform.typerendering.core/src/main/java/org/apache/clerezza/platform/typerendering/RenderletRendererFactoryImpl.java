@@ -357,17 +357,23 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 
 	private void createType2DefinitionMap() {
 		type2DefinitionMap = new HashMap<UriRef, RenderletDefinition[]>(50);
+		Lock l = configGraph.getLock().readLock();
 		for (Resource prioRdfType : rdfTypePrioList) {
-			Iterator<Triple> renderletDefs =
-					configGraph.filter(null, TYPERENDERING.renderedType, prioRdfType);
-			ArrayList<RenderletDefinition> definitionList = new ArrayList<RenderletDefinition>();
-			while (renderletDefs.hasNext()) {
-				definitionList.add(
-						new RenderletDefinition((BNode) renderletDefs.next().getSubject(),
-						configGraph));
+			l.lock();
+			try {
+				Iterator<Triple> renderletDefs =
+						configGraph.filter(null, TYPERENDERING.renderedType, prioRdfType);
+				ArrayList<RenderletDefinition> definitionList = new ArrayList<RenderletDefinition>();
+				while (renderletDefs.hasNext()) {
+					definitionList.add(
+							new RenderletDefinition((BNode) renderletDefs.next().getSubject(),
+							configGraph));
+				}
+				type2DefinitionMap.put((UriRef) prioRdfType,
+						definitionList.toArray(new RenderletDefinition[definitionList.size()]));
+			} finally {
+				l.unlock();
 			}
-			type2DefinitionMap.put((UriRef) prioRdfType,
-					definitionList.toArray(new RenderletDefinition[definitionList.size()]));
 		}
 	}
 
