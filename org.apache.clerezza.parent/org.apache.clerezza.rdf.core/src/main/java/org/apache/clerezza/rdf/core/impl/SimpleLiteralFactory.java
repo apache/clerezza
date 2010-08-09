@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collections;
@@ -210,6 +211,24 @@ public class SimpleLiteralFactory extends LiteralFactory {
 			return new Double(literal.getLexicalForm());
 		}
 	}
+
+	private static class BigIntegerConverter implements TypeConverter<BigInteger> {
+
+
+
+		@Override
+		public TypedLiteral createTypedLiteral(BigInteger value) {
+			return new TypedLiteralImpl(value.toString(), xsdInteger);
+		}
+
+		@Override
+		public BigInteger createObject(TypedLiteral literal) {
+			if (!literal.getDataType().equals(xsdInteger)) {
+				throw new InvalidLiteralTypeException(Double.class, literal.getDataType());
+			}
+			return new BigInteger(literal.getLexicalForm());
+		}
+	}
 	
 	private static class UriRefConverter implements TypeConverter<UriRef> {
 
@@ -229,7 +248,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 		}
 	}
 
-	private static Map<Class<?>, TypeConverter<?>> typeConverterMap = new HashMap<Class<?>, TypeConverter<?>>();
+	final private static Map<Class<?>, TypeConverter<?>> typeConverterMap = new HashMap<Class<?>, TypeConverter<?>>();
 
 	static {
 		typeConverterMap.put(byteArrayType, new ByteArrayConverter());
@@ -237,6 +256,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 		typeConverterMap.put(Boolean.class, new BooleanConverter());
 		typeConverterMap.put(String.class, new StringConverter());
 		typeConverterMap.put(Integer.class, new IntegerConverter());
+		typeConverterMap.put(BigInteger.class, new BigIntegerConverter());
 		typeConverterMap.put(Long.class, new LongConverter());
 		typeConverterMap.put(Double.class, new DoubleConverter());
 		typeConverterMap.put(UriRef.class, new UriRefConverter());
