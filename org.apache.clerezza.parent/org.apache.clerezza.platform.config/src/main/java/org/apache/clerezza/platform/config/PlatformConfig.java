@@ -23,6 +23,7 @@ import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.platform.Constants;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.felix.scr.annotations.Component;
@@ -115,11 +116,17 @@ public class PlatformConfig {
 	}
 
 	private NonLiteral getPlatformInstanceResource() {
-		Iterator<Triple> instances = systemGraph.filter(null, RDF.type, PLATFORM.Instance);
-		if (!instances.hasNext()) {
-			throw new RuntimeException("No Platform:Instance in system graph.");
-		}		
-		return instances.next().getSubject();
+		Lock l = systemGraph.getLock().readLock();
+		l.lock();
+		try {
+			Iterator<Triple> instances = systemGraph.filter(null, RDF.type, PLATFORM.Instance);
+			if (!instances.hasNext()) {
+				throw new RuntimeException("No Platform:Instance in system graph.");
+			}
+			return instances.next().getSubject();
+		} finally {
+			l.unlock();
+		}
 	}
 
 	/**
