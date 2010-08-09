@@ -201,7 +201,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 		var classCounter = 0
 
 		val virtualDirectory = new VirtualDirectory("(memory)", None)
-		val msgWriter = new StringWriter
+		var msgWriter = new StringWriter
 		lazy val compiler = {
 			AccessController.doPrivileged(new PrivilegedAction[BundleContextScalaCompiler]() {
 				override def run() =  {
@@ -236,7 +236,9 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 							(new compiler.Run).compileSources(sources)
 							if (compiler.reporter.hasErrors) {
 								compiler.reporter.reset
-								throw new ScriptException(msgWriter.toString, "script", -1);
+								val msg = msgWriter.toString
+								msgWriter = new StringWriter
+								throw new ScriptException(msg, "script", -1);
 							}
 							new CompiledScript() {
 								override def eval(context: ScriptContext) = {
