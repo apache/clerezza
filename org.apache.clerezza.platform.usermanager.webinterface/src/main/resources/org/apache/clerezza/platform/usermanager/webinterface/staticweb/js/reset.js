@@ -20,11 +20,17 @@
 $(document).ready(function() {
 
 	$("#resetButton").hide();
-	$("<a/>").addClass("tx-button tx-button-generic").attr("href", "#")
-		.text("Reset").insertBefore("#resetButton");
+	$("<a/>").addClass("tx-button tx-button-generic").attr({"href": "#", "style": "width: 9em;" })
+		.text("Get New Password").insertBefore("#resetButton");
 
 	$(".tx-button-generic").click(function(){
-		$("#reset-form").submit();
+        var options = new AjaxOptions("send-data", "sending data", function(obj) {
+				$(".tx-info").text(obj);			
+        });
+        options.type = "POST";
+        options.url = "/reset/";
+        options.data = $("#reset-form").serialize();
+        $.ajax(options);
 	});
 
 	$("input[name*='user']").focus();
@@ -35,5 +41,5 @@ $(document).ready(function() {
 					document.location.href.indexOf(document.location.pathname)) +
 				"/dashboard/overview",
 			"style" : "padding-left: 1em; background-position: left center;"})
-		.text("Login Page").insertAfter("#reset-form");
+		.text("Log in").insertAfter("#reset-form");
 });
