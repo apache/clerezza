@@ -177,7 +177,7 @@ public class CookieLogin {
 				GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
 				result.addProperty(RDF.type, LOGIN.LoginPage);
 				PlainLiteral failedMessage = new PlainLiteralImpl(
-						"Login name or password are wrong");
+						"Username name or password are wrong");
 				try {
 					if (authenticationChecker.authenticate(userName,password)) {
 
