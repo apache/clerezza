@@ -211,6 +211,10 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 		if (decimalValues.length > 0) {
 			return Some(BigInt(decimalValues*))
 		}
+		val intValues = n/CERT.int_
+		if (intValues.length > 0) {
+			return Some(BigInt(intValues*))
+		}
 		return None
 	}
  
@@ -225,6 +229,7 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 			(l.getLexicalForm, l.getDataType) match {
 				case (lf, CERT.hex) => Some(intValueOfHexString(lf))
 				case (lf, CERT.decimal) => Some(BigInt(lf))
+				case (lf, CERT.int_) => Some(BigInt(lf))
 				case _ => Some(new BigInt(LiteralFactory.getInstance.createObject(classOf[BigInteger], l)))
 			}
 		} catch {
