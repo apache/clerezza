@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.users
 
 import java.net.HttpURLConnection
 import java.net.URL
+import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.config.SystemConfig
 import org.apache.clerezza.rdf.core.TripleCollection
@@ -59,9 +60,8 @@ class WebDescriptionProvider {
 	}
 	
 	private val authoritativeLocalGraphs = Array(
-		SystemConfig.SYSTEM_GRAPH_URI,
-		PlatformConfig.CONFIG_GRAPH_URI,
-		new UriRef("http://tpf.localhost/config.graph"))
+		Constants.SYSTEM_GRAPH_URI,
+		Constants.CONFIG_GRAPH_URI)
 	
 	private var authoritativeLocalGraphUnion: TripleCollection = null
 	
