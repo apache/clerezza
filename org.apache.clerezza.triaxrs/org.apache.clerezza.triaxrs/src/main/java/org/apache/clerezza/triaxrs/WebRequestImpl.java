@@ -39,6 +39,8 @@ import javax.ws.rs.ext.Providers;
 import org.apache.clerezza.triaxrs.providers.provided.JafMessageBodyReader;
 import org.apache.clerezza.triaxrs.util.AcceptHeader;
 import org.apache.clerezza.triaxrs.util.CaseInsensitiveMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.HeaderName;
 import org.wymiwyg.wrhapi.Method;
@@ -51,6 +53,7 @@ import org.wymiwyg.wrhapi.Request;
  */
 public class WebRequestImpl implements WebRequest {
 
+	private static Logger logger = LoggerFactory.getLogger(WebRequestImpl.class);
 	
 	static class BodyKey {
 		private Annotation[] transformationAnnotation;
@@ -145,8 +148,9 @@ public class WebRequestImpl implements WebRequest {
 	@Override
 	public AcceptHeader getAcceptHeader() {
 		if (acceptHeader == null) {
-			acceptHeader = new AcceptHeader(getHeaders()
-					.get(HttpHeaders.ACCEPT));
+			final List<String> acceptHeaderStrings = getHeaders().get(HttpHeaders.ACCEPT);
+			logger.debug("Accept-Header: {}", acceptHeaderStrings);
+			acceptHeader = new AcceptHeader(acceptHeaderStrings);
 		}
 		return acceptHeader;
 	}
