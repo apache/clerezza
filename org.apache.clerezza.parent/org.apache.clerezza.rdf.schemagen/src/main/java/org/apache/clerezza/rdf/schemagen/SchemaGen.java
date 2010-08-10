@@ -139,6 +139,7 @@ public class SchemaGen {
 
 		SortedSet<OntologyResource> ontClasses = new TreeSet<OntologyResource>();
 		ontClasses.addAll(getResourcesOfType(out, RDFS.Class));
+		ontClasses.addAll(getResourcesOfType(out, RDFS.Datatype));
 		ontClasses.addAll(getResourcesOfType(out, OWL.Class));
 		if (ontClasses.size() > 0) {
 			out.println("\t// Classes");
@@ -148,6 +149,9 @@ public class SchemaGen {
 		ontProperties.addAll(getResourcesOfType(out, RDF.Property));
 		ontProperties.addAll(getResourcesOfType(out, OWL.ObjectProperty));
 		ontProperties.addAll(getResourcesOfType(out, OWL.DatatypeProperty));
+		//this is for some ontologies defining things that are both classes
+		//and properties, like image in RSS 1.0
+		ontProperties.removeAll(ontClasses);
 		if (ontProperties.size() > 0) {
 			out.println();
 			out.println("\t// Properties");
@@ -375,6 +379,7 @@ public class SchemaGen {
 		private static final String NS =
 				"http://www.w3.org/2000/01/rdf-schema#";
 		private static final UriRef Class = new UriRef(NS + "Class");
+		private static final UriRef Datatype = new UriRef(NS + "Datatype");
 		private static final UriRef comment = new UriRef(NS + "comment");
 	}
 
