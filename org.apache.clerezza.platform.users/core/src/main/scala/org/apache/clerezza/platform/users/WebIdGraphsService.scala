@@ -188,7 +188,7 @@ class WebIdGraphsService() {
 			val url = new URL(representationGraphUriString)
 			val connection = url.openConnection()
 			connection match {
-				case hc: HttpURLConnection => hc.addRequestProperty("Accept:",  acceptHeader);
+				case hc: HttpURLConnection => hc.addRequestProperty("Accept",  acceptHeader);
 			}
 			val mediaType = connection.getContentType()
 			connection.connect()
