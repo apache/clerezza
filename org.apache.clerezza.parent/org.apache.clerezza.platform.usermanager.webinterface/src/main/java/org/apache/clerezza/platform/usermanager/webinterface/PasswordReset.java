@@ -43,7 +43,6 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.platform.mail.MailMan;
@@ -110,10 +109,6 @@ public class PasswordReset {
 				new UriRef(templateURL.toString()), USERMANAGER.PasswordResetPage,
 				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		templateURL = getClass().getResource("reset_success.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), USERMANAGER.PasswordResetSuccessPage,
-				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		templateURL = getClass().getResource("reset_mail.txt");
 		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
 				new UriRef(templateURL.toString()), USERMANAGER.PasswordResetMail,
@@ -145,8 +140,7 @@ public class PasswordReset {
 					userManager.updateUser(userName, null, newPassword,
 							Collections.EMPTY_LIST, null);
 				} else {
-					return createInputErrorMessageResponse(
-							"User name and email address don't match");
+					return createResponse("Username and e-mail address don't match.");
 				}
 				try {
 					NonLiteral agent;
@@ -173,25 +167,14 @@ public class PasswordReset {
 				} catch (MessagingException ex) {
 					throw new RuntimeException(ex);
 				}
-				return RedirectUtil.createSeeOtherResponse("/reset/success/", uriInfo);
+				return createResponse("Successfully password reseted. Check your e-mail box. " +
+						"An automatically generated password was sent to your e-mail address.");
 			}
 		});
 	}
 
-	@GET
-	@Path("success")
-	public GraphNode successPage(@Context UriInfo uriInfo) {
-		TrailingSlash.enforcePresent(uriInfo);
-		GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
-		result.addProperty(RDF.type, USERMANAGER.PasswordResetSuccessPage);
-		return result;
-	}
-
-	private Response createInputErrorMessageResponse(String message) {
-		Response.ResponseBuilder responseBuilder =
-				Response.ok("<html><body><p>Input Error(s):</p>" + message +
-				"</body></html>");
-		responseBuilder.type(MediaType.TEXT_XML_TYPE);
+	private Response createResponse(String message) {
+		Response.ResponseBuilder responseBuilder = Response.ok(message);
 		return responseBuilder.build();
 	}
 }
