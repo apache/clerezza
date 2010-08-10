@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(Editor.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractDiscobitsHandler.class);
 
 	/**
 	 *
