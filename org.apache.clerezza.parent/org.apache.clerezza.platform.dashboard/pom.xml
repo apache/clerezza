@@ -10,7 +10,7 @@
 	<packaging>pom</packaging>
 	<version>0.4-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Dashboard</name>
-	<description>Provides a dashboard and a global contextual menu.</description>
+	<description>Provides a global contextual menu.</description>
 	
 	<modules>
 		<module>org.apache.clerezza.platform.dashboard.ontologies</module>
