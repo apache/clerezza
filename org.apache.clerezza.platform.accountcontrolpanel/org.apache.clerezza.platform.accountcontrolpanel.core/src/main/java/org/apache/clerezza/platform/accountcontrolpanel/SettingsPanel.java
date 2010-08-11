@@ -71,6 +71,7 @@ import org.apache.clerezza.jaxrs.utils.form.FormFile;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL;
 import org.apache.clerezza.platform.config.SystemConfig;
+import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
@@ -113,6 +114,8 @@ public class SettingsPanel {
 	private MGraph systemGraph; // System graph for user data access
 	@Reference
 	private RenderletManager renderletManager;
+	@Reference
+	private ContentGraphProvider cgProvider;
 	private final Logger logger = LoggerFactory.getLogger(SettingsPanel.class);
 	private ConfigurationAdmin configAdmin;
 
@@ -521,6 +524,33 @@ public class SettingsPanel {
 		});
 		return RedirectUtil.createSeeOtherResponse("../control-panel", uriInfo);
 
+	}
+
+	/**
+	 * changes the password of an user
+	 *
+	 * @param idP id is the username as given in the URL
+	 * @param lang represents the user's new standard language.
+	 * @return
+	 */
+	@POST
+	@Path("change-language")
+	public Response changeUserLanguage(@PathParam(value = "id") String idP,
+			@FormParam("availablelanguages") final String lang, @Context UriInfo uriInfo) {
+
+		final String id = idP;
+		AccessController.checkPermission(new AccountControlPanelAppPermission(id, ""));
+		AccessController.doPrivileged(new PrivilegedAction() {
+			@Override
+			public Object run() {
+				GraphNode userNode = new GraphNode(getAgent(id), systemGraph);
+				userNode.deleteProperties(PLATFORM.preferredLangInISOCode);
+				userNode.addProperty(PLATFORM.preferredLangInISOCode, LiteralFactory.getInstance().createTypedLiteral(lang));
+				return null;
+			}
+		});
+
+		return RedirectUtil.createSeeOtherResponse("../control-panel", uriInfo);
 	}
 
 	/**

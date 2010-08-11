@@ -14,10 +14,10 @@ if ((res/cp("userBundlePermission")*) == "true") {
 	<h3>Install Bundle</h3>
 
 	<form method="post" action="control-panel/install-bundle" enctype="multipart/form-data">
-		<input type="file" class="FieldText" name="bundle" size="30" title="bundle path"/>
-		<input value="Install" type="submit"/><p />
+		<input type="file" class="FieldText" name="bundle" size="30" title="bundle path"/><br/><br/>
+		<input style="width: 5em;" value="Install" type="submit"/><p />
 	</form>
-
+	<br/><br/>
 	<h3>User Bundles</h3>
 	<table border="1">
 	<tbody>
@@ -68,29 +68,60 @@ if ((res/cp("userBundlePermission")*) == "true") {
 
 if((res/cp("changePasswordPermission")*) == "true") {
 	nodeBuff +=(<h2>Change Password</h2>
-	<form method="post" action="control-panel/change-password" >
-	<label for="oldPW">Current Password:</label>
-	<input type="password" name="oldPW"/>
-	<br />
-	<label for="newPW">New Password:</label>
-	<input type="password" name="newPW"/>
-	<br />
-	<label for="confirmNewPW">Confirm new Password:</label>
-	<input type="password" name="confirmNewPW"/>
-	<br />
-	<input type="submit" name="submit" value="Submit"/>
+	
+
+	<form action="control-panel/change-password" method="post">
+		<fieldset>
+			<ol style="display: block;">
+				<li class="tx-line" style="background-image: none;">
+					<label>Current Password:</label>
+					<span class="tx-item">
+						<input type="password" name="oldPW"/>
+					</span>
+				</li>
+				<li class="tx-line" style="background-image: none;">
+					<label>New Password:</label>
+					<span class="tx-item">
+						<input type="password" name="newPW"/>
+					</span>
+				</li>
+				<li class="tx-line" style="background-image: none;">
+					<label>Confirm new Password:</label>
+					<span class="tx-item">
+						<input type="password" name="confirmNewPW"/>
+					</span>
+				</li>
+				<br />
+				<input style="width: 5em;" type="submit" name="submit" value="Submit"/>
+			</ol>
+			<br/>
+		</fieldset>
 	</form>)
+
+
 }
 
 if((res/cp("changedPassword")).length > 0) {
 	nodeBuff +=(<br /><span>Password has not changed, either wrong current password or the
-				new password and the confirmation didn't match!</span>)
+				new password and the confirmation didn't match!<br /><br /></span>)
 }
 
+
+nodeBuff +=(<h2>Change user's default language</h2>
+	<form method="post" action="control-panel/change-language">
+		{render(context/platform("instance")/platform("languages"), "naked")}
+		<br/><br/>
+		<script type="text/javascript">$("#availablelanguages").val({"'" + (context/platform("user")/platform("preferredLangInISOCode")*) + "'"})</script>
+		<input style="width: 5em;" type="submit" name="submit" value="Submit"/>
+		<br/><br/>
+	</form>)
+
 <div id="tx-content">
-{if(nodeBuff.isEmpty)
-	<span>There are no settings you can configure for this account!</span> 
-else
-	nodeBuff
-}
+	<div class="tx-edit" style="margin-left: 0.5em;">
+	{if(nodeBuff.isEmpty)
+		<span>There are no settings you can configure for this account!</span>
+	else
+		nodeBuff
+	}
+	</div>
 </div>
