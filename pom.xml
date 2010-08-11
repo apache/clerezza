@@ -47,6 +47,7 @@
 		<module>org.apache.clerezza.platform.content</module>
 		<module>org.apache.clerezza.platform.content.representations</module>
 		<module>org.apache.clerezza.platform.dashboard</module>
+		<module>org.apache.clerezza.platform.dashboard.webinterface</module>
 		<module>org.apache.clerezza.platform.documentation</module>
 		<module>org.apache.clerezza.platform.documentation.viewer</module>
 		<module>org.apache.clerezza.platform.enrichment</module>
@@ -661,6 +662,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.dashboard.ontologies</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.dashboard.webinterface</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.platform.dashboard;
+package org.apache.clerezza.platform.dashboard.webinterface;
 
 import java.net.URL;
 
@@ -38,6 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.dashboard.ontologies.DASHBOARD;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
