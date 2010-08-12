@@ -287,7 +287,7 @@ public class Main implements BundleActivator {
 		}
 		{
 			
-			final String keyStorePassword = arguments.getKeyStorePath();
+			final String keyStorePassword = arguments.getKeyStorePassword();
 			if (keyStorePassword != null) {
 				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.password", keyStorePassword);
 				httpsEnabled = true;
