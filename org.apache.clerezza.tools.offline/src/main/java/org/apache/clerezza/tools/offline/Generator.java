@@ -234,12 +234,16 @@ public class Generator {
 		}
 		final String responseContentType = urlConnection.getContentType();
 		if (!responseContentType.startsWith(mediaType.toString())) {
-			throw new VariantUnavailableException("Got "+responseContentType+" and not "+mediaType);
+			throw new VariantUnavailableException("Got " + responseContentType + " and not " + mediaType);
 		}
-		final InputStream in = urlConnection.getInputStream();
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		for (int ch = in.read(); ch != -1; ch = in.read()) {
-			baos.write(ch);
+		final InputStream in = urlConnection.getInputStream();
+		try {
+			for (int ch = in.read(); ch != -1; ch = in.read()) {
+				baos.write(ch);
+			}
+		} finally {
+			in.close();
 		}
 		return baos.toByteArray();
 	}
