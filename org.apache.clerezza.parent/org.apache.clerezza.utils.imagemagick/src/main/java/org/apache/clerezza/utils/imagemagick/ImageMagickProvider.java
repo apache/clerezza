@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
@@ -55,6 +54,9 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.felix.scr.annotations.Services;
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IMOperation;
+import org.im4java.core.Stream2BufferedImage;
 
 /**
  * This class implements interfaces that execute system calls to imageMagick.
@@ -73,9 +75,9 @@ import org.apache.felix.scr.annotations.Services;
 	@Property(name="convert", value="convert", description="Specifies the ImageMagick convert command."),
 	@Property(name="identify", value="identify", description="Specifies the ImageMagick identify command."),
 	@Property(name="release_number", intValue=6, description="Specifies ImageMagick release number (Syntax: release.version.majorRevision-minorRevision)."),
-	@Property(name="version_number", intValue=5, description="Specifies ImageMagick version number (Syntax: release.version.majorRevision-minorRevision)."),
-	@Property(name="major_release_number", intValue=2, description="Specifies ImageMagick major revision number (Syntax: release.version.majorRevision-minorRevision)."),
-	@Property(name="minor_release_number", intValue=10, description="Specifies ImageMagick minor revision number (Syntax: release.version.majorRevision-minorRevision)."),
+	@Property(name="version_number", intValue=3, description="Specifies ImageMagick version number (Syntax: release.version.majorRevision-minorRevision)."),
+	@Property(name="major_release_number", intValue=7, description="Specifies ImageMagick major revision number (Syntax: release.version.majorRevision-minorRevision)."),
+	@Property(name="minor_release_number", intValue=9, description="Specifies ImageMagick minor revision number (Syntax: release.version.majorRevision-minorRevision)."),
 	@Property(name="service.ranking", value="100")
 	})
 @Services({
@@ -87,34 +89,12 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 
 	private String convert = "convert";
 	private String identify = "identify";
-	private int imagemagickRelease = 6;
-	private int imagemagickVersion = 5;
-	private int imagemagickRevisionMajorNumber = 2;
-	private int imagemagickRevisionMinorNumber = 10;
+
 
 	@Reference
 	private Serializer serializer;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	protected void activate(ComponentContext cCtx) {
-		if (cCtx != null) {
-			convert = (String) cCtx.getProperties().get("convert");
-			identify = (String) cCtx.getProperties().get("identify");
-			imagemagickRelease = (Integer) cCtx.getProperties().
-				get("release_number");
-			imagemagickVersion = (Integer) cCtx.getProperties().
-				get("version_number");
-			imagemagickRevisionMajorNumber = (Integer) cCtx.getProperties().
-				get("major_release_number");
-			imagemagickRevisionMinorNumber = (Integer) cCtx.getProperties().
-				get("minor_release_number");
-		}
-		
-		checkImageMagickInstallation();
-		
-		logger.info("ImageMagickProvider activated");
-	}
 
 	/**
 	 * Default Constructor
@@ -138,22 +118,17 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 		try {
 			List<String> command = new ArrayList<String>();
 			command.add(identify);
-			command.add("--version");
+			command.add("-version");
 			Process proc = execCommand(command);
 			
 			BufferedReader br = new BufferedReader(
 					new InputStreamReader(proc.getInputStream()));
 			String output = br.readLine();
 			br.close();
-			
-			ok = checkImageMagickVersion(output, imagemagickRelease, 
-								imagemagickVersion, 
-								imagemagickRevisionMajorNumber, 
-								imagemagickRevisionMinorNumber);
-			
+					
 			command.clear();
 			command.add(convert);
-			command.add("--version");
+			command.add("-version");
 			proc = execCommand(command);
 			
 			br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
@@ -162,8 +137,7 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 			
 			if(output!=null && !output.contains("Version: ImageMagick")) {
 				ok = false;
-			}
-			
+			}			
 			
 		} catch (InterruptedException ex) {
 			Thread.currentThread().interrupt();
@@ -179,46 +153,7 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 		}
 		
 		if(!ok) {
-			logger.error("ImageMagick version can not be verified. " +
-			"Please make sure you have ImageMagick (>=" +
-			imagemagickRelease + "." + imagemagickVersion + "." +
-			imagemagickRevisionMajorNumber + "-" + 
-			imagemagickRevisionMinorNumber +
-			") installed correctly");
-			
 			throw new RuntimeException("ImageMagick not installed correctly.");
-		}
-	}
-
-	private boolean checkImageMagickVersion(String str, int release, int version,
-			int revision_major_number, int revision_minor_number) {
-
-		Pattern pattern = Pattern.compile("(\\d+\\.){2}\\d+-\\d+");
-		Matcher matcher = pattern.matcher(str);
-
-		boolean error = false;
-		if (matcher.find()) {
-			String versionString = matcher.group();
-			String[] versionParts = versionString.split("\\.");
-			if (Integer.parseInt(versionParts[0]) < release) {
-				error = true;
-			} else if (Integer.parseInt(versionParts[0]) == release) {
-				if (Integer.parseInt(versionParts[1]) < version) {
-					error = true;
-				} else if (Integer.parseInt(versionParts[1]) == version) {
-					String[] revisionParts = versionParts[2].split("-");
-					if (Integer.parseInt(revisionParts[0]) < revision_major_number) {
-						error = true;
-					} else if (Integer.parseInt(revisionParts[0]) == revision_major_number) {
-						if (Integer.parseInt(revisionParts[1]) < revision_minor_number) {
-							error = true;
-						}
-					}
-				}
-			}
-			return !error;
-		} else {
-			return false;
 		}
 	}
 
@@ -235,86 +170,76 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 
 	@Override
 	public BufferedImage flip(BufferedImage image, int direction) {
-		List<String> command = new ArrayList<String>(10);
-		command.add(convert);
+		IMOperation op = new IMOperation();
 		if (direction == 0) {
-			command.add("-flop");
+			op.flop();
 		} else {
-			command.add("-flip");
+			op.flip();
 		}
-
-		return processImage(command, 100, image);
+		return processImage(op, image);
 	}
 
 	@Override
 	public BufferedImage rotate(BufferedImage image, int angle) {
-		List<String> command = new ArrayList<String>(10);
-		command.add(convert);
-		command.add("-rotate");
-		command.add("" + angle);
-
-		return processImage(command, 100, image);
+		IMOperation op = new IMOperation();
+		op.rotate(Double.valueOf(angle));
+		return processImage(op, image);
 	}
 
 	@Override
 	public BufferedImage resize(BufferedImage image, int newWidth, int newHeight) {
-		List<String> command = new ArrayList<String>(10);
-		command.add(convert);
-		command.add("-geometry");
-		command.add(newWidth + "x" + newHeight + "!");
-
-		return processImage(command, 100, image);
+		IMOperation op = new IMOperation();
+		op.resize(newWidth == 0 ? null : newWidth, newHeight == 0 ? null : newHeight, "!");
+		return processImage(op, image);
 	}
 
 	@Override
 	public BufferedImage resizeProportional(BufferedImage image, int newWidth,
 			int newHeight) {
-		List<String> command = new ArrayList<String>(10);
-		command.add(convert);
-		command.add("-geometry");
-		if (newWidth != 0) {
-			command.add("" + newWidth);
-		} else {
-			if (newHeight != 0) {
-				command.add("x" + newHeight);
-			} else {
-				return image;
-			}
-		}
-
-		return processImage(command, 100, image);
+		IMOperation op = new IMOperation();
+		op.resize(newWidth == 0 ? null : newWidth, newWidth !=0 || newHeight == 0  ? null : newHeight);
+		return processImage(op, image);
 	}
 
 	@Override
 	public BufferedImage resizeRelative(BufferedImage image,
 			float resizeFactorWidth, float resizeFactorHeight) {
-		List<String> command = new ArrayList<String>(10);
-		command.add(convert);
-		command.add("-geometry");
-		command.add((100 * resizeFactorWidth) + "%x"
-				+ (100 * resizeFactorHeight) + "%");
-
-		return processImage(command, 100, image);
+		IMOperation op = new IMOperation();
+		Integer newWidth = Float.valueOf(image.getWidth() * resizeFactorWidth).intValue();
+		Integer newHeight = Float.valueOf(image.getHeight() * resizeFactorHeight).intValue();
+		op.resize(newWidth, newHeight, "!");
+		return processImage(op, image);
 	}
 
 	@Override
 	public BufferedImage resizeRelativeProportional(BufferedImage image,
 			float resizeFactor) {
-		List<String> command = new ArrayList<String>(10);
-		command.add(convert);
-		command.add("-geometry");
-		command.add(100 * resizeFactor + "%");
-
-		return processImage(command, 100, image);
+		IMOperation op = new IMOperation();		
+		Integer width = Float.valueOf(image.getWidth() * resizeFactor).intValue();
+		op.resize(width);
+		return processImage(op, image);
 	}
 
-	private BufferedImage crop(BufferedImage image, int newWidth, int newHeight) {
-		List<String> command = new ArrayList<String>(10);
-		command.add(convert);
-		command.add("-crop");
-		command.add(newWidth + "x" + newHeight);
+	@Override
+	public BufferedImage makeAThumbnail(BufferedImage image, int width, int height) {
+		IMOperation op = new IMOperation();
+		op.thumbnail(width, height);
+		return processImage(op, image);
+	}
 
-		return processImage(command, 100, image);
+	private BufferedImage processImage(IMOperation ops, BufferedImage image) {
+		ConvertCmd convertCmd = new ConvertCmd();
+		ops.addImage();
+		ops.addImage("jpg:-");
+		Stream2BufferedImage s2b = new Stream2BufferedImage();
+		convertCmd.setOutputConsumer(s2b);
+		try {
+			convertCmd.run(ops, image);
+		} catch(Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		BufferedImage img = s2b.getImage();
+		return img;
 	}
 
 	@Override
@@ -546,35 +471,6 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 		}
 		
 		return null;
-	}
-
-	
-	
-	private BufferedImage processImage(List<String> command, int quality,
-			BufferedImage image) {
-		command.add("-quality");
-		command.add(String.valueOf(quality));
-		command.add("-");
-		command.add("-");
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
-			if (ImageIO.write(image, "png", baos) == false) {
-				logger.warn("Cannot write image to output stream");
-				return null;
-			}
-
-			return ImageIO.read(execCommand(command, baos.toByteArray()).
-					getInputStream());
-			
-		} catch (InterruptedException ex) {
-			logger.warn("ImageMagick has been interrupted");
-			Thread.currentThread().interrupt();
-			return null;
-		} catch (IOException ex) {
-			logger.warn("IOException while trying to execute {}", command);
-			return null;
-		}
 	}
 
 	private Process execCommand(List<String> command,
