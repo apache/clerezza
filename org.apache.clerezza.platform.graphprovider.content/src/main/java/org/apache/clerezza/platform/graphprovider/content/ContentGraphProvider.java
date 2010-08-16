@@ -19,7 +19,6 @@
 package org.apache.clerezza.platform.graphprovider.content;
 
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -29,6 +28,7 @@ import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.utils.UnionMGraph;
@@ -91,7 +91,7 @@ public class ContentGraphProvider {
 		}
 	}
 
-	public MGraph getContentGraph() {
+	public LockableMGraph getContentGraph() {
 		configLock.readLock().lock();
 		try {
 			TripleCollection[] united = new TripleCollection[additions.length + 1];

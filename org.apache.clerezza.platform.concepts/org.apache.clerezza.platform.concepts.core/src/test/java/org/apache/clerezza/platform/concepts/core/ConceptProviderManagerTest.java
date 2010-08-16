@@ -25,6 +25,8 @@ import org.apache.clerezza.platform.concepts.ontologies.CONCEPTS;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +55,7 @@ public class ConceptProviderManagerTest {
 		}
 	}
 
-	private static MGraph mGraph = new SimpleMGraph();
+	private static LockableMGraph mGraph = new LockableMGraphWrapper(new SimpleMGraph());
 
 	private TestedConceptProviderManager testedConceptProviderManager;
 
@@ -63,7 +65,7 @@ public class ConceptProviderManagerTest {
 		testedConceptProviderManager.cgProvider = new ContentGraphProvider() {
 
 			@Override
-			public MGraph getContentGraph() {
+			public LockableMGraph getContentGraph() {
 				return mGraph;
 			}
 		};
