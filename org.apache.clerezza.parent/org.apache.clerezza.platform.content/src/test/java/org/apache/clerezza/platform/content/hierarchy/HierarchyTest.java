@@ -296,9 +296,9 @@ public class HierarchyTest{
 		{
 			contentGraph.setCheckConcurrency(true);
 		}
-		private MGraph graph = new LockableMGraphWrapperForTesting(contentGraph);
+		private LockableMGraph graph = new LockableMGraphWrapperForTesting(contentGraph);
 		@Override
-		public MGraph getContentGraph() {
+		public LockableMGraph getContentGraph() {
 			return graph;
 		} 
 	}

@@ -26,6 +26,8 @@ import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.OWL;
@@ -94,7 +96,7 @@ public class ConceptsFinderTest {
 	private class TestedConceptsFinder extends ConceptsFinder {
 	}
 
-	private static MGraph mGraph = new SimpleMGraph();
+	private static LockableMGraph mGraph = new LockableMGraphWrapper(new SimpleMGraph());
 	private TestedConceptProviderManager testedConceptProviderManager;
 	private TestedConceptsFinder testedConceptsFinder;
 
@@ -111,8 +113,8 @@ public class ConceptsFinderTest {
 		final ContentGraphProvider cgProvider = new ContentGraphProvider() {
 
 			@Override
-			public MGraph getContentGraph() {
-				return new SimpleMGraph();
+			public LockableMGraph getContentGraph() {
+				return new LockableMGraphWrapper(new SimpleMGraph());
 			}
 
 		};
@@ -120,7 +122,7 @@ public class ConceptsFinderTest {
 		testedConceptProviderManager = new TestedConceptProviderManager();
 		testedConceptProviderManager.cgProvider = new ContentGraphProvider() {
 			@Override
-			public MGraph getContentGraph() {
+			public LockableMGraph getContentGraph() {
 				return mGraph;
 			}
 		};
