@@ -218,7 +218,7 @@
 				<plugin>
 					<groupId>org.ops4j.pax.exam</groupId>
 					<artifactId>maven-paxexam-plugin</artifactId>
-					<version>1.2.0</version>
+					<version>1.2.1</version>
 					<executions>
 						<execution>
 							<id>generate-depends-file</id>
@@ -479,9 +479,9 @@
 			<dependency>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>pax-exam</artifactId>
-				<version>1.2.0</version>
+				<version>1.2.1</version>
 			</dependency>
-			<!-- this is a dependecy of pax-exam, enforcing latest version
+			<!-- this is a dependecy of pax-exam, enforcing latescat t version
 			to get latest felix -->
 			<dependency>
 				<groupId>org.ops4j.pax.runner</groupId>
@@ -491,12 +491,22 @@
 			<dependency>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>pax-exam-junit</artifactId>
-				<version>1.2.0</version>
+				<version>1.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ops4j.pax.exam</groupId>
+				<artifactId>pax-exam-junit-extender</artifactId>
+				<version>1.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ops4j.pax.exam</groupId>
+				<artifactId>pax-exam-junit-extender-impl</artifactId>
+				<version>1.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>pax-exam-container-default</artifactId>
-				<version>1.2.0</version>
+				<version>1.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.script.jruby</groupId>
