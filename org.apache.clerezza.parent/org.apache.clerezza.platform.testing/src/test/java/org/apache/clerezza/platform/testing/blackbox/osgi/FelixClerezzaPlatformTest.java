@@ -61,8 +61,8 @@ public class FelixClerezzaPlatformTest {
 				"org.osgi.compendium").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza.ext").artifactId(
 				"com.hp.hpl.jena").versionAsInProject(),
-				mavenBundle().groupId("org.apache.felix").artifactId(
-				"org.apache.felix.log").versionAsInProject(),
+				/*mavenBundle().groupId("org.apache.felix").artifactId(
+				"org.apache.felix.log").versionAsInProject(),*/
 				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
 				"pax-logging-api").versionAsInProject(),
 				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
@@ -102,13 +102,21 @@ public class FelixClerezzaPlatformTest {
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.rdf.ontologies").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.config").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.graphprovider.content").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.templating").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza.scala").artifactId(
+				"scala-compiler-osgi").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza.scala").artifactId(
+				"scala-library-osgi").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza.scala").artifactId(
 				"script-engine").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.permissiondescriptions").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.typerendering.scalaserverpages").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
@@ -162,15 +170,20 @@ public class FelixClerezzaPlatformTest {
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.web.resources.yui").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.permissiondescriptions").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.utils.imageprocessing").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.menumanager").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.language.core").versionAsInProject(),
+				mavenBundle().groupId("org.apache.httpcomponents").artifactId(
+				"httpcore-osgi").versionAsInProject(),
 				//dsProfile(),
 				configProfile(),
 				webProfile(),
 				junitBundles(),
+				vmOption("-XX:MaxPermSize=200m"),
 				frameworks(
 				felix()),
 				systemProperty("org.osgi.service.http.port").value(
