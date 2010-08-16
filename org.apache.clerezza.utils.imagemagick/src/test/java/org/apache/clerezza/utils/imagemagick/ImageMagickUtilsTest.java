@@ -70,6 +70,67 @@ public class ImageMagickUtilsTest {
 		BufferedImage bimg = ip.flip(ImageIO.read(in), 0);
 		assert(bimg != null);
 	}
+
+	@Test
+	public void resizeProportionalTest() throws IOException {
+		Assume.assumeTrue(correctlyInstalled);
+		ImageMagickProvider ip = new ImageMagickProvider();
+		BufferedImage inputImage = ImageIO.read(
+				getClass().getResourceAsStream("rocket.jpg"));
+		BufferedImage outputImage = ip.resizeProportional(inputImage, 200, 200);
+		assert(outputImage != null);
+		Assert.assertEquals(200, outputImage.getWidth());
+		Assert.assertEquals(250, outputImage.getHeight());
+	}
+
+	@Test
+	public void resizeTest() throws IOException {
+		Assume.assumeTrue(correctlyInstalled);
+		ImageMagickProvider ip = new ImageMagickProvider();
+		BufferedImage inputImage = ImageIO.read(
+				getClass().getResourceAsStream("rocket.jpg"));
+		BufferedImage outputImage = ip.resize(inputImage, 200, 200);
+		assert(outputImage != null);
+		Assert.assertEquals(200, outputImage.getHeight());
+		Assert.assertEquals(200, outputImage.getWidth());
+	}
+
+	@Test
+	public void resizeRelativeProportionalTest() throws IOException {
+		Assume.assumeTrue(correctlyInstalled);
+		ImageMagickProvider ip = new ImageMagickProvider();
+		BufferedImage inputImage = ImageIO.read(
+				getClass().getResourceAsStream("rocket.jpg"));
+		BufferedImage outputImage = ip.resizeRelativeProportional(inputImage, Float.valueOf(".5"));
+		assert(outputImage != null);
+		Assert.assertEquals(inputImage.getWidth() / 2, outputImage.getWidth());
+		Assert.assertEquals(inputImage.getHeight() / 2, outputImage.getHeight());
+	}
+	
+	@Test
+	public void resizeRelativeTest() throws IOException {
+		Assume.assumeTrue(correctlyInstalled);
+		ImageMagickProvider ip = new ImageMagickProvider();
+		BufferedImage inputImage = ImageIO.read(
+				getClass().getResourceAsStream("rocket.jpg"));
+		BufferedImage outputImage = ip.resizeRelative(inputImage, Float.valueOf(".5"), 
+				Float.valueOf(".25"));
+		assert(outputImage != null);
+		Assert.assertEquals(inputImage.getHeight() / 4, outputImage.getHeight());
+		Assert.assertEquals(inputImage.getWidth() / 2, outputImage.getWidth());
+	}
+
+	@Test
+	public void thumbnailTest() throws IOException {
+		Assume.assumeTrue(correctlyInstalled);
+		ImageMagickProvider ip = new ImageMagickProvider();
+		BufferedImage inputImage = ImageIO.read(
+				getClass().getResourceAsStream("rocket.jpg"));
+		BufferedImage outputImage = ip.makeAThumbnail(inputImage, 200, 200);
+		Assert.assertEquals(200, outputImage.getHeight());
+		Assert.assertEquals(160, outputImage.getWidth());
+		assert(outputImage != null);
+	}
 	
 	@Test
 	public void extractMetaDataTest() throws IOException {

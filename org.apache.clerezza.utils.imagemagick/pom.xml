@@ -38,5 +38,14 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza.ext</groupId>
+			<artifactId>org.im4java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.im4java</groupId>
+			<artifactId>org.im4java</artifactId>
+			<version>1.1.0</version>
+		</dependency>
 	</dependencies>
 </project>
