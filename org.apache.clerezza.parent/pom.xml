@@ -69,6 +69,7 @@
 		<module>org.apache.clerezza.platform.typehandlerspace</module>
 		<module>org.apache.clerezza.platform.typerendering.manager</module>
 		<module>org.apache.clerezza.platform.typerendering</module>
+		<module>org.apache.clerezza.platform.typerendering.scala</module>
 		<module>org.apache.clerezza.platform.typerendering.scalaserverpages</module>
 		<module>org.apache.clerezza.platform.typerendering.seedsnipe</module>
 		<module>org.apache.clerezza.platform.usermanager</module>
@@ -557,6 +558,11 @@
 				<groupId>org.apache.clerezza.ext</groupId>
 				<artifactId>org.openrdf.sesame</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.typerendering.scala</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
