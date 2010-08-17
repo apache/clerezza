@@ -23,7 +23,6 @@
 		<module>org.apache.clerezza.ext.com.hp.hpl.jena</module>
 		<module>org.apache.clerezza.ext.com.hp.hpl.jena.tdb</module>
 		<module>org.apache.clerezza.ext.com.ibm.icu</module>
-		<module>org.apache.clerezza.ext.org.im4java</module>
 		<module>org.apache.clerezza.ext.javax.mail</module>
 		<module>org.apache.clerezza.ext.org.jruby</module>
 		<module>org.apache.clerezza.ext.org.json.simple</module>
@@ -558,11 +557,6 @@
 				<groupId>org.apache.clerezza.ext</groupId>
 				<artifactId>org.openrdf.sesame</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza.ext</groupId>
-				<artifactId>org.im4java</artifactId>
-				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
