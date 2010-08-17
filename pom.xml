@@ -23,6 +23,7 @@
 		<module>org.apache.clerezza.ext.com.hp.hpl.jena</module>
 		<module>org.apache.clerezza.ext.com.hp.hpl.jena.tdb</module>
 		<module>org.apache.clerezza.ext.com.ibm.icu</module>
+		<module>org.apache.clerezza.ext.org.im4java</module>
 		<module>org.apache.clerezza.ext.javax.mail</module>
 		<module>org.apache.clerezza.ext.org.jruby</module>
 		<module>org.apache.clerezza.ext.org.json.simple</module>
