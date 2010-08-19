@@ -326,6 +326,7 @@ class ResponseProcessor {
 					finalWriter.writeTo(finalEntity, finalEntity.getClass(), entityType,
 							annotations, finalMediaType, headerMap, firstByteActionOut);
 					firstByteActionOut.close();
+					JaxRsHandler.localRequest.remove();
 				} catch (Exception ex) {
 					try {
 						BodyStoringResponse responseFake = new BodyStoringResponse(response);
