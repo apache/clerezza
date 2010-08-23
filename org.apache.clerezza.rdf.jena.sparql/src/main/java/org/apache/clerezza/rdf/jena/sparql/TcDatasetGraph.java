@@ -23,6 +23,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.Context;
 import java.util.Iterator;
 import org.apache.clerezza.rdf.core.TripleCollection;
@@ -102,7 +103,7 @@ class TcDatasetGraph implements DatasetGraph {
 	}
 
 	@Override
-	public int size() {
+	public long size() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
@@ -114,5 +115,62 @@ class TcDatasetGraph implements DatasetGraph {
 	public Context getContext() {
 		return null;
 	}
+
+	@Override
+	public boolean isEmpty() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void add(Quad quad) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void addGraph(Node graphName, Graph graph) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public boolean contains(Node g, Node s, Node p, Node o) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public boolean contains(Quad quad) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void delete(Quad quad) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void deleteAny(Node g, Node s, Node p, Node o) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Iterator<Quad> find(Quad quad) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void removeGraph(Node graphName) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void setDefaultGraph(Graph g) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+
 
 }
