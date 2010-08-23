@@ -38,6 +38,7 @@ import javax.script.{ScriptEngineFactory => JavaxEngineFactory, Compilable,
 					 CompiledScript, ScriptEngine, AbstractScriptEngine, Bindings,
 					 SimpleBindings, ScriptException}
 //import scala.collection.immutable.Map
+import scala.actors.DaemonActor
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
 import scala.tools.nsc.io.{AbstractFile, PlainFile, VirtualDirectory}
@@ -132,7 +133,8 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 			eval(scriptStringWriter.toString, context)
 		}
 
-		lazy val interpreterAction = actor {
+		lazy val interpreterAction = new DaemonActor {
+			def act() {
 				//not using loop { react {, as this method doesn't seem to guarantee
 				//asynchronous execution
 				//also using react with a final invocation of act() different exception from interprter.bind have been seen
@@ -170,6 +172,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 						}
 					}
 				}
+			}
 		}
 
 
