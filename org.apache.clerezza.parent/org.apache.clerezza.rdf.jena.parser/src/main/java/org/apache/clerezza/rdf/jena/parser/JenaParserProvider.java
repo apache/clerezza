@@ -62,7 +62,7 @@ public class JenaParserProvider implements ParsingProvider {
 		Model model = ModelFactory.createModelForGraph(graph);
 		String base;
 		if (baseUri == null) {
-			base = "urn:x-relative:";
+			base = "http://relative-uri.fake/";
 		} else {
 			base = baseUri.getUnicodeString();
 		}
