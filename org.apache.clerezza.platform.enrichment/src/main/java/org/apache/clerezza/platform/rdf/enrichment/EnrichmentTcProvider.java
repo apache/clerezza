@@ -75,7 +75,7 @@ public class EnrichmentTcProvider implements WeightedTcProvider {
 	public static final String SYSTEM_GRAPH_FILTER =
 			"(name="+ Constants.SYSTEM_GRAPH_URI_STRING +")";
 	private LockableMGraph contentGraph;
-	private Collection<Enricher> enrichers = Collections.synchronizedCollection(new HashSet<Enricher>());
+	private final Collection<Enricher> enrichers = Collections.synchronizedCollection(new HashSet<Enricher>());
 
 	@Reference
 	private ContentGraphProvider cgProvider;

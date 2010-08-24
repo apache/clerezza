@@ -90,7 +90,7 @@ class SimpleTripleCollection extends AbstractTripleCollection {
 		}
 	}	
 	
-	private Set<SoftReference<SimpleIterator>> iterators = 
+	private final Set<SoftReference<SimpleIterator>> iterators =
 			Collections.synchronizedSet(new HashSet<SoftReference<SimpleIterator>>());
 	
 	/**
@@ -185,15 +185,17 @@ class SimpleTripleCollection extends AbstractTripleCollection {
 			return;
 		}
 		Set<SoftReference> oldReferences = new HashSet<SoftReference>();
-		for (SoftReference<SimpleTripleCollection.SimpleIterator> softReference : iterators) {
-			SimpleIterator simpleIterator = softReference.get();
-			if (simpleIterator == null) {
-				oldReferences.add(softReference);
-				continue;
+		synchronized(iterators) {
+			for (SoftReference<SimpleTripleCollection.SimpleIterator> softReference : iterators) {
+				SimpleIterator simpleIterator = softReference.get();
+				if (simpleIterator == null) {
+					oldReferences.add(softReference);
+					continue;
+				}
+				if (simpleIterator != caller) {
+					simpleIterator.invalidate();
+				}
 			}
-			if (simpleIterator != caller) {
-				simpleIterator.invalidate();
-			}			
 		}
 		iterators.removeAll(oldReferences);
 	}

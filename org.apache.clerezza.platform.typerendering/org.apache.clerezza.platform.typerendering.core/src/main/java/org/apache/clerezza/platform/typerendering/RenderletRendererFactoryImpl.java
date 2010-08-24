@@ -46,7 +46,6 @@ import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
@@ -93,7 +92,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	private Map<String, Renderlet> renderletMap = new HashMap<String, Renderlet>();
 	private ComponentContext componentContext;
 	private ReentrantReadWriteLock configLock = new ReentrantReadWriteLock();
-	private Set<ServiceReference> renderletRefStore =
+	private final Set<ServiceReference> renderletRefStore =
 			Collections.synchronizedSet(new HashSet<ServiceReference>());
 	List<Resource> rdfTypePrioList;
 
@@ -324,8 +323,10 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	}
 
 	private void registerRenderletsFromStore() {
-		for (ServiceReference renderletRef : renderletRefStore) {
-			registerRenderletService(renderletRef);
+		synchronized(renderletRefStore) {
+			for (ServiceReference renderletRef : renderletRefStore) {
+				registerRenderletService(renderletRef);
+			}
 		}
 		renderletRefStore.clear();
 	}

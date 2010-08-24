@@ -66,7 +66,7 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 	private Set<Object> typeHandlerStore = new HashSet<Object>();
 
 	private List<Resource> typePriorityList;
-	private Map<UriRef, Object> typeHandlerMap = Collections.synchronizedMap(
+	private final Map<UriRef, Object> typeHandlerMap = Collections.synchronizedMap(
 			new HashMap<UriRef, Object>());
 	
 	
@@ -144,10 +144,12 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 	private void unregisterTypeHandler(Object component) {
 		Iterator<UriRef> keys = typeHandlerMap.keySet().iterator();
 		Set<UriRef> toRemove = new HashSet<UriRef>(typeHandlerMap.size());
-		while (keys.hasNext()) {
-			UriRef uriRef = keys.next();
-			if(typeHandlerMap.get(uriRef)==component) {
-				toRemove.add(uriRef);
+		synchronized(typeHandlerMap) {
+			while (keys.hasNext()) {
+				UriRef uriRef = keys.next();
+				if(typeHandlerMap.get(uriRef)==component) {
+					toRemove.add(uriRef);
+				}
 			}
 		}
 		keys = toRemove.iterator();
