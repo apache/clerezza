@@ -46,6 +46,7 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.UnionMGraph;
+import org.apache.felix.scr.annotations.Services;
 import org.osgi.service.component.ComponentContext;
 
 /**
@@ -55,7 +56,10 @@ import org.osgi.service.component.ComponentContext;
  */
 
 @Component
-@Service(Object.class)
+@Services({
+	@Service(Object.class),
+	@Service(CollectionTypeHandler.class)
+})
 @Property(name = "org.apache.clerezza.platform.typehandler", boolValue = true)
 @SupportedTypes(types = { "http://clerezza.org/2009/09/hierarchy#Collection" }, prioritize = true)
 public class CollectionTypeHandler extends DiscobitsTypeHandler{
