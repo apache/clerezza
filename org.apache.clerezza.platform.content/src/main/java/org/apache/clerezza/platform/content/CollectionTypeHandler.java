@@ -18,7 +18,6 @@ package org.apache.clerezza.platform.content;
 import java.net.URL;
 import java.util.Map;
 import javax.ws.rs.GET;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -29,10 +28,6 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.platform.content.hierarchy.CollectionNode;
-import org.apache.clerezza.platform.content.hierarchy.HierarchyNode;
-import org.apache.clerezza.platform.content.hierarchy.NodeDoesNotExistException;
-import org.apache.clerezza.platform.content.hierarchy.UnknownRootExcetpion;
 import org.apache.clerezza.platform.content.webdav.COPY;
 import org.apache.clerezza.platform.content.webdav.LOCK;
 import org.apache.clerezza.platform.content.webdav.UNLOCK;
@@ -104,40 +99,28 @@ public class CollectionTypeHandler extends DiscobitsTypeHandler{
 		graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
 
 		UriRef collectionUri = new UriRef(uriInfo.getAbsolutePath().toString());
-		CollectionNode collection = null;
-		try {
-			collection = hierarchyService.getCollectionNode(collectionUri);
-		} catch (NodeDoesNotExistException ex) {
-			throw new WebApplicationException(ex);
-		} catch (UnknownRootExcetpion ex) {
-			throw new WebApplicationException(ex);
-		}
-		CollectionNode parent = collection.getParent();
-		if (parent != null){
-			graphNode.addProperty(HIERARCHY.parent, parent.getNode());
-		}
 		return graphNode;
 	}
 
 	@Override
-	Map<UriRef, PropertyMap> getPropNames(HierarchyNode node, String depthHeader) {
-		return WebDavUtils.getCollectionProps(null, null, null, (CollectionNode) node,
+	Map<UriRef, PropertyMap> getPropNames(GraphNode node, String depthHeader) {
+		return WebDavUtils.getCollectionProps(null, null, null, node,
 							depthHeader, false /* doesNotIncludeValues */);
 	}
 
 	@Override
-	Map<UriRef, PropertyMap> getPropsByName(Node requestNode, HierarchyNode node,
+	Map<UriRef, PropertyMap> getPropsByName(Node requestNode, GraphNode node,
 			String depthHeader) {
 		Map<UriRef, PropertyMap> result;
 		NodeList children = requestNode.getChildNodes();
-		result = WebDavUtils.getPropsByName(children, (CollectionNode) node, depthHeader,
+		result = WebDavUtils.getPropsByName(children, node, depthHeader,
 				true /* includeValues */);
 		return result;
 	}
 
 	@Override
-	Map<UriRef, PropertyMap> getAllProps(HierarchyNode node, String depthHeader) {
-		return WebDavUtils.getCollectionProps(null, null, null, (CollectionNode) node,
+	Map<UriRef, PropertyMap> getAllProps(GraphNode node, String depthHeader) {
+		return WebDavUtils.getCollectionProps(null, null, null, node,
 							depthHeader, true /* includeValues */);
 	}
 

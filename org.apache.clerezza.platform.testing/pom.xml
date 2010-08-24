@@ -332,11 +332,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.menumanager</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.language.core</artifactId>
 			<scope>provided</scope>
 		</dependency>

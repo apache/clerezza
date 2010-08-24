@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.rdf.utils;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,8 +34,12 @@ import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.core.serializedform.Serializer;
+import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of an <code>java.util.List</code> backed by an RDF
@@ -50,6 +56,8 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  * @author rbn, mir
  */
 public class RdfList extends AbstractList<Resource> {
+
+	private static final Logger logger = LoggerFactory.getLogger(RdfList.class);
 
 	private final static UriRef RDF_NIL =
 			new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
@@ -240,7 +248,28 @@ public class RdfList extends AbstractList<Resource> {
 	}
 
 	private Resource getFirstEntry(NonLiteral listResource) {
-		return tc.filter(listResource, RDF.first, null).next().getObject();
+		try {
+			return tc.filter(listResource, RDF.first, null).next().getObject();
+		} catch (NullPointerException e) {
+			try {
+				final FileOutputStream fileOutputStream = new FileOutputStream("/tmp/broken-list.nt");
+				final GraphNode graphNode = new GraphNode(listResource, tc);
+				Serializer.getInstance().serialize(
+						fileOutputStream,
+						graphNode.getNodeContext(),
+						SupportedFormat.N_TRIPLE);
+				fileOutputStream.flush();
+				logger.warn("GraphNode: "+graphNode);
+				final Iterator<UriRef> properties = graphNode.getProperties();
+				while (properties.hasNext()) {
+					logger.warn("available: "+properties.next());
+				}
+
+				throw new RuntimeException("broken list "+listResource, e);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+		}
 	}
 
 	public NonLiteral getListResource() {

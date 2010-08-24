@@ -40,8 +40,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMResult;
-import org.apache.clerezza.platform.content.hierarchy.CollectionNode;
-import org.apache.clerezza.platform.content.hierarchy.HierarchyNode;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.Resource;
@@ -50,6 +48,8 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
+import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.clerezza.rdf.utils.GraphNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -282,7 +282,7 @@ class WebDavUtils {
 	 *------------------------------------------------------------*/
 
 	static Map<UriRef, PropertyMap> getPropsByName(NodeList children,
-			HierarchyNode node, String depthHeader, boolean includeValues) {
+			GraphNode node, String depthHeader, boolean includeValues) {
 		List<Property> requestedUserProps = new ArrayList<Property>();
 		List<Property> requestedDavProps = new ArrayList<Property>();
 
@@ -301,9 +301,9 @@ class WebDavUtils {
 		}
 		Map<UriRef, PropertyMap> allprops = new HashMap<UriRef, PropertyMap>();
 
-		if (node instanceof CollectionNode) {
+		if (node.hasProperty(RDF.type, HIERARCHY.Collection)) {
 			return getCollectionProps(allprops, requestedUserProps, requestedDavProps,
-					(CollectionNode) node, depthHeader, includeValues);
+					node, depthHeader, includeValues);
 		}else{
 			addNodeProperties(allprops, requestedUserProps, requestedDavProps,
 					node, includeValues);
@@ -314,14 +314,18 @@ class WebDavUtils {
 	
 	static Map<UriRef, PropertyMap> getCollectionProps(Map<UriRef, PropertyMap> allprops,
 			List<Property> requestedUserProps, List<Property> requestedDavProps,
-			CollectionNode collection, String depthHeader, boolean includeValues) {
+			GraphNode collection, String depthHeader, boolean includeValues) {
 		if(allprops == null){
 			allprops = new HashMap<UriRef, PropertyMap>();
 		}
-		List<HierarchyNode> members = collection.getMembers();
 		addNodeProperties(allprops, requestedUserProps, requestedDavProps, collection,
 				includeValues);
 		if (depthHeader.equals("1") || depthHeader.equals(infinite)) {
+			Iterator<GraphNode> membersIter = collection.getSubjectNodes(HIERARCHY.parent);
+			List<GraphNode> members = new ArrayList<GraphNode>();
+			while (membersIter.hasNext()) {
+				members.add(membersIter.next());
+			}
 			addMemberProps(allprops, requestedUserProps, requestedDavProps, members,
 					depthHeader, includeValues);
 		}
@@ -330,11 +334,11 @@ class WebDavUtils {
 
 	private static void addMemberProps(Map<UriRef, PropertyMap> allprops,
 			List<Property> requestedUserProps, List<Property> requestedDavProps,
-			List<HierarchyNode> members, String depthHeader, boolean includeValues) {
-		for (HierarchyNode member : members) {
-			if (depthHeader.equals(infinite) && member instanceof CollectionNode) {
+			List<GraphNode> members, String depthHeader, boolean includeValues) {
+		for (GraphNode member : members) {
+			if (depthHeader.equals(infinite) && member.hasProperty(RDF.type, HIERARCHY.Collection)) {
 				getCollectionProps(allprops, requestedUserProps, requestedDavProps,
-						(CollectionNode) member, depthHeader, includeValues);
+						member, depthHeader, includeValues);
 			} else {
 				addNodeProperties(allprops, requestedUserProps, requestedDavProps,
 						member,	includeValues);
@@ -344,7 +348,7 @@ class WebDavUtils {
 
 	static void addNodeProperties(Map<UriRef, PropertyMap> allprops,
 			List<Property> requestedUserProps, List<Property> requestedDavProps,
-			HierarchyNode node,	boolean includeValues) {
+			GraphNode node,	boolean includeValues) {
 
 		if (requestedDavProps == null) {
 			requestedDavProps = new ArrayList<Property>();
@@ -360,11 +364,11 @@ class WebDavUtils {
 			addDavPropsWithoutValues(propertyMap);
 			addUserPropsWithoutValues(node, propertyMap);
 		}
-		allprops.put(node.getNode(), propertyMap);
+		allprops.put((UriRef) node.getNode(), propertyMap);
 
 	}
 
-	private static void addUserProps(HierarchyNode node, PropertyMap propertyMap,
+	private static void addUserProps(GraphNode node, PropertyMap propertyMap,
 			List<Property> requestedProps) {
 		Iterator<UriRef> userPropsIter = node.getProperties();
 		Set<UriRef> userProps = new HashSet<UriRef>();
@@ -406,7 +410,7 @@ class WebDavUtils {
 		}
 	}
 
-	private static void addUserPropsWithoutValues(HierarchyNode node,
+	private static void addUserPropsWithoutValues(GraphNode node,
 			PropertyMap propertyMap) {
 		Iterator<UriRef> userPropsIter = node.getProperties();
 		Set<UriRef> userProps = new HashSet<UriRef>();
@@ -448,14 +452,14 @@ class WebDavUtils {
 	 * @param includeValues
 	 * @param requestedProps
 	 */
-	private static void addDavProps(HierarchyNode node, PropertyMap propertyMap,
+	private static void addDavProps(GraphNode node, PropertyMap propertyMap,
 			List<Property> requestedProps) {
 		for (Property property : requestedProps) {
 			if (davProps.contains(property.prop)) {
 				if (property.prop.equalsIgnoreCase(displayname)) {
-					propertyMap.put(property, node.getName());
+					propertyMap.put(property, getLastSection(((UriRef)node.getNode()).getUnicodeString()));
 				} else if (property.prop.equalsIgnoreCase(resourcetype)) {
-					if (node instanceof CollectionNode) {
+					if (node.hasProperty(RDF.type, HIERARCHY.Collection)) {
 						propertyMap.put(property, "collection");
 					} else {
 						propertyMap.put(property, "");
@@ -503,13 +507,13 @@ class WebDavUtils {
 	 * Proppatch methods *
 	 *-------------------*/
 
-	static Document modifyProperties(HierarchyNode hierarchyNode, NodeList propsToSet,
+	static Document modifyProperties(GraphNode hierarchyNode, NodeList propsToSet,
 			NodeList propsToRemove) throws ParserConfigurationException {
 		Document responseDoc = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder().newDocument();
-		UriRef subject = hierarchyNode.getNode();
+		UriRef subject = (UriRef) hierarchyNode.getNode();
 		Element hrefElement = responseDoc.createElementNS(davUri, href);
-		hrefElement.setTextContent(hierarchyNode.getNode().getUnicodeString());
+		hrefElement.setTextContent(subject.getUnicodeString());
 		Element multistatus = responseDoc.createElementNS(davUri, multistat);
 		Element responseElement = responseDoc.createElementNS(davUri, response);
 		Element propOk = responseDoc.createElementNS(davUri, prop);
@@ -604,6 +608,10 @@ class WebDavUtils {
 		}
 		contentGraph.add(new TripleImpl(subject, predicate,
 				fac.createTypedLiteral(entry.getValue())));
+	}
+
+	private static String getLastSection(String s) {
+		return s.substring(s.lastIndexOf('/', s.length()-2));
 	}
 
 	/**
