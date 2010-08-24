@@ -46,7 +46,7 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 		implements TripleCollection {
 
 	//all listeners
-	private Set<ListenerConfiguration> listenerConfigs = Collections.synchronizedSet(
+	private final Set<ListenerConfiguration> listenerConfigs = Collections.synchronizedSet(
 			new HashSet<ListenerConfiguration>());
 	private DelayedNotificator delayedNotificator = new DelayedNotificator();
 
@@ -177,9 +177,11 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 	 * @param type The type of modification
 	 */
 	protected void dispatchEvent(GraphEvent event) {
-		for (ListenerConfiguration config : listenerConfigs) {
-			if (config.getFilter().match(event.getTriple())) {
-				delayedNotificator.sendEventToListener(config.getListener(), event);
+		synchronized(listenerConfigs) {
+			for (ListenerConfiguration config : listenerConfigs) {
+				if (config.getFilter().match(event.getTriple())) {
+					delayedNotificator.sendEventToListener(config.getListener(), event);
+				}
 			}
 		}
 	}
@@ -200,11 +202,13 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 
 	@Override
 	public void removeGraphListener(GraphListener listener) {
-		Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
-		while (iter.hasNext()) {
-			ListenerConfiguration listenerConfig = iter.next();
-			if (listenerConfig.getListener().equals(listener)) {
-				iter.remove();
+		synchronized(listenerConfigs) {
+			Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
+			while (iter.hasNext()) {
+				ListenerConfiguration listenerConfig = iter.next();
+				if (listenerConfig.getListener().equals(listener)) {
+					iter.remove();
+				}
 			}
 		}
 		delayedNotificator.removeDelayedListener(listener);

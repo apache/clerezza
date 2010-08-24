@@ -77,11 +77,14 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 		TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
 		infoDiscoBitNode.deleteProperties(DISCOBITS.mediaType);
 		infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
-		for(MetaDataGenerator generator : getMetaDataGenerators()) {
-			try {
-				generator.generate(infoDiscoBitNode, data, mediaType);
-			} catch (RuntimeException ex) {
-				logger.error("Exception in MetaDataGenerator ", ex);
+		Set<MetaDataGenerator> metaDataGenerators = getMetaDataGenerators();
+		synchronized(metaDataGenerators) {
+			for(MetaDataGenerator generator : metaDataGenerators) {
+				try {
+					generator.generate(infoDiscoBitNode, data, mediaType);
+				} catch (RuntimeException ex) {
+					logger.error("Exception in MetaDataGenerator ", ex);
+				}
 			}
 		}
 	}

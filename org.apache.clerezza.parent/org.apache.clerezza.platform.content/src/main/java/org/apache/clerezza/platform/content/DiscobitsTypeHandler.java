@@ -110,7 +110,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	
 	private static final Logger logger = LoggerFactory.getLogger(DiscobitsTypeHandler.class);
 
-	private Set<MetaDataGenerator> metaDataGenerators =
+	private final Set<MetaDataGenerator> metaDataGenerators =
 			Collections.synchronizedSet(new HashSet<MetaDataGenerator>());
 
 	/**

@@ -37,7 +37,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -90,7 +89,7 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 	private static final Logger logger = LoggerFactory.getLogger(GenericGraphNodeMBW.class);
 	private UriInfo uriInfo = null;
 	private HttpHeaders headers = null;
-	private Set<UserContextProvider> contextProviders =
+	private final Set<UserContextProvider> contextProviders =
 			Collections.synchronizedSet(new HashSet<UserContextProvider>());
 	private DocumentBuilder documentBuilder;
 	private TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -208,10 +207,12 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 
 	private GraphNode getUserContext() {
 		GraphNode contextNode = new GraphNode(new BNode(), new SimpleMGraph());
-		Iterator<UserContextProvider> providersIter = contextProviders.iterator();
-		while (providersIter.hasNext()) {
-			UserContextProvider userContextProvider = providersIter.next();
-			contextNode = userContextProvider.addUserContext(contextNode);
+		synchronized(contextProviders) {
+			Iterator<UserContextProvider> providersIter = contextProviders.iterator();
+			while (providersIter.hasNext()) {
+				UserContextProvider userContextProvider = providersIter.next();
+				contextNode = userContextProvider.addUserContext(contextNode);
+			}
 		}
 		return contextNode;
 	}

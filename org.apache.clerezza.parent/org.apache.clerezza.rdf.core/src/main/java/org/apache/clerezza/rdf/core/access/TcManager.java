@@ -43,7 +43,6 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
 import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
@@ -114,7 +113,7 @@ public class TcManager implements TcProvider {
 	 * A store that keeps <code>WeightedTcProvider</code>S in case the
 	 * componentContext is null. Used in activate().
 	 */
-	private Set<WeightedTcProvider> providerStore =
+	private final Set<WeightedTcProvider> providerStore =
 			Collections.synchronizedSet(new HashSet<WeightedTcProvider>());
 
 	/**
@@ -163,10 +162,12 @@ public class TcManager implements TcProvider {
 
 	protected void activate(final ComponentContext componentContext) {
 		this.componentContext = componentContext;
-		Iterator<WeightedTcProvider> it = providerStore.iterator();
-		while (it.hasNext()) {
-			WeightedTcProvider provider = it.next();
-			updateLockableMGraphCache(provider, true);			
+		synchronized(providerStore) {
+			Iterator<WeightedTcProvider> it = providerStore.iterator();
+			while (it.hasNext()) {
+				WeightedTcProvider provider = it.next();
+				updateLockableMGraphCache(provider, true);
+			}
 		}
 		providerStore.clear();
 	}
