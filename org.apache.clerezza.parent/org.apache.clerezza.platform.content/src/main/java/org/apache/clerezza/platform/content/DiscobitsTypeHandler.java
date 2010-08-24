@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -48,14 +49,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.platform.content.WebDavUtils.PropertyMap;
-import org.apache.clerezza.platform.content.hierarchy.CollectionNode;
-import org.apache.clerezza.platform.content.hierarchy.HierarchyNode;
-import org.apache.clerezza.platform.content.hierarchy.HierarchyService;
-import org.apache.clerezza.platform.content.hierarchy.HierarchyUtils;
-import org.apache.clerezza.platform.content.hierarchy.IllegalMoveException;
-import org.apache.clerezza.platform.content.hierarchy.NodeAlreadyExistsException;
-import org.apache.clerezza.platform.content.hierarchy.NodeDoesNotExistException;
-import org.apache.clerezza.platform.content.hierarchy.UnknownRootExcetpion;
+import org.apache.clerezza.platform.content.collections.CollectionCreator;
 import org.apache.clerezza.platform.content.webdav.MKCOL;
 import org.apache.clerezza.platform.content.webdav.MOVE;
 import org.apache.clerezza.platform.content.webdav.PROPFIND;
@@ -74,7 +68,12 @@ import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typehandlerspace.OPTIONS;
 import org.apache.clerezza.platform.typehandlerspace.SupportedTypes;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.ontologies.HIERARCHY;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
 import org.w3c.dom.Document;
@@ -108,9 +107,6 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 
 	@Reference
 	protected ContentGraphProvider cgProvider;
-
-	@Reference
-	protected HierarchyService hierarchyService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(DiscobitsTypeHandler.class);
 
@@ -181,17 +177,19 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	 */
 	@MKCOL
 	public Object mkcol(@Context UriInfo uriInfo) {
-		UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
-		nodeUri = HierarchyUtils.makeCollectionUriRef(nodeUri);
-		try {
-			hierarchyService.createCollectionNode(nodeUri);
-		} catch (NodeAlreadyExistsException e) {
-			logger.debug("Collection \""
-					+ nodeUri.getUnicodeString() + "\" already exists.");
+		String uriString = uriInfo.getAbsolutePath().toString();
+		if (uriString.charAt(uriString.length()-1) != '/') {
+			uriString += '/';
+		}
+		UriRef nodeUri = new UriRef(uriString);
+		final MGraph mGraph = cgProvider.getContentGraph();
+		Triple typeTriple = new TripleImpl(nodeUri, RDF.type, HIERARCHY.Collection);
+		if (mGraph.contains(typeTriple)) {
 			return Response.status(405) // Method Not Allowed
 					.entity("Collection \"" + nodeUri.getUnicodeString()
 					+ "\" already exists.").build();
 		}
+		new CollectionCreator(mGraph).createContainingCollections(nodeUri);
 		return Response.created(uriInfo.getAbsolutePath()).build();
 	}
 
@@ -219,54 +217,50 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 			return checkIfOppositExistsAndRedirectIfSo(nodeUri, uriInfo);
 		}
 			Map<UriRef, PropertyMap> result;
-			try {
-				String depthHeader = WebDavUtils.getHeaderAsString(headers, "Depth");
-				if (depthHeader == null) {
-					depthHeader = WebDavUtils.infinite;
-				}
-				HierarchyNode node = hierarchyService.getHierarchyNode(nodeUri);
-				if (body != null) {
-					Document requestDoc = WebDavUtils.sourceToDocument(body);
-					Node propfindNode = WebDavUtils.getNode(requestDoc, WebDavUtils.propfind);
-					Node requestNode = WebDavUtils.getFirstChild(propfindNode);
-					String requestType = requestNode.getLocalName();
-					if (requestType.equalsIgnoreCase(WebDavUtils.allprop)) {
-						result = getAllProps(node, depthHeader);
-					} else if (requestType.equalsIgnoreCase(WebDavUtils.prop)) {
-						result = getPropsByName(requestNode, node, depthHeader);
-					} else if (requestType.equalsIgnoreCase(WebDavUtils.propname)) {
-						result = getPropNames(node, depthHeader);
-					} else {
-						return Response.status(Status.BAD_REQUEST).build();
-					}
-				} else {
-					// returns all properties
-					result = getAllProps(node, depthHeader);
-				}
-				Document responseDoc = WebDavUtils.createResponseDoc(result);
-				return Response.status(207).entity(new DOMSource(responseDoc)).type(
-						MediaType.APPLICATION_XML_TYPE).build();
-			} catch (NodeDoesNotExistException e) {
-				return Response.status(Status.NOT_FOUND).entity(
-						e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-			} catch (TransformerFactoryConfigurationError e) {
-				return Response.status(Status.BAD_REQUEST).build();
-			} catch (TransformerException e) {
-				return Response.status(Status.BAD_REQUEST).build();
-			} catch (ParserConfigurationException e) {
-				throw new RuntimeException(e);
-			} catch(UnknownRootExcetpion ex) {
-				return Response.status(Status.BAD_REQUEST).build();
+		try {
+			String depthHeader = WebDavUtils.getHeaderAsString(headers, "Depth");
+			if (depthHeader == null) {
+				depthHeader = WebDavUtils.infinite;
 			}
+			final MGraph mGraph = cgProvider.getContentGraph();
+			GraphNode node = new GraphNode(nodeUri, mGraph);
+			if (body != null) {
+				Document requestDoc = WebDavUtils.sourceToDocument(body);
+				Node propfindNode = WebDavUtils.getNode(requestDoc, WebDavUtils.propfind);
+				Node requestNode = WebDavUtils.getFirstChild(propfindNode);
+				String requestType = requestNode.getLocalName();
+				if (requestType.equalsIgnoreCase(WebDavUtils.allprop)) {
+					result = getAllProps(node, depthHeader);
+				} else if (requestType.equalsIgnoreCase(WebDavUtils.prop)) {
+					result = getPropsByName(requestNode, node, depthHeader);
+				} else if (requestType.equalsIgnoreCase(WebDavUtils.propname)) {
+					result = getPropNames(node, depthHeader);
+				} else {
+					return Response.status(Status.BAD_REQUEST).build();
+				}
+			} else {
+				// returns all properties
+				result = getAllProps(node, depthHeader);
+			}
+			Document responseDoc = WebDavUtils.createResponseDoc(result);
+			return Response.status(207).entity(new DOMSource(responseDoc)).type(
+					MediaType.APPLICATION_XML_TYPE).build();
+		} catch (TransformerFactoryConfigurationError e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		} catch (TransformerException e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	Map<UriRef, PropertyMap> getPropNames(HierarchyNode node, String depthHeader) {
+	Map<UriRef, PropertyMap> getPropNames(GraphNode node, String depthHeader) {
 		Map<UriRef, PropertyMap> result = new HashMap<UriRef, PropertyMap>();
 		WebDavUtils.addNodeProperties(result, null, null, node, false);
 		return result;
 	}
 
-	Map<UriRef, PropertyMap> getPropsByName(Node requestNode, HierarchyNode node,
+	Map<UriRef, PropertyMap> getPropsByName(Node requestNode, GraphNode node,
 			String depthHeader) {
 		Map<UriRef, PropertyMap> result;
 		NodeList children = requestNode.getChildNodes();
@@ -274,7 +268,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		return result;
 	}
 
-	Map<UriRef, PropertyMap> getAllProps(HierarchyNode node, String depthHeader) {
+	Map<UriRef, PropertyMap> getAllProps(GraphNode node, String depthHeader) {
 		HashMap<UriRef, PropertyMap> result = new HashMap<UriRef, PropertyMap>();
 		WebDavUtils.addNodeProperties(result, null, null, node, true);
 		return result;
@@ -301,7 +295,8 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		}
 		try {
 			Document requestDoc = WebDavUtils.sourceToDocument(body);
-			HierarchyNode node = hierarchyService.getHierarchyNode(nodeUri);
+			final MGraph mGraph = cgProvider.getContentGraph();
+			GraphNode node = new GraphNode(nodeUri, mGraph);
 			NodeList propsToSet = null;
 			NodeList propsToRemove = null;
 			Node proppatchNode = WebDavUtils.getNode(requestDoc, WebDavUtils.proppatch);
@@ -320,18 +315,13 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 			Document responseDoc = WebDavUtils.modifyProperties(node, propsToSet, propsToRemove);
 			return Response.status(207).entity(new DOMSource(responseDoc)).type(
 					MediaType.APPLICATION_XML_TYPE).build();
-		} catch (NodeDoesNotExistException e) {
-			return Response.status(Status.NOT_FOUND).entity(
-					e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-		}catch (ParserConfigurationException ex) {
+		} catch (ParserConfigurationException ex) {
 			throw new RuntimeException(ex);
 		} catch (TransformerFactoryConfigurationError ex) {
 			return Response.status(Status.BAD_REQUEST).build();
 		} catch (TransformerException ex) {
 			return Response.status(Status.BAD_REQUEST).build();
-		} catch(UnknownRootExcetpion ex) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
+		} 
 	}
 
 	/**
@@ -352,66 +342,42 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	@MOVE
 	public Response move(@Context UriInfo uriInfo, @Context HttpHeaders headers) {
 		UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
-		if (!nodeAtUriExists(nodeUri)) {
-			UriRef oppositUri = HierarchyUtils.makeOppositeUriRef(nodeUri);
-			if(nodeAtUriExists(oppositUri)) {
-				nodeUri = oppositUri;
+		final LockableMGraph mGraph = cgProvider.getContentGraph();
+		GraphNode node = new GraphNode(nodeUri, mGraph);
+		String targetString = WebDavUtils.getHeaderAsString(headers,
+					"Destination");
+		UriRef targetUri = new UriRef(targetString);
+		String overwriteHeader = WebDavUtils.getHeaderAsString(headers, "Overwrite");
+		boolean overwriteTarget = "T".equalsIgnoreCase(overwriteHeader);
+		if (nodeAtUriExists(targetUri)) {
+			if (overwriteTarget) {
+				new GraphNode(targetUri, mGraph).deleteNodeContext();
 			} else {
-				return Response.status(Status.NOT_FOUND).build();
+				return Response.status(Status.PRECONDITION_FAILED).build();
 			}
 		}
-		HierarchyNode targetNode;
-		String overwriteHeader = null;
-		CollectionNode newParentCollection = null;
+		Lock l = mGraph.getLock().writeLock();
+		l.lock();
 		try {
-			targetNode = hierarchyService.getHierarchyNode(nodeUri);
-			/* ignored at the moment */
-			overwriteHeader = WebDavUtils.getHeaderAsString(headers, "Overwrite");
-			if (overwriteHeader == null) {
-				overwriteHeader = "F";
+			Iterator<Triple> oldParentTripleIter
+					= mGraph.filter(nodeUri, HIERARCHY.parent, null);
+			if (oldParentTripleIter.hasNext()) {
+				oldParentTripleIter.next();
+				oldParentTripleIter.remove();
 			}
-			String newCollectionString = WebDavUtils.getHeaderAsString(headers,
-					"Destination");
-			if (newCollectionString != null) {				
-				UriRef newParentUri = HierarchyUtils.extractParentCollectionUri(
-						new UriRef(newCollectionString));
-				newParentCollection = hierarchyService
-						.getCollectionNode(newParentUri);
-				targetNode.move(newParentCollection, HierarchyUtils.getName(
-						new UriRef(newCollectionString)), newParentCollection
-						.getMembers().size());
-				return Response.created(new java.net.URI(nodeUri.getUnicodeString()))
-						.build();
-			} else {
-				logger.error("empty Destination header!");
-				return Response.status(Status.BAD_REQUEST).build();
+			while (oldParentTripleIter.hasNext()) {
+				logger.error("more than one parent statement: "+oldParentTripleIter.next());
+				oldParentTripleIter.remove();
 			}
-		} catch (URISyntaxException e) {
-			return Response.status(Status.BAD_REQUEST).build();
-		} catch (NodeDoesNotExistException e) {
-			return Response.status(Status.NOT_FOUND).build();
-		} catch (NodeAlreadyExistsException e) {
-			if (overwriteHeader.equals("F")) {
-				return Response.status(Status.PRECONDITION_FAILED).build();
-			} else if (overwriteHeader.equals("T")) {
-				try {
-					String name = HierarchyUtils.getName(nodeUri);
-					hierarchyService.getHierarchyNode(
-							new UriRef(newParentCollection.getNode().
-							getUnicodeString() + name)).delete();
-					return this.move(uriInfo, headers);
-				} catch (NodeDoesNotExistException ex) {
-					throw new RuntimeException(e);
-				} catch (UnknownRootExcetpion ex) {
-					throw new RuntimeException(ex);
-				}
-			} else {
-				return Response.status(Status.BAD_REQUEST).build();
+			node.replaceWith(targetUri);
+			new CollectionCreator(mGraph).createContainingCollections(targetUri);
+			try {
+				return Response.created(new java.net.URI(targetUri.getUnicodeString())).build();
+			} catch (URISyntaxException ex) {
+				throw new IllegalArgumentException(ex);
 			}
-		} catch (IllegalMoveException e) {
-			return Response.status(Status.FORBIDDEN).build();
-		} catch (UnknownRootExcetpion ex) {
-			return Response.status(Status.BAD_REQUEST).build();
+		} finally {
+			l.unlock();
 		}
 	}
 
@@ -429,26 +395,12 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	public Response delete(@Context UriInfo uriInfo) {
 		UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			UriRef oppositUri = HierarchyUtils.makeOppositeUriRef(nodeUri);
-			if(nodeAtUriExists(oppositUri)) {
-				nodeUri = oppositUri;
-			} else {
-				return Response.status(Status.NOT_FOUND).entity(
-					uriInfo.getAbsolutePath()).type(MediaType.TEXT_PLAIN).build();
-			}
-		}
-		
-		HierarchyNode hierarchyNode;
-		try {
-			hierarchyNode = hierarchyService.getHierarchyNode(nodeUri);
-		} catch (NodeDoesNotExistException e) {
-			return Response.status(Status.NOT_FOUND).entity(
-					uriInfo.getAbsolutePath()).type(MediaType.TEXT_PLAIN).build();
-		} catch (UnknownRootExcetpion ex) {
 			return Response.status(Status.NOT_FOUND).entity(
 					uriInfo.getAbsolutePath()).type(MediaType.TEXT_PLAIN).build();
 		}
-		hierarchyNode.delete();
+		final LockableMGraph mGraph = cgProvider.getContentGraph();
+		GraphNode node = new GraphNode(nodeUri, mGraph);
+		node.deleteNodeContext();
 		return Response.ok().build();
 	}
 
@@ -512,10 +464,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		return metaDataGenerators;
 	}
 
-	@Override
-	protected HierarchyService getHierarchyService() {
-		return hierarchyService;
-	}	
+	
 
 	private boolean nodeAtUriExists(UriRef nodeUri) {
 		MGraph mGraph = getMGraph();
@@ -525,11 +474,25 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 
 	private Response checkIfOppositExistsAndRedirectIfSo(UriRef nodeUri,
 			UriInfo uriInfo) {
-		UriRef oppositUri = HierarchyUtils.makeOppositeUriRef(nodeUri);
+		UriRef oppositUri = makeOppositeUriRef(nodeUri);
 		if (nodeAtUriExists(oppositUri)) {
 			return RedirectUtil.createSeeOtherResponse(
 					oppositUri.getUnicodeString(), uriInfo);
 		}
 		return Response.status(Status.NOT_FOUND).build();
+	}
+	/**
+	 * add trailing slash if none present, remove otherwise
+	 *
+	 * @param uri
+	 * @return
+	 */
+	private static UriRef makeOppositeUriRef(UriRef uri) {
+		String uriString = uri.getUnicodeString();
+		if (uriString.endsWith("/")) {
+			return new UriRef(uriString.substring(0, uriString.length() - 1));
+		} else {
+			return new UriRef(uriString + "/");
+		}
 	}
 }

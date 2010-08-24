@@ -1,16 +1,13 @@
 def hierarchy(s: Any) = new UriRef("http://clerezza.org/2009/09/hierarchy#" + s)
 <div id="tx-content">
 	<h3>{res*}</h3>
-	{if ((res/hierarchy("parent")).length != 0){
+	{ifx ((res/hierarchy("parent")).length != 0){
 	<h4>Parent: <a href={res/hierarchy("parent")*}>{res/hierarchy("parent")*}</a></h4>
-	}else{
-	<h4>Parent: -</h4>
 	}
 	}
-
-	{if ((res/hierarchy("members")).length != 0){
+	{if ((res/-hierarchy("parent")).length != 0){
 	<ul>
-		{for (member <- (res/hierarchy("members"))!!) yield
+		{for (member <- (res/-hierarchy("parent"))) yield
 			{
 			<li><a href={member*}>{member*}</a></li>
 			}

@@ -24,11 +24,7 @@ import java.util.Iterator;
 
 import java.util.Set;
 import javax.ws.rs.core.MediaType;
-import org.apache.clerezza.platform.content.hierarchy.HierarchyNode;
-import org.apache.clerezza.platform.content.hierarchy.HierarchyService;
-import org.apache.clerezza.platform.content.hierarchy.NodeAlreadyExistsException;
-import org.apache.clerezza.platform.content.hierarchy.NodeDoesNotExistException;
-import org.apache.clerezza.platform.content.hierarchy.UnknownRootExcetpion;
+import org.apache.clerezza.platform.content.collections.CollectionCreator;
 
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -64,29 +60,16 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 	 */
 	protected abstract Set<MetaDataGenerator> getMetaDataGenerators();
 
-	/**
-	 * Returns the hierarchy service used to manage hierachy in the content
-	 * graph
-	 * @return the hierarchy service
-	 */
-	protected abstract HierarchyService getHierarchyService();
 	
 	@Override
 	public void put(UriRef infoDiscoBitUri, MediaType mediaType,
 			byte[] data) {
 
 		GraphNode infoDiscoBitNode;
-		try {
-			HierarchyService hierarchyService = getHierarchyService();
-			if (hierarchyService == null) {
-				infoDiscoBitNode = new GraphNode(infoDiscoBitUri, getMGraph());
-			} else {
-				infoDiscoBitNode = hierarchyService.createNonCollectionNode(infoDiscoBitUri);
-			}
-			
-		} catch (NodeAlreadyExistsException ex) {
-			infoDiscoBitNode = new GraphNode(infoDiscoBitUri, getMGraph());
-		}
+		final MGraph mGraph = getMGraph();
+		infoDiscoBitNode = new GraphNode(infoDiscoBitUri, mGraph);
+		CollectionCreator collectionCreator = new CollectionCreator(mGraph);
+		collectionCreator.createContainingCollections(infoDiscoBitUri);
 		infoDiscoBitNode.addProperty(RDF.type, DISCOBITS.InfoDiscoBit);
 		TypedLiteral dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
 		infoDiscoBitNode.deleteProperties(DISCOBITS.infoBit);
@@ -129,20 +112,7 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 				return;
 			}			
 		}
-		GraphNode graphNode;
-		try {
-			HierarchyService hierarchyService = getHierarchyService();
-			if (hierarchyService == null) {
-				graphNode = new GraphNode(node, mGraph);
-			} else {
-				graphNode = hierarchyService.getHierarchyNode((UriRef) node);
-				((HierarchyNode) graphNode).delete();
-			}
-		} catch (NodeDoesNotExistException ex) {
-			graphNode = new GraphNode(node, mGraph);
-		} catch (UnknownRootExcetpion ex) {
-			graphNode = new GraphNode(node, mGraph);
-		}
+		GraphNode graphNode = new GraphNode(node, mGraph);
 		graphNode.deleteNodeContext();
 	}
 
