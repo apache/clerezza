@@ -84,12 +84,18 @@ public class GraphNode {
 	 * @return the context of the node represented by the instance
 	 */
 	public Graph getNodeContext() {
-		final HashSet<Resource> dontExpand = new HashSet<Resource>();
-		dontExpand.add(resource);
-		if (resource instanceof UriRef) {
-			return getContextOf((UriRef) resource, dontExpand).getGraph();
+		Lock l = readLock();
+		l.lock();
+		try {
+			final HashSet<Resource> dontExpand = new HashSet<Resource>();
+			dontExpand.add(resource);
+			if (resource instanceof UriRef) {
+				return getContextOf((UriRef) resource, dontExpand).getGraph();
+			}
+			return getContextOf(resource, dontExpand).getGraph();
+		} finally {
+			l.unlock();
 		}
-		return getContextOf(resource, dontExpand).getGraph();
 
 	}
 
@@ -314,13 +320,19 @@ public class GraphNode {
 	 *         statement with the given prediate and object, false otherwise
 	 */
 	public boolean hasProperty(UriRef property, Resource object) {
-		Iterator<Resource> objects = getObjects(property);
-		while (objects.hasNext()) {
-			if (objects.next().equals(object)) {
-				return true;
+		Lock l = readLock();
+		l.lock();
+		try {
+			Iterator<Resource> objects = getObjects(property);
+			while (objects.hasNext()) {
+				if (objects.next().equals(object)) {
+					return true;
+				}
 			}
+			return false;
+		} finally {
+			l.unlock();
 		}
-		return false;
 	}
 
 	/**
@@ -332,7 +344,13 @@ public class GraphNode {
 	 *		which meet the specified condition
 	 */
 	public int countSubjects(UriRef property) {
-		return countTriples(graph.filter(null, property, resource));
+		Lock l = readLock();
+		l.lock();
+		try {
+			return countTriples(graph.filter(null, property, resource));
+		} finally {
+			l.unlock();
+		}
 	}
 
 	/**
