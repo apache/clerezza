@@ -69,10 +69,10 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 		NonLiteral agent = getAgentFromGraph(userName);
 		String storedPassword = getPasswordOfAgent(agent);
 		if (storedPassword.equals(PasswordUtil.convertPassword(password))) {
-			logger.debug("password matches");
+			logger.debug("user {} successfully authenticated");
 			return true;
 		} else {
-			logger.debug("password didn't match ");
+			logger.info("unsuccessful authentication attempt as user {}", userName);
 			return false;
 		}
 	}
@@ -83,7 +83,7 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 		if (agents.hasNext()) {
 			agent = agents.next().getSubject();
 		} else {
-			logger.debug("no user {} in graph", userName);
+			logger.info("unsuccessful authentication attempt as non-existent user {}", userName);
 			throw new NoSuchAgent();
 		}
 		return agent;
