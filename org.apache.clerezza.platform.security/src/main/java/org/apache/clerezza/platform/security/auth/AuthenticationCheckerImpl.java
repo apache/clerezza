@@ -69,7 +69,7 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 		NonLiteral agent = getAgentFromGraph(userName);
 		String storedPassword = getPasswordOfAgent(agent);
 		if (storedPassword.equals(PasswordUtil.convertPassword(password))) {
-			logger.debug("user {} successfully authenticated");
+			logger.debug("user {} successfully authenticated", userName);
 			return true;
 		} else {
 			logger.info("unsuccessful authentication attempt as user {}", userName);
