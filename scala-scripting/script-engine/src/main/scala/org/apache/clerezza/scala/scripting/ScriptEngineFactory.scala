@@ -133,7 +133,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 			eval(scriptStringWriter.toString, context)
 		}
 
-		lazy val interpreterAction = new DaemonActor {
+		val interpreterAction = new DaemonActor {
 			def act() {
 				//not using loop { react {, as this method doesn't seem to guarantee
 				//asynchronous execution
@@ -174,6 +174,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 				}
 			}
 		}
+		interpreterAction.start()
 
 
 		override def eval(script : String, context : ScriptContext) : Object = {
