@@ -18,7 +18,9 @@
  */
 package org.apache.clerezza.rdf.core.access.security;
 
+import java.security.AccessControlException;
 import java.security.AccessController;
+import java.security.AllPermission;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,14 +92,19 @@ public class TcAccessController {
 		}
 		SecurityManager security = System.getSecurityManager();
 		if (security != null) {
-			Collection<Permission> perms = getRequiredReadPermissions(tripleCollectionUri);
-			if (perms.size() > 0) {
-				for (Permission permission : perms) {
-					AccessController.checkPermission(permission);
+			//will AllPermissions the rest is obsolete
+			try {
+				AccessController.checkPermission(new AllPermission());
+			} catch (AccessControlException e) {
+				Collection<Permission> perms = getRequiredReadPermissions(tripleCollectionUri);
+				if (perms.size() > 0) {
+					for (Permission permission : perms) {
+						AccessController.checkPermission(permission);
+					}
+				} else {
+					AccessController.checkPermission(new TcPermission(
+							tripleCollectionUri.getUnicodeString(), TcPermission.READ));
 				}
-			} else {
-				AccessController.checkPermission(new TcPermission(
-						tripleCollectionUri.getUnicodeString(), TcPermission.READ));
 			}
 		}
 	}
@@ -105,18 +112,23 @@ public class TcAccessController {
 	public void checkReadWritePermission(UriRef tripleCollectionUri) {
 		SecurityManager security = System.getSecurityManager();
 		if (security != null) {
-			if (tripleCollectionUri.equals(permissionGraphName)) {
-				AccessController.checkPermission(new TcPermission(
-						tripleCollectionUri.getUnicodeString(), TcPermission.READWRITE));
-			} else {
-				Collection<Permission> perms = getRequiredReadWritePermissions(tripleCollectionUri);
-				if (perms.size() > 0) {
-					for (Permission permission : perms) {
-						AccessController.checkPermission(permission);
-					}
-				} else {
+			//will AllPermissions the rest is obsolete
+			try {
+				AccessController.checkPermission(new AllPermission());
+			} catch (AccessControlException e) {
+				if (tripleCollectionUri.equals(permissionGraphName)) {
 					AccessController.checkPermission(new TcPermission(
 							tripleCollectionUri.getUnicodeString(), TcPermission.READWRITE));
+				} else {
+					Collection<Permission> perms = getRequiredReadWritePermissions(tripleCollectionUri);
+					if (perms.size() > 0) {
+						for (Permission permission : perms) {
+							AccessController.checkPermission(permission);
+						}
+					} else {
+						AccessController.checkPermission(new TcPermission(
+								tripleCollectionUri.getUnicodeString(), TcPermission.READWRITE));
+					}
 				}
 			}
 		}
