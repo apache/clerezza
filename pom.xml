@@ -110,6 +110,7 @@
 		<module>org.apache.clerezza.web.resources.scripts</module>
 		<module>org.apache.clerezza.web.resources.style</module>
 		<module>org.apache.clerezza.web.resources.yui</module>
+		<module>org.apache.clerezza.rdf.storage.externalizer</module>
 	</modules>
 	<build>
 		<pluginManagement>
