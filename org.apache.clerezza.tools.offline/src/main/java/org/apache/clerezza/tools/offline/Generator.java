@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.tools.offline;
 
+import org.apache.clerezza.tools.offline.utils.ConditionalOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +32,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -41,6 +41,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import org.apache.clerezza.platform.content.representations.core.ThumbnailService;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RendererFactory;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -79,6 +80,9 @@ public class Generator {
 
 	@Reference
 	private RendererFactory rendererFactory;
+
+	@Reference
+	private ThumbnailService thumbnailService;
 
 	private MediaTypeGuesser mediaTypeGuesser = MediaTypeGuesser.getInstance();
 
@@ -189,7 +193,8 @@ public class Generator {
 				final byte[] variant = getVariant(uriRef, mediaType);
 				if (mediaType.getSubtype().equals("png"))
 					logger.info("Got variant of length : {}",variant.length);
-				final byte[] dataPrefixApplied = applyRootLinkPrefic(variant, 
+				final byte[] addedThumbnailUris = applyThumbnailService(variant);
+				final byte[] dataPrefixApplied = applyRootLinkPrefix(addedThumbnailUris,
 						rootLinkPrefix, mediaType);
 				final String filePath = uriRef.getUnicodeString().endsWith("/") ? path+"index" : path;
 				final String dottedExtension = "."+formatExtension;
@@ -266,7 +271,7 @@ public class Generator {
 		rootLinkIndicators.add("url\\(");
 	}
 
-	private byte[] applyRootLinkPrefic(byte[] variant, String rootLinkPrefix,
+	private byte[] applyRootLinkPrefix(byte[] variant, String rootLinkPrefix,
 			MediaType mediaType) {
 		try {
 			//here we should locate some mediaType specific handlers
@@ -280,6 +285,19 @@ public class Generator {
 			}
 			out.write(variant);
 			out.close();
+			return resultWriter.toByteArray();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private byte[] applyThumbnailService(byte[] variant) {
+		try {			
+			final ByteArrayOutputStream resultWriter = new ByteArrayOutputStream(variant.length);
+			OutputStream thumbnailCorrectingStream = new ConditionalOutputStream(resultWriter,
+					new ThumbnailCondition(thumbnailService));
+			thumbnailCorrectingStream.write(variant);
+			thumbnailCorrectingStream.close();
 			return resultWriter.toByteArray();
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
