@@ -45,10 +45,10 @@ import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
 import org.apache.clerezza.triaxrs.RootResourceExecutorImpl;
 import org.apache.clerezza.jaxrs.testutils.TestWebServer;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -60,7 +60,7 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  */
 public class TypeHandlerSpaceTest {
 	
-	private static MGraph mGraph = new SimpleMGraph();
+	private static LockableMGraph mGraph = new LockableMGraphWrapper(new SimpleMGraph());
 
 	UriRef myType = new UriRef("org.example/myType");
 	
@@ -210,7 +210,7 @@ public class TypeHandlerSpaceTest {
 
 							@Override
 							public ReadWriteLock getLock() {
-								throw new UnsupportedOperationException("Not supported yet.");
+								return mGraph.getLock();
 							}
 
 							@Override

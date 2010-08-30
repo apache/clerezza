@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.typehandlerspace;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,13 +29,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.clerezza.jaxrs.extensions.HttpRequest;
 import org.apache.clerezza.jaxrs.extensions.ResourceMethodException;
 import org.apache.clerezza.jaxrs.extensions.RootResourceExecutor;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -102,7 +103,7 @@ public class TypeHandlerSpace {
 	}
 
 	private Object getTypeHandler(String absoluteUriPath) throws ResourceMethodException {
-		MGraph contentMGraph = tcManager.getMGraph(CONTENT_GRAPH_URI);
+		LockableMGraph contentMGraph = tcManager.getMGraph(CONTENT_GRAPH_URI);
 		UriRef uri = new UriRef(absoluteUriPath);
 
 		Set<UriRef> rdfTypes = getRdfTypesOfUriRef(contentMGraph, uri);
@@ -111,19 +112,26 @@ public class TypeHandlerSpace {
 		
 	}
 
-	private Set<UriRef> getRdfTypesOfUriRef(MGraph contentMGraph, UriRef uri) {
-		Iterator<Triple> typeStmts = contentMGraph.filter(uri, RDF.type, null);
+	private Set<UriRef> getRdfTypesOfUriRef(LockableMGraph contentMGraph, UriRef uri) {
 		Set<UriRef> rdfTypes = new HashSet<UriRef>();
-		while (typeStmts.hasNext()) {
-			Triple triple = typeStmts.next();
-			Resource typeStmtObj = triple.getObject();
-			if (!(typeStmtObj instanceof UriRef)) {
-				throw new RuntimeException(
-						"RDF type is expected to be a URI but is "+typeStmtObj+
-						"(in "+triple+")");
+		Lock readLock = contentMGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> typeStmts = contentMGraph.filter(uri, RDF.type, null);
+
+			while (typeStmts.hasNext()) {
+				Triple triple = typeStmts.next();
+				Resource typeStmtObj = triple.getObject();
+				if (!(typeStmtObj instanceof UriRef)) {
+					throw new RuntimeException(
+							"RDF type is expected to be a URI but is " + typeStmtObj
+							+ "(in " + triple + ")");
+				}
+				UriRef rdfType = (UriRef) typeStmtObj;
+				rdfTypes.add(rdfType);
 			}
-			UriRef rdfType = (UriRef) typeStmtObj;
-			rdfTypes.add(rdfType);
+		} finally {
+			readLock.unlock();
 		}
 		return rdfTypes;
 	}
