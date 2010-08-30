@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.platform.content.representations.core;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -29,7 +28,6 @@ import java.util.concurrent.locks.Lock;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -49,6 +47,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Services;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -64,10 +63,14 @@ import org.slf4j.LoggerFactory;
  * @author mir
  */
 @Component
-@Service(Object.class)
+@Services({
+	@Service(Object.class),
+	@Service(ThumbnailService.class)
+})
+
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("thumbnail-service")
-public class ThumbnailService implements BundleListener{
+public class ThumbnailService implements BundleListener {
 
 	@Reference
 	ContentGraphProvider cgProvider;
@@ -75,7 +78,6 @@ public class ThumbnailService implements BundleListener{
 	PlatformConfig config;
 	@Reference
 	AlternativeRepresentationGenerator altRepGen;
-
 	private static final Logger log = LoggerFactory.getLogger(ThumbnailService.class);
 	private BundleContext bundleContext;
 	private String STATICWEB_PATH = "/org/apache/clerezza/web/resources/style/staticweb/";
@@ -113,11 +115,15 @@ public class ThumbnailService implements BundleListener{
 	 */
 	@GET
 	public Response getThumbnailUri(@QueryParam("uri") UriRef infoBitUri,
-			@QueryParam("width") Integer width,	@QueryParam("height") Integer height,
+			@QueryParam("width") Integer width, @QueryParam("height") Integer height,
 			@Context UriInfo uriInfo) {
+		return RedirectUtil.createSeeOtherResponse(
+				getThumbnailUri(infoBitUri, width, height).getUnicodeString(), uriInfo);
+	}
+
+	public UriRef getThumbnailUri(UriRef infoBitUri, Integer width,  Integer height) {
 		if ((width == null) && (height == null)) {
-			throw new WebApplicationException(new IllegalArgumentException("height and/or width must be specified"),
-					Response.Status.BAD_REQUEST);
+			throw new IllegalArgumentException("height and/or width must be specified");
 		}
 		if (width == null) {
 			width = Integer.MAX_VALUE;
@@ -126,46 +132,46 @@ public class ThumbnailService implements BundleListener{
 			height = Integer.MAX_VALUE;
 		}
 		GraphNode infoBitNode = new GraphNode(infoBitUri, cgProvider.getContentGraph());
-		UriRef thumbnailUri = getThumbnailUri(infoBitNode, width, height);
-		if (thumbnailUri != null) {
-			return Response.seeOther(
-					URI.create((thumbnailUri).getUnicodeString())).build();
-		}		
-			
-		TypedLiteral mediaTypeLiteral = null;
-		Lock readLock = infoBitNode.readLock();
-		readLock.lock();
-		try {	
-			Iterator<Resource> mediaTypes = infoBitNode.getObjects(DISCOBITS.mediaType);			
-			if (mediaTypes.hasNext()) {
-				mediaTypeLiteral = (TypedLiteral) mediaTypes.next();
+		UriRef thumbnailUri = getGeneratedThumbnailUri(infoBitNode, width, height);
+		if (thumbnailUri == null) {
+			TypedLiteral mediaTypeLiteral = null;
+			Lock readLock = infoBitNode.readLock();
+			readLock.lock();
+			try {
+				Iterator<Resource> mediaTypes = infoBitNode.getObjects(DISCOBITS.mediaType);
+				if (mediaTypes.hasNext()) {
+					mediaTypeLiteral = (TypedLiteral) mediaTypes.next();
+				}
+			} finally {
+				readLock.unlock();
 			}
-		} finally {
-			readLock.unlock();
-		}
-		if (mediaTypeLiteral != null) {
-			MediaType mediaType = MediaType.valueOf(LiteralFactory.getInstance().createObject(
-					String.class, mediaTypeLiteral));
-			// if the infoBit is an image, create a thumbnail on the fly.
-			if (mediaType.getType().startsWith("image")) {
-				try {
-					thumbnailUri = altRepGen.generateAlternativeImage(infoBitNode, width,
-							height);
-					return RedirectUtil.createSeeOtherResponse(thumbnailUri.getUnicodeString(), uriInfo);
-				} catch (Exception ex) {
-					// Was worth a try. eLets go on
+			if (mediaTypeLiteral != null) {
+				MediaType mediaType = MediaType.valueOf(LiteralFactory.getInstance().createObject(
+						String.class, mediaTypeLiteral));
+				// if the infoBit is an image, create a thumbnail on the fly.
+				if (mediaType.getType().startsWith("image")) {
+					try {
+						thumbnailUri = altRepGen.generateAlternativeImage(infoBitNode, width,
+								height);
+					} catch (Exception ex) {
+						// Was worth a try. eLets go on
+					}
+				}
+				if (thumbnailUri == null) {
+					String iconUri = mediaTypeIconUriCache.get(mediaType);
+					if (iconUri == null) {
+						iconUri = getMediaTypeIconUri(mediaType);
+						mediaTypeIconUriCache.put(mediaType, iconUri);
+					}
+					thumbnailUri = new UriRef(iconUri);
 				}
 			}
-
-			String iconUri = mediaTypeIconUriCache.get(mediaType);
-			if (iconUri == null) {
-				iconUri = getMediaTypeIconUri(mediaType);
-				mediaTypeIconUriCache.put(mediaType, iconUri);
-			}
-			return RedirectUtil.createSeeOtherResponse(iconUri, uriInfo);
 		}
-		return RedirectUtil.createSeeOtherResponse(
-				getDefaultIconUrl(getStyleBundle()), uriInfo);
+
+		if (thumbnailUri == null) {
+			thumbnailUri = new UriRef(getDefaultIconUrl(getStyleBundle()));
+		}
+		return thumbnailUri;
 	}
 
 	private String getMediaTypeIconUri(MediaType mediaType) {
@@ -206,7 +212,7 @@ public class ThumbnailService implements BundleListener{
 		return null;
 	}
 
-	private UriRef getThumbnailUri(GraphNode infoBitNode,
+	private UriRef getGeneratedThumbnailUri(GraphNode infoBitNode,
 			Integer width, Integer height) {
 		if (isFittingImage(infoBitNode, width, height)) {
 			return (UriRef) infoBitNode.getNode();
@@ -282,7 +288,7 @@ public class ThumbnailService implements BundleListener{
 		Bundle[] bundles = bundleContext.getBundles();
 		for (Bundle bundle : bundles) {
 			URL staticWebPathURL = bundle.getEntry(STATICWEB_PATH);
-			if (staticWebPathURL != null ) {
+			if (staticWebPathURL != null) {
 				cachedStyleBundle = bundle;
 				return bundle;
 			}
@@ -292,8 +298,8 @@ public class ThumbnailService implements BundleListener{
 
 	@Override
 	public synchronized void bundleChanged(BundleEvent be) {
-		if (be.getType() == BundleEvent.UNINSTALLED && 
-				be.getBundle().equals(cachedStyleBundle)) {
+		if (be.getType() == BundleEvent.UNINSTALLED
+				&& be.getBundle().equals(cachedStyleBundle)) {
 			cachedStyleBundle = null;
 			cachedStyleBundle = getStyleBundle();
 			mediaTypeIconUriCache.clear();
