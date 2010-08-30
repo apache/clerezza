@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
@@ -38,6 +39,7 @@ import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.RdfList;
 import org.apache.felix.scr.annotations.ReferencePolicy;
@@ -69,7 +71,7 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 	private final Map<UriRef, Object> typeHandlerMap = Collections.synchronizedMap(
 			new HashMap<UriRef, Object>());
 	
-	
+	LockableMGraph systemGraph;
 
 	protected void bindTypeHandler(Object typeHandler) {
 		if (typePriorityList != null) {
@@ -88,10 +90,12 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 	protected void bindSystemGraph(MGraph systemGraph) {
 		typePriorityList = new RdfList(
 				new UriRef("http://tpf.localhost/typePriorityList"), systemGraph);
+		this.systemGraph = (LockableMGraph) systemGraph;
 	}
 
 	protected void unbindSystemGraph(MGraph systemGraph) {
 		typePriorityList = null;
+		this.systemGraph = null;
 	}
 
 	protected void activate(ComponentContext context) throws Exception {
@@ -109,13 +113,19 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 
 			@Override
 			public Object run() {
-				for (Resource type : typePriorityList) {
-					if (types.contains(type)) {
-						Object result = typeHandlerMap.get(type);
-						if (result != null) {
-							return result;
+				Lock readLock = systemGraph.getLock().readLock();
+				readLock.lock();
+				try {
+					for (Resource type : typePriorityList) {
+						if (types.contains(type)) {
+							Object result = typeHandlerMap.get(type);
+							if (result != null) {
+								return result;
+							}
 						}
 					}
+				} finally {
+					readLock.unlock();
 				}
 				return typeHandlerMap.get(RDFS.Resource);
 			}
@@ -130,12 +140,18 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 		}		
 		for (String typeUriString : supportedTypes.types()) {
 			UriRef typeUri = new UriRef(typeUriString);
-			if (!typePriorityList.contains(typeUri)) {
-				if (supportedTypes.prioritize()) {
-					typePriorityList.add(0, typeUri);
-				} else {
-					typePriorityList.add(typeUri);
+			Lock writeLock = systemGraph.getLock().writeLock();
+			writeLock.lock();
+			try {
+				if (!typePriorityList.contains(typeUri)) {
+					if (supportedTypes.prioritize()) {
+						typePriorityList.add(0, typeUri);
+					} else {
+						typePriorityList.add(typeUri);
+					}
 				}
+			} finally {
+				writeLock.unlock();
 			}
 			typeHandlerMap.put(typeUri, component);
 		}
