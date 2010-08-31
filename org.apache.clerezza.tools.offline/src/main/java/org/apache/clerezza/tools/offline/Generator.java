@@ -18,12 +18,14 @@
  */
 package org.apache.clerezza.tools.offline;
 
+import java.util.logging.Level;
 import org.apache.clerezza.tools.offline.utils.ConditionalOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
@@ -58,6 +60,8 @@ import org.slf4j.LoggerFactory;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.utils.ReplacingOutputStream;
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
+import org.apache.commons.codec.binary.Base64;
+import org.osgi.service.component.ComponentContext;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
@@ -66,7 +70,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  *
  * @author reto
  */
-@Component
+@Component(metatype=true)
 @Service(Object.class)
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("/admin/offline")
@@ -229,28 +233,40 @@ public class Generator {
 
 	private byte[] getVariant(UriRef uriRef, MediaType mediaType) throws 
 			IOException, VariantUnavailableException {
-		final URL url = new URL(uriRef.getUnicodeString());
-		final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-		urlConnection.setRequestProperty("Accept", mediaType.toString());
-		urlConnection.connect();
-		final int responseCode = urlConnection.getResponseCode();
-		if (responseCode != 200) {
-			throw new VariantUnavailableException("response code: "+responseCode);
-		}
-		final String responseContentType = urlConnection.getContentType();
-		if (!responseContentType.startsWith(mediaType.toString())) {
-			throw new VariantUnavailableException("Got " + responseContentType + " and not " + mediaType);
-		}
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final InputStream in = urlConnection.getInputStream();
-		try {
-			for (int ch = in.read(); ch != -1; ch = in.read()) {
-				baos.write(ch);
+		logger.info("requested uri " + uriRef.getUnicodeString() + ",mediatype " + mediaType.toString());
+		try{
+			final URL url = new URL(uriRef.getUnicodeString());
+
+			final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestProperty("Accept", mediaType.toString());
+			urlConnection.connect();
+			final int responseCode = urlConnection.getResponseCode();
+			if (responseCode != 200) {
+				throw new VariantUnavailableException("response code: "+responseCode);
 			}
-		} finally {
-			in.close();
+			final String responseContentType = urlConnection.getContentType();
+			if (!responseContentType.startsWith(mediaType.toString())) {
+				throw new VariantUnavailableException("Got " + responseContentType + " and not " + mediaType);
+			}
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			final InputStream in = urlConnection.getInputStream();
+			try {
+				for (int ch = in.read(); ch != -1; ch = in.read()) {
+					baos.write(ch);
+				}
+			} finally {
+				in.close();
+			}
+			return baos.toByteArray();
+		} catch(SocketException ex) {
+			try {
+				logger.info("SocketException thrown");
+				Thread.sleep(5000);		
+			} catch (InterruptedException ex1) {
+				new RuntimeException(ex1);
+			}
+			return getVariant(uriRef, mediaType);
 		}
-		return baos.toByteArray();
 	}
 
 	private String getPathForUriRef(UriRef uriRef, String baseUri) {
