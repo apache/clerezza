@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
+import org.apache.clerezza.rdf.core.access.debug.ReentrantReadWriteLockTracker;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
@@ -40,7 +41,17 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  */
 public class LockableMGraphWrapper implements LockableMGraph {
 
-	private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
+	private static final String DEBUG_MODE = "rdfLocksDebugging";
+	private final ReadWriteLock lock;
+	{
+		String debugMode = System.getProperty(DEBUG_MODE);
+		if (debugMode != null && debugMode.toLowerCase().equals("true")) {
+			lock = new ReentrantReadWriteLockTracker();
+		} else {
+			lock = new ReentrantReadWriteLock();
+		}
+	}
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
 	private final MGraph wrapped;
