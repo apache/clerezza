@@ -50,8 +50,9 @@ class WrappedResponse extends ResponseWrapper implements ResponseStatusInfo {
 			}
 			return;
 		}
-		if (headerName.equals(HeaderName.CONTENT_TYPE) && XHTML_TYPE.equals(value)) {
-			super.addHeader(headerName, HTML_TYPE);
+		String stringValue = value.toString();
+		if (headerName.equals(HeaderName.CONTENT_TYPE) && value.toString().startsWith(XHTML_TYPE)) {
+			super.addHeader(headerName, HTML_TYPE+stringValue.substring(XHTML_TYPE.length()));
 			convertXhtml2Html = true;
 		} else {
 			super.addHeader(headerName, value);
@@ -69,8 +70,9 @@ class WrappedResponse extends ResponseWrapper implements ResponseStatusInfo {
 			}
 			return;
 		}
-		if (headerName.equals(HeaderName.CONTENT_TYPE) && XHTML_TYPE.equals(value)) {
-			super.setHeader(headerName, HTML_TYPE);
+		String stringValue = value.toString();
+		if (headerName.equals(HeaderName.CONTENT_TYPE) && stringValue.startsWith(XHTML_TYPE)) {
+			super.setHeader(headerName, HTML_TYPE+stringValue.substring(XHTML_TYPE.length()));
 			convertXhtml2Html = true;
 		} else {
 			super.setHeader(headerName, value);

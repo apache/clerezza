@@ -143,10 +143,13 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 			throw new WebApplicationException(
 					Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No suitable renderer found").build());
 		}
-		httpHeaders.add(HttpHeaders.CONTENT_TYPE, renderer.getMediaType());
-		if (!renderer.getMediaType().equals(MediaType.APPLICATION_XHTML_XML_TYPE)) {
+		final MediaType rendererMediaType = renderer.getMediaType();
+		if (!rendererMediaType.equals(MediaType.APPLICATION_XHTML_XML_TYPE)) {
+			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, rendererMediaType);
 			renderer.render(node, getUserContext(), uriInfo, httpHeaders, entityStream);
 		} else {
+			final MediaType mediaTypeWithCharset = MediaType.valueOf(MediaType.APPLICATION_XHTML_XML+";charset=UTF-8");
+			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, mediaTypeWithCharset);
 			ResultDocModifier.init();
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
