@@ -19,6 +19,7 @@
 package org.apache.clerezza.platform.content;
 
 import java.util.Iterator;
+import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.Resource;
@@ -44,13 +45,19 @@ public class InfoDiscobit {
 	 * @return an instance of InfoDiscobit or null if node is not an InfoDiscoBit
 	 */
 	public static InfoDiscobit createInstance(GraphNode node) {
-		Iterator<Resource> types = node.getObjects(RDF.type);
-		while(types.hasNext()) {
-			if (types.next().equals(DISCOBITS.InfoDiscoBit)){
-				return new InfoDiscobit(node);
+		Lock l = node.readLock();
+		l.lock();
+		try {
+			Iterator<Resource> types = node.getObjects(RDF.type);
+			while(types.hasNext()) {
+				if (types.next().equals(DISCOBITS.InfoDiscoBit)){
+					return new InfoDiscobit(node);
+				}
 			}
+			return null;
+		} finally {
+			l.unlock();
 		}
-		return null;
 	}
 
 	InfoDiscobit(GraphNode infoBit) {
