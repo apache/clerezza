@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+<head>
+    <title>Usage: Apache UIMA integration within Clerezza </title>
+</head>
+<body>
+<h1>Usage of Apache UIMA integration within Clerezza </h1>
+
+<p>Author: Tommaso Teofili</p>
+
+<p>Date: July 27, 2010</p>
+
+<p>You can use one of this package modules to take advantage of the Apache Unstructured Information Management
+    Architecture framework to enable discover and annotation of entities within text nodes of GraphNodes</p>
+<h4>UIMA - Clerezza available modules:</h4>
+<ul>
+    <li>Metadata generator - this module is a particular implementation of the MetadataGenerator interface which
+        provides extraction of entities from a resource depending on its media type. It recognizes tags and language to
+        associate to the uploaded GraphNode and creates a new Graph containing the whole UIMA extracted structures
+    </li>
+    <li>Concept tagging - this module enables UIMA as a ConceptProvider for automatic concept tag suggestion</li>
+    <li>Utils - utility classes to be used when some module wants to call UIMA and its services as a Clerezza bundle</li>
+    <li>Ontologies - the ontology responsible to describe UIMA type system, annotations and features relationships</li>
+</ul>
+</body>
+</html>
+
