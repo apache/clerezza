@@ -54,15 +54,6 @@ public class JenaParserProviderTest {
 		Assert.assertTrue(jenaGraphFromNTriples.isIsomorphicWith(jenaGraphFromTurtle));
 	}
 
-	@Test
-	public void testTurtleParser2() {
-		ParsingProvider provider = new JenaParserProvider();
-
-		InputStream turtleIn = getClass().getResourceAsStream("image-13-08-2010_14-46-13.0001.txt");
-		Graph graphFromTurtle = provider.parse(turtleIn, "text/turtle", null);
-
-	}
-
 	/*
 	 * comparing result from nt and rdf/xml parsing,
 	 */
