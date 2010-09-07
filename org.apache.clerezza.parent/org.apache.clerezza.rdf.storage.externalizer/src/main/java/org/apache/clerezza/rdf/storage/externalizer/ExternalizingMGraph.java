@@ -22,7 +22,6 @@ package org.apache.clerezza.rdf.storage.externalizer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +29,6 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -41,6 +38,8 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -60,11 +59,12 @@ class ExternalizingMGraph extends AbstractMGraph {
 	private static final String UriHashPrefix = "urn:x-litrep:";
 	private static final Charset UTF8 = Charset.forName("utf-8");
 	private static final byte[] DELIMITER = "^^".getBytes(UTF8);
+	Logger logger = LoggerFactory.getLogger(ExternalizingMGraph.class);
 
 	public ExternalizingMGraph(MGraph baseGraph, File dataDir) {
 		this.baseGraph = baseGraph;
 		this.dataDir = dataDir;
-		System.out.println("Created externalizing mgraph with dir: "+dataDir);
+		logger.info("Created externalizing mgraph with dir: "+dataDir);
 	}
 
 	@Override
@@ -172,7 +172,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 				ByteArrayOutputStream typeWriter = new ByteArrayOutputStream();
 				int posInDelimiter = 0;
 				for (int ch = in.read(); ch != -1; ch = in.read()) {
-					if (ch != DELIMITER[posInDelimiter]) {
+					if (ch == DELIMITER[posInDelimiter]) {
 						posInDelimiter++;
 						if (DELIMITER.length == posInDelimiter) {
 							break;
