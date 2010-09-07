@@ -62,10 +62,9 @@ public class MetaDataConversionTest {
 					triple.getObject().toString().contains(RDF.Bag.getURI()));
 		}
 
-		Assert.assertTrue(tc.contains(new TripleImpl(
-				new UriRef("urn:x-relative:"), 
+		Assert.assertTrue(tc.filter(null,
 				new UriRef("http://ns.adobe.com/photoshop/1.0/City"), 
-				new PlainLiteralImpl("City"))));
+				new PlainLiteralImpl("City")).hasNext());
 	}
 	
 	@Test
@@ -86,10 +85,9 @@ public class MetaDataConversionTest {
 					triple.getObject().toString().contains(RDF.Alt.getURI()));
 		}
 		
-		Assert.assertTrue(tc.contains(new TripleImpl(
-				new UriRef("urn:x-relative:"), 
+		Assert.assertTrue(tc.filter(null,
 				new UriRef("http://ns.adobe.com/tiff/1.0/Artist"), 
-				new PlainLiteralImpl("Hans Wurst"))));
+				new PlainLiteralImpl("Hans Wurst")).hasNext());
 		
 	}
 }
