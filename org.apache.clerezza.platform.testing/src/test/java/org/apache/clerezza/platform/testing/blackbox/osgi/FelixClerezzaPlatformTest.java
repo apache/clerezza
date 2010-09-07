@@ -174,8 +174,6 @@ public class FelixClerezzaPlatformTest {
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.utils.imageprocessing").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
-				"org.apache.clerezza.platform.menumanager").versionAsInProject(),
-				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.language.core").versionAsInProject(),
 				mavenBundle().groupId("org.apache.httpcomponents").artifactId(
 				"httpcore-osgi").versionAsInProject(),
