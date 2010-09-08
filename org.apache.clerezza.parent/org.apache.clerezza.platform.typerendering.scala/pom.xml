@@ -9,7 +9,7 @@
 	<artifactId>org.apache.clerezza.platform.typerendering.scala</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
-	<name>Clerezza - Platform Typerendering Utilities for Scala</name>
+	<name>Clerezza - Platform Type Rendering Utilities for Scala</name>
 	<description>Utilities to write renderlets in Scala</description>
 	<dependencies>
 		<dependency>

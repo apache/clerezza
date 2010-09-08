@@ -1,24 +1,12 @@
 package org.apache.clerezza.platform.typerendering.scala
 
-
-import java.io.IOException
 import java.io.OutputStream
 import java.io.PrintWriter
 import java.net.URI
-import java.util.ArrayList
-import java.util.Comparator
-import java.util.Iterator
-import java.util.List
-import java.util.SortedSet
-import java.util.TreeSet
 import javax.ws.rs.core.MediaType
 import scala.xml._
 import org.apache.clerezza.platform.typerendering._
-import org.apache.clerezza.rdf.core.NonLiteral
-import org.apache.clerezza.rdf.core.Resource
-import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.rdf.utils.GraphNode
-import org.osgi.service.component.ComponentContext
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.utils._
