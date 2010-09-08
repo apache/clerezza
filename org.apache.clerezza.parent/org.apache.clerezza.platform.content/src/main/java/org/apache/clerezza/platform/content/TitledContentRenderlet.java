@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.ws.rs.core.MediaType;
@@ -60,7 +61,7 @@ public class TitledContentRenderlet implements Renderlet {
 
 	};
 	@Override
-	public void render(GraphNode res, GraphNode context,
+	public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
 			CallbackRenderer callbackRenderer,
 			URI renderingSpecification,
 			String mode,

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.typerendering.CallbackRenderer;
@@ -47,7 +48,7 @@ public class SeedsnipeRenderlet implements Renderlet{
 	}
 
 	@Override
-	public void render(GraphNode res, GraphNode context,
+	public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
 			CallbackRenderer callbackRenderer,
 			URI renderingSpecification,
 			String mode,

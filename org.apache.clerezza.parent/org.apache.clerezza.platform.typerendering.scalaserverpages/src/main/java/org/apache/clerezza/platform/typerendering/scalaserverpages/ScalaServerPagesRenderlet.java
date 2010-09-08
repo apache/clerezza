@@ -34,16 +34,13 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
-import java.util.logging.Level;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.typerendering.CallbackRenderer;
@@ -119,7 +116,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	private Map<String, CompiledScript> compiledScripts = new HashMap<String, CompiledScript>();
 	
 	@Override
-	public void render(GraphNode res, GraphNode context,
+	public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
 			CallbackRenderer callbackRenderer, URI renderingSpecification,
 			String mode, MediaType mediaType,
 			RequestProperties requestProperties, OutputStream os) throws IOException {

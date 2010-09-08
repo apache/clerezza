@@ -60,7 +60,7 @@ public class GenericTest {
 				"text/turtle");
 		GraphNode res = new GraphNode(root, tc);
 		ByteArrayOutputStream baosRendered = new ByteArrayOutputStream();
-		renderlet.render(res, null, null,
+		renderlet.render(res, null, null, null,
 				getClass().getResource(template).toURI(),
 				null, null, null, baosRendered);
 		ByteArrayOutputStream baosExpected = new ByteArrayOutputStream();

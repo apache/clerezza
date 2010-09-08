@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -86,10 +88,11 @@ class RendererImpl implements Renderer, Comparable {
 	public void render(GraphNode resource, GraphNode context, UriInfo uriInfo,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException {
+		Map<String, Object> sharedRenderingValues = new HashMap<String, Object>();
 			CallbackRenderer callbackRenderer =
 					new CallbackRendererImpl(renderletRendererFactoryImpl,
 					uriInfo, httpHeaders, mediaType);
-			renderlet.render(resource, context, callbackRenderer,
+			renderlet.render(resource, context, sharedRenderingValues, callbackRenderer,
 				renderSpecUri, mode, mediaType,
 				new Renderlet.RequestProperties(uriInfo, httpHeaders),
 				entityStream);
