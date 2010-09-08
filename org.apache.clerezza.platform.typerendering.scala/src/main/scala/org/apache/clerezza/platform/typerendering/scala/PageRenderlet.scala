@@ -57,6 +57,7 @@ abstract class PageRenderlet extends Renderlet {
 
 	@throws(classOf[IOException])
 	override def render(res: GraphNode, context: GraphNode,
+					sharedRenderingValues: java.util.Map[String, Object] ,
 					renderer: CallbackRenderer ,
 					renderingSpecification:  URI,
 					mode: String,

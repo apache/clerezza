@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import java.net.URI;
+import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
@@ -65,6 +66,8 @@ public interface Renderlet {
 	 *
 	 * @param res  RDF resource to be rendered with the template.
 	 * @param context  RDF resource providing a redering context.
+	 * @param sharedRenderingValues	a map that can be used for sharing values
+	 * across the different renderlets involved in a rendering process
 	 * @param callbackRenderer  renderer for call backs.
 	 * @param renderingSpecification  the rendering specification
 	 * @param mediaType  the media type this media produces (a part of)
@@ -75,6 +78,7 @@ public interface Renderlet {
 	 */
 	public void render(GraphNode res,
 			GraphNode context,
+			Map<String, Object> sharedRenderingValues,
 			CallbackRenderer callbackRenderer,
 			URI renderingSpecification,
 			String mode,

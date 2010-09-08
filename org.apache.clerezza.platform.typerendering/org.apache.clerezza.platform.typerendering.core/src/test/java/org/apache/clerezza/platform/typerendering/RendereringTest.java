@@ -27,6 +27,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,7 +76,7 @@ public abstract class RendereringTest {
 		}
 
 		@Override
-		public void render(GraphNode res, GraphNode context, 
+		public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
 				CallbackRenderer callbackRenderer, URI renderingSpecification,
 				String mode, MediaType mediaType, 
 				Renderlet.RequestProperties requestProperties, OutputStream os) {
