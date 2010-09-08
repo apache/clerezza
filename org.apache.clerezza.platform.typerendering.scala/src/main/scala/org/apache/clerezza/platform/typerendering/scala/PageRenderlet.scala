@@ -57,7 +57,7 @@ abstract class PageRenderlet extends Renderlet {
 
 	@throws(classOf[IOException])
 	override def render(res: GraphNode, context: GraphNode,
-					sharedRenderingValues: java.util.Map[String, Object] ,
+					sharedRenderingValues: java.util.Map[String, Object],
 					renderer: CallbackRenderer ,
 					renderingSpecification:  URI,
 					mode: String,
@@ -70,7 +70,7 @@ abstract class PageRenderlet extends Renderlet {
 			val renderingSpecificationOption = if (renderingSpecification != null) {Some(renderingSpecification)} else {None}
 			val modeOption = if (mode != null) {Some(mode)} else {None}
 			renderedPage(
-				RenderedPage.Arguments(res, context, renderer,
+				RenderedPage.Arguments(res, context, sharedRenderingValues, renderer,
 								   renderingSpecificationOption, modeOption, mediaType, os));
 
 	}

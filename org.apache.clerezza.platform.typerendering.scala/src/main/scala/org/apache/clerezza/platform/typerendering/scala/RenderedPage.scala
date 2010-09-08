@@ -22,6 +22,7 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 	val RenderedPage.Arguments(
 					res: GraphNode,
 					context: GraphNode,
+					sharedRenderingValues: java.util.Map[String, Object],
 					renderer: CallbackRenderer,
 					renderingSpecificationOption:  Option[URI],
 					modeOption: Option[String],
@@ -47,15 +48,19 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 		renderer.render(resource, context, mode, baos)
 		parseNodeSeq(new String(baos.toByteArray))
 	}
-	println("rendering")
-	val out = new PrintWriter(os)
 
+	object $ {
+		def apply(key: String) = sharedRenderingValues.get(key)
+		def update(key: String, value: Object) = sharedRenderingValues.put(key, value)
+	}
 
 	def ifx[T](con:  => Boolean)(f: => T) :  T = {
 		if (con) f else null.asInstanceOf[T]
 	}
 
 	val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
+
+	val out = new PrintWriter(os)
 
 	out.println(
 		content
@@ -68,6 +73,7 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 }
 object RenderedPage {
 	case class Arguments(res: GraphNode, context: GraphNode,
+					sharedRenderingValues: java.util.Map[String, Object],
 					renderer: CallbackRenderer ,
 					renderingSpecificationOption:  Option[URI],
 					modeOption: Option[String],
