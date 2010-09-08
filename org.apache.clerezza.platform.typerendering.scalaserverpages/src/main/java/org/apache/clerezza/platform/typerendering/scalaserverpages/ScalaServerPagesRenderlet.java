@@ -110,7 +110,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		byteHeader = baos.toByteArray();
 	}
 
-	private final byte[] byteCloser = (';' + lineSeparator).getBytes();
+	private final byte[] byteCloser = (";}" + lineSeparator).getBytes();
 
 	//TODO a map with SoftReferences as keys
 	private Map<String, CompiledScript> compiledScripts = new HashMap<String, CompiledScript>();
@@ -142,6 +142,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			values.put("context", context);
 			values.put("renderer", callbackRenderer);
 			values.put("mode", mode);
+			values.put("sharedRenderingValues", sharedRenderingValues);
 			if (requestProperties != null) {
 				values.put("uriInfo", requestProperties.getUriInfo());
 				//values.put("httpHeaders", requestProperties.getHttpHeaders());

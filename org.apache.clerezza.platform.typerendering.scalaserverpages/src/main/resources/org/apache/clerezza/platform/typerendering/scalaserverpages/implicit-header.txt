@@ -12,27 +12,33 @@ val res = $("res").asInstanceOf[GraphNode]
 val context = $("context").asInstanceOf[GraphNode]
 val mode = $("mode").asInstanceOf[String]
 val uriInfo = $("uriInfo").asInstanceOf[UriInfo]
+val sharedRenderingValues = $("sharedRenderingValues").asInstanceOf[java.util.Map[String, Object]]
 
-def render(resource : GraphNode, mode : String) = {
-    def parseNodeSeq(string : String)  = {
-        _root_.scala.xml.XML.loadString("<elem>"+string+"</elem>").child
-    }
-	val baos = new java.io.ByteArrayOutputStream
-	try {
-		renderer.render(resource, context, mode, baos)
-	} catch {
-		case e: Exception => {
-				val exWriter = new java.io.StringWriter
-				val pw = new PrintWriter(exWriter)
-				e.printStackTrace(pw)
-				pw.flush()
-				baos.write(<div class="exception">{exWriter.toString}</div>.toString.getBytes)		
-			}
+{
+	object $ {
+		def apply(key: String) = sharedRenderingValues.get(key)
+		def update(key: String, value: Object) = sharedRenderingValues.put(key, value)
 	}
-	parseNodeSeq(new String(baos.toByteArray, "utf-8"))
-}
-def ifx[T](con:  => Boolean)(f: => T) :  T = {
-	if (con) f else null.asInstanceOf[T]
-}
-val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
 
+	def render(resource : GraphNode, mode : String) = {
+		def parseNodeSeq(string : String)  = {
+			_root_.scala.xml.XML.loadString("<elem>"+string+"</elem>").child
+		}
+		val baos = new java.io.ByteArrayOutputStream
+		try {
+			renderer.render(resource, context, mode, baos)
+		} catch {
+			case e: Exception => {
+					val exWriter = new java.io.StringWriter
+					val pw = new PrintWriter(exWriter)
+					e.printStackTrace(pw)
+					pw.flush()
+					baos.write(<div class="exception">{exWriter.toString}</div>.toString.getBytes)
+				}
+		}
+		parseNodeSeq(new String(baos.toByteArray, "utf-8"))
+	}
+	def ifx[T](con:  => Boolean)(f: => T) :  T = {
+		if (con) f else null.asInstanceOf[T]
+	}
+	val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
