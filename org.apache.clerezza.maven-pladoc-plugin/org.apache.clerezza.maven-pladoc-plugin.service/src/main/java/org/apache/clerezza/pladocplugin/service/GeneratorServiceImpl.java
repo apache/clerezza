@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -129,7 +130,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 			FileOutputStream out = new FileOutputStream(outFile);
 			try {
 				System.out.println("writing " + outFile);
-				renderer.render(docRootNode, docRootNode, null, null, out);
+				renderer.render(docRootNode, docRootNode, null, null, new HashMap<String, Object>(), out);
 			} finally {
 				out.close();
 			}
