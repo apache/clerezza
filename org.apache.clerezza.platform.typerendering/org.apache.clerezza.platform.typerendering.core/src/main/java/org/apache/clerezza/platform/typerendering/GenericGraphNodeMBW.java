@@ -25,9 +25,11 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import java.util.Set;
 
@@ -144,16 +146,17 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 					Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No suitable renderer found").build());
 		}
 		final MediaType rendererMediaType = renderer.getMediaType();
+		Map<String, Object> sharedRenderingValues = new HashMap<String, Object>();
 		if (!rendererMediaType.equals(MediaType.APPLICATION_XHTML_XML_TYPE)) {
 			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, rendererMediaType);
-			renderer.render(node, getUserContext(), uriInfo, httpHeaders, entityStream);
+			renderer.render(node, getUserContext(), uriInfo, httpHeaders, sharedRenderingValues, entityStream);
 		} else {
 			final MediaType mediaTypeWithCharset = MediaType.valueOf(MediaType.APPLICATION_XHTML_XML+";charset=UTF-8");
 			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, mediaTypeWithCharset);
 			ResultDocModifier.init();
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				renderer.render(node, getUserContext(), uriInfo, httpHeaders, baos);
+				renderer.render(node, getUserContext(), uriInfo, httpHeaders, sharedRenderingValues, baos);
 				final byte[] bytes = baos.toByteArray();
 				if (!ResultDocModifier.getInstance().isModified()) {
 					entityStream.write(bytes);

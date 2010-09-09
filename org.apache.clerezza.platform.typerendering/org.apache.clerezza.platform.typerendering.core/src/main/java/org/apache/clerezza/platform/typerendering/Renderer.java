@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.typerendering;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
@@ -68,6 +69,7 @@ public interface Renderer  {
 	 * @param os  where the output will be written to.
 	 */
 	public void render(GraphNode node, GraphNode userContext, UriInfo uriInfo,
-			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+			MultivaluedMap<String, Object> httpHeaders, 
+			Map<String, Object> sharedRenderingValues, OutputStream entityStream)
 			throws IOException;
 }

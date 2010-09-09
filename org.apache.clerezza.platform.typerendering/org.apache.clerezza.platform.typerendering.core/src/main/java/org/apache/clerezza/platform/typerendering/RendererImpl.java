@@ -87,15 +87,15 @@ class RendererImpl implements Renderer, Comparable {
 	@Override
 	public void render(GraphNode resource, GraphNode context, UriInfo uriInfo,
 			MultivaluedMap<String, Object> httpHeaders,
+			Map<String, Object> sharedRenderingValues,
 			OutputStream entityStream) throws IOException {
-		Map<String, Object> sharedRenderingValues = new HashMap<String, Object>();
-			CallbackRenderer callbackRenderer =
-					new CallbackRendererImpl(renderletRendererFactoryImpl,
-					uriInfo, httpHeaders, mediaType);
-			renderlet.render(resource, context, sharedRenderingValues, callbackRenderer,
-				renderSpecUri, mode, mediaType,
-				new Renderlet.RequestProperties(uriInfo, httpHeaders),
-				entityStream);
+		CallbackRenderer callbackRenderer =
+				new CallbackRendererImpl(renderletRendererFactoryImpl,
+				uriInfo, httpHeaders, mediaType, sharedRenderingValues);
+		renderlet.render(resource, context, sharedRenderingValues, callbackRenderer,
+			renderSpecUri, mode, mediaType,
+			new Renderlet.RequestProperties(uriInfo, httpHeaders),
+			entityStream);
 	}
 
 	@Override

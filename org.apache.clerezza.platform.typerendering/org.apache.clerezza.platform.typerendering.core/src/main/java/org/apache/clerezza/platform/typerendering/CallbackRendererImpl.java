@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
@@ -36,13 +37,15 @@ public class CallbackRendererImpl implements CallbackRenderer {
 	RenderletRendererFactoryImpl manager;
 	private final UriInfo uriInfo;
 	private final MultivaluedMap<String, Object> httpHeaders;
+	private final Map<String, Object> sharedRenderingValue;
 
 	CallbackRendererImpl(RenderletRendererFactoryImpl manager, UriInfo uriInfo,
-			MultivaluedMap<String, Object> httpHeaders, MediaType mediaType) {
+			MultivaluedMap<String, Object> httpHeaders, MediaType mediaType, Map<String, Object> sharedRenderingValue) {
 		this.uriInfo = uriInfo;
 		this.httpHeaders = httpHeaders;
 		this.mediaTypeList = Collections.singletonList(mediaType);
 		this.manager = manager;
+		this.sharedRenderingValue = sharedRenderingValue;
 	}
 	
 	@Override
@@ -53,7 +56,8 @@ public class CallbackRendererImpl implements CallbackRenderer {
 			throw new RuntimeException("no renderer could be created for "+
 					resource+" (in "+resource.getNodeContext()+"), "+mode+","+mediaTypeList);
 		}
-		renderer.render(resource, context, uriInfo, httpHeaders, os);
+		renderer.render(resource, context, uriInfo, httpHeaders,
+				sharedRenderingValue, os);
 	}
 
 }
