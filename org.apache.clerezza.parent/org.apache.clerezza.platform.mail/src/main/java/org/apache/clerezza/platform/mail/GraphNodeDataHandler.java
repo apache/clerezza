@@ -23,6 +23,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 
 import javax.activation.CommandInfo;
 import javax.activation.CommandMap;
@@ -122,7 +123,7 @@ public class GraphNodeDataHandler extends DataHandler{
 
 	@Override
 	public void writeTo(OutputStream os) throws IOException {
-		renderer.render(graphNode, null, null, null, os);
+		renderer.render(graphNode, null, null, null, new HashMap<String, Object>(), os);
 	}
 
 
