@@ -36,10 +36,13 @@ import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.access.TcProviderMultiplexer;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
@@ -56,11 +59,15 @@ import org.slf4j.LoggerFactory;
 @Component
 @Service(WeightedTcProvider.class)
 @Property(name = "weight", intValue = 500 )
+@Reference(name="weightedTcProvider", policy=ReferencePolicy.DYNAMIC,
+		referenceInterface=WeightedTcProvider.class,
+		cardinality=ReferenceCardinality.MANDATORY_MULTIPLE)
 public class ExternalizingProvider implements WeightedTcProvider {
 
 	private static final String EXTERNALIZEDLITERALS_SUFFIX = "-externalizedliterals";
-	@Reference
-	private TcManager tcManager;
+
+	//@Reference(policy=ReferencePolicy.DYNAMIC, cardinality=ReferenceCardinality.OPTIONAL_UNARY)
+	private TcProviderMultiplexer tcProvider = new TcProviderMultiplexer();
 	/**
 	 *	directory where all graphs are stored
 	 */
@@ -74,10 +81,10 @@ public class ExternalizingProvider implements WeightedTcProvider {
 
 	ExternalizingProvider(File directory) {
 		dataPath = directory;
-		tcManager = TcManager.getInstance();
+		tcProvider = TcManager.getInstance();
 	}
 
-	public void activate(ComponentContext cCtx) {
+	protected void activate(ComponentContext cCtx) {
 		log.info("Activating literal externalizing provider");
 		if (cCtx != null) {
 			weight = (Integer) cCtx.getProperties().get("weight");
@@ -86,7 +93,7 @@ public class ExternalizingProvider implements WeightedTcProvider {
 		}
 	}
 
-	public void deactivate(ComponentContext cCtx) {
+	protected void deactivate(ComponentContext cCtx) {
 		dataPath = null;
 	}
 
@@ -114,11 +121,14 @@ public class ExternalizingProvider implements WeightedTcProvider {
 		}
 		try {
 			final UriRef baseGraphName = new UriRef(name.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
+			if (tcProvider == null) {
+				throw new RuntimeException("MGraph retrieval currently not possible: tcManager unavalibale");
+			}
 			final MGraph baseGraph = AccessController.doPrivileged(new PrivilegedExceptionAction<MGraph>() {
 
 				@Override
 				public MGraph run() {
-					return tcManager.getMGraph(baseGraphName);
+					return tcProvider.getMGraph(baseGraphName);
 				}
 			});
 			return new ExternalizingMGraph(baseGraph, getHashStoreDir(name));
@@ -151,11 +161,14 @@ public class ExternalizingProvider implements WeightedTcProvider {
 				throw new IllegalArgumentException();
 			}
 			final UriRef baseGraphName = new UriRef(name.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
+			if (tcProvider == null) {
+				throw new RuntimeException("MGraph creation currently not possible: tcManager unavalibale");
+			}
 			final MGraph baseGraph = AccessController.doPrivileged(new PrivilegedExceptionAction<MGraph>() {
 
 				@Override
 				public MGraph run() {
-					return tcManager.createMGraph(baseGraphName);
+					return tcProvider.createMGraph(baseGraphName);
 				}
 			});
 			File hashStoreDir = getHashStoreDir(name);
@@ -192,7 +205,7 @@ public class ExternalizingProvider implements WeightedTcProvider {
 
 				@Override
 				public Object run() {
-					tcManager.deleteTripleCollection(baseGraphName);
+					tcProvider.deleteTripleCollection(baseGraphName);
 					return null;
 				}
 			});
@@ -269,7 +282,7 @@ public class ExternalizingProvider implements WeightedTcProvider {
 			UriRef graphName = it.next();
 			final UriRef baseGraphName = new UriRef(graphName.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
 			try {
-				tcManager.getMGraph(baseGraphName);
+				tcProvider.getMGraph(baseGraphName);
 			} catch (NoSuchEntityException e) {
 				log.warn("Store for exeternalized literals but no base graph found for {}.", graphName);
 				it.remove();
@@ -302,5 +315,26 @@ public class ExternalizingProvider implements WeightedTcProvider {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Registers a provider
+	 *
+	 * @param provider
+	 *            the provider to be registered
+	 */
+	protected void bindWeightedTcProvider(WeightedTcProvider provider) {
+		tcProvider.addWeightedTcProvider(provider);
+	}
+
+	/**
+	 * Unregister a provider
+	 *
+	 * @param provider
+	 *            the provider to be deregistered
+	 */
+	protected void unbindWeightedTcProvider(
+			WeightedTcProvider provider) {
+		tcProvider.removeWeightedTcProvider(provider);
 	}
 }
