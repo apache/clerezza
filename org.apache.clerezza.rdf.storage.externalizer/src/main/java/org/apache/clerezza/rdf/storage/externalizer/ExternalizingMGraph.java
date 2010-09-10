@@ -64,7 +64,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 	public ExternalizingMGraph(MGraph baseGraph, File dataDir) {
 		this.baseGraph = baseGraph;
 		this.dataDir = dataDir;
-		logger.info("Created externalizing mgraph with dir: "+dataDir);
+		logger.debug("Created externalizing mgraph with dir: {}", dataDir);
 	}
 
 	@Override
