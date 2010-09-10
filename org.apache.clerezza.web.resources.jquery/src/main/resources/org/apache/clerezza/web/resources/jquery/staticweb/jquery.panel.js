@@ -9,11 +9,12 @@ $(document).ready(function () {
 
 	$('.tx-panel-open-close').bind("click",function(){
 
-		var oPanel = $('.tx-panel').children().not(".tx-panel-open-close");
-		if (!$('.tx-panel').hasClass("tx-close")) {
+		var oPanel = $('.tx-panel').not(".tx-panel-middle").not(".tx-panel-right");
+
+		if (!oPanel.hasClass("tx-close")) {
 			$(this).removeClass("tx-icon-left-inverse");
 			$(this).addClass("tx-icon-right-inverse");
-			$('.tx-panel').addClass("tx-close");
+			oPanel.addClass("tx-close");
 			$(this).addClass("tx-close");
 			$('.tx-list').addClass("tx-hide-panel").removeClass("tx-show-panel");
 			$('.tx-edit').addClass("tx-hide-panel").removeClass("tx-show-panel");
@@ -22,7 +23,7 @@ $(document).ready(function () {
 		else {
 			$(this).removeClass("tx-icon-right-inverse");
 			$(this).addClass("tx-icon-left-inverse");
-			$('.tx-panel').removeClass("tx-close");
+			oPanel.removeClass("tx-close");
 			$(this).removeClass("tx-close");
 			$('.tx-list').addClass("tx-show-panel").removeClass("tx-hide-panel");
 			$('.tx-edit').addClass("tx-show-panel").removeClass("tx-hide-panel");
