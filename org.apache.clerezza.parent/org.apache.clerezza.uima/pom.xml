@@ -17,6 +17,7 @@
     <module>org.apache.clerezza.uima.ontologies</module>
     <module>org.apache.clerezza.uima.utils</module>
     <module>org.apache.clerezza.uima.metadata-generator</module>
+    <!--<module>org.apache.clerezza.uima.concept-tagging</module>-->
   </modules>
   <dependencies>
     <dependency>
@@ -34,4 +35,31 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>org.apache.clerezza.maven-pladoc-plugin.core</artifactId>
+        <version>0.2-incubating-SNAPSHOT</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.xsite</groupId>
+        <artifactId>xsite-maven-plugin</artifactId>
+        <configuration>
+          <sourceDirectoryPath>${basedir}/src/site/xsite</sourceDirectoryPath>
+          <sitemapPath>content/sitemap.xml</sitemapPath>
+          <skinPath>templates/skin.html</skinPath>
+          <outputDirectoryPath>${basedir}/target/site/documentation</outputDirectoryPath>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>site</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
