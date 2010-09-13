@@ -86,6 +86,7 @@
 		<module>org.apache.clerezza.rdf.jena.sparql</module>
 		<module>org.apache.clerezza.rdf.jena.storage</module>
 		<module>org.apache.clerezza.rdf.jena.tdb.storage</module>
+		<module>org.apache.clerezza.rdf.locking</module>
 		<module>org.apache.clerezza.rdf.ontologies</module>
 		<module>org.apache.clerezza.rdf.metadata</module>
 		<module>org.apache.clerezza.rdf.rdfa</module>
