@@ -30,7 +30,7 @@ import java.util.concurrent.locks.Lock;
  * This class represents a node in the context of a graph. It provides
  * utility methods to explore and modify its neighbourhood. The method
  * modifying the graph will throw an {@link UnsupportedOperationException}
- * it the undelying TripleCollection in inmutable (i.e. is a {@link Graph}.
+ * it the underlying TripleCollection in immutable (i.e. is a {@link Graph}.
  *
  * @since 0.2
  * @author reto, mir
@@ -40,7 +40,19 @@ public class GraphNode {
 	private final Resource resource;
 	private final TripleCollection graph;
 
+	/**
+	 * Create a GraphNode representing resource within graph.
+	 *
+	 * @param resource the resource this GraphNode represents
+	 * @param graph the TripleCollection that describes the resource
+	 */
 	public GraphNode(Resource resource, TripleCollection graph) {
+		if (resource == null) {
+			throw new IllegalArgumentException("resource may not be null");
+		}
+		if (graph == null) {
+			throw new IllegalArgumentException("graph may not be null");
+		}
 		this.resource = resource;
 		this.graph = graph;
 	}
