@@ -12,9 +12,8 @@
 	<version>0.1-incubating-SNAPSHOT</version>
 	
 	<packaging>bundle</packaging>
-	<name>Clerezza - RDF locking</name>
-	<description>Provides a web page containig an overview of graph locks.</description>
-
+	<name>Clerezza - RDF Utility for MGraph lock monitoring</name>
+	<description>Provides a web page containig an overview of locks on MGraphs.</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -23,6 +22,10 @@
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>jsr311-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.dashboard.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>

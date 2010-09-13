@@ -20,12 +20,16 @@ package org.apache.clerezza.rdf.locking;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.security.AccessControlException;
+import java.security.AccessController;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
+import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.debug.ReadLockDebug;
@@ -34,16 +38,20 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Services;
 
 /**
  * Provides an overview page of all locks of all graphs.
  * @author mir
  */
 @Component()
-@Service(value = Object.class)
+@Services({
+	@Service(value=Object.class),
+	@Service(value=GlobalMenuItemsProvider.class)
+})
 @Property(name = "javax.ws.rs", boolValue = true)
-@Path("/locks")
-public class LockOverview {
+@Path("admin/graphs/locks")
+public class LockOverview implements GlobalMenuItemsProvider {
 
 	@Reference
 	TcManager tcManager;
@@ -142,5 +150,19 @@ public class LockOverview {
 		for (int i = 0; i < numGroups; i++) {
 			visit(groups[i], level + 1, threadSet);
 		}
+	}
+
+	@Override
+	public Set<GlobalMenuItem> getMenuItems() {
+		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+		try {
+			AccessController.checkPermission(
+					new LockOverviewPermission());
+		} catch (AccessControlException e) {
+			return items;
+		}
+		items.add(new GlobalMenuItem("/admin/graphs/locks", "SCM", "MGraph Locking", 1,
+				"Development"));
+		return items;
 	}
 }
