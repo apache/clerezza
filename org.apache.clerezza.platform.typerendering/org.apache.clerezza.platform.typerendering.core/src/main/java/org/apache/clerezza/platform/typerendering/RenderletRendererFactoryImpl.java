@@ -128,9 +128,10 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 			for (RenderletDefinition renderletDef : renderletDefs) {
 				MediaType mediaTypeInGraph = renderletDef.getMediaType();
 				int prio = -1;
+				MediaType mediaTypeRequested = null;
 				for (int i = 0; i < acceptableMediaTypes.size(); i++) {
-					MediaType acceptableMediaType = acceptableMediaTypes.get(i);
-					if (acceptableMediaType.isCompatible(mediaTypeInGraph)) {
+					mediaTypeRequested = acceptableMediaTypes.get(i);
+					if (mediaTypeRequested.isCompatible(mediaTypeInGraph)) {
 						prio = i;
 						break;
 					}
@@ -151,7 +152,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 							renderletDef.getRenderingSpecification(),
 							renderlet,
 							mode,
-							mediaTypeInGraph,
+							getMostConcreteMediaType(mediaTypeRequested, mediaTypeInGraph),
 							prio, RenderletRendererFactoryImpl.this,
 							renderletDef.isBuiltIn()));
 				}
@@ -161,6 +162,25 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 			}
 		}
 		return null;
+	}
+
+	private MediaType getMostConcreteMediaType(MediaType a, MediaType b) {
+		if (a == null) {
+			return b;
+		}
+		if (b == null) {
+			return a;
+		}
+		if (!a.isWildcardType()) {
+			return a;
+		}
+		if (!b.isWildcardType()) {
+			return b;
+		}
+		if (!a.isWildcardSubtype()) {
+			return a;
+		}
+		return b;
 	}
 
 	@Override
