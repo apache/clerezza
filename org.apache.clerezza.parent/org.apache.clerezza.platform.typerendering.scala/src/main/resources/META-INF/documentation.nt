@@ -1,0 +1,25 @@
+<bundle:///intro-content-el/0> <http://discobits.org/ontology#infoBit> "The Type-Rendering Utilities for Scala allow to write Renderlets in Scala more easily. Apart from a having to add a bit of code to produce complete Scala classes they provide the same functionality as available in ScalaServerPages, additionally the Renderlet can register itself for a specified RDF type and rendering mode."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/1> <http://discobits.org/ontology#infoBit> "See the ScalaDoc for PageRenderlet and its superclass AbstractRenderlet for usage instrcutions. Note that the resulting rendelerlets need to be registered as service, in serviceComponents.xml the respective section would look like this: \n<pre xmlns=\"http://www.w3.org/1999/xhtml\">\n&lt;scr:component enabled=\"true\" name=\"org.example.html.BookFormRenderlet\"&gt;\n\t&lt;implementation class=\"org.example.html.BookFormRenderlet\"/&gt;\n\t&lt;service servicefactory=\"false\"&gt;\n\t\t&lt;provide interface=\"org.apache.clerezza.platform.typerendering.Renderlet\"/&gt;\n\t&lt;/service&gt;\n\t&lt;property name=\"service.pid\" value=\"org.example.html.BookFormRenderlet\"/&gt;\n\t&lt;reference name=\"renderletManager\"\n\tinterface=\"org.apache.clerezza.platform.typerendering.RenderletManager\"\n\tcardinality=\"1..1\" policy=\"static\" bind=\"bindRenderletManager\" unbind=\"unbindRenderletManager\"/&gt;\n&lt;/scr:component&gt;\n</pre>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:86e4309edd82a6d415338546caff2d551 . 
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:8ced329518dac9ef741f4099548bb8451 . 
+<bundle:///intro-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#OrderedContent> .
+<bundle:///intro-title> <http://discobits.org/ontology#infoBit> "Clerezza - Platform Type Rendering Utilities for Scala"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro> <http://clerezza.org/2009/08/documentation#after> <bundle://org.apache.clerezza.platform.typerendering.scalaserverpages/intro> .
+<bundle:///intro> <http://discobits.org/ontology#contains> _:b7d0232f405805aac4674f5585e011d01 . 
+<bundle:///intro> <http://discobits.org/ontology#contains> _:ccd6d577f99d82c53d5323fdbe4b6ba31 . 
+<bundle:///intro> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+_:86e4309edd82a6d415338546caff2d551 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/1> . 
+_:86e4309edd82a6d415338546caff2d551 <http://discobits.org/ontology#pos> "1" . 
+_:86e4309edd82a6d415338546caff2d551 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:8ced329518dac9ef741f4099548bb8451 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/0> . 
+_:8ced329518dac9ef741f4099548bb8451 <http://discobits.org/ontology#pos> "0" . 
+_:8ced329518dac9ef741f4099548bb8451 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:b7d0232f405805aac4674f5585e011d01 <http://discobits.org/ontology#holds> <bundle:///intro-content> . 
+_:b7d0232f405805aac4674f5585e011d01 <http://discobits.org/ontology#pos> "1" . 
+_:b7d0232f405805aac4674f5585e011d01 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:ccd6d577f99d82c53d5323fdbe4b6ba31 <http://discobits.org/ontology#holds> <bundle:///intro-title> . 
+_:ccd6d577f99d82c53d5323fdbe4b6ba31 <http://discobits.org/ontology#pos> "0" . 
+_:ccd6d577f99d82c53d5323fdbe4b6ba31 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
