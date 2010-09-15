@@ -42,6 +42,8 @@ public class CUSTOMPROPERTY {
 
 	public static final UriRef presentationlabel = new UriRef(
 			"http://clerezza.org/2009/06/custompropery#presentationlabel");
+	public static final UriRef configuration = new UriRef(
+			"http://clerezza.org/2009/06/custompropery#configuration");
 	public static final UriRef property = new UriRef(
 			"http://clerezza.org/2009/06/custompropery#property");
 	public static final UriRef cardinality = new UriRef(
