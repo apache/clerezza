@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.web.fileserver;
 
+import org.apache.clerezza.utils.osgi.BundlePathNode;
 import java.io.File;
 import java.net.URL;
 import javax.ws.rs.Path;

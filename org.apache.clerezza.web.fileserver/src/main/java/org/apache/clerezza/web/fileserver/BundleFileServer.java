@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.web.fileserver;
 
+import org.apache.clerezza.utils.osgi.BundlePathNode;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collection;
