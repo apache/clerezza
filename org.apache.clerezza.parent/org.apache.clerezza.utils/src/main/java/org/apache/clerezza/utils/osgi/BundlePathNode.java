@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.web.fileserver;
+package org.apache.clerezza.utils.osgi;
 
 import java.io.IOException;
 import java.io.InputStream;
