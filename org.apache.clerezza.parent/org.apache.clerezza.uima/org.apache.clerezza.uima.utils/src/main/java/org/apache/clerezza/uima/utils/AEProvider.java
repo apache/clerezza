@@ -1,17 +1,14 @@
 package org.apache.clerezza.uima.utils;
 
-import java.net.URL;
-import java.util.Map;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
-import org.apache.uima.resource.metadata.impl.ConfigurationParameterSettings_impl;
 import org.apache.uima.util.XMLInputSource;
-import org.apache.uima.util.XMLParser;
+
+import java.net.URL;
+import java.util.Map;
 
 /**
  * provide the AnalysisEngine using the default descriptor or using a custom descriptor (absolute)
@@ -78,7 +75,8 @@ public class AEProvider {
       // eventually add/override descriptor's configuration parameters
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       for (String parameter : parameterSettings.keySet()) {
-        desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterValue(parameter,parameterSettings.get(parameter));
+        if (desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().getParameterValue(parameter)!=null)
+          desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterValue(parameter,parameterSettings.get(parameter));
       }
 
       // create AE here

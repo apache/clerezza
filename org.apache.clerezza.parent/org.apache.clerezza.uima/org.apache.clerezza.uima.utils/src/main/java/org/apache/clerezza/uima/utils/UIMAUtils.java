@@ -7,9 +7,12 @@ import org.apache.clerezza.uima.utils.exception.NotSingletonFeatureStructureExce
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,8 @@ import java.util.concurrent.locks.Lock;
  * Utilities for managing UIMA data and features
  */
 public class UIMAUtils {
+
+  private final static Logger log = LoggerFactory.getLogger(UIMAUtils.class);
 
   public static List<FeatureStructure> getAllFSofType(int type, JCas cas)
           throws FeatureStructureNotFoundException {
@@ -65,6 +70,7 @@ public class UIMAUtils {
       for (FeatureStructure uimaObject : uimaObjects) {
         // create a new node for the current Annotation
         GraphNode annotationNode = new GraphNode(ENTITY.Annotation, existingNode.getGraph());
+        log.info(new StringBuilder("Node created for Type ").append(uimaObject.getType().toString()).toString());
 
         // set Annotation specific properties for the node
         if (uimaObject instanceof Annotation) {
@@ -77,15 +83,30 @@ public class UIMAUtils {
         annotationNode.addPropertyValue(ENTITY.uimaType, uimaObject.getType().getName());
 
         /* inspect features of the annotation */
-        for (Feature feature : uimaObject.getType().getFeatures()) {
+        Type type = uimaObject.getType();
+        for (Feature feature : type.getFeatures()) {
 
           // create a new feature node
           GraphNode featureNode = new GraphNode(ENTITY.Feature, existingNode.getGraph());
+          log.info(new StringBuilder("Node created for Feature ").append(feature.getName()).toString());
+
           // set feature name and value if not null
           featureNode.addPropertyValue(ENTITY.featureName, feature.getName());
-          FeatureStructure featureValue = uimaObject.getFeatureValue(feature);
-          if (featureValue != null)
+
+          String featureValue = null;
+          try {
+            featureValue = uimaObject.getFeatureValueAsString(feature);
+          }
+          catch (Exception e) {
+            // do nothing at the moment
+            log.warn(new StringBuilder("Unable to create feature value - ").append(e.toString()).toString());
+          }
+
+          if (featureValue != null) {
             featureNode.addPropertyValue(ENTITY.featureValue, featureValue);
+            log.info(new StringBuilder("Added feature ").append(feature.getName()).append(" with value ")
+                    .append(featureValue.toString()).toString());
+          }
 
           // add feature to the annotation node
           annotationNode.addProperty(ENTITY.hasFeature, featureNode.getNode());
