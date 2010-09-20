@@ -22,6 +22,7 @@ import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,6 +49,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
+import org.apache.clerezza.platform.Constants;
 import org.apache.clerezza.platform.content.WebDavUtils.PropertyMap;
 import org.apache.clerezza.platform.content.collections.CollectionCreator;
 import org.apache.clerezza.platform.content.webdav.MKCOL;
@@ -69,13 +71,17 @@ import org.apache.clerezza.platform.typehandlerspace.OPTIONS;
 import org.apache.clerezza.platform.typehandlerspace.SupportedTypes;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.rdf.utils.UnionMGraph;
+import org.apache.clerezza.rdf.utils.UriMutatingTripleCollection;
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
+import org.osgi.service.component.ComponentContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -90,7 +96,7 @@ import org.wymiwyg.wrhapi.HeaderName;
  *
  * @author reto, tho, agron, mir
  */
-@Component
+@Component(metatype=true)
 @Services({
 	@Service(Object.class),
 	@Service(DiscobitsHandler.class)
@@ -104,6 +110,10 @@ import org.wymiwyg.wrhapi.HeaderName;
 @SupportedTypes(types = { "http://www.w3.org/2000/01/rdf-schema#Resource" }, prioritize = false)
 public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		implements DiscobitsHandler {
+@Property(value="600", label="Max-Age", description="Specifies the value of the max-age field"
+		+ "set in the cache-control header of InfoDiscoBit-Responses, as per RFC 2616 this is a number of "
+		+ "seconds")
+	public static final String MAX_AGE = "max-age";
 
 	@Reference
 	protected ContentGraphProvider cgProvider;
@@ -112,6 +122,12 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 
 	private final Set<MetaDataGenerator> metaDataGenerators =
 			Collections.synchronizedSet(new HashSet<MetaDataGenerator>());
+
+	private String cacheControlHeaderValue;
+
+	protected void activate(ComponentContext context) {
+		cacheControlHeaderValue = "max-age="+(String) context.getProperties().get(MAX_AGE);
+	}
 
 	/**
 	 * TypeHandle method for rdf types "TitledContext", "InfoDiscoBit",
@@ -125,17 +141,47 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	public Object getResource(@Context UriInfo uriInfo) {
 		final MGraph mGraph = cgProvider.getContentGraph();
 		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
-		final GraphNode graphNode = new GraphNode(uri, mGraph);
-		InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(graphNode);
-		if (infoDiscobit != null) {
-			return infoDiscobit;
-		} else {
-			if (nodeAtUriExists(uri)) {
-				return new GraphNode(uri, mGraph);
-			}
+		final GraphNode graphNode = getResourceAsGraphNode(uriInfo);
+		if (graphNode == null) {
 			return checkIfOppositExistsAndRedirectIfSo(uri, uriInfo);
 		}
+		InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(graphNode);
+		if (infoDiscobit != null) {
+			Response response = Response.ok().
+					header(HttpHeaders.CACHE_CONTROL, cacheControlHeaderValue).
+					entity(infoDiscobit).
+					build();
+			return response;
+		} else {
+			return graphNode;
+		}
 	}
+
+	private GraphNode getResourceAsGraphNode(UriInfo uriInfo) {
+		final MGraph mGraph = cgProvider.getContentGraph();
+		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
+		UriRef allHostsUri = createAnyHostUri(uriInfo);
+		List<TripleCollection> baseTripleCollections = new ArrayList<TripleCollection>(2);
+		if (nodeAtUriExists(allHostsUri)) {
+			GraphNode anyHostGraphNode = new GraphNode(allHostsUri, mGraph);
+			TripleCollection anyHostTriples = new UriMutatingTripleCollection(
+					anyHostGraphNode.getNodeContext(),
+					Constants.ALL_HOSTS_URI_PREFIX+'/', uriInfo.getBaseUri().toString());
+			baseTripleCollections.add(anyHostTriples);
+
+		}
+		if (nodeAtUriExists(uri)) {
+			baseTripleCollections.add(mGraph);
+		}
+		if (baseTripleCollections.isEmpty()) {
+			return null;
+		}
+		TripleCollection baseGraph = baseTripleCollections.size() == 2 ?
+			new UnionMGraph(baseTripleCollections.toArray(new TripleCollection[2])) :
+			baseTripleCollections.get(0);
+		return new GraphNode(uri, baseGraph);
+	}
+
 
 	
 	/**
@@ -494,5 +540,9 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		} else {
 			return new UriRef(uriString + "/");
 		}
+	}
+
+	private UriRef createAnyHostUri(UriInfo uriInfo) {
+		return new UriRef(Constants.ALL_HOSTS_URI_PREFIX+uriInfo.getPath());
 	}
 }

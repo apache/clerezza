@@ -20,28 +20,17 @@ package org.apache.clerezza.web.resources.style;
 
 import java.net.URL;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 
 import javax.ws.rs.core.MediaType;
 import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.felix.scr.annotations.Services;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDFS;
-import org.osgi.framework.Bundle;
 import org.osgi.service.component.ComponentContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.clerezza.web.fileserver.BundlePathNode;
-import org.apache.clerezza.web.fileserver.FileServer;
-import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
  * Bundlized version oficons. Bundles which uses these icons
@@ -49,18 +38,8 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  *
  * @author tio
  */
-@Component
-@Services({
-	@Service(Object.class),
-	@Service(Style.class)}
-)
-@Property(name="javax.ws.rs", boolValue=true)
-@Path("/style")
+@Component(immediate=true)
 public class Style {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private FileServer fileServer;
 
 	@Reference
 	private RenderletManager renderletManager;
@@ -71,12 +50,6 @@ public class Style {
 	 * @param context
 	 */
 	protected void activate(ComponentContext context) {
-		Bundle bundle = context.getBundleContext().getBundle();
-		URL resourceDir = getClass().getResource("staticweb");
-		PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
-		logger.debug("Initializing file server for {} ({})", resourceDir,
-				resourceDir.getFile());
-		fileServer = new FileServer(pathNode);
 		URL templateURL = getClass().getResource("globalmenu-naked.ssp");
 
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
@@ -90,15 +63,4 @@ public class Style {
 
 	}
 
-	/**
-	 * Returns a PathNode of a static file from the staticweb folder.
-	 *
-	 * @return {@link PathNode}
-	 */
-	@GET
-	@Path("{path:.+}")
-	public PathNode getStaticFile(@PathParam("path") String path) {
-		final PathNode node = fileServer.getNode(path);
-		return node;
-	}
 }

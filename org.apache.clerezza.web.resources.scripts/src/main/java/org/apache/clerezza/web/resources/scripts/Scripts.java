@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.web.fileserver.BundlePathNode;
 import org.apache.clerezza.web.fileserver.FileServer;
-import org.apache.clerezza.web.resources.jquery.JQuery;	
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
@@ -47,11 +46,6 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  */
 @Path("/scripts")
 public class Scripts {
-	
-	/**
-	 * @scr.reference
-	 */
-	private JQuery jQuery;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 

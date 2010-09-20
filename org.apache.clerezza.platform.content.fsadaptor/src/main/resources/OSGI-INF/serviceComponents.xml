@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.platform.content.fsadaptor.BundleFsLoader">
+		<implementation class="org.apache.clerezza.platform.content.fsadaptor.BundleFsLoader"/>
+		<reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
+		cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
+		<reference name="parser" interface="org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider"
+		cardinality="1..1" policy="static" bind="bindContentGraphProvider" unbind="unbindContentGraphProvider"/>
+	</scr:component>
+</components>
