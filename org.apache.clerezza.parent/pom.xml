@@ -45,6 +45,7 @@
 		<module>org.apache.clerezza.platform.config.gui</module>
 		<module>org.apache.clerezza.platform.content.imagemetadata</module>
 		<module>org.apache.clerezza.platform.content</module>
+		<module>org.apache.clerezza.platform.content.fsadaptor</module>
 		<module>org.apache.clerezza.platform.content.representations</module>
 		<module>org.apache.clerezza.platform.dashboard</module>
 		<module>org.apache.clerezza.platform.dashboard.webinterface</module>
@@ -727,6 +728,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.content</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.content.fsadaptor</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>

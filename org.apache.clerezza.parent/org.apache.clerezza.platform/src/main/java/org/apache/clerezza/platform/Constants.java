@@ -57,5 +57,11 @@ public class Constants {
 	 */
 	public static final UriRef CONTENT_GRAPH_URI =
 			new UriRef(CONTENT_GRAPH_URI_STRING);
+	/**
+	 * all hosts uri-prefix, uri scheme for which the resource are also named
+	 * with the any schema/authority the instance can be reached with instead
+	 * of this prefix
+	 */
+	public static final String ALL_HOSTS_URI_PREFIX = "urn:x-allhosts:";
 
 }

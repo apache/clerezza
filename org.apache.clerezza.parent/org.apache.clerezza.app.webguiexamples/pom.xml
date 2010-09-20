@@ -46,7 +46,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Import-Package>org.apache.clerezza.web.resources.jquery, org.apache.clerezza.web.resources.style, *</Import-Package>
+						<Require-Bundle>org.apache.clerezza.web.resources.style, org.apache.clerezza.web.resources.jquery</Require-Bundle>
 					</instructions>
 				</configuration>
 			</plugin>

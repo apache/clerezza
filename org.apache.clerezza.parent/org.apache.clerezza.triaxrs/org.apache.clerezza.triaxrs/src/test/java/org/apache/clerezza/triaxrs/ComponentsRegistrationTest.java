@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.triaxrs;
 
+import java.io.File;
+import java.io.InputStream;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
@@ -33,7 +35,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentInstance;
 import org.apache.clerezza.jaxrs.extensions.prefixmanager.BundlePrefixManager;
@@ -158,6 +167,8 @@ public class ComponentsRegistrationTest {
 		return referenceMock;
 	}
 
+
+	
 	public static class MyComponentContext implements ComponentContext {
 
 		Map<ServiceReference, Object> reference2ComponentMap = new HashMap<ServiceReference, Object>();
@@ -174,7 +185,118 @@ public class ComponentsRegistrationTest {
 
 		@Override
 		public BundleContext getBundleContext() {
-			throw new UnsupportedOperationException("Not supported yet.");
+			return new BundleContext() {
+
+				@Override
+				public String getProperty(String string) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public Bundle getBundle() {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public Bundle installBundle(String string) throws BundleException {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public Bundle installBundle(String string, InputStream in) throws BundleException {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public Bundle getBundle(long l) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public Bundle[] getBundles() {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public void addServiceListener(ServiceListener sl, String string) throws InvalidSyntaxException {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public void addServiceListener(ServiceListener sl) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public void removeServiceListener(ServiceListener sl) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public void addBundleListener(BundleListener bl) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public void removeBundleListener(BundleListener bl) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public void addFrameworkListener(FrameworkListener fl) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public void removeFrameworkListener(FrameworkListener fl) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public ServiceRegistration registerService(String[] strings, Object o, Dictionary dctnr) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public ServiceRegistration registerService(String string, Object o, Dictionary dctnr) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public ServiceReference[] getServiceReferences(String string, String string1) throws InvalidSyntaxException {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public ServiceReference[] getAllServiceReferences(String string, String string1) throws InvalidSyntaxException {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public ServiceReference getServiceReference(String string) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public Object getService(ServiceReference sr) {
+					return reference2ComponentMap.get(sr);
+				}
+
+				@Override
+				public boolean ungetService(ServiceReference sr) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public File getDataFile(String string) {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+
+				@Override
+				public Filter createFilter(String string) throws InvalidSyntaxException {
+					throw new UnsupportedOperationException("Not supported yet.");
+				}
+			};
 		}
 
 		@Override

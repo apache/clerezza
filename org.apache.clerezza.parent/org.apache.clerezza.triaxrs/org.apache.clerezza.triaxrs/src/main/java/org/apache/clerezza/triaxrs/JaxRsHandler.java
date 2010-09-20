@@ -227,8 +227,7 @@ public class JaxRsHandler implements Handler {
 		String bundlePathPrefix = prefixManager.getPrefix(serviceReference
 				.getBundle());
 
-		Object component = componentContext.locateService("component",
-				serviceReference);
+		Object component = componentContext.getBundleContext().getService(serviceReference);
 		if (component == null) {
 			return;
 		}
@@ -284,9 +283,11 @@ public class JaxRsHandler implements Handler {
 		configLock.writeLock().lock();
 		try {
 			if (!componentReferenceStore.remove(serviceReference)) {
-				Object component = componentContext.locateService("component",
-						serviceReference);
-
+				Object component = componentContext.getBundleContext().getService(serviceReference);
+				if (component == null) {
+					logger.warn("Failed to unregister {} as no service could be located", serviceReference);
+					return;
+				}
 				unregisterComponent(component, component2PathPrefixMap.get(component));
 				component2PathPrefixMap.remove(component);
 			}
@@ -298,8 +299,7 @@ public class JaxRsHandler implements Handler {
 	protected void unregisterComponent(Object component, String pathPrefix) {
 		final Class<?> clazz = component.getClass();
 		final Path path = clazz.getAnnotation(Path.class);
-
-		logger.info("Unbinding {}", component);
+		logger.info("Unbinding: {}", component);
 		if (path != null) {
 			final RootResourceDescriptor descriptor = new RootResourceDescriptor(
 					clazz, component, path.value(), providers);

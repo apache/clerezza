@@ -42,6 +42,17 @@
 				<groupId>net.sf.alchim</groupId>
 				<artifactId>yuicompressor-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<!-- <Import-Package>org.apache.clerezza.web.resources.jquery, *</Import-Package> -->
+						<Require-Bundle>org.apache.clerezza.web.resources.jquery</Require-Bundle>
+					</instructions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
