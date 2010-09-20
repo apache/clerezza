@@ -35,8 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Assert;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.web.resources.jquery.JQuery;
-import org.apache.clerezza.web.resources.scripts.Scripts;
 import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.exam.Inject;
@@ -208,14 +206,6 @@ public class FelixClerezzaPlatformTest {
 
 	}
 
-	@Test
-	public void checkJaxRsServices()
-			throws Exception {
-		Object service = waitFor(JQuery.class, 20000);
-		Assert.assertTrue(service != null);		
-		service = waitFor(Scripts.class, 20000);
-		Assert.assertTrue(service != null);
-	}
 
 
 	private Object waitFor(Class<?> aClass, long timeout)
