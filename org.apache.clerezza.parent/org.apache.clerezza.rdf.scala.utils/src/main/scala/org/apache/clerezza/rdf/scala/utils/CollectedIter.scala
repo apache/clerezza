@@ -18,15 +18,17 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
+import java.util.ConcurrentModificationException
 import java.util.Iterator
 import _root_.scala.collection
 import collection.mutable._
 import collection.immutable
 import _root_.scala.collection.JavaConversions._
+import java.util.concurrent.locks.Lock
 
-class CollectedIter[T](iter: Iterator[T]) extends immutable.Seq[T] {
+class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends immutable.Seq[T] {
 
-	def this(jList : java.util.List[T]) = this(jList.iterator())
+	def this(jList : java.util.List[T], readLock: Lock) = this(() => jList.iterator(), readLock)
 	
 
 	private val collectedElems = new ArrayBuffer[T]()
@@ -41,22 +43,49 @@ class CollectedIter[T](iter: Iterator[T]) extends immutable.Seq[T] {
 
 
 	/**
-	* returns a new fully expanded and sorted CollectedIter
+	* returns a new fully expanded and sorted CollectediterCreator
 	*/
 	def sort(lt : (T,T) => Boolean) = {
 		val sortedElems = iterator.toList.sortWith(lt)
-		new CollectedIter[T](sortedElems)
+		//TODO this re-expands everything, return sorted-list directly
+		new CollectedIter[T](sortedElems, readLock)
+
 	}
 
     /**
-    * Operator style synatx to access a position.
+    * Operator style syntax to access a position.
     */
     def %(pos: Int) = apply(pos)
 
     private def ensureReadTill(pos: Int) {
-        while (iter.hasNext && (collectedElems.length-1 <= pos)) {
-        	collectedElems += iter.next()
-        }
+		try {
+			val iter = iterCreator()
+			while (iter.hasNext && (collectedElems.length-1 <= pos)) {
+				collectedElems += iter.next()
+			}
+		} catch {
+			case e: ConcurrentModificationException => {
+					readLock.lock()
+					try {
+						val iter = iterCreator()
+						//going beyond pos, do reduce chance we have to aquire another lock
+						val biggerPos = if (pos < (Integer.MAX_VALUE - 100)) {
+							pos + 100
+						} else {
+							Integer.MAX_VALUE
+						}
+						while (iter.hasNext && (collectedElems.length-1 <= biggerPos)) {
+							val next = iter.next()
+							if (!collectedElems.contains(next)) {
+								collectedElems += next
+							}
+						}
+					} finally {
+						readLock.unlock()
+					}
+			}
+			case e => throw e
+		}
     }
 
     override def length : Int = {
@@ -65,7 +94,7 @@ class CollectedIter[T](iter: Iterator[T]) extends immutable.Seq[T] {
 
     /**
     * The value returned is same or less than the length of the collection,
-    * the underlying iterator isn't expanded till more than <code>max</code>. If
+    * the underlying Iterator isn't expanded till more than <code>max</code>. If
     * the result is smaller than max it is the length of the collection.
     */
     def length(max: Int) : Int = {

@@ -30,14 +30,14 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
      * Operator syntax shortcut to get all objects as <code>RichGraphNode</code>s
      */
     def /(property: UriRef) = {
-    	new CollectedIter(new GraphNodeIter(node.getObjects(property)))
+    	new CollectedIter(() => new GraphNodeIter(node.getObjects(property)), readLock)
 	}
 
     /**
      * Operator syntax shortcut to get all subjects as <code>RichGraphNode</code>s
      */
     def /-(property: UriRef) = {
-    	new CollectedIter(new GraphNodeIter(node.getSubjects(property)))
+    	new CollectedIter(() => new GraphNodeIter(node.getSubjects(property)), readLock)
     }
 
     /**
