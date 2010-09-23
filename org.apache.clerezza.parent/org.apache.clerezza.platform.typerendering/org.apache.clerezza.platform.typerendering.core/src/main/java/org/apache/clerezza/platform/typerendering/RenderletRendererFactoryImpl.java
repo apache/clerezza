@@ -233,7 +233,9 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		} finally {
 			l.unlock();
 		}
-		type2DefinitionMap = null;
+		synchronized (this) {
+			type2DefinitionMap = null;
+		}
 	}
 
 	private void removeExisting(UriRef rdfType, String mode,
@@ -366,18 +368,20 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	}
 
 	private Map<UriRef, RenderletDefinition[]> getType2DefinitionMap() {
-		if (type2DefinitionMap == null) {
+		Map<UriRef, RenderletDefinition[]> result = type2DefinitionMap;
+		if (result == null) {
 			synchronized(this) {
 				if (type2DefinitionMap == null) {
-					createType2DefinitionMap();
+					type2DefinitionMap = createType2DefinitionMap();
 				}
+				result = type2DefinitionMap;
 			}
 		}
-		return type2DefinitionMap;
+		return result;
 	}
 
-	private void createType2DefinitionMap() {
-		type2DefinitionMap = new HashMap<UriRef, RenderletDefinition[]>(50);
+	private Map<UriRef, RenderletDefinition[]> createType2DefinitionMap() {
+		Map<UriRef, RenderletDefinition[]> result = new HashMap<UriRef, RenderletDefinition[]>(50);
 		Lock l = configGraph.getLock().readLock();
 		for (Resource prioRdfType : rdfTypePrioList) {
 			l.lock();
@@ -390,12 +394,13 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 							new RenderletDefinition((BNode) renderletDefs.next().getSubject(),
 							configGraph));
 				}
-				type2DefinitionMap.put((UriRef) prioRdfType,
+				result.put((UriRef) prioRdfType,
 						definitionList.toArray(new RenderletDefinition[definitionList.size()]));
 			} finally {
 				l.unlock();
 			}
 		}
+		return result;
 	}
 
 	/**
