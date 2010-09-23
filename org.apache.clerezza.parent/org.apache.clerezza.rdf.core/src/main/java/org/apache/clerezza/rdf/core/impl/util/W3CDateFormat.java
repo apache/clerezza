@@ -29,8 +29,10 @@ public class W3CDateFormat extends DateFormat {
 	 */
 	public static final W3CDateFormat instance = new W3CDateFormat();
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+	private static final SimpleDateFormat dateFormatWithMillis = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	private static final SimpleDateFormat dateFormatNoMillis = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssZ");
 
 	private static final long serialVersionUID = 3258407344076372025L;
 
@@ -40,9 +42,12 @@ public class W3CDateFormat extends DateFormat {
 	 * @see java.text.DateFormat#format(java.util.Date, java.lang.StringBuffer,
 	 *      java.text.FieldPosition)
 	 */
+	@Override
 	public StringBuffer format(Date date, StringBuffer toAppendTo,
 			FieldPosition fieldPosition) {
 
+		final DateFormat dateFormat = (date.getTime() % 1000) == 0 ?
+			dateFormatNoMillis : dateFormatWithMillis;
 		String string = dateFormat.format(date);
 		StringBuffer result = new StringBuffer(string);
 		result.insert(string.length() - 2, ':');
