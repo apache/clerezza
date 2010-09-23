@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -116,12 +117,13 @@ public class ThumbnailService implements BundleListener {
 	@GET
 	public Response getThumbnailUri(@QueryParam("uri") UriRef infoBitUri,
 			@QueryParam("width") Integer width, @QueryParam("height") Integer height,
-			@Context UriInfo uriInfo) {
+			@DefaultValue("false") @QueryParam("exact") Boolean exact, @Context UriInfo uriInfo) {
 		return RedirectUtil.createSeeOtherResponse(
-				getThumbnailUri(infoBitUri, width, height).getUnicodeString(), uriInfo);
+				getThumbnailUri(infoBitUri, width, height, exact).getUnicodeString(), uriInfo);
 	}
 
-	public UriRef getThumbnailUri(UriRef infoBitUri, Integer width,  Integer height) {
+	public UriRef getThumbnailUri(UriRef infoBitUri, Integer width,  Integer height,
+			boolean exact) {
 		if ((width == null) && (height == null)) {
 			throw new IllegalArgumentException("height and/or width must be specified");
 		}
@@ -132,7 +134,7 @@ public class ThumbnailService implements BundleListener {
 			height = Integer.MAX_VALUE;
 		}
 		GraphNode infoBitNode = new GraphNode(infoBitUri, cgProvider.getContentGraph());
-		UriRef thumbnailUri = getGeneratedThumbnailUri(infoBitNode, width, height);
+		UriRef thumbnailUri = getGeneratedThumbnailUri(infoBitNode, width, height, exact);
 		if (thumbnailUri == null) {
 			TypedLiteral mediaTypeLiteral = null;
 			Lock readLock = infoBitNode.readLock();
@@ -152,8 +154,9 @@ public class ThumbnailService implements BundleListener {
 				if (mediaType.getType().startsWith("image")) {
 					try {
 						thumbnailUri = altRepGen.generateAlternativeImage(infoBitNode, width,
-								height);
+								height, exact);
 					} catch (Exception ex) {
+						ex.printStackTrace();
 						// Was worth a try. eLets go on
 					}
 				}
@@ -167,7 +170,6 @@ public class ThumbnailService implements BundleListener {
 				}
 			}
 		}
-
 		if (thumbnailUri == null) {
 			thumbnailUri = new UriRef(getDefaultIconUrl(getStyleBundle()));
 		}
@@ -213,8 +215,8 @@ public class ThumbnailService implements BundleListener {
 	}
 
 	private UriRef getGeneratedThumbnailUri(GraphNode infoBitNode,
-			Integer width, Integer height) {
-		if (isFittingImage(infoBitNode, width, height)) {
+			Integer width, Integer height, boolean exact) {
+		if (isFittingImage(infoBitNode, width, height, exact)) {
 			return (UriRef) infoBitNode.getNode();
 		}
 		UriRef resultThumbnailUri = null;
@@ -227,8 +229,11 @@ public class ThumbnailService implements BundleListener {
 				UriRef thumbnailUri = (UriRef) thumbnails.next();
 				GraphNode thumbnailNode = new GraphNode(thumbnailUri,
 						cgProvider.getContentGraph());
-				int thumbnailPixels = getSurfaceSizeIfFitting(thumbnailNode, width, height);
+				int thumbnailPixels = getSurfaceSizeIfFitting(thumbnailNode, width, height, exact);
 				if (thumbnailPixels > pixels) {
+					if (exact) {
+						return thumbnailUri;
+					}
 					resultThumbnailUri = thumbnailUri;
 					pixels = thumbnailPixels;
 				}
@@ -243,7 +248,15 @@ public class ThumbnailService implements BundleListener {
 	 * returns the surface in pixel if the image fits withing width and height,
 	 * or -1 if it doesn't fit
 	 */
-	private int getSurfaceSizeIfFitting(GraphNode infoBitNode, Integer width, Integer height) {
+	private int getSurfaceSizeIfFitting(GraphNode infoBitNode, Integer width, Integer height,
+			boolean exact) {
+		Resource imageRes = infoBitNode.getNode();
+		if (imageRes instanceof UriRef) {
+			String imageUri = ((UriRef)imageRes).getUnicodeString();
+			if (!exact && imageUri.contains(AlternativeRepresentationGenerator.EXACT_APPENDIX)) {
+				return -1;
+			}
+		}		
 		Iterator<Resource> exifWidths = infoBitNode.getObjects(EXIF.width);
 		Iterator<Resource> exifHeights = infoBitNode.getObjects(EXIF.height);
 		if (!exifWidths.hasNext() || !exifHeights.hasNext()) {
@@ -254,8 +267,14 @@ public class ThumbnailService implements BundleListener {
 				Integer.class, (TypedLiteral) exifWidths.next());
 		Integer thumbnailHeight = LiteralFactory.getInstance().createObject(
 				Integer.class, (TypedLiteral) exifHeights.next());
-		if (thumbnailHeight <= height && thumbnailWidth <= width) {
-			return thumbnailWidth * thumbnailHeight;
+		if (exact) {
+			if (thumbnailHeight == height && thumbnailWidth == width) {
+				return 1;
+			}
+		} else {
+			if (thumbnailHeight <= height && thumbnailWidth <= width) {
+				return thumbnailWidth * thumbnailHeight;
+			}
 		}
 		return -1;
 	}
@@ -263,7 +282,8 @@ public class ThumbnailService implements BundleListener {
 	/**
 	 * returns true if infoBitNode is an image and fits
 	 */
-	private boolean isFittingImage(GraphNode infoBitNode, Integer width, Integer height) {
+	private boolean isFittingImage(GraphNode infoBitNode, Integer width, Integer height,
+			boolean exact) {
 		Lock readLock = infoBitNode.readLock();
 		readLock.lock();
 		try {
@@ -272,7 +292,7 @@ public class ThumbnailService implements BundleListener {
 				return false;
 			}
 			if (mediaTypesIter.next().getLexicalForm().startsWith("image")) {
-				return getSurfaceSizeIfFitting(infoBitNode, width, height) > -1;
+				return getSurfaceSizeIfFitting(infoBitNode, width, height, exact) > -1;
 			} else {
 				return false;
 			}
