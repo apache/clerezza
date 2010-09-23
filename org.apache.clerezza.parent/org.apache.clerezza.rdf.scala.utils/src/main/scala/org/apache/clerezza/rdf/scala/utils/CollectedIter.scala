@@ -29,7 +29,9 @@ import java.util.concurrent.locks.Lock
 class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends immutable.Seq[T] {
 
 	def this(jList : java.util.List[T], readLock: Lock) = this(() => jList.iterator(), readLock)
-	
+
+	var iter = iterCreator()
+	var firstIter = true
 
 	private val collectedElems = new ArrayBuffer[T]()
 
@@ -59,15 +61,19 @@ class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends i
 
     private def ensureReadTill(pos: Int) {
 		try {
-			val iter = iterCreator()
+			
 			while (iter.hasNext && (collectedElems.length-1 <= pos)) {
-				collectedElems += iter.next()
+				val next = iter.next()
+				if (firstIter || !collectedElems.contains(next)) {
+					collectedElems += next
+				}
 			}
 		} catch {
 			case e: ConcurrentModificationException => {
 					readLock.lock()
 					try {
-						val iter = iterCreator()
+						iter = iterCreator()
+						firstIter = false
 						//going beyond pos, do reduce chance we have to aquire another lock
 						val biggerPos = if (pos < (Integer.MAX_VALUE - 100)) {
 							pos + 100

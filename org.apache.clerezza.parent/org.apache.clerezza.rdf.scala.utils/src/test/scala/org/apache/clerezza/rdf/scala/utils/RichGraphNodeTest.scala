@@ -73,6 +73,22 @@ class RichGraphNodeTest {
 	}
 
 	@Test
+	def testIterate = {
+		val simple: MGraph = new SimpleMGraph();
+		val node = new GraphNode(new BNode(), simple);
+		node.addProperty(DCTERMS.provenance, new UriRef("http://example.org/foo"));
+		node.addProperty(DCTERMS.language, new UriRef("http://www.bluewin.ch/"));
+		simple.add(new TripleImpl(new UriRef("http://www.bluewin.ch/"),RDF.`type`, RDFS.Container));
+		node.addProperty(RDF.`type`, PLATFORM.HeadedPage);
+		node.addProperty(RDF.`type`, RDFS.Class);
+		val test: CollectedIter[RichGraphNode] = node/DCTERMS.language/RDF.`type`;
+		Assert.assertEquals(1, test.length)
+		var counter = 0;
+		for(k <- test) { counter = counter + 1 }
+		Assert.assertEquals(1, counter)
+	}
+
+	@Test
 	def testInverse = {
 		val rNode = new RichGraphNode(node)
 		Assert.assertEquals(1, (rNode/-FOAF.knows).length)
