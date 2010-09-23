@@ -21,6 +21,7 @@ package org.apache.clerezza.rdf.jena.tdb.storage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.junit.After;
@@ -76,6 +77,27 @@ public class TdbMGraphTest extends MGraphTest {
 		Triple triple = new TripleImpl(new BNode(), new UriRef("http://example.com/property"), dateLiteral);
 		graph.add(triple);
 		Assert.assertTrue(graph.contains(triple));
+	}
+
+	@Test
+	public void dateStorage2() {
+		MGraph graph = getEmptyMGraph();
+		Date date = new Date(0);
+		LiteralFactory literalFactory = LiteralFactory.getInstance();
+		TypedLiteral dateLiteral = literalFactory.createTypedLiteral(date);
+		System.out.println(dateLiteral);
+		UriRef property = new UriRef("http://example.com/property");
+		Triple triple = new TripleImpl(new BNode(), property, dateLiteral);
+		graph.add(triple);
+
+		Triple tripleFromGraph = null;
+		Iterator<Triple> propertyTriples = graph.filter(null, property, dateLiteral);
+		if (propertyTriples.hasNext()) {
+			tripleFromGraph = propertyTriples.next();
+		} else {
+			Assert.assertTrue(false);
+		}
+		Assert.assertEquals(dateLiteral, tripleFromGraph.getObject());
 	}
 
 }
