@@ -93,16 +93,25 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 			return width;
 		}
 	}
+	final static String EXACT_APPENDIX = "-exact";
 
 	@Reference
 	private ImageProcessor imageProcessor;
+
 	@Property(value="100x100,200x200", description="Specifies the resolutions of alternative" +
 			" representations in the format [width]x[height]. Multiple resolutions" +
 			" are separated by comma (e.g. 100x100,30x30)")
 	public static final String RESOLUTIONS = "resolutions";
+
+	@Property(value="100x100,200x200", description="Specifies the exact resolutions of alternative" +
+			" representations in the format [width]x[height]. Multiple resolutions" +
+			" are separated by comma (e.g. 100x100,30x30). The image will be cropped if it has not " +
+			"the needed proportions")
+	public static final String EXACT_RESOLUTIONS = "exact_resolutions";
 	
 	private volatile ServiceTracker discobitTracker;
 	private Resolution[] resolutions;
+	private Resolution[] exactResolutions;
 
 	/**
 	 * Indicates if data given to the AlternativeRepresentationGenerator is a
@@ -118,7 +127,8 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 	};
 
 	protected void activate(ComponentContext context) {
-		setupResolutionArray((String) context.getProperties().get(RESOLUTIONS));
+		resolutions = createResolutionArray((String) context.getProperties().get(RESOLUTIONS));
+		exactResolutions = createResolutionArray((String) context.getProperties().get(EXACT_RESOLUTIONS));
 		discobitTracker = new ServiceTracker(context.getBundleContext(),
 				DiscobitsHandler.class.getName(), null);
 		new Thread() {
@@ -129,12 +139,13 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 		}.start();
 	}
 
-	private void setupResolutionArray(String resolutionsString) {
+	private Resolution[] createResolutionArray(String resolutionsString) {
 		String[] resoultionStrings = resolutionsString.split(",");
-		resolutions = new Resolution[resoultionStrings.length];
+		Resolution[] resolutionArray = new Resolution[resoultionStrings.length];
 		for (int i = 0; i < resoultionStrings.length; i++) {
-			resolutions[i] = new Resolution(resoultionStrings[i].trim());
+			resolutionArray[i] = new Resolution(resoultionStrings[i].trim());
 		}
+		return resolutionArray;
 	}
 
 	protected void deactivate(ComponentContext context) {
@@ -153,12 +164,17 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 	}
 	
 	public UriRef generateAlternativeImage(GraphNode infoBitNode, int width, int height) {
+		return generateAlternativeImage(infoBitNode, width, height, false);
+	}
+	
+	public UriRef generateAlternativeImage(GraphNode infoBitNode, int width, int height, 
+			boolean exact) {
 		try {
 			isAltRepresentation.set(Boolean.TRUE);
 			InfoDiscobit infoBit = InfoDiscobit.createInstance(infoBitNode);
 			BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(infoBit.getData()));
 			return generateAlternativeImage(buffImage, new Resolution(width, height), 
-					MediaType.valueOf(infoBit.getContentType()), infoBitNode);
+					MediaType.valueOf(infoBit.getContentType()), infoBitNode, exact);
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		} finally {
@@ -175,7 +191,12 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 			int imgHeigth = buffImage.getHeight();
 			for (Resolution resolution : resolutions) {
 				if (imgWidth > resolution.getWidth() || imgHeigth > resolution.getHeight()) {
-					generateAlternativeImage( buffImage, resolution, mediaType, node);
+					generateAlternativeImage(buffImage, resolution, mediaType, node, false);
+				}
+			}
+			for (Resolution resolution : exactResolutions) {
+				if (imgWidth > resolution.getWidth() && imgHeigth > resolution.getHeight()) {
+					generateAlternativeImage(buffImage, resolution, mediaType, node, true);
 				}
 			}
 		} catch (IOException ex) {
@@ -186,13 +207,21 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 	}
 
 	private UriRef generateAlternativeImage(BufferedImage buffImage, Resolution resolution,
-			MediaType mediaType, GraphNode node) throws IOException {
-		BufferedImage alternativeImage = imageProcessor.makeAThumbnail(buffImage,
-				resolution.getWidth(), resolution.getHeight());
+			MediaType mediaType, GraphNode node, boolean extact) throws IOException {
+		BufferedImage alternativeImage;
+		if (extact) {
+			alternativeImage = resizeAndCrop(resolution, buffImage);
+			if (alternativeImage == null) {
+				return null;
+			}
+		} else {
+			alternativeImage = imageProcessor.makeAThumbnail(buffImage,
+					resolution.getWidth(), resolution.getHeight());
+		}
 		byte[] alternativeImageBytes = bufferedImage2ByteArray(alternativeImage, mediaType);
 		DiscobitsHandler contentHandler = (DiscobitsHandler) discobitTracker.getService();
 		
-		UriRef thumbnailUri = createThumbnailUri((UriRef) node.getNode(), alternativeImage);
+		UriRef thumbnailUri = createThumbnailUri((UriRef) node.getNode(), alternativeImage, extact);
 		contentHandler.put(thumbnailUri, mediaType, alternativeImageBytes);
 		Lock writeLock = node.writeLock();
 		writeLock.lock();
@@ -202,6 +231,36 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 		} finally {
 			writeLock.unlock();
 		}
+	}
+	
+		private BufferedImage resizeAndCrop(Resolution resolution, BufferedImage buffImage) {
+		BufferedImage alternativeImage;
+		int imageHeight = 0;
+		int imageWidth = 0;
+		int widthDiff = buffImage.getWidth() - resolution.getWidth() ;
+		int heightDiff = buffImage.getHeight() - resolution.getHeight();
+		// resize if both dimension are bigger than the dimensions of the needed resolution
+		if (widthDiff >= 0 && heightDiff >= 0) {
+			if (widthDiff < heightDiff) {
+				imageWidth = resolution.getWidth();
+			} else {
+				imageHeight = resolution.getHeight();
+			}
+			alternativeImage = imageProcessor.resizeProportional(buffImage, imageWidth, imageHeight);
+		} else {
+			return null;
+		}
+		// crop image to fit exact the resolution
+		if (widthDiff < heightDiff) {
+			heightDiff = alternativeImage.getHeight() - resolution.getHeight();
+			alternativeImage = alternativeImage.getSubimage(0, heightDiff/2, resolution.getWidth(),
+					resolution.getHeight());
+		} else {
+			widthDiff = alternativeImage.getWidth() - resolution.getWidth();
+			alternativeImage = alternativeImage.getSubimage(widthDiff/2, 0, resolution.getWidth(),
+					resolution.getHeight());
+		}
+		return alternativeImage;
 	}
 
 	private byte[] bufferedImage2ByteArray(BufferedImage image,
@@ -213,8 +272,8 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 		return bytes;
 	}
 
-	private UriRef createThumbnailUri(UriRef uriRef, BufferedImage img) {
-		String resolution = "-" + img.getWidth() + "x" + img.getHeight();
+	private UriRef createThumbnailUri(UriRef uriRef, BufferedImage img, boolean exact) {
+		String resolution = "-" + img.getWidth() + "x" + img.getHeight() + (exact ? EXACT_APPENDIX: "");
 		String oldUri = uriRef.getUnicodeString();
 		String newUri;
 		int lastIndexOfDot = oldUri.lastIndexOf(".");
