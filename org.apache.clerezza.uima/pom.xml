@@ -42,24 +42,6 @@
         <artifactId>org.apache.clerezza.maven-pladoc-plugin.core</artifactId>
         <version>0.3-incubating-SNAPSHOT</version>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.xsite</groupId>
-        <artifactId>xsite-maven-plugin</artifactId>
-        <configuration>
-          <sourceDirectoryPath>${basedir}/src/site/xsite</sourceDirectoryPath>
-          <sitemapPath>content/sitemap.xml</sitemapPath>
-          <skinPath>templates/skin.html</skinPath>
-          <outputDirectoryPath>${basedir}/target/site/documentation</outputDirectoryPath>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>site</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 </project>
