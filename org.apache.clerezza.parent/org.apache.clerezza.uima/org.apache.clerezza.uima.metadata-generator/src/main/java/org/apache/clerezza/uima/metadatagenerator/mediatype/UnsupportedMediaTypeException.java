@@ -8,6 +8,14 @@ import javax.ws.rs.core.MediaType;
 public class UnsupportedMediaTypeException extends Exception {
   private static final String UNSUPPORTED = " is not supported";
 
+  public UnsupportedMediaTypeException(String message) {
+      super(message);
+  }
+
+  public UnsupportedMediaTypeException(String message, Exception e) {
+      super(message, e);
+  }
+
   public UnsupportedMediaTypeException(MediaType mediaType) {
     super(new StringBuilder(mediaType.getType()).append(UNSUPPORTED).toString());
   }
