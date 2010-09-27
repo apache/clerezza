@@ -122,6 +122,10 @@ public class ThumbnailService implements BundleListener {
 				getThumbnailUri(infoBitUri, width, height, exact).getUnicodeString(), uriInfo);
 	}
 
+	public UriRef getThumbnailUri(UriRef infoBitUri, Integer width,  Integer height) {
+		return getThumbnailUri(infoBitUri, width, height, false);
+	}
+
 	public UriRef getThumbnailUri(UriRef infoBitUri, Integer width,  Integer height,
 			boolean exact) {
 		if ((width == null) && (height == null)) {
