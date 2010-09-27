@@ -50,7 +50,6 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
     this.textExtractors = new TreeSet<MediaTypeTextExtractor>();
   }
 
-  @Override
   public void generate(GraphNode node, byte[] data, MediaType mediaType) {
     if (textExtractors.isEmpty()) {
       initializeExtractors();
