@@ -19,8 +19,10 @@
 package org.apache.clerezza.triaxrs.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -35,6 +37,8 @@ import org.slf4j.LoggerFactory;
  */
 public class AcceptHeader {
 
+
+
 	@Override
 	public String toString() {
 		return entries.toString();
@@ -48,8 +52,11 @@ public class AcceptHeader {
 		int quality; //from 0 to 1000
 
 		AcceptHeaderEntry(MediaType mediaType) {
-			this.mediaType = mediaType;
-			String qValue = mediaType.getParameters().get("q");
+			Map<String, String> parametersWithoutQ = new HashMap<String, String>();
+			parametersWithoutQ.putAll(mediaType.getParameters());
+			String qValue = parametersWithoutQ.remove("q");
+			this.mediaType = new MediaType(mediaType.getType(),
+					mediaType.getSubtype(), parametersWithoutQ);
 			if (qValue == null) {
 				quality = 1000;
 			} else {
