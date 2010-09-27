@@ -9,7 +9,7 @@
 	<artifactId>org.apache.clerezza.web.resources.jquery</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.5-incubating-SNAPSHOT</version>
-	<name>Clerezza Ext - jQuery JS</name>
+	<name>Clerezza - jQuery bundlized</name>
 	<description>
 		jQuery 1.3.2 as a bundle
 	</description>
@@ -32,18 +32,4 @@
 			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Export-Package>org.apache.clerezza.web.resources.jquery</Export-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
