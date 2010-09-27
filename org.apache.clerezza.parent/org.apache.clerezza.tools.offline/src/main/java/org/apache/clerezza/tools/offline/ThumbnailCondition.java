@@ -143,7 +143,7 @@ public class ThumbnailCondition implements StreamCondition {
 	private byte[] getThumbnailUri() {
 		ThumbnailServiceParams params = parseThumbnailServiceParams();
 		UriRef thumbnailUri = thumbnailService.getThumbnailUri(params.getUri(),
-				params.getWidth(), params.getHeight());
+				params.getWidth(), params.getHeight(), params.getExact());
 		return thumbnailUri.getUnicodeString().getBytes();
 	}
 
@@ -160,6 +160,7 @@ public class ThumbnailCondition implements StreamCondition {
 	private ThumbnailServiceParams parseThumbnailServiceParams() {
 		Integer width = null, height = null;
 		UriRef uri = null;
+		boolean extact = false;
 		String queryParams = cachedQueryParams.toString();
 		queryParams = queryParams.replace("&amp;", "&");
 		String[] nameValues = queryParams.split("&");
@@ -173,20 +174,25 @@ public class ThumbnailCondition implements StreamCondition {
 					width = Integer.valueOf(nameValuePair[1]);
 				} else if (name.equals("height")) {
 					height = Integer.valueOf(nameValuePair[1]);
+				} else if (name.equals("exact")) {
+					extact = Boolean.valueOf(nameValuePair[1]);
 				}
 			}
 		}
-		return new ThumbnailServiceParams(width, height, uri);
+		return new ThumbnailServiceParams(width, height, uri, extact);
 	}
 
 	private class ThumbnailServiceParams {
 		 private Integer width, height;
 		 private UriRef uri;
+		 private boolean exact;
 
-		public ThumbnailServiceParams(Integer width, Integer height, UriRef uri) {
+		public ThumbnailServiceParams(Integer width, Integer height, UriRef uri,
+				boolean exact) {
 			this.width = width;
 			this.height = height;
 			this.uri = uri;
+			this.exact = exact;
 		}
 
 		public Integer getHeight() {
@@ -199,6 +205,10 @@ public class ThumbnailCondition implements StreamCondition {
 
 		public Integer getWidth() {
 			return width;
+		}
+
+		public boolean getExact() {
+			return exact;
 		}
 	}
 }
