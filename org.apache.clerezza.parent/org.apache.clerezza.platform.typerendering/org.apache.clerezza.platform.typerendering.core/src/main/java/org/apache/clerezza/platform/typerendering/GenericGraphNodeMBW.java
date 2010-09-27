@@ -147,7 +147,7 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 		}
 		final MediaType rendererMediaType = renderer.getMediaType();
 		Map<String, Object> sharedRenderingValues = new HashMap<String, Object>();
-		if (!rendererMediaType.equals(MediaType.APPLICATION_XHTML_XML_TYPE)) {
+		if (!(rendererMediaType.getType().equals("application") && rendererMediaType.getSubtype().equals("xhtml+xml"))) {
 			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, rendererMediaType);
 			renderer.render(node, getUserContext(), uriInfo, httpHeaders, sharedRenderingValues, entityStream);
 		} else {
