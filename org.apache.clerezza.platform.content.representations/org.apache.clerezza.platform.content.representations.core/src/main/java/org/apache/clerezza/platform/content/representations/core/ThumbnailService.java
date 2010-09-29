@@ -102,16 +102,22 @@ public class ThumbnailService implements BundleListener {
 	 * Returns the thumbnail uri for a InfoDiscoBit which is located at the uri
 	 * specified over the query parameter "uri". The thumbnails
 	 * maximum width and height can optionally be specified over the query parameters
-	 * "width" and "height". If more than one acceptable thumbnail is available
-	 * then the thumbnail uri of the thumbnail with the highest resolution
+	 * "width" and "height". Futhermore there is the optional "exact" parameter,
+	 * which specifies if the thumbnail must have the exact width and height as
+	 * specified or not (default is "false"). If more than one acceptable thumbnail
+	 * is available then the thumbnail uri of the thumbnail with the highest resolution
 	 * (width * height) is returned. If no thumbnail is available and the logged
 	 * in user has the write permission for the content graph, then an attempt is
 	 * made to create the thumbnail on the fly. If this fails or the write permission
 	 * is missing, then the uri of the icon representing the media type is returned.
 	 * If also no media type icon is available the uri to default icon is returned.
-	 * @param infoBitUri the uri of the infoDiscoBit of which the thumbnail uri should be returned
+	 *
+	 * @param infoBitUri the uri of the infoDiscoBit of which the thumbnail uri should
+	 *		be returned
 	 * @param height the maximum height that the thumbnail has
 	 * @param width the maximum width that the thumbnail has
+	 * @param exact boolean that specifies if the return thumbnail should have
+	 *		the exact width and height.
 	 * @return
 	 */
 	@GET
@@ -122,10 +128,51 @@ public class ThumbnailService implements BundleListener {
 				getThumbnailUri(infoBitUri, width, height, exact).getUnicodeString(), uriInfo);
 	}
 
+
+	/**
+	 * Returns the thumbnail uri for a InfoDiscoBit which is located at the uri
+	 * specified over the query parameter "uri". The thumbnails
+	 * maximum width and height can optionally be specified over the query parameters
+	 * "width" and "height". If more than one acceptable thumbnail is available
+	 * then the thumbnail uri of the thumbnail with the highest resolution
+	 * (width * height) is returned. If no thumbnail is available and the logged
+	 * in user has the write permission for the content graph, then an attempt is
+	 * made to create the thumbnail on the fly. If this fails or the write permission
+	 * is missing, then the uri of the icon representing the media type is returned.
+	 * If also no media type icon is available the uri to default icon is returned.
+	 *
+	 * @param infoBitUri the uri of the infoDiscoBit of which the thumbnail uri should
+	 *		be returned
+	 * @param height the maximum height that the thumbnail has
+	 * @param width the maximum width that the thumbnail has
+	 * @return
+	 */
 	public UriRef getThumbnailUri(UriRef infoBitUri, Integer width,  Integer height) {
 		return getThumbnailUri(infoBitUri, width, height, false);
 	}
 
+	/**
+	 * Returns the thumbnail uri for a InfoDiscoBit which is located at the uri
+	 * specified over the query parameter "uri". The thumbnails
+	 * maximum width and height can optionally be specified over the query parameters
+	 * "width" and "height". Futhermore there is the optional "exact" parameter,
+	 * which specifies if the thumbnail must have the exact width and height as
+	 * specified or not. If more than one acceptable thumbnail is available then
+	 * the thumbnail uri of the thumbnail with the highest resolution (width * height)
+	 * is returned. If no thumbnail is available and the logged in user has the write
+	 * permission for the content graph, then an attempt is made to create the
+	 * thumbnail on the fly. If this fails or the write permission is missing, then
+	 * the uri of the icon representing the media type is returned. If also no
+	 * media type icon is available the uri to default icon is returned.
+	 *
+	 * @param infoBitUri the uri of the infoDiscoBit of which the thumbnail uri should
+	 *		be returned
+	 * @param height the maximum height that the thumbnail has
+	 * @param width the maximum width that the thumbnail has
+	 * @param exact boolean that specifies if the return thumbnail should have
+	 *		the exact width and height.
+	 * @return
+	 */
 	public UriRef getThumbnailUri(UriRef infoBitUri, Integer width,  Integer height,
 			boolean exact) {
 		if ((width == null) && (height == null)) {
