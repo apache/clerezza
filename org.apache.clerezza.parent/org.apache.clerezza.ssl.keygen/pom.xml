@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>org.apache.clerezza.parent</artifactId>
+        <version>0.2-incubating-SNAPSHOT</version>
+   </parent>
+   <groupId>org.apache.clerezza</groupId>
+   <artifactId>org.apache.clerezza.ssl.keygen</artifactId>
+   <packaging>pom</packaging>
+   <version>0.5</version>
+   <name>FOAF+SSL Keygen Lib :: Creating WebIDs in one Click</name>
+   <url>http://www.rcs.manchester.ac.uk/</url>
+
+   <licenses>
+      <license>
+         <name>BSD</name>
+         <url>LICENSE.txt</url>
+         <distribution>repo</distribution>
+      </license>
+   </licenses>
+
+   <modules>
+      <module>base</module>
+      <module>samplewebapp</module>
+   </modules>
+
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+   <reporting>
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <version>1.2</version>
+            <configuration>
+               <findbugsXmlOutput>true</findbugsXmlOutput>
+               <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+               <xmlOutput>true</xmlOutput>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>2.3</version>
+         </plugin>
+      </plugins>
+   </reporting>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+         </dependency>
+         <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.1</version>
+         </dependency>
+         <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.45</version>
+         </dependency>
+         <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1</version>
+         </dependency>
+         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.4</version>
+            <scope>test</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <developers>
+      <developer>
+         <id>bruno.harbulot</id>
+         <name>Bruno Harbulot</name>
+         <email>Bruno.Harbulot@manchester.ac.uk</email>
+         <organization>The University of Manchester</organization>
+         <organizationUrl>http://www.manchester.ac.uk/</organizationUrl>
+         <roles>
+            <role>architect</role>
+            <role>developer</role>
+         </roles>
+         <timezone>0</timezone>
+      </developer>
+      <developer>
+         <id>http://bblfish.net/#hjs</id>
+         <name>Henry Story</name>
+         <email>Henry.Story@bblfish.net</email>
+         <organization>Self Employed</organization>
+         <organizationUrl>http://bblfish.net/</organizationUrl>
+         <roles>
+            <role>architect</role>
+            <role>developer</role>
+         </roles>
+         <timezone>0</timezone>
+      </developer>
+   </developers>
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+</project>
