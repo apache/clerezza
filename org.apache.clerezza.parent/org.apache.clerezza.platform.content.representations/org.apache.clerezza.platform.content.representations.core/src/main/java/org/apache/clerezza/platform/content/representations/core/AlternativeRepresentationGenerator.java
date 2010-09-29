@@ -162,11 +162,41 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 			generateAlternativeImages(data, mediaType, node);
 		}
 	}
-	
+
+	/**
+	 * Generates an alternative image of the image at the specified infoBitNode.
+	 * The parameters width and height specify the dimensions the generated
+	 * image should have. The image will be resized to fit the specified
+	 * dimensions (height and width of the generated image will be smaller
+	 * or equals the specified width and height). Returns the URI of the
+	 * generated image.
+	 *
+	 * @param infoBitNode an infoDiscoBit of media type image
+	 * @param width the width the generated image should have
+	 * @param height the height the generated image should have
+	 * @return the URI of the generated image
+	 */
 	public UriRef generateAlternativeImage(GraphNode infoBitNode, int width, int height) {
 		return generateAlternativeImage(infoBitNode, width, height, false);
 	}
-	
+
+	/**
+	 * Generates an alternative image of the image at the specified infoBitNode.
+	 * The parameters width and height specify the dimensions the generated
+	 * image should have. If exact is true, then the generated image will be
+	 * resized and cropped to match the specified width and height exactly. If
+	 * exact is false, then the image will be resized to fit the specified
+	 * dimensions (height and width of the generated image will be smaller
+	 * or equals the specified width and height). Returns the URI of the
+	 * generated image.
+	 *
+	 * @param infoBitNode an infoDiscoBit of media type image
+	 * @param width the width the generated image should have
+	 * @param height the height the generated image should have
+	 * @param exact specifies if the generated image must have the exact
+	 *		width and height or not.
+	 * @return the URI of the generated image
+	 */
 	public UriRef generateAlternativeImage(GraphNode infoBitNode, int width, int height, 
 			boolean exact) {
 		try {
