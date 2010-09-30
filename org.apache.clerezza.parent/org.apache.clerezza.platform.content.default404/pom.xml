@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.apache.clerezza</groupId>
+		<artifactId>org.apache.clerezza.parent</artifactId>
+		<version>0.2-incubating-SNAPSHOT</version>
+	</parent>
+	<groupId>org.apache.clerezza</groupId>
+	<artifactId>org.apache.clerezza.platform.content.default404</artifactId>
+	<version>0.1-incubating-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+	<name>Clerezza - Platform Content Default 404 response provider</name>
+	<description>
+		Provides a default implementation of PageNotFoundService
+	</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.content</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src/main/scala</sourceDirectory>
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- <scalaVersion>${scala.version}</scalaVersion> -->
+					<!-- <args>
+						<arg>-target:jvm-1.5</arg>
+					</args> -->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
+						<Export-Package>org.apache.clerezza.platform.content.default404</Export-Package>
+						<!-- <Bundle-SymbolicName>org.apache.clerezza.platform.users.core</Bundle-SymbolicName> -->
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+

@@ -504,13 +504,14 @@ public class JaxRsHandler implements Handler {
 						request, resourceAndPathMatching.getRootResource(),
 						pathMatching.getRemainingURIPath(), pathMatching.getParameters());
 			}
+			ProcessableResponse processableResponse;
 			try {
-				ProcessableResponse processableResponse = (ProcessableResponse) methodResponse;
-				ResponseProcessor.handleReturnValue(request, response, processableResponse);
+				processableResponse = (ProcessableResponse) methodResponse;
 			} catch (ClassCastException e) {
 				throw new RuntimeException("processing of other MethodResponse" +
 						" implementations not yet supported");
 			}
+			ResponseProcessor.handleReturnValue(request, response, processableResponse);
 			
 		} catch (ResourceMethodException ex) {
 			Throwable cause = ex.getCause();

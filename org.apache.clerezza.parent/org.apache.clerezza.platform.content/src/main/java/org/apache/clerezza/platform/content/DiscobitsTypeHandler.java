@@ -117,6 +117,9 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 
 	@Reference
 	protected ContentGraphProvider cgProvider;
+
+	@Reference
+	PageNotFoundService notFoundPageService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(DiscobitsTypeHandler.class);
 
@@ -143,7 +146,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
 		final GraphNode graphNode = getResourceAsGraphNode(uriInfo);
 		if (graphNode == null) {
-			return checkIfOppositExistsAndRedirectIfSo(uri, uriInfo);
+			return resourceUnavailable(uri, uriInfo);
 		}
 		InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(graphNode);
 		if (infoDiscobit != null) {
@@ -260,7 +263,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 			@Context HttpHeaders headers, DOMSource body) {
 		final UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			return checkIfOppositExistsAndRedirectIfSo(nodeUri, uriInfo);
+			return resourceUnavailable(nodeUri, uriInfo);
 		}
 			Map<UriRef, PropertyMap> result;
 		try {
@@ -337,7 +340,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	public Response proppatch(@Context UriInfo uriInfo, DOMSource body) {
 		UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			return checkIfOppositExistsAndRedirectIfSo(nodeUri, uriInfo);
+			return resourceUnavailable(nodeUri, uriInfo);
 		}
 		try {
 			Document requestDoc = WebDavUtils.sourceToDocument(body);
@@ -464,7 +467,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	public Response options(@Context UriInfo uriInfo) {
 		final UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
 		if (!nodeAtUriExists(nodeUri)) {
-			return checkIfOppositExistsAndRedirectIfSo(nodeUri, uriInfo);
+			return resourceUnavailable(nodeUri, uriInfo);
 		}
 			Response.ResponseBuilder builder = Response.ok();
 			builder.header(HeaderName.DAV.toString(), "1");
@@ -518,14 +521,16 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 				|| mGraph.filter(null, null, nodeUri).hasNext();
 	}
 
-	private Response checkIfOppositExistsAndRedirectIfSo(UriRef nodeUri,
+	private Response resourceUnavailable(UriRef nodeUri,
 			UriInfo uriInfo) {
 		UriRef oppositUri = makeOppositeUriRef(nodeUri);
 		if (nodeAtUriExists(oppositUri)) {
 			return RedirectUtil.createSeeOtherResponse(
 					oppositUri.getUnicodeString(), uriInfo);
+		} else {
+			return notFoundPageService.createResponse(uriInfo);
 		}
-		return Response.status(Status.NOT_FOUND).build();
+		//return Response.status(Status.NOT_FOUND).build();
 	}
 	/**
 	 * add trailing slash if none present, remove otherwise

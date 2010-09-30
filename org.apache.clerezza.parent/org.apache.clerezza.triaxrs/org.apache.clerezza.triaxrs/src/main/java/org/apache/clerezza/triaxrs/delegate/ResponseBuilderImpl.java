@@ -84,7 +84,11 @@ class ResponseBuilderImpl extends ResponseBuilder {
 
 	@Override
 	public ResponseBuilder type(String type) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		if (type == null) {
+			headers.remove(HttpHeaders.CONTENT_TYPE);
+		}
+		headers.putSingle(HttpHeaders.CONTENT_TYPE, type);
+		return this;
 	}
 
 	@Override

@@ -54,6 +54,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.RuntimeDelegate;
+import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -262,7 +263,13 @@ class ResponseProcessor {
 		List<Object> contentTypeList = jaxResponse.getMetadata().get(
 				HttpHeaders.CONTENT_TYPE);
 		if ((contentTypeList != null) && (contentTypeList.size() > 0)) {
-			mediaType = (MediaType) contentTypeList.get(0);
+			Object mediaTypeObject = contentTypeList.get(0);
+			if (mediaTypeObject instanceof MediaType) {
+				mediaType = (MediaType) mediaTypeObject;
+			} else {
+				String mediaTypeString = getStringValueFromHeader(mediaTypeObject);
+				mediaType = MediaType.valueOf(mediaTypeString);
+			}
 		} else {
 			headerMap.add(HttpHeaders.CONTENT_TYPE, mediaType);
 		}
@@ -464,12 +471,17 @@ class ResponseProcessor {
 		for (String headerNameString : headerMap.keySet()) {
 			List<Object> values = headerMap.get(headerNameString);
 			for (Object object : values) {
-				RuntimeDelegate.HeaderDelegate headerDelegate = RuntimeDelegate.getInstance().createHeaderDelegate(object.getClass());
-				final String stringValue = headerDelegate == null ? object.toString() : headerDelegate.toString(object);
+				final String stringValue = getStringValueFromHeader(object);
 				response.setHeader(HeaderName.get(headerNameString),
 						stringValue);
 			}
 		}
+	}
+
+	private static <T> String getStringValueFromHeader(T headerObject) {
+		HeaderDelegate<T> headerDelegate = RuntimeDelegate.getInstance().createHeaderDelegate((Class<T>)headerObject.getClass());
+		String mediaTypeString = headerDelegate != null ? headerDelegate.toString(headerObject) : headerObject.toString();
+		return mediaTypeString;
 	}
 
 	private static MediaType getConcreteMediaTypeFromPattern(
