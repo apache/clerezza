@@ -21,15 +21,19 @@ package org.apache.clerezza.platform.usermanager;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Iterator;
 import org.apache.clerezza.platform.security.UserUtil;
-import org.apache.clerezza.rdf.core.NonLiteral;
 
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.typerendering.UserContextProvider;
-import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.rdf.ontologies.PERMISSION;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 
 /**
@@ -62,14 +66,20 @@ public class UserLoginNode implements UserContextProvider {
 			}
 		});
 		if (agent != null) {
-			if (!(node.getObjects(PLATFORM.user).hasNext())) {
-				node.addProperty(PLATFORM.user, agent.getNode());
-			} else {
-				Resource user = node.getObjects(PLATFORM.user).next();
-				agent.replaceWith((NonLiteral) user);
-			}
-			node.getGraph().addAll(agent.getGraph());
+			node.addProperty(PLATFORM.user, agent.getNode());
+			MGraph userContext = new SimpleMGraph(agent.getNodeContext());
+			removeTripleWithProperty(userContext, PERMISSION.password);
+			removeTripleWithProperty(userContext, PERMISSION.passwordSha1);
+			node.getGraph().addAll(userContext);			
 		}
 		return node;
+	}
+
+	private void removeTripleWithProperty(MGraph userContext, UriRef property) {
+		Iterator<Triple> propertyTriples = userContext.filter(null, property, null);
+		while (propertyTriples.hasNext()) {
+			propertyTriples.next();
+			propertyTriples.remove();
+		}
 	}
 }
