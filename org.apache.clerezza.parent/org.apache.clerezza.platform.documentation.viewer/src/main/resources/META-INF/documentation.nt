@@ -8,13 +8,10 @@
 <bundle:///intro-title> <http://discobits.org/ontology#infoBit> "Documentation Viewer"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <bundle:///intro-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
 <bundle:///intro> <http://clerezza.org/2009/08/documentation#after> <bundle://org.apache.clerezza.platform.content/discobits-editor> .
-<bundle:///intro> <http://clerezza.org/2009/08/documentation#after> <http://localhost:8080/bundle-doc/org.apache.clerezza.platform.documentation/intro> .
-<bundle:///intro> <http://discobits.org/ontology#contains> _:0919018e0c4dd3053687a1d116b29e851 . 
+<bundle:///intro> <http://clerezza.org/2009/08/documentation#after> <bundle://org.apache.clerezza.platform.documentation/intro> .
 <bundle:///intro> <http://discobits.org/ontology#contains> _:cc06f094ff0d735a332291b856b0d4ae1 . 
+<bundle:///intro> <http://discobits.org/ontology#contains> _:ccd6d577f99d82c53d5323fdbe4b6ba31 . 
 <bundle:///intro> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
-_:0919018e0c4dd3053687a1d116b29e851 <http://discobits.org/ontology#holds> <bundle:///intro-title> . 
-_:0919018e0c4dd3053687a1d116b29e851 <http://discobits.org/ontology#pos> "0" . 
-_:0919018e0c4dd3053687a1d116b29e851 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:1e27a3b4f21eada7ec61fd7c55f2bd221 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/0> . 
 _:1e27a3b4f21eada7ec61fd7c55f2bd221 <http://discobits.org/ontology#pos> "0" . 
 _:1e27a3b4f21eada7ec61fd7c55f2bd221 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -24,3 +21,6 @@ _:86e4309edd82a6d415338546caff2d551 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:cc06f094ff0d735a332291b856b0d4ae1 <http://discobits.org/ontology#holds> <bundle:///intro-content> . 
 _:cc06f094ff0d735a332291b856b0d4ae1 <http://discobits.org/ontology#pos> "1" . 
 _:cc06f094ff0d735a332291b856b0d4ae1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:ccd6d577f99d82c53d5323fdbe4b6ba31 <http://discobits.org/ontology#holds> <bundle:///intro-title> . 
+_:ccd6d577f99d82c53d5323fdbe4b6ba31 <http://discobits.org/ontology#pos> "0" . 
+_:ccd6d577f99d82c53d5323fdbe4b6ba31 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
