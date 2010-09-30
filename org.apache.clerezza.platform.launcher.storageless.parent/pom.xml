@@ -232,6 +232,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.content.default404</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.content.fsadaptor</artifactId>
 			<scope>runtime</scope>
 		</dependency>
