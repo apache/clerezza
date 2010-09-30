@@ -44,6 +44,7 @@ import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * Provides a read-only MGraph with the name http://zz.localhost/enrichment.graph
@@ -72,8 +73,6 @@ public class EnrichmentTcProvider implements WeightedTcProvider {
 
 	public static final UriRef ENRICHMENT_GRAPH_URI = new UriRef("http://zz.localhost/enrichment.graph");
 	
-	public static final String SYSTEM_GRAPH_FILTER =
-			"(name="+ Constants.SYSTEM_GRAPH_URI_STRING +")";
 	private LockableMGraph contentGraph;
 	private final Collection<Enricher> enrichers = Collections.synchronizedCollection(new HashSet<Enricher>());
 
@@ -155,7 +154,7 @@ public class EnrichmentTcProvider implements WeightedTcProvider {
 	 * gets the base content-graph from tcManager and sets the permission
 	 * required to access the enrichment-graph accordingly
 	 */
-	protected void activate() {
+	protected void activate(ComponentContext context) {
 		contentGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
 		Collection<Permission> requiredReadPermissions =
 				tcManager.getTcAccessController().getRequiredReadPermissions(Constants.CONTENT_GRAPH_URI);
@@ -175,7 +174,7 @@ public class EnrichmentTcProvider implements WeightedTcProvider {
 	 * deactivates the compononent removing the enrichment-graph from the
 	 * virtual content graph
 	 */
-	protected void deactivate() {
+	protected void deactivate(ComponentContext context) {
 		cgProvider.removeTemporaryAdditionGraph(ENRICHMENT_GRAPH_URI);
 		contentGraph = null;
 	}
