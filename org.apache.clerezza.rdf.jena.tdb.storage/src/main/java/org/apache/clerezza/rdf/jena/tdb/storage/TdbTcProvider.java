@@ -20,6 +20,7 @@ package org.apache.clerezza.rdf.jena.tdb.storage;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -28,7 +29,9 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +46,9 @@ import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedMGraphWrapper;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * A {@link org.apache.clerezza.rdf.core.access.WeightedTcProvider} based on Jena TDB.
@@ -57,7 +63,15 @@ import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
  * @scr.property name="weight" type="Integer" value="105"
  *
  */
+@Component(metatype=true, immediate=true)
+@Service(WeightedTcProvider.class)
+@Property(name="weight", intValue=105)
 public class TdbTcProvider implements WeightedTcProvider {
+
+	@Property(intValue=600, description="Specifies the number of seconds to wait "
+	+ "between synchronizations of the TDB datasets to the filesystem")
+	public static final String SYNC_INTERVAL = "sync-interval";
+	private int syncInterval = 600;
 
 	/**
 	 *	directory where all graphs are stored
@@ -68,9 +82,31 @@ public class TdbTcProvider implements WeightedTcProvider {
 	private Map<UriRef, Graph> graphMap = new HashMap<UriRef, Graph>();
 	private Map<File, com.hp.hpl.jena.graph.Graph> dir2JenaGraphMap =
 			new HashMap<File, com.hp.hpl.jena.graph.Graph>();
-	private Map<File, Dataset> dir2Dataset = new HashMap<File, Dataset>();
+	private final Map<File, Dataset> dir2Dataset = new HashMap<File, Dataset>();
 	private static final Logger log = LoggerFactory.getLogger(TdbTcProvider.class);
 	private int weight = 105;
+
+	class SyncThread extends Thread {
+		private boolean stopRequested = false;
+
+		@Override
+		public void run() {
+			while (!stopRequested) {
+				try {
+					Thread.sleep(syncInterval*1000);
+				} catch (InterruptedException ex) {
+					interrupt();
+				}
+				syncWithFileSystem();
+			}
+		}
+		
+		public void requestStop() {
+			stopRequested = true;
+		}
+	}
+
+	private SyncThread syncThread;
 
 	public TdbTcProvider() {
 	}
@@ -87,17 +123,24 @@ public class TdbTcProvider implements WeightedTcProvider {
 			weight = (Integer) cCtx.getProperties().get("weight");
 			dataPathString = cCtx.getBundleContext().
 					getDataFile(DATA_PATH_NAME).getAbsolutePath();
+			syncInterval = Integer.parseInt(cCtx.getProperties().get(SYNC_INTERVAL).toString());
 		}
 		loadMGraphs();
 		loadGraphs();
+		syncThread = new SyncThread();
+		syncThread.start();
 	}
 
 	public void deactivate(ComponentContext cCtx) {
+		syncThread.requestStop();
+		syncThread = null;
 		for (com.hp.hpl.jena.graph.Graph jenaGraph : dir2JenaGraphMap.values()) {
 			jenaGraph.close();
 		}
-		for (Dataset dataset : dir2Dataset.values()) {
-			dataset.close();
+		synchronized(dir2Dataset) {
+			for (Dataset dataset : dir2Dataset.values()) {
+				dataset.close();
+			}
 		}
 	}
 
@@ -183,8 +226,10 @@ public class TdbTcProvider implements WeightedTcProvider {
 		if (tcDir.exists()) {
 			dir2JenaGraphMap.get(tcDir).close();
 			dir2JenaGraphMap.remove(tcDir);
-			dir2Dataset.get(tcDir).close();
-			dir2Dataset.remove(tcDir);
+			synchronized(dir2Dataset) {
+				dir2Dataset.get(tcDir).close();
+				dir2Dataset.remove(tcDir);
+			}
 			delete(tcDir);
 			return true;
 		}
@@ -261,7 +306,9 @@ public class TdbTcProvider implements WeightedTcProvider {
 		//Model model = TDBFactory.createModel(tcDir.getAbsolutePath());
 		final com.hp.hpl.jena.graph.Graph jenaGraph = model.getGraph();
 		dir2JenaGraphMap.put(tcDir, jenaGraph);
-		dir2Dataset.put(tcDir, dataset);
+		synchronized(dir2Dataset) {
+			dir2Dataset.put(tcDir, dataset);
+		}
 		return new JenaGraphAdaptor(jenaGraph);
 	}
 
@@ -303,6 +350,14 @@ public class TdbTcProvider implements WeightedTcProvider {
 				} catch (UnsupportedEncodingException ex) {
 					throw new RuntimeException("utf-8 not supported", ex);
 				}
+			}
+		}
+	}
+	
+	public void syncWithFileSystem() {
+		synchronized(dir2Dataset) {
+			for (Dataset dataset : dir2Dataset.values()) {
+				TDB.sync(dataset);
 			}
 		}
 	}

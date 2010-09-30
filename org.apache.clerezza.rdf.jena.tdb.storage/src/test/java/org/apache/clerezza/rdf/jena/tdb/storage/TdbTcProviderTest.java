@@ -57,6 +57,7 @@ public class TdbTcProviderTest extends TcProviderTest {
 			lastInstance.deactivate(null);
 		}
 		lastInstance =  new TdbTcProvider(tempFile);
+		lastInstance.activate(null);
 		return lastInstance;
 	}
 }
