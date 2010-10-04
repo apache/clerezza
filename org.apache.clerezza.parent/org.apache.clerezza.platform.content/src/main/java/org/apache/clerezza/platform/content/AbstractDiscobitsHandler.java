@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.content.collections.CollectionCreator;
 
@@ -32,6 +33,7 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -66,17 +68,23 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 			byte[] data) {
 
 		GraphNode infoDiscoBitNode;
-		final MGraph mGraph = getMGraph();
+		final LockableMGraph mGraph = (LockableMGraph) getMGraph();
 		infoDiscoBitNode = new GraphNode(infoDiscoBitUri, mGraph);
 		CollectionCreator collectionCreator = new CollectionCreator(mGraph);
 		collectionCreator.createContainingCollections(infoDiscoBitUri);
-		infoDiscoBitNode.addProperty(RDF.type, DISCOBITS.InfoDiscoBit);
-		TypedLiteral dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
-		infoDiscoBitNode.deleteProperties(DISCOBITS.infoBit);
-		infoDiscoBitNode.addProperty(DISCOBITS.infoBit, dataLiteral);
-		TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
-		infoDiscoBitNode.deleteProperties(DISCOBITS.mediaType);
-		infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
+		Lock writeLock = mGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			infoDiscoBitNode.addProperty(RDF.type, DISCOBITS.InfoDiscoBit);
+			TypedLiteral dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
+			infoDiscoBitNode.deleteProperties(DISCOBITS.infoBit);
+			infoDiscoBitNode.addProperty(DISCOBITS.infoBit, dataLiteral);
+			TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
+			infoDiscoBitNode.deleteProperties(DISCOBITS.mediaType);
+			infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
+		} finally {
+			writeLock.unlock();
+		}
 		Set<MetaDataGenerator> metaDataGenerators = getMetaDataGenerators();
 		synchronized(metaDataGenerators) {
 			for(MetaDataGenerator generator : metaDataGenerators) {

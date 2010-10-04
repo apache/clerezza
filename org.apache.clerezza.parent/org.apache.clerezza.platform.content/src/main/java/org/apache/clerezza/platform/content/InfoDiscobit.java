@@ -65,24 +65,35 @@ public class InfoDiscobit {
 	}
 
 	public String getContentType() {
-		Iterator<Literal> mediaTypeLits = infoBit.getLiterals(DISCOBITS.mediaType);
-		if (mediaTypeLits.hasNext()) {
-			return mediaTypeLits.next().getLexicalForm();
+		Lock readLock = infoBit.readLock();
+		readLock.lock();
+		try {
+			Iterator<Literal> mediaTypeLits = infoBit.getLiterals(DISCOBITS.mediaType);
+			if (mediaTypeLits.hasNext()) {
+				return mediaTypeLits.next().getLexicalForm();
+			}
+		} finally {
+			readLock.unlock();
 		}
 		return null;
 	}
 	
 	public byte[] getData() {
 		byte[] result = null;
-		Iterator<Literal> mediaTypeLits = infoBit.getLiterals(DISCOBITS.infoBit);
-		if (mediaTypeLits.hasNext()) {
-			final Literal literalValue = mediaTypeLits.next();
-			if (literalValue instanceof TypedLiteral) {
-				result = LiteralFactory.getInstance().createObject(
-						(new byte[0]).getClass(),(TypedLiteral)literalValue);
+		Lock readLock = infoBit.readLock();
+		readLock.lock();
+		try {
+			Iterator<Literal> mediaTypeLits = infoBit.getLiterals(DISCOBITS.infoBit);
+			if (mediaTypeLits.hasNext()) {
+				final Literal literalValue = mediaTypeLits.next();
+				if (literalValue instanceof TypedLiteral) {
+					result = LiteralFactory.getInstance().createObject(
+							(new byte[0]).getClass(), (TypedLiteral) literalValue);
+				}
 			}
-		}
-		
+		} finally {
+			readLock.unlock();
+		}		
 		return result;	
 	};
 
