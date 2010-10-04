@@ -20,6 +20,7 @@ package org.apache.clerezza.platform.content;
 
 
 import java.net.URI;
+import java.util.concurrent.locks.Lock;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,6 +31,7 @@ import org.apache.clerezza.jaxrs.utils.form.FormFile;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
@@ -77,10 +79,17 @@ public class ContentPostSupport {
 			return Response.status(400).entity("Required form field is missing").
 					type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
-		if (cgProvider.getContentGraph().filter(new UriRef(uri), RDF.type, null).hasNext()) {
-			return Response.status(Response.Status.CONFLICT).
-					entity("A resource with the specified URI already exists").
-					type(MediaType.TEXT_PLAIN_TYPE).build();
+		LockableMGraph contentGraph = cgProvider.getContentGraph();
+		Lock readLock = contentGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			if (contentGraph.filter(new UriRef(uri), RDF.type, null).hasNext()) {
+				return Response.status(Response.Status.CONFLICT).
+						entity("A resource with the specified URI already exists").
+						type(MediaType.TEXT_PLAIN_TYPE).build();
+			}
+		} finally {
+			readLock.unlock();
 		}
 		handler.put(new UriRef(uri), formFile.getMediaType(), content);
 		return Response.created(URI.create(uri)).build();

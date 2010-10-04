@@ -142,7 +142,6 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	@GET
 	@Produces({"*/*"})
 	public Object getResource(@Context UriInfo uriInfo) {
-		final MGraph mGraph = cgProvider.getContentGraph();
 		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
 		final GraphNode graphNode = getResourceAsGraphNode(uriInfo);
 		if (graphNode == null) {
@@ -418,7 +417,13 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 				logger.error("more than one parent statement: "+oldParentTripleIter.next());
 				oldParentTripleIter.remove();
 			}
-			node.replaceWith(targetUri);
+			Lock writeLock = node.writeLock();
+			writeLock.lock();
+			try {
+				node.replaceWith(targetUri);
+			} finally {
+				writeLock.unlock();
+			}
 			new CollectionCreator(mGraph).createContainingCollections(targetUri);
 			try {
 				return Response.created(new java.net.URI(targetUri.getUnicodeString())).build();
@@ -492,7 +497,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 				}
 				builder.header(HeaderName.ALLOW.toString(), buffer.toString());
 			}
-			return builder.build();
+		return builder.build();
 	}
 
 	protected void bindMetaDataGenerator(MetaDataGenerator generator) {
@@ -516,9 +521,15 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	
 
 	private boolean nodeAtUriExists(UriRef nodeUri) {
-		MGraph mGraph = getMGraph();
-		return mGraph.filter(nodeUri, null, null).hasNext()
-				|| mGraph.filter(null, null, nodeUri).hasNext();
+		LockableMGraph mGraph = (LockableMGraph) getMGraph();
+		Lock readLock = mGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			return mGraph.filter(nodeUri, null, null).hasNext()
+					|| mGraph.filter(null, null, nodeUri).hasNext();
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	private Response resourceUnavailable(UriRef nodeUri,
