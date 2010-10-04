@@ -93,7 +93,7 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 	private HttpHeaders headers = null;
 	private final Set<UserContextProvider> contextProviders =
 			Collections.synchronizedSet(new HashSet<UserContextProvider>());
-	private DocumentBuilder documentBuilder;
+	private final DocumentBuilder documentBuilder;
 	private TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
 	{
@@ -164,7 +164,9 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 				}
 				Document document;
 				try {
-					document = documentBuilder.parse(new ByteArrayInputStream(bytes));
+					synchronized(documentBuilder) {
+						document = documentBuilder.parse(new ByteArrayInputStream(bytes));
+					}
 				} catch (SAXException ex) {
 					logger.error("Error parsing XHTML", ex);
 					entityStream.write(bytes);
