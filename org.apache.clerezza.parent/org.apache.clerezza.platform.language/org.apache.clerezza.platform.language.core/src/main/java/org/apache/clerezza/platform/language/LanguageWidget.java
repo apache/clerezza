@@ -30,7 +30,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
-import org.apache.clerezza.platform.config.PlatformConfig;
+import org.apache.clerezza.platform.Constants;
 
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
@@ -47,6 +47,8 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -78,8 +80,8 @@ public class LanguageWidget implements UserContextProvider {
 
 	private FileServer fileServer;
 
-	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
-	private MGraph configGraph;
+	@Reference
+	private TcManager TcManager;
 
 	@Reference
 	private RenderletManager renderletManager;
@@ -104,6 +106,10 @@ public class LanguageWidget implements UserContextProvider {
 
 	}
 
+	private LockableMGraph getConfigGraph() {
+		return TcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
+	}
+
 	@Override
 	public GraphNode addUserContext(final GraphNode node) {
 		try {
@@ -124,6 +130,7 @@ public class LanguageWidget implements UserContextProvider {
 		TripleCollection graph = node.getGraph();
 		BNode listNode = new BNode();		
 		RdfList list = new RdfList(listNode, graph);
+		MGraph configGraph = getConfigGraph();
 		for (LanguageDescription languageDescription : languages) {
 			NonLiteral languageUri = (NonLiteral) languageDescription.getResource().getNode();
 			list.add(languageUri);
