@@ -59,7 +59,6 @@ public class SecuredMGraph extends SecuredTripleCollection implements LockableMG
 	 */
 	public LockableMGraph getUnsecuredMGraph() {
 		checkWrite();
-		checkRead();
 		return wrapped;
 	}
 

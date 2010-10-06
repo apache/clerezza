@@ -26,7 +26,6 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
 
@@ -163,7 +162,7 @@ public class SecuredTripleCollection implements TripleCollection {
 		}
 	}
 
-	void checkRead() {
+	private void checkRead() {
 		tcAccessController.checkReadPermission(name);
 	}
 
