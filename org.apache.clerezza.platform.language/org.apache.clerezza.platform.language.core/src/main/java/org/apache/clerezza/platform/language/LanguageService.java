@@ -27,21 +27,22 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.apache.clerezza.platform.config.PlatformConfig;
+import java.util.concurrent.locks.Lock;
+import org.apache.clerezza.platform.Constants;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Language;
 import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
@@ -62,11 +63,8 @@ import org.apache.clerezza.rdf.utils.RdfList;
 @Service(LanguageService.class)
 public class LanguageService {	
 
-	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
-	private MGraph systemGraph;
-
-	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
-	private MGraph configGraph;
+	@Reference
+	private TcManager tcManager;
 
 	/**
 	 * this is linked to the system-graph, accessing requires respective
@@ -86,6 +84,15 @@ public class LanguageService {
 	
 	private SoftReference<Graph> softLingvojGraph = new SoftReference<Graph>(null);
 
+
+	private LockableMGraph getSystemGraph() {
+		return tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI);
+	}
+
+	private LockableMGraph getConfigGraph() {
+		return tcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
+	}
+
 	/**
 	 * Returns a <code>List</code> of <code>LanguageDescription</code>s which
 	 * describe the languages which are supported by the platform. The first
@@ -99,7 +106,7 @@ public class LanguageService {
 			UriRef language = (UriRef) languages.next();
 			langList.add(
 					new LanguageDescription(new GraphNode(language, 
-					configGraph)));
+					getConfigGraph())));
 		}
 		return langList;
 	}
@@ -111,7 +118,7 @@ public class LanguageService {
 	 */
 	public LanguageDescription getDefaultLanguage() {
 		return new LanguageDescription(
-				new GraphNode(languageListCache.get(0), configGraph));
+				new GraphNode(languageListCache.get(0), getConfigGraph()));
 	}
 
 	/**
@@ -192,8 +199,15 @@ public class LanguageService {
 	 * @param languageUri
 	 */
 	private void addToConfigGraph(NonLiteral languageUri) {
-		if (!configGraph.filter(languageUri, LINGVOJ.iso1, null).hasNext()) {
-			configGraph.addAll(getLanguageContext(languageUri));
+		LockableMGraph configGraph = getConfigGraph();
+		Lock writeLock = configGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			if (!configGraph.filter(languageUri, LINGVOJ.iso1, null).hasNext()) {
+				configGraph.addAll(getLanguageContext(languageUri));
+			}
+		} finally {
+			writeLock.unlock();
 		}
 	}
 
@@ -228,7 +242,7 @@ public class LanguageService {
 	 * @param componentContext
 	 */
 	protected void activate(ComponentContext componentContext) {
-		final RdfList rdfList = new RdfList(getListNode(), systemGraph);
+		final RdfList rdfList = new RdfList(getListNode(), getSystemGraph());
 		languageList = Collections.synchronizedList(rdfList);
 		//access to languages should not require access to system graph,
 		//so copying the resources to an ArrayList
@@ -242,19 +256,32 @@ public class LanguageService {
 	}
 
 	private NonLiteral getListNode() {
-		Iterator<Triple> instances = systemGraph.filter(null, RDF.type, PLATFORM.Instance);
-		if (!instances.hasNext()) {
-			throw new RuntimeException("No Platform:Instance in system graph.");
-		}
-		NonLiteral instance = instances.next().getSubject();
-		Iterator<Triple> langListIter = systemGraph.filter(instance,
-				PLATFORM.languages, null);
-		if (langListIter.hasNext()) {
-			return (NonLiteral) langListIter.next().getObject();
+		NonLiteral instance = null;
+		LockableMGraph systemGraph = getSystemGraph();
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			Iterator<Triple> instances = systemGraph.filter(null, RDF.type, PLATFORM.Instance);
+			if (!instances.hasNext()) {
+				throw new RuntimeException("No Platform:Instance in system graph.");
+			}
+			instance = instances.next().getSubject();
+			Iterator<Triple> langListIter = systemGraph.filter(instance,
+					PLATFORM.languages, null);
+			if (langListIter.hasNext()) {
+				return (NonLiteral) langListIter.next().getObject();
+			}
+		} finally {
+			readLock.unlock();
 		}
 		BNode listNode = new BNode();
-		systemGraph.add(new TripleImpl(instance, PLATFORM.languages,
-				listNode));
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			systemGraph.add(new TripleImpl(instance, PLATFORM.languages, listNode));
+		} finally {
+			writeLock.unlock();
+		}
 		return listNode;
 	}
 }
