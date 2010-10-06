@@ -51,4 +51,16 @@ public class SecuredMGraph extends SecuredTripleCollection implements LockableMG
 		return wrapped.getLock();
 	}
 
+	/**
+	 * Returns the wrapped LockableMGraph if the caller has all access rights,
+	 * otherwise an AccessControlException is thrown.
+	 *
+	 * @return the wrapped LockableMGraph.
+	 */
+	public LockableMGraph getUnsecuredMGraph() {
+		checkWrite();
+		checkRead();
+		return wrapped;
+	}
+
 }
