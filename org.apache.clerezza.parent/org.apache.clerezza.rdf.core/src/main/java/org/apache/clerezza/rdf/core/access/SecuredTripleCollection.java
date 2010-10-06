@@ -163,11 +163,11 @@ public class SecuredTripleCollection implements TripleCollection {
 		}
 	}
 
-	private void checkRead() {
+	void checkRead() {
 		tcAccessController.checkReadPermission(name);
 	}
 
-	private void checkWrite() {
+	void checkWrite() {
 		tcAccessController.checkReadWritePermission(name);
 	}
 
