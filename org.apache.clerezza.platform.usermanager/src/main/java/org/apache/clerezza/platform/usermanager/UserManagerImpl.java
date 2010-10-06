@@ -30,12 +30,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
+import org.apache.clerezza.platform.Constants;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -45,6 +45,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -64,13 +65,17 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 @Service(value=UserManager.class)
 public class UserManagerImpl implements UserManager {
 
-	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
-	private LockableMGraph systemGraph;
-
 	@Reference
 	private ContentGraphProvider cgProvider;
 
+	@Reference
+	TcManager tcManager;
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	private LockableMGraph getSystemGraph() {
+		return tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI);
+	}
 
 	@Override
 	public void storeRole(String title) {
@@ -81,6 +86,7 @@ public class UserManagerImpl implements UserManager {
 			return;
 		}
 		BNode role = new BNode();
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock writeLock = systemGraph.getLock().writeLock();
 		writeLock.lock();
 		try {
@@ -94,6 +100,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public NonLiteral getRoleByTitle(String title) {
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -119,6 +126,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Iterator<NonLiteral> getRoles() {
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -141,6 +149,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Iterator<NonLiteral> getRolesOfUser(NonLiteral user){
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -172,6 +181,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private boolean isBaseRole(NonLiteral role) {
+		LockableMGraph systemGraph = getSystemGraph();
 		GraphNode roleNode = new GraphNode(role, systemGraph);
 		Lock readLock = roleNode.readLock();
 		readLock.lock();
@@ -184,6 +194,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private void deleteTriplesOfASubject(NonLiteral subject) {
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock writeLock = systemGraph.getLock().writeLock();
 		writeLock.lock();
 		try {
@@ -219,6 +230,7 @@ public class UserManagerImpl implements UserManager {
 		if (permissionEntries.isEmpty()) {
 			return;
 		}
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock writeLock = systemGraph.getLock().writeLock();
 		writeLock.lock();
 		try {
@@ -246,6 +258,7 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private NonLiteral getPermissionOfAJavaPermEntry(
 			String permissionString) {
+		LockableMGraph systemGraph = getSystemGraph();
 		PlainLiteral javaPermEntry = new PlainLiteralImpl(permissionString);
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
@@ -272,7 +285,8 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role) {	
+	public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role) {
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -310,6 +324,7 @@ public class UserManagerImpl implements UserManager {
 		if (permissionEntries.isEmpty()) {
 			return;
 		}
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock writeLock = systemGraph.getLock().writeLock();
 		writeLock.lock();
 		try {
@@ -339,6 +354,7 @@ public class UserManagerImpl implements UserManager {
 		if (role == null) {
 			return;
 		}
+		LockableMGraph systemGraph = getSystemGraph();
 		GraphNode graphNode = new GraphNode(role, systemGraph);
 		Lock writeLock = systemGraph.getLock().writeLock();
 		writeLock.lock();
@@ -369,6 +385,7 @@ public class UserManagerImpl implements UserManager {
 			}
 		}
 		BNode user = new BNode();
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock writeLock = systemGraph.getLock().writeLock();
 		writeLock.lock();
 		try {
@@ -417,6 +434,7 @@ public class UserManagerImpl implements UserManager {
 		if (email == null) {
 			return null;
 		}
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -448,6 +466,7 @@ public class UserManagerImpl implements UserManager {
 		if (user == null) {
 			throw new UserNotExistsException(name);
 		}
+		LockableMGraph systemGraph = getSystemGraph();
 		GraphNode userGraphNode = new GraphNode(user, systemGraph);
 		Lock writeLock = userGraphNode.writeLock();
 		writeLock.lock();
@@ -482,6 +501,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private void addRolesToUser(Collection<String> assignedRoles, NonLiteral user) throws RoleUnavailableException {
+		LockableMGraph systemGraph = getSystemGraph();
 		for (String roleTitle : assignedRoles) {
 			// skip empty strings
 			if ((roleTitle == null) || (roleTitle.trim().length() == 0)) {
@@ -502,6 +522,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean nameExists(String name) {
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -514,6 +535,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean emailExists(String email) {
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -534,7 +556,8 @@ public class UserManagerImpl implements UserManager {
 		return getResourcesOfType(FOAF.Agent);
 	}
 
-	private Iterator<NonLiteral> getResourcesOfType(UriRef type) {		
+	private Iterator<NonLiteral> getResourcesOfType(UriRef type) {
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -621,6 +644,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public GraphNode getUserInSystemGraph(final String name) {
+		LockableMGraph systemGraph = getSystemGraph();
 		NonLiteral user = getUserByUserName(name);
 		if (user != null) {
 			return new GraphNode(user, systemGraph);
@@ -670,6 +694,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public GraphNode getUserGraphNode(final String name) {
+		LockableMGraph systemGraph = getSystemGraph();
 		NonLiteral user = getUserByUserName(name);
 		if (user != null) {
 			GraphNode userNodeInSystemGraph =
@@ -683,6 +708,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private NonLiteral getUserByUserName(String name) {
+		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
