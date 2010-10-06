@@ -117,6 +117,13 @@ package org.apache.clerezza.scala.scripting {
 							// a trailing slash
 							if (entryUrl == null)
 								entryUrl = bundle.getResource("/" + removeTralingSlash(entry))
+
+							if (entryUrl == null) {
+								entryUrl = new URL(bundle.getResource("/"), entry)
+								if (entryUrl == null) {
+									throw new RuntimeException("Could not locate entry: "+entry+" in bundle: "+bundle)
+								}
+							}
             
 							if (entry.endsWith(".class"))
 								new FileEntry(entryUrl, DirEntry.this)
