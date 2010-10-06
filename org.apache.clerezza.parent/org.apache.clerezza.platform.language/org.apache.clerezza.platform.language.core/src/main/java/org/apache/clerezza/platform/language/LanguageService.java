@@ -275,13 +275,7 @@ public class LanguageService {
 			readLock.unlock();
 		}
 		BNode listNode = new BNode();
-		Lock writeLock = systemGraph.getLock().writeLock();
-		writeLock.lock();
-		try {
-			systemGraph.add(new TripleImpl(instance, PLATFORM.languages, listNode));
-		} finally {
-			writeLock.unlock();
-		}
+		systemGraph.add(new TripleImpl(instance, PLATFORM.languages, listNode));
 		return listNode;
 	}
 }
