@@ -29,12 +29,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.platform.Constants;
+import org.apache.clerezza.platform.config.PlatformConfig;
+import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Language;
+import org.apache.clerezza.rdf.core.MGraph;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
@@ -42,6 +45,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.SecuredMGraph;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
@@ -81,16 +85,22 @@ public class LanguageService {
 
 	@Reference(target=PARSER_FILTER)
 	private ParsingProvider parser;
+
+	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
+	private MGraph securedSystemGraph;
+
+	@Reference(target = PlatformConfig.CONFIG_GRAPH_FILTER)
+	private MGraph securedConfigGraph;
 	
 	private SoftReference<Graph> softLingvojGraph = new SoftReference<Graph>(null);
 
 
 	private LockableMGraph getSystemGraph() {
-		return tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI);
+		return ((SecuredMGraph) securedSystemGraph).getUnsecuredMGraph();
 	}
 
 	private LockableMGraph getConfigGraph() {
-		return tcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
+		return ((SecuredMGraph) securedConfigGraph).getUnsecuredMGraph();
 	}
 
 	/**
