@@ -66,19 +66,18 @@ import scala.collection.Seq;
 @Service(Renderlet.class)
 public class ScalaServerPagesRenderlet implements Renderlet {
 
-
-	@Reference(target="(javax.script.language=scala)")
+	@Reference(target = "(javax.script.language=scala)")
 	private ScriptEngineFactory scalaScriptEngineFactory;
-	
 	private static final Logger logger = LoggerFactory.getLogger(ScalaServerPagesRenderlet.class);
 	private int byteHeaderLines = 0;
 	private Type multiStringObjectMapType;
+
 	{
 		try {
 			multiStringObjectMapType = RequestProperties.class.getMethod("getHttpHeaders", new Class[0]).getReturnType();
 		} catch (NoSuchMethodException ex) {
 			throw new RuntimeException(ex);
-		} 
+		}
 	}
 
 	/**
@@ -86,11 +85,9 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	 */
 	public ScalaServerPagesRenderlet() {
 	}
-
-
-
 	private final String lineSeparator = System.getProperty("line.separator");
 	private final byte[] byteHeader;
+
 	{
 		final InputStream in = ScalaServerPagesRenderlet.class.getResourceAsStream("implicit-header.txt");
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -109,12 +106,10 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		}
 		byteHeader = baos.toByteArray();
 	}
-
 	private final byte[] byteCloser = (";}" + lineSeparator).getBytes();
-
 	//TODO a map with SoftReferences as keys
 	private Map<String, CompiledScript> compiledScripts = new HashMap<String, CompiledScript>();
-	
+
 	@Override
 	public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
 			CallbackRenderer callbackRenderer, URI renderingSpecification,
@@ -122,21 +117,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			RequestProperties requestProperties, OutputStream os) throws IOException {
 		try {
 			logger.debug("ScalaServerPagesRenderlet rendering");
-			final InputStream in = renderingSpecification.toURL().openStream();
-			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			//Add the scriptHeader to the beginning of the script
-			baos.write(byteHeader);
-			//add the content
-			for (int b = in.read(); b != -1; b = in.read()) {
-				baos.write(b);
-			}
-			//add the closing ";" 
-			baos.write(byteCloser);
-			String scriptName = extractFileName(renderingSpecification);
-			logger.debug("getting CompiledScript for: {}", scriptName);
-			final byte[] scriptBytes = baos.toByteArray();
-			final CompiledScript cs = getCompiledScript(scriptBytes);
-			
+			final byte[] scriptBytes = getScriptBytes(renderingSpecification);
 			final SimpleBindings values = new SimpleBindings();
 			values.put("res", res);
 			values.put("context", context);
@@ -148,32 +129,16 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 				//values.put("httpHeaders", requestProperties.getHttpHeaders());
 			}
 			//The priviledged block is needed because of FELIX-2273
-			Object execResult = null;
-			try {
-				execResult = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-
-					@Override
-					public Object run() throws ScriptException {
-						return cs.eval(values);
-					}
-				});
-			} catch (PrivilegedActionException ex) {
-				Exception cause = (Exception) ex.getCause();
-				logger.debug("Exception executing ScalaServerPage Script", cause);
-				if (cause instanceof ScriptException) {
-					throw (ScriptException) cause;
-				}
-				throw new RuntimeException(cause);
- 			} catch (RuntimeException ex) {
-				logger.debug("RuntimeException executing ScalaServerPage Script", ex);
-				throw ex;
-			}
+			Object execResult = exec(scriptBytes, values);
 			if (execResult != null) {
 				String sspResult = toString(execResult);
-				logger.debug("executed ssp, result: {} (for {})", sspResult, scriptName);
+				if (logger.isDebugEnabled()) {
+					String scriptName = extractFileName(renderingSpecification);
+					logger.debug("executed ssp, result: {} (for {})", sspResult, scriptName);
+				}
 				os.write(sspResult.getBytes("UTF-8"));
 			}
-			
+
 			os.flush();
 			logger.debug("flushed");
 		} catch (MalformedURLException ex) {
@@ -211,7 +176,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 
 	private static String toString(Object object) {
 		if (object instanceof Seq) {
-			return ((Seq)object).mkString();
+			return ((Seq) object).mkString();
 		} else {
 			return object.toString();
 		}
@@ -231,13 +196,51 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		}
 		CompiledScript cs = compiledScripts.get(scriptString);
 		if (cs == null) {
-			cs = ((Compilable)scalaScriptEngineFactory.getScriptEngine())
-					.compile(scriptString);
+			cs = ((Compilable) scalaScriptEngineFactory.getScriptEngine()).compile(scriptString);
 			compiledScripts.put(scriptString, cs);
 		}
 		return cs;
 	}
 
+	private byte[] getScriptBytes(URI renderingSpecification) throws IOException {
+		final InputStream in = renderingSpecification.toURL().openStream();
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		//Add the scriptHeader to the beginning of the script
+		baos.write(byteHeader);
+		//add the content
+		final byte[] buffer = new byte[1024];
+		int bytesRead;
+		while ((bytesRead = in.read(buffer, 0, 1024)) != -1) {
+			baos.write(buffer, 0, bytesRead);
+		}
+		//add the closing ";"
+		baos.write(byteCloser);
+		String scriptName = extractFileName(renderingSpecification);
+		logger.debug("getting CompiledScript for: {}", scriptName);
+		return baos.toByteArray();
+	}
 
+	private Object exec(byte[] scriptBytes, final SimpleBindings values) throws ScriptException {
+		final CompiledScript cs = getCompiledScript(scriptBytes);
 
+		try {
+			return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+
+				@Override
+				public Object run() throws ScriptException {
+					return cs.eval(values);
+				}
+			});
+		} catch (PrivilegedActionException ex) {
+			Exception cause = (Exception) ex.getCause();
+			logger.debug("Exception executing ScalaServerPage Script", cause);
+			if (cause instanceof ScriptException) {
+				throw (ScriptException) cause;
+			}
+			throw new RuntimeException(cause);
+		} catch (RuntimeException ex) {
+			logger.debug("RuntimeException executing ScalaServerPage Script", ex);
+			throw ex;
+		}
+	}
 }
