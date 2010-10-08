@@ -77,7 +77,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 
 	//methods from ScriptEngineFactory
 	override def getEngineName() = "Scala Scripting Engine for OSGi"
-	override def getEngineVersion() = "0.2/scala 2.8.0.RC2"
+	override def getEngineVersion() = "0.2/scala 2.8.0"
 	override def getExtensions() = java.util.Collections.singletonList("scala")
 	override def getMimeTypes() = java.util.Collections.singletonList("application/x-scala")
 	override def getNames() = java.util.Collections.singletonList("scala")
@@ -206,6 +206,11 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 
 		val virtualDirectory = new VirtualDirectory("(memory)", None)
 		var msgWriter = new StringWriter
+
+		val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
+
+		//var classLoader = createClassLoader
+
 		lazy val compiler = {
 			AccessController.doPrivileged(new PrivilegedAction[BundleContextScalaCompiler]() {
 				override def run() =  {
@@ -227,11 +232,12 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 			try {
 				AccessController.doPrivileged(new PrivilegedAction[CompiledScript]() {
 				override def run() =  {
+
 						//inefficient but thread safe
 						compiler.synchronized {
 							val objectName = "CompiledScript"+classCounter
 							classCounter += 1
-							val classCode = "object " + objectName + """ {
+							val classCode = "class " + objectName + """ {
 								|	def run($: Map[String, Object]) = {
 								|""".stripMargin + script +"""
 								|	}
@@ -244,8 +250,14 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 								msgWriter = new StringWriter
 								throw new ScriptException(msg, "script", -1);
 							}
+							//val classBytes = virtualDirectory.fileNamed(objectName+".class").toCharArray
+							val clazz = classLoader.loadClass(objectName)
+							val scriptObject = clazz.newInstance()
+
 							new CompiledScript() {
+
 								override def eval(context: ScriptContext) = {
+	
 									var map = Map[String, Object]()
 									import _root_.scala.collection.JavaConversions._
 									for (	scope <- context.getScopes;
@@ -253,12 +265,13 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 											entry <- context.getBindings(scope.intValue)) {
 										map = map + (entry._1 -> entry._2)
 									}
-									val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
-									val runMethod = classLoader.findClass(objectName).getMethod("run", classOf[Map[String, Object]])
+									val runMethod = clazz.getMethod("run", classOf[Map[String, Object]])
 									try {
-										runMethod.invoke(null, map)
+										runMethod.invoke(scriptObject, map)
 									} catch {
-										case e: InvocationTargetException => throw e.getCause
+										case e: InvocationTargetException => {
+											throw e.getCause
+										}
 									}
 								}
 								override def getEngine = MyScriptEngine.this
