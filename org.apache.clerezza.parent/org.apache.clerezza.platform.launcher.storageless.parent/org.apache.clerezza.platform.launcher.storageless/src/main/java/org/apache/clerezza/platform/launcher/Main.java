@@ -264,7 +264,7 @@ public class Main implements BundleActivator {
 			}
 			//sun.reflect added because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6265952 and loading of scala scripts
 			configProps.put("org.osgi.framework.system.packages.extra",
-					"sun.misc;sun.reflect"
+					"sun.misc;sun.reflect;"
 					+ extraPackages);
 		}
 
