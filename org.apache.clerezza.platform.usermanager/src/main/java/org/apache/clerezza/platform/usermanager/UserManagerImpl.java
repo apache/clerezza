@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
-import org.apache.clerezza.platform.Constants;
+import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -45,6 +45,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.SecuredMGraph;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
@@ -73,8 +74,11 @@ public class UserManagerImpl implements UserManager {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
+	private MGraph securedSystemGraph;
+
 	private LockableMGraph getSystemGraph() {
-		return tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI);
+		return ((SecuredMGraph) securedSystemGraph).getUnsecuredMGraph();
 	}
 
 	@Override
