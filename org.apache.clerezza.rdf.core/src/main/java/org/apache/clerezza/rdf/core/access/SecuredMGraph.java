@@ -18,11 +18,13 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
+import java.security.AccessControlException;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
+import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
 
 /**
  * A SecuredMGraph is a LockableMGraph that wraps a LockableMGraph checking each
@@ -52,14 +54,23 @@ public class SecuredMGraph extends SecuredTripleCollection implements LockableMG
 	}
 
 	/**
-	 * Returns the wrapped LockableMGraph if the caller has all access rights,
-	 * otherwise an AccessControlException is thrown.
+	 * Returns the wrapped LockableMGraph if the caller has all access rights.
+	 * If the caller has only the read access right, then a write-blocked
+	 * LockableMGraph is returned. If the caller has neither the read nor the write
+	 * access right then an AccessControlException is thrown.
 	 *
-	 * @return the wrapped LockableMGraph.
+	 * @return the wrapped LockableMGraph or a write-block LockableMGraph depending
+	 *		on the access rights of the caller.
 	 */
 	public LockableMGraph getUnsecuredMGraph() {
-		checkWrite();
-		return wrapped;
+		try {
+			checkWrite();
+			return wrapped;
+		} catch (AccessControlException ex) {
+			checkRead();
+			return new WriteBlockedMGraph(wrapped);
+		}
+		
 	}
 
 }
