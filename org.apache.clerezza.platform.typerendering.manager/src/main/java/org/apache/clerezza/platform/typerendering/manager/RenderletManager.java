@@ -188,8 +188,6 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 						Status.BAD_REQUEST).entity(message).build());
 			}
 			renderingSpecificationUri = getUnusedUriRef(uriInfo, formFile.getFileName());
-
-
 		} else {
 			if (fileUploaded) {
 				//check that the URI point to the platfomrm
@@ -201,7 +199,6 @@ public class RenderletManager implements GlobalMenuItemsProvider{
 					throw new WebApplicationException(Response.status(
 							Status.BAD_REQUEST).entity(message).build());
 				}
-
 			}
 		}
 		renderedType = new UriRef(type);
