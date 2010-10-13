@@ -45,7 +45,7 @@ import org.wymiwyg.wrhapi.util.MediaRange;
 @Service(Filter.class)
 public class DefaultAcceptHeaderSetter implements Filter {
 
-	@Property(value={"text/html", "application/xhtml+xml;q=.9", "*/*;q=.1"},
+	@Property(value={"application/xhtml+xml", "text/html;q=.9", "*/*;q=.1"},
 	description="The default accept header used if a request does not have an " +
 			"accept header.")
 	public static final String DEFAULT_ACCEPT_HEADER = "defaultAcceptHeader";
