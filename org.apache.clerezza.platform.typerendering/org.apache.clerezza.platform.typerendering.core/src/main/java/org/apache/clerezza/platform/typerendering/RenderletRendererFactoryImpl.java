@@ -421,11 +421,4 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 		}
 	}
 
-	protected void bindConfigGraph(LockableMGraph configGraph) {
-		this.configGraph = configGraph;
-	}
-
-	protected void unbindConfigGraph(LockableMGraph configGraph) {
-		this.configGraph = null;
-	}
 }
