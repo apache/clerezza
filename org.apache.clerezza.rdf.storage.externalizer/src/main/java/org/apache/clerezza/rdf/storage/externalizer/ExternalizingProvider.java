@@ -52,6 +52,15 @@ import org.slf4j.LoggerFactory;
  * A {@link org.apache.clerezza.rdf.core.access.WeightedTcProvider} storing
  * large literals to the filesystem and the triples (with references
  * instead of the literals) to another TcProvider.
+ * <br/>
+ * As this provider is not currently included in any clerezza launcher, the way
+ * to install it is as follows:<br/>
+ *
+ * - start clerezza<br/>
+ * - install the bundle setting and set its startlevel to 3<br/>
+ * - shutdown clerezza<br/>
+ * - delete the mgraphs that shall use the externalizer from the felix cache<br/>
+ * - start clerezza again<br/>
  *
  * @author reto
  *
