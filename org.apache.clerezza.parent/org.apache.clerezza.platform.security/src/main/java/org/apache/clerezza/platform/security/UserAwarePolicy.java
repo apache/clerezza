@@ -18,8 +18,6 @@
  */
 package org.apache.clerezza.platform.security;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.Permission;
 import java.security.PermissionCollection;
@@ -30,6 +28,7 @@ import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,7 +37,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.clerezza.platform.config.SystemConfig;
 
-import org.osgi.service.permissionadmin.PermissionInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +88,7 @@ public class UserAwarePolicy extends Policy {
 
 	private Policy originalPolicy;
 	private Set<WebIdBasedPermissionProvider> permissionProviders = 
-			new HashSet<WebIdBasedPermissionProvider>();
+			Collections.synchronizedSet(new HashSet<WebIdBasedPermissionProvider>());
 
 	public UserAwarePolicy() {
 		this.originalPolicy = Policy.getPolicy();
@@ -209,8 +207,10 @@ public class UserAwarePolicy extends Policy {
 	private List<String> getPermissionEntriesOfAUser(NonLiteral user, String userName) {
 		List<String> result = getPermissionEntriesOfARole(user, userName, user);
 		if (user instanceof UriRef) {
-			for (WebIdBasedPermissionProvider p : permissionProviders) {
-				result.addAll(p.getPermissions((UriRef)user));
+			synchronized(permissionProviders) {
+				for (WebIdBasedPermissionProvider p : permissionProviders) {
+					result.addAll(p.getPermissions((UriRef)user));
+				}
 			}
 		}
 		return result;
