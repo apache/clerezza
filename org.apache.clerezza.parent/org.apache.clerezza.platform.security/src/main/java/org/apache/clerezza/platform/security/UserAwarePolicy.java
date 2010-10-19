@@ -87,7 +87,7 @@ public class UserAwarePolicy extends Policy {
 	private UserPermissionsCache cache = new UserPermissionsCache();
 
 	private Policy originalPolicy;
-	private Set<WebIdBasedPermissionProvider> permissionProviders = 
+	private final Set<WebIdBasedPermissionProvider> permissionProviders =
 			Collections.synchronizedSet(new HashSet<WebIdBasedPermissionProvider>());
 
 	public UserAwarePolicy() {
