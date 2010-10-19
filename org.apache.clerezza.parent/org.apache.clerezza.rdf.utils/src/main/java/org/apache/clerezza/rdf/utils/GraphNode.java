@@ -324,7 +324,9 @@ public class GraphNode {
 	}
 
 	/**
-	 * Checks wether this node has the given property with the given value
+	 * Checks wether this node has the given property with the given value.
+	 * If the given value is null, then it is checked if this node has the
+	 * specified property regardless of its value.
 	 *
 	 * @param property
 	 * @param object
@@ -336,6 +338,9 @@ public class GraphNode {
 		l.lock();
 		try {
 			Iterator<Resource> objects = getObjects(property);
+			if (object == null) {
+				return objects.hasNext();
+			}
 			while (objects.hasNext()) {
 				if (objects.next().equals(object)) {
 					return true;
