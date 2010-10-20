@@ -10,26 +10,25 @@ def dhb(s: Any) = new UriRef("http://clerezza.org/2009/06/dashboard#"+s)
 		{
 			for (rdfType <- res!!) yield {
 				if ((rdfType/-typerendering("renderedType")).length > 0) {
-                    <li>
-                        <table>
-                            <tr>
-                                <td>
-                                    <strong>RDF Type: {rdfType*}</strong>
-                                </td>
-                                <td>
-                                    <form method="post" action="up">
-                                            <input type="hidden" name="renderedType" value={rdfType*} />
-                                            <input type="submit" value="up" />
-                                    </form>
-                                </td>
-                                <td>
-                                    <form method="post" action="down">
-                                            <input type="hidden" name="renderedType" value={rdfType*} />
-                                            <input type="submit" value="down" />
-                                    </form>
-                                </td>
-                            </tr>
-                        </table>
+                    <li style="list-style-type: none;">
+						<strong>RDF Type: {rdfType*}</strong>
+						<br/>
+						<br/>
+						<div>
+							<div style="float: left; margin-right:1em;">
+								<form method="post" action="up">
+									<input type="hidden" name="renderedType" value={rdfType*} />
+									<input type="submit" value="up" />
+								</form>
+							</div>
+							<div>
+								<form method="post" action="down">
+									<input type="hidden" name="renderedType" value={rdfType*} />
+									<input type="submit" value="down" />
+								</form>
+							</div>
+						</div>
+						<br/>
                         <table border="1" style="width:80%">
                             <tr>
                                 <th>Renderlet</th>
@@ -75,6 +74,8 @@ def dhb(s: Any) = new UriRef("http://clerezza.org/2009/06/dashboard#"+s)
                             </tr>
                             }}
                         </table>
+						<br/>
+						<br/>
                     </li>
                 } else {
                     ""
