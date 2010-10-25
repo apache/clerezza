@@ -435,6 +435,7 @@ public class TcManager extends TcProviderMultiplexer {
 		ServiceRegistration reg = serviceRegistrations.get(name);
 		if (reg != null) {
 			reg.unregister();
+			serviceRegistrations.remove(name);
 		}
 	}
 }
