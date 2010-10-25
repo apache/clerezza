@@ -41,6 +41,8 @@ import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
@@ -68,17 +70,17 @@ import org.apache.felix.scr.annotations.Service;
 @Property(name="weight", intValue=105)
 public class TdbTcProvider implements WeightedTcProvider {
 
-	@Property(intValue=600, description="Specifies the number of seconds to wait "
+	@Property(intValue=6, description="Specifies the number of seconds to wait "
 	+ "between synchronizations of the TDB datasets to the filesystem")
 	public static final String SYNC_INTERVAL = "sync-interval";
-	private int syncInterval = 600;
+	private int syncInterval = 6;
 
 	/**
 	 *	directory where all graphs are stored
 	 */
 	private static final String DATA_PATH_NAME = "tdb-data/";
 	private String dataPathString = DATA_PATH_NAME;
-	private Map<UriRef, MGraph> mGraphMap = new HashMap<UriRef, MGraph>();
+	private Map<UriRef, LockableMGraph> mGraphMap = new HashMap<UriRef, LockableMGraph>();
 	private Map<UriRef, Graph> graphMap = new HashMap<UriRef, Graph>();
 	private Map<File, com.hp.hpl.jena.graph.Graph> dir2JenaGraphMap =
 			new HashMap<File, com.hp.hpl.jena.graph.Graph>();
@@ -182,7 +184,7 @@ public class TdbTcProvider implements WeightedTcProvider {
 			throw new EntityAlreadyExistsException(name);
 		}
 		tcDir.mkdirs();
-		MGraph result = new PrivilegedMGraphWrapper(getMGraph(tcDir));
+		LockableMGraph result = new LockableMGraphWrapper(getMGraph(tcDir));
 		mGraphMap.put(name, result);
 		return result;
 	}
@@ -199,7 +201,7 @@ public class TdbTcProvider implements WeightedTcProvider {
 			triples = new SimpleMGraph();
 		}
 		tcDir.mkdirs();
-		MGraph mGraph = new PrivilegedMGraphWrapper(getMGraph(tcDir));
+		MGraph mGraph = getMGraph(tcDir);
 		mGraph.addAll(triples);
 		Graph result = mGraph.getGraph();
 		
@@ -309,7 +311,7 @@ public class TdbTcProvider implements WeightedTcProvider {
 		synchronized(dir2Dataset) {
 			dir2Dataset.put(tcDir, dataset);
 		}
-		return new JenaGraphAdaptor(jenaGraph);
+		return new PrivilegedMGraphWrapper(new JenaGraphAdaptor(jenaGraph));
 	}
 
 	private File getMGraphDir(UriRef name) {
@@ -346,7 +348,7 @@ public class TdbTcProvider implements WeightedTcProvider {
 			for (String mGraphDirName : mGraphsDir.list()) {
 				try {
 					UriRef uri = new UriRef(URLDecoder.decode(mGraphDirName, "utf-8"));
-					mGraphMap.put(uri, getMGraph(new File(mGraphsDir, mGraphDirName)));
+					mGraphMap.put(uri, new LockableMGraphWrapper(getMGraph(new File(mGraphsDir, mGraphDirName))));
 				} catch (UnsupportedEncodingException ex) {
 					throw new RuntimeException("utf-8 not supported", ex);
 				}

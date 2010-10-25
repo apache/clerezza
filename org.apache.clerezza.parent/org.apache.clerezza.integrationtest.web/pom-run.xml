@@ -12,6 +12,9 @@
 	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - Web Test Framework</name>
 	<description>A framework to run tests against a webserver</description>
+  <properties>
+    <org.osgi.service.http.port>8383</org.osgi.service.http.port>
+  </properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
@@ -31,10 +34,10 @@
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>javax.mail</artifactId>
 		</dependency>
-		<dependency>
+ 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.integrationtest.web.performance</artifactId>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.httpclient</artifactId>
