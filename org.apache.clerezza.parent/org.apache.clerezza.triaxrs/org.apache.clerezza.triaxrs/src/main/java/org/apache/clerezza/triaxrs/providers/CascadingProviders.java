@@ -111,7 +111,9 @@ public class CascadingProviders implements Providers {
 			}
 			pos++;
 			prev = current;
-			current = current.getChild(section);
+			if (!section.equals("")) {
+				current = current.getChild(section);
+			}
 		}
 		if (current != null) {
 			ProvidersImpl providers = current.getProviders();
