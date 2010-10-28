@@ -570,7 +570,9 @@ class ResponseProcessor {
 	private static void setDefaultCacheControlHeader(MultivaluedMap<String, Object> headerMap) {
 		if (headerMap.containsKey(HeaderName.CACHE_CONTROL.toString()) ||
 				headerMap.containsKey(HeaderName.EXPIRES.toString()) ||
-				headerMap.containsKey(HeaderName.PRAGMA.toString())) {
+				headerMap.containsKey(HeaderName.PRAGMA.toString()) ||
+				headerMap.containsKey(HeaderName.LAST_MODIFIED.toString()) ||
+				headerMap.containsKey("ETag")) {
 			return;
 		}
 		headerMap.putSingle(HeaderName.CACHE_CONTROL.toString(), "no-cache");
