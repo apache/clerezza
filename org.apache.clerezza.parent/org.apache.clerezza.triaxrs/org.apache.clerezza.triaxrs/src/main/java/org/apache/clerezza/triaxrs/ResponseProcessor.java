@@ -41,7 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.activation.UnsupportedDataTypeException;
 import javax.security.auth.Subject;
@@ -297,6 +296,7 @@ class ResponseProcessor {
 					@Override
 					public void run() {
 						try {
+							setDefaultCacheControlHeader(headerMap);
 							flushHeaders(headerMap, response);
 						} catch (HandlerException ex) {
 							logger.error("Exception {}", ex.toString(), ex);
@@ -565,5 +565,14 @@ class ResponseProcessor {
 			}
 		}
 		return result;
+	}
+
+	private static void setDefaultCacheControlHeader(MultivaluedMap<String, Object> headerMap) {
+		if (headerMap.containsKey(HeaderName.CACHE_CONTROL.toString()) ||
+				headerMap.containsKey(HeaderName.EXPIRES.toString()) ||
+				headerMap.containsKey(HeaderName.PRAGMA.toString())) {
+			return;
+		}
+		headerMap.putSingle(HeaderName.CACHE_CONTROL.toString(), "no-cache");
 	}
 }
