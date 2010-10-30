@@ -21,6 +21,7 @@ package org.apache.clerezza.rdf.stable.serializer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.PlainLiteral;

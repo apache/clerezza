@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
@@ -46,8 +47,8 @@ public class StableSerializerGraphTest {
 	}
 
 	@Parameterized.Parameters
-	public static Collection inputFileNames() {
-		return Arrays.asList(new Object[][]{
+	public static Collection<String[]> inputFileNames() {
+		return Arrays.asList(new String[][]{
 					{"amp-in-url-test001.rdf", "application/rdf+xml"},
 					{"datatypes-test001.rdf", "application/rdf+xml"},
 					{"datatypes-test002.rdf", "application/rdf+xml"},

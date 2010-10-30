@@ -22,12 +22,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+
 import junit.framework.Assert;
+
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
-import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
+import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -48,8 +49,8 @@ public class NTriplesSerializerTest {
 	}
 
 	@Parameterized.Parameters
-	public static Collection inputFileNames() {
-		return Arrays.asList(new Object[][] {
+	public static Collection<String[]> inputFileNames() {
+		return Arrays.asList(new String[][] {
 			{"amp-in-url-test001.rdf", "application/rdf+xml"},
 			{"datatypes-test001.rdf", "application/rdf+xml"},
 			{"datatypes-test002.rdf", "application/rdf+xml"},
@@ -70,7 +71,7 @@ public class NTriplesSerializerTest {
 	public void RDFTestCases() {
 		NTriplesSerializer nts = new NTriplesSerializer();
 
-		ParsingProvider parser = new JenaParserProvider();
+		Parser parser = Parser.getInstance();
 		Graph deserializedGraphOld = parser.parse(
 				getClass().getResourceAsStream(inputFileName), format);
 
