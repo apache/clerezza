@@ -21,20 +21,9 @@ package org.apache.clerezza.foafssl.ssl
 import java.security.KeyStore
 import java.util._
 import java.io._
-import javax.imageio._
 import javax.net.ssl.SSLContext
-import javax.ws.rs._
-import javax.ws.rs.core._
-import org.apache.clerezza.rdf.core._
-import org.apache.clerezza.rdf.core.access._
-import org.apache.clerezza.rdf.core.impl._
-import org.apache.clerezza.rdf.utils._
-import org.apache.clerezza.rdf.ontologies._
-import org.apache.clerezza.platform.graphprovider.content._
-import org.apache.clerezza.platform.typerendering.scalaserverpages._
 import org.jsslutils.keystores.KeyStoreLoader
 import org.jsslutils.sslcontext.X509SSLContextFactory
-import org.jsslutils.sslcontext.trustmanagers._
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext
 import org.wymiwyg.jetty.httpservice.{Activator => ServiceActivator}
@@ -51,19 +40,27 @@ class Activator() {
 		x509TrustManagerWrapperService = null
 	}
 	
-	protected def activate(context: ComponentContext) = {	
-		val bundleContext = context.getBundleContext
-		//TODO set jvm default ca-store
-		val sslContextFactory = new X509SSLContextFactory(
-                getServerCertKeyStore(context), getKeyStorePassword(bundleContext),
-                getServerCertKeyStore(context));//getCaKeyStore());
-        sslContextFactory
-                .setTrustManagerWrapper(x509TrustManagerWrapperService);
-		
-		
-		bundleContext.registerService(classOf[SSLContext].getName, 
-									  sslContextFactory.buildSSLContext("TLS"), new Properties()) 
-		println("Registered SSLContext+")
+	protected def activate(context: ComponentContext) = {
+    try{
+      val bundleContext = context.getBundleContext
+      //TODO set jvm default ca-store
+      val http = bundleContext.getProperty("org.osgi.service.http.secure.enabled")
+      if (http!=null && "true".equals(http)) {
+        val sslContextFactory = new X509SSLContextFactory(
+                    getServerCertKeyStore(context), getKeyStorePassword(bundleContext),
+                    getServerCertKeyStore(context));//getCaKeyStore());
+            sslContextFactory
+                    .setTrustManagerWrapper(x509TrustManagerWrapperService);
+  
+
+        bundleContext.registerService(classOf[SSLContext].getName,
+                        sslContextFactory.buildSSLContext("TLS"), new Properties())
+        println("Registered SSLContext+")
+      }
+    }
+    catch{
+      case e : Exception => println("unable to activate FOAF+SSL")
+    }
 	}
 	
 	
