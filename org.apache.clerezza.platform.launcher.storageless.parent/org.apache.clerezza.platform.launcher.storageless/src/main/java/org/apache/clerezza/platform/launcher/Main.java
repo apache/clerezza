@@ -273,7 +273,7 @@ public class Main implements BundleActivator {
 		{
 			
 			final String httpsPort = arguments.getSecurePort();
-			if (httpsPort != null) {
+			if (httpsPort != null && !"".equals(httpsPort)) {
 				configProps.put("org.osgi.service.http.port.secure", httpsPort);
 				httpsEnabled = true;
 			}
@@ -281,7 +281,7 @@ public class Main implements BundleActivator {
 		{
 			
 			final String keyStorePath = arguments.getKeyStorePath();
-			if (keyStorePath != null) {
+			if (keyStorePath != null && !"".equals(keyStorePath)) {
 				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.path", keyStorePath);
 				httpsEnabled = true;
 			}
@@ -289,7 +289,7 @@ public class Main implements BundleActivator {
 		{
 			
 			final String keyStorePassword = arguments.getKeyStorePassword();
-			if (keyStorePassword != null) {
+			if (keyStorePassword != null && !"".equals(keyStorePassword)) {
 				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.password", keyStorePassword);
 				httpsEnabled = true;
 			}
@@ -297,7 +297,7 @@ public class Main implements BundleActivator {
 		{
 			
 			final String keyStoreType = arguments.getKeyStoreType();
-			if (keyStoreType != null) {
+			if (keyStoreType != null && !"".equals(keyStoreType)) {
 				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.type", keyStoreType);
 				httpsEnabled = true;
 			}
@@ -306,7 +306,7 @@ public class Main implements BundleActivator {
 		{
 			
 			final String clientAuth = arguments.getClientAuth();
-			if (clientAuth != null) {
+			if (clientAuth != null && !"".equals(clientAuth)) {
 				configProps.put("org.wymiwyg.jetty.httpservice.clientauth", clientAuth);
 				httpsEnabled = true;
 			}
@@ -315,7 +315,6 @@ public class Main implements BundleActivator {
 		if (httpsEnabled) {
 			configProps.put("org.osgi.service.http.secure.enabled", "true");
 		}
-		
 		return configProps;
 
 	}
