@@ -48,11 +48,11 @@ public class QueryParameterInjector implements ParameterInjector<QueryParam> {
 		try {
 			final String query = request.getWrhapiRequest().getRequestURI()
 					.getQuery();
-			if (query == null) {
-				return null;
+			List<String> values = null;
+			if (query != null) {
+				values = QueryStringParser.getParameterValues(query,
+						!encodingDisabled, annotation.value());
 			}
-			List<String> values = QueryStringParser.getParameterValues(query,
-					!encodingDisabled, annotation.value());
 			if (values == null && defaultValue != null) {
 				values = Collections.singletonList(defaultValue);
 			}

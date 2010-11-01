@@ -57,7 +57,7 @@ import org.wymiwyg.wrhapi.util.MessageBody2Write;
  *
  * @author mir
  */
-public class TestAnnotationDefaultValue {
+public class DefaultValueAnnotationTest {
 
 	@Before
 	public void setUp() {
@@ -75,6 +75,7 @@ public class TestAnnotationDefaultValue {
 		static Cookie cookie;
 		static String date;
 		static String pathParam;
+		static String id;
 
 	   
 		@POST
@@ -93,6 +94,7 @@ public class TestAnnotationDefaultValue {
 			r.setContent(id);
 			return r;
 		}
+
 		@Path("addheader")
 		@GET
 		public void setHeader(@DefaultValue(value="1.1.1970") @HeaderParam("expires") String date) {
@@ -120,6 +122,12 @@ public class TestAnnotationDefaultValue {
 				@QueryParam(value = "test") String testValue) {
 			matrix = matrixParam;
 			queryParam = testValue;
+		}
+
+		@GET
+		@Path("getId")
+		public void setMatrix(@DefaultValue(value = "123") @QueryParam(value = "id") String idParam) {
+			id = idParam;
 		}
 		
 	}// $Log: $
@@ -177,7 +185,7 @@ public class TestAnnotationDefaultValue {
 		RequestImpl request = new RequestImpl();
 		RequestURIImpl uri = new RequestURIImpl();
 		uri.setPath("/test-resource/add");
-		uri.setQuery(";lat=50;long=20");
+		//uri.setQuery(";lat=50;long=20");
 		request.setRequestURI(uri);
 		request.setMethod(Method.POST);
 
@@ -190,7 +198,7 @@ public class TestAnnotationDefaultValue {
 
 	
 	@Test
-	public void testQueryParamInjectionIntoMethod() throws Exception {
+	public void testQueryParamInjectionIntoMethodPost() throws Exception {
 		JaxRsHandler handler = HandlerCreator.getHandler(TestResourceForDefaultValue.class);
 
 		RequestImpl request = new RequestImpl();
@@ -206,6 +214,23 @@ public class TestAnnotationDefaultValue {
 
 		assertNotNull(TestResourceForDefaultValue.queryParam);
 		assertEquals("defaultQP", TestResourceForDefaultValue.queryParam.toString());
+	}
+
+	@Test
+	public void testQueryParamInjectionIntoMethodGet() throws Exception {
+		JaxRsHandler handler = HandlerCreator.getHandler(TestResourceForDefaultValue.class);
+
+		RequestImpl request = new RequestImpl();
+		RequestURIImpl uri = new RequestURIImpl();
+		uri.setPath("/test-resource/getId");
+		request.setRequestURI(uri);
+		request.setMethod(Method.GET);
+
+		Response response = new ResponseImpl();
+		handler.handle(request, response);
+
+		assertNotNull(TestResourceForDefaultValue.id);
+		assertEquals("123", TestResourceForDefaultValue.id);
 	}
 
 	@Test

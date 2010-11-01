@@ -48,20 +48,17 @@ public class CookieParameterInjector implements ParameterInjector<CookieParam> {
 		List<String> cookieValues = request.getHeaders().get(
 				HeaderName.COOKIE.toString());
 		List<String> cookieValue = null;
-		for (String cookie : cookieValues){
-			if (cookie.substring(0, cookie.indexOf("=")).trim().equals(annotation.value())){
-				cookieValue = Collections.singletonList(cookie);
-				break;
+		if (cookieValues != null) {		
+			for (String cookie : cookieValues){
+				if (cookie.substring(0, cookie.indexOf("=")).trim().equals(annotation.value())){
+					cookieValue = Collections.singletonList(cookie);
+					break;
+				}
 			}
 		}
-
-		if (cookieValue == null && defaultValue == null){
-			return null;
-		}
-		if (cookieValue == null && defaultValue != null) {
+		if (cookieValue == null && defaultValue != null){
 			cookieValue = Collections.singletonList(defaultValue);
 		}
-
 		return (T) ConversionUtil.convert(cookieValue, parameterType,
 				new ConversionUtil.Convertor<Cookie>() {
 

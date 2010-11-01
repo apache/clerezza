@@ -44,16 +44,18 @@ public class MatrixParameterInjector implements ParameterInjector<MatrixParam> {
 			throws UnsupportedFieldType {
 		MultivaluedMap<String, String> matrix;		
 		try {
-			matrix =QueryStringParser.getMatrix(request.getWrhapiRequest().
+			matrix = QueryStringParser.getMatrix(request.getWrhapiRequest().
 					getRequestURI().getQuery(), encodingDisabled);
 		} catch (HandlerException ex) {
 			throw new RuntimeException(ex);
 		}
-		if (matrix == null) return null;
-		List<String> values = matrix.get(annotation.value());
+		List<String> values = null;
+		if (matrix != null) {
+			values = matrix.get(annotation.value());
+		} 
 		if (values == null && defaultValue != null) {
 			values = Collections.singletonList(defaultValue);
-		}
+		} 
 		return (T) ConversionUtil.convert(values, parameterType);
 	}
 }
