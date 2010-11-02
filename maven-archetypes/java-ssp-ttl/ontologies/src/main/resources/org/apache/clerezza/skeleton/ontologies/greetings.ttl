@@ -13,3 +13,7 @@
 :words a rdf:Property;
 	skos:definition "A sequence of word expressing the subject."@en;
 	rdfs:Domain :Greeting.
+
+:GreetingList a rdfs:Class;
+	skos:definition "A List of Greetings"@en;
+	rdfs:subClassOf rdf:List.
