@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
-import org.apache.clerezza.platform.Constants;
 import org.apache.clerezza.platform.config.PlatformConfig;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.felix.scr.annotations.Component;
@@ -106,7 +105,7 @@ public class LanguageService {
 	/**
 	 * Returns a <code>List</code> of <code>LanguageDescription</code>s which
 	 * describe the languages which are supported by the platform. The first
-	 * entry describes the default language af the platform.
+	 * entry describes the default language of the platform.
 	 * @return a list containing all language descriptions.
 	 */
 	public List<LanguageDescription> getLanguages() {
@@ -183,7 +182,7 @@ public class LanguageService {
 	 * platform. The languageUri has to be a <http://www.lingvoj.org/ontology#Lingvo>
 	 * according to the graph <http://www.lingvoj.org/lingvoj> included in this
 	 * bundle., e.g. "http://www.lingvoj.org/lang/de" adds German.
-	 * The uri is added to the system graph and its context to the conent graph.
+	 * The uri is added to the system graph and its context to the config graph.
 	 * The context added is the context provided by lingvoj.rdf.
 	 * @param languageUri The language uri which specifies the language to be
 	 *		added to the platform.
@@ -191,7 +190,7 @@ public class LanguageService {
 	public void addLanguage(UriRef languageUri) {
 		if (!languageListCache.contains(languageUri)) {
 			if(languageList.add(languageUri)) {
-				addToConfigGraph(languageUri);
+				addToLanguageConfigGraph(languageUri);
 			}
 			languageListCache.add(languageUri);
 		}
@@ -199,16 +198,21 @@ public class LanguageService {
 
 	private void synchronizeContentGraph() {
 		for (Resource resource : languageListCache) {
-			addToConfigGraph((UriRef)resource);
+			addToLanguageConfigGraph((UriRef)resource);
 		}
 	}
 	/**
-	 * Adds the langugae information for the specified language to the content
-	 * graph, if the content-graph contains no LINGVOJ.iso1 property for that suject.
+	 * Adds the language information of the language specified through
+	 * languageUri to the config graph. The languageUri has to be of type 
+	 * <http://www.lingvoj.org/ontology#Lingvo> according to the graph 
+	 * <http://www.lingvoj.org/lingvoj> included in this
+	 * bundle., e.g. "http://www.lingvoj.org/lang/de" adds German.
+	 * 
+	 * The added language will not be a platform language.
 	 *
 	 * @param languageUri
 	 */
-	private void addToConfigGraph(NonLiteral languageUri) {
+	public void addToLanguageConfigGraph(NonLiteral languageUri) {
 		LockableMGraph configGraph = getConfigGraph();
 		Lock writeLock = configGraph.getLock().writeLock();
 		writeLock.lock();
