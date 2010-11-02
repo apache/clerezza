@@ -41,17 +41,17 @@ public class Tria2JenaUtil {
 		this.tria2JenaBNodes = tria2JenaBNodes;
 	}
 
-	public Node convert2JenaNode(NonLiteral nonLiteral) {
+	public Node convert2JenaNode(NonLiteral nonLiteral, boolean createBlankNode) {
 		if (nonLiteral instanceof UriRef) {
 			return convert2JenaNode((UriRef)nonLiteral);
 		} else {
-			return convert2JenaNode((BNode)nonLiteral);
+			return convert2JenaNode((BNode)nonLiteral, createBlankNode);
 		}
 	}
 
 	public Node convert2JenaNode(Literal literal) {
 		if (literal == null) {
-			return null;
+			throw new IllegalArgumentException("null argument not allowed");
 		}
 		if (literal instanceof PlainLiteral) {
 			return convert2JenaNode((PlainLiteral)literal);
@@ -72,26 +72,34 @@ public class Tria2JenaUtil {
 	}
 
 	public Node convert2JenaNode(Resource resource) {
+		return convert2JenaNode(resource, false);
+	}
+
+	public Node convert2JenaNode(Resource resource, boolean createBlankNode) {
 		if (resource instanceof NonLiteral) {
-			return convert2JenaNode((NonLiteral)resource);
+			return convert2JenaNode((NonLiteral)resource, createBlankNode);
 		}
 		return convert2JenaNode((Literal)resource);
 	}
 
 	public Node convert2JenaNode(UriRef uriRef) {
 		if (uriRef == null) {
-			return null;
+			throw new IllegalArgumentException("null argument not allowed");
 		}
 		return com.hp.hpl.jena.graph.Node.createURI(
 						uriRef.getUnicodeString());
 	}
 
 	public Node convert2JenaNode(BNode bnode) {
+		return convert2JenaNode(bnode, false);
+	}
+	
+	public Node convert2JenaNode(BNode bnode, boolean createBlankNode) {
 		if (bnode == null) {
-			return null;
+			throw new IllegalArgumentException("null argument not allowed");
 		}
 		Node result = tria2JenaBNodes.get(bnode);
-		if (result == null) {
+		if (result == null && createBlankNode) {
 			result = com.hp.hpl.jena.graph.Node.createAnon();
 			tria2JenaBNodes.put(bnode, result);
 		}
@@ -99,9 +107,16 @@ public class Tria2JenaUtil {
 	}
 
 	public com.hp.hpl.jena.graph.Triple convertTriple(Triple triple) {
-		Node subject = convert2JenaNode(triple.getSubject());
+		return convertTriple(triple, false);
+	}
+
+	public com.hp.hpl.jena.graph.Triple convertTriple(Triple triple, boolean createBlankNodes) {
+		Node subject = convert2JenaNode(triple.getSubject(), createBlankNodes);
 		Node predicate = convert2JenaNode(triple.getPredicate());
-		Node object = convert2JenaNode(triple.getObject());
+		Node object = convert2JenaNode(triple.getObject(), createBlankNodes);
+		if (subject == null || object == null) {
+			return null;
+		}
 		return new com.hp.hpl.jena.graph.Triple(subject, predicate, object);
 	}
 }

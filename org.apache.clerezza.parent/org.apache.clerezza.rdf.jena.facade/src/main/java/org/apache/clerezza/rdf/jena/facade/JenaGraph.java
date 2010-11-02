@@ -25,6 +25,7 @@ import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -72,12 +73,15 @@ public class JenaGraph extends GraphBase implements Graph {
 
 	@Override
 	public void performAdd(com.hp.hpl.jena.graph.Triple triple) {
-		graph.add(jena2TriaUtil.convertTriple(triple));
+		graph.add(jena2TriaUtil.convertTriple(triple, true));
 	}
 
 	@Override
 	public void performDelete(com.hp.hpl.jena.graph.Triple triple) {
-		graph.remove(jena2TriaUtil.convertTriple(triple));
+		Triple clerezzaTriple = jena2TriaUtil.convertTriple(triple);
+		if (clerezzaTriple != null) {
+			graph.remove(clerezzaTriple);
+		}
 	}
 
 	private Iterator<com.hp.hpl.jena.graph.Triple> convert(
@@ -95,7 +99,7 @@ public class JenaGraph extends GraphBase implements Graph {
 			public com.hp.hpl.jena.graph.Triple next() {
 				Triple baseNext = base.next();
 				lastReturned = baseNext;
-				return (baseNext == null) ? null : tria2JenaUtil.convertTriple(baseNext);
+				return (baseNext == null) ? null : tria2JenaUtil.convertTriple(baseNext, true);
 			}
 
 			@Override
@@ -112,9 +116,25 @@ public class JenaGraph extends GraphBase implements Graph {
 	 * @return TripleCollection
 	 */
 	private Iterator<Triple> filter(TripleMatch m) {
-		NonLiteral subject = jena2TriaUtil.convertNonLiteral(m.getMatchSubject());
-		UriRef predicate = jena2TriaUtil.convertJenaUri2UriRef(m.getMatchPredicate());
-		Resource object = jena2TriaUtil.convertJenaNode2Resource(m.getMatchObject());
+		NonLiteral subject = null;
+		UriRef predicate = null;
+		Resource object = null;
+		if (m.getMatchSubject() != null) {
+			subject = jena2TriaUtil.convertNonLiteral(m.getMatchSubject());
+			if (subject == null) {
+				return Collections.EMPTY_SET.iterator();
+			}
+		}
+		if (m.getMatchObject() != null) {
+			object = jena2TriaUtil.convertJenaNode2Resource(m.getMatchObject());
+			if (object == null) {
+				return Collections.EMPTY_SET.iterator();
+			}
+		}		
+		if (m.getMatchPredicate() != null) {
+			predicate = jena2TriaUtil.convertJenaUri2UriRef(m.getMatchPredicate());
+		}
+
 		try {
 			return graph.filter(subject, predicate, object);
 		} catch (IllegalArgumentException e) {

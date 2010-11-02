@@ -22,6 +22,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.NonLiteral;
@@ -64,9 +65,27 @@ public class JenaGraphAdaptor extends AbstractMGraph {
 
 	@Override
 	public Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate, Resource object) {
-		final ExtendedIterator jenaIter = jenaGraph.find(tria2JenaUtil.convert2JenaNode(subject),
-				tria2JenaUtil.convert2JenaNode(predicate),
-				tria2JenaUtil.convert2JenaNode(object));
+		Node jenaSubject = null;
+		Node jenaPredicate = null;
+		Node jenaObject = null;
+		if (subject != null) {
+			jenaSubject = tria2JenaUtil.convert2JenaNode(subject);
+			if (jenaSubject == null) {
+				return Collections.EMPTY_SET.iterator();
+			}
+		}
+		if (object != null) {
+			jenaObject = tria2JenaUtil.convert2JenaNode(object);
+			if (jenaObject == null) {
+				return Collections.EMPTY_SET.iterator();
+			}
+		}
+		if (predicate != null) {
+			jenaPredicate = tria2JenaUtil.convert2JenaNode(predicate);
+		}
+		
+		final ExtendedIterator jenaIter = jenaGraph.find(jenaSubject, jenaPredicate,
+				jenaObject);
 		return new Iterator<Triple>() {
 
 			private Triple lastReturned = null;
@@ -87,7 +106,7 @@ public class JenaGraphAdaptor extends AbstractMGraph {
 					lastReturned =  precached.next();
 				} else {
 					lastReturned = jena2TriaUtil.convertTriple(
-							(com.hp.hpl.jena.graph.Triple)jenaIter.next());
+							(com.hp.hpl.jena.graph.Triple)jenaIter.next(), true);
 				}
 				return lastReturned;
 			}
@@ -115,7 +134,7 @@ public class JenaGraphAdaptor extends AbstractMGraph {
 		if (contains(triple)) {
 			return false;
 		}
-		jenaGraph.add(tria2JenaUtil.convertTriple(triple));
+		jenaGraph.add(tria2JenaUtil.convertTriple(triple, true));
 		return true;
 	}
 
