@@ -1,5 +1,15 @@
 def sma(s: Any) = new UriRef("http://clerezza.org/2009/07/scriptmanager#"+s)
 
+resultDocModifier.addStyleSheet("/yui/2/container/assets/container-core.css");
+
+resultDocModifier.addScriptReference("/yui/2/yahoo-dom-event/yahoo-dom-event.js");
+resultDocModifier.addScriptReference("/yui/2/animation/animation-min.js");
+resultDocModifier.addScriptReference("/yui/2/dragdrop/dragdrop-min.js");
+resultDocModifier.addScriptReference("/yui/2/logger/logger-min.js");
+resultDocModifier.addScriptReference("/yui/2/element/element-min.js");
+resultDocModifier.addScriptReference("/yui/2/container/container-min.js");
+resultDocModifier.addScriptReference("/yui/2/resize/resize-min.js")
+
 resultDocModifier.addScriptReference("/scripts/ajax-options.js");
 resultDocModifier.addScriptReference("/scripts/alert-message.js");
 resultDocModifier.addScriptReference("js/scriptmanager.js");
