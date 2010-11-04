@@ -18,10 +18,9 @@
  */
 package org.apache.clerezza.triaxrs.util;
 
+import org.apache.clerezza.triaxrs.util.uri.UriEncoder;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
-
-import org.apache.clerezza.triaxrs.util.uri.UriComponent;
 
 public final class PathSegmentImpl implements PathSegment {
 
@@ -62,7 +61,7 @@ public final class PathSegmentImpl implements PathSegment {
 		}
 
 		if (!disableDecoding) {
-			path = UriComponent.decode(path, UriComponent.Type.PATH_SEGMENT);
+			path = UriEncoder.decodeString(path);
 		}
 		return new PathSegmentImpl(path, matrixMap);
 

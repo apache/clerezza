@@ -56,7 +56,7 @@ public class TestQueryParserUtil {
         MultivaluedMap<String,String> matrix = QueryStringParser.getMatrix(query, encode);
         
         assertNotNull(matrix);
-        assertEquals("{scale=[32000], long=[20], lat=[50]}", matrix.toString());
+        assertEquals("[lat=50,long=20,scale=32000]", matrix.toString());
     }
     
     @Test

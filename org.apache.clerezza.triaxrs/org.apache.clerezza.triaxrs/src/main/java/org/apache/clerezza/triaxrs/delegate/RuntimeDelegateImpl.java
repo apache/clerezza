@@ -33,14 +33,13 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
 import javax.ws.rs.ext.RuntimeDelegate;
-
-import org.apache.clerezza.triaxrs.headerDelegate.CacheControlProvider;
-import org.apache.clerezza.triaxrs.headerDelegate.CookieProvider;
-import org.apache.clerezza.triaxrs.headerDelegate.DateProvider;
-import org.apache.clerezza.triaxrs.headerDelegate.EntityTagProvider;
+import org.apache.clerezza.triaxrs.headerDelegate.CacheControlHeaderDelegate;
+import org.apache.clerezza.triaxrs.headerDelegate.CookieHeaderDelegate;
+import org.apache.clerezza.triaxrs.headerDelegate.DateHeaderDelegate;
+import org.apache.clerezza.triaxrs.headerDelegate.EntityTagHeaderDelegate;
 import org.apache.clerezza.triaxrs.headerDelegate.LocaleProvider;
-import org.apache.clerezza.triaxrs.headerDelegate.MediaTypeProvider;
-import org.apache.clerezza.triaxrs.headerDelegate.NewCookieProvider;
+import org.apache.clerezza.triaxrs.headerDelegate.MediaTypeHeaderDelegate;
+import org.apache.clerezza.triaxrs.headerDelegate.NewCookieHeaderDelegate;
 import org.apache.clerezza.triaxrs.headerDelegate.StringProvider;
 import org.apache.clerezza.triaxrs.headerDelegate.URIProvider;
 
@@ -58,12 +57,12 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
 	{
 		// initiaze header delegates
 		this.headerDelegates
-				.put(CacheControl.class, new CacheControlProvider());
-		this.headerDelegates.put(Cookie.class, new CookieProvider());
-		this.headerDelegates.put(Date.class, new DateProvider());
-		this.headerDelegates.put(EntityTag.class, new EntityTagProvider());
-		this.headerDelegates.put(MediaType.class, new MediaTypeProvider());
-		this.headerDelegates.put(NewCookie.class, new NewCookieProvider());
+				.put(CacheControl.class, new CacheControlHeaderDelegate());
+		this.headerDelegates.put(Cookie.class, new CookieHeaderDelegate());
+		this.headerDelegates.put(Date.class, new DateHeaderDelegate());
+		this.headerDelegates.put(EntityTag.class, new EntityTagHeaderDelegate());
+		this.headerDelegates.put(MediaType.class, new MediaTypeHeaderDelegate());
+		this.headerDelegates.put(NewCookie.class, new NewCookieHeaderDelegate());
 		this.headerDelegates.put(String.class, new StringProvider());
 		this.headerDelegates.put(URI.class, new URIProvider());
 		this.headerDelegates.put(Locale.class, new LocaleProvider());

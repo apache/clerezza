@@ -30,7 +30,7 @@ import javax.ws.rs.ext.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.triaxrs.WebRequest;
-import org.apache.clerezza.triaxrs.headerDelegate.CookieProvider;
+import org.apache.clerezza.triaxrs.headerDelegate.CookieHeaderDelegate;
 import org.apache.clerezza.triaxrs.headerDelegate.LocaleProvider;
 
 /**
@@ -39,7 +39,7 @@ import org.apache.clerezza.triaxrs.headerDelegate.LocaleProvider;
  */
 public class HeaderParameterInjector implements ParameterInjector<HeaderParam> {
 
-	final static CookieProvider cookieProvider = new CookieProvider();
+	final static CookieHeaderDelegate cookieProvider = new CookieHeaderDelegate();
 	private Logger logger = LoggerFactory.getLogger(HeaderParameterInjector.class);
 
 	@Override

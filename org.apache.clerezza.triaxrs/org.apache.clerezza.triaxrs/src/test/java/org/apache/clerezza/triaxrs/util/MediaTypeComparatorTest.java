@@ -32,12 +32,11 @@ import javax.ws.rs.core.Variant.VariantListBuilder;
 import javax.ws.rs.ext.RuntimeDelegate;
 
 import junit.framework.Assert;
+import org.apache.clerezza.triaxrs.headerDelegate.MediaTypeHeaderDelegate;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.apache.clerezza.triaxrs.headerDelegate.MediaTypeProvider;
-import org.apache.clerezza.triaxrs.util.MediaTypeComparator;
 
 public class MediaTypeComparatorTest {
 	
@@ -105,7 +104,7 @@ public class MediaTypeComparatorTest {
 			if (!clazz.equals(MediaType.class)) {
 				throw new UnsupportedOperationException("not supported in test");
 			}
-			return (HeaderDelegate<T>) new MediaTypeProvider();
+			return (HeaderDelegate<T>) new MediaTypeHeaderDelegate();
 		}
 
 		@Override

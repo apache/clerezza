@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.triaxrs.util.uri;
+package org.apache.clerezza.triaxrs.util;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -30,7 +30,6 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.clerezza.triaxrs.WebRequest;
-import org.apache.clerezza.triaxrs.util.QueryStringParser;
 import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.util.EnhancedRequest;
 
@@ -133,8 +132,7 @@ public class UriInfoImpl implements UriInfo {
 	@Override
 	public URI getRequestUri() {
 		try {
-			return new URI(new EnhancedRequest(this.request.getWrhapiRequest()
-					).getFullRequestURL().toString());
+			return new URI(new EnhancedRequest(this.request.getWrhapiRequest()).getFullRequestURL().toString());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

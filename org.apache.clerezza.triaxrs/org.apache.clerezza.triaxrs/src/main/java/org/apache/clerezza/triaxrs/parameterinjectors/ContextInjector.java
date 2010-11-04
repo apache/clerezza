@@ -29,9 +29,9 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
 import org.apache.clerezza.triaxrs.WebRequest;
-import org.apache.clerezza.triaxrs.headerDelegate.CookieProvider;
+import org.apache.clerezza.triaxrs.headerDelegate.CookieHeaderDelegate;
 import org.apache.clerezza.triaxrs.util.HttpHeadersImpl;
-import org.apache.clerezza.triaxrs.util.uri.UriInfoImpl;
+import org.apache.clerezza.triaxrs.util.UriInfoImpl;
 
 /**
  *
@@ -39,7 +39,7 @@ import org.apache.clerezza.triaxrs.util.uri.UriInfoImpl;
  */
 public class ContextInjector implements ParameterInjector<Context> {
 
-	final static CookieProvider cookieProvider = new CookieProvider();
+	final static CookieHeaderDelegate cookieProvider = new CookieHeaderDelegate();
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -1,47 +1,24 @@
-/*
- *
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License. You can obtain
- * a copy of the License at https://jersey.dev.java.net/CDDL+GPL.html
- * or jersey/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- * 
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at jersey/legal/LICENSE.txt.
- * Sun designates this particular file as subject to the "Classpath" exception
- * as provided by Sun in the GPL Version 2 section of the License file that
- * accompanied this code.  If applicable, add the following below the License
- * Header, with the fields enclosed by brackets [] replaced by your own
- * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
- * 
- * Contributor(s):
- * 
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
- * 
- * trialox.org (trialox AG, Switzerland) elects to include this software in this
- * distribution under the CDDL license.
- */
-
+/*******************************************************************************
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *  
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ *  
+ *******************************************************************************/
 package org.apache.clerezza.triaxrs.providers.provided;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -51,74 +28,157 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.Provider;
+import org.apache.clerezza.triaxrs.util.Messages;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * modified by szalay
- *
- * @author Paul.Sandoz@Sun.Com
- */
-public final class FileProvider extends AbstractMessageReaderWriterProvider<File> {
+@Provider
+@Produces("*/*")
+@Consumes("*/*")
+public class FileProvider implements MessageBodyWriter<File>, MessageBodyReader<File> {
 
-    @Override
-    public int compareTo(Object o) {
+	private static final Logger logger = LoggerFactory.getLogger(FileProvider.class);
+	private String prefix = "FP_PRE";                                   //$NON-NLS-1$
+	private String uploadDir = null;
+	private String suffix = "FP_SUF";                                   //$NON-NLS-1$
 
-        if (o instanceof FileProvider) {
-            return 0;
-        }
-
-        return -1;
-    }
+	/********************** Writer **************************************/
+	@Override
+	public long getSize(File t,
+			Class<?> type,
+			Type genericType,
+			Annotation[] annotations,
+			MediaType mediaType) {
+		return t.length();
+	}
 
 	@Override
-    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return File.class == type;
-    }
-    
-	@Override
-    public File readFrom(
-            Class<File> type, 
-            Type genericType, 
-            Annotation annotations[],
-            MediaType mediaType, 
-            MultivaluedMap<String, String> httpHeaders, 
-            InputStream entityStream) throws IOException {
-        File f = File.createTempFile("rep","tmp");        
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
-        try {
-            writeTo(entityStream, out);
-        } finally {
-            out.close();
-        }
-        return f;
-    }
+	public boolean isWriteable(Class<?> type,
+			Type genericType,
+			Annotation[] annotations,
+			MediaType mediaType) {
+		return File.class.isAssignableFrom(type);
+	}
 
 	@Override
-    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return File.class.isAssignableFrom(type);
-    }
-    
-	@Override
-    public void writeTo(
-            File t,
-            Class<?> type, 
-            Type genericType, 
-            Annotation annotations[], 
-            MediaType mediaType, 
-            MultivaluedMap<String, Object> httpHeaders,
-            OutputStream entityStream) throws IOException {
-        InputStream in = new BufferedInputStream(new FileInputStream(t));
-        try {
-            writeTo(in, entityStream);
-        } finally {
-            in.close();
-        }
-    }
+	public void writeTo(File t,
+			Class<?> type,
+			Type genericType,
+			Annotation[] annotations,
+			MediaType mediaType,
+			MultivaluedMap<String, Object> httpHeaders,
+			OutputStream entityStream) throws IOException, WebApplicationException {
+		if (!t.canRead() || t.isDirectory()) {
+			if (logger.isWarnEnabled()) {
+				logger.warn(Messages.getMessage("cannotUseFileAsResponse", t.getAbsoluteFile()));
+			}
+			throw new WebApplicationException();
+		} else {
+			FileInputStream fis = new FileInputStream(t);
+			try {
+				pipe(fis, entityStream);
+			} finally {
+				fis.close();
+			}
+		}
 
-    @Override
-    public long getSize(File t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return t.length();
-    }
+	}
+
+	/********************** Reader **************************************/
+	@Override
+	public boolean isReadable(Class<?> type,
+			Type genericType,
+			Annotation[] annotations,
+			MediaType mediaType) {
+		return type.isAssignableFrom(File.class);
+	}
+
+	@Override
+	public File readFrom(Class<File> type,
+			Type genericType,
+			Annotation[] annotations,
+			MediaType mediaType,
+			MultivaluedMap<String, String> httpHeaders,
+			InputStream entityStream) throws IOException, WebApplicationException {
+		File dir = null;
+		if (uploadDir != null) {
+			dir = new File(uploadDir);
+			if (!dir.exists() || !dir.isDirectory()) {
+				dir = null;
+				if (logger.isWarnEnabled()) {
+					logger.warn(Messages.getMessage("uploadDirDoesNotExist", uploadDir)); //$NON-NLS-1$
+				}
+				throw new WebApplicationException();
+
+			}
+		}
+		File f = File.createTempFile(prefix, suffix, dir);
+
+		FileOutputStream fos = new FileOutputStream(f);
+		try {
+			pipe(entityStream, fos);
+		} finally {
+			fos.close();
+		}
+		return f;
+	}
+
+	/********************** Help methods ************************************/
+	private void pipe(InputStream is, OutputStream os) throws IOException {
+		byte[] ba = new byte[1024];
+		int i = is.read(ba);
+		while (i != -1) {
+			os.write(ba, 0, i);
+			i = is.read(ba);
+		}
+	}
+
+	/********************** getters & setters *********************************/
+	public String getPrefix() {
+		return prefix;
+	}
+
+	/**
+	 * set the prefix of the uploaded files
+	 *
+	 * @return
+	 */
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getUploadDir() {
+		return uploadDir;
+	}
+
+	/**
+	 * set the directory where this provider save the upload files
+	 *
+	 * @param uploadDir
+	 */
+	public void setUploadDir(String uploadDir) {
+		this.uploadDir = uploadDir;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	/**
+	 * set the suffix of the uploaded files
+	 *
+	 * @return
+	 */
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
 }

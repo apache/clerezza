@@ -28,7 +28,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.ext.Providers;
 
 import org.apache.clerezza.triaxrs.WebRequest;
-import org.apache.clerezza.triaxrs.headerDelegate.CookieProvider;
+import org.apache.clerezza.triaxrs.headerDelegate.CookieHeaderDelegate;
 import org.wymiwyg.wrhapi.HeaderName;
 
 /**
@@ -37,7 +37,7 @@ import org.wymiwyg.wrhapi.HeaderName;
  */
 public class CookieParameterInjector implements ParameterInjector<CookieParam> {
 
-	final static CookieProvider cookieProvider = new CookieProvider();
+	final static CookieHeaderDelegate cookieProvider = new CookieHeaderDelegate();
 
 	@Override
 	public <T> T getValue(WebRequest request, Map<String, String> pathParam,

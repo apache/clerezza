@@ -32,9 +32,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.triaxrs.WebRequest;
-import org.apache.clerezza.triaxrs.headerDelegate.CookieProvider;
+import org.apache.clerezza.triaxrs.headerDelegate.CookieHeaderDelegate;
 import org.apache.clerezza.triaxrs.headerDelegate.LocaleProvider;
-import org.apache.clerezza.triaxrs.headerDelegate.MediaTypeProvider;
+import org.apache.clerezza.triaxrs.headerDelegate.MediaTypeHeaderDelegate;
 
 /**
 *
@@ -80,7 +80,7 @@ public class HttpHeadersImpl implements HttpHeaders {
 	public Map<String, Cookie> getCookies() {
 		Map<String, Cookie> cookies = new LinkedHashMap<String, Cookie>();
 		List<String> cookieStrings = request.getHeaders().get(HttpHeaders.COOKIE);
-		CookieProvider cp = new CookieProvider();
+		CookieHeaderDelegate cp = new CookieHeaderDelegate();
 		
 		if(cookieStrings == null) {
 			return null;
@@ -119,7 +119,7 @@ public class HttpHeadersImpl implements HttpHeaders {
 			return null;
 		}
 		
-		return new MediaTypeProvider().fromString(mediatype.get(0));
+		return new MediaTypeHeaderDelegate().fromString(mediatype.get(0));
 	}
 
 	@Override

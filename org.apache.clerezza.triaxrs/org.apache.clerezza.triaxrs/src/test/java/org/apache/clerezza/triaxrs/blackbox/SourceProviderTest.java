@@ -46,6 +46,7 @@ import org.apache.clerezza.triaxrs.mock.RequestImpl;
 import org.apache.clerezza.triaxrs.mock.RequestURIImpl;
 import org.apache.clerezza.triaxrs.mock.ResponseImpl;
 import org.apache.clerezza.triaxrs.testutils.HandlerCreator;
+import org.junit.Ignore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.wymiwyg.wrhapi.HeaderName;
@@ -59,8 +60,7 @@ import org.wymiwyg.wrhapi.util.MessageBody2Read;
  * @author ali
  * 
  */
-
-public class TestSourceProvider {
+public class SourceProviderTest {
 	private JaxRsHandler handler = HandlerCreator.getHandler(MyResource.class);
 	private RequestURIImpl uri = new RequestURIImpl();
 	private TransformerFactory transformerFac = TransformerFactory.newInstance();

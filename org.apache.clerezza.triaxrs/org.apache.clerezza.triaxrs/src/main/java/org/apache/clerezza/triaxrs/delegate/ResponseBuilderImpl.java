@@ -37,7 +37,7 @@ import javax.ws.rs.core.Variant;
 
 import org.apache.clerezza.triaxrs.JaxRsHandler;
 import org.apache.clerezza.triaxrs.util.MultivaluedMapImpl;
-import org.apache.clerezza.triaxrs.util.uri.UriInfoImpl;
+import org.apache.clerezza.triaxrs.util.UriInfoImpl;
 
 /**
  *
