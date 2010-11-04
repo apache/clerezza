@@ -19,12 +19,15 @@
  *******************************************************************************/
 package org.apache.clerezza.triaxrs.providers.provided;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import javax.activation.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -33,40 +36,39 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import org.apache.clerezza.triaxrs.util.ProviderUtils;
 
 @Provider
-@Consumes
-@Produces
-public class ByteArrayProvider implements MessageBodyReader<byte[]>, MessageBodyWriter<byte[]> {
+@Produces("*/*")
+@Consumes("*/*")
+public class DataSourceProvider implements MessageBodyReader<DataSource>,
+		MessageBodyWriter<DataSource> {
 
-	/******************* Reader *******************************/
 	@Override
 	public boolean isReadable(Class<?> type,
 			Type genericType,
 			Annotation[] annotations,
 			MediaType mediaType) {
-		return type != null && type.equals(byte[].class);
+		return type.isAssignableFrom(DataSource.class);
 	}
 
 	@Override
-	public byte[] readFrom(Class<byte[]> type,
+	public DataSource readFrom(Class<DataSource> type,
 			Type genericType,
 			Annotation[] annotations,
 			MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders,
-			InputStream entityStream) throws IOException, WebApplicationException {
-		return ProviderUtils.readFromStreamAsBytes(entityStream);
+			InputStream entityStream) throws IOException,
+			WebApplicationException {
+		return new ByteArrayDataSource(entityStream, (mediaType == null) ? null : mediaType.toString());
 	}
 
-	/********************** Writer **************************************/
 	@Override
-	public long getSize(byte[] t,
+	public long getSize(DataSource t,
 			Class<?> type,
 			Type genericType,
 			Annotation[] annotations,
 			MediaType mediaType) {
-		return t.length;
+		return -1;
 	}
 
 	@Override
@@ -74,17 +76,74 @@ public class ByteArrayProvider implements MessageBodyReader<byte[]>, MessageBody
 			Type genericType,
 			Annotation[] annotations,
 			MediaType mediaType) {
-		return type != null && type.equals(byte[].class);
+		return DataSource.class.isAssignableFrom(type);
 	}
 
 	@Override
-	public void writeTo(byte[] t,
+	public void writeTo(DataSource t,
 			Class<?> type,
 			Type genericType,
 			Annotation[] annotations,
 			MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException {
-		entityStream.write(t);
+		InputStream inputStream = t.getInputStream();
+		final byte[] data = new byte[2048];
+		int read;
+		while ((read = inputStream.read(data)) != -1) {
+			entityStream.write(data, 0, read);
+		}
+		entityStream.flush();
+	}
+
+	public static class ByteArrayDataSource implements DataSource {
+
+		private final String contentType;
+		private final byte[] buffer;
+		private final int length;
+
+		public ByteArrayDataSource(InputStream is, String contentType) throws IOException {
+			DataStoreByteArrayOutputStream os = new DataStoreByteArrayOutputStream();
+			byte[] buf = new byte[8192];
+			int len;
+			while ((len = is.read(buf)) > 0) {
+				os.write(buf, 0, len);
+			}
+
+			this.buffer = os.getBuf();
+			this.length = os.getCount();
+			this.contentType = contentType;
+		}
+
+		@Override
+		public String getContentType() {
+			return contentType;
+		}
+
+		@Override
+		public InputStream getInputStream() {
+			return new ByteArrayInputStream(buffer, 0, length);
+		}
+
+		@Override
+		public String getName() {
+			return null;
+		}
+
+		@Override
+		public OutputStream getOutputStream() {
+			throw new UnsupportedOperationException();
+		}
+
+		static class DataStoreByteArrayOutputStream extends ByteArrayOutputStream {
+
+			public byte[] getBuf() {
+				return buf;
+			}
+
+			public int getCount() {
+				return count;
+			}
+		}
 	}
 }

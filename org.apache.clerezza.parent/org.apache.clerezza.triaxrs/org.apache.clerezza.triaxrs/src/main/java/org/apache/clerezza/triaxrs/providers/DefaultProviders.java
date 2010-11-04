@@ -36,10 +36,9 @@ public class DefaultProviders {
 				FileProvider.class, FormMultivaluedMapProvider.class,
 				InputStreamProvider.class, ReaderProvider.class,
 				StreamingOutputProvider.class,
-				SourceProvider.SAXSourceReader.class,
-				SourceProvider.StreamSourceReader.class,
-				SourceProvider.DOMSourceReader.class,
-				SourceProvider.SourceWriter.class };
+				SourceProvider.StreamSourceProvider.class,
+				SourceProvider.SAXSourceProvider.class,
+				SourceProvider.DOMSourceProvider.class};
 
 		// commented out because more dependencies needed:
 		// XMLJAXBElementProvider.class, XMLRootElementProvider.class };

@@ -102,6 +102,13 @@ public class JafMessageBodyWriter<T> implements MessageBodyWriter<T> {
 		}
 		DataHandler dataHandler = new DataHandler(t, mediaType.toString());
 		dataHandler.getInputStream();
-		AbstractMessageReaderWriterProvider.writeTo(dataHandler.getInputStream(), entityStream);
+		writeTo(dataHandler.getInputStream(), entityStream);
 	}
+
+	 private static final void writeTo(InputStream in, OutputStream out) throws IOException {
+        int read;
+        final byte[] data = new byte[2048];
+        while ((read = in.read(data)) != -1)
+            out.write(data, 0, read);
+    }
 }

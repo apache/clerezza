@@ -29,7 +29,7 @@ import javax.ws.rs.ext.Providers;
 
 import org.apache.clerezza.triaxrs.WebRequest;
 import org.apache.clerezza.triaxrs.util.PathSegmentImpl;
-import org.apache.clerezza.triaxrs.util.uri.UriComponent;
+import org.apache.clerezza.triaxrs.util.uri.UriEncoder;
 
 /**
  *
@@ -71,7 +71,7 @@ public class PathParameterInjector implements ParameterInjector<PathParam> {
 						if (encodingDisabled) {
 							return string;
 						} else {
-							return UriComponent.decode(string, UriComponent.Type.PATH_SEGMENT);
+							return UriEncoder.decodeString(string);
 						}
 					}
 				});
