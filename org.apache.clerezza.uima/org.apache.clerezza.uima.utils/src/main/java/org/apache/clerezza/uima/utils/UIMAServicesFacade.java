@@ -16,21 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.uima.utils.exception;
+package org.apache.clerezza.uima.utils;
+
+import org.apache.uima.UIMAException;
+import org.apache.uima.cas.FeatureStructure;
+
+import java.util.List;
 
 /**
- * Exception raised when there are multiple {@link FeatureStructure} objects of a same {@link Type}
- * in the {@link JCas} while there should be only one
+ * Interface for Apache UIMA services for enrichment
+ *
  */
-public class NotSingletonFeatureStructureException extends Exception {
+public interface UIMAServicesFacade {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = -5226914034672596670L;
+  public List<FeatureStructure> getTags(String document) throws UIMAException;
 
-  public NotSingletonFeatureStructureException() {
-    super();
-  }
+  public FeatureStructure getLanguage(String document) throws UIMAException;
 
+  public List<FeatureStructure> getNamedEntities(String document) throws UIMAException;
+
+  public FeatureStructure getCategory(String document) throws UIMAException;
+
+  public List<FeatureStructure> getConcepts(String document) throws UIMAException;
 }
