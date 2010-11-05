@@ -43,8 +43,7 @@
 				<configuration>
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Pacakge>org.apache.clerezza.scala.scripting</Export-Pacakge>
-						<Private-Package>org.apache.clerezza.scala.scripting</Private-Package>
+						<Export-Package>org.apache.clerezza.scala.scripting</Export-Package>
 						<DynamicImport-Package>*</DynamicImport-Package>
 						<Bundle-SymbolicName>org.apache.clerezza.scala.scripting</Bundle-SymbolicName>
 					</instructions>
