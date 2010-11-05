@@ -17,7 +17,7 @@
     <module>org.apache.clerezza.uima.ontologies</module>
     <module>org.apache.clerezza.uima.utils</module>
     <module>org.apache.clerezza.uima.metadata-generator</module>
-    <!--<module>org.apache.clerezza.uima.concept-tagging</module>-->
+    <module>org.apache.clerezza.uima.concept-tagging</module>
   </modules>
   <dependencies>
     <dependency>
