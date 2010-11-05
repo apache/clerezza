@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.clerezza.uima.utils;
 
 import org.apache.uima.cas.FeatureStructure;
@@ -29,7 +47,8 @@ public class ExternalServicesFacadeTest {
             Map<String, Object> parameterSettings = new HashMap<String, Object>();
             parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
             externalServicesFacade.setParameterSetting(parameterSettings);
-            String language = externalServicesFacade.getLanguage(AN_ENGLISH_TEXT);
+            FeatureStructure languageFS = externalServicesFacade.getLanguage(AN_ENGLISH_TEXT);
+            String language = languageFS.getStringValue(languageFS.getType().getFeatureByBaseName("language"));
             assertEquals(language, "english");
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,7 +65,7 @@ public class ExternalServicesFacadeTest {
             Map<String, Object> parameterSettings = new HashMap<String, Object>();
             parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
             externalServicesFacade.setParameterSetting(parameterSettings);
-            List<FeatureStructure> tags = externalServicesFacade.getAlchemyAPITags(AN_ENGLISH_TEXT);
+            List<FeatureStructure> tags = externalServicesFacade.getTags(AN_ENGLISH_TEXT);
             assertTrue(tags != null);
             assertTrue(!tags.isEmpty());
             assertTrue(tags.size() == 1);
@@ -62,17 +81,18 @@ public class ExternalServicesFacadeTest {
     }
 
     @Test
-    public void getCalaisAnnotationsTest() {
+    public void getNamedEntitiesTest() {
         try {
             ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
             String licenseId = "g6h9zamsdtwhb93nc247ecrs";
             Map<String, Object> parameterSettings = new HashMap<String, Object>();
             parameterSettings.put("licenseID", licenseId);
             externalServicesFacade.setParameterSetting(parameterSettings);
-            List<Annotation> calaisAnnotations = externalServicesFacade.getCalaisAnnotations(ANOTHER_ENGLISH_TEXT);
-            assertTrue(calaisAnnotations != null);
-            assertTrue(!calaisAnnotations.isEmpty());
-            for (Annotation annotation : calaisAnnotations) {
+            List<FeatureStructure> entities = externalServicesFacade.getNamedEntities(ANOTHER_ENGLISH_TEXT);
+            assertTrue(entities != null);
+            assertTrue(!entities.isEmpty());
+            for (FeatureStructure fs : entities) {
+              Annotation annotation = (Annotation) fs;
               assertTrue(annotation.getType()!=null && annotation.getType().getName()!=null);
               assertTrue(annotation.getBegin()>0);
               assertTrue(annotation.getEnd()>0);
@@ -92,12 +112,35 @@ public class ExternalServicesFacadeTest {
             Map<String, Object> parameterSettings = new HashMap<String, Object>();
             parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
             externalServicesFacade.setParameterSetting(parameterSettings);
-            String category = externalServicesFacade.getCategory(CLEREZZA_RELATED_TEXT);
+            FeatureStructure categoryFS = externalServicesFacade.getCategory(CLEREZZA_RELATED_TEXT);
+            String category = categoryFS.getStringValue(categoryFS.getType().getFeatureByBaseName("text"));
             assertEquals(category, "computer_internet");
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getLocalizedMessage());
         }
+    }
+
+    @Test
+    public void getConceptsTest() {
+        try {
+            ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
+            Map<String, Object> parameterSettings = new HashMap<String, Object>();
+            parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
+            externalServicesFacade.setParameterSetting(parameterSettings);
+            List<FeatureStructure> concepts = externalServicesFacade.getConcepts(ANOTHER_ENGLISH_TEXT);
+            assertTrue(concepts != null);
+            assertTrue("Concepts list is empty",!concepts.isEmpty());
+            assertTrue("Concepts list size is "+concepts.size(),concepts.size() == 8);
+            FeatureStructure concept = concepts.get(0);
+            Type type = concept.getType();
+            String conceptText = concept.getStringValue(type.getFeatureByBaseName("text"));
+            assertTrue("First concept was"+conceptText+" instead of Petroleum",conceptText!=null && conceptText.equals("Petroleum"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getLocalizedMessage());
+        }
+
     }
 
 }
