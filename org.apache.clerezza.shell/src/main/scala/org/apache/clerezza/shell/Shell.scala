@@ -58,18 +58,9 @@ import jline.{ ConsoleReader, ArgumentCompletor, History => JHistory }
 
 class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)  {
 
-	//var _interpreter : Interpreter = null;
+
 	private var bundleContext: BundleContext = null
-	/*def interpreter = {
-		if (_interpreter == null) {
-			this.synchronized {
-				if (_interpreter == null) {
-					_interpreter = factory.createInterpreter(new PrintWriter(System.out, true))
-				}
-			}
-		}
-		_interpreter
-	}*/
+
 
 
 	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(System.out, true)) {
