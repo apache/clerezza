@@ -61,6 +61,7 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 
 	private var bundleContext: BundleContext = null
 
+	private var bindings = Set[(String, String, Any)]()
 
 
 	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(System.out, true)) {
@@ -69,6 +70,9 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 			interpreter.interpret("import org.apache.clerezza._")
 			interpreter.interpret("val a = 33")
 			interpreter.interpret("println(\"enjoy!\")")
+			for (binding <- bindings) {
+				interpreter.bind(binding._1, binding._2, binding._3)
+			}
 		}
 
 		override val prompt = "zz>"
@@ -136,6 +140,10 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 	def stop() {
 		interpreterLoop.command(":q")
 		interpreterLoop.closeInterpreter()
+	}
+
+	def bind(name: String, boundType: String, value: Any) {
+		bindings += ((name, boundType, value))
 	}
 
 

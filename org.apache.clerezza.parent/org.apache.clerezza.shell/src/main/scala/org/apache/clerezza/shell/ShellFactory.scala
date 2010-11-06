@@ -25,24 +25,27 @@ import org.osgi.service.component.ComponentContext;
 
 import java.io.OutputStreamWriter
 import org.apache.clerezza.scala.scripting.InterpreterFactory
+import org.osgi.framework.BundleContext
 
 class ShellFactory()  {
 
 
 
 	var factory: InterpreterFactory = null
-	
+	var bundleContext: BundleContext = null
 	
 	def activate(componentContext: ComponentContext)= {
-		//bundleContext = componentContext.getBundleContext
+		bundleContext = componentContext.getBundleContext
 	}
 
 	def deactivate(componentContext: ComponentContext) = {
-		//bundleContext = componentContext.getBundleContext
+		bundleContext = componentContext.getBundleContext
 	}
 
 	def createShell() = {
-		new Shell(factory, System.in, new OutputStreamWriter(System.out))
+		val shell = new Shell(factory, System.in, new OutputStreamWriter(System.out))
+		shell.bind("bundleContext", classOf[BundleContext].getName, bundleContext)
+		shell
 	}
 
 	def bindInterpreterFactory(f: InterpreterFactory) = {
