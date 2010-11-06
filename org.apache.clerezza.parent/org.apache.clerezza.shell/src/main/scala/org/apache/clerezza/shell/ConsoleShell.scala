@@ -20,36 +20,13 @@ package org.apache.clerezza.shell;
 
 
 
-import org.apache.felix.scr.annotations.Component;
 import org.osgi.framework.BundleContext
-import org.osgi.framework.BundleEvent
-import org.osgi.framework.BundleListener
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.Bundle
-import java.io.{File, PrintWriter, Reader, StringWriter}
-import java.lang.reflect.InvocationTargetException
 import java.net._
-import java.security.PrivilegedActionException
-import java.security.AccessController
-import java.security.PrivilegedAction
-import java.util.{ArrayList, Arrays};
-import javax.script.ScriptContext
-import javax.script.{ScriptEngineFactory => JavaxEngineFactory, Compilable, 
-					 CompiledScript, ScriptEngine, AbstractScriptEngine, Bindings,
-					 SimpleBindings, ScriptException}
-//import scala.collection.immutable.Map
-import scala.actors.DaemonActor
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
-import scala.tools.nsc.io.{AbstractFile, PlainFile, VirtualDirectory}
 import scala.tools.nsc.util._
-import scala.tools.nsc.symtab.SymbolLoaders
-import scala.tools.nsc.reporters.ConsoleReporter
-import scala.tools.nsc.reporters.ConsoleReporter
-import scala.tools.nsc.reporters.ConsoleReporter
-import scala.tools.nsc.reporters.Reporter
-import scala.tools.util.PathResolver
-import scala.tools.nsc.util.{ClassPath, JavaClassPath}
 import scala.actors.Actor
 import scala.actors.Actor._
 
