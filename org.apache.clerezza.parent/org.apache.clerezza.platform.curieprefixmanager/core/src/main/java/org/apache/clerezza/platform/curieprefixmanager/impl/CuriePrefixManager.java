@@ -57,6 +57,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Services;
 import org.osgi.service.component.ComponentContext;
 
 
@@ -67,7 +68,10 @@ import org.osgi.service.component.ComponentContext;
  * @author reto
  */
 @Component
-@Service(value=Object.class)
+@Services({
+	@Service(Object.class), 
+	@Service(CuriePrefixRecommender.class)
+})
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/curie-prefix/manager")
 public class CuriePrefixManager implements CuriePrefixRecommender {
