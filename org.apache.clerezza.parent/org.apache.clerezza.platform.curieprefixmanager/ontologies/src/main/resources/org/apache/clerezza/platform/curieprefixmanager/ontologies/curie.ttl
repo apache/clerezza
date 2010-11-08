@@ -1,0 +1,23 @@
+@prefix : <http://clerezza.apache.org/platform/curieprefix#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix skos: <http://www.w3.org/2008/05/skos#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+
+: a owl:Ontology.
+
+:CuriePrefixBinding a rdfs:Class;
+	skos:definition "A binding of a CURIE prefix to the string which has to be prepended to reference part of the CURIE to produce a IRI."@en.
+
+:prefix a rdf:Property;
+	skos:definition "The CURIE pefix, i.e. a NCName according to http://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName."@en;
+	rdfs:Domain :CuriePrefixBinding.
+
+:binding a rdf:Property;
+	skos:definition "The value to which the pefix associated with the subject is bound to."@en;
+	rdfs:Domain :CuriePrefixBinding.
+
+:CuriePrefixBindingList a rdfs:Class;
+	skos:definition "A List of CURIE prefix bindings"@en;
+	rdfs:subClassOf rdf:List.

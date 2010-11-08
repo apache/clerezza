@@ -1,0 +1,25 @@
+def curie(s: Any) = new UriRef("http://clerezza.apache.org/platform/curieprefix#" + s)
+
+<div id="tx-content">
+	<h3>The following IRI bases are bound to a CURIE Prefix:</h3>
+	<table>
+
+		<tr><th>IRI prefix</th>
+		<th>CURIE Prefix</th>
+		<th></th></tr>
+	{for (binding <- res!!) yield <tr>
+	<td><a href={"get?binding="+(binding/curie("binding")*)}>{binding/curie("binding")*}</a></td>
+	<td>{binding/curie("prefix")*}</td>
+	<td><form action="delete" method="post">
+		<input name="binding" type="hidden" value={binding/curie("binding")*}/>
+		<a class="tx-icon tx-icon-delete" href="#" onclick="this.parentNode.submit(); return false">Delete</a></form></td>
+	</tr>}
+	</table>
+	<h3>Add new Prefix Binding:</h3>
+	<form action="save" method="post">
+		<label for="prefix">Prefix:</label><input name="prefix" type="text" value=""/><br/>
+		<label for="binding">Expanded form:</label><input name="binding" type="text" size="80" value=""/><br/>
+		<input type="submit" name="add"/>
+	</form>
+
+</div>

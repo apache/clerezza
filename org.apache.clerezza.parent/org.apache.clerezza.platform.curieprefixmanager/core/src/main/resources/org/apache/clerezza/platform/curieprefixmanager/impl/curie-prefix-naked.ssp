@@ -1,0 +1,10 @@
+def curie(s: Any) = new UriRef("http://clerezza.apache.org/platform/curieprefix#" + s)
+
+<div id="tx-content">
+	<h3>A CURIE Prefix Binding:</h3>
+	<form method="post" action="save">
+		<input type="text" name="prefix" value={res/curie("prefix")*}/><br/>
+		<input type="text" name="binding" value={res/curie("binding")*}/><br/>
+		<input type="submit" name="Save"/>
+	</form>
+</div>
