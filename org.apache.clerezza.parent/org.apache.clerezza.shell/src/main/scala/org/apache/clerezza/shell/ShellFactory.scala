@@ -32,19 +32,23 @@ class ShellFactory()  {
 
 
 	var factory: InterpreterFactory = null
-	var bundleContext: BundleContext = null
+	var componentContext: ComponentContext = null
 	
 	def activate(componentContext: ComponentContext)= {
-		bundleContext = componentContext.getBundleContext
+		this.componentContext = componentContext
 	}
 
 	def deactivate(componentContext: ComponentContext) = {
-		bundleContext = componentContext.getBundleContext
+		this.componentContext = componentContext
 	}
 
 	def createShell() = {
 		val shell = new Shell(factory, System.in, new OutputStreamWriter(System.out))
-		shell.bind("bundleContext", classOf[BundleContext].getName, bundleContext)
+		//shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
+		//shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
+		shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext))
+		shell.addImport("org.apache.clerezza._")
+		shell.addImport("osgiDsl._")
 		shell
 	}
 

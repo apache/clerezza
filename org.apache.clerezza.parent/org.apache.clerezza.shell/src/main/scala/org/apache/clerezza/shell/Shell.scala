@@ -62,20 +62,40 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 	private var bundleContext: BundleContext = null
 
 	private var bindings = Set[(String, String, Any)]()
+	private var imports = Set[String]()
 
 
 	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(System.out, true)) {
 		override def createInterpreter() {
+			println("creating interpreter")
 			interpreter = factory.createInterpreter(out)
-			interpreter.interpret("import org.apache.clerezza._")
-			interpreter.interpret("val a = 33")
-			interpreter.interpret("println(\"enjoy!\")")
+			println("binding bindings")
 			for (binding <- bindings) {
 				interpreter.bind(binding._1, binding._2, binding._3)
+			}
+			println("adding imports")
+			for (v <- imports) {
+				interpreter.interpret("import "+v)
 			}
 		}
 
 		override val prompt = "zz>"
+
+		override val standardCommands: List[Command] = {
+			import CommandImplicits._
+			List(
+			   NoArgs("help", "print this help message", printHelp),
+			   VarArgs("history", "show the history (optional arg: lines to show)", printHistory),
+			   LineArg("h?", "search the history", searchHistory),
+			   OneArg("load", "load and interpret a Scala file", load),
+			   NoArgs("power", "enable power user mode", power),
+			   NoArgs("quit", "exit the interpreter", () => Result(false, None)),
+			   NoArgs("replay", "reset execution and replay all previous commands", replay),
+			   LineArg("sh", "fork a shell and run a command", runShellCmd),
+			   LineArg("felix", "execute a felix shell command", runShellCmd),
+			   NoArgs("silent", "disable/enable automatic printing of results", verbosity)
+			)
+		  }
 
 		override def main(settings: Settings) {
 			this.settings = settings
@@ -144,6 +164,10 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 
 	def bind(name: String, boundType: String, value: Any) {
 		bindings += ((name, boundType, value))
+	}
+
+	def addImport(importValue: String) {
+		imports += importValue
 	}
 
 
