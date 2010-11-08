@@ -61,7 +61,7 @@ public class MediaTypeHeaderDelegate implements HeaderDelegate<MediaType> {
 			// type and subType
 			String main = all[0];
 			String[] mainArray = SLASH.split(main);
-			type = mainArray[0];
+			type = mainArray[0].trim();
 			if ("".equals(type)) {
 				String errMsg = Messages.getMessage("mediaTypeWrongFormat", value);
 				logger.error(errMsg);
@@ -70,7 +70,7 @@ public class MediaTypeHeaderDelegate implements HeaderDelegate<MediaType> {
 			if (mainArray.length == 1 && MediaType.MEDIA_TYPE_WILDCARD.equals(type)) {
 				subType = MediaType.MEDIA_TYPE_WILDCARD;
 			} else {
-				subType = mainArray[1];
+				subType = mainArray[1].trim();
 			}
 
 			// parameters
