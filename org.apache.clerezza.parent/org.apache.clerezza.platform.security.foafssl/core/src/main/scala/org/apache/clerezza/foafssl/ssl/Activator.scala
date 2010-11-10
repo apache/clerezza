@@ -90,6 +90,7 @@ class Activator() {
 			new File(new File(System.getProperty("user.home")), ".keystore").getAbsolutePath
 		}
 	}
+
 	protected def getKeyStorePassword(context: BundleContext) = {
 		val property = context.getProperty(ServiceActivator.CONTEXT_PROPERTY_KEYSTORE_PASSWORD);
 		if (property != null) {
