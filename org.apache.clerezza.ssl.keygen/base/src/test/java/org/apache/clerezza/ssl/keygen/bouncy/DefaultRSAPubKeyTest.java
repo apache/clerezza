@@ -32,7 +32,6 @@
 
 package org.apache.clerezza.ssl.keygen.bouncy;
 
-import org.apache.clerezza.ssl.keygen.bouncy.DefaultRSAPubKey;
 import junit.framework.TestCase;
 
 import java.io.BufferedReader;

@@ -32,7 +32,6 @@
 
 package org.apache.clerezza.ssl.keygen.bouncy;
 
-import org.apache.clerezza.ssl.keygen.bouncy.BouncyKeygenService;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.security.cert.CertificateFactory;
