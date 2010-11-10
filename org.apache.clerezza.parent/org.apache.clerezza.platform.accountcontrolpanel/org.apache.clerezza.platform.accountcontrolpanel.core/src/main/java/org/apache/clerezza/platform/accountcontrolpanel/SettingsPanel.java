@@ -170,6 +170,7 @@ public class SettingsPanel {
 		return graphNode;
 	}
 
+
 	private void addBundleDescriptionToGraph(MGraph responseGraph, Bundle bundle) {
 		TypedLiteral status = LiteralFactory.getInstance().
 				createTypedLiteral(bundle.getState());

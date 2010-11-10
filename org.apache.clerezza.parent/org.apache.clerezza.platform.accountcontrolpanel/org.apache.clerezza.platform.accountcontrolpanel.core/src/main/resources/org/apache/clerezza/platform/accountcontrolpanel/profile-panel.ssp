@@ -1,88 +1,182 @@
-import scala.xml.NodeBuffer
-import scala.collection.mutable.ListBuffer
-def cp(s: Any) = new UriRef("http://clerezza.org/2009/03/controlpanel#"+s)
+import org.apache.clerezza.rdf.core.{BNode, UriRef}
+import org.apache.clerezza.rdf.ontologies.{DC, FOAF}
+import org.apache.clerezza.rdf.scala.utils.RichGraphNode
+import scala.xml.Null
+import xml.{Text, Attribute}
+
+
+def cp(s: Any) = new UriRef("http://clerezza.org/2009/03/controlpanel#" + s)
 def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#" + s)
 resultDocModifier.addStyleSheet("profile/style/profile.css");
 resultDocModifier.addScriptReference("profile/scripts/profile.js");
 resultDocModifier.setTitle("Account Control Panel");
 resultDocModifier.addNodes2Elem("tx-module", <h1>Account Control Panel</h1>);
-resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Profile</a></li>);
-resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="control-panel">Settings</a></li>);
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active">
+  <a href="#">Profile</a>
+</li>);
+resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li>
+  <a href="control-panel">Settings</a>
+</li>);
 
-val agent = res/FOAF.primaryTopic
+val agent: RichGraphNode = res / FOAF.primaryTopic
+var webId =""
 
 def createWebId() = {
-	<h3>Associate Profile to Web-id</h3>
-	<div id="newOrExistingSelection">
-		<p>Your profile is not currently associated to a Web-ID. A Web-ID allows you 
-		to link your friends as well as to log-in to many sites (supporting foaf+ssl
-		or open-id).</p>
-		<p>You may either create a new Web-Id or associate your account to an 
-		existing Web-Id. Only creating a Web-Id here will allow you to manage your
-		profile here.</p>
-		<form action="#" id="associateSelection">
-			<button id="newWebIdButton">Create a new Web-Id</button>
-			<button id="existingWebIdButton">I already have a Web-ID and want to use it</button>
-		</form>
-	</div>
-	<div id="createNewWebId">
-		<p>You have chosen to create a new Web-Id.</p>
-		<p>The Web-ID will be created as follows:<br/>
-			<ol>
-				<li>Web-Id: {res/cp("suggestedPPDUri")*}#me</li>
-				<li>Perfonal-Profile Document: http://localhost/user/admin/profile</li>
-			</ol>
-		</p>
-		<form method="post" action="profile/create-new-web-id">
-			<input value="Create it!" type="submit"/>
-		</form>
-	</div>
-	<div id="setExistingWebId">
-		<p>Please enter your Web-Id, if your Web-Id supports Foaf+SSL you will 
-		be able to use it to log in to this site.</p>
-		<form method="post" action="profile/set-existing-webid">
-			<label for="webid">Web-Id</label> <input type="text" name="webid" size="80" title="Web-ID"/><br/>
-			<input value="Associate Profile to Web-Id" type="submit"/><p />
-		</form>
-	</div>
-	
+  <h3>Associate Profile to Web-id</h3>
+  <div id="newOrExistingSelection">
+    <p>Your profile is not currently associated to a Web-ID.A Web-ID allows you
+        to link your friends as well as to log-in to many sites (supporting foaf+ssl
+        or open-id).
+    </p>
+    <p>You may either create a new Web-Id or associate your account to an
+        existing Web-Id.Only creating a Web-Id here will allow you to manage your
+        profile here.
+    </p>
+    <form action="#" id="associateSelection">
+      <input type="radio" id="newWebIdButton">Create a new Web-Id</input>
+      <br/>
+      <input type="radio" id="existingWebIdButton">I already have a Web-ID and want to use it</input>
+    </form>
+  </div>
+  <div id="createNewWebId">
+    <p>You have chosen to create a new Web-Id.</p>
+    <p>The Web-ID will be created as follows:
+        <br/>
+      <ol>
+        <li>Web-Id:
+          {webId = res / cp("suggestedPPDUri") *;
+           webId += "#me";
+           webId}
+        </li>
+        <li>Personal-Profile Document: http://localhost/user/admin/profile</li>
+      </ol>
+    </p>
+    <form id="keygenform" method="post" action="profile/keygen">
+      <table width="95%">
+        <tr>
+          <td>Common Name:</td>
+          <td>
+              <input name="cn" size="30" id="cn" type="text" value="me@clerezza"/> <!-- find some way perhaps to get hostname-->
+          </td>
+        </tr>
+        <tr>
+          <td>WebID:</td>
+          <td>
+            {<input name="webId" size="60" id="webId" type="text"/>%Attribute(None,"value",Text(webId),Null)}
+          </td>
+        </tr>
+        <tr>
+          <td>Key strength:</td>
+          <td id="keystrenghtd">
+              <keygen id="spkac" name="spkac" challenge="TheChallenge1"/>
+          </td>
+        </tr>
+        <tr>
+          <td>Valid for:
+              <br/>
+            (defaults to 1 year)</td>
+          <td>
+              <input type="text" name="hours" value="0.0" size="4"/>
+            hours
+              <br/>
+              <input type="text" name="days" value="356" size="4"/>
+            days</td>
+        </tr>
+        <!--#if (!$nodebug)
+        <tr>
+          <td>Debug:</td>
+          <td>
+              <input type="checkbox" name="viewParams" value="yes"/>
+            view parameters
+              <br/>
+              <input type="checkbox" name="showCert" value="yes"/>
+            show certificate
+              <br/>
+              <input type="checkbox" name="makeKeyObj" value="yes"/>
+            create local objects
+              <br/>
+              <input type="checkbox" name="nodebug" value="yes"/>
+            simulate input from a personal profile document
+              <br/>
+          </td>
+        </tr>
+        #end -->
+        <tr>
+          <td colspan="2">
+            #if ($nodebug)
+            Clicking the submit button will start the following sequence of events:
+            #else
+            If none of the above debug options are checked then the following will happen on clicking submit:
+            #end
+            <ol>
+              <li>your browser will create a public/private key pair</li>
+              <li>send us your public key, in what is known as a
+                <a href="http://en.wikipedia.org/wiki/Certification_request">certification request</a>
+                along with information from the form above</li>
+              <li>we will create a certificate with the parameters specified</li>
+              <li>it will be returned to you and your browser will match it with your private key and add the pair to your keychain</li>
+              <li>a
+                <a href="$xwiki.getDocument('WebId.RSAPubKeyClass').getURL('edit','editor=class')">WebId.RSAPubKeyClass</a>
+                object will be created in
+                <a href="$homepage.getURL()">your public profile</a>, which you will then see clearly in
+                <a target="_blank" href="${homepage.getURL('edit','editor=object')}">its object view</a>.Your profile should also have an RDF view of the key.</li>
+            </ol>
+          </td>
+        </tr>
+      </table>
+      <input id="keygensubmit" type="submit" value="submit certificate request" />
+    </form>
+  </div>
+  <div id="setExistingWebId">
+    <p>Please enter your Web-Id, if your Web-Id supports Foaf+SSL you will
+      be able to use it to log in to this site.</p>
+    <form method="post" action="profile/set-existing-webid">
+      <label for="webid">Web-Id</label> <input type="text" name="webid" size="80" title="Web-ID"/>
+        <br/>
+        <input value="Associate Profile to Web-Id" type="submit"/>
+        <p/>
+    </form>
+  </div>
+
 }
 
 def existingWebId() = {
-	if ((res/cp("isLocalProfile")).as[Boolean]) {
-		existingLocalWebId()
-	} else {
-		roamingUser()
-	}
+  if ((res / cp("isLocalProfile")).as[Boolean]) {
+    existingLocalWebId()
+  } else {
+    roamingUser()
+  }
 }
 
 
 def existingLocalWebId() = {
-	<h3>Manage your profile</h3>
-	<p>Here you can change your public profile.</p>
-	<form method="post" action="profile/modify">
-		<input type="hidden" name="webId" value={agent*}/>
-		<label for="name">name</label><input type="text" name="name" value={agent/FOAF.name*}/><br/>
-		<label for="description">description</label><textarea name="description"
-		>{agent/DC.description*}</textarea><br/>
-		<input value="Modify" type="submit"/><p />
-	</form>
+  <h3>Manage your profile</h3>
+          <p>Here you can change your public profile.</p>
+          <form method="post" action="profile/modify">
+              <input type="hidden" name="webId" value={agent *}/>
+            <label for="name">name</label> <input type="text" name="name" value={agent / FOAF.name *}/>
+              <br/>
+            <label for="description">description</label> <textarea name="description">
+            {agent / DC.description *}
+          </textarea> <br/>
+              <input value="Modify" type="submit"/>
+              <p/>
+          </form>
 }
 
 def roamingUser() = {
-	<h3>Using remote profile</h3>
-	<p>{agent/FOAF.nick*}, you have accessed this site using you Web-Id {"<"+(agent*)+">"} which has not been 
-	created on this site. To edit your profile you should visit the site issuing the
-	profile.</p>
+  <h3>Using remote profile</h3>
+          <p>
+            {agent / FOAF.nick *}, you have accessed this site using you Web-Id
+            {"<" + (agent *) + ">"}
+            which has not been
+            created on this site.To edit your profile you should visit the site issuing the
+            profile.</p>
 }
 
 <div id="tx-content">
-	<h2>Personal Profile</h2>
-	
-	{
-		agent! match {
-			case _: BNode => createWebId()
-			case _: UriRef => existingWebId()
-		}
-	}
+  <h2>Personal Profile</h2>{agent ! match {
+  case _: BNode => createWebId()
+  case _: UriRef => existingWebId()
+}}
 </div>
