@@ -50,10 +50,10 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.core</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
@@ -106,10 +106,10 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
 		</dependency>
-                <dependency>
+		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
 			<version>0.5</version>
-                </dependency>
+		</dependency>
 	</dependencies>
 </project>
