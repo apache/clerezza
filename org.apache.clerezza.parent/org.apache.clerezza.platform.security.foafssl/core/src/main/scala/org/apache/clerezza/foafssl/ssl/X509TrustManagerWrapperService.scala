@@ -85,22 +85,31 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 		new TrustAllClientsWrappingTrustManager(
 			trustManager) {
 			override def checkClientTrusted(chain: Array[X509Certificate], authType: String): Unit = {
-				val webIdUriRefs = Utilities.getClaimedWebIds(chain)
-				if (webIdUriRefs.length == 0) {
-					trustManager.checkClientTrusted(chain, authType)
-				} else {
-					val cert0 = chain(0)
-					val now = new Date();
-					if (now.after(cert0.getNotAfter()))
-						throw new CertificateExpiredException(String.format("The certificate expires after %c . It is now %c . ", now, cert0.getNotAfter));
-					if (now.before(cert0.getNotBefore()))
-						throw new CertificateNotYetValidException(String.format("The certificate is not valid before %c. It is now %c .", now, cert0.getNotBefore));
-					val publicKey = cert0.getPublicKey
-					for (uriRef <- webIdUriRefs) {
-						verify(uriRef, publicKey)
+				try {
+					val webIdUriRefs = Utilities.getClaimedWebIds(chain)
+					if (webIdUriRefs.length == 0) {
+						trustManager.checkClientTrusted(chain, authType)
+					} else {
+						val cert0 = chain(0)
+						val now = new Date();
+						if (now.after(cert0.getNotAfter()))
+							throw new CertificateExpiredException(String.format("The certificate expires after %c . It is now %c . ", now, cert0.getNotAfter));
+						if (now.before(cert0.getNotBefore()))
+							throw new CertificateNotYetValidException(String.format("The certificate is not valid before %c. It is now %c .", now, cert0.getNotBefore));
+						val publicKey = cert0.getPublicKey
+						for (uriRef <- webIdUriRefs) {
+							verify(uriRef, publicKey)
+						}
 					}
+					return
+				} catch {
+					//todo: this should be more clever, only displaying full stack trace if requested
+					//todo: currently could be a denial of service attack - by filling up your hard drive
+					case ex: Throwable  => { 
+							logger.info("can't check client",ex) 
+							throw new CertificateException("cannot check client"+ex.getMessage);
+						}
 				}
-				return
 			}
 		}
 	}
@@ -171,6 +180,7 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 	
 	
 	/**
+	 * todo: question should this perhaps be a 2 position method (pubkey, graphnode) ?
 	 * @return true if the key could be verified
 	 */
 	private def verify(webId: UriRef, publicKey: PublicKey, tc: TripleCollection): Boolean = {
@@ -254,22 +264,22 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 
 
 
-    /**
-     * This takes any string and returns in order only those characters that are
-     * part of a hex string
-     * 
-     * @param strval
-     *            any string
-     * @return a pure hex string
-     */
+	/**
+	 * This takes any string and returns in order only those characters that are
+	 * part of a hex string
+	 * 
+	 * @param strval
+	 *            any string
+	 * @return a pure hex string
+	 */
 
-    private def cleanHex( strval: String)  = {
+	private def cleanHex( strval: String)  = {
 		def legal(c: Char) = { //in order of likelyhood of appearance
 			((c >= '0') && (c <= '9')) ||
 			((c >= 'A') && (c <= 'F')) ||
 			((c >= 'a') && (c <= 'f'))
 		}
-        (for (c <- strval; if legal(c)) yield c)
-    }
+		(for (c <- strval; if legal(c)) yield c)
+	}
 }
 	 
