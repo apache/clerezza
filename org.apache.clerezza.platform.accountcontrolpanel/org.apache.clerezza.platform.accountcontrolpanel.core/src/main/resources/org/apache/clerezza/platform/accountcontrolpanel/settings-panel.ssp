@@ -1,3 +1,4 @@
+import org.apache.clerezza.rdf.core.UriRef
 import scala.xml.NodeBuffer
 import scala.collection.mutable.ListBuffer
 def cp(s: Any) = new UriRef("http://clerezza.org/2009/03/controlpanel#"+s)

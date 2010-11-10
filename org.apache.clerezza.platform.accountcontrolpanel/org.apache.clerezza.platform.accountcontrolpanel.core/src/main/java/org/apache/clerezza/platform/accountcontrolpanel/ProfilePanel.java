@@ -19,39 +19,19 @@
 package org.apache.clerezza.platform.accountcontrolpanel;
 
 
-import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import javax.ws.rs.core.UriInfo;
+import net.bblfish.dev.foafssl.keygen.CertSerialisation;
+import net.bblfish.dev.foafssl.keygen.Certificate;
+import net.bblfish.dev.foafssl.keygen.KeygenService;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-
-
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL;
 import org.apache.clerezza.platform.config.PlatformConfig;
-import org.apache.clerezza.platform.security.UserUtil;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.platform.users.WebIdGraphsService;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.*;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -59,13 +39,25 @@ import org.apache.clerezza.rdf.ontologies.DC;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
-import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.UnionMGraph;
 import org.apache.clerezza.web.fileserver.FileServer;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  *
@@ -83,6 +75,9 @@ public class ProfilePanel extends FileServer {
 	
 	@Reference
 	private UserManager userManager;
+
+    @Reference
+    private KeygenService keygenSrvc;
 	
 	@Reference
 	private TcManager tcManager;
@@ -193,6 +188,42 @@ public class ProfilePanel extends FileServer {
 			}
 		});
 	}
+
+    @POST
+    @Path("keygen")
+    public Response createCert(@FormParam("webId") String webId,
+                          @FormParam("cn") String commonName,
+                          @FormParam("spkac") String spkac,
+                          @FormParam("hours") String hours,
+                          @FormParam("days") String days) {
+        logger.info("in keygen code. webId="+webId);
+        logger.info("cn="+commonName);
+        logger.info("hours="+hours);
+        logger.info("days="+days);
+        logger.info("spkac="+spkac);
+        Certificate cert = null;
+        if (spkac != null && spkac.length() > 0) {
+           cert = keygenSrvc.createFromSpkac(spkac);
+           if (cert == null) logger.warn("unable to create keygen from spkac request");
+        }
+        if (cert == null) {
+            return null;
+        }
+        cert.setSubjectCommonName(commonName);
+        cert.addDurationInHours(hours);
+        cert.addDurationInDays(days);
+        cert.setSubjectWebID(webId);
+
+        try {
+            CertSerialisation ser = cert.getSerialisation();
+            Response.ResponseBuilder resBuild = Response.ok(ser.getContent(),MediaType.valueOf(ser.getMimeType()));
+            return resBuild.build();
+        } catch (Exception e) {
+            logger.warn("problem creating cert for webid="+webId,e);
+            return null;
+        }
+    }
+
 
 	@POST
 	@Path("modify")
