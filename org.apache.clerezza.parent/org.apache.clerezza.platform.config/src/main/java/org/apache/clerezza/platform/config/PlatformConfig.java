@@ -87,18 +87,25 @@ public class PlatformConfig {
 
 			@Override
 			public UriRef run() {
-				Iterator<Resource> triples = getPlatformInstance().getObjects(PLATFORM.defaultBaseUri);
-				if (triples.hasNext()) {
-					return (UriRef) triples.next();
-				} else {
-					String port = context.getProperty("org.osgi.service.http.port");
-					if (port == null) {
-						port = DEFAULT_PORT;
+				GraphNode platformInstance = getPlatformInstance();
+				Lock l = platformInstance.readLock();
+				l.lock();
+				try {
+					Iterator<Resource> triples = platformInstance.getObjects(PLATFORM.defaultBaseUri);
+					if (triples.hasNext()) {
+						return (UriRef) triples.next();
+					} else {
+						String port = context.getProperty("org.osgi.service.http.port");
+						if (port == null) {
+							port = DEFAULT_PORT;
+						}
+						if (port.equals("80")) {
+							return new UriRef("http://localhost/");
+						}
+						return new UriRef("http://localhost:" + port + "/");
 					}
-					if (port.equals("80")) {
-						return new UriRef("http://localhost/");
-					}
-					return new UriRef("http://localhost:" + port + "/");
+				} finally {
+					l.unlock();
 				}
 			}
 		});
