@@ -168,7 +168,7 @@ class WebIdGraphsService() {
 				case hc : HttpURLConnection => {
 						hc.setRequestMethod("HEAD");
 						hc.setInstanceFollowRedirects(false)
-						hc.addRequestProperty("Accept:",  acceptHeader)
+						hc.addRequestProperty("Accept",  acceptHeader)
 						hc.getResponseCode match {
 							case HttpURLConnection.HTTP_SEE_OTHER  => {
 									val location = hc.getHeaderField("Location")
