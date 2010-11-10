@@ -34,6 +34,8 @@ import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.util.Base64;
 import org.apache.clerezza.rdf.core.impl.util.W3CDateFormat;
+import org.apache.clerezza.rdf.ontologies.XSD;
+
 
 /**
  * An implementation of literal factory currently supporting only
@@ -44,25 +46,14 @@ import org.apache.clerezza.rdf.core.impl.util.W3CDateFormat;
 
 public class SimpleLiteralFactory extends LiteralFactory {
 
-	final private static UriRef xsdInteger =
-			new UriRef("http://www.w3.org/2001/XMLSchema#integer");
-	final private static UriRef xsdInt =
-			new UriRef("http://www.w3.org/2001/XMLSchema#int");
-	final private static UriRef xsdShort =
-			new UriRef("http://www.w3.org/2001/XMLSchema#short");
-	final private static UriRef xsdByte =
-			new UriRef("http://www.w3.org/2001/XMLSchema#byte");
 	
 
 	final private static Set<UriRef> decimalTypes = new HashSet<UriRef>();
 	static {
-		Collections.addAll(decimalTypes, xsdInteger, xsdInt, xsdByte, xsdShort);
+		Collections.addAll(decimalTypes, XSD.integer, XSD.int_, XSD.byte_, XSD.short_, XSD.long_, XSD.negativeInteger,
+				  XSD.nonNegativeInteger, XSD.nonPositiveInteger, XSD.positiveInteger);
 	}
 
-	final private static UriRef xsdDouble =
-			new UriRef("http://www.w3.org/2001/XMLSchema#double");
-	final private static UriRef xsdAnyURI =
-			new UriRef("http://www.w3.org/2001/XMLSchema#anyURI");
 
 	final static Class<? extends byte[]> byteArrayType;
 	static {
@@ -77,17 +68,16 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class  ByteArrayConverter implements TypeConverter<byte[]> {
 
-		private static final UriRef base64Uri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#base64Binary");
+
 
 		@Override
 		public TypedLiteral createTypedLiteral(byte[] value) {
-			return new TypedLiteralImpl(Base64.encode((byte[]) value), base64Uri);
+			return new TypedLiteralImpl(Base64.encode((byte[]) value), XSD.base64Binary);
 		}
 
 		@Override
 		public byte[] createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(base64Uri)) {
+			if (!literal.getDataType().equals(XSD.base64Binary)) {
 				throw new InvalidLiteralTypeException(byteArrayType, literal.getDataType());
 			}
 			return (byte[])Base64.decode(literal.getLexicalForm());
@@ -97,18 +87,16 @@ public class SimpleLiteralFactory extends LiteralFactory {
 	}
 	private static class  DateConverter implements TypeConverter<Date> {
 
-		private static final UriRef dateTimeUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#dateTime");
 		private static final DateFormat DATE_FORMAT = new W3CDateFormat();
 
 		@Override
 		public TypedLiteral createTypedLiteral(Date value) {
-			return new TypedLiteralImpl(DATE_FORMAT.format(value), dateTimeUri);
+			return new TypedLiteralImpl(DATE_FORMAT.format(value), XSD.dateTime);
 		}
 
 		@Override
 		public Date createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(dateTimeUri)) {
+			if (!literal.getDataType().equals(XSD.dateTime)) {
 				throw new InvalidLiteralTypeException(Date.class, literal.getDataType());
 			}
 			try {
@@ -123,17 +111,15 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class BooleanConverter implements TypeConverter<Boolean> {
 
-		private static final UriRef booleanUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#boolean");
 
 		@Override
 		public TypedLiteral createTypedLiteral(Boolean value) {
-			return new TypedLiteralImpl(value.toString(), booleanUri);
+			return new TypedLiteralImpl(value.toString(), XSD.boolean_);
 		}
 
 		@Override
 		public Boolean createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(booleanUri)) {
+			if (!literal.getDataType().equals(XSD.boolean_)) {
 				throw new InvalidLiteralTypeException(Boolean.class, literal.getDataType());
 			}
 			return Boolean.valueOf(literal.getLexicalForm());
@@ -142,17 +128,14 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class StringConverter implements TypeConverter<String> {
 
-		private static final UriRef stringUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#string");
-
 		@Override
 		public TypedLiteral createTypedLiteral(String value) {
-			return new TypedLiteralImpl(value, stringUri);
+			return new TypedLiteralImpl(value, XSD.string);
 		}
 
 		@Override
 		public String createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(stringUri)) {
+			if (!literal.getDataType().equals(XSD.string)) {
 				throw new InvalidLiteralTypeException(String.class, literal.getDataType());
 			}
 			return literal.getLexicalForm();
@@ -164,7 +147,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 		@Override
 		public TypedLiteral createTypedLiteral(Integer value) {
-			return new TypedLiteralImpl(value.toString(), xsdInt);
+			return new TypedLiteralImpl(value.toString(), XSD.int_);
 		}
 
 		@Override
@@ -172,6 +155,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 			if (!decimalTypes.contains(literal.getDataType())) {
 				throw new InvalidLiteralTypeException(Integer.class, literal.getDataType());
 			}
+			//todo: warning: this can throw exception if passed integer is too big
 			return new Integer(literal.getLexicalForm());
 		}
 	}
@@ -182,7 +166,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 		@Override
 		public TypedLiteral createTypedLiteral(Long value) {
-			return new TypedLiteralImpl(value.toString(), xsdInteger);
+			return new TypedLiteralImpl(value.toString(), XSD.integer);
 		}
 
 		@Override
@@ -190,6 +174,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 			if (!decimalTypes.contains(literal.getDataType())) {
 				throw new InvalidLiteralTypeException(Long.class, literal.getDataType());
 			}
+			//todo: warning: this can throw exception if passed integer is too big
 			return new Long(literal.getLexicalForm());
 		}
 	}
@@ -200,12 +185,12 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 		@Override
 		public TypedLiteral createTypedLiteral(Double value) {
-			return new TypedLiteralImpl(value.toString(), xsdDouble);
+			return new TypedLiteralImpl(value.toString(), XSD.double_);
 		}
 
 		@Override
 		public Double createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(xsdDouble)) {
+			if (!literal.getDataType().equals(XSD.double_)) {
 				throw new InvalidLiteralTypeException(Double.class, literal.getDataType());
 			}
 			return new Double(literal.getLexicalForm());
@@ -218,12 +203,12 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 		@Override
 		public TypedLiteral createTypedLiteral(BigInteger value) {
-			return new TypedLiteralImpl(value.toString(), xsdInteger);
+			return new TypedLiteralImpl(value.toString(), XSD.integer);
 		}
 
 		@Override
 		public BigInteger createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(xsdInteger)) {
+			if (!decimalTypes.contains(literal.getDataType())) {
 				throw new InvalidLiteralTypeException(Double.class, literal.getDataType());
 			}
 			return new BigInteger(literal.getLexicalForm());
@@ -236,12 +221,12 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 		@Override
 		public TypedLiteral createTypedLiteral(UriRef value) {
-			return new TypedLiteralImpl(value.getUnicodeString(), xsdAnyURI);
+			return new TypedLiteralImpl(value.getUnicodeString(), XSD.anyURI);
 		}
 
 		@Override
 		public UriRef createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(xsdAnyURI)) {
+			if (!literal.getDataType().equals(XSD.anyURI)) {
 				throw new InvalidLiteralTypeException(UriRef.class, literal.getDataType());
 			}
 			return new UriRef(literal.getLexicalForm());
