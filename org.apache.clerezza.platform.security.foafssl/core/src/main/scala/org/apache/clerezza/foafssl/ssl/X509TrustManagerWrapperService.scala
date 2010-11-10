@@ -23,8 +23,11 @@ import java.io.ByteArrayOutputStream
 import java.math.BigInteger
 import java.security.PublicKey
 import java.security.cert.CertificateException
+import java.security.cert.CertificateExpiredException
+import java.security.cert.CertificateNotYetValidException
 import java.security.cert.X509Certificate
 import java.security.interfaces.RSAPublicKey
+import java.util.Date
 import javax.net.ssl.X509TrustManager;
 import org.apache.clerezza.foafssl.Utilities
 import org.apache.clerezza.platform.users.WebDescriptionProvider
@@ -86,7 +89,13 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 				if (webIdUriRefs.length == 0) {
 					trustManager.checkClientTrusted(chain, authType)
 				} else {
-					val publicKey = chain(0).getPublicKey
+					val cert0 = chain(0)
+					val now = new Date();
+					if (now.after(cert0.getNotAfter()))
+						throw new CertificateExpiredException(String.format("The certificate expires after %c . It is now %c . ", now, cert0.getNotAfter));
+					if (now.before(cert0.getNotBefore()))
+						throw new CertificateNotYetValidException(String.format("The certificate is not valid before %c. It is now %c .", now, cert0.getNotBefore));
+					val publicKey = cert0.getPublicKey
 					for (uriRef <- webIdUriRefs) {
 						verify(uriRef, publicKey)
 					}
@@ -102,38 +111,38 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 		var webDescription = descriptionProvider.getWebDescription(uriRef, false)
 		if (
 			!verify(uriRef, publicKey, webDescription.getGraph)
-			) {
-				webDescription = descriptionProvider.getWebDescription(uriRef, true)
-				if (
-					!verify(uriRef, publicKey, webDescription.getGraph)
-				) throw new CertificateException
-			}
-			systemGraph.addAll(createSystemUserDescription(webDescription))		
+		) {
+			webDescription = descriptionProvider.getWebDescription(uriRef, true)
+			if (
+				!verify(uriRef, publicKey, webDescription.getGraph)
+			) throw new CertificateException
+		}
+		systemGraph.addAll(createSystemUserDescription(webDescription))
 	}
 	
 	def createSystemUserDescription(webDescription: GraphNode) = {
 		val result = new SimpleMGraph()
 		val webId = webDescription.getNode.asInstanceOf[UriRef]
 		result.add(new TripleImpl(webId, PLATFORM.userName, 
-															new PlainLiteralImpl(Utilities.cretateUsernameForWebId(webId))))
+								  new PlainLiteralImpl(Utilities.cretateUsernameForWebId(webId))))
 		result.add(new TripleImpl(webId, RDF.`type` , 
-															FOAF.Agent))
+								  FOAF.Agent))
 		result
 	}
 	
 	/*private lazy val selectQuery = {
-		val query = """PREFIX cert: <http://www.w3.org/ns/auth/cert#>
-                                PREFIX rsa: <http://www.w3.org/ns/auth/rsa#>
-                                SELECT ?m ?e ?mod ?exp 
-                                WHERE { 
-                                   [] cert:identity ?webid ;
-                                        rsa:modulus ?m ;
-                                        rsa:public_exponent ?e .
-                                   OPTIONAL { ?m cert:hex ?mod . }
-                                   OPTIONAL { ?e cert:decimal ?exp . }
-                                }"""
-		queryParser.parse(query).asInstanceOf[SelectQuery]
-	}*/
+	 val query = """PREFIX cert: <http://www.w3.org/ns/auth/cert#>
+	 PREFIX rsa: <http://www.w3.org/ns/auth/rsa#>
+	 SELECT ?m ?e ?mod ?exp
+	 WHERE {
+	 [] cert:identity ?webid ;
+	 rsa:modulus ?m ;
+	 rsa:public_exponent ?e .
+	 OPTIONAL { ?m cert:hex ?mod . }
+	 OPTIONAL { ?e cert:decimal ?exp . }
+	 }"""
+	 queryParser.parse(query).asInstanceOf[SelectQuery]
+	 }*/
 	/**
 	 * gets the parts of key from rdf
 	 * @return (mod, exp)
@@ -144,19 +153,19 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 			t.getSubject
 		}
 		(for (p <- publicKeys) yield {
-			val node = new GraphNode(p, tc)
-			val modulusRes = node/RSA.modulus
-			val modulus = intValueOfResource(modulusRes) match {
-				case Some(x) => x
-				case _ => BigInt(0)
-			}
-			val exponentRes = node/RSA.public_exponent
-			val exponent = intValueOfResource(exponentRes) match {
-				case Some(x) => x
-				case _ => BigInt(0)
-			}		
-			(modulus, exponent)
-		}).toArray
+				val node = new GraphNode(p, tc)
+				val modulusRes = node/RSA.modulus
+				val modulus = intValueOfResource(modulusRes) match {
+					case Some(x) => x
+					case _ => BigInt(0)
+				}
+				val exponentRes = node/RSA.public_exponent
+				val exponent = intValueOfResource(exponentRes) match {
+					case Some(x) => x
+					case _ => BigInt(0)
+				}
+				(modulus, exponent)
+			}).toArray
 	}
  
 	
@@ -164,12 +173,12 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 	/**
 	 * @return true if the key could be verified
 	 */
-	 private def verify(webId: UriRef, publicKey: PublicKey, tc: TripleCollection): Boolean = {
-			publicKey match {
-				case k: RSAPublicKey => verify(webId, k, tc);
-				case _ => throw new CertificateException("Unsupported key format")
-			}
+	private def verify(webId: UriRef, publicKey: PublicKey, tc: TripleCollection): Boolean = {
+		publicKey match {
+			case k: RSAPublicKey => verify(webId, k, tc);
+			case _ => throw new CertificateException("Unsupported key format")
 		}
+	}
 	 
 	private def verify(webId: UriRef, publicKey: RSAPublicKey, tc: TripleCollection): Boolean = {
 		val publicKeysInGraph = getPublicKeysInGraph(webId, tc)
@@ -179,10 +188,10 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 			if (!result) {
 				val baos = new ByteArrayOutputStream
 				Serializer.getInstance.serialize(baos, tc, SupportedFormat.TURTLE);
-				logger.debug("no mathing key in: \n{}", new String(baos.toByteArray));
+				logger.debug("no matching key in: \n{}", new String(baos.toByteArray));
 				logger.debug("the public key is not among the "+
-					publicKeysInGraph.size+" keys in the profile graph of size "+
-					tc.size)
+							 publicKeysInGraph.size+" keys in the profile graph of size "+
+							 tc.size)
 				logger.debug("PublicKey: "+publicKeyTuple)
 				publicKeysInGraph.foreach(k => logger.debug("PublikKey in graph: "+ k))
 			}
@@ -190,11 +199,11 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 		result
 	}
 
-		/**
-	  * @return the integer value if r is a typedLiteral of cert:hex or cert:decimal,
-		* otherwise the integer value of the  cert:hex or cert:decimal property of r or 
-		* None if no such value available
-	  */
+	/**
+	 * @return the integer value if r is a typedLiteral of cert:hex or cert:decimal,
+	 * otherwise the integer value of the  cert:hex or cert:decimal property of r or
+	 * None if no such value available
+	 */
 	private def intValueOfResource(n: GraphNode): Option[BigInt] = {
 		n! match {
 			case l: TypedLiteral => intValueOfTypedLiteral(l);
@@ -240,8 +249,8 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 	
 	private def intValueOfHexString(s: String): BigInt = {
 		val strval = cleanHex(s);
-    BigInt(strval, 16);
-   }
+		BigInt(strval, 16);
+	}
 
 
 
@@ -255,12 +264,12 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
      */
 
     private def cleanHex( strval: String)  = {
-				def legal(c: Char) = {
-					((c >= 'a') && (c <= 'f')) ||
-					((c >= 'A') && (c <= 'F')) ||
-					((c >= '0') && (c <= '9'))
-				}
+		def legal(c: Char) = { //in order of likelyhood of appearance
+			((c >= '0') && (c <= '9')) ||
+			((c >= 'A') && (c <= 'F')) ||
+			((c >= 'a') && (c <= 'f'))
+		}
         (for (c <- strval; if legal(c)) yield c)
     }
-	 }
+}
 	 
