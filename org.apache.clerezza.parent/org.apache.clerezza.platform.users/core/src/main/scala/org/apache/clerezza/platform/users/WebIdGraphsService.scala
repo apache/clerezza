@@ -79,15 +79,21 @@ class WebIdGraphsService() {
 		(for (f <- parser.getSupportedFormats) yield {
 				val qualityOfFormat = {
 					f match {
-						//the default format
+						//the default, well established format
 						case SupportedFormat.RDF_XML => "1.0";
-						//n3 is a bit less well defined and/or many parsers supports only subsets
-						case SupportedFormat.N3 => "0.5";
-						case _ => "0.8";
+							//we prefer most dedicated formats to (X)HTML, not because those are "better", 
+							//but just because it is quite likely that the pure RDF format will be 
+							//ligher (contain less presentation markup), and it is also possible that HTML does not
+							//contain any RDFa, but just points to another format.
+						case SupportedFormat.XHTML => "0.5"; 
+							//we prefer XHTML over html, because parsing (shoule) be easier 
+						case SupportedFormat.HTML => "0.4";
+							//all other formats known currently are structured formats
+						case _ => "0.8"
 					}
 				}
 				f+"; q="+qualityOfFormat+","
-		}).mkString +" *; q=.1"
+			}).mkString +" *; q=.1"  //with grddl should add */*
 	}
 	
 	def getWebIdGraphs(webId: UriRef): WebIdGraphs = {
@@ -143,16 +149,15 @@ class WebIdGraphsService() {
 		}
 		
 		lazy val localGraph = try {
-			val g = tcManager.getMGraph(localGraphUri)
-			g
+            tcManager.getMGraph(localGraphUri)
 		} catch {
 			case e: NoSuchEntityException => {
 					import scala.collection.JavaConversions._
 					tcManager.getTcAccessController.
 					setRequiredReadPermissionStrings(localGraphUri,
-					List(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString))
+													 List(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString))
 					tcManager.createMGraph(localGraphUri)
-			}
+				}
 		}
 		
 		lazy val representationGraphUri = {
@@ -227,7 +232,7 @@ class WebIdGraphsService() {
 						}
 						new SecuredMGraph(unionGraph, localGraphUri, tcManager.getTcAccessController)
 					}
-			})
+				})
 		}
 	}
 }
