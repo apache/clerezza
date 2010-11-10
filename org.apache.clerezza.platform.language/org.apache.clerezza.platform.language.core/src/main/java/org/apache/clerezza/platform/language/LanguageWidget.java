@@ -31,6 +31,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.Constants;
+import org.apache.clerezza.platform.config.PlatformConfig;
 
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
@@ -84,6 +85,9 @@ public class LanguageWidget implements UserContextProvider {
 	private TcManager TcManager;
 
 	@Reference
+	private PlatformConfig platformConfig;
+
+	@Reference
 	private RenderletManager renderletManager;
 	@Reference
 	private LanguageService languageService;
@@ -111,22 +115,29 @@ public class LanguageWidget implements UserContextProvider {
 	}
 
 	@Override
-	public GraphNode addUserContext(final GraphNode node) {
+	public GraphNode addUserContext(final GraphNode node) {	
+		final NonLiteral platformInstance = AccessController.doPrivileged(
+			new PrivilegedAction<NonLiteral>() {
+				@Override
+				public NonLiteral run() {
+					return (NonLiteral) platformConfig.getPlatformInstance().getNode();
+				}
+			});
 		try {
-			return addLanguages(node, languageService.getLanguages(), false);
+			return addLanguages(node, platformInstance, languageService.getLanguages(), false);
 			 
 		} catch (AccessControlException ex) {
 			return AccessController.doPrivileged(
 				new PrivilegedAction<GraphNode>() {
 					@Override
 					public GraphNode run() {
-						return addLanguages(node, languageService.getLanguages(), true);						 
+						return addLanguages(node, platformInstance, languageService.getLanguages(), true);
 					}
 				});
 		}		
 	}
 
-	private GraphNode addLanguages(GraphNode node, List<LanguageDescription> languages, boolean copyToNode) {
+	private GraphNode addLanguages(GraphNode node, NonLiteral platformInstance, List<LanguageDescription> languages, boolean copyToNode) {
 		TripleCollection graph = node.getGraph();
 		BNode listNode = new BNode();		
 		RdfList list = new RdfList(listNode, graph);
@@ -139,10 +150,9 @@ public class LanguageWidget implements UserContextProvider {
 					getNodeContext());
 			}
 		}
-		BNode instance = new BNode();
-		node.addProperty(PLATFORM.instance, instance);
-		graph.add(new TripleImpl(instance, RDF.type, PLATFORM.Instance));
-		graph.add(new TripleImpl(instance, PLATFORM.languages, listNode));
+		node.addProperty(PLATFORM.instance, platformInstance);
+		graph.add(new TripleImpl(platformInstance, RDF.type, PLATFORM.Instance));
+		graph.add(new TripleImpl(platformInstance, PLATFORM.languages, listNode));
 		graph.add(new TripleImpl(listNode, RDF.type, LANGUAGE.LanguageList));
 		if (!copyToNode) {
 			node = new GraphNode(node.getNode(), new UnionMGraph(graph, configGraph));
