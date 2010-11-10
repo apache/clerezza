@@ -19,16 +19,11 @@
 
 package org.apache.clerezza.platform.users
 
-import java.net.HttpURLConnection
-import java.net.URL
 import org.apache.clerezza.platform.Constants
-import org.apache.clerezza.platform.config.PlatformConfig
-import org.apache.clerezza.platform.config.SystemConfig
 import org.apache.clerezza.rdf.core.TripleCollection
 import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException
 import org.apache.clerezza.rdf.core.access.TcManager
-import org.apache.clerezza.rdf.core.serializedform.Parser
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.osgi.service.component.ComponentContext
@@ -84,6 +79,7 @@ class WebDescriptionProvider {
 	def getWebDescription(uri: UriRef, update: Boolean): GraphNode = {
 		
 		val webIdGraphs = webIdGraphsService.getWebIdGraphs(uri)
+		if (webIdGraphs.isLocal) return new GraphNode(uri,webIdGraphs.localGraph)
 		if (update) {
 					webIdGraphs.updateLocalCache()
 		}

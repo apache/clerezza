@@ -195,9 +195,9 @@ class WebIdGraphsService() {
 			connection match {
 				case hc: HttpURLConnection => hc.addRequestProperty("Accept",  acceptHeader);
 			}
-			val mediaType = connection.getContentType()
 			connection.connect()
 			val in = connection.getInputStream()
+			val mediaType = connection.getContentType()
 			val remoteTriples = parser.parse(in, mediaType, representationGraphUri)
 			localCache.clear()
 			localCache.addAll(remoteTriples)
