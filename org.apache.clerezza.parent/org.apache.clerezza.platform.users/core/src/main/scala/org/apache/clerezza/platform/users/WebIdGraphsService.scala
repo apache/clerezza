@@ -93,7 +93,7 @@ class WebIdGraphsService() {
 					}
 				}
 				f+"; q="+qualityOfFormat+","
-			}).mkString +" *; q=.1"  //with grddl should add */*
+			}).mkString +" *; q=.1"  //is that for GRDDL?
 	}
 	
 	def getWebIdGraphs(webId: UriRef): WebIdGraphs = {

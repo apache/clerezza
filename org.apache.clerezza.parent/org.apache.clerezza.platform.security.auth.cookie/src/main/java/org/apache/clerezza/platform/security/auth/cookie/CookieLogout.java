@@ -19,7 +19,9 @@
 package org.apache.clerezza.platform.security.auth.cookie;
 
 import java.net.URI;
-import java.net.URL;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -58,56 +60,71 @@ import org.wymiwyg.wrhapi.util.Cookie;
 @Path("/logout")
 public class CookieLogout {
 
-	private final Logger logger = LoggerFactory.getLogger(CookieLogout.class);
+    private final Logger logger = LoggerFactory.getLogger(CookieLogout.class);
+    @Reference
+    private RenderletManager renderletManager;
+ 
+    /**
+     * The activate method is called when SCR activates the component configuration.
+     *
+     * @param componentContext
+     */
+    protected void activate(ComponentContext componentContext) {
 
-	@Reference
-	private RenderletManager renderletManager;
+	logger.info("Cookie Logout activated.");
+    }
 
-	/**
-	 * The activate method is called when SCR activates the component configuration.
-	 *
-	 * @param componentContext
-	 */
-	protected void activate(ComponentContext componentContext) {
+    @GET
+    public Response logout(@Context UriInfo uriInfo,
+	    @HeaderParam("Referer") URI referer,
+	    @Context ServletRequest req) {
+	TrailingSlash.enforceNotPresent(uriInfo);
+	ResponseBuilder responseBuilder;
 
-		logger.info("Cookie Logout activated.");
+	if (referer != null) {
+	    responseBuilder = Response.seeOther(referer);
+	} else {
+	    responseBuilder = Response.fromResponse(
+		    RedirectUtil.createSeeOtherResponse("logout/success", uriInfo));
 	}
-
-	@GET
-	public Response logout(@Context UriInfo uriInfo,
-			@HeaderParam("Referer") URI referer) {
-		TrailingSlash.enforceNotPresent(uriInfo);
-		ResponseBuilder responseBuilder;
-		if (referer != null) {
-			responseBuilder = Response.seeOther(referer);
-		} else {
-			responseBuilder = Response.fromResponse(
-				RedirectUtil.createSeeOtherResponse("logout/success", uriInfo));
-		}
-		responseBuilder.header(HttpHeaders.SET_COOKIE, getLogoutCookie());
-		return responseBuilder.build();
+	responseBuilder.header("Connection", "close"); //will
+	logger.info("logout! Closing connection");
+	//we need to get the ssl session.
+	//With tomcat this works with javax.servlet.request.ssl_session_mgr attribute as
+	//explained here http://tomcat.apache.org/tomcat-7.0-doc/ssl-howto.html
+	if (req != null) {
+	    HttpSession session = ((HttpServletRequest) req).getSession();
+	    if (session != null) {
+		session.invalidate();
+		logger.info("logout! invalidating session");
+	    }
+	} else {
+	    logger.info("request is null!");
 	}
+	responseBuilder.header(HttpHeaders.SET_COOKIE, getLogoutCookie());
+	return responseBuilder.build();
+    }
 
-	@GET
-	@Path("success")
-	public GraphNode logoutSuccessPage(@Context UriInfo uriInfo) {
-		TrailingSlash.enforcePresent(uriInfo);
-		GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
-		PlainLiteral message = new PlainLiteralImpl(
-						"You successfully logged out.");
-		result.addProperty(LOGIN.message, message);
-		result.addProperty(RDF.type, LOGIN.LoginPage);
+    @GET
+    @Path("success")
+    public GraphNode logoutSuccessPage(@Context UriInfo uriInfo) {
+	TrailingSlash.enforcePresent(uriInfo);
+	GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
+	PlainLiteral message = new PlainLiteralImpl(
+		"You successfully logged out.");
+	result.addProperty(LOGIN.message, message);
+	result.addProperty(RDF.type, LOGIN.LoginPage);
 
-		String baseUri = uriInfo.getBaseUri().getScheme() + "://" +
-				uriInfo.getBaseUri().getAuthority();
+	String baseUri = uriInfo.getBaseUri().getScheme() + "://"
+		+ uriInfo.getBaseUri().getAuthority();
 
-		result.addProperty(LOGIN.refererUri, new UriRef(baseUri + "/dashboard/overview"));
-		return result;
-	}
-	
-	public static Cookie getLogoutCookie() {
-		Cookie cookie = new Cookie(CookieLogin.AUTH_COOKIE_NAME, null);
-		cookie.setMaxAge(0);
-		return cookie;
-	}
+	result.addProperty(LOGIN.refererUri, new UriRef(baseUri + "/dashboard/overview"));
+	return result;
+    }
+
+    public static Cookie getLogoutCookie() {
+	Cookie cookie = new Cookie(CookieLogin.AUTH_COOKIE_NAME, null);
+	cookie.setMaxAge(0);
+	return cookie;
+    }
 }
