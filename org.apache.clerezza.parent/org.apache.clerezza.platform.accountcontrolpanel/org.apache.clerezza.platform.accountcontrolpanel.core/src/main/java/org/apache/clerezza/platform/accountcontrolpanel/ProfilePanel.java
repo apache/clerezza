@@ -18,11 +18,10 @@
  */
 package org.apache.clerezza.platform.accountcontrolpanel;
 
-
-
-import net.bblfish.dev.foafssl.keygen.CertSerialisation;
-import net.bblfish.dev.foafssl.keygen.Certificate;
-import net.bblfish.dev.foafssl.keygen.KeygenService;
+import org.apache.clerezza.ssl.keygen.CertSerialisation;
+import org.apache.clerezza.ssl.keygen.Certificate;
+import org.apache.clerezza.foafssl.ontologies.CERT;
+import org.apache.clerezza.foafssl.ontologies.RSA;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL;
@@ -55,9 +54,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.math.BigInteger;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.interfaces.RSAPublicKey;
 
 /**
  *
@@ -77,8 +78,7 @@ public class ProfilePanel extends FileServer {
 	private UserManager userManager;
 
     @Reference
-    private KeygenService keygenSrvc;
-	
+	private org.apache.clerezza.ssl.keygen.KeygenService keygenSrvc;
 	@Reference
 	private TcManager tcManager;
 	
@@ -102,14 +102,15 @@ public class ProfilePanel extends FileServer {
 	@GET
 	public GraphNode getPersonalProfilePage(@Context UriInfo uriInfo, @PathParam(value = "id") String userName) {
 		TrailingSlash.enforceNotPresent(uriInfo);
-		GraphNode resultNode = getPersonalProfile(userName);
+		GraphNode resultNode = getPersonalProfile(userName, new UriRef(uriInfo.getAbsolutePath().toString()));
 		resultNode.addProperty(RDF.type, PLATFORM.HeadedPage);
 		resultNode.addProperty(RDF.type, CONTROLPANEL.ProfilePage);
 		return resultNode;
 	}
 	
-	private	GraphNode getPersonalProfile(final String userName) {
+	private GraphNode getPersonalProfile(final String userName, final UriRef profile) {
 		return AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
+
 			@Override
 			public GraphNode run() {
 				GraphNode userInSystemGraph = userManager.getUserInSystemGraph(userName);
@@ -129,23 +130,23 @@ public class ProfilePanel extends FileServer {
 							LiteralFactory.getInstance().createTypedLiteral(userName)));
 					return profileNode;
 				} else {
-					return getProfileInUserGraph((UriRef)userNodeInSystemGraph);
+					return getProfileInUserGraph((UriRef) userNodeInSystemGraph, profile);
 				}
 			}
 		});
 	}
 
 	private UriRef getSuggestedPPDUri(String userName) {
-		return new UriRef(platformConfig.getDefaultBaseUri().getUnicodeString()+
-							"user/"+userName+"/profile");
+		return new UriRef(platformConfig.getDefaultBaseUri().getUnicodeString()
+				  + "user/" + userName + "/profile");
 	}
 	
-	private GraphNode getProfileInUserGraph(UriRef webId) {
+	private GraphNode getProfileInUserGraph(UriRef webId, UriRef profile) {
 		WebIdGraphsService.WebIdGraphs webIdGraphs = webIdGraphsService.getWebIdGraphs(webId);
 		MGraph userGraph = webIdGraphs.publicUserGraph();
 		logger.debug("got publicUserGraph of size {}.", userGraph.size());
 		GraphNode userGraphNode = new GraphNode(webId, userGraph);
-		GraphNode resultNode = new GraphNode(new BNode(), 
+		GraphNode resultNode = new GraphNode(profile,
 				new UnionMGraph(new SimpleMGraph(), userGraphNode.getGraph()));
 		resultNode.addProperty(CONTROLPANEL.isLocalProfile, 
 				LiteralFactory.getInstance().createTypedLiteral(webIdGraphs.isLocal()));
@@ -160,6 +161,7 @@ public class ProfilePanel extends FileServer {
 		//TODO check that its not local
 		//TODO check its not an existing user
 		return AccessController.doPrivileged(new PrivilegedAction<Response>() {
+
 			@Override
 			public Response run() {
 				GraphNode userInSystemGraph = userManager.getUserInSystemGraph(userName);
@@ -180,6 +182,7 @@ public class ProfilePanel extends FileServer {
 		webIdGraphs.localGraph().add(new TripleImpl(ppd, FOAF.primaryTopic, webId));
 		webIdGraphs.localGraph().add(new TripleImpl(ppd, RDF.type, FOAF.PersonalProfileDocument));
 		return AccessController.doPrivileged(new PrivilegedAction<Response>() {
+
 			@Override
 			public Response run() {
 				GraphNode userInSystemGraph = userManager.getUserInSystemGraph(userName);
@@ -191,39 +194,71 @@ public class ProfilePanel extends FileServer {
 
     @POST
     @Path("keygen")
-    public Response createCert(@FormParam("webId") String webId,
+	public Response createCert(@FormParam("webId") UriRef webId,
                           @FormParam("cn") String commonName,
                           @FormParam("spkac") String spkac,
+			  @FormParam("crmf") String crmf,
                           @FormParam("hours") String hours,
-                          @FormParam("days") String days) {
-        logger.info("in keygen code. webId="+webId);
-        logger.info("cn="+commonName);
-        logger.info("hours="+hours);
-        logger.info("days="+days);
-        logger.info("spkac="+spkac);
+			  @FormParam("days") String days,
+			  @FormParam("csr") String csr) {
+
+		logger.info("in keygen code. webId={}", webId);
+		logger.info("cn={}", commonName);
+		logger.info("hours={}", hours);
+		logger.info("days={}", days);
+		logger.info("spkac={}", spkac);
+		logger.info("crmf={}", crmf);
+		logger.info("csr={}",csr);
+
         Certificate cert = null;
         if (spkac != null && spkac.length() > 0) {
            cert = keygenSrvc.createFromSpkac(spkac);
-           if (cert == null) logger.warn("unable to create keygen from spkac request");
+			if (cert == null) {
+				logger.warn("unable to create certificate from spkac request");
         }
+		}
+		if (cert == null && crmf != null && crmf.length() > 0) {
+			cert = keygenSrvc.createFromCRMF(crmf);
         if (cert == null) {
-            return null;
+				logger.warn("unable to create certificate from crmf requrest :" + crmf);
         }
+		}
+		if (cert == null && csr != null && csr.length() > 0 ) {
+			cert = keygenSrvc.createFromPEM(csr);
+			if (cert == null) {
+				logger.warn("unable to create certificate from csr request :"+ csr);
+			}
+		}
+		if (cert == null) {
+			throw new RuntimeException("The server was unable to craete a certificate");
+		}
         cert.setSubjectCommonName(commonName);
         cert.addDurationInHours(hours);
         cert.addDurationInDays(days);
-        cert.setSubjectWebID(webId);
+		cert.startEarlier("2"); // start a few hours earlier in order to remove chances of time synchronisation issues
+		cert.setSubjectWebID(webId.getUnicodeString());
 
+		CertSerialisation ser;
         try {
-            CertSerialisation ser = cert.getSerialisation();
+			ser = cert.getSerialisation();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		RSAPublicKey pubKey = (RSAPublicKey) cert.getSubjectPublicKey().getPublicKey();
+		BigInteger publicExponent = pubKey.getPublicExponent();
+		BigInteger modulus = pubKey.getModulus();
+		final WebIdGraphsService.WebIdGraphs webIdGraphs = webIdGraphsService.getWebIdGraphs(webId);
+		final GraphNode certNode = new GraphNode(new BNode(), webIdGraphs.localGraph());
+		certNode.addProperty(RDF.type, RSA.RSAPublicKey);
+		certNode.addProperty(CERT.identity, webId);
+		final GraphNode agent = new GraphNode(webId, webIdGraphs.localGraph());
+		certNode.addPropertyValue(RSA.modulus, modulus);
+		certNode.addPropertyValue(RSA.public_exponent, publicExponent);
+
             Response.ResponseBuilder resBuild = Response.ok(ser.getContent(),MediaType.valueOf(ser.getMimeType()));
             return resBuild.build();
-        } catch (Exception e) {
-            logger.warn("problem creating cert for webid="+webId,e);
-            return null;
-        }
-    }
 
+        }
 
 	@POST
 	@Path("modify")
@@ -238,9 +273,7 @@ public class ProfilePanel extends FileServer {
 		agent.addPropertyValue(FOAF.name, name);
 		agent.deleteProperties(DC.description);
 		agent.addPropertyValue(DC.description, description);
-		logger.info("desc:"+description);
-		logger.info("local graph (uri: {}) is now of size {}", webIdGraphs.localGraphUri(), webIdGraphs.localGraph().size());
+		logger.debug("local graph (uri: {}) is now of size {}", webIdGraphs.localGraphUri(), webIdGraphs.localGraph().size());
 		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo);
 	}
-	
 }
