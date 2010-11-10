@@ -38,6 +38,7 @@
 		<module>org.apache.clerezza.maven-ontologies-plugin</module>
 		<module>org.apache.clerezza.maven-pladoc-plugin</module>
 		<module>org.apache.clerezza.permissiondescriptions</module>
+        <module>org.apache.clerezza.ssl.keygen</module>
 		<module>org.apache.clerezza.platform</module>
 		<module>org.apache.clerezza.platform.accountcontrolpanel</module>
 		<module>org.apache.clerezza.platform.concepts</module>
