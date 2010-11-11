@@ -10,6 +10,7 @@
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
 	<packaging>bundle</packaging>
+	<version>0.5</version>
 	<name>FOAF+SSL Keygen :: Base Component</name>
 	<build>
 		<plugins>

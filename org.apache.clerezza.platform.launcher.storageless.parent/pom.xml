@@ -115,13 +115,13 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-            <groupId>net.rootdev</groupId>
-            <artifactId>java-rdfa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.rootdev</groupId>
-            <artifactId>java-rdfa-htmlparser</artifactId>
-        </dependency>
+			<groupId>net.rootdev</groupId>
+			<artifactId>java-rdfa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.rootdev</groupId>
+			<artifactId>java-rdfa-htmlparser</artifactId>
+		</dependency>
 		<!--
 			Clerezza Bundles
 		-->
@@ -313,6 +313,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
+			<version>0.5</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
