@@ -18,36 +18,50 @@
  */
 package org.apache.clerezza.platform.testing.blackbox.osgi;
 
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-
-import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.*;
-import static org.ops4j.pax.exam.junit.JUnitOptions.*;
+import static org.ops4j.pax.exam.CoreOptions.felix;
+import static org.ops4j.pax.exam.CoreOptions.frameworks;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.mavenConfiguration;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.configProfile;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.vmOption;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.webProfile;
+import static org.ops4j.pax.exam.junit.JUnitOptions.junitBundles;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import junit.framework.Assert;
+
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Inject;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.Configuration;
+import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.BundleContext;
-
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- *
+ * 
  * @author mir, reto
  */
 @RunWith(JUnit4TestRunner.class)
 public class FelixClerezzaPlatformTest {
+
+	private static final int REQUESTS_PER_THREAD = 50;
+	private static final int THREADS_COUNT = 10;
 
 	@Configuration
 	public static Option[] configuration() {
@@ -59,8 +73,6 @@ public class FelixClerezzaPlatformTest {
 				"org.osgi.compendium").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza.ext").artifactId(
 				"com.hp.hpl.jena").versionAsInProject(),
-				/*mavenBundle().groupId("org.apache.felix").artifactId(
-				"org.apache.felix.log").versionAsInProject(),*/
 				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
 				"pax-logging-api").versionAsInProject(),
 				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
@@ -175,13 +187,12 @@ public class FelixClerezzaPlatformTest {
 				"org.apache.clerezza.platform.language.core").versionAsInProject(),
 				mavenBundle().groupId("org.apache.httpcomponents").artifactId(
 				"httpcore-osgi").versionAsInProject(),
-				//dsProfile(),
+				// dsProfile(),
 				configProfile(),
 				webProfile(),
 				junitBundles(),
 				vmOption("-XX:MaxPermSize=200m"),
-				frameworks(
-				felix()),
+				frameworks(felix()),
 				systemProperty("org.osgi.service.http.port").value(
 				Integer.toString(testHttpPort)));
 	}
@@ -191,22 +202,43 @@ public class FelixClerezzaPlatformTest {
 	private boolean webServerExist;
 
 	@Before
-	public void registerServices()
-			throws Exception {
+	public void registerServices() throws Exception {
 		webServerExist = waitForWebserver();
-		Assert.assertTrue("webserver running on port "+testHttpPort, webServerExist);
+		Assert.assertTrue("webserver running on port " + testHttpPort,
+				webServerExist);
 		Thread.sleep(10000);
 	}
 
+	/**
+	 * multiple tests that run within the lifetime of the same instance
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	public void checkTcManagerService()
-			throws Exception {
+	public void multi() throws Exception {
+		checkTcManagerService();
+		testJaxRsRegistration();
+	}
+
+	private void testJaxRsRegistration() throws InterruptedException, IOException {
+		final Dictionary<String, Object> jaxRsResourceProperty = new Hashtable<String, Object>();
+		{
+			jaxRsResourceProperty.put("javax.ws.rs", Boolean.TRUE);
+			jaxRsResourceProperty.put("service.pid", SimpleRootResource.class.getName());
+		}
+		bundleContext.registerService(Object.class.getName(),
+				new SimpleRootResource(), jaxRsResourceProperty);
+		URL url = new URL("http://localhost:" + testHttpPort + "/foo");
+		Thread.sleep(4000);
+		requestUrl(url);//"/admin/users/list-users"));
+		runRequestThreads(url);
+	}
+
+	private void checkTcManagerService() throws Exception {
 		Object service = waitFor(TcManager.class, 20000);
 		Assert.assertTrue(service != null);
 
 	}
-
-
 
 	private Object waitFor(Class<?> aClass, long timeout)
 			throws InterruptedException {
@@ -217,8 +249,7 @@ public class FelixClerezzaPlatformTest {
 		return service;
 	}
 
-	private boolean waitForWebserver()
-			throws InterruptedException {
+	private boolean waitForWebserver() throws InterruptedException {
 		int j = 0;
 		try {
 			URL serverURL = new URL("http://localhost:" + testHttpPort + "/");
@@ -237,8 +268,59 @@ public class FelixClerezzaPlatformTest {
 				break;
 			}
 		} catch (MalformedURLException ex) {
-			Logger.getLogger(FelixClerezzaPlatformTest.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(FelixClerezzaPlatformTest.class.getName()).log(
+					Level.SEVERE, null, ex);
 		}
 		return j < 100;
+	}
+
+	private void runRequestThreads(final URL url) throws MalformedURLException,
+			InterruptedException {
+		RequestThread[] requestThread = new RequestThread[THREADS_COUNT];
+		for (int i = 0; i < THREADS_COUNT; i++) {
+			requestThread[i] = new RequestThread(url);
+		}
+		for (int i = 0; i < THREADS_COUNT; i++) {
+			requestThread[i].start();
+		}
+		int successfulRequests = 0;
+		for (int i = 0; i < THREADS_COUNT; i++) {
+			requestThread[i].join();
+			successfulRequests += requestThread[i].successfulRequests;
+		}
+		Assert.assertEquals(REQUESTS_PER_THREAD * THREADS_COUNT,
+				successfulRequests);
+	}
+
+	static class RequestThread extends Thread {
+
+		private URL url;
+		int successfulRequests = 0;
+
+		public RequestThread(URL url) {
+			this.url = url;
+		}
+
+		@Override
+		public void run() {
+			try {
+				for (int i = 0; i < REQUESTS_PER_THREAD; i++) {
+					requestUrl(url);
+					successfulRequests++;
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	private static void requestUrl(URL url) throws IOException {
+		URLConnection urlConnection = url.openConnection();
+		InputStream in = urlConnection.getInputStream();
+		for (int ch = in.read(); ch != -1; ch = in.read()) {
+			System.out.print((char) ch);
+		}
 	}
 }
