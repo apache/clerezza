@@ -886,6 +886,11 @@
 				<artifactId>jsslutils</artifactId>
 				<version>1.0.5</version>
 			</dependency>
+            <dependency>
+                <groupId>org.apache.clerezza</groupId>
+                <artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
+                <version>0.5</version>
+            </dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>
 				<artifactId>jetty-osgi-httpservice</artifactId>
