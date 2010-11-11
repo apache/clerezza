@@ -128,7 +128,6 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 				values.put("uriInfo", requestProperties.getUriInfo());
 				//values.put("httpHeaders", requestProperties.getHttpHeaders());
 			}
-			//The priviledged block is needed because of FELIX-2273
 			Object execResult = exec(scriptBytes, values);
 			if (execResult != null) {
 				String sspResult = toString(execResult);
