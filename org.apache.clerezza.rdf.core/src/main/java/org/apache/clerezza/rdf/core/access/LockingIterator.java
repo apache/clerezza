@@ -24,8 +24,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.clerezza.rdf.core.Triple;
 
 /**
- * Wrapps an iterator<Triple> reading all elements to a cache on construction
- * and returning them from that cache.
+ * Wrapps an iterator<Triple> reading entering a read-lock on every invocation
+ * of hasNext and next
  * @author reto
  */
 class LockingIterator implements Iterator<Triple> {
