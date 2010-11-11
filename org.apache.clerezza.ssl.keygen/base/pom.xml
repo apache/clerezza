@@ -12,19 +12,20 @@
 	<packaging>bundle</packaging>
 	<name>FOAF+SSL Keygen :: Base Component</name>
 	<build>
- 		<plugins>
+		<plugins>
 			<plugin>
                 <!-- this plugin is needed because bouncycastle is not available
-            as an OSGI module -->
+            as an OSGI module. Please vote to make it so by going to 
+			http://www.bouncycastle.org/jira/browse/BJA-287 -->
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
 						<Embed-Dependency>bcprov-jdk16;inline=false</Embed-Dependency>
- 						<Import-Package>!junit.framework,!junit.textui,*</Import-Package>
+						<Import-Package>!junit.framework,!junit.textui,*</Import-Package>
 						<Export-Package>!junit,org.apache.clerezza.ssl.keygen.*</Export-Package>
- 					</instructions>
+					</instructions>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -62,11 +63,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
@@ -77,8 +73,8 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

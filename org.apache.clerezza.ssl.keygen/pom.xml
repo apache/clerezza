@@ -23,7 +23,9 @@
 
    <modules>
       <module>base</module>
-      <module>samplewebapp</module>
+	  <!-- The sameplewebapp is just here as an example code for jsp based webapps on 
+	   how to use keygen -->
+      <!--module>samplewebapp</module-->
    </modules>
 
    <build>
