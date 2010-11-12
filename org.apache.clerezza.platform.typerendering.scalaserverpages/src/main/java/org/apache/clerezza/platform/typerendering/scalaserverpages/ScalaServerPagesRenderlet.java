@@ -221,25 +221,6 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 
 	private Object exec(byte[] scriptBytes, final SimpleBindings values) throws ScriptException {
 		final CompiledScript cs = getCompiledScript(scriptBytes);
-
-		try {
-			return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-
-				@Override
-				public Object run() throws ScriptException {
-					return cs.eval(values);
-				}
-			});
-		} catch (PrivilegedActionException ex) {
-			Exception cause = (Exception) ex.getCause();
-			logger.debug("Exception executing ScalaServerPage Script", cause);
-			if (cause instanceof ScriptException) {
-				throw (ScriptException) cause;
-			}
-			throw new RuntimeException(cause);
-		} catch (RuntimeException ex) {
-			logger.debug("RuntimeException executing ScalaServerPage Script", ex);
-			throw ex;
-		}
+		return cs.eval(values);
 	}
 }
