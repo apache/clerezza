@@ -21,13 +21,10 @@ package org.apache.clerezza.scala.scripting;
 import org.osgi.framework.BundleContext
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
-import scala.tools.nsc.io.{AbstractFile, PlainFile}
 import scala.tools.nsc.util._
 import java.io.PrintWriter
 import java.net._
-import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
-import scala.tools.util.PathResolver
 
 
 

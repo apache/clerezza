@@ -18,7 +18,7 @@
  * http://code.google.com/p/sling-scala/
  */
 import scala.tools.nsc.io.AbstractFile
-import java.io.{File, InputStream, OutputStream, IOException}
+import java.io.{File, IOException, InputStream}
 import java.net.URL
 import org.osgi.framework.Bundle
 import org.apache.clerezza.scala.scripting.Utils.{valueOrElse, nullOrElse}

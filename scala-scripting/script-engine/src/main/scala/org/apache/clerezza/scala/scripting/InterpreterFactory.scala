@@ -19,23 +19,14 @@
 package org.apache.clerezza.scala.scripting;
 
 
-
-import org.apache.felix.scr.annotations.Component;
 import org.osgi.framework.BundleContext
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.Bundle
-import java.io.{File, PrintWriter}
-import java.util.{ArrayList, Arrays};
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
-import scala.tools.nsc.io.{AbstractFile, PlainFile}
 import scala.tools.nsc.util._
-import scala.tools.nsc.symtab.SymbolLoaders
+import java.io.PrintWriter
 import java.net._
-import scala.tools.nsc.reporters.ConsoleReporter
-import scala.tools.nsc.reporters.Reporter
-import scala.tools.util.PathResolver
-import scala.tools.nsc.util.{ClassPath, JavaClassPath}
 
 
 class InterpreterFactory() {
