@@ -47,12 +47,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient-osgi</artifactId>
-			<version>4.0.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.clerezza.scala</groupId>
 			<artifactId>scala-library-osgi</artifactId>
 			<scope>provided</scope>

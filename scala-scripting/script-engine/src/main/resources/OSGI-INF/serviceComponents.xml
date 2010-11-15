@@ -11,6 +11,13 @@
         </service>
         <property name="service.pid" value="org.apache.clerezza.scala.scripting.InterpreterFactory"/>
     </scr:component>
+	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.scala.scripting.CompilerService">
+        <implementation class="org.apache.clerezza.scala.scripting.CompilerService"/>
+		<service servicefactory="false">
+            <provide interface="org.apache.clerezza.scala.scripting.CompilerService"/>
+        </service>
+        <property name="service.pid" value="org.apache.clerezza.scala.scripting.CompilerService"/>
+    </scr:component>
 	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.scala.scripting.ScriptEngineFactory">
         <implementation class="org.apache.clerezza.scala.scripting.ScriptEngineFactory"/>
 		<service servicefactory="false">
