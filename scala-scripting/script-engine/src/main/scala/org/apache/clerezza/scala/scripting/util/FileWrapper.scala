@@ -8,7 +8,6 @@ package org.apache.clerezza.scala.scripting.util
 import scala.tools.nsc.io.AbstractFile
 
 class FileWrapper(val wrapped: AbstractFile, val childWrapper: (AbstractFile) => AbstractFile) extends AbstractFile with GenericFileWrapperTrait {
-	println("wrapping!!!")
 
 	/** overriding this hgere rather than in the trait as this is a var in VirtualDirectory
 	*/
