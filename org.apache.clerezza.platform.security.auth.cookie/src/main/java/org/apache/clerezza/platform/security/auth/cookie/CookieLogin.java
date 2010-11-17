@@ -25,7 +25,10 @@ import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedAction;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import javax.security.auth.Subject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -49,6 +52,7 @@ import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.platform.security.auth.AuthenticationChecker;
+import org.apache.clerezza.platform.security.auth.LoginListener;
 import org.apache.clerezza.platform.security.auth.NoSuchAgent;
 import org.apache.clerezza.platform.security.auth.cookie.onotology.LOGIN;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
@@ -65,6 +69,8 @@ import org.apache.clerezza.web.fileserver.FileServer;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.Bundle;
 import org.wymiwyg.commons.util.Base64;
@@ -77,6 +83,10 @@ import org.wymiwyg.wrhapi.HandlerException;
  */
 @Component
 @Service(Object.class)
+@Reference(name="loginListener",
+		cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
+		policy=ReferencePolicy.DYNAMIC,
+		referenceInterface=LoginListener.class)
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("/login")
 public class CookieLogin {
@@ -87,6 +97,7 @@ public class CookieLogin {
 	public static final String AUTH_COOKIE_NAME = "auth";
 	private final Logger logger = LoggerFactory.getLogger(CookieLogin.class);
 	private FileServer fileServer;
+	private final Set<LoginListener> loginListenerSet = Collections.synchronizedSet(new HashSet<LoginListener>());
 
 	@Reference
 	private RenderletManager renderletManager;
@@ -180,7 +191,14 @@ public class CookieLogin {
 						"Username name or password are wrong");
 				try {
 					if (authenticationChecker.authenticate(userName,password)) {
-
+						Set<LoginListener> tempLoginListenerSet = null;
+						synchronized(loginListenerSet) {
+							tempLoginListenerSet = new HashSet<LoginListener>(loginListenerSet);
+						}
+						for (Iterator<LoginListener> it = tempLoginListenerSet.iterator(); it.hasNext();) {
+							LoginListener listener = it.next();
+							listener.userLoggedIn(userName);
+						}
 						ResponseBuilder responseBuilder = Response.fromResponse(
 							RedirectUtil.createSeeOtherResponse(
 							referer, uriInfo));
@@ -226,5 +244,23 @@ public class CookieLogin {
 	@Path("{path:.+}")
 	public PathNode getStaticFile(@PathParam("path") String path) {
 		return fileServer.getNode(path);
+	}
+
+	/**
+	 * Registers a <code>LoginListener</code>
+	 *
+	 * @param listener the listener to be registered
+	 */
+	protected void bindLoginListener(LoginListener listener) {
+		loginListenerSet.add(listener);
+	}
+
+	/**
+	 * Unregisters a <code>LoginListener</code>
+	 *
+	 * @param listener the listener to be unregistered
+	 */
+	protected void unbindLoginListener(LoginListener listener) {
+		loginListenerSet.remove(listener);
 	}
 }
