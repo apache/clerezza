@@ -20,6 +20,7 @@ package org.apache.clerezza.platform.security.auth;
 
 import java.security.AccessController;
 import java.util.Iterator;
+import java.util.concurrent.locks.Lock;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -34,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.platform.security.PasswordUtil;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 
 /**
@@ -50,7 +51,7 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 	private final static Logger logger = LoggerFactory.getLogger(AuthenticationCheckerImpl.class);
 
 	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
-	private MGraph systemGraph;
+	private LockableMGraph systemGraph;
 
 	/**
 	 * Checks if the provided username and password matches a username and
@@ -79,21 +80,33 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 
 	private NonLiteral getAgentFromGraph(String userName) throws NoSuchAgent {
 		NonLiteral agent;
-		Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName, new PlainLiteralImpl(userName));
-		if (agents.hasNext()) {
-			agent = agents.next().getSubject();
-		} else {
-			logger.info("unsuccessful authentication attempt as non-existent user {}", userName);
-			throw new NoSuchAgent();
+		Lock l = systemGraph.getLock().readLock();
+		l.lock();
+		try {
+			Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName, new PlainLiteralImpl(userName));
+			if (agents.hasNext()) {
+				agent = agents.next().getSubject();
+			} else {
+				logger.info("unsuccessful authentication attempt as non-existent user {}", userName);
+				throw new NoSuchAgent();
+			}
+		} finally {
+			l.unlock();
 		}
 		return agent;
 	}
 
 	private String getPasswordOfAgent(NonLiteral agent) {
 		String storedPassword = "";
-		Iterator<Triple> agentPassword = systemGraph.filter(agent, PERMISSION.passwordSha1, null);
-		if (agentPassword.hasNext()) {
-			storedPassword = ((Literal) agentPassword.next().getObject()).getLexicalForm();
+		Lock l = systemGraph.getLock().readLock();
+		l.lock();
+		try {
+			Iterator<Triple> agentPassword = systemGraph.filter(agent, PERMISSION.passwordSha1, null);
+			if (agentPassword.hasNext()) {
+				storedPassword = ((Literal) agentPassword.next().getObject()).getLexicalForm();
+			}
+		} finally {
+			l.unlock();
 		}
 		return storedPassword;
 	}
