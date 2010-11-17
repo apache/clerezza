@@ -51,21 +51,8 @@ class CompilerService() {
 		bundleContext = null
 	}
 
-	def createCompiler(out: PrintWriter, outputSirectory: AbstractFile) : Global = {
-		val settings = new Settings
-		settings.outputDirs setSingleOutput outputSirectory
-		AccessController.doPrivileged(new PrivilegedAction[BundleContextScalaCompiler]() {
-			override def run() =  {
-				new BundleContextScalaCompiler(bundleContext, settings,
-					new ConsoleReporter(settings, null, out) {
-					
-						override def printMessage(msg: String) {
-							out write msg
-							out.flush()
-						}
-					}) 
-			}
-		})
+	def createCompiler(out: PrintWriter, outputSirectory: AbstractFile) : TrackingCompiler = {
+		TrackingCompiler(bundleContext, out, outputSirectory)
 	}
 
 	def compile(sources: List[Array[Char]]): List[Class[_]] = {
@@ -73,53 +60,11 @@ class CompilerService() {
 		compile(sources, virtualDirectory)
 	}
 
-	def compile(sources: List[Array[Char]], rawOutputDirectory: AbstractFile): List[Class[_]] = {
-
-		var writtenClasses: List[AbstractFile] = List[AbstractFile]()
-
-		trait VirtualDirectoryFlavour extends VirtualDirectoryWrapper {
-			abstract override def output = {
-				println("unexpected call to output "+name)
-				super.output
-			}
-		}
-		
-		def wrap(f: AbstractFile): AbstractFile = {
-			f match {
-				case d: VirtualDirectory => new VirtualDirectoryWrapper(d, wrap) with LoggingFileWrapper with VirtualDirectoryFlavour {
-						override def output = d.output
-				}
-				case o => new FileWrapper(o, wrap) with LoggingFileWrapper
-			}
-		}
-
-		trait LoggingFileWrapper extends GenericFileWrapperTrait {
-
-			abstract override def output = {
-				writtenClasses ::= this
-				super.output
-			}
-		}
-		val outputDirectory = wrap(rawOutputDirectory)
+	def compile(sources: List[Array[Char]], outputDirectory: AbstractFile): List[Class[_]] = {
 		val out = new ByteArrayOutputStream
 		val printWriter = new PrintWriter(out)
 		val compiler = createCompiler(printWriter, outputDirectory)
-		val sourceFiles: List[SourceFile] = for(chars <- sources) yield new BatchSourceFile("<script>", chars)
-		(new compiler.Run).compileSources(sourceFiles)
-		printWriter.flush
-		if (compiler.reporter.hasErrors) {
-			compiler.reporter.reset
-			throw new RuntimeException("compile errors: "+new String(out.toByteArray));
-		} 
-		val classLoader = new AbstractFileClassLoader(rawOutputDirectory, this.getClass.getClassLoader())
-		val result: List[Class[_]] = for (classFile <- writtenClasses;
-										if (!classFile.name.contains('$'))) yield {
-											val path = classFile.path
-											val relevantPath = path.substring(path.indexOf('/')+1,path.lastIndexOf('.'))
-											val fqn = relevantPath.replace("/",".")
-											classLoader.loadClass(fqn)
-										}
-		return result
+		compiler.compile(sources)
 	}
 
 	
