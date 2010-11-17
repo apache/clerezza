@@ -20,9 +20,14 @@ package org.apache.clerezza.platform.security.auth;
 
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.security.auth.Subject;
@@ -31,6 +36,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
 
 import org.slf4j.Logger;
@@ -48,15 +54,22 @@ import org.wymiwyg.wrhapi.filter.Filter;
  */
 @Component
 @Service(Filter.class)
-@Reference(name="weightedAuthenticationMethod",
-    cardinality=ReferenceCardinality.MANDATORY_MULTIPLE,
-    policy=ReferencePolicy.DYNAMIC,
-    referenceInterface=WeightedAuthenticationMethod.class)
+@References({
+	@Reference(name="weightedAuthenticationMethod",
+		cardinality=ReferenceCardinality.MANDATORY_MULTIPLE,
+		policy=ReferencePolicy.DYNAMIC,
+		referenceInterface=WeightedAuthenticationMethod.class),
+	@Reference(name="loginListener",
+		cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
+		policy=ReferencePolicy.DYNAMIC,
+		referenceInterface=LoginListener.class)
+		})
 public class AuthenticatingFilter implements Filter {
 
 	private final Logger logger = LoggerFactory.getLogger(AuthenticatingFilter.class);
 	private SortedSet<WeightedAuthenticationMethod> methodList =
 			new TreeSet<WeightedAuthenticationMethod>(new WeightedAuthMethodComparator());
+	private final Set<LoginListener> loginListenerSet = Collections.synchronizedSet(new HashSet<LoginListener>());
 	public static final Subject ANONYMOUS_SUBJECT = UserUtil.createSubject("anonymous");
 
 	@Override
@@ -85,6 +98,14 @@ public class AuthenticatingFilter implements Filter {
 			subject = ANONYMOUS_SUBJECT;
 		} else {
 			subject = UserUtil.createSubject(userName);
+			Set<LoginListener> tempLoginListenerSet = null;
+			synchronized(loginListenerSet) {
+				tempLoginListenerSet = new HashSet<LoginListener>(loginListenerSet);
+			}
+			for (Iterator<LoginListener> it = tempLoginListenerSet.iterator(); it.hasNext();) {
+				LoginListener listener = it.next();
+				listener.userLoggedIn(userName, authenticationMethod.getClass());
+			}
 		}
 		try {
 			Subject.doAsPrivileged(subject, new PrivilegedExceptionAction() {
@@ -123,10 +144,28 @@ public class AuthenticatingFilter implements Filter {
 	/**
 	 * Unregister a <code>WeightedAuthenticationMethod</code>
 	 *
-	 * @param method the method to be deregistered
+	 * @param method the method to be unregistered
 	 */
 	protected void unbindWeightedAuthenticationMethod(WeightedAuthenticationMethod method) {
 		methodList.remove(method);
+	}
+
+	/**
+	 * Registers a <code>LoginListener</code>
+	 *
+	 * @param listener the listener to be registered
+	 */
+	protected void bindLoginListener(LoginListener listener) {
+		loginListenerSet.add(listener);
+	}
+
+	/**
+	 * Unregisters a <code>LoginListener</code>
+	 *
+	 * @param listener the listener to be unregistered
+	 */
+	protected void unbindLoginListener(LoginListener listener) {
+		loginListenerSet.remove(listener);
 	}
 
 	/**
