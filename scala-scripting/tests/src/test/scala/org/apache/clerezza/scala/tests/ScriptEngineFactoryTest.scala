@@ -83,6 +83,7 @@ class ScriptEngineFactoryTest {
 
 	@Test
 	def testConcurrency : Unit = {
+		val startTime = System.currentTimeMillis
 		import scala.actors.Actor._
 		val actorsCount = 5
 		val iterationsCount = 9
@@ -117,6 +118,8 @@ s"""
 				case t : Throwable => throw t
 			}
 		}
+		val duration = System.currentTimeMillis - startTime
+		println("running the tests took "+duration)
 
 	}
 

@@ -96,6 +96,57 @@ class CompilerServiceTest {
 		Assert.assertEquals("Hello", method.invoke(null))
 	}
 
+	@Test
+	def testConcurrency : Unit = {
+		val startTime = System.currentTimeMillis
+		import scala.actors.Actor._
+		val actorsCount = 5
+		val iterationsCount = 9
+		val testRunner = self
+		for (i <- 1 to actorsCount) {
+			object ValueVerifier extends Actor {
+				def act() {
+					try {
+						for (i <- 1 to iterationsCount) {
+							val objectName = "C"+(for (i <-1 to 12) yield ((random*('z'-'a'+1))+'a').asInstanceOf[Char]).mkString
+							val message = "Hello from "+objectName
+
+							val source = """
+object """+objectName+""" {
+	println("constructing TestClass Object");
+	val msg = """"+message+""""
+}"""
+
+							//println("compiling: "+source)
+							val sources = List(source.toCharArray)
+							val compiled = service.compile(sources)
+							val clazz = compiled(0)
+							val className = clazz.getName
+							testRunner ! (objectName, className)
+							val method = clazz.getMethod("msg")
+							val receivedMessage = method.invoke(null)
+							testRunner ! (message, receivedMessage)
+						}
+					} catch {
+						case t => testRunner ! t
+					}
+				}
+			}
+			ValueVerifier.start()
+		}
+		for (i <- 1 to (actorsCount*iterationsCount*2)) {
+			self.receive {
+				case (expected, got) => {
+						Assert.assertEquals(expected, got)
+				}
+				case t : Throwable => throw t
+			}
+		}
+		val duration = System.currentTimeMillis - startTime
+		println("running the tests took "+duration)
+
+	}
+
 }
 
 object CompilerServiceTest {
