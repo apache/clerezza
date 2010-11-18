@@ -24,6 +24,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Policy;
 import java.security.PrivilegedAction;
+import java.security.SecurityPermission;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -227,6 +228,7 @@ public class UserManagerImpl implements UserManager {
 
 	private void addPermissionEntriesForARole(NonLiteral role,
 			String id, List<String> permissionEntries) {
+		AccessController.checkPermission(new SecurityPermission("getPolicy"));
 		if (role == null) {
 			logger.debug("Cannot assign permissions: {} does not exist", id);
 			return;
@@ -321,6 +323,7 @@ public class UserManagerImpl implements UserManager {
 
 	private void deletePermissionEntriesOfARole(NonLiteral role,
 			String id, List<String> permissionEntries) {
+		AccessController.checkPermission(new SecurityPermission("getPolicy"));
 		if (role == null) {
 			logger.debug("Cannot delete permissions: {} does not exist", id);
 			return;
@@ -355,6 +358,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private void deleteAllPermissionEntriesOfARole(NonLiteral role) {
+		AccessController.checkPermission(new SecurityPermission("getPolicy"));
 		if (role == null) {
 			return;
 		}
@@ -463,6 +467,7 @@ public class UserManagerImpl implements UserManager {
 	public void updateUser(String name, String email, String password,
 			Collection<String> assignedRoles, String pathPrefix) {
 
+		AccessController.checkPermission(new SecurityPermission("getPolicy"));
 		if (name == null) {
 			throw new IllegalArgumentException("userName may not be null");
 		}
