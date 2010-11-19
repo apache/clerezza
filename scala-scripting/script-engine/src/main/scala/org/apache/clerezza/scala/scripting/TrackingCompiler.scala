@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 import java.net._
 
+
 /** a compiler that keeps track of classes added to the directory
  */
 class TrackingCompiler private (bundleContext : BundleContext,
@@ -47,13 +48,14 @@ class TrackingCompiler private (bundleContext : BundleContext,
 	/**
 	 * compiles a list of class sources returning a list of compiled classes
 	 */
+	@throws(classOf[CompileErrorsException])
 	def compile(sources: List[Array[Char]]): List[Class[_]] = {
 		writtenClasses.clear()
 		val sourceFiles: List[SourceFile] = for(chars <- sources) yield new BatchSourceFile("<script>", chars)
 		(new Run).compileSources(sourceFiles)
 		if (reporter.hasErrors) {
 			reporter.reset
-			throw new RuntimeException("compile errors, see output");
+			throw new CompileErrorsException;
 		} 
 		val classLoader = new AbstractFileClassLoader(outputDirectory, this.getClass.getClassLoader())
 		val result: List[Class[_]] = for (classFile <- writtenClasses.toList;
@@ -101,7 +103,7 @@ object TrackingCompiler {
 			}
 		new TrackingCompiler(bundleContext,
 			 settings,
-			 new ConsoleReporter(null, null, out) {
+			 new ConsoleReporter(settings, null, out) {
 				override def printMessage(msg: String) {
 					out write msg
 					out.flush()

@@ -33,8 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.exam.Inject;
 import org.osgi.framework.BundleContext;
-import java.io.Reader
-import java.io.StringReader
 import org.osgi.util.tracker.ServiceTracker
 import scala.actors.Actor
 import scala.math.random
@@ -73,27 +71,47 @@ class CompilerServiceTest {
 
 	@Test
 	def checkEngine(): Unit =  {
-
-		Assert.assertNotNull(service)
-		val s = """
-		package foo {
-			class TestClass() {
-				println("constructing TestClass");
+		Assert.assertNotNull(service);
+		//do it once
+		{
+			val s = """
+			package foo {
+				class TestClass() {
+					println("constructing TestClass");
+				}
+				object TestClass {
+					println("constructing TestClass Object");
+					val msg = "Hello"
+				}
 			}
-			object TestClass {
-				println("constructing TestClass Object");
-				val msg = "Hello"
-			}
+			"""
+			val compileResult = service.compile(List(s.toCharArray))
+			println("finished compiling")
+			Assert.assertEquals(1, compileResult.size)
+			val testClassClass: Class[_] = compileResult(0)
+			Assert.assertEquals("foo.TestClass", testClassClass.getName)
+			val method = testClassClass.getMethod("msg")
+			Assert.assertEquals("Hello", method.invoke(null))
 		}
-		"""
-		println("now compiling")
-		val compileResult = service.compile(List(s.toCharArray))
-		println("finished compiling")
-		Assert.assertEquals(1, compileResult.size)
-		val testClassClass: Class[_] = compileResult(0)
-		Assert.assertEquals("foo.TestClass", testClassClass.getName)
-		val method = testClassClass.getMethod("msg")
-		Assert.assertEquals("Hello", method.invoke(null))
+		//compile different class with same name
+		{
+			val s = """
+			package foo {
+				class TestClass() {
+					println("constructing a different TestClass");
+				}
+				object TestClass {
+					println("constructing TestClass Object");
+					val msg = "Hello2"
+				}
+			}
+			"""
+			val compileResult = service.compile(List(s.toCharArray))
+			val testClassClass: Class[_] = compileResult(0)
+			Assert.assertEquals("foo.TestClass", testClassClass.getName)
+			val method = testClassClass.getMethod("msg")
+			Assert.assertEquals("Hello2", method.invoke(null))
+		}
 	}
 
 	@Test
@@ -108,8 +126,9 @@ class CompilerServiceTest {
 				def act() {
 					try {
 						for (i <- 1 to iterationsCount) {
-							val objectName = "C"+(for (i <-1 to 12) yield ((random*('z'-'a'+1))+'a').asInstanceOf[Char]).mkString
-							val message = "Hello from "+objectName
+							val uniqueToken = (for (i <-1 to 12) yield ((random*('z'-'a'+1))+'a').asInstanceOf[Char]).mkString
+							val objectName = "MyClass"
+							val message = "Hello from "+uniqueToken
 
 							val source = """
 object """+objectName+""" {

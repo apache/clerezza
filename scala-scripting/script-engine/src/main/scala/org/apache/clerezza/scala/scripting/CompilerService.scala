@@ -25,6 +25,8 @@ import org.apache.clerezza.scala.scripting.util.FileWrapper
 import org.apache.clerezza.scala.scripting.util.GenericFileWrapperTrait
 import org.apache.clerezza.scala.scripting.util.VirtualDirectoryWrapper
 import org.osgi.framework.BundleContext
+import org.osgi.framework.BundleEvent
+import org.osgi.framework.BundleListener
 import org.osgi.service.component.ComponentContext;
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
@@ -34,21 +36,55 @@ import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.util._
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
+import java.io.OutputStream
 import java.io.PrintWriter
 import java.io.Reader
 import java.net._
 
+class CompileErrorsException(message: String) extends Exception(message) {
+	def this() = this(null)
+}
 
-class CompilerService() {
-	
+class CompilerService() extends BundleListener  {
+
 	protected var bundleContext : BundleContext = null;
+	protected val sharedVirtualDirectory = new VirtualDirectory("(memory)", None)
+	protected var currentSharedCompilerOutputStream: OutputStream = null
+	protected val splipptingOutputStream = new OutputStream() {
+		def write(b: Int) {
+			if (currentSharedCompilerOutputStream == null) {
+				throw new IOException("no currentSharedCompilerOutputStream set")
+			}
+			currentSharedCompilerOutputStream.write(b)
+		}
+	}
+	protected val splittingPrintWriter = new PrintWriter(splipptingOutputStream, true)
+
+	protected var currentSharedCompiler: TrackingCompiler = null;
+	protected def sharedCompiler = {
+		if (currentSharedCompiler == null) {
+			synchronized {
+				if (currentSharedCompiler == null) {
+					currentSharedCompiler = createCompiler(splittingPrintWriter, sharedVirtualDirectory)
+				}
+			}
+		}
+		currentSharedCompiler
+	}
 
 	def activate(componentContext: ComponentContext)= {
 		bundleContext = componentContext.getBundleContext
+		bundleContext.addBundleListener(this)
 	}
 
 	def deactivate(componentContext: ComponentContext) = {
-		bundleContext = null
+		currentSharedCompiler = null
+		bundleContext.removeBundleListener(this)
+	}
+
+	def bundleChanged(event: BundleEvent) = {
+		currentSharedCompiler = null
 	}
 
 	def createCompiler(out: PrintWriter, outputSirectory: AbstractFile) : TrackingCompiler = {
@@ -56,15 +92,39 @@ class CompilerService() {
 	}
 
 	def compile(sources: List[Array[Char]]): List[Class[_]] = {
-		val virtualDirectory = new VirtualDirectory("(memory)", None)
-		compile(sources, virtualDirectory)
+		sharedCompiler.synchronized {
+			val baos = new ByteArrayOutputStream
+			currentSharedCompilerOutputStream = baos
+			try {
+				sharedCompiler.compile(sources)
+			} catch {
+				case c: CompileErrorsException => throw new CompileErrorsException(
+						new String(baos.toByteArray, "utf-8"))
+				case e => throw e
+			} finally {
+				currentSharedCompilerOutputStream = null
+			}
+		}
 	}
 
-	def compile(sources: List[Array[Char]], outputDirectory: AbstractFile): List[Class[_]] = {
+	/**
+	 * compiles a set of sources with a dedicated compiler
+	 */
+	def compileIsolated(sources: List[Array[Char]]): List[Class[_]] = {
+		val virtualDirectory = new VirtualDirectory("(memory)", None)
+		compileIsolated(sources, virtualDirectory)
+	}
+
+	def compileIsolated(sources: List[Array[Char]], outputDirectory: AbstractFile): List[Class[_]] = {
 		val out = new ByteArrayOutputStream
 		val printWriter = new PrintWriter(out)
 		val compiler = createCompiler(printWriter, outputDirectory)
-		compiler.compile(sources)
+		try {
+			compiler.compile(sources)
+		} catch {
+			case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"))
+			case e => throw e
+		}
 	}
 
 	

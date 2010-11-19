@@ -43,8 +43,6 @@ import scala.tools.nsc.interpreter._;
 import scala.tools.nsc.util._
 import scala.tools.nsc.io.VirtualDirectory
 import scala.tools.nsc.reporters.ConsoleReporter
-import scala.tools.nsc.reporters.ConsoleReporter
-import scala.tools.nsc.reporters.ConsoleReporter
 import scala.actors.Actor
 import scala.actors.Actor._
 
@@ -55,7 +53,8 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 		MyScriptEngine.interpreterAction ! ScriptEngineFactory.RefreshInterpreter
 	}
 
-	var factory: InterpreterFactory = null
+	private var factory: InterpreterFactory = null
+	private var compilerService: CompilerService = null
 	var _interpreter : Interpreter = null;
 	private var bundleContext: BundleContext = null
 	def interpreter = {
@@ -114,6 +113,14 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 	def unbindInterpreterFactory(f: InterpreterFactory) = {
 		factory = null
 		_interpreter = null
+	}
+
+	def bindCompilerService(s: CompilerService) = {
+		compilerService  = s
+	}
+
+	def unbindCompilerService(s: CompilerService) = {
+		compilerService  = null
 	}
 	/** Inner object as it accesse interpreter
 	 */
@@ -202,75 +209,48 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 		val virtualDirectory = new VirtualDirectory("(memory)", None)
 		var msgWriter = new StringWriter
 
-		val classLoader = new AbstractFileClassLoader(virtualDirectory, this.getClass.getClassLoader())
 
-		//var classLoader = createClassLoader
-
-		lazy val compiler = {
-			AccessController.doPrivileged(new PrivilegedAction[BundleContextScalaCompiler]() {
-				override def run() =  {
-					val settings = new Settings	
-					settings.outputDirs setSingleOutput virtualDirectory
-					val out = new PrintWriter(System.out)
-					new BundleContextScalaCompiler(bundleContext, settings,										   
-						new ConsoleReporter(settings, null, out) {
-							override def printMessage(msg: String) {
-								msgWriter write msg
-								//out.flush()
-							}
-						})
-				}
-			})
-		}
 		
 		override def compile(script: String): CompiledScript = {
 			try {
 				AccessController.doPrivileged(new PrivilegedAction[CompiledScript]() {
-				override def run() =  {
+					override def run() =  {
+						val objectName = "CompiledScript"+classCounter
+						classCounter += 1
+						val classCode = "class " + objectName + """ {
+							|	def run($: Map[String, Object]) = {
+							|""".stripMargin + script +"""
+							|	}
+							|}""".stripMargin
+							val sources: List[Array[Char]] = List(classCode.toCharArray)
+						val clazz = try {
+							compilerService.compile(sources)(0)
+						} catch {
+							case e: CompileErrorsException => throw new ScriptException(e.getMessage, "script", -1);
+							case e => throw e
+						}
+						val scriptObject = clazz.newInstance()
 
-						//inefficient but thread safe
-						compiler.synchronized {
-							val objectName = "CompiledScript"+classCounter
-							classCounter += 1
-							val classCode = "class " + objectName + """ {
-								|	def run($: Map[String, Object]) = {
-								|""".stripMargin + script +"""
-								|	}
-								|}""".stripMargin
-							val sources: List[SourceFile] = List(new BatchSourceFile("<script>", classCode))
-							(new compiler.Run).compileSources(sources)
-							if (compiler.reporter.hasErrors) {
-								compiler.reporter.reset
-								val msg = msgWriter.toString
-								msgWriter = new StringWriter
-								throw new ScriptException(msg, "script", -1);
-							}
-							//val classBytes = virtualDirectory.fileNamed(objectName+".class").toCharArray
-							val clazz = classLoader.loadClass(objectName)
-							val scriptObject = clazz.newInstance()
+						new CompiledScript() {
+							override def eval(context: ScriptContext) = {
 
-							new CompiledScript() {
-
-								override def eval(context: ScriptContext) = {
-	
-									var map = Map[String, Object]()
-									import _root_.scala.collection.JavaConversions._
-									for (	scope <- context.getScopes;
-											if (context.getBindings(scope.intValue) != null);
-											entry <- context.getBindings(scope.intValue)) {
-										map = map + (entry._1 -> entry._2)
-									}
-									val runMethod = clazz.getMethod("run", classOf[Map[String, Object]])
-									try {
-										runMethod.invoke(scriptObject, map)
-									} catch {
-										case e: InvocationTargetException => {
-											throw e.getCause
-										}
+								var map = Map[String, Object]()
+								import _root_.scala.collection.JavaConversions._
+								for (	scope <- context.getScopes;
+										if (context.getBindings(scope.intValue) != null);
+										entry <- context.getBindings(scope.intValue)) {
+									map = map + (entry._1 -> entry._2)
+								}
+								val runMethod = clazz.getMethod("run", classOf[Map[String, Object]])
+								try {
+									runMethod.invoke(scriptObject, map)
+								} catch {
+									case e: InvocationTargetException => {
+										throw e.getCause
 									}
 								}
-								override def getEngine = MyScriptEngine.this
 							}
+							override def getEngine = MyScriptEngine.this
 						}
 					}
 				})
