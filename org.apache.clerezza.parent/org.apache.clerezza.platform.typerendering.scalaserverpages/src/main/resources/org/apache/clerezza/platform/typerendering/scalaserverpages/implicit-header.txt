@@ -3,42 +3,11 @@ import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
-import org.apache.clerezza.platform.typerendering.CallbackRenderer
-import java.io.{PrintWriter, OutputStreamWriter}
+import org.apache.clerezza.platform.typerendering.scala._
 import javax.ws.rs.core.UriInfo
 
-val renderer = $("renderer").asInstanceOf[CallbackRenderer]
-val res = $("res").asInstanceOf[GraphNode]
-val context = $("context").asInstanceOf[GraphNode]
-val mode = $("mode").asInstanceOf[String]
-val uriInfo = $("uriInfo").asInstanceOf[UriInfo]
-val sharedRenderingValues = $("sharedRenderingValues").asInstanceOf[java.util.Map[String, Object]]
+ class CompilesScalaServerPage extends AbstractRenderlet {
 
-{
-	object $ {
-		def apply(key: String) = sharedRenderingValues.get(key)
-		def update(key: String, value: Object) = sharedRenderingValues.put(key, value)
-	}
-
-	def render(resource : GraphNode, mode : String) = {
-		def parseNodeSeq(string : String)  = {
-			_root_.scala.xml.XML.loadString("<elem>"+string+"</elem>").child
-		}
-		val baos = new java.io.ByteArrayOutputStream
-		try {
-			renderer.render(resource, context, mode, baos)
-		} catch {
-			case e: Exception => {
-					val exWriter = new java.io.StringWriter
-					val pw = new PrintWriter(exWriter)
-					e.printStackTrace(pw)
-					pw.flush()
-					baos.write(<div class="exception">{exWriter.toString}</div>.toString.getBytes)
-				}
-		}
-		parseNodeSeq(new String(baos.toByteArray, "utf-8"))
-	}
-	def ifx[T](con:  => Boolean)(f: => T) :  T = {
-		if (con) f else null.asInstanceOf[T]
-	}
-	val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
+	override def renderedPage(arguments: RenderedPage.Arguments): RenderedPage = {
+ 		new RenderedPage(arguments) {
+			override def content = {

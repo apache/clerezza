@@ -18,27 +18,23 @@
  */
 package org.apache.clerezza.platform.typerendering.scalaserverpages;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Map;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Collections;
 import java.util.HashMap;
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptException;
-import javax.script.SimpleBindings;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
@@ -49,6 +45,8 @@ import org.apache.clerezza.platform.typerendering.Renderlet;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.platform.typerendering.RenderingspecificationException;
 import org.apache.clerezza.platform.typerendering.TypeRenderingException;
+import org.apache.clerezza.scala.scripting.CompileErrorsException;
+import org.apache.clerezza.scala.scripting.CompilerService;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -66,8 +64,10 @@ import scala.collection.Seq;
 @Service(Renderlet.class)
 public class ScalaServerPagesRenderlet implements Renderlet {
 
-	@Reference(target = "(javax.script.language=scala)")
-	private ScriptEngineFactory scalaScriptEngineFactory;
+	final Charset UTF8 = Charset.forName("UTF-8");
+
+	@Reference
+	private CompilerService scalaCompilerService;
 	private static final Logger logger = LoggerFactory.getLogger(ScalaServerPagesRenderlet.class);
 	private int byteHeaderLines = 0;
 	private Type multiStringObjectMapType;
@@ -86,14 +86,15 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 	public ScalaServerPagesRenderlet() {
 	}
 	private final String lineSeparator = System.getProperty("line.separator");
-	private final byte[] byteHeader;
+	private final char[] headerChars;
 
 	{
-		final InputStream in = ScalaServerPagesRenderlet.class.getResourceAsStream("implicit-header.txt");
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final Reader in = new InputStreamReader(ScalaServerPagesRenderlet.class.getResourceAsStream("implicit-header.txt"),
+				UTF8);
+		final CharArrayWriter caos = new CharArrayWriter();
 		try {
 			for (int ch = in.read(); ch != -1; ch = in.read()) {
-				baos.write(ch);
+				caos.write(ch);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -104,11 +105,13 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 				throw new RuntimeException(e);
 			}
 		}
-		byteHeader = baos.toByteArray();
+		headerChars = caos.toCharArray();
 	}
-	private final byte[] byteCloser = (";}" + lineSeparator).getBytes();
+	private final char[] footerChars = (";}" + lineSeparator + "}"
+			+ lineSeparator + "}" + lineSeparator + "}" + lineSeparator).toCharArray();
 	//TODO a map with SoftReferences as keys
-	private Map<String, CompiledScript> compiledScripts = new HashMap<String, CompiledScript>();
+	private Map<String, Renderlet> compiledRenderlet = Collections.synchronizedMap(
+			new HashMap<String, Renderlet>());
 
 	@Override
 	public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
@@ -117,32 +120,16 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 			RequestProperties requestProperties, OutputStream os) throws IOException {
 		try {
 			logger.debug("ScalaServerPagesRenderlet rendering");
-			final byte[] scriptBytes = getScriptBytes(renderingSpecification);
-			final SimpleBindings values = new SimpleBindings();
-			values.put("res", res);
-			values.put("context", context);
-			values.put("renderer", callbackRenderer);
-			values.put("mode", mode);
-			values.put("sharedRenderingValues", sharedRenderingValues);
-			if (requestProperties != null) {
-				values.put("uriInfo", requestProperties.getUriInfo());
-				//values.put("httpHeaders", requestProperties.getHttpHeaders());
-			}
-			Object execResult = exec(scriptBytes, values);
-			if (execResult != null) {
-				String sspResult = toString(execResult);
-				if (logger.isDebugEnabled()) {
-					String scriptName = extractFileName(renderingSpecification);
-					logger.debug("executed ssp, result: {} (for {})", sspResult, scriptName);
-				}
-				os.write(sspResult.getBytes("UTF-8"));
-			}
+			final char[] scriptBytes = getScriptChars(renderingSpecification);
 
-			os.flush();
-			logger.debug("flushed");
+			final Renderlet cs = getCompiledRenderlet(scriptBytes);
+			cs.render(res, context, sharedRenderingValues, callbackRenderer,
+					renderingSpecification, mode, mediaType, requestProperties, os);
+			//os.flush();
+			//logger.debug("flushed");
 		} catch (MalformedURLException ex) {
 			throw new WebApplicationException(ex);
-		} catch (ScriptException ex) {
+		} catch (CompileErrorsException ex) {
 			logger.debug("ScriptException rendering ScalaServerPage: ", ex);
 			Exception cause = (Exception) ex.getCause();
 			if (cause != null) {
@@ -152,7 +139,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 				throw new RenderingException(cause, renderingSpecification, res, context);
 			}
 			throw new RenderingspecificationException(ex.getMessage(), renderingSpecification,
-					ex.getLineNumber(), ex.getColumnNumber(), res, context);
+					0,0, res, context);
 		}
 	}
 
@@ -160,7 +147,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		if (byteHeaderLines == 0) {
 			int count = 0;
 			LineNumberReader ln = new LineNumberReader(
-					new InputStreamReader(new ByteArrayInputStream(byteHeader)));
+					new CharArrayReader(headerChars));
 			try {
 				while (ln.readLine() != null) {
 					count++;
@@ -173,54 +160,71 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 		return byteHeaderLines;
 	}
 
-	private static String toString(Object object) {
-		if (object instanceof Seq) {
-			return ((Seq) object).mkString();
-		} else {
-			return object.toString();
-		}
-	}
 
 	private String extractFileName(URI renderingSpecification) {
 		String path = renderingSpecification.getPath();
 		return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
 	}
 
-	private CompiledScript getCompiledScript(byte[] scriptBytes) throws ScriptException {
-		String scriptString;
-		try {
-			scriptString = new String(scriptBytes, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
+	private Renderlet getCompiledRenderlet(char[] scriptChars) throws CompileErrorsException {
+		String scriptString = new String(scriptChars);
+		Renderlet renderlet = compiledRenderlet.get(scriptString);
+		if (renderlet == null) {
+			final char[][] scipts = new char[][]{scriptChars};
+			Class renderletClass;
+			try {
+				//doing as priviledged so that no COmpilePermission is needed
+				renderletClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class>() {
+					@Override
+					public Class run() {
+						return scalaCompilerService.compile(scipts)[0];
+					}
+				});
+
+			} catch (PrivilegedActionException e) {
+				Throwable cause = e.getCause();
+				if (cause instanceof RuntimeException) {
+					throw (RuntimeException) cause;
+				}
+				if (cause instanceof CompileErrorsException) {
+					throw (CompileErrorsException) cause;
+				}
+				throw new RuntimeException(e);
+			}
+			try {
+				renderlet = (Renderlet) renderletClass.newInstance();
+			} catch (InstantiationException ex) {
+				throw new RuntimeException(ex);
+			} catch (IllegalAccessException ex) {
+				throw new RuntimeException(ex);
+			}
+			compiledRenderlet.put(scriptString, renderlet);
 		}
-		CompiledScript cs = compiledScripts.get(scriptString);
-		if (cs == null) {
-			cs = ((Compilable) scalaScriptEngineFactory.getScriptEngine()).compile(scriptString);
-			compiledScripts.put(scriptString, cs);
-		}
-		return cs;
+		return renderlet;
 	}
 
-	private byte[] getScriptBytes(URI renderingSpecification) throws IOException {
-		final InputStream in = renderingSpecification.toURL().openStream();
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	private char[] getScriptChars(URI renderingSpecification) throws IOException {
+		final Reader in = new InputStreamReader(renderingSpecification.toURL().openStream(), UTF8);
+		final CharArrayWriter caos = new CharArrayWriter();
 		//Add the scriptHeader to the beginning of the script
-		baos.write(byteHeader);
+		caos.write(headerChars);
 		//add the content
-		final byte[] buffer = new byte[1024];
-		int bytesRead;
-		while ((bytesRead = in.read(buffer, 0, 1024)) != -1) {
-			baos.write(buffer, 0, bytesRead);
+		final char[] buffer = new char[1024];
+
+
+		int charsRead;
+		while ((charsRead = in.read(buffer, 0, 1024)) != -1) {
+			caos.write(buffer, 0, charsRead);
+
+
 		}
 		//add the closing ";"
-		baos.write(byteCloser);
+		caos.write(footerChars);
 		String scriptName = extractFileName(renderingSpecification);
 		logger.debug("getting CompiledScript for: {}", scriptName);
-		return baos.toByteArray();
-	}
 
-	private Object exec(byte[] scriptBytes, final SimpleBindings values) throws ScriptException {
-		final CompiledScript cs = getCompiledScript(scriptBytes);
-		return cs.eval(values);
+
+		return caos.toCharArray();
+
 	}
 }

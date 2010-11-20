@@ -26,6 +26,10 @@
 			<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.clerezza.scala</groupId>
+			<artifactId>script-engine</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 		</dependency>
