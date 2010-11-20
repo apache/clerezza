@@ -21,6 +21,7 @@ package org.apache.clerezza.scala.scripting
 
 import org.apache.clerezza.scala.scripting.util.FileWrapper
 import org.apache.clerezza.scala.scripting.util.GenericFileWrapperTrait
+import org.apache.clerezza.scala.scripting.util.SplittingDirectory
 import org.apache.clerezza.scala.scripting.util.VirtualDirectoryWrapper
 import org.osgi.framework.BundleContext
 import scala.collection.mutable
@@ -39,7 +40,7 @@ import java.net._
 /** a compiler that keeps track of classes added to the directory
  */
 class TrackingCompiler private (bundleContext : BundleContext,
-		settings: Settings, reporter: Reporter, outputDirectory: AbstractFile,
+		settings: Settings, reporter: Reporter, classLoaderBuilder: () => ClassLoader,
 		writtenClasses: mutable.ListBuffer[AbstractFile])
 	extends  BundleContextScalaCompiler(bundleContext : BundleContext,
 		settings: Settings, reporter: Reporter) {
@@ -56,8 +57,8 @@ class TrackingCompiler private (bundleContext : BundleContext,
 		if (reporter.hasErrors) {
 			reporter.reset
 			throw new CompileErrorsException;
-		} 
-		val classLoader = new AbstractFileClassLoader(outputDirectory, this.getClass.getClassLoader())
+		}
+		val classLoader = classLoaderBuilder()
 		val result: List[Class[_]] = for (classFile <- writtenClasses.toList;
 										  if (!classFile.name.contains('$'))) yield {
 			val path = classFile.path
@@ -71,7 +72,27 @@ class TrackingCompiler private (bundleContext : BundleContext,
 }
 
 object TrackingCompiler {
-	def apply(bundleContext : BundleContext, out: PrintWriter, outputDirectory: AbstractFile) = {
+
+	private class TrackingCompilerSplittingDirectory extends SplittingDirectory
+
+	private def createClassLoader(dir: AbstractFile) = new AbstractFileClassLoader(dir, this.getClass.getClassLoader())
+
+	def apply(bundleContext : BundleContext, out: PrintWriter, outputDirectoryOption: Option[AbstractFile]) = {
+		val (outputDirectory, classLoaderBuilder): (AbstractFile, () => ClassLoader) = outputDirectoryOption match {
+			case Some(d) => (d, () => createClassLoader(d))
+			case None => {
+					val d = new TrackingCompilerSplittingDirectory
+					d.currentTarget = new VirtualDirectory("(memory)", None)
+					def createClassLoaderAndReset() = {
+						val r = createClassLoader(d.currentTarget)
+						//println("created class loader with "+(for (c <- d.currentTarget) yield c).mkString("-"))
+						d.currentTarget = new VirtualDirectory("(memory)", None)
+						r
+					}
+					(d, createClassLoaderAndReset _)
+				}
+		}
+
 		val writtenClasses: mutable.ListBuffer[AbstractFile] = mutable.ListBuffer[AbstractFile]()
 		val settings = {
 				trait VirtualDirectoryFlavour extends VirtualDirectoryWrapper {
@@ -108,7 +129,7 @@ object TrackingCompiler {
 					out write msg
 					out.flush()
 				}
-			}, outputDirectory, writtenClasses)
+			}, classLoaderBuilder, writtenClasses)
 	}
 }
 

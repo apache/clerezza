@@ -7,5 +7,5 @@ package org.apache.clerezza.scala.scripting.util
 
 trait Wrapper[T] {
 	protected def wrapped: T
-	protected val childWrapper: (T) => T
+	protected def childWrapper: (T) => T
 }

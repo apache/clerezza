@@ -20,7 +20,10 @@ package org.apache.clerezza.scala.scripting;
 
 
 import java.security.AccessController
+import java.security.Permission
 import java.security.PrivilegedAction
+import java.security.PrivilegedActionException
+import java.security.PrivilegedExceptionAction
 import org.apache.clerezza.scala.scripting.util.FileWrapper
 import org.apache.clerezza.scala.scripting.util.GenericFileWrapperTrait
 import org.apache.clerezza.scala.scripting.util.VirtualDirectoryWrapper
@@ -46,10 +49,17 @@ class CompileErrorsException(message: String) extends Exception(message) {
 	def this() = this(null)
 }
 
+class CompilePermission extends Permission("Compile Permssion") {
+	def getActions() = ""
+	def implies(p: Permission) = p.isInstanceOf[CompilePermission]
+	override def equals(o: Any): Boolean = o.isInstanceOf[CompilePermission]
+	override def hashCode = classOf[CompilePermission].hashCode
+}
+
 class CompilerService() extends BundleListener  {
 
 	protected var bundleContext : BundleContext = null;
-	protected val sharedVirtualDirectory = new VirtualDirectory("(memory)", None)
+	//protected val sharedVirtualDirectory = new VirtualDirectory("(memory)", None)
 	protected var currentSharedCompilerOutputStream: OutputStream = null
 	protected val splipptingOutputStream = new OutputStream() {
 		def write(b: Int) {
@@ -66,7 +76,8 @@ class CompilerService() extends BundleListener  {
 		if (currentSharedCompiler == null) {
 			synchronized {
 				if (currentSharedCompiler == null) {
-					currentSharedCompiler = createCompiler(splittingPrintWriter, sharedVirtualDirectory)
+					currentSharedCompiler = TrackingCompiler(bundleContext, splittingPrintWriter, None)
+					//createCompiler(splittingPrintWriter, sharedVirtualDirectory)
 				}
 			}
 		}
@@ -88,21 +99,36 @@ class CompilerService() extends BundleListener  {
 	}
 
 	def createCompiler(out: PrintWriter, outputSirectory: AbstractFile) : TrackingCompiler = {
-		TrackingCompiler(bundleContext, out, outputSirectory)
+		TrackingCompiler(bundleContext, out, Some(outputSirectory))
+	}
+
+	def compile(sources: Array[Array[Char]]): Array[Class[_]] = {
+		compile(sources.toList).toArray
 	}
 
 	def compile(sources: List[Array[Char]]): List[Class[_]] = {
+		AccessController.checkPermission(new CompilePermission)
 		sharedCompiler.synchronized {
-			val baos = new ByteArrayOutputStream
-			currentSharedCompilerOutputStream = baos
 			try {
-				sharedCompiler.compile(sources)
+				AccessController.doPrivileged[List[Class[_]]](
+					new PrivilegedExceptionAction[List[Class[_]]] {
+						def run(): List[Class[_]] = {
+							val baos = new ByteArrayOutputStream
+							currentSharedCompilerOutputStream = baos
+							try {
+								sharedCompiler.compile(sources)
+							} catch {
+								case c: CompileErrorsException => throw new CompileErrorsException(
+										new String(baos.toByteArray, "utf-8"))
+								case e => throw e
+							} finally {
+								currentSharedCompilerOutputStream = null
+							}
+						}
+					})
 			} catch {
-				case c: CompileErrorsException => throw new CompileErrorsException(
-						new String(baos.toByteArray, "utf-8"))
+				case e: PrivilegedActionException => throw e.getCause
 				case e => throw e
-			} finally {
-				currentSharedCompilerOutputStream = null
 			}
 		}
 	}
@@ -116,14 +142,24 @@ class CompilerService() extends BundleListener  {
 	}
 
 	def compileIsolated(sources: List[Array[Char]], outputDirectory: AbstractFile): List[Class[_]] = {
-		val out = new ByteArrayOutputStream
-		val printWriter = new PrintWriter(out)
-		val compiler = createCompiler(printWriter, outputDirectory)
-		try {
-			compiler.compile(sources)
-		} catch {
-			case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"))
-			case e => throw e
+		AccessController.checkPermission(new CompilePermission)
+		sharedCompiler.synchronized {
+			try {
+				AccessController.doPrivileged[List[Class[_]]](
+					new PrivilegedExceptionAction[List[Class[_]]] {
+						def run() = {
+							val out = new ByteArrayOutputStream
+							val printWriter = new PrintWriter(out)
+							val compiler = createCompiler(printWriter, outputDirectory)
+							try {
+								compiler.compile(sources)
+							} catch {
+								case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"))
+								case e => throw e
+							}
+						}
+					})
+			}
 		}
 	}
 
