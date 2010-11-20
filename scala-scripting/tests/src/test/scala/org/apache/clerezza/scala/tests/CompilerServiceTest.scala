@@ -27,6 +27,9 @@ import org.ops4j.pax.exam.CoreOptions._;
 import org.ops4j.pax.exam.container.`def`.PaxRunnerOptions._;
 import org.ops4j.pax.exam.junit.JUnitOptions._;
 
+import java.security.AccessController
+import java.security.PrivilegedActionException
+import java.security.PrivilegedExceptionAction
 import org.apache.clerezza.scala.scripting.CompilerService
 import org.junit.Assert
 import org.junit.Before;
@@ -73,7 +76,7 @@ class CompilerServiceTest {
 	def checkEngine(): Unit =  {
 		Assert.assertNotNull(service);
 		//do it once
-		{
+		val testClassClass1 = {
 			val s = """
 			package foo {
 				class TestClass() {
@@ -85,13 +88,12 @@ class CompilerServiceTest {
 				}
 			}
 			"""
-			val compileResult = service.compile(List(s.toCharArray))
+			val compileResult = priv(service.compile(List(s.toCharArray)))
 			println("finished compiling")
 			Assert.assertEquals(1, compileResult.size)
 			val testClassClass: Class[_] = compileResult(0)
-			Assert.assertEquals("foo.TestClass", testClassClass.getName)
-			val method = testClassClass.getMethod("msg")
-			Assert.assertEquals("Hello", method.invoke(null))
+			//Assert.assertEquals("foo.TestClass", testClassClass.getName)
+			testClassClass
 		}
 		//compile different class with same name
 		{
@@ -106,12 +108,14 @@ class CompilerServiceTest {
 				}
 			}
 			"""
-			val compileResult = service.compile(List(s.toCharArray))
+			val compileResult = priv(service.compile(List(s.toCharArray)))
 			val testClassClass: Class[_] = compileResult(0)
 			Assert.assertEquals("foo.TestClass", testClassClass.getName)
 			val method = testClassClass.getMethod("msg")
 			Assert.assertEquals("Hello2", method.invoke(null))
 		}
+		val methodFrom1Again = testClassClass1.getMethod("msg")
+		Assert.assertEquals("Hello", methodFrom1Again.invoke(null))
 	}
 
 	@Test
@@ -138,7 +142,7 @@ object """+objectName+""" {
 
 							//println("compiling: "+source)
 							val sources = List(source.toCharArray)
-							val compiled = service.compile(sources)
+							val compiled = priv(service.compile(sources))
 							val clazz = compiled(0)
 							val className = clazz.getName
 							testRunner ! (objectName, className)
@@ -164,6 +168,18 @@ object """+objectName+""" {
 		val duration = System.currentTimeMillis - startTime
 		println("running the tests took "+duration)
 
+	}
+
+	def priv[T](action: => T): T = {
+		try {
+			AccessController.doPrivileged(
+			new PrivilegedExceptionAction[T]() {
+				def run = action
+			})
+		} catch {
+			case e: PrivilegedActionException => throw e.getCause
+			case e => throw e
+		}
 	}
 
 }
