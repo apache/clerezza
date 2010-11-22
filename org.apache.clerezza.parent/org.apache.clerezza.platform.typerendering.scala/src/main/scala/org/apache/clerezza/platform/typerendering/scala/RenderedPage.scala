@@ -63,11 +63,14 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 	val out = new PrintWriter(os)
 
 	out.println(
-		content
+		content match {
+			case s: Seq[_] => s.mkString
+			case o => o.toString
+		}
 	)
 	out.flush()
 
-	def content : Elem;
+	def content : AnyRef;
 
 
 }
