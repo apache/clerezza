@@ -27,6 +27,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.configProfile;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.vmOption;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.webProfile;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.dsProfile;
 import static org.ops4j.pax.exam.junit.JUnitOptions.junitBundles;
 
 import java.io.FileNotFoundException;
@@ -91,12 +92,12 @@ public class FelixClerezzaPlatformTest {
 				"wrhapi-osgi").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza.ext").artifactId(
 				"com.ibm.icu").versionAsInProject(),
-				mavenBundle().groupId("org.apache.felix").artifactId(
+				/*mavenBundle().groupId("org.apache.felix").artifactId(
 				"org.apache.felix.scr").version("1.0.6"),
 				mavenBundle().groupId("org.apache.felix").artifactId(
 				"org.apache.felix.eventadmin").version("1.0.0"),
 				mavenBundle().groupId("org.apache.felix").artifactId(
-				"org.apache.felix.metatype").version("1.0.2"),
+				"org.apache.felix.metatype").version("1.0.2"),*/
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.triaxrs").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza.ext").artifactId(
@@ -158,6 +159,10 @@ public class FelixClerezzaPlatformTest {
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.usermanager").startLevel(4).versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.security").startLevel(4).versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.security.conditions").startLevel(4).versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.scripting").startLevel(4).versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.rdf.jena.sparql").versionAsInProject(),
@@ -185,9 +190,13 @@ public class FelixClerezzaPlatformTest {
 				"org.apache.clerezza.utils.imageprocessing").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.language.core").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.language.ontologies").versionAsInProject(),
 				mavenBundle().groupId("org.apache.httpcomponents").artifactId(
 				"httpcore-osgi").versionAsInProject(),
-				// dsProfile(),
+				mavenBundle().groupId("org.mortbay.jetty").artifactId(
+				"servlet-api-2.5").version("6.1.12"),
+				dsProfile(),
 				configProfile(),
 				webProfile(),
 				junitBundles(),
