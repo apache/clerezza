@@ -236,7 +236,7 @@ public class CookieLogin {
 			maxAge = Integer.MAX_VALUE;
 		}
 		NewCookie cookie = new NewCookie(AUTH_COOKIE_NAME, Base64.encode(
-				cookieString.getBytes()), null, null, null, maxAge, false);
+				cookieString.getBytes()), "/", null, null, maxAge, false);
 		return cookie;
 	}
 
