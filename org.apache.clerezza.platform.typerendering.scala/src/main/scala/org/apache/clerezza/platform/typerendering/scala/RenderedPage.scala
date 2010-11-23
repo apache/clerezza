@@ -6,6 +6,7 @@ import java.net.URI
 import javax.ws.rs.core.MediaType
 import scala.xml._
 import org.apache.clerezza.platform.typerendering._
+import org.apache.clerezza.platform.typerendering.Renderlet.RequestProperties
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._
@@ -27,11 +28,14 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 					renderingSpecificationOption:  Option[URI],
 					modeOption: Option[String],
 					mediaType: MediaType,
+					requestProperties: RequestProperties,
 					os: OutputStream) = arguments;
 	val mode = modeOption match {
 		case Some(x) => x
 		case None => null
 	}
+
+	val uriInfo = requestProperties.getUriInfo
 
 	def render(resource : GraphNode) : Seq[Node] = {
 		modeOption match {
@@ -81,5 +85,6 @@ object RenderedPage {
 					renderingSpecificationOption:  Option[URI],
 					modeOption: Option[String],
 					mediaType: MediaType,
+					requestProperties: RequestProperties,
 					os: OutputStream);
 }

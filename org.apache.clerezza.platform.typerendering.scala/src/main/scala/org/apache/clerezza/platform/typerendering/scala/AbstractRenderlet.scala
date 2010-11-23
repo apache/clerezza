@@ -64,7 +64,8 @@ abstract class AbstractRenderlet extends Renderlet {
 			val modeOption = if (mode != null) {Some(mode)} else {None}
 			renderedPage(
 				RenderedPage.Arguments(res, context, sharedRenderingValues, renderer,
-								   renderingSpecificationOption, modeOption, mediaType, os));
+								   renderingSpecificationOption, modeOption, 
+								   mediaType, requestProperties, os));
 
 	}
 
