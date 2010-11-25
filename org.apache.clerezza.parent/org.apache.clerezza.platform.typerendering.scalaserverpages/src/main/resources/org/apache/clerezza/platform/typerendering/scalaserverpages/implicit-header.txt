@@ -6,7 +6,7 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.platform.typerendering.scala._
 import javax.ws.rs.core.UriInfo
 
- class CompilesScalaServerPage extends AbstractRenderlet {
+ class CompiledScalaServerPage extends AbstractRenderlet {
 
 	override def renderedPage(arguments: RenderedPage.Arguments): RenderedPage = {
  		new RenderedPage(arguments) {
