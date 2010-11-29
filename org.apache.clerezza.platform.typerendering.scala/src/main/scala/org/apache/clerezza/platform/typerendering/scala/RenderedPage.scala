@@ -4,6 +4,7 @@ import java.io.OutputStream
 import java.io.PrintWriter
 import java.net.URI
 import javax.ws.rs.core.MediaType
+import org.osgi.framework.BundleContext
 import scala.xml._
 import org.apache.clerezza.platform.typerendering._
 import org.apache.clerezza.platform.typerendering.Renderlet.RequestProperties
@@ -17,7 +18,7 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
 /**
  * PageRenderlet.renderedPage returns an instance of this class, implementing
  * the content method to produce an XML Elmenet suitable as response to the
- * request yieldingto the arguments passed to the constructor.
+ * request yielding to the arguments passed to the constructor.
  */
 abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 	val RenderedPage.Arguments(
@@ -56,6 +57,10 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 	object $ {
 		def apply(key: String) = sharedRenderingValues.get(key)
 		def update(key: String, value: Object) = sharedRenderingValues.put(key, value)
+		def apply[T](implicit m: Manifest[T]): T = {
+			val clazz = m.erasure.asInstanceOf[Class[T]]
+			requestProperties.getRenderingService(clazz)
+		}
 	}
 
 	def ifx[T](con:  => Boolean)(f: => T) :  T = {

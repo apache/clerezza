@@ -30,6 +30,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.osgi.framework.BundleContext;
 
 /**
  *
@@ -45,10 +46,12 @@ class RendererImpl implements Renderer, Comparable {
 	private boolean builtIn;
 	private String mode;
 	private final RenderletRendererFactoryImpl renderletRendererFactoryImpl;
+	private final BundleContext bundleContext;
 
 	RendererImpl(UriRef renderingSpecification,
 			Renderlet renderlet, String mode, MediaType mediaType, int prio,
-			RenderletRendererFactoryImpl renderletRendererFactoryImpl, boolean builtIn) {
+			RenderletRendererFactoryImpl renderletRendererFactoryImpl, boolean builtIn,
+			BundleContext bundleContext) {
 		this.renderlet = renderlet;
 		this.mediaType = mediaType;
 		this.mode = mode;
@@ -62,7 +65,7 @@ class RendererImpl implements Renderer, Comparable {
 				throw new WebApplicationException(ex);
 			}
 		}
-
+		this.bundleContext = bundleContext;
 	}
 
 	@Override
@@ -94,7 +97,7 @@ class RendererImpl implements Renderer, Comparable {
 				uriInfo, httpHeaders, mediaType, sharedRenderingValues);
 		renderlet.render(resource, context, sharedRenderingValues, callbackRenderer,
 			renderSpecUri, mode, mediaType,
-			new Renderlet.RequestProperties(uriInfo, httpHeaders),
+			new Renderlet.RequestProperties(uriInfo, httpHeaders, bundleContext),
 			entityStream);
 	}
 

@@ -24,8 +24,10 @@ import javax.ws.rs.Produces;
 
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.RdfList;
 
@@ -36,13 +38,14 @@ import org.apache.clerezza.rdf.utils.RdfList;
 @Path("/list")
 public class RDFListRootResource {
 
-	static final public String greeting = "hello";
+	static final public UriRef testType = new UriRef("http://example.org/foo");
+
 	
 	@GET
-	@Produces("text/plain")
 	public GraphNode sayHello() {
 		TripleCollection resultGraph = new SimpleMGraph();
 		GraphNode result = new GraphNode(new BNode(), resultGraph);
+		result.addProperty(RDF.type, testType);
 		RdfList list = new RdfList(result);
 		for (int i = 0; i < 10 ; i++) {
 			list.add(new PlainLiteralImpl("number "+i));
