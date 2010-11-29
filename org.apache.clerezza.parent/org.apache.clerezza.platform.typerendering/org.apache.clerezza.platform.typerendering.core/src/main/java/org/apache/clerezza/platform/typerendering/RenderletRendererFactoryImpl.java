@@ -60,6 +60,7 @@ import org.apache.clerezza.rdf.utils.RdfList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.rdf.ontologies.RDFS;
+import org.osgi.framework.BundleContext;
 
 /**
  *
@@ -95,6 +96,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	private final Set<ServiceReference> renderletRefStore =
 			Collections.synchronizedSet(new HashSet<ServiceReference>());
 	List<Resource> rdfTypePrioList;
+	private BundleContext bundleContext;
 
 	@Override
 	public Renderer createRenderer(GraphNode resource, String mode, List<MediaType> acceptableMediaTypes) {
@@ -154,7 +156,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 							mode,
 							getMostConcreteMediaType(mediaTypeRequested, mediaTypeInGraph),
 							prio, RenderletRendererFactoryImpl.this,
-							renderletDef.isBuiltIn()));
+							renderletDef.isBuiltIn(), bundleContext));
 				}
 			}
 			if (!configurationList.isEmpty()) {
@@ -360,6 +362,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	 * @param componentContext
 	 */
 	protected void activate(ComponentContext componentContext) {
+		bundleContext = componentContext.getBundleContext();
 		graphChanged(null);
 		configGraph.addGraphListener(this,
 				new FilterTriple(null, RDF.first, null), 1000);
@@ -411,6 +414,7 @@ public class RenderletRendererFactoryImpl implements RenderletManager, RendererF
 	 */
 	protected void deactivate(ComponentContext componentContext) {
 		configGraph.removeGraphListener(this);
+		bundleContext = null;
 	}
 
 	@Override

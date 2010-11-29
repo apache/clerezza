@@ -27,6 +27,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * A renderlet renders a <code>GraphNode</code> with the optionally specified
@@ -38,16 +40,19 @@ public interface Renderlet {
 
 	/**
 	 * A class repressing properties of the http request within which the
-	 * Renderlet is used
+	 * Renderlet is used, it also allows access to contextual rendering services.
 	 */
 	static class RequestProperties {
 		private UriInfo uriInfo;
 		private MultivaluedMap<String, Object> httpHeaders;
+		private final BundleContext bundleContext;
 
 		public RequestProperties(UriInfo uriInfo, 
-				MultivaluedMap<String, Object> httpHeaders) {
+				MultivaluedMap<String, Object> httpHeaders,
+				BundleContext bundleContext) {
 			this.uriInfo = uriInfo;
 			this.httpHeaders = httpHeaders;
+			this.bundleContext = bundleContext;
 		}
 
 		public MultivaluedMap<String, Object>  getHttpHeaders() {
@@ -56,6 +61,26 @@ public interface Renderlet {
 
 		public UriInfo getUriInfo() {
 			return uriInfo;
+		}
+
+		/**
+		 * Rendering services
+		 *
+		 * @param type
+		 * @return a intsance of the requested rendering services
+		 */
+		public <T> T getRenderingService(Class<T> type) {
+			ServiceReference serviceReference = bundleContext.getServiceReference(type.getName());
+			if (serviceReference != null) {
+				T resultCandidate = (T) bundleContext.getService(serviceReference);
+				if (resultCandidate.getClass().getAnnotation(WebRenderingService.class) != null) {
+					return resultCandidate;
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
 		}
 
 	}

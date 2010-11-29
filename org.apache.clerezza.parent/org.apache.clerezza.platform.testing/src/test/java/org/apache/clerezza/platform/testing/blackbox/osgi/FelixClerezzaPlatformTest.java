@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.platform.testing.blackbox.osgi;
 
+import java.io.ByteArrayOutputStream;
 import static org.ops4j.pax.exam.CoreOptions.felix;
 import static org.ops4j.pax.exam.CoreOptions.frameworks;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -28,11 +29,13 @@ import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.configProfile;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.vmOption;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.webProfile;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.dsProfile;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.profile;
 import static org.ops4j.pax.exam.junit.JUnitOptions.junitBundles;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -40,19 +43,29 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.core.MediaType;
 
 import junit.framework.Assert;
+import org.apache.clerezza.platform.typerendering.RenderletManager;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
+import org.apache.clerezza.rdf.core.UriRef;
 
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Customizer;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.swissbox.tinybundles.core.TinyBundles;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.framework.Constants;
+
+
 
 /**
  * 
@@ -179,6 +192,8 @@ public class FelixClerezzaPlatformTest {
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.typerendering.manager").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
+				"org.apache.clerezza.platform.typerendering.scala").versionAsInProject(),
+				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.scripting.scriptmanager").versionAsInProject(),
 				mavenBundle().groupId("org.apache.clerezza").artifactId(
 				"org.apache.clerezza.platform.xhtml2html").versionAsInProject(),
@@ -197,13 +212,23 @@ public class FelixClerezzaPlatformTest {
 				mavenBundle().groupId("org.mortbay.jetty").artifactId(
 				"servlet-api-2.5").version("6.1.12"),
 				dsProfile(),
+				profile("felix.webconsole"),
 				configProfile(),
 				webProfile(),
 				junitBundles(),
 				vmOption("-XX:MaxPermSize=200m"),
 				frameworks(felix()),
 				systemProperty("org.osgi.service.http.port").value(
-				Integer.toString(testHttpPort)));
+				Integer.toString(testHttpPort)),
+				new Customizer() {
+
+					@Override
+					public InputStream customizeTestProbe(InputStream testProbe)
+							throws IOException {
+						return TinyBundles.modifyBundle(testProbe).
+								set(Constants.EXPORT_PACKAGE, "org.apache.clerezza.platform.testing.blackbox.osgi").build();
+					}
+				});
 	}
 	protected final static int testHttpPort = 8976;
 	@Inject
@@ -227,6 +252,7 @@ public class FelixClerezzaPlatformTest {
 	public void multi() throws Exception {
 		checkTcManagerService();
 		testJaxRsRegistration();
+		testWithScalaServerPage();
 	}
 
 	private void testJaxRsRegistration() throws InterruptedException, IOException {
@@ -241,6 +267,26 @@ public class FelixClerezzaPlatformTest {
 		Thread.sleep(4000);
 		requestUrl(url);//"/admin/users/list-users"));
 		runRequestThreads(url);
+	}
+
+	private void testWithScalaServerPage() throws InterruptedException, IOException {
+		registerRDFListRootResource();
+		final Dictionary<String, Object> webRenderingServiceProperty = new Hashtable<String, Object>();
+		{
+			webRenderingServiceProperty.put("service.pid", SomeContentWebRenderingService.class.getName());
+		}
+		bundleContext.registerService(SomeContentWebRenderingService.class.getName(),
+				new SomeContentWebRenderingService(), webRenderingServiceProperty);
+		ServiceReference serviceReference = bundleContext.getServiceReference(RenderletManager.class.getName());
+		RenderletManager renderletManager = (RenderletManager) bundleContext.getService(serviceReference);
+		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+				new UriRef(getClass().getResource("renderingServiceTest.ssp").toString()),
+				RDFListRootResource.testType, null, MediaType.TEXT_PLAIN_TYPE, false);
+		URL url = new URL("http://localhost:" + testHttpPort + "/list");
+		Thread.sleep(4000);
+		String returnedString = new String(requestUrl(url), "utf-8");
+		Assert.assertEquals("some content\n", returnedString);
+
 	}
 
 	private void checkTcManagerService() throws Exception {
@@ -301,6 +347,16 @@ public class FelixClerezzaPlatformTest {
 				successfulRequests);
 	}
 
+	private void registerRDFListRootResource() {
+		final Dictionary<String, Object> jaxRsResourceProperty = new Hashtable<String, Object>();
+		{
+			jaxRsResourceProperty.put("javax.ws.rs", Boolean.TRUE);
+			jaxRsResourceProperty.put("service.pid", RDFListRootResource.class.getName());
+		}
+		bundleContext.registerService(Object.class.getName(),
+				new RDFListRootResource(), jaxRsResourceProperty);
+	}
+
 	static class RequestThread extends Thread {
 
 		private URL url;
@@ -325,11 +381,13 @@ public class FelixClerezzaPlatformTest {
 		}
 	}
 
-	private static void requestUrl(URL url) throws IOException {
+	private static byte[] requestUrl(URL url) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		URLConnection urlConnection = url.openConnection();
 		InputStream in = urlConnection.getInputStream();
 		for (int ch = in.read(); ch != -1; ch = in.read()) {
-			System.out.print((char) ch);
+			baos.write(ch);
 		}
+		return baos.toByteArray();
 	}
 }
