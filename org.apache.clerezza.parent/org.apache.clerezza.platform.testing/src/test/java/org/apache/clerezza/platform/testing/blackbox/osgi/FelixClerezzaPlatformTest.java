@@ -285,7 +285,7 @@ public class FelixClerezzaPlatformTest {
 		URL url = new URL("http://localhost:" + testHttpPort + "/list");
 		Thread.sleep(4000);
 		String returnedString = new String(requestUrl(url), "utf-8");
-		Assert.assertEquals("some content\n", returnedString);
+		Assert.assertEquals("some content", returnedString);
 
 	}
 
