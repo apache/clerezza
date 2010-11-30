@@ -71,7 +71,7 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 
 	val out = new PrintWriter(os)
 
-	out.println(
+	out.print(
 		content match {
 			case s: Seq[_] => s.mkString
 			case o => o.toString
