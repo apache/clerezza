@@ -23,16 +23,18 @@ package org.apache.clerezza.shell;
 
 import org.osgi.service.component.ComponentContext;
 
-import java.io.OutputStreamWriter
+import java.io.InputStream
+import java.io.OutputStream
 import org.apache.clerezza.scala.scripting.InterpreterFactory
-import org.osgi.framework.BundleContext
+
 
 class ShellFactory()  {
 
 
 
-	var factory: InterpreterFactory = null
+	var interpreterFactory: InterpreterFactory = null
 	var componentContext: ComponentContext = null
+	var commands = Set[ShellCommand]()
 	
 	def activate(componentContext: ComponentContext)= {
 		this.componentContext = componentContext
@@ -42,21 +44,29 @@ class ShellFactory()  {
 		this.componentContext = componentContext
 	}
 
-	def createShell() = {
-		val shell = new Shell(factory, System.in, new OutputStreamWriter(System.out))
+	def createShell(in: InputStream, out: OutputStream) = {
+		val shell = new Shell(interpreterFactory, in, out, commands)
 		//shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
 		//shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
 		shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext))
-		shell.addImport("org.apache.clerezza._")
+		shell.addImport("org.apache.clerezza.{scala => zzscala, _ }")
 		shell.addImport("osgiDsl._")
 		shell
 	}
 
 	def bindInterpreterFactory(f: InterpreterFactory) = {
-		factory = f
+		interpreterFactory = f
 	}
 
 	def unbindInterpreterFactory(f: InterpreterFactory) = {
-		factory = null
+		interpreterFactory = null
+	}
+
+	def bindCommand(c: ShellCommand) = {
+		commands += c
+	}
+
+	def unbindCommand(c: ShellCommand) = {
+		commands -= c
 	}
 }

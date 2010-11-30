@@ -38,6 +38,7 @@ class ConsoleShell()  {
 	var bundleContext: BundleContext = null
 	var stoppedBundle: Option[Bundle] = None
 	var shellOption: Option[Shell] = None
+	var interruptibleIn: InterruptibleInputStream = null
 
 	def activate(componentContext: ComponentContext)= {
 		bundleContext = componentContext.getBundleContext
@@ -48,7 +49,8 @@ class ConsoleShell()  {
 			bundle.stop()
 			stoppedBundle = Some(bundle)
 		}
-		val shell = factory.createShell
+		interruptibleIn = new InterruptibleInputStream(System.in)
+		val shell = factory.createShell(interruptibleIn, System.out)
 		shell.start()
 		shellOption = Some(shell)
 	}
@@ -64,6 +66,7 @@ class ConsoleShell()  {
 			case Some(shell) => shell.stop()
 			case _ =>
 		}
+		interruptibleIn.terminate()
 	}
 
 	def bindShellFactory(f: ShellFactory) = {
