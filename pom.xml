@@ -102,6 +102,8 @@
 		<module>org.apache.clerezza.rdf.simple.storage</module>
 		<module>org.apache.clerezza.rdf.utils</module>
 		<module>org.apache.clerezza.rdf.web</module>
+		<module>org.apache.clerezza.shell</module>
+		<module>org.apache.clerezza.shell.felixshellcommand</module>
 		<module>org.apache.clerezza.templating</module>
 		<module>org.apache.clerezza.templating.seedsnipe</module>
 		<module>org.apache.clerezza.tools.offline</module>
@@ -1119,6 +1121,16 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.concepts.ontologies</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.shell</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.shell.felixshellcommand</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>

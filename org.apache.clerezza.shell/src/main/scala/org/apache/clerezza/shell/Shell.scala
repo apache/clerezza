@@ -26,7 +26,7 @@ import org.osgi.framework.BundleEvent
 import org.osgi.framework.BundleListener
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.Bundle
-import java.io.{File, PrintWriter, Reader, StringWriter, BufferedReader, InputStreamReader, InputStream, Writer}
+import java.io.{File, PrintWriter, Reader, StringWriter, BufferedReader, InputStreamReader, InputStream, Writer, OutputStream}
 import java.lang.reflect.InvocationTargetException
 import java.net._
 import java.security.PrivilegedActionException
@@ -39,6 +39,7 @@ import javax.script.{ScriptEngineFactory => JavaxEngineFactory, Compilable,
 					 SimpleBindings, ScriptException}
 //import scala.collection.immutable.Map
 import scala.actors.DaemonActor
+import scala.collection.immutable
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
 import scala.tools.nsc.io.{AbstractFile, PlainFile, VirtualDirectory}
@@ -56,7 +57,7 @@ import org.apache.clerezza.scala.scripting._
 import java.io.File
 import jline.{ ConsoleReader, ArgumentCompletor, History => JHistory }
 
-class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)  {
+class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputStream, shellCommands: immutable.Set[ShellCommand])  {
 
 
 	private var bundleContext: BundleContext = null
@@ -65,15 +66,12 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 	private var imports = Set[String]()
 
 
-	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(System.out, true)) {
+	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(out, true)) {
 		override def createInterpreter() {
-			println("creating interpreter")
 			interpreter = factory.createInterpreter(out)
-			println("binding bindings")
 			for (binding <- bindings) {
 				interpreter.bind(binding._1, binding._2, binding._3)
 			}
-			println("adding imports")
 			for (v <- imports) {
 				interpreter.interpret("import "+v)
 			}
@@ -83,19 +81,42 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 
 		override val standardCommands: List[Command] = {
 			import CommandImplicits._
+			(for (shellCommand <- shellCommands) yield {
+					LineArg(shellCommand.command, shellCommand.description, (line: String)=> {
+							val (continue, linesToRecord) = shellCommand.execute(line, Shell.this.out)
+							Result(continue, linesToRecord)
+						})
+				}).toList :::
 			List(
-			   NoArgs("help", "print this help message", printHelp),
-			   VarArgs("history", "show the history (optional arg: lines to show)", printHistory),
-			   LineArg("h?", "search the history", searchHistory),
-			   OneArg("load", "load and interpret a Scala file", load),
-			   NoArgs("power", "enable power user mode", power),
-			   NoArgs("quit", "exit the interpreter", () => Result(false, None)),
-			   NoArgs("replay", "reset execution and replay all previous commands", replay),
-			   LineArg("sh", "fork a shell and run a command", runShellCmd),
-			   LineArg("felix", "execute a felix shell command", runShellCmd),
-			   NoArgs("silent", "disable/enable automatic printing of results", verbosity)
+				NoArgs("help", "print this help message", printHelp),
+				VarArgs("history", "show the history (optional arg: lines to show)", printHistory),
+				LineArg("h?", "search the history", searchHistory),
+				OneArg("load", "load and interpret a Scala file", load),
+				NoArgs("power", "enable power user mode", power),
+				NoArgs("quit", "terminate the console shell (use shutdown to shut down clerezza)", () => Result(false, None)),
+				NoArgs("replay", "reset execution and replay all previous commands", replay),
+				LineArg("sh", "fork a shell and run a command", runShellCmd),
+				NoArgs("silent", "disable/enable automatic printing of results", verbosity)
 			)
-		  }
+		}
+
+		override def printHelp() = {
+			out println "This is a scala based console, it supports any Scala expression, as well as the command described below."
+			out println "To access an OSGi service use $[interface]."
+			out println ""
+			out println "Initially the following variables are bound:"
+			for ((name, boundType, value) <- bindings) {
+				out println (name+": "+boundType+" = "+value)
+			}
+			out println ""
+			out println "This are the initial imports: "
+			for (v <- imports) {
+				out println ("import "+v)
+			}
+			out println ""
+			super.printHelp()
+		}
+
 
 		override def main(settings: Settings) {
 			this.settings = settings
@@ -104,23 +125,23 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 			// sets in to some kind of reader depending on environmental cues
 			in = new InteractiveReader() {
 
-			  override lazy val history = Some(History(consoleReader))
-			  override lazy val completion = Option(interpreter) map (x => new Completion(x))
+				override lazy val history = Some(History(consoleReader))
+				override lazy val completion = Option(interpreter) map (x => new Completion(x))
 
-			  val consoleReader = {
-				val r = new jline.ConsoleReader(inStream, out)
-				r setHistory (History().jhistory)
-				r setBellEnabled false
-				completion foreach { c =>
-				  r addCompletor c.jline
-				  r setAutoprintThreshhold 250
+				val consoleReader = {
+					val r = new jline.ConsoleReader(inStream, out)
+					r setHistory (History().jhistory)
+					r setBellEnabled false
+					completion foreach { c =>
+						r addCompletor c.jline
+						r setAutoprintThreshhold 250
+					}
+
+					r
 				}
 
-				r
-			  }
-
-			  def readOneLine(prompt: String) = consoleReader readLine prompt
-			  val interactive = true
+				def readOneLine(prompt: String) = consoleReader readLine prompt
+				val interactive = true
 			}
 
 			loadFiles(settings)
@@ -140,11 +161,21 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: Writer)
 			}
 			finally closeInterpreter()
 		}
+
+		override def printWelcome() {
+			import Properties._
+			val welcomeMsg =
+				"""|Welcome to the Apache Clerezza Console
+				|Console is based on Scala %s (%s, Java %s).
+				|Type in expressions to have them evaluated.
+				|Hint: To execute a Felix-Shell command prepend ":f "
+				|Type :help for more information.""" .
+			stripMargin.format(versionString, javaVmName, javaVersion)
+
+			plushln(welcomeMsg)
+		}
 	}
 	val console: Actor = actor {
-		//cala.tools.nsc.MainGenericRunner.main(Array[String]());
-		//scalaConsole();
-
 		println("starting console")
 		try {
 			interpreterLoop.main(Array[String]())

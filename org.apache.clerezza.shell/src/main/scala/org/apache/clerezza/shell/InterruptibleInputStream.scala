@@ -18,38 +18,44 @@
  */
 package org.apache.clerezza.shell
 
-import org.osgi.service.component.ComponentContext
+import java.io.InputStream
+import scala.actors.Actor
+import scala.actors.Actor._
 
-class OsgiDsl(context: ComponentContext) {
+class InterruptibleInputStream(base: InputStream) extends InputStream {
+	private case object Stop
+	private case object Read
 
-	val bundleContext = context.getBundleContext
+	private var lastReader: Actor = null
 
-	def ps = {
-		for (b <- bundleContext.getBundles) { println(b.getBundleId+" - "+b.getSymbolicName+" "+b.getLocation)}
+	val readerActor = new Actor() {
+		def act() {
+			loop {
+				react {
+					case Stop => exit()
+					case Read => {
+							val ch = base.read()
+							lastReader ! ch
+					}
+				}
+			}
+		}
+	}
+	readerActor.start()
+
+	def read() = {
+		lastReader = self
+		readerActor ! Read
+		self.receive {
+			case x: Int => x
+		}
 	}
 
-	def install(uri: String) = {
-		bundleContext.installBundle(uri)
+	def terminate() {
+		readerActor ! Stop
+		if (lastReader != null) {
+			lastReader ! -1
+		}
 	}
 
-	def start(uri: String) = {
-		val b = install(uri)
-		b.start()
-		b
-	}
-
-	def shutdown {
-		bundleContext.getBundle(0).stop()
-	}
-
-	def $[T](implicit m: Manifest[T]): T = {
-		getService(m.erasure.asInstanceOf[Class[T]])
-	}
-
-	private def getService[T](clazz : Class[T]) : T= {
-		val serviceReference = bundleContext.getServiceReference(clazz.getName)
-		if (serviceReference != null) {
-			bundleContext.getService(serviceReference).asInstanceOf[T]
-		} else null.asInstanceOf[T]
-	}
 }

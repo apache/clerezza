@@ -18,5 +18,9 @@
 				interface="org.apache.clerezza.scala.scripting.InterpreterFactory"
 				cardinality="1..1"
 				bind="bindInterpreterFactory" unbind="unbindInterpreterFactory"/>
+		<reference name="commands"
+				interface="org.apache.clerezza.shell.ShellCommand"
+				cardinality="0..n"
+				bind="bindCommand" unbind="unbindCommand"/>
     </scr:component>
 </components>

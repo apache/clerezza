@@ -51,7 +51,6 @@
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
 						<Export-Package>org.apache.clerezza.shell</Export-Package>
-						<Private-Package>org.apache.clerezza.shell</Private-Package>
 						<Bundle-SymbolicName>org.apache.clerezza.shell</Bundle-SymbolicName>
 					</instructions>
 				</configuration>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.shell.felixshellcommand.FelixShellCommand">
+        <implementation class="org.apache.clerezza.shell.felixshellcommand.FelixShellCommand"/>
+		<service servicefactory="false">
+            <provide interface="org.apache.clerezza.shell.ShellCommand"/>
+        </service>
+        <property name="service.pid" value="org.apache.clerezza.shell.felixshellcommand.FelixShellCommand"/>
+		<reference name="felixShell"
+				interface="org.apache.felix.shell.ShellService"
+				cardinality="1..1"
+				bind="bindFelixShell" unbind="unbindFelixShell"/>
+    </scr:component>
+</components>
