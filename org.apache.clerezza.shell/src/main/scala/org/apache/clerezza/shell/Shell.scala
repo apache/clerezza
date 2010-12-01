@@ -69,11 +69,13 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputS
 	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(out, true)) {
 		override def createInterpreter() {
 			interpreter = factory.createInterpreter(out)
-			for (binding <- bindings) {
-				interpreter.bind(binding._1, binding._2, binding._3)
-			}
-			for (v <- imports) {
-				interpreter.interpret("import "+v)
+			interpreter.beQuietDuring {
+				for (binding <- bindings) {
+					interpreter.bind(binding._1, binding._2, binding._3)
+				}
+				for (v <- imports) {
+					interpreter.interpret("import "+v)
+				}
 			}
 		}
 
