@@ -275,6 +275,16 @@
 			<artifactId>org.apache.clerezza.platform.dashboard.webinterface</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+                <dependency>
+                        <groupId>org.apache.clerezza</groupId>
+                        <artifactId>org.apache.clerezza.shell</artifactId>
+                        <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                        <groupId>org.apache.clerezza</groupId>
+                        <artifactId>org.apache.clerezza.shell.felixshellcommand</artifactId>
+                        <scope>runtime</scope>
+                </dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
