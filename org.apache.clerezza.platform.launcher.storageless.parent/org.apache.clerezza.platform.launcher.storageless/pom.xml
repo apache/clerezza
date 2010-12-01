@@ -327,12 +327,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.shell.tui</artifactId>
-			<scope>provided</scope>
-			<version>1.4.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.shell</artifactId>
 			<scope>provided</scope>
 			<version>1.4.2</version>
