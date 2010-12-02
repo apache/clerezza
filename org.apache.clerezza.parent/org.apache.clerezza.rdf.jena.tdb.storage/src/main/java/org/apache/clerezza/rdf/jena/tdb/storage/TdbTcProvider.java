@@ -99,7 +99,9 @@ public class TdbTcProvider implements WeightedTcProvider {
 				} catch (InterruptedException ex) {
 					interrupt();
 				}
-				syncWithFileSystem();
+				if (!stopRequested) {
+					syncWithFileSystem();
+				}
 			}
 		}
 		
