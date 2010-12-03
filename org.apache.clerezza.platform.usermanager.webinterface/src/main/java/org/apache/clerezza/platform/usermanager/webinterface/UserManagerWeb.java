@@ -501,6 +501,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@Context UriInfo uriInfo) {
 
 		checkUserParam(userName);
+		userManager.deleteUser(userName);
 		LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 		NonLiteral user = getCustomUser(contentGraph, userName);
 		if (user != null) {
@@ -514,12 +515,9 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 				}
 			} finally {
 				writeLock.unlock();
-			}
-			userManager.deleteUser(userName);
-			return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
+			}			
 		}
-		return Response.status(Status.NOT_FOUND).entity(
-				"User " + userName + "does not exist in our database").build();
+		return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
 	}
 
 	private void checkUserParam(String userName) {
