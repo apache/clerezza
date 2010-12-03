@@ -80,7 +80,6 @@ object PathNode2MGraph {
 			new UriRef(URI_PREFIX+path)
 		}
 		def processDirectory(directory: PathNode) {
-			println("processing "+directory)
 			val directoryResource = createUriRef(directory, true)
 			mGraph.add(new TripleImpl(directoryResource, RDF.`type`, HIERARCHY.Collection))
 			for (subPath <- directory.list) {
