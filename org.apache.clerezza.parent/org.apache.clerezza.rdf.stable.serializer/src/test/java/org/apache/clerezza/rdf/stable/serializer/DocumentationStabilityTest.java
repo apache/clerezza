@@ -52,8 +52,7 @@ public class DocumentationStabilityTest {
 				new UriRef("bundle://org.apache.clerezza.platform.documentation/intro")));
 		final Set<String> lines2 = serializeToLines(tc2);
 		lines2.removeAll(lines1);
-		//TODO: the following fails, fix:
-		//Assert.assertEquals(1, lines2.size());
+		Assert.assertEquals(1, lines2.size());
 	}
 	
 	private Set<String> serializeToLines(TripleCollection tc) throws UnsupportedEncodingException {
