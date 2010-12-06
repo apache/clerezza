@@ -25,16 +25,18 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Literal;
+import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -67,8 +69,8 @@ import org.slf4j.LoggerFactory;
  * to provide similar results when serializing graphs. Specifically it tries to
  * label blank nodes deterministically with reasonable complexity.
  *
- * This serilaizer does not guarantee a deterministic result but it may minimze
- * the ammount of modified lines in serilaized output.
+ * This serializer does not guarantee a deterministic result but it may minimize
+ * the amount of modified lines in serialized output.
  *
  * @author Daniel Spicar (daniel.spicar@access.uzh.ch)
  */
@@ -77,7 +79,7 @@ import org.slf4j.LoggerFactory;
 @SupportedFormat({SupportedFormat.N_TRIPLE})
 public class StableSerializerProvider implements SerializingProvider {
 
-	@Property(description="Specifies maximum ammount of blank node " +
+	@Property(description="Specifies maximum amount of blank nodes " +
 	"labeling recursions, may increase performance at the expense of stability " +
 			"(0 = no limit).", intValue=0)
 	public static final String MAX_LABELING_ITERATIONS = "max_labeling_iterations";
@@ -97,7 +99,7 @@ public class StableSerializerProvider implements SerializingProvider {
 			String formatIdentifier) {
 
 		try {
-			List<String> lines = new Vector<String>();
+			List<String> lines = new LinkedList<String>();
 			List<MSG> msgs = decomposeGraphToMSGs(tc);
 			NTriplesSerializer serializer = new NTriplesSerializer();
 
@@ -127,7 +129,7 @@ public class StableSerializerProvider implements SerializingProvider {
 		TripleCollection tmp = new SimpleMGraph();
 		tmp.addAll(tc);
 
-		List<MSG> msgSet = new Vector<MSG>();
+		List<MSG> msgSet = new LinkedList<MSG>();
 
 		while (tmp.size() > 0) {
 			Triple triple = tmp.iterator().next();
@@ -147,43 +149,39 @@ public class StableSerializerProvider implements SerializingProvider {
 
 		boolean containsBNode = false;
 
-		if (triple.getSubject() instanceof BNode) {
+		Resource resource = triple.getSubject();
+		if (resource instanceof BNode) {
 			containsBNode = true;
-			GraphNode gn = new GraphNode(triple.getSubject(), tc);
+		} else {
+			resource = triple.getObject();
+			if (resource instanceof BNode) {
+				containsBNode = true;
+			}
+		}
+		if (containsBNode) {
+			GraphNode gn = new GraphNode(resource, tc);
 			Graph context = gn.getNodeContext();
 			msg.addAll(context);
 			tc.removeAll(context);
 		} else {
-			if ((triple.getObject() instanceof BNode)
-					&& (triple.getSubject() != triple.getObject())) {
-				containsBNode = true;
-				GraphNode gn = new GraphNode(triple.getObject(), tc);
-				Graph context = gn.getNodeContext();
-				msg.addAll(context);
-				tc.removeAll(context);
-			} else {
-				msg.add(triple);
-				tc.remove(triple);
-			}
+			msg.add(triple);
+			tc.remove(triple);
 		}
-
 		return containsBNode;
 	}
-
-
 
 	private List<String> labelBlankNodes(BufferedReader serializedGraph,
 			String prefix) throws IOException {
 
 		String line = null;
-		List<String> lines = new Vector<String>();
+		List<String> lines = new LinkedList<String>();
 
 		long commentedIdentifiers = 0;
 		while ((line = serializedGraph.readLine()) != null) {
 			try {
 				commentedIdentifiers = commentBlankNodeLabels(line,
 						commentedIdentifiers, lines);
-			} catch(IOException ex) {
+			} catch (IOException ex) {
 				logger.error("Exception while trying to parse line: "
 						+ line + "\n{}", ex);
 			}
@@ -404,22 +402,30 @@ public class StableSerializerProvider implements SerializingProvider {
 				//hash is needed only for b-node labelling
 				continue;
 			}
-			StringBuffer input = new StringBuffer();
+			List<String> tripleHashes = new ArrayList<String>(msg.tc.size());
 			for (Triple t : msg.tc) {
+				StringBuilder tripleHash = new StringBuilder();
 				if (!(t.getSubject() instanceof BNode)) {
-					input.append(((UriRef) t.getSubject()).hashCode());
+					tripleHash.append(((UriRef) t.getSubject()).hashCode());
 				}
-				input.append(t.getPredicate().hashCode());
+				tripleHash.append(t.getPredicate().hashCode());
 				if (!(t.getObject() instanceof BNode)) {
 					if (t.getObject() instanceof Literal) {
-						input.append(((Literal) t.getObject()).
+						tripleHash.append(((Literal) t.getObject()).
 								toString().hashCode());
 					} else {
-						input.append(((UriRef) t.getObject()).hashCode());
+						tripleHash.append(((UriRef) t.getObject()).hashCode());
 					}
 				}
+				tripleHashes.add(tripleHash.toString());
 			}
-			md.update(input.toString().getBytes());
+			Collections.sort(tripleHashes);
+			StringBuilder msgHash = new StringBuilder();
+			for(String tripleHash : tripleHashes) {
+				msgHash.append(tripleHash);
+			}
+
+			md.update(msgHash.toString().getBytes());
 
 			String hexString;
 			if(computedHashes.add((hexString = getHashHexString(md.digest())))){
@@ -437,9 +443,8 @@ public class StableSerializerProvider implements SerializingProvider {
 		}
 	}
 
-
 	private String getHashHexString(byte[] hash) {
-		StringBuffer hexString = new StringBuffer();
+		StringBuilder hexString = new StringBuilder();
 		for (int i = 0; i < hash.length; i++) {
 			String hex = Integer.toHexString(0xFF & hash[i]);
 			if (hex.length() == 1) {
