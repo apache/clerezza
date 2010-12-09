@@ -67,16 +67,10 @@ public class FelixContextualMenuGeneratorTest {
 	
 	@Configuration
 	public static Option[] configuration() {
+		System.out.println("configuration");
 		return options(
 				mavenConfiguration(),
-				//using old ds because of issues with 1.0.8
-				mavenBundle().groupId("org.apache.felix").artifactId(
-				"org.apache.felix.scr").version("1.0.6"),
-				mavenBundle().groupId("org.apache.felix").artifactId(
-				"org.apache.felix.eventadmin").version("1.0.0"),
-				mavenBundle().groupId("org.apache.felix").artifactId(
-				"org.apache.felix.metatype").version("1.0.2"),
-				/*dsProfile(),*/
+				dsProfile(),
 				configProfile(),
 				webProfile(),
 				junitBundles(),
@@ -95,9 +89,10 @@ public class FelixContextualMenuGeneratorTest {
 
 	@Before
 	public void registerServices() throws Exception {
+		System.out.println("@Before");
 		webServerExist = waitForWebserver();
 		if (webServerExist) {
-			waitFor(Handler.class, 300000);
+			waitFor(Handler.class, 10000);
 			bundleContext.registerService(GlobalMenuItemsProvider.class.getName(),
 					new GlobalMenuItemsProviderA(), null);
 			Thread.sleep(10000);
