@@ -11,7 +11,7 @@
 	<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.5-incubating-SNAPSHOT</version>
-	<name>FOAF+SSL Keygen :: Base Component</name>
+	<name>Clerezza - FOAF+SSL Keygen :: Base Component</name>
 	<build>
 		<plugins>
 			<plugin>

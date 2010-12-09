@@ -32,6 +32,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package org.apache.clerezza.ssl.keygen.bouncy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.clerezza.ssl.keygen.Certificate;
 import org.apache.clerezza.ssl.keygen.KeygenService;
 import org.apache.felix.scr.annotations.Component;
@@ -61,8 +63,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.apache.clerezza.ssl.keygen.bouncy.DefaultPubKey.create;
 
@@ -87,7 +87,7 @@ public class BouncyKeygenService implements KeygenService {
 	PrivateKey privateKey;
 	X509Certificate certificate;
 	SecureRandom numberGenerator;
-	static transient final Logger log = Logger.getLogger(BouncyKeygenService.class.getName());
+	static transient final Logger log = LoggerFactory.getLogger(BouncyKeygenService.class);
 
 	static {
 		if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
@@ -122,7 +122,7 @@ public class BouncyKeygenService implements KeygenService {
 		try {
 			initialize();
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "could not activate keygen component", e);
+			log.warn("could not activate keygen component", e);
 			throw new Error("could not activate keygen component", e);
 		}
 	}
@@ -196,7 +196,7 @@ public class BouncyKeygenService implements KeygenService {
 	@Override
 	public Certificate createFromPEM(String pemCsr) {
         if (pemCsr == null) {
-            log.warning("pemCsr was null");
+            log.warn("pemCsr was null");
             return null;
         }
 		PEMReader pemReader = new PEMReader(new StringReader(pemCsr));
@@ -211,15 +211,15 @@ public class BouncyKeygenService implements KeygenService {
 					cert.setSubjectPublicKey(create(pkcs10Obj.getPublicKey()));
 					return cert;
 				} catch (NoSuchAlgorithmException e) {
-					log.log(Level.SEVERE, "Don't know algorithm required by certification request ", e);
+					log.warn("Don't know algorithm required by certification request ", e);
 				} catch (NoSuchProviderException e) {
-					log.log(Level.SEVERE, "Don't have provider for certification request ", e);
+					log.warn("Don't have provider for certification request ", e);
 				} catch (InvalidKeyException e) {
-					log.log(Level.WARNING, "Invalid key sent in certificate request", e);
+					log.warn("Invalid key sent in certificate request", e);
 				}
 			}
 		} catch (IOException e) {
-			log.log(Level.SEVERE, "How can this happen? Serious! An IOEXception on a StringReader?", e);
+			log.warn("How can this happen? Serious! An IOEXception on a StringReader?", e);
 		}
 		return null;
 	}
@@ -227,7 +227,7 @@ public class BouncyKeygenService implements KeygenService {
 	@Override
 	public Certificate createFromSpkac(String spkac) {
 		if (spkac == null) {
-            log.warning("SPKAC parameter is null, should be checked before");
+            log.warn("SPKAC parameter is null, should be checked before");
             return null;
         }
 		try {
@@ -237,7 +237,7 @@ public class BouncyKeygenService implements KeygenService {
 			cert.setSubjectPublicKey(create(certRequest.getPublicKey()));
 			return cert;
 		} catch (IOException e) {
-			log.log(Level.SEVERE, "how can an IOError occur when reading a string?", e);
+			log.warn("how can an IOError occur when reading a string?", e);
 		}
 		return null;
 	}
@@ -322,7 +322,7 @@ public class BouncyKeygenService implements KeygenService {
 				  //extensions = X509Extensions.getInstance(taggedObj, false);
 				  // }
 			}
-			log.log(Level.INFO,"Serial number: " + serialNumber
+			log.info("Serial number: " + serialNumber
 			+" Algorithm identifier: " + algorithmIdentifier
 			+" Issuer: " + issuerNm
 			+" Optional validity: " + optionalValidity
@@ -338,7 +338,7 @@ public class BouncyKeygenService implements KeygenService {
 				cert.setSubjectPublicKey(new DefaultRSAPubKey(rsaKeyParam.getExponent(),rsaKeyParam.getModulus()));
 				return cert;
 			} else {
-                log.warning("KeyParam is not an RSA Key but of type"+keyParam.getClass()+" need to implement this.");
+                log.warn("KeyParam is not an RSA Key but of type"+keyParam.getClass()+" need to implement this.");
             }
 //          A lot of poentially useful code developed by Bruno, that shows one one
 //          could use the extra fields in the CRMF structure.
@@ -396,7 +396,7 @@ public class BouncyKeygenService implements KeygenService {
 //					+ attrTypeAndValue.getType());
 //			}
 		} catch (Exception e) {
-			log.log(Level.WARNING,"caught exception in CRMF code",e);
+			log.warn("caught exception in CRMF code",e);
 		}
 		return null;
 	}
