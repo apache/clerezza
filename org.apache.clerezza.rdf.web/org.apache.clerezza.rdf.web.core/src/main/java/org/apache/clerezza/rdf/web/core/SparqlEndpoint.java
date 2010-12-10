@@ -120,6 +120,7 @@ public class SparqlEndpoint {
 	@GET
 	@Path("form")
 	public GraphNode getAvailableTripleCollectionUris(@Context UriInfo uriInfo) {
+		AccessController.checkPermission(new SparqlEndpointAccessPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 		GraphNode graphNode = new GraphNode(new BNode(), new SimpleMGraph());
 		Set<UriRef> tripleCollections = tcManager.listTripleCollections();
@@ -153,6 +154,7 @@ public class SparqlEndpoint {
 			@FormParam("apply-style-sheet") String applyStyleSheet,
             @FormParam("server-side") String serverSide,
 			@FormParam("style-sheet-uri") String styleSheetUri) {
+		AccessController.checkPermission(new SparqlEndpointAccessPermission());
 		logger.info("Executing SPARQL Query: " + queryString);
 		boolean applyStyle;
 		if (applyStyleSheet != null && applyStyleSheet.equals("on")) {
@@ -221,6 +223,7 @@ public class SparqlEndpoint {
 			@QueryParam("default-graph-uri") UriRef defaultGraphUri,
 			@QueryParam("style-sheet-uri") String styleSheetUri,
 			@QueryParam("server-side") String serverSide) {
+		AccessController.checkPermission(new SparqlEndpointAccessPermission());
 		String applyStyleSheet = null;
 		if(styleSheetUri != null){
 			applyStyleSheet = "on";

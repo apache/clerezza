@@ -20,6 +20,7 @@ package org.apache.clerezza.rdf.web.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.security.AccessController;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -79,6 +80,7 @@ public class WebAccess {
 	 */
 	@GET
 	public TripleCollection getTriples(@QueryParam("name") UriRef name) {
+		AccessController.checkPermission(new WebAccessPermission());
 		if (name == null) {
 			Response r = Response.status(Response.Status.BAD_REQUEST)
 					.entity("must specify a graph name")
@@ -108,6 +110,7 @@ public class WebAccess {
 	 */
 	@PUT
 	public void putTriples(@QueryParam("name") UriRef name, TripleCollection triples) {
+		AccessController.checkPermission(new WebAccessPermission());
 		TripleCollection tc;
 		try {
 			tc = tcManager.getTriples(name);
@@ -147,6 +150,7 @@ public class WebAccess {
 	@Consumes("multipart/form")
 	public Response postTriples(MultiPartBody form, @Context UriInfo uriInfo) {
 
+		AccessController.checkPermission(new WebAccessPermission());
 		FormFile[] formFiles = form.getFormFileParameterValues("graph");
 		if (formFiles.length == 0) {
 			responseWithBadRequest("form file parameter 'graph' is missing");
@@ -202,6 +206,7 @@ public class WebAccess {
 	@Path("upload-form")
 	@Produces("application/xhtml+xml")
 	public InputStream getUploadForm() {
+		AccessController.checkPermission(new WebAccessPermission());
 		return getClass().getResourceAsStream("upload-form.xhtml");
 	}
 

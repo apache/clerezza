@@ -126,6 +126,7 @@ public class PlatformConfigGui implements GlobalMenuItemsProvider {
 	 */
 	@GET
 	public GraphNode getConfig() {
+		AccessController.checkPermission(new ConfigGuiAccessPermission());
 		GraphNode node = new GraphNode(new BNode(), new SimpleMGraph());
 		node.addProperty(RDF.type, CONFIG_PAGE);
 		node.addProperty(RDF.type, PLATFORM.HeadedPage);
@@ -137,6 +138,7 @@ public class PlatformConfigGui implements GlobalMenuItemsProvider {
 	@POST
 	public Response setConfig(@FormParam(value = "defaultBaseUri") String defaultBaseUri,
 			@Context UriInfo uriInfo) {
+		AccessController.checkPermission(new ConfigGuiAccessPermission());
 		logger.debug("Setting base-uri to {}", defaultBaseUri);
 		if (defaultBaseUri.charAt(defaultBaseUri.length() - 1) != SLASH) {
 			defaultBaseUri += SLASH;
@@ -159,6 +161,7 @@ public class PlatformConfigGui implements GlobalMenuItemsProvider {
 	public Set<GlobalMenuItem> getMenuItems() {
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
 		try {
+			AccessController.checkPermission(new ConfigGuiAccessPermission());
 			AccessController.checkPermission(
 					new TcPermission(SystemConfig.SYSTEM_GRAPH_URI.toString(),
 					TcPermission.READWRITE));
