@@ -85,6 +85,7 @@ public class GraphManagement implements GlobalMenuItemsProvider {
 
 	@GET
 	public GraphNode mainPage(@Context UriInfo uriInfo) {
+		AccessController.checkPermission(new GraphManagementAppPermission());
 		TrailingSlash.enforcePresent(uriInfo);
 		final SimpleMGraph resultGraph = new SimpleMGraph();
 		GraphNode graphNode = new GraphNode(new BNode(), resultGraph);

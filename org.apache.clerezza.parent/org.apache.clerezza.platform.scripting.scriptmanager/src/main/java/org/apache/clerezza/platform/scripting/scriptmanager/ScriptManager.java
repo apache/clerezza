@@ -204,7 +204,8 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@Path("script-overview")
 	public GraphNode overview(
 			@QueryParam(value = "script") UriRef script) {
-		
+
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		MGraph contentGraph = cgProvider.getContentGraph();
 		BNode resultResource = new BNode();
 		MGraph resultGraph = new SimpleMGraph();
@@ -252,6 +253,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	public GraphNode getScript(
 			@QueryParam(value = "script") UriRef scriptUri){
 
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		BNode resource = new BNode();
 		MGraph resultGraph = new SimpleMGraph();
 
@@ -286,6 +288,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	public GraphNode getScriptList(
 			@QueryParam(value = "resource") NonLiteral resource) {
 
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		if(resource == null) {
 			resource = new BNode();
 		}
@@ -320,7 +323,8 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@GET
 	@Path("script-install")
 	public GraphNode install() {
-		
+
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		MGraph contentGraph = cgProvider.getContentGraph();
 		BNode resultResource = new BNode();
 		MGraph resultGraph = new SimpleMGraph();
@@ -376,6 +380,8 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@Path("install-script")
 	public Response installScript(MultiPartBody form,
 			@Context UriInfo uriInfo) {
+
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 		
 		URI absolutePath = uriInfo.getAbsolutePath();
@@ -463,6 +469,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@Consumes("multipart/form")
 	@Path("update-script")
 	public Response updateScript(MultiPartBody form, @Context UriInfo uriInfo) {
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		UriRef scriptUri =
 				new UriRef(form.getTextParameterValues("scriptUri")[0]);
 
@@ -513,7 +520,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@POST
 	@Path("delete")
 	public Response deleteScript(@FormParam("script") String script) {
-
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		UriRef scriptUri = new UriRef(script);
 		
 
@@ -649,6 +656,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@GET
 	@Path("execution-uri-overview")
 	public GraphNode getExecutionUriOverview() {
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		MGraph contentGraph = cgProvider.getContentGraph();
 		BNode resultResource = new BNode();
 		MGraph resultGraph = new SimpleMGraph();
@@ -676,6 +684,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@Produces("text/plain")
 	public GraphNode getExecutionUris(
 			@QueryParam(value = "script") UriRef script){
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		BNode resultResource = new BNode();
 		MGraph resultGraph = new SimpleMGraph();
 		Iterator<NonLiteral> executionUris =
@@ -711,7 +720,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 			@FormParam( "scriptUri" ) UriRef scriptUri,
 			@FormParam( "executionUri" ) String generatedResourceUri,
 			@Context UriInfo uriInfo){
-		
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		if(!saveExecutionUri(generatedResourceUri, scriptUri)) {
 			logger.warn("Execution URI {} already used.", 
 					generatedResourceUri);
@@ -737,6 +746,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 			@FormParam( "scriptUri" ) UriRef scriptUri,
 			@FormParam( "executionUri" ) UriRef generatedResourceUri){
 
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		deleteExecutionUri((NonLiteral) generatedResourceUri, scriptUri);
 
 		return Response.status(Status.CREATED).build();
@@ -784,6 +794,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@GET
 	@Path("execute")
 	public Object executeScript(@QueryParam("script") String script) {
+		AccessController.checkPermission(new ScriptManagerAppPermission());
 		try {
 			return scriptExecution.execute(new UriRef(script));
 		} catch (NoEngineException ex) {
