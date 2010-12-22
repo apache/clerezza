@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -69,21 +71,28 @@ public interface Renderlet {
 		 * @param type
 		 * @return a intsance of the requested rendering services
 		 */
-		public <T> T getRenderingService(Class<T> type) {
-			ServiceReference serviceReference = bundleContext.getServiceReference(type.getName());
-			if (serviceReference != null) {
-				T resultCandidate = (T) bundleContext.getService(serviceReference);
-				if (resultCandidate.getClass().getAnnotation(WebRenderingService.class) != null) {
-					return resultCandidate;
-				} else {
-					return null;
-				}
-			} else {
-				return null;
-			}
-		}
+		public <T> T getRenderingService(final Class<T> type) {
+			return AccessController.doPrivileged(
+				new PrivilegedAction<T>() {				
 
+					@Override
+					public T run() {
+							ServiceReference serviceReference = bundleContext.getServiceReference(type.getName());
+							if (serviceReference != null) {
+								T resultCandidate = (T) bundleContext.getService(serviceReference);
+								if (resultCandidate.getClass().getAnnotation(WebRenderingService.class) != null) {
+									return resultCandidate;
+								} else {
+									return null;
+								}
+							} else {
+								return null;
+							}
+						}
+					});
+		}
 	}
+	
 	
 	/**
 	 * Renders the data from <code>res</code> with a appropriate rendering
