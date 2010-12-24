@@ -33,7 +33,7 @@ import org.apache.clerezza.rdf.ontologies.EXIF;
 /**
  * This class generates metadata about image data.
  *
- * @author mir
+ * @author mir, hasan
  */
 @Component(metatype=true)
 @Service(MetaDataGenerator.class)
@@ -45,8 +45,10 @@ public class ImageMetaDataGenerator implements MetaDataGenerator {
 		if (mediaType.getType().startsWith("image")) {
 			try {
 				BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(data));
+				node.deleteProperties(EXIF.width);
+				node.deleteProperties(EXIF.height);
 				node.addProperty(EXIF.width, LiteralFactory.getInstance().
-						createTypedLiteral(new Integer(buffImage.getWidth())));
+						createTypedLiteral(Integer.valueOf(buffImage.getWidth())));
 				node.addProperty(EXIF.height, LiteralFactory.getInstance().
 						createTypedLiteral(Integer.valueOf(buffImage.getHeight())));
 			} catch (IOException ex) {
