@@ -48,7 +48,7 @@ class ShellFactory()  {
 		val shell = new Shell(interpreterFactory, in, out, commands)
 		//shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
 		//shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
-		shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext))
+		shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext, out))
 		shell.addImport("org.apache.clerezza.{scala => zzscala, _ }")
 		shell.addImport("osgiDsl._")
 		shell
