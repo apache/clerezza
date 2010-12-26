@@ -18,14 +18,18 @@
  */
 package org.apache.clerezza.shell
 
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.io.PrintWriter
 import org.osgi.service.component.ComponentContext
 
-class OsgiDsl(context: ComponentContext) {
+class OsgiDsl(context: ComponentContext, outputStream: OutputStream) {
 
+	lazy val out = new PrintWriter(new OutputStreamWriter(outputStream, "utf-8"), true)
 	val bundleContext = context.getBundleContext
 
 	def ps = {
-		for (b <- bundleContext.getBundles) { println(b.getBundleId+" - "+b.getSymbolicName+" "+b.getLocation)}
+		for (b <- bundleContext.getBundles) {out.println(b.getBundleId+" - "+b.getSymbolicName+" "+b.getLocation)}
 	}
 
 	def install(uri: String) = {
