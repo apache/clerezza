@@ -64,6 +64,7 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputS
 
 	private var bindings = Set[(String, String, Any)]()
 	private var imports = Set[String]()
+	private var terminationListeners = Set[Shell.TerminationListener]();
 
 
 	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(out, true)) {
@@ -182,6 +183,9 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputS
 		try {
 			interpreterLoop.main(Array[String]())
 		} finally {
+			for (l <- terminationListeners) {
+				l.terminated
+			}
 			println("console terminated")
 		}
 	}
@@ -203,6 +207,17 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputS
 		imports += importValue
 	}
 
+	def addTerminationListener(l: Shell.TerminationListener) {
+		terminationListeners += l
+	}
 
+	def removeTerminationListener(l: Shell.TerminationListener) {
+		terminationListeners -= l
+	}
 
+}
+object Shell {
+	trait TerminationListener {
+		def terminated: Unit
+	}
 }
