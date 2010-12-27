@@ -25,6 +25,8 @@ import org.osgi.service.component.ComponentContext;
 
 import java.io.InputStream
 import java.io.OutputStream
+import java.security.AccessController
+import java.security.PrivilegedAction
 import org.apache.clerezza.scala.scripting.InterpreterFactory
 
 
@@ -45,13 +47,18 @@ class ShellFactory()  {
 	}
 
 	def createShell(in: InputStream, out: OutputStream) = {
-		val shell = new Shell(interpreterFactory, in, out, commands)
-		//shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
-		//shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
-		shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext, out))
-		shell.addImport("org.apache.clerezza.{scala => zzscala, _ }")
-		shell.addImport("osgiDsl._")
-		shell
+		AccessController.checkPermission(new ShellPermission())
+		AccessController.doPrivileged(new PrivilegedAction[Shell] {
+				override def run() = {
+					val shell = new Shell(interpreterFactory, in, out, commands)
+					//shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
+					//shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
+					shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext, out))
+					shell.addImport("org.apache.clerezza.{scala => zzscala, _ }")
+					shell.addImport("osgiDsl._")
+					shell
+				}
+			})
 	}
 
 	def bindInterpreterFactory(f: InterpreterFactory) = {
