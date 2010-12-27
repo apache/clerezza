@@ -44,15 +44,15 @@ import org.wymiwyg.wrhapi.util.MessageBody2Read;
  */
 @Component
 @Service(WeightedAuthenticationMethod.class)
-@Property(name="weight", intValue=10)
-public class BasicAuthentication implements WeightedAuthenticationMethod{
-	
+@Property(name = "weight", intValue = 10)
+public class BasicAuthentication implements WeightedAuthenticationMethod {
+
 	/**
 	 *	weight of the authentication method
 	 */
 	private int weight = 10;
-
-        @Reference
+	
+	@Reference
 	AuthenticationChecker authenticationChecker;
 
 	public void activate(ComponentContext componentContext) {
@@ -74,7 +74,7 @@ public class BasicAuthentication implements WeightedAuthenticationMethod{
 				password = "";
 			}
 			try {
-				if (authenticationChecker.authenticate(userName, password)){
+				if (authenticationChecker.authenticate(userName, password)) {
 					return userName;
 				} else {
 					throw new LoginException(LoginException.PASSWORD_NOT_MATCHING);
@@ -88,21 +88,21 @@ public class BasicAuthentication implements WeightedAuthenticationMethod{
 	}
 
 	@Override
-	public boolean writeLoginResponse(Request request,Response response, Throwable cause) throws HandlerException{
+	public boolean writeLoginResponse(Request request, Response response, Throwable cause) throws HandlerException {
 		if (cause == null || cause instanceof AccessControlException) {
-			setUnauthorizedResponse(response, 
-			"<html><body>unauthorized</body></html>");
+			setUnauthorizedResponse(response,
+					"<html><body>unauthorized</body></html>");
 			return true;
 		}
 		if (cause instanceof LoginException) {
 			LoginException loginException = (LoginException) cause;
-			String type = loginException.getType();		
-			if (type.equals(LoginException.PASSWORD_NOT_MATCHING)){
+			String type = loginException.getType();
+			if (type.equals(LoginException.PASSWORD_NOT_MATCHING)) {
 				setUnauthorizedResponse(response,
 						"<html><body>Username and password do not match</body></html>");
 				return true;
 			}
-			if (type.equals(LoginException.USER_NOT_EXISTING)){
+			if (type.equals(LoginException.USER_NOT_EXISTING)) {
 				setUnauthorizedResponse(response,
 						"<html><body>User does not exist</body></html>");
 				return true;
@@ -116,8 +116,7 @@ public class BasicAuthentication implements WeightedAuthenticationMethod{
 		response.setResponseStatus(ResponseStatus.UNAUTHORIZED);
 		response.addHeader(HeaderName.WWW_AUTHENTICATE,
 				"Basic realm=\"Clerezza Platform authentication needed\"");
-		final java.io.InputStream pipedIn = new ByteArrayInputStream(message
-				.getBytes());
+		final java.io.InputStream pipedIn = new ByteArrayInputStream(message.getBytes());
 		response.setHeader(HeaderName.CONTENT_LENGTH, message.getBytes().length);
 		response.setBody(new MessageBody2Read() {
 
