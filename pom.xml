@@ -104,6 +104,7 @@
 		<module>org.apache.clerezza.rdf.web</module>
 		<module>org.apache.clerezza.shell</module>
 		<module>org.apache.clerezza.shell.felixshellcommand</module>
+		<module>org.apache.clerezza.sshshell</module>
 		<module>org.apache.clerezza.templating</module>
 		<module>org.apache.clerezza.templating.seedsnipe</module>
 		<module>org.apache.clerezza.tools.offline</module>
@@ -569,6 +570,21 @@
 				<version>2.4</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.mina</groupId>
+				<artifactId>mina-core</artifactId>
+				<version>2.0.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.sshd</groupId>
+				<artifactId>sshd-core</artifactId>
+				<version>0.5.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.sshd</groupId>
+				<artifactId>sshd-pam</artifactId>
+				<version>0.5.0</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.clerezza.ext</groupId>
 				<artifactId>org.jruby</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
@@ -637,6 +653,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.rdf.web.ontologies</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.sshshell</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
