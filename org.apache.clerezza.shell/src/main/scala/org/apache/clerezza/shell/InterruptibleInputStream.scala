@@ -19,6 +19,7 @@
 package org.apache.clerezza.shell
 
 import java.io.InputStream
+import java.nio.channels.ClosedByInterruptException
 import scala.actors.Actor
 import scala.actors.Actor._
 
@@ -26,7 +27,7 @@ class InterruptibleInputStream(base: InputStream) extends InputStream {
 	private case object Stop
 	private case object Read
 
-	private var lastReader: Actor = null
+	private var readingThread: Thread = null
 
 	val readerActor = new Actor() {
 		def act() {
@@ -34,8 +35,16 @@ class InterruptibleInputStream(base: InputStream) extends InputStream {
 				react {
 					case Stop => exit()
 					case Read => {
-							val ch = base.read()
-							lastReader ! ch
+							readingThread = Thread.currentThread
+							val ch = try {
+								 base.read()
+							} catch {
+								case e: ClosedByInterruptException => {
+										-1
+								}
+							}
+							readingThread = null
+							sender ! ch
 					}
 				}
 			}
@@ -44,7 +53,6 @@ class InterruptibleInputStream(base: InputStream) extends InputStream {
 	readerActor.start()
 
 	def read() = {
-		lastReader = self
 		readerActor ! Read
 		self.receive {
 			case x: Int => x
@@ -53,8 +61,9 @@ class InterruptibleInputStream(base: InputStream) extends InputStream {
 
 	def terminate() {
 		readerActor ! Stop
-		if (lastReader != null) {
-			lastReader ! -1
+		val currentReadingThread = readingThread
+		if (currentReadingThread != null) {
+			currentReadingThread.interrupt()
 		}
 	}
 
