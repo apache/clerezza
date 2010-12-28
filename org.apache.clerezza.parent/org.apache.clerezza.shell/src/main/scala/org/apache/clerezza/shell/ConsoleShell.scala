@@ -22,7 +22,10 @@ package org.apache.clerezza.shell;
 
 import org.osgi.framework.BundleContext
 import org.osgi.service.component.ComponentContext;
+import java.nio.channels.Channels
 import org.osgi.framework.Bundle
+import java.io.FileDescriptor
+import java.io.FileInputStream
 import java.net._
 import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
@@ -49,7 +52,9 @@ class ConsoleShell()  {
 			bundle.stop()
 			stoppedBundle = Some(bundle)
 		}
-		interruptibleIn = new InterruptibleInputStream(System.in)
+		val in =  Channels.newInputStream(
+            (new FileInputStream(FileDescriptor.in)).getChannel());
+		interruptibleIn = new InterruptibleInputStream(in)
 		val shell = factory.createShell(interruptibleIn, System.out)
 		shell.start()
 		shellOption = Some(shell)

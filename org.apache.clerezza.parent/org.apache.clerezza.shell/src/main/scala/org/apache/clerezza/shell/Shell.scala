@@ -46,8 +46,6 @@ import scala.tools.nsc.io.{AbstractFile, PlainFile, VirtualDirectory}
 import scala.tools.nsc.util._
 import scala.tools.nsc.symtab.SymbolLoaders
 import scala.tools.nsc.reporters.ConsoleReporter
-import scala.tools.nsc.reporters.ConsoleReporter
-import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.reporters.Reporter
 import scala.tools.util.PathResolver
 import scala.tools.nsc.util.{ClassPath, JavaClassPath}
@@ -178,15 +176,16 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputS
 			plushln(welcomeMsg)
 		}
 	}
-	val console: Actor = actor {
-		println("starting console")
-		try {
-			interpreterLoop.main(Array[String]())
-		} finally {
-			for (l <- terminationListeners) {
-				l.terminated
+	val console: Actor = new DaemonActor {
+		def act() {
+			try {
+				interpreterLoop.main(Array[String]())
+			} finally {
+				for (l <- terminationListeners) {
+					l.terminated
+				}
+				println("console terminated")
 			}
-			println("console terminated")
 		}
 	}
 
