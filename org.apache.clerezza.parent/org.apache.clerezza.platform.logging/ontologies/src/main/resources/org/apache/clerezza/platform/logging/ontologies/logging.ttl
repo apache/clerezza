@@ -1,0 +1,14 @@
+@prefix : <http://clerezza.apache.org/2010/12/03/logging#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix skos: <http://www.w3.org/2008/05/skos#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+
+: a owl:Ontology.
+
+:LoggingConfigPage a rdfs:Class;
+	skos:definition "A page to configure logging."@en.
+
+:loggingConfig a rdf:Property;
+	skos:definition "Points to the logging configuration pertinent to the subject."@en.
