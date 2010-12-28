@@ -1,0 +1,11 @@
+def logging(s: Any) = new UriRef("http://clerezza.apache.org/2010/12/03/logging#" + s)
+
+<div id="tx-content">
+	<h3>Logging Configuration:</h3>
+	<form action="setConfiguration" method="POST">
+	<textarea name="configuration" style="width: 80%; height: 20em">{res/logging("loggingConfig")*}</textarea>
+	<br/>
+	<input type="submit" value="Save" />
+	</form>
+
+</div>
