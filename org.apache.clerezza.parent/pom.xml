@@ -1071,6 +1071,21 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.logging.core</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.logging.initializer</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.platform.logging.ontologies</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.platform.pagemanager</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
