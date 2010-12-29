@@ -67,7 +67,6 @@ public class FelixContextualMenuGeneratorTest {
 	
 	@Configuration
 	public static Option[] configuration() {
-		System.out.println("configuration");
 		return options(
 				mavenConfiguration(),
 				dsProfile(),
