@@ -18,6 +18,10 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FeatureStructure;
@@ -129,6 +133,35 @@ public class UIMAUtilsTest {
     } catch (Exception e) {
       // if here, test passed
     }
+  }
+
+  @Test
+  public void testEnhanceNode() {
+
+    try {
+      JCas cas = getCAS().getJCas();
+      cas.setDocumentText(DOCUMENT_TEXT);
+
+      Annotation simpleAnnotation = new Annotation(cas);
+      simpleAnnotation.setBegin(10);
+      simpleAnnotation.setEnd(24);
+      simpleAnnotation.addToIndexes();
+
+      Annotation secondSimpleAnnotation = new Annotation(cas);
+      secondSimpleAnnotation.setBegin(32);
+      secondSimpleAnnotation.setEnd(44);
+      secondSimpleAnnotation.addToIndexes();
+
+      MGraph mGraph = new SimpleMGraph();
+      GraphNode node = new GraphNode(new UriRef(cas.toString()), mGraph);
+
+      UIMAUtils.enhanceNode(node, UIMAUtils.getAllAnnotationsOfType(Annotation.type, cas));
+
+
+    } catch (Exception e) {
+      fail(e.getLocalizedMessage());
+    }
+
   }
 
 

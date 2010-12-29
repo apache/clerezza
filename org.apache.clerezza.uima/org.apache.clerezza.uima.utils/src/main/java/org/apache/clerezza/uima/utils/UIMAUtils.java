@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.uima.ontologies.ENTITY;
 import org.apache.clerezza.uima.utils.exception.FeatureStructureNotFoundException;
@@ -42,6 +43,7 @@ import java.util.concurrent.locks.Lock;
 public class UIMAUtils {
 
   private final static Logger log = LoggerFactory.getLogger(UIMAUtils.class);
+  private static final String COVERED_TEXT = "coveredText";
 
   public static List<FeatureStructure> getAllFSofType(int type, JCas cas)
           throws FeatureStructureNotFoundException {
@@ -87,7 +89,8 @@ public class UIMAUtils {
       lock.lock();
       for (FeatureStructure uimaObject : uimaObjects) {
         // create a new node for the current Annotation
-        GraphNode annotationNode = new GraphNode(ENTITY.Annotation, existingNode.getGraph());
+        GraphNode annotationNode = new GraphNode(new UriRef(new StringBuilder(ENTITY.Annotation.getUnicodeString()).
+                append(uimaObject.hashCode()).toString()), existingNode.getGraph());
         log.info(new StringBuilder("Node created for Type ").append(uimaObject.getType().toString()).toString());
 
         // set Annotation specific properties for the node
@@ -95,6 +98,16 @@ public class UIMAUtils {
           Annotation annotation = (Annotation) uimaObject;
           annotationNode.addPropertyValue(ENTITY.begin, annotation.getBegin());
           annotationNode.addPropertyValue(ENTITY.end, annotation.getEnd());
+
+          GraphNode coveredTextNode = new GraphNode(new UriRef(new StringBuilder(ENTITY.Feature.getUnicodeString()).
+                  append(COVERED_TEXT.hashCode() / uimaObject.hashCode()).toString()), annotationNode.getGraph());
+          coveredTextNode.addPropertyValue(ENTITY.featureName, COVERED_TEXT);
+          log.info(new StringBuilder("Node created for Feature ").append(COVERED_TEXT).toString());
+          String coveredText = annotation.getCoveredText();
+          coveredTextNode.addPropertyValue(ENTITY.featureValue, coveredText);
+          log.info(new StringBuilder("Added feature ").append(COVERED_TEXT).append(" with value ")
+                  .append(coveredText).toString());
+
         }
 
         //XXX : in OpenCalais the type is an URI so it maybe reasonable to put another node here
@@ -105,7 +118,8 @@ public class UIMAUtils {
         for (Feature feature : type.getFeatures()) {
 
           // create a new feature node
-          GraphNode featureNode = new GraphNode(ENTITY.Feature, existingNode.getGraph());
+          GraphNode featureNode = new GraphNode(new UriRef(new StringBuilder(ENTITY.Feature.getUnicodeString()).
+                  append(feature.hashCode() / uimaObject.hashCode()).toString()), annotationNode.getGraph());
           log.info(new StringBuilder("Node created for Feature ").append(feature.getName()).toString());
 
           // set feature name and value if not null
@@ -114,8 +128,7 @@ public class UIMAUtils {
           String featureValue = null;
           try {
             featureValue = uimaObject.getFeatureValueAsString(feature);
-          }
-          catch (Exception e) {
+          } catch (Exception e) {
             // do nothing at the moment
             log.warn(new StringBuilder("Unable to create feature value - ").append(e.toString()).toString());
           }
