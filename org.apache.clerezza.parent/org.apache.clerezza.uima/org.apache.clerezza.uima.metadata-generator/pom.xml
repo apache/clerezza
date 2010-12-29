@@ -37,7 +37,7 @@
       <systemPath>${project.basedir}/../org.apache.clerezza.uima.utils/lib/org.apache.uima.opencalais_2.3.1.SNAPSHOT.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>org.apache.clerezza.uima</groupId>
+      <groupId>org.apache.clerezza</groupId>
       <artifactId>org.apache.clerezza.uima.ontologies</artifactId>
       <version>0.1-incubating-SNAPSHOT</version>
     </dependency>
