@@ -159,11 +159,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.enrichment</artifactId>
 			<scope>runtime</scope>
 		</dependency>
