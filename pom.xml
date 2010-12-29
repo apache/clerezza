@@ -61,6 +61,7 @@
 		<module>org.apache.clerezza.platform.launcher.sesame</module>
 		<module>org.apache.clerezza.platform.launcher.storageless.parent</module>
 		<module>org.apache.clerezza.platform.launcher.tdb</module>
+		<module>org.apache.clerezza.platform.logging</module>
 		<module>org.apache.clerezza.platform.mail</module>
 		<module>org.apache.clerezza.platform.scripting</module>
 		<module>org.apache.clerezza.platform.scripting.scriptmanager</module>
