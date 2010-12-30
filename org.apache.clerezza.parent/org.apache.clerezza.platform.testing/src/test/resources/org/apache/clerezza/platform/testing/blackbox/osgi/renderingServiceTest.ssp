@@ -1,0 +1,3 @@
+import org.apache.clerezza.platform.testing.blackbox.osgi._
+
+$[SomeContentWebRenderingService].getSomeContent
