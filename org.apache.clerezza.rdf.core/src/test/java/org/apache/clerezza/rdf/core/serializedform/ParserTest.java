@@ -72,18 +72,16 @@ public class ParserTest {
 	static class ParsingProviderA implements ParsingProvider {
 
 		@Override
-		public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+		public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 			providerAInvoked = true;
-			return null;
 		}
 	};
 	@SupportedFormat("application/x-fantasy2+rdf")
 	static class ParsingProviderB implements ParsingProvider {
 
 		@Override
-		public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+		public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 			providerBInvoked = true;
-			return null;
 		}
 	};
 }

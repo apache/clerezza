@@ -79,9 +79,10 @@ public class RdfJsonSerializerProviderTest {
 		ParsingProvider parsingProvider = new RdfJsonParsingProvider();
 		ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph
 				.toByteArray());
-		Graph graphFromJsonRdf = parsingProvider.parse(jsonIn,
-				"application/rdf+json", null);
-		Assert.assertEquals(graphFromJsonRdf.size(), 6);
+		MGraph deserializedMGraph = new SimpleMGraph();
+		parsingProvider.parse(deserializedMGraph, jsonIn, "application/rdf+json", null);
+		Assert.assertEquals(6, deserializedMGraph.size());
+		Assert.assertEquals(mGraph.getGraph(), deserializedMGraph.getGraph());
 
 	}
 }

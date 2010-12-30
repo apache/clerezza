@@ -55,10 +55,9 @@ import org.apache.clerezza.rdf.core.serializedform.UnsupportedParsingFormatExcep
 public class JenaParserProvider implements ParsingProvider {
 
 	@Override
-	public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+	public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 		String jenaFormat = getJenaFormat(formatIdentifier);
-		MGraph mResult = new SimpleMGraph();
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mResult);
+		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(target);
 		Model model = ModelFactory.createModelForGraph(graph);
 		String base;
 		if (baseUri == null) {
@@ -67,7 +66,6 @@ public class JenaParserProvider implements ParsingProvider {
 			base = baseUri.getUnicodeString();
 		}
 		model.read(serializedGraph, base, jenaFormat);
-		return mResult.getGraph();
 	}
 
 	private String getJenaFormat(String formatIdentifier) {

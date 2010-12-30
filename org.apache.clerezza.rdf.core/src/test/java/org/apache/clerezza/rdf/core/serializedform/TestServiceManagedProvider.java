@@ -19,9 +19,9 @@
 package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.InputStream;
+import org.apache.clerezza.rdf.core.MGraph;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
 
 /**
@@ -36,11 +36,10 @@ public class TestServiceManagedProvider implements ParsingProvider {
 	private static boolean parseInvoked;
 
 	@Override
-	public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+	public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 		parseInvoked = true;
-		return null;
 	}
-
+	
 	@Test
 	public void registerOneProvider() {
 		Parser parser = Parser.getInstance();

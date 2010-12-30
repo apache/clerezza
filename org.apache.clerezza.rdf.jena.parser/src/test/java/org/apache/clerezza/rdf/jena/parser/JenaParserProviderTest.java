@@ -23,8 +23,10 @@ import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
-import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 
 
 
@@ -42,16 +44,9 @@ public class JenaParserProviderTest {
 		ParsingProvider provider = new JenaParserProvider();
 		InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
 		InputStream turtleIn = getClass().getResourceAsStream("test-04.ttl");
-		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt", null);
-		Graph graphFromTurtle = provider.parse(turtleIn, "text/turtle", null);
-		//due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just check
-		//that the two graphs are equals
-		Assert.assertEquals(graphFromNTriples.size(), graphFromTurtle.size());
-		Assert.assertEquals(graphFromNTriples.hashCode(), graphFromTurtle.hashCode());
-		//isomorphism delegated to jena
-		JenaGraph jenaGraphFromNTriples = new JenaGraph(graphFromNTriples);
-		JenaGraph jenaGraphFromTurtle = new JenaGraph(graphFromTurtle);
-		Assert.assertTrue(jenaGraphFromNTriples.isIsomorphicWith(jenaGraphFromTurtle));
+		Graph graphFromNTriples = parse(provider, nTriplesIn, "text/rdf+nt", null);
+		Graph graphFromTurtle = parse(provider, turtleIn, "text/turtle", null);
+		Assert.assertEquals(graphFromNTriples, graphFromTurtle);
 	}
 
 	/*
@@ -62,16 +57,9 @@ public class JenaParserProviderTest {
 		ParsingProvider provider = new JenaParserProvider();
 		InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
 		InputStream rdfIn = getClass().getResourceAsStream("test-04.rdf");
-		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt", null);
-		Graph graphFromTurtle = provider.parse(rdfIn, "application/rdf+xml", null);
-		//due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just check
-		//that the two graphs are equals
-		Assert.assertEquals(graphFromNTriples.size(), graphFromTurtle.size());
-		Assert.assertEquals(graphFromNTriples.hashCode(), graphFromTurtle.hashCode());
-		//isomorphism delegated to jena
-		JenaGraph jenaGraphFromNTriples = new JenaGraph(graphFromNTriples);
-		JenaGraph jenaGraphFromTurtle = new JenaGraph(graphFromTurtle);
-		Assert.assertTrue(jenaGraphFromNTriples.isIsomorphicWith(jenaGraphFromTurtle));
+		Graph graphFromNTriples = parse(provider, nTriplesIn, "text/rdf+nt", null);
+		Graph graphFromTurtle = parse(provider, rdfIn, "application/rdf+xml", null);
+		Assert.assertEquals(graphFromNTriples, graphFromTurtle);
 	}
 	
 	@Test
@@ -79,16 +67,15 @@ public class JenaParserProviderTest {
 		ParsingProvider provider = new JenaParserProvider();
 		InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
 		InputStream turtleIn = getClass().getResourceAsStream("test-04.ttl");
-		Graph graphFromNTriples = provider.parse(nTriplesIn, "text/rdf+nt", null);
-		Graph graphFromTurtle = provider.parse(turtleIn, "text/turtle;charset=UTF-", null);
-		//due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just check
-		//that the two graphs are equals
-		Assert.assertEquals(graphFromNTriples.size(), graphFromTurtle.size());
-		Assert.assertEquals(graphFromNTriples.hashCode(), graphFromTurtle.hashCode());
-		//isomorphism delegated to jena
-		JenaGraph jenaGraphFromNTriples = new JenaGraph(graphFromNTriples);
-		JenaGraph jenaGraphFromTurtle = new JenaGraph(graphFromTurtle);
-		Assert.assertTrue(jenaGraphFromNTriples.isIsomorphicWith(jenaGraphFromTurtle));
+		Graph graphFromNTriples = parse(provider, nTriplesIn, "text/rdf+nt", null);
+		Graph graphFromTurtle = parse(provider, turtleIn, "text/turtle;charset=UTF-", null);
+		Assert.assertEquals(graphFromNTriples, graphFromTurtle);
+	}
+
+	private Graph parse(ParsingProvider parsingProvider, InputStream in, String type, UriRef base) {
+		MGraph simpleMGraph = new SimpleMGraph();
+		parsingProvider.parse(simpleMGraph, in, type, base);
+		return simpleMGraph.getGraph();
 	}
 
 }

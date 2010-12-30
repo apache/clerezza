@@ -46,6 +46,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.SecuredMGraph;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
@@ -241,8 +242,10 @@ public class LanguageService {
 			throw new RuntimeException("no file found");
 		}
 		try {
-			lingvojGraph = parser.parse(config.openStream(),
+			MGraph lingvojMGraph = new SimpleMGraph();
+			parser.parse(lingvojMGraph, config.openStream(),
 					SupportedFormat.RDF_XML, null);
+			lingvojGraph = lingvojMGraph.getGraph();
 			softLingvojGraph = new SoftReference<Graph>(lingvojGraph);
 			return lingvojGraph;
 		} catch (IOException ex) {

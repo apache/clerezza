@@ -57,9 +57,8 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
-	public Graph parse(InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+	public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 
-		MGraph mGraph = new SimpleMGraph();
 		JSONParser parser = new JSONParser();
 		InputStreamReader reader = new InputStreamReader(serializedGraph);
 		try {
@@ -68,7 +67,7 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 			for (String keyString : subjects.keySet()) {
 				NonLiteral key = subjects.get(keyString);
 				JSONObject predicates = (JSONObject) root.get(keyString);
-				addValuesToGraph(key, subjects, predicates, mGraph);
+				addValuesToGraph(key, subjects, predicates, target);
 			}
 		} catch (IOException ioe) {
 			logger.error(ioe.getMessage());
@@ -77,7 +76,6 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 			logger.error(pe.getMessage());
 			throw new RuntimeException(pe.getMessage());
 		}
-		return mGraph.getGraph();
 	}
 
 	private Map<String, NonLiteral> createSubjectsFromJSONObjects(

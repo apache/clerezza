@@ -30,7 +30,9 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 
 /**
  * This singleton class provides a method <code>parse</code> to transform 
@@ -125,7 +127,55 @@ public class Parser {
 			String formatIdentifier) throws UnsupportedFormatException {
 		return parse(serializedGraph, formatIdentifier, null);
 	}
+
+	/**
+	 * Parses a serialized Graph from an InputStream. This delegates the
+	 * processing to the provider registered for the specified format, if
+	 * the formatIdentifier contains a ';'-character only the section before
+	 * that character is used for choosing the provider.
+	 *
+	 * @param target the MGraph to which the parsed triples are added
+	 * @param serializedGraph an inputstream with the serialization
+	 * @param formatIdentifier a string identifying the format (usually the MIME-type)
+	 * @throws UnsupportedFormatException
+	 */
+	public void parse(MGraph target, InputStream serializedGraph,
+			String formatIdentifier) throws UnsupportedFormatException {
+		parse(target, serializedGraph, formatIdentifier, null);
+	}
+
+	/**
+	 * Parses a serialized Graph from an InputStream. This delegates the
+	 * processing to the provider registered for the specified format, if
+	 * the formatIdentifier contains a ';'-character only the section before
+	 * that character is used for choosing the provider.
+	 *
+	 * @param serializedGraph an inputstream with the serialization
+	 * @param formatIdentifier a string identifying the format (usually the MIME-type)
+	 * @param baseUri the uri against which relative uri-refs are evaluated
+	 * @return the graph read from the stream
+	 * @throws UnsupportedFormatException
+	 */
 	public Graph parse(InputStream serializedGraph,
+			String formatIdentifier, UriRef baseUri) throws UnsupportedFormatException {
+		MGraph mGraph = new SimpleMGraph();
+		parse(mGraph, serializedGraph, formatIdentifier, baseUri);
+		return mGraph.getGraph();
+	}
+
+	/**
+	 * Parses a serialized Graph from an InputStream. This delegates the
+	 * processing to the provider registered for the specified format, if
+	 * the formatIdentifier contains a ';'-character only the section before
+	 * that character is used for choosing the provider.
+	 *
+	 * @param target the MGraph to which the parsed triples are added
+	 * @param serializedGraph an inputstream with the serialization
+	 * @param formatIdentifier a string identifying the format (usually the MIME-type)
+	 * @param baseUri the uri against which relative uri-refs are evaluated
+	 * @throws UnsupportedFormatException
+	 */
+	public void parse(MGraph target, InputStream serializedGraph,
 			String formatIdentifier, UriRef baseUri) throws UnsupportedFormatException {
 		String deParameterizedIdentifier;
 		int semicolonPos = formatIdentifier.indexOf(';');
@@ -138,7 +188,7 @@ public class Parser {
 		if (provider == null) {
 			throw new UnsupportedParsingFormatException(formatIdentifier);
 		}
-		return provider.parse(serializedGraph, formatIdentifier, baseUri);
+		provider.parse(target, serializedGraph, formatIdentifier, baseUri);
 	}
 	
 	/**
