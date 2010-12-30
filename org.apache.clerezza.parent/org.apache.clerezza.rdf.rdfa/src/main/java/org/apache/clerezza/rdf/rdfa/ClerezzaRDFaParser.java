@@ -40,20 +40,19 @@ import org.xml.sax.XMLReader;
 public abstract class ClerezzaRDFaParser implements ParsingProvider {
 
 	private static Logger log = LoggerFactory.getLogger(ClerezzaRDFaParser.class);
-	private MGraph mGraph = new SimpleMGraph();
+
 
 	@Override
-	public Graph parse(InputStream in, String formatIdentifier, UriRef baseUri) {
+	public void parse(MGraph target, InputStream in, String formatIdentifier, UriRef baseUri) {
 		try {
-			parse(new InputSource(in), baseUri);
+			parse(target, new InputSource(in), baseUri);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return mGraph.getGraph();
 	}
 
-	private void parse(InputSource in, UriRef baseURI) throws IOException {
-		Parser parser = new Parser(new ClerezzaStatementSink(mGraph));
+	private void parse(MGraph target, InputSource in, UriRef baseURI) throws IOException {
+		Parser parser = new Parser(new ClerezzaStatementSink(target));
 		if (baseURI != null) {
 			parser.setBase(baseURI.getUnicodeString());
 		} else {

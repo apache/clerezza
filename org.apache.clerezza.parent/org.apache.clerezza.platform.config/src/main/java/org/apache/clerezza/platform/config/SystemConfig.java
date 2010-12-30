@@ -75,19 +75,19 @@ public class SystemConfig {
 			tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI);
 		} catch (NoSuchEntityException nsee) {
 			MGraph systemGraph = tcManager.createMGraph(Constants.SYSTEM_GRAPH_URI);
-			Graph configGraph = readConfigGraphFile();
 			logger.info("Add initial configuration to system graph");
-			systemGraph.addAll(configGraph);
+			readConfigGraphFile(systemGraph);
+			
 		}
 	}
 
-	private Graph readConfigGraphFile() {
+	private void readConfigGraphFile(MGraph mGraph) {
 		URL config = getClass().getResource(CONFIG_FILE);
 		if (config == null) {
 			throw new RuntimeException("no config file found");
 		}
 		try {
-			return parser.parse(config.openStream(),
+			parser.parse(mGraph, config.openStream(),
 					SupportedFormat.RDF_XML, null);
 		} catch (IOException ex) {
 			logger.warn("Cannot parse coniguration at URL: {}", config);

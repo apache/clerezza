@@ -21,6 +21,7 @@ package org.apache.clerezza.rdf.web.core;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -36,6 +37,8 @@ import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.core.serializedform.Parser;
+import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
@@ -69,7 +72,7 @@ public class BackupTest {
 
 	private static String backupContentFileName = "triplecollections.nt";
 	private static BackupMessageBodyWriter backup;
-	private static JenaParserProvider parser = new JenaParserProvider();
+	private static Parser parser = Parser.getInstance();
 
 	@Before
 	public void setUp() {

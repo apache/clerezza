@@ -24,8 +24,10 @@ import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 
 
@@ -41,9 +43,10 @@ public class RdfJsonParserProviderTest {
 	public void testParser() {
 		ParsingProvider provider = new RdfJsonParsingProvider();
 		InputStream jsonIn = getClass().getResourceAsStream("test.json");
-		Graph graphFromJsonRdf = provider.parse(jsonIn, "application/rdf+json", null);
-		Assert.assertEquals(graphFromJsonRdf.size(), 6);
-		Iterator<Triple> triples = graphFromJsonRdf.filter(new UriRef("http://base/child1"), null, null);
+		MGraph deserializedMGraph = new SimpleMGraph();
+		provider.parse(deserializedMGraph, jsonIn, "application/rdf+json", null);
+		Assert.assertEquals(deserializedMGraph.size(), 6);
+		Iterator<Triple> triples = deserializedMGraph.filter(new UriRef("http://base/child1"), null, null);
 		while(triples.hasNext()) {
 			UriRef uri = triples.next().getPredicate();
 			Assert.assertEquals(uri.getUnicodeString(), "http://base/propertyB");
