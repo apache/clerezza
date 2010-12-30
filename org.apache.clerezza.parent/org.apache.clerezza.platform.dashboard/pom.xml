@@ -15,6 +15,6 @@
 	<modules>
 		<module>org.apache.clerezza.platform.dashboard.ontologies</module>
 		<module>org.apache.clerezza.platform.dashboard.core</module>
-		<module>org.apache.clerezza.platform.dashboard.tests</module>
+		<!-- disabled because of problems with pax-exam: <module>org.apache.clerezza.platform.dashboard.tests</module> -->
 	</modules>
 </project>
