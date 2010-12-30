@@ -313,7 +313,7 @@ public class FelixClerezzaPlatformTest {
 				} catch (FileNotFoundException ex) {
 					break;
 				} catch (IOException ex) {
-					System.out.println("waiting (" + ex + ")");
+					System.out.println("waiting (" + ex + ") - Iteration: "+j);
 					Thread.sleep(3000);
 					if (j++ < 100) {
 						continue;
