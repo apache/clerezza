@@ -96,7 +96,7 @@ public class Parser {
 		if (instance == null) {
 			synchronized (Parser.class) {
 				if (instance == null) {
-					instance = new Parser();
+					new Parser();
 					Iterator<ParsingProvider> parsingProviders =
 							ServiceLoader.load(ParsingProvider.class).iterator();
 					while (parsingProviders.hasNext()) {
