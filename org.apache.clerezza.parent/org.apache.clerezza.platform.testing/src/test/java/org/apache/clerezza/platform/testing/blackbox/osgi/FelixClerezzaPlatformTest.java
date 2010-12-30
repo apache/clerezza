@@ -277,8 +277,7 @@ public class FelixClerezzaPlatformTest {
 		}
 		bundleContext.registerService(SomeContentWebRenderingService.class.getName(),
 				new SomeContentWebRenderingService(), webRenderingServiceProperty);
-		ServiceReference serviceReference = bundleContext.getServiceReference(RenderletManager.class.getName());
-		RenderletManager renderletManager = (RenderletManager) bundleContext.getService(serviceReference);
+		RenderletManager renderletManager = waitFor(RenderletManager.class, 20000);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource("renderingServiceTest.ssp").toString()),
 				RDFListRootResource.testType, null, MediaType.TEXT_PLAIN_TYPE, false);
@@ -295,12 +294,12 @@ public class FelixClerezzaPlatformTest {
 
 	}
 
-	private Object waitFor(Class<?> aClass, long timeout)
+	private <T> T waitFor(Class<T> aClass, long timeout)
 			throws InterruptedException {
 		ServiceTracker tracker = new ServiceTracker(bundleContext,
 				aClass.getName(), null);
 		tracker.open();
-		Object service = tracker.waitForService(timeout);
+		T service = (T)tracker.waitForService(timeout);
 		return service;
 	}
 
