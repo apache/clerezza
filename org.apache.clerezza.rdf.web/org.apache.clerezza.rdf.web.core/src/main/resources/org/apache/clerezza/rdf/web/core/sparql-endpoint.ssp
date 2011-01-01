@@ -29,7 +29,11 @@ def se(s: Any) = new UriRef("http://clerezza.org/2009/11/sparql-endpoint#"+s)
 		<form method="post" action="../sparql">
 			<lable for="query">Type in your query:</lable>
 			<br />
-			<textarea cols="70" rows="10" name="query" />
+			<textarea cols="70" rows="10" name="query" >
+PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX disco: &lt;http://discobits.org/ontology#>
+SELECT ?c where {{?c rdf:type disco:TitledContent}}
+			</textarea>
 			<br />
 			<br />
 			<label for="default-graph-uri">Select a graph URI:</label>
