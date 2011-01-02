@@ -23,6 +23,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -186,6 +187,12 @@ public class TdbTcProvider implements WeightedTcProvider {
 			throw new EntityAlreadyExistsException(name);
 		}
 		tcDir.mkdirs();
+		File otimizationIndicator = new File(tcDir, "fixed.opt");
+		try {
+			otimizationIndicator.createNewFile();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 		LockableMGraph result = new LockableMGraphWrapper(getMGraph(tcDir));
 		mGraphMap.put(name, result);
 		return result;
@@ -203,6 +210,12 @@ public class TdbTcProvider implements WeightedTcProvider {
 			triples = new SimpleMGraph();
 		}
 		tcDir.mkdirs();
+		File otimizationIndicator = new File(tcDir, "fixed.opt");
+		try {
+			otimizationIndicator.createNewFile();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 		MGraph mGraph = getMGraph(tcDir);
 		mGraph.addAll(triples);
 		Graph result = mGraph.getGraph();
