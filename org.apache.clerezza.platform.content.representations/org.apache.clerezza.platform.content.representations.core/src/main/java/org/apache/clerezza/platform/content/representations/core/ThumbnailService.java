@@ -187,20 +187,19 @@ public class ThumbnailService implements BundleListener {
 		GraphNode infoBitNode = new GraphNode(infoBitUri, cgProvider.getContentGraph());
 		UriRef thumbnailUri = getGeneratedThumbnailUri(infoBitNode, width, height, exact);
 		if (thumbnailUri == null) {
-			TypedLiteral mediaTypeLiteral = null;
+			Literal mediaTypeLiteral = null;
 			Lock readLock = infoBitNode.readLock();
 			readLock.lock();
 			try {
 				Iterator<Resource> mediaTypes = infoBitNode.getObjects(DISCOBITS.mediaType);
 				if (mediaTypes.hasNext()) {
-					mediaTypeLiteral = (TypedLiteral) mediaTypes.next();
+					mediaTypeLiteral = (Literal) mediaTypes.next();
 				}
 			} finally {
 				readLock.unlock();
 			}
 			if (mediaTypeLiteral != null) {
-				MediaType mediaType = MediaType.valueOf(LiteralFactory.getInstance().createObject(
-						String.class, mediaTypeLiteral));
+				MediaType mediaType = MediaType.valueOf(mediaTypeLiteral.getLexicalForm());
 				// if the infoBit is an image, create a thumbnail on the fly.
 				if (mediaType.getType().startsWith("image")) {
 					try {
