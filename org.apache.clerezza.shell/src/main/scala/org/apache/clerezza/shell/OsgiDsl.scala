@@ -21,7 +21,9 @@ package org.apache.clerezza.shell
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
+import org.osgi.framework.Bundle
 import org.osgi.service.component.ComponentContext
+import scala.collection.JavaConversions._
 
 class OsgiDsl(context: ComponentContext, outputStream: OutputStream) {
 
@@ -40,6 +42,14 @@ class OsgiDsl(context: ComponentContext, outputStream: OutputStream) {
 		val b = install(uri)
 		b.start()
 		b
+	}
+
+	def headers(bundleId: Int) {
+		headers(bundleContext.getBundle(bundleId))
+	}
+
+	def headers(bundle: Bundle) {
+		for ((k,v) <- bundle.getHeaders) {out.println(k+" = "+v) }
 	}
 
 	def shutdown {
