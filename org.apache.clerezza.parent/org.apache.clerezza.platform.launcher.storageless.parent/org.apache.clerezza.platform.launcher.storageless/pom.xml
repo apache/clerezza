@@ -189,14 +189,14 @@
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-api</artifactId>
 			<scope>provided</scope>
-			<version>1.4</version>
+			<version>1.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-service</artifactId>
 			<scope>provided</scope>
-			<version>1.4</version>
-			<exclusions>
+			<version>1.5.3</version>
+			<!-- <exclusions>
 				<exclusion>
 					<artifactId>jmxri</artifactId>
 					<groupId>com.sun.jmx</groupId>
@@ -205,7 +205,7 @@
 					<artifactId>jmxtools</artifactId>
 					<groupId>com.sun.jdmk</groupId>
 				</exclusion>
-			</exclusions>
+			</exclusions> -->
 		</dependency>
 		
 		  <!-- Core Felix. -->
