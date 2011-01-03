@@ -29,6 +29,10 @@
 				<perm:hasPermission rdf:parseType="Resource">
 					<perm:javaPermissionEntry>(org.osgi.framework.AdminPermission "*" "resource")</perm:javaPermissionEntry>
 				</perm:hasPermission>
+				<!-- it seems pax-logger impl needs this, see comment to https://issues.apache.org/jira/browse/CLEREZZA-205 -->
+				<perm:hasPermission rdf:parseType="Resource">
+					<perm:javaPermissionEntry>(org.osgi.framework.AdminPermission "*" "metadata")</perm:javaPermissionEntry>
+				</perm:hasPermission>
 				<perm:hasPermission rdf:parseType="Resource">
 					<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "http://tpf.localhost/content.graph" "read")</perm:javaPermissionEntry>
 				</perm:hasPermission>
