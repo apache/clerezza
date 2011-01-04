@@ -120,16 +120,9 @@ public class SshShell {
 									shell.addTerminationListener(new Shell.TerminationListener() {
 
 										public void terminated() {
-											try {
-												log.info("closing ssh stream");
-												newLineWrapperStream.close();
-												in.close();
-											} catch (IOException ex) {
-												log.warn("error closing ssh stream", ex);
-											}
+											ec.onExit(0);
 										}
 
-										;
 									});
 									shell.start();
 									return null;
