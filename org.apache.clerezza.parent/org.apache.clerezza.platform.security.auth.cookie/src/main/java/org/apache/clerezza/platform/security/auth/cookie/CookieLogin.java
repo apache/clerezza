@@ -165,7 +165,7 @@ public class CookieLogin {
 				cause.equals(CookieAuthentication.NOT_ENOUGH_PERMISSIONS)) {
 			try {
 				result.addProperty(LOGIN.message, new PlainLiteralImpl("The user " +
-						user + " has not the required permissions to view this page" +
+						user + " does not have the required permissions to view this page" +
 						" (" + URLDecoder.decode(refererUri, "UTF-8") + ")." +
 						" Please log in as another user."));
 			} catch (UnsupportedEncodingException ex) {
