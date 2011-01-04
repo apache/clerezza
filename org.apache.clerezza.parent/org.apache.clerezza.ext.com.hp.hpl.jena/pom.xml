@@ -64,6 +64,8 @@
 						!com.sun.jdmk.*,
 						!javax.jms.*,
 						!org.relaxng.*,
+						!com.ibm.uvm.tools,
+						!javax.jmdns,
 						*</Import-Package>
 						<Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
                     </instructions>
