@@ -12,8 +12,24 @@
 	<name>Clerezza - Triaxrs Parent</name>
 	<description>Parent projects for Triaxrs, a JAX-RS implementation for OSGi.
 	See the org.apache.clerezza.triaxrs module for documentation</description>
-	<modules>
-		<module>org.apache.clerezza.triaxrs</module>
-		<module>org.apache.clerezza.triaxrs.tests</module>
-	</modules>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>org.apache.clerezza.triaxrs</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>it</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<modules>
+				<module>org.apache.clerezza.triaxrs.tests</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>
