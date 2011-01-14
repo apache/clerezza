@@ -211,8 +211,6 @@ public class DocumentationProvider implements WeightedTcProvider, BundleListener
 		if (entry == null) {
 			return;
 		}
-		logger.info("Registering documentation of bundle: {}", bundle.getSymbolicName());
-		System.out.println("Registering documentation of the bundle: " + bundle.getSymbolicName());
 		MGraph docMGraph = getDocumentationMGraph(entry, bundle.getSymbolicName());
 		addAdditionalTriples(bundle, docMGraph);
 		bundle2DocGraphMap.put(bundle, docMGraph);
