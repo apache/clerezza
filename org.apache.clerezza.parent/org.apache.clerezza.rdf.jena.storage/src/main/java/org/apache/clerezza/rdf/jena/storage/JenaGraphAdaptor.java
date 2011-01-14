@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.jena.storage;
 
+import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -56,6 +57,13 @@ public class JenaGraphAdaptor extends AbstractMGraph {
 	 */
 	public JenaGraphAdaptor(Graph jenaGraph) {
 		this.jenaGraph = jenaGraph;
+	}
+
+	@Override
+	public void clear() {
+		BulkUpdateHandler handler = jenaGraph.getBulkUpdateHandler();
+		handler.removeAll();
+		tria2JenaBNodes.clear();
 	}
 
 	@Override
