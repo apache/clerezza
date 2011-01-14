@@ -825,6 +825,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
+				<artifactId>org.apache.clerezza.rdf.sesame.parser</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
 				<artifactId>org.apache.clerezza.rdf.rdfa</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
