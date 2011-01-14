@@ -1,26 +1,28 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * or more contributor license agreements.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.apache.clerezza.rdf.web.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.AccessController;
+import java.util.concurrent.locks.Lock;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -48,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
@@ -87,7 +90,7 @@ public class WebAccess {
 					.type(MediaType.TEXT_PLAIN_TYPE).build();
 			throw new WebApplicationException(r);
 		}
-		TripleCollection result =  tcManager.getTriples(name);
+		TripleCollection result = tcManager.getTriples(name);
 		logger.debug("Got graph of size {} ", result.size());
 		int i = 1;
 		if (logger.isDebugEnabled()) {
@@ -111,14 +114,20 @@ public class WebAccess {
 	@PUT
 	public void putTriples(@QueryParam("name") UriRef name, TripleCollection triples) {
 		AccessController.checkPermission(new WebAccessPermission());
-		TripleCollection tc;
+		LockableMGraph mGraph;
 		try {
-			tc = tcManager.getTriples(name);
-			tc.clear();
+			mGraph = tcManager.getMGraph(name);
 		} catch (NoSuchEntityException e) {
-			tc = tcManager.createMGraph(name);
+			mGraph = tcManager.createMGraph(name);
 		}
-		tc.addAll(triples);
+		Lock writeLock = mGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			mGraph.clear();
+			mGraph.addAll(triples);
+		} finally {
+			writeLock.unlock();
+		}
 	}
 
 	/**
@@ -160,38 +169,44 @@ public class WebAccess {
 		if (graph == null || (graph.length == 0)) {
 			responseWithBadRequest("no triples uploaded");
 		}
-		InputStream is = new ByteArrayInputStream(graph);
-
 		MediaType mediaType = formFile.getMediaType();
 		if (mediaType == null) {
 			responseWithBadRequest("mime-type not specified");
 		}
-		Graph parsedGraph = parser.parse(is, mediaType.toString());
-
 		String graphName = getFirstTextParameterValue(form, "name", true);
 		if (graphName == null) {
 			responseWithBadRequest("graph name not specified");
 		}
+		String mode = getFirstTextParameterValue(form, "mode", false);
+		if (mode != null) {
+			if (!(mode.equals("replace") || mode.equals("append"))) {
+				responseWithBadRequest("unknown mode");
+			}
+		} else {
+			mode = "append";
+		}
+		InputStream is = new ByteArrayInputStream(graph);
+		Graph parsedGraph = parser.parse(is, mediaType.toString());
 		UriRef graphUri = new UriRef(graphName);
-		TripleCollection tc;
+		LockableMGraph mGraph;
 		boolean newGraph = false;
 		try {
-			tc = tcManager.getTriples(graphUri);
-			String mode = getFirstTextParameterValue(form, "mode", false);
-			if (mode != null) {
-				if (mode.equals("replace")) {
-					tc.clear();
-				} else if (!mode.equals("append")) {
-					responseWithBadRequest("unknown mode");
-				}
-			}
+			mGraph = tcManager.getMGraph(graphUri);
 		} catch (NoSuchEntityException e) {
-			tc = tcManager.createMGraph(graphUri);
+			mGraph = tcManager.createMGraph(graphUri);
 			newGraph = true;
 		}
-		tc.addAll(parsedGraph);
-		String redirection = getFirstTextParameterValue(form, "redirection",
-				false);
+		Lock writeLock = mGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			if (!newGraph && mode.equals("replace")) {
+				mGraph.clear();
+			}
+			mGraph.addAll(parsedGraph);
+		} finally {
+			writeLock.unlock();
+		}
+		String redirection = getFirstTextParameterValue(form, "redirection", false);
 		if (redirection == null) {
 			if (newGraph) {
 				return Response.status(Status.CREATED).build();
