@@ -143,6 +143,7 @@
 				<module>org.apache.clerezza.ext.org.openrdf.sesame</module>
 				<module>org.apache.clerezza.platform.launcher.sesame</module>
 				<module>org.apache.clerezza.rdf.sesame.storage</module>
+				<module>org.apache.clerezza.rdf.sesame.parser</module>
 			</modules>
 		</profile>
 	</profiles>
