@@ -4,6 +4,13 @@ def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#" + s)
 def dct(s: Any) = new UriRef("http://purl.org/dc/terms/" + s)
 def sioc(s: Any) = new UriRef("http://rdfs.org/sioc/ns#" + s)
 
+resultDocModifier.addStyleSheet("/yui/2/container/assets/container-core.css");
+
+resultDocModifier.addScriptReference("/yui/2/yahoo-dom-event/yahoo-dom-event.js");
+resultDocModifier.addScriptReference("/yui/2/element/element-min.js");
+resultDocModifier.addScriptReference("/yui/2/container/container-min.js");
+resultDocModifier.addScriptReference("/yui/2/resize/resize-min.js")
+
 resultDocModifier.addScriptReference("/scripts/alert-message.js");
 resultDocModifier.addScriptReference("/scripts/ajax-options.js");
 resultDocModifier.addScriptReference("js/usermanager-user-permission.js");
@@ -16,6 +23,19 @@ resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="list-roles">Ro
 
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="backButton" class="tx-button tx-button-generic" href="list-users">Back to Overview</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="saveButton" class="tx-button tx-button-create tx-inactive" href="#">Save Permissions</a></li>);
+
+var allAvailablePermissions = "";
+for (perm <- (context/platform("user")/permission("hasPermission"))) {
+	allAvailablePermissions = allAvailablePermissions + "," + (perm/permission("javaPermissionEntry")*)
+}
+
+for(role <- (context/platform("user")/sioc("has_function"))) {
+	for (perm <- (role/permission("hasPermission"))) {
+		allAvailablePermissions = allAvailablePermissions + "," + (perm/permission("javaPermissionEntry")*)
+	}
+}
+
+val userHasAllPermissions = allAvailablePermissions.contains("(java.security.AllPermission \"\" \"\")");
 
 var allUserPermissions = "";
 for (perm <- (res/umr("user")/permission("hasPermission"))) {
@@ -57,9 +77,18 @@ for (role <- (res/umr("user")/sioc("has_function"))) {
 						} else {
 							if(allUserPermissions.contains(javaPermission)) {
 								allUserPermissions = allUserPermissions.replace("," + javaPermission, "")
-								<input type="checkbox" checked="checked" name="permEntries" value={javaPermission} />
+								if(userHasAllPermissions || allAvailablePermissions.contains(javaPermission)) {
+									<input type="checkbox" checked="checked" name="permEntries" value={javaPermission} />
+								} else {
+									<input type="checkbox" checked="checked" disabled="disabled" value={javaPermission} />
+									<input type="hidden" name="permEntries" value={javaPermission} />
+								}
 							} else {
-								<input type="checkbox" name="permEntries" value={javaPermission} />
+								if(userHasAllPermissions || allAvailablePermissions.contains(javaPermission)) {
+									<input type="checkbox" name="permEntries" value={javaPermission} />
+								} else {
+									<input type="checkbox" disabled="disabled" value={javaPermission} />
+								}
 							}
 						}
 						}
@@ -75,12 +104,23 @@ for (role <- (res/umr("user")/sioc("has_function"))) {
 				val otherUserPermissions = allUserPermissions.split(",")
 				for(perm <-  otherUserPermissions) yield {
 					ifx(!perm.equals("")) {
+					if(userHasAllPermissions || allAvailablePermissions.contains(perm)) {
 					<tr>
 						<td><input type="checkbox" checked="checked" name="permEntries" value={perm} /></td>
 						<td><span style="line-height: 1.5em;"></span></td>
 						<td><span style="line-height: 1.5em;"></span></td>
 						<td><span style="line-height: 1.5em;">{perm}</span></td>
 					</tr>
+					} else {
+					<tr>
+						<td><input type="checkbox" checked="checked" disabled="disabled" value={perm} />
+							<input type="hidden" name="permEntries" value={perm} />
+						</td>
+						<td><span style="line-height: 1.5em;"></span></td>
+						<td><span style="line-height: 1.5em;"></span></td>
+						<td><span style="line-height: 1.5em;">{perm}</span></td>
+					</tr>
+					}
 					}
 				}
 				}
@@ -89,7 +129,7 @@ for (role <- (res/umr("user")/sioc("has_function"))) {
 				for(perm <-  otherRolePermissions) yield {
 					ifx(!perm.equals("")) {
 					<tr>
-						<td><input type="checkbox" checked="checked" disabled="disabled" name="permEntries" value={perm} /></td>
+						<td><input type="checkbox" checked="checked" disabled="disabled" value={perm} /></td>
 						<td><span style="line-height: 1.5em;"></span></td>
 						<td><span style="line-height: 1.5em;"></span></td>
 						<td><span style="line-height: 1.5em;">{perm}</span></td>

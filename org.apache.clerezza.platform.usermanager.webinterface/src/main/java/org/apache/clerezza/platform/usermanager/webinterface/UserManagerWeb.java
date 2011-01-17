@@ -24,8 +24,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.AccessControlContext;
 import java.security.AccessControlException;
 import java.security.AccessController;
+import java.security.Principal;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,6 +38,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
+import javax.security.auth.Subject;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -139,6 +143,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private FileServer fileServer;
 
+	private final static String ALL_PERMISSION_ENTRY_STRING = "(java.security.AllPermission \"\" \"\")";
+
 	protected void activate(final ComponentContext context) throws IOException,
 			URISyntaxException {
 		Bundle bundle = context.getBundleContext().getBundle();
@@ -197,6 +203,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 	@GET
 	public Response userMgmtHome(@Context UriInfo uriInfo) {
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		if (uriInfo.getAbsolutePath().toString().endsWith("/")) {
 			return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
 		}
@@ -208,6 +215,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@Path("list-users")
 	public GraphNode listUsers(@QueryParam(value = "from") Integer from,
 			@QueryParam(value = "to") Integer to, @Context UriInfo uriInfo) {
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 
 		MGraph resultGraph = new SimpleMGraph();
@@ -280,7 +288,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@GET
 	@Path("add-user")
 	public GraphNode addUser(@Context UriInfo uriInfo) {
-
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 
 		MGraph resultGraph = new SimpleMGraph();
@@ -315,17 +323,29 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@Consumes("multipart/form")
 	@Path("add-user")
 	public Response addUser(MultiPartBody form, @Context UriInfo uriInfo) {
-
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		String userName = form.getTextParameterValues("userName")[0];
 		String email = form.getTextParameterValues("email")[0];
 		String pathPrefix = form.getTextParameterValues("pathPrefix")[0];
 		String psw = form.getTextParameterValues("psw")[0];
 		String[] userRole = form.getTextParameterValues("userRoles");
 
-		List<String> userRoles = new ArrayList<String>();
-		for (int i = 0; i < userRole.length; i++) {
-			userRoles.add(userRole[i]);
+		List<String> userRoles = Arrays.asList(userRole);
+
+		String currentUserName = getCurrentUserName();
+		//Checks if logged in user has all permissions.
+		Set<String> availablePermissionEntries = retrieveAllPermissionEntriesFromUser(currentUserName);
+		boolean currentUserHasAllPermission = availablePermissionEntries.contains(ALL_PERMISSION_ENTRY_STRING);
+
+		Set<String> currentUserRoleTitles = retrieveRoleTitlesOfUser(getCurrentUserName());
+		//Current user is not associated with the following roles.
+		Set<String> remainingRoles = new HashSet<String>(userRoles);
+		remainingRoles.removeAll(currentUserRoleTitles);
+		if(!currentUserHasAllPermission && remainingRoles.size() > 0) {
+			return Response.status(Status.FORBIDDEN).entity("You don't have the "
+					+ "permissions to add these roles to a user.").build();
 		}
+
 		StringWriter writer = new StringWriter();
 		checkParamLength(writer, userName, "Username");
 		checkQuote(writer, userName, "Username");
@@ -354,6 +374,25 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 		saveCustomUserInformation(contentGraph, userName, userRoles, form);
 		return RedirectUtil.createSeeOtherResponse("list-users", uriInfo);
+	}
+
+	private Set<String> retrieveRoleTitlesOfUser(String userName) {
+		NonLiteral user = userManager.getUserByName(userName);
+		Iterator<NonLiteral> roles = userManager.getRolesOfUser(user);
+		Set<String> userRoleTitles = new HashSet<String>();
+		Lock lock = systemGraph.getLock().readLock();
+		lock.lock();
+		try {
+			while(roles.hasNext()) {
+				Iterator<Triple> titles = systemGraph.filter(roles.next(), DC.title, null);
+				if(titles.hasNext()) {
+					userRoleTitles.add(((Literal) titles.next().getObject()).getLexicalForm());
+				}
+			}
+		} finally {
+			lock.unlock();
+		}
+		return userRoleTitles;
 	}
 
 	private void saveCustomUserInformation(LockableMGraph contentGraph,
@@ -418,6 +457,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@QueryParam(value = "roles") String roles,
 			@QueryParam(value = "user") String userName,
 			@Context UriInfo uriInfo) throws ParseException {
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral node = new BNode();
@@ -500,6 +540,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	public Response deleteUser(@FormParam(value = "userName") String userName,
 			@Context UriInfo uriInfo) {
 
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		checkUserParam(userName);
 		userManager.deleteUser(userName);
 		LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
@@ -539,6 +580,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@QueryParam(value = "userName") String userName,
 			@Context UriInfo uriInfo) {
 
+		AccessController.checkPermission(new UserManagerAccessPermission());
+		AccessController.checkPermission(new PermissionManagerAccessPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 
 		MGraph resultGraph = new SimpleMGraph();
@@ -588,12 +631,91 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "name") String userName,
 			@FormParam(value = "permEntries") List<String> permissionEntries,
 			@Context UriInfo uriInfo) {
+		AccessController.checkPermission(new UserManagerAccessPermission());
+		AccessController.checkPermission(new PermissionManagerAccessPermission());
 		checkUserParam(userName);
+
+		//Retrieves permissions of the current user.
+		Set<String> availablePermissionEntries = retrieveAllPermissionEntriesFromUser(getCurrentUserName());
+		boolean currentUserHasAllPermission = availablePermissionEntries.contains(ALL_PERMISSION_ENTRY_STRING);
+
+		//Retrieves the current permissions of the specified user
+		Iterator<NonLiteral> permissions = userManager.getPermissionsOfUser(userManager.getUserByName(userName));
+		Set<String> oldPermissionEntries = new HashSet<String>();
+		retrievePermissionEntries(oldPermissionEntries, permissions);
+
+		//Permission, which are already assigned to the specified user.
+		Set<String> addedEntries = new HashSet<String>(oldPermissionEntries);
+		addedEntries.retainAll(permissionEntries);
+		availablePermissionEntries.addAll(addedEntries);
+		//Permissions, which should be removed.
+		Set<String> removedEntries = new HashSet<String>(oldPermissionEntries);
+		removedEntries.removeAll(permissionEntries);
+		boolean containsRemovedEntries = availablePermissionEntries.containsAll(removedEntries);
+		if(!currentUserHasAllPermission && (!availablePermissionEntries.containsAll(
+				permissionEntries) || !containsRemovedEntries)) {
+			return Response.status(Status.FORBIDDEN).entity("You are not allowed to assign "
+					+ "the specified permissions to the user " + userName + ".").build();
+		}
+
 		userManager.deleteAllPermissionsOfUser(userName);
 		userManager.assignPermissionsToUser(userName, permissionEntries);
 		return Response.status(Status.CREATED).build();
 	
 	}
+
+	private String getCurrentUserName() {
+		final AccessControlContext userContext = AccessController.getContext();
+		Subject subject = AccessController.doPrivileged(
+				new PrivilegedAction<Subject> (){
+			@Override
+			public Subject run() {
+				return Subject.getSubject(userContext);
+			}
+		});
+		if (subject == null) {
+			return null;
+		}
+		Iterator<Principal> iter = subject.getPrincipals().iterator();
+		String name = null;
+
+		if (iter.hasNext()) {
+			name = iter.next().getName();
+		}
+		return name;
+	}
+
+	private Set<String> retrieveAllPermissionEntriesFromUser(String userName) {
+		Set<String> permissionEntries = new HashSet<String>();
+		NonLiteral currentUser = (NonLiteral) userManager.getUserInSystemGraph(userName).getNode();
+		Iterator<NonLiteral> roles = userManager.getRolesOfUser(currentUser);
+		while(roles.hasNext()) {
+			Iterator<NonLiteral> permissions = userManager.getPermissionsOfRole(roles.next());
+			retrievePermissionEntries(permissionEntries, permissions);
+		}
+
+		Iterator<NonLiteral> permissions = userManager.getPermissionsOfUser(currentUser);
+		retrievePermissionEntries(permissionEntries, permissions);
+		return permissionEntries;
+	}
+
+	private void retrievePermissionEntries(Set<String> permissionEntries, Iterator<NonLiteral> permissions) {
+		while(permissions.hasNext()) {
+			NonLiteral permission = permissions.next();
+			Lock lock = systemGraph.getLock().readLock();
+			lock.lock();
+			try {
+				Iterator<Triple> triples = systemGraph.filter(permission, PERMISSION.javaPermissionEntry, null);
+				if(triples.hasNext()) {
+					Literal entry = (Literal) triples.next().getObject();
+					permissionEntries.add(entry.getLexicalForm());
+				}
+			} finally {
+				lock.unlock();
+			}
+		}
+	}
+
 
 	/**
 	 * add user permissionEntries
@@ -604,7 +726,19 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "name") String userName,
 			@FormParam(value = "permEntries") List<String> permissionEntries,
 			@Context UriInfo uriInfo) {
+
+		AccessController.checkPermission(new UserManagerAccessPermission());
+		AccessController.checkPermission(new PermissionManagerAccessPermission());
 		checkUserParam(userName);
+
+		//Retrieves permissions from current user.
+		Set<String> availablePermissionEntries = retrieveAllPermissionEntriesFromUser(getCurrentUserName());
+		boolean currentUserHasAllPermission = availablePermissionEntries.contains(ALL_PERMISSION_ENTRY_STRING);
+		if(!currentUserHasAllPermission && !availablePermissionEntries.containsAll(permissionEntries)) {
+			return Response.status(Status.FORBIDDEN).entity("You are not allowed to assign "
+					+ "the specified permissions to the user " + userName + ".").build();
+		}
+
 		userManager.assignPermissionsToUser(userName, permissionEntries);
 		try {
 			return RedirectUtil.createSeeOtherResponse(
@@ -624,7 +758,18 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "name") String userName,
 			@FormParam(value = "permEntries") List<String> permissionEntries,
 			@Context UriInfo uriInfo) {
+
+		AccessController.checkPermission(new UserManagerAccessPermission());
+		AccessController.checkPermission(new PermissionManagerAccessPermission());
 		checkUserParam(userName);
+
+		Set<String> availablePermissionEntries = retrieveAllPermissionEntriesFromUser(getCurrentUserName());
+		boolean currentUserHasAllPermission = availablePermissionEntries.contains(ALL_PERMISSION_ENTRY_STRING);
+		if(!currentUserHasAllPermission && !availablePermissionEntries.containsAll(permissionEntries)) {
+			return Response.status(Status.FORBIDDEN).entity("You are not allowed to delete "
+					+ "the specified permissions from the user " + userName + ". Refresh the page to get the correct permissions.").build();
+		}
+
 		userManager.deletePermissionsOfUser(userName, permissionEntries);
 		try {
 			return RedirectUtil.createSeeOtherResponse(
@@ -640,6 +785,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	public GraphNode updateUser(
 			@QueryParam(value = "userName") String userName,
 			@Context UriInfo uriInfo) {
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 
 		NonLiteral user = userManager.getUserByName(userName);
@@ -701,16 +847,43 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	public Response updateUser(MultiPartBody form, @Context UriInfo uriInfo)
 			throws UnsupportedEncodingException {
 
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		String userName = getTextParamValueOfForm(form, 0, "userName");
 		String pathPrefix = getTextParamValueOfForm(form, 0, "pathPrefix");
 		String[] userRole = form.getTextParameterValues("userRoles");
 		List<String> userRoleList = Arrays.asList(userRole);
 		String email = getTextParamValueOfForm(form, 0, "email");
+
 		if (email != null) {
 			email = email.replaceAll("mailto:", "");
 		}
 		NonLiteral user = (NonLiteral) userManager.getUserInSystemGraph(userName).getNode();
 		if (user != null) {
+
+			//Check if the currently logged in user has the all permissions
+			String currentUserName = getCurrentUserName();
+			Set<String> availablePermissionEntries = retrieveAllPermissionEntriesFromUser(currentUserName);
+			boolean currentUserHasAllPermission = availablePermissionEntries.contains(ALL_PERMISSION_ENTRY_STRING);
+
+			//Retrieve all currently assigned roles of the specified user
+			Set<String> oldRoles = retrieveRoleTitlesOfUser(userName);
+			Set<String> currentUserRoleTitles = retrieveRoleTitlesOfUser(getCurrentUserName());
+
+			//Roles, which are already assigned
+			Set<String> alreadyAssignedRoles = new HashSet<String>(oldRoles);
+			alreadyAssignedRoles.retainAll(userRoleList);
+			currentUserRoleTitles.addAll(alreadyAssignedRoles);
+
+			//Roles, which are currently assigned but removed after the update.
+			Set<String> removedRoles = new HashSet<String>(oldRoles);
+			removedRoles.removeAll(userRoleList);	
+			boolean containsRemovedRoles = currentUserRoleTitles.containsAll(removedRoles);
+			
+			if(!currentUserHasAllPermission && (!currentUserRoleTitles.containsAll(userRoleList)
+					|| !containsRemovedRoles)) {
+				return Response.status(Status.FORBIDDEN).entity("You don't have the "
+						+ "permission to assign these permissions to the user.").build();
+			}
 			userManager.updateUser(userName, email, null, userRoleList,
 					pathPrefix);
 			LockableMGraph contentGraph = (LockableMGraph) cgProvider.getContentGraph();
@@ -730,6 +903,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@GET
 	@Path("list-roles")
 	public GraphNode listRoles(@Context UriInfo uriInfo) {
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 
 		MGraph resultGraph = new SimpleMGraph();
@@ -761,6 +935,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	public Response addRole(@FormParam(value = "roleTitle") String title,
 			@Context UriInfo uriInfo) {
 
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		StringWriter writer = new StringWriter();
 		checkParamLength(writer, title, "Role title");
 		checkQuote(writer, title, "Role title");
@@ -788,6 +963,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	public Response deleteRole(@FormParam(value = "roleTitle") String title,
 			@Context UriInfo uriInfo) {
 
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		checkRoleParam(title);
 		userManager.deleteRole(title);
 		return RedirectUtil.createSeeOtherResponse("list-roles", uriInfo);
@@ -812,6 +988,9 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	public GraphNode manageRolePermissions(
 			@QueryParam(value = "roleTitle") String title,
 			@Context UriInfo uriInfo) {
+
+		AccessController.checkPermission(new UserManagerAccessPermission());
+		AccessController.checkPermission(new PermissionManagerAccessPermission());
 		TrailingSlash.enforceNotPresent(uriInfo);
 
 		MGraph resultGraph = new SimpleMGraph();
@@ -858,7 +1037,17 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "permEntries") List<String> permissionEntries,
 			@Context UriInfo uriInfo) {
 
+		AccessController.checkPermission(new UserManagerAccessPermission());
+		AccessController.checkPermission(new PermissionManagerAccessPermission());
 		checkRoleParam(title);
+		//Retrieves permissions from current user
+		Set<String> availablePermissionEntries = retrieveAllPermissionEntriesFromUser(getCurrentUserName());
+		boolean currentUserHasAllPermission = availablePermissionEntries.contains(ALL_PERMISSION_ENTRY_STRING);
+		if(!currentUserHasAllPermission && !availablePermissionEntries.containsAll(permissionEntries)) {
+			return Response.status(Status.FORBIDDEN).entity("You are not allowed to assign "
+					+ "the specified permissions to the role " + title + ".").build();
+		}
+
 		userManager.assignPermissionsToRole(title, permissionEntries);
 		try {
 			return RedirectUtil.createSeeOtherResponse(
@@ -879,7 +1068,17 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "permEntries") List<String> permissionEntries,
 			@Context UriInfo uriInfo) {
 
+		AccessController.checkPermission(new UserManagerAccessPermission());
+		AccessController.checkPermission(new PermissionManagerAccessPermission());
 		checkRoleParam(title);
+
+		Set<String> availablePermissionEntries = retrieveAllPermissionEntriesFromUser(getCurrentUserName());
+		boolean currentUserHasAllPermission = availablePermissionEntries.contains(ALL_PERMISSION_ENTRY_STRING);
+		if(!currentUserHasAllPermission && !availablePermissionEntries.containsAll(permissionEntries)) {
+			return Response.status(Status.FORBIDDEN).entity("You are not allowed to delete "
+					+ "the specified permissions from the role " + title + ".").build();
+		}
+
 		userManager.deletePermissionsOfRole(title, permissionEntries);
 		try {
 			return RedirectUtil.createSeeOtherResponse(
@@ -900,7 +1099,30 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "permEntries") List<String> permissionEntries,
 			@Context UriInfo uriInfo) {
 
+		AccessController.checkPermission(new UserManagerAccessPermission());
+		AccessController.checkPermission(new PermissionManagerAccessPermission());
 		checkRoleParam(title);
+
+		Set<String> availablePermissionEntries = retrieveAllPermissionEntriesFromUser(getCurrentUserName());
+		boolean currentUserHasAllPermission = availablePermissionEntries.contains(ALL_PERMISSION_ENTRY_STRING);
+		Iterator<NonLiteral> permissions = userManager.getPermissionsOfRole(
+				userManager.getRoleByTitle(title));
+		
+		Set<String> oldPermissionEntries = new HashSet<String>();
+		retrievePermissionEntries(oldPermissionEntries, permissions);
+
+		Set<String> addEntries = new HashSet<String>(oldPermissionEntries);
+		addEntries.retainAll(permissionEntries);
+		availablePermissionEntries.addAll(addEntries);
+		Set<String> removedEntries = new HashSet<String>(oldPermissionEntries);
+		removedEntries.removeAll(permissionEntries);
+		boolean containsRemovedEntries = availablePermissionEntries.containsAll(removedEntries);
+		if(!currentUserHasAllPermission && (!availablePermissionEntries.containsAll(
+				permissionEntries) || !containsRemovedEntries)) {
+			return Response.status(Status.FORBIDDEN).entity("You are not allowed to assign "
+					+ "the specified permissions to the role " + title + ".").build();
+		}
+
 		userManager.deleteAllPermissionsOfRole(title);
 		userManager.assignPermissionsToRole(title, permissionEntries);
 
@@ -913,6 +1135,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	@Path("add-property")
 	public GraphNode getAddSinglePropertyPage(
 			@QueryParam(value = "roleTitle") String role) {
+
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral node = new BNode();
 		resultGraph.add(new TripleImpl(node, RDF.type,
@@ -934,6 +1158,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "property") String property,
 			@FormParam(value = "length") int length, @Context UriInfo uriInfo) {
 		UriRef propertyUri = new UriRef(property);
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		customPropertyManager.addSingleCustomField(PERMISSION.Role, title,
 				label, propertyUri, length, 1);
 		return RedirectUtil.createSeeOtherResponse("manage-custom-properties?role=" + title, uriInfo);
@@ -949,6 +1174,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "multiselect") String multiselect,
 			@FormParam(value = "selectablevalues") String selectablevalues,
 			@Context UriInfo uriInfo) {
+
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		UriRef propertyUri = new UriRef(property);
 		customPropertyManager.addMultipleCustomField(PERMISSION.Role, title,
 				label, propertyUri, multiselect, selectablevalues, 1);
@@ -962,6 +1189,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 			@FormParam(value = "role") String role,
 			@FormParam(value = "property") String property,
 			@Context UriInfo uriInfo) {
+
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		UriRef propertyUri = new UriRef(property);
 		if (customPropertyManager.deleteCustomField(PERMISSION.Role, role,
 				propertyUri)) {
@@ -977,6 +1206,8 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	public GraphNode manageCustomProperties(
 			@QueryParam(value = "role") String role, @Context UriInfo uriInfo) {
 		TrailingSlash.enforceNotPresent(uriInfo);
+
+		AccessController.checkPermission(new UserManagerAccessPermission());
 		MGraph contentGraph = cgProvider.getContentGraph();
 		MGraph resultGraph = new SimpleMGraph();
 		NonLiteral propertyManagementPage = new BNode();
@@ -1017,6 +1248,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 		try {
 			AccessController.checkPermission(new TcPermission(
 					SystemConfig.SYSTEM_GRAPH_URI.getUnicodeString(), "readwrite"));
+			AccessController.checkPermission(new UserManagerAccessPermission());
 		} catch (AccessControlException e) {
 			return items;
 		}
