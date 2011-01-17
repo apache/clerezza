@@ -98,6 +98,9 @@ public class Tria2JenaUtil {
 		if (bnode == null) {
 			throw new IllegalArgumentException("null argument not allowed");
 		}
+		if (bnode instanceof JenaBNodeWrapper) {
+			return ((JenaBNodeWrapper)bnode).node;
+		}
 		Node result = tria2JenaBNodes.get(bnode);
 		if (result == null && createBlankNode) {
 			result = com.hp.hpl.jena.graph.Node.createAnon();
