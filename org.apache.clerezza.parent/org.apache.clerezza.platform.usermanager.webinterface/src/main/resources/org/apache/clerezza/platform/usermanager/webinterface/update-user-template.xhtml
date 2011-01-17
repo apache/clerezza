@@ -19,20 +19,31 @@ resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="list-roles">Ro
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="deleteButton" class="tx-button tx-button-generic" href="list-users">Back  to Overview</a></li>);
 resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton" class="tx-button tx-button-create" href="javascript:saveUser()">Save</a></li>);
 
+var roleTitles = "";
+var allAvailablePermissions = "";
+for (perm <- (context/platform("user")/permission("hasPermission"))) {
+	allAvailablePermissions = allAvailablePermissions + "," + (perm/permission("javaPermissionEntry")*)
+}
+
+for(role <- (context/platform("user")/sioc("has_function"))) {
+	roleTitles = roleTitles + "," + (role/dc("title")*)
+	for (perm <- (role/permission("hasPermission"))) {
+		allAvailablePermissions = allAvailablePermissions + "," + (perm/permission("javaPermissionEntry")*)
+	}
+}
+
+var selectedTitles = "";
+for (funct <- (res/umr("user")/sioc("has_function"))) yield {
+	selectedTitles = selectedTitles + "," + (funct/dc("title")*);
+}
+
+
+val userHasAllPermissions = allAvailablePermissions.contains("(java.security.AllPermission \"\" \"\")");
+
         <div id="tx-content">
 			<script type="text/javascript">
-				var userRoles = new Array();
-				{
-					var titles = "";
-					for (user <- (res/umr("user"))) yield {
-						for (funct <- (user/sioc("has_function"))) yield {
-							"userRoles.push('" + {funct/dc("title")*} +"');"
-						}
-				}
-				}
 
 				$(document).ready(function() {{
-					$('#userRoles').val(userRoles);
 					
 					refreshCustomInformation({"'" + (res/umr("user")/platform("userName")*) + "'"});
 
@@ -77,10 +88,27 @@ resultDocModifier.addNodes2Elem("tx-contextual-buttons-ol", <li><a id="addButton
 								<span class="tx-item">
 									<select name="userRoles" id="userRoles" size="3" multiple="multiple">
 										{for (role <- (res/umr("role"))) yield {
-											<option value={role/dc("title")*}>{role/dc("title")*}</option>
+											val title = (role/dc("title")*);
+											ifx(userHasAllPermissions || roleTitles.contains("," + title)) {
+												
+												if(selectedTitles.contains("," + title)) {
+													<option value={title} selected="selected">{title}</option>
+												} else {
+													<option value={title}>{title}</option>
+												}
+											} 
 										}
 										}
 									</select>
+									<div>
+									{for (role <- (res/umr("role"))) yield {
+											val title = (role/dc("title")*);
+											ifx(selectedTitles.contains("," + title) && !userHasAllPermissions && !roleTitles.contains("," + title)) {
+												<input type="hidden" value={title} name="userRoles"/>
+											}
+										}
+										}
+									</div>
 								</span>
 							</li>
 							<div id="custominfos"></div>
