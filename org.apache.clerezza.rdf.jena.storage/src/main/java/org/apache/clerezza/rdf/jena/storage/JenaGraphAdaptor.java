@@ -61,8 +61,7 @@ public class JenaGraphAdaptor extends AbstractMGraph {
 
 	@Override
 	public void clear() {
-		BulkUpdateHandler handler = jenaGraph.getBulkUpdateHandler();
-		handler.removeAll();
+		super.clear();
 		tria2JenaBNodes.clear();
 	}
 
@@ -114,7 +113,7 @@ public class JenaGraphAdaptor extends AbstractMGraph {
 					lastReturned =  precached.next();
 				} else {
 					lastReturned = jena2TriaUtil.convertTriple(
-							(com.hp.hpl.jena.graph.Triple)jenaIter.next(), true);
+							(com.hp.hpl.jena.graph.Triple)jenaIter.next());
 				}
 				return lastReturned;
 			}

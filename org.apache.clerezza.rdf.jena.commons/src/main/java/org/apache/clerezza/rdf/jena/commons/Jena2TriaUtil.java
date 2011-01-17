@@ -42,11 +42,11 @@ public class Jena2TriaUtil {
 		this.tria2JenaBNodes = tria2JenaBNodes;
 	}
 
-	private BNode convertJenaNode2TriaBlankNode(Node node, boolean createBNode) {
+	private BNode convertJenaNode2TriaBlankNode(Node node) {
 		BNode result = tria2JenaBNodes.get(node);
-		if (result == null && createBNode) {
-			result = new BNode();
-			tria2JenaBNodes.put(node,result);
+		if (result == null) {
+			result = new JenaBNodeWrapper(node);
+			//tria2JenaBNodes.put(node,result);
 		}
 		return result;
 	}
@@ -91,21 +91,11 @@ public class Jena2TriaUtil {
 	 * @return BNode if it is a Blank Node, UriRef if it is a URI and Literal if it is a literal.
 	 */
 	public Resource convertJenaNode2Resource(Node node) {
-		return convertJenaNode2Resource(node, false);
-	}
-
-	/**
-	 * Converts a jena node to a resource. If covertBNode is true, then a new
-	 * BNode is created for a blank node if no mapping already exists.
-	 * @param node
-	 * @return BNode if it is a Blank Node, UriRef if it is a URI and Literal if it is a literal.
-	 */
-	public Resource convertJenaNode2Resource(Node node, boolean createBNode) {
 		if (node == null) {
 			throw new IllegalArgumentException("null argument not allowed");
 		}
 		if (node.isBlank()) {
-			return convertJenaNode2TriaBlankNode(node, createBNode);
+			return convertJenaNode2TriaBlankNode(node);
 		}
 		if (node.isURI()) {
 			return convertJenaUri2UriRef(node);
@@ -125,23 +115,11 @@ public class Jena2TriaUtil {
 	 * @return BNode if it is a Blank Node otherwise a UriRef
 	 */
 	public NonLiteral convertNonLiteral(Node node) {
-		return convertNonLiteral(node, false);
-	}
-
-	/**
-	 * Converts a node to a BNode if it is a Blank Node otherwise to a UriRef.
-	 * If covertBNode is true, then a new BNode is created for a blank node if
-	 * no mapping already exists.
-	 *
-	 * @param node
-	 * @return BNode if it is a Blank Node otherwise a UriRef
-	 */
-	public NonLiteral convertNonLiteral(Node node, boolean createBNode) {
 		if (node == null) {
 			throw new IllegalArgumentException("null argument not allowed");
 		}
 		if (node.isBlank()) {
-			return convertJenaNode2TriaBlankNode(node, createBNode);
+			return convertJenaNode2TriaBlankNode(node);
 		}
 		if (node.isURI()) {
 			return convertJenaUri2UriRef(node);
@@ -150,13 +128,9 @@ public class Jena2TriaUtil {
 	}
 
 	public Triple convertTriple(com.hp.hpl.jena.graph.Triple triple) {
-		return convertTriple(triple, false);
-	}
-
-	public Triple convertTriple(com.hp.hpl.jena.graph.Triple triple, boolean createBnodes) {
-		NonLiteral subject = convertNonLiteral(triple.getSubject(), createBnodes);
+		NonLiteral subject = convertNonLiteral(triple.getSubject());
 		UriRef predicate = convertJenaUri2UriRef(triple.getPredicate());
-		Resource object = convertJenaNode2Resource(triple.getObject(), createBnodes);
+		Resource object = convertJenaNode2Resource(triple.getObject());
 		if (subject == null || object == null) {
 			return null;
 		}
