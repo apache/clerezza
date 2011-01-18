@@ -27,11 +27,15 @@ import org.apache.clerezza.rdf.core._
 * <code>import org.apache.clerezza.rdf.scala.utils.Preamble._</code> near the top of the
 * file using SCB Utilities for Scala
 */
-object Preamble {
+class Preamble(baseTc: TripleCollection) extends TcIndependentConversions {
+	implicit def toRichGraphNode(resource: Resource) = {
+		new RichGraphNode(new GraphNode(resource, baseTc))
+	}
+}
+object Preamble extends TcIndependentConversions {
 
-	val emptyGraph = new impl.SimpleGraph(new impl.SimpleMGraph)
-	val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
-
+}
+trait TcIndependentConversions {
 	implicit def toRichGraphNode(node: GraphNode) = {
 		new RichGraphNode(node)
 	}
@@ -40,9 +44,11 @@ object Preamble {
 		if (c.length(1) > 0) {
 			c(0)
 		} else {
-			emptyLiteral
+			TcIndependentConversions.emptyLiteral
 		}
 	}
-
-
+}
+object TcIndependentConversions {
+	val emptyGraph = new impl.SimpleGraph(new impl.SimpleMGraph)
+	val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
 }
