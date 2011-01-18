@@ -32,7 +32,7 @@ class RichGraphNodeTest {
 	private val listUri = new UriRef("http://example.org/list")
 	private val greetingsUri = new UriRef("http://example.org/greetings")
 	private val billBNode = new BNode()
-	private var node : GraphNode = null;
+	private var node : RichGraphNode = null;
 	private var mGraph = new SimpleMGraph()
 
 	@Before
@@ -61,11 +61,20 @@ class RichGraphNodeTest {
 	}
 
 	@Test
+	def testBaseGraph {
+		val preamble = new Preamble(mGraph)
+		import preamble._
+		def asGn(gn: GraphNode)  = gn
+		val johnUriNode = asGn(johnUri)
+		Assert.assertEquals(johnUriNode, node)
+	}
+
+	@Test
 	def testSlash = {
 		val rNode = new RichGraphNode(node)
 		Assert.assertEquals(new PlainLiteralImpl("johny"), (rNode/FOAF.nick)(0).getNode)
 		Assert.assertEquals(2, (rNode/FOAF.name).length(20))
-		val stringNames = (for(name <- (rNode/FOAF.name).elements) yield {
+		val stringNames = (for(name <- (rNode/FOAF.name).iterator) yield {
 			name.toString
 		}).toList
 		Assert.assertTrue(stringNames.contains("\"Johnathan Guller\""))
@@ -131,8 +140,8 @@ class RichGraphNodeTest {
 
 	@Test
 	def sortProperties = {
-		Assert.assertEquals(new PlainLiteralImpl("bar"), (node/SKOS.related%0!!).sort((a,b) => ((a*) < (b*)))(0)!)
-		Assert.assertEquals(johnUri, (node/SKOS.related%0!!).sort((a,b) => ((a*) > (b*)))(0)!)
+		Assert.assertEquals(new PlainLiteralImpl("bar"), (node/SKOS.related%0!!).sortWith((a,b) => ((a*) < (b*)))(0)!)
+		Assert.assertEquals(johnUri, (node/SKOS.related%0!!).sortWith((a,b) => ((a*) > (b*)))(0)!)
 	}
 
 	@Test
