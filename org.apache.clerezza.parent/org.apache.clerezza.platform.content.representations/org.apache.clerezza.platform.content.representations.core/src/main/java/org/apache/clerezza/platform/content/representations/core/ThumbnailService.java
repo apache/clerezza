@@ -313,9 +313,9 @@ public class ThumbnailService implements BundleListener {
 			log.warn(infoBitNode.getNode() + " doesn't have exif:width and exif:height");
 			return -1;
 		}
-		Integer thumbnailWidth = LiteralFactory.getInstance().createObject(
+		int thumbnailWidth = LiteralFactory.getInstance().createObject(
 				Integer.class, (TypedLiteral) exifWidths.next());
-		Integer thumbnailHeight = LiteralFactory.getInstance().createObject(
+		int thumbnailHeight = LiteralFactory.getInstance().createObject(
 				Integer.class, (TypedLiteral) exifHeights.next());
 		if (exact) {
 			if (thumbnailHeight == height && thumbnailWidth == width) {
