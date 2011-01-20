@@ -9,7 +9,7 @@
 	<version>0.2-incubating-SNAPSHOT</version>
 	<description>The direct or indirect parent of all Clerezza Artifacts</description>
 	<properties>
-		<scala.version>2.8.0</scala.version>
+		<scala.version>2.8.1</scala.version>
 	</properties>
 	<licenses>
 		<license>
