@@ -96,17 +96,8 @@ public class TestJenaSerializerProvider {
 		InputStream in = new ByteArrayInputStream(serializedGraph.toByteArray());
 
 		Graph deserializedGraph = parse(in, "TURTLE");
-		// due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just
-		// check
-		// that the two graphs are equals
-		Assert.assertEquals(deserializedGraph.size(), mGraph.getGraph().size());
-		Assert.assertEquals(deserializedGraph.hashCode(), mGraph.getGraph()
-				.hashCode());
-		// isomorphism delegated to jena
-		JenaGraph jenaGraphFromNTriples = new JenaGraph(deserializedGraph);
-		JenaGraph jenaGraphFromTurtle = new JenaGraph(mGraph.getGraph());
-		Assert.assertTrue(jenaGraphFromNTriples
-				.isIsomorphicWith(jenaGraphFromTurtle));
+		Assert.assertEquals(mGraph.getGraph(), deserializedGraph);
+
 	}
 
 	
@@ -125,16 +116,7 @@ public class TestJenaSerializerProvider {
 		InputStream in = new ByteArrayInputStream(serializedGraph.toByteArray());
 
 		Graph deserializedGraph = parse(in, "RDF/XML-ABBREV");
-		// due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just
-		// check that the two graphs are equals
-		Assert.assertEquals(deserializedGraph.size(), mGraph.getGraph().size());
-		Assert.assertEquals(deserializedGraph.hashCode(), mGraph.getGraph()
-				.hashCode());
-		// isomorphism delegated to jena
-		JenaGraph jenaGraphFromNTriples = new JenaGraph(deserializedGraph);
-		JenaGraph jenaGraphFromTurtle = new JenaGraph(mGraph.getGraph());
-		Assert.assertTrue(jenaGraphFromNTriples
-				.isIsomorphicWith(jenaGraphFromTurtle));
+		Assert.assertEquals(mGraph.getGraph(), deserializedGraph);
 	}
 
 	/*
@@ -150,16 +132,7 @@ public class TestJenaSerializerProvider {
 		InputStream in = new ByteArrayInputStream(serializedGraph.toByteArray());
 
 		Graph deserializedGraph = parse(in, "N-TRIPLE");
-		// due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just
-		// check that the two graphs are equals
-		Assert.assertEquals(deserializedGraph.size(), mGraph.getGraph().size());
-		Assert.assertEquals(deserializedGraph.hashCode(), mGraph.getGraph()
-				.hashCode());
-		// isomorphism delegated to jena
-		JenaGraph jenaGraphFromNTriples = new JenaGraph(deserializedGraph);
-		JenaGraph jenaGraphFromTurtle = new JenaGraph(mGraph.getGraph());
-		Assert.assertTrue(jenaGraphFromNTriples
-				.isIsomorphicWith(jenaGraphFromTurtle));
+		Assert.assertEquals(mGraph.getGraph(), deserializedGraph);
 	}
 
 	/*
@@ -175,16 +148,7 @@ public class TestJenaSerializerProvider {
 		InputStream in = new ByteArrayInputStream(serializedGraph.toByteArray());
 
 		Graph deserializedGraph = parse(in, "N3");
-		// due to http://issues.trialox.org/jira/browse/RDF-6 we cannot just
-		// check that the two graphs are equals
-		Assert.assertEquals(deserializedGraph.size(), mGraph.getGraph().size());
-		Assert.assertEquals(deserializedGraph.hashCode(), mGraph.getGraph()
-				.hashCode());
-		// isomorphism delegated to jena
-		JenaGraph jenaGraphFromNTriples = new JenaGraph(deserializedGraph);
-		JenaGraph jenaGraphFromTurtle = new JenaGraph(mGraph.getGraph());
-		Assert.assertTrue(jenaGraphFromNTriples
-				.isIsomorphicWith(jenaGraphFromTurtle));
+		Assert.assertEquals(mGraph.getGraph(), deserializedGraph);
 	}
 
 	private Graph parse(InputStream serializedGraph, String jenaFormat) {
