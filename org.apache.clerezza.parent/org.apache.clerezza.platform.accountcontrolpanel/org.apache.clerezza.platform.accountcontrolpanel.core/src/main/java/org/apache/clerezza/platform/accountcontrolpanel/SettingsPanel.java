@@ -73,6 +73,7 @@ import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL;
 import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
+import org.apache.clerezza.platform.typerendering.scala.PageRenderlet;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
@@ -101,20 +102,20 @@ import org.apache.clerezza.triaxrs.prefixmanager.TriaxrsPrefixManager;
  * 
  * @author mir, hasan
  */
-@Component
-@Service(value = Object.class)
-@Property(name = "javax.ws.rs", boolValue = true)
-@Reference(name = "configurationAdmin", cardinality = ReferenceCardinality.OPTIONAL_UNARY,
-policy = ReferencePolicy.DYNAMIC, referenceInterface = ConfigurationAdmin.class)
+//@Component
+//@Service(value = Object.class)
+//@Property(name = "javax.ws.rs", boolValue = true)
+//@Reference(name = "configurationAdmin", cardinality = ReferenceCardinality.OPTIONAL_UNARY,
+//	       policy = ReferencePolicy.DYNAMIC, referenceInterface = ConfigurationAdmin.class)
 @Path("/user/{id}/control-panel")
 public class SettingsPanel {
 
 	private ComponentContext componentContext;
-	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
+//	@Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
 	private MGraph systemGraph; // System graph for user data access
-	@Reference
+//	@Reference
 	private RenderletManager renderletManager;
-	@Reference
+//	@Reference
 	private ContentGraphProvider cgProvider;
 	private final Logger logger = LoggerFactory.getLogger(SettingsPanel.class);
 	private ConfigurationAdmin configAdmin;
@@ -159,17 +160,16 @@ public class SettingsPanel {
 		} catch (AccessControlException e) {
 			graphNode.addProperty(CONTROLPANEL.changePasswordPermission,
 					SimpleLiteralFactory.getInstance().createTypedLiteral(
-						Boolean.valueOf(false)));
+					Boolean.valueOf(false)));
 		}
 		if (changedPassword != null && changedPassword.equals("false")) {
 			graphNode.addProperty(CONTROLPANEL.changedPassword,
-				new PlainLiteralImpl("false"));
+					new PlainLiteralImpl("false"));
 		}
 		graphNode.addProperty(RDF.type, CONTROLPANEL.SettingsPage);
 		graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
 		return graphNode;
 	}
-
 
 	private void addBundleDescriptionToGraph(MGraph responseGraph, Bundle bundle) {
 		TypedLiteral status = LiteralFactory.getInstance().
@@ -542,6 +542,7 @@ public class SettingsPanel {
 		final String id = idP;
 		AccessController.checkPermission(new AccountControlPanelAppPermission(id, ""));
 		AccessController.doPrivileged(new PrivilegedAction() {
+
 			@Override
 			public Object run() {
 				GraphNode userNode = new GraphNode(getAgent(id), systemGraph);
@@ -587,7 +588,7 @@ public class SettingsPanel {
 					}
 					return currentPassword;
 				}
-				
+
 				@Override
 				public Boolean run() {
 					final NonLiteral agent = getAgent(id);
@@ -611,8 +612,8 @@ public class SettingsPanel {
 							new PlainLiteralImpl(getEncodedPW(newPW)));
 					if (currentPassword != null) {
 						Triple oldPWTriple = new TripleImpl(agent,
-							PERMISSION.passwordSha1, new PlainLiteralImpl(
-							currentPassword));
+								PERMISSION.passwordSha1, new PlainLiteralImpl(
+								currentPassword));
 						systemGraph.remove(oldPWTriple);
 						logger.debug("removed old password from systemgraph");
 					}
@@ -674,12 +675,15 @@ public class SettingsPanel {
 	 */
 	protected void activate(ComponentContext componentContext) {
 		this.componentContext = componentContext;
-		URL templateURL = getClass().getResource("settings-panel.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), CONTROLPANEL.SettingsPage,
-				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+//		URL templateURL = getClass().getResource("profile_panel.scala");
+//		renderletManager.registerRenderlet(PageRenderlet.class.getName(),
+//				null, CONTROLPANEL.SettingsPage,
+//				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+		//todo: broken, because one has to put the full path instead of a reference due to scala/java compilation priorities
+//equivalent of above with no ssp?
+//	   renderletManager.registerRenderlet("org.apache.clerezza.platform.accountcontrolpanel.settings_panel", 
+//				null, CONTROLPANEL.SettingsPage, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		logger.info("Account Control Panel activated.");
 	}
 
 	protected void bindConfigurationAdmin(ConfigurationAdmin configAdmin) {
@@ -692,4 +696,33 @@ public class SettingsPanel {
 		this.configAdmin = null;
 	}
 
+	protected void bindSystemGraph(MGraph mgraph) {
+		systemGraph = mgraph;
+	}
+
+	protected void unbindSystemGraph(MGraph mgraph) {
+		if (systemGraph == mgraph) {
+			systemGraph = null;
+		}
+	}
+
+	protected void bindRenderletManager(RenderletManager renderletmanager) {
+		renderletManager = renderletmanager;
+	}
+
+	protected void unbindRenderletManager(RenderletManager renderletmanager) {
+		if (renderletManager == renderletmanager) {
+			renderletManager = null;
+		}
+	}
+
+	protected void bindCgProvider(ContentGraphProvider contentgraphprovider) {
+		cgProvider = contentgraphprovider;
+	}
+
+	protected void unbindCgProvider(ContentGraphProvider contentgraphprovider) {
+		if (cgProvider == contentgraphprovider) {
+			cgProvider = null;
+		}
+	}
 }
