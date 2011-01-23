@@ -47,8 +47,8 @@ import org.apache.clerezza.platform.security.UserUtil;
  * 
  * @author reto
  */
-@Component
-@Service(value = GlobalMenuItemsProvider.class)
+//@Component
+//@Service(value = GlobalMenuItemsProvider.class)
 public class MenuItemProvider implements GlobalMenuItemsProvider{
 
 

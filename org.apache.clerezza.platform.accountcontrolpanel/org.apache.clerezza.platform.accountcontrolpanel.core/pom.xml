@@ -14,6 +14,42 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+                                        <!-- <scalaVersion>${scala.version}</scalaVersion> -->
+                                        <!-- <args>
+                                                <arg>-target:jvm-1.5</arg>
+                                        </args> -->
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
+						<Export-Package>org.apache.clerezza.platform.accountcontrolpanel</Export-Package>
+						<Bundle-SymbolicName>org.apache.clerezza.platform.accountcontrolpanel</Bundle-SymbolicName>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.xsite</groupId>
 				<artifactId>xsite-maven-plugin</artifactId>
 				<configuration>
@@ -30,7 +66,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>                 
 		</plugins>
 	</build>
 	<dependencies>
@@ -74,10 +110,11 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.users.core</artifactId>
 		</dependency>
-		<dependency>
+		<!--dependency> 
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
+			<version></version>
+		</dependency-->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.config</artifactId>
@@ -85,6 +122,10 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.typerendering.scala</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
@@ -109,7 +150,10 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
-			<version>0.5-incubating-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
 		</dependency>
 	</dependencies>
 </project>

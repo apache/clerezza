@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.platform.accountcontrolpanel;
 
+import java.util.Iterator;
 import org.apache.clerezza.ssl.keygen.CertSerialisation;
 import org.apache.clerezza.ssl.keygen.Certificate;
 import org.apache.clerezza.foafssl.ontologies.CERT;
@@ -59,6 +60,10 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
+import org.apache.clerezza.platform.typerendering.scala.PageRenderlet;
+import org.apache.clerezza.rdf.ontologies.RDFS;
+import org.apache.clerezza.ssl.keygen.KeygenService;
 
 /**
  *
@@ -66,31 +71,34 @@ import java.security.interfaces.RSAPublicKey;
  * 
  * @author reto
  */
-@Component
-@Service(value = Object.class)
-@Property(name = "javax.ws.rs", boolValue = true)
+//@Component
+//@Service(value = Object.class)
+//@Property(name = "javax.ws.rs", boolValue = true)
 @Path("/user/{id}/profile")
 public class ProfilePanel extends FileServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProfilePanel.class);
-	@Reference
+//	@Reference
 	private UserManager userManager;
-	@Reference
+//	@Reference
 	private org.apache.clerezza.ssl.keygen.KeygenService keygenSrvc;
-	@Reference
+//	@Reference
 	private TcManager tcManager;
-	@Reference
+//	@Reference
 	private RenderletManager renderletManager;
-	@Reference
+//	@Reference
 	private WebIdGraphsService webIdGraphsService;
-	@Reference
+//	@Reference
 	private PlatformConfig platformConfig;
 
 	protected void activate(ComponentContext componentContext) {
-		URL templateURL = getClass().getResource("profile-panel.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), CONTROLPANEL.ProfilePage,
-				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+//		URL templateURL = getClass().getResource("profile_panel.scala");
+//		renderletManager.registerRenderlet(PageRenderlet.class.getName(),
+//				null, CONTROLPANEL.ProfilePage,
+//				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+//equivalent of above with no ssp?
+//		renderletManager.registerRenderlet("org.apache.clerezza.platform.accountcontrolpanel.profile_panel", 
+//				null, CONTROLPANEL.ProfilePage, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		configure(componentContext.getBundleContext(), "profile-staticweb");
 	}
 
@@ -195,7 +203,8 @@ public class ProfilePanel extends FileServer {
 			@FormParam("crmf") String crmf,
 			@FormParam("hours") String hours,
 			@FormParam("days") String days,
-			@FormParam("csr") String csr) {
+			@FormParam("csr") String csr,
+			@FormParam("comment") String comment) {
 
 		logger.info("in keygen code. webId={}", webId);
 		logger.info("cn={}", commonName);
@@ -249,10 +258,47 @@ public class ProfilePanel extends FileServer {
 		final GraphNode agent = new GraphNode(webId, webIdGraphs.localGraph());
 		certNode.addPropertyValue(RSA.modulus, modulus);
 		certNode.addPropertyValue(RSA.public_exponent, publicExponent);
+		if (comment != null && comment.length() > 0) {
+			certNode.addPropertyValue(RDFS.comment, comment);
+		}
+		certNode.addPropertyValue(DC.date, cert.getStartDate());
 
 		Response.ResponseBuilder resBuild = Response.ok(ser.getContent(), MediaType.valueOf(ser.getMimeType()));
 		return resBuild.build();
 
+	}
+
+	@POST
+	@Path("deletekey")
+	public Response deleteKey(@Context final UriInfo uriInfo,
+			@FormParam("webId") final UriRef webId,
+			@FormParam("keyhash") List<String> keys) {
+		final WebIdGraphsService.WebIdGraphs webIdGraphs = webIdGraphsService.getWebIdGraphs(webId);
+		final GraphNode agent = new GraphNode(webId, webIdGraphs.localGraph());
+		Iterator<GraphNode> subjects = agent.getSubjectNodes(CERT.identity);
+		for (GraphNode nl; subjects.hasNext();  ) {
+			nl = subjects.next();
+			Iterator<Resource> modulusIt = nl.getObjects(RSA.modulus);
+			if (!modulusIt.hasNext()) break;
+			Resource modLit = modulusIt.next(); //we only get the first, any more would be an error
+			if (modulusIt.hasNext()) logger.warn("data error, a modulus too many in cert for "+webId);
+			if (!(modLit instanceof TypedLiteral)) {
+				logger.warn("a public key has a modulus that is not a literal for "+webId);
+				break;
+			}
+			BigInteger modulus = LiteralFactory.getInstance().createObject(BigInteger.class, (TypedLiteral)modLit);
+			for (String key : keys) {
+				if (modulus.hashCode() == Integer.decode(key)) {
+					//we delete the key. Even thous it is extreemly unlikely that anything could go wrong here
+					//it would be a bitch to debug this. So one should probably just send the full key.
+					//in fact it would be impossible to duplicate the problem
+					nl.deleteNodeContext();
+					break;
+				}
+			}
+		}
+		//shoud one really have a redirect? or should the post just be to the profile page?
+	    return RedirectUtil.createSeeOtherResponse("../profile", uriInfo);
 	}
 
 	@POST
@@ -270,5 +316,65 @@ public class ProfilePanel extends FileServer {
 		agent.addPropertyValue(DC.description, description);
 		logger.debug("local graph (uri: {}) is now of size {}", webIdGraphs.localGraphUri(), webIdGraphs.localGraph().size());
 		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo);
+	}
+
+	protected void bindUserManager(UserManager usermanager) {
+		userManager = usermanager;
+	}
+
+	protected void unbindUserManager(UserManager usermanager) {
+		if (userManager == usermanager) {
+			userManager = null;
+		}
+	}
+
+	protected void bindKeygenSrvc(KeygenService keygenservice) {
+		keygenSrvc = keygenservice;
+	}
+
+	protected void unbindKeygenSrvc(KeygenService keygenservice) {
+		if (keygenSrvc == keygenservice) {
+			keygenSrvc = null;
+		}
+	}
+
+	protected void bindTcManager(TcManager tcmanager) {
+		tcManager = tcmanager;
+	}
+
+	protected void unbindTcManager(TcManager tcmanager) {
+		if (tcManager == tcmanager) {
+			tcManager = null;
+		}
+	}
+
+	protected void bindRenderletManager(RenderletManager renderletmanager) {
+		renderletManager = renderletmanager;
+	}
+
+	protected void unbindRenderletManager(RenderletManager renderletmanager) {
+		if (renderletManager == renderletmanager) {
+			renderletManager = null;
+		}
+	}
+
+	protected void bindWebIdGraphsService(WebIdGraphsService webidgraphsservice) {
+		webIdGraphsService = webidgraphsservice;
+	}
+
+	protected void unbindWebIdGraphsService(WebIdGraphsService webidgraphsservice) {
+		if (webIdGraphsService == webidgraphsservice) {
+			webIdGraphsService = null;
+		}
+	}
+
+	protected void bindPlatformConfig(PlatformConfig platformconfig) {
+		platformConfig = platformconfig;
+	}
+
+	protected void unbindPlatformConfig(PlatformConfig platformconfig) {
+		if (platformConfig == platformconfig) {
+			platformConfig = null;
+		}
 	}
 }
