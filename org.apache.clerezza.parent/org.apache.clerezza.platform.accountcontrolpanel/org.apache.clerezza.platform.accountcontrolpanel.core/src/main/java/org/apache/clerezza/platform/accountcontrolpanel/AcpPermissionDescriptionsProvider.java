@@ -38,8 +38,8 @@ import org.apache.felix.scr.annotations.Service;
  *
  * @author mir
  */
-@Component
-@Service(PermissionDescriptionsProvider.class)
+//@Component
+//@Service(PermissionDescriptionsProvider.class)
 public class AcpPermissionDescriptionsProvider implements PermissionDescriptionsProvider{
 
 	private static final Set<PermissionDescripton> ACP_PERMISSION_DESCRIPTIONS = new HashSet<PermissionDescripton>();
