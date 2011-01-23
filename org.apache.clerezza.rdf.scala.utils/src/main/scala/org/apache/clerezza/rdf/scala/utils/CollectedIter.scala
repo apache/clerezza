@@ -27,13 +27,13 @@ import _root_.scala.collection.JavaConversions._
 import java.util.concurrent.locks.Lock
 
 /**
- * (initial a posteriori documentation by bblfish. Please verify, then remove this line if correct)
  * 
  * A Collection that groups the elements of an iterator, giving a view over it as over a
  * sequence. 
  * 
  * The collection takes a function returning an iterator, in order to allow for cases where the
- * iterator needs to be called from the beginning again - see the exception.
+ * iterator needs to be called from the beginning again. i.e. when a ConcurrentModificationException
+ * occurs and the iteration is repeated in a section used using the provided readLock.
  */
 class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends immutable.Seq[T] {
 
