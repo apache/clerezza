@@ -48,7 +48,7 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 		}).toList
 
     /**
-	 * returns the specified index from the rdf:List represenetd by this node
+	 * returns the specified index from the rdf:List represented by this node
 	 */
     def %!!(index: Int) = new RichGraphNode(new GraphNode(node.asList.get(index),
                                                           node.getGraph))

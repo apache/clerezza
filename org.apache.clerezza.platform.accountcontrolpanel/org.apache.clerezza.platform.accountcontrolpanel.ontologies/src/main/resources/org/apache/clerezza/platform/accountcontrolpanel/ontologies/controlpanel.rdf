@@ -30,7 +30,7 @@
 <rdfs:Class rdf:about="#ProfilePage">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
 	<rdfs:label xml:lang="en">personal profile management page</rdfs:label>
-	<skos:definition xml:lang="en">A web page allowing users to change to change 
+	<skos:definition xml:lang="en">A web page allowing users to change  
 	their profile.</skos:definition>
 	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/03/controlpanel#" />
 </rdfs:Class>
