@@ -148,10 +148,10 @@ public class TcManager extends TcProviderMultiplexer {
 	protected void activate(final ComponentContext componentContext) {
 		this.componentContext = componentContext;
 		for (UriRef name : mGraphsToRegisterOnActivation) {
-			registerMGraphAsService(name);
+			registerTripleCollectionAsService(name, true);
 		}
 		for (UriRef name : graphsToRegisterOnActivation) {
-			registerGraphAsService(name);
+			registerTripleCollectionAsService(name, false);
 		}
 	}
 
@@ -387,7 +387,7 @@ public class TcManager extends TcProviderMultiplexer {
 		if (componentContext == null) {
 			mGraphsToRegisterOnActivation.add(name);
 		} else {
-			registerMGraphAsService(name);
+			registerTripleCollectionAsService(name, true);
 		}
 	}
 
@@ -396,35 +396,27 @@ public class TcManager extends TcProviderMultiplexer {
 		if (componentContext == null) {
 			graphsToRegisterOnActivation.add(name);
 		} else {
-			registerGraphAsService(name);
+			registerTripleCollectionAsService(name, false);
 		}
 	}
 
-	private void registerMGraphAsService(UriRef name) {
-		
+	private void registerTripleCollectionAsService(UriRef name, boolean isMGraph) {
 		Dictionary props = new Properties();
 		props.put("name", name.getUnicodeString());
 		String[] interfaceNames;
-		final TripleCollection triples = getTriples(name);
-		interfaceNames = new String[]{
-			MGraph.class.getName(),
-			LockableMGraph.class.getName()
-		};
-		Object service = new MGraphServiceFactory(this, name, tcAccessController);
-		ServiceRegistration serviceReg = componentContext.getBundleContext().registerService(
-				interfaceNames, service, props);
-		serviceRegistrations.put(name, serviceReg);
-	}
-
-	private void registerGraphAsService(UriRef name) {
-		Dictionary props = new Properties();
-		props.put("name", name.getUnicodeString());
-		String[] interfaceNames;
-		interfaceNames = new String[]{Graph.class.getName()};
-		Object service = new GraphServiceFactory(this, name, tcAccessController);
-
-		ServiceRegistration serviceReg = componentContext.getBundleContext().registerService(
-				interfaceNames, service, props);
+		Object service;
+		if (isMGraph) {
+			interfaceNames = new String[] {
+				MGraph.class.getName(),
+				LockableMGraph.class.getName()
+			};
+			service = new MGraphServiceFactory(this, name, tcAccessController);
+		} else {
+			interfaceNames = new String[] {Graph.class.getName()};
+			service = new GraphServiceFactory(this, name, tcAccessController);
+		}
+		ServiceRegistration serviceReg = componentContext.getBundleContext()
+				.registerService(interfaceNames, service, props);
 		serviceRegistrations.put(name, serviceReg);
 	}
 
