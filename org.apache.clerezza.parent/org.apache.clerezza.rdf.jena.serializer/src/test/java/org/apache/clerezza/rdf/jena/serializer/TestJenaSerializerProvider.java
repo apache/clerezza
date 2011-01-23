@@ -32,6 +32,10 @@ import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.LiteralFactory;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.TripleImpl;
 
 /**
  * Serializes a Graph to different formats
@@ -44,18 +48,26 @@ public class TestJenaSerializerProvider {
 
 	private void initializeGraph() {
 		mGraph = new SimpleMGraph();
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
+		/*com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
 		Model model = ModelFactory.createModelForGraph(graph);
 		// create the resource
 		// and add the properties cascading style
 		String URI = "http://example.org/";
 
-		model.createResource(URI + "A").addProperty(
 				model.createProperty(URI + "B"), "C").addProperty(
 				model.createProperty(URI + "D"),
 				model.createResource().addProperty(
 						model.createProperty(URI + "E"), "F").addProperty(
 						model.createProperty(URI + "G"), "H"));
+		mGraph.add(new TripleImpl(new UriRef("http://foo/bar"),
+				new UriRef("http://foo/bar"),
+				LiteralFactory.getInstance().createTypedLiteral("foo")));
+		mGraph.add(new TripleImpl(new UriRef("http://foo/bar"),
+				new UriRef("http://foo/bar"),
+				LiteralFactory.getInstance().createTypedLiteral(54675)));*/
+		mGraph.add(new TripleImpl(new BNode(),
+				new UriRef("http://foo/bar"),
+				new UriRef("http://foo/bar")));
 	}
 
 	/*
