@@ -18,8 +18,9 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -247,28 +248,31 @@ public class RdfList extends AbstractList<Resource> {
 		return (NonLiteral) tc.filter(list, RDF.rest, null).next().getObject();
 	}
 
-	private Resource getFirstEntry(NonLiteral listResource) {
+	private Resource getFirstEntry(final NonLiteral listResource) {
 		try {
 			return tc.filter(listResource, RDF.first, null).next().getObject();
-		} catch (NullPointerException e) {
-			try {
-				final FileOutputStream fileOutputStream = new FileOutputStream("/tmp/broken-list.nt");
-				final GraphNode graphNode = new GraphNode(listResource, tc);
-				Serializer.getInstance().serialize(
-						fileOutputStream,
-						graphNode.getNodeContext(),
-						SupportedFormat.N_TRIPLE);
-				fileOutputStream.flush();
-				logger.warn("GraphNode: "+graphNode);
-				final Iterator<UriRef> properties = graphNode.getProperties();
-				while (properties.hasNext()) {
-					logger.warn("available: "+properties.next());
-				}
+		} catch (final NullPointerException e) {
+			RuntimeException runtimeEx = AccessController.doPrivileged(new PrivilegedAction<RuntimeException>() {
+				@Override
+				public RuntimeException run(){
+					try {
+						final FileOutputStream fileOutputStream = new FileOutputStream("/tmp/broken-list.nt");
+						final GraphNode graphNode = new GraphNode(listResource, tc);
+						Serializer.getInstance().serialize(fileOutputStream, graphNode.getNodeContext(), SupportedFormat.N_TRIPLE);
+						fileOutputStream.flush();
+						logger.warn("GraphNode: " + graphNode);
+						final Iterator<UriRef> properties = graphNode.getProperties();
+						while (properties.hasNext()) {
+							logger.warn("available: " + properties.next());
+						}
+						return new RuntimeException("broken list " + listResource, e);
+					} catch (Exception ex) {
+						return new RuntimeException(ex);
+					}
 
-				throw new RuntimeException("broken list "+listResource, e);
-			} catch (Exception ex) {
-				throw new RuntimeException(ex);
-			}
+				}
+			});
+			throw runtimeEx;
 		}
 	}
 
