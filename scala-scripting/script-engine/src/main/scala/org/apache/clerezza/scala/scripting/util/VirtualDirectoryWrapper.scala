@@ -10,7 +10,7 @@ import scala.tools.nsc.io.VirtualDirectory
 
 class VirtualDirectoryWrapper(val wrapped: AbstractFile,
 							  val childWrapper: (AbstractFile) => AbstractFile) extends VirtualDirectory(null, None)
-							with GenericFileWrapperTrait {
+																				   with GenericFileWrapperTrait {
 	lastModified =wrapped.lastModified
 
 	override def output = {
@@ -38,4 +38,38 @@ class VirtualDirectoryWrapper(val wrapped: AbstractFile,
 		childWrapper(wrapped.lookupPathUnchecked(path, directory))
 	}
 
+}
+
+object VirtualDirectoryWrapper {
+	trait VirtualDirectoryFlavour extends VirtualDirectoryWrapper {
+		abstract override def output = {
+			println("unexpected call to output "+name)
+			super.output
+		}
+	}
+
+	def wrap(f: AbstractFile, outputListenerParam: (AbstractFile) => Unit): AbstractFile = {
+		def innerWrap(f: AbstractFile) = wrap(f, outputListenerParam)
+		f match {
+			case d: VirtualDirectory => new VirtualDirectoryWrapper(d, 
+										innerWrap)
+										with LoggingFileWrapper with VirtualDirectoryFlavour {
+					override def output = d.output
+					val outputListener = outputListenerParam
+				}
+			case o => new FileWrapper(o, innerWrap) with LoggingFileWrapper {
+					val outputListener = outputListenerParam
+				}
+		}
+	}
+
+	trait LoggingFileWrapper extends GenericFileWrapperTrait {
+
+		val outputListener: (AbstractFile) => Unit
+
+		abstract override def output = {
+			outputListener(this)
+			super.output
+		}
+	}
 }
