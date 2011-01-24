@@ -99,7 +99,7 @@ public class JenaGraph extends GraphBase implements Graph {
 			public com.hp.hpl.jena.graph.Triple next() {
 				Triple baseNext = base.next();
 				lastReturned = baseNext;
-				return (baseNext == null) ? null : tria2JenaUtil.convertTriple(baseNext);
+				return (baseNext == null) ? null : tria2JenaUtil.convertTriple(baseNext, true);
 			}
 
 			@Override
