@@ -19,6 +19,7 @@
 
 package org.apache.clerezza.scala.scripting
 
+
 import org.apache.clerezza.scala.scripting.util.FileWrapper
 import org.apache.clerezza.scala.scripting.util.GenericFileWrapperTrait
 import org.apache.clerezza.scala.scripting.util.SplittingDirectory
@@ -52,7 +53,11 @@ class TrackingCompiler private (bundleContext : BundleContext,
 	@throws(classOf[CompileErrorsException])
 	def compile(sources: List[Array[Char]]): List[Class[_]] = {
 		writtenClasses.clear()
-		val sourceFiles: List[SourceFile] = for(chars <- sources) yield new BatchSourceFile("<script>", chars)
+		var i = 0
+		val sourceFiles: List[SourceFile] = for(chars <- sources) yield {
+			i = i +1;
+			new BatchSourceFile("<script"+i+">", chars)
+		}
 		(new Run).compileSources(sourceFiles)
 		if (reporter.hasErrors) {
 			reporter.reset
@@ -95,31 +100,11 @@ object TrackingCompiler {
 
 		val writtenClasses: mutable.ListBuffer[AbstractFile] = mutable.ListBuffer[AbstractFile]()
 		val settings = {
-				trait VirtualDirectoryFlavour extends VirtualDirectoryWrapper {
-					abstract override def output = {
-						println("unexpected call to output "+name)
-						super.output
-					}
-				}
-
-				def wrap(f: AbstractFile): AbstractFile = {
-					f match {
-						case d: VirtualDirectory => new VirtualDirectoryWrapper(d, wrap) with LoggingFileWrapper with VirtualDirectoryFlavour {
-								override def output = d.output
-							}
-						case o => new FileWrapper(o, wrap) with LoggingFileWrapper
-					}
-				}
-
-				trait LoggingFileWrapper extends GenericFileWrapperTrait {
-
-					abstract override def output = {
-						writtenClasses += this
-						super.output
-					}
+				def outputListener(abtractFile: AbstractFile) {
+					writtenClasses += abtractFile
 				}
 				val settings = new Settings
-				settings.outputDirs setSingleOutput wrap(outputDirectory)
+				settings.outputDirs setSingleOutput VirtualDirectoryWrapper.wrap(outputDirectory, outputListener)
 				settings
 			}
 		new TrackingCompiler(bundleContext,
