@@ -45,13 +45,13 @@ class TrackingCompiler private (bundleContext : BundleContext,
 		writtenClasses: mutable.ListBuffer[AbstractFile])
 	extends  BundleContextScalaCompiler(bundleContext : BundleContext,
 		settings: Settings, reporter: Reporter) {
-	
 
 	/**
-	 * compiles a list of class sources returning a list of compiled classes
+	 * compiles a list of classes to settings.outputDirs returning a
+	 * the generated AbstractFiles
 	 */
 	@throws(classOf[CompileErrorsException])
-	def compile(sources: List[Array[Char]]): List[Class[_]] = {
+	def compileToDir(sources: List[Array[Char]]): List[AbstractFile] = {
 		writtenClasses.clear()
 		var i = 0
 		val sourceFiles: List[SourceFile] = for(chars <- sources) yield {
@@ -63,8 +63,17 @@ class TrackingCompiler private (bundleContext : BundleContext,
 			reporter.reset
 			throw new CompileErrorsException;
 		}
+		writtenClasses.toList
+	}
+
+	/**
+	 * compiles a list of class sources returning a list of compiled classes
+	 */
+	@throws(classOf[CompileErrorsException])
+	def compile(sources: List[Array[Char]]): List[Class[_]] = {
+		val classFiles = compileToDir(sources)
 		val classLoader = classLoaderBuilder()
-		val result: List[Class[_]] = for (classFile <- writtenClasses.toList;
+		val result: List[Class[_]] = for (classFile <- classFiles;
 										  if (!classFile.name.contains('$'))) yield {
 			val path = classFile.path
 			val relevantPath = path.substring(path.indexOf('/')+1,path.lastIndexOf('.'))
