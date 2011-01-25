@@ -28,7 +28,6 @@ abstract class PageRenderlet extends AbstractRenderlet {
 	var renderletManager: RenderletManager = null;
 
 	def activate(context: ComponentContext) = {
-		println("activating Page Renderlet "+this.getClass);
 		renderletManager.registerRenderlet(this.getClass.getName,
 				null,
 				rdfType, mode,
