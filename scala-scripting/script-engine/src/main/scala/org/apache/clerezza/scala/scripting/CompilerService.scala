@@ -163,5 +163,27 @@ class CompilerService() extends BundleListener  {
 		}
 	}
 
+	def compileToDir(sources: List[Array[Char]], outputDirectory: AbstractFile): List[AbstractFile] = {
+		AccessController.checkPermission(new CompilePermission)
+		sharedCompiler.synchronized {
+			try {
+				AccessController.doPrivileged[List[AbstractFile]](
+					new PrivilegedExceptionAction[List[AbstractFile]] {
+						def run() = {
+							val out = new ByteArrayOutputStream
+							val printWriter = new PrintWriter(out)
+							val compiler = createCompiler(printWriter, outputDirectory)
+							try {
+								compiler.compileToDir(sources)
+							} catch {
+								case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"))
+								case e => throw e
+							}
+						}
+					})
+			}
+		}
+	}
+
 	
 }
