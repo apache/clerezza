@@ -34,7 +34,7 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  * for the rights on a the graph for which the uri is passed to the 
  * constructor.
  *
- * @author mir
+ * @author mir, hasan
  */
 public class SecuredTripleCollection implements TripleCollection {
 
@@ -113,53 +113,25 @@ public class SecuredTripleCollection implements TripleCollection {
 	@Override
 	public boolean addAll(Collection<? extends Triple> c) {
 		checkWrite();
-		boolean modified = false;
-		Iterator<? extends Triple> e = c.iterator();
-		while (e.hasNext()) {
-			if (wrapped.add(e.next())) {
-				modified = true;
-			}
-		}
-		return modified;
-
+		return wrapped.addAll(c);
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
 		checkWrite();
-		boolean modified = false;
-		Iterator<?> e = wrapped.iterator();
-		while (e.hasNext()) {
-			if (c.contains(e.next())) {
-			e.remove();
-			modified = true;
-			}
-		}
-		return modified;
+		return wrapped.removeAll(c);
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
 		checkWrite();
-		boolean modified = false;
-		Iterator<Triple> e = wrapped.iterator();
-		while (e.hasNext()) {
-			if (!c.contains(e.next())) {
-			e.remove();
-			modified = true;
-			}
-		}
-		return modified;
+		return wrapped.retainAll(c);
 	}
 
 	@Override
 	public void clear() {
 		checkWrite();
-		Iterator<Triple> e = wrapped.iterator();
-		while (e.hasNext()) {
-			e.next();
-			e.remove();
-		}
+		wrapped.clear();
 	}
 
 	void checkRead() {
@@ -173,17 +145,7 @@ public class SecuredTripleCollection implements TripleCollection {
 	@Override
 	public boolean contains(Object o) {
 		checkRead();
-		Iterator<Triple> e = wrapped.iterator();
-		if (o==null) {
-			while (e.hasNext())
-			if (e.next()==null)
-				return true;
-		} else {
-			while (e.hasNext())
-			if (o.equals(e.next()))
-				return true;
-		}
-		return false;
+		return wrapped.contains((Triple) o);
 	}
 
 	@Override
