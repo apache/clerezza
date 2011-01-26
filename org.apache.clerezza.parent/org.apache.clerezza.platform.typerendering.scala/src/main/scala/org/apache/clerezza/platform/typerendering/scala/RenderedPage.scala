@@ -3,6 +3,7 @@ package org.apache.clerezza.platform.typerendering.scala
 import java.io.OutputStream
 import java.io.PrintWriter
 import java.net.URI
+import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.MediaType
 import org.osgi.framework.BundleContext
 import scala.xml._
@@ -37,6 +38,7 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 	}
 
 	val uriInfo = requestProperties.getUriInfo
+	val httpHeaders = requestProperties.getHttpHeaders
 
 	def render(resource : GraphNode) : Seq[Node] = {
 		modeOption match {
