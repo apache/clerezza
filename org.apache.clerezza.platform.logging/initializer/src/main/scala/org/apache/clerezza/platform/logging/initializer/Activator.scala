@@ -52,24 +52,15 @@ class Activator extends BundleActivator {
 			if (config.getProperties() == null) {
 				val props: Dictionary[String, String] = new Hashtable[String, String]();
 				props.put("log4j.rootLogger", "DEBUG, R, stdout");
-				//props.put("log4j.logger.CONSOLE","INHERIT, stdout");
-				//props.put("log4j.additivity.CONSOLE","false");
 				props.put("log4j.appender.stdout", "org.apache.log4j.ConsoleAppender");
 				props.put("log4j.appender.stdout.layout", "org.apache.log4j.PatternLayout");
 				props.put("log4j.appender.stdout.Threshold", "WARN");
-
 				// Pattern to output the caller's file name and line number.
-				props.put("log4j.appender.stdout.layout.ConversionPattern", "%5p [%t] (%F:%L) - %m%n");
-
-				props.put("log4j.appender.R", "org.apache.log4j.RollingFileAppender");
+				props.put("log4j.appender.stdout.layout.ConversionPattern", "%d [%t] %5p [%t] (%F\\:%L) - %m%n");
+				props.put("log4j.appender.R", "org.apache.log4j.FileAppender");
 				props.put("log4j.appender.R.File", "clerezza.log");
-
-				props.put("log4j.appender.R.MaxFileSize", "100KB");
-				// Keep one backup file
-				props.put("log4j.appender.R.MaxBackupIndex", "1");
-
 				props.put("log4j.appender.R.layout", "org.apache.log4j.PatternLayout");
-				props.put("log4j.appender.R.layout.ConversionPattern", "%p %t %c - %m%n");
+				props.put("log4j.appender.R.layout.ConversionPattern", "%d [%t] %p %t %c - %m%n");
 
 				config.update(props);
 			}
