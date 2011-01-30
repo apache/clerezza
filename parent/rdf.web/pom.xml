@@ -2,17 +2,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.rdf.web</artifactId>
+	<artifactId>rdf.web</artifactId>
 	<packaging>pom</packaging>
 	<version>0.8-incubating-SNAPSHOT</version>
 	<name>Clerezza - SCB Web Access</name>
 	<description>Allows access to SCB graphs over HTTP with JAX-RS</description>
 	<modules>
-		<module>org.apache.clerezza.rdf.web.core</module>
-		<module>org.apache.clerezza.rdf.web.ontologies</module>
+		<module>rdf.web.core</module>
+		<module>rdf.web.ontologies</module>
 	</modules>
 </project>

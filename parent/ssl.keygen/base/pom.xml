@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.ssl.keygen</artifactId>
+		<artifactId>ssl.keygen</artifactId>
 		<version>0.5-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
+	<artifactId>ssl.keygen.base</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.5-incubating-SNAPSHOT</version>
 	<name>Clerezza - FOAF+SSL Keygen :: Base Component</name>

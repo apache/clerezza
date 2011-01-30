@@ -2,13 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+	<artifactId>rdf.ontologies</artifactId>
 	<version>0.11-incubating-SNAPSHOT</version>
 	
 	<packaging>bundle</packaging>
@@ -17,14 +17,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.maven-ontologies-plugin</artifactId>
+				<artifactId>maven-ontologies-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>

@@ -3,17 +3,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.concepts</artifactId>
+	<artifactId>platform.concepts</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Concepts</name>
 	<description>Provides services for tagging resources with SKOS concepts.</description>
 	<modules>
-		<module>org.apache.clerezza.platform.concepts.ontologies</module>
-		<module>org.apache.clerezza.platform.concepts.core</module>
+		<module>platform.concepts.ontologies</module>
+		<module>platform.concepts.core</module>
 	</modules>
 </project>

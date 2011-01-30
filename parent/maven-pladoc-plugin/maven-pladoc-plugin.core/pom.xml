@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>org.apache.clerezza.maven-pladoc-plugin</artifactId>
+		<artifactId>maven-pladoc-plugin</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.maven-pladoc-plugin.core</artifactId>
+	<artifactId>maven-pladoc-plugin.core</artifactId>
 	<packaging>maven-plugin</packaging>
 	<version>0.3-incubating-SNAPSHOT</version>
 	<name>Clerezza - Maven PlaDoc Plugin Core</name>
@@ -18,11 +18,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.maven-pladoc-plugin.api</artifactId>
+			<artifactId>maven-pladoc-plugin.api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.maven-pladoc-plugin.service</artifactId>
+			<artifactId>maven-pladoc-plugin.service</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -71,17 +71,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content</artifactId>
+			<artifactId>platform.content</artifactId>
 			<!--<scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.simple.storage</artifactId>
+			<artifactId>rdf.simple.storage</artifactId>
 			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.triaxrs</artifactId>
+			<artifactId>triaxrs</artifactId>
 		 	<exclusions>
 		 		<exclusion>
 					<artifactId>osgi_R4_compendium</artifactId>
@@ -91,7 +91,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.parser</artifactId>
+			<artifactId>rdf.jena.parser</artifactId>
 			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>

@@ -2,24 +2,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
-  <artifactId>org.apache.clerezza.uima.metadata-generator</artifactId>
+  <artifactId>uima.metadata-generator</artifactId>
   <version>0.1-incubating-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>Clerezza - Apache Clerezza UIMA extension for metadata generation</name>
   <description>Apache Clerezza UIMA extension for metadata generation</description>
   <parent>
     <groupId>org.apache.clerezza</groupId>
-    <artifactId>org.apache.clerezza.uima</artifactId>
+    <artifactId>uima</artifactId>
     <version>0.1-incubating-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
-      <artifactId>org.apache.clerezza.platform.content</artifactId>
+      <artifactId>platform.content</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
-      <artifactId>org.apache.clerezza.uima.utils</artifactId>
+      <artifactId>uima.utils</artifactId>
       <version>0.1-incubating-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -38,12 +38,12 @@
     </dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
-      <artifactId>org.apache.clerezza.uima.ontologies</artifactId>
+      <artifactId>uima.ontologies</artifactId>
       <version>0.1-incubating-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
-      <artifactId>org.apache.clerezza.rdf.core</artifactId>
+      <artifactId>rdf.core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
@@ -64,7 +64,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
-      <artifactId>org.apache.clerezza.jaxrs.testutils</artifactId>
+      <artifactId>jaxrs.testutils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

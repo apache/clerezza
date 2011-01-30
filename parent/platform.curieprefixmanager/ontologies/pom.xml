@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.platform.curieprefixmanager</artifactId>
+		<artifactId>platform.curieprefixmanager</artifactId>
 		<version>0.1-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.curieprefixmanager.ontologies</artifactId>
+	<artifactId>platform.curieprefixmanager.ontologies</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - CURIE prefix manager Ontologies</name>
@@ -16,14 +16,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.maven-ontologies-plugin</artifactId>
+				<artifactId>maven-ontologies-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>

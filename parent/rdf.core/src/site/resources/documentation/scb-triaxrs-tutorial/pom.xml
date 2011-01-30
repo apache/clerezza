@@ -8,7 +8,7 @@
 	<version>1.0-incubating-SNAPSHOT</version>
 	<name>SCB Jaxrs Tutorial</name>	
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.11-incubating-SNAPSHOT</version>
 	</parent>
@@ -29,15 +29,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.rdf.providers</artifactId>
+			<artifactId>jaxrs.rdf.providers</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.seedsnipe</artifactId>
+			<artifactId>platform.typerendering.seedsnipe</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.triaxrs</artifactId>
+			<artifactId>triaxrs</artifactId>
 		</dependency>
 	</dependencies>	
 </project>

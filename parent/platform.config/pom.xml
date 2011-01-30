@@ -2,11 +2,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.clerezza</groupId>
-        <artifactId>org.apache.clerezza.parent</artifactId>
+        <artifactId>parent</artifactId>
         <version>0.2-incubating-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
-    <artifactId>org.apache.clerezza.platform.config</artifactId>
+    <artifactId>platform.config</artifactId>
     <version>0.3-incubating-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Configuration</name>
@@ -21,15 +21,15 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.rdf.core</artifactId>
+            <artifactId>rdf.core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+            <artifactId>rdf.ontologies</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.rdf.utils</artifactId>
+            <artifactId>rdf.utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -37,15 +37,15 @@
         </dependency>
 		<dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.platform</artifactId>
+            <artifactId>platform</artifactId>
         </dependency>
 		<dependency>
             <groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+			<artifactId>platform.graphprovider.content</artifactId>
 		</dependency>
 		<dependency>
             <groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+			<artifactId>permissiondescriptions</artifactId>
 		</dependency>
     </dependencies>
 </project>

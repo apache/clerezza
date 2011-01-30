@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.rdf.jena.parser</artifactId>
+	<artifactId>rdf.jena.parser</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.10-incubating-SNAPSHOT</version>
 	<name>Clerezza - SCB Jena based Parser</name>
@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.facade</artifactId>
+			<artifactId>rdf.jena.facade</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.parent</artifactId>
+	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Clerezza - Parent for all (root)</name>
 	<url>http://incubator.apache.org/clerezza/mvn-site/</url>
@@ -25,103 +25,103 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-				<module>org.apache.clerezza.app.webguiexamples</module>
-				<module>org.apache.clerezza.ext.com.hp.hpl.jena</module>
-				<module>org.apache.clerezza.ext.com.hp.hpl.jena.tdb</module>
-				<module>org.apache.clerezza.ext.com.ibm.icu</module>
-				<module>org.apache.clerezza.ext.javax.mail</module>
-				<module>org.apache.clerezza.ext.org.json.simple</module>
-				<module>org.apache.clerezza.ext.org.ops4j.pax.swissbox.tinybundles</module>
-				<module>org.apache.clerezza.internal.archetype</module>
-				<module>org.apache.clerezza.jaxrs.extensions</module>
-				<module>org.apache.clerezza.jaxrs.rdf.providers</module>
-				<module>org.apache.clerezza.jaxrs.testutils</module>
-				<module>org.apache.clerezza.jaxrs.utils</module>
-				<module>org.apache.clerezza.maven-jaxrs-report-plugin</module>
-				<module>org.apache.clerezza.maven-ontologies-plugin</module>
-				<module>org.apache.clerezza.maven-pladoc-plugin</module>
-				<module>org.apache.clerezza.permissiondescriptions</module>
-				<module>org.apache.clerezza.ssl.keygen</module>
-				<module>org.apache.clerezza.platform</module>
-				<module>org.apache.clerezza.platform.accountcontrolpanel</module>
-				<module>org.apache.clerezza.platform.concepts</module>
-				<module>org.apache.clerezza.platform.config</module>
-				<module>org.apache.clerezza.platform.config.gui</module>
-				<module>org.apache.clerezza.platform.content.imagemetadata</module>
-				<module>org.apache.clerezza.platform.content</module>
-				<module>org.apache.clerezza.platform.content.default404</module>
-				<module>org.apache.clerezza.platform.content.fsadaptor</module>
-				<module>org.apache.clerezza.platform.content.representations</module>
-				<module>org.apache.clerezza.platform.curieprefixmanager</module>
-				<module>org.apache.clerezza.platform.dashboard</module>
-				<module>org.apache.clerezza.platform.dashboard.webinterface</module>
-				<module>org.apache.clerezza.platform.defaultacceptheader</module>
-				<module>org.apache.clerezza.platform.documentation</module>
-				<module>org.apache.clerezza.platform.documentation.viewer</module>
-				<module>org.apache.clerezza.platform.enrichment</module>
-				<module>org.apache.clerezza.platform.graphprovider.content</module>
-				<module>org.apache.clerezza.platform.language</module>
-				<module>org.apache.clerezza.platform.launcher.storageless.parent</module>
-				<module>org.apache.clerezza.platform.launcher.tdb</module>
-				<module>org.apache.clerezza.platform.logging</module>
-				<module>org.apache.clerezza.platform.mail</module>
-				<module>org.apache.clerezza.platform.scripting</module>
-				<module>org.apache.clerezza.platform.scripting.scriptmanager</module>
-				<module>org.apache.clerezza.platform.security.auth.basic</module>
-				<module>org.apache.clerezza.platform.security.auth.cookie</module>
-				<module>org.apache.clerezza.platform.security.foafssl</module>
-				<module>org.apache.clerezza.platform.security.conditions</module>
-				<module>org.apache.clerezza.platform.security</module>
-				<module>org.apache.clerezza.platform.typehandlerspace</module>
-				<module>org.apache.clerezza.platform.typerendering.manager</module>
-				<module>org.apache.clerezza.platform.typerendering</module>
-				<module>org.apache.clerezza.platform.typerendering.scala</module>
-				<module>org.apache.clerezza.platform.typerendering.scalaserverpages</module>
-				<module>org.apache.clerezza.platform.typerendering.seedsnipe</module>
-				<module>org.apache.clerezza.platform.usermanager</module>
-				<module>org.apache.clerezza.platform.usermanager.webinterface</module>
-				<module>org.apache.clerezza.platform.users</module>
-				<module>org.apache.clerezza.platform.xhtml2html</module>
-				<module>org.apache.clerezza.rdf.core</module>
-				<module>org.apache.clerezza.rdf.core.test</module>
-				<module>org.apache.clerezza.rdf.enrichment</module>
-				<module>org.apache.clerezza.rdf.file.storage</module>
-				<module>org.apache.clerezza.rdf.jena.commons</module>
-				<module>org.apache.clerezza.rdf.jena.facade</module>
-				<module>org.apache.clerezza.rdf.jena.parser</module>
-				<module>org.apache.clerezza.rdf.jena.serializer</module>
-				<module>org.apache.clerezza.rdf.jena.sparql</module>
-				<module>org.apache.clerezza.rdf.jena.storage</module>
-				<module>org.apache.clerezza.rdf.jena.tdb.storage</module>
-				<module>org.apache.clerezza.rdf.locking</module>
-				<module>org.apache.clerezza.rdf.ontologies</module>
-				<module>org.apache.clerezza.rdf.metadata</module>
-				<module>org.apache.clerezza.rdf.rdfa</module>
-				<module>org.apache.clerezza.rdf.rdfjson</module>
-				<module>org.apache.clerezza.rdf.scala.utils</module>
-				<module>org.apache.clerezza.rdf.schemagen</module>
-				<module>org.apache.clerezza.rdf.simple.storage</module>
-				<module>org.apache.clerezza.rdf.utils</module>
-				<module>org.apache.clerezza.rdf.web</module>
-				<module>org.apache.clerezza.shell</module>
-				<module>org.apache.clerezza.shell.felixshellcommand</module>
-				<module>org.apache.clerezza.sourcebundle</module>
-				<module>org.apache.clerezza.sshshell</module>
-				<module>org.apache.clerezza.templating</module>
-				<module>org.apache.clerezza.templating.seedsnipe</module>
-				<module>org.apache.clerezza.tools.offline</module>
-				<module>org.apache.clerezza.triaxrs</module>
-				<module>org.apache.clerezza.uima</module>
-				<module>org.apache.clerezza.utils.customproperty</module>
-				<module>org.apache.clerezza.utils.imagemagick</module>
-				<module>org.apache.clerezza.utils.imageprocessing</module>
-				<module>org.apache.clerezza.utils</module>
-				<module>org.apache.clerezza.web.fileserver</module>
-				<module>org.apache.clerezza.web.resources.jquery</module>
-				<module>org.apache.clerezza.web.resources.scripts</module>
-				<module>org.apache.clerezza.web.resources.style</module>
-				<module>org.apache.clerezza.web.resources.yui</module>
-				<module>org.apache.clerezza.rdf.storage.externalizer</module>
+				<module>app.webguiexamples</module>
+				<module>ext.com.hp.hpl.jena</module>
+				<module>ext.com.hp.hpl.jena.tdb</module>
+				<module>ext.com.ibm.icu</module>
+				<module>ext.javax.mail</module>
+				<module>ext.org.json.simple</module>
+				<module>ext.org.ops4j.pax.swissbox.tinybundles</module>
+				<module>internal.archetype</module>
+				<module>jaxrs.extensions</module>
+				<module>jaxrs.rdf.providers</module>
+				<module>jaxrs.testutils</module>
+				<module>jaxrs.utils</module>
+				<module>maven-jaxrs-report-plugin</module>
+				<module>maven-ontologies-plugin</module>
+				<module>maven-pladoc-plugin</module>
+				<module>permissiondescriptions</module>
+				<module>ssl.keygen</module>
+				<module>platform</module>
+				<module>platform.accountcontrolpanel</module>
+				<module>platform.concepts</module>
+				<module>platform.config</module>
+				<module>platform.config.gui</module>
+				<module>platform.content.imagemetadata</module>
+				<module>platform.content</module>
+				<module>platform.content.default404</module>
+				<module>platform.content.fsadaptor</module>
+				<module>platform.content.representations</module>
+				<module>platform.curieprefixmanager</module>
+				<module>platform.dashboard</module>
+				<module>platform.dashboard.webinterface</module>
+				<module>platform.defaultacceptheader</module>
+				<module>platform.documentation</module>
+				<module>platform.documentation.viewer</module>
+				<module>platform.enrichment</module>
+				<module>platform.graphprovider.content</module>
+				<module>platform.language</module>
+				<module>platform.launcher.storageless.parent</module>
+				<module>platform.launcher.tdb</module>
+				<module>platform.logging</module>
+				<module>platform.mail</module>
+				<module>platform.scripting</module>
+				<module>platform.scripting.scriptmanager</module>
+				<module>platform.security.auth.basic</module>
+				<module>platform.security.auth.cookie</module>
+				<module>platform.security.foafssl</module>
+				<module>platform.security.conditions</module>
+				<module>platform.security</module>
+				<module>platform.typehandlerspace</module>
+				<module>platform.typerendering.manager</module>
+				<module>platform.typerendering</module>
+				<module>platform.typerendering.scala</module>
+				<module>platform.typerendering.scalaserverpages</module>
+				<module>platform.typerendering.seedsnipe</module>
+				<module>platform.usermanager</module>
+				<module>platform.usermanager.webinterface</module>
+				<module>platform.users</module>
+				<module>platform.xhtml2html</module>
+				<module>rdf.core</module>
+				<module>rdf.core.test</module>
+				<module>rdf.enrichment</module>
+				<module>rdf.file.storage</module>
+				<module>rdf.jena.commons</module>
+				<module>rdf.jena.facade</module>
+				<module>rdf.jena.parser</module>
+				<module>rdf.jena.serializer</module>
+				<module>rdf.jena.sparql</module>
+				<module>rdf.jena.storage</module>
+				<module>rdf.jena.tdb.storage</module>
+				<module>rdf.locking</module>
+				<module>rdf.ontologies</module>
+				<module>rdf.metadata</module>
+				<module>rdf.rdfa</module>
+				<module>rdf.rdfjson</module>
+				<module>rdf.scala.utils</module>
+				<module>rdf.schemagen</module>
+				<module>rdf.simple.storage</module>
+				<module>rdf.utils</module>
+				<module>rdf.web</module>
+				<module>shell</module>
+				<module>shell.felixshellcommand</module>
+				<module>sourcebundle</module>
+				<module>sshshell</module>
+				<module>templating</module>
+				<module>templating.seedsnipe</module>
+				<module>tools.offline</module>
+				<module>triaxrs</module>
+				<module>uima</module>
+				<module>utils.customproperty</module>
+				<module>utils.imagemagick</module>
+				<module>utils.imageprocessing</module>
+				<module>utils</module>
+				<module>web.fileserver</module>
+				<module>web.resources.jquery</module>
+				<module>web.resources.scripts</module>
+				<module>web.resources.style</module>
+				<module>web.resources.yui</module>
+				<module>rdf.storage.externalizer</module>
 			</modules>
 		</profile>
 		<profile>
@@ -130,9 +130,9 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<modules>
-				<module>org.apache.clerezza.integrationtest.web</module>
-				<module>org.apache.clerezza.integrationtest.web.performance</module>
-				<module>org.apache.clerezza.platform.testing</module>
+				<module>integrationtest.web</module>
+				<module>integrationtest.web.performance</module>
+				<module>platform.testing</module>
 			</modules>
 		</profile>
 		<profile>
@@ -141,11 +141,11 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<modules>
-				<module>org.apache.clerezza.ext.org.jruby</module>
-				<module>org.apache.clerezza.ext.org.openrdf.sesame</module>
-				<module>org.apache.clerezza.platform.launcher.sesame</module>
-				<module>org.apache.clerezza.rdf.sesame.storage</module>
-				<module>org.apache.clerezza.rdf.sesame.parser</module>
+				<module>ext.org.jruby</module>
+				<module>ext.org.openrdf.sesame</module>
+				<module>platform.launcher.sesame</module>
+				<module>rdf.sesame.storage</module>
+				<module>rdf.sesame.parser</module>
 			</modules>
 		</profile>
 	</profiles>
@@ -253,12 +253,12 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.clerezza</groupId>
-					<artifactId>org.apache.clerezza.maven-ontologies-plugin</artifactId>
+					<artifactId>maven-ontologies-plugin</artifactId>
 					<version>0.3-incubating-SNAPSHOT</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.clerezza</groupId>
-					<artifactId>org.apache.clerezza.maven-pladoc-plugin.core</artifactId>
+					<artifactId>maven-pladoc-plugin.core</artifactId>
 					<version>0.2-incubating-SNAPSHOT</version>
 				</plugin>
 				<plugin>
@@ -592,187 +592,187 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.typerendering.scala</artifactId>
+				<artifactId>platform.typerendering.scala</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.utils</artifactId>
+				<artifactId>rdf.utils</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.core</artifactId>
+				<artifactId>rdf.core</artifactId>
 				<version>0.12-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.enrichment</artifactId>
+				<artifactId>rdf.enrichment</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.simple.storage</artifactId>
+				<artifactId>rdf.simple.storage</artifactId>
 				<version>0.7-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.jena.tdb.storage</artifactId>
+				<artifactId>rdf.jena.tdb.storage</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.core.test</artifactId>
+				<artifactId>rdf.core.test</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.jena.facade</artifactId>
+				<artifactId>rdf.jena.facade</artifactId>
 				<version>0.12-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.web</artifactId>
+				<artifactId>rdf.web</artifactId>
 				<version>0.8-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.web.core</artifactId>
+				<artifactId>rdf.web.core</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.web.ontologies</artifactId>
+				<artifactId>rdf.web.ontologies</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.sshshell</artifactId>
+				<artifactId>sshshell</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+				<artifactId>web.fileserver</artifactId>
 				<version>0.9-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.web.resources.jquery</artifactId>
+				<artifactId>web.resources.jquery</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.web.resources.yui</artifactId>
+				<artifactId>web.resources.yui</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.web.resources.style</artifactId>
+				<artifactId>web.resources.style</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.web.resources.scripts</artifactId>
+				<artifactId>web.resources.scripts</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.triaxrs</artifactId>
+				<artifactId>triaxrs</artifactId>
 				<version>0.11-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.jaxrs.testutils</artifactId>
+				<artifactId>jaxrs.testutils</artifactId>
 				<version>0.9-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform</artifactId>
+				<artifactId>platform</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.usermanager</artifactId>
+				<artifactId>platform.usermanager</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.dashboard</artifactId>
+				<artifactId>platform.dashboard</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.dashboard.core</artifactId>
+				<artifactId>platform.dashboard.core</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.dashboard.ontologies</artifactId>
+				<artifactId>platform.dashboard.ontologies</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.dashboard.webinterface</artifactId>
+				<artifactId>platform.dashboard.webinterface</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.enrichment</artifactId>
+				<artifactId>platform.enrichment</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.usermanager.webinterface</artifactId>
+				<artifactId>platform.usermanager.webinterface</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.utils.customproperty</artifactId>
+				<artifactId>utils.customproperty</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.accountcontrolpanel</artifactId>
+				<artifactId>platform.accountcontrolpanel</artifactId>
 				<version>0.9-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.accountcontrolpanel.core</artifactId>
+				<artifactId>platform.accountcontrolpanel.core</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.accountcontrolpanel.ontologies</artifactId>
+				<artifactId>platform.accountcontrolpanel.ontologies</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.jaxrs.extensions</artifactId>
+				<artifactId>jaxrs.extensions</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.content</artifactId>
+				<artifactId>platform.content</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.content.default404</artifactId>
+				<artifactId>platform.content.default404</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.content.fsadaptor</artifactId>
+				<artifactId>platform.content.fsadaptor</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+				<artifactId>platform.graphprovider.content</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.mail</artifactId>
+				<artifactId>platform.mail</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -792,17 +792,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+				<artifactId>platform.typerendering.scalaserverpages</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
+				<artifactId>rdf.scala.utils</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.jaxrs.rdf.providers</artifactId>
+				<artifactId>jaxrs.rdf.providers</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -822,82 +822,82 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+				<artifactId>rdf.ontologies</artifactId>
 				<version>0.11-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.jena.parser</artifactId>
+				<artifactId>rdf.jena.parser</artifactId>
 				<version>0.10-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.jena.serializer</artifactId>
+				<artifactId>rdf.jena.serializer</artifactId>
 				<version>0.9-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.sesame.parser</artifactId>
+				<artifactId>rdf.sesame.parser</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.rdfa</artifactId>
+				<artifactId>rdf.rdfa</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.rdfjson</artifactId>
+				<artifactId>rdf.rdfjson</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.schemagen</artifactId>
+				<artifactId>rdf.schemagen</artifactId>
 				<version>0.10-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.sesame.storage</artifactId>
+				<artifactId>rdf.sesame.storage</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.security</artifactId>
+				<artifactId>platform.security</artifactId>
 				<version>0.8-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.security.conditions</artifactId>
+				<artifactId>platform.security.conditions</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.security.auth.basic</artifactId>
+				<artifactId>platform.security.auth.basic</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.users.core</artifactId>
+				<artifactId>platform.users.core</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.security.auth.cookie</artifactId>
+				<artifactId>platform.security.auth.cookie</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.typehandlerspace</artifactId>
+				<artifactId>platform.typehandlerspace</artifactId>
 				<version>0.8-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.security.foafssl.core</artifactId>
+				<artifactId>platform.security.foafssl.core</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
+				<artifactId>platform.security.foafssl.ontologies</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -907,7 +907,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
+				<artifactId>ssl.keygen.base</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -937,72 +937,72 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.templating</artifactId>
+				<artifactId>templating</artifactId>
 				<version>0.8-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.templating.seedsnipe</artifactId>
+				<artifactId>templating.seedsnipe</artifactId>
 				<version>0.8-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.tools.offline</artifactId>
+				<artifactId>tools.offline</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.jaxrs.utils</artifactId>
+				<artifactId>jaxrs.utils</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.utils.imageprocessing</artifactId>
+				<artifactId>utils.imageprocessing</artifactId>
 				<version>0.7-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.utils.imagemagick</artifactId>
+				<artifactId>utils.imagemagick</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.integrationtest.web</artifactId>
+				<artifactId>integrationtest.web</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.integrationtest.web.performance</artifactId>
+				<artifactId>integrationtest.web.performance</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.launcher.storageless</artifactId>
+				<artifactId>platform.launcher.storageless</artifactId>
 				<version>0.8-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.typerendering</artifactId>
+				<artifactId>platform.typerendering</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
+				<artifactId>platform.typerendering.core</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.typerendering.ontologies</artifactId>
+				<artifactId>platform.typerendering.ontologies</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.typerendering.seedsnipe</artifactId>
+				<artifactId>platform.typerendering.seedsnipe</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.typerendering.manager</artifactId>
+				<artifactId>platform.typerendering.manager</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -1012,182 +1012,182 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.xhtml2html</artifactId>
+				<artifactId>platform.xhtml2html</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.web.resources.extjs</artifactId>
+				<artifactId>web.resources.extjs</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.jena.commons</artifactId>
+				<artifactId>rdf.jena.commons</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.jena.storage</artifactId>
+				<artifactId>rdf.jena.storage</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.jena.sparql</artifactId>
+				<artifactId>rdf.jena.sparql</artifactId>
 				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.scripting</artifactId>
+				<artifactId>platform.scripting</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.scripting.scriptmanager</artifactId>
+				<artifactId>platform.scripting.scriptmanager</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.config</artifactId>
+				<artifactId>platform.config</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.config.gui</artifactId>
+				<artifactId>platform.config.gui</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.documentation</artifactId>
+				<artifactId>platform.documentation</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.documentation.viewer</artifactId>
+				<artifactId>platform.documentation.viewer</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.logging.core</artifactId>
+				<artifactId>platform.logging.core</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.logging.initializer</artifactId>
+				<artifactId>platform.logging.initializer</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.logging.ontologies</artifactId>
+				<artifactId>platform.logging.ontologies</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.pagemanager</artifactId>
+				<artifactId>platform.pagemanager</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.file.storage</artifactId>
+				<artifactId>rdf.file.storage</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.maven-pladoc-plugin.api</artifactId>
+				<artifactId>maven-pladoc-plugin.api</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.maven-pladoc-plugin.service</artifactId>
+				<artifactId>maven-pladoc-plugin.service</artifactId>
 				<version>0.3-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.language.ontologies</artifactId>
+				<artifactId>platform.language.ontologies</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.language.core</artifactId>
+				<artifactId>platform.language.core</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.language</artifactId>
+				<artifactId>platform.language</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.app.webguiexamples</artifactId>
+				<artifactId>app.webguiexamples</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.content.representations</artifactId>
+				<artifactId>platform.content.representations</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.content.representations.core</artifactId>
+				<artifactId>platform.content.representations.core</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.content.representations.ontologies</artifactId>
+				<artifactId>platform.content.representations.ontologies</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.content.imagemetadata</artifactId>
+				<artifactId>platform.content.imagemetadata</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.concepts</artifactId>
+				<artifactId>platform.concepts</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.concepts.core</artifactId>
+				<artifactId>platform.concepts.core</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.concepts.ontologies</artifactId>
+				<artifactId>platform.concepts.ontologies</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.shell</artifactId>
+				<artifactId>shell</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.shell.felixshellcommand</artifactId>
+				<artifactId>shell.felixshellcommand</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.sourcebundle</artifactId>
+				<artifactId>sourcebundle</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.utils</artifactId>
+				<artifactId>utils</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.rdf.metadata</artifactId>
+				<artifactId>rdf.metadata</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.uima</artifactId>
+				<artifactId>uima</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+				<artifactId>permissiondescriptions</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -1288,7 +1288,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.maven-jaxrs-report-plugin</artifactId>
+				<artifactId>maven-jaxrs-report-plugin</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</plugin>
 			<plugin>
@@ -1298,7 +1298,7 @@
 			</plugin>
 <!--			<plugin>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.maven-pladoc-plugin.core</artifactId>
+				<artifactId>maven-pladoc-plugin.core</artifactId>
 				<version>0.1</version>
 			</plugin> -->
 		</plugins>

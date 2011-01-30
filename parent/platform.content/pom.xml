@@ -3,11 +3,11 @@
 
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
     <groupId>org.apache.clerezza</groupId>
-    <artifactId>org.apache.clerezza.platform.content</artifactId>
+    <artifactId>platform.content</artifactId>
     <version>0.13-incubating-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
@@ -29,35 +29,35 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.rdf.core</artifactId>
+            <artifactId>rdf.core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.platform.typehandlerspace</artifactId>
+            <artifactId>platform.typehandlerspace</artifactId>
         </dependency>
 		<dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>org.apache.clerezza.rdf.utils</artifactId>
+            <artifactId>rdf.utils</artifactId>
         </dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+			<artifactId>rdf.ontologies</artifactId>
 		</dependency>
         <dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+			<artifactId>platform.graphprovider.content</artifactId>
 		</dependency>
         <dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.usermanager</artifactId>
+			<artifactId>platform.usermanager</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.seedsnipe</artifactId>
+			<artifactId>platform.typerendering.seedsnipe</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+			<artifactId>web.fileserver</artifactId>
 			<exclusions>
                 <exclusion>
                     <artifactId>javax.servlet</artifactId>
@@ -71,7 +71,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.utils</artifactId>
+			<artifactId>jaxrs.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -79,23 +79,23 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.config</artifactId>
+			<artifactId>platform.config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security</artifactId>
+			<artifactId>platform.security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+			<artifactId>platform.typerendering.scalaserverpages</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.metadata</artifactId>
+			<artifactId>rdf.metadata</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core.test</artifactId>
+			<artifactId>rdf.core.test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

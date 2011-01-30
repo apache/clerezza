@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.accountcontrolpanel</artifactId>
+	<artifactId>platform.accountcontrolpanel</artifactId>
 	<packaging>pom</packaging>
 	<version>0.9-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Account Control Panel</name>
@@ -14,7 +14,7 @@
 		of a platform user.</description>
 	
 	<modules>
-		<module>org.apache.clerezza.platform.accountcontrolpanel.ontologies</module>
-		<module>org.apache.clerezza.platform.accountcontrolpanel.core</module>
+		<module>platform.accountcontrolpanel.ontologies</module>
+		<module>platform.accountcontrolpanel.core</module>
 	</modules>
 </project>
