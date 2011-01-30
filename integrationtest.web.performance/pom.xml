@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.integrationtest.web.performance</artifactId>
+	<artifactId>integrationtest.web.performance</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.6-incubating-SNAPSHOT</version>
 	<name>Clerezza - Web Performance Integration Tests</name>
@@ -21,7 +21,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.integrationtest.web</artifactId>
+			<artifactId>integrationtest.web</artifactId>
 		</dependency>
 		<dependency>
             <groupId>commons-httpclient</groupId>

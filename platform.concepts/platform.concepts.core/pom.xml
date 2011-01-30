@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.platform.concepts</artifactId>
+		<artifactId>platform.concepts</artifactId>
 		<version>0.1-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.concepts.core</artifactId>
+	<artifactId>platform.concepts.core</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Concepts Core</name>
@@ -24,56 +24,56 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+			<artifactId>rdf.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
+			<artifactId>rdf.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.concepts.ontologies</artifactId>
+			<artifactId>platform.concepts.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+			<artifactId>platform.graphprovider.content</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
+			<artifactId>platform.typerendering.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+			<artifactId>platform.typerendering.scalaserverpages</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.utils</artifactId>
+			<artifactId>jaxrs.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.config</artifactId>
+			<artifactId>platform.config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.dashboard.core</artifactId>
+			<artifactId>platform.dashboard.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+			<artifactId>permissiondescriptions</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.triaxrs</artifactId>
+			<artifactId>triaxrs</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+			<artifactId>web.fileserver</artifactId>
 			<version>0.9-incubating-SNAPSHOT</version>
 			<type>bundle</type>
 			<scope>compile</scope>

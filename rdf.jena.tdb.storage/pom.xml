@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.rdf.jena.tdb.storage</artifactId>
+	<artifactId>rdf.jena.tdb.storage</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.5-incubating-SNAPSHOT</version>
 	<name>Clerezza - SCB Jena TDB Storage Provider</name>
@@ -20,11 +20,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.commons</artifactId>
+			<artifactId>rdf.jena.commons</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.storage</artifactId>
+			<artifactId>rdf.jena.storage</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -54,7 +54,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core.test</artifactId>
+			<artifactId>rdf.core.test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

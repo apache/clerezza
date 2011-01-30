@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.rdf.sesame.parser</artifactId>
+	<artifactId>rdf.sesame.parser</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - SCB Sesame-based Parser</name>
@@ -28,7 +28,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>

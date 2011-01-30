@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.platform.logging.parent</artifactId>
+		<artifactId>platform.logging.parent</artifactId>
 		<version>0.1-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.logging.initializer</artifactId>
+	<artifactId>platform.logging.initializer</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Logging Initializer</name>

@@ -2,18 +2,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.content.representations</artifactId>
+	<artifactId>platform.content.representations</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Content Representations</name>
 	<description>Provides services for creating and retrieving alternative representations of content.</description>
 	
 	<modules>
-		<module>org.apache.clerezza.platform.content.representations.ontologies</module>
-		<module>org.apache.clerezza.platform.content.representations.core</module>
+		<module>platform.content.representations.ontologies</module>
+		<module>platform.content.representations.core</module>
 	</modules>
 </project>

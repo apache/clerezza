@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.content.fsadaptor</artifactId>
+	<artifactId>platform.content.fsadaptor</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Content Filesystem Adaptor</name>
@@ -18,23 +18,23 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform</artifactId>
+			<artifactId>platform</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+			<artifactId>platform.graphprovider.content</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
+			<artifactId>rdf.scala.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+			<artifactId>web.fileserver</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>

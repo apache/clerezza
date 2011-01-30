@@ -3,11 +3,11 @@
    <modelVersion>4.0.0</modelVersion>
    <parent>
         <groupId>org.apache.clerezza</groupId>
-        <artifactId>org.apache.clerezza.parent</artifactId>
+        <artifactId>parent</artifactId>
         <version>0.2-incubating-SNAPSHOT</version>
    </parent>
    <groupId>org.apache.clerezza</groupId>
-   <artifactId>org.apache.clerezza.ssl.keygen</artifactId>
+   <artifactId>ssl.keygen</artifactId>
    <packaging>pom</packaging>
    <version>0.5-incubating-SNAPSHOT</version>
    <name>Clerezza - FOAF+SSL Keygen Lib :: Creating WebIDs in one Click</name>

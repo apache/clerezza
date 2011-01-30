@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.rdf.enrichment</artifactId>
+	<artifactId>rdf.enrichment</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - SCB Enrichment Core</name>
@@ -19,29 +19,29 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils</artifactId>
+			<artifactId>utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.serializer</artifactId>
+			<artifactId>rdf.jena.serializer</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.parser</artifactId>
+			<artifactId>rdf.jena.parser</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+			<artifactId>rdf.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
+			<artifactId>rdf.utils</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

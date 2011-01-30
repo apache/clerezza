@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.xhtml2html</artifactId>
+	<artifactId>platform.xhtml2html</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.5-incubating-SNAPSHOT</version>
 	<name>Clerezza - Filter for browsers that do not support XHTML</name>

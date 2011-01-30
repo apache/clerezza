@@ -20,19 +20,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.launcher.storageless.parent</artifactId>
+	<artifactId>platform.launcher.storageless.parent</artifactId>
 	<version>0.8-incubating-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Clerezza - Platform Launcher Storageless Parent POM</name>
 	<description>A parent for Platform launchers, containing the platform bundles as runtime dependencies.
 	</description>
 	<modules>
-		<module>org.apache.clerezza.platform.launcher.storageless</module>
+		<module>platform.launcher.storageless</module>
 	</modules>
 	<dependencies>
 
@@ -144,412 +144,412 @@
 		-->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform</artifactId>
+			<artifactId>platform</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.logging.core</artifactId>
+			<artifactId>platform.logging.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.logging.initializer</artifactId>
+			<artifactId>platform.logging.initializer</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.logging.ontologies</artifactId>
+			<artifactId>platform.logging.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.enrichment</artifactId>
+			<artifactId>platform.enrichment</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.usermanager</artifactId>
+			<artifactId>platform.usermanager</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.usermanager.webinterface</artifactId>
+			<artifactId>platform.usermanager.webinterface</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils.customproperty</artifactId>
+			<artifactId>utils.customproperty</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.accountcontrolpanel.core</artifactId>
+			<artifactId>platform.accountcontrolpanel.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.accountcontrolpanel.ontologies</artifactId>
+			<artifactId>platform.accountcontrolpanel.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.triaxrs</artifactId>
+			<artifactId>triaxrs</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
+			<artifactId>rdf.utils</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.enrichment</artifactId>
+			<artifactId>rdf.enrichment</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.facade</artifactId>
+			<artifactId>rdf.jena.facade</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.commons</artifactId>
+			<artifactId>rdf.jena.commons</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.storage</artifactId>
+			<artifactId>rdf.jena.storage</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.sparql</artifactId>
+			<artifactId>rdf.jena.sparql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.parser</artifactId>
+			<artifactId>rdf.jena.parser</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.serializer</artifactId>
+			<artifactId>rdf.jena.serializer</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.rdfa</artifactId>
+			<artifactId>rdf.rdfa</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.rdfjson</artifactId>
+			<artifactId>rdf.rdfjson</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+			<artifactId>rdf.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content</artifactId>
+			<artifactId>platform.content</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content.default404</artifactId>
+			<artifactId>platform.content.default404</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content.fsadaptor</artifactId>
+			<artifactId>platform.content.fsadaptor</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content.imagemetadata</artifactId>
+			<artifactId>platform.content.imagemetadata</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content.representations.core</artifactId>
+			<artifactId>platform.content.representations.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.content.representations.ontologies</artifactId>
+			<artifactId>platform.content.representations.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+			<artifactId>platform.graphprovider.content</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.dashboard.ontologies</artifactId>
+			<artifactId>platform.dashboard.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.dashboard.core</artifactId>
+			<artifactId>platform.dashboard.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.dashboard.webinterface</artifactId>
+			<artifactId>platform.dashboard.webinterface</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.shell</artifactId>
+			<artifactId>shell</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.shell.felixshellcommand</artifactId>
+			<artifactId>shell.felixshellcommand</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.sourcebundle</artifactId>
+			<artifactId>sourcebundle</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.sshshell</artifactId>
+			<artifactId>sshshell</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+			<artifactId>web.fileserver</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.rdf.providers</artifactId>
+			<artifactId>jaxrs.rdf.providers</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.web.core</artifactId>
+			<artifactId>rdf.web.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.web.ontologies</artifactId>
+			<artifactId>rdf.web.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security</artifactId>
+			<artifactId>platform.security</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security.conditions</artifactId>
+			<artifactId>platform.security.conditions</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security.foafssl.core</artifactId>
+			<artifactId>platform.security.foafssl.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
+			<artifactId>platform.security.foafssl.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
+			<artifactId>ssl.keygen.base</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security.auth.basic</artifactId>
+			<artifactId>platform.security.auth.basic</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security.auth.cookie</artifactId>
+			<artifactId>platform.security.auth.cookie</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typehandlerspace</artifactId>
+			<artifactId>platform.typehandlerspace</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.mail</artifactId>
+			<artifactId>platform.mail</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.templating</artifactId>
+			<artifactId>templating</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.templating.seedsnipe</artifactId>
+			<artifactId>templating.seedsnipe</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.utils</artifactId>
+			<artifactId>jaxrs.utils</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.extensions</artifactId>
+			<artifactId>jaxrs.extensions</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
+			<artifactId>platform.typerendering.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.ontologies</artifactId>
+			<artifactId>platform.typerendering.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.seedsnipe</artifactId>
+			<artifactId>platform.typerendering.seedsnipe</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.manager</artifactId>
+			<artifactId>platform.typerendering.manager</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.scripting</artifactId>
+			<artifactId>platform.scripting</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.scripting.scriptmanager</artifactId>
+			<artifactId>platform.scripting.scriptmanager</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.xhtml2html</artifactId>
+			<artifactId>platform.xhtml2html</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.resources.jquery</artifactId>
+			<artifactId>web.resources.jquery</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.resources.yui</artifactId>
+			<artifactId>web.resources.yui</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils.imageprocessing</artifactId>
+			<artifactId>utils.imageprocessing</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.resources.scripts</artifactId>
+			<artifactId>web.resources.scripts</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.resources.style</artifactId>
+			<artifactId>web.resources.style</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scala</artifactId>
+			<artifactId>platform.typerendering.scala</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+			<artifactId>platform.typerendering.scalaserverpages</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
+			<artifactId>rdf.scala.utils</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.config</artifactId>
+			<artifactId>platform.config</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.config.gui</artifactId>
+			<artifactId>platform.config.gui</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.documentation</artifactId>
+			<artifactId>platform.documentation</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.documentation.viewer</artifactId>
+			<artifactId>platform.documentation.viewer</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.language.ontologies</artifactId>
+			<artifactId>platform.language.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.language.core</artifactId>
+			<artifactId>platform.language.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.app.webguiexamples</artifactId>
+			<artifactId>app.webguiexamples</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.concepts.core</artifactId>
+			<artifactId>platform.concepts.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.concepts.ontologies</artifactId>
+			<artifactId>platform.concepts.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.users.core</artifactId>
+			<artifactId>platform.users.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils</artifactId>
+			<artifactId>utils</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.metadata</artifactId>
+			<artifactId>rdf.metadata</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+			<artifactId>permissiondescriptions</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>

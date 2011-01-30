@@ -2,18 +2,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.typerendering</artifactId>
+	<artifactId>platform.typerendering</artifactId>
 	<packaging>pom</packaging>
 	<version>0.6-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Type Rendering</name>
 	<description>This project provides a JAX-RS MessageBodyWriter to render GraphNodes. Rendering requests are delegated to registered renderlets.</description>
 	
 	<modules>
-		<module>org.apache.clerezza.platform.typerendering.ontologies</module>
-		<module>org.apache.clerezza.platform.typerendering.core</module>
+		<module>platform.typerendering.ontologies</module>
+		<module>platform.typerendering.core</module>
 	</modules>
 </project>

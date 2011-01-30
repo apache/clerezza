@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.usermanager.webinterface</artifactId>
+	<artifactId>platform.usermanager.webinterface</artifactId>
 	<version>0.13-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Usermanager Webinterface</name>
@@ -22,15 +22,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.usermanager</artifactId>
+			<artifactId>platform.usermanager</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
+			<artifactId>rdf.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
@@ -38,39 +38,39 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+			<artifactId>rdf.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+			<artifactId>platform.graphprovider.content</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.utils</artifactId>
+			<artifactId>jaxrs.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.resources.jquery</artifactId>
+			<artifactId>web.resources.jquery</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.seedsnipe</artifactId>
+			<artifactId>platform.typerendering.seedsnipe</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+			<artifactId>platform.typerendering.scalaserverpages</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils.customproperty</artifactId>
+			<artifactId>utils.customproperty</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.dashboard.core</artifactId>
+			<artifactId>platform.dashboard.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.mail</artifactId>
+			<artifactId>platform.mail</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -78,11 +78,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.config</artifactId>
+			<artifactId>platform.config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+			<artifactId>permissiondescriptions</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

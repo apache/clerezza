@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.curieprefixmanager</artifactId>
+	<artifactId>platform.curieprefixmanager</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - CURIE prefix manager</name>
@@ -18,7 +18,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.platform.curieprefixmanager.ontologies</artifactId>
+				<artifactId>platform.curieprefixmanager.ontologies</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 		</dependencies>

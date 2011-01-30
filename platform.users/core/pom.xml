@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.platform.users</artifactId>
+		<artifactId>platform.users</artifactId>
 		<version>0.1-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.users.core</artifactId>
+	<artifactId>platform.users.core</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Users Core</name>
@@ -17,32 +17,32 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform</artifactId>
+			<artifactId>platform</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
+			<artifactId>platform.security.foafssl.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
+			<artifactId>platform.typerendering.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+			<artifactId>platform.typerendering.scalaserverpages</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
+			<artifactId>rdf.scala.utils</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security</artifactId>
+			<artifactId>platform.security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
