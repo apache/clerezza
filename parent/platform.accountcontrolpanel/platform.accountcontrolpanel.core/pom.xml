@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.platform.accountcontrolpanel</artifactId>
+		<artifactId>platform.accountcontrolpanel</artifactId>
 		<version>0.9-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.accountcontrolpanel.core</artifactId>
+	<artifactId>platform.accountcontrolpanel.core</artifactId>
 	<version>0.2-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Account Control Panel Core</name>
@@ -84,31 +84,31 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
+			<artifactId>rdf.scala.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+			<artifactId>rdf.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.utils</artifactId>
+			<artifactId>jaxrs.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.triaxrs</artifactId>
+			<artifactId>triaxrs</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.seedsnipe</artifactId>
+			<artifactId>platform.typerendering.seedsnipe</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.users.core</artifactId>
+			<artifactId>platform.users.core</artifactId>
 		</dependency>
 		<!--dependency> 
 			<groupId>org.apache.felix</groupId>
@@ -117,43 +117,43 @@
 		</dependency-->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.config</artifactId>
+			<artifactId>platform.config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+			<artifactId>platform.typerendering.scalaserverpages</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scala</artifactId>
+			<artifactId>platform.typerendering.scala</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.dashboard.core</artifactId>
+			<artifactId>platform.dashboard.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.accountcontrolpanel.ontologies</artifactId>
+			<artifactId>platform.accountcontrolpanel.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.usermanager</artifactId>
+			<artifactId>platform.usermanager</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+			<artifactId>web.fileserver</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+			<artifactId>permissiondescriptions</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
+			<artifactId>ssl.keygen.base</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security.foafssl.ontologies</artifactId>
+			<artifactId>platform.security.foafssl.ontologies</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.security</artifactId>
+	<artifactId>platform.security</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.8-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Security</name>
@@ -27,7 +27,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.parser</artifactId>
+			<artifactId>rdf.jena.parser</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -44,15 +44,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+			<artifactId>rdf.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.security.conditions</artifactId>
+			<artifactId>platform.security.conditions</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -68,11 +68,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.config</artifactId>
+			<artifactId>platform.config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.permissiondescriptions</artifactId>
+			<artifactId>permissiondescriptions</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

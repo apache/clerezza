@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-		<artifactId>org.apache.clerezza.triaxrs.parent</artifactId>
+		<artifactId>triaxrs.parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.triaxrs</artifactId>
+	<artifactId>triaxrs</artifactId>
 	<version>0.11-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Triaxrs</name>
@@ -26,11 +26,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.extensions</artifactId>
+			<artifactId>jaxrs.extensions</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils</artifactId>
+			<artifactId>utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

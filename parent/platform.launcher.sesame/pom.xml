@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.launcher.sesame</artifactId>
+	<artifactId>platform.launcher.sesame</artifactId>
 	<version>0.5-incubating-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Clerezza - Platform Launcher with Sesame Storage</name>
@@ -114,13 +114,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.launcher.storageless</artifactId>
+			<artifactId>platform.launcher.storageless</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<!-- what makes this variant special -->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.sesame.storage</artifactId>
+			<artifactId>rdf.sesame.storage</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>

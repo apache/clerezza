@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.typerendering.scala</artifactId>
+	<artifactId>platform.typerendering.scala</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Type Rendering Utilities for Scala</name>
@@ -14,15 +14,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform</artifactId>
+			<artifactId>platform</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.scala.utils</artifactId>
+			<artifactId>rdf.scala.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
+			<artifactId>platform.typerendering.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>

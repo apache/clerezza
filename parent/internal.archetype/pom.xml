@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project>
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.internal.archetype</artifactId>
+	<artifactId>internal.archetype</artifactId>
 	<packaging>maven-archetype</packaging>
 	<version>0.9-incubating-SNAPSHOT</version>
 	<name>Clerezza - Archetype for clerezza.org projects</name>

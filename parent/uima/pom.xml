@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
-  <artifactId>org.apache.clerezza.uima</artifactId>
+  <artifactId>uima</artifactId>
   <version>0.1-incubating-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Clerezza - Apache UIMA extension module</name>
@@ -10,14 +10,14 @@
   </description>
   <parent>
     <groupId>org.apache.clerezza</groupId>
-    <artifactId>org.apache.clerezza.parent</artifactId>
+    <artifactId>parent</artifactId>
     <version>0.2-incubating-SNAPSHOT</version>
   </parent>
   <modules>
-    <module>org.apache.clerezza.uima.ontologies</module>
-    <module>org.apache.clerezza.uima.utils</module>
-    <module>org.apache.clerezza.uima.metadata-generator</module>
-    <module>org.apache.clerezza.uima.concept-tagging</module>
+    <module>uima.ontologies</module>
+    <module>uima.utils</module>
+    <module>uima.metadata-generator</module>
+    <module>uima.concept-tagging</module>
   </modules>
   <dependencies>
     <dependency>
@@ -39,7 +39,7 @@
     <plugins>
       <plugin>
         <groupId>org.apache.clerezza</groupId>
-        <artifactId>org.apache.clerezza.maven-pladoc-plugin.core</artifactId>
+        <artifactId>maven-pladoc-plugin.core</artifactId>
         <version>0.3-incubating-SNAPSHOT</version>
       </plugin>
     </plugins>

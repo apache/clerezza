@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.platform.typerendering</artifactId>
+		<artifactId>platform.typerendering</artifactId>
 		<version>0.6-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
+	<artifactId>platform.typerendering.core</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.2-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Type Rendering Core</name>
@@ -25,7 +25,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.triaxrs</artifactId>
+			<artifactId>triaxrs</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -34,19 +34,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
+			<artifactId>rdf.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.ontologies</artifactId>
+			<artifactId>platform.typerendering.ontologies</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.config</artifactId>
+			<artifactId>platform.config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

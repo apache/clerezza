@@ -2,18 +2,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.platform.language</artifactId>
+	<artifactId>platform.language</artifactId>
 	<packaging>pom</packaging>
 	<version>0.2-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Language</name>
 	<description>This bundles provides methods to manage languages in the Clerezza platform.
 	</description>
 	<modules>
-		<module>org.apache.clerezza.platform.language.ontologies</module>
-		<module>org.apache.clerezza.platform.language.core</module>
+		<module>platform.language.ontologies</module>
+		<module>platform.language.core</module>
 	</modules>
 </project>

@@ -2,18 +2,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.maven-pladoc-plugin</artifactId>
+	<artifactId>maven-pladoc-plugin</artifactId>
 	<packaging>pom</packaging>
 	<version>0.3-incubating-SNAPSHOT</version>
 	<name>Clerezza - Maven PlaDoc Plugin</name>
 	<description>The maven plugin starts an OSGi container and access a service provided by the OSGi BUndle in Service</description>
 	<modules>
-		<module>org.apache.clerezza.maven-pladoc-plugin.api</module>
-		<module>org.apache.clerezza.maven-pladoc-plugin.service</module>
-		<module>org.apache.clerezza.maven-pladoc-plugin.core</module>
+		<module>maven-pladoc-plugin.api</module>
+		<module>maven-pladoc-plugin.service</module>
+		<module>maven-pladoc-plugin.core</module>
 	</modules>
 </project>

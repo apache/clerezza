@@ -17,29 +17,29 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 			<version>0.7-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.utils</artifactId>
+			<artifactId>rdf.utils</artifactId>
 			<version>0.7-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.ontologies</artifactId>
+			<artifactId>rdf.ontologies</artifactId>
 			<version>0.5-incubating-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.parser</artifactId>
+			<artifactId>rdf.jena.parser</artifactId>
 			<version>0.5-incubating-SNAPSHOT</version>
 	<!-- <scope>runtime</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.jena.serializer</artifactId>
+			<artifactId>rdf.jena.serializer</artifactId>
 			<version>0.4-incubating-SNAPSHOT</version>
 	<!-- <scope>runtime</scope> -->
 		</dependency>
@@ -51,7 +51,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.simple.storage</artifactId>
+			<artifactId>rdf.simple.storage</artifactId>
 			<version>0.2-incubating-SNAPSHOT</version>
 			<!-- <scope>runtime</scope> -->
 		</dependency>

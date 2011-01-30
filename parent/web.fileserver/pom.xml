@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.parent</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+	<artifactId>web.fileserver</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.9-incubating-SNAPSHOT</version>
 	<name>Clerezza - Jax-Rs File Server</name>
@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.utils</artifactId>
+			<artifactId>utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

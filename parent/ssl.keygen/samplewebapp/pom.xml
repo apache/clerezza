@@ -3,17 +3,17 @@
    <modelVersion>4.0.0</modelVersion>
    <parent>
       <groupId>org.apache.clerezza</groupId>
-      <artifactId>org.apache.clerezza.ssl.keygen</artifactId>
+      <artifactId>ssl.keygen</artifactId>
       <version>0.5-incubating-SNAPSHOT</version>
    </parent>
    <groupId>org.apache.clerezza</groupId>
-   <artifactId>org.apache.clerezza.ssl.keygen.samplewebapp</artifactId>
+   <artifactId>ssl.keygen.samplewebapp</artifactId>
    <packaging>war</packaging>
    <name>FOAF+SSL Keygen :: Sample WebApp</name>
    <dependencies>
       <dependency>
          <groupId>org.apache.clerezza</groupId>
-         <artifactId>org.apache.clerezza.ssl.keygen.base</artifactId>
+         <artifactId>ssl.keygen.base</artifactId>
          <version>0.5-incubating-SNAPSHOT</version>
       </dependency>
       <dependency>

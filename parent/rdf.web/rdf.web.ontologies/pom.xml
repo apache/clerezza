@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>org.apache.clerezza.rdf.web</artifactId>
+		<artifactId>rdf.web</artifactId>
 		<version>0.8-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>org.apache.clerezza.rdf.web.ontologies</artifactId>
+	<artifactId>rdf.web.ontologies</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.2-incubating-SNAPSHOT</version>
 	<name>Clerezza - SCB Web Access Ontologies</name>
@@ -14,14 +14,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.maven-ontologies-plugin</artifactId>
+				<artifactId>maven-ontologies-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
