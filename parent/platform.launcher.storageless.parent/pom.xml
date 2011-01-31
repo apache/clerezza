@@ -94,7 +94,7 @@
 			<artifactId>script-engine</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.sun.script.jruby</groupId>
 			<artifactId>jruby-engine</artifactId>
 			<scope>runtime</scope>
@@ -103,7 +103,7 @@
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>org.jruby</artifactId>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm-all</artifactId>
@@ -553,16 +553,4 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>sun</id>
-			<name>sun java repository</name>
-			<releases>
-				<!-- com.sun.script.jruby is not in central repo -->
-				<updatePolicy>interval:60</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<url>http://download.java.net/maven/2/</url>
-		</repository>
-	</repositories>
 </project>
