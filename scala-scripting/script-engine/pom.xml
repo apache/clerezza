@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza.scala</groupId>
@@ -20,17 +21,14 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
-			<version>1.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
-			<version>4.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>4.1.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -38,8 +36,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<version>2.1.0</version>
 				<configuration>
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
@@ -72,5 +68,3 @@
 		</plugins>
 	</build>
 </project>
-
-
