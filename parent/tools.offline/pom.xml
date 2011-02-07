@@ -2,8 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>rdf.web</artifactId>
-		<version>0.8-incubating-SNAPSHOT</version>
+		<artifactId>parent</artifactId>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>tools.offline</artifactId>
