@@ -56,7 +56,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Import-Package>org.apache.clerezza.web.resources.scripts, *</Import-Package>
+						<Import-Package>*</Import-Package>
+						<Require-Bundle>org.apache.clerezza.web.resources.scripts</Require-Bundle>
 					</instructions>
 				</configuration>
 			</plugin>

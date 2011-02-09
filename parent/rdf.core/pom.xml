@@ -73,7 +73,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>${project.artifactId}.*</Export-Package>
+                        <Export-Package>org.apache.clerezza.rdf.core.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
