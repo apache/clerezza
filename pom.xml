@@ -182,7 +182,7 @@
 					<version>2.1.0</version>
 					<configuration>
 						<instructions>
-							<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+							<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 						</instructions>
 					</configuration>
 				</plugin>

@@ -45,7 +45,7 @@
 					<instructions>
 						<Embed-Dependency>*;scope=provided;inline=false;artifactId=!slf4j-api</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>
-						<Export-Package>org.apache.commons.codec.*;version=1.4.1,${project.artifactId}.*;version=${project.version}</Export-Package>
+						<Export-Package>org.apache.commons.codec.*;version=1.4.1,org.apache.clerezza.utils.*;version=${project.version}</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
