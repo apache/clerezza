@@ -31,14 +31,14 @@
       <artifactId>alchemy-annotator-osgi</artifactId>
       <version>2.3.1-SNAPSHOT</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/../org.apache.clerezza.uima.utils/lib/org.apache.uima.alchemyapi_2.3.1.SNAPSHOT.jar</systemPath>
+      <systemPath>${project.basedir}/../uima.utils/lib/org.apache.uima.alchemyapi_2.3.1.SNAPSHOT.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>OpenCalaisAnnotator-osgi</artifactId>
       <version>2.3.1-SNAPSHOT</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/../org.apache.clerezza.uima.utils/lib/org.apache.uima.opencalais_2.3.1.SNAPSHOT.jar</systemPath>
+      <systemPath>${project.basedir}/../uima.utils/lib/org.apache.uima.opencalais_2.3.1.SNAPSHOT.jar</systemPath>
     </dependency>
   </dependencies>
 </project>
