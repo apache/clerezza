@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Map;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
@@ -69,7 +70,8 @@ public interface Renderer  {
 	 * @param os  where the output will be written to.
 	 */
 	public void render(GraphNode node, GraphNode userContext, UriInfo uriInfo,
-			MultivaluedMap<String, Object> httpHeaders, 
+			HttpHeaders requestHeaders,
+			MultivaluedMap<String, Object> responseHeaders,
 			Map<String, Object> sharedRenderingValues, OutputStream entityStream)
 			throws IOException;
 }

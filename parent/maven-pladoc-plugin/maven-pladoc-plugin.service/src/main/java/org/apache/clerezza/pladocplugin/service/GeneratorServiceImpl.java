@@ -130,7 +130,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 			FileOutputStream out = new FileOutputStream(outFile);
 			try {
 				System.out.println("writing " + outFile);
-				renderer.render(docRootNode, docRootNode, null, null, new HashMap<String, Object>(), out);
+				renderer.render(docRootNode, docRootNode, null, null, null, new HashMap<String, Object>(), out);
 			} finally {
 				out.close();
 			}

@@ -25,6 +25,7 @@ import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
@@ -46,19 +47,26 @@ public interface Renderlet {
 	 */
 	static class RequestProperties {
 		private UriInfo uriInfo;
-		private MultivaluedMap<String, Object> httpHeaders;
+		private MultivaluedMap<String, Object> responseHeaders;
+		private HttpHeaders requestHeaders;
 		private final BundleContext bundleContext;
 
 		public RequestProperties(UriInfo uriInfo, 
-				MultivaluedMap<String, Object> httpHeaders,
+				HttpHeaders requestHeaders,
+				MultivaluedMap<String, Object> responseHeaders,
 				BundleContext bundleContext) {
 			this.uriInfo = uriInfo;
-			this.httpHeaders = httpHeaders;
+			this.requestHeaders = requestHeaders;
+			this.responseHeaders = responseHeaders;
 			this.bundleContext = bundleContext;
 		}
 
-		public MultivaluedMap<String, Object>  getHttpHeaders() {
-			return httpHeaders;
+		public HttpHeaders getRequestHeaders() {
+			return requestHeaders;
+		}
+
+		public MultivaluedMap<String, Object> getResponseHeaders() {
+			return responseHeaders;
 		}
 
 		public UriInfo getUriInfo() {

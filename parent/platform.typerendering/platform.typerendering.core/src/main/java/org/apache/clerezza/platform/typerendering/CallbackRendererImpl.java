@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
@@ -36,13 +37,15 @@ public class CallbackRendererImpl implements CallbackRenderer {
 	private List<MediaType> mediaTypeList;
 	RenderletRendererFactoryImpl manager;
 	private final UriInfo uriInfo;
-	private final MultivaluedMap<String, Object> httpHeaders;
+	private final HttpHeaders requestHeaders;
+	private final MultivaluedMap<String, Object> responseHeaders;
 	private final Map<String, Object> sharedRenderingValue;
 
 	CallbackRendererImpl(RenderletRendererFactoryImpl manager, UriInfo uriInfo,
-			MultivaluedMap<String, Object> httpHeaders, MediaType mediaType, Map<String, Object> sharedRenderingValue) {
+			HttpHeaders requestHeaders, MultivaluedMap<String, Object> responseHeaders, MediaType mediaType, Map<String, Object> sharedRenderingValue) {
 		this.uriInfo = uriInfo;
-		this.httpHeaders = httpHeaders;
+		this.requestHeaders = requestHeaders;
+		this.responseHeaders = responseHeaders;
 		this.mediaTypeList = Collections.singletonList(mediaType);
 		this.manager = manager;
 		this.sharedRenderingValue = sharedRenderingValue;
@@ -56,7 +59,7 @@ public class CallbackRendererImpl implements CallbackRenderer {
 			throw new RuntimeException("no renderer could be created for "+
 					resource+" (in "+resource.getNodeContext()+"), "+mode+","+mediaTypeList);
 		}
-		renderer.render(resource, context, uriInfo, httpHeaders,
+		renderer.render(resource, context, uriInfo, requestHeaders, responseHeaders,
 				sharedRenderingValue, os);
 	}
 
