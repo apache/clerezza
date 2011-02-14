@@ -50,6 +50,15 @@ public class W3CDateFormatTest {
 	}
 
 	@Test
+	public void dateObjectSerializedWithoutTimeZone() throws Exception {
+		Calendar calendar = new GregorianCalendar(2009, 0, 1, 1, 33, 58);
+		calendar.setTimeZone(TimeZone.getTimeZone("GMT+7:00"));
+		Date date = calendar.getTime();
+		String serializedDate = new W3CDateFormat().format(date);
+		assertEquals("2008-12-31T18:33:58Z", serializedDate);
+	}
+
+	@Test
 	public void roundTrip() throws Exception {
 		Calendar calendar = new GregorianCalendar(2009, 0, 1,
 				1, 33, 58);
