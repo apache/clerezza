@@ -74,7 +74,7 @@ public class ScalaServerPagesRenderlet implements Renderlet {
 
 	{
 		try {
-			multiStringObjectMapType = RequestProperties.class.getMethod("getHttpHeaders", new Class[0]).getReturnType();
+			multiStringObjectMapType = RequestProperties.class.getMethod("getResponseHeaders", new Class[0]).getReturnType();
 		} catch (NoSuchMethodException ex) {
 			throw new RuntimeException(ex);
 		}

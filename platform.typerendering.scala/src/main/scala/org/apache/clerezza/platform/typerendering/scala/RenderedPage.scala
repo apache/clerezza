@@ -38,7 +38,8 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 	}
 
 	val uriInfo = requestProperties.getUriInfo
-	val httpHeaders = requestProperties.getHttpHeaders
+	val requestHeaders = requestProperties.getRequestHeaders
+	val responseHeaders = requestProperties.getResponseHeaders
 
 	def render(resource : GraphNode) : Seq[Node] = {
 		modeOption match {

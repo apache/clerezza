@@ -199,10 +199,15 @@ class BundleRoot {
 
 		def act() {
 			while (!stopped) {
+				logger.debug("wathcing "+dir)
 				val (triggered, newWatchState) =
 					SourceModificationWatch.watch(sourcePath**(-HiddenFileFilter), 1, watchState)(stopped)
 				if (!stopped) {
-					updateBundle()
+					try {
+						updateBundle()
+					} catch {
+						case e => logger.warn("Exception compiling", e)
+					}
 					watchState = newWatchState
 				}
 			}
