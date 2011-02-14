@@ -38,6 +38,17 @@ public class W3CDateFormat extends DateFormat {
 
 	private static final TimeZone utcTZ = new SimpleTimeZone(0, "UTC");
 
+	static {
+		dateFormatWithMillis.setTimeZone(utcTZ);
+		dateFormatNoMillis.setTimeZone(utcTZ);
+	}
+
+	@Override
+	public void setTimeZone(TimeZone zone) {
+		super.setTimeZone(zone);
+	}
+
+
 	/**
 	 * @see java.text.DateFormat#format(java.util.Date, java.lang.StringBuffer,
 	 *      java.text.FieldPosition)
@@ -49,9 +60,15 @@ public class W3CDateFormat extends DateFormat {
 		final DateFormat dateFormat = (date.getTime() % 1000) == 0 ?
 			dateFormatNoMillis : dateFormatWithMillis;
 		String string = dateFormat.format(date);
-		StringBuffer result = new StringBuffer(string);
-		result.insert(string.length() - 2, ':');
-		return result;
+		if (string.endsWith("0000")) {
+			StringBuffer result = new StringBuffer(string.substring(0, string.length()-5));
+			result.append('Z');
+			return result;
+		} else {
+			StringBuffer result = new StringBuffer(string);
+			result.insert(string.length() - 2, ':');
+			return result;
+		}
 	}
 
 	/**
