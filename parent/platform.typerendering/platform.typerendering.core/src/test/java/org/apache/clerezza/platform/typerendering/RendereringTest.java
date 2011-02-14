@@ -323,7 +323,7 @@ public abstract class RendereringTest {
 		if (renderer == null) {
 			throw new WebApplicationException();
 		}
-		renderer.render(resource, null, null, null, null, baos);
+		renderer.render(resource, null, null, null, null, null, baos);
 		return baos.toString();
 	}	
 	

@@ -149,14 +149,14 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 		Map<String, Object> sharedRenderingValues = new HashMap<String, Object>();
 		if (!(rendererMediaType.getType().equals("application") && rendererMediaType.getSubtype().equals("xhtml+xml"))) {
 			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, rendererMediaType);
-			renderer.render(node, getUserContext(), uriInfo, httpHeaders, sharedRenderingValues, entityStream);
+			renderer.render(node, getUserContext(), uriInfo, headers, httpHeaders, sharedRenderingValues, entityStream);
 		} else {
 			final MediaType mediaTypeWithCharset = MediaType.valueOf(MediaType.APPLICATION_XHTML_XML+";charset=UTF-8");
 			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, mediaTypeWithCharset);
 			ResultDocModifier.init();
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				renderer.render(node, getUserContext(), uriInfo, httpHeaders, sharedRenderingValues, baos);
+				renderer.render(node, getUserContext(), uriInfo, headers, httpHeaders, sharedRenderingValues, baos);
 				final byte[] bytes = baos.toByteArray();
 				if (!ResultDocModifier.getInstance().isModified()) {
 					entityStream.write(bytes);
