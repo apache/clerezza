@@ -101,6 +101,7 @@
 				<module>rdf.scala.utils</module>
 				<module>rdf.schemagen</module>
 				<module>rdf.simple.storage</module>
+				<module>rdf.stable.serializer</module>
 				<module>rdf.utils</module>
 				<module>rdf.web</module>
 				<module>shell</module>
