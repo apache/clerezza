@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.clerezza.rdf.storage.externalizer;
 
 import java.io.ByteArrayOutputStream;
@@ -50,12 +49,12 @@ import org.slf4j.LoggerFactory;
  * AbstractMGraph but intercept the notifictification of the basegraph
  */
 class ExternalizingMGraph extends AbstractMGraph {
+
 	private final MGraph baseGraph;
 	private final File dataDir;
-
 	private static final UriRef base64Uri =
 			new UriRef("http://www.w3.org/2001/XMLSchema#base64Binary");
-	//not using a nown uri-scheme (such as urn:hash) to avoid collission with Uris in the graph
+	//not using a known uri-scheme (such as urn:hash) to avoid collission with Uris in the graph
 	private static final String UriHashPrefix = "urn:x-litrep:";
 	private static final Charset UTF8 = Charset.forName("utf-8");
 	private static final byte[] DELIMITER = "^^".getBytes(UTF8);
@@ -71,7 +70,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 	protected Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate, Resource object) {
 		if (object != null) {
 			if (needsReplacing(object)) {
-				return replaceReferences(baseGraph.filter(subject, predicate, replace((TypedLiteral)object)));
+				return replaceReferences(baseGraph.filter(subject, predicate, replace((TypedLiteral) object)));
 			} else {
 				return baseGraph.filter(subject, predicate, object);
 			}
@@ -99,7 +98,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 		Resource object = triple.getObject();
 		if (needsReplacing(object)) {
 			return new TripleImpl(triple.getSubject(), triple.getPredicate(),
-					replace((TypedLiteral)object));
+					replace((TypedLiteral) object));
 		} else {
 			return triple;
 		}
@@ -114,7 +113,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 	 */
 	private boolean needsReplacing(Resource object) {
 		if (object instanceof TypedLiteral) {
-			if (((TypedLiteral)object).getDataType().equals(base64Uri)) {
+			if (((TypedLiteral) object).getDataType().equals(base64Uri)) {
 				return true;
 			}
 		}
@@ -125,9 +124,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 		FileOutputStream out = null;
 		try {
 			final byte[] serializedLiteral = serializeLiteral(literal);
-			MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-			digest.update(serializedLiteral);
-			byte[] hash = digest.digest();
+			final byte[] hash = getHash(literal, serializedLiteral);
 			String base16Hash = toBase16(hash);
 			File storingFile = getStoringFile(base16Hash);
 			out = new FileOutputStream(storingFile);
@@ -164,41 +161,9 @@ class ExternalizingMGraph extends AbstractMGraph {
 		}
 	}
 
-	private TypedLiteral parseLiteral(File file) {
+	private TypedLiteral getLiteralForHash(String base16Hash) {
+		return new ReplacementLiteral(base16Hash);
 
-		try {
-			InputStream in = new FileInputStream(file);
-			try {
-				ByteArrayOutputStream typeWriter = new ByteArrayOutputStream();
-				int posInDelimiter = 0;
-				for (int ch = in.read(); ch != -1; ch = in.read()) {
-					if (ch == DELIMITER[posInDelimiter]) {
-						posInDelimiter++;
-						if (DELIMITER.length == posInDelimiter) {
-							break;
-						}
-					} else {
-						if (posInDelimiter > 0) {
-							typeWriter.write(DELIMITER, 0, posInDelimiter);
-							posInDelimiter = 0;
-						}
-						typeWriter.write(ch);
-					}
-				}
-				UriRef type = new UriRef(new String(typeWriter.toByteArray(), UTF8));
-				typeWriter = null;
-				ByteArrayOutputStream dataWriter = new ByteArrayOutputStream((int) file.length());
-				for (int ch = in.read(); ch != -1; ch = in.read()) {
-					dataWriter.write(ch);
-				}
-				String lexicalForm = new String(dataWriter.toByteArray(), UTF8);
-				return new TypedLiteralImpl(lexicalForm, type);
-			} finally {
-				in.close();
-			}
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
 
 	}
 
@@ -214,8 +179,8 @@ class ExternalizingMGraph extends AbstractMGraph {
 	}
 
 	private File getStoringFile(String base16Hash) {
-		File dir1 = new File(dataDir, base16Hash.substring(0,4));
-		File dir2 = new File(dir1, base16Hash.substring(4,8));
+		File dir1 = new File(dataDir, base16Hash.substring(0, 4));
+		File dir2 = new File(dir1, base16Hash.substring(4, 8));
 		dir2.mkdirs();
 		return new File(dir2, base16Hash.substring(8));
 	}
@@ -241,15 +206,113 @@ class ExternalizingMGraph extends AbstractMGraph {
 			private Triple replaceReference(Triple triple) {
 				Resource object = triple.getObject();
 				if (object instanceof UriRef) {
-					String uriString = ((UriRef)object).getUnicodeString();
+					String uriString = ((UriRef) object).getUnicodeString();
 					if (uriString.startsWith(UriHashPrefix)) {
-						File file = getStoringFile(uriString.substring(UriHashPrefix.length()));
+						String base16Hash = uriString.substring(UriHashPrefix.length());
 						return new TripleImpl(triple.getSubject(), triple.getPredicate(),
-								parseLiteral(file));
+								getLiteralForHash(base16Hash));
 					}
 				}
 				return triple;
 			}
 		};
+	}
+
+	private byte[] getHash(TypedLiteral literal, byte[] serializedLiteral) throws NoSuchAlgorithmException {
+		MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+		digest.update(serializedLiteral);
+		byte[] hash = new byte[digest.getDigestLength()+4];
+		int javaHash = literal.hashCode();
+		hash[0] = (byte) (javaHash >>> 24);
+        hash[1] = (byte) (javaHash >>> 16);
+        hash[2] = (byte) (javaHash >>> 8);
+        hash[3] = (byte) javaHash;
+		byte[] md5Digest = digest.digest();
+		System.arraycopy(md5Digest, 0, hash, 4, md5Digest.length);
+		return hash;
+	}
+
+	private class ReplacementLiteral implements TypedLiteral {
+
+		private String lexicalForm;
+		private UriRef dataType;
+		final private String base16Hash;
+		private boolean initialized = false;
+		final private int hash;
+
+		private ReplacementLiteral(String base16Hash) {
+			this.base16Hash = base16Hash;
+			hash = Integer.parseInt(base16Hash.substring(0,8), 16);
+		}
+
+		private synchronized void initialize() {
+			if (initialized) {
+				return;
+			}
+			File file = getStoringFile(base16Hash);
+			try {
+				InputStream in = new FileInputStream(file);
+				try {
+					ByteArrayOutputStream typeWriter = new ByteArrayOutputStream();
+					int posInDelimiter = 0;
+					for (int ch = in.read(); ch != -1; ch = in.read()) {
+						if (ch == DELIMITER[posInDelimiter]) {
+							posInDelimiter++;
+							if (DELIMITER.length == posInDelimiter) {
+								break;
+							}
+						} else {
+							if (posInDelimiter > 0) {
+								typeWriter.write(DELIMITER, 0, posInDelimiter);
+								posInDelimiter = 0;
+							}
+							typeWriter.write(ch);
+						}
+					}
+					dataType = new UriRef(new String(typeWriter.toByteArray(), UTF8));
+					typeWriter = null;
+					ByteArrayOutputStream dataWriter = new ByteArrayOutputStream((int) file.length());
+					for (int ch = in.read(); ch != -1; ch = in.read()) {
+						dataWriter.write(ch);
+					}
+					lexicalForm = new String(dataWriter.toByteArray(), UTF8);
+				} finally {
+					in.close();
+				}
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+			initialized = true;
+		}
+
+		@Override
+		public UriRef getDataType() {
+			if (!initialized) initialize();
+			return dataType;
+		}
+
+		@Override
+		public String getLexicalForm() {
+			if (!initialized) initialize();
+			return lexicalForm;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof ReplacementLiteral) {
+				ReplacementLiteral other = (ReplacementLiteral)obj;
+				return base16Hash.equals(other.base16Hash);
+			}
+			TypedLiteral other = (TypedLiteral)obj;
+			return getLexicalForm().equals(other.getLexicalForm()) &&
+					getDataType().equals(other.getDataType());
+		}
+
+		@Override
+		public int hashCode() {
+			return hash;
+		}
+
+
 	}
 }
