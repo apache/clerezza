@@ -113,6 +113,9 @@ class ExternalizingMGraph extends AbstractMGraph {
 	 */
 	private boolean needsReplacing(Resource object) {
 		if (object instanceof TypedLiteral) {
+			if (object instanceof ReplacementLiteral) {
+				return true;
+			}
 			if (((TypedLiteral) object).getDataType().equals(base64Uri)) {
 				return true;
 			}
