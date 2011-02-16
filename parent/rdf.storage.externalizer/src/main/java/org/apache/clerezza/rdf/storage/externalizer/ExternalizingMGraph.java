@@ -52,7 +52,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 
 	private final MGraph baseGraph;
 	private final File dataDir;
-	private static final UriRef base64Uri =
+	static final UriRef base64Uri =
 			new UriRef("http://www.w3.org/2001/XMLSchema#base64Binary");
 	//not using a known uri-scheme (such as urn:hash) to avoid collission with Uris in the graph
 	private static final String UriHashPrefix = "urn:x-litrep:";
@@ -120,7 +120,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 		return false;
 	}
 
-	private UriRef replace(TypedLiteral literal) {
+	UriRef replace(TypedLiteral literal) {
 		FileOutputStream out = null;
 		try {
 			final byte[] serializedLiteral = serializeLiteral(literal);
@@ -161,19 +161,29 @@ class ExternalizingMGraph extends AbstractMGraph {
 		}
 	}
 
+	TypedLiteral getLiteralForUri(String uriString) {
+		String base16Hash = uriString.substring(UriHashPrefix.length());
+		return getLiteralForHash(base16Hash);
+	}
+
 	private TypedLiteral getLiteralForHash(String base16Hash) {
 		return new ReplacementLiteral(base16Hash);
 
 
 	}
 
-	private String toBase16(byte[] bytes) {
+	String toBase16(byte[] bytes) {
 		StringBuilder sb = new StringBuilder();
 		for (byte b : bytes) {
-			if (b < 16) {
+			if ((b < 16) && (b > 0)) {
 				sb.append('0');
 			}
-			sb.append(Integer.toHexString(b));
+			String integerHex = Integer.toHexString(b);
+			if (b < 0) {
+				sb.append(integerHex.substring(6));
+			} else {
+				sb.append(integerHex);
+			}
 		}
 		return sb.toString();
 	}
@@ -208,9 +218,8 @@ class ExternalizingMGraph extends AbstractMGraph {
 				if (object instanceof UriRef) {
 					String uriString = ((UriRef) object).getUnicodeString();
 					if (uriString.startsWith(UriHashPrefix)) {
-						String base16Hash = uriString.substring(UriHashPrefix.length());
 						return new TripleImpl(triple.getSubject(), triple.getPredicate(),
-								getLiteralForHash(base16Hash));
+								getLiteralForUri(uriString));
 					}
 				}
 				return triple;
@@ -232,6 +241,25 @@ class ExternalizingMGraph extends AbstractMGraph {
 		return hash;
 	}
 
+	int parseHexInt(String hexInt) {
+		int[] hashBytes = new int[4];
+		hashBytes[0] = Integer.parseInt(hexInt.substring(0,2), 16);
+		hashBytes[1] = Integer.parseInt(hexInt.substring(2,4), 16);
+		hashBytes[2] = Integer.parseInt(hexInt.substring(4,6), 16);
+		hashBytes[3] = Integer.parseInt(hexInt.substring(6,8), 16);
+		return getIntFromBytes(hashBytes);
+	}
+
+	private int getIntFromBytes(int[] bytes) {
+		int result = 0;
+		int shift = (bytes.length*8);
+		for (int b : bytes) {
+			shift -= 8;
+			result |= (0xFF & b) << shift;
+		}
+		return result;
+	}
+
 	private class ReplacementLiteral implements TypedLiteral {
 
 		private String lexicalForm;
@@ -239,10 +267,10 @@ class ExternalizingMGraph extends AbstractMGraph {
 		final private String base16Hash;
 		private boolean initialized = false;
 		final private int hash;
-
 		private ReplacementLiteral(String base16Hash) {
 			this.base16Hash = base16Hash;
-			hash = Integer.parseInt(base16Hash.substring(0,8), 16);
+			hash = parseHexInt(base16Hash.substring(0, 8));
+			
 		}
 
 		private synchronized void initialize() {
