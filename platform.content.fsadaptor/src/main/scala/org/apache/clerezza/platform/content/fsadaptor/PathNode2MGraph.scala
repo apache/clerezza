@@ -30,6 +30,7 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl
 import org.apache.clerezza.rdf.ontologies.DISCOBITS
 import org.apache.clerezza.rdf.ontologies.HIERARCHY
 import org.apache.clerezza.rdf.ontologies.RDF
+import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser
 import org.wymiwyg.commons.util.dirbrowser.PathNode
 
@@ -96,6 +97,43 @@ object PathNode2MGraph {
 					mGraph.add(new TripleImpl(resource, DISCOBITS.mediaType,
 											  new PlainLiteralImpl(getMediaType(file))))
 				}
+			}
+		}
+		processDirectory(directory)
+	}
+
+	def removeNodesFromGraph(directory: PathNode, mGraph: MGraph) {
+		val basePathLength = directory.getPath.length
+		def createUriRef(file: PathNode, isDirectory: Boolean) = {
+			def addSlashIfNeeded(s: String) = {
+				 if (s.endsWith("/")) {
+					 s
+				 } else {
+					 s+'/'
+				 }
+			}
+			val path =	if (isDirectory) {
+				addSlashIfNeeded(file.getPath.substring(basePathLength))
+			} else {
+				file.getPath.substring(basePathLength)
+			}
+			new UriRef(URI_PREFIX+path)
+		}
+		def processDirectory(directory: PathNode) {
+			val directoryResource = createUriRef(directory, true)
+			mGraph.remove(new TripleImpl(directoryResource, RDF.`type`, HIERARCHY.Collection))
+			for (subPath <- directory.list) {
+				val file = directory.getSubPath(subPath)
+				val isDirectory = file.isDirectory
+				val resource = createUriRef(file, isDirectory)
+				val node = new GraphNode(resource, mGraph)
+				if (isDirectory) {
+					processDirectory(file)
+				}
+				node.deleteProperties(HIERARCHY.parent)
+				node.deleteProperties(RDF.`type`)
+				node.deleteProperties(DISCOBITS.infoBit)
+				node.deleteProperties(DISCOBITS.mediaType)
 			}
 		}
 		processDirectory(directory)

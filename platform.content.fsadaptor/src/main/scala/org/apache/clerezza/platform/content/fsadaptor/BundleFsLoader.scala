@@ -87,6 +87,11 @@ class BundleFsLoader extends BundleListener with Logger {
 	}
 
 	def removeFromGraph(bundle: Bundle) {
+		val pathNode = new BundlePathNode(bundle, "CLEREZZA-INF/web-resources");
+		val mGraph: MGraph = tcManager.getMGraph(MGRAPH_NAME);
+		BundleFsLoader.log.info("Size of mgraph before removing resources of {}: {}", bundle, mGraph.size)
+		PathNode2MGraph.removeNodesFromGraph(pathNode, mGraph);
+		BundleFsLoader.log.info("Size of mgraph after removing resources of {}: {}", bundle, mGraph.size)
 
 	}
 
