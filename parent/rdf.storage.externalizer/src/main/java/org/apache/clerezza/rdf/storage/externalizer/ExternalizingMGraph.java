@@ -121,6 +121,10 @@ class ExternalizingMGraph extends AbstractMGraph {
 	}
 
 	UriRef replace(TypedLiteral literal) {
+		if (literal instanceof ReplacementLiteral) {
+			ReplacementLiteral replacementLiteral = (ReplacementLiteral) literal;
+			return new UriRef(UriHashPrefix + replacementLiteral.base16Hash);
+		}
 		FileOutputStream out = null;
 		try {
 			final byte[] serializedLiteral = serializeLiteral(literal);
