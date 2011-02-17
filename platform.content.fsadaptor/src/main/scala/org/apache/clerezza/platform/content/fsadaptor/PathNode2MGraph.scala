@@ -47,7 +47,12 @@ object PathNode2MGraph {
 
 	private def getMediaType(file: PathNode) = {
 		val guessedMediaType: MediaType = MediaTypeGuesser.getInstance().guessTypeForName(file.getPath());
-		guessedMediaType.toString
+		if (guessedMediaType != null) {
+			guessedMediaType.toString
+		} else {
+			"application/octet-stream"
+		}
+
 	}
 
 	private def getData(file: PathNode) = {

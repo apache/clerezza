@@ -20,6 +20,7 @@
 package org.apache.clerezza.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -48,6 +49,15 @@ public class IteratorMerger<T> implements Iterator<T> {
 	 */
 	public IteratorMerger(Iterator<Iterator<T>> baseIterators) {
 		init(baseIterators);
+	}
+
+	/**
+	 * constructs an iterator that will return the elements of the baseIterators
+	 *
+	 * @param baseIterators
+	 */
+	public IteratorMerger(Iterator<T>... baseIterators) {
+		init(Arrays.asList(baseIterators).iterator());
 	}
 
 	/**
