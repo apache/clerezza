@@ -98,16 +98,9 @@ public class UIMAUtils {
           Annotation annotation = (Annotation) uimaObject;
           annotationNode.addPropertyValue(ENTITY.begin, annotation.getBegin());
           annotationNode.addPropertyValue(ENTITY.end, annotation.getEnd());
+          annotationNode.addPropertyValue(ENTITY.coveredText,annotation.getCoveredText());
 
-          GraphNode coveredTextNode = new GraphNode(new UriRef(new StringBuilder(ENTITY.Feature.getUnicodeString()).
-                  append(COVERED_TEXT.hashCode() / uimaObject.hashCode()).toString()), annotationNode.getGraph());
-          coveredTextNode.addPropertyValue(ENTITY.featureName, COVERED_TEXT);
-          log.info(new StringBuilder("Node created for Feature ").append(COVERED_TEXT).toString());
-          String coveredText = annotation.getCoveredText();
-          coveredTextNode.addPropertyValue(ENTITY.featureValue, coveredText);
-          log.info(new StringBuilder("Added feature ").append(COVERED_TEXT).append(" with value ")
-                  .append(coveredText).toString());
-
+          log.info(new StringBuilder("Added annotation properties to node ").append(uimaObject.toString()).toString());
         }
 
         //XXX : in OpenCalais the type is an URI so it maybe reasonable to put another node here
