@@ -47,7 +47,7 @@ import static org.junit.Assert.fail;
  * Testcase for {@link UIMAUtils}
  */
 public class UIMAUtilsTest {
-  private static final String DOCUMENT_TEXT = "the seerver will return a \"A concept with the same label and language already exists!\", so there are actually 2 issues:";
+  private static final String DOCUMENT_TEXT = "the server will return a \"A concept with the same label and language already exists!\", so there are actually 2 issues:";
 
   @Test
   public void testGetAllFSOfAnnotationType() {
