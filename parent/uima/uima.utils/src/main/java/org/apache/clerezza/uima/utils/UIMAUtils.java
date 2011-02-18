@@ -23,10 +23,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.uima.ontologies.ENTITY;
 import org.apache.clerezza.uima.utils.exception.FeatureStructureNotFoundException;
 import org.apache.clerezza.uima.utils.exception.NotSingletonFeatureStructureException;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.Type;
+import org.apache.uima.cas.*;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -43,7 +40,6 @@ import java.util.concurrent.locks.Lock;
 public class UIMAUtils {
 
   private final static Logger log = LoggerFactory.getLogger(UIMAUtils.class);
-  private static final String COVERED_TEXT = "coveredText";
 
   public static List<FeatureStructure> getAllFSofType(int type, JCas cas)
           throws FeatureStructureNotFoundException {
@@ -96,11 +92,9 @@ public class UIMAUtils {
         // set Annotation specific properties for the node
         if (uimaObject instanceof Annotation) {
           Annotation annotation = (Annotation) uimaObject;
-          annotationNode.addPropertyValue(ENTITY.begin, annotation.getBegin());
-          annotationNode.addPropertyValue(ENTITY.end, annotation.getEnd());
-          annotationNode.addPropertyValue(ENTITY.coveredText,annotation.getCoveredText());
-
-          log.info(new StringBuilder("Added annotation properties to node ").append(uimaObject.toString()).toString());
+          String coveredText = annotation.getCoveredText();
+          annotationNode.addPropertyValue(ENTITY.coveredText, coveredText);
+          log.info(new StringBuilder("Node wraps Annotation with coveredText:").append(coveredText).toString());
         }
 
         //XXX : in OpenCalais the type is an URI so it maybe reasonable to put another node here
@@ -121,9 +115,15 @@ public class UIMAUtils {
           String featureValue = null;
           try {
             featureValue = uimaObject.getFeatureValueAsString(feature);
-          } catch (Exception e) {
-            // do nothing at the moment
-            log.warn(new StringBuilder("Unable to create feature value - ").append(e.toString()).toString());
+          } catch (CASRuntimeException sofaEx) {
+            try {
+              // this is usually due to Sofa having a range of {2}
+              featureValue = uimaObject.getFeatureValue(feature).toString();
+            } catch (Exception ex) {
+              // do nothing at the moment
+              log.warn(new StringBuilder("Unable to create feature value - ").append(ex.toString()).append(" (").
+                      append(sofaEx.toString()).append(")").toString());
+            }
           }
 
           if (featureValue != null) {
@@ -136,7 +136,7 @@ public class UIMAUtils {
           annotationNode.addProperty(ENTITY.hasFeature, featureNode.getNode());
         }
 
-        // finally add the triple existingNode,ENTITY.contains,calaisNode
+        // finally add the triple to the existing node
         existingNode.addProperty(ENTITY.contains, annotationNode.getNode());
 
       }
