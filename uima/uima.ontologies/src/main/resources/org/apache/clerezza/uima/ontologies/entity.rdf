@@ -46,20 +46,6 @@
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
         <rdfs:isDefinedBy rdf:resource="http://clerezza.apache.org/2010/22/uima-entities"/>
     </rdf:Property>
-    
-    <rdf:Property rdf:about="http://clerezza.apache.org/2010/22/uima-entities#begin" vs:term_status="stable" rdfs:label="begin" skos:definition="The first character of the wrapped text.">
-        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-        <rdfs:domain rdf:resource="http://clerezza.apache.org/2010/22/uima-entities#Annotation"/>
-        <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
-        <rdfs:isDefinedBy rdf:resource="http://clerezza.apache.org/2010/22/uima-entities"/>
-    </rdf:Property>
-    
-    <rdf:Property rdf:about="http://clerezza.apache.org/2010/22/uima-entities#end" vs:term_status="stable" rdfs:label="end" skos:definition="The last character of the wrapped text.">
-        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-        <rdfs:domain rdf:resource="http://clerezza.apache.org/2010/22/uima-entities#Annotation"/>
-        <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
-        <rdfs:isDefinedBy rdf:resource="http://clerezza.apache.org/2010/22/uima-entities"/>
-    </rdf:Property>
 
     <rdf:Property rdf:about="http://clerezza.apache.org/2010/22/uima-entities#coveredText" vs:term_status="stable" rdfs:label="coveredText" skos:definition="The text span between begin and end">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
