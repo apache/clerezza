@@ -16,14 +16,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>org.apache.clerezza.maven-ontologies-plugin</artifactId>
+				<artifactId>maven-ontologies-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>

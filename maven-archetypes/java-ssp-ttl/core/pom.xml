@@ -21,31 +21,31 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.jaxrs.utils</artifactId>
+			<artifactId>jaxrs.utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.rdf.core</artifactId>
+			<artifactId>rdf.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform</artifactId>
+			<artifactId>platform</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.graphprovider.content</artifactId>
+			<artifactId>platform.graphprovider.content</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.core</artifactId>
+			<artifactId>platform.typerendering.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.platform.typerendering.scalaserverpages</artifactId>
+			<artifactId>platform.typerendering.scalaserverpages</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>org.apache.clerezza.web.fileserver</artifactId>
+			<artifactId>web.fileserver</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
