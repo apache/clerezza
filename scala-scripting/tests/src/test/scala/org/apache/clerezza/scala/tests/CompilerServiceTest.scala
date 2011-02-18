@@ -121,14 +121,18 @@ class CompilerServiceTest {
 			}
 			"""
 			val compileResult = priv(service.compile(List(s.toCharArray, s2.toCharArray)))
-			val testClassClass: Class[_] = compileResult(0)
-			Assert.assertEquals("foo.TestClass", testClassClass.getName)
-			val method = testClassClass.getMethod("msg")
-			Assert.assertEquals("Hello2", method.invoke(null))
-			val testClassClass2: Class[_] = compileResult(1)
-			Assert.assertEquals("foo.TestClass2", testClassClass2.getName)
-			val method2 = testClassClass2.getMethod("msg")
-			Assert.assertEquals("Hello2b", method2.invoke(null))
+			Assert.assertEquals(2, compileResult.size)
+			val nameMsg = for (cr <- compileResult) yield
+				(cr.getName, {
+						val method = cr.getMethod("msg")
+						method.invoke(null)
+					})
+			val nameMsgMap = Map(nameMsg: _*)
+			Assert.assertTrue(nameMsgMap.contains("foo.TestClass"))
+			Assert.assertTrue(nameMsgMap.contains("foo.TestClass2"))
+
+			Assert.assertEquals("Hello2", nameMsgMap("foo.TestClass"))
+			Assert.assertEquals("Hello2b", nameMsgMap("foo.TestClass2"))
 		}
 		val methodFrom1Again = testClassClass1.getMethod("msg")
 		Assert.assertEquals("Hello", methodFrom1Again.invoke(null))
