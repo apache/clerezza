@@ -53,7 +53,7 @@ public class BasicAuthentication implements WeightedAuthenticationMethod {
 	private int weight = 10;
 	
 	@Reference
-	AuthenticationChecker authenticationChecker;
+	AuthenticationService authenticationService;
 
 	public void activate(ComponentContext componentContext) {
 		weight = (Integer) componentContext.getProperties().get("weight");
@@ -74,7 +74,7 @@ public class BasicAuthentication implements WeightedAuthenticationMethod {
 				password = "";
 			}
 			try {
-				if (authenticationChecker.authenticate(userName, password)) {
+				if (authenticationService.authenticateUser(userName, password)) {
 					return userName;
 				} else {
 					throw new LoginException(LoginException.PASSWORD_NOT_MATCHING);

@@ -29,7 +29,6 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
-import org.wymiwyg.wrhapi.HandlerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,11 +59,10 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 	 * @param userName
 	 * @param password
 	 * @return true if the password matched, false otherwise
-	 * @throws org.wymiwyg.wrhapi.HandlerException
 	 * @throws org.apache.clerezza.platform.security.auth.NoSuchAgent
 	 */
 	@Override
-	public boolean authenticate(String userName, String password) throws HandlerException, NoSuchAgent
+	public boolean authenticate(String userName, String password) throws NoSuchAgent
 	{
 		AccessController.checkPermission(new CheckAuthenticationPermission());
 		NonLiteral agent = getAgentFromGraph(userName);
@@ -73,7 +71,7 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 			logger.debug("user {} successfully authenticated", userName);
 			return true;
 		} else {
-			logger.info("unsuccessful authentication attempt as user {}", userName);
+			logger.debug("unsuccessful authentication attempt as user {}", userName);
 			return false;
 		}
 	}
@@ -87,7 +85,7 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 			if (agents.hasNext()) {
 				agent = agents.next().getSubject();
 			} else {
-				logger.info("unsuccessful authentication attempt as non-existent user {}", userName);
+				logger.debug("unsuccessful authentication attempt as non-existent user {}", userName);
 				throw new NoSuchAgent();
 			}
 		} finally {
