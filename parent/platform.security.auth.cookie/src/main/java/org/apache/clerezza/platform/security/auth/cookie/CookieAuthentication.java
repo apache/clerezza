@@ -61,8 +61,8 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 	 */
 	private int weight = 20;
 
-        @Reference
-	AuthenticationChecker authenticationChecker;
+	@Reference
+	AuthenticationService authenticationService;
 
 	public void activate(ComponentContext componentContext) {
 		weight = (Integer) componentContext.getProperties().get("weight");
@@ -88,7 +88,7 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 				password = "";
 			}
 			try {
-				if (authenticationChecker.authenticate(userName, password)){
+				if (authenticationService.authenticateUser(userName, password)){
 					return userName;
 				} else {
 					throw new LoginException(LoginException.PASSWORD_NOT_MATCHING);

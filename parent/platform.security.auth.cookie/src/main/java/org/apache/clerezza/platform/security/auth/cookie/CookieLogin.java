@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
-import org.apache.clerezza.platform.security.auth.AuthenticationChecker;
+import org.apache.clerezza.platform.security.auth.AuthenticationService;
 import org.apache.clerezza.platform.security.auth.LoginListener;
 import org.apache.clerezza.platform.security.auth.NoSuchAgent;
 import org.apache.clerezza.platform.security.auth.cookie.onotology.LOGIN;
@@ -75,7 +75,6 @@ import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.Bundle;
 import org.wymiwyg.commons.util.Base64;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
-import org.wymiwyg.wrhapi.HandlerException;
 
 /**
  *
@@ -103,7 +102,7 @@ public class CookieLogin {
 	private RenderletManager renderletManager;
 
 	@Reference
-	AuthenticationChecker authenticationChecker;
+	AuthenticationService authenticationService;
 
 	/**
 	 * The activate method is called when SCR activates the component configuration.
@@ -190,7 +189,7 @@ public class CookieLogin {
 				PlainLiteral failedMessage = new PlainLiteralImpl(
 						"Username name or password are wrong");
 				try {
-					if (authenticationChecker.authenticate(userName,password)) {
+					if (authenticationService.authenticateUser(userName,password)) {
 						Set<LoginListener> tempLoginListenerSet = null;
 						synchronized(loginListenerSet) {
 							tempLoginListenerSet = new HashSet<LoginListener>(loginListenerSet);
@@ -210,8 +209,6 @@ public class CookieLogin {
 						result.addProperty(LOGIN.refererUri, new UriRef(referer));
 					}
 					return result;
-				} catch (HandlerException ex) {
-					throw new RuntimeException(ex);
 				} catch (NoSuchAgent ex) {
 					result.addProperty(LOGIN.message, failedMessage);
 					result.addProperty(LOGIN.refererUri, new UriRef(referer));
