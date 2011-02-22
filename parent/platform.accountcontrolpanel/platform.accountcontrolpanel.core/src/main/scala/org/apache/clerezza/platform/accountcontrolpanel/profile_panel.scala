@@ -185,7 +185,12 @@ class profile_panel extends PageRenderlet {
 						   if (modulus == null)  <span/> //todo: broken public key, should delete it
 						   else <tr><td><input type="checkbox" name="keyhash" value={modulus.hashCode().toString()}/></td>
 						<td><table>
-							<tr><td class="propvalue">Created:</td><td>{beautify((cert/DC.date).as[Date])}</td></tr>
+							<tr><td class="propvalue">Created:</td><td>{if ((cert/DC.date).size > 0) {
+									beautify((cert/DC.date).as[Date])
+									} else {
+										"-"
+									}
+							}</td></tr>
 							<tr><td class="propvalue">Comment:</td><td>{ cert/RDFS.comment* }</td></tr>
 							<tr><td class="propvalue multiline">Modulus:</td><td><code>{ beautify((cert/RSA.modulus).as[BigInteger]) }</code></td></tr>
 							<tr><td class="propvalue">Exponent:</td><td><code>{ beautify((cert/RSA.public_exponent).as[Integer]) }</code></td></tr>
