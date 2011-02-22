@@ -45,19 +45,21 @@ class ConsoleShell()  {
 
 	def activate(componentContext: ComponentContext)= {
 		bundleContext = componentContext.getBundleContext
-		for (bundle <- bundleContext.getBundles;
-				if (bundle.getSymbolicName == "org.apache.felix.shell.tui");
-				if (bundle.getState == Bundle.ACTIVE)) {
-			println("stopping "+bundle);
-			bundle.stop()
-			stoppedBundle = Some(bundle)
+		if ("true" != bundleContext.getProperty("clerezza.shell.disable")) {
+			for (bundle <- bundleContext.getBundles;
+					if (bundle.getSymbolicName == "org.apache.felix.shell.tui");
+					if (bundle.getState == Bundle.ACTIVE)) {
+				println("stopping "+bundle);
+				bundle.stop()
+				stoppedBundle = Some(bundle)
+			}
+			val in =  Channels.newInputStream(
+				(new FileInputStream(FileDescriptor.in)).getChannel());
+			interruptibleIn = new InterruptibleInputStream(in)
+			val shell = factory.createShell(interruptibleIn, System.out)
+			shell.start()
+			shellOption = Some(shell)
 		}
-		val in =  Channels.newInputStream(
-            (new FileInputStream(FileDescriptor.in)).getChannel());
-		interruptibleIn = new InterruptibleInputStream(in)
-		val shell = factory.createShell(interruptibleIn, System.out)
-		shell.start()
-		shellOption = Some(shell)
 	}
 
 
@@ -71,7 +73,9 @@ class ConsoleShell()  {
 			case Some(shell) => shell.stop()
 			case _ =>
 		}
-		interruptibleIn.terminate()
+		if (interruptibleIn != null) {
+			interruptibleIn.terminate()
+		}
 	}
 
 	def bindShellFactory(f: ShellFactory) = {
