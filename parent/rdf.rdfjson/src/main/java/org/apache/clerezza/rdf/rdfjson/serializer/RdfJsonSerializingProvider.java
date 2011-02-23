@@ -1,20 +1,18 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.clerezza.rdf.rdfjson.serializer;
 
@@ -23,7 +21,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -50,7 +47,7 @@ import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
  *              interface="org.apache.clerezza.rdf.core.serializedform.SerializingProvider"
  * 
  */
-@SupportedFormat( SupportedFormat.RDF_JSON )
+@SupportedFormat(SupportedFormat.RDF_JSON)
 public class RdfJsonSerializingProvider implements SerializingProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -67,15 +64,11 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 
 			JSONObject predicatesAsJSONObjects = new JSONObject();
 
-			Iterator<Triple> triplesFromSubject = tc
-					.filter(subject, null, null);
+			Iterator<Triple> triplesFromSubject = tc.filter(subject, null, null);
 			while (triplesFromSubject.hasNext()) {
-				UriRef predicate = triplesFromSubject.next()
-						.getPredicate();
-				JSONArray jsonValues = addValuesToJSONArray(tc, subject,
-						predicate, subjectsAsJSONObjects);
-				predicatesAsJSONObjects.put(predicate.getUnicodeString(),
-						jsonValues);
+				UriRef predicate = triplesFromSubject.next().getPredicate();
+				JSONArray jsonValues = addValuesToJSONArray(tc, subject, predicate, subjectsAsJSONObjects);
+				predicatesAsJSONObjects.put(predicate.getUnicodeString(), jsonValues);
 			}
 			root.put(key, predicatesAsJSONObjects);
 		}
@@ -96,8 +89,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 			NonLiteral subject = triples.next().getSubject();
 			if (!subjectsAsJSONObjects.containsKey(subject)) {
 				if (subject instanceof UriRef) {
-					subjectsAsJSONObjects.put(subject, ((UriRef) subject)
-							.getUnicodeString());
+					subjectsAsJSONObjects.put(subject, ((UriRef) subject).getUnicodeString());
 				} else if (subject instanceof BNode) {
 					subjectsAsJSONObjects.put(subject, "_:" + bNodeCounter++);
 				}
@@ -112,11 +104,9 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 
 		JSONArray jsonValues = new JSONArray();
 
-		Iterator<Triple> objectsFromPredicate = tc.filter(subject, predicate,
-				null);
+		Iterator<Triple> objectsFromPredicate = tc.filter(subject, predicate, null);
 		while (objectsFromPredicate.hasNext()) {
-			Resource object = objectsFromPredicate.next()
-					.getObject();
+			Resource object = objectsFromPredicate.next().getObject();
 			JSONObject objectAsJSONObject = new JSONObject();
 			if (object instanceof PlainLiteral) {
 				PlainLiteral plainLiteral = (PlainLiteral) object;
@@ -129,15 +119,13 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 				TypedLiteral literal = (TypedLiteral) object;
 				objectAsJSONObject.put("value", literal.getLexicalForm());
 				objectAsJSONObject.put("type", "literal");
-				objectAsJSONObject.put("datatype", literal.getDataType()
-						.getUnicodeString());
+				objectAsJSONObject.put("datatype", literal.getDataType().getUnicodeString());
 			} else if (object instanceof UriRef) {
 				UriRef uri = (UriRef) object;
 				objectAsJSONObject.put("value", uri.getUnicodeString());
 				objectAsJSONObject.put("type", "uri");
 			} else if (object instanceof BNode) {
-				objectAsJSONObject.put("value", subjectsAsJSONObjects
-						.get(object));
+				objectAsJSONObject.put("value", subjectsAsJSONObjects.get(object));
 				objectAsJSONObject.put("type", "bnode");
 			}
 			jsonValues.add(objectAsJSONObject);

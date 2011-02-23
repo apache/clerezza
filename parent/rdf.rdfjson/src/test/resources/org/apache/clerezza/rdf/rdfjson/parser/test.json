@@ -7,7 +7,7 @@
 		"http://base/propertyC":[{"value":"C","type":"literal","lang":"en"}]
 		"http://base/propertyE":[{"value":"E","type":"literal","datatype":"http://www.w3.org/2001/XMLSchema#string"}]
 	},
-	
+
 	"http://base/root":	{
 		"http://base/propertyA":[{"value":"A","type":"literal"}],
 		"http://base/resourcePropertyB":[{"value":"http://base/child1","type":"uri"}],
