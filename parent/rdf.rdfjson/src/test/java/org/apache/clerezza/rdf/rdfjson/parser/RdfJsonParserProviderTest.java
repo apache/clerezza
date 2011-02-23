@@ -18,19 +18,58 @@ package org.apache.clerezza.rdf.rdfjson.parser;
 
 import java.io.InputStream;
 import java.util.Iterator;
+import org.apache.clerezza.rdf.core.BNode;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 
 /**
- * @author tio
+ * @author tio, hasan
  */
 public class RdfJsonParserProviderTest {
+
+	@Test
+	public void testParsingOfObjectBNode() {
+		ParsingProvider provider = new RdfJsonParsingProvider();
+		InputStream jsonIn = getClass().getResourceAsStream("test-object-bnode.json");
+		MGraph parsedMGraph = new SimpleMGraph();
+		provider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
+		Assert.assertEquals(parsedMGraph.size(), 1);
+		Iterator<Triple> triples = parsedMGraph.filter(new UriRef("http://example.org/node1"),
+				new UriRef("http://example.org/prop1"), null);
+		Assert.assertTrue(triples.hasNext());
+		Assert.assertTrue(triples.next().getObject() instanceof BNode);
+	}
+
+	@Test
+	public void testParsingOfSubjectBNode() {
+		ParsingProvider provider = new RdfJsonParsingProvider();
+		InputStream jsonIn = getClass().getResourceAsStream("test-subject-bnode.json");
+		MGraph parsedMGraph = new SimpleMGraph();
+		provider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
+		Assert.assertEquals(3, parsedMGraph.size());
+		Iterator<Triple> triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop1"),
+				new UriRef("http://example.org/node1"));
+		Assert.assertTrue(triples.hasNext());
+		NonLiteral subject = triples.next().getSubject();
+		Assert.assertTrue(subject instanceof BNode);
+
+		triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop2"),
+				new UriRef("http://example.org/node2"));
+		Assert.assertTrue(triples.hasNext());
+		Assert.assertTrue(subject.equals(triples.next().getSubject()));
+
+		triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop3"),
+				new UriRef("http://example.org/node3"));
+		Assert.assertTrue(triples.hasNext());
+		Assert.assertFalse(subject.equals(triples.next().getSubject()));
+	}
 
 	@Test
 	public void testParser() {
