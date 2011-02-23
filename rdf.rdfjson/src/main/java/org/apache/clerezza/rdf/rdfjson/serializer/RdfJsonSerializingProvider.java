@@ -19,8 +19,10 @@ package org.apache.clerezza.rdf.rdfjson.serializer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -35,42 +37,54 @@ import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.serializedform.SerializingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 
 /**
- * A {@link org.apache.clerezza.rdf.core.serializedform.SerializingProvider} for
- * rdf/json
+ * A {@link org.apache.clerezza.rdf.core.serializedform.SerializingProvider} for rdf/json
  * 
- * @author tio
- * 
- * @scr.component immediate="true"
- * @scr.service 
- *              interface="org.apache.clerezza.rdf.core.serializedform.SerializingProvider"
- * 
+ * @author tio, hasan
  */
+@Component(immediate=true)
+@Service(SerializingProvider.class)
 @SupportedFormat(SupportedFormat.RDF_JSON)
 public class RdfJsonSerializingProvider implements SerializingProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	private int bNodeCounter = 0;
+
 	@Override
-	public void serialize(OutputStream serializedGraph, TripleCollection tc,
-			String formatIdentifier) {
+	public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
 		JSONObject root = new JSONObject();
 
-		Map<NonLiteral, String> subjectsAsJSONObjects = createSubjectsAsJSONObjects(tc);
+		Set<NonLiteral> processedSubject = new HashSet<NonLiteral>();
+		Map<BNode, String> bNodeMap = new HashMap<BNode, String>();
 
-		for (NonLiteral subject : subjectsAsJSONObjects.keySet()) {
-			String key = subjectsAsJSONObjects.get(subject);
+		NonLiteral subject = null;
+		String subjectStr = null;
+		bNodeCounter = 0;
+		Iterator<Triple> triples = tc.iterator();
+		while (triples.hasNext()) {
+			subject = triples.next().getSubject();
+			if (!processedSubject.contains(subject)) {
+				if (subject instanceof BNode) {
+					subjectStr = getNextBNodeId();
+					bNodeMap.put((BNode)subject, subjectStr);
+				} else { // if (subject instanceof UriRef)
+					subjectStr = ((UriRef)subject).getUnicodeString();
+				}
+				JSONObject predicatesAsJSONObjects = new JSONObject();
+				Iterator<Triple> triplesOfSubject = tc.filter(subject, null, null);
+				while (triplesOfSubject.hasNext()) {
+					UriRef predicate = triplesOfSubject.next().getPredicate();
+					JSONArray jsonValues = addValuesToJSONArray(tc, subject, predicate, bNodeMap);
+					predicatesAsJSONObjects.put(predicate.getUnicodeString(), jsonValues);
+				}
+				root.put(subjectStr, predicatesAsJSONObjects);
 
-			JSONObject predicatesAsJSONObjects = new JSONObject();
-
-			Iterator<Triple> triplesFromSubject = tc.filter(subject, null, null);
-			while (triplesFromSubject.hasNext()) {
-				UriRef predicate = triplesFromSubject.next().getPredicate();
-				JSONArray jsonValues = addValuesToJSONArray(tc, subject, predicate, subjectsAsJSONObjects);
-				predicatesAsJSONObjects.put(predicate.getUnicodeString(), jsonValues);
+				processedSubject.add(subject);
 			}
-			root.put(key, predicatesAsJSONObjects);
 		}
 		try {
 			serializedGraph.write(root.toJSONString().getBytes());
@@ -80,33 +94,18 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 		}
 	}
 
-	private Map<NonLiteral, String> createSubjectsAsJSONObjects(
-			TripleCollection tc) {
-		Map<NonLiteral, String> subjectsAsJSONObjects = new HashMap<NonLiteral, String>();
-		Iterator<Triple> triples = tc.iterator();
-		int bNodeCounter = 1;
-		while (triples.hasNext()) {
-			NonLiteral subject = triples.next().getSubject();
-			if (!subjectsAsJSONObjects.containsKey(subject)) {
-				if (subject instanceof UriRef) {
-					subjectsAsJSONObjects.put(subject, ((UriRef) subject).getUnicodeString());
-				} else if (subject instanceof BNode) {
-					subjectsAsJSONObjects.put(subject, "_:" + bNodeCounter++);
-				}
-			}
-		}
-		return subjectsAsJSONObjects;
+	private String getNextBNodeId() {
+		return "_:b" + ++bNodeCounter;
 	}
 
-	private JSONArray addValuesToJSONArray(TripleCollection tc,
-			NonLiteral subject, UriRef predicate,
-			Map<NonLiteral, String> subjectsAsJSONObjects) {
+	private JSONArray addValuesToJSONArray(TripleCollection tc, NonLiteral subject, UriRef predicate,
+			Map<BNode, String> bNodeMap) {
 
 		JSONArray jsonValues = new JSONArray();
 
-		Iterator<Triple> objectsFromPredicate = tc.filter(subject, predicate, null);
-		while (objectsFromPredicate.hasNext()) {
-			Resource object = objectsFromPredicate.next().getObject();
+		Iterator<Triple> objectsOfPredicate = tc.filter(subject, predicate, null);
+		while (objectsOfPredicate.hasNext()) {
+			Resource object = objectsOfPredicate.next().getObject();
 			JSONObject objectAsJSONObject = new JSONObject();
 			if (object instanceof PlainLiteral) {
 				PlainLiteral plainLiteral = (PlainLiteral) object;
@@ -121,11 +120,16 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 				objectAsJSONObject.put("type", "literal");
 				objectAsJSONObject.put("datatype", literal.getDataType().getUnicodeString());
 			} else if (object instanceof UriRef) {
-				UriRef uri = (UriRef) object;
-				objectAsJSONObject.put("value", uri.getUnicodeString());
+				UriRef uriRef = (UriRef) object;
+				objectAsJSONObject.put("value", uriRef.getUnicodeString());
 				objectAsJSONObject.put("type", "uri");
 			} else if (object instanceof BNode) {
-				objectAsJSONObject.put("value", subjectsAsJSONObjects.get(object));
+				String bNodeId = bNodeMap.get((BNode)object);
+				if (bNodeId == null) {
+					bNodeId = getNextBNodeId();
+					bNodeMap.put((BNode)object, bNodeId);
+				}
+				objectAsJSONObject.put("value", bNodeId);
 				objectAsJSONObject.put("type", "bnode");
 			}
 			jsonValues.add(objectAsJSONObject);
