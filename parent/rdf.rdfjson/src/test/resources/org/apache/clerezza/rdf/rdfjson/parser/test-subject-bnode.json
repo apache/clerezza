@@ -1,0 +1,10 @@
+{	
+	"_:bnode1":	{
+		"http://example.org/prop1": [{"value":"http://example.org/node1","type":"uri"}],
+		"http://example.org/prop2": [{"value":"http://example.org/node2","type":"uri"}]
+	},
+
+	"_:bnode2":	{
+		"http://example.org/prop3": [{"value":"http://example.org/node3","type":"uri"}]
+	}
+}
