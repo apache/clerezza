@@ -19,10 +19,13 @@
 package org.apache.clerezza.platform.language;
 
 import java.util.Iterator;
+import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.Language;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.ontologies.LINGVOJ;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -39,10 +42,22 @@ public class LanguageDescription {
 
 	LanguageDescription(GraphNode resource) {
 		this.resource = resource;
-		Literal iso1Literal = (Literal) resource.getObjects(LINGVOJ.iso1).next();
+		Literal iso1Literal = null;
+		TripleCollection configGraph = resource.getGraph();
+		if (configGraph instanceof LockableMGraph) {
+			LockableMGraph lockableConfigGraph = (LockableMGraph)configGraph;
+			Lock readLock = lockableConfigGraph.getLock().readLock();
+			readLock.lock();
+			try {
+				iso1Literal = (Literal) resource.getObjects(LINGVOJ.iso1).next();
+			} finally {
+				readLock.unlock();
+			}
+		} else {
+			iso1Literal = (Literal) resource.getObjects(LINGVOJ.iso1).next();
+		}
 		if (iso1Literal == null) {
-			throw new RuntimeException("No iso1 code for "
-					+resource.getNode());
+			throw new RuntimeException("No iso1 code for " +resource.getNode());
 		}
 		String iso1 = iso1Literal.getLexicalForm();
 		this.language = new Language(iso1);
@@ -75,13 +90,26 @@ public class LanguageDescription {
 	 * @return
 	 */
 	public String getLabel(Language lang) {
-		Iterator<Resource> labels = resource.getObjects(RDFS.label);
-		while (labels.hasNext()) {
-			PlainLiteral label = (PlainLiteral) labels.next();
-			if (label.getLanguage().equals(lang)) {
-				return label.getLexicalForm();
+		Lock readLock = null;
+		TripleCollection configGraph = resource.getGraph();
+		if (configGraph instanceof LockableMGraph) {
+			LockableMGraph lockableConfigGraph = (LockableMGraph)configGraph;
+			readLock = lockableConfigGraph.getLock().readLock();
+			readLock.lock();
+		}
+		try {
+			Iterator<Resource> labels = resource.getObjects(RDFS.label);
+			while (labels.hasNext()) {
+				PlainLiteral label = (PlainLiteral) labels.next();
+				if (label.getLanguage().equals(lang)) {
+					return label.getLexicalForm();
+				}
+			}
+			return null;
+		} finally {
+			if (readLock != null) {
+				readLock.unlock();
 			}
 		}
-		return null;
 	}
 }
