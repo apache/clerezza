@@ -52,25 +52,20 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private int bNodeCounter = 0;
-
 	@Override
 	public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
 		JSONObject root = new JSONObject();
 
 		Set<NonLiteral> processedSubject = new HashSet<NonLiteral>();
-		Map<BNode, String> bNodeMap = new HashMap<BNode, String>();
-
+		BNodeManager bNodeMgr = new BNodeManager();
 		NonLiteral subject = null;
 		String subjectStr = null;
-		bNodeCounter = 0;
 		Iterator<Triple> triples = tc.iterator();
 		while (triples.hasNext()) {
 			subject = triples.next().getSubject();
 			if (!processedSubject.contains(subject)) {
 				if (subject instanceof BNode) {
-					subjectStr = getNextBNodeId();
-					bNodeMap.put((BNode)subject, subjectStr);
+					subjectStr = bNodeMgr.getBNodeId((BNode)subject);
 				} else { // if (subject instanceof UriRef)
 					subjectStr = ((UriRef)subject).getUnicodeString();
 				}
@@ -78,7 +73,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 				Iterator<Triple> triplesOfSubject = tc.filter(subject, null, null);
 				while (triplesOfSubject.hasNext()) {
 					UriRef predicate = triplesOfSubject.next().getPredicate();
-					JSONArray jsonValues = addValuesToJSONArray(tc, subject, predicate, bNodeMap);
+					JSONArray jsonValues = addValuesToJSONArray(tc, subject, predicate, bNodeMgr);
 					predicatesAsJSONObjects.put(predicate.getUnicodeString(), jsonValues);
 				}
 				root.put(subjectStr, predicatesAsJSONObjects);
@@ -94,12 +89,22 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 		}
 	}
 
-	private String getNextBNodeId() {
-		return "_:b" + ++bNodeCounter;
+	private class BNodeManager {
+		private Map<BNode, String> bNodeMap = new HashMap<BNode, String>();
+		private int counter = 0;
+
+		public String getBNodeId(BNode node) {
+			String bNodeId = bNodeMap.get(node);
+			if (bNodeId == null) {
+				bNodeId = "_:b" + ++counter;
+				bNodeMap.put((BNode)node, bNodeId);
+			}
+			return bNodeId;
+		}
 	}
 
 	private JSONArray addValuesToJSONArray(TripleCollection tc, NonLiteral subject, UriRef predicate,
-			Map<BNode, String> bNodeMap) {
+			BNodeManager bNodeMgr) {
 
 		JSONArray jsonValues = new JSONArray();
 
@@ -124,11 +129,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 				objectAsJSONObject.put("value", uriRef.getUnicodeString());
 				objectAsJSONObject.put("type", "uri");
 			} else if (object instanceof BNode) {
-				String bNodeId = bNodeMap.get((BNode)object);
-				if (bNodeId == null) {
-					bNodeId = getNextBNodeId();
-					bNodeMap.put((BNode)object, bNodeId);
-				}
+				String bNodeId = bNodeMgr.getBNodeId((BNode)object);
 				objectAsJSONObject.put("value", bNodeId);
 				objectAsJSONObject.put("type", "bnode");
 			}
