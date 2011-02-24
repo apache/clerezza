@@ -1,30 +1,32 @@
-package org.apache.clerezza.foafssl.testservlets
-
 /*
- * Copyright 2011 hjs.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
-import java.security.AccessController
-import java.security.PrivilegedAction
+package org.apache.clerezza.foafssl.testservlets
+
 import org.apache.clerezza.platform.security.UserUtil
 import org.apache.clerezza.platform.usermanager.UserManager
 import org.apache.clerezza.rdf.utils.GraphNode
-import sun.management.resources.agent
 import javax.ws.rs.{Produces, GET, Path}
 import org.apache.clerezza.web.fileserver.FileServer
 import org.osgi.service.component.ComponentContext
+import java.security.{PrivilegedAction, AccessController}
+import org.apache.clerezza.rdf.core.{UriRef, Resource, BNode}
 
 /**
  * implementation of (very early) version of test server for WebID so that the following tests
@@ -36,38 +38,41 @@ import org.osgi.service.component.ComponentContext
 @Path("/test/webIdEndPoint")
 class TestMe extends FileServer {
 
-  var userManager: UserManager =null;
+	var userManager: UserManager = null;
 
-  protected def bindUserManager(um: UserManager)  = {
+	protected def bindUserManager(um: UserManager) = {
 		userManager = um
 	}
 
-	protected def unbindUserManager(um: UserManager)  = {
+	protected def unbindUserManager(um: UserManager) = {
 		userManager = null
 	}
 
- 	protected def activate(componentContext: ComponentContext ) = {
-//		configure(componentContext.getBundleContext(), "profile-staticweb");
+	protected def activate(componentContext: ComponentContext) = {
+		//		configure(componentContext.getBundleContext(), "profile-staticweb");
 	}
 
-  @GET @Produces(Array("text/plain"))
-  def getTestMe() : String = {
-    return "Hello World!"
-//    val context = AccessController.getContext();
-//    val agent = AccessController.doPrivileged(new PrivilegedAction[String]() {
-//      @Override
-//      def run(): String = {
-//        val userName = UserUtil.getUserName(context);
-//        if (userName == null) {
-//          return "-";
-//        }
-//        val node: GraphNode = userManager.getUserGraphNode(userName)
-//        return node.getNode.toString;
-//      }
-//    });
- //   return agent
-  }
-
+	@GET
+	@Produces(Array("text/plain"))
+	def getTestMe(): String = {
+		try {
+			val context = AccessController.getContext();
+			var userName = UserUtil.getUserName(context);
+			val webid = AccessController.doPrivileged(new PrivilegedAction[String]() {
+				@Override
+				def run(): String = {
+					val node: GraphNode = userManager.getUserGraphNode(userName)
+					node.getNode match {
+						case b : BNode => "+"
+					   case uri: UriRef => uri.getUnicodeString
+					}
+				}
+			});
+			return webid
+		} catch {
+			case e: Exception => return "+ " + e.toString;
+		}
+	}
 
 
 }
