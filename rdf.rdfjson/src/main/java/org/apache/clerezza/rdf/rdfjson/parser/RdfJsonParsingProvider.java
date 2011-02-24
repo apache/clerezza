@@ -56,9 +56,10 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 	@Override
 	public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 
+		BNodeManager bNodeMgr = new BNodeManager();
+
 		JSONParser parser = new JSONParser();
 		InputStreamReader reader = new InputStreamReader(serializedGraph);
-		Map<String, NonLiteral> bNodeMap = new HashMap<String, NonLiteral>();
 
 		try {
 			JSONObject root = (JSONObject) parser.parse(reader);
@@ -67,13 +68,12 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 			for (Object key : root.keySet()) {
 				String keyString = (String) key;
 				if (keyString.startsWith("_:")) {
-					nonLiteral = new BNode();
-					bNodeMap.put(keyString, nonLiteral);
+					nonLiteral = bNodeMgr.getBNode(keyString);
 				} else {
 					nonLiteral = new UriRef(keyString);
 				}
 				JSONObject predicates = (JSONObject) root.get(keyString);
-				addTriplesToGraph(nonLiteral, bNodeMap, predicates, target);
+				addTriplesToGraph(nonLiteral, bNodeMgr, predicates, target);
 			}
 		} catch (IOException ioe) {
 			logger.error(ioe.getMessage());
@@ -84,8 +84,20 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 		}
 	}
 
-	private void addTriplesToGraph(NonLiteral subject, Map<String, NonLiteral> bNodeMap, JSONObject predicates,
-			MGraph mGraph) {
+	private class BNodeManager {
+		private Map<String, BNode> bNodeMap = new HashMap<String, BNode>();
+
+		public BNode getBNode(String id) {
+			BNode bNode = bNodeMap.get(id);
+			if (bNode == null) {
+				bNode = new BNode();
+				bNodeMap.put(id, bNode);
+			}
+			return bNode;
+		}
+	}
+
+	private void addTriplesToGraph(NonLiteral subject, BNodeManager bNodeMgr, JSONObject predicates, MGraph mGraph) {
 		for (Object predicate : predicates.keySet()) {
 			JSONArray objects = (JSONArray) predicates.get(predicate);
 			for (Object object : objects) {
@@ -108,11 +120,7 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 				} else if (values.get("type").equals("uri")) {
 					mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), new UriRef(value)));
 				} else if (values.get("type").equals("bnode")) {
-					NonLiteral bNode = bNodeMap.get(value);
-					if (bNode == null) {
-						bNode = new BNode();
-						bNodeMap.put(value, bNode);
-					}
+					NonLiteral bNode = bNodeMgr.getBNode(value);
 					mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), bNode));
 				}
 			}

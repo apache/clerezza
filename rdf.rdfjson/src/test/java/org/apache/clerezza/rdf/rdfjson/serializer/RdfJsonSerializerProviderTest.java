@@ -24,12 +24,14 @@ import org.junit.Test;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SerializingProvider;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.rdfjson.parser.RdfJsonParsingProvider;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -37,13 +39,26 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
- * serializes a Graph to rdf+json
- * 
- * see http://n2.talis.com/wiki/RDF_JSON_Specification
  * 
  * @author tio, hasan
  */
 public class RdfJsonSerializerProviderTest {
+
+	private final static UriRef RDF_NIL = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
+	private final static UriRef node1 = new UriRef("http://example.org/node1");
+	private final static UriRef node2 = new UriRef("http://example.org/node2");
+	private final static UriRef prop1 = new UriRef("http://example.org/prop1");
+	private final static UriRef prop2 = new UriRef("http://example.org/prop2");
+	private final static UriRef prop3 = new UriRef("http://example.org/prop3");
+	private final static UriRef prop4 = new UriRef("http://example.org/prop4");
+	private final static UriRef prop5 = new UriRef("http://example.org/prop5");
+	private final static UriRef prop6 = new UriRef("http://example.org/prop6");
+	private final static BNode blank1 = new BNode();
+	private final static BNode blank2 = new BNode();
+	private final static PlainLiteralImpl plainLiteralA = new PlainLiteralImpl("A");
+	private final static PlainLiteralImpl plainLiteralB = new PlainLiteralImpl("B");
+	private final static PlainLiteralImpl plainLiteralC = new PlainLiteralImpl("C");
+	private final static TypedLiteral typedLiteralA = LiteralFactory.getInstance().createTypedLiteral("A");
 
 	private MGraph mGraph;
 
@@ -66,12 +81,33 @@ public class RdfJsonSerializerProviderTest {
 
 	@Test
 	public void testSerializationOfBNode() {
-		mGraph.add(new TripleImpl(new UriRef("http://example.org/node1"),
-				new UriRef("http://example.org/prop1"), new BNode()));
+		mGraph.add(new TripleImpl(node1, prop1, blank1));
 		SerializingProvider provider = new RdfJsonSerializingProvider();
 		ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
 		provider.serialize(serializedGraph, mGraph, "application/rdf+json");
 		Assert.assertTrue(serializedGraph.toString().contains("_:"));
+	}
+
+	@Test
+	public void testSerializationOfRdfList() {
+		mGraph.add(new TripleImpl(blank1, RDF.first, blank2));
+		mGraph.add(new TripleImpl(blank1, RDF.rest, RDF_NIL));
+		mGraph.add(new TripleImpl(blank2, prop1, node1));
+
+//		System.out.println(mGraph);
+
+		SerializingProvider provider = new RdfJsonSerializingProvider();
+		ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
+		provider.serialize(serializedGraph, mGraph, "application/rdf+json");
+
+//		System.out.println(serializedGraph.toString());
+
+		ParsingProvider parsingProvider = new RdfJsonParsingProvider();
+		ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph.toByteArray());
+		MGraph parsedMGraph = new SimpleMGraph();
+		parsingProvider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
+
+		Assert.assertEquals(mGraph.getGraph(), parsedMGraph.getGraph());
 	}
 
 	/*
@@ -79,7 +115,13 @@ public class RdfJsonSerializerProviderTest {
 	 */
 	@Test
 	public void testSerializer() {
-		initializeGraph();
+		mGraph.add(new TripleImpl(node1, prop1, plainLiteralA));
+		mGraph.add(new TripleImpl(node1, prop2, node2));
+		mGraph.add(new TripleImpl(node2, prop3, plainLiteralB));
+		mGraph.add(new TripleImpl(blank1, prop4, plainLiteralC));
+		mGraph.add(new TripleImpl(blank1, prop5, typedLiteralA));
+		mGraph.add(new TripleImpl(node1, prop6, blank1));
+
 		SerializingProvider provider = new RdfJsonSerializingProvider();
 		ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
 		provider.serialize(serializedGraph, mGraph, "application/rdf+json");
@@ -90,20 +132,5 @@ public class RdfJsonSerializerProviderTest {
 
 		Assert.assertEquals(6, parsedMGraph.size());
 		Assert.assertEquals(mGraph.getGraph(), parsedMGraph.getGraph());
-	}
-
-	private void initializeGraph() {
-		String baseUri = "http://base/";
-		mGraph.add(new TripleImpl(new UriRef(baseUri + "root"), new UriRef(baseUri + "propertyA"),
-				new PlainLiteralImpl("A")));
-		mGraph.add(new TripleImpl(new UriRef(baseUri + "root"), new UriRef(baseUri + "resourcePropertyB"),
-				new UriRef(baseUri + "child1")));
-		mGraph.add(new TripleImpl(new UriRef(baseUri + "child1"), new UriRef(baseUri + "propertyB"),
-				new PlainLiteralImpl("B")));
-		BNode bNode = new BNode();
-		mGraph.add(new TripleImpl(bNode, new UriRef(baseUri + "propertyC"), new PlainLiteralImpl("C")));
-		mGraph.add(new TripleImpl(bNode, new UriRef(baseUri + "propertyE"),
-				LiteralFactory.getInstance().createTypedLiteral("E")));
-		mGraph.add(new TripleImpl(new UriRef(baseUri + "root"), new UriRef(baseUri + "resourcePropertyD"), bNode));
 	}
 }
