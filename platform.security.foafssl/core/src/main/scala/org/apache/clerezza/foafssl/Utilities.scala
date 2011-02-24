@@ -66,14 +66,14 @@ object Utilities {
 			val altNme = it.next()
 			val altTpe = altNme.get(0);
 			val altObj = altNme.get(1);
-			if ((altTpe.asInstanceOf[Integer] == 6) && altObj.isInstanceOf[String]) {
+			if ((altTpe.asInstanceOf[Int] == 6) && altObj.isInstanceOf[String]) {
 				result =  new UriRef(altObj.asInstanceOf[String]) :: result;
 			}
 		}
 		return result
 	}
 	
-	def cretateUsernameForWebId(webId: UriRef) = {
+	def createUsernameForWebId(webId: UriRef) = {
 		webId.getUnicodeString.replace(":", "");
 	} 
 
