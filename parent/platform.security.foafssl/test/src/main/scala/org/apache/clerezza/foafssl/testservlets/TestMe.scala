@@ -20,9 +20,11 @@ import java.security.AccessController
 import java.security.PrivilegedAction
 import org.apache.clerezza.platform.security.UserUtil
 import org.apache.clerezza.platform.usermanager.UserManager
-import org.apache.felix.scr.annotations.Reference
-import javax.ws.rs.{GET, Path}
 import org.apache.clerezza.rdf.utils.GraphNode
+import sun.management.resources.agent
+import javax.ws.rs.{Produces, GET, Path}
+import org.apache.clerezza.web.fileserver.FileServer
+import org.osgi.service.component.ComponentContext
 
 /**
  * implementation of (very early) version of test server for WebID so that the following tests
@@ -32,34 +34,40 @@ import org.apache.clerezza.rdf.utils.GraphNode
  */
 
 @Path("/test/webIdEndPoint")
-class TestMe {
+class TestMe extends FileServer {
 
-  @Reference
   var userManager: UserManager =null;
 
   protected def bindUserManager(um: UserManager)  = {
 		userManager = um
 	}
 
-	protected def unbindX509TrustManagerWrapperService(um: UserManager)  = {
+	protected def unbindUserManager(um: UserManager)  = {
 		userManager = null
 	}
 
-  @GET
+ 	protected def activate(componentContext: ComponentContext ) = {
+//		configure(componentContext.getBundleContext(), "profile-staticweb");
+	}
+
+  @GET @Produces(Array("text/plain"))
   def getTestMe() : String = {
-    val context = AccessController.getContext();
-    val agent = AccessController.doPrivileged(new PrivilegedAction[String]() {
-      @Override
-      def run(): String = {
-        val userName = UserUtil.getUserName(context);
-        if (userName == null) {
-          return "-";
-        }
-        val node: GraphNode = userManager.getUserGraphNode(userName)
-        return node.getNode.toString;
-      }
-    });
-    return agent
+    return "Hello World!"
+//    val context = AccessController.getContext();
+//    val agent = AccessController.doPrivileged(new PrivilegedAction[String]() {
+//      @Override
+//      def run(): String = {
+//        val userName = UserUtil.getUserName(context);
+//        if (userName == null) {
+//          return "-";
+//        }
+//        val node: GraphNode = userManager.getUserGraphNode(userName)
+//        return node.getNode.toString;
+//      }
+//    });
+ //   return agent
   }
+
+
 
 }
