@@ -9,15 +9,23 @@
 	<artifactId>platform.security.foafssl.test</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>Clerezza - Platform Security foaf+ssl Tests</name>
+	<name>Clerezza - Platform Security foaf+ssl Test Servlets</name>
 	<description>
-		Foaf + Ssl test "servlets" to run WebID tests on.
+		Foaf + Ssl test "servlets" to run WebID tests on.  (need to add link to WebID wiki)
 	</description>
 
 	<dependencies>
-        <dependency>
+        <!--dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency-->
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>web.fileserver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -98,9 +106,8 @@
 				<configuration>
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>!org.apache.clerezza.foafssl.ontologies,
-								org.apache.clerezza.foafssl.*</Export-Package>
-						<Bundle-SymbolicName>org.apache.clerezza.foafssl</Bundle-SymbolicName>
+						<Export-Package>org.apache.clerezza.foafssl.testservlets</Export-Package>
+						<Bundle-SymbolicName>${groupId}.${artifactId}</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
 			</plugin>
