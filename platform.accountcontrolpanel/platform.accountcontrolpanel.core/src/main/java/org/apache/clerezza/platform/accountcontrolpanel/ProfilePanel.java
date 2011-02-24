@@ -18,7 +18,10 @@
  */
 package org.apache.clerezza.platform.accountcontrolpanel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+
 import org.apache.clerezza.ssl.keygen.CertSerialisation;
 import org.apache.clerezza.ssl.keygen.Certificate;
 import org.apache.clerezza.foafssl.ontologies.CERT;
@@ -61,14 +64,14 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.interfaces.RSAPublicKey;
 import java.util.List;
+
 import org.apache.clerezza.platform.typerendering.scala.PageRenderlet;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.ssl.keygen.KeygenService;
 
 /**
- *
  * Presents a panel where the user can create a webid and edit her profile.
- * 
+ *
  * @author reto
  */
 //@Component
@@ -78,17 +81,17 @@ import org.apache.clerezza.ssl.keygen.KeygenService;
 public class ProfilePanel extends FileServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProfilePanel.class);
-//	@Reference
+	//	@Reference
 	private UserManager userManager;
-//	@Reference
+	//	@Reference
 	private org.apache.clerezza.ssl.keygen.KeygenService keygenSrvc;
-//	@Reference
+	//	@Reference
 	private TcManager tcManager;
-//	@Reference
+	//	@Reference
 	private RenderletManager renderletManager;
-//	@Reference
+	//	@Reference
 	private WebIdGraphsService webIdGraphsService;
-//	@Reference
+	//	@Reference
 	private PlatformConfig platformConfig;
 
 	protected void activate(ComponentContext componentContext) {
@@ -97,7 +100,7 @@ public class ProfilePanel extends FileServer {
 //				null, CONTROLPANEL.ProfilePage,
 //				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 //equivalent of above with no ssp?
-//		renderletManager.registerRenderlet("org.apache.clerezza.platform.accountcontrolpanel.profile_panel", 
+//		renderletManager.registerRenderlet("org.apache.clerezza.platform.accountcontrolpanel.profile_panel",
 //				null, CONTROLPANEL.ProfilePage, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		configure(componentContext.getBundleContext(), "profile-staticweb");
 	}
@@ -139,28 +142,38 @@ public class ProfilePanel extends FileServer {
 		});
 	}
 
+	/**
+	 * @param userName
+	 * @return the suggested Personal Profile Document URI
+	 */
 	private UriRef getSuggestedPPDUri(String userName) {
 		return new UriRef(platformConfig.getDefaultBaseUri().getUnicodeString()
 				+ "user/" + userName + "/profile");
 	}
 
+	/**
+	 * called in privileged block, when the user has a WebID.
+	 *
+	 * @param webId
+	 * @param profile
+	 * @return A graph containing some information from the system graph, the published profile cache if available, and
+	 * the local graph. Local changes can be written to a buffer graph, that will have not be saved.
+	 */
 	private GraphNode getProfileInUserGraph(UriRef webId, UriRef profile) {
 		WebIdGraphsService.WebIdGraphs webIdGraphs = webIdGraphsService.getWebIdGraphs(webId);
 		MGraph userGraph = webIdGraphs.publicUserGraph();
-		logger.debug("got publicUserGraph of size {}.", userGraph.size());
-		GraphNode userGraphNode = new GraphNode(webId, userGraph);
 		GraphNode resultNode = new GraphNode(profile,
-				new UnionMGraph(new SimpleMGraph(), userGraphNode.getGraph()));
+				new UnionMGraph(new SimpleMGraph(), userGraph));
 		resultNode.addProperty(CONTROLPANEL.isLocalProfile,
 				LiteralFactory.getInstance().createTypedLiteral(webIdGraphs.isLocal()));
-		resultNode.addProperty(FOAF.primaryTopic, userGraphNode.getNode());
+		resultNode.addProperty(FOAF.primaryTopic, webId);
 		return resultNode;
 	}
 
 	@POST
 	@Path("set-existing-webid")
 	public Response setExistingWebId(@Context final UriInfo uriInfo,
-			@FormParam("webid") final UriRef webId, @PathParam(value = "id") final String userName) {
+	                                 @FormParam("webid") final UriRef webId, @PathParam(value = "id") final String userName) {
 		//TODO check that its not local
 		//TODO check its not an existing user
 		return AccessController.doPrivileged(new PrivilegedAction<Response>() {
@@ -177,13 +190,15 @@ public class ProfilePanel extends FileServer {
 	@POST
 	@Path("create-new-web-id")
 	public Response createNewWebId(@Context final UriInfo uriInfo,
-			@PathParam(value = "id") final String userName) {
-		//TODO check its not an existing user
+	                               @PathParam(value = "id") final String userName) {
+		//TODO don't pass user name in param. Use logged in user.
 		final UriRef ppd = getSuggestedPPDUri(userName);
 		final UriRef webId = new UriRef(ppd.getUnicodeString() + "#me");
 		final WebIdGraphsService.WebIdGraphs webIdGraphs = webIdGraphsService.getWebIdGraphs(webId);
-		webIdGraphs.localGraph().add(new TripleImpl(ppd, FOAF.primaryTopic, webId));
-		webIdGraphs.localGraph().add(new TripleImpl(ppd, RDF.type, FOAF.PersonalProfileDocument));
+		webIdGraphs.localGraph().addAll(Arrays.asList(
+				new TripleImpl(ppd, RDF.type, FOAF.PersonalProfileDocument),
+				new TripleImpl(ppd, FOAF.primaryTopic, webId))
+		);
 		return AccessController.doPrivileged(new PrivilegedAction<Response>() {
 
 			@Override
@@ -198,13 +213,13 @@ public class ProfilePanel extends FileServer {
 	@POST
 	@Path("keygen")
 	public Response createCert(@FormParam("webId") UriRef webId,
-			@FormParam("cn") String commonName,
-			@FormParam("spkac") String spkac,
-			@FormParam("crmf") String crmf,
-			@FormParam("hours") String hours,
-			@FormParam("days") String days,
-			@FormParam("csr") String csr,
-			@FormParam("comment") String comment) {
+	                           @FormParam("cn") String commonName,
+	                           @FormParam("spkac") String spkac,
+	                           @FormParam("crmf") String crmf,
+	                           @FormParam("hours") String hours,
+	                           @FormParam("days") String days,
+	                           @FormParam("csr") String csr,
+	                           @FormParam("comment") String comment) {
 
 		logger.info("in keygen code. webId={}", webId);
 		logger.info("cn={}", commonName);
@@ -234,7 +249,7 @@ public class ProfilePanel extends FileServer {
 			}
 		}
 		if (cert == null) {
-			throw new RuntimeException("The server was unable to craete a certificate");
+			throw new RuntimeException("The server was unable to create a certificate");
 		}
 		cert.setSubjectCommonName(commonName);
 		cert.addDurationInHours(hours);
@@ -271,22 +286,22 @@ public class ProfilePanel extends FileServer {
 	@POST
 	@Path("deletekey")
 	public Response deleteKey(@Context final UriInfo uriInfo,
-			@FormParam("webId") final UriRef webId,
-			@FormParam("keyhash") List<String> keys) {
+	                          @FormParam("webId") final UriRef webId,
+	                          @FormParam("keyhash") List<String> keys) {
 		final WebIdGraphsService.WebIdGraphs webIdGraphs = webIdGraphsService.getWebIdGraphs(webId);
 		final GraphNode agent = new GraphNode(webId, webIdGraphs.localGraph());
 		Iterator<GraphNode> subjects = agent.getSubjectNodes(CERT.identity);
-		for (GraphNode nl; subjects.hasNext();  ) {
+		for (GraphNode nl; subjects.hasNext(); ) {
 			nl = subjects.next();
 			Iterator<Resource> modulusIt = nl.getObjects(RSA.modulus);
 			if (!modulusIt.hasNext()) break;
 			Resource modLit = modulusIt.next(); //we only get the first, any more would be an error
-			if (modulusIt.hasNext()) logger.warn("data error, a modulus too many in cert for "+webId);
+			if (modulusIt.hasNext()) logger.warn("data error, a modulus too many in cert for " + webId);
 			if (!(modLit instanceof TypedLiteral)) {
-				logger.warn("a public key has a modulus that is not a literal for "+webId);
+				logger.warn("a public key has a modulus that is not a literal for " + webId);
 				break;
 			}
-			BigInteger modulus = LiteralFactory.getInstance().createObject(BigInteger.class, (TypedLiteral)modLit);
+			BigInteger modulus = LiteralFactory.getInstance().createObject(BigInteger.class, (TypedLiteral) modLit);
 			for (String key : keys) {
 				if (modulus.hashCode() == Integer.decode(key)) {
 					//we delete the key. Even thous it is extreemly unlikely that anything could go wrong here
@@ -298,16 +313,16 @@ public class ProfilePanel extends FileServer {
 			}
 		}
 		//shoud one really have a redirect? or should the post just be to the profile page?
-	    return RedirectUtil.createSeeOtherResponse("../profile", uriInfo);
+		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo);
 	}
 
 	@POST
 	@Path("modify")
 	public Response modifyProfile(@Context final UriInfo uriInfo,
-			@PathParam(value = "id") final String userName,
-			@FormParam("webId") final UriRef webId,
-			@FormParam("name") final String name,
-			@FormParam("description") final String description) {
+	                              @PathParam(value = "id") final String userName,
+	                              @FormParam("webId") final UriRef webId,
+	                              @FormParam("name") final String name,
+	                              @FormParam("description") final String description) {
 		final WebIdGraphsService.WebIdGraphs webIdGraphs = webIdGraphsService.getWebIdGraphs(webId);
 		final GraphNode agent = new GraphNode(webId, webIdGraphs.localGraph());
 		agent.deleteProperties(FOAF.name);
