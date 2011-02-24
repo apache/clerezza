@@ -49,13 +49,15 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
 		if ((certificates == null) || (certificates.length == 0)) {
 			return null
 		} else {
+			//TODO: not all the WebIDs below may have been verified (in cases of multiple SANs)
+			//in fact we only currently verify the first, but as soon as we verify more then
+			//a solution will need to be put in place for this.
 			val webIdUriRefs = Utilities.getClaimedWebIds(certificates)
 			if (webIdUriRefs.size > 0) {
-				Utilities.cretateUsernameForWebId(webIdUriRefs(0))
+				return Utilities.createUsernameForWebId(webIdUriRefs(0))
 			} else {
-				null
+				return null
 			}
-			
 		}
 	}
 

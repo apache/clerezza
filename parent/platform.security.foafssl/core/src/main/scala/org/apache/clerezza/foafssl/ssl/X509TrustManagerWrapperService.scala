@@ -133,7 +133,7 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 		val result = new SimpleMGraph()
 		val webId = webDescription.getNode.asInstanceOf[UriRef]
 		result.add(new TripleImpl(webId, PLATFORM.userName, 
-								  new PlainLiteralImpl(Utilities.cretateUsernameForWebId(webId))))
+								  new PlainLiteralImpl(Utilities.createUsernameForWebId(webId))))
 		result.add(new TripleImpl(webId, RDF.`type` , 
 								  FOAF.Agent))
 		result
