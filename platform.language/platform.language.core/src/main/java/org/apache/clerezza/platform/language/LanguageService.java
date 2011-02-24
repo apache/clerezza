@@ -114,9 +114,7 @@ public class LanguageService {
 		Iterator<Resource> languages = languageListCache.iterator();
 		while (languages.hasNext()) {
 			UriRef language = (UriRef) languages.next();
-			langList.add(
-					new LanguageDescription(new GraphNode(language, 
-					getConfigGraph())));
+			langList.add(new LanguageDescription(new GraphNode(language, getConfigGraph())));
 		}
 		return langList;
 	}
@@ -160,11 +158,9 @@ public class LanguageService {
 	 */
 	public UriRef getLanguage(String languageName, Language inLanguage) {
 		Graph lingvojGraph = getLingvojGraph();
-		Iterator<Triple> languages = lingvojGraph.filter(null, RDFS.isDefinedBy,
-				null);
+		Iterator<Triple> languages = lingvojGraph.filter(null, RDFS.isDefinedBy, null);
 		while (languages.hasNext()) {
-			GraphNode languageNode = new GraphNode((UriRef) languages.next().getSubject(),
-					lingvojGraph);
+			GraphNode languageNode = new GraphNode((UriRef) languages.next().getSubject(), lingvojGraph);
 			Iterator<Resource> labels = languageNode.getObjects(RDFS.label);
 			while (labels.hasNext()) {
 				PlainLiteral label = (PlainLiteral) labels.next();
@@ -190,8 +186,15 @@ public class LanguageService {
 	 */
 	public void addLanguage(UriRef languageUri) {
 		if (!languageListCache.contains(languageUri)) {
-			if(languageList.add(languageUri)) {
-				addToLanguageConfigGraph(languageUri);
+			LockableMGraph systemGraph = getSystemGraph();
+			Lock writeLock = systemGraph.getLock().writeLock();
+			writeLock.lock();
+			try {
+				if (languageList.add(languageUri)) {
+					addToLanguageConfigGraph(languageUri);
+				}
+			} finally {
+				writeLock.unlock();
 			}
 			languageListCache.add(languageUri);
 		}
@@ -243,8 +246,7 @@ public class LanguageService {
 		}
 		try {
 			MGraph lingvojMGraph = new SimpleMGraph();
-			parser.parse(lingvojMGraph, config.openStream(),
-					SupportedFormat.RDF_XML, null);
+			parser.parse(lingvojMGraph, config.openStream(), SupportedFormat.RDF_XML, null);
 			lingvojGraph = lingvojMGraph.getGraph();
 			softLingvojGraph = new SoftReference<Graph>(lingvojGraph);
 			return lingvojGraph;
@@ -259,22 +261,31 @@ public class LanguageService {
 	 * @param componentContext
 	 */
 	protected void activate(ComponentContext componentContext) {
-		final RdfList rdfList = new RdfList(getListNode(), getSystemGraph());
-		languageList = Collections.synchronizedList(rdfList);
-		//access to languages should not require access to system graph,
-		//so copying the resources to an ArrayList
-		languageListCache = Collections.synchronizedList(
-				new ArrayList<Resource>(rdfList));
-		if (languageListCache.size() == 0) {
-			addLanguage(new UriRef("http://www.lingvoj.org/lang/en"));
+		LockableMGraph systemGraph = getSystemGraph();
+		NonLiteral listNode = getListNode(systemGraph);
+
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			// the constructor of RdfList might write to the graph! => requires a write lock
+			final RdfList rdfList = new RdfList(listNode, systemGraph);
+			languageList = Collections.synchronizedList(rdfList);
+			//access to languages should not require access to system graph,
+			//so copying the resources to an ArrayList
+			languageListCache = Collections.synchronizedList(
+					new ArrayList<Resource>(rdfList));
+			if (languageListCache.size() == 0) {
+				addLanguage(new UriRef("http://www.lingvoj.org/lang/en"));
+			}
+			//this is to make sure the content graph contains the relevant data
+			synchronizeContentGraph();
+		} finally {
+			writeLock.unlock();
 		}
-		//this is to make sure the content graph contains the relevant data
-		synchronizeContentGraph();
 	}
 
-	private NonLiteral getListNode() {
+	private NonLiteral getListNode(LockableMGraph systemGraph) {
 		NonLiteral instance = null;
-		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
 		try {
@@ -292,7 +303,13 @@ public class LanguageService {
 			readLock.unlock();
 		}
 		BNode listNode = new BNode();
-		systemGraph.add(new TripleImpl(instance, PLATFORM.languages, listNode));
+		Lock writeLock = systemGraph.getLock().writeLock();
+		writeLock.lock();
+		try {
+			systemGraph.add(new TripleImpl(instance, PLATFORM.languages, listNode));
+		} finally {
+			writeLock.unlock();
+		}
 		return listNode;
 	}
 }
