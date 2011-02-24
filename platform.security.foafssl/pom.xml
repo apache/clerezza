@@ -13,5 +13,6 @@
 	<modules>
 		<module>ontologies</module>
 		<module>core</module>
+        <module>test</module>
 	</modules>
 </project>
