@@ -180,20 +180,15 @@ class profile_panel extends PageRenderlet {
 			  <tr><th>Delete</th><th>Certificate Details</th></tr>
 			  <input name="webId" id="webId" type="hidden" value={agent*} />
 			  <tbody>{ 
-				  for (cert <- agent/-CERT.identity )  
-					yield { val modulus = (cert/RSA.modulus).as[BigInteger]
+				  for (key <- agent/-CERT.identity )
+					yield { val modulus = (key/RSA.modulus).as[BigInteger]
 						   if (modulus == null)  <span/> //todo: broken public key, should delete it
 						   else <tr><td><input type="checkbox" name="keyhash" value={modulus.hashCode().toString()}/></td>
 						<td><table>
-							<tr><td class="propvalue">Created:</td><td>{if ((cert/DC.date).size > 0) {
-									beautify((cert/DC.date).as[Date])
-									} else {
-										"-"
-									}
-							}</td></tr>
-							<tr><td class="propvalue">Comment:</td><td>{ cert/RDFS.comment* }</td></tr>
-							<tr><td class="propvalue multiline">Modulus:</td><td><code>{ beautify((cert/RSA.modulus).as[BigInteger]) }</code></td></tr>
-							<tr><td class="propvalue">Exponent:</td><td><code>{ beautify((cert/RSA.public_exponent).as[Integer]) }</code></td></tr>
+							<tr><td class="propvalue">Created:</td><td>{beautifyDate(key/DC.date )}</td></tr>
+							<tr><td class="propvalue">Comment:</td><td>{ key/RDFS.comment* }</td></tr>
+							<tr><td class="propvalue multiline">Modulus:</td><td><code>{ beautifyHex(key/RSA.modulus) }</code></td></tr>
+							<tr><td class="propvalue">Exponent:</td><td><code>{ beautifyInt(key/RSA.public_exponent) }</code></td></tr>
 							</table>
 						</td>
 								</tr>}
@@ -225,25 +220,33 @@ class profile_panel extends PageRenderlet {
 	}
   }
 
-  def beautify(resource: Object) = {
-	resource match {
-	  case bigint: BigInteger => {
-		  val bstr = bigint.toString(16).toUpperCase;
-		  val sbuf = new StringBuffer(bstr.size + (bstr.size/2)+10)
-		  var cnt = 0
-		  for (c <- bstr.toCharArray) {
-			if ((cnt % 2) == 0) { sbuf.append(' ') }
-			sbuf.append(c)
-			cnt += 1
-		  }
-		  sbuf.toString
-		}
-	  case date: Date => {DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.FULL).format(date)}
-	  case intg: Integer => intg.toString
-	  case string: String => string
-	  case _ => resource.toString
+  def beautifyDate(dtIt: CollectedIter[RichGraphNode]) {
+	  if (dtIt.size = 0) return "_"
+	  DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.FULL).format(dtIt.as[Date])
+  }
+
+
+  def beautifyHex(dtIt: CollectedIter[RichGraphNode]): String = {
+	  if (dtIt.size = 0) return "warning! missing. Key invalid"
+	  //this is a problem, it should always be here or it is invalid, and key should be removed
+	  val bigint: BigInteger = dtIt.as[BigInteger]
+	  val bstr = bigint.toString(16).toUpperCase;
+	  val sbuf = new StringBuffer(bstr.size + (bstr.size/2)+10)
+	  var cnt = 0
+	  for (c <- bstr.toCharArray) {
+		if ((cnt % 2) == 0) { sbuf.append(' ') }
+		sbuf.append(c)
+		cnt += 1
+	  }
+	  sbuf.toString
 	}
-  }  
+
+
+
+  def beautifyInt(dtIt: CollectedIter[RichGraphNode] ) :String = {
+	  if (dtIt.size = 0) return "warning! missing. Key invalid"
+	  else return dtIt.as[String]
+  }
 }
 
 
