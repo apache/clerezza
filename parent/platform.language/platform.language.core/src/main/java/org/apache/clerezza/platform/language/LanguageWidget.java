@@ -25,6 +25,7 @@ import java.security.AccessControlException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -44,7 +45,6 @@ import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.UserContextProvider;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -82,20 +82,18 @@ public class LanguageWidget implements UserContextProvider {
 	private FileServer fileServer;
 
 	@Reference
-	private TcManager TcManager;
+	private TcManager tcManager;
 
 	@Reference
 	private PlatformConfig platformConfig;
 
 	@Reference
 	private RenderletManager renderletManager;
+
 	@Reference
 	private LanguageService languageService;
 	
-	protected void activate(ComponentContext context)
-			throws IOException,
-			URISyntaxException {
-
+	protected void activate(ComponentContext context) throws IOException, URISyntaxException {
 		Bundle bundle = context.getBundleContext().getBundle();
 		URL resourceDir = getClass().getResource("staticweb");
 		PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
@@ -111,9 +109,15 @@ public class LanguageWidget implements UserContextProvider {
 	}
 
 	private LockableMGraph getConfigGraph() {
-		return TcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
+		return tcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
 	}
 
+	/**
+	 *
+	 * @param node  The graph of the specified GraphNode will not be locked, neither for reading nor writing.
+	 *		It is the responsibility of the calling function to set the write lock, if necessary.
+	 * @return
+	 */
 	@Override
 	public GraphNode addUserContext(final GraphNode node) {	
 		final NonLiteral platformInstance = AccessController.doPrivileged(
@@ -137,17 +141,23 @@ public class LanguageWidget implements UserContextProvider {
 		}		
 	}
 
-	private GraphNode addLanguages(GraphNode node, NonLiteral platformInstance, List<LanguageDescription> languages, boolean copyToNode) {
+	private GraphNode addLanguages(GraphNode node, NonLiteral platformInstance, List<LanguageDescription> languages,
+			boolean copyToNode) {
 		TripleCollection graph = node.getGraph();
 		BNode listNode = new BNode();		
 		RdfList list = new RdfList(listNode, graph);
-		MGraph configGraph = getConfigGraph();
+		LockableMGraph configGraph = getConfigGraph();
+		Lock readLock = configGraph.getLock().readLock();
 		for (LanguageDescription languageDescription : languages) {
 			NonLiteral languageUri = (NonLiteral) languageDescription.getResource().getNode();
 			list.add(languageUri);
 			if (copyToNode) {
-			graph.addAll(new GraphNode(languageUri, configGraph).
-					getNodeContext());
+				readLock.lock();
+				try {
+					graph.addAll(new GraphNode(languageUri, configGraph).getNodeContext());
+				} finally {
+					readLock.unlock();
+				}
 			}
 		}
 		node.addProperty(PLATFORM.instance, platformInstance);
