@@ -57,7 +57,7 @@
 							<outputDirectory>${basedir}/target/bundles/startlevel-4</outputDirectory>
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<excludeTransitive>true</excludeTransitive>
-							<includeArtifactIds>org.apache.clerezza.rdf.core</includeArtifactIds>
+							<includeArtifactIds>rdf.core</includeArtifactIds>
 						</configuration>
 					</execution>
 					<execution>
@@ -70,7 +70,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<excludeTransitive>true</excludeTransitive>
 							<includeScope>runtime</includeScope>
-							<excludeArtifactIds>org.apache.clerezza.rdf.core,slf4j-api,org.apache.clerezza.platform.security,org.apache.clerezza.platform.security.conditions</excludeArtifactIds>
+							<excludeArtifactIds>rdf.core,slf4j-api,platform.security,platform.security.conditions</excludeArtifactIds>
 						</configuration>
 					</execution>
 					<execution>
@@ -95,7 +95,7 @@
 						<configuration>
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<outputDirectory>${basedir}/target/bundles/startlevel-2</outputDirectory>
-							<includeArtifactIds>org.apache.clerezza.platform.security</includeArtifactIds>
+							<includeArtifactIds>platform.security</includeArtifactIds>
 						</configuration>
 					</execution>
 					<execution>
@@ -107,7 +107,7 @@
 						<configuration>
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<outputDirectory>${basedir}/target/bundles/startlevel-1</outputDirectory>
-							<includeArtifactIds>org.apache.clerezza.platform.security.conditions</includeArtifactIds>
+							<includeArtifactIds>platform.security.conditions</includeArtifactIds>
 						</configuration>
 					</execution>
 					<execution>
