@@ -56,8 +56,7 @@ class TestMe extends FileServer {
 	@Produces(Array("text/plain"))
 	def getTestMe(): String = {
 		try {
-			val context = AccessController.getContext();
-			var userName = UserUtil.getUserName(context);
+			var userName = UserUtil.getCurrentUserName();
 			val webid = AccessController.doPrivileged(new PrivilegedAction[String]() {
 				@Override
 				def run(): String = {
