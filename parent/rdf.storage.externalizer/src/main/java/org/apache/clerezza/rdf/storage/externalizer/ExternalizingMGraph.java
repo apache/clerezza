@@ -36,7 +36,6 @@ import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 /*
  * This could be optimized by not using the notification mechanism provided by
- * AbstractMGraph but intercept the notifictification of the basegraph
+ * AbstractMGraph but intercept the notification of the basegraph
  */
 class ExternalizingMGraph extends AbstractMGraph {
 
@@ -54,7 +53,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 	private final File dataDir;
 	static final UriRef base64Uri =
 			new UriRef("http://www.w3.org/2001/XMLSchema#base64Binary");
-	//not using a known uri-scheme (such as urn:hash) to avoid collission with Uris in the graph
+	// not using a known uri-scheme (such as urn:hash) to avoid collision with Uris in the graph
 	private static final String UriHashPrefix = "urn:x-litrep:";
 	private static final Charset UTF8 = Charset.forName("utf-8");
 	private static final byte[] DELIMITER = "^^".getBytes(UTF8);
@@ -105,7 +104,7 @@ class ExternalizingMGraph extends AbstractMGraph {
 	}
 
 	/**
-	 * this method defines which resources are too be replaced, the rest of the
+	 * this method defines which resources are to be replaced, the rest of the
 	 * code only assumes the resource to be replaced to be a typed literal.
 	 * 
 	 * @param object
