@@ -16,25 +16,22 @@
 package org.apache.clerezza.platform.accountcontrolpanel
 
 import org.apache.clerezza.rdf.core._
-import org.apache.clerezza.rdf.ontologies._
-import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.foafssl.ontologies.CERT
 import org.apache.clerezza.foafssl.ontologies.RSA
-import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.platform.typerendering.scala._
 import java.math.BigInteger
 import java.util.Date
 import java.text._
-import javax.ws.rs.core.UriInfo
 import org.apache.clerezza.rdf.core.UriRef
-
+import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
+import org.apache.clerezza.rdf.ontologies.{RDFS, DC, FOAF}
 
 class profile_panel extends PageRenderlet {
   val rdfType = CONTROLPANEL.ProfilePage
   override def mode = "naked"
-	
+
   override def renderedPage(arguments: RenderedPage.Arguments): RenderedPage = {
 	new RenderedPage(arguments) {
 
@@ -109,8 +106,8 @@ class profile_panel extends PageRenderlet {
 		def existingLocalWebId() = {
 		  <h3>Manage your profile</h3>
           <p>Here you can change your public profile.</p>
-		  
-          <form method="post" action="profile/modify">
+
+        <form method="post" action="profile/modify">
 			<input type="hidden" name="webId" value={agent *}/>
 			<table>
 			  <tr><td class="formlabel">Name:</td>
@@ -121,13 +118,25 @@ class profile_panel extends PageRenderlet {
 			  </tr>
 			  <tr><td class="formlabel"><input value="Modify" type="submit"/></td><td/></tr>
 			</table>
-	
+
 			<p/>
-          </form>
+        </form>
+
+		  <h3>Contacts</h3>
+
+		  <table>{for (friend <- agent/FOAF.knows) {
+			  <tr><td>{friend*}</td></tr>
+		     }
+			  <tr><td><form id="addContact" method="post" action="profile/addContact">
+			  <input type="text" name="webId" size="80"/>
+			  <input type="submit" value="add contact" />
+		  </form></td></tr>
+	     }</table>
+
 
 		  <h3>Key and Certificate Creation</h3>
 
-		  <script type="text/javascript"> <![CDATA[$(document).ready(  function(){ configurePage(); }   ); ]]> </script>
+		  <script type="text/javascript"> <![CDATA[$(document).ready(  function() { configurePage(); }   ); ]]> </script>
 
 		  <div id="iehelptext" style="display: none;">
 			<p>Using Internet Explorer under Windows Vista or above or Windows
@@ -152,7 +161,8 @@ class profile_panel extends PageRenderlet {
 			  <tr>
 				<td class="formlabel">Certificate Name:</td>
 				<td>
-				  <input alt="create a certificate name that will help you distinguish it from others you may have" name="cn" size="35" id="cn" type="text" value={ ((agent/FOAF.name*)+"@clerezza")}/>
+				  <input alt="create a certificate name that will help you distinguish it from others you may have" name="cn"
+							size="35" id="cn" type="text" value={ ((agent/FOAF.name*)+"@clerezza")}/>
 				</td>
 			  </tr>
 			  <tr>
@@ -170,7 +180,7 @@ class profile_panel extends PageRenderlet {
 			  <tr>
 				<td class="formlabel">Comment:</td>
 				<td><input type="text" name="comment" value="" size="80"/></td>
-			  </tr>				
+			  </tr>
 			  <tr><td class="formlabel"><input id="keygensubmit" type="submit" value="create certificate" /></td><td/></tr>
 			</table>
 		  </form>
@@ -179,7 +189,7 @@ class profile_panel extends PageRenderlet {
 			<table>
 			  <tr><th>Delete</th><th>Certificate Details</th></tr>
 			  <input name="webId" id="webId" type="hidden" value={agent*} />
-			  <tbody>{ 
+			  <tbody>{
 				  for (key <- agent/-CERT.identity )
 					yield { val modulus = (key/RSA.modulus).as[BigInteger]
 						   if (modulus == null)  <span/> //todo: broken public key, should delete it
@@ -197,7 +207,7 @@ class profile_panel extends PageRenderlet {
 			<input type="submit" value="Disable Keys"/>
 		  </form>
 		  <p></p>
-	
+
 		}
 
 		def roamingUser() = {
@@ -245,7 +255,7 @@ class profile_panel extends PageRenderlet {
 
   def beautifyInt(dtIt: CollectedIter[RichGraphNode] ) :String = {
 	  if (0 == dtIt.size) return "warning! missing. Key invalid"
-	  else return dtIt.as[String]
+	  else return dtIt.as[BigInteger].toString
   }
 }
 
