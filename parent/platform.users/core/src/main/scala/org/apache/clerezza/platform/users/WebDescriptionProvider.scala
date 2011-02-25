@@ -70,11 +70,12 @@ class WebDescriptionProvider {
 	protected def deactivate(context: ComponentContext) = {	
 		authoritativeLocalGraphUnion = null
 	}
-	
-	
-	
+
 	/**
-	 * @return a GraphNode describing uri
+	 *
+	 * @param uri the URI to fetch
+	 * @param should the local graph be updated if need be
+	 * @return GraphNode the cached Node
 	 */
 	def getWebDescription(uri: UriRef, update: Boolean): GraphNode = {
 		
@@ -95,6 +96,6 @@ class WebDescriptionProvider {
 		new GraphNode(uri, tripleCollection)
 		
 	}
-	
+
 	
 }
