@@ -221,13 +221,13 @@ class profile_panel extends PageRenderlet {
   }
 
   def beautifyDate(dtIt: CollectedIter[RichGraphNode]) {
-	  if (dtIt.size = 0) return "_"
+	  if (0 == dtIt.size) return "_"
 	  DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.FULL).format(dtIt.as[Date])
   }
 
 
   def beautifyHex(dtIt: CollectedIter[RichGraphNode]): String = {
-	  if (dtIt.size = 0) return "warning! missing. Key invalid"
+	  if (0 == dtIt.size) return "warning! missing. Key invalid"
 	  //this is a problem, it should always be here or it is invalid, and key should be removed
 	  val bigint: BigInteger = dtIt.as[BigInteger]
 	  val bstr = bigint.toString(16).toUpperCase;
@@ -244,7 +244,7 @@ class profile_panel extends PageRenderlet {
 
 
   def beautifyInt(dtIt: CollectedIter[RichGraphNode] ) :String = {
-	  if (dtIt.size = 0) return "warning! missing. Key invalid"
+	  if (0 == dtIt.size) return "warning! missing. Key invalid"
 	  else return dtIt.as[String]
   }
 }

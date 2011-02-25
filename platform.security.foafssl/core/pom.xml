@@ -100,7 +100,7 @@
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
 						<Export-Package>!org.apache.clerezza.foafssl.ontologies,
 								org.apache.clerezza.foafssl.*</Export-Package>
-						<Bundle-SymbolicName>{groupId}.${artifactId}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${groupId}.${artifactId}</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
 			</plugin>
