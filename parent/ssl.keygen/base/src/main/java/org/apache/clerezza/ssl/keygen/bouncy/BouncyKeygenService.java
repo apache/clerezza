@@ -267,7 +267,9 @@ public class BouncyKeygenService implements KeygenService {
 
 			CertTemplate certTemplate = certRequest.getCertTemplate();
 
-			/* (see RFC 2511)
+			/* (see RFC 2511) --
+			  [ note RFC rfc4211 obsoletes 2511
+                https://datatracker.ietf.org/doc/rfc4211/ ]
 
 					  CertTemplate ::= SEQUENCE {
 					  version      [0] Version               OPTIONAL,
@@ -340,7 +342,7 @@ public class BouncyKeygenService implements KeygenService {
 			} else {
                 log.warn("KeyParam is not an RSA Key but of type"+keyParam.getClass()+" need to implement this.");
             }
-//          A lot of poentially useful code developed by Bruno, that shows one one
+//          A lot of potentially useful code developed by Bruno, that shows one one
 //          could use the extra fields in the CRMF structure.
 //			But use cases need to be found, and it really is not clear that any of this
 //			cannot be better done by passing the values in a form.
