@@ -44,7 +44,7 @@ public class UserUtil {
 	public static String getCurrentUserName() {		 
 		return getUserName(AccessController.getContext());
 	}
-	
+
 	/**
 	 * Returns the name of the user associtated with the specified 
 	 * <code>AccessControlContext</code>.
