@@ -23,7 +23,7 @@ import org.wymiwyg.wrhapi.Request;
 import org.wymiwyg.wrhapi.Response;
 
 /**
- * Classes implemeneting this interface provide a method to authenticate a 
+ * Classes implementing this interface provide a method to authenticate a
  * a user with the information provided in a http request.
  *
  * @author mir
@@ -35,7 +35,7 @@ public interface AuthenticationMethod {
 	 * provided in the specified request. If the authentication failed, an
 	 * <code>LoginException</code> will be thrown. If no authentication
 	 * informations are available null is returned.
-	 * @param request containg the information to authenticate a subject
+	 * @param request containing the information to authenticate a subject
 	 * @return name of authenticated user
 	 * @throws LoginException This exception is thrown in case
 	 * the login procedure failed.

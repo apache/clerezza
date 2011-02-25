@@ -39,7 +39,7 @@ import org.apache.clerezza.rdf.utils.UnionMGraph
 
 
 /**
- * For agents with a Web-Id various graphs are available, this graphs are 
+ * For agents with a Web-Id various graphs are available, these graphs are
  * grouped by <code>WebIdGraphs</code> which this service provides.
  */
 class WebIdGraphsService() {
@@ -83,10 +83,10 @@ class WebIdGraphsService() {
 						case SupportedFormat.RDF_XML => "1.0";
 							//we prefer most dedicated formats to (X)HTML, not because those are "better", 
 							//but just because it is quite likely that the pure RDF format will be 
-							//ligher (contain less presentation markup), and it is also possible that HTML does not
+							//lighter (contain less presentation markup), and it is also possible that HTML does not
 							//contain any RDFa, but just points to another format.
 						case SupportedFormat.XHTML => "0.5"; 
-							//we prefer XHTML over html, because parsing (shoule) be easier 
+							//we prefer XHTML over html, because parsing (should) be easier
 						case SupportedFormat.HTML => "0.4";
 							//all other formats known currently are structured formats
 						case _ => "0.8"
@@ -134,11 +134,11 @@ class WebIdGraphsService() {
 		/**
 		 * for web-ids with a # same as representationGraphUriString
 		 */
-		//FIXME multiple remote users could have same
 		lazy val localGraphUri = {
 			new UriRef(localGraphUriString)
 		}
-		
+
+		//TODO: One should do some reasoning somewhere for URIs that have redirects, such a http://xmlns.com/foaf/knows
 		lazy val localGraphUriString = {
 			val hashPos = uriString.indexOf('#')
 			if (hashPos != -1) {

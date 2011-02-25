@@ -185,7 +185,7 @@ public interface UserManager {
 	 * otherwise a AccessControlException will be thrown.
 	 *
 	 * @param name The username of the user
-	 * @return GraphNode representing the suer with some context in a dedicated MGraph
+	 * @return GraphNode representing the user (WebID or blank node) with some context in a dedicated MGraph
 	 */
 	public GraphNode getUserGraphNode(String name);
 
