@@ -62,8 +62,7 @@
 						<Embed-Dependency>*;artifactId=!commons-logging,!sfl4j-simple,!slf4j-api</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>
 						<Import-Package>!com.hp.hpl.jena.*.test,
-						!junit.*,!org.apache.xml.resolver.*,!sun.*,
-						!org.junit.*,
+						!org.apache.xml.resolver.*,!sun.*,
 						!com.sun.msv.*,
 						!com.sun.jdmk.*,
 						!javax.jms.*,
