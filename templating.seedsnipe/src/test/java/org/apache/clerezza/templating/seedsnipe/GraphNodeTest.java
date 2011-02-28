@@ -498,7 +498,7 @@ public class GraphNodeTest {
 		NonLiteral listNode2 = new BNode() {
 		};
 		mGraph.add(new TripleImpl(resource, RDF.value, listNode2));
-		new RdfList(listNode2, mGraph);
+		RdfList.createEmptyList(listNode2, mGraph);
 
 		GraphNode node = new GraphNode(resource, mGraph);
 
