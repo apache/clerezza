@@ -74,8 +74,8 @@ class WebDescriptionProvider {
 	/**
 	 *
 	 * @param uri the URI to fetch
-	 * @param should the local graph be updated if need be
-	 * @return GraphNode the cached Node
+	 * @param update true if the local cache is to be updated, false otherwise
+	 * @return the cached Node as GraphNode with the authoritativeLocalGraphUnion and if available the cache of the remote graph as underlying graph
 	 */
 	def getWebDescription(uri: UriRef, update: Boolean): GraphNode = {
 		
