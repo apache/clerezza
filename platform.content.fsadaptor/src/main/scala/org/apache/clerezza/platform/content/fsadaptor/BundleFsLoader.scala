@@ -50,6 +50,7 @@ object BundleFsLoader {
 class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider {
 
 	private val RESOURCE_MGRAPH_URI = new UriRef("http://zz.localhost/web-resources.graph")
+	private val cacheGraphPrefix = "http://zz.localhost/web-resources-cache.graph"
 	private var currentCacheUri: UriRef = null
 
 	private var tcManager: TcManager = null
@@ -98,8 +99,18 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 	private var updateThread: UpdateThread = null
 
 
+	private def deleteCacheGraphs() {
+		import collection.JavaConversions._
+		for(mGraphUri <- tcManager.listMGraphs) {
+			if(mGraphUri.getUnicodeString.startsWith(cacheGraphPrefix)) {
+				tcManager.deleteTripleCollection(mGraphUri);
+			}
+		}
+	}
+
 	protected def activate(context: ComponentContext) {
 		synchronized {
+			deleteCacheGraphs()
 			for (bundle <- context.getBundleContext().getBundles();
 					if bundle.getState == Bundle.ACTIVE) {
 				bundleList ::= bundle
@@ -137,7 +148,7 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 		}
 		synchronized {
 			val sortedList = Sorting.stableSort(bundleList, (b:Bundle) => -startLevel.getBundleStartLevel(b))
-			val newCacheUri = new UriRef("http://zz.localhost/web-resources-cache.graph"+System.currentTimeMillis)
+			val newCacheUri = new UriRef(cacheGraphPrefix+System.currentTimeMillis)
 			val newChacheMGraph = tcManager.createMGraph(newCacheUri);
 			tcManager.getTcAccessController.setRequiredReadPermissions(
 					newCacheUri, Collections.singleton(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ)))
