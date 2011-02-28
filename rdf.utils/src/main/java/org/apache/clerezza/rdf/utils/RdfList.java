@@ -27,13 +27,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
@@ -72,9 +70,7 @@ public class RdfList extends AbstractList<Resource> {
 	private boolean totallyExpanded = false;
 
 	/**
-	 * Get a list for the specified resource. If the resource does not have
-	 * rdf:first and rdf:rest properties an empty list is created by
-	 * specifying that the resource is owl:sameAs rdf:nil.
+	 * Get a list for the specified resource.
 	 *
 	 * If the list is modified using the created instance
 	 * <code>listResource</code> will always be the first list.
@@ -85,45 +81,38 @@ public class RdfList extends AbstractList<Resource> {
 	public RdfList(NonLiteral listResource, TripleCollection tc) {
 		firstList = listResource;
 		this.tc = tc;
-		boolean addNilStmt;
-		if (tc instanceof LockableMGraph) {
-			LockableMGraph lg = (LockableMGraph) tc;
-			final Lock readLock = lg.getLock().readLock();
-			readLock.lock();
-			try {
-				addNilStmt = listIncomplete(listResource);
-			} finally {
-				readLock.unlock();
-			}
-		} else {
-			addNilStmt = listIncomplete(listResource);
-		}
-		if (addNilStmt) {
-			tc.add(new TripleImpl(listResource, OWL.sameAs, RDF_NIL));
-		}
-	}
 
-	private boolean listIncomplete(NonLiteral listResource) {
-		if (!tc.filter(listResource, RDF.first, null).hasNext()) {
-			if (!tc.filter(listResource, OWL.sameAs, RDF_NIL).hasNext()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
-	 * Get a list for the specified resource node. If the resource node does not
-	 * have rdf:first and rdf:rest properties an empty list is created by
-	 * specifying that the resource is owl:sameAs rdf:nil.
-	 *
-	 * If the list is modified using the created instance
-	 * <code>listResource</code> will always be the first list.
+	 * Get a list for the specified resource node.
 	 *
 	 * @param listNode
 	 */
 	public RdfList(GraphNode listNode) {
 		this((NonLiteral)listNode.getNode(), listNode.getGraph());
+	}
+
+	/**
+	 * Creates an empty RdfList by writing a triple
+	 * "{@code listResource} owl:sameAs rdf.nil ." to {@code tc}.
+	 *
+	 * @param listResource
+	 * @param tc
+	 * @return	an empty rdf:List.
+	 * @throws IllegalArgumentException
+	 *		if the provided {@code  listResource} is a non-empty rdf:List.
+	 */
+	public static RdfList createEmptyList(NonLiteral listResource, TripleCollection tc)
+			throws IllegalArgumentException {
+
+		if (!tc.filter(listResource, RDF.first, null).hasNext()) {
+			RdfList list = new RdfList(listResource, tc);
+			list.tc.add(new TripleImpl(listResource, OWL.sameAs, RDF_NIL));
+			return list;
+		} else {
+			throw new IllegalArgumentException(listResource + "is a non-empty rdf:List.");
+		}
 	}
 
 	private void expandTill(int pos) {
@@ -135,7 +124,7 @@ public class RdfList extends AbstractList<Resource> {
 			currentList = listList.get(listList.size()-1);
 		} else {
 			currentList = firstList;
-			if (tc.filter(currentList, OWL.sameAs, RDF_NIL).hasNext()) {
+			if (!tc.filter(currentList, RDF.first, null).hasNext()) {
 				return;
 			}
 			listList.add(currentList);
