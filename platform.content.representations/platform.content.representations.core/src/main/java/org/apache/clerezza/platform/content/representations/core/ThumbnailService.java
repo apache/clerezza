@@ -81,7 +81,7 @@ public class ThumbnailService implements BundleListener {
 	AlternativeRepresentationGenerator altRepGen;
 	private static final Logger log = LoggerFactory.getLogger(ThumbnailService.class);
 	private BundleContext bundleContext;
-	private String STATICWEB_PATH = "/org/apache/clerezza/web/resources/style/staticweb/";
+	private String STATICWEB_PATH = "/CLEREZZA-INF/web-resources/style/";
 	private String MEDIA_TYPE_BASE_PATH = STATICWEB_PATH + "images/icons/mediatype/";
 	private Bundle cachedStyleBundle = null;
 	private Map<MediaType, String> mediaTypeIconUriCache =
