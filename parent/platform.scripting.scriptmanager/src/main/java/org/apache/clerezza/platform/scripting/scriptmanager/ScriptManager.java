@@ -300,7 +300,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 
 		UnionMGraph resultGraph = new UnionMGraph(additionGraph, contentGraph);
 
-		RdfList list = new RdfList(resultResource, additionGraph);
+		RdfList list = RdfList.createEmptyList(resultResource, additionGraph);
 		resultGraph.add(new TripleImpl(resource,
 				SCRIPTMANAGER.scriptList, resultResource));
 		resultGraph.add(new TripleImpl(resultResource, RDF.type,
