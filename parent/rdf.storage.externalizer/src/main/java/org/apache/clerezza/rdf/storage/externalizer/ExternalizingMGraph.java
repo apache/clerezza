@@ -195,10 +195,12 @@ class ExternalizingMGraph extends AbstractMGraph {
 	}
 
 	private File getStoringFile(String base16Hash) {
-		File dir1 = new File(dataDir, base16Hash.substring(0, 4));
-		File dir2 = new File(dir1, base16Hash.substring(4, 8));
-		dir2.mkdirs();
-		return new File(dir2, base16Hash.substring(8));
+		
+		File dir1 = new File(dataDir, base16Hash.substring(0, 2));
+		File dir2 = new File(dir1, base16Hash.substring(2, 5));
+		File dir3 = new File(dir2, base16Hash.substring(5, 8));
+		dir3.mkdirs();
+		return new File(dir3, base16Hash.substring(8));
 	}
 
 	private Iterator<Triple> replaceReferences(final Iterator<Triple> base) {
