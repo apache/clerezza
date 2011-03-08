@@ -19,12 +19,14 @@
 package org.apache.clerezza.triaxrs.util;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
 /**
- * Sorts media types in accordance with an accept-header, falling back to literal
- * sorting to guarantee constistency.
+ * Sorts media types in accordance with an accept-header, falling back to
+ * a built-in priority list and to literal sorting to guarantee constistency.
  *
  * Also provides static Utility methods for Media Type comparison.
  *
@@ -32,6 +34,29 @@ import javax.ws.rs.core.MediaType;
  */
 public class MediaTypeComparator implements Comparator<MediaType> {
 
+	/** if the media-types have equal priority in the accept header
+	 * they are sorted according to the following q-values
+	 */
+	private static final Map<MediaType, Float> fallBackQ = new HashMap<MediaType, Float>();
+
+	static {
+		fallBackQ.put(MediaType.APPLICATION_XHTML_XML_TYPE, new Float(1.0f));
+		fallBackQ.put(MediaType.valueOf("text/html"), new Float(0.9f));
+		fallBackQ.put(MediaType.valueOf("application/rdf+xml"), new Float(0.8f));
+	}
+
+	private static int fallBackCompare(MediaType o1, MediaType o2) {
+		float q1 = getFallBackQ(o1);
+		float q2 = getFallBackQ(o2);
+		if (q1 == q2) {
+			return 0;
+		}
+		if (q1 > q2) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
 	private AcceptHeader acceptHeader;
 
 	public MediaTypeComparator() {
@@ -62,7 +87,7 @@ public class MediaTypeComparator implements Comparator<MediaType> {
 			float q1 = getQ(o1);
 			float q2 = getQ(o2);
 			if (q1 == q2) {
-				return 0;
+				return fallBackCompare(o1, o2);
 			}
 			if (q1 > q2) {
 				return -1;
@@ -73,10 +98,12 @@ public class MediaTypeComparator implements Comparator<MediaType> {
 			return wilchCharComparison;
 		}
 	}
-	
+
 	@Override
 	public int compare(MediaType o1, MediaType o2) {
-		if (o1.equals(o2)) return 0;
+		if (o1.equals(o2)) {
+			return 0;
+		}
 		if (acceptHeader != null) {
 			if (acceptHeader.getAcceptedQuality(o1) > acceptHeader.getAcceptedQuality(o2)) {
 				return -1;
@@ -91,7 +118,7 @@ public class MediaTypeComparator implements Comparator<MediaType> {
 		} else {
 			return inconsistentCompare;
 		}
-		
+
 	}
 
 	/**
@@ -129,6 +156,14 @@ public class MediaTypeComparator implements Comparator<MediaType> {
 			return 1;
 		} else {
 			return Float.parseFloat(qString);
+		}
+	}
+
+	private static float getFallBackQ(MediaType m) {
+		if (fallBackQ.containsKey(m)) {
+			return fallBackQ.get(m);
+		} else {
+			return 0f;
 		}
 	}
 }
