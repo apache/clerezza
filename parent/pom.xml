@@ -55,7 +55,6 @@
 				<module>platform.curieprefixmanager</module>
 				<module>platform.dashboard</module>
 				<module>platform.dashboard.webinterface</module>
-				<module>platform.defaultacceptheader</module>
 				<module>platform.documentation</module>
 				<module>platform.documentation.viewer</module>
 				<module>platform.enrichment</module>
