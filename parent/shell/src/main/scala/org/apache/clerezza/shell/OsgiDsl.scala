@@ -44,6 +44,13 @@ class OsgiDsl(context: ComponentContext, outputStream: OutputStream) {
 		b
 	}
 
+	def update(pattern: String) = {
+		for (b <- bundleContext.getBundles; if (b.getLocation.matches(pattern))) {
+			out.println("updating "+b.getLocation)
+			b.update()
+		}
+	}
+
 	def headers(bundleId: Int) {
 		headers(bundleContext.getBundle(bundleId))
 	}
