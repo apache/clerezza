@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
 cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE,
 policy = ReferencePolicy.DYNAMIC)
 @Provider
-@Produces("*/*")
+@Produces({"application/xhtml+xml", "*/*"})
 public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 
 	public static final String MODE = "mode";
