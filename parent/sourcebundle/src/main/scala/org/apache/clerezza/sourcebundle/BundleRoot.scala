@@ -1,18 +1,20 @@
 /*
- *  Copyright 2011 reto.
- * 
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- * 
- *       http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.apache.clerezza.sourcebundle
@@ -35,6 +37,13 @@ import scala.tools.nsc.io.VirtualDirectory
 import scala.collection.mutable
 import org.osgi.service.packageadmin.PackageAdmin
 
+/**
+ * Provides a service that allows to register directories containing a maven-style project
+ * structure to be registered as SourceBundle which is added as OSGi Bundle and regenerated
+ * whenever a file is changed.
+ *
+ * Currently only scala files a compiled.
+ */
 class BundleRoot {
 
 	var compilerService: CompilerService = null
@@ -63,6 +72,9 @@ class BundleRoot {
 		for (sb <- sourceBundles) sb.stop()
 	}
 
+  /**
+   * Creates a SourceBundle for the sources in the specified dir
+   */
 	def createSourceBundle(dir: File) = {
 		val sourceBundle = new SourceBundle(dir)
 		sourceBundle.start()
