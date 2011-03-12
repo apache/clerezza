@@ -65,7 +65,7 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputS
 	private var terminationListeners = Set[Shell.TerminationListener]();
 
 
-	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(out, true)) {
+	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(inStream)), new PrintWriter(out, true)) {
 		override def createInterpreter() {
 			interpreter = factory.createInterpreter(out)
 			interpreter.beQuietDuring {
