@@ -21,11 +21,13 @@ package org.apache.clerezza.shell
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
+import org.apache.clerezza.osgi.services.ServicesDsl
 import org.osgi.framework.Bundle
 import org.osgi.service.component.ComponentContext
 import scala.collection.JavaConversions._
 
-class OsgiDsl(context: ComponentContext, outputStream: OutputStream) {
+class OsgiDsl(context: ComponentContext, outputStream: OutputStream) 
+		extends ServicesDsl(context.getBundleContext) {
 
 	lazy val out = new PrintWriter(new OutputStreamWriter(outputStream, "utf-8"), true)
 	val bundleContext = context.getBundleContext
@@ -61,16 +63,5 @@ class OsgiDsl(context: ComponentContext, outputStream: OutputStream) {
 
 	def shutdown {
 		bundleContext.getBundle(0).stop()
-	}
-
-	def $[T](implicit m: Manifest[T]): T = {
-		getService(m.erasure.asInstanceOf[Class[T]])
-	}
-
-	private def getService[T](clazz : Class[T]) : T= {
-		val serviceReference = bundleContext.getServiceReference(clazz.getName)
-		if (serviceReference != null) {
-			bundleContext.getService(serviceReference).asInstanceOf[T]
-		} else null.asInstanceOf[T]
 	}
 }
