@@ -5,35 +5,15 @@
 		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
-	<artifactId>shell</artifactId>
+	<artifactId>osgi.services</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>Clerezza - Shell Service</name>
+	<name>Clerezza - OSGi Services DSL for Scala</name>
+	<description>A Scala DSL to easily access OSGi Services</description>
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.clerezza.scala</groupId>
-			<artifactId>script-engine</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>osgi.services</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>jline</groupId>
-			<artifactId>jline</artifactId>
-			<version>0.9.94</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-compiler</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -53,9 +33,8 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
-						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>org.apache.clerezza.shell</Export-Package>
-						<Bundle-SymbolicName>org.apache.clerezza.shell</Bundle-SymbolicName>
+						<Export-Package>org.apache.clerezza.osgi.services</Export-Package>
+						<Bundle-SymbolicName>org.apache.clerezza.osgi.services</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
 			</plugin>

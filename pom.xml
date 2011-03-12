@@ -1122,6 +1122,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
+				<artifactId>osgi.services</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.content.representations</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
