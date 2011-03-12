@@ -53,6 +53,8 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * This class implements <code>TcManager</code>, delegating the actual
@@ -415,9 +417,12 @@ public class TcManager extends TcProviderMultiplexer {
 			interfaceNames = new String[] {Graph.class.getName()};
 			service = new GraphServiceFactory(this, name, tcAccessController);
 		}
-		ServiceRegistration serviceReg = componentContext.getBundleContext()
-				.registerService(interfaceNames, service, props);
-		serviceRegistrations.put(name, serviceReg);
+		final int bundleState = componentContext.getBundleContext().getBundle().getState();
+		if ((bundleState == Bundle.ACTIVE) || (bundleState == Bundle.STARTING)) {
+			ServiceRegistration serviceReg = componentContext.getBundleContext()
+					.registerService(interfaceNames, service, props);
+			serviceRegistrations.put(name, serviceReg);
+		}
 	}
 
 	@Override
