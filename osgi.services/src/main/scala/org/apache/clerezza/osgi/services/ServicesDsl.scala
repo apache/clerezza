@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.osgi.services
 
-import org.osgi.framework.BundleContext
+import org.osgi.framework.{BundleContext, Constants, ServiceEvent, ServiceListener}
 import scala.collection.JavaConversions._
 
 class ServicesDsl(bundleContext: BundleContext) {
@@ -35,5 +35,30 @@ class ServicesDsl(bundleContext: BundleContext) {
 		if (serviceReference != null) {
 			bundleContext.getService(serviceReference).asInstanceOf[T]
 		} else null.asInstanceOf[T]
+	}
+
+	/**
+	 * executes action as soon as a service exposing T is available, if such
+	 * a service is already available the action is executed immedtely and the
+	 * method blocks until the action finished executing, otherwise the method
+	 * returns and action will be executed when a respective becomes available.
+	 */
+	def doWith[T](action: T => Unit)(implicit m: Manifest[T]) {
+		val clazz = m.erasure.asInstanceOf[Class[T]]
+		val service = getService(clazz)
+		if (service != null) {
+			action(service)
+		} else {
+			lazy val serviceListener: ServiceListener = new ServiceListener {
+					def serviceChanged(e: ServiceEvent) = {
+						if (e.getType == ServiceEvent.REGISTERED) {
+							bundleContext.removeServiceListener(serviceListener)
+							action(bundleContext.getService(e.getServiceReference).asInstanceOf[T])
+						}
+					}
+				}
+			bundleContext.addServiceListener(serviceListener,
+											 "("+Constants.OBJECTCLASS+"="+clazz.getName+")")
+		}
 	}
 }
