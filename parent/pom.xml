@@ -81,6 +81,7 @@
 				<module>platform.usermanager.webinterface</module>
 				<module>platform.users</module>
 				<module>platform.xhtml2html</module>
+				<module>osgi.services</module>
 				<module>rdf.core</module>
 				<module>rdf.core.test</module>
 				<module>rdf.enrichment</module>
