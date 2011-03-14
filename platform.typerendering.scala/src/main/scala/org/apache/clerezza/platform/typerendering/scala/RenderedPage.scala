@@ -5,7 +5,6 @@ import java.io.PrintWriter
 import java.net.URI
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.MediaType
-import org.osgi.framework.BundleContext
 import scala.xml._
 import org.apache.clerezza.platform.typerendering._
 import org.apache.clerezza.platform.typerendering.Renderlet.RequestProperties
@@ -14,14 +13,18 @@ import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
-
+import java.security.{PrivilegedAction, AccessController}
+import org.osgi.framework.{BundleContext, ServiceReference}
+import org.apache.clerezza.platform.users.{WebDescriptionProvider, Cache}
+import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 
 /**
  * PageRenderlet.renderedPage returns an instance of this class, implementing
- * the content method to produce an XML Elmenet suitable as response to the
+ * the content method to produce an XML Element suitable as response to the
  * request yielding to the arguments passed to the constructor.
  */
 abstract class RenderedPage(arguments: RenderedPage.Arguments) {
+
 	val RenderedPage.Arguments(
 					res: GraphNode,
 					context: GraphNode,
@@ -41,32 +44,59 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 	val requestHeaders = requestProperties.getRequestHeaders
 	val responseHeaders = requestProperties.getResponseHeaders
 
-	def render(resource : GraphNode) : Seq[Node] = {
+	def render(resource: GraphNode): Seq[Node] = {
 		modeOption match {
 			case Some(m) => render(resource, m)
 			case None => render(resource, "naked")
 		}
 	}
 
-	def render(resource : GraphNode, mode : String) = {
-		def parseNodeSeq(string : String)  = {
-			_root_.scala.xml.XML.loadString("<elem>"+string+"</elem>").child
+	def render(resource: GraphNode, mode: String) = {
+		def parseNodeSeq(string: String) = {
+			_root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
 		}
 		val baos = new java.io.ByteArrayOutputStream
 		renderer.render(resource, context, mode, baos)
 		parseNodeSeq(new String(baos.toByteArray))
 	}
 
+	def fetch(uri: UriRef) : GraphNode = {
+		val webSrvc = AccessController.doPrivileged(new PrivilegedAction[WebDescriptionProvider] {
+			def run: WebDescriptionProvider = {
+				val cntxt: BundleContext = requestProperties.bundleContext
+				var serviceReference: ServiceReference = cntxt.getServiceReference("org.apache.clerezza.platform.users.WebDescriptionProvider")
+				if (serviceReference != null) {
+					return cntxt.getService(serviceReference).asInstanceOf[WebDescriptionProvider]
+				} else {
+					return null
+				}
+			}
+		})
+		//This should return not a graph, but a graph surrounded with HTTP metadata, so that the user
+		//connection error messages can be designed, and so on.
+		//The graph should be fetched as the user also if this is required.
+		val grph = webSrvc.fetchSemantics(uri,Cache.Fetch)
+		return new GraphNode(uri,grph)
+	}
+
+	/**
+	 * This is an object that allows one to use some nice shortcuts in scala based subclasses
+	 * - $variable will get the value of the sharedRenderingValues hash
+	 * - $variable = value allows one to update the sharedRenderingValues hash
+	 * - $? not sure there...
+	 */
 	object $ {
 		def apply(key: String) = sharedRenderingValues.get(key)
+
 		def update(key: String, value: Object) = sharedRenderingValues.put(key, value)
+
 		def apply[T](implicit m: Manifest[T]): T = {
 			val clazz = m.erasure.asInstanceOf[Class[T]]
 			requestProperties.getRenderingService(clazz)
 		}
 	}
 
-	def ifx[T](con:  => Boolean)(f: => T) :  T = {
+	def ifx[T](con: => Boolean)(f: => T): T = {
 		if (con) f else null.asInstanceOf[T]
 	}
 
@@ -82,17 +112,38 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 	)
 	out.flush()
 
-	def content : AnyRef;
+	/**
+	 * This is the main method/variable that needs to be implemented by subclasses
+	 */
+	def content: AnyRef;
 
 
 }
+
 object RenderedPage {
-	case class Arguments(res: GraphNode, context: GraphNode,
-					sharedRenderingValues: java.util.Map[String, Object],
-					renderer: CallbackRenderer ,
-					renderingSpecificationOption:  Option[URI],
-					modeOption: Option[String],
-					mediaType: MediaType,
-					requestProperties: RequestProperties,
-					os: OutputStream);
+
+	/**
+	 * Class to encapsulate information sent to the rendering engine.
+	 *
+	 * @param res  RDF resource to be rendered with the template.
+	 * @param context  RDF resource providing a rendering context.
+	 * @param sharedRenderingValues	a map that can be used for sharing values
+	 * across the different Renderlets involved in a rendering process
+	 * @param callbackRenderer  renderer for call backs.
+	 * @param renderingSpecification  the rendering specification
+	 * @param modeOption the mode this Renderlet was invoked with, this is mainly used
+	 * so that the callbackRenderer can be claeed inheriting the mode.
+	 * @param mediaType  the media type this media produces (a part of)
+	 * @param requestProperties properties of the http request, may be null
+	 * @param os  where the output will be written to.
+	 */
+	case class Arguments(res: GraphNode,
+								context: GraphNode,
+								sharedRenderingValues: java.util.Map[String, Object],
+								renderer: CallbackRenderer,
+								renderingSpecificationOption: Option[URI],
+								modeOption: Option[String],
+								mediaType: MediaType,
+								requestProperties: RequestProperties,
+								os: OutputStream);
 }

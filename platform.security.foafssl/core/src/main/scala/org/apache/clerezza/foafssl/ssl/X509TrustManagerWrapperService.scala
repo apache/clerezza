@@ -30,7 +30,6 @@ import java.security.interfaces.RSAPublicKey
 import java.util.Date
 import javax.net.ssl.X509TrustManager;
 import org.apache.clerezza.foafssl.Utilities
-import org.apache.clerezza.platform.users.WebDescriptionProvider
 import org.apache.clerezza.foafssl.ontologies.CERT
 import org.apache.clerezza.foafssl.ontologies.RSA
 import org.apache.clerezza.platform.Constants
@@ -56,7 +55,8 @@ import org.apache.clerezza.rdf.ontologies.RDF
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.jsslutils.sslcontext.X509TrustManagerWrapper
 import org.jsslutils.sslcontext.trustmanagers.TrustAllClientsWrappingTrustManager
-import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory
+import org.apache.clerezza.platform.users.{Cache, WebDescriptionProvider}
 
 class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 
@@ -117,11 +117,11 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 	private val systemGraphUri = Constants.SYSTEM_GRAPH_URI;
 	
 	private def verify(uriRef: UriRef, publicKey: PublicKey): Unit = {
-		var webDescription = descriptionProvider.getWebDescription(uriRef, false)
+		var webDescription = descriptionProvider.getWebDescription(uriRef, Cache.CacheOnly)
 		if (
 			!verify(uriRef, publicKey, webDescription.getGraph)
 		) {
-			webDescription = descriptionProvider.getWebDescription(uriRef, true)
+			webDescription = descriptionProvider.getWebDescription(uriRef, Cache.ForceUpdate)
 			if (
 				!verify(uriRef, publicKey, webDescription.getGraph)
 			) throw new CertificateException

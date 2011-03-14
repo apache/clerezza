@@ -49,7 +49,7 @@ public interface Renderlet {
 		private UriInfo uriInfo;
 		private MultivaluedMap<String, Object> responseHeaders;
 		private HttpHeaders requestHeaders;
-		private final BundleContext bundleContext;
+		public final BundleContext bundleContext;      //public only to test an idea
 
 		public RequestProperties(UriInfo uriInfo, 
 				HttpHeaders requestHeaders,
@@ -77,7 +77,7 @@ public interface Renderlet {
 		 * Rendering services
 		 *
 		 * @param type
-		 * @return a intsance of the requested rendering services
+		 * @return a instance of the requested rendering services
 		 */
 		public <T> T getRenderingService(final Class<T> type) {
 			return AccessController.doPrivileged(
@@ -107,14 +107,14 @@ public interface Renderlet {
 	 * engine.
 	 *
 	 * @param res  RDF resource to be rendered with the template.
-	 * @param context  RDF resource providing a redering context.
+	 * @param context  RDF resource providing a rendering context.
 	 * @param sharedRenderingValues	a map that can be used for sharing values
-	 * across the different renderlets involved in a rendering process
+	 * across the different Renderlets involved in a rendering process
 	 * @param callbackRenderer  renderer for call backs.
 	 * @param renderingSpecification  the rendering specification
 	 * @param mediaType  the media type this media produces (a part of)
 	 * @param mode  the mode this Renderlet was invoked with, this is mainly used
-	 * so that the callbackeRenderer can be claeed inheriting the mode.
+	 * so that the callbackRenderer can be claeed inheriting the mode.
 	 * @param requestProperties properties of the http request, may be null
 	 * @param os  where the output will be written to.
 	 */
