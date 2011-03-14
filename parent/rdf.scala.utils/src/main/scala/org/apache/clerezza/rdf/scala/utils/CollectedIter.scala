@@ -38,6 +38,7 @@ import java.util.concurrent.locks.Lock
 class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends immutable.Seq[T] {
 
 	def this(jList : java.util.List[T], readLock: Lock) = this(() => jList.iterator(), readLock)
+	def this() = this( ()=> java.util.Collections.emptyList[T].iterator(),null)
 
 	var iter = iterCreator()
 	var firstIter = true

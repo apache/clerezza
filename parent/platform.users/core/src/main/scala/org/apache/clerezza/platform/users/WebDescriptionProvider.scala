@@ -20,15 +20,16 @@
 package org.apache.clerezza.platform.users
 
 import org.apache.clerezza.platform.Constants
-import org.apache.clerezza.rdf.core.TripleCollection
-import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException
 import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.osgi.service.component.ComponentContext
+import org.apache.clerezza.rdf.core.{MGraph, TripleCollection, UriRef}
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 
-
+//todo: this class can be generalised to a generalised semweb caching service
+//there's not really a reason to have it specialised for WebIDs.
 /**
  * delivers the description of a resource. This description is based on local 
  * data as well as (cached) web-data
@@ -59,7 +60,8 @@ class WebDescriptionProvider {
 		Constants.CONFIG_GRAPH_URI)
 	
 	private var authoritativeLocalGraphUnion: TripleCollection = null
-	
+
+	/** OSGI method, called on activation */
 	protected def activate(context: ComponentContext) = {	
 		val baseTripleCollections = for (uri <- authoritativeLocalGraphs) yield {
 			tcManager.getTriples(uri)
@@ -71,31 +73,61 @@ class WebDescriptionProvider {
 		authoritativeLocalGraphUnion = null
 	}
 
+	//todo: this should probably return Some[GraphNode] as it is possible that there is no URI
+	//todo: or it should return an explanation of what went wrong, for user processing
+	//todo: why do we really need the merge with the system graph? How doangerous is this?
 	/**
+	 * This graph merges remote information and local system information
 	 *
 	 * @param uri the URI to fetch
 	 * @param update true if the local cache is to be updated, false otherwise
-	 * @return the cached Node as GraphNode with the authoritativeLocalGraphUnion and if available the cache of the remote graph as underlying graph
+	 * @return the cached Node as GraphNode with the authoritativeLocalGraphUnion
 	 */
-	def getWebDescription(uri: UriRef, update: Boolean): GraphNode = {
-		
-		val webIdGraphs = webIdGraphsService.getWebIdGraphs(uri)
-		if (webIdGraphs.isLocal) return new GraphNode(uri,webIdGraphs.localGraph)
-		if (update) {
-					webIdGraphs.updateLocalCache()
-		}
-		val cacheGraphOption: Option[TripleCollection] = try {
-			Some(tcManager.getTriples(webIdGraphs.localCacheUri))
-		} catch {
-			case e: NoSuchEntityException =>  None
-		}
-		val tripleCollection = cacheGraphOption match {
-			case Some(g) => new UnionMGraph(authoritativeLocalGraphUnion, g)
-			case None => authoritativeLocalGraphUnion
-		}
-		new GraphNode(uri, tripleCollection)
+	def getWebDescription(uri: UriRef, update: Cache.Value): GraphNode = {
+
+		val grph = fetchSemantics(uri, update)
+		val tc = new UnionMGraph(authoritativeLocalGraphUnion, grph, authoritativeLocalGraphUnion)
+		new GraphNode(uri, tc)
 		
 	}
 
+	/**
+	 * similar to cwm log:semantics relation. Fetches the graph associated with a URI
+	 * this just returns a simple Graph for the representation at the given URI.121
+	 *
+	 * todo: should this return an MGraph, or a TripleCollection, or something else?
+	 *
+	 * @param uri the URI to fetch
+	 * @param update true if the local cache is to be updated, false otherwise
+	 * @return the cached Node as an MGraph
+	 *
+	*/
+	def fetchSemantics(uri: UriRef, update: Cache.Value): MGraph = {
+			val webIdGraphs = webIdGraphsService.getWebIdGraphs(uri)
+		   if (webIdGraphs.isLocal) return webIdGraphs.localGraph
+
+		//the logic here is not quite right, as we don't look at time of previous fetch.
+		update match {
+			case Cache.Fetch => if (webIdGraphs.localCache.size() == 0) webIdGraphs.updateLocalCache()
+			case Cache.ForceUpdate => webIdGraphs.updateLocalCache()
+			case Cache.CacheOnly => {}
+		}
+		 return try {
+			 new SimpleMGraph(tcManager.getTriples(webIdGraphs.localCacheUri))
+		} catch {
+			case e: NoSuchEntityException =>  new SimpleMGraph()
+		}
+
+	}
+
 	
+}
+
+object Cache extends Enumeration {
+	/** fetch if not in cache, if version in cache is out of date, or return cache */
+	val Fetch = Value
+	/** fetch from source whatever is in cache */
+	val ForceUpdate = Value
+	/** only get cached version. If none exists return empty graph */
+	val CacheOnly = Value
 }

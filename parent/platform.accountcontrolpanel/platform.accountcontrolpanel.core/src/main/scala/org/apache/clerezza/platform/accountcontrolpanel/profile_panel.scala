@@ -27,6 +27,7 @@ import java.text._
 import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.rdf.ontologies.{RDFS, DC, FOAF}
+import org.apache.clerezza.rdf.utils.GraphNode
 
 class profile_panel extends PageRenderlet {
   val rdfType = CONTROLPANEL.ProfilePage
@@ -123,16 +124,22 @@ class profile_panel extends PageRenderlet {
         </form>
 
 		  <h3>Contacts</h3>
-
-		  <table>{for (friend <- agent/FOAF.knows) {
-			  <tr><td>{friend*}</td></tr>
-		     }
-			  <tr><td><form id="addContact" method="post" action="profile/addContact">
-			  <input type="text" name="webId" size="80"/>
-			  <input type="submit" value="add contact" />
-		  </form></td></tr>
-	     }</table>
-
+		  <form id="addContact" method="get" action="people">
+		  <table>{ var i =0
+			  val friends = for (friend <- agent/FOAF.knows) yield {
+			  import person_panel._
+			  val node = friend.getNode() match {
+				  case uri: UriRef => personInABox(fetch(uri))
+				  case _ => emptyText //one could show info with bnodes too...
+			  }
+			  <td>{node}</td>
+		    }
+			 for (row <- friends.grouped(5)) yield <tr>{row}</tr>
+		  }<tr> <td><input type="submit" value="add contact" /></td>
+			  <td><input type="text" name="uri" size="80"/><!-- human input forms cannot require precise WebIds-->
+		  </td></tr>
+	     </table>
+		  </form>
 
 		  <h3>Key and Certificate Creation</h3>
 
@@ -220,12 +227,13 @@ class profile_panel extends PageRenderlet {
             profile.</p>
 		}
 
-		<div id="tx-content">
+	  <div id="tx-content">
 		  <h2>Personal Profile</h2>{agent ! match {
-			  case _: BNode => createWebId()
-			  case _: UriRef => existingWebId()
-			}}
-		</div>
+				case _: BNode => createWebId()
+				case _: UriRef => existingWebId()
+			 }}
+	  </div>
+
 	  }
 	}
   }
@@ -244,7 +252,7 @@ class profile_panel extends PageRenderlet {
 	  val sbuf = new StringBuffer(bstr.size + (bstr.size/2)+10)
 	  var cnt = 0
 	  for (c <- bstr.toCharArray) {
-		if ((cnt % 2) == 0) { sbuf.append(' ') }
+		if ((cnt % 2) == 0) sbuf.append(' ')
 		sbuf.append(c)
 		cnt += 1
 	  }

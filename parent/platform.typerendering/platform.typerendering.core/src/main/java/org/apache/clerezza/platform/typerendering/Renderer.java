@@ -64,7 +64,7 @@ public interface Renderer  {
 	 * rendering specification.
 	 *
 	 * @param res  RDF resource to be rendered with the template.
-	 * @param context RDF resource providing a redering context.
+	 * @param context RDF resource providing a rendering context.
 	 * @param uriInfo the uriInfo of the request, the renderlet may use
 	 * @param httpHeaders the http-headers of the request
 	 * @param os  where the output will be written to.
