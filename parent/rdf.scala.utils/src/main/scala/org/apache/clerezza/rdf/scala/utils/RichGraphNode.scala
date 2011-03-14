@@ -26,6 +26,14 @@ import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
 
 class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGraph) {
+
+	/* because it is tedious to wrap nodes as happens in a lot of code.
+	 *
+	 * todo: does one really need to create the graph node? Is there a reason this is passed ike that,
+	 * todo: or was that just a quick hack? If it is because we don't want to use any of the superclass implementations
+	 * todo: then it would be worth creating an interface above GraphNode and implementing the interface instead...
+	 */
+	 def this(node: Resource, graph: GraphNode ) = this(new GraphNode(node,graph))
     /**
      * Operator syntax shortcut to get all objects as <code>RichGraphNode</code>s
      */
@@ -56,17 +64,14 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 	/**
 	 * returns the lexical form of literals, the unicode-string for UriRef for
 	 * BNodes the value returned by toString
+	 * todo: not sure this is a good symbol as it is usually a binary symbol, and so if it is found at the end of a line the
+	 * todo: the parsers expect the expression to go on the next line
 	 */
-	def * = {
-		val wrappedNode = node.getNode();
-		if (wrappedNode.isInstanceOf[Literal]) {
-			wrappedNode.asInstanceOf[Literal].getLexicalForm
-		} else {
-			if (wrappedNode.isInstanceOf[UriRef]) {
-				wrappedNode.asInstanceOf[UriRef].getUnicodeString
-			} else {
-				wrappedNode.toString
-			}
+	def * : String = {
+		node.getNode() match {
+			case lit: Literal => lit.getLexicalForm
+			case uri: UriRef => uri.getUnicodeString
+			case wrappedNode => wrappedNode.toString
 		}
 	}
 

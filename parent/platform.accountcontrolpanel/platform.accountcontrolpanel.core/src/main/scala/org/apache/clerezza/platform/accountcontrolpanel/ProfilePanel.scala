@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.platform.accountcontrolpanel
 
-import java.util.ArrayList
+import java.util.List
 import java.util.Arrays
 import java.util.Iterator
 import org.apache.clerezza.platform.security.UserUtil
@@ -33,7 +33,6 @@ import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.typerendering.RenderletManager
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet
 import org.apache.clerezza.platform.usermanager.UserManager
-import org.apache.clerezza.platform.users.WebIdGraphsService
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
@@ -62,31 +61,30 @@ import java.net.URL
 import java.security.AccessController
 import java.security.PrivilegedAction
 import java.security.interfaces.RSAPublicKey
-import java.util.List
 import org.apache.clerezza.platform.typerendering.scala.PageRenderlet
 import org.apache.clerezza.rdf.ontologies.RDFS
 import org.apache.clerezza.ssl.keygen.KeygenService
+import org.apache.clerezza.platform.users.{WebDescriptionProvider, WebIdGraphsService}
+
+object ProfilePanel {
+	private val logger: Logger = LoggerFactory.getLogger(classOf[ProfilePanel])
+}
 
 /**
  * Presents a panel where the user can create a webid and edit her profile.
  *
  * @author reto
  */
-@Path("/user/{id}/profile")
-object ProfilePanel {
-	private  val logger: Logger = LoggerFactory.getLogger(classOf[ProfilePanel])
-}
 
 @Path("/user/{id}/profile")
-class ProfilePanel extends FileServer {
+class ProfilePanel {
+
 	import ProfilePanel.logger
 
-	protected def activate(componentContext: ComponentContext): Unit = {
-		configure(componentContext.getBundleContext, "profile-staticweb")
-	}
 
 	@GET
-	def getPersonalProfilePage(@Context uriInfo: UriInfo, @PathParam(value = "id") userName: String): GraphNode = {
+	def getPersonalProfilePage(@Context uriInfo: UriInfo,
+										@PathParam(value = "id") userName: String): GraphNode = {
 		TrailingSlash.enforceNotPresent(uriInfo)
 		var resultNode: GraphNode = getPersonalProfile(userName, new UriRef(uriInfo.getAbsolutePath.toString))
 		resultNode.addProperty(RDF.`type`, PLATFORM.HeadedPage)
@@ -94,7 +92,8 @@ class ProfilePanel extends FileServer {
 		return resultNode
 	}
 
-	private def getPersonalProfile(userName: String, profile: UriRef): GraphNode = {
+	private def getPersonalProfile(userName: String,
+											 profile: UriRef): GraphNode = {
 		return AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
 			def run: GraphNode = {
 				var userInSystemGraph: GraphNode = userManager.getUserInSystemGraph(userName)
@@ -143,7 +142,10 @@ class ProfilePanel extends FileServer {
 	}
 
 	@POST
-	@Path("set-existing-webid") def setExistingWebId(@Context uriInfo: UriInfo, @FormParam("webid") webId: UriRef, @PathParam(value = "id") userName: String): Response = {
+	@Path("set-existing-webid")
+	def setExistingWebId(@Context uriInfo: UriInfo,
+								@FormParam("webid") webId: UriRef,
+								@PathParam(value = "id") userName: String): Response = {
 		return AccessController.doPrivileged(new PrivilegedAction[Response] {
 			def run: Response = {
 				var userInSystemGraph: GraphNode = userManager.getUserInSystemGraph(userName)
@@ -154,7 +156,9 @@ class ProfilePanel extends FileServer {
 	}
 
 	@POST
-	@Path("create-new-web-id") def createNewWebId(@Context uriInfo: UriInfo, @PathParam(value = "id") userName: String): Response = {
+	@Path("create-new-web-id")
+	def createNewWebId(@Context uriInfo: UriInfo,
+							 @PathParam(value = "id") userName: String): Response = {
 		val ppd: UriRef = getSuggestedPPDUri(userName)
 		val webId: UriRef = new UriRef(ppd.getUnicodeString + "#me")
 		val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(webId)
@@ -169,24 +173,38 @@ class ProfilePanel extends FileServer {
 	}
 
 	@POST
-	@Path("addContact") def addContact(@Context uriInfo: UriInfo, @FormParam("webId") contactWebID: UriRef): Response = {
-		if (contactWebID != null) {
+	@Path("addContact")
+	def addContact(@Context uriInfo: UriInfo,
+						@FormParam("webId") newContacts: java.util.List[UriRef]): Response = {
+		import collection.JavaConversions._
+		if (newContacts.size >0) {
 			val userName: String = UserUtil.getCurrentUserName
 			var me: GraphNode = AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
 				def run: GraphNode = {
 					return userManager.getUserGraphNode(userName)
 				}
 			})
-			val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(me.getNode.asInstanceOf[UriRef])
-			var meGrph: GraphNode = new GraphNode(me.getNode, webIdGraphs.localGraph)
-			webIdGraphsService.getWebIdGraphs(contactWebID)
-			meGrph.addProperty(FOAF.knows, contactWebID)
+			for (contactWebID <- newContacts) {
+				val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(me.getNode.asInstanceOf[UriRef])
+				var meGrph: GraphNode = new GraphNode(me.getNode, webIdGraphs.localGraph)
+				webIdGraphsService.getWebIdGraphs(contactWebID)
+				meGrph.addProperty(FOAF.knows, contactWebID)
+			} //todo: one should catch errors here (bad uris sent for ex
 		}
 		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
 	}
 
+
 	@POST
-	@Path("keygen") def createCert(@FormParam("webId") webId: UriRef, @FormParam("cn") commonName: String, @FormParam("spkac") spkac: String, @FormParam("crmf") crmf: String, @FormParam("hours") hours: String, @FormParam("days") days: String, @FormParam("csr") csr: String, @FormParam("comment") comment: String): Response = {
+	@Path("keygen")
+	def createCert(@FormParam("webId") webId: UriRef,
+						@FormParam("cn") commonName: String,
+						@FormParam("spkac") spkac: String,
+						@FormParam("crmf") crmf: String,
+						@FormParam("hours") hours: String,
+						@FormParam("days") days: String,
+						@FormParam("csr") csr: String,
+						@FormParam("comment") comment: String): Response = {
 		logger.info("in keygen code. webId={}", webId)
 		logger.info("cn={}", commonName)
 		logger.info("hours={}", hours)
@@ -255,9 +273,10 @@ class ProfilePanel extends FileServer {
 		val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(webId)
 		val agent: GraphNode = new GraphNode(webId, webIdGraphs.localGraph)
 		var subjects: Iterator[GraphNode] = agent.getSubjectNodes(CERT.identity)
-	   import scala.util.control.Breaks._
+		import scala.util.control.Breaks._
 		breakable {
-			import scala.collection.JavaConversions._    //to for loop through iterators
+			import scala.collection.JavaConversions._
+			//to for loop through iterators
 			for (nl <- subjects) {
 				var modulusIt: Iterator[Resource] = nl.getObjects(RSA.modulus)
 				if (!modulusIt.hasNext) break
@@ -316,16 +335,6 @@ class ProfilePanel extends FileServer {
 		}
 	}
 
-	protected def bindTcManager(tcmanager: TcManager): Unit = {
-		tcManager = tcmanager
-	}
-
-	protected def unbindTcManager(tcmanager: TcManager): Unit = {
-		if (tcManager == tcmanager) {
-			tcManager = null
-		}
-	}
-
 	protected def bindRenderletManager(renderletmanager: RenderletManager): Unit = {
 		renderletManager = renderletmanager
 	}
@@ -356,10 +365,33 @@ class ProfilePanel extends FileServer {
 		}
 	}
 
+	protected def bindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
+		this.descriptionProvider = descriptionProvider
+	}
+
+	protected def unbindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
+		if (descriptionProvider == this.descriptionProvider) {
+			this.descriptionProvider = null
+		}
+	}
+
+	protected def activate(componentContext: ComponentContext): Unit = {
+		this.componentContext = componentContext
+	}
+
+
 	private var userManager: UserManager = null
-	private var keygenSrvc: KeygenService = null
-	private var tcManager: TcManager = null
-	private var renderletManager: RenderletManager = null
+
+	//todo: does one need both of these?
 	private var webIdGraphsService: WebIdGraphsService = null
+	private var descriptionProvider: WebDescriptionProvider = null
+
+	private var keygenSrvc: KeygenService = null
 	private var platformConfig: PlatformConfig = null
+
+	//todo: are these this needed? It's not used it seems
+	private var renderletManager: RenderletManager = null
+
+	private var componentContext: ComponentContext = null
+
 }

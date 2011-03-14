@@ -38,6 +38,7 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM
 import org.apache.clerezza.rdf.utils.UnionMGraph
 
 
+//todo: this class can be generalised to a generalised semweb caching service
 /**
  * For agents with a Web-Id various graphs are available, these graphs are
  * grouped by <code>WebIdGraphs</code> which this service provides.
@@ -188,7 +189,14 @@ class WebIdGraphsService() {
 				case _ => us
 			}
 		}
-		
+
+		//todo: follow redirects and keep track of them
+		//todo: keep track of headers especially date and etag. test for etag similarity
+		//todo: it may be important to have blank node identifiers for graphs as the same webid, when called by different
+		//      agents could have very different content
+		//todo: for https connection allow user to specify his webid and send his key: ie allow web server to be an agent
+		//todo: add GRDDL functionality, so that other return types can be processed too
+		//todo: enable ftp and other formats (though content negotiation won't work there)
 		def updateLocalCache() = {
 			val url = new URL(representationGraphUriString)
 			val connection = url.openConnection()

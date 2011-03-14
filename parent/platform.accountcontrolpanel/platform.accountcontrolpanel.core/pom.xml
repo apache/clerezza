@@ -45,7 +45,7 @@
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
 						<Export-Package>org.apache.clerezza.platform.accountcontrolpanel</Export-Package>
-						<Bundle-SymbolicName>${groupId}.${artifactId}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
 			</plugin>
