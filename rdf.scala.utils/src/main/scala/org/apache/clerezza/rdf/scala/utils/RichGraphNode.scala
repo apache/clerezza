@@ -19,11 +19,11 @@
 package org.apache.clerezza.rdf.scala.utils
 
 import org.apache.clerezza.rdf.utils.GraphNode
-import org.apache.clerezza.rdf.core.{UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
 import java.util.Iterator
 import _root_.scala.collection.JavaConversions
 import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
+import org.apache.clerezza.rdf.core.{TripleCollection, UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
 
 class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGraph) {
 
@@ -33,7 +33,7 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 	 * todo: or was that just a quick hack? If it is because we don't want to use any of the superclass implementations
 	 * todo: then it would be worth creating an interface above GraphNode and implementing the interface instead...
 	 */
-	 def this(node: Resource, graph: GraphNode ) = this(new GraphNode(node,graph))
+	 def this(node: Resource, graph: TripleCollection ) = this(new GraphNode(node,graph))
     /**
      * Operator syntax shortcut to get all objects as <code>RichGraphNode</code>s
      */
