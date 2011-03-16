@@ -42,6 +42,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>platform.typepriority</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.ontologies</artifactId>
 		</dependency>
 		<dependency>

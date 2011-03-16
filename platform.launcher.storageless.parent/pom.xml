@@ -439,11 +439,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.typerendering.manager</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.scripting</artifactId>
 			<scope>runtime</scope>
 		</dependency>

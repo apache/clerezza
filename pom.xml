@@ -72,7 +72,6 @@
 				<module>platform.security.conditions</module>
 				<module>platform.security</module>
 				<module>platform.typehandlerspace</module>
-				<module>platform.typerendering.manager</module>
 				<module>platform.typerendering</module>
 				<module>platform.typerendering.scala</module>
 				<module>platform.typerendering.scalaserverpages</module>
@@ -1005,11 +1004,6 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.typerendering.seedsnipe</artifactId>
-				<version>0.6-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
-				<artifactId>platform.typerendering.manager</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>

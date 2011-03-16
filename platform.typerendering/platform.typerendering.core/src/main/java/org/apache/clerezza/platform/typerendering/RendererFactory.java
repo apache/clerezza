@@ -18,16 +18,65 @@
  */
 package org.apache.clerezza.platform.typerendering;
 
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.ws.rs.core.MediaType;
+import org.apache.clerezza.platform.typepriority.TypePrioritizer;
+import org.apache.clerezza.platform.typerendering.utils.MediaTypeMap;
+import org.apache.clerezza.platform.typerendering.utils.RegexMap;
+import org.apache.clerezza.rdf.core.TypedLiteral;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.felix.scr.annotations.Services;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates a <code>Renderer</code> which can used to render a <code>GraphNode</code>.
  *
- * @author mir
+ * @author mir, reto
  */
-public interface RendererFactory {
+@Component
+@Services({
+	@Service(RendererFactory.class)
+})
+@Reference(name = "typeRenderlet",
+cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE,
+policy = ReferencePolicy.DYNAMIC,
+referenceInterface = TypeRenderlet.class)
+public class RendererFactory {
+
+	private Logger logger = LoggerFactory.getLogger(RendererFactory.class);
+	
+	@Reference
+	private TypePrioritizer typePrioritizer;
+
+	private Map<UriRef, RegexMap<MediaTypeMap<Renderer>>> typeRenderletMap =
+			new HashMap<UriRef, RegexMap<MediaTypeMap<Renderer>>>();
+
+	private BundleContext bundleContext;
+
+	protected void activate(ComponentContext componentContext) {
+		bundleContext = componentContext.getBundleContext();
+	}
+
+	protected void deactivate(ComponentContext componentContext) {
+		bundleContext = null;
+	}
 
 	/**
 	 * Creates a <code>Renderer</code> for the specified mode, acceptable 
@@ -44,5 +93,68 @@ public interface RendererFactory {
 	 * @return the Renderer or null if no renderer could be created for the specified parameters
 	 */
 	public Renderer createRenderer(GraphNode resource, String mode,
-			List<MediaType> acceptableMediaTypes);
+			List<MediaType> acceptableMediaTypes) {
+		Set<UriRef> types = new HashSet<UriRef>();
+		if (resource.getNode() instanceof TypedLiteral) {
+			types.add(((TypedLiteral) resource.getNode()).getDataType());
+		} else {
+			// extract rdf types
+			Iterator<UriRef> it = resource.getUriRefObjects(RDF.type);
+			while (it.hasNext()) {
+				final UriRef rdfType = it.next();
+				types.add(rdfType);
+			}
+			types.add(RDFS.Resource);
+		}
+		return getRenderer(types, mode, acceptableMediaTypes);
+	}
+
+	private Renderer getRenderer(Set<UriRef> types, String mode,
+			List<MediaType> acceptableMediaTypes) {
+		Iterator<UriRef> sortedTypes = typePrioritizer.iterate(types);
+		while (sortedTypes.hasNext()) {
+			final UriRef currentType = sortedTypes.next();
+			final RegexMap<MediaTypeMap<Renderer>> regexMap = typeRenderletMap.get(currentType);
+			if (regexMap != null) {
+				Iterator<MediaTypeMap<Renderer>> mediaTypeMapIter = regexMap.getMatching(mode);
+				while (mediaTypeMapIter.hasNext()) {
+					MediaTypeMap<Renderer> mediaTypeMap = mediaTypeMapIter.next();
+					for (MediaType acceptableType : acceptableMediaTypes) {
+						Iterator<Renderer> renderlets = mediaTypeMap.getMatching(acceptableType);
+						if (renderlets.hasNext()) {
+							return renderlets.next();
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	protected void bindTypeRenderlet(TypeRenderlet typeRenderlet) {
+		final UriRef rdfType = typeRenderlet.getRdfType();
+		RegexMap<MediaTypeMap<Renderer>> regexMap = typeRenderletMap.get(rdfType);
+		if (regexMap == null) {
+			regexMap = new RegexMap<MediaTypeMap<Renderer>>();
+			typeRenderletMap.put(rdfType, regexMap);
+		}
+		final String mode = typeRenderlet.getModePatter();
+		MediaTypeMap<Renderer> mediaTypeMap = regexMap.getFirstExactMatch(mode);
+		if (mediaTypeMap == null) {
+			mediaTypeMap = new MediaTypeMap<Renderer>();
+			regexMap.addEntry(mode, mediaTypeMap);
+		}
+		final MediaType mediaType = typeRenderlet.getMediaType();
+		final Renderer renderer = new TypeRenderletRendererImpl(null,
+			typeRenderlet, mediaType,
+			this,
+			bundleContext);
+		mediaTypeMap.addEntry(mediaType, renderer);
+	}
+
+	protected void unbindTypeRenderlet(TypeRenderlet typeRenderlet) {
+
+	}
+
+
 }

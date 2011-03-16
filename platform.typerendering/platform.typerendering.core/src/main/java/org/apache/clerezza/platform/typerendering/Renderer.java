@@ -20,7 +20,6 @@ package org.apache.clerezza.platform.typerendering;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.Map;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -31,30 +30,19 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 /**
  * A instance of this class is created by a <code>RendererFactory</code>
  * implementation. <code>Renderer</code> is used to render <code>GraphNode</code>s.
- * It also provides methods to get information about the created renderer
- * (e.g. media type of the output).
+ *
+ * The difference between this and a TYpeRenderer is that this renders
+ * a node without doing CallBacks, while a TypeRenderlet might delegate parts of
+ * the rendering by doing callbacks.
  *  
- * @author mir
+ * @author mir, reto
  */
 public interface Renderer  {
 
-	/**
-	 * Returns the <code>URI</code> of the rendering specification that will
-	 * be used for rendering.
-	 *
-	 * @return
-	 */
-	public URI getRenderingSpecificationUri();
 
 	/**
-	 * Returns the <code>Renderlet</code> that will be used for rendering.
-	 * @return
-	 */
-	public Renderlet getRenderlet();
-
-	/**
-	 * Returns a <code>MediaType</code> Object represeting the media type of
-	 * the rendered <code>GraphNode</code>.
+	 * Returns a <code>MediaType</code> Object representing the media type
+	 * that will be produced <code>GraphNode</code>.
 	 * @return
 	 */
 	public MediaType getMediaType();
@@ -69,7 +57,7 @@ public interface Renderer  {
 	 * @param httpHeaders the http-headers of the request
 	 * @param os  where the output will be written to.
 	 */
-	public void render(GraphNode node, GraphNode userContext, UriInfo uriInfo,
+	public void render(GraphNode node, GraphNode userContext, String mode, UriInfo uriInfo,
 			HttpHeaders requestHeaders,
 			MultivaluedMap<String, Object> responseHeaders,
 			Map<String, Object> sharedRenderingValues, OutputStream entityStream)
