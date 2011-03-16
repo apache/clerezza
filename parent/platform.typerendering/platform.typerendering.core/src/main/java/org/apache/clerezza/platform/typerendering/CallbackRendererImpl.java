@@ -35,13 +35,13 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class CallbackRendererImpl implements CallbackRenderer {
 	private List<MediaType> mediaTypeList;
-	RenderletRendererFactoryImpl manager;
+	private RendererFactory manager;
 	private final UriInfo uriInfo;
 	private final HttpHeaders requestHeaders;
 	private final MultivaluedMap<String, Object> responseHeaders;
 	private final Map<String, Object> sharedRenderingValue;
 
-	CallbackRendererImpl(RenderletRendererFactoryImpl manager, UriInfo uriInfo,
+	CallbackRendererImpl(RendererFactory manager, UriInfo uriInfo,
 			HttpHeaders requestHeaders, MultivaluedMap<String, Object> responseHeaders, MediaType mediaType, Map<String, Object> sharedRenderingValue) {
 		this.uriInfo = uriInfo;
 		this.requestHeaders = requestHeaders;
@@ -59,7 +59,7 @@ public class CallbackRendererImpl implements CallbackRenderer {
 			throw new RuntimeException("no renderer could be created for "+
 					resource+" (in "+resource.getNodeContext()+"), "+mode+","+mediaTypeList);
 		}
-		renderer.render(resource, context, uriInfo, requestHeaders, responseHeaders,
+		renderer.render(resource, context, mode, uriInfo, requestHeaders, responseHeaders,
 				sharedRenderingValue, os);
 	}
 

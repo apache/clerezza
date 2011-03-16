@@ -35,30 +35,28 @@ import org.osgi.framework.BundleContext;
 
 /**
  *
- * @author mir
+ * @deprecated uses Renderlet
+ * @author mir, reto
  */
-class RendererImpl implements Renderer, Comparable {
+@Deprecated
+class RenderletRendererImpl implements Renderer {
 
 	private URI renderSpecUri = null;
 	private Renderlet renderlet = null;
 	private MediaType mediaType = null;
-	private int prio;
+	//private int prio;
 	//private CallbackRenderer callbackRenderer;
 	private boolean builtIn;
-	private String mode;
-	private final RenderletRendererFactoryImpl renderletRendererFactoryImpl;
+	private final RendererFactory rendererFactory;
 	private final BundleContext bundleContext;
 
-	RendererImpl(UriRef renderingSpecification,
-			Renderlet renderlet, String mode, MediaType mediaType, int prio,
-			RenderletRendererFactoryImpl renderletRendererFactoryImpl, boolean builtIn,
+	RenderletRendererImpl(UriRef renderingSpecification,
+			Renderlet renderlet, MediaType mediaType, 
+			RendererFactory rendererFactory,
 			BundleContext bundleContext) {
 		this.renderlet = renderlet;
 		this.mediaType = mediaType;
-		this.mode = mode;
-		this.prio = prio;
-		this.renderletRendererFactoryImpl = renderletRendererFactoryImpl;
-		this.builtIn = builtIn;
+		this.rendererFactory = rendererFactory;
 		if (renderingSpecification != null) {
 			try {
 				renderSpecUri = new URI(renderingSpecification.getUnicodeString());
@@ -70,33 +68,21 @@ class RendererImpl implements Renderer, Comparable {
 	}
 
 	@Override
-	public URI getRenderingSpecificationUri() {
-		return renderSpecUri;
-	}
-
-	@Override
-	public Renderlet getRenderlet() {
-		return renderlet;
-	}
-
-	@Override
 	public MediaType getMediaType() {
 		return mediaType;
 	}
 
-	protected int getPrio() {
-		return prio;
-	}
 
 	@Override
-	public void render(GraphNode resource, GraphNode context, UriInfo uriInfo,
-			
+	public void render(GraphNode resource, GraphNode context,
+			String mode,
+			UriInfo uriInfo,
 			HttpHeaders requestHeaders,
 			MultivaluedMap<String, Object> responseHeaders,
 			Map<String, Object> sharedRenderingValues,
 			OutputStream entityStream) throws IOException {
 		CallbackRenderer callbackRenderer =
-				new CallbackRendererImpl(renderletRendererFactoryImpl,
+				new CallbackRendererImpl(rendererFactory,
 				uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
 		renderlet.render(resource, context, sharedRenderingValues, callbackRenderer,
 			renderSpecUri, mode, mediaType,
@@ -105,25 +91,6 @@ class RendererImpl implements Renderer, Comparable {
 			entityStream);
 	}
 
-	@Override
-	public int compareTo(Object o) {
-		RendererImpl otherConf = (RendererImpl) o;
-		if (this.prio == otherConf.getPrio()) {
-			if (this.builtIn == otherConf.builtIn) {
-				return 0;
-			}
-			if (this.builtIn) {
-				return 1;
-			} else {
-				return -1;
-			}
 
-		}
-		if (this.getPrio() < otherConf.getPrio()) {
-			return -1;
-		} else {
-			return 1;
-		}
-	}
 
 }

@@ -20,8 +20,6 @@ package org.apache.clerezza.platform.typerendering;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
-import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
@@ -29,36 +27,42 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
+import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
- * A renderlet renders a <code>GraphNode</code> with the optionally specified
- * rendering specification (e.g. a template).
+ * A typerenderlet creates a representation of resource described in a graph.
  *
- * @deprecated used {@TypeRenderlet} instead
- * @author daniel, mir, reto
+ * @author reto
  */
-public interface Renderlet {
+public interface TypeRenderlet {
 
 	/**
-	 * A class repressing properties of the http request within which the
-	 * Renderlet is used, it also allows access to contextual rendering services.
+	 * A class repressing properties of the rendering request within which the
+	 * TypeRenderlet is used. It also allows access to contextual rendering services.
 	 */
 	static class RequestProperties {
+
 		private UriInfo uriInfo;
 		private MultivaluedMap<String, Object> responseHeaders;
 		private HttpHeaders requestHeaders;
-		public final BundleContext bundleContext;      //public only to test an idea
+		private final BundleContext bundleContext;
+		private final String mode;
+		private final MediaType mediaType;
 
-		public RequestProperties(UriInfo uriInfo, 
+		public RequestProperties(UriInfo uriInfo,
 				HttpHeaders requestHeaders,
 				MultivaluedMap<String, Object> responseHeaders,
+				String mode,
+				MediaType mediaType,
 				BundleContext bundleContext) {
 			this.uriInfo = uriInfo;
 			this.requestHeaders = requestHeaders;
 			this.responseHeaders = responseHeaders;
+			this.mode = mode;
+			this.mediaType = mediaType;
 			this.bundleContext = bundleContext;
 		}
 
@@ -75,6 +79,25 @@ public interface Renderlet {
 		}
 
 		/**
+		 * the media type of the representation to be produced.
+		 *
+		 * @return the concrete MediaType
+		 */
+		public MediaType getMediaType() {
+			return mediaType;
+		}
+
+		/**
+		 * the mode the TypeRenderlet is invoked with, this is mainly used
+		 * so that the callbackRenderer can be called inheriting the mode.
+		 *
+		 * @return
+		 */
+		public String getMode() {
+			return mode;
+		}
+
+		/**
 		 * Rendering services
 		 *
 		 * @param type
@@ -82,10 +105,10 @@ public interface Renderlet {
 		 */
 		public <T> T getRenderingService(final Class<T> type) {
 			return AccessController.doPrivileged(
-				new PrivilegedAction<T>() {				
+					new PrivilegedAction<T>() {
 
-					@Override
-					public T run() {
+						@Override
+						public T run() {
 							ServiceReference serviceReference = bundleContext.getServiceReference(type.getName());
 							if (serviceReference != null) {
 								T resultCandidate = (T) bundleContext.getService(serviceReference);
@@ -101,31 +124,44 @@ public interface Renderlet {
 					});
 		}
 	}
-	
-	
+
 	/**
-	 * Renders the data from <code>res</code> with a appropriate rendering
-	 * engine.
+	 * @return the rdf type rendered by this renderlet
+	 */
+	UriRef getRdfType();
+
+	/**
+	 * The renderer may render resources in different modes. Such a mode is
+	 * typically set when a renderlet calls back the renderer to delegate a
+	 * referenced resource.
 	 *
-	 * @param res  RDF resource to be rendered with the template.
-	 * @param context  RDF resource providing a rendering context.
+	 * @return a regex the mode must match
+	 */
+	String getModePatter();
+
+	/**
+	 *
+	 * @return the Media Type pattern this TypeRenderlet supports
+	 */
+	MediaType getMediaType();
+
+	/**
+	 * Renders a node, possibly considering the context of the rendering request
+	 * (e.g. for which user the resource is rendered for) to a stream.
+	 *
+	 * @param node  RDF resource to be rendered with the template.
+	 * @param context  RDF resource providing a rendering context, typically this
+	 *		  contains a description of the user for which the resource is to be rendered
 	 * @param sharedRenderingValues	a map that can be used for sharing values
 	 * across the different Renderlets involved in a rendering process
 	 * @param callbackRenderer  renderer for call backs.
-	 * @param renderingSpecification  the rendering specification
-	 * @param mediaType  the media type this media produces (a part of)
-	 * @param mode  the mode this Renderlet was invoked with, this is mainly used
-	 * so that the callbackRenderer can be claeed inheriting the mode.
-	 * @param requestProperties properties of the http request, may be null
+	 * @param requestProperties properties of this rendering request
 	 * @param os  where the output will be written to.
 	 */
-	public void render(GraphNode res,
+	public void render(GraphNode node,
 			GraphNode context,
 			Map<String, Object> sharedRenderingValues,
 			CallbackRenderer callbackRenderer,
-			URI renderingSpecification,
-			String mode,
-			MediaType mediaType,
 			RequestProperties requestProperties,
 			OutputStream os) throws IOException;
 }
