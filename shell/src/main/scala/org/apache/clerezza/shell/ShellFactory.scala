@@ -34,9 +34,10 @@ class ShellFactory()  {
 
 
 
-	var interpreterFactory: InterpreterFactory = null
-	var componentContext: ComponentContext = null
-	var commands = Set[ShellCommand]()
+	private var interpreterFactory: InterpreterFactory = null
+	private var componentContext: ComponentContext = null
+	private var commands = Set[ShellCommand]()
+	private var customizers = Set[ShellCustomizer]()
 	
 	def activate(componentContext: ComponentContext)= {
 		this.componentContext = componentContext
@@ -46,16 +47,29 @@ class ShellFactory()  {
 		this.componentContext = componentContext
 	}
 
-	def createShell(in: InputStream, out: OutputStream) = {
+	def createShell(pIn: InputStream, pOut: OutputStream) = {
 		AccessController.checkPermission(new ShellPermission())
 		AccessController.doPrivileged(new PrivilegedAction[Shell] {
 				override def run() = {
-					val shell = new Shell(interpreterFactory, in, out, commands)
+					val shell = new Shell(interpreterFactory, pIn, pOut, commands)
 					//shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
 					//shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
-					shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext, out))
+					shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext, pOut))
 					shell.addImport("org.apache.clerezza.{scala => zzscala, _ }")
 					shell.addImport("osgiDsl._")
+					val environment = new Shell.Environment {
+						val componentContext: ComponentContext = ShellFactory.this.componentContext
+						val in: InputStream = pIn;
+						val out: OutputStream = pOut;
+					}
+					for (c <- customizers) {
+						for(b <- c.bindings(environment)) {
+							shell.bind(b._1, b._2, b._3)
+						}
+						for(i <- c.imports) {
+							shell.addImport(i)
+						}
+					}
 					shell
 				}
 			})
@@ -75,5 +89,13 @@ class ShellFactory()  {
 
 	def unbindCommand(c: ShellCommand) = {
 		commands -= c
+	}
+
+	def bindCustomizer(c: ShellCustomizer) = {
+		customizers += c
+	}
+
+	def unbindCustomizer(c: ShellCustomizer) = {
+		customizers -= c
 	}
 }

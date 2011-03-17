@@ -219,4 +219,10 @@ object Shell {
 	trait TerminationListener {
 		def terminated: Unit
 	}
+	
+	trait Environment {
+		val componentContext: ComponentContext;
+		val in: InputStream;
+		val out: OutputStream;
+	}
 }
