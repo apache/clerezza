@@ -22,5 +22,9 @@
 				interface="org.apache.clerezza.shell.ShellCommand"
 				cardinality="0..n"
 				bind="bindCommand" unbind="unbindCommand"/>
+		<reference name="customizers"
+				interface="org.apache.clerezza.shell.ShellCustomizer"
+				cardinality="0..n"
+				bind="bindCustomizer" unbind="unbindCustomizer"/>
     </scr:component>
 </components>

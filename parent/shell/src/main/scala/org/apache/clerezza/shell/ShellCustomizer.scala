@@ -18,13 +18,25 @@
  */
 package org.apache.clerezza.shell
 
-import java.io.OutputStream
 
-trait ShellCommand {
-	def command: String
-	def description: String
+import java.io.InputStream
+import java.io.OutputStream
+import org.osgi.service.component.ComponentContext
+
+/**
+ * A service implemebting this trait provides bjects and/or imports available
+ * on any shell by default
+ */
+trait ShellCustomizer {
+
 	/**
-	 * Extecutes the command an return (keepRunning,Option[lineToRecord])
+	 * A list of bindings that will be available in the shell
+	 * The tuple consist of: bindingName, typeName, value
 	 */
-	def execute(line: String, out: OutputStream): (Boolean, Option[String])
+	def bindings(e: Shell.Environment): List[(String, String, Any)]
+
+	/**
+	 * A list of imports that will be available in the shell
+	 */
+	def imports: List[String]
 }
