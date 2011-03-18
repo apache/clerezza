@@ -257,7 +257,7 @@ public class RenderletManagerImpl implements RenderletManager {
 			}
 
 			@Override
-			public String getModePatter() {
+			public String getModePattern() {
 				return modePattern;
 			}
 

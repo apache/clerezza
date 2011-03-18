@@ -137,7 +137,7 @@ public interface TypeRenderlet {
 	 *
 	 * @return a regex the mode must match
 	 */
-	String getModePatter();
+	String getModePattern();
 
 	/**
 	 *
