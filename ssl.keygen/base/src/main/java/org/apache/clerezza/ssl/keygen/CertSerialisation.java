@@ -32,14 +32,13 @@
 
 package org.apache.clerezza.ssl.keygen;
 
-import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
  * This makes it easier to send serialisations out in scripting languages such as velocity.
  *
- * @author Henry K. Story
+ * @author Henry J. Story
  */
 public interface CertSerialisation {
 
@@ -63,14 +62,6 @@ public interface CertSerialisation {
 	 * @param out the output stream to write this serialisation too
 	 */
 	void writeTo(OutputStream out) throws IOException;
-
-	/**
-	 * Write the full response the response object, including headers, such as content length and mime type
-	 * Clients should use this method, as it reduces the risk of making a mistake
-	 *
-	 * @param response
-	 */
-	void writeTo(ServletResponse response) throws IOException;
 
 
 }

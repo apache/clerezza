@@ -65,7 +65,6 @@ import java.util.List
 import org.apache.clerezza.platform.typerendering.scala.PageRenderlet
 import org.apache.clerezza.rdf.ontologies.RDFS
 import org.apache.clerezza.ssl.keygen.KeygenService
-import org.apache.clerezza.platform.users.{Cache, WebDescriptionProvider, WebIdGraphsService}
 
 object PersonPanel {
 	private val logger: Logger = LoggerFactory.getLogger(classOf[ProfilePanel])
@@ -106,25 +105,6 @@ class PersonPanel  {
 	   return resultNode
 	}
 
-	protected def bindWebIdGraphsService(webidgraphsservice: WebIdGraphsService): Unit = {
-		webIdGraphsService = webidgraphsservice
-	}
-
-	protected def unbindWebIdGraphsService(webidgraphsservice: WebIdGraphsService): Unit = {
-		if (webIdGraphsService == webidgraphsservice) {
-			webIdGraphsService = null
-		}
-	}
-
-	protected def bindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
-		this.descriptionProvider = descriptionProvider
-	}
-
-	protected def unbindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
-		if (descriptionProvider == this.descriptionProvider) {
-			this.descriptionProvider = null
-		}
-	}
 
 
 	protected def bindRenderletManager(renderletmanager: RenderletManager): Unit = {
@@ -138,20 +118,7 @@ class PersonPanel  {
 	}
 
 
-	//
-	//needed by code
-	//
-	private var descriptionProvider: WebDescriptionProvider = null
-	private var webIdGraphsService: WebIdGraphsService = null
-
-	//
-	//needed by framework
-	//
-
 	//called by the ssp, web component
 	private var renderletManager: RenderletManager = null
-
-	//set in activate. But is it useful to keep an pointer to it?
-	//private var componentContext: ComponentContext = null
 
 }

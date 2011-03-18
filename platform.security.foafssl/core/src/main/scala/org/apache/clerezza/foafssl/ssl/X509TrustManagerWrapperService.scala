@@ -56,19 +56,19 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.jsslutils.sslcontext.X509TrustManagerWrapper
 import org.jsslutils.sslcontext.trustmanagers.TrustAllClientsWrappingTrustManager
 import org.slf4j.LoggerFactory
-import org.apache.clerezza.platform.users.{Cache, WebDescriptionProvider}
+import org.apache.clerezza.rdf.web.proxy.{WebProxy, Cache}
 
 class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 
 	private val logger = LoggerFactory.getLogger(classOf[X509TrustManagerWrapperService])
-	private var descriptionProvider: WebDescriptionProvider = null;
+	private var webproxy: WebProxy = null;
 
-	protected def bindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
-		this.descriptionProvider = descriptionProvider
+	protected def bindWebProxy(webcache: WebProxy) = {
+		this.webproxy = webcache
 	}
 	
-	protected def unbindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
-		this.descriptionProvider = null
+	protected def unbindWebProxy(webcache: WebProxy) = {
+		this.webproxy = null
 	}
 	
 	private var systemGraph: MGraph = null
@@ -116,23 +116,22 @@ class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 	
 	private val systemGraphUri = Constants.SYSTEM_GRAPH_URI;
 	
-	private def verify(uriRef: UriRef, publicKey: PublicKey): Unit = {
-		var webDescription = descriptionProvider.getWebDescription(uriRef, Cache.CacheOnly)
+	private def verify(webidClaim: UriRef, publicKey: PublicKey): Unit = {
+		var webIdInfo = webproxy.getResourceInfo(webidClaim, Cache.CacheOnly)
 		if (
-			!verify(uriRef, publicKey, webDescription.getGraph)
+			!verify(webidClaim, publicKey, webIdInfo.localCache)
 		) {
-			webDescription = descriptionProvider.getWebDescription(uriRef, Cache.ForceUpdate)
+			webIdInfo = webproxy.getResourceInfo(webidClaim, Cache.ForceUpdate)
 			if (
-				!verify(uriRef, publicKey, webDescription.getGraph)
+				!verify(webidClaim, publicKey, webIdInfo.localCache)
 			) throw new CertificateException
 		}
-		systemGraph.addAll(createSystemUserDescription(webDescription))
+		systemGraph.addAll(createSystemUserDescription(webidClaim))
 	}
 	
-	def createSystemUserDescription(webDescription: GraphNode) = {
+	def createSystemUserDescription(webId: UriRef): MGraph = {
 		val result = new SimpleMGraph()
-		val webId = webDescription.getNode.asInstanceOf[UriRef]
-		result.add(new TripleImpl(webId, PLATFORM.userName, 
+		result.add(new TripleImpl(webId, PLATFORM.userName,
 								  new PlainLiteralImpl(Utilities.createUsernameForWebId(webId))))
 		result.add(new TripleImpl(webId, RDF.`type` , 
 								  FOAF.Agent))

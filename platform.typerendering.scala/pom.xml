@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.users.core</artifactId>
+			<artifactId>rdf.web.proxy.core</artifactId>
 		</dependency>
 	</dependencies>
 

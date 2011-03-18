@@ -129,7 +129,10 @@ class profile_panel extends PageRenderlet {
 			  val friends = for (friend <- agent/FOAF.knows) yield {
 			  import person_panel._
 			  val node = friend.getNode() match {
-				  case uri: UriRef => personInABox(fetch(uri))
+				  case uri: UriRef => fetch(uri) match {
+					  case Some(grp) => personInABox(grp)
+					  case None => emptyText
+				  }
 				  case _ => emptyText //one could show info with bnodes too...
 			  }
 			  <td>{node}</td>

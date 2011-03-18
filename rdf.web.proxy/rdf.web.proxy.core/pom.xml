@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>rdf.web.proxy</artifactId>
+        <version>0.2-incubating-SNAPSHOT</version>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>rdf.web.proxy.core</artifactId>
+    <packaging>bundle</packaging>
+    <version>0.2-incubating-SNAPSHOT</version>
+    <name>Clerezza - SCB RDF Web Caching Proxy Core</name>
+    <description>The core part of SCB RDF Web Proxy Caching Service</description>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.typerendering.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.typerendering.scalaserverpages</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.jena.serializer</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.jena.parser</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+        </dependency>
+        <!--dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency-->
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>jaxrs.utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.ontologies</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.web.ontologies</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.dashboard.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>permissiondescriptions</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <!--testSourceDirectory>src/test/scala</testSourceDirectory-->
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- <scalaVersion>${scala.version}</scalaVersion> -->
+                    <!-- <args>
+                        <arg>-target:jvm-1.5</arg>
+                    </args> -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
+                        <Export-Package>org.apache.clerezza.rdf.web.proxy</Export-Package>
+                        <Bundle-SymbolicName>org.apache.clerezza.rdf.web.proxy</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
+

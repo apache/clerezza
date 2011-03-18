@@ -33,7 +33,7 @@ import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.security.{PrivilegedAction, AccessController}
 import org.osgi.framework.{BundleContext, ServiceReference}
-import org.apache.clerezza.platform.users.{WebDescriptionProvider, Cache}
+import org.apache.clerezza.rdf.web.proxy.{WebProxy,Cache}
 import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 
 /**
@@ -78,13 +78,13 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 		parseNodeSeq(new String(baos.toByteArray))
 	}
 
-	def fetch(uri: UriRef) : GraphNode = {
-		val webSrvc = AccessController.doPrivileged(new PrivilegedAction[WebDescriptionProvider] {
-			def run: WebDescriptionProvider = {
+	def fetch(uri: UriRef) : Option[GraphNode] = {
+		val webSrvc = AccessController.doPrivileged(new PrivilegedAction[WebProxy] {
+			def run: WebProxy = {
 				val cntxt: BundleContext = requestProperties.bundleContext
-				var serviceReference: ServiceReference = cntxt.getServiceReference("org.apache.clerezza.platform.users.WebDescriptionProvider")
+				var serviceReference: ServiceReference = cntxt.getServiceReference("org.apache.clerezza.rdf.web.proxy.WebProxy")
 				if (serviceReference != null) {
-					return cntxt.getService(serviceReference).asInstanceOf[WebDescriptionProvider]
+					return cntxt.getService(serviceReference).asInstanceOf[WebProxy]
 				} else {
 					return null
 				}
@@ -93,8 +93,7 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 		//This should return not a graph, but a graph surrounded with HTTP metadata, so that the user
 		//connection error messages can be designed, and so on.
 		//The graph should be fetched as the user also if this is required.
-		val grph = webSrvc.fetchSemantics(uri,Cache.Fetch)
-		return new GraphNode(uri,grph)
+		return webSrvc.fetchSemantics(uri,Cache.Fetch)
 	}
 
 	/**

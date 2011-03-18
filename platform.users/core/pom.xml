@@ -39,7 +39,10 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.scala.utils</artifactId>
 		</dependency>
-
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.web.proxy.core</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security</artifactId>
@@ -69,7 +72,7 @@
 
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
-		<testSourceDirectory>src/test/scala</testSourceDirectory>
+		<!--testSourceDirectory>src/test/scala</testSourceDirectory-->
 		<plugins>
 			<plugin>
 				<groupId>org.scala-tools</groupId>

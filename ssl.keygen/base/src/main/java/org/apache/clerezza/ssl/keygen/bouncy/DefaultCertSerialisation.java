@@ -35,7 +35,6 @@ package org.apache.clerezza.ssl.keygen.bouncy;
 import org.apache.clerezza.ssl.keygen.CertSerialisation;
 import org.apache.clerezza.ssl.keygen.Certificate;
 
-import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -60,13 +59,6 @@ public abstract class DefaultCertSerialisation implements CertSerialisation {
 	@Override
 	public void writeTo(OutputStream out) throws IOException {
 		out.write(getContent());
-	}
-
-	@Override
-	public void writeTo(ServletResponse response) throws IOException {
-		response.setContentLength(getLength());
-		response.setContentType(getMimeType());
-		writeTo(response.getOutputStream());
 	}
 
 	/**

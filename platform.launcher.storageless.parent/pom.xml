@@ -257,7 +257,7 @@
 			<artifactId>rdf.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
+    	<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.content</artifactId>
 			<scope>runtime</scope>
@@ -345,6 +345,11 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.web.ontologies</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.web.proxy.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
