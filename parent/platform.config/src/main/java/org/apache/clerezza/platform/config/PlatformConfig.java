@@ -141,6 +141,7 @@ public class PlatformConfig {
 	 * A base Uri is the shortest URI of a URI-Hierarhy the platform handles.
 	 * @return the base URI of the Clerezza platform
 	 */
+	//todo: if this is the only class that sets and reads base uris then getBaseURIs should keep a cache
 	public Set<UriRef> getBaseUris() {
 
 		return AccessController.doPrivileged(new PrivilegedAction<Set<UriRef>>() {

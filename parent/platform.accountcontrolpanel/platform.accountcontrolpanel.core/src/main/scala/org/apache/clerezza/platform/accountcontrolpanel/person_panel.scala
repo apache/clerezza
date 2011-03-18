@@ -25,9 +25,9 @@ import org.apache.clerezza.platform.typerendering.scala._
 import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.rdf.utils.GraphNode
-import org.apache.clerezza.rdf.ontologies.{RDFS, RDF, FOAF}
 import xml.{NodeSeq, NodeBuffer, Text, Node}
 import java.net.{URLEncoder, URL}
+import org.apache.clerezza.rdf.ontologies.{RDF, FOAF, RDFS}
 
 object person_panel {
 	final val emptyText = new Text("")
@@ -154,7 +154,7 @@ class person_panel extends PageRenderlet {
 	   val it: CollectedIter[RichGraphNode] = res / FOAF.primaryTopic
 	   val primeTpc: RichGraphNode = it.apply(0)
 		val agent : RichGraphNode= primeTpc! match {
-			case uri : UriRef => fetch(uri)
+			case uri : UriRef => fetch(uri) match { case Some(grph) => grph; case None => res};
 			case _ => res
 		}
 

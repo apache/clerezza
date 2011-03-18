@@ -43,8 +43,6 @@
 				   cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
         <reference name="platformConfig" interface="org.apache.clerezza.platform.config.PlatformConfig"
 				   cardinality="1..1" policy="static" bind="bindPlatformConfig" unbind="unbindPlatformConfig"/>
-		<reference name="webDescriptionProvider" interface="org.apache.clerezza.platform.users.WebDescriptionProvider"
-		           cardinality="1..1" policy="static" bind="bindWebDescriptionProvider" unbind="unbindWebDescriptionProvider"/>
     </scr:component>
 	<scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.PersonPanel">
 		<implementation class="org.apache.clerezza.platform.accountcontrolpanel.PersonPanel"/>
@@ -53,10 +51,6 @@
 		</service>
 		<property name="javax.ws.rs" type="Boolean" value="true"/>
 		<property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.PersonPanel"/>
-		<reference name="webIdGraphsService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
-				   cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
-		<reference name="webDescriptionProvider" interface="org.apache.clerezza.platform.users.WebDescriptionProvider"
-				   cardinality="1..1" policy="static" bind="bindWebDescriptionProvider" unbind="unbindWebDescriptionProvider"/>
 		<reference name="renderletManager" interface="org.apache.clerezza.platform.typerendering.RenderletManager"
 				   cardinality="1..1" policy="static" bind="bindRenderletManager" unbind="unbindRenderletManager"/>
 	</scr:component>

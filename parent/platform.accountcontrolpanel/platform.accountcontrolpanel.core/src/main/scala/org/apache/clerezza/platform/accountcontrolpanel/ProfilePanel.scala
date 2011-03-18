@@ -31,10 +31,8 @@ import org.apache.clerezza.jaxrs.utils.TrailingSlash
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.typerendering.RenderletManager
-import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet
 import org.apache.clerezza.platform.usermanager.UserManager
 import org.apache.clerezza.rdf.core._
-import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 import org.apache.clerezza.rdf.core.impl.TripleImpl
 import org.apache.clerezza.rdf.ontologies.DC
@@ -43,11 +41,6 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM
 import org.apache.clerezza.rdf.ontologies.RDF
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.utils.UnionMGraph
-import org.apache.clerezza.web.fileserver.FileServer
-import org.apache.felix.scr.annotations.Component
-import org.apache.felix.scr.annotations.Property
-import org.apache.felix.scr.annotations.Reference
-import org.apache.felix.scr.annotations.Service
 import org.osgi.service.component.ComponentContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -57,14 +50,12 @@ import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriInfo
 import java.math.BigInteger
-import java.net.URL
 import java.security.AccessController
 import java.security.PrivilegedAction
 import java.security.interfaces.RSAPublicKey
-import org.apache.clerezza.platform.typerendering.scala.PageRenderlet
 import org.apache.clerezza.rdf.ontologies.RDFS
 import org.apache.clerezza.ssl.keygen.KeygenService
-import org.apache.clerezza.platform.users.{WebDescriptionProvider, WebIdGraphsService}
+import org.apache.clerezza.platform.users.WebIdGraphsService
 
 object ProfilePanel {
 	private val logger: Logger = LoggerFactory.getLogger(classOf[ProfilePanel])
@@ -133,10 +124,10 @@ class ProfilePanel {
 	 *         the local graph. Local changes can be written to a buffer graph, that will have not be saved.
 	 */
 	private def getProfileInUserGraph(webId: UriRef, profile: UriRef): GraphNode = {
-		var webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(webId)
-		var userGraph: MGraph = webIdGraphs.publicUserGraph
+		var webIDInfo = webIdGraphsService.getWebIDInfo(webId)
+		var userGraph: MGraph = webIDInfo.publicUserGraph
 		var resultNode: GraphNode = new GraphNode(profile, new UnionMGraph(new SimpleMGraph, userGraph))
-		resultNode.addProperty(CONTROLPANEL.isLocalProfile, LiteralFactory.getInstance.createTypedLiteral(webIdGraphs.isLocal))
+		resultNode.addProperty(CONTROLPANEL.isLocalProfile, LiteralFactory.getInstance.createTypedLiteral(webIDInfo.isLocal))
 		resultNode.addProperty(FOAF.primaryTopic, webId)
 		return resultNode
 	}
@@ -161,8 +152,12 @@ class ProfilePanel {
 							 @PathParam(value = "id") userName: String): Response = {
 		val ppd: UriRef = getSuggestedPPDUri(userName)
 		val webId: UriRef = new UriRef(ppd.getUnicodeString + "#me")
-		val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(webId)
-		webIdGraphs.localGraph.addAll(Arrays.asList(new TripleImpl(ppd, RDF.`type`, FOAF.PersonalProfileDocument), new TripleImpl(ppd, FOAF.primaryTopic, webId)))
+		val webIDInfo = webIdGraphsService.getWebIDInfo(webId)
+		webIDInfo.localGraph.addAll(
+			Arrays.asList(
+			new TripleImpl(ppd, RDF.`type`, FOAF.PersonalProfileDocument),
+			new TripleImpl(ppd, FOAF.primaryTopic, webId))
+		)
 		return AccessController.doPrivileged(new PrivilegedAction[Response] {
 			def run: Response = {
 				var userInSystemGraph: GraphNode = userManager.getUserInSystemGraph(userName)
@@ -185,9 +180,8 @@ class ProfilePanel {
 				}
 			})
 			for (contactWebID <- newContacts) {
-				val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(me.getNode.asInstanceOf[UriRef])
+				val webIdGraphs = webIdGraphsService.getWebIDInfo(me.getNode.asInstanceOf[UriRef])
 				var meGrph: GraphNode = new GraphNode(me.getNode, webIdGraphs.localGraph)
-				webIdGraphsService.getWebIdGraphs(contactWebID)
 				meGrph.addProperty(FOAF.knows, contactWebID)
 			} //todo: one should catch errors here (bad uris sent for ex
 		}
@@ -251,8 +245,8 @@ class ProfilePanel {
 		var pubKey: RSAPublicKey = cert.getSubjectPublicKey.getPublicKey.asInstanceOf[RSAPublicKey]
 		var publicExponent: BigInteger = pubKey.getPublicExponent
 		var modulus: BigInteger = pubKey.getModulus
-		val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(webId)
-		val certNode: GraphNode = new GraphNode(new BNode, webIdGraphs.localGraph)
+		val webIdInfo: WebIdGraphsService#WebIDInfo = webIdGraphsService.getWebIDInfo(webId)
+		val certNode: GraphNode = new GraphNode(new BNode, webIdInfo.localGraph)
 		certNode.addProperty(RDF.`type`, RSA.RSAPublicKey)
 		certNode.addProperty(CERT.identity, webId)
 		certNode.addPropertyValue(RSA.modulus, modulus)
@@ -270,8 +264,8 @@ class ProfilePanel {
 	def deleteKey(@Context uriInfo: UriInfo,
 					  @FormParam("webId") webId: UriRef,
 					  @FormParam("keyhash") keys: List[String]): Response = {
-		val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(webId)
-		val agent: GraphNode = new GraphNode(webId, webIdGraphs.localGraph)
+		val webIDInfo = webIdGraphsService.getWebIDInfo(webId)
+		val agent: GraphNode = new GraphNode(webId, webIDInfo.localGraph)
 		var subjects: Iterator[GraphNode] = agent.getSubjectNodes(CERT.identity)
 		import scala.util.control.Breaks._
 		breakable {
@@ -305,13 +299,13 @@ class ProfilePanel {
 							@FormParam("webId") webId: UriRef,
 							@FormParam("name") name: String,
 							@FormParam("description") description: String): Response = {
-		val webIdGraphs: WebIdGraphsService#WebIdGraphs = webIdGraphsService.getWebIdGraphs(webId)
-		val agent: GraphNode = new GraphNode(webId, webIdGraphs.localGraph)
+		val webIDInfo = webIdGraphsService.getWebIDInfo(webId)
+		val agent: GraphNode = new GraphNode(webId, webIDInfo.localGraph)
 		agent.deleteProperties(FOAF.name)
 		agent.addPropertyValue(FOAF.name, name)
 		agent.deleteProperties(DC.description)
 		agent.addPropertyValue(DC.description, description)
-		logger.debug("local graph (uri: {}) is now of size {}", webIdGraphs.localGraphUri, webIdGraphs.localGraph.size)
+		logger.debug("local graph (uri: {}) is now of size {}", webIDInfo.localGraphUri, webIDInfo.localGraph.size)
 		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
 	}
 
@@ -365,16 +359,6 @@ class ProfilePanel {
 		}
 	}
 
-	protected def bindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
-		this.descriptionProvider = descriptionProvider
-	}
-
-	protected def unbindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
-		if (descriptionProvider == this.descriptionProvider) {
-			this.descriptionProvider = null
-		}
-	}
-
 	protected def activate(componentContext: ComponentContext): Unit = {
 		this.componentContext = componentContext
 	}
@@ -382,9 +366,7 @@ class ProfilePanel {
 
 	private var userManager: UserManager = null
 
-	//todo: does one need both of these?
 	private var webIdGraphsService: WebIdGraphsService = null
-	private var descriptionProvider: WebDescriptionProvider = null
 
 	private var keygenSrvc: KeygenService = null
 	private var platformConfig: PlatformConfig = null
