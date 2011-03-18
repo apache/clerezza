@@ -138,7 +138,7 @@ public class RendererFactory {
 			regexMap = new RegexMap<MediaTypeMap<Renderer>>();
 			typeRenderletMap.put(rdfType, regexMap);
 		}
-		final String mode = typeRenderlet.getModePatter();
+		final String mode = typeRenderlet.getModePattern();
 		MediaTypeMap<Renderer> mediaTypeMap = regexMap.getFirstExactMatch(mode);
 		if (mediaTypeMap == null) {
 			mediaTypeMap = new MediaTypeMap<Renderer>();
