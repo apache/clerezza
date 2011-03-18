@@ -20,7 +20,6 @@
 package org.apache.clerezza.foafssl.auth
 
 import org.apache.clerezza.foafssl.Utilities
-import org.apache.clerezza.platform.users.WebDescriptionProvider
 import org.apache.clerezza.platform.security.auth._
 import org.apache.clerezza.rdf.core._
 import org.wymiwyg.wrhapi.Request
@@ -32,16 +31,6 @@ import org.wymiwyg.wrhapi.Response
  * already have been done by X509TrustManagerWrapperService
  */
 class FoafSslAuthentication extends WeightedAuthenticationMethod {
-
-	private var descriptionProvider: WebDescriptionProvider = null;
-
-	protected def bindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
-		this.descriptionProvider = descriptionProvider
-	}
-	
-	protected def unbindWebDescriptionProvider(descriptionProvider: WebDescriptionProvider) = {
-		this.descriptionProvider = null
-	}
 
 	
 	def authenticate(request: Request): String = {

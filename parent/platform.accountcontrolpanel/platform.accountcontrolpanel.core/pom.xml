@@ -110,7 +110,12 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.users.core</artifactId>
 		</dependency>
-		<!--dependency> 
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.web.proxy.core</artifactId>
+            <version>0.2-incubating-SNAPSHOT</version>
+        </dependency>
+		<!--dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 			<version></version>
