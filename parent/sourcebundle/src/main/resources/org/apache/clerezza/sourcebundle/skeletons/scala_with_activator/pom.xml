@@ -5,32 +5,11 @@
 		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
-	<artifactId>sourcebundle</artifactId>
+	<artifactId>skeleton</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>Clerezza - Source-Bundle Service</name>
+	<name>Clerezza - Project Skeleton</name>
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.clerezza.scala</groupId>
-			<artifactId>script-engine</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>jline</groupId>
-			<artifactId>jline</artifactId>
-			<version>0.9.94</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-compiler</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
@@ -39,19 +18,38 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.swissbox</groupId>
-			<artifactId>pax-swissbox-tinybundles</artifactId>
-			<version>1.3.0</version>
-		</dependency>
         <dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>utils</artifactId>
+			<artifactId>platform.typerendering.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>shell</artifactId>
+			<artifactId>platform.typerendering.scala</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.ontologies</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.scala.utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>osgi.services</artifactId>
+		</dependency>
+        <dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+        </dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
@@ -62,10 +60,9 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
-						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>org.apache.clerezza.sourcebundle</Export-Package>
-						<Private-Package>sbt,sbt.*</Private-Package>
-						<Bundle-SymbolicName>org.apache.clerezza.sourcebundle</Bundle-SymbolicName>
+						<Bundle-activator>skeleton.Activator</Bundle-activator>
+						<Export-Package>skeleton</Export-Package>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -92,7 +89,6 @@
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
-
 			</plugin>
 		</plugins>
 	</build>
