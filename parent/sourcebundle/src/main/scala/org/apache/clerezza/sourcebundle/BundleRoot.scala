@@ -19,7 +19,7 @@
 
 package org.apache.clerezza.sourcebundle
 
-import java.io._
+
 import scala.actors.DaemonActor
 import scala.io._
 import org.osgi.framework.Bundle
@@ -32,24 +32,28 @@ import org.apache.clerezza.scala.scripting.CompilerService
 import org.osgi.framework.Constants
 import org.osgi.service.component.ComponentContext
 import org.slf4j.LoggerFactory
-import scala.tools.nsc.io.AbstractFile
-import scala.tools.nsc.io.VirtualDirectory
 import scala.collection.mutable
 import org.osgi.service.packageadmin.PackageAdmin
+import tools.nsc.io.{AbstractFile, VirtualDirectory}
+import java.io.{File, FileInputStream, ByteArrayInputStream}
+import org.apache.clerezza.utils.osgi.BundlePathNode
+import org.wymiwyg.commons.util.dirbrowser.PathNode
 
 /**
  * Provides a service that allows to register directories containing a maven-style project
  * structure to be registered as SourceBundle which is added as OSGi Bundle and regenerated
  * whenever a file is changed.
  *
- * Currently only scala files a compiled.
+ * Currently only scala files are compiled.
  */
 class BundleRoot {
 
-	var compilerService: CompilerService = null
-	var packageAdmin: PackageAdmin = null
+	private var compilerService: CompilerService = null
+	private var packageAdmin: PackageAdmin = null
 
-	var bundleContext: BundleContext = null
+	private var bundleContext: BundleContext = null
+
+	private val skeletonsPath = "org/apache/clerezza/sourcebundle/skeletons"
 
 	val sourceBundles = mutable.ListBuffer[SourceBundle]()
 
@@ -72,14 +76,63 @@ class BundleRoot {
 		for (sb <- sourceBundles) sb.stop()
 	}
 
-  /**
-   * Creates a SourceBundle for the sources in the specified dir
-   */
-	def createSourceBundle(dir: File) = {
+	/**
+	 * adds a SourceBundle for the sources in the specified dir
+	 */
+	def addSourceBundle(dir: File) = {
 		val sourceBundle = new SourceBundle(dir)
 		sourceBundle.start()
 		sourceBundles += sourceBundle
 		sourceBundle
+	}
+
+	@deprecated
+	def createSourceBundle(dir: File) = addSourceBundle(dir)
+
+	/**
+	* list of the available skletons
+	*/
+	def availableSkeletons: Seq[Symbol] = {
+		val skeletonsNode = new BundlePathNode(bundleContext.getBundle, skeletonsPath)
+		for (name <- skeletonsNode.list) yield {
+			Symbol(name.substring(1,name.length-1))
+		}
+	}
+
+	/**
+	 * Creates and adds a new SourceBundle from a skeleton, no existing file is
+	 * replaced
+	 */
+	def createSourceBundle(skeleton: Symbol, dir: File) = {
+		dir.mkdirs
+		val skeletonsNode = new BundlePathNode(bundleContext.getBundle, skeletonsPath)
+		val skeletonNode = skeletonsNode.getSubPath(skeleton.name)
+		if (!skeletonNode.exists) {
+			throw new UnavailableSkeletonException(skeleton, availableSkeletons)
+		}
+		def processFile(p: PathNode, f: File) {
+			if (!f.exists) {
+				val in = scala.io.Source.fromInputStream(p.getInputStream)
+				val out = new java.io.PrintWriter(f)
+				try { in.getLines().foreach(out.println(_)) }
+				finally { out.close }
+			}
+		}
+		def processDir(p: PathNode, f: File) {
+			f.mkdir()
+			for (subPathString <- p.list()) {
+				val subPathNode: PathNode = p.getSubPath(subPathString)
+				val subFile: File = new File(f, subPathString)
+				if (subPathNode.isDirectory) {
+					processDir(subPathNode, subFile)
+				} else {
+					processFile(subPathNode, subFile)
+				}
+			}
+		}
+
+		processDir(skeletonNode, dir)
+		addSourceBundle(dir)
 	}
 
 	def bindCompilerService(cs: CompilerService) {
@@ -137,22 +190,27 @@ class BundleRoot {
 
 			val tinyBundle: TinyBundle = newBundle()
 
-			def compileDir(sourceDir: File) {
-				
+			def compileDir(sourceDir: File): Option[String] = {
+
 				val charArrays = getFilesAsCharArrays(sourceDir)
 				logger.debug("compiling "+charArrays.size+" files")
-				
+
 				val vdPathPrefix = "(memory)"
 				val virtualDirectory = new VirtualDirectory(vdPathPrefix, None)
 				//val wrappedDirectory = VirtualDirectoryWrapper.wrap(virtualDirectory, outputListener)
 
 				val writtenClasses = compilerService.compileToDir(charArrays, virtualDirectory)
 				logger.debug("virtualDirectory "+virtualDirectory.size)
+				var potentialActivator: Option[String] = None
 				for (writtenClass <- writtenClasses) {
 					val fullPath = writtenClass.path
 					val path = fullPath.substring(vdPathPrefix.length+1)
+					if (path.endsWith("Activator.class")) {
+						potentialActivator = Some(path.substring(0, path.lastIndexOf('.')).replace('/', '.'))
+					}
 					tinyBundle.add(path, new ByteArrayInputStream(writtenClass.toByteArray))
 				}
+		    potentialActivator
 			}
 
 			def copyResource(resourcesDir: File) {
@@ -178,10 +236,12 @@ class BundleRoot {
 			tinyBundle.set("Bundle-SymbolicName", symName)
 
 			val scalaSourceDir = new File(dir, "src/main/scala")
-			if (scalaSourceDir.exists) {
+
+			val potentialActivator = if (scalaSourceDir.exists) {
 				compileDir(scalaSourceDir)
 			} else {
 				logger.debug("No source dir "+scalaSourceDir)
+				None
 			}
 			val resourcesDir = new File(dir, "src/main/resources")
 			if (resourcesDir.exists) {
@@ -193,6 +253,10 @@ class BundleRoot {
 			if (serviceComponentsFile.exists) {
 				tinyBundle.set("Service-Component", "OSGI-INF/serviceComponents.xml")
 				tinyBundle.set(Constants.EXPORT_PACKAGE, "!OSGI-INF, *" )
+			}
+			potentialActivator match {
+				case Some(s) =>  tinyBundle.set("Bundle-Activator", s)
+				case _ => ;
 			}
 			tinyBundle.set(Constants.IMPORT_PACKAGE, "*" );
 			val in = tinyBundle.build(
@@ -206,7 +270,7 @@ class BundleRoot {
 			} else {
 				bundle.update(in)
 			}
-			
+
 		}
 
 		def act() {
