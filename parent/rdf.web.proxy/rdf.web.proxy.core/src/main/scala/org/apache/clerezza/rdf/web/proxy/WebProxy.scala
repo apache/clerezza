@@ -21,18 +21,14 @@ package org.apache.clerezza.rdf.web.proxy
 
 import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.rdf.utils.GraphNode
-import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.osgi.service.component.ComponentContext
 import org.apache.clerezza.rdf.core.{MGraph, TripleCollection, UriRef}
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph
-import org.apache.clerezza.rdf.ontologies.PLATFORM
-import org.apache.clerezza.platform.config.{PlatformConfig, SystemConfig}
-import org.apache.clerezza.rdf.core.access.security.TcPermission
+import org.apache.clerezza.platform.config.PlatformConfig
 import java.net.{HttpURLConnection, URL}
-import java.security.{PrivilegedAction, AccessController}
-import org.apache.clerezza.rdf.core.access.{SecuredMGraph, NoSuchEntityException, TcManager}
+import org.apache.clerezza.rdf.core.access.{NoSuchEntityException, TcManager}
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat
 import org.apache.clerezza.rdf.core.serializedform.Parser
+import org.apache.clerezza.platform.typerendering.WebRenderingService
 
 
 /**
@@ -40,6 +36,7 @@ import org.apache.clerezza.rdf.core.serializedform.Parser
  * version of them in store for faster delivery.
  *
  */
+@WebRenderingService
 class WebProxy {
 
 

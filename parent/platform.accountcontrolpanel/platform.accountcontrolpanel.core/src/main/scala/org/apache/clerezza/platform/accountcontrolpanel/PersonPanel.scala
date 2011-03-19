@@ -77,11 +77,10 @@ object PersonPanel {
  */
 @Path("/user/{id}/people")
 class PersonPanel  {
-
 	import PersonPanel.logger
 
 	protected def activate(componentContext: ComponentContext): Unit = {
-//		this.componentContext = componentContext.
+//		this.componentContext = componentContext
 	}
 
 	@GET
@@ -107,18 +106,5 @@ class PersonPanel  {
 
 
 
-	protected def bindRenderletManager(renderletmanager: RenderletManager): Unit = {
-		renderletManager = renderletmanager
-	}
-
-	protected def unbindRenderletManager(renderletmanager: RenderletManager): Unit = {
-		if (renderletManager == renderletmanager) {
-			renderletManager = null
-		}
-	}
-
-
-	//called by the ssp, web component
-	private var renderletManager: RenderletManager = null
 
 }
