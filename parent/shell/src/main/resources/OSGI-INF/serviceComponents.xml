@@ -20,11 +20,11 @@
 				bind="bindInterpreterFactory" unbind="unbindInterpreterFactory"/>
 		<reference name="commands"
 				interface="org.apache.clerezza.shell.ShellCommand"
-				cardinality="0..n"
+				cardinality="0..n" policy="dynamic"
 				bind="bindCommand" unbind="unbindCommand"/>
 		<reference name="customizers"
 				interface="org.apache.clerezza.shell.ShellCustomizer"
-				cardinality="0..n"
+				cardinality="0..n" policy="dynamic"
 				bind="bindCustomizer" unbind="unbindCustomizer"/>
     </scr:component>
 </components>
