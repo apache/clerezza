@@ -39,26 +39,17 @@ import org.osgi.framework.BundleContext;
  */
 class TypeRenderletRendererImpl implements Renderer {
 
-	private URI renderSpecUri = null;
 	private TypeRenderlet renderlet = null;
 	private MediaType mediaType = null;
 	private final RendererFactory rendererFactory;
 	private final BundleContext bundleContext;
 
-	TypeRenderletRendererImpl(UriRef renderingSpecification,
-			TypeRenderlet renderlet, MediaType mediaType,
+	TypeRenderletRendererImpl(TypeRenderlet renderlet, MediaType mediaType,
 			RendererFactory rendererFactory,
 			BundleContext bundleContext) {
 		this.renderlet = renderlet;
 		this.mediaType = mediaType;
 		this.rendererFactory = rendererFactory;
-		if (renderingSpecification != null) {
-			try {
-				renderSpecUri = new URI(renderingSpecification.getUnicodeString());
-			} catch (URISyntaxException ex) {
-				throw new WebApplicationException(ex);
-			}
-		}
 		this.bundleContext = bundleContext;
 	}
 

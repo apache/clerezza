@@ -65,8 +65,8 @@ public class RendererFactory {
 	@Reference
 	private TypePrioritizer typePrioritizer;
 
-	private Map<UriRef, RegexMap<MediaTypeMap<Renderer>>> typeRenderletMap =
-			new HashMap<UriRef, RegexMap<MediaTypeMap<Renderer>>>();
+	private Map<UriRef, RegexMap<MediaTypeMap<TypeRenderlet>>> typeRenderletMap =
+			new HashMap<UriRef, RegexMap<MediaTypeMap<TypeRenderlet>>>();
 
 	private BundleContext bundleContext;
 
@@ -114,15 +114,21 @@ public class RendererFactory {
 		Iterator<UriRef> sortedTypes = typePrioritizer.iterate(types);
 		while (sortedTypes.hasNext()) {
 			final UriRef currentType = sortedTypes.next();
-			final RegexMap<MediaTypeMap<Renderer>> regexMap = typeRenderletMap.get(currentType);
+			final RegexMap<MediaTypeMap<TypeRenderlet>> regexMap = typeRenderletMap.get(currentType);
 			if (regexMap != null) {
-				Iterator<MediaTypeMap<Renderer>> mediaTypeMapIter = regexMap.getMatching(mode);
+				Iterator<MediaTypeMap<TypeRenderlet>> mediaTypeMapIter = regexMap.getMatching(mode);
 				while (mediaTypeMapIter.hasNext()) {
-					MediaTypeMap<Renderer> mediaTypeMap = mediaTypeMapIter.next();
+					MediaTypeMap<TypeRenderlet> mediaTypeMap = mediaTypeMapIter.next();
 					for (MediaType acceptableType : acceptableMediaTypes) {
-						Iterator<Renderer> renderlets = mediaTypeMap.getMatching(acceptableType);
+						Iterator<TypeRenderlet> renderlets = mediaTypeMap.getMatching(acceptableType);
 						if (renderlets.hasNext()) {
-							return renderlets.next();
+							TypeRenderlet typeRenderlet = renderlets.next();
+							//TODO is this the most convrete type
+							return new TypeRenderletRendererImpl(
+								typeRenderlet,
+								acceptableType,
+								this,
+								bundleContext);
 						}
 					}
 				}
@@ -133,23 +139,19 @@ public class RendererFactory {
 
 	protected void bindTypeRenderlet(TypeRenderlet typeRenderlet) {
 		final UriRef rdfType = typeRenderlet.getRdfType();
-		RegexMap<MediaTypeMap<Renderer>> regexMap = typeRenderletMap.get(rdfType);
+		RegexMap<MediaTypeMap<TypeRenderlet>> regexMap = typeRenderletMap.get(rdfType);
 		if (regexMap == null) {
-			regexMap = new RegexMap<MediaTypeMap<Renderer>>();
+			regexMap = new RegexMap<MediaTypeMap<TypeRenderlet>>();
 			typeRenderletMap.put(rdfType, regexMap);
 		}
 		final String mode = typeRenderlet.getModePattern();
-		MediaTypeMap<Renderer> mediaTypeMap = regexMap.getFirstExactMatch(mode);
+		MediaTypeMap<TypeRenderlet> mediaTypeMap = regexMap.getFirstExactMatch(mode);
 		if (mediaTypeMap == null) {
-			mediaTypeMap = new MediaTypeMap<Renderer>();
+			mediaTypeMap = new MediaTypeMap<TypeRenderlet>();
 			regexMap.addEntry(mode, mediaTypeMap);
 		}
 		final MediaType mediaType = typeRenderlet.getMediaType();
-		final Renderer renderer = new TypeRenderletRendererImpl(null,
-			typeRenderlet, mediaType,
-			this,
-			bundleContext);
-		mediaTypeMap.addEntry(mediaType, renderer);
+		mediaTypeMap.addEntry(mediaType, typeRenderlet);
 	}
 
 	protected void unbindTypeRenderlet(TypeRenderlet typeRenderlet) {
