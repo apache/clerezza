@@ -18,39 +18,29 @@
  */
 package org.apache.clerezza.platform.typerendering.scalaserverpages;
 
-import java.io.CharArrayReader;
-import java.io.CharArrayWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.OutputStream;
-import java.io.Reader;
+import org.apache.clerezza.platform.typerendering.*;
+import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.scala.scripting.CompileErrorsException;
+import org.apache.clerezza.scala.scripting.CompilerService;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.Map;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
 import java.util.HashMap;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.clerezza.platform.typerendering.CallbackRenderer;
-import org.apache.clerezza.platform.typerendering.RenderingException;
-import org.apache.clerezza.platform.typerendering.Renderlet;
-import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.platform.typerendering.RenderingspecificationException;
-import org.apache.clerezza.platform.typerendering.TypeRenderingException;
-import org.apache.clerezza.scala.scripting.CompileErrorsException;
-import org.apache.clerezza.scala.scripting.CompilerService;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-import scala.collection.Seq;
+import java.util.Map;
 
 /**
  * 
@@ -62,6 +52,7 @@ import scala.collection.Seq;
  */
 @Component
 @Service(Renderlet.class)
+@Deprecated
 public class ScalaServerPagesRenderlet implements Renderlet {
 
 	final Charset UTF8 = Charset.forName("UTF-8");
