@@ -25,9 +25,11 @@ import org.apache.clerezza.platform.typerendering.scala._
 import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.rdf.utils.GraphNode
-import xml.{NodeSeq, NodeBuffer, Text, Node}
+import xml.{NodeSeq, Text, Node}
 import java.net.{URLEncoder, URL}
 import org.apache.clerezza.rdf.ontologies.{RDF, FOAF, RDFS}
+import org.apache.clerezza.rdf.web.proxy.WebProxy
+import javax.ws.rs.core.MediaType
 
 object person_panel {
 	final val emptyText = new Text("")
@@ -132,14 +134,15 @@ object person_panel {
 
 }
 
-class person_panel extends PageRenderlet {
-  val rdfType = CONTROLPANEL.ProfileViewerPage
-  override def mode = "naked"
+class person_panel extends SRenderlet {
+	def getRdfType() = CONTROLPANEL.ProfileViewerPage
+	def getMediaType() =MediaType.APPLICATION_XHTML_XML_TYPE
+	def getModePattern() = "naked"
   import person_panel._
 
 
-  override def renderedPage(arguments: RenderedPage.Arguments): RenderedPage = {
-	new RenderedPage(arguments) {
+	override def renderedPage(arguments: XmlResult.Arguments) = {
+	  new XmlResult(arguments) {
 
 	  override def content = {
 		def cp(s: Any) =  new UriRef("http://clerezza.org/2009/03/controlpanel#" + s)
@@ -151,12 +154,15 @@ class person_panel extends PageRenderlet {
 		resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="control-panel">Settings</a></li>);
 	   resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="profile">Profile</a></li>);
 
-	   val it: CollectedIter[RichGraphNode] = res / FOAF.primaryTopic
-	   val primeTpc: RichGraphNode = it.apply(0)
-		val agent : RichGraphNode= primeTpc! match {
-			case uri : UriRef => fetch(uri) match { case Some(grph) => grph; case None => res};
-			case _ => res
-		}
+		val webIdUri= new UriRef(uriInfo.getQueryParameters(true).getFirst("uri"))
+//	   val it: CollectedIter[RichGraphNode] = res / FOAF.primaryTopic
+//	   val primeTpc: RichGraphNode = it.apply(0)
+		val agent : RichGraphNode=  $[WebProxy].fetchSemantics(webIdUri) match { case Some(grph) => grph; case None => res};
+
+//			primeTpc! match {
+//			case uri : UriRef => $[WebProxy].fetchSemantics(uri) match { case Some(grph) => grph; case None => res};
+//			case _ => res
+//		}
 
 		def relations() = {
 			<table>{for (friend <- agent/FOAF.knows) {
@@ -173,7 +179,8 @@ class person_panel extends PageRenderlet {
 		def allAgentsHtml(tc: TripleCollection): Node = {<span>
 			<th><tr colspan="2">All agents found</tr></th>
 			{ import collection.JavaConversions._
-			  val base = new URL(primeTpc.getNode.asInstanceOf[UriRef].getUnicodeString());
+			//todo: change
+			  val base = new URL(agent.getNode.asInstanceOf[UriRef].getUnicodeString());
 			  val lclPrson = for (tr: Triple <- tc.filter(null, RDF.`type`, FOAF.Person);
 			       subjUrl = try { new URL(tr.getSubject.asInstanceOf[UriRef].getUnicodeString) } catch  { case _ => null }
 					 if (subjUrl != null && base.sameFile(subjUrl))

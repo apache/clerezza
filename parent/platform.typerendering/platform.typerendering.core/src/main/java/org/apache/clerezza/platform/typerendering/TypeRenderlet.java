@@ -23,10 +23,8 @@ import java.io.OutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
+
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.osgi.framework.BundleContext;
@@ -109,7 +107,7 @@ public interface TypeRenderlet {
 
 						@Override
 						public T run() {
-							ServiceReference serviceReference = bundleContext.getServiceReference(type.getName());
+							ServiceReference serviceReference = RequestProperties.this.bundleContext.getServiceReference(type.getName());
 							if (serviceReference != null) {
 								T resultCandidate = (T) bundleContext.getService(serviceReference);
 								if (resultCandidate.getClass().getAnnotation(WebRenderingService.class) != null) {
