@@ -329,15 +329,6 @@ class ProfilePanel {
 		}
 	}
 
-	protected def bindRenderletManager(renderletmanager: RenderletManager): Unit = {
-		renderletManager = renderletmanager
-	}
-
-	protected def unbindRenderletManager(renderletmanager: RenderletManager): Unit = {
-		if (renderletManager == renderletmanager) {
-			renderletManager = null
-		}
-	}
 
 	protected def bindWebIdGraphsService(webidgraphsservice: WebIdGraphsService): Unit = {
 		webIdGraphsService = webidgraphsservice
@@ -371,8 +362,6 @@ class ProfilePanel {
 	private var keygenSrvc: KeygenService = null
 	private var platformConfig: PlatformConfig = null
 
-	//todo: are these this needed? It's not used it seems
-	private var renderletManager: RenderletManager = null
 
 	private var componentContext: ComponentContext = null
 

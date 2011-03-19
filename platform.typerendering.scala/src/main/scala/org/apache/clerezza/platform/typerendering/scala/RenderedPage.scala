@@ -78,24 +78,6 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 		parseNodeSeq(new String(baos.toByteArray))
 	}
 
-	def fetch(uri: UriRef) : Option[GraphNode] = {
-		val webSrvc = AccessController.doPrivileged(new PrivilegedAction[WebProxy] {
-			def run: WebProxy = {
-				val cntxt: BundleContext = requestProperties.bundleContext
-				var serviceReference: ServiceReference = cntxt.getServiceReference("org.apache.clerezza.rdf.web.proxy.WebProxy")
-				if (serviceReference != null) {
-					return cntxt.getService(serviceReference).asInstanceOf[WebProxy]
-				} else {
-					return null
-				}
-			}
-		})
-		//This should return not a graph, but a graph surrounded with HTTP metadata, so that the user
-		//connection error messages can be designed, and so on.
-		//The graph should be fetched as the user also if this is required.
-		return webSrvc.fetchSemantics(uri,Cache.Fetch)
-	}
-
 	/**
 	 * This is an object that allows one to use some nice shortcuts in scala based subclasses
 	 * - $variable will get the value of the sharedRenderingValues hash
