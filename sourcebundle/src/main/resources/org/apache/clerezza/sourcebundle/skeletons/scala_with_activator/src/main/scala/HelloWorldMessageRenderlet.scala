@@ -13,17 +13,19 @@ import org.apache.clerezza.platform.typerendering.scala._
 /**
  * A Renderlet for HelloWorldMessage
  */
-class HelloWorldMessageRenderlet extends PageRenderlet {
+class HelloWorldMessageRenderlet extends SRenderlet {
 
-	val rdfType = Ontology.HelloWordMessageType
-	override def mode = "naked"
+	val getRdfType = Ontology.HelloWordMessageType
 
-	override def renderedPage(arguments: RenderedPage.Arguments): RenderedPage = {
-		new RenderedPage(arguments) {
+	override def getModePattern = "naked"
+
+	override def renderedPage(arguments: XmlResult.Arguments) = {
+		new XmlResult(arguments) {
 			override def content = {
-				resultDocModifier.addStyleSheet("/styles/wall/wall.css")
+				resultDocModifier.addStyleSheet("/styles/hello-world/style.css")
 				<div xmlns="http://www.w3.org/1999/xhtml" id="tx-content">
-					<h2>Wall</h2>
+					<h2>A Message</h2>
+					<div class="message">foo!</div>
 				</div>
 			}
 		}

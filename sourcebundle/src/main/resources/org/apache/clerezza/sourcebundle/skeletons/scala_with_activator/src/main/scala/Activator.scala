@@ -2,7 +2,7 @@ package skeleton
 
 import org.osgi.framework.{BundleActivator, BundleContext, ServiceRegistration}
 import scala.collection.JavaConversions.asJavaDictionary
-import org.apache.clerezza.platform.typerendering.{Renderlet, RenderletManager}
+import org.apache.clerezza.platform.typerendering.{TypeRenderlet, RenderletManager}
 
 /**
  * Activator for a bundle using Apache Clerezza.
@@ -24,11 +24,9 @@ class Activator extends BundleActivator {
 												  new HelloWorld(), args)
 		val renderlet = new HelloWorldMessageRenderlet
 		val serviceReference = context.getServiceReference(classOf[RenderletManager].getName)
-		renderlet bindRenderletManager context.getService(serviceReference).asInstanceOf[RenderletManager]
-
-		renderletRegistration = context.registerService(classOf[Renderlet].getName,
+		renderletRegistration = context.registerService(classOf[TypeRenderlet].getName,
 												  renderlet, null)
-		println("enjoy!")
+		println("enjoy it!")
 	}
 
 	/**
