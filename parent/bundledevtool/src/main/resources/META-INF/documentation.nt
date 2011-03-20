@@ -1,0 +1,52 @@
+<bundle:///intro-content-el/0> <http://discobits.org/ontology#infoBit> "The Bundle Development Tool provides utility for developing new bundles on Clerezza. It allows to edit Scala source files as well as other resources on a file-system location an have the changes automatically reflected on the local instance. The tool takes care about compiling the sources and recreating the bundle."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/1-content> <http://discobits.org/ontology#infoBit> "To create a new project enter the following on the Clerezza console:\n<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"tx-blockcode\">\nzz&gt; Dev create 'scala_with_activator in \"/path/to/new/project/\"\n</div>\nThe above will create a project using the archetype 'scala_with_activator at the location /path/to/new/project. Files and folder that do not yet exist will be created (no file is overwriiten).<br xmlns=\"http://www.w3.org/1999/xhtml\"></br>\nTo see alist of the available archetypes enter\n<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"tx-blockcode\">\nzz&gt; Dev listArchetypes\n</div>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/1-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/1-title> <http://discobits.org/ontology#infoBit> "Creating a new project"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/1-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/1> <http://discobits.org/ontology#contains> _:a2950b10a4e67d4ee8d25d131e9d59471 . 
+<bundle:///intro-content-el/1> <http://discobits.org/ontology#contains> _:e696a99dc91ebddcf13b5a4fd83e55991 . 
+<bundle:///intro-content-el/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///intro-content-el/2-content> <http://discobits.org/ontology#infoBit> "To load an exiting project enter the following on the Clerezza console:\n<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"tx-blockcode\">\nzz&gt; Dev load \"/path/to/existing/project/\"\n</div>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/2-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/2-title> <http://discobits.org/ontology#infoBit> "Load an existing project"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-content-el/2-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro-content-el/2> <http://discobits.org/ontology#contains> _:005cab2e8f532d75dbe6021467d5f7191 . 
+<bundle:///intro-content-el/2> <http://discobits.org/ontology#contains> _:3682407f1c90d02dcf9dbf4e83d964f51 . 
+<bundle:///intro-content-el/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:0c33aa960ad81e72549c579dd55074231 . 
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:16fd3882eda078006a6b02abb28816da1 . 
+<bundle:///intro-content> <http://discobits.org/ontology#contains> _:da78c47eff7d6e6f75a17d01572cb4d81 . 
+<bundle:///intro-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#OrderedContent> .
+<bundle:///intro-title> <http://discobits.org/ontology#infoBit> "Bundle Development Tool"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///intro-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///intro> <http://discobits.org/ontology#contains> _:2d0db51a9a2a40d89460edf6544edbad1 . 
+<bundle:///intro> <http://discobits.org/ontology#contains> _:566a75916142ac411441d067f09a49f71 . 
+<bundle:///intro> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+_:005cab2e8f532d75dbe6021467d5f7191 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/2-content> . 
+_:005cab2e8f532d75dbe6021467d5f7191 <http://discobits.org/ontology#pos> "1" . 
+_:005cab2e8f532d75dbe6021467d5f7191 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:0c33aa960ad81e72549c579dd55074231 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/2> . 
+_:0c33aa960ad81e72549c579dd55074231 <http://discobits.org/ontology#pos> "2" . 
+_:0c33aa960ad81e72549c579dd55074231 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:16fd3882eda078006a6b02abb28816da1 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/0> . 
+_:16fd3882eda078006a6b02abb28816da1 <http://discobits.org/ontology#pos> "0" . 
+_:16fd3882eda078006a6b02abb28816da1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:2d0db51a9a2a40d89460edf6544edbad1 <http://discobits.org/ontology#holds> <bundle:///intro-title> . 
+_:2d0db51a9a2a40d89460edf6544edbad1 <http://discobits.org/ontology#pos> "0" . 
+_:2d0db51a9a2a40d89460edf6544edbad1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:3682407f1c90d02dcf9dbf4e83d964f51 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/2-title> . 
+_:3682407f1c90d02dcf9dbf4e83d964f51 <http://discobits.org/ontology#pos> "0" . 
+_:3682407f1c90d02dcf9dbf4e83d964f51 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:566a75916142ac411441d067f09a49f71 <http://discobits.org/ontology#holds> <bundle:///intro-content> . 
+_:566a75916142ac411441d067f09a49f71 <http://discobits.org/ontology#pos> "1" . 
+_:566a75916142ac411441d067f09a49f71 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:a2950b10a4e67d4ee8d25d131e9d59471 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/1-title> . 
+_:a2950b10a4e67d4ee8d25d131e9d59471 <http://discobits.org/ontology#pos> "0" . 
+_:a2950b10a4e67d4ee8d25d131e9d59471 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:da78c47eff7d6e6f75a17d01572cb4d81 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/1> . 
+_:da78c47eff7d6e6f75a17d01572cb4d81 <http://discobits.org/ontology#pos> "1" . 
+_:da78c47eff7d6e6f75a17d01572cb4d81 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:e696a99dc91ebddcf13b5a4fd83e55991 <http://discobits.org/ontology#holds> <bundle:///intro-content-el/1-content> . 
+_:e696a99dc91ebddcf13b5a4fd83e55991 <http://discobits.org/ontology#pos> "1" . 
+_:e696a99dc91ebddcf13b5a4fd83e55991 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
