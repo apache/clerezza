@@ -107,7 +107,7 @@
 				<module>rdf.web.proxy</module>
 				<module>shell</module>
 				<module>shell.felixshellcommand</module>
-				<module>sourcebundle</module>
+				<module>bundledevtool</module>
 				<module>sshshell</module>
 				<module>templating</module>
 				<module>templating.seedsnipe</module>
@@ -1179,7 +1179,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>sourcebundle</artifactId>
+				<artifactId>bundledevtool</artifactId>
 				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>

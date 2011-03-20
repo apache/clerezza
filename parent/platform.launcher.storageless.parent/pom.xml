@@ -327,7 +327,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>sourcebundle</artifactId>
+			<artifactId>bundledevtool</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>

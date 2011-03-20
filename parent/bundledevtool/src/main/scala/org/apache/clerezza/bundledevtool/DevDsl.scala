@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.clerezza.sourcebundle
+package org.apache.clerezza.bundledevtool
 
 import java.io.File
 import java.io.OutputStream
