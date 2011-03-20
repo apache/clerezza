@@ -36,6 +36,7 @@ import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.config.SystemConfig;
+import org.apache.clerezza.platform.typepriority.TypePrioritizer;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -54,116 +55,35 @@ import org.apache.felix.scr.annotations.ReferencePolicy;
 		cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
 		referenceInterface=Object.class,
 		target="(org.apache.clerezza.platform.typehandler=true)",
-		policy=ReferencePolicy.DYNAMIC),
-	@Reference(name="systemGraph",
-		cardinality=ReferenceCardinality.MANDATORY_UNARY,
-		referenceInterface=MGraph.class,
-		target=SystemConfig.SYSTEM_GRAPH_FILTER)})
+		policy=ReferencePolicy.DYNAMIC)})
 public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 
-	/**
-	 * type-handlers that are bound while the this component was not activated
-	 * yet. Stored for later registration.
-	 */
-	private Set<Object> typeHandlerStore = new HashSet<Object>();
 
-	private List<Resource> typePriorityList;
+	@Reference
+	private TypePrioritizer typePrioritizer;
+
 	private final Map<UriRef, Object> typeHandlerMap = Collections.synchronizedMap(
 			new HashMap<UriRef, Object>());
 	
-	LockableMGraph systemGraph;
-
 	protected void bindTypeHandler(Object typeHandler) {
-		if (typePriorityList != null) {
-			registerTypeHandler(typeHandler);
-		} else {
-			typeHandlerStore.add(typeHandler);
+		SupportedTypes supportedTypes = typeHandler.getClass()
+				.getAnnotation(SupportedTypes.class);
+		if (supportedTypes == null) {
+			return;
+		}
+		for (String typeUriString : supportedTypes.types()) {
+			UriRef typeUri = new UriRef(typeUriString);
+			typeHandlerMap.put(typeUri, typeHandler);
 		}
 	}
 		
 	protected void unbindTypeHandler(Object typeHandler) {
-		if(!typeHandlerStore.remove(typeHandler)) {
-			unregisterTypeHandler(typeHandler);
-		}
-	}
-
-	protected void bindSystemGraph(MGraph systemGraph) {
-		typePriorityList = new RdfList(
-				new UriRef("http://tpf.localhost/typePriorityList"), systemGraph);
-		this.systemGraph = (LockableMGraph) systemGraph;
-	}
-
-	protected void unbindSystemGraph(MGraph systemGraph) {
-		typePriorityList = null;
-		this.systemGraph = null;
-	}
-
-	protected void activate(ComponentContext context) throws Exception {
-		Iterator<Object> handers = typeHandlerStore.iterator();
-		while (handers.hasNext()) {
-			Object object = handers.next();
-			registerTypeHandler(object);
-		}
-		typeHandlerStore.clear();
-	}
-
-	@Override
-	public Object getTypeHandler(final Set<UriRef> types) {
-		return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-
-			@Override
-			public Object run() {
-				Lock readLock = systemGraph.getLock().readLock();
-				readLock.lock();
-				try {
-					for (Resource type : typePriorityList) {
-						if (types.contains(type)) {
-							Object result = typeHandlerMap.get(type);
-							if (result != null) {
-								return result;
-							}
-						}
-					}
-				} finally {
-					readLock.unlock();
-				}
-				return typeHandlerMap.get(RDFS.Resource);
-			}
-		});		
-	}
-
-	private void registerTypeHandler(Object component) {
-		SupportedTypes supportedTypes = component.getClass()
-				.getAnnotation(SupportedTypes.class);
-		if (supportedTypes == null) {
-			return;
-		}		
-		for (String typeUriString : supportedTypes.types()) {
-			UriRef typeUri = new UriRef(typeUriString);
-			Lock writeLock = systemGraph.getLock().writeLock();
-			writeLock.lock();
-			try {
-				if (!typePriorityList.contains(typeUri)) {
-					if (supportedTypes.prioritize()) {
-						typePriorityList.add(0, typeUri);
-					} else {
-						typePriorityList.add(typeUri);
-					}
-				}
-			} finally {
-				writeLock.unlock();
-			}
-			typeHandlerMap.put(typeUri, component);
-		}
-	}
-
-	private void unregisterTypeHandler(Object component) {
 		Iterator<UriRef> keys = typeHandlerMap.keySet().iterator();
 		Set<UriRef> toRemove = new HashSet<UriRef>(typeHandlerMap.size());
 		synchronized(typeHandlerMap) {
 			while (keys.hasNext()) {
 				UriRef uriRef = keys.next();
-				if(typeHandlerMap.get(uriRef)==component) {
+				if(typeHandlerMap.get(uriRef) == typeHandler) {
 					toRemove.add(uriRef);
 				}
 			}
@@ -173,4 +93,23 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 			typeHandlerMap.remove(keys.next());
 		}
 	}
+
+	@Override
+	public Object getTypeHandler(final Set<UriRef> types) {
+		return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+			@Override
+			public Object run() {
+				Iterator<UriRef> prioritizedTypes = typePrioritizer.iterate(types);
+				while (prioritizedTypes.hasNext()) {
+					Object result = typeHandlerMap.get(prioritizedTypes.next());
+					if (result != null) {
+						return result;
+					}
+				}
+				return typeHandlerMap.get(RDFS.Resource);
+			}
+		});		
+	}
+
 }
