@@ -46,6 +46,15 @@ class DevDsl(outputStream: OutputStream, bundleContext: BundleContext) {
 				}
 			}
 		}
+
+		def load(location: String) {
+			val dir = new File(location)
+			if (!dir.isDirectory) {
+				out println "No directory "+location+" found"
+			} else {
+				$[BundleRoot].addSourceBundle(dir)
+			}
+		}
 	}
 
 }
