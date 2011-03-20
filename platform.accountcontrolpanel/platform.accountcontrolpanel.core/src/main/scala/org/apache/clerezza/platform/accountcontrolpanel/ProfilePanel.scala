@@ -121,7 +121,7 @@ class ProfilePanel {
 	 * @param webId
 	 * @param profile
 	 * @return A graph containing some information from the system graph, the published profile cache if available, and
-	 *         the local graph. Local changes can be written to a buffer graph, that will have not be saved.
+	 *         the definedHere graph. Local changes can be written to a buffer graph, that will have not be saved.
 	 */
 	private def getProfileInUserGraph(webId: UriRef, profile: UriRef): GraphNode = {
 		var webIDInfo = webIdGraphsService.getWebIDInfo(webId)
