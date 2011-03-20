@@ -9,8 +9,6 @@
 	<description>Provides bundles and services to allow compiling and executing scala code
 	</description>
 	<modules>
-		<module>scala-library-osgi</module>
-		<module>scala-compiler-osgi</module>
 		<module>script-engine</module>
 		<module>tests</module>
 	</modules>
@@ -40,16 +38,6 @@
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.core</artifactId>
 				<version>4.2.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza.scala</groupId>
-				<artifactId>scala-library-osgi</artifactId>
-				<version>0.1-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza.scala</groupId>
-				<artifactId>scala-compiler-osgi</artifactId>
-				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza.scala</groupId>
