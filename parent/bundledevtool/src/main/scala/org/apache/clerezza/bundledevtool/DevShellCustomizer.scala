@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.sourcebundle
+package org.apache.clerezza.bundledevtool
 
 import org.apache.clerezza.shell.Shell
 import org.apache.clerezza.shell.ShellCustomizer

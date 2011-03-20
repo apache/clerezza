@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.clerezza.sourcebundle
+package org.apache.clerezza.bundledevtool
 
 class UnavailableSkeletonException(val requested: Symbol, val available: Seq[Symbol])
 	extends RuntimeException("The Skeleton "+requested.name+" is not avialble") {

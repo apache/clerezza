@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.clerezza.sourcebundle
+package org.apache.clerezza.bundledevtool
 
 
 import scala.actors.DaemonActor
@@ -53,7 +53,7 @@ class BundleRoot {
 
 	private var bundleContext: BundleContext = null
 
-	private val skeletonsPath = "org/apache/clerezza/sourcebundle/skeletons"
+	private val skeletonsPath = "org/apache/clerezza/bundledevtool/skeletons"
 
 	val sourceBundles = mutable.ListBuffer[SourceBundle]()
 
@@ -298,6 +298,6 @@ class BundleRoot {
 
 object BundleRoot {
 
-	val sourceBundleUriPrefix = "sourcebundle:"
+	val sourceBundleUriPrefix = "bundledevtool:"
 
 }
