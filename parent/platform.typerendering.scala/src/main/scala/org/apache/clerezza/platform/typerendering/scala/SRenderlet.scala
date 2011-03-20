@@ -82,5 +82,9 @@ trait SRenderlet extends TypeRenderlet {
 
 	}
 
+	override def getMediaType() = MediaType.APPLICATION_XHTML_XML_TYPE
+
+	def getModePattern = "naked"
+
 }
 

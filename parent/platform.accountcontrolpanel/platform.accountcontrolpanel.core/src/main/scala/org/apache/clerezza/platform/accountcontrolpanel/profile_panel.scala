@@ -32,8 +32,6 @@ import javax.ws.rs.core.MediaType
 
 class profile_panel extends SRenderlet {
   def getRdfType() = CONTROLPANEL.ProfilePage
-  def getMediaType() =MediaType.APPLICATION_XHTML_XML_TYPE
-  def getModePattern() = "naked"
 
   override def renderedPage(arguments: XmlResult.Arguments) = {
 	new XmlResult(arguments) {
