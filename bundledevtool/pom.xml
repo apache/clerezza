@@ -5,10 +5,10 @@
 		<artifactId>parent</artifactId>
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
-	<artifactId>sourcebundle</artifactId>
+	<artifactId>bundledevtool</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>Clerezza - Source-Bundle Service</name>
+	<name>Clerezza - Bundle Development Tools</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza.scala</groupId>
@@ -63,9 +63,9 @@
 				<configuration>
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>org.apache.clerezza.sourcebundle</Export-Package>
+						<Export-Package>org.apache.clerezza.bundledevtool</Export-Package>
 						<Private-Package>sbt,sbt.*</Private-Package>
-						<Bundle-SymbolicName>org.apache.clerezza.sourcebundle</Bundle-SymbolicName>
+						<Bundle-SymbolicName>org.apache.clerezza.bundledevtool</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
 			</plugin>
