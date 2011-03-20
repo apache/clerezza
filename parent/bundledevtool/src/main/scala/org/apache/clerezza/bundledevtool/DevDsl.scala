@@ -32,17 +32,21 @@ class DevDsl(outputStream: OutputStream, bundleContext: BundleContext) {
 		private val serviceDsl = new ServicesDsl(bundleContext)
 		import serviceDsl._
 		private lazy val out = new PrintWriter(new OutputStreamWriter(outputStream, "utf-8"), true)
+
+		def listArchetypes() {
+			out println "The following archetypes are available"
+			for (a <- $[BundleRoot].availableSkeletons) {
+				out println "  - "+a
+			}
+		}
 		
-		def create(skeleton: Symbol) = new Object() {
+		def create(archetype: Symbol) = new Object() {
 			def in(location: String): Unit = try {
-				$[BundleRoot].createSourceBundle(skeleton, new File(location))
+				$[BundleRoot].createSourceBundle(archetype, new File(location))
 			} catch {
 				case u: UnavailableSkeletonException => {
-					out println "FAILURE: no skeleton "+skeleton+" is available"
-					out println "The following skeletons are available"
-					for (a <- u.available) {
-						out println "  - "+a
-					}
+					out println "FAILURE: no archetype "+archetype+" is available"
+					listArchetypes()
 				}
 			}
 		}
