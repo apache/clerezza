@@ -136,8 +136,6 @@ object person_panel {
 
 class person_panel extends SRenderlet {
 	def getRdfType() = CONTROLPANEL.ProfileViewerPage
-	def getMediaType() =MediaType.APPLICATION_XHTML_XML_TYPE
-	def getModePattern() = "naked"
   import person_panel._
 
 
