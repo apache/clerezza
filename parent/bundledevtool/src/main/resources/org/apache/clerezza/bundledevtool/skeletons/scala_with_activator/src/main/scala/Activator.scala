@@ -15,9 +15,6 @@ class Activator extends BundleActivator {
 	 * called when the bundle is started, this method initializes the provided service
 	 */
 	def start(context: BundleContext) {
-		//import org.apache.clerezza.shell.OsgiDsl
-		//val osgiDsl = new OsgiDsl(context, System.out)
-		//import osgiDsl._
 		println("activating...")
 		val args = scala.collection.mutable.Map("javax.ws.rs" -> true)
 		helloWorldRegistration = context.registerService(classOf[Object].getName,
