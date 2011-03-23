@@ -112,8 +112,6 @@ object person_panel {
  */
 class person_panel extends SRenderlet {
 	def getRdfType() = CONTROLPANEL.ProfileViewerPage
-  import person_panel._
-
 
 	override def renderedPage(arguments: XmlResult.Arguments) = new XmlPerson(arguments)
 }
@@ -139,20 +137,23 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	lazy val agent : RichGraphNode=  $[WebProxy].fetchSemantics(webIdUri) match { case Some(grph) => grph; case None => res};
 
 	//
+	// setting some header info
+	//
+
+	resultDocModifier.addStyleSheet("profile/style/profile.css");
+	resultDocModifier.setTitle("Profile Viewer");
+	resultDocModifier.addNodes2Elem("tx-module", <h1>Account Control Panel</h1>);
+	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Profile Viewer</a></li>);
+	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="control-panel">Settings</a></li>);
+	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="profile">Profile</a></li>);
+
+
+	//
 	// the content itself.
 	// This is the piece that is closest to a pure ssp, though there is still too much code in it
 	//
 
-	override def content = {
-		 resultDocModifier.addStyleSheet("profile/style/profile.css");
-		 resultDocModifier.setTitle("Profile Viewer");
-		 resultDocModifier.addNodes2Elem("tx-module", <h1>Account Control Panel</h1>);
-		 resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Profile Viewer</a></li>);
-		 resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="control-panel">Settings</a></li>);
-		 resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="profile">Profile</a></li>);
-
-
-	<div id="tx-content">
+	override def content = <div id="tx-content">
 		<h2>Profile Viewer</h2>
 		<form action="profile/addContact" method="POST">
 			<table>
@@ -175,7 +176,7 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 			}</pre>
 		</code>
 	</div>
-	}
+
 
 	//
 	// Methods called by the content
