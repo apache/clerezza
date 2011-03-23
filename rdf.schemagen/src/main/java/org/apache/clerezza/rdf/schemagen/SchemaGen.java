@@ -316,12 +316,14 @@ public class SchemaGen {
 		}
 
 		String getDescription() {
+			StringBuffer result = new StringBuffer();
 			Iterator<Triple> skosDefStatements = graph.filter(
 					uri, SKOS.definition, null);
 			while (skosDefStatements.hasNext()) {
 				Resource object = skosDefStatements.next().getObject();
 				if (object instanceof Literal) {
-					return ((Literal) object).getLexicalForm();
+					result.append (((Literal) object).getLexicalForm());
+					result.append("\n");
 				}
 			}
 			Iterator<Triple> rdfsCommentStatements = graph.filter(
@@ -329,10 +331,32 @@ public class SchemaGen {
 			while (rdfsCommentStatements.hasNext()) {
 				Resource object = rdfsCommentStatements.next().getObject();
 				if (object instanceof Literal) {
-					return ((Literal) object).getLexicalForm();
+					result.append(((Literal) object).getLexicalForm());
+					result.append("\n");
 				}
 			}
-			return null;
+			Iterator<Triple> skosNoteStatements = graph.filter(
+					uri, SKOS.note, null);
+			while (skosNoteStatements.hasNext()) {
+				Resource object = skosNoteStatements.next().getObject();
+				if (object instanceof Literal) {
+					result.append (((Literal) object).getLexicalForm());
+					result.append("\n");
+				}
+			}
+			Iterator<Triple> skosExampleStatements = graph.filter(
+					uri, SKOS.example, null);
+			while (skosNoteStatements.hasNext()) {
+				Resource object = skosNoteStatements.next().getObject();
+				if (object instanceof Literal) {
+					result.append (((Literal) object).getLexicalForm());
+					result.append("\n");
+				} else if (object instanceof UriRef) {
+					result.append("see <a href="+((UriRef)object).getUnicodeString()+">example</a>");
+					result.append("\n");
+				}
+			}
+			return result.toString();
 		}
 
 		@Override
@@ -394,5 +418,7 @@ public class SchemaGen {
 
 	private static class SKOS {
 		static final UriRef definition = new UriRef("http://www.w3.org/2008/05/skos#definition");
+		static final UriRef note = new UriRef("http://www.w3.org/2004/02/skos/core#note");
+		static final UriRef example = new UriRef("http://www.w3.org/2004/02/skos/core#example");
 	}
 }
