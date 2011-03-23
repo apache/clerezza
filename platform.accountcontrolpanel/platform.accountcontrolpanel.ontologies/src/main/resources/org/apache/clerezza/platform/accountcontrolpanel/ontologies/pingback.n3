@@ -1,0 +1,186 @@
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix sioc: <http://rdfs.org/sioc/ns#>.
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+
+@prefix vann: <http://purl.org/vocab/vann/>.
+@prefix http: <http://www.w3.org/2006/http#>.
+@prefix prv: <http://purl.org/net/provenance/ns#> .
+
+@prefix pingback: <http://purl.org/net/pingback/> .
+
+
+###
+# Pingback classes
+###
+
+pingback:Container a owl:Class;
+    rdfs:label "Pingback Container";
+    rdfs:subClassOf sioc:Container;
+    skos:note "Doing a POST of an pingback:Request on a pingback:Container creates a pingback:Item";
+    skos:note """Doing a GET on a pingback:Container with mime type html should return a html form similar to:
+
+    <form action="POST" action="">
+        source: <input type="text" name="source"/> (pingback:source of the new Pingback Item)<br/>
+        target: <input type="text" name="target"/> (pingback:target of the new Pingback Item)<br/>
+        comment: <input type="text" name="comment"/>  (sioc:content of the new Pingback Item)
+    </form>
+""";
+    rdfs:seeAlso pingback:Item;
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+pingback:Item a owl:Class;
+    rdfs:label "Pingback";
+    rdfs:subClassOf sioc:Item;
+    skos:note "One should be able to do a GET on a pingback:Item instance (and get back an RDFa/n3, RDF/XML document), a DELETE and an PUT (to be defined later).";
+    rdfs:seeAlso pingback:Container;
+    skos:example pingback:examplePingback1;
+    skos:example pingback:examplePingback2;
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+###
+# Pingback properties
+###
+
+pingback:service a owl:ObjectProperty;
+    rdfs:label "pingback service";
+    skos:note "This property is used to link the target resource with a pingback XML/RPC service URI. The linked service should accept XML/RPC pingback requests as described in the Pingback 1.0 specification.";
+    rdfs:seeAlso <http://hixie.ch/specs/pingback/pingback-1.0>;
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+pingback:to a owl:ObjectProperty;
+    rdfs:label "pingback request to";
+    skos:note "This property is used to link the subject resource (which is then the target resource of the pingback request) with a resource which accept the simplified pingback request. This relation (as well as pingback:service) gives a way for other services to ping this resource e.g. when a new document was created that mentions this resource.";
+    rdfs:range pingback:Container;
+    rdfs:seeAlso <http://aksw.org/Projects/SemanticPingBack#simplepost>;
+    rdfs:seeAlso pingback:Request;
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+pingback:source a owl:ObjectProperty;
+    rdfs:label "source resource";
+    rdfs:domain pingback:Item;
+    skos:note "The source resource of a Pingback (Item) is in most cases the subject of the statement which is communicated with this pingback request.";
+    skos:example pingback:examplePingback1;
+    skos:example pingback:examplePingback2;
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+pingback:target a owl:ObjectProperty;
+    rdfs:label "target resource";
+    rdfs:domain pingback:Item;
+    skos:note "The target resource of a Pingback (Item) is in most cases the object of the statement which is communicated with this pingback request.";
+    skos:example pingback:examplePingback1;
+    skos:example pingback:examplePingback2;
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+###
+# Example
+###
+
+pingback:examplePingback1 a pingback:Item;
+    rdfs:label "friendship request";
+    sioc:has_container <http://pingback.aksw.org>;
+    pingback:source <http://sebastian.tramp.name>;
+    pingback:target <http://philipp.frischmuth24.de/id/me>;
+    sioc:content "Hi Phil, lets connect :-)";
+    sioc:ip_address "139.18.8.71";
+    dcterms:created "2008-01-14";
+    skos:note "This is an example of an item which was created by a pingback request. Source and target resource of the request are WebIDs. As part of the post-processing of this request, the agent of the target resource gets the source WebID and looks for RDF statements (and HTML links), which relate this resource with the target WebID. The user can then decide to backlink the connection to approve this friendship request.".
+
+pingback:examplePingback2 a pingback:Item;
+    rdfs:label "blogpost back-linking request";
+    sioc:has_container <http://blog.aksw.org/xmlrpc.php>;
+    pingback:source <http://identi.ca/notice/7674706>;
+    pingback:target <http://blog.aksw.org/2009/ontowiki-09-available/>;
+    sioc:ip_address "139.18.8.71";
+    dcterms:created "2009-08-06";
+    skos:note "This is an example of an item which was created by a pingback request. In that example, source and target resource of the request are different sub-types of sioc:Post. As part of the post-processing of this request, the blog system of the target resource gets the source post and looks for RDF statements (and HTML links), which relate this post with the target post. The blog system own can then decide to approve this connection which means the target backlinks the source post.".
+
+
+###
+# Provenance Information Creation Guideline
+###
+
+pingback:RequestGuideline a owl:Class;
+    rdfs:subClassOf prv:CreationGuideline;
+    rdfs:label "Pingback Creation Guideline";
+    rdfs:comment "This concept represents the process of creating data based on a pingback request.";
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+
+###
+# HTTP Request Description
+###
+
+pingback:Request a owl:Class;
+    rdfs:label "(Simplified) Pingback HTTP Request";
+    skos:note "This is the class of all REST-based pingback requests. Such a request SHOULD at least have a parameter source and target. ";
+    rdfs:subClassOf http:PostRequest;
+    rdfs:subClassOf [
+        a owl:Restriction;
+        owl:minCardinality "2"^^xsd:int;
+        owl:maxCardinality "3"^^xsd:int;
+        owl:hasValue pingback:sourceParameter;
+        owl:hasValue pingback:targetParameter;
+        owl:onProperty http:param;
+    ];
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+pingback:sourceParameter a http:Param;
+    rdfs:label "source";
+    http:paramName "source";
+    skos:note "The value of this parameter is an URI.";
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+pingback:targetParameter a http:Param;
+    rdfs:label "target";
+    http:paramName "target";
+    skos:note "The value of this parameter is an URI.";
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+pingback:commentParameter a http:Param;
+    rdfs:label "comment";
+    http:paramName "comment";
+    skos:note "The value of this parameter is an URI.";
+    rdfs:isDefinedBy <http://purl.org/net/pingback/>.
+
+
+###
+# Vocabulary description and documentation
+###
+
+<http://purl.org/net/pingback/> a owl:Ontology;
+    foaf:maker <http://sebastian.tramp.name>, <http://philipp.frischmuth24.de/id/me>, <http://www.informatik.uni-leipzig.de/~auer/foaf.rdf#me>, <http://bblfish.net/people/henry/card#me>;
+    doap:maintainer <http://sebastian.tramp.name>;
+    vann:preferredNamespacePrefix "pingback";
+    vann:preferredNamespaceUri "http://purl.org/net/pingback/";
+    foaf:homepage <http://aksw.org/Projects/SemanticPingback>;
+    foaf:primaryTopic pingback:Container, pingback:Item;
+    vann:example <http://aksw.org/Projects/SemanticPingback#usagefoaf>, <http://aksw.org/Projects/SemanticPingback#HowTo>, <http://aksw.org/Projects/SemanticPingback#Implementations>;
+    vann:changes <http://code.google.com/p/ontowiki/source/list?path=/SemanticPingback/namespace.rdf&amp;repo=models>;
+    rdfs:label "Semantic Pingback Vocabulary";
+    skos:note "This small vocabulary defines resources which are used in the context of Semantic Pingback. The Semantic Pingback mechanism is an extension of the well-known Pingback method, a technological cornerstone of the blogosphere, thus supporting the interlinking within the Data Web.".
+
+<http://aksw.org/Projects/SemanticPingback> a foaf:Document;
+    rdfs:label "Semantic Pingback Project Homepage".
+
+<http://hixie.ch/specs/pingback/pingback-1.0> a foaf:Document;
+    rdfs:label "Pingback 1.0 Specification";
+    dcterms:creator "Stuart Langridge";
+    dcterms:creator "Ian Hickson".
+
+<http://aksw.org/Projects/SemanticPingback#usagefoaf> rdfs:label "Use an external pingback service with your FOAF profile".
+<http://aksw.org/Projects/SemanticPingback#HowTo> rdfs:label "How to add Semantic Pingback functionality to your application".
+<http://aksw.org/Projects/SemanticPingback#Implementations> rdfs:label "Available Implementations".
+<http://aksw.org/Projects/SemanticPingBack#simplepost> rdfs:label "Simplified Pingback Post Definition".
+
+<http://www.informatik.uni-leipzig.de/~auer/foaf.rdf#me> a foaf:Person; foaf:name "Sören Auer".
+<http://philipp.frischmuth24.de/id/me> a foaf:Person; foaf:name "Philipp Frischmuth".
+<http://bblfish.net/people/henry/card#me> a foaf:Person; foaf:name "Henry Story".
+<http://sebastian.tramp.name> a foaf:Person; foaf:name "Sebastian Tramp".
+
