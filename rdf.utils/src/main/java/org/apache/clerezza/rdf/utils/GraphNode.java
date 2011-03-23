@@ -475,6 +475,7 @@ public class GraphNode {
 		}
 	}
 
+
 	/**
 	 * Coverts the value into a typed literals and sets it as object of the
 	 * specified property
@@ -486,6 +487,22 @@ public class GraphNode {
 		addProperty(property,
 				LiteralFactory.getInstance().createTypedLiteral(value));
 	}
+
+	/**
+	 * Adds a property to the node with the inverse of the specified predicate and object
+	 * In other words <code>subject</code> will be related via the property <code>relation</code> to this node.
+	 *
+	 * @param predicate
+	 * @param subject
+	 */
+	public void addInverseProperty(UriRef predicate, Resource subject) {
+		if (subject instanceof NonLiteral) {
+			graph.add(new TripleImpl((NonLiteral) subject, predicate, resource));
+		} else {
+			throw new RuntimeException("Literals cannot be the subject of a statement");
+		}
+	}
+
 
 	/**
 	 * creates and returns an <code>RdfList</code> for the node and
