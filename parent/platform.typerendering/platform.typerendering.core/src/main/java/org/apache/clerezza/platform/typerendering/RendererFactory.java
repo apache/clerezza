@@ -123,7 +123,6 @@ public class RendererFactory {
 						Iterator<TypeRenderlet> renderlets = mediaTypeMap.getMatching(acceptableType);
 						if (renderlets.hasNext()) {
 							TypeRenderlet typeRenderlet = renderlets.next();
-							//TODO is this the most convrete type
 							return new TypeRenderletRendererImpl(
 								typeRenderlet,
 								acceptableType,
