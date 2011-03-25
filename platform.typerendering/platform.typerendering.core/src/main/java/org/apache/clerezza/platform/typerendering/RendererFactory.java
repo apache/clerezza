@@ -19,12 +19,7 @@
 package org.apache.clerezza.platform.typerendering;
 
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.typepriority.TypePrioritizer;
 import org.apache.clerezza.platform.typerendering.utils.MediaTypeMap;
@@ -41,7 +36,9 @@ import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.felix.scr.annotations.Services;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.startlevel.StartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,13 +62,21 @@ public class RendererFactory {
 	@Reference
 	private TypePrioritizer typePrioritizer;
 
+	@Reference
+	private StartLevel startLevelService;
+
 	private Map<UriRef, RegexMap<MediaTypeMap<TypeRenderlet>>> typeRenderletMap =
-			new HashMap<UriRef, RegexMap<MediaTypeMap<TypeRenderlet>>>();
+			Collections.synchronizedMap(new HashMap<UriRef, RegexMap<MediaTypeMap<TypeRenderlet>>>());
 
 	private BundleContext bundleContext;
 
+	private Set<ServiceReference> pendingRenderletRegistrations = new HashSet<ServiceReference>();
+
 	protected void activate(ComponentContext componentContext) {
 		bundleContext = componentContext.getBundleContext();
+		for (ServiceReference r : pendingRenderletRegistrations) {
+			registerTypeRenderlet(r);
+		}
 	}
 
 	protected void deactivate(ComponentContext componentContext) {
@@ -136,7 +141,21 @@ public class RendererFactory {
 		return null;
 	}
 
-	protected void bindTypeRenderlet(TypeRenderlet typeRenderlet) {
+	protected void bindTypeRenderlet(ServiceReference serviceReference) {
+		if (bundleContext == null) {
+			pendingRenderletRegistrations.add(serviceReference);
+		} else {
+			registerTypeRenderlet(serviceReference);
+		}
+	}
+
+	private void registerTypeRenderlet(ServiceReference serviceReference) {
+		int startLevel = startLevelService.getBundleStartLevel(serviceReference.getBundle());
+		TypeRenderlet renderlet = (TypeRenderlet) bundleContext.getService(serviceReference);
+		registerRenderlet(renderlet, startLevel);
+	}
+
+	private void registerRenderlet(TypeRenderlet typeRenderlet, int startLevel) {
 		final UriRef rdfType = typeRenderlet.getRdfType();
 		RegexMap<MediaTypeMap<TypeRenderlet>> regexMap = typeRenderletMap.get(rdfType);
 		if (regexMap == null) {
@@ -154,8 +173,17 @@ public class RendererFactory {
 	}
 
 	protected void unbindTypeRenderlet(TypeRenderlet typeRenderlet) {
-
+		for (Map.Entry<UriRef, RegexMap<MediaTypeMap<TypeRenderlet>>> typeEntry: typeRenderletMap.entrySet()) {
+			final RegexMap<MediaTypeMap<TypeRenderlet>> regexMap = typeEntry.getValue();
+			for (Map.Entry<String, MediaTypeMap<TypeRenderlet>> regexEntry: regexMap.entrySet()) {
+				final MediaTypeMap<TypeRenderlet> mediaTypeMap = regexEntry.getValue();
+				if (mediaTypeMap.remove(typeRenderlet)) {
+					//for now we just leave the potentially empty mediaTypeMap there
+					//IMPROVEMENT remove without entries
+					return;
+				}
+			}
+		}
 	}
-
 
 }

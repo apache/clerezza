@@ -19,6 +19,8 @@
 
 package org.apache.clerezza.platform.typerendering.utils;
 
+import org.apache.clerezza.platform.typerendering.TypeRenderlet;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -43,6 +46,7 @@ public class MediaTypeMap<T> {
 	private final Map<MediaType, Set<T>> exactTypeEntries = new HashMap<MediaType, Set<T>>();
 	private final Map<String, Set<T>> primaryTypeEntries = new HashMap<String, Set<T>>();
 	private final Set<T> wildCardEntries = new HashSet<T>();
+
 
 	public void addEntry(final MediaType mediaType, final T entry) {
 		if (mediaType.isWildcardType()) {
@@ -108,4 +112,30 @@ public class MediaTypeMap<T> {
 		resultList.addAll(wildCardEntries);
 		return resultList.iterator();
 	}
+
+	public boolean remove(T toBeRemoved) {
+		if (removeFromSetMap(exactTypeEntries, toBeRemoved)) {
+			return true;
+		}
+		if (removeFromSetMap(primaryTypeEntries, toBeRemoved)) {
+			return true;
+		}
+		return wildCardEntries.remove(toBeRemoved);
+	}
+
+	private <U> boolean removeFromSetMap(Map<U, Set<T>> map, T toBeRemoved) {
+		Iterator<Map.Entry<U, Set<T>>> iter = map.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry<?, Set<T>> entry = iter.next();
+			Set<T> values = entry.getValue();
+			if (values.remove(toBeRemoved)) {
+				if (values.isEmpty()) {
+					iter.remove();
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
