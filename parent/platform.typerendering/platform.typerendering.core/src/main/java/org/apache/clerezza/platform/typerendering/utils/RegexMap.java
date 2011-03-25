@@ -19,10 +19,7 @@
 
 package org.apache.clerezza.platform.typerendering.utils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -119,7 +116,7 @@ public class RegexMap<T> {
 
 	/**
 	 * 
-	 * @param term the term that must macth against the regex of the entry
+	 * @param term the term that must match against the regex of the entry
 	 * @return an iterator of matching entries, sorted by length of match
 	 */
 	public Iterator<T> getMatching(String pTerm) {
@@ -160,5 +157,13 @@ public class RegexMap<T> {
 				throw new UnsupportedOperationException("Not supported.");
 			}
 		};
+	}
+
+	public Set<Map.Entry<String,T>> entrySet() {
+		Map<String,T> map = new HashMap<String, T>();
+		for (Tuple tuple : tuples) {
+			map.put(tuple.pattern.pattern(), tuple.entry);
+		}
+		return map.entrySet();
 	}
 }
