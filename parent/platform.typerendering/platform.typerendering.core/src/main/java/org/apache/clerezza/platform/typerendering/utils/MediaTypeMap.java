@@ -71,7 +71,7 @@ public class MediaTypeMap<T> {
 	/**
 	 * Returns entries matching the specified media-type.
 	 *
-	 * The current implemenation is efficient for concrete media-types while
+	 * The current implementation is efficient for concrete media-types while
 	 * wildcards require iterating throw parts of the entries
 	 *
 	 * @param mediaType

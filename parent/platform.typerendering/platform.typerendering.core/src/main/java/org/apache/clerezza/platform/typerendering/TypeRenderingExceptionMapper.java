@@ -54,7 +54,7 @@ public class TypeRenderingExceptionMapper implements ExceptionMapper<TypeRenderi
 			TypeRenderingExceptionMapper.class);
 
 	@Reference
-	RenderletManagerImpl renderletManager;
+	RenderletManager renderletManager;
 
 	@Override
 	public Response toResponse(TypeRenderingException exception) {
