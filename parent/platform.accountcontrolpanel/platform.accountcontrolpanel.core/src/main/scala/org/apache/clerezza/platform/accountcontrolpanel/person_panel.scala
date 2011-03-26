@@ -140,7 +140,7 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	// setting some header info
 	//
 
-	resultDocModifier.addStyleSheet("profile/style/profile.css");
+	resultDocModifier.addStyleSheet("/account-control-panel/style/profile.css");
 	resultDocModifier.setTitle("Profile Viewer");
 	resultDocModifier.addNodes2Elem("tx-module", <h1>Account Control Panel</h1>);
 	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Profile Viewer</a></li>);
