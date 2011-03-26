@@ -1,0 +1,7 @@
+<div id="tx-content" class="list">
+	{for (entry <- res!!) yield
+		<div class="entry">
+			{render(entry, mode)}
+		</div>
+	}
+</div>

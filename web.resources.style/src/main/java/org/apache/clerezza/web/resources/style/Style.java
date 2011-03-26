@@ -26,6 +26,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesService;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.osgi.service.component.ComponentContext;
 
@@ -48,6 +49,10 @@ public class Style {
 	protected void activate(ComponentContext context) {
 		URL templateURL = getClass().getResource("globalmenu-naked.ssp");
 		sspService.registerScalaServerPage(templateURL, RDFS.Resource, "menu",
+				MediaType.APPLICATION_XHTML_XML_TYPE);
+
+		templateURL = getClass().getResource("rdf-list-template.ssp");
+		sspService.registerScalaServerPage(templateURL, RDF.List, ".*naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE);
 
 		templateURL = getClass().getResource("headed-page-template.ssp");
