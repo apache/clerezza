@@ -1,17 +1,20 @@
 /*
- * Copyright 2010 Apache.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.clerezza.platform.accountcontrolpanel
 
@@ -40,9 +43,9 @@ class ProfilePanelXHTML(arguments: XmlResult.Arguments) extends XmlResult(argume
 
 	//set header properties
 
- 	resultDocModifier.addStyleSheet("profile/style/profile.css");
-	resultDocModifier.addScriptReference("profile/scripts/profile.js");
-	resultDocModifier.addScriptReference("profile/scripts/IEKeygen.js");
+ 	resultDocModifier.addStyleSheet("/account-control-panel/style/profile.css");
+	resultDocModifier.addScriptReference("/account-control-panel/scripts/profile.js");
+	resultDocModifier.addScriptReference("/account-control-panel/scripts/IEKeygen.js");
 	resultDocModifier.setTitle("Account Control Panel");
 	resultDocModifier.addNodes2Elem("tx-module", <h1>Account Control Panel</h1>);
 	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Profile</a></li>);
