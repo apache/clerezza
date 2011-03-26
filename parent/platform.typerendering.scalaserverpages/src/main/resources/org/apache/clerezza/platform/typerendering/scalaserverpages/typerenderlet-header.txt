@@ -8,9 +8,9 @@ import javax.ws.rs.core.UriInfo
 
  class CompiledScalaServerPage extends SRenderlet {
 
-	def getMediaType = null
-	def getModePattern = null
-	def getRdfType = null
+	override def getMediaType = null
+	override def getModePattern = null
+	override def getRdfType = null
 	override def renderedPage(arguments: XmlResult.Arguments): XmlResult = {
  		new XmlResult(arguments) {
 			override def content = {
