@@ -24,25 +24,21 @@ import java.net.URL;
 import javax.ws.rs.core.MediaType;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.platform.typerendering.RenderletManager;
-import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesService;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.osgi.service.component.ComponentContext;
 
 /**
- * Bundlized version oficons. Bundles which uses these icons
- * should use this service (bundle depends on org.apache.clerezza.web.resources.style.Style)
+ * Registers the Scala Sever PAges provided by this bundle.
  *
- * @author tio
+ * @author tio, reto
  */
 @Component(immediate=true)
 public class Style {
 
 	@Reference
-	private RenderletManager renderletManager;
+	private ScalaServerPagesService sspService;
 
 	/**
 	 * configuration.
@@ -51,15 +47,13 @@ public class Style {
 	 */
 	protected void activate(ComponentContext context) {
 		URL templateURL = getClass().getResource("globalmenu-naked.ssp");
-
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), RDFS.Resource,
-				"menu", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+		sspService.registerScalaServerPage(templateURL, RDFS.Resource, "menu",
+				MediaType.APPLICATION_XHTML_XML_TYPE);
 
 		templateURL = getClass().getResource("headed-page-template.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), PLATFORM.HeadedPage, "(?!.*naked).*",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+		sspService.registerScalaServerPage(templateURL, PLATFORM.HeadedPage, "(?!.*naked).*",
+				MediaType.APPLICATION_XHTML_XML_TYPE);
+
 
 	}
 
