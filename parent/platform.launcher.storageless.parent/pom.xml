@@ -442,6 +442,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>platform.typerendering.gui</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
