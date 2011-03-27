@@ -43,6 +43,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import org.apache.clerezza.platform.Constants;
 import org.apache.clerezza.platform.content.representations.core.ThumbnailService;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RendererFactory;
@@ -62,6 +63,7 @@ import org.apache.clerezza.utils.ReplacingOutputStream;
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
 import org.apache.commons.codec.binary.Base64;
 import org.osgi.service.component.ComponentContext;
+import org.wymiwyg.commons.util.dirbrowser.MultiPathNode;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 
 /**
@@ -150,8 +152,11 @@ public class Generator {
 
 	private byte[] createOfflineSite(String baseUri, String targetUri,
 			String rootLinkPrefix, List<String> formatExtensions) throws IOException {
-		PathNode rootNode = createFileHierarchy(baseUri, targetUri, rootLinkPrefix,
+		PathNode baseNode = createFileHierarchy(baseUri, baseUri, targetUri, rootLinkPrefix,
 				formatExtensions);
+		PathNode allHostsNode = createFileHierarchy(Constants.ALL_HOSTS_URI_PREFIX+"/",
+				baseUri,targetUri, rootLinkPrefix, formatExtensions);
+		PathNode rootNode = new MultiPathNode(baseNode, allHostsNode);
 		try {
 			return ZipCreationUtil.createZip(rootNode);
 		} catch (IOException ex) {
@@ -159,7 +164,7 @@ public class Generator {
 		}
 	}
 
-	private PathNode createFileHierarchy(String baseUri, String targetUri,
+	private PathNode createFileHierarchy(String baseUri, String retrievalBaseUri, String targetUri,
 			String rootLinkPrefix, List<String> formatExtensions) throws IOException {
 		Hierarchy result = new Hierarchy("");
 		MGraph contentGraph = cgp.getContentGraph();
@@ -175,7 +180,7 @@ public class Generator {
 			if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index"))) {
 				continue;
 			}
-			generateFilesForResource(baseUri, targetUri,
+			generateFilesForResource(baseUri, retrievalBaseUri, targetUri,
 					rootLinkPrefix, uriRef, contentGraph, formatExtensions,
 					result);
 		}
@@ -186,21 +191,21 @@ public class Generator {
 	 * Currently not using graph, but in future this might be used for special
 	 * handling of infodicscobits
 	 */
-	private void generateFilesForResource(String baseUri, String targetBaseUri,
-			String rootLinkPrefix, UriRef uriRef, TripleCollection graph,
+	private void generateFilesForResource(String baseUri, String retrievalBaseUri,
+			String targetBaseUri, String rootLinkPrefix, UriRef resourceUriRef, TripleCollection graph,
 			List<String> formatExtensions, Hierarchy hierarchy) throws IOException {
-		final String path = getPathForUriRef(uriRef, baseUri);
-		final UriRef targetUri = new UriRef(baseUri+path);
+		final String path = getPathForUriRef(resourceUriRef, baseUri);
+		UriRef retreivalUriRef = new UriRef(retrievalBaseUri+path);
 		for (String formatExtension : formatExtensions) {
 			MediaType mediaType = mediaTypeGuesser.getTypeForExtension(formatExtension);
 			try {
-				final byte[] variant = getVariant(uriRef, mediaType);
+				final byte[] variant = getVariant(retreivalUriRef, mediaType);
 				if (mediaType.getSubtype().equals("png"))
 					logger.info("Got variant of length : {}",variant.length);
 				final byte[] addedThumbnailUris = applyThumbnailService(variant);
 				final byte[] dataPrefixApplied = applyRootLinkPrefix(addedThumbnailUris,
 						rootLinkPrefix, mediaType);
-				final String filePath = uriRef.getUnicodeString().endsWith("/") ? path+"index" : path;
+				final String filePath = resourceUriRef.getUnicodeString().endsWith("/") ? path+"index" : path;
 				final String dottedExtension = "."+formatExtension;
 				final String extendedPath = filePath.endsWith(dottedExtension) ?
 					filePath : filePath + dottedExtension;
@@ -209,7 +214,7 @@ public class Generator {
 				hierarchy.addChild(extendedPath, 
 						changeBaseUri(dataPrefixApplied, baseUri, targetBaseUri));
 			} catch (VariantUnavailableException ex) {
-				logger.debug("{} not available as {}", uriRef, mediaType);
+				logger.debug("{} not available as {}", resourceUriRef, mediaType);
 			}
 		}	
 	}
@@ -270,6 +275,9 @@ public class Generator {
 	}
 
 	private String getPathForUriRef(UriRef uriRef, String baseUri) {
+		if (!uriRef.getUnicodeString().startsWith(baseUri)) {
+			throw new RuntimeException(uriRef+" doesn't start with "+baseUri);
+		}
 		return uriRef.getUnicodeString().substring(baseUri.length());
 	}
 
