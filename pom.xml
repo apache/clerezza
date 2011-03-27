@@ -73,6 +73,7 @@
 				<module>platform.security</module>
 				<module>platform.typehandlerspace</module>
 				<module>platform.typerendering</module>
+				<module>platform.typerendering.gui</module>
 				<module>platform.typerendering.scala</module>
 				<module>platform.typerendering.scalaserverpages</module>
 				<module>platform.typerendering.seedsnipe</module>
@@ -996,6 +997,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.typerendering</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>platform.typerendering.gui</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
