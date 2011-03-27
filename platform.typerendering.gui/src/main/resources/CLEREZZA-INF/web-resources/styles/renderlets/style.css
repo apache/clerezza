@@ -1,0 +1,17 @@
+.renderlet {
+	background-color: lightgray;
+	border: darkgrey;
+	border-width: 1px;
+	border-style: solid;
+	with: 90%;
+	vertical-align: middle;
+	margin-left: 1em;
+	margin-right: 1em
+}
+.entry {
+	padding-bottom: 1em;
+}
+.renderlet .value {
+	color: darkgreen;
+}
+
