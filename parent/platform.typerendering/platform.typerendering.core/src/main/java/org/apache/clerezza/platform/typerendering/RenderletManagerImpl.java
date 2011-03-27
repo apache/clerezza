@@ -282,6 +282,13 @@ public class RenderletManagerImpl implements RenderletManager {
 						typeRenderletRequestProperties.getMediaType(),
 						renderletRequestProperties, os);
 			}
+
+			@Override
+			public String toString() {
+				return "RenderletManager managed for: "+renderletServiceName+" with "+renderingSpecificationUri;
+			}
+
+
 		};
 		ServiceRegistration registration = bundleContext.registerService(TypeRenderlet.class.getName(), typeRenderlet,
 				new Hashtable());
