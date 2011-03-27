@@ -21,6 +21,9 @@ package org.apache.clerezza.tools.offline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
@@ -41,7 +44,9 @@ class ZipCreationUtil {
 	private static void archive(ZipOutputStream compressedTcs,
 			PathNode pathNode) throws IOException {
 		if (pathNode.isDirectory()) {
-			String[] childNames = pathNode.list();
+			//multi-path node doesn't prevent duplicate in versions previous to
+			//0.8
+			Set<String> childNames = new HashSet<String>(Arrays.asList(pathNode.list()));
 			for (String childName : childNames) {
 				archive(compressedTcs, pathNode.getSubPath(childName));
 			}
