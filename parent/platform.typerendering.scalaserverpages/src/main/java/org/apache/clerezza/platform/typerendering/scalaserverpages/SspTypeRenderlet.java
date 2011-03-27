@@ -162,4 +162,11 @@ public class SspTypeRenderlet implements TypeRenderlet {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "SspTypeRenderlet for: " + sspLocation;
+	}
+
+
 }
