@@ -103,9 +103,17 @@ ul.yui-nav li.selected a:active, ul.yui-nav li.selected a:hover  {
 .tx-edit form {
 }
 
+.tx-edit.tx-panel-right form {
+	margin-right: 19em;
+	min-width: 33em;
+}
 
 .tx-edit input, .tx-edit textarea {
 	width: 22em;
+}
+
+.tx-edit .tx-toplabel input, .tx-edit .tx-toplabel textarea, .tx-edit .tx-toplabel select {
+	width: 31em;
 }
 
 .tx-edit select {
@@ -138,6 +146,11 @@ ul.yui-nav li.selected a:active, ul.yui-nav li.selected a:hover  {
 	float: left;
 }
 
+.tx-edit fieldset li.tx-toplabel label {
+	width: 30em;
+	float: none;
+}
+
 .tx-edit fieldset li label + p {
 	margin: 0;
 	margin-left: 11em;
@@ -147,6 +160,12 @@ ul.yui-nav li.selected a:active, ul.yui-nav li.selected a:hover  {
 	margin: 0;
 	margin-left: 11em;
 }
+
+.tx-edit fieldset li.tx-toplabel label + div {
+	margin: 0;
+	margin-left: 0em;
+}
+
 
 .tx-edit fieldset li a {
 	text-decoration: none;
@@ -162,4 +181,9 @@ ul.yui-nav li.selected a:active, ul.yui-nav li.selected a:hover  {
 
 .tx-edit fieldset li span.tx-item a {
 	float: right;
+}
+
+
+.tx-edit .tx-toplabel .tx-panel-middle input, .tx-edit .tx-toplabel .tx-panel-middle textarea {
+	width: 98%;
 }
