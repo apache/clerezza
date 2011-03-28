@@ -156,7 +156,7 @@ public class Generator {
 				formatExtensions);
 		PathNode allHostsNode = createFileHierarchy(Constants.ALL_HOSTS_URI_PREFIX+"/",
 				baseUri,targetUri, rootLinkPrefix, formatExtensions);
-		PathNode rootNode = new MultiPathNode(baseNode, allHostsNode);
+		PathNode rootNode = new MultiPathNode(allHostsNode, baseNode);
 		try {
 			return ZipCreationUtil.createZip(rootNode);
 		} catch (IOException ex) {
@@ -178,6 +178,9 @@ public class Generator {
 		}
 		for (UriRef uriRef : matchingUri) {
 			if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index"))) {
+				continue;
+			}
+			if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index.html"))) {
 				continue;
 			}
 			generateFilesForResource(baseUri, retrievalBaseUri, targetUri,
