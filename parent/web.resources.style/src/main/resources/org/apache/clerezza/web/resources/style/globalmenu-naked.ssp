@@ -1,6 +1,7 @@
 def menu(s: Any) = new UriRef("http://clerezza.org/2009/11/global-menu#"+s)
 def rdfs(s: Any) = new UriRef("http://www.w3.org/2000/01/rdf-schema#"+s)
 def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#"+s)
+def dct(s: Any) = new UriRef("http://purl.org/dc/terms/"+s)
 
 resultDocModifier.addScriptReference("/style/scripts/login.js");
 
@@ -13,16 +14,15 @@ resultDocModifier.addScriptReference("/style/scripts/login.js");
 		</form>
 
 	</div>
-
 	<div id="tx-login">
-				{if((context/platform("user")/platform("userName")*).equals("anonymous")) {
+				{
+					val username = (context/platform("user")/platform("userName")*)
+					if((username).equals("anonymous")) {
 						<span>
 							<a href="#" id="tx-login-button">login</a>
 						</span>
 					} else {
-						<span>{context/platform("user")/platform("userName")*}
-							<a href="/logout">logout</a>
-						</span>
+						<span><a href={"/user/" + username + "/control-panel"}>{username}</a>|<a href="/logout">logout</a></span>
 					}
 				}
 	</div>
@@ -43,11 +43,11 @@ resultDocModifier.addScriptReference("/style/scripts/login.js");
 			{
 				ifx ((menuItem/menu("children")).length > 0) {
 				<div>
-					<h4></h4>
 					<ol>
 						 {
-							for (childMenuItem <- menuItem/menu("children")!!) yield
-							<li class="clearfix"><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a><span></span></li>
+							for (childMenuItem <- menuItem/menu("children")!!) yield {
+							<li class="clearfix"><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a><span>{childMenuItem/dct("description")*}</span></li>
+							}
 						 }
 					</ol>
 				</div>
