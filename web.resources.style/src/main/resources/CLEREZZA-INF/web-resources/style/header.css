@@ -50,7 +50,7 @@
 }
 
 #tx-login {
-	width: 50em;
+	width: 16em;
 	color: #ffffff;
 	float: right;
 	padding: 0.2em 0.8em 0 0;
@@ -59,8 +59,8 @@
 
 #tx-login a {
 	color: #ffffff;
-	float: right;
 	margin-left: 0.8em;
+	margin-right: 0.8em;
 }
 
 #tx-login span {
@@ -85,6 +85,19 @@
 	float: none;
 	width: 21px;
 	height: 20px
+}
+
+#tx-header #tx-globalsearch .tx-icon-search {
+	background-color: #FFFFFF;
+	background: url("./images/icons/btn-search.png") no-repeat scroll center center transparent;
+    background-repeat: repeat-x;
+    border-color: #A7A7A7 #A7A7A7 #CCCCCC;
+    border-style: solid;
+    border-width: 1px;
+    font-size: 1em;
+    min-height: 1.2em;
+    outline: medium none;
+    vertical-align: middle;
 }
 
 #tx-site {
