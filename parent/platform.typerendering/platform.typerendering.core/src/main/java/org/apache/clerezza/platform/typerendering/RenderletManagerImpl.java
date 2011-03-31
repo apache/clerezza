@@ -290,9 +290,39 @@ public class RenderletManagerImpl implements RenderletManager {
 
 
 		};
+
+		ServiceRegistration oldServiceRegistration =
+				getAlreadyRegisteredServiceReg(rdfType, mediaType, modePattern);
+		if(oldServiceRegistration != null) {
+			oldServiceRegistration.unregister();
+			registeredTypeRenderlets.remove(oldServiceRegistration);
+		}
+
 		ServiceRegistration registration = bundleContext.registerService(TypeRenderlet.class.getName(), typeRenderlet,
 				new Hashtable());
 		registeredTypeRenderlets.add(registration);
 		return true;
+	}
+
+	private ServiceRegistration getAlreadyRegisteredServiceReg(UriRef rdfType, 
+			MediaType mediaType, String modePattern) {
+		
+		for (ServiceRegistration serviceRegistration : registeredTypeRenderlets) {
+			TypeRenderlet registeredRenderlet = (TypeRenderlet)
+					bundleContext.getService(serviceRegistration.getReference());
+			if (registeredRenderlet != null
+					&& registeredRenderlet.getRdfType().equals(rdfType)
+					&& registeredRenderlet.getMediaType().equals(mediaType)) {
+
+				if(modePattern == null && registeredRenderlet.getModePattern() == null) {
+					return serviceRegistration;
+				} else if(modePattern != null && registeredRenderlet.getModePattern() != null) {
+					if(registeredRenderlet.getModePattern().equals(modePattern)) {
+						return serviceRegistration;
+					}
+				}
+			}
+		}
+		return null;
 	}
 }
