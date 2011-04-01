@@ -23,9 +23,7 @@ import org.apache.clerezza.platform.security.UserUtil
 import org.apache.clerezza.platform.usermanager.UserManager
 import javax.ws.rs.{Produces, GET, Path}
 import org.osgi.service.component.ComponentContext
-import org.apache.clerezza.foafssl.auth.{WebIDClaim, X509Claim}
-import java.security.Principal
-import scala.collection.JavaConversions._
+import org.apache.clerezza.foafssl.auth.X509Claim
 
 /**
  * implementation of (very early) version of test server for WebID so that the following tests
@@ -59,15 +57,12 @@ class TestMe {
     if (creds.size == 0) return "No public keys found"
     val cred = creds.iterator.next
     def outString(x509: X509Claim): String = {
-      val res = for (p <- x509.verified) yield {
-        p match {
-          case id: WebIDClaim => "webid " + id.webId+" hasname "+ id.getName
-          case other: Principal => other.getName
-        }
+      val res = for (id <- x509.webidclaims) yield {
+        id.verified + " webid " + id.webId + " hasname " + id.userName
       }
-
-      return "X509 Certificate found. verified the following ids: " + res
+      res.toString
     }
+
     return cred match {
       case x509: X509Claim => outString(x509)
       case other: AnyRef => "no X509 certificate found: found " + other.getClass()
