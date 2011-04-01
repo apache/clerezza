@@ -34,6 +34,10 @@ public class CheckAuthenticationPermission extends Permission {
 		super(null);
 	}
 	
+	public CheckAuthenticationPermission(String name, String actions) {
+		super(null);
+	}
+	
 	@Override
 	public boolean implies(Permission permission) {
 		if (permission instanceof CheckAuthenticationPermission) {
