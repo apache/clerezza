@@ -47,7 +47,8 @@ class Activator() {
       val http = bundleContext.getProperty("org.osgi.service.http.secure.enabled")
       if (http!=null && "true".equals(http)) {
         val sslContextFactory = new X509SSLContextFactory(
-                    getServerCertKeyStore(context), getKeyStorePassword(bundleContext),
+                    getServerCertKeyStore(context),
+			        getKeyStorePassword(bundleContext),
                     getServerCertKeyStore(context));//getCaKeyStore());
             sslContextFactory
                     .setTrustManagerWrapper(x509TrustManagerWrapperService);

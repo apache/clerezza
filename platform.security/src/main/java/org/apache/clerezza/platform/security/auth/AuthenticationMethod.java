@@ -22,6 +22,8 @@ import org.wymiwyg.wrhapi.HandlerException;
 import org.wymiwyg.wrhapi.Request;
 import org.wymiwyg.wrhapi.Response;
 
+import javax.security.auth.Subject;
+
 /**
  * Classes implementing this interface provide a method to authenticate a
  * a user with the information provided in a http request.
@@ -31,7 +33,7 @@ import org.wymiwyg.wrhapi.Response;
 public interface AuthenticationMethod {
 
 	/**
-	 * Returns the user name of the authenticated user with the informations
+	 * Returns the user name of the authenticated user with the information
 	 * provided in the specified request. If the authentication failed, an
 	 * <code>LoginException</code> will be thrown. If no authentication
 	 * informations are available null is returned.
@@ -41,7 +43,7 @@ public interface AuthenticationMethod {
 	 * the login procedure failed.
 	 * @throws HandlerException
 	 */
-	public String authenticate(Request request)
+	public Subject authenticate(Request request)
 		throws LoginException, HandlerException;
 
 	/**

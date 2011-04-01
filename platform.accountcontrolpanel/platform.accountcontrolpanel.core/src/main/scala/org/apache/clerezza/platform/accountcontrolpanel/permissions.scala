@@ -68,6 +68,7 @@ class AbstractPermission(val accountName: String, val actions: String ="") exten
 			case _ => false
 	    }
 
+  //todo: the hashes for same named account names of different types would be the same here
 	override
 	def hashCode: Int = {
 		return  41 * (41 + (if (accountName != null) accountName.hashCode else 0))

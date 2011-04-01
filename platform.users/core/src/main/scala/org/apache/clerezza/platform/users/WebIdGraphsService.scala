@@ -82,7 +82,7 @@ class WebIdGraphsService extends WebProxy {
 		 */
 		def publicUserGraph: MGraph = {
 			def systemTriples = {
-				val systemGraph = tcManager.getMGraph(SystemConfig.SYSTEM_GRAPH_URI)
+				val systemGraph = tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI)
 				val triples = systemGraph.filter(webId, PLATFORM.userName, null)
 				val result = new SimpleMGraph
 				while (triples.hasNext) {
@@ -103,21 +103,13 @@ class WebIdGraphsService extends WebProxy {
 		}
 
 		/**
-		 * for web-ids with a # same as representationGraphUriString
+		 * the graph for putting local information in addition to the remote graph
 		 */
 		lazy val localGraphUri = {
-			new UriRef(localGraphUriString)
+			new UriRef(representationUri+".graph")
 		}
 
-		//TODO: One should do some reasoning somewhere for URIs that have redirects, such a http://xmlns.com/foaf/knows
-		lazy val localGraphUriString = {
-			val hashPos = uriString.indexOf('#')
-			if (hashPos != -1) {
-				uriString.substring(0, hashPos)
-			} else {
-				uriString
-			}
-		}
+
 
 
 		//for the WebID Graph this is the place where local information in addition to remote
