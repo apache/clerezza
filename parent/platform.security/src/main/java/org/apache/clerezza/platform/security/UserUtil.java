@@ -46,6 +46,16 @@ public class UserUtil {
 	}
 
 	/**
+	 *
+	 * @return the subject which is associated to the
+	 * <code>AccessControlContext</code> of the current thread.
+	 */
+	public static Subject getCurrentSubject() {
+		return getSubject(AccessController.getContext());
+	}
+
+
+	/**
 	 * Returns the name of the user associtated with the specified 
 	 * <code>AccessControlContext</code>.
 	 * 
@@ -54,7 +64,25 @@ public class UserUtil {
 	 * user name is associated with the provided <code>AccessControlContext</code>.
 	 */
 	public static String getUserName(final AccessControlContext context) {
-		Subject subject;		
+		Subject subject = getSubject(context);
+		Iterator<Principal> iter = subject.getPrincipals().iterator();
+		String name = null;
+		if (iter.hasNext()) {
+				name = iter.next().getName();
+		}
+		return name;
+	}
+
+	/**
+	 * Returns the name of the user associtated with the specified
+	 * <code>AccessControlContext</code>.
+	 *
+	 * @param context
+	 * @return the username of the current user or null if no
+	 * user name is associated with the provided <code>AccessControlContext</code>.
+	 */
+	public static Subject getSubject(final AccessControlContext context) {
+		Subject subject;
 		try {
 			subject = AccessController.doPrivileged(new PrivilegedExceptionAction<Subject>() {
 
@@ -70,16 +98,9 @@ public class UserUtil {
 			}
 			throw new RuntimeException(cause);
 		}
-		if (subject == null) {
-			return null;
-		}
-		Iterator<Principal> iter = subject.getPrincipals().iterator();
-		String name = null;
-		if (iter.hasNext()) {
-				name = iter.next().getName();
-		}
-		return name;
+		return subject;
 	}
+
 
 	public static Subject createSubject(String userName) {
 		return new Subject(true,

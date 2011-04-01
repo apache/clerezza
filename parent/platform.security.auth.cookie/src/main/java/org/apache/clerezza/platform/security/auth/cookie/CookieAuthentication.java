@@ -21,10 +21,9 @@ package org.apache.clerezza.platform.security.auth.cookie;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.AccessControlException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.security.Principal;
+import java.util.*;
+import javax.security.auth.Subject;
 import javax.ws.rs.core.Cookie;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.security.auth.*;
@@ -69,7 +68,7 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 	}
 
 	@Override
-	public String authenticate(Request request) throws LoginException, HandlerException {
+	public Subject authenticate(Request request) throws LoginException, HandlerException {
 		String[] cookieValues = request.getHeaderValues(HeaderName.COOKIE);
 		if (cookieValues != null && cookieValues.length > 0) {
 			Map<String, Cookie> cookies = parseCookies(cookieValues[0]);		
@@ -89,7 +88,10 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 			}
 			try {
 				if (authenticationService.authenticateUser(userName, password)){
-					return userName;
+					return new Subject(true,
+						Collections.singleton(new PrincipalImpl(userName)),
+						Collections.EMPTY_SET,
+						Collections.EMPTY_SET);
 				} else {
 					throw new LoginException(LoginException.PASSWORD_NOT_MATCHING);
 				}
