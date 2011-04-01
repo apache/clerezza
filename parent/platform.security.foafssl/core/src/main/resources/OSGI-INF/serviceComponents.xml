@@ -11,16 +11,16 @@
 		<service servicefactory="false">
 			<provide interface="org.apache.clerezza.platform.security.auth.WeightedAuthenticationMethod"/>
 		</service>
+        <reference name="webIdService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
+        cardinality="1..1" policy="static" bind="bindWebIdService" unbind="unbindWebIdService"/>
+        <reference name="systemGraph" interface="org.apache.clerezza.rdf.core.access.LockableMGraph"
+        cardinality="1..1" policy="static" target="(name=http://tpf.localhost/system.graph)"
+        bind="bindSystemGraph" unbind="unbindSystemGraph"/>
 	</scr:component>
 	<scr:component enabled="true" name="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService">
 		<implementation class="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"/>
 		<service servicefactory="false">
 			<provide interface="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"/>
 		</service>
-		<reference name="webProxy" interface="org.apache.clerezza.rdf.web.proxy.WebProxy"
-		cardinality="1..1" policy="static" bind="bindWebProxy" unbind="unbindWebProxy"/>
-		<reference name="systemGraph" interface="org.apache.clerezza.rdf.core.access.LockableMGraph" 
-		cardinality="1..1" policy="static" target="(name=http://tpf.localhost/system.graph)" 
-		bind="bindSystemGraph" unbind="unbindSystemGraph"/>
 	</scr:component>
 </components>

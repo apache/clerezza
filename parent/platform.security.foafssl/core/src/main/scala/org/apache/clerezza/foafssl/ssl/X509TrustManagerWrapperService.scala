@@ -19,266 +19,52 @@
 
 package org.apache.clerezza.foafssl.ssl
 
-import java.io.ByteArrayOutputStream
-import java.math.BigInteger
-import java.security.PublicKey
 import java.security.cert.CertificateException
-import java.security.cert.CertificateExpiredException
-import java.security.cert.CertificateNotYetValidException
 import java.security.cert.X509Certificate
-import java.security.interfaces.RSAPublicKey
-import java.util.Date
 import javax.net.ssl.X509TrustManager;
-import org.apache.clerezza.foafssl.Utilities
-import org.apache.clerezza.foafssl.ontologies.CERT
-import org.apache.clerezza.foafssl.ontologies.RSA
-import org.apache.clerezza.platform.Constants
-import org.apache.clerezza.rdf.core.Literal
-import org.apache.clerezza.rdf.core.LiteralFactory
-import org.apache.clerezza.rdf.core.MGraph
-import org.apache.clerezza.rdf.core.NoConvertorException
-import org.apache.clerezza.rdf.core.Resource
-import org.apache.clerezza.rdf.core.TripleCollection
-import org.apache.clerezza.rdf.core.TypedLiteral
-import org.apache.clerezza.rdf.core.UriRef
-import org.apache.clerezza.rdf.core.access.LockableMGraph
-import org.apache.clerezza.rdf.core.access.TcManager
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph
-import org.apache.clerezza.rdf.core.impl.TripleImpl
-import org.apache.clerezza.rdf.core.serializedform.{Serializer, SupportedFormat}
-import org.apache.clerezza.rdf.utils._
-import org.apache.clerezza.rdf.scala.utils._
-import org.apache.clerezza.rdf.ontologies.FOAF
-import org.apache.clerezza.rdf.ontologies.PLATFORM
-import org.apache.clerezza.rdf.ontologies.RDF
-import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.jsslutils.sslcontext.X509TrustManagerWrapper
 import org.jsslutils.sslcontext.trustmanagers.TrustAllClientsWrappingTrustManager
 import org.slf4j.LoggerFactory
-import org.apache.clerezza.rdf.web.proxy.{WebProxy, Cache}
+import org.osgi.service.component.ComponentContext
+import org.apache.clerezza.foafssl.auth.X509Claim
+
+
+object X509TrustManagerWrapperService {
+	private val logger = LoggerFactory.getLogger(classOf[X509TrustManagerWrapperService])
+}
+
 
 class X509TrustManagerWrapperService() extends X509TrustManagerWrapper {
 
-	private val logger = LoggerFactory.getLogger(classOf[X509TrustManagerWrapperService])
-	private var webproxy: WebProxy = null;
+	import X509TrustManagerWrapperService._
 
-	protected def bindWebProxy(webcache: WebProxy) = {
-		this.webproxy = webcache
-	}
-	
-	protected def unbindWebProxy(webcache: WebProxy) = {
-		this.webproxy = null
-	}
-	
-	private var systemGraph: MGraph = null
-	
-	protected def bindSystemGraph(g: LockableMGraph) {
-		systemGraph = g
-	}
-	
-	protected def unbindSystemGraph(g: LockableMGraph) {
-		systemGraph = null
-	}
-	
-	override def wrapTrustManager(trustManager: X509TrustManager): X509TrustManager =  {
-		new TrustAllClientsWrappingTrustManager(
-			trustManager) {
+	override def wrapTrustManager(trustManager: X509TrustManager): X509TrustManager = {
+
+		new TrustAllClientsWrappingTrustManager(trustManager) {
+
+			//At this level we just check if there are webids
 			override def checkClientTrusted(chain: Array[X509Certificate], authType: String): Unit = {
 				try {
-					val webIdUriRefs = Utilities.getClaimedWebIds(chain)
-					if (webIdUriRefs.length == 0) {
+					val webIdUriRefs = X509Claim.getClaimedWebIds(chain(0))
+					if (webIdUriRefs.isEmpty) {
 						trustManager.checkClientTrusted(chain, authType)
-					} else {
-						val cert0 = chain(0)
-						val now = new Date();
-						if (now.after(cert0.getNotAfter()))
-							throw new CertificateExpiredException(String.format("The certificate expires after %c . It is now %c . ", now, cert0.getNotAfter));
-						if (now.before(cert0.getNotBefore()))
-							throw new CertificateNotYetValidException(String.format("The certificate is not valid before %c. It is now %c .", now, cert0.getNotBefore));
-						val publicKey = cert0.getPublicKey
-						for (uriRef <- webIdUriRefs) {
-							verify(uriRef, publicKey)
-						}
 					}
 					return
+
 				} catch {
 					//todo: this should be more clever, only displaying full stack trace if requested
 					//todo: currently could be a denial of service attack - by filling up your hard drive
-					case ex: Throwable  => { 
-							logger.info("can't check client",ex) 
-							throw new CertificateException("cannot check client"+ex.getMessage);
-						}
+					case ex: Throwable => {
+						logger.info("can't check client", ex)
+						throw new CertificateException("cannot check client" + ex.getMessage);
+					}
 				}
 			}
 		}
 	}
-	
-	private val systemGraphUri = Constants.SYSTEM_GRAPH_URI;
-	
-	private def verify(webidClaim: UriRef, publicKey: PublicKey): Unit = {
-		var webIdInfo = webproxy.getResourceInfo(webidClaim, Cache.CacheOnly)
-		if (
-			!verify(webidClaim, publicKey, webIdInfo.localCache)
-		) {
-			webIdInfo = webproxy.getResourceInfo(webidClaim, Cache.ForceUpdate)
-			if (
-				!verify(webidClaim, publicKey, webIdInfo.localCache)
-			) throw new CertificateException
-		}
-		systemGraph.addAll(createSystemUserDescription(webidClaim))
-	}
-	
-	def createSystemUserDescription(webId: UriRef): MGraph = {
-		val result = new SimpleMGraph()
-		result.add(new TripleImpl(webId, PLATFORM.userName,
-								  new PlainLiteralImpl(Utilities.createUsernameForWebId(webId))))
-		result.add(new TripleImpl(webId, RDF.`type` , 
-								  FOAF.Agent))
-		result
-	}
-	
-	/*private lazy val selectQuery = {
-	 val query = """PREFIX cert: <http://www.w3.org/ns/auth/cert#>
-	 PREFIX rsa: <http://www.w3.org/ns/auth/rsa#>
-	 SELECT ?m ?e ?mod ?exp
-	 WHERE {
-	 [] cert:identity ?webid ;
-	 rsa:modulus ?m ;
-	 rsa:public_exponent ?e .
-	 OPTIONAL { ?m cert:hex ?mod . }
-	 OPTIONAL { ?e cert:decimal ?exp . }
-	 }"""
-	 queryParser.parse(query).asInstanceOf[SelectQuery]
-	 }*/
-	/**
-	 * gets the parts of key from rdf
-	 * @return (mod, exp)
-	 */
-	private def getPublicKeysInGraph(webId: UriRef, tc: TripleCollection): Array[(BigInt, BigInt)]= {
-		import scala.collection.JavaConversions._
-		val publicKeys = for (t <- tc.filter(null, CERT.identity, webId)) yield {
-			t.getSubject
-		}
-		(for (p <- publicKeys) yield {
-				val node = new GraphNode(p, tc)
-				val modulusRes = node/RSA.modulus
-				val modulus = intValueOfResource(modulusRes) match {
-					case Some(x) => x
-					case _ => BigInt(0)
-				}
-				val exponentRes = node/RSA.public_exponent
-				val exponent = intValueOfResource(exponentRes) match {
-					case Some(x) => x
-					case _ => BigInt(0)
-				}
-				(modulus, exponent)
-			}).toArray
-	}
- 
-	
-	
-	/**
-	 * todo: question should this perhaps be a 2 position method (pubkey, graphnode) ?
-	 * @return true if the key could be verified
-	 */
-	private def verify(webId: UriRef, publicKey: PublicKey, tc: TripleCollection): Boolean = {
-		publicKey match {
-			case k: RSAPublicKey => verify(webId, k, tc);
-			case _ => throw new CertificateException("Unsupported key format")
-		}
-	}
-	 
-	private def verify(webId: UriRef, publicKey: RSAPublicKey, tc: TripleCollection): Boolean = {
-		val publicKeysInGraph = getPublicKeysInGraph(webId, tc)
-		val publicKeyTuple = (new BigInt(publicKey.getModulus), new BigInt(publicKey.getPublicExponent))
-		val result = publicKeysInGraph.contains(publicKeyTuple)
-		if (logger.isDebugEnabled) {
-			if (!result) {
-				val baos = new ByteArrayOutputStream
-				Serializer.getInstance.serialize(baos, tc, SupportedFormat.TURTLE);
-				logger.debug("no matching key in: \n{}", new String(baos.toByteArray));
-				logger.debug("the public key is not among the "+
-							 publicKeysInGraph.size+" keys in the profile graph of size "+
-							 tc.size)
-				logger.debug("PublicKey: "+publicKeyTuple)
-				publicKeysInGraph.foreach(k => logger.debug("PublikKey in graph: "+ k))
-			}
-		}
-		result
-	}
 
-	/**
-	 * @return the integer value if r is a typedLiteral of cert:hex or cert:decimal,
-	 * otherwise the integer value of the  cert:hex or cert:decimal property of r or
-	 * None if no such value available
-	 */
-	private def intValueOfResource(n: GraphNode): Option[BigInt] = {
-		n! match {
-			case l: TypedLiteral => intValueOfTypedLiteral(l);
-			case r: Resource => intValueOfResourceByProperty(n)
-		}
-	}
-	
-	private def intValueOfResourceByProperty(n: GraphNode): Option[BigInt] = {
-		val hexValues = n/CERT.hex
-		if (hexValues.length > 0) {
-			return Some(intValueOfHexString(hexValues*))
-		}
-		val decimalValues = n/CERT.decimal
-		if (decimalValues.length > 0) {
-			return Some(BigInt(decimalValues*))
-		}
-		val intValues = n/CERT.int_
-		if (intValues.length > 0) {
-			return Some(BigInt(intValues*))
-		}
-		return None
-	}
- 
-	private def intValueOfLiteral(l: Literal): Option[BigInt] = {
-		l match {
-			case x: TypedLiteral => intValueOfTypedLiteral(x);
-			case x => Some(intValueOfHexString(x.getLexicalForm))
-		}
-	}
-	private def intValueOfTypedLiteral(l: TypedLiteral): Option[BigInt] = {
-		try {
-			(l.getLexicalForm, l.getDataType) match {
-				case (lf, CERT.hex) => Some(intValueOfHexString(lf))
-				case (lf, CERT.decimal) => Some(BigInt(lf))
-				case (lf, CERT.int_) => Some(BigInt(lf))
-				case _ => Some(new BigInt(LiteralFactory.getInstance.createObject(classOf[BigInteger], l)))
-			}
-		} catch {
-			case e: NoConvertorException => None
-			case e => throw e
-		}
-	}
-	
-	private def intValueOfHexString(s: String): BigInt = {
-		val strval = cleanHex(s);
-		BigInt(strval, 16);
-	}
+	protected def activate(context: ComponentContext) = { }
 
 
-
-	/**
-	 * This takes any string and returns in order only those characters that are
-	 * part of a hex string
-	 * 
-	 * @param strval
-	 *            any string
-	 * @return a pure hex string
-	 */
-
-	private def cleanHex( strval: String)  = {
-		def legal(c: Char) = { //in order of likelyhood of appearance
-			((c >= '0') && (c <= '9')) ||
-			((c >= 'A') && (c <= 'F')) ||
-			((c >= 'a') && (c <= 'f'))
-		}
-		(for (c <- strval; if legal(c)) yield c)
-	}
 }
 	 

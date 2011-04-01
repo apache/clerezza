@@ -19,11 +19,36 @@
 
 package org.apache.clerezza.foafssl.auth
 
-import org.apache.clerezza.foafssl.Utilities
 import org.apache.clerezza.platform.security.auth._
 import org.apache.clerezza.rdf.core._
+import access.LockableMGraph
+import impl.{TripleImpl, PlainLiteralImpl, SimpleMGraph}
 import org.wymiwyg.wrhapi.Request
 import org.wymiwyg.wrhapi.Response
+import javax.security.auth.Subject
+import org.apache.clerezza.platform.Constants
+import org.apache.clerezza.rdf.ontologies.{FOAF, RDF, PLATFORM}
+import org.apache.clerezza.platform.users.WebIdGraphsService
+import org.slf4j.LoggerFactory
+import java.util.Collections
+
+
+object FoafSslAuthentication {
+  final private val logger = LoggerFactory.getLogger(classOf[FoafSslAuthentication])
+
+  final val ANONYMOUS: String = "anonymous"
+
+  def createSystemUserDescription(claim: WebIDClaim): MGraph = {
+    val result = new SimpleMGraph()
+    result.add(new TripleImpl(claim.webId, PLATFORM.userName,
+      new PlainLiteralImpl(claim.userName)))
+    result.add(new TripleImpl(claim.webId, RDF.`type`,
+      FOAF.Agent))
+    result
+  }
+
+
+}
 
 
 /**
@@ -32,28 +57,67 @@ import org.wymiwyg.wrhapi.Response
  */
 class FoafSslAuthentication extends WeightedAuthenticationMethod {
 
-	
-	def authenticate(request: Request): String = {
-		val certificates = request.getCertificates()
-		if ((certificates == null) || (certificates.length == 0)) {
-			return null
-		} else {
-			//TODO: not all the WebIDs below may have been verified (in cases of multiple SANs)
-			//in fact we only currently verify the first, but as soon as we verify more then
-			//a solution will need to be put in place for this.
-			val webIdUriRefs = Utilities.getClaimedWebIds(certificates)
-			if (webIdUriRefs.size > 0) {
-				return Utilities.createUsernameForWebId(webIdUriRefs(0))
-			} else {
-				return null
-			}
-		}
-	}
+  import FoafSslAuthentication._
+  import collection.JavaConversions._
 
-	def writeLoginResponse(request: Request, response: Response,
-			cause: Throwable) = {
-		false;
-	}
 
-	def getWeight() = 400
+  override
+  def authenticate(request: Request): Subject = {
+    val certificates = request.getCertificates()
+    if ((certificates == null) || (certificates.length == 0)) {
+      return null
+    }
+    val x509c = new X509Claim(certificates(0))
+    x509c.verify(this)
+
+    val verified = for (claim <- x509c.webidclaims;
+         if (claim.verified == Verification.Verified) ) yield {
+      addAgentToSystem(claim)
+      claim.principal
+    }
+
+    return new Subject(true,
+      asJavaSet(verified.toSet),
+      Collections.singleton(x509c),
+      Collections.EMPTY_SET);
+
+
+  }
+
+  def addAgentToSystem(id: WebIDClaim) {
+    systemGraph.addAll(createSystemUserDescription(id))
+  }
+
+  //todo: perhaps this makes more sense now that the verification has moved up higher
+  def writeLoginResponse(request: Request, response: Response,
+                         cause: Throwable) = {
+    false;
+  }
+
+  def getWeight() = 400
+
+  protected[auth] var webIdSrvc: WebIdGraphsService = null;
+
+  protected def bindWebIdService(webcache: WebIdGraphsService) = {
+    this.webIdSrvc = webcache
+  }
+
+  protected def unbindWebIdService(webcache: WebIdGraphsService) = {
+    this.webIdSrvc = null
+  }
+
+  private var systemGraph: MGraph = null
+
+  protected def bindSystemGraph(g: LockableMGraph) {
+    systemGraph = g
+  }
+
+  protected def unbindSystemGraph(g: LockableMGraph) {
+    systemGraph = null
+  }
+
+
+  private val systemGraphUri = Constants.SYSTEM_GRAPH_URI;
+
+
 }

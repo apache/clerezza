@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.security.AccessControlException;
+import java.util.Collections;
+
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.security.auth.*;
 import org.apache.felix.scr.annotations.Component;
@@ -36,6 +38,8 @@ import org.wymiwyg.wrhapi.Request;
 import org.wymiwyg.wrhapi.Response;
 import org.wymiwyg.wrhapi.ResponseStatus;
 import org.wymiwyg.wrhapi.util.MessageBody2Read;
+
+import javax.security.auth.Subject;
 
 /**
  *
@@ -60,7 +64,7 @@ public class BasicAuthentication implements WeightedAuthenticationMethod {
 	}
 
 	@Override
-	public String authenticate(Request request) throws LoginException, HandlerException {
+	public Subject authenticate(Request request) throws LoginException, HandlerException {
 		String[] authorizationValues = request.getHeaderValues(HeaderName.AUTHORIZATION);
 		if (authorizationValues != null && authorizationValues.length > 0) {
 			String authorization = authorizationValues[0];
@@ -75,7 +79,10 @@ public class BasicAuthentication implements WeightedAuthenticationMethod {
 			}
 			try {
 				if (authenticationService.authenticateUser(userName, password)) {
-					return userName;
+					return new Subject(true,
+						Collections.singleton(new PrincipalImpl(userName)),
+						Collections.EMPTY_SET,
+						Collections.EMPTY_SET);
 				} else {
 					throw new LoginException(LoginException.PASSWORD_NOT_MATCHING);
 				}

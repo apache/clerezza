@@ -45,7 +45,7 @@
 		</dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.web.proxy.core</artifactId>
+            <artifactId>platform.users.core</artifactId>
         </dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>

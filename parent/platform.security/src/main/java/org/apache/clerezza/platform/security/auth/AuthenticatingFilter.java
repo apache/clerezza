@@ -63,13 +63,13 @@ public class AuthenticatingFilter implements Filter {
 	public void handle(final Request request, final Response response,
 			final Handler wrapped) throws HandlerException {
 
-		String userName = null;
+		Subject subject = null;
 		AuthenticationMethod authenticationMethod = null;
 		try {
 			for (Iterator<WeightedAuthenticationMethod> it = methodList.iterator(); it.hasNext();) {
 				authenticationMethod = it.next();
-				userName = authenticationMethod.authenticate(request);
-				if (userName != null) {
+				subject = authenticationMethod.authenticate(request);
+				if (subject != null) {
 					break;
 				}
 			}
@@ -80,11 +80,8 @@ public class AuthenticatingFilter implements Filter {
 			return;
 		}
 
-		Subject subject;
-		if (userName == null) {
+		if (subject == null) {
 			subject = ANONYMOUS_SUBJECT;
-		} else {
-			subject = UserUtil.createSubject(userName);
 		}
 		try {
 			Subject.doAsPrivileged(subject, new PrivilegedExceptionAction() {

@@ -21,12 +21,11 @@ package org.apache.clerezza.foafssl.testservlets
 
 import org.apache.clerezza.platform.security.UserUtil
 import org.apache.clerezza.platform.usermanager.UserManager
-import org.apache.clerezza.rdf.utils.GraphNode
 import javax.ws.rs.{Produces, GET, Path}
-import org.apache.clerezza.web.fileserver.FileServer
 import org.osgi.service.component.ComponentContext
-import java.security.{PrivilegedAction, AccessController}
-import org.apache.clerezza.rdf.core.{UriRef, Resource, BNode}
+import org.apache.clerezza.foafssl.auth.{WebIDClaim, X509Claim}
+import java.security.Principal
+import scala.collection.JavaConversions._
 
 /**
  * implementation of (very early) version of test server for WebID so that the following tests
@@ -35,43 +34,58 @@ import org.apache.clerezza.rdf.core.{UriRef, Resource, BNode}
  * http://lists.w3.org/Archives/Public/public-xg-webid/2011Jan/0107.html
  */
 
-@Path("/test/webIdEndPoint")
-class TestMe extends FileServer {
+@Path("/test/WebId")
+class TestMe {
 
-	var userManager: UserManager = null;
+  var userManager: UserManager = null;
 
-	protected def bindUserManager(um: UserManager) = {
-		userManager = um
-	}
+  protected def bindUserManager(um: UserManager) = {
+    userManager = um
+  }
 
-	protected def unbindUserManager(um: UserManager) = {
-		userManager = null
-	}
+  protected def unbindUserManager(um: UserManager) = {
+    userManager = null
+  }
 
-	protected def activate(componentContext: ComponentContext) = {
-		//		configure(componentContext.getBundleContext(), "profile-staticweb");
-	}
+  protected def activate(componentContext: ComponentContext) = {
+    //		configure(componentContext.getBundleContext(), "profile-staticweb");
+  }
 
-	@GET
-	@Produces(Array("text/plain"))
-	def getTestMe(): String = {
-		try {
-			var userName = UserUtil.getCurrentUserName();
-			val webid = AccessController.doPrivileged(new PrivilegedAction[String]() {
-				@Override
-				def run(): String = {
-					val node: GraphNode = userManager.getUserGraphNode(userName)
-					node.getNode match {
-						case b : BNode => "+"
-					   case uri: UriRef => uri.getUnicodeString
-					}
-				}
-			});
-			return webid
-		} catch {
-			case e: Exception => return "+ " + e.toString;
-		}
-	}
+  @GET
+  @Produces(Array("text/plain"))
+  def getTestMe(): String = {
+    val subject = UserUtil.getCurrentSubject();
+    val creds = subject.getPublicCredentials
+    if (creds.size == 0) return "No public keys found"
+    val cred = creds.iterator.next
+    def outString(x509: X509Claim): String = {
+      val res = for (p <- x509.verified) yield {
+        p match {
+          case id: WebIDClaim => "webid " + id.webId+" hasname "+ id.getName
+          case other: Principal => other.getName
+        }
+      }
+
+      return "X509 Certificate found. verified the following ids: " + res
+    }
+    return cred match {
+      case x509: X509Claim => outString(x509)
+      case other: AnyRef => "no X509 certificate found: found " + other.getClass()
+    }
+  }
+
+  @GET
+  @Path("x509")
+  @Produces(Array("text/plain"))
+  def getTestX509(): String = {
+    val subject = UserUtil.getCurrentSubject();
+    val creds = subject.getPublicCredentials
+    if (creds.size == 0) return "No public keys found"
+    return creds.iterator.next match {
+      case x509: X509Claim => "X509 Certificate found. " + x509.cert.toString
+      case other: Any => "no X509 certificate found: found " + other.getClass()
+    }
+  }
 
 
 }
