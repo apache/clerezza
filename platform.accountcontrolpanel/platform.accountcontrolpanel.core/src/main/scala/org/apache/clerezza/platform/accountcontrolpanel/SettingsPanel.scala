@@ -630,16 +630,6 @@ class SettingsPanel {
 		}
 	}
 
-	protected def bindRenderletManager(renderletmanager: RenderletManager): Unit = {
-		renderletManager = renderletmanager
-	}
-
-	protected def unbindRenderletManager(renderletmanager: RenderletManager): Unit = {
-		if (renderletManager == renderletmanager) {
-			renderletManager = null
-		}
-	}
-
 	protected def bindCgProvider(contentgraphprovider: ContentGraphProvider): Unit = {
 		cgProvider = contentgraphprovider
 	}
@@ -652,7 +642,6 @@ class SettingsPanel {
 
 	private var componentContext: ComponentContext = null
 	private var systemGraph: MGraph = null
-	private var renderletManager: RenderletManager = null
 	private var cgProvider: ContentGraphProvider = null
 	private var configAdmin: ConfigurationAdmin = null
 }
