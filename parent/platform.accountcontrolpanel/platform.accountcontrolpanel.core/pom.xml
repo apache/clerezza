@@ -115,11 +115,6 @@
             <artifactId>rdf.web.proxy.core</artifactId>
             <version>0.2-incubating-SNAPSHOT</version>
         </dependency>
-		<!--dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-			<version></version>
-		</dependency-->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.config</artifactId>
@@ -128,10 +123,6 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.typerendering.scalaserverpages</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.scala</artifactId>
