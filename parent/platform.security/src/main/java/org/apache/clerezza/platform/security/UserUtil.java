@@ -25,6 +25,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 import javax.security.auth.Subject;
 import org.apache.clerezza.platform.security.auth.PrincipalImpl;
 
@@ -65,7 +66,9 @@ public class UserUtil {
 	 */
 	public static String getUserName(final AccessControlContext context) {
 		Subject subject = getSubject(context);
-		Iterator<Principal> iter = subject.getPrincipals().iterator();
+        Set<Principal> principals = subject.getPrincipals();
+        if (principals==null) return null;
+        Iterator<Principal> iter = principals.iterator();
 		String name = null;
 		if (iter.hasNext()) {
 				name = iter.next().getName();
