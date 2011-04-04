@@ -662,6 +662,8 @@ text/parityfec
 text/plain					asc txt text diff pot
 text/prs.lines.tag
 text/x-psp					psp
+text/rdf+nt					nt
+text/rdf+n3					n3
 text/rfc822-headers
 text/richtext					rtx
 text/rtf					rtf
@@ -669,6 +671,7 @@ text/scriptlet					sct wsc
 text/t140
 text/texmacs					tm ts
 text/tab-separated-values			tsv
+text/turtle					turtle ttl
 text/uri-list
 text/vnd.abc
 text/vnd.curl
