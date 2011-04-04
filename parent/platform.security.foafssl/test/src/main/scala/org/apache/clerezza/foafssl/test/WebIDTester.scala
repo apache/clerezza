@@ -17,13 +17,19 @@
  * under the License.
  */
 
-package org.apache.clerezza.foafssl.testservlets
+package org.apache.clerezza.foafssl.test
 
 import org.apache.clerezza.platform.security.UserUtil
 import org.apache.clerezza.platform.usermanager.UserManager
 import javax.ws.rs.{Produces, GET, Path}
 import org.osgi.service.component.ComponentContext
 import org.apache.clerezza.foafssl.auth.X509Claim
+import javax.ws.rs.core.Response
+import org.apache.clerezza.rdf.utils.GraphNode
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph
+import org.apache.clerezza.rdf.ontologies.{FOAF, PLATFORM, RDF}
+import org.apache.clerezza.rdf.core.{BNode, UriRef}
+import pages.XhtmlCertificate
 
 /**
  * implementation of (very early) version of test server for WebID so that the following tests
@@ -32,42 +38,26 @@ import org.apache.clerezza.foafssl.auth.X509Claim
  * http://lists.w3.org/Archives/Public/public-xg-webid/2011Jan/0107.html
  */
 
+object WebIDTester {
+  val testCls = new UriRef("https://localhost/test/WebID/ont/tests")   //todo: change url
+}
+
 @Path("/test/WebId")
-class TestMe {
+class WebIDTester {
+   import WebIDTester._
 
-  var userManager: UserManager = null;
-
-  protected def bindUserManager(um: UserManager) = {
-    userManager = um
-  }
-
-  protected def unbindUserManager(um: UserManager) = {
-    userManager = null
-  }
 
   protected def activate(componentContext: ComponentContext) = {
     //		configure(componentContext.getBundleContext(), "profile-staticweb");
   }
 
   @GET
-  @Produces(Array("text/plain"))
-  def getTestMe(): String = {
-    val subject = UserUtil.getCurrentSubject();
-    val creds = subject.getPublicCredentials
-    if (creds.size == 0) return "No public keys found"
-    val cred = creds.iterator.next
-    def outString(x509: X509Claim): String = {
-      val res = for (id <- x509.webidclaims) yield {
-        id.verified + " webid " + id.webId + " hasname " + id.userName
-      }
-      res.toString
-    }
-
-    return cred match {
-      case x509: X509Claim => outString(x509)
-      case other: AnyRef => "no X509 certificate found: found " + other.getClass()
-    }
+  def getTestMe(): GraphNode = {
+    val resultNode: GraphNode = new GraphNode(new BNode(),new SimpleMGraph())
+    resultNode.addProperty(RDF.`type`, testCls)
+    return resultNode
   }
+
 
   @GET
   @Path("x509")
@@ -80,6 +70,7 @@ class TestMe {
       case x509: X509Claim => "X509 Certificate found. " + x509.cert.toString
       case other: Any => "no X509 certificate found: found " + other.getClass()
     }
+
   }
 
 

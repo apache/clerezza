@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-	<scr:component enabled="true" name="org.apache.clerezza.foafssl.testserlvets.TestMe" immediate="true">
-		<implementation class="org.apache.clerezza.foafssl.testservlets.TestMe"/>
+    <scr:component enabled="true" name="org.apache.clerezza.foafssl.testserlvets.TestMe" immediate="true">
+        <implementation class="org.apache.clerezza.foafssl.test.WebIDTester"/>
         <service servicefactory="false">
             <provide interface="java.lang.Object"/>
         </service>
-		<reference name="UserManager"
-		interface="org.apache.clerezza.platform.usermanager.UserManager"
-		cardinality="1..1" policy="static" bind="bindUserManager" unbind="unbindUserManager"/>
         <property name="javax.ws.rs" type="Boolean" value="true"/>
-	</scr:component>
+    </scr:component>
+    <scr:component enabled="true" name="org.apache.clerezza.foafssl.testservlets.pages.CertificateDescription">
+        <implementation class="org.apache.clerezza.foafssl.test.pages.CertificateDescription"/>
+        <service servicefactory="false">
+              <provide interface="org.apache.clerezza.platform.typerendering.TypeRenderlet"/>
+        </service>
+        <property name="service.pid" value="org.apache.clerezza.foafssl.test.pages.CertificateDescription"/>
+    </scr:component>
 </components>
