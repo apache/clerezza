@@ -76,6 +76,8 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
       claim.principal
     }
 
+    if (verified.size == 0) return null
+
     return new Subject(true,
       asJavaSet(verified.toSet),
       Collections.singleton(x509c),
