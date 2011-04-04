@@ -19,6 +19,7 @@
  */
 package org.apache.clerezza.rdf.web.core;
 
+import java.awt.MediaTracker;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.AccessController;
@@ -54,6 +55,8 @@ import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
+import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
+import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
 
 /**
  * Provides methods to GET, PUT, and POST an SCB graph over the web.
@@ -173,6 +176,12 @@ public class WebAccess {
 		if (mediaType == null) {
 			responseWithBadRequest("mime-type not specified");
 		}
+		if (mediaType.equals(MediaType.APPLICATION_OCTET_STREAM_TYPE)) {
+			MediaType guessedType = MediaTypeGuesser.getInstance().guessTypeForName(formFile.getFileName());
+			if (guessedType != null) {
+				mediaType = guessedType;
+			}
+		}
 		String graphName = getFirstTextParameterValue(form, "name", true);
 		if (graphName == null) {
 			responseWithBadRequest("graph name not specified");
@@ -186,6 +195,7 @@ public class WebAccess {
 			mode = "append";
 		}
 		InputStream is = new ByteArrayInputStream(graph);
+		SupportedFormat
 		Graph parsedGraph = parser.parse(is, mediaType.toString());
 		UriRef graphUri = new UriRef(graphName);
 		LockableMGraph mGraph;
