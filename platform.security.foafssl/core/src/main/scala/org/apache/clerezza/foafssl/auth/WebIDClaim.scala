@@ -47,7 +47,7 @@ class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 
   import X509Claim._
 
-  val errors = new LinkedList[Throwable]()
+  val errors = new LinkedList[java.lang.Throwable]()
 
   lazy val principal = new PrincipalImpl(userName)
   var verified = Verification.Unverified
