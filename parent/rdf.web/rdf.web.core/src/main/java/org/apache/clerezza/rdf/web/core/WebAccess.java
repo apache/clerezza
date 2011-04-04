@@ -19,7 +19,6 @@
  */
 package org.apache.clerezza.rdf.web.core;
 
-import java.awt.MediaTracker;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.AccessController;
@@ -55,7 +54,6 @@ import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
-import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
 
 /**
@@ -195,7 +193,6 @@ public class WebAccess {
 			mode = "append";
 		}
 		InputStream is = new ByteArrayInputStream(graph);
-		SupportedFormat
 		Graph parsedGraph = parser.parse(is, mediaType.toString());
 		UriRef graphUri = new UriRef(graphName);
 		LockableMGraph mGraph;
