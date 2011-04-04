@@ -57,6 +57,10 @@
 		</dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.typerendering.scala</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.security.foafssl.core</artifactId>
         </dependency>
 		<dependency>
@@ -110,7 +114,7 @@
 				<configuration>
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>org.apache.clerezza.foafssl.testservlets</Export-Package>
+						<Export-Package>org.apache.clerezza.foafssl.test.*</Export-Package>
 						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
