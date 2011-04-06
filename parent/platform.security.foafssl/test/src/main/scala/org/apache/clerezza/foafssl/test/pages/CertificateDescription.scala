@@ -87,6 +87,7 @@ class XhtmlCertificate(arguments: XmlResult.Arguments) extends XmlResult(argumen
         claim.verified match {
         case Verification.Verified => verifiedClaim(claim)
         case Verification.Failed => claimFailure(claim)
+        case Verification.Unsupported => <p>WebId's with this protocol are currently unsupported</p>
         case Verification.Unverified => <p>Currently this is not possible, but in asynchronous situations it will be</p>
           }
         }

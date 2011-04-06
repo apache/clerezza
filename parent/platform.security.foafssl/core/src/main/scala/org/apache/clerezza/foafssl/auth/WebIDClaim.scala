@@ -45,141 +45,158 @@ import org.apache.clerezza.platform.security.auth.PrincipalImpl
  */
 class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 
-  import X509Claim._
+	import X509Claim._
 
-  val errors = new LinkedList[java.lang.Throwable]()
+	val errors = new LinkedList[java.lang.Throwable]()
 
-  lazy val principal = new PrincipalImpl(userName)
-  var verified = Verification.Unverified
+	lazy val principal = new PrincipalImpl(userName)
+	var verified = Verification.Unverified
 
- /*private lazy val selectQuery = {
-	 val query = """PREFIX cert: <http://www.w3.org/ns/auth/cert#>
-	 PREFIX rsa: <http://www.w3.org/ns/auth/rsa#>
-	 SELECT ?m ?e ?mod ?exp
-	 WHERE {
-	 [] cert:identity ?webid ;
-	 rsa:modulus ?m ;
-	 rsa:public_exponent ?e .
-	 OPTIONAL { ?m cert:hex ?mod . }
-	 OPTIONAL { ?e cert:decimal ?exp . }
-	 }"""
-	 queryParser.parse(query).asInstanceOf[SelectQuery]
-	 }*/
+	/*private lazy val selectQuery = {
+		  val query = """PREFIX cert: <http://www.w3.org/ns/auth/cert#>
+		  PREFIX rsa: <http://www.w3.org/ns/auth/rsa#>
+		  SELECT ?m ?e ?mod ?exp
+		  WHERE {
+		  [] cert:identity ?webid ;
+		  rsa:modulus ?m ;
+		  rsa:public_exponent ?e .
+		  OPTIONAL { ?m cert:hex ?mod . }
+		  OPTIONAL { ?e cert:decimal ?exp . }
+		  }"""
+		  queryParser.parse(query).asInstanceOf[SelectQuery]
+		  }*/
 
-  //todo: not at all a satisfactory username method. Find something better.
-  lazy val userName = for (c <- webId.getUnicodeString) yield
-      c match {
-        case ':' => '_';
-        case '#' => '_';
-        case '/' => '_';
-        case _ => c
-      }
-
-  /**
-   * verify this claim
-   * @param authSrvc: the authentication service contains information about where to get graphs
-   */
-  //todo: make this asynchronous
-  def verify(authSrvc: FoafSslAuthentication)  {
-    try {
-      var webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.CacheOnly)
-      if (
-        !verify(webIdInfo.publicUserGraph)
-      ) {
-        webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.ForceUpdate)
-        if (
-          !verify(webIdInfo.publicUserGraph)
-        ) {
-          verified = Verification.Failed
-          return
-        }
-      }
-    } catch {
-      case e => {
-        errors.add(e)
-        verified = Verification.Failed
-        return
-      }
-    }
-    verified = Verification.Verified
-  }
-
-  def verify(tc: TripleCollection): Boolean = {
-    key match {
-      case k: RSAPublicKey => verify(k, tc);
-      case _ => throw new CertificateException("Unsupported key format")
-    }
-  }
-
-  private def verify(publicKey: RSAPublicKey, tc: TripleCollection): Boolean = {
-    val publicKeysInGraph = getPublicKeysInGraph(tc)
-    val publicKeyTuple = (new BigInt(publicKey.getModulus), new BigInt(publicKey.getPublicExponent))
-    val result = publicKeysInGraph.contains(publicKeyTuple)
-    if (logger.isDebugEnabled) {
-      if (!result) {
-        val baos = new ByteArrayOutputStream
-        Serializer.getInstance.serialize(baos, tc, SupportedFormat.TURTLE);
-        logger.debug("no matching key in: \n{}", new String(baos.toByteArray));
-        logger.debug("the public key is not among the " +
-          publicKeysInGraph.size + " keys in the profile graph of size " +
-          tc.size)
-        logger.debug("PublicKey: " + publicKeyTuple)
-        publicKeysInGraph.foreach(k => logger.debug("PublikKey in graph: " + k))
-      }
-    }
-    result
-  }
-
-  private def getPublicKeysInGraph(tc: TripleCollection): Array[(BigInt, BigInt)] = {
-    import scala.collection.JavaConversions._
-    val publicKeys = for (t <- tc.filter(null, CERT.identity, webId)) yield {
-      t.getSubject
-    }
-    (for (p <- publicKeys) yield {
-      val node = new GraphNode(p, tc)
-      val modulusRes = node / RSA.modulus
-      val modulus = intValueOfResource(modulusRes) match {
-        case Some(x) => x
-        case _ => BigInt(0)
-      }
-      val exponentRes = node / RSA.public_exponent
-      val exponent = intValueOfResource(exponentRes) match {
-        case Some(x) => x
-        case _ => BigInt(0)
-      }
-      (modulus, exponent)
-    }).toArray
-  }
+	//todo: not at all a satisfactory username method. Find something better.
+	lazy val userName = for (c <- webId.getUnicodeString) yield
+		c match {
+			case ':' => '_';
+			case '#' => '_';
+			case '/' => '_';
+			case _ => c
+		}
 
 
+	/**
+	 * verify this claim
+	 * @param authSrvc: the authentication service contains information about where to get graphs
+	 */
+	//todo: make this asynchronous
+	def verify(authSrvc: FoafSslAuthentication) {
+		if (!webId.getUnicodeString.startsWith("http:") && !webId.getUnicodeString.startsWith("https:")) {
+			//todo: ftp, and ftps should also be doable, though content negoations is then lacking
+			verified = Verification.Unsupported
+			return
+		}
+		try {
+			var webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.CacheOnly)
+			if (
+				!verify(webIdInfo.publicUserGraph)
+			) {
+				webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.ForceUpdate)
+				if (
+					!verify(webIdInfo.publicUserGraph)
+				) {
+					verified = Verification.Failed
+					return
+				}
+			}
+		} catch {
+			case e => {
+				errors.add(e)
+				verified = Verification.Failed
+				return
+			}
+		}
+		verified = Verification.Verified
+	}
 
-  def canEqual(other: Any) = other.isInstanceOf[WebIDClaim]
+	def verify(tc: TripleCollection): Boolean = {
+		key match {
+			case k: RSAPublicKey => verify(k, tc);
+			case _ => throw new CertificateException("Unsupported key format")
+		}
+	}
 
-  override
-  def equals(other: Any): Boolean =
-    other match {
-      case that: WebIDClaim => (that eq this) || (that.canEqual(this) && webId == that.webId && key == that.key)
-      case _ => false
-    }
+	private def verify(publicKey: RSAPublicKey, tc: TripleCollection): Boolean = {
+		val publicKeysInGraph = getPublicKeysInGraph(tc)
+		val publicKeyTuple = (new BigInt(publicKey.getModulus), new BigInt(publicKey.getPublicExponent))
+		val result = publicKeysInGraph.contains(publicKeyTuple)
+		if (logger.isDebugEnabled) {
+			if (!result) {
+				val baos = new ByteArrayOutputStream
+				Serializer.getInstance.serialize(baos, tc, SupportedFormat.TURTLE);
+				logger.debug("no matching key in: \n{}", new String(baos.toByteArray));
+				logger.debug("the public key is not among the " +
+					publicKeysInGraph.size + " keys in the profile graph of size " +
+					tc.size)
+				logger.debug("PublicKey: " + publicKeyTuple)
+				publicKeysInGraph.foreach(k => logger.debug("PublikKey in graph: " + k))
+			}
+		}
+		result
+	}
 
-  override
-  lazy val hashCode: Int = 41 * (
-      41 * (
-        41 + (if (webId != null) webId.hashCode else 0)
-        ) + (if (key != null) key.hashCode else 0)
-      )
+	private def getPublicKeysInGraph(tc: TripleCollection): Array[(BigInt, BigInt)] = {
+		import scala.collection.JavaConversions._
+		val publicKeys = for (t <- tc.filter(null, CERT.identity, webId)) yield {
+			t.getSubject
+		}
+		(for (p <- publicKeys) yield {
+			val node = new GraphNode(p, tc)
+			val modulusRes = node / RSA.modulus
+			val modulus = intValueOfResource(modulusRes) match {
+				case Some(x) => x
+				case _ => BigInt(0)
+			}
+			val exponentRes = node / RSA.public_exponent
+			val exponent = intValueOfResource(exponentRes) match {
+				case Some(x) => x
+				case _ => BigInt(0)
+			}
+			(modulus, exponent)
+		}).toArray
+	}
+
+
+	def canEqual(other: Any) = other.isInstanceOf[WebIDClaim]
+
+	override
+	def equals(other: Any): Boolean =
+		other match {
+			case that: WebIDClaim => (that eq this) || (that.canEqual(this) && webId == that.webId && key == that.key)
+			case _ => false
+		}
+
+	override
+	lazy val hashCode: Int = 41 * (
+		41 * (
+			41 + (if (webId != null) webId.hashCode else 0)
+			) + (if (key != null) key.hashCode else 0)
+		)
 }
 
 object Verification extends Enumeration {
 
+	/**
+	 * the claim has not yet been verified
+	 */
 	val Unverified = Value
 
+	/**
+	 * The claim was verified and succeeded
+	 */
 	val Verified = Value
 
+
+	/**
+	 * The claim was verified and failed
+	 */
 	val Failed = Value
 
+	/**
+	 * The claim cannot be verified by this agent
+	 */
+	val Unsupported = Value
+
 }
-
-
-
 

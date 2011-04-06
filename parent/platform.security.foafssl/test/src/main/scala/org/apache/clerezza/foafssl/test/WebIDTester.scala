@@ -20,17 +20,14 @@
 package org.apache.clerezza.foafssl.test
 
 import org.apache.clerezza.platform.security.UserUtil
-import org.apache.clerezza.platform.usermanager.UserManager
-import javax.ws.rs.{Produces, GET, Path}
 import org.osgi.service.component.ComponentContext
 import org.apache.clerezza.foafssl.auth.X509Claim
-import javax.ws.rs.core.Response
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
-import org.apache.clerezza.rdf.ontologies.{FOAF, PLATFORM, RDF}
 import org.apache.clerezza.rdf.core.{BNode, UriRef}
-import pages.XhtmlCertificate
-
+import javax.ws.rs._
+import org.apache.clerezza.rdf.ontologies._
+import org.slf4j.{LoggerFactory, Logger}
 /**
  * implementation of (very early) version of test server for WebID so that the following tests
  * can be checked.
@@ -40,6 +37,8 @@ import pages.XhtmlCertificate
 
 object WebIDTester {
   val testCls = new UriRef("https://localhost/test/WebID/ont/tests")   //todo: change url
+  private val logger: Logger = LoggerFactory.getLogger(classOf[WebIDTester])
+
 }
 
 @Path("/test/WebId")
@@ -72,6 +71,7 @@ class WebIDTester {
     }
 
   }
+
 
 
 }
