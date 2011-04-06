@@ -54,14 +54,7 @@ class WebIdGraphsService extends WebProxy {
 	 */
 	def getWebIDInfo(uri: UriRef, update: Cache.Value = Cache.Fetch): WebIDInfo = {
 		val resource = new WebIDInfo(uri)
-		if (resource.isLocal) return resource
-
-		//the logic here is not quite right, as we don't look at time of previous fetch.
-		update match {
-			case Cache.Fetch => if (resource.localCache.size() == 0) resource.updateLocalCache()
-			case Cache.ForceUpdate => resource.updateLocalCache()
-			case Cache.CacheOnly => {}
-		}
+		resource.semantics(update)
 		return resource
 	}
 
@@ -95,7 +88,7 @@ class WebIdGraphsService extends WebProxy {
 					val unionGraph = if (isLocal) {
 						new UnionMGraph(localGraph, systemTriples)
 					} else {
-						new UnionMGraph(localGraph, localCache, systemTriples)
+						new UnionMGraph(localGraph, theGraph, systemTriples)
 					}
 					new SecuredMGraph(unionGraph, localGraphUri, tcManager.getTcAccessController)
 				}
@@ -106,10 +99,11 @@ class WebIdGraphsService extends WebProxy {
 		 * the graph for putting local information in addition to the remote graph
 		 */
 		lazy val localGraphUri = {
-			new UriRef(representationUri+".graph")
+			if (isLocal) graphUriRef
+			else {
+				new UriRef(platformConfig.getDefaultBaseUri.getUnicodeString+"user/"+representationUri)
+			}
 		}
-
-
 
 
 		//for the WebID Graph this is the place where local information in addition to remote

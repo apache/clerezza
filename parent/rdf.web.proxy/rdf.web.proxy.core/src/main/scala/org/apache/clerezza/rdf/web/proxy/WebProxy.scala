@@ -22,7 +22,7 @@ package org.apache.clerezza.rdf.web.proxy
 import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.osgi.service.component.ComponentContext
-import org.apache.clerezza.rdf.core.{MGraph, TripleCollection, UriRef}
+import org.apache.clerezza.rdf.core.{MGraph, UriRef}
 import org.apache.clerezza.platform.config.PlatformConfig
 import java.net.{HttpURLConnection, URL}
 import org.apache.clerezza.rdf.core.access.{NoSuchEntityException, TcManager}
@@ -32,8 +32,8 @@ import org.apache.clerezza.platform.typerendering.WebRenderingService
 
 
 /**
- * The Web Proxy Service enables applications to request remote graphs. It keeps cached
- * version of them in store for faster delivery.
+ * The Web Proxy Service enables applications to request remote (and local) graphs.
+ * It keeps cached version of the remote graphs in store for faster delivery.
  *
  */
 @WebRenderingService
@@ -53,18 +53,13 @@ class WebProxy {
 	//todo: replace this with an appropriate graph
 	protected val authoritativeLocalGraphs = Constants.CONFIG_GRAPH_URI
 
-	private var cacheMetaGraph: TripleCollection = null
 
 	/**OSGI method, called on activation */
 	protected def activate(context: ComponentContext) = {
 
 	}
 
-	protected def deactivate(context: ComponentContext) = {
-		cacheMetaGraph = null
-	}
-
-	private var platformConfig: PlatformConfig = null;
+	protected var platformConfig: PlatformConfig = null;
 
 	protected def bindPlatformConfig(c: PlatformConfig) = {
 		this.platformConfig = c
@@ -94,10 +89,10 @@ class WebProxy {
 	 * @return the cached Node as an MGraph. (The wrapper here is Some/None, but could be more tuned for this
 	 *
 	 */
-	def fetchSemantics(uri: UriRef, update: Cache.Value= Cache.Fetch): Option[GraphNode] = {
+	def fetchSemantics(uri: UriRef, update: Cache.Value = Cache.Fetch): Option[GraphNode] = {
 		val resource = getResourceInfo(uri, update)
 		return try {
-			Some(new GraphNode(uri,tcManager.getTriples(resource.localCacheUri)))
+			Some(new GraphNode(uri, resource.theGraph))
 		} catch {
 			case e: NoSuchEntityException => None
 		}
@@ -113,28 +108,18 @@ class WebProxy {
 	 */
 	def getResourceInfo(uri: UriRef, update: Cache.Value = Cache.Fetch): ResourceInfo = {
 		val resource = new ResourceInfo(uri)
-		if (resource.isLocal) return resource
-
-		//the logic here is not quite right, as we don't look at time of previous fetch.
-		update match {
-			case Cache.Fetch => if (resource.localCache.size() == 0) resource.updateLocalCache()
-			case Cache.ForceUpdate => resource.updateLocalCache()
-			case Cache.CacheOnly => {}
-		}
+		resource.semantics(update)
 		return resource
 	}
 
 	/**
-  	 * A Resource Info gives us access to a number of things about a resource:
+	 * A Resource Info gives us access to a number of things about a resource:
 	 * its semantics in the form of a cached graphs, representation URI(s), local cache uris
 	 *
-	 * currently the local cache of the remote graph is named by the resource name + ".cache"
-	 * the local graph that can contain extra information is the name of the resource
-	 *
-	 *
-	 * todo? access to representations
-	 * todo? should the graphs returned contain metadata about their update time?
- */
+	 * todo? should the resource info link to HTTP fetch metadata, etags and such when relevant
+	 * todo: one could create a filter object so that for different users making this request for local graphs
+	 *       filters would be used
+	 */
 	class ResourceInfo(url: UriRef) {
 		val uriString = url.getUnicodeString
 
@@ -144,43 +129,41 @@ class WebProxy {
 			platformConfig.getBaseUris.exists(baseUri => uriString.startsWith(baseUri.getUnicodeString))
 		}
 
-		/**
-		 * remote graphs are cache locally with this name
-		 */
-		//todo: work on a cache database. It could be that a URL redirects to another resource...
-		lazy val localCacheUri = {
-			new UriRef(representationUri + ".cache")
-		}
-
 		// the graph containing the local cache of the resource
 		//todo: watch out: if someone can just make us add graphs to tcmanager even when there is no data...
-		lazy val localCache: MGraph = try {
-			val g = tcManager.getMGraph(localCacheUri)
+		lazy val theGraph: MGraph = try {
+			val g = tcManager.getMGraph(graphUriRef)
 			g
 		} catch {
-			case e: NoSuchEntityException => tcManager.createMGraph(localCacheUri)
+			case e: NoSuchEntityException => tcManager.createMGraph(graphUriRef)
 		}
 
 
+		/*
+		 * the URI of the representation, the information resource, which ends up
+		 * being our handle on the graph too.
+		 */
 		lazy val representationUri = {
 			val hashPos = uriString.indexOf('#')
 			if (hashPos != -1) {
-				uriString.substring(0, hashPos)
+				uriString.substring(0, hashPos) //though could there not be an odd case of hash and redirects?
+			} else if (isLocal) {
+				uriString //assuming no (non-hash) URIs referring directly to non information resources
 			} else {
 				finalRedirectLocation
 			}
 		}
 
 
-		lazy val representationGraphUri = {
+		lazy val graphUriRef = {
 			new UriRef(representationUri)
 		}
 
-		private lazy val finalRedirectLocation = {
+		lazy val finalRedirectLocation = {
 			finalRedirectLocationFor(url.getUnicodeString)
 		}
 
-		def finalRedirectLocationFor(us: String): String = {
+		private def finalRedirectLocationFor(us: String): String = {
 			val url = new URL(us)
 			val connection = url.openConnection()
 			connection match {
@@ -203,6 +186,21 @@ class WebProxy {
 			}
 		}
 
+		/**
+		 * The semantics of this resource
+		 * @param update if a remote URI, update information on the resource first
+		 */
+		def semantics(update: Cache.Value): MGraph = {
+			if (isLocal) return theGraph
+			//the logic here is not quite right, as we don't look at time of previous fetch.
+			update match {
+				case Cache.Fetch => if (theGraph.size() == 0) updateGraph()
+				case Cache.ForceUpdate => updateGraph()
+				case Cache.CacheOnly => {}
+			}
+			theGraph
+		}
+
 		//todo: follow redirects and keep track of them
 		//todo: keep track of headers especially date and etag. test for etag similarity
 		//todo: it may be important to have blank node identifiers for graphs as the same webid, when called by different
@@ -210,7 +208,7 @@ class WebProxy {
 		//todo: for https connection allow user to specify his webid and send his key: ie allow web server to be an agent
 		//todo: add GRDDL functionality, so that other return types can be processed too
 		//todo: enable ftp and other formats (though content negotiation won't work there)
-		def updateLocalCache() = {
+		private def updateGraph()  {
 			val url = new URL(representationUri)
 			val connection = url.openConnection()
 			connection match {
@@ -219,9 +217,9 @@ class WebProxy {
 			connection.connect()
 			val in = connection.getInputStream()
 			val mediaType = connection.getContentType()
-			val remoteTriples = parser.parse(in, mediaType, representationGraphUri)
-			localCache.clear()
-			localCache.addAll(remoteTriples)
+			val remoteTriples = parser.parse(in, mediaType, graphUriRef)
+			theGraph.clear()
+			theGraph.addAll(remoteTriples)
 		}
 
 
