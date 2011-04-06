@@ -85,7 +85,7 @@ public class CertificateServiceTest extends TestCase {
 		Date now = new Date();
 		cert.addDurationInDays("3");
 		cert.setSubjectCommonName("Test");
-		cert.setSubjectWebID(WEBID);
+		cert.addSubjectAlternativeName(WEBID);
 		CertSerialisation certByte = cert.getSerialisation();
 
 		//test that the returned certificate contains the correct values...
@@ -146,7 +146,7 @@ public class CertificateServiceTest extends TestCase {
 		Date now = new Date();
 
 		cert.setSubjectCommonName("Test");
-		cert.setSubjectWebID(WEBID);
+		cert.addSubjectAlternativeName(WEBID);
 		cert.startEarlier("2");
 		CertSerialisation certByte = cert.getSerialisation();
 

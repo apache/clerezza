@@ -96,7 +96,7 @@ public class MiniCaServlet extends HttpServlet {
                 cert = keygen.createFromPEM(pemCsrData);
             }
             cert.setSubjectCommonName(cn);
-            cert.setSubjectWebID(webId);
+            cert.addSubjectAlternativeName(webId);
             cert.addDurationInDays("365");
             cert.startEarlier("1"); //always start one hour earlier at least, to avoid clock synchronisation issues
             cert.getSerialisation().writeTo(response);

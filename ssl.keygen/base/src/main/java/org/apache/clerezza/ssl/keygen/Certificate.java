@@ -55,10 +55,11 @@ public interface Certificate {
 
 	/**
 	 * Set the <a href="http://esw.w3.org/topic/webid">WebID</a> for the certificate.
+     * The first SAN added will appear in the Distinguished Name
 	 *
-	 * @param url the webID. Must be a full URL
+	 * @param san, a Subject Alternative Name to add. Must be a full URL, usually the WebID
 	 */
-	public void setSubjectWebID(String url);
+	public void addSubjectAlternativeName(String san);
 
 
 	/**

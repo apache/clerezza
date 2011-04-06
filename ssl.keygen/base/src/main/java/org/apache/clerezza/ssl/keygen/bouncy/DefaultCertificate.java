@@ -30,12 +30,14 @@ POSSIBILITY OF SUCH DAMAGE.
   Author: Henry Story
  */
 
+
 package org.apache.clerezza.ssl.keygen.bouncy;
 
 import org.apache.clerezza.ssl.keygen.CertSerialisation;
 import org.apache.clerezza.ssl.keygen.Certificate;
 import org.apache.clerezza.ssl.keygen.PubKey;
 import org.bouncycastle.asn1.DERObjectIdentifier;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.misc.MiscObjectIdentifiers;
 import org.bouncycastle.asn1.misc.NetscapeCertType;
 import org.bouncycastle.asn1.x509.*;
@@ -46,6 +48,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,13 +57,16 @@ import java.util.logging.Logger;
 /**
  * Default implementation of Certificate
  *
+ * useful reference: "X.509 Style Guide" by Peter Gutmann
+ * http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt
+ *
  * @author Henry Story
  */
 
 public class DefaultCertificate implements Certificate {
 	static final Logger log = Logger.getLogger(DefaultCertificate.class.getName());
 
-	String webId;
+	LinkedList<String> sans = new LinkedList<String>();
 	String CN;
 	Date startDate;
 	Date endDate;
@@ -82,7 +89,7 @@ public class DefaultCertificate implements Certificate {
 
 
 	@Override
-	public void setSubjectWebID(String urlStr) {
+	public void addSubjectAlternativeName(String urlStr) {
 		URL url = null;
 		try {
 			url = new URL(urlStr);
@@ -91,13 +98,13 @@ public class DefaultCertificate implements Certificate {
 				//everything probably ok, though really https should be the default
 			} else {
 				//could very well be a mistake
-				log.log(Level.WARNING, "using WebId with protocol " + protocol + ". Could be a mistake. WebId=" + url);
+				log.log(Level.INFO, "using WebId with protocol " + protocol + ". Could be a mistake. WebId=" + url);
 			}
 
 		} catch (MalformedURLException e) {
 			log.log(Level.WARNING, "Malformed URL " + url, e);
 		}
-		this.webId = urlStr;
+		sans.add(urlStr);
 	}
 
 	@Override
@@ -129,7 +136,7 @@ public class DefaultCertificate implements Certificate {
 
 	@Override
 	public void startEarlier(String hours) {
-		if (null == hours  || "".equals(hours)) return;
+		if (null == hours || "".equals(hours)) return;
 		try {
 			this.earlier += Double.valueOf(hours);
 		} catch (NumberFormatException e) {
@@ -139,7 +146,7 @@ public class DefaultCertificate implements Certificate {
 
 	@Override
 	public void addDurationInHours(String hours) {
-		if (null ==hours || "".equals(hours)) return;
+		if (null == hours || "".equals(hours)) return;
 		try {
 			this.numHours += Double.valueOf(hours);
 		} catch (NumberFormatException e) {
@@ -176,14 +183,21 @@ public class DefaultCertificate implements Certificate {
 		return serialization;
 	}
 
+	/**
+	 * see: http://www.bouncycastle.org/wiki/display/JA1/X.509+Public+Key+Certificate+and+Certification+Request+Generation
+	 *
+	 * @throws Exception
+	 */
 	public void generate() throws Exception {
 		X509V3CertificateGenerator certGenerator = new X509V3CertificateGenerator();
 
 		certGenerator.reset();
-		/*
-					* Sets up the subject distinguished name. Since it's a self-signed
-					* certificate, issuer and subject are the same.
-					*/
+
+/*
+		Sets up the subject distinguished name.
+		The issuer should be the same for all self signed CAs as this then allows selection of acceptable certificates
+		by the server
+*/
 		certGenerator.setIssuerDN(new X509Name(BouncyKeygenService.issuer));
 
 
@@ -194,7 +208,11 @@ public class DefaultCertificate implements Certificate {
 		subjectDnValues.add("FOAF+SSL");
 		subjectDnOids.add(X509Name.OU);
 		subjectDnValues.add("The Community Of Self Signers");
+
+		//DNs have to be unique, so we put a webID here. The first one
+		String webId = sans.getFirst();
 		subjectDnOids.add(X509Name.UID);
+
 		subjectDnValues.add(webId);
 		subjectDnOids.add(X509Name.CN);
 		subjectDnValues.add(CN);
@@ -202,26 +220,25 @@ public class DefaultCertificate implements Certificate {
 		X509Name DName = new X509Name(subjectDnOids, subjectDnValues);
 		certGenerator.setSubjectDN(DName);
 
-		/*
-					* Sets up the validity dates.
-					*/
+/*
+		Sets up the validity dates.
+*/
 		certGenerator.setNotBefore(getStartDate());
-
 		certGenerator.setNotAfter(getEndDate());
 
-		/*
-					* The serial-number of this certificate is 1. It makes sense because
-					* it's self-signed.
-					*/
+/*
+		set a random number for the serial number
+*/
 		certGenerator.setSerialNumber(service.nextRandom());
 
-		/*
-					* Sets the public-key to embed in this certificate.
-					*/
+/*
+	    Sets the public-key to embed in this certificate.
+*/
 		certGenerator.setPublicKey(getSubjectPublicKey().getPublicKey());
+
 		/*
-					* Sets the signature algorithm.
-					*/
+				  * Sets the signature algorithm.
+				  */
 //        String pubKeyAlgorithm = service.caPubKey.getAlgorithm();
 //        if (pubKeyAlgorithm.equals("DSA")) {
 //            certGenerator.setSignatureAlgorithm("SHA1WithDSA");
@@ -234,72 +251,93 @@ public class DefaultCertificate implements Certificate {
 //            throw re;
 //        }
 
-		/*
-					* Adds the Basic Constraint (CA: false) extension.
-					*/
-		certGenerator.addExtension(X509Extensions.BasicConstraints, true,
-			new BasicConstraints(false));
+/*
+		 Adds the Basic Constraint (CA: false) extension.
+*/
+		certGenerator.addExtension(X509Extension.basicConstraints, true,
+				new BasicConstraints(false));
 
-		/*
-					* Adds the Key Usage extension.
-					*/
-		certGenerator.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(
-			KeyUsage.digitalSignature | KeyUsage.nonRepudiation
-				| KeyUsage.keyEncipherment | KeyUsage.keyAgreement
-				| KeyUsage.keyCertSign));
+/*
+		Adds the Key Usage extension.
+*/
+		certGenerator.addExtension(X509Extension.keyUsage, true, new KeyUsage(
+				KeyUsage.digitalSignature | KeyUsage.nonRepudiation
+						| KeyUsage.keyEncipherment | KeyUsage.keyAgreement
+						| KeyUsage.keyCertSign));
 
-		/*
-					* Adds the Netscape certificate type extension.
-					*/
+/*
+      Adds the Netscape certificate type extension.
+      sslClient: the certificate is selectable by the client
+      the certificate can be used for mime encryption.
+      (perhaps the above should be settable. It is not clear that most certs should be used that way, as their life
+		span could be very short)
+*/
 		certGenerator.addExtension(MiscObjectIdentifiers.netscapeCertType,
-			false, new NetscapeCertType(NetscapeCertType.sslClient
-				| NetscapeCertType.smime));
+				false, new NetscapeCertType(NetscapeCertType.sslClient
+						| NetscapeCertType.smime));
 
 		/*
-					* Adds the authority key identifier extension.
-					* Bruno pointed out that this is not needed, as the authority's key is never checked in this setup!
-					* so I am commenting it out, to be removed at a later date.
-					*
+				  * Adds the authority key identifier extension.
+				  * Bruno pointed out that this is not needed, as the authority's key is never checked in this setup!
+				  * so I am commenting it out, to be removed at a later date.
+				  *
 
-				  AuthorityKeyIdentifierStructure authorityKeyIdentifier;
-				  try {
-						authorityKeyIdentifier = new AuthorityKeyIdentifierStructure(
-								  service.certificate.getPublicKey());
-				  } catch (InvalidKeyException e) {
-						throw new Exception("failed to parse CA cert. This should never happen", e);
-				  }
+				AuthorityKeyIdentifierStructure authorityKeyIdentifier;
+				try {
+					  authorityKeyIdentifier = new AuthorityKeyIdentifierStructure(
+								service.certificate.getPublicKey());
+				} catch (InvalidKeyException e) {
+					  throw new Exception("failed to parse CA cert. This should never happen", e);
+				}
 
-				  certGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier,
-							 false, authorityKeyIdentifier);
-				  */
+				certGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier,
+						   false, authorityKeyIdentifier);
+				*/
 
-		/*
-					* Adds the subject key identifier extension.
-					*/
+/*
+		Adds the subject key identifier extension.
+*/
 		SubjectKeyIdentifier subjectKeyIdentifier = new SubjectKeyIdentifierStructure(
-			getSubjectPublicKey().getPublicKey());
-		certGenerator.addExtension(X509Extensions.SubjectKeyIdentifier, false,
-			subjectKeyIdentifier);
+				getSubjectPublicKey().getPublicKey());
+		certGenerator.addExtension(X509Extension.subjectKeyIdentifier, false,
+				subjectKeyIdentifier);
 
-		/*
-					* Adds the subject alternative-name extension (critical).
-					*/
-		if (webId != null) {
+/*
+		Adds the subject alternative-name extension (critical).
+*/
+		if (sans.size() == 0) {
+			throw new Exception("WebId not set!");
+		}
+		if (sans.size() == 1) {
 			GeneralNames subjectAltNames = new GeneralNames(new GeneralName(
-				GeneralName.uniformResourceIdentifier, webId));
-			certGenerator.addExtension(X509Extensions.SubjectAlternativeName,
-				true, subjectAltNames);
-		} else throw new Exception("WebId not set!");
+					GeneralName.uniformResourceIdentifier, webId));
 
-		/*
-					* Creates and sign this certificate with the private key corresponding
-					* to the public key of the FOAF+SSL DN
-					*/
+			certGenerator.addExtension(X509Extension.subjectAlternativeName,
+					true, subjectAltNames);
+		} else {
+			// BouncyCastle has a pretty inflexible API. It would have made more sense to just
+			// pass an array of Names to the constructor.
+			GeneralName[] names = new GeneralName[sans.size()];
+			Iterator<String> sanIt = sans.iterator();
+			int i = 0;
+			while (sanIt.hasNext()) {
+				names[i] = new GeneralName(GeneralName.uniformResourceIdentifier, sanIt.next());
+				i++;
+			}
+			certGenerator.addExtension(X509Extension.subjectAlternativeName,
+					true, new DERSequence(names));
+
+		}
+
+/*
+		Creates and sign this certificate with the private key corresponding
+		to the public key of the FOAF+SSL DN
+*/
 		cert = certGenerator.generate(service.privateKey);
 
-		/*
-					* Checks that this certificate has indeed been correctly signed.
-					*/
+/*
+		Checks that this certificate has indeed been correctly signed.
+*/
 		cert.verify(service.certificate.getPublicKey());
 
 	}
