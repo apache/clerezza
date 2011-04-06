@@ -14,10 +14,10 @@
 	<name>Clerezza - FOAF+SSL Keygen :: Base Component</name>
 	<build>
 		<plugins>
-			<plugin>
-                <!-- this plugin is needed because bouncycastle is not available
-            as an OSGI module. Please vote to make it so by going to 
-			http://www.bouncycastle.org/jira/browse/BJA-287 -->
+			<!--plugin>
+                this plugin was needed because bouncycastle was not available
+            as an OSGI module. This has now been closed. Keeping this test as it can be useful for other
+			http://www.bouncycastle.org/jira/browse/BJA-287
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
@@ -28,7 +28,7 @@
 						<Export-Package>!junit,org.apache.clerezza.ssl.keygen.*</Export-Package>
 					</instructions>
 				</configuration>
-			</plugin>
+			</plugin-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
@@ -62,12 +62,11 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk16</artifactId>
-			<version>1.45</version>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
