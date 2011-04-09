@@ -61,4 +61,37 @@ class ServicesDsl(bundleContext: BundleContext) {
 											 "("+Constants.OBJECTCLASS+"="+clazz.getName+")")
 		}
 	}
+
+	def doWith[T,U](action: (T,U) => Unit)(implicit mt: Manifest[T], mu: Manifest[U]) {
+		doWith[T] {
+			t: T => {
+				val clazz = mt.erasure.asInstanceOf[Class[U]]
+				val service = getService(clazz)
+				if (service != null) {
+					action(t, service)
+				} else {
+					doWith[U,T] {
+						(u: U, t: T) => action(t,u)
+					}
+					}
+			}
+		}
+	}
+
+	def doWith[T,U,V](action: (T,U,V) => Unit)(implicit mt: Manifest[T],
+												mu: Manifest[U], mv: Manifest[V]) {
+		doWith[T,U] {
+			(t: T, u: U) => {
+				val clazz = mv.erasure.asInstanceOf[Class[V]]
+				val service = getService(clazz)
+				if (service != null) {
+					action(t, u, service)
+				} else {
+					doWith[U,V,T] {
+						(u: U, v: V, t: T) => action(t,u,v)
+					}
+				}
+			}
+		}
+	}
 }
