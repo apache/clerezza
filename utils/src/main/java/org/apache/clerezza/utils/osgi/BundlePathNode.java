@@ -51,7 +51,7 @@ public class BundlePathNode implements PathNode {
 	public PathNode getSubPath(String requestPath) {
 		StringWriter mergedPath = new StringWriter(255);
 		mergedPath.append(path);
-		if (path.charAt(path.length() - 1) != '/') {
+		if ((!path.isEmpty()) && (path.charAt(path.length() - 1) != '/')) {
 			mergedPath.append('/');
 		}
 		if (requestPath.charAt(0) == '/') {
