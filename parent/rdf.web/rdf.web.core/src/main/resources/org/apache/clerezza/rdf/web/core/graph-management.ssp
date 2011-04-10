@@ -9,7 +9,7 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 
 <div id="tx-content">
 <table>
-	<tr><th>Name</th><th>Size</th><th>type</th><th>Actions</th></tr>
+	<tr><th>Name</th><th>Size</th><th>type</th><th colspan="2">Actions</th></tr>
 				{for (tc <- (res/gm("tripleCollection"))) yield
 					<tr>
 						<td>{tc*}</td>
@@ -26,6 +26,10 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 							<input type="hidden" name="graphName" value={tc*} />
 						<input type="submit" value="smush" /></div></form>}
 						}</td>
+						<td><form action="graph" method="get"><div>
+							<input type="hidden" name="name" value={tc*} />
+						<input type="submit" value="get" /></div></form>
+						</td>
 					</tr>
 				}
 </table>
