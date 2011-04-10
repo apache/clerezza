@@ -26,7 +26,7 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 							<input type="hidden" name="graphName" value={tc*} />
 						<input type="submit" value="smush" /></div></form>}
 						}</td>
-						<td><form action="graph" method="get"><div>
+						<td><form action="/graph" method="get"><div>
 							<input type="hidden" name="name" value={tc*} />
 						<input type="submit" value="get" /></div></form>
 						</td>
