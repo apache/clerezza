@@ -23,16 +23,18 @@ import org.apache.clerezza.platform.typerendering.scala.{XmlResult, SRenderlet}
 import org.apache.clerezza.platform.security.UserUtil
 import org.apache.clerezza.foafssl.test.WebIDTester
 import org.apache.clerezza.rdf.web.proxy.{Cache, WebProxy}
-import org.apache.clerezza.rdf.scala.utils.RichGraphNode
-import org.apache.clerezza.rdf.ontologies.RDF
 import org.apache.clerezza.foafssl.ontologies.{RSA, CERT}
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.security.{PrivilegedAction, AccessController}
 import org.apache.clerezza.rdf.utils.GraphNode
-import org.apache.clerezza.rdf.core.Graph
 import org.apache.clerezza.rdf.core.serializedform.Serializer
 import org.apache.clerezza.foafssl.auth.{Verification, WebIDClaim, X509Claim}
 import java.io.{PrintStream, ByteArrayOutputStream}
+import xml.{Node, NodeSeq}
+import org.apache.clerezza.rdf.scala.utils.Preamble._
+import org.apache.clerezza.rdf.core._
+import org.apache.clerezza.rdf.scala.utils.{CollectedIter, RichGraphNode}
+import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
 
 /**
  * @author hjs
@@ -45,7 +47,12 @@ class CertificateDescription extends SRenderlet {
 	override def renderedPage(arguments: XmlResult.Arguments) = new XhtmlCertificate(arguments)
 }
 
+object XhtmlCertificate {
+   val emptyxml=new scala.xml.Text("")
+}
+
 class XhtmlCertificate(arguments: XmlResult.Arguments) extends XmlResult(arguments )  {
+  import XhtmlCertificate._
   val subject = UserUtil.getCurrentSubject();
 
 
@@ -54,14 +61,14 @@ class XhtmlCertificate(arguments: XmlResult.Arguments) extends XmlResult(argumen
       {
     val subj = UserUtil.getCurrentSubject();
     val creds: scala.collection.mutable.Set[X509Claim] = collection.JavaConversions.asScalaSet(subj.getPublicCredentials(classOf[X509Claim]));
-    if (creds.size==0) <p>No credentials available. Cannot tell how we came to accept identity</p>
+    if (creds.size==0) <p>No X509 credentials available.</p>
     else for (cred <- creds) yield describeX509Claim(cred)
     }
   </span>
 
 
   def describeX509Claim(claim: X509Claim) = {
-     <p>The Certificate sent can be viewed in detail <a href="WebId/x509">here</a>. The public key shown there is:
+     <p>The Certificate sent can be viewed <a href="WebId/x509">in detail here</a>. The public key is:
        <pre>{claim.cert.getPublicKey}</pre>
      </p>
 
@@ -118,13 +125,98 @@ class XhtmlCertificate(arguments: XmlResult.Arguments) extends XmlResult(argumen
     }
     </p>
 
-  def displayKey(key: RichGraphNode) = <pre>
-    {val graph: Graph = key.getNodeContext
-    val sout = Serializer.getInstance()
-    val out = new ByteArrayOutputStream(1024)
-    sout.serialize(out, graph, "text/rdf+n3")
-    out.toString("UTF-8")}
-  </pre>
+  def displayKey(key: RichGraphNode) = <span>
+	  {val errs = verifyKeyClosely(key)
+	  if (errs.size > 0) <ul>{errs}</ul>
+	  else scala.xml.Null
+	  }
+	  <pre>
+		  {val graph: Graph = key.getNodeContext
+	  val sout = Serializer.getInstance()
+	  val out = new ByteArrayOutputStream(1024)
+	  sout.serialize(out, graph, "text/rdf+n3")
+	  out.toString("UTF-8")}
+	  </pre>
+  </span>
 
+	/**
+	 * test numbers written in the old style with non literals
+	 *
+	 * @param The node that is the number. Should be a non literal
+	 * @param The relation name to the string that identifies the number
+	 * @param The role of the number in the public key (modulus, exponent, ...)
+	 *
+	*/
+	def nonLiteralNumTest(number: RichGraphNode, relToString: UriRef, numberRole: String ): NodeSeq = {
+		val typeTest = number! match {
+			case uri: UriRef => <li>Warning: your {numberRole} is a uri. The new spec requires this to be a literal.
+					 Uri found: {uri.getUnicodeString}</li>
+			case _: BNode => <li>Warning: your {numberRole} is a blank node. The newer spec requires this to be a literal</li>
+		}
+		typeTest++
+		 {
+			val hexs = number / relToString
+			if (hexs.size > 1) {
+				<li>WARNING: Your {numberRole} has more than one relation to a hexadecimal string. Unless both of those strings
+					map to the same number, your identification experience will be very random</li>
+			} else if (hexs.size == 0) {
+				<li>WARNING: your {numberRole} has no decimal literal attached by the {relToString} relation</li>
+			} else hexs! match {
+				case bnode: NonLiteral => <li>Warning: Your {numberRole} has a relation to a non literal, where it should be a
+					relation to a literal. It is possible that logically it all works out, but don't even expect a few engines to
+					bother reflecting deeply on this. We don't check past here.</li>
+				case lit: Literal => emptyxml
+			}
+		}
+
+	}
+
+	def literalNumTest(number: Literal): NodeSeq = {
+		number match {
+			case tl: TypedLiteral => tl.getDataType match {
+		   	case CERT.int_ => emptyxml
+			   case CERT.hex => emptyxml
+			   case CERT.decimal => emptyxml
+			   case XSD.base64Binary => <li>Base 64 binary is not a number. If you wish to have a base64 integer notation
+				   let the WebId Group know</li>
+				case XSD.hexBinary => <li>Base hex binary is not a number. If you wish to have a hex integer notation
+				   use the {CERT.hex} relation. It is easier for people to write out</li>
+				case XSD.nonNegativeInteger => emptyxml
+				case XSD.integer => emptyxml
+				case XSD.positiveInteger => emptyxml
+				case XSD.int_ => emptyxml
+				case littype => <li>We don't know how to interpret numbers of {littype}.
+					It would be better to use either
+					<a href={CERT.hex.getUnicodeString}>cert:hex</a> or <a href={CERT.int_.getUnicodeString}>cert:int</a></li>
+			}
+			case _: Literal => <li>Warning: you need to put a literal type, so we can know how to interpret the string.
+		</li>
+		}
+	}
+
+	def verifyKeyClosely(key: RichGraphNode) : NodeSeq= {
+		val moduli = key/RSA.modulus
+		val modWarn = if (moduli.size>1) {
+			<li>Warning: you have written the modulus out in more than one way. If they a are not equal your
+				connections might be alternatively successful</li>
+		} else if (moduli.size==0) {
+			<li>Warning: you have no modulus here. RSA keys must have one modulus</li>
+		} else  moduli! match {
+				 case _: NonLiteral => nonLiteralNumTest(moduli(0),CERT.hex,"modulus")
+				 case lit: Literal => literalNumTest(lit)
+		}
+		val expts = key/RSA.public_exponent
+		val expWarn = if (expts.size>1) {
+			<li>Warning: you have more than one exponent. They must be equal, or your connections will be unpredicable</li>
+
+		} else if (expts.size==0) {
+			<li>Warning: you have no exponent here. RSA keys must have one public exponent</li>
+		} else expts! match {
+				 case _: NonLiteral => nonLiteralNumTest(expts(0),CERT.decimal,"exponent")
+				 case lit: Literal => literalNumTest(lit)
+		}
+
+		return modWarn ++ expWarn
+	}
 
 }
