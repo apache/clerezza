@@ -16,9 +16,10 @@ class Activator extends BundleActivator {
 	 */
 	def start(context: BundleContext) {
 		println("activating...")
+
 		val args = scala.collection.mutable.Map("javax.ws.rs" -> true)
 		helloWorldRegistration = context.registerService(classOf[Object].getName,
-												  new HelloWorld(), args)
+												  new HelloWorld(context), args)
 		val renderlet = new HelloWorldMessageRenderlet
 		val serviceReference = context.getServiceReference(classOf[RenderletManager].getName)
 		renderletRegistration = context.registerService(classOf[TypeRenderlet].getName,
