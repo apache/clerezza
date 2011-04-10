@@ -66,6 +66,7 @@ public class UserUtil {
 	 */
 	public static String getUserName(final AccessControlContext context) {
 		Subject subject = getSubject(context);
+		if (subject == null) return null;
         Set<Principal> principals = subject.getPrincipals();
         if (principals==null) return null;
         Iterator<Principal> iter = principals.iterator();
