@@ -31,6 +31,7 @@ import org.apache.clerezza.rdf.ontologies.{FOAF, RDF, PLATFORM}
 import org.apache.clerezza.platform.users.WebIdGraphsService
 import org.slf4j.LoggerFactory
 import java.util.Collections
+import org.apache.clerezza.platform.security.UserUtil
 
 
 object FoafSslAuthentication {
@@ -75,13 +76,15 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
       addAgentToSystem(claim)
       claim.principal
     }
+	 var subj = UserUtil.getCurrentSubject();   //arguably getCurrentSubject should always return a subject
+	 if (subj == null) {
+		 subj = new Subject()
+	 }
 
-    if (verified.size == 0) return null
+	 subj.getPrincipals().addAll(verified)
+    subj.getPublicCredentials.add(x509c)
 
-    return new Subject(true,
-      asJavaSet(verified.toSet),
-      Collections.singleton(x509c),
-      Collections.EMPTY_SET);
+    return subj;
 
 
   }

@@ -25,6 +25,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.security.AccessControlException;
 import java.util.Collections;
 
+import org.apache.clerezza.platform.security.UserUtil;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.security.auth.*;
 import org.apache.felix.scr.annotations.Component;
@@ -79,10 +80,12 @@ public class BasicAuthentication implements WeightedAuthenticationMethod {
 			}
 			try {
 				if (authenticationService.authenticateUser(userName, password)) {
-					return new Subject(true,
-						Collections.singleton(new PrincipalImpl(userName)),
-						Collections.EMPTY_SET,
-						Collections.EMPTY_SET);
+					Subject subj = UserUtil.getCurrentSubject();   //arguably getCurrentSubject should always return a subject
+					if (subj == null) {
+						subj = new Subject();
+					}
+					subj.getPrincipals().add(new PrincipalImpl(userName));
+					return subj;
 				} else {
 					throw new LoginException(LoginException.PASSWORD_NOT_MATCHING);
 				}
