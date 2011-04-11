@@ -31,7 +31,7 @@ import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.security.PublicKey
 import org.apache.clerezza.platform.security.auth.PrincipalImpl
-
+import scala.None
 
 /**
  * An X509 Claim maintains information about the proofs associated with claims
@@ -87,38 +87,39 @@ class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 			verified = Verification.Unsupported
 			return
 		}
-		try {
+		verified = try {
 			var webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.CacheOnly)
-			if (
-				!verify(webIdInfo.publicUserGraph)
-			) {
-				webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.ForceUpdate)
-				if (
-					!verify(webIdInfo.publicUserGraph)
-				) {
-					verified = Verification.Failed
-					return
+			verify(webIdInfo.publicUserGraph) match {
+				case None => Verification.Verified
+				case Some(err) => {
+					webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.ForceUpdate)
+					verify(webIdInfo.publicUserGraph) match {
+						case None => Verification.Verified
+						case Some(err) => {
+							errors.add(err)
+							Verification.Failed
+						}
+					}
 				}
 			}
 		} catch {
 			case e => {
 				errors.add(e)
-				verified = Verification.Failed
-				return
+				Verification.Failed
 			}
 		}
-		verified = Verification.Verified
 	}
 
-	def verify(tc: TripleCollection): Boolean = {
+	def verify(tc: TripleCollection): Option[WebIDVerificationError] = {
 		key match {
 			case k: RSAPublicKey => verify(k, tc);
-			case _ => throw new CertificateException("Unsupported key format")
+			case x => Some(new WebIDVerificationError("Unsupported key format "+x.getClass) )
 		}
 	}
 
-	private def verify(publicKey: RSAPublicKey, tc: TripleCollection): Boolean = {
+	private def verify(publicKey: RSAPublicKey, tc: TripleCollection): Option[WebIDVerificationError] = {
 		val publicKeysInGraph = getPublicKeysInGraph(tc)
+		if (publicKeysInGraph.size==0) return Some(new WebIDVerificationError("No public keys found in WebID Profile for "+webId.getUnicodeString))
 		val publicKeyTuple = (new BigInt(publicKey.getModulus), new BigInt(publicKey.getPublicExponent))
 		val result = publicKeysInGraph.contains(publicKeyTuple)
 		if (logger.isDebugEnabled) {
@@ -133,7 +134,8 @@ class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 				publicKeysInGraph.foreach(k => logger.debug("PublikKey in graph: " + k))
 			}
 		}
-		result
+		if (result) return None
+		else return Some(new WebIDVerificationError("No matching keys found in WebID Profile"))
 	}
 
 	private def getPublicKeysInGraph(tc: TripleCollection): Array[(BigInt, BigInt)] = {
@@ -174,6 +176,11 @@ class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 			) + (if (key != null) key.hashCode else 0)
 		)
 }
+
+class WebIDVerificationError(msg: String) extends Error(msg) {
+
+}
+
 
 object Verification extends Enumeration {
 
