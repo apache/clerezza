@@ -33,12 +33,12 @@ import javax.security.auth.Subject;
 public interface AuthenticationMethod {
 
 	/**
-	 * Returns the user name of the authenticated user with the information
-	 * provided in the specified request. If the authentication failed, an
+	 * Returns the Subject of the authenticate user containing the principal
+	 * of the authentication and possibly some credentials.  If the authentication failed, an
 	 * <code>LoginException</code> will be thrown. If no authentication
-	 * informations are available null is returned.
+	 * information are available null is returned.
 	 * @param request containing the information to authenticate a subject
-	 * @return name of authenticated user
+	 * @return Subject if this method authenticated, or null if not
 	 * @throws LoginException This exception is thrown in case
 	 * the login procedure failed.
 	 * @throws HandlerException
