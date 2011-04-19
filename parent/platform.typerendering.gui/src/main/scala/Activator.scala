@@ -9,9 +9,11 @@ import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider
 import org.apache.clerezza.platform.typerendering.{TypeRenderlet, RenderletManager}
 import java.util.HashSet
 import javax.ws.rs._
-import org.apache.clerezza.rdf.ontologies.{DC, RDF, PLATFORM}
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.scala.utils._
+import org.apache.clerezza.rdf.ontologies.{RDF, DC, PLATFORM}
+import org.apache.clerezza.rdf.core.access.security.TcPermission
+import java.security.{AccessControlException, AccessController}
 
 /**
  * Activator for a bundle using Apache Clerezza.
@@ -56,8 +58,18 @@ class Activator extends BundleActivator {
 	}
 
 	object MenuProvider extends GlobalMenuItemsProvider {
-		override def getMenuItems = {
+		override def getMenuItems: java.util.Set[GlobalMenuItem] = {
+			import collection.JavaConversions._
 			val result = new HashSet[GlobalMenuItem]();
+			try {
+				//TODO should have a more general way to say that a user has some administrative priviledges
+				AccessController.checkPermission(new TcPermission("http://tpf.localhost/content.graph", "readwrite"))
+			}
+			catch {
+				case e: AccessControlException => {
+					return result
+				}
+			}
 			result.add(new GlobalMenuItem("/"+path,"renderlet-overview", "Renderlet Overview", -999, "Administration"))
 			result
 		}
