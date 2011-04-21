@@ -90,9 +90,9 @@ public class BouncyKeygenService implements KeygenService {
 	static transient final Logger log = LoggerFactory.getLogger(BouncyKeygenService.class);
 
 	static {
-		if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+		//if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
 			Security.addProvider(new BouncyCastleProvider());
-		} else throw new Error("missing BouncyCastleProvider -- add jars to classpath");
+		//} else throw new Error("missing BouncyCastleProvider -- add jars to classpath");
 	}
 
 	/**

@@ -61,8 +61,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.utils.ReplacingOutputStream;
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
-import org.apache.commons.codec.binary.Base64;
-import org.osgi.service.component.ComponentContext;
 import org.wymiwyg.commons.util.dirbrowser.MultiPathNode;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
 

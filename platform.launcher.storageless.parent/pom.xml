@@ -128,6 +128,11 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
 			<groupId>net.rootdev</groupId>
 			<artifactId>java-rdfa</artifactId>
 		</dependency>
@@ -203,7 +208,9 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>triaxrs</artifactId>
-			<scope>runtime</scope>
+			<!-- this has to start early, because of the MEdiaType requiring RuntimeImpl in 
+			static iinitializer -->
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
