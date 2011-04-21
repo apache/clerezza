@@ -33,5 +33,9 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>triaxrs</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>platform.typerendering.core</artifactId>
+		</dependency>
 	</dependencies>
 </project>
