@@ -61,7 +61,8 @@ public class ClerezzaCASConsumer extends CasAnnotator_ImplBase {
     // create the root node
     GraphNode sample = new GraphNode(new BNode(), outputGraph);
 
-    if (casModelFilePath!=null && casModelFilePath.length()>0) {
+    // if no casModel was specified use the default mapping
+    if (casModelFilePath==null || casModelFilePath.length()==0) {
       try {
         UIMAUtils.enhanceNode(sample, UIMAUtils.getAllFSofType(TOP.type, cas.getJCas()));
       } catch (FeatureStructureNotFoundException e) {
@@ -70,6 +71,7 @@ public class ClerezzaCASConsumer extends CasAnnotator_ImplBase {
         throw new AnalysisEngineProcessException(e);
       }
     }
+    // TODO otherwise map UIMA FeatureStructures to Triples using the given casModel
 
   }
 
