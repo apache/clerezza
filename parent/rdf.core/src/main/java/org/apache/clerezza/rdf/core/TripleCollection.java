@@ -67,12 +67,16 @@ public interface TripleCollection extends Collection<Triple> {
 	 * only partially propagate their changes to the listener. They should
 	 * describe the behavior in the documentation of the class.
 	 *
+	 * Implementations should keep weak references the listeners, so that the
+	 * listener can be garbage collected if its no longer referenced by another
+	 * object.
+	 *
 	 * If delay is 0 notification will happen synchroneously.
 	 *
 	 * @param listener The listener that will be notified
 	 * @param filter The triple filter with which triples are tested,
 	 *		that were part of the modification.
-	 * @param delay The time period afer which the listener will be notified.
+	 * @param delay The time period afer which the listener will be notified in milliseconds.
 	 */
 	public void addGraphListener(GraphListener listener, FilterTriple filter,
 			long delay);
