@@ -18,15 +18,13 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.lang.ref.WeakReference;
+import java.util.*;
+
 import org.apache.clerezza.rdf.core.event.GraphEvent;
 import org.apache.clerezza.rdf.core.event.GraphListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -34,21 +32,18 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  */
 class DelayedNotificator {
 
+	private static final Logger log = LoggerFactory.getLogger(DelayedNotificator.class);
 	private static Timer timer = new Timer("Event delivery timer",true);
 
 	static class ListenerHolder {
 
 		long delay;
 		List<GraphEvent> events = null;
-		GraphListener listener;
+		WeakReference<GraphListener> listenerRef;
 
 		public ListenerHolder(GraphListener listener, long delay) {
-			this.listener = listener;
+			this.listenerRef = new WeakReference<GraphListener>(listener);
 			this.delay = delay;
-		}
-
-		private ListenerHolder(long delay) {
-			throw new UnsupportedOperationException("Not yet implemented");
 		}
 
 		private void registerEvent(GraphEvent event) {
@@ -65,7 +60,16 @@ class DelayedNotificator {
 								eventsLocal = events;
 								events = null;
 							}
-							listener.graphChanged(eventsLocal);
+							GraphListener listener = listenerRef.get();
+							if (listener == null) {
+								log.debug("Ignoring garbage collected listener");
+							} else {
+								try {
+									listener.graphChanged(eventsLocal);
+								} catch (Exception e) {
+									log.warn("Exception delivering graph event", e);
+								}
+							}
 						}
 					}, delay);
 				} else {
@@ -74,25 +78,26 @@ class DelayedNotificator {
 			}
 		}
 	}
-	private Map<GraphListener, ListenerHolder> map = Collections.synchronizedMap(
-			new HashMap<GraphListener, ListenerHolder>());
+	
+	private final Map<GraphListener, ListenerHolder> map = Collections.synchronizedMap(
+			new WeakHashMap<GraphListener, ListenerHolder>());
 
 	void addDelayedListener(GraphListener listener, long delay) {
 		map.put(listener, new ListenerHolder(listener, delay));
 	}
 
 	/**
-	 * removes a Listener, this doesn't prevent the listener from receiving 
+	 * removes a Listener, this doesn't prevent the listenerRef from receiving
 	 * events alreay scheduled.
 	 *
-	 * @param listener
+	 * @param listenerRef
 	 */
 	void removeDelayedListener(GraphListener listener) {
 		map.remove(listener);
 	}
 
 	/**
-	 * if the listener has not been registered as delayed listener te events is
+	 * if the listenerRef has not been registered as delayed listenerRef te events is
 	 * forwarded synchroneously
 	 * @param event
 	 */
