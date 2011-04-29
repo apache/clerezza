@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import java.lang.ref.WeakReference;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Collections;
@@ -178,9 +179,16 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 	 */
 	protected void dispatchEvent(GraphEvent event) {
 		synchronized(listenerConfigs) {
-			for (ListenerConfiguration config : listenerConfigs) {
+			Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
+			while (iter.hasNext()) {
+				ListenerConfiguration config = iter.next();
+				GraphListener registeredListener = config.getListener();
+				if (registeredListener == null) {
+					iter.remove();
+					continue;
+				}
 				if (config.getFilter().match(event.getTriple())) {
-					delayedNotificator.sendEventToListener(config.getListener(), event);
+					delayedNotificator.sendEventToListener(registeredListener, event);
 				}
 			}
 		}
@@ -206,7 +214,8 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 			Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
 			while (iter.hasNext()) {
 				ListenerConfiguration listenerConfig = iter.next();
-				if (listenerConfig.getListener().equals(listener)) {
+				GraphListener registeredListener = listenerConfig.getListener();
+				if ((registeredListener == null) || (registeredListener.equals(listener))) {
 					iter.remove();
 				}
 			}
@@ -216,11 +225,11 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 
 	private static class ListenerConfiguration {
 
-		private GraphListener listener;
+		private WeakReference<GraphListener> listenerRef;
 		private FilterTriple filter;
 
 		private ListenerConfiguration(GraphListener listener, FilterTriple filter) {
-			this.listener = listener;
+			this.listenerRef = new WeakReference<GraphListener>(listener);
 			this.filter = filter;
 		}
 
@@ -228,6 +237,7 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
 		 * @return the listener
 		 */
 		GraphListener getListener() {
+			GraphListener listener = listenerRef.get();
 			return listener;
 		}
 
