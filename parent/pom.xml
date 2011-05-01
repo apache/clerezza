@@ -32,6 +32,7 @@
 				<module>ext.javax.mail</module>
 				<module>ext.org.json.simple</module>
 				<module>ext.org.ops4j.pax.swissbox.tinybundles</module>
+				<module>slf4j-scala-api</module>
 				<module>internal.archetype</module>
 				<module>jaxrs.extensions</module>
 				<module>jaxrs.rdf.providers</module>
@@ -400,6 +401,10 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.clerezza.ext</groupId>
+			<artifactId>slf4j-scala-api</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<scope>test</scope>
@@ -460,6 +465,11 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza.ext</groupId>
+				<artifactId>slf4j-scala-api</artifactId>
 				<version>1.6.1</version>
 			</dependency>
 			<dependency>
