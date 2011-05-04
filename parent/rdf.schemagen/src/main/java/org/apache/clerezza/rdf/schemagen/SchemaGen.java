@@ -138,25 +138,39 @@ public class SchemaGen {
 		out.println(" {");
 
 		SortedSet<OntologyResource> ontClasses = new TreeSet<OntologyResource>();
-		ontClasses.addAll(getResourcesOfType(out, RDFS.Class));
-		ontClasses.addAll(getResourcesOfType(out, RDFS.Datatype));
-		ontClasses.addAll(getResourcesOfType(out, OWL.Class));
+		ontClasses.addAll(getResourcesOfType(RDFS.Class));
+		ontClasses.addAll(getResourcesOfType(RDFS.Datatype));
+		ontClasses.addAll(getResourcesOfType(OWL.Class));
+
+
+
 		if (ontClasses.size() > 0) {
 			out.println("\t// Classes");
 			printResources(ontClasses.iterator(), out);
 		}
 		SortedSet<OntologyResource> ontProperties = new TreeSet<OntologyResource>();
-		ontProperties.addAll(getResourcesOfType(out, RDF.Property));
-		ontProperties.addAll(getResourcesOfType(out, OWL.ObjectProperty));
-		ontProperties.addAll(getResourcesOfType(out, OWL.DatatypeProperty));
-		//this is for some ontologies defining things that are both classes
-		//and properties, like image in RSS 1.0
-		ontProperties.removeAll(ontClasses);
+		//some ontologies defining things that are both classes
+		//and properties, like image in RSS 1.0 - so we remove those
+		ontProperties.addAll(getResourcesOfType(RDF.Property,ontClasses));
+		ontProperties.addAll(getResourcesOfType( OWL.ObjectProperty,ontClasses));
+		ontProperties.addAll(getResourcesOfType(OWL.DatatypeProperty,ontClasses));
+
 		if (ontProperties.size() > 0) {
 			out.println();
 			out.println("\t// Properties");
 			printResources(ontProperties.iterator(), out);
 		}
+
+		//create a set of classes and properties. Everything else should be instances
+		ontClasses.addAll(ontProperties);
+		Collection<OntologyResource> instances = getResourcesOfType(null, ontClasses);
+
+		if (instances.size() > 0) {
+			out.println();
+			out.println("\t// Properties");
+			printResources(instances.iterator(), out);
+		}
+
 		out.println("}");
 	}
 
@@ -181,8 +195,17 @@ public class SchemaGen {
 
 	}
 
-	private Collection<OntologyResource> getResourcesOfType(
-			PrintWriter out, UriRef type) {
+	private Collection<OntologyResource> getResourcesOfType(UriRef type) {
+		 return getResourcesOfType(type, null);
+	}
+
+	/**
+	 *
+	 * @param type the type of the class, or null for all things that are declared to be of a type
+	 * @param ignore a set things to ignore
+	 * @return
+	 */
+	private Collection<OntologyResource> getResourcesOfType(UriRef type, Collection<OntologyResource> ignore) {
 		Set<OntologyResource> result = new HashSet<OntologyResource>();
 		Iterator<Triple> classStatemente = schemaGraph.filter(null, RDF.type,
 				type);
@@ -190,7 +213,8 @@ public class SchemaGen {
 			Triple triple = classStatemente.next();
 			NonLiteral classResource = triple.getSubject();
 			if (classResource instanceof BNode) {
-				System.err.println("Ignoring anonymous resource of type " + type.getUnicodeString());
+				if (type !=null) System.err.println("Ignoring anonymous resource of type " + type.getUnicodeString());
+				else System.err.println("Ignoring anonymous resource");
 				for (Triple contextTriple : getNodeContext(classResource, schemaGraph)) {
 					System.err.println(contextTriple);
 				}
@@ -214,7 +238,8 @@ public class SchemaGen {
 				if (idxSlash <= offset && idxHash <= offset) {
 					OntologyResource ontologyResource =
 							new OntologyResource(classUri, schemaGraph);
-					result.add(ontologyResource);
+					if (ignore ==null || !ignore.contains(ontologyResource))
+						result.add(ontologyResource);
 				}
 			}
 		}
@@ -306,6 +331,7 @@ public class SchemaGen {
 			int slashPos = uriValue.lastIndexOf('/');
 			int delimiter = hashPos > slashPos ? hashPos : slashPos;
 			String val = uriValue.substring(delimiter + 1);
+			if (val.length()==0) return "THIS_ONTOLOGY";
 			//replace bad characters...
 			val = val.replace('-', '_');
 			return reservedWords.contains(val) ? val + "_" : val;
@@ -317,11 +343,32 @@ public class SchemaGen {
 
 		String getDescription() {
 			StringBuffer result = new StringBuffer();
+			Iterator<Triple> titleStatements = graph.filter(
+					uri, DCTERMS.title, null);
+			while (titleStatements.hasNext()) {
+				Resource object = titleStatements.next().getObject();
+				if (object instanceof Literal) {
+					result.append("title: ");
+					result.append (((Literal) object).getLexicalForm());
+					result.append("\n");
+				}
+			}
+			Iterator<Triple> descriptionStatements = graph.filter(
+					uri, DCTERMS.description, null);
+			while (descriptionStatements.hasNext()) {
+				Resource object = descriptionStatements.next().getObject();
+				if (object instanceof Literal) {
+					result.append("description: ");
+					result.append (((Literal) object).getLexicalForm());
+					result.append("\n");
+				}
+			}
 			Iterator<Triple> skosDefStatements = graph.filter(
 					uri, SKOS.definition, null);
 			while (skosDefStatements.hasNext()) {
 				Resource object = skosDefStatements.next().getObject();
 				if (object instanceof Literal) {
+					result.append("definition: ");
 					result.append (((Literal) object).getLexicalForm());
 					result.append("\n");
 				}
@@ -331,6 +378,7 @@ public class SchemaGen {
 			while (rdfsCommentStatements.hasNext()) {
 				Resource object = rdfsCommentStatements.next().getObject();
 				if (object instanceof Literal) {
+					result.append("comment: ");
 					result.append(((Literal) object).getLexicalForm());
 					result.append("\n");
 				}
@@ -340,15 +388,17 @@ public class SchemaGen {
 			while (skosNoteStatements.hasNext()) {
 				Resource object = skosNoteStatements.next().getObject();
 				if (object instanceof Literal) {
+					result.append("note: ");
 					result.append (((Literal) object).getLexicalForm());
 					result.append("\n");
 				}
 			}
 			Iterator<Triple> skosExampleStatements = graph.filter(
 					uri, SKOS.example, null);
-			while (skosNoteStatements.hasNext()) {
-				Resource object = skosNoteStatements.next().getObject();
+			while (skosExampleStatements.hasNext()) {
+				Resource object = skosExampleStatements.next().getObject();
 				if (object instanceof Literal) {
+					result.append("example: ");
 					result.append (((Literal) object).getLexicalForm());
 					result.append("\n");
 				} else if (object instanceof UriRef) {
@@ -382,6 +432,10 @@ public class SchemaGen {
 			return getUriString().compareTo(o.getUriString());
 		}
 	}
+
+	/*
+	 * Ontology vocabs are re-defined here and not imported to avoid a maven dependency loop
+	 */
 
 	/** OWL Ontology. */
 	private static class OWL {
@@ -420,5 +474,11 @@ public class SchemaGen {
 		static final UriRef definition = new UriRef("http://www.w3.org/2008/05/skos#definition");
 		static final UriRef note = new UriRef("http://www.w3.org/2004/02/skos/core#note");
 		static final UriRef example = new UriRef("http://www.w3.org/2004/02/skos/core#example");
+	}
+
+	private static class DCTERMS {
+		public static final UriRef title = new UriRef("http://purl.org/dc/terms/title");
+		public static final UriRef description = new UriRef("http://purl.org/dc/terms/description");
+
 	}
 }
