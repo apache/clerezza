@@ -49,7 +49,7 @@ class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 
 	val errors = new LinkedList[java.lang.Throwable]()
 
-	lazy val principal = new PrincipalImpl(userName)
+	lazy val principal = new WebIdPrincipal(webId)
 	var verified = Verification.Unverified
 
 	/*private lazy val selectQuery = {
@@ -66,14 +66,6 @@ class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 		  queryParser.parse(query).asInstanceOf[SelectQuery]
 		  }*/
 
-	//todo: not at all a satisfactory username method. Find something better.
-	lazy val userName = for (c <- webId.getUnicodeString) yield
-		c match {
-			case ':' => '_';
-			case '#' => '_';
-			case '/' => '_';
-			case _ => c
-		}
 
 
 	/**
@@ -178,6 +170,21 @@ class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 }
 
 class WebIDVerificationError(msg: String) extends Error(msg) {
+
+}
+
+object WebIdPrincipal {
+	//todo: not at all a satisfactory username method. Find something better.
+	def userName(webId: UriRef) = for (c <- webId.getUnicodeString) yield
+		c match {
+			case ':' => '_';
+			case '#' => '_';
+			case '/' => '_';
+			case _ => c
+		}
+}
+
+class WebIdPrincipal(val webId: UriRef) extends PrincipalImpl(WebIdPrincipal.userName(webId)) {
 
 }
 
