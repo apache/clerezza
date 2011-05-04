@@ -42,7 +42,7 @@ object FoafSslAuthentication {
   def createSystemUserDescription(claim: WebIDClaim): MGraph = {
     val result = new SimpleMGraph()
     result.add(new TripleImpl(claim.webId, PLATFORM.userName,
-      new PlainLiteralImpl(claim.userName)))
+      new PlainLiteralImpl(claim.principal.getName)))
     result.add(new TripleImpl(claim.webId, RDF.`type`,
       FOAF.Agent))
     result
