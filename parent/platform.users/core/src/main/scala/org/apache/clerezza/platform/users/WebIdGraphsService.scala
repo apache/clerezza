@@ -32,7 +32,6 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM
 import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.apache.clerezza.rdf.web.proxy.{Cache, WebProxy}
 
-//todo: this class can be generalised to a generalised semweb caching service
 /**
  * For agents with a Web-Id various graphs are available, these graphs are
  * grouped by <code>WebIdGraphs</code> which this service provides.
