@@ -87,14 +87,34 @@
    rdfs:comment "Private Key" ;
    rdfs:subClassOf :Key .
 
+:base64der a rdf:Property;
+   vs:term_status "unstable";
+   rdfs:comment """The relation between an object and it's base64 DER format, for things that can have a DER format, 
+         such as certificates, private keys or even just bare keys(?)""" ;
+   rdfs:range xsd:string .
+
 :public_key a rdf:Property;
     vs:term_status "unstable";
+    rdfs:label "public_key"@en; 
+    owl:inverseOf :identity;
     rdfs:comment """
-    relates the private key to the public key component, in a public/private
-    key pair.
-    """;
-    rdfs:domain :PrivateKey;
-    rdfs:range :PublicKey .  
+      a relation from an agent to a public key for which he alone has 
+      the private key. This public key identifies that agent, allows him
+      to decrypt messages sent to him with that key, and is able to sign
+      messages with it too.
+    """ ;
+   rdfs:domain foaf:Agent;
+   rdfs:range :PublicKey .
+
+:principal_key a rdf:Property;
+    vs:term_status "unstable";
+    rdfs:label "the certificate's public_key"@en; 
+    rdfs:comment """
+        The main public key published in the certificate. Most certificates only publish one key
+   """ ;
+   rdfs:domain :Certificate;
+   rdfs:range :PublicKey .
+
 
 :hex a owl:DatatypeProperty, rdfs:Datatype,
       owl:InverseFunctionalProperty;
