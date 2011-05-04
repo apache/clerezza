@@ -203,13 +203,14 @@ class CertTester(subj: Subject, webProxy: WebProxy) extends Assertor {
 		//
 		// WebID authentication succeeded
 		//
-		val principals = subj.getPrincipals.filter(p => p.isInstanceOf[WebIdPrincipal])
+		val principals = for (p <- subj.getPrincipals
+		                      if p.isInstanceOf[WebIdPrincipal]) yield p.asInstanceOf[WebIdPrincipal]
 		(g.bnode ∈ EARL.Assertion
 			⟝ EARL.test ⟶ TEST.webidAuthentication
 			⟝ EARL.result ⟶ (g.bnode ∈ EARL.TestResult
 						⟝ DC.description ⟶ {"found " + principals.size + " valid principals"}
 						⟝ EARL.outcome ⟶ {if (principals.size > 0) EARL.passed else EARL.failed}
-						⟝ EARL.pointer ⟶* principals.map(p => new UriRef(p.getName))
+						⟝ EARL.pointer ⟶* principals.map(p => p.webId)
 						)
 			⟝ EARL.subject ⟶* x509claimRefs.map(p => p._1)
 			)
