@@ -41,19 +41,18 @@ import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
  * @created: 01/04/2011
  */
 
-class CertificateDescription extends SRenderlet {
+class WebIDClaimPg extends SRenderlet {
 	def getRdfType() = WebIDTester.testCls
 
-	override def renderedPage(arguments: XmlResult.Arguments) = new XhtmlCertificate(arguments)
+	override def renderedPage(arguments: XmlResult.Arguments) = new XhtmlWebIDClaimPg(arguments)
 }
 
-object XhtmlCertificate {
+object XhtmlWebIDClaimPg {
    val emptyxml=new scala.xml.Text("")
 }
 
-class XhtmlCertificate(arguments: XmlResult.Arguments) extends XmlResult(arguments )  {
-  import XhtmlCertificate._
-  val subject = UserUtil.getCurrentSubject();
+class XhtmlWebIDClaimPg(arguments: XmlResult.Arguments) extends XmlResult(arguments )  {
+  import XhtmlWebIDClaimPg._
 
 
   override def content = <span>

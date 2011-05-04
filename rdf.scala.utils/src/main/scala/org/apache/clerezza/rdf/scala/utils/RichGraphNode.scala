@@ -20,7 +20,6 @@ package org.apache.clerezza.rdf.scala.utils
 
 import org.apache.clerezza.rdf.utils.GraphNode
 import java.util.Iterator
-import _root_.scala.collection.JavaConversions
 import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
 import org.apache.clerezza.rdf.core.{TripleCollection, UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
@@ -35,17 +34,17 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 	 */
 	 def this(node: Resource, graph: TripleCollection ) = this(new GraphNode(node,graph))
     /**
-     * Operator syntax shortcut to get all objects as <code>RichGraphNode</code>s
+     * Operator syntax shortcut to get all objects as <code>RichGraphNode</code>ref
      */
-    def /(property: UriRef) = {
-    	new CollectedIter(() => new GraphNodeIter(node.getObjects(property)), readLock)
+    def /(property: UriRef): CollectedIter[RichGraphNode] = {
+    	new CollectedIter[RichGraphNode](() => new GraphNodeIter(node.getObjects(property)), readLock)
 	}
 
     /**
-     * Operator syntax shortcut to get all subjects as <code>RichGraphNode</code>s
+     * Operator syntax shortcut to get all subjects as <code>RichGraphNode</code>ref
      */
-    def /-(property: UriRef) = {
-    	new CollectedIter(() => new GraphNodeIter(node.getSubjects(property)), readLock)
+    def /-(property: UriRef): CollectedIter[RichGraphNode] = {
+    	new CollectedIter[RichGraphNode](() => new GraphNodeIter(node.getSubjects(property)), readLock)
     }
 
     /**
