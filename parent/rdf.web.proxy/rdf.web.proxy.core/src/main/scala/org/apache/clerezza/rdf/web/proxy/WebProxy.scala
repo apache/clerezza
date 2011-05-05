@@ -29,6 +29,7 @@ import org.apache.clerezza.rdf.core.access.{NoSuchEntityException, TcManager}
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat
 import org.apache.clerezza.rdf.core.serializedform.Parser
 import org.apache.clerezza.platform.typerendering.WebRenderingService
+import org.apache.clerezza.rdf.core.access.security.TcPermission
 
 
 /**
@@ -135,7 +136,13 @@ class WebProxy {
 			val g = tcManager.getMGraph(graphUriRef)
 			g
 		} catch {
-			case e: NoSuchEntityException => tcManager.createMGraph(graphUriRef)
+			case e: NoSuchEntityException => {
+				import scala.collection.JavaConversions._
+				tcManager.getTcAccessController.
+					setRequiredReadPermissionStrings(graphUriRef,
+					List(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString))
+				   tcManager.createMGraph(graphUriRef)
+			}
 		}
 
 
