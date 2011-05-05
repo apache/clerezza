@@ -195,7 +195,7 @@ public interface UserManager {
 	 * exist.
 	 *
 	 * @param name The username of the user
-	 * @return GraphNode represing the user in the system graph
+	 * @return GraphNode representing the user in the system graph
 	 */
 	public GraphNode getUserInSystemGraph(String name);
 

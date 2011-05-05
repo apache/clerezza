@@ -87,8 +87,8 @@ class ProfilePanel {
 	                               profile: UriRef): GraphNode = {
 		return AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
 			def run: GraphNode = {
-				var userInSystemGraph: GraphNode = userManager.getUserInSystemGraph(userName)
-				var userNodeInSystemGraph: NonLiteral = userInSystemGraph.getNode.asInstanceOf[NonLiteral]
+				val userInSystemGraph: GraphNode = userManager.getUserInSystemGraph(userName)
+				val userNodeInSystemGraph: NonLiteral = userInSystemGraph.getNode.asInstanceOf[NonLiteral]
 				if (userNodeInSystemGraph.isInstanceOf[BNode]) {
 					var simpleMGraph: SimpleMGraph = new SimpleMGraph
 					var profileNode: GraphNode = new GraphNode(new BNode, simpleMGraph)
@@ -121,7 +121,7 @@ class ProfilePanel {
 	 * @param webId
 	 * @param profile
 	 * @return A graph containing some information from the system graph, the published profile cache if available, and
-	 *         the definedHere graph. Local changes can be written to a buffer graph, that will have not be saved.
+	 *         the definedHere graph. Local changes can be written to a buffer graph, that will not be saved.
 	 */
 	private def getProfileInUserGraph(webId: UriRef, profile: UriRef): GraphNode = {
 		var webIDInfo = webIdGraphsService.getWebIDInfo(webId)

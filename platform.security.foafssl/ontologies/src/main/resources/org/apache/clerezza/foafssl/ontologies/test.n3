@@ -9,10 +9,11 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix : <#> .
 
 wit: a owl:Ontology .
 
-zz:0_5-SNAPSHOT a earl:Software;
+zz:r05 a earl:Software;
    doap:repository <https://svn.apache.org/repos/asf/incubator/clerezza/trunk/parent/platform.security.foafssl/test>;
    doap:programming-language "Scala";
    doap:developer <http://bblfish.net/#hjs>;
