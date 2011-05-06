@@ -173,6 +173,19 @@ public class LanguageService {
 		}
 		return null;
 	}
+	
+	/**
+	 * Get the language as <code>GraphNode</code> specified through languageUri. 
+	 * The languageUri has to be a <http://www.lingvoj.org/ontology#Lingvo>
+	 * according to the graph <http://www.lingvoj.org/lingvoj> included in this
+	 * bundle., e.g. "http://www.lingvoj.org/lang/de".
+	 *
+	 * @param languageUri The language uri which specifies the language 
+	 */
+	public GraphNode getLanguageNode(NonLiteral langUri) {
+		Graph lingvojRdf = getLingvojGraph();
+		return new GraphNode(langUri, lingvojRdf);
+	}
 
 	/**
 	 * Adds the language specified through languageUri to the Clerezza
