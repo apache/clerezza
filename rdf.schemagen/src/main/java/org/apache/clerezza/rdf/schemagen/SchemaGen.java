@@ -333,7 +333,7 @@ public class SchemaGen {
 			String val = uriValue.substring(delimiter + 1);
 			if (val.length()==0) return "THIS_ONTOLOGY";
 			//replace bad characters...
-			val = val.replace('-', '_');
+			val = val.replace('-', '_').replace('.','_');
 			return reservedWords.contains(val) ? val + "_" : val;
 		}
 
