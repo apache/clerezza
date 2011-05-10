@@ -63,10 +63,10 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
 
 
   override
-  def authenticate(request: Request): Subject = {
+  def authenticate(request: Request, subject: Subject): Boolean = {
     val certificates = request.getCertificates()
     if ((certificates == null) || (certificates.length == 0)) {
-      return null
+      return false
     }
     val x509c = new X509Claim(certificates(0))
     x509c.verify(this)
@@ -76,17 +76,15 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
       addAgentToSystem(claim)
       claim.principal
     }
-	 var subj = UserUtil.getCurrentSubject();   //arguably getCurrentSubject should always return a subject
-	 if (subj == null) {
-		 subj = new Subject()
-	 }
 
-	 subj.getPrincipals().addAll(verified)
-    subj.getPublicCredentials.add(x509c)
-
-    return subj;
-
-
+	  subject.getPublicCredentials.add(x509c)
+	  if (verified.size > 0) {
+		  subject.getPrincipals().remove(UserUtil.ANONYMOUS)
+		  subject.getPrincipals().addAll(verified)
+		  return true
+	  } else {
+		  return false
+	  }
   }
 
   def addAgentToSystem(id: WebIDClaim) {

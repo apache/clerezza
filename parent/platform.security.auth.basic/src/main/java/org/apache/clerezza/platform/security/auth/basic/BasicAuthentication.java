@@ -65,7 +65,7 @@ public class BasicAuthentication implements WeightedAuthenticationMethod {
 	}
 
 	@Override
-	public Subject authenticate(Request request) throws LoginException, HandlerException {
+	public boolean authenticate(Request request, Subject subject) throws LoginException, HandlerException {
 		String[] authorizationValues = request.getHeaderValues(HeaderName.AUTHORIZATION);
 		if (authorizationValues != null && authorizationValues.length > 0) {
 			String authorization = authorizationValues[0];
@@ -80,12 +80,9 @@ public class BasicAuthentication implements WeightedAuthenticationMethod {
 			}
 			try {
 				if (authenticationService.authenticateUser(userName, password)) {
-					Subject subj = UserUtil.getCurrentSubject();   //arguably getCurrentSubject should always return a subject
-					if (subj == null) {
-						subj = new Subject();
-					}
-					subj.getPrincipals().add(new PrincipalImpl(userName));
-					return subj;
+					subject.getPrincipals().remove(UserUtil.ANONYMOUS);
+					subject.getPrincipals().add(new PrincipalImpl(userName));
+					return true;
 				} else {
 					throw new LoginException(LoginException.PASSWORD_NOT_MATCHING);
 				}
@@ -93,7 +90,7 @@ public class BasicAuthentication implements WeightedAuthenticationMethod {
 				throw new LoginException(LoginException.USER_NOT_EXISTING);
 			}
 		} else {
-			return null;
+			return false;
 		}
 	}
 
