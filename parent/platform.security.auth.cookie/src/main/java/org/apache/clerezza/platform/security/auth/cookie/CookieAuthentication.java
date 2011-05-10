@@ -70,13 +70,13 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 	}
 
 	@Override
-	public Subject authenticate(Request request) throws LoginException, HandlerException {
+	public boolean authenticate(Request request, Subject subject) throws LoginException, HandlerException {
 		String[] cookieValues = request.getHeaderValues(HeaderName.COOKIE);
 		if (cookieValues != null && cookieValues.length > 0) {
 			Map<String, Cookie> cookies = parseCookies(cookieValues[0]);		
 			Cookie authCookie = cookies.get(CookieLogin.AUTH_COOKIE_NAME);
 			if (authCookie == null) {
-				return null;
+				return false;
 			}
 
 			String authBase64 = authCookie.getValue();
@@ -90,12 +90,9 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 			}
 			try {
 				if (authenticationService.authenticateUser(userName, password)){
-					Subject subj = UserUtil.getCurrentSubject();   //arguably getCurrentSubject should always return a subject
-					if (subj == null) {
-						subj = new Subject();
-					}
-					subj.getPrincipals().add(new PrincipalImpl(userName));
-					return subj;
+					subject.getPrincipals().remove(UserUtil.ANONYMOUS);
+					subject.getPrincipals().add(new PrincipalImpl(userName));
+					return true;
 				} else {
 					throw new LoginException(LoginException.PASSWORD_NOT_MATCHING);
 				}
@@ -103,7 +100,7 @@ public class CookieAuthentication implements WeightedAuthenticationMethod{
 				throw new LoginException(LoginException.USER_NOT_EXISTING);
 			}
 		} else {
-			return null;
+			return false;
 		}
 	}
 

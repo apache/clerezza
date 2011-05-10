@@ -38,12 +38,13 @@ public interface AuthenticationMethod {
 	 * <code>LoginException</code> will be thrown. If no authentication
 	 * information are available null is returned.
 	 * @param request containing the information to authenticate a subject
-	 * @return Subject if this method authenticated, or null if not
+	 * @param subject to add authentication information to
+	 * @return true if this method did authenticate, false otherwise
 	 * @throws LoginException This exception is thrown in case
 	 * the login procedure failed.
 	 * @throws HandlerException
 	 */
-	public Subject authenticate(Request request)
+	public boolean authenticate(Request request, Subject subject)
 		throws LoginException, HandlerException;
 
 	/**

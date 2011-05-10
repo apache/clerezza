@@ -18,13 +18,11 @@
  */
 package org.apache.clerezza.platform.security.auth;
 
+import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import javax.security.auth.Subject;
 import org.apache.clerezza.platform.security.UserUtil;
 import org.apache.felix.scr.annotations.Component;
@@ -57,19 +55,17 @@ public class AuthenticatingFilter implements Filter {
 	private final Logger logger = LoggerFactory.getLogger(AuthenticatingFilter.class);
 	private SortedSet<WeightedAuthenticationMethod> methodList =
 			new TreeSet<WeightedAuthenticationMethod>(new WeightedAuthMethodComparator());
-	public static final Subject ANONYMOUS_SUBJECT = UserUtil.createSubject("anonymous");
 
 	@Override
 	public void handle(final Request request, final Response response,
 			final Handler wrapped) throws HandlerException {
 
-		Subject subject = null;
+		final Subject subject = getSubject();
 		AuthenticationMethod authenticationMethod = null;
 		try {
 			for (Iterator<WeightedAuthenticationMethod> it = methodList.iterator(); it.hasNext();) {
 				authenticationMethod = it.next();
-				subject = authenticationMethod.authenticate(request);
-				if (subject != null) {
+				if (authenticationMethod.authenticate(request,subject)) {
 					break;
 				}
 			}
@@ -80,8 +76,9 @@ public class AuthenticatingFilter implements Filter {
 			return;
 		}
 
-		if (subject == null) {
-			subject = ANONYMOUS_SUBJECT;
+		Set<Principal> principals = subject.getPrincipals();
+		if (principals.size() == 0) {
+			principals.add(UserUtil.ANONYMOUS);
 		}
 		try {
 			Subject.doAsPrivileged(subject, new PrivilegedExceptionAction() {
@@ -106,6 +103,14 @@ public class AuthenticatingFilter implements Filter {
 			logger.debug("SecurityException: {}", e);
 			writeLoginResponse(request, response, e);
 		}
+	}
+
+	private Subject getSubject() {
+		Subject subject = UserUtil.getCurrentSubject();
+		if (subject== null) {
+			subject = new Subject();
+		}
+		return subject;
 	}
 
 	/**

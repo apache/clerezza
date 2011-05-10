@@ -105,6 +105,7 @@ public class UserUtil {
 		return subject;
 	}
 
+	public static final Principal ANONYMOUS = new PrincipalImpl("anonymous");
 
 	public static Subject createSubject(String userName) {
 		return new Subject(true,
