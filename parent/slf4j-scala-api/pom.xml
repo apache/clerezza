@@ -19,7 +19,7 @@
   <url>http://www.slf4j.org</url>
   <description>The slf4j Scala API. Taken from
   https://github.com/ceki/slf4j/tree/master/slf4j-scala-api. Changed to slf4j 1.6.1 and scala to 2.8.1.
-  Changed group id, </description>
+  Changed group id, added distribution management and made it s</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,6 +30,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+	  <version>1.6.1</version>
     </dependency>
     <dependency>
       <groupId>org.scala-lang</groupId>
@@ -57,7 +58,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>${project.version}</version>
+      <version>1.6.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies> 
