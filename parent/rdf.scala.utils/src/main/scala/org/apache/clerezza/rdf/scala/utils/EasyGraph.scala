@@ -1,5 +1,3 @@
-package org.apache.clerezza.rdf.scala.utils
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,12 +17,15 @@ package org.apache.clerezza.rdf.scala.utils
  * under the License.
  */
 
+package org.apache.clerezza.rdf.scala.utils
+
 import org.apache.clerezza.rdf.core._
 import collection.mutable.Queue
 import impl._
 import org.apache.clerezza.rdf.ontologies.{RDF, RDFS, FOAF}
 import java.math.BigInteger
 import java.util.Date
+import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 
 object EasyGraph {
 	final val en = "en"
@@ -79,6 +80,10 @@ object EasyGraph {
 
 }
 
+/**
+  * An implementation of PlainLiteral for Scala that allows some automatic conversaitons to happen
+  * when combined with the implicit defs in the EasyGraph object
+  */
 class PlainLiteralScala(string: String) extends PlainLiteralImpl(string) {
 
 	def apply(lang: String) = new PlainLiteralImpl(string, new Language(lang) )
@@ -89,36 +94,51 @@ class PlainLiteralScala(string: String) extends PlainLiteralImpl(string) {
 
 
 /**
- *  This is really a TripleCollection
+ * This is really a TripleCollection , should it just extend a TC? Or a MGraph?
  *
+ * @param graph: a Triple collection - or should it be an MGraph since it is really meant to be modifiable
  * @author hjs
  * @created: 20/04/2011
  */
 
-class EasyGraph(val graph: TripleCollection) {
+class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
 
-	def +=(sub: SubjectGraph) = {
-		  if (graph ne  sub.graph) graph.addAll(sub.graph)
+	def +=(other: Graph) = {
+		  if (graph ne  other) graph.addAll(other)
 	}
 
-	 def bnode : SubjectGraph = {
-		new SubjectGraph(new BNode(), graph)
+	 def bnode : EasyGraphNode = {
+		new EasyGraphNode(new BNode(), graph)
 	 }
 
-	def u(url: String) = new SubjectGraph(new UriRef(url),graph)
+	def u(url: String) = new EasyGraphNode(new UriRef(url),this)
+
+	def apply(subj: NonLiteral) = new EasyGraphNode(subj, this)
 
 }
 
 
 /**
- * This is really a GraphNode
  *
- * Because of operator binding rules all the mathamatical operators should
- * be used together as they bind at the same strenght. Since they bind strongest
- * other operators will need to be strengthened with parenthesis, such as when addding strings
+ * Because of operator binding rules all the mathematical operators should
+ * be used together as they bind at the same strength. Since they bind strongest
+ * other operators will need to be strengthened with parenthesis, such as when adding strings
+  *
+  * @prefix graph: should this be an MGraph, since the EasyGraphNode is really designed for editing
  *
  */
-class SubjectGraph(val ref: NonLiteral, val graph: TripleCollection) {
+class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends GraphNode(ref,graph) {
+
+	lazy val easyGraph = graph match {
+		case eg: EasyGraph => eg
+		case other: TripleCollection => new EasyGraph(graph)
+	}
+
+	/*
+	 * create an EasyGraphNode from this one where the backing graph is protected from writes by a new
+	 * SimpleGraph.
+	 */
+	def protect(): EasyGraphNode = new EasyGraphNode(ref, new UnionMGraph(new SimpleMGraph(),graph))
 
 	def this(s: NonLiteral)  = this(s,new SimpleMGraph())
 	def this() = this(new BNode)
@@ -130,55 +150,67 @@ class SubjectGraph(val ref: NonLiteral, val graph: TripleCollection) {
 	def has(rel: String): Predicate = new Predicate(new UriRef(rel))
 
 // does not worked as hoped, and does not look that good either
-//	def hasQ(yes: Boolean, rel: UriRef )(func: Predicate => SubjectGraph): SubjectGraph =
+//	def hasQ(yes: Boolean, rel: UriRef )(func: Predicate => EasyGraphNode): EasyGraphNode =
 //		if (yes) func(has(rel))
 //		else this
 
 
-	def ⟝(rel: UriRef): Predicate = apply(rel)
-	def ⟝(rel: String): Predicate = apply(rel)
+	def ⟝(rel: UriRef): Predicate = has(rel)
+	def ⟝(rel: String): Predicate = has(rel)
+
+	/* For inverse relationships */
+	def ⟵(rel: UriRef) = new InversePredicate(rel)
 
 // does not work as hoped
-//	def ⟝?(yes: Boolean, uri: UriRef)(func: Predicate => SubjectGraph): SubjectGraph = hasQ(yes,uri)(func)
+//	def ⟝?(yes: Boolean, uri: UriRef)(func: Predicate => EasyGraphNode): EasyGraphNode = hasQ(yes,uri)(func)
 
-	def +(sub: SubjectGraph) = {
+	def +(sub: EasyGraphNode) = {
 		  if (graph ne sub.graph) graph.addAll(sub.graph)
 		  this
 	}
 
 	def a(rdfclass: UriRef) = ∈(rdfclass)
-	def ∈(rdfclass: UriRef) : SubjectGraph = {
+	def ∈(rdfclass: UriRef) : EasyGraphNode = {
 		graph.add(new TripleImpl(ref,RDF.`type`,rdfclass))
-		return SubjectGraph.this
+		return EasyGraphNode.this
 	}
 
+	class InversePredicate(rel: UriRef) {
+		  def ⟞ (subj: NonLiteral) = add(subj)
+		  def ⟞ (subj: String) = add(new UriRef(subj)) // since we can only have inverses from non literals (howto deal with bndoes?)
+
+		  protected def add(subj: NonLiteral) = {
+			  graph.add(new TripleImpl(subj,rel,ref))
+			  EasyGraphNode.this
+		  }
+	}
 
 	class Predicate(rel: UriRef) {
 
 		//
 		// methods that do the work
 		//
-		def to(obj: Resource): SubjectGraph = add(obj)
+		def to(obj: Resource): EasyGraphNode = add(obj)
 
 		/* add a relation to each object in the argument list */
-		def to(objs: Resource*): SubjectGraph = {
+		def to(objs: Resource*): EasyGraphNode = {
 			for (o <- objs) add(o)
-			SubjectGraph.this
+			EasyGraphNode.this
 		}
-		def to[T<:Resource](objs: Iterable[T]): SubjectGraph = {
+		def to[T<:Resource](objs: Iterable[T]): EasyGraphNode = {
 			for (o <- objs) add(o)
-			SubjectGraph.this
+			EasyGraphNode.this
 		}
-		def to(uri: String) : SubjectGraph = add(new PlainLiteralImpl(uri))
-		def to(sub: SubjectGraph): SubjectGraph = {
-			SubjectGraph.this + sub
+		def to(uri: String) : EasyGraphNode = add(new PlainLiteralImpl(uri))
+		def to(sub: EasyGraphNode): EasyGraphNode = {
+			EasyGraphNode.this + sub
 			add(sub.ref)
 		}
 
 		def toUri(uri: String) = add(new UriRef(uri))
 		def toUris(uris: Seq[String]) = {
 			for (u <- uris) add(new UriRef(u))
-			SubjectGraph.this
+			EasyGraphNode.this
 		}
 
 		//
@@ -187,7 +219,7 @@ class SubjectGraph(val ref: NonLiteral, val graph: TripleCollection) {
 		def apply(obj: Resource) = to(obj)
 		def apply(objs: Resource*) = to(objs: _*)
 		def apply(uri: String) = to(uri)
-		def apply(sub: SubjectGraph) = to(sub)
+		def apply(sub: EasyGraphNode) = to(sub)
 
 		//
 		// arrow notation
@@ -197,11 +229,11 @@ class SubjectGraph(val ref: NonLiteral, val graph: TripleCollection) {
 		def ⟶ (obj: String) = to(obj)
 		def ⟶ (obj: Resource) = to(obj)
 		def ⟶* [T<:Resource](objs: Iterable[T]) = to(objs)
-		def ⟶ (sub: SubjectGraph) = to(sub)
+		def ⟶ (sub: EasyGraphNode) = to(sub)
 
 		protected def add(obj: Resource) =  {
 			graph.add(new TripleImpl(ref,rel,obj))
-			SubjectGraph.this
+			EasyGraphNode.this
 		}
 	}
 }

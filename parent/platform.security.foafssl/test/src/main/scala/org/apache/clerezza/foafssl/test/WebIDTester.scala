@@ -34,7 +34,7 @@ import org.apache.clerezza.foafssl.auth.{WebIDClaim, Verification, WebIdPrincipa
 import java.util.Date
 import org.apache.clerezza.rdf.web.proxy.{Cache, WebProxy}
 import org.apache.clerezza.rdf.scala.utils.Preamble._
-import org.apache.clerezza.rdf.scala.utils.{CollectedIter, SubjectGraph, EasyGraph, RichGraphNode}
+import org.apache.clerezza.rdf.scala.utils.{CollectedIter, EasyGraphNode, EasyGraph, RichGraphNode}
 import serializedform.Serializer
 import java.io.ByteArrayOutputStream
 import org.apache.clerezza.rdf.scala.utils.EasyGraph._
@@ -189,12 +189,8 @@ class CertTester(subj: Subject, webProxy: WebProxy) extends Assertor {
 			g.bnode ∈ EARL.Assertion
 				⟝ EARL.test ⟶ TEST.certificateProvided
 				⟝ EARL.result ⟶ (g.bnode ∈ EARL.TestResult
-				⟝ DC.description ⟶ {
-				if (eC) "Certificate available" else "No Certificate Found"
-			}
-				⟝ EARL.outcome ⟶ {
-				if (eC) EARL.passed else EARL.failed
-			})
+				                     ⟝ DC.description ⟶ {if (eC) "Certificate available" else "No Certificate Found"}
+				                     ⟝ EARL.outcome ⟶ {if (eC) EARL.passed else EARL.failed})
 			)
 		if (eC) ass ⟝ EARL.subject ⟶* x509claimRefs.map(p => p._1)
 		else return g.graph
@@ -703,7 +699,7 @@ class Assertor {
 			new TstResult
 		}
 
-		def toRdf(): SubjectGraph = (
+		def toRdf(): EasyGraphNode = (
 			g.bnode ∈ EARL.Assertion
 				⟝ EARL.test ⟶ testName
 				⟝ EARL.result ⟶ result.toRdf()
@@ -735,7 +731,7 @@ class Assertor {
 		}
 
 
-		def toRdf(): SubjectGraph =  (
+		def toRdf(): EasyGraphNode =  (
 				g.bnode ∈ EARL.TestResult
 					⟝ DC.description ⟶ description
 					⟝ EARL.outcome ⟶ outcome
