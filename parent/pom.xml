@@ -34,6 +34,7 @@
 				<module>ext.org.ops4j.pax.swissbox.tinybundles</module>
 				<module>slf4j-scala-api</module>
 				<module>internal.archetype</module>
+				<module>scala-scripting</module>
 				<module>jaxrs.extensions</module>
 				<module>jaxrs.rdf.providers</module>
 				<module>jaxrs.testutils</module>
