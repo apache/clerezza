@@ -20,22 +20,18 @@
 package org.apache.clerezza.rdf.scala.utils
 
 import org.apache.clerezza.rdf.core._
-import collection.mutable.Queue
 import impl._
-import org.apache.clerezza.rdf.ontologies.{RDF, RDFS, FOAF}
+import org.apache.clerezza.rdf.ontologies.RDF
 import java.math.BigInteger
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
-import java.util.{HashSet, Collections, Date}
+import java.util.Date
 import java.lang.Boolean
-import com.sun.tools.internal.xjc.reader.xmlschema.BindGreen
 
 object EasyGraph {
 	final val en = "en"
 	final val de = "de"
 	final val fr = "fr"
 	val litFactory = new SimpleLiteralFactory()
-
-	import org.apache.clerezza.rdf.core.impl.SimpleLiteralFactory._
 
 	implicit def string2lit(str: String) = new PlainLiteralScala(str)
 	implicit def date2lit(date: Date) = litFactory.createTypedLiteral(date)
