@@ -93,7 +93,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 			new UriRef("http://www.w3.org/2001/XMLSchema#anyURI");
 
 
-	public static interface TypeConverter<T> {
+	private static interface TypeConverter<T> {
 		TypedLiteral createTypedLiteral(T value);
 		T createObject(TypedLiteral literal);		
 	}
