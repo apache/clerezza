@@ -129,7 +129,6 @@
 				<configuration>
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-                        <Private-Package>org.apache.clerezza.rdf.scala.utils.*</Private-Package>
 						<Export-Package>org.apache.clerezza.foafssl.test.*</Export-Package>
 						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 					</instructions>
