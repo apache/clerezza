@@ -55,8 +55,36 @@ public class SimpleLiteralFactory extends LiteralFactory {
 	
 
 	final private static Set<UriRef> decimalTypes = new HashSet<UriRef>();
+
+	final static private TypeConverter<byte[]> BYTE_ARRAY_CONVERTER = new ByteArrayConverter();
+	final static private TypeConverter<Boolean> BOOLEAN_CONVERTER = new BooleanConverter();
+	final static private TypeConverter<Date> DATE_CONVERTER = new DateConverter();
+	final static private TypeConverter<String> STRING_CONVERTER = new StringConverter();
+	final static private TypeConverter<Integer> INTEGER_CONVERTER = new IntegerConverter();
+	final static private TypeConverter<BigInteger> BIG_INTEGER_CONVERTER = new BigIntegerConverter();
+	final static private TypeConverter<Long> LONG_CONVERTER = new LongConverter();
+	final static private TypeConverter<Double> DOUBLE_CONVERTER = new DoubleConverter();
+	final static private TypeConverter<UriRef> URIREF_CONVERTER = new UriRefConverter();
+
+	final private static Map<Class<?>, TypeConverter<?>> typeConverterMap = new HashMap<Class<?>, TypeConverter<?>>();
+	final static Class<? extends byte[]> byteArrayType;
+
 	static {
+		//what's this for?
 		Collections.addAll(decimalTypes, xsdInteger, xsdInt, xsdByte, xsdShort);
+
+
+		byte[] byteArray = new byte[0];
+		byteArrayType = byteArray.getClass();
+		typeConverterMap.put(byteArrayType, BYTE_ARRAY_CONVERTER);
+		typeConverterMap.put(Date.class, DATE_CONVERTER);
+		typeConverterMap.put(Boolean.class, BOOLEAN_CONVERTER);
+		typeConverterMap.put(String.class, STRING_CONVERTER);
+		typeConverterMap.put(Integer.class, INTEGER_CONVERTER);
+		typeConverterMap.put(BigInteger.class, BIG_INTEGER_CONVERTER);
+		typeConverterMap.put(Long.class, LONG_CONVERTER);
+		typeConverterMap.put(Double.class, DOUBLE_CONVERTER);
+		typeConverterMap.put(UriRef.class, URIREF_CONVERTER);
 	}
 
 	final private static UriRef xsdDouble =
@@ -64,13 +92,8 @@ public class SimpleLiteralFactory extends LiteralFactory {
 	final private static UriRef xsdAnyURI =
 			new UriRef("http://www.w3.org/2001/XMLSchema#anyURI");
 
-	final static Class<? extends byte[]> byteArrayType;
-	static {
-		byte[] byteArray = new byte[0];
-		byteArrayType = byteArray.getClass();
-	}
 
-	private static interface TypeConverter<T> {
+	public static interface TypeConverter<T> {
 		TypedLiteral createTypedLiteral(T value);
 		T createObject(TypedLiteral literal);		
 	}
@@ -125,15 +148,22 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 		private static final UriRef booleanUri =
 			new UriRef("http://www.w3.org/2001/XMLSchema#boolean");
+		public static final TypedLiteralImpl TRUE = new TypedLiteralImpl("true", booleanUri);
+		public static final TypedLiteralImpl FALSE = new TypedLiteralImpl("false", booleanUri);
 
 		@Override
 		public TypedLiteral createTypedLiteral(Boolean value) {
-			return new TypedLiteralImpl(value.toString(), booleanUri);
+			if (value) return TRUE;
+			else return FALSE;
 		}
 
+		//todo: create a subclass of TypedLiteral that contains the original value, then one would not need
+		//to do these conversions
 		@Override
 		public Boolean createObject(TypedLiteral literal) {
-			if (!literal.getDataType().equals(booleanUri)) {
+			if (literal == TRUE) return true;
+			else if (literal == FALSE) return false;
+			else if (!literal.getDataType().equals(booleanUri)) {
 				throw new InvalidLiteralTypeException(Boolean.class, literal.getDataType());
 			}
 			return Boolean.valueOf(literal.getLexicalForm());
@@ -246,20 +276,6 @@ public class SimpleLiteralFactory extends LiteralFactory {
 			}
 			return new UriRef(literal.getLexicalForm());
 		}
-	}
-
-	final private static Map<Class<?>, TypeConverter<?>> typeConverterMap = new HashMap<Class<?>, TypeConverter<?>>();
-
-	static {
-		typeConverterMap.put(byteArrayType, new ByteArrayConverter());
-		typeConverterMap.put(Date.class, new DateConverter());
-		typeConverterMap.put(Boolean.class, new BooleanConverter());
-		typeConverterMap.put(String.class, new StringConverter());
-		typeConverterMap.put(Integer.class, new IntegerConverter());
-		typeConverterMap.put(BigInteger.class, new BigIntegerConverter());
-		typeConverterMap.put(Long.class, new LongConverter());
-		typeConverterMap.put(Double.class, new DoubleConverter());
-		typeConverterMap.put(UriRef.class, new UriRefConverter());
 	}
 
 
