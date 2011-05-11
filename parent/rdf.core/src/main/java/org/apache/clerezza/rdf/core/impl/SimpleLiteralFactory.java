@@ -282,14 +282,8 @@ public class SimpleLiteralFactory extends LiteralFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public TypedLiteral createTypedLiteral(Object value) throws NoConvertorException {
-		for (Map.Entry<Class<?>, TypeConverter<?>> converterEntry : typeConverterMap.entrySet()) {
-			if (converterEntry.getKey().isAssignableFrom(value.getClass())) {
-				TypeConverter<Object> converter = (TypeConverter<Object>) converterEntry.getValue();
-				return converter.createTypedLiteral(value);
-			}
-		}
-		throw new NoConvertorException(value.getClass());
-
+		TypeConverter converter = getConverterFor(value.getClass());
+		return converter.createTypedLiteral(value);
 	}
 
 	
