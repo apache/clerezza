@@ -24,8 +24,10 @@ import collection.mutable.Queue
 import impl._
 import org.apache.clerezza.rdf.ontologies.{RDF, RDFS, FOAF}
 import java.math.BigInteger
-import java.util.Date
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
+import java.util.{HashSet, Collections, Date}
+import java.lang.Boolean
+import com.sun.tools.internal.xjc.reader.xmlschema.BindGreen
 
 object EasyGraph {
 	final val en = "en"
@@ -33,10 +35,17 @@ object EasyGraph {
 	final val fr = "fr"
 	val litFactory = new SimpleLiteralFactory()
 
+	import org.apache.clerezza.rdf.core.impl.SimpleLiteralFactory._
+
 	implicit def string2lit(str: String) = new PlainLiteralScala(str)
 	implicit def date2lit(date: Date) = litFactory.createTypedLiteral(date)
-	implicit def int2lit(date: Int) = litFactory.createTypedLiteral(date)
-
+	implicit def int2lit(int: Int) = litFactory.createTypedLiteral(int)
+	implicit def bigint2lit(bint: BigInt) = litFactory.createTypedLiteral(bint.underlying())
+	implicit def bigint2lit(bigInt: BigInteger) = litFactory.createTypedLiteral(bigInt)
+	implicit def bool2lit(boolean: Boolean) = litFactory.createTypedLiteral(boolean)
+	implicit def scalaBool2lit(boolean: scala.Boolean) = litFactory.createTypedLiteral(boolean)
+	implicit def long2lit(long: Long) = litFactory.createTypedLiteral(long)
+	implicit def double2lit(double: Double) = litFactory.createTypedLiteral(double)
 
 
 //	val g = new EasyGraph(new SimpleMGraph)
@@ -103,6 +112,12 @@ class PlainLiteralScala(string: String) extends PlainLiteralImpl(string) {
 
 class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
 
+  /*
+	* because we can't jump straight to super constructor in Scala we need to
+	* create the collection here
+	**/
+	def this() = this( new SimpleMGraph() )
+
 	def +=(other: Graph) = {
 		  if (graph ne  other) graph.addAll(other)
 	}
@@ -115,6 +130,9 @@ class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
 
 	def apply(subj: NonLiteral) = new EasyGraphNode(subj, this)
 
+	//note one could have an apply for a Literal that would return a InversePredicate
+	//but that would require restructuring EasyGraphNode so that one can have an EasyGraphNode
+	//with a missing ref, or perhaps a sublcass of EasyGraphnode that only has the <- operator available
 }
 
 
