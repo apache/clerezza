@@ -43,7 +43,7 @@ object PersonPanel {
  * @author bblfish
  */
 @Path("/user/{id}/people")
-class PersonPanel  {
+class PersonPanel {
 	protected def activate(componentContext: ComponentContext): Unit = {
 //		this.componentContext = componentContext
 	}

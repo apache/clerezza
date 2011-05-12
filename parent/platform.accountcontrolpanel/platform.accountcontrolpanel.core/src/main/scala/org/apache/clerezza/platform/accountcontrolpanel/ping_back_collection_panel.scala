@@ -50,6 +50,7 @@ class XhtmlPingBackDoc(args: XmlResult.Arguments) extends XmlResult(args) {
 	override def content = {<div id="tx-content" xmlns:pingback="http://purl.org/net/pingback/" about="" typeof="pingback:Container">
 		  <h3>Pingback Form</h3>
 		  <form method="POST" action="">
+			  { for (to <- res/PINGBACK.to) yield <input type="hidden" name="to" value={to*}/> }
 			  <table>
 				<tr><td><label for="source">Source</label></td><td><input type="text" size="80" name="source"/></td></tr>
 				<tr><td><label for="target">Target</label></td><td><input type="text" size="80" name="target"/></td></tr>

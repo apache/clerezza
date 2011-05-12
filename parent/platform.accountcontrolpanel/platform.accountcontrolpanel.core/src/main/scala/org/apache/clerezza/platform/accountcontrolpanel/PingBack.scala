@@ -22,23 +22,28 @@ import org.apache.clerezza.platform.accountcontrolpanel.ontologies.PINGBACK
 import org.apache.clerezza.rdf.core.access.{NoSuchEntityException, TcManager}
 import org.apache.clerezza.rdf.ontologies.{SIOC, PLATFORM, RDF}
 import org.osgi.service.component.ComponentContext
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.apache.clerezza.rdf.core.access.security.TcPermission
 import org.apache.clerezza.platform.Constants
 import java.security.{PrivilegedAction, AccessController}
 import javax.ws.rs.core.{Response, Context, UriInfo}
-import org.apache.clerezza.rdf.core.{MGraph, UriRef}
-import javax.ws.rs.{PathParam, FormParam, POST, QueryParam, GET, Path}
-import java.net.URI
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
+import org.apache.clerezza.rdf.scala.utils.{EasyGraphNode, EasyGraph}
+import org.apache.clerezza.rdf.web.proxy.WebProxy
+import java.util.Iterator
+import org.apache.clerezza.rdf.core.{Triple, MGraph, UriRef}
+import java.net._
+import org.slf4j.scala.Logger
+import javax.ws.rs._
+import java.io.{StringWriter, IOException, OutputStreamWriter}
+import collection.JavaConversions._
+import java.lang.Appendable
 
 
 object PingBack {
-	private val logger: Logger = LoggerFactory.getLogger(classOf[PingBack])
+	private val log: Logger = Logger(classOf[PingBack])
 
-	val classPathTemplate = classOf[PingBack].getAnnotation(classOf[Path]).value
+	val pingPathTemplate = classOf[PingBack].getAnnotation(classOf[Path]).value
 	val regex = """\{([^}]+)\}""".r
 
 	// taken from http://dcsobral.blogspot.com/2010/01/string-interpolation-in-scala-with.html
@@ -46,6 +51,32 @@ object PingBack {
 		val it = values.iterator
 		regex.replaceAllIn(text, _ => it.next)
 	}
+
+	/**
+	 * replace the name in the path with the id of the user, in order to get his ping collection
+	 * and return the full uri for it
+	 *
+	 * This also suggests that support for relative URIs in the graphs should be supported
+	 *
+	 * This is not written with all the tools available to someone with access to
+	 * a full UriInfo implementation or Jersey's ExtendedUriInfo as triaxrs implementation
+	 * UriInfoImpl has many methods that are not yet implemented.
+	 * Apparently if they were one could use getMatchedURIs or one of those methods to build this
+	 * more cleanly.
+	 * Perhaps one should look at http://incubator.apache.org/wink/index.html implementations...
+	 *
+	 * Currently this assumes that the path of the class is a root class, ie, that it starts with /
+	 *
+	 * @param id the value of the parameter to replace in the string taken from the @Path in the class
+	 * @param uriInfo the info from the method that called this
+	 * @return the full URI  of the ping collection as a string
+	 */
+	def pingCollUri(id: String, uriInfo: UriInfo): String = {
+		val path = interpolate(pingPathTemplate, id)
+		val uriStr = uriInfo.getBaseUri.resolve(path); //a bit expensive for something so simple
+		uriStr.toString
+	}
+
 }
 
 /**
@@ -66,12 +97,12 @@ class PingBack {
 
 
 	/**
-	 * The ping form, where you can POST new pings
+	 * The ping collection graph, where new pings can be posted and saved
 	 */
-	def pingGraphNode(id: String, uriInfo: UriInfo): GraphNode = {
+	def  pingCollection(id: String, uriInfo: UriInfo): EasyGraphNode = {
 		val pingRef = new UriRef(pingCollUri(id, uriInfo))
-		val resultNode: GraphNode = new GraphNode(pingRef, pingColl(pingRef))
-		resultNode
+		val pingCollG: EasyGraph = pingColl(pingRef)
+		pingCollG(pingRef)
 	}
 
 	@GET
@@ -79,20 +110,17 @@ class PingBack {
 	def pingForm(@Context uriInfo: UriInfo,
 					 @QueryParam("uri") uri: UriRef,
 					 @PathParam("id") id: String): GraphNode = {
-		val resultNode: GraphNode = pingGraphNode(id, uriInfo)
-		resultNode.addProperty(RDF.`type`, PLATFORM.HeadedPage)
-		resultNode.addProperty(RDF.`type`, PINGBACK.Container)
-		return resultNode
 
+		( pingCollection(id, uriInfo) ∈ PLATFORM.HeadedPage
+				∈ PINGBACK.Container )
 	}
-
 
 
 	/**
 	 * get Ping Collection
 	 */
-	def pingColl(pingCollRef: UriRef): MGraph = {
-		AccessController.doPrivileged(new PrivilegedAction[MGraph] {
+	def pingColl(pingCollRef: UriRef): EasyGraph = {
+		val tcgraph =AccessController.doPrivileged(new PrivilegedAction[MGraph] {
 			def run: MGraph = try {
 				tcManager.getMGraph(pingCollRef)
 			} catch {
@@ -105,26 +133,78 @@ class PingBack {
 				}
 			}
 		})
+		new EasyGraph(tcgraph)
 	}
 
 
 	/**
-	 * This is not written with all the tools available to someone with access to
-	 * a full UriInfo implementation or Jersey's ExtendedUriInfo as triaxrs implementation
-	 * UriInfoImpl has many methods that are not yet implemented.
-	 * Apparently if they were one could use getMatchedURIs or one of those methods to build this
-	 * more cleanly.
-	 * Perhaps one should look at http://incubator.apache.org/wink/index.html implementations...
-	 *
-	 * Currently this assumes that the path of the class is a root class, ie, that it starts with /
+	 *send a ping to another endpoint
 	 */
-	def pingCollUri(id: String, uriInfo: UriInfo): String = {
-		val path = interpolate(classPathTemplate, id)
-		val uriStr = uriInfo.getBaseUri.resolve(path); //a bit expensive for something so simple
-		System.out.println("res=" + uriStr)
-		uriStr.toString
+	@POST
+	@Produces(Array("text/plain"))
+	def pingSomeone(@FormParam("to") pingTo: UriRef,
+	                @FormParam("source") source: UriRef,
+	                @FormParam("target") target: UriRef,
+	                @FormParam("comment") comment: String): String = {
+		val wr = new StringBuilder()
+		wr append "Sent ping to " append pingTo append "\r\n"
+		wr append "with following parameters:"
+		wr append "Source=" append source append  "\r\n"
+		wr append "target=" append target append "\r\n"
+		wr append "comment=" append comment append "\r\n"
+
+		val pingInfo = webProxy.getResourceInfo(pingTo)
+		//initially I just test if something about pingback is there.
+		//todo: make the subject the resource itself.
+		val filter = pingInfo.theGraph.filter(null, RDF.`type`, PINGBACK.Container)
+		val res = if (filter.hasNext) try {
+			 val to = new URL(pingTo.getUnicodeString)
+			 if (to.getProtocol == "http" || to.getProtocol == "https") {
+				 val toReq = to.openConnection().asInstanceOf[HttpURLConnection]
+				 toReq.setConnectTimeout(2 * 1000)
+				 toReq.setReadTimeout(5 * 1000)
+				 postData(toReq,
+					 Map("source" -> source.getUnicodeString,
+						 "target" -> source.getUnicodeString,
+						 "comment" -> comment))
+				 wr append  "\r\n"
+				 wr append "response is"
+				 wr append  "\r\n"
+				 for ((header, list) <- toReq.getHeaderFields) {
+					 for (e <- list) wr append header append ":" append e append "\r\n"
+				 }
+				 wr append("\r\n\r\n")
+				 wr append { for ( line <- new scala.io.BufferedSource(toReq.getInputStream).getLines) yield line }.mkString("\r\n")
+				 wr
+			 } else {
+				 "wrong URL type" + pingTo
+			 }
+
+		} catch {
+			case e: MalformedURLException =>  "error: was asked to ping an endpoint with a malformed URL "+pingTo
+			case io: IOException => "IO exception connecting to "+io.toString
+			case t: SocketTimeoutException => "Connection is taking too long to "+pingTo
+		} else { //not a pingback endpoint
+		   "the endpoint does not specify itself as a pingback endpoint"
+		}
+		wr append res
+		wr.toString()
 	}
 
+
+	private def postData(conn: HttpURLConnection, attrVals: Map[String,String]) {
+		conn.setDoOutput(true)
+		conn.connect()
+		val wr =  new OutputStreamWriter(conn.getOutputStream())
+		wr.write(encodePostData(attrVals))
+		wr.flush
+      wr.close
+	}
+
+	private def encodePostData(data: Map[String, String]) = {
+		import java.net.URLEncoder.encode
+    (for ((name, value) <- data) yield encode(name, "UTF-8") + "=" + encode(value, "UTF-8")).mkString("&")
+	}
 
 	/**
 	 * Add a new Ping Item
@@ -141,30 +221,38 @@ class PingBack {
 
 
 		//create a new Resource for this ping (we'll use time stamps to get going)
-		val pingCollStr: String = pingCollUri(id, uriInfo)
-		val pingItem = new UriRef(pingCollStr + "/ts" + System.currentTimeMillis)
+		val pingCollUriStr: String = pingCollUri(id, uriInfo)
+		val pingItem = new UriRef(pingCollUriStr + "/ts" + System.currentTimeMillis)
 
 		//build the graph and add to the store if ok
-		val itemNde: GraphNode = new GraphNode(pingItem, pingColl(new UriRef(pingCollStr)))
-		itemNde.addProperty(RDF.`type`, PINGBACK.Item)
-		itemNde.addProperty(PINGBACK.source, source)
-		itemNde.addProperty(PINGBACK.target, target)
-		itemNde.addPropertyValue(SIOC.content, comment)
-		itemNde.addInverseProperty(SIOC.container_of,new UriRef(pingCollStr))
+		val pingColGr = pingColl(new UriRef(pingCollUriStr))
+		val item = (
+			pingColGr(pingItem) ∈ PINGBACK.Item
+		         ⟝ PINGBACK.source ⟶  source
+		         ⟝ PINGBACK.target ⟶  target
+		         ⟝ SIOC.content ⟶  comment
+		         ⟵ SIOC.container_of ⟞ pingCollUriStr)
 
-		val resultNode = new GraphNode(pingItem,new UnionMGraph(new SimpleMGraph(),itemNde.getGraph))
-		resultNode.addProperty(RDF.`type`, PLATFORM.HeadedPage)
+		val resultNode = item.protect() ∈ PLATFORM.HeadedPage
+
 		//response
 		Response.ok(resultNode).header("Content-Location",new URI(pingItem.getUnicodeString).getPath).build()
 	}
 
+	/**
+	  * view a collection. This will return a collection of pings and a form
+	  * @param to if this is set then it will filter the pings sent to that endpoint and the form will sent something there
+	  * @param uriInfo: set by jsr311
+	  * @return a GraphNode -- still to be worked out what should be put in there precisely
+	  */
 	@GET
 	def viewCollection(@Context uriInfo: UriInfo,
+	                   @QueryParam("to") to: UriRef,
 							 @PathParam("id") id: String): GraphNode = {
-		val resultNode: GraphNode = pingGraphNode(id,uriInfo )
-		resultNode.addProperty(RDF.`type`, PLATFORM.HeadedPage)
-		resultNode.addProperty(RDF.`type`, PINGBACK.Container)
-		return resultNode
+		val gn = (pingCollection(id,uriInfo ) ∈ PLATFORM.HeadedPage
+										∈  PINGBACK.Container )
+		if (to != null)	gn  ⟝ PINGBACK.to ⟶ to
+		else gn
 	}
 
 	@POST
@@ -172,9 +260,8 @@ class PingBack {
 	def deleteItems(@Context uriInfo: UriInfo,
 						 @PathParam("id") id: String,
 						 @FormParam("item") items: java.util.List[UriRef]): GraphNode= {
-		import collection.JavaConversions._
 
-		val pingColl: GraphNode = pingGraphNode(id,uriInfo )
+		val pingColl: GraphNode = pingCollection(id,uriInfo )
 		//todo: verify if access is allowed
 		for(item <- items) {
 			 new GraphNode(item,pingColl.getGraph).deleteNodeContext
@@ -190,18 +277,14 @@ class PingBack {
 	@Path("{item}")
 	def viewPing(@Context uriInfo: UriInfo,
 					 @PathParam("id") id: String,
-					 @PathParam("item") item: String): GraphNode = {
+					 @PathParam("item") item: String): EasyGraphNode = {
 
 		//ITS the wrong ping collection!!!
 
-		val resultNode: GraphNode = new GraphNode(
-			new UriRef(uriInfo.getAbsolutePath.toString),
-			pingColl(new UriRef(pingCollUri(id, uriInfo)))
-		)
-		resultNode.addProperty(RDF.`type`, PLATFORM.HeadedPage)
-		resultNode.addProperty(RDF.`type`, PINGBACK.Item)
-		return resultNode
-
+		val pinG = pingColl(new UriRef(pingCollUri(id, uriInfo)))
+		( pinG(new UriRef(uriInfo.getAbsolutePath.toString))∈  PLATFORM.HeadedPage
+								∈ PINGBACK.Item
+			)
 	}
 
 	protected var tcManager: TcManager = null;
@@ -212,6 +295,16 @@ class PingBack {
 
 	protected def unbindTcManager(tcManager: TcManager) = {
 		this.tcManager = null
+	}
+
+	protected var webProxy: WebProxy = null;
+
+	protected def bindWebProxy(proxy: WebProxy) = {
+		this.webProxy = proxy
+	}
+
+	protected def unbindWebProxy(proxy: WebProxy  ) = {
+		this.webProxy = null
 	}
 
 }

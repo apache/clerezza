@@ -18,12 +18,12 @@
  */
 package org.apache.clerezza.platform.accountcontrolpanel
 
+import ontologies.{PINGBACK, CONTROLPANEL}
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.scala.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.platform.typerendering.scala._
 import org.apache.clerezza.rdf.core.UriRef
-import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.rdf.utils.GraphNode
 import xml.{NodeSeq, Text, Node}
 import java.net.{URLEncoder, URL}
@@ -70,9 +70,15 @@ object person_panel {
 			case uri: UriRef => uri.getUnicodeString
 			case _ => "http://upload.wikimedia.org/wikipedia/commons/0/0a/Gnome-stock_person.svg"
 		}
-
 		val pixml= { <a href={"people?uri="+encode(p*)}><img src={pix} width="70px" /></a> }
-		return pixml ++ new Text(getName(p))
+		val pingXML = (p / PINGBACK.to)! match {
+			case pingto: UriRef => {
+				val ref = "ping?to=" + URLEncoder.encode(pingto.getUnicodeString, "UTF-8")
+				<a href={ref}>ping me</a>
+			}
+			case other => emptyText
+		}
+		return pixml ++ new Text(getName(p)) ++ pingXML
 	}
 
 	def encode(url: String): String =  URLEncoder.encode(url,"UTF8")
@@ -147,7 +153,6 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="control-panel">Settings</a></li>);
 	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="profile">Profile</a></li>);
 
-
 	//
 	// the content itself.
 	// This is the piece that is closest to a pure ssp, though there is still too much code in it
@@ -181,7 +186,6 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	//
 	// Methods called by the content
 	//
-
 
 	def relations() = {
 		<table>{for (friend <- agent/FOAF.knows) {
@@ -244,7 +248,7 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 		 ifE(p/FOAF.depiction){f=>(<tr><td>Depictions:</td><td><img src={f*} /></td></tr>)}++
 		 ifE(p/FOAF.img){f=>(<tr><td>Depictions:</td><td><img src={f*} /></td></tr>)}++
 		 ifE(p/FOAF.logo){f=>(<tr><td>Logo:</td><td><img src={f*} /></td></tr>)}++
-			ifE(p/FOAF.knows){k=>(<tr><td>claims to know</td><td><table>{for (fr<-k) yield displayAgent(fr)}</table></td></tr>)}
+		 ifE(p/FOAF.knows){k=>(<tr><td>claims to know</td><td><table>{for (fr<-k) yield displayAgent(fr)}</table></td></tr>)}
 	}
 
 
