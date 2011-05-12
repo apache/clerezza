@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.accountcontrolpanel
 import java.util.List
 import java.util.Arrays
 import java.util.Iterator
+import ontologies.{PINGBACK, CONTROLPANEL}
 import org.apache.clerezza.platform.security.UserUtil
 import org.apache.clerezza.ssl.keygen.CertSerialisation
 import org.apache.clerezza.ssl.keygen.Certificate
@@ -28,7 +29,6 @@ import org.apache.clerezza.foafssl.ontologies.CERT
 import org.apache.clerezza.foafssl.ontologies.RSA
 import org.apache.clerezza.jaxrs.utils.RedirectUtil
 import org.apache.clerezza.jaxrs.utils.TrailingSlash
-import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.usermanager.UserManager
 import org.apache.clerezza.rdf.core._
@@ -56,6 +56,7 @@ import org.apache.clerezza.rdf.ontologies.RDFS
 import org.apache.clerezza.ssl.keygen.KeygenService
 import org.apache.clerezza.platform.users.WebIdGraphsService
 import java.net.URI
+import org.apache.clerezza.rdf.scala.utils.{EasyGraphNode, EasyGraph}
 
 object ProfilePanel {
 	private val logger: Logger = LoggerFactory.getLogger(classOf[ProfilePanel])
@@ -71,37 +72,45 @@ object ProfilePanel {
 class ProfilePanel {
 
 	import ProfilePanel.logger
+	import EasyGraph._
 
 
 	@GET
 	def getPersonalProfilePage(@Context uriInfo: UriInfo,
 	                           @PathParam(value = "id") userName: String): GraphNode = {
 		TrailingSlash.enforceNotPresent(uriInfo)
-		var resultNode: GraphNode = getPersonalProfile(userName, new UriRef(uriInfo.getAbsolutePath.toString))
+		var resultNode: GraphNode = getPersonalProfile(userName, uriInfo)
 		resultNode.addProperty(RDF.`type`, PLATFORM.HeadedPage)
 		resultNode.addProperty(RDF.`type`, CONTROLPANEL.ProfilePage)
 		return resultNode
 	}
 
+	//todo: there is a bit of repetition in the graphs, and it is not clear why these relations should not go straight into the DB. What should, what should not?
 	private def getPersonalProfile(userName: String,
-	                               profile: UriRef): GraphNode = {
-		return AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
-			def run: GraphNode = {
-				val userInSystemGraph: GraphNode = userManager.getUserInSystemGraph(userName)
-				val userNodeInSystemGraph: NonLiteral = userInSystemGraph.getNode.asInstanceOf[NonLiteral]
-				if (userNodeInSystemGraph.isInstanceOf[BNode]) {
-					var simpleMGraph: SimpleMGraph = new SimpleMGraph
-					var profileNode: GraphNode = new GraphNode(new BNode, simpleMGraph)
-					profileNode.addProperty(CONTROLPANEL.isLocalProfile, LiteralFactory.getInstance.createTypedLiteral(true))
-					var suggestedPPDUri: UriRef = getSuggestedPPDUri(userName)
-					profileNode.addProperty(CONTROLPANEL.suggestedPPDUri, LiteralFactory.getInstance.createTypedLiteral(suggestedPPDUri))
-					var agent: NonLiteral = new BNode
-					profileNode.addProperty(FOAF.primaryTopic, agent)
-					simpleMGraph.add(new TripleImpl(agent, PLATFORM.userName, LiteralFactory.getInstance.createTypedLiteral(userName)))
-					return profileNode
-				}
-				else {
-					return getProfileInUserGraph(userNodeInSystemGraph.asInstanceOf[UriRef], profile)
+	                               profile: UriInfo): EasyGraphNode = {
+		val profileDocUri = getSuggestedPPDUri(userName)
+		return AccessController.doPrivileged(new PrivilegedAction[EasyGraphNode] {
+			def run: EasyGraphNode = {
+				val userInSysGraph = userManager.getUserInSystemGraph(userName)
+				userInSysGraph.getNode match {
+					case blank: BNode => { //user does not have a webId yet
+						val g = new EasyGraph()
+						return (
+							g.bnode ⟝ CONTROLPANEL.isLocalProfile ⟶ true
+								⟝ CONTROLPANEL.suggestedPPDUri ⟶ profileDocUri
+								⟝ FOAF.primaryTopic ⟶ (g.bnode ⟝ PLATFORM.userName ⟶ userName)
+							)
+					}
+					case webid: UriRef => {
+						var webIDInfo = webIdGraphsService.getWebIDInfo(webid)
+						var res = new EasyGraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.publicUserGraph))
+						(res ⟝ CONTROLPANEL.isLocalProfile ⟶ webIDInfo.isLocal
+							  ⟝ FOAF.primaryTopic ⟶ webid)
+						if (webIDInfo.isLocal) {
+							res ⟝ PINGBACK.to ⟶ new UriRef(PingBack.pingCollUri(userName,profile))
+						}
+						res
+					}
 				}
 			}
 		})
@@ -113,23 +122,6 @@ class ProfilePanel {
 	 */
 	private def getSuggestedPPDUri(userName: String): UriRef = {
 		return new UriRef(platformConfig.getDefaultBaseUri.getUnicodeString + "user/" + userName + "/profile")
-	}
-
-	/**
-	 * called in privileged block, when the user has a WebID.
-	 *
-	 * @param webId
-	 * @param profile
-	 * @return A graph containing some information from the system graph, the published profile cache if available, and
-	 *         the definedHere graph. Local changes can be written to a buffer graph, that will not be saved.
-	 */
-	private def getProfileInUserGraph(webId: UriRef, profile: UriRef): GraphNode = {
-		var webIDInfo = webIdGraphsService.getWebIDInfo(webId)
-		var userGraph: MGraph = webIDInfo.publicUserGraph
-		var resultNode: GraphNode = new GraphNode(profile, new UnionMGraph(new SimpleMGraph, userGraph))
-		resultNode.addProperty(CONTROLPANEL.isLocalProfile, LiteralFactory.getInstance.createTypedLiteral(webIDInfo.isLocal))
-		resultNode.addProperty(FOAF.primaryTopic, webId)
-		return resultNode
 	}
 
 	@POST
@@ -257,15 +249,15 @@ class ProfilePanel {
 		     val webIdInfo = webIdGraphsService.getWebIDInfo(webidRef);
 		     if (webIdInfo.isLocal)
 		) {
-			val certNode: GraphNode = new GraphNode(new BNode, webIdInfo.localGraph)
-			certNode.addProperty(RDF.`type`, RSA.RSAPublicKey)
-			certNode.addProperty(CERT.identity, webidRef)
-			certNode.addPropertyValue(RSA.modulus, modulus)
-			certNode.addPropertyValue(RSA.public_exponent, publicExponent)
+			val certNode = new EasyGraph(webIdInfo.localGraph).bnode
+			( certNode ∈  RSA.RSAPublicKey
+			   ⟝ CERT.identity ⟶  webidRef
+			   ⟝ RSA.modulus ⟶  modulus
+			   ⟝ RSA.public_exponent ⟶  publicExponent
+			   ⟝ DC.date ⟶  cert.getStartDate )
 			if (comment != null && comment.length > 0) {
-				certNode.addPropertyValue(RDFS.comment, comment)
+				certNode ⟝  RDFS.comment ⟶  comment
 			}
-			certNode.addPropertyValue(DC.date, cert.getStartDate)
 		}
 		var resBuild: Response.ResponseBuilder = Response.ok(ser.getContent, MediaType.valueOf(ser.getMimeType))
 		return resBuild.build
