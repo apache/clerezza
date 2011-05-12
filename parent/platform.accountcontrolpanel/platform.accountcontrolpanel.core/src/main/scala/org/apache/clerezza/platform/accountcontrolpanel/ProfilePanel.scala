@@ -144,14 +144,14 @@ class ProfilePanel {
 	                   @PathParam(value = "id") userName: String): Response = {
 		val ppd: UriRef = getSuggestedPPDUri(userName)
 		val webId: UriRef = new UriRef(ppd.getUnicodeString + "#me")
-		val webIDInfo = webIdGraphsService.getWebIDInfo(webId)
-		webIDInfo.localGraph.addAll(
-			Arrays.asList(
-				new TripleImpl(ppd, RDF.`type`, FOAF.PersonalProfileDocument),
-				new TripleImpl(ppd, FOAF.primaryTopic, webId))
-		)
 		return AccessController.doPrivileged(new PrivilegedAction[Response] {
 			def run: Response = {
+				val webIDInfo = webIdGraphsService.getWebIDInfo(webId)
+				webIDInfo.localGraph.addAll(
+					Arrays.asList(
+						new TripleImpl(ppd, RDF.`type`, FOAF.PersonalProfileDocument),
+						new TripleImpl(ppd, FOAF.primaryTopic, webId))
+				)
 				var userInSystemGraph: GraphNode = userManager.getUserInSystemGraph(userName)
 				userInSystemGraph.replaceWith(webId)
 				return RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
