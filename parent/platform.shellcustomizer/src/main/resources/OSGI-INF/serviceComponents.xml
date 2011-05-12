@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+	<scr:component enabled="true"  name="org.apache.clerezza.platform.shellcustomizer.PlatformShellCustomizer">
+        <implementation class="org.apache.clerezza.platform.shellcustomizer.PlatformShellCustomizer"/>
+        <property name="service.pid" value="org.apache.clerezza.platform.shellcustomizer.PlatformShellCustomizer"/>
+		<service servicefactory="false">
+            <provide interface="org.apache.clerezza.shell.ShellCustomizer"/>
+        </service>
+        <reference name="cgProvider" interface="org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider"
+		cardinality="1..1" policy="static" bind="bindContentGraphProvider" unbind="unbindContentGraphProvider"/>
+    </scr:component>
+</components>
