@@ -26,7 +26,7 @@ import org.apache.clerezza.platform.graphprovider.content._
 
 class PlatformShellCustomizer extends ShellCustomizer {
 
-	var contentGraphProvider: ContentGraphProvider = null
+	private var contentGraphProvider: ContentGraphProvider = null
 
 	def bindings(e: Shell.Environment): List[(String, String, Any)] = {
 		val bundleContext = e.componentContext.getBundleContext
@@ -39,11 +39,11 @@ class PlatformShellCustomizer extends ShellCustomizer {
 									"org.apache.clerezza.rdf.ontologies._",
 									"org.apache.clerezza.rdf.scala.utils._")
 
-	def bindContentGraphProvider(p: ContentGraphProvider) {
+	protected def bindContentGraphProvider(p: ContentGraphProvider) {
 		contentGraphProvider = p
 	}
 
-	def unbindContentGraphProvider(p: ContentGraphProvider) {
+	protected def unbindContentGraphProvider(p: ContentGraphProvider) {
 		contentGraphProvider = null
 	}
 }
