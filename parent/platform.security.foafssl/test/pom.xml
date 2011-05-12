@@ -79,18 +79,7 @@
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 		</dependency>
-        <dependency>
-            <!-- in the 1.46 release the packages have been moved around so that one now needs both bcmail and bcpv-->
-             <groupId>org.bouncycastle</groupId>
-             <artifactId>bcprov-jdk16</artifactId>
-             <version>1.46</version>
-         </dependency>
-        <dependency>
-              <groupId>org.bouncycastle</groupId>
-              <artifactId>bcmail-jdk16</artifactId>
-              <version>1.46</version>
-          </dependency>
-		<dependency>
+      	<dependency>
 			<groupId>org.wymiwyg</groupId>
 			<artifactId>jetty-osgi-httpservice</artifactId>
 		</dependency>
