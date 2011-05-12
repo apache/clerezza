@@ -324,6 +324,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>platform.shellcustomizer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>shell</artifactId>
 			<scope>runtime</scope>
 		</dependency>

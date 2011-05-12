@@ -73,6 +73,7 @@
 				<module>platform.security.foafssl</module>
 				<module>platform.security.conditions</module>
 				<module>platform.security</module>
+				<module>platform.shellcustomizer</module>
 				<module>platform.typehandlerspace</module>
 				<module>platform.typerendering</module>
 				<module>platform.typerendering.gui</module>
@@ -1147,6 +1148,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.language</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>platform.shellcustomizer</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
