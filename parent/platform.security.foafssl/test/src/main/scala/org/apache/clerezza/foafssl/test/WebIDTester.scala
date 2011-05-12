@@ -87,7 +87,10 @@ class WebIDTester {
     return resultNode
   }
 
-
+	@GET
+	@Produces(Array("text/n3","text/rdf+n3","text/turtle"))
+	@Path("n3")
+	def getTestMe_N3(): TripleCollection = getTestMeRDF()
 
 	@GET
 	def getTestMeRDF(): TripleCollection = {

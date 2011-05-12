@@ -63,6 +63,7 @@ class XhtmlWebIDClaimPg(arguments: XmlResult.Arguments) extends XmlResult(argume
     if (creds.size==0) <p>No X509 credentials available.</p>
     else for (cred <- creds) yield describeX509Claim(cred)
     }
+	  <p>For very detailed test information to send to support download this <a href="WebId/n3">n3</a> file.</p>
   </span>
 
 
