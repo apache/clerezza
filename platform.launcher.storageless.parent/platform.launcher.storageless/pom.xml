@@ -51,6 +51,19 @@
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
+						<id>copy-shell</id>
+						<configuration>
+							<outputDirectory>${basedir}/target/bundles/startlevel-4</outputDirectory>
+							<useRepositoryLayout>true</useRepositoryLayout>
+							<excludeTransitive>true</excludeTransitive>
+							<includeScope>runtime</includeScope>
+							<includeArtifactIds>shell</includeArtifactIds>
+						</configuration>
+					</execution>
+					<execution>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
 						<id>copy-rdf-core</id>
 						<!-- the tc-manager should be activated after the provider -->
 						<configuration>
@@ -70,7 +83,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<excludeTransitive>true</excludeTransitive>
 							<includeScope>runtime</includeScope>
-							<excludeArtifactIds>rdf.core,slf4j-api,platform.security,platform.security.conditions</excludeArtifactIds>
+							<excludeArtifactIds>rdf.core,slf4j-api,platform.security,platform.security.conditions,shell</excludeArtifactIds>
 						</configuration>
 					</execution>
 					<execution>
