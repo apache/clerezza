@@ -590,7 +590,6 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
             <scope>runtime</scope>
-            <version>1.46</version>
         </dependency>
 	</dependencies>
 </project>
