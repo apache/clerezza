@@ -29,7 +29,7 @@
                 <configuration>
                     <instructions>
 						<_exportcontents>${project.artifactId}.*</_exportcontents>
-                        <Embed-Dependency>*</Embed-Dependency>
+                        <Embed-Dependency>icu4j</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>
