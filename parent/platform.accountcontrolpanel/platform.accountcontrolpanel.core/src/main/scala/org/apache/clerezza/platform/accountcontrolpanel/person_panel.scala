@@ -226,7 +226,7 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	 * in the cache?
 	 *
 	 */
-	def definedHere(uri: UriRef):Boolean = uri.getUnicodeString.startsWith(webIdInfo.representationUri)
+	def definedHere(uri: UriRef):Boolean = uri.getUnicodeString.startsWith(webIdInfo.graphUriRef.getUnicodeString)
 
 
 	def personHtml(p: RichGraphNode): NodeSeq = {

@@ -29,7 +29,6 @@ import javax.ws.rs.core.{Response, Context, UriInfo}
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 import org.apache.clerezza.rdf.scala.utils.{EasyGraphNode, EasyGraph}
-import org.apache.clerezza.rdf.web.proxy.WebProxy
 import java.util.Iterator
 import org.apache.clerezza.rdf.core.{Triple, MGraph, UriRef}
 import java.net._
@@ -38,6 +37,7 @@ import javax.ws.rs._
 import java.io.{StringWriter, IOException, OutputStreamWriter}
 import collection.JavaConversions._
 import java.lang.Appendable
+import org.apache.clerezza.rdf.web.proxy.{Cache, WebProxy}
 
 
 object PingBack {
@@ -156,7 +156,7 @@ class PingBack {
 		val pingInfo = webProxy.getResourceInfo(pingTo)
 		//initially I just test if something about pingback is there.
 		//todo: make the subject the resource itself.
-		val filter = pingInfo.theGraph.filter(null, RDF.`type`, PINGBACK.Container)
+		val filter = pingInfo.semantics(Cache.CacheOnly).filter(null, RDF.`type`, PINGBACK.Container)
 		val res = if (filter.hasNext) try {
 			 val to = new URL(pingTo.getUnicodeString)
 			 if (to.getProtocol == "http" || to.getProtocol == "https") {
