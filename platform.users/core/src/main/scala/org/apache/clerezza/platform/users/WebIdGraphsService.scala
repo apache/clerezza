@@ -87,7 +87,7 @@ class WebIdGraphsService extends WebProxy {
 					val unionGraph = if (isLocal) {
 						new UnionMGraph(localGraph, systemTriples)
 					} else {
-						new UnionMGraph(localGraph, theGraph, systemTriples)
+						new UnionMGraph(localGraph, semantics(Cache.CacheOnly), systemTriples)
 					}
 					new SecuredMGraph(unionGraph, localGraphUri, tcManager.getTcAccessController)
 				}
@@ -100,7 +100,7 @@ class WebIdGraphsService extends WebProxy {
 		lazy val localGraphUri = {
 			if (isLocal) graphUriRef
 			else {
-				new UriRef(platformConfig.getDefaultBaseUri.getUnicodeString+"user/"+representationUri)
+				new UriRef(platformConfig.getDefaultBaseUri.getUnicodeString+"user/"+graphUriRef.getUnicodeString)
 			}
 		}
 
