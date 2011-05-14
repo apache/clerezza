@@ -93,8 +93,9 @@ class WebProxy {
 	def fetchSemantics(uri: UriRef, update: Cache.Value = Cache.Fetch): Option[GraphNode] = {
 		val resource = getResourceInfo(uri, update)
 		return try {
-			Some(new GraphNode(uri, resource.theGraph))
+			Some(new GraphNode(uri, resource.semantics(Cache.CacheOnly)))
 		} catch {
+			//It seems this is never thrown
 			case e: NoSuchEntityException => None
 		}
 
@@ -124,6 +125,9 @@ class WebProxy {
 	class ResourceInfo(url: UriRef) {
 		val uriString = url.getUnicodeString
 
+		/**
+		 * true if the resource uri starts with a baseUri of this instance
+		 */
 		lazy val isLocal: Boolean = {
 			import scala.collection.JavaConversions._
 			//todo: the base uris are checked on every invocation. This seems somewhat heavy.
@@ -132,7 +136,7 @@ class WebProxy {
 
 		// the graph containing the local cache of the resource
 		//todo: watch out: if someone can just make us add graphs to tcmanager even when there is no data...
-		lazy val theGraph: MGraph = try {
+		private lazy val theGraph: MGraph = try {
 			val g = tcManager.getMGraph(graphUriRef)
 			g
 		} catch {
@@ -150,7 +154,7 @@ class WebProxy {
 		 * the URI of the representation, the information resource, which ends up
 		 * being our handle on the graph too.
 		 */
-		lazy val representationUri = {
+		private lazy val graphUriString = {
 			val hashPos = uriString.indexOf('#')
 			if (hashPos != -1) {
 				uriString.substring(0, hashPos) //though could there not be an odd case of hash and redirects?
@@ -161,12 +165,14 @@ class WebProxy {
 			}
 		}
 
-
+		/**
+		 * the uri from which the description of this resource was dereferenced
+		 */
 		lazy val graphUriRef = {
-			new UriRef(representationUri)
+			new UriRef(graphUriString)
 		}
 
-		lazy val finalRedirectLocation = {
+		private lazy val finalRedirectLocation = {
 			finalRedirectLocationFor(url.getUnicodeString)
 		}
 
@@ -216,7 +222,7 @@ class WebProxy {
 		//todo: add GRDDL functionality, so that other return types can be processed too
 		//todo: enable ftp and other formats (though content negotiation won't work there)
 		private def updateGraph()  {
-			val url = new URL(representationUri)
+			val url = new URL(graphUriString)
 			val connection = url.openConnection()
 			connection match {
 				case hc: HttpURLConnection => hc.addRequestProperty("Accept", acceptHeader);
