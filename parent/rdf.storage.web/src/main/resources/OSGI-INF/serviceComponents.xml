@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+
+	<scr:component enabled="true" name="org.apache.clerezza.rdf.storage.web.WebProxy">
+		<implementation class="org.apache.clerezza.rdf.storage.web.WebProxy"/>
+		<service servicefactory="false">
+			<provide interface="org.apache.clerezza.rdf.storage.web.WebProxy"/>
+            <provide interface="org.apache.clerezza.rdf.core.access.WeightedTcProvider"/>
+		</service>
+        <!-- hard coded <property name="weight" type="Integer" value="0"/> -->
+        <reference name="weightedTcProvider" interface="org.apache.clerezza.rdf.core.access.WeightedTcProvider"
+                   cardinality="1..n" policy="dynamic" bind="bindWeightedTcProvider" unbind="unbindWeightedTcProvider"/>
+		<reference name="parser" interface="org.apache.clerezza.rdf.core.serializedform.Parser"
+		cardinality="1..1" policy="static" bind="bindParser" unbind="unbindParser"/>
+	</scr:component>
+
+</components>
