@@ -20,15 +20,10 @@ package org.apache.clerezza.rdf.storage.web
  */
 
 import org.apache.clerezza.platform.Constants
-import org.apache.clerezza.rdf.utils.GraphNode
 import org.osgi.service.component.ComponentContext
-import org.apache.clerezza.platform.config.PlatformConfig
 import java.net.{HttpURLConnection, URL}
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat
 import org.apache.clerezza.rdf.core.serializedform.Parser
-import org.apache.clerezza.platform.typerendering.WebRenderingService
-import org.apache.clerezza.rdf.core.access.security.TcPermission
-import java.io.File
 import java.security.{PrivilegedExceptionAction, PrivilegedActionException, AccessController}
 
 import org.slf4j.scala._
@@ -159,8 +154,7 @@ class WebProxy extends WeightedTcProvider with Logging {
 	 * @param update if a remote URI, update information on the resource first
 	 */
 	def getGraph(name: UriRef, updatePolicy: Cache.Value): Graph = {
-		println("Getting ")
-		logger.warn("getting "+name)
+		logger.debug("getting graph " + name)
 		val cacheGraphName = new UriRef("urn:x-localinstance:/cache/" + name.getUnicodeString)
 		//todo: follow redirects and keep track of them
 		//todo: keep track of headers especially date and etag. test for etag similarity
