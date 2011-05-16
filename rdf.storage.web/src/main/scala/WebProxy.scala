@@ -1,5 +1,3 @@
-package org.apache.clerezza.rdf.storage.web
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,8 +17,11 @@ package org.apache.clerezza.rdf.storage.web
  * under the License.
  */
 
-import org.apache.clerezza.platform.Constants
+package org.apache.clerezza.rdf.storage.web
+
+
 import org.osgi.service.component.ComponentContext
+import java.io.IOException
 import java.net.{HttpURLConnection, URL}
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat
 import org.apache.clerezza.rdf.core.serializedform.Parser
@@ -60,10 +61,6 @@ class WebProxy extends WeightedTcProvider with Logging {
 		tcProvider.removeWeightedTcProvider(provider)
 	}
 
-	//todo: replace this with an appropriate graph
-	protected val authoritativeLocalGraphs = Constants.CONFIG_GRAPH_URI
-
-
 	/**OSGI method, called on activation */
 	protected def activate(context: ComponentContext) = {
 
@@ -85,7 +82,7 @@ class WebProxy extends WeightedTcProvider with Logging {
 	}
 
 	/**
-	 * we don't do mgraphs
+	 * Any TripleCollection is available as Graph as well as immutable MGraph
 	 *
 	 * @param name
 	 * @return
@@ -103,7 +100,15 @@ class WebProxy extends WeightedTcProvider with Logging {
 	}
 
 	def getGraph(name: UriRef): Graph = {
-		getGraph(name, Cache.Fetch)
+		try {
+			getGraph(name, Cache.Fetch)
+		} catch {
+			case e: IOException => {
+					logger.debug("could not get graph by dereferencing uri", e)
+					throw new NoSuchEntityException(name)
+			}
+
+		}
 	}
 
 	def getTriples(name: UriRef): TripleCollection = {
@@ -181,21 +186,16 @@ class WebProxy extends WeightedTcProvider with Logging {
 			}
 		}
 		try {
-			AccessController.doPrivileged(new PrivilegedExceptionAction[Graph] {
-				def run: Graph = {
-					//the logic here is not quite right, as we don't look at time of previous fetch.
-					updatePolicy match {
-						case Cache.Fetch => try {
-							tcProvider.getGraph(cacheGraphName)
-						} catch {
-							case e: NoSuchEntityException => updateGraph(); tcProvider.getGraph(cacheGraphName)
-						}
-						case Cache.ForceUpdate => updateGraph(); tcProvider.getGraph(cacheGraphName)
-						case Cache.CacheOnly => tcProvider.getGraph(cacheGraphName)
-					}
-
+			//the logic here is not quite right, as we don't look at time of previous fetch.
+			updatePolicy match {
+				case Cache.Fetch => try {
+					tcProvider.getGraph(cacheGraphName)
+				} catch {
+					case e: NoSuchEntityException => updateGraph(); tcProvider.getGraph(cacheGraphName)
 				}
-			})
+				case Cache.ForceUpdate => updateGraph(); tcProvider.getGraph(cacheGraphName)
+				case Cache.CacheOnly => tcProvider.getGraph(cacheGraphName)
+			}
 		} catch {
 			case ex: PrivilegedActionException => {
 				var cause: Throwable = ex.getCause
