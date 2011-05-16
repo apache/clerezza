@@ -1,38 +1,11 @@
 package skeleton
 
-import org.osgi.framework.{BundleActivator, BundleContext, ServiceRegistration}
-import scala.collection.JavaConversions.asJavaDictionary
-import org.apache.clerezza.platform.typerendering.TypeRenderlet
+import org.apache.clerezza.osgi.services.ActivationHelper
 
 /**
  * Activator for a bundle using Apache Clerezza.
  */
-class Activator extends BundleActivator {
-
-	var helloWorldRegistration: ServiceRegistration = null
-	var renderletRegistration: ServiceRegistration = null
-	/**
-	 * called when the bundle is started, this method initializes the provided service
-	 */
-	def start(context: BundleContext) {
-		println("activating...")
-
-		val args = scala.collection.mutable.Map("javax.ws.rs" -> true)
-		helloWorldRegistration = context.registerService(classOf[Object].getName,
-												  new HelloWorld(context), args)
-		val renderlet = new HelloWorldMessageRenderlet
-		renderletRegistration = context.registerService(classOf[TypeRenderlet].getName,
-												  renderlet, null)
-		println("enjoy it!")
-	}
-
-	/**
-	 * called when the bundle is stopped, this method unregisters the provided service
-	 */
-	def stop(context: BundleContext) {
-		helloWorldRegistration.unregister()
-		renderletRegistration.unregister()
-		println("bye")
-	}
-
+class Activator extends ActivationHelper {
+	registerRootResource(new HelloWorld(context))
+	registerRenderlet(new HelloWorldMessageRenderlet)
 }
