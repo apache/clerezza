@@ -272,6 +272,10 @@
 			<artifactId>rdf.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.storage.web</artifactId>
+		</dependency>
     	<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.content</artifactId>
