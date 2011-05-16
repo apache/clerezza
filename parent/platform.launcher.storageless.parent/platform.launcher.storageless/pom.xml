@@ -208,7 +208,7 @@
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-service</artifactId>
 			<scope>provided</scope>
-			<version>1.5.3</version>
+			<version>1.6.2</version>
 			<!-- <exclusions>
 				<exclusion>
 					<artifactId>jmxri</artifactId>
