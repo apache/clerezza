@@ -119,7 +119,6 @@
 				<module>triaxrs</module>
 				<module>uima</module>
 				<module>utils.customproperty</module>
-				<module>utils.imagemagick</module>
 				<module>utils.imageprocessing</module>
 				<module>utils</module>
 				<module>web.fileserver</module>
@@ -148,6 +147,9 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<modules>
+				<!-- tests depends on availability of right version of imagemagick, see CLEREZZA-326-->
+				<module>utils.imagemagick</module>
+				<!-- have dependencies that are not in maven central -->
 				<module>ext.org.jruby</module>
 				<module>ext.org.openrdf.sesame</module>
 				<module>platform.launcher.sesame</module>
