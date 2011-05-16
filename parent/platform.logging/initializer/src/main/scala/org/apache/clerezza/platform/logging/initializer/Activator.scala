@@ -51,7 +51,8 @@ class Activator extends BundleActivator {
 				"org.ops4j.pax.logging", paxLoggingLocation);
 			if (config.getProperties() == null) {
 				val props: Dictionary[String, String] = new Hashtable[String, String]();
-				props.put("log4j.rootLogger", "DEBUG, R, stdout");
+				props.put("log4j.rootLogger", "INFO, R, stdout");
+				props.put("log4j.logger.org.apache.clerezza","DEBUG")
 				props.put("log4j.appender.stdout", "org.apache.log4j.ConsoleAppender");
 				props.put("log4j.appender.stdout.layout", "org.apache.log4j.PatternLayout");
 				props.put("log4j.appender.stdout.Threshold", "WARN");
