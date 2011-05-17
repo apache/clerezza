@@ -372,11 +372,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.web.proxy.core</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security</artifactId>
 			<scope>runtime</scope>
 		</dependency>

@@ -37,7 +37,7 @@ import javax.ws.rs._
 import java.io.{StringWriter, IOException, OutputStreamWriter}
 import collection.JavaConversions._
 import java.lang.Appendable
-import org.apache.clerezza.rdf.web.proxy.{Cache, WebProxy}
+
 
 
 object PingBack {
@@ -153,10 +153,10 @@ class PingBack {
 		wr append "target=" append target append "\r\n"
 		wr append "comment=" append comment append "\r\n"
 
-		val pingInfo = webProxy.getResourceInfo(pingTo)
+		val pingToGraph = tcManager.getGraph(pingTo)
 		//initially I just test if something about pingback is there.
 		//todo: make the subject the resource itself.
-		val filter = pingInfo.semantics(Cache.CacheOnly).filter(null, RDF.`type`, PINGBACK.Container)
+		val filter = pingToGraph.filter(null, RDF.`type`, PINGBACK.Container)
 		val res = if (filter.hasNext) try {
 			 val to = new URL(pingTo.getUnicodeString)
 			 if (to.getProtocol == "http" || to.getProtocol == "https") {
@@ -295,16 +295,6 @@ class PingBack {
 
 	protected def unbindTcManager(tcManager: TcManager) = {
 		this.tcManager = null
-	}
-
-	protected var webProxy: WebProxy = null;
-
-	protected def bindWebProxy(proxy: WebProxy) = {
-		this.webProxy = proxy
-	}
-
-	protected def unbindWebProxy(proxy: WebProxy  ) = {
-		this.webProxy = null
 	}
 
 }

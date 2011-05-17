@@ -28,11 +28,11 @@ import org.slf4j.{LoggerFactory, Logger}
 import org.apache.clerezza.rdf.core.impl.util.Base64
 import java.security.interfaces.RSAPublicKey
 import org.apache.clerezza.rdf.core._
+import access.NoSuchEntityException
 import impl.{PlainLiteralImpl, TypedLiteralImpl, SimpleMGraph}
 import org.apache.clerezza.foafssl.ontologies._
 import org.apache.clerezza.foafssl.auth.{WebIDClaim, Verification, WebIdPrincipal, X509Claim}
 import java.util.Date
-import org.apache.clerezza.rdf.web.proxy.{Cache, WebProxy}
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.rdf.scala.utils.{CollectedIter, EasyGraphNode, EasyGraph, RichGraphNode}
 import serializedform.Serializer
@@ -42,6 +42,7 @@ import java.math.BigInteger
 import collection.mutable.{Queue, LinkedList}
 import javax.security.auth.Subject
 import collection.JavaConversions._
+import org.apache.clerezza.platform.users.WebIdGraphsService
 
 
 /**
@@ -66,15 +67,7 @@ class WebIDTester {
     //		configure(componentContext.getBundleContext(), "profile-staticweb");
   }
 
-  private var webProxy: WebProxy = _
 
-  protected def bindWebProxy(proxy: WebProxy) {
-    webProxy = proxy
-  }
-
-  protected def unbindWebProxy(proxy: WebProxy) {
-    webProxy = null
-  }
 
 	/**
 	 * don't bother converting to rdf here for the moment.
@@ -94,7 +87,7 @@ class WebIDTester {
 
 	@GET
 	def getTestMeRDF(): TripleCollection = {
-		val certTester = new CertTester(UserUtil.getCurrentSubject(),webProxy)
+		val certTester = new CertTester(UserUtil.getCurrentSubject(), webIdGraphsService)
 		certTester.runTests()
 		return certTester.toRdf()
 	}
@@ -113,10 +106,19 @@ class WebIDTester {
 
 	}
 
+	private var webIdGraphsService: WebIdGraphsService = null
+	protected def bindWebIdGraphsService(webIdGraphsService: WebIdGraphsService): Unit = {
+		this.webIdGraphsService = webIdGraphsService
+	}
+
+	protected def unbindWebIdGraphsService(webIdGraphsService: WebIdGraphsService): Unit = {
+		this.webIdGraphsService = null
+	}
+
 }
 
 /** All the cert tests are placed here */
-class CertTester(subj: Subject, webProxy: WebProxy) extends Assertor {
+class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends Assertor {
 
 	import EARL.{passed, failed, cantTell, untested, inapplicable}
 
@@ -246,8 +248,11 @@ class CertTester(subj: Subject, webProxy: WebProxy) extends Assertor {
 	// more detailed tester for claims that passed or failed
 	// even tester that succeed could be just succeeding by chance (if public profileKeys are badly written out for eg)
 	def claimTests(claim: WebIDClaim) {
-		val sem: Option[GraphNode] = webProxy.fetchSemantics(claim.webId, Cache.CacheOnly)
-
+		val sem: Option[GraphNode] = try {
+			Some(new GraphNode(claim.webId, webIdGraphsService.getWebIdInfo(claim.webId).publicProfile)) //webProxy.fetchSemantics(claim.webId, Cache.CacheOnly)
+		} catch {
+			case e: NoSuchEntityException => None
+		}
 		val profileXst = create(TEST.profileGet, claim.webId)
 
 		sem match {

@@ -22,7 +22,6 @@ package org.apache.clerezza.foafssl.test.pages
 import org.apache.clerezza.platform.typerendering.scala.{XmlResult, SRenderlet}
 import org.apache.clerezza.platform.security.UserUtil
 import org.apache.clerezza.foafssl.test.WebIDTester
-import org.apache.clerezza.rdf.web.proxy.{Cache, WebProxy}
 import org.apache.clerezza.foafssl.ontologies.{RSA, CERT}
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.security.{PrivilegedAction, AccessController}
@@ -35,6 +34,7 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.scala.utils.{CollectedIter, RichGraphNode}
 import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
+import org.apache.clerezza.platform.users.WebIdGraphsService
 
 /**
  * @author hjs
@@ -44,14 +44,29 @@ import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
 class WebIDClaimPg extends SRenderlet {
 	def getRdfType() = WebIDTester.testCls
 
-	override def renderedPage(arguments: XmlResult.Arguments) = new XhtmlWebIDClaimPg(arguments)
+	override def renderedPage(arguments: XmlResult.Arguments) = new XhtmlWebIDClaimPg(arguments, webIdGraphsService)
+
+	//TODO a renderlet should not need services,
+
+	private var webIdGraphsService: WebIdGraphsService = null
+
+	protected def bindWebIdGraphsService(webIdGraphsService: WebIdGraphsService): Unit = {
+		this.webIdGraphsService = webIdGraphsService
+	}
+
+	protected def unbindWebIdGraphsService(webIdGraphsService: WebIdGraphsService): Unit = {
+		this.webIdGraphsService = null
+	}
+
+
+
 }
 
 object XhtmlWebIDClaimPg {
    val emptyxml=new scala.xml.Text("")
 }
 
-class XhtmlWebIDClaimPg(arguments: XmlResult.Arguments) extends XmlResult(arguments )  {
+class XhtmlWebIDClaimPg(arguments: XmlResult.Arguments, webIdGraphsService: WebIdGraphsService) extends XmlResult(arguments )  {
   import XhtmlWebIDClaimPg._
 
 
@@ -81,7 +96,7 @@ class XhtmlWebIDClaimPg(arguments: XmlResult.Arguments) extends XmlResult(argume
 
   def getWebIDProfile(claim: WebIDClaim): Option[GraphNode] = {
     val som = AccessController.doPrivileged(new PrivilegedAction[Option[GraphNode]] {
-      def run = $[WebProxy].fetchSemantics(claim.webId, Cache.CacheOnly)
+      def run = Some(new GraphNode(claim.webId, webIdGraphsService.getWebIdInfo(claim.webId).publicProfile))
     })
     som
   }
