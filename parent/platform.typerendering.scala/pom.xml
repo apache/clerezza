@@ -28,10 +28,6 @@
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.web.proxy.core</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>

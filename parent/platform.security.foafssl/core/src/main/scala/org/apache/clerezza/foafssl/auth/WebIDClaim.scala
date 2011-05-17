@@ -25,7 +25,6 @@ import java.io.ByteArrayOutputStream
 import org.apache.clerezza.rdf.core.serializedform.{SupportedFormat, Serializer}
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.foafssl.ontologies.{RSA, CERT}
-import org.apache.clerezza.rdf.web.proxy.Cache
 import java.util.LinkedList
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
@@ -80,12 +79,13 @@ class WebIDClaim(val webId: UriRef, val key: PublicKey) {
 			return
 		}
 		verified = try {
-			var webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.CacheOnly)
-			verify(webIdInfo.publicUserGraph) match {
+			var webIdInfo = authSrvc.webIdSrvc.getWebIdInfo(webId)
+			verify(webIdInfo.localPublicUserData) match {
 				case None => Verification.Verified
 				case Some(err) => {
-					webIdInfo = authSrvc.webIdSrvc.getWebIDInfo(webId, Cache.ForceUpdate)
-					verify(webIdInfo.publicUserGraph) match {
+					webIdInfo.forceCacheUpdate()
+					webIdInfo = authSrvc.webIdSrvc.getWebIdInfo(webId)
+					verify(webIdInfo.localPublicUserData) match {
 						case None => Verification.Verified
 						case Some(err) => {
 							errors.add(err)

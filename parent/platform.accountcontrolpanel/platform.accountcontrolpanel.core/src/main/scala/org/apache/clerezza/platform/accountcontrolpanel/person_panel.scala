@@ -27,9 +27,8 @@ import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.rdf.utils.GraphNode
 import xml.{NodeSeq, Text, Node}
 import java.net.{URLEncoder, URL}
-import org.apache.clerezza.rdf.ontologies.{RDF, FOAF, RDFS}
-import org.apache.clerezza.rdf.web.proxy.WebProxy
 import javax.ws.rs.core.MediaType
+import org.apache.clerezza.rdf.ontologies.{FOAF, RDF, RDFS}
 
 /**
  * static methods used by person panel and that could possibly be moved to a library
@@ -136,12 +135,12 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	//	    val it: CollectedIter[RichGraphNode] = res / FOAF.primaryTopic
 	//	    val primeTpc: RichGraphNode = it.apply(0)
 	// or we can get that information from URL, as shown here
-	lazy val webIdStr = uriInfo.getQueryParameters(true).getFirst("uri")
-	lazy val webIdUri= new UriRef(webIdStr)
+	//lazy val webIdStr = uriInfo.getQueryParameters(true).getFirst("uri")
+	//lazy val webIdUri= new UriRef(webIdStr)
 
-	lazy val webIdInfo =  $[WebProxy].getResourceInfo(webIdUri)
-	lazy val agent : RichGraphNode=  $[WebProxy].fetchSemantics(webIdUri) match { case Some(grph) => grph; case None => res};
-
+	//lazy val webIdInfo =  $[WebProxy].getResourceInfo(webIdUri)
+	//lazy val agent : RichGraphNode=  $[WebProxy].fetchSemantics(webIdUri) match { case Some(grph) => grph; case None => res};
+	lazy val agent : RichGraphNode = res / FOAF.primaryTopic
 	//
 	// setting some header info
 	//
@@ -226,7 +225,7 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	 * in the cache?
 	 *
 	 */
-	def definedHere(uri: UriRef):Boolean = uri.getUnicodeString.startsWith(webIdInfo.graphUriRef.getUnicodeString)
+	def definedHere(uri: UriRef):Boolean = uri.getUnicodeString.startsWith(agent*)
 
 
 	def personHtml(p: RichGraphNode): NodeSeq = {

@@ -33,7 +33,6 @@ import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.security.{PrivilegedAction, AccessController}
 import org.osgi.framework.{BundleContext, ServiceReference}
-import org.apache.clerezza.rdf.web.proxy.{WebProxy,Cache}
 import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 
 /**
