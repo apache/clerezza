@@ -44,8 +44,6 @@ import org.apache.clerezza.rdf.core.serializedform.{SupportedFormat, Parser}
  */
 class WebIdGraphsService {
 
-
-
 	private var proxy: WebProxy  = null
 
 	protected def bindProxy(proxy: WebProxy) = {
@@ -55,20 +53,6 @@ class WebIdGraphsService {
 	protected def unbindProxy(proxy: WebProxy) = {
 		this.proxy = null
 	}
-
-	/**
-	 * We use the parser just to get the supported formats so we get the right redirect location
-	 */
-	private var parser: Parser = null;
-
-	protected def bindParser(parser: Parser) = {
-		this.parser = parser
-	}
-
-	protected def unbindParser(parser: Parser) = {
-		this.parser = null
-	}
-
 	private var tcManager: TcManager = null;
 
 	protected def bindTcManager(tcManager: TcManager) = {
@@ -91,10 +75,8 @@ class WebIdGraphsService {
 
 	/**
 	 *
-	 * @param uri for which info should be fetched
-	 * @param update, a Cache.Value for how much to force the info for the resource. By default get what is in the cache
-	 *        if this is still valid
-	 * @return a resource info, more or less updated
+	 * @param uri the Web-Id
+	 * @return a WebIdInfo allowing to access the graphs of the user
 	 */
 	def getWebIdInfo(uri: UriRef): WebIdInfo = {
 		return new WebIdInfo {
@@ -106,22 +88,15 @@ class WebIdGraphsService {
 			 * We don't know if there are multiple rediects from the person to the
 			 * Document with the triples which one is the Document
 			 */
-			private lazy val representationGraphUriString = {
+			private lazy val profileDocumentUriString = {
 				val hashPos = uriString.indexOf('#')
 				if (hashPos != -1) {
 					uriString.substring(0, hashPos)
 				} else {
-					finalRedirectLocation
+					redirectLocationString
 				}
 			}
 
-			/**
-			 * for web-ids with a # same as representationGraphUriString
-			 */
-			//FIXME multiple remote users could have same
-			/*private lazy val localGraphUri = {
-				new UriRef(localGraphUriString)
-			}*/
 			/**
 			 * the graph for putting local information in addition to the remote graph
 			 */
@@ -142,17 +117,16 @@ class WebIdGraphsService {
 			}
 
 
-			private lazy val representationGraphUri = {
-				new UriRef(representationGraphUriString)
+			private lazy val profileDocumentUri = {
+				new UriRef(profileDocumentUriString)
 			}
 
-			//TODO maybe its better to just follow one redirect and assume this
-			//to be the profile rather than get the uri of the actual representation
-			private lazy val finalRedirectLocation = {
-				finalRedirectLocationFor(uriString)
-			}
-			private def finalRedirectLocationFor(us: String): String = {
-				val url = new URL(us)
+			/**
+			 * As the webid identifies a person an not a document, a webid without hash sign
+			 * should redirect to the profile document
+			 */
+			private lazy val redirectLocationString = {
+				val url = new URL(uriString)
 				val connection = url.openConnection()
 				connection match {
 					case hc : HttpURLConnection => {
@@ -165,39 +139,21 @@ class WebIdGraphsService {
 										if (location == null) {
 											throw new RuntimeException("No Location Headers in 303 response")
 										}
-										finalRedirectLocationFor(location)
+										location
 									}
-								case _ => us
+								case _ => uriString
 							}
 						}
-					case _ => us
+					case _ => uriString
 				}
 			}
 
-			private lazy val acceptHeader = {
-				import scala.collection.JavaConversions._
-				(for (f <- parser.getSupportedFormats) yield {
-						val qualityOfFormat = {
-							f match {
-								//the default, well established format
-								case SupportedFormat.RDF_XML => "1.0";
-									//n3 is a bit less well defined and/or many parsers supports only subsets
-								case SupportedFormat.N3 => "0.6";
-									//we prefer most dedicated formats to (X)HTML, not because those are "better",
-									//but just because it is quite likely that the pure RDF format will be
-									//ligher (contain less presentation markup), and it is also possible that HTML does not
-									//contain any RDFa, but just points to another format.
-								case SupportedFormat.XHTML => "0.5";
-									//we prefer XHTML over html, because parsing (shoule) be easier
-								case SupportedFormat.HTML => "0.4";
-									//all other formats known currently are structured formats
-								case _ => "0.8"
-							}
-						}
-						f+"; q="+qualityOfFormat+","
-					}).mkString +" *; q=.1"  //with grddl should add */*
-			}
-
+			/**
+			 * A webbid identifying a person should redirect to the uri identifying the document,
+			 * it is possible that it redirects directly to the "correct" representation, this is why
+			 * we set this to prefer rdf over other formats
+			 */
+			private lazy val acceptHeader = "application/rdf+xml,*/*;q.1"
 
 
 			private def systemTriples = {
@@ -228,12 +184,12 @@ class WebIdGraphsService {
 			}
 			//implementing exposed methods (from WebIdInfo trait)
 			def publicProfile: TripleCollection = {
-				tcManager.getMGraph(representationGraphUri)
+				tcManager.getMGraph(profileDocumentUri)
 			}
 
 			def localPublicUserData: MGraph = {
 				if (isLocal) {
-					new UnionMGraph(tcManager.getMGraph(representationGraphUri), systemTriples)
+					new UnionMGraph(tcManager.getMGraph(profileDocumentUri), systemTriples)
 				} else {
 					new UnionMGraph(localGraph, systemTriples, publicProfile)
 				}
@@ -247,7 +203,7 @@ class WebIdGraphsService {
 			val webId = uri
 
 			def forceCacheUpdate() = {
-				proxy.getGraph(representationGraphUri)
+				proxy.getGraph(profileDocumentUri)
 			}
 		}
 
