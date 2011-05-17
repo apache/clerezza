@@ -16,8 +16,6 @@
 		cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
 		<reference name="platformConfig" interface="org.apache.clerezza.platform.config.PlatformConfig"
 		cardinality="1..1" policy="static" bind="bindPlatformConfig" unbind="unbindPlatformConfig"/>
-        <reference name="parser" interface="org.apache.clerezza.rdf.core.serializedform.Parser"
-        cardinality="1..1" policy="static" bind="bindParser" unbind="unbindParser"/>
 		<reference name="proxy" interface="org.apache.clerezza.rdf.storage.web.WebProxy"
         cardinality="1..1" policy="static" bind="bindProxy" unbind="unbindProxy"/>
 		<!-- <reference name="tcManager" interface="org.apache.clerezza.platform.users.WebDescriptionProvider"
