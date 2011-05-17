@@ -8,7 +8,7 @@
 	<artifactId>rdf.storage.web</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>Clerezza - Caching Web Storage Provider</name>
+	<name>Clerezza - SCB Caching Web Storage Provider</name>
 	<description>A (currently read-only) storage provider retrieving graphs from the web. It
         implements a caching proxy, relying on another provider for storing triples.</description>
 	<dependencies>
