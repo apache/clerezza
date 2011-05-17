@@ -110,11 +110,6 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.users.core</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.web.proxy.core</artifactId>
-            <version>0.2-incubating-SNAPSHOT</version>
-        </dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.config</artifactId>

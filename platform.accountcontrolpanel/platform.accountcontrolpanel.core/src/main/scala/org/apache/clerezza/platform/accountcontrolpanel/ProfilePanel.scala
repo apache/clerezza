@@ -32,6 +32,7 @@ import org.apache.clerezza.jaxrs.utils.TrailingSlash
 import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.usermanager.UserManager
 import org.apache.clerezza.rdf.core._
+import access.TcManager
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 import org.apache.clerezza.rdf.core.impl.TripleImpl
 import org.apache.clerezza.rdf.ontologies.DC
@@ -102,8 +103,8 @@ class ProfilePanel {
 							)
 					}
 					case webid: UriRef => {
-						var webIDInfo = webIdGraphsService.getWebIDInfo(webid)
-						var res = new EasyGraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.publicUserGraph))
+						var webIDInfo = webIdGraphsService.getWebIdInfo(webid)
+						var res = new EasyGraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.localPublicUserData))
 						(res ⟝ CONTROLPANEL.isLocalProfile ⟶ webIDInfo.isLocal
 							  ⟝ FOAF.primaryTopic ⟶ webid)
 						if (webIDInfo.isLocal) {
@@ -146,8 +147,9 @@ class ProfilePanel {
 		val webId: UriRef = new UriRef(ppd.getUnicodeString + "#me")
 		return AccessController.doPrivileged(new PrivilegedAction[Response] {
 			def run: Response = {
-				val webIDInfo = webIdGraphsService.getWebIDInfo(webId)
-				webIDInfo.localGraph.addAll(
+				tcManager.createMGraph(ppd)
+				val webIDInfo = webIdGraphsService.getWebIdInfo(webId)
+				webIDInfo.localPublicUserData.addAll(
 					Arrays.asList(
 						new TripleImpl(ppd, RDF.`type`, FOAF.PersonalProfileDocument),
 						new TripleImpl(ppd, FOAF.primaryTopic, webId))
@@ -172,8 +174,8 @@ class ProfilePanel {
 				}
 			})
 			for (contactWebID <- newContacts) {
-				val webIdGraphs = webIdGraphsService.getWebIDInfo(me.getNode.asInstanceOf[UriRef])
-				var meGrph: GraphNode = new GraphNode(me.getNode, webIdGraphs.localGraph)
+				val webIdGraphs = webIdGraphsService.getWebIdInfo(me.getNode.asInstanceOf[UriRef])
+				var meGrph: GraphNode = new GraphNode(me.getNode, webIdGraphs.localPublicUserData)
 				meGrph.addProperty(FOAF.knows, contactWebID)
 			} //todo: one should catch errors here (bad uris sent for ex
 		}
@@ -246,10 +248,10 @@ class ProfilePanel {
 		for (webid: URI<-webIds
 		     if (webid.getScheme=="https"||webid.getScheme=="http");
 	  		  val webidRef = new UriRef(webid.toString);
-		     val webIdInfo = webIdGraphsService.getWebIDInfo(webidRef);
+		     val webIdInfo = webIdGraphsService.getWebIdInfo(webidRef);
 		     if (webIdInfo.isLocal)
 		) {
-			val certNode = new EasyGraph(webIdInfo.localGraph).bnode
+			val certNode = new EasyGraph(webIdInfo.localPublicUserData).bnode
 			( certNode ∈  RSA.RSAPublicKey
 			   ⟝ CERT.identity ⟶  webidRef
 			   ⟝ RSA.modulus ⟶  modulus
@@ -268,8 +270,8 @@ class ProfilePanel {
 	def deleteKey(@Context uriInfo: UriInfo,
 	              @FormParam("webId") webId: UriRef,
 	              @FormParam("keyhash") keys: List[String]): Response = {
-		val webIDInfo = webIdGraphsService.getWebIDInfo(webId)
-		val agent: GraphNode = new GraphNode(webId, webIDInfo.localGraph)
+		val webIDInfo = webIdGraphsService.getWebIdInfo(webId)
+		val agent: GraphNode = new GraphNode(webId, webIDInfo.localPublicUserData)
 		var subjects: Iterator[GraphNode] = agent.getSubjectNodes(CERT.identity)
 		import scala.util.control.Breaks._
 		breakable {
@@ -303,13 +305,13 @@ class ProfilePanel {
 	                  @FormParam("webId") webId: UriRef,
 	                  @FormParam("name") name: String,
 	                  @FormParam("description") description: String): Response = {
-		val webIDInfo = webIdGraphsService.getWebIDInfo(webId)
-		val agent: GraphNode = new GraphNode(webId, webIDInfo.localGraph)
+		val webIDInfo = webIdGraphsService.getWebIdInfo(webId)
+		val agent: GraphNode = new GraphNode(webId, webIDInfo.localPublicUserData)
 		agent.deleteProperties(FOAF.name)
 		agent.addPropertyValue(FOAF.name, name)
 		agent.deleteProperties(DC.description)
 		agent.addPropertyValue(DC.description, description)
-		logger.debug("local graph (uri: {}) is now of size {}", webIDInfo.localGraphUri, webIDInfo.localGraph.size)
+		logger.debug("local graph (uri: {}) is now of size {}", webIDInfo.webId, webIDInfo.localPublicUserData.size)
 		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
 	}
 
@@ -339,9 +341,7 @@ class ProfilePanel {
 	}
 
 	protected def unbindWebIdGraphsService(webidgraphsservice: WebIdGraphsService): Unit = {
-		if (webIdGraphsService == webidgraphsservice) {
-			webIdGraphsService = null
-		}
+		webIdGraphsService = null
 	}
 
 	protected def bindPlatformConfig(platformconfig: PlatformConfig): Unit = {
@@ -352,6 +352,14 @@ class ProfilePanel {
 		if (platformConfig == platformconfig) {
 			platformConfig = null
 		}
+	}
+
+	protected def bindTcManager(tcManager: TcManager) = {
+		this.tcManager = tcManager
+	}
+
+	protected def unbindTcManager(tcManager: TcManager) = {
+		this.tcManager = null
 	}
 
 	protected def activate(componentContext: ComponentContext): Unit = {
@@ -368,5 +376,7 @@ class ProfilePanel {
 
 
 	private var componentContext: ComponentContext = null
+
+	private var tcManager: TcManager = null;
 
 }

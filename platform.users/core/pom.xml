@@ -41,7 +41,7 @@
 		</dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.web.proxy.core</artifactId>
+            <artifactId>rdf.storage.web</artifactId>
         </dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
