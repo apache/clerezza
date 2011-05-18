@@ -23,9 +23,12 @@ import org.apache.clerezza.rdf.core._
 import impl._
 import org.apache.clerezza.rdf.ontologies.RDF
 import java.math.BigInteger
-import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 import java.util.Date
 import java.lang.Boolean
+import java.net.{URL, URI}
+import org.apache.clerezza.rdf.core._
+import reflect.Apply
+import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 
 object EasyGraph {
 
@@ -50,6 +53,10 @@ object EasyGraph {
 	implicit def double2lit(double: Double) = litFactory.createTypedLiteral(double)
 
 	implicit def uriRef2Prefix(uriRef: UriRef) = new NameSpace(uriRef.getUnicodeString)
+
+	implicit def URItoUriRef(uri: URI) = new UriRef(uri.toString)
+
+	implicit def URLtoUriRef(url: URL) = new UriRef(url.toExternalForm)
 
 
 	//	val g = new EasyGraph(new SimpleMGraph)
@@ -124,6 +131,8 @@ class PlainLiteralScala(string: String) extends PlainLiteralImpl(string) {
  * @created: 20/04/2011
  */
 
+@deprecated("Don't use yet other than for trying out this class as it may be merged with another class or changed dramatically." +
+	" Send feedback to CLEREZZA-510. ")
 class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
 
 	/*
@@ -143,6 +152,29 @@ class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
 	def u(url: String) = new EasyGraphNode(new UriRef(url), this)
 
 	def apply(subj: NonLiteral) = new EasyGraphNode(subj, this)
+
+	/**
+	 * Add a a relation
+	 * @param subj: subject of relation
+	 * @param relation: relation
+	 * @param: obj: the object of the statement
+	 * @return this, to making method chaining easier
+	 */
+	def add(subj: NonLiteral, relation: UriRef, obj: Resource ) = {
+		graph.add(new TripleImpl(subj,relation,obj))
+		graph
+	}
+
+	/**
+	 * Add a type relation for the subject
+	 * @param subj: the subject of the relation
+	 * @param clazz: the rdfs:Class the subject is an instance of
+	 * @return this, to making method chaining easier
+	 */
+	def addType(subj: NonLiteral, clazz: UriRef) = {
+		graph.add(new TripleImpl(subj,RDF.`type`,clazz))
+		graph
+	}
 
 	//note one could have an apply for a Literal that would return a InversePredicate
 	//but that would require restructuring EasyGraphNode so that one can have an EasyGraphNode
