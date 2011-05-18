@@ -20,28 +20,27 @@ package org.apache.clerezza.platform.accountcontrolpanel
 
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.PINGBACK
 import org.apache.clerezza.rdf.core.access.{NoSuchEntityException, TcManager}
-import org.apache.clerezza.rdf.ontologies.{SIOC, PLATFORM, RDF}
 import org.osgi.service.component.ComponentContext
 import org.apache.clerezza.rdf.core.access.security.TcPermission
 import org.apache.clerezza.platform.Constants
 import java.security.{PrivilegedAction, AccessController}
 import javax.ws.rs.core.{Response, Context, UriInfo}
-import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 import org.apache.clerezza.rdf.scala.utils.{EasyGraphNode, EasyGraph}
 import java.util.Iterator
-import org.apache.clerezza.rdf.core.{Triple, MGraph, UriRef}
 import java.net._
 import org.slf4j.scala.Logger
 import javax.ws.rs._
 import java.io.{StringWriter, IOException, OutputStreamWriter}
 import collection.JavaConversions._
 import java.lang.Appendable
-
-
+import org.apache.clerezza.rdf.ontologies.{FOAF, SIOC, PLATFORM, RDF}
+import org.apache.clerezza.rdf.core.{UriRef, Triple, MGraph}
+import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 
 object PingBack {
 	private val log: Logger = Logger(classOf[PingBack])
+	val ProxyForm = new UriRef(PINGBACK.THIS_ONTOLOGY+"ProxyForm")
 
 	val pingPathTemplate = classOf[PingBack].getAnnotation(classOf[Path]).value
 	val regex = """\{([^}]+)\}""".r
@@ -98,6 +97,8 @@ class PingBack {
 
 	/**
 	 * The ping collection graph, where new pings can be posted and saved
+	 * @param id: the user id
+	 * @param uriInfo jax-rs info
 	 */
 	def  pingCollection(id: String, uriInfo: UriInfo): EasyGraphNode = {
 		val pingRef = new UriRef(pingCollUri(id, uriInfo))
@@ -136,12 +137,13 @@ class PingBack {
 		new EasyGraph(tcgraph)
 	}
 
-
 	/**
-	 *send a ping to another endpoint
+	 * send a ping to another endpoint. Could go directly to that ping outbox and fill in information
+	 * there, but the UI is not friendly.
 	 */
 	@POST
 	@Produces(Array("text/plain"))
+	@Path("out")
 	def pingSomeone(@FormParam("to") pingTo: UriRef,
 	                @FormParam("source") source: UriRef,
 	                @FormParam("target") target: UriRef,
@@ -239,6 +241,8 @@ class PingBack {
 		Response.ok(resultNode).header("Content-Location",new URI(pingItem.getUnicodeString).getPath).build()
 	}
 
+
+
 	/**
 	  * view a collection. This will return a collection of pings and a form
 	  * @param to if this is set then it will filter the pings sent to that endpoint and the form will sent something there
@@ -253,6 +257,37 @@ class PingBack {
 										∈  PINGBACK.Container )
 		if (to != null)	gn  ⟝ PINGBACK.to ⟶ to
 		else gn
+	}
+
+
+	/**
+	 * display a simple ping form for pings by this user where the 'source' refers to the 'target'
+	 * and the 'target' has a known ping endpoint (to be found in the web cache). A missing source
+	 * indicates the source is this user. The form will display a bit of information about the target
+	 * (initially an agent of some sort)
+	 *
+	 * The form will then be posted to a local forwarding endpoint or directly to the remote endpoint
+	 * (to be decided) Remote posting means the WebId in the users browser can be used directly for auth
+	 * but the UI interface is not in the users control,
+	 *
+	 * @param source the source of the ping. The thing that is referring to the target that will be pinged
+	 * @param target the target of the ping. The thing that the source is referring to (talking about).
+	 *        If possible the form should describe the target somewhat. The user knows he is sending the message
+	 */
+	@GET
+	@Path("new")
+	def pingSomeone(@QueryParam("source") source: UriRef,
+		             @QueryParam("target") target: UriRef,
+		             @Context uriInfo: UriInfo ,
+		             @PathParam("id") id: String): GraphNode = {
+	   //get the source graph
+		 val targetGrph = tcManager.getMGraph(target)
+		(
+			new EasyGraph(new UnionMGraph(new SimpleMGraph(),targetGrph)).bnode ∈ PLATFORM.HeadedPage
+			                          ∈ ProxyForm
+				⟝ PINGBACK.source ⟶ { if (source == null) ProfilePanel.webID(id,uriInfo) else source }
+				⟝ PINGBACK.target ⟶ target
+		)
 	}
 
 	@POST
@@ -282,7 +317,7 @@ class PingBack {
 		//ITS the wrong ping collection!!!
 
 		val pinG = pingColl(new UriRef(pingCollUri(id, uriInfo)))
-		( pinG(new UriRef(uriInfo.getAbsolutePath.toString))∈  PLATFORM.HeadedPage
+		( pinG(new UriRef(uriInfo.getAbsolutePath.toString)) ∈ PLATFORM.HeadedPage
 								∈ PINGBACK.Item
 			)
 	}
@@ -297,4 +332,4 @@ class PingBack {
 		this.tcManager = null
 	}
 
-}
+	}

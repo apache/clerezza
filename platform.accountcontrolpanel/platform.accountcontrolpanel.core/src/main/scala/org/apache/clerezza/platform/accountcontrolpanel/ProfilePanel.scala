@@ -61,6 +61,18 @@ import org.apache.clerezza.rdf.scala.utils.{EasyGraphNode, EasyGraph}
 
 object ProfilePanel {
 	private val logger: Logger = LoggerFactory.getLogger(classOf[ProfilePanel])
+	val webIdTemplate = classOf[ProfilePanel].getAnnotation(classOf[Path]).value+"#me"
+
+
+	/*
+	 * return the WebID for the given user name  given the UriInfo (which contains information for
+	 * server default name)
+	 **/
+	def webID(uname: String, uriInfo: UriInfo): UriRef = {
+		val path = PingBack.interpolate(webIdTemplate, uname)
+		val uriStr = uriInfo.getBaseUri.resolve(path); //a bit expensive for something so simple
+		new UriRef(uriStr.toString)
+	}
 }
 
 /**
@@ -121,7 +133,7 @@ class ProfilePanel {
 	 * @param userName
 	 * @return the suggested Personal Profile Document URI
 	 */
-	private def getSuggestedPPDUri(userName: String): UriRef = {
+	def getSuggestedPPDUri(userName: String): UriRef = {
 		return new UriRef(platformConfig.getDefaultBaseUri.getUnicodeString + "user/" + userName + "/profile")
 	}
 
