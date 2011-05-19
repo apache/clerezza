@@ -69,8 +69,11 @@ object XhtmlWebIDClaimPg {
 class XhtmlWebIDClaimPg(arguments: XmlResult.Arguments, webIdGraphsService: WebIdGraphsService) extends XmlResult(arguments )  {
   import XhtmlWebIDClaimPg._
 
+	resultDocModifier.setTitle("WebId Tests");
+	resultDocModifier.addNodes2Elem("tx-module", <h1>Test Panel</h1>);
+	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">WebId Tester</a></li>);
 
-  override def content = <span>
+  override def content = <div id="tx-content"> <h2>WebID Login Test Page</h2>
     <p>The TLS connection was established. We do not test the basic TLS connection.</p>
       {
     val subj = UserUtil.getCurrentSubject();
@@ -78,8 +81,8 @@ class XhtmlWebIDClaimPg(arguments: XmlResult.Arguments, webIdGraphsService: WebI
     if (creds.size==0) <p>No X509 credentials available.</p>
     else for (cred <- creds) yield describeX509Claim(cred)
     }
-	  <p>For very detailed test information to send to support download this <a href="WebId/n3">n3</a> file.</p>
-  </span>
+	  <p>For very detailed test information to send to support <a href="WebId/n3">download this n3 file</a>.</p>
+  </div>
 
 
   def describeX509Claim(claim: X509Claim) = {
