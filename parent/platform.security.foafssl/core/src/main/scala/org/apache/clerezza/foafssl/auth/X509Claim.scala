@@ -19,7 +19,7 @@
 
 package org.apache.clerezza.foafssl.auth
 
-import javax.security.auth.{RefreshFailedException, Refreshable}
+import javax.security.auth.Refreshable
 import java.security.cert.X509Certificate
 import org.slf4j.LoggerFactory
 import org.apache.clerezza.rdf.utils.GraphNode
@@ -27,20 +27,12 @@ import org.apache.clerezza.foafssl.ontologies.{RSA, CERT}
 import java.util.Date
 import org.apache.clerezza.rdf.core._
 import java.math.BigInteger
-import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 
 /**
- * An X509 Claim maintains information about the proofs associated with claims
- * found in an X509 Certificate. It is the type of object that can be passed
- * into the public credentials part of a Subject node
- *
- * todo: think of what this would look like for a chain of certificates
- *
- * @author hjs
- * @created: 30/03/2011
+ * Static methods for X509Claim. It makes it easier to read code when one knows which methods
+ * have no need of any object state and which do. These methods could be moved to a library.
  */
-
 object X509Claim {
   final val logger = LoggerFactory.getLogger(classOf[X509Claim])
 
@@ -83,6 +75,7 @@ object X509Claim {
    }"""
    queryParser.parse(query).asInstanceOf[SelectQuery]
    }*/
+
   /**
    * gets the parts of key from rdf
    * @return (mod, exp)
@@ -168,6 +161,14 @@ object X509Claim {
     }
   }
 
+  /*
+  	* This method helps us deal with the old style notation
+  	* of  key rsa:modulus [ cert:hex "a342342bde..." ]
+  	*        rsa:public_exponent [ cert:int "256" ]
+  	*
+  	* where the numbers are representated by blank nodes identified by their relation to a string
+  	*
+  	*/
   def intValueOfResourceByProperty(n: GraphNode): Option[BigInt] = {
     val hexValues = n / CERT.hex
     if (hexValues.length > 0) {
@@ -184,13 +185,10 @@ object X509Claim {
     return None
   }
 
-  def intValueOfLiteral(l: Literal): Option[BigInt] = {
-    l match {
-      case x: TypedLiteral => intValueOfTypedLiteral(x);
-      case x => Some(intValueOfHexString(x.getLexicalForm))
-    }
-  }
-
+	/**
+	 * @prefix a typed literal of some some numeric type
+	 * @return the BigInteger it represents
+	 */
   def intValueOfTypedLiteral(l: TypedLiteral): Option[BigInt] = {
     try {
       (l.getLexicalForm, l.getDataType) match {
@@ -206,12 +204,19 @@ object X509Claim {
   }
 
 
-  private
-  val systemGraphUri = Constants.SYSTEM_GRAPH_URI;
 
 }
 
-
+/**
+ * An X509 Claim maintains information about the proofs associated with claims
+ * found in an X509 Certificate. It is the type of object that can be passed
+ * into the public credentials part of a Subject node
+ *
+ * todo: think of what this would look like for a chain of certificates
+ *
+ * @author hjs
+ * @created: 30/03/2011
+ */
 class X509Claim(val cert: X509Certificate) extends Refreshable {
 
   import X509Claim._
@@ -236,9 +241,9 @@ class X509Claim(val cert: X509Certificate) extends Refreshable {
 
   override
   def refresh() {
-    throw new RefreshFailedException("refreshing validity period of x509 claim not defined and not implemented")
   }
 
+  /* The certificate is currently within the valid timzone */
   override
   def isCurrent(): Boolean = {
     val now = new Date();
