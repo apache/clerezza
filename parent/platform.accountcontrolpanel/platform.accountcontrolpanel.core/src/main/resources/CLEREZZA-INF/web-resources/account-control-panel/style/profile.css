@@ -20,3 +20,11 @@ td.formlabel:first-child {
 td.multiline:first-child {
     vertical-align: text-top;
 }
+
+img.mugshot {
+    width: 80px;
+}
+
+td.personInABox {
+    width: 100px;
+}

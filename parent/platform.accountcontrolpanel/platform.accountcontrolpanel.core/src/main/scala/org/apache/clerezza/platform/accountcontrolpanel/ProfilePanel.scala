@@ -33,12 +33,7 @@ import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.usermanager.UserManager
 import org.apache.clerezza.rdf.core._
 import access.TcManager
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph
-import org.apache.clerezza.rdf.core.impl.TripleImpl
-import org.apache.clerezza.rdf.ontologies.DC
-import org.apache.clerezza.rdf.ontologies.FOAF
-import org.apache.clerezza.rdf.ontologies.PLATFORM
-import org.apache.clerezza.rdf.ontologies.RDF
+import impl.{SimpleMGraph, TripleImpl}
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.osgi.service.component.ComponentContext
@@ -53,11 +48,11 @@ import java.math.BigInteger
 import java.security.AccessController
 import java.security.PrivilegedAction
 import java.security.interfaces.RSAPublicKey
-import org.apache.clerezza.rdf.ontologies.RDFS
 import org.apache.clerezza.ssl.keygen.KeygenService
 import org.apache.clerezza.platform.users.WebIdGraphsService
 import java.net.URI
-import org.apache.clerezza.rdf.scala.utils.{EasyGraphNode, EasyGraph}
+import org.apache.clerezza.rdf.scala.utils.{RichGraphNode, EasyGraphNode, EasyGraph}
+import org.apache.clerezza.rdf.ontologies._
 
 object ProfilePanel {
 	private val logger: Logger = LoggerFactory.getLogger(classOf[ProfilePanel])
@@ -85,6 +80,7 @@ object ProfilePanel {
 class ProfilePanel {
 
 	import ProfilePanel.logger
+	import collection.JavaConversions._
 	import EasyGraph._
 
 
@@ -92,19 +88,20 @@ class ProfilePanel {
 	def getPersonalProfilePage(@Context uriInfo: UriInfo,
 	                           @PathParam(value = "id") userName: String): GraphNode = {
 		TrailingSlash.enforceNotPresent(uriInfo)
-		var resultNode: GraphNode = getPersonalProfile(userName, uriInfo)
-		resultNode.addProperty(RDF.`type`, PLATFORM.HeadedPage)
-		resultNode.addProperty(RDF.`type`, CONTROLPANEL.ProfilePage)
+		val resultNode= getPersonalProfile(userName, uriInfo)
+
 		return resultNode
 	}
 
 	//todo: there is a bit of repetition in the graphs, and it is not clear why these relations should not go straight into the DB. What should, what should not?
-	private def getPersonalProfile(userName: String,
-	                               profile: UriInfo): EasyGraphNode = {
+	private def getPersonalProfile(userName: String, info: UriInfo): EasyGraphNode = {
 		val profileDocUri = getSuggestedPPDUri(userName)
-		return AccessController.doPrivileged(new PrivilegedAction[EasyGraphNode] {
+
+		val userInSysGraph = userManager.getUserInSystemGraph(userName)
+
+
+		val profile: EasyGraphNode  = AccessController.doPrivileged(new PrivilegedAction[EasyGraphNode] {
 			def run: EasyGraphNode = {
-				val userInSysGraph = userManager.getUserInSystemGraph(userName)
 				userInSysGraph.getNode match {
 					case blank: BNode => { //user does not have a webId yet
 						val g = new EasyGraph()
@@ -120,13 +117,35 @@ class ProfilePanel {
 						(res ⟝ CONTROLPANEL.isLocalProfile ⟶ webIDInfo.isLocal
 							  ⟝ FOAF.primaryTopic ⟶ webid)
 						if (webIDInfo.isLocal) {
-							res ⟝ PINGBACK.to ⟶ new UriRef(PingBack.pingCollUri(userName,profile))
+							//the reason we need to call pingCollUri is we need a full URI because lack of support for relative URIs
+							res ⟝ PINGBACK.to ⟶ new UriRef(PingBack.pingCollUri(userName,info))
 						}
 						res
 					}
 				}
 			}
 		})
+
+		val friendInfo = for (kn: Triple <- profile.getGraph.filter(userInSysGraph.getNode.asInstanceOf[NonLiteral], FOAF.knows, null)
+		                     if kn.getObject.isInstanceOf[UriRef];
+		                     friend = kn.getObject.asInstanceOf[UriRef]
+									if (friend != profileDocUri)
+							) yield {
+			try {
+				tcManager.getGraph(friend)
+				new RichGraphNode(friend, tcManager.getGraph(friend)).getNodeContext
+			} catch {
+				case e => {
+					logger.warn("cought exception trying to fetch graph - these graphs should already be in store "+friend,e)
+					new EasyGraph().add(friend,SKOS.note,"problem with fetching this node: "+e)
+				}
+			}
+		}
+
+		for (g <- friendInfo) profile.graph.addAll(g)
+
+		(profile ∈   PLATFORM.HeadedPage
+		         ∈  CONTROLPANEL.ProfilePage)
 	}
 
 	/**
