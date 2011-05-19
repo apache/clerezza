@@ -1,19 +1,2 @@
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-    <rdf:Description rdf:about="http://localhost:8080/">
-        <infoBit xmlns="http://discobits.org/ontology#" rdf:parseType="Literal">The WebID Test page gives information to the user about all aspects of his WebID claims. 
-
-It tells the user 
-
- <ul xmlns="http://www.w3.org/1999/xhtml"><li>what the public key in his certificate was if one was sent</li><li>which of his WebIDs were authenticated if any</li><li>what errors can be found in the WebID profile concerning authentication</li></ul> 
-  
-
-The Profile also allows the user to download a machine readable page which he can send to an administrator in case of difficulties.
-
-The Machine readable versions of the test results can also be used by automated agents to test the capabilities of this WebID implementation, in order to produce a ranking according to criteria to appear of this implementation compared to others.
-</infoBit>
-        <rdf:type rdf:resource="http://discobits.org/ontology#XHTMLInfoDiscoBit"/>
-    </rdf:Description>
-</rdf:RDF>
-
-
-
+<http://localhost:8080/> <http://discobits.org/ontology#infoBit> "The WebID Test page gives information to the user about all aspects of his WebID claims. \n\nIt tells the user \n\n <ul xmlns=\"http://www.w3.org/1999/xhtml\"><li>what the public key in his certificate was if one was sent</li><li>which of his WebIDs were authenticated if any</li><li>what errors can be found in the WebID profile concerning authentication</li></ul> \n  \n\nThe Profile also allows the user to download a machine readable page which he can send to an administrator in case of difficulties.\n\nThe Machine readable versions of the test results can also be used by automated agents to test the capabilities of this WebID implementation, in order to produce a ranking according to criteria to appear of this implementation compared to others.\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://localhost:8080/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
