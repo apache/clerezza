@@ -16,33 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.clerezza.platform.launcher;
 
-import java.io.IOException;
+import org.osgi.framework.FrameworkEvent;
 
 /**
- * Clerezza Application launcher class.
+ * A listener that gets notified when the Felix Framework is shut down.
  *
  * @author daniel
  */
-public class Main {
-	
-	public static void main(String... args) throws IOException {
-		ClerezzaApp clerezza = new ClerezzaApp();
+public interface ShutdownListener {
 
-		try {
-			clerezza.start(args);
-		} catch (Throwable t) {
-			System.err.println("Could not start Clerezza: " + t);
-			t.printStackTrace();
-			System.exit(clerezza.getExitCode());
-		}
-		try {
-			clerezza.waitForStop();
-		} catch (Throwable t) {
-			System.err.println("Exception during Clerezza shutdown: " + t);
-			t.printStackTrace();
-			System.exit(-1);
-		}
-	}
+	/**
+	 * Notify listener of complete Clerezza shut down.
+	 *
+	 * @param event
+	 *		What event caused the shutdown. Note: event may be null.
+	 */
+	public void notify(FrameworkEvent event);
 }
