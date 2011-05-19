@@ -387,6 +387,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>platform.security.foafssl.test</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+			<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security.foafssl.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
