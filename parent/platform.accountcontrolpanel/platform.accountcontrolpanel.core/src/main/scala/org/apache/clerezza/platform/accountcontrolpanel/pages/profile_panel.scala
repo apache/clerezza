@@ -30,7 +30,6 @@ import java.text._
 import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.rdf.ontologies.{RDFS, DC, FOAF}
-import javax.ws.rs.core.MediaType
 
 class profile_panel extends SRenderlet {
   override def getRdfType() = CONTROLPANEL.ProfilePage
@@ -153,23 +152,11 @@ class ProfilePanelXHTML(arguments: XmlResult.Arguments) extends XmlResult(argume
 	  <table>{ var i =0
 		  val friends = for (friend <- agent/FOAF.knows) yield {
 		  import person_panel._
-		  val node = personInABox(friend)
-			/*added in CLEREZZA-473, no longer working as no such WebRenderingService available
-
-			val node = friend.getNode() match {
-			  case uri: UriRef => $[WebProxy].fetchSemantics(uri) match {
-				  case Some(grp) => personInABox(grp)
-				  case None => emptyText
-			  }
-			  case _ => emptyText //one could show info with bnodes too...
-		  }*/
-		  <td>{node}</td>
+		  <td class="personInABox">{personInABox(friend)}</td>
 		 }
 		 for (row <- friends.grouped(5)) yield <tr>{row}</tr>
-	  }<tr> <td><input type="submit" value="add contact" /></td>
-		  <td><input type="text" name="uri" size="80"/><!-- human input forms cannot require precise WebIds-->
-	  </td></tr>
-	  </table>
+	  }</table>
+	  <input type="text" name="uri" size="80"/><input type="submit" value="add contact" />
 	  </form>
 
 	  <h3>Key and Certificate Creation</h3>

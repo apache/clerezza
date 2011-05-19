@@ -27,8 +27,6 @@ import javax.ws.rs._
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.UriInfo
 import org.apache.clerezza.rdf.scala.utils.{EasyGraph, RichGraphNode}
-import javax.xml.crypto.dsig.keyinfo.KeyName
-import sun.awt.SunHints.Value
 import collection.JavaConversions._
 import org.slf4j.scala._
 import org.apache.clerezza.rdf.ontologies._
@@ -68,31 +66,7 @@ class PersonPanel extends Logging {
 				inference.addType(kn.getSubject,FOAF.Person)
 		}
 
-		//get extra info about an agent as found on the remote profiles, to help put things in context
-/*
-   This takes too much time: because TcManager is not threaded, but also because one can't just get
-   specify to only get cahced graphs. Being able to do that would allow one to point for example to people
-   who are friends of people one already knows.
-
-		val extraInfo = for (kn: Triple <- profile.filter(null, RDF.`type`, FOAF.Person)
-		                     if kn.getSubject.isInstanceOf[UriRef];
-		                     subj = kn.getSubject.asInstanceOf[UriRef]
-							) yield {
-			try {
-				tcManager.getGraph(subj)
-				new RichGraphNode(subj, tcManager.getGraph(subj)).getNodeContext
-			} catch {
-				case e => {
-					logger.info("cought exception trying to fetch graph "+subj,e)
-					new EasyGraph().add(subj,SKOS.note,"problem with fetching this node: "+e)
-				}
-			}
-		}
-		val result = new EasyGraph(new UnionMGraph(inference::extraInfo.toList :_*))
-
-*/
-
-
+		//todo: if possible get a bit more info about remote profiles, if these are in the db
 
 		//Here we make a BNode the subject of the properties as a workaround to CLEREZZA-447
 		return ( inference(uriInfo.getRequestUri()) ∈  PLATFORM.HeadedPage
