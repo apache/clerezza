@@ -67,11 +67,11 @@ object person_panel {
 	 * assumes the p is WebID node (can change later)
 	 */
 	def getAgentPix(p: RichGraphNode) = {
-		val pix = firstOf(p, FOAF.depiction, FOAF.logo).getNode match {
+		val pix = firstOf(p, FOAF.depiction, FOAF.logo, FOAF.img).getNode match {
 			case uri: UriRef => uri.getUnicodeString
 			case _ => "http://upload.wikimedia.org/wikipedia/commons/0/0a/Gnome-stock_person.svg"
 		}
-		<a href={"people?uri="+encode(p*)}><img src={pix} width="70px" /></a>
+		<a href={"people?uri="+encode(p*)}><img class="mugshot" src={pix}/></a>
 	}
 
 	def personInABox(p: RichGraphNode): NodeSeq = {
@@ -83,7 +83,9 @@ object person_panel {
 			}
 			case _ => emptyText
 		} else emptyText
-		return pixml ++ new Text(getName(p)) ++ pingXML
+		return <table><tr><td>{pixml}</td></tr>
+			<tr><td>{new Text(getName(p))}<br/>{pingXML}</td></tr>
+			</table>
 	}
 
 	def encode(url: String): String =  URLEncoder.encode(url,"UTF8")

@@ -26,15 +26,13 @@ import org.apache.clerezza.platform.Constants
 import java.security.{PrivilegedAction, AccessController}
 import javax.ws.rs.core.{Response, Context, UriInfo}
 import org.apache.clerezza.rdf.scala.utils.{EasyGraphNode, EasyGraph}
-import java.util.Iterator
 import java.net._
 import org.slf4j.scala.Logger
 import javax.ws.rs._
-import java.io.{StringWriter, IOException, OutputStreamWriter}
+import java.io.{IOException, OutputStreamWriter}
 import collection.JavaConversions._
-import java.lang.Appendable
-import org.apache.clerezza.rdf.ontologies.{FOAF, SIOC, PLATFORM, RDF}
-import org.apache.clerezza.rdf.core.{UriRef, Triple, MGraph}
+import org.apache.clerezza.rdf.ontologies.{SIOC, PLATFORM, RDF}
+import org.apache.clerezza.rdf.core.{UriRef, MGraph}
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 
