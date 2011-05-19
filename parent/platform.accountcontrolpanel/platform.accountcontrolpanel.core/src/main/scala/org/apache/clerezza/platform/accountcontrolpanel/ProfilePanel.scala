@@ -37,8 +37,6 @@ import impl.{SimpleMGraph, TripleImpl}
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.osgi.service.component.ComponentContext
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import javax.ws.rs._
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
@@ -53,9 +51,9 @@ import org.apache.clerezza.platform.users.WebIdGraphsService
 import java.net.URI
 import org.apache.clerezza.rdf.scala.utils.{RichGraphNode, EasyGraphNode, EasyGraph}
 import org.apache.clerezza.rdf.ontologies._
+import org.slf4j.scala.Logging
 
 object ProfilePanel {
-	private val logger: Logger = LoggerFactory.getLogger(classOf[ProfilePanel])
 	val webIdTemplate = classOf[ProfilePanel].getAnnotation(classOf[Path]).value+"#me"
 
 
@@ -77,9 +75,8 @@ object ProfilePanel {
  */
 
 @Path("/user/{id}/profile")
-class ProfilePanel {
+class ProfilePanel extends Logging {
 
-	import ProfilePanel.logger
 	import collection.JavaConversions._
 	import EasyGraph._
 
@@ -97,15 +94,13 @@ class ProfilePanel {
 	private def getPersonalProfile(userName: String, info: UriInfo): EasyGraphNode = {
 		val profileDocUri = getSuggestedPPDUri(userName)
 
-		val userInSysGraph = userManager.getUserInSystemGraph(userName)
-
-
-		val profile: EasyGraphNode  = AccessController.doPrivileged(new PrivilegedAction[EasyGraphNode] {
-			def run: EasyGraphNode = {
-				userInSysGraph.getNode match {
+		val (user,profile) = AccessController.doPrivileged(new PrivilegedAction[Pair[Resource,EasyGraphNode]] {
+			def run: Pair[Resource,EasyGraphNode] = {
+				val userInSysGraph = userManager.getUserInSystemGraph(userName)
+				val profile = userInSysGraph.getNode match {
 					case blank: BNode => { //user does not have a webId yet
 						val g = new EasyGraph()
-						return (
+						(
 							g.bnode ⟝ CONTROLPANEL.isLocalProfile ⟶ true
 								⟝ CONTROLPANEL.suggestedPPDUri ⟶ profileDocUri
 								⟝ FOAF.primaryTopic ⟶ (g.bnode ⟝ PLATFORM.userName ⟶ userName)
@@ -123,10 +118,11 @@ class ProfilePanel {
 						res
 					}
 				}
+				(userInSysGraph.getNode,profile)
 			}
 		})
 
-		val friendInfo = for (kn: Triple <- profile.getGraph.filter(userInSysGraph.getNode.asInstanceOf[NonLiteral], FOAF.knows, null)
+		val friendInfo = for (kn: Triple <- profile.getGraph.filter(user.asInstanceOf[NonLiteral], FOAF.knows, null)
 		                     if kn.getObject.isInstanceOf[UriRef];
 		                     friend = kn.getObject.asInstanceOf[UriRef]
 									if (friend != profileDocUri)
@@ -336,14 +332,18 @@ class ProfilePanel {
 	                  @FormParam("webId") webId: UriRef,
 	                  @FormParam("name") name: String,
 	                  @FormParam("description") description: String): Response = {
-		val webIDInfo = webIdGraphsService.getWebIdInfo(webId)
-		val agent: GraphNode = new GraphNode(webId, webIDInfo.localPublicUserData)
-		agent.deleteProperties(FOAF.name)
-		agent.addPropertyValue(FOAF.name, name)
-		agent.deleteProperties(DC.description)
-		agent.addPropertyValue(DC.description, description)
-		logger.debug("local graph (uri: {}) is now of size {}", webIDInfo.webId, webIDInfo.localPublicUserData.size)
-		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
+		 AccessController.doPrivileged(new PrivilegedAction[Response] {
+			def run: Response = {
+				val webIDInfo = webIdGraphsService.getWebIdInfo(webId)
+				val agent: GraphNode = new GraphNode(webId, webIDInfo.localPublicUserData)
+				agent.deleteProperties(FOAF.name)
+				agent.addPropertyValue(FOAF.name, name)
+				agent.deleteProperties(DC.description)
+				agent.addPropertyValue(DC.description, description)
+				logger.debug("local graph (uri: {}) is now of size {}".format( webIDInfo.webId, webIDInfo.localPublicUserData.size))
+				RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
+			}
+		 })
 	}
 
 	protected def bindUserManager(usermanager: UserManager): Unit = {
