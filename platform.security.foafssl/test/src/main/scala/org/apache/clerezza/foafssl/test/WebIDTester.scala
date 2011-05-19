@@ -60,7 +60,7 @@ object WebIDTester {
 
 @Path("/test/WebId")
 class WebIDTester {
-   import WebIDTester._
+  import WebIDTester._
 
 
   protected def activate(componentContext: ComponentContext) = {
@@ -77,6 +77,7 @@ class WebIDTester {
   def getTestMe(): GraphNode = {
     val resultNode: GraphNode = new GraphNode(new BNode(),new SimpleMGraph())
     resultNode.addProperty(RDF.`type`, testCls)
+	 resultNode.addProperty(RDF.`type`,PLATFORM.HeadedPage)
     return resultNode
   }
 
