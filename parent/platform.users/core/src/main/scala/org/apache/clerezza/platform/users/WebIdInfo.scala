@@ -20,6 +20,7 @@
 package org.apache.clerezza.platform.users
 
 import org.apache.clerezza.rdf.core.{MGraph, TripleCollection, UriRef}
+import org.apache.clerezza.rdf.core.access.LockableMGraph
 
 
 /*
@@ -45,7 +46,7 @@ trait WebIdInfo {
 	 * users this is the same as publicProfile. In any case this contains the
 	 * triples of the publicProfile.
 	 */
-	def localPublicUserData: MGraph
+	def localPublicUserData: LockableMGraph
 
 	/**
 	 * indicates if this WebId is local.
