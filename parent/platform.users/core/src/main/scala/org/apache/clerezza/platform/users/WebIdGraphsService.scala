@@ -28,6 +28,7 @@ import org.apache.clerezza.platform.config.SystemConfig
 import org.apache.clerezza.rdf.core.MGraph
 import org.apache.clerezza.rdf.core.TripleCollection
 import org.apache.clerezza.rdf.core.UriRef
+import org.apache.clerezza.rdf.core.access.LockableMGraph
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException
 import org.apache.clerezza.rdf.core.access.SecuredMGraph
 import org.apache.clerezza.rdf.core.access.TcManager
@@ -187,7 +188,7 @@ class WebIdGraphsService {
 				tcManager.getMGraph(profileDocumentUri)
 			}
 
-			def localPublicUserData: MGraph = {
+			def localPublicUserData: LockableMGraph = {
 				if (isLocal) {
 					new UnionMGraph(tcManager.getMGraph(profileDocumentUri), systemTriples)
 				} else {
