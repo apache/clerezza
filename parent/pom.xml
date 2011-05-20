@@ -60,6 +60,7 @@
 				<module>platform.documentation</module>
 				<module>platform.documentation.viewer</module>
 				<module>platform.enrichment</module>
+				<module>platform.graphnodeprovider</module>
 				<module>platform.graphprovider.content</module>
 				<module>platform.language</module>
 				<module>platform.launcher.storageless.parent</module>
@@ -725,6 +726,11 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.usermanager</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>platform.graphnodeprovider</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
