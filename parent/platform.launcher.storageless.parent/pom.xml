@@ -182,6 +182,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>platform.graphnodeprovider</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.usermanager</artifactId>
 			<scope>runtime</scope>
 		</dependency>

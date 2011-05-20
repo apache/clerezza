@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+
+	<scr:component enabled="true" name="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider">
+		<implementation class="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider"/>
+		<service servicefactory="false">
+			<provide interface="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider"/>
+		</service>
+        <reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
+		cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
+		<reference name="platformConfig" interface="org.apache.clerezza.platform.config.PlatformConfig"
+		cardinality="1..1" policy="static" bind="bindPlatformConfig" unbind="unbindPlatformConfig"/>
+        <reference name="cggProvider" interface="org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider"
+		cardinality="1..1" policy="static" bind="bindCgProvider" unbind="unbindCgProvider"/>
+        <reference name="webIdGraphsService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
+        cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
+        <reference name="userManager" interface="org.apache.clerezza.platform.usermanager.UserManager"
+		cardinality="1..1" policy="static" bind="bindUserManager" unbind="unbindUserManager"/>
+	</scr:component>
+
+</components>
