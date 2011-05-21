@@ -77,10 +77,34 @@ abstract class XmlResult(arguments: XmlResult.Arguments) {
 	}
 
 	/**
+	 * renders the specified resource without using the base-graph from resource
+	 * rendered by the caller but getting a new context using the GraphNodeProvider
+	 */
+	def render(resource: UriRef): Seq[Node] = {
+		modeOption match {
+			case Some(m) => render(resource, m)
+			case None => render(resource, "naked")
+		}
+	}
+
+	/**
+	 * renders the specified resource without using the base-graph from resource
+	 * rendered by the caller but getting a new context using the GraphNodeProvider
+	 */
+	def render(resource: UriRef, mode: String) = {
+		def parseNodeSeq(string: String) = {
+			_root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
+		}
+		val baos = new java.io.ByteArrayOutputStream
+		renderer.render(resource, context, mode, baos)
+		parseNodeSeq(new String(baos.toByteArray))
+	}
+
+	/**
 	 * This is an object that allows one to use some nice shortcuts in scala based subclasses
 	 * - $variable will get the value of the sharedRenderingValues hash
 	 * - $variable = value allows one to update the sharedRenderingValues hash
-	 * - $? not sure there...
+	 * - $[ClassName] allows to access an osgi service annotated to be a WebRenderingService
 	 */
 	object $ {
 		def apply(key: String) = sharedRenderingValues.get(key)
