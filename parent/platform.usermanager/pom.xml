@@ -47,10 +47,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.typerendering.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security</artifactId>
 		</dependency>
 	</dependencies>
