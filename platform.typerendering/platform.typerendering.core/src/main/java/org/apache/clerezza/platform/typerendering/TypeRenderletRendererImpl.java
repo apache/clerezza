@@ -20,16 +20,13 @@ package org.apache.clerezza.platform.typerendering;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
-import org.apache.clerezza.rdf.core.UriRef;
+
+import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.osgi.framework.BundleContext;
 
@@ -43,13 +40,15 @@ class TypeRenderletRendererImpl implements Renderer {
 	private MediaType mediaType = null;
 	private final RendererFactory rendererFactory;
 	private final BundleContext bundleContext;
+	private final GraphNodeProvider graphNodeProvider;
 
 	TypeRenderletRendererImpl(TypeRenderlet renderlet, MediaType mediaType,
-			RendererFactory rendererFactory,
+			RendererFactory rendererFactory, GraphNodeProvider graphNodeProvider,
 			BundleContext bundleContext) {
 		this.renderlet = renderlet;
 		this.mediaType = mediaType;
 		this.rendererFactory = rendererFactory;
+		this.graphNodeProvider = graphNodeProvider;
 		this.bundleContext = bundleContext;
 	}
 
@@ -71,8 +70,8 @@ class TypeRenderletRendererImpl implements Renderer {
 			Map<String, Object> sharedRenderingValues,
 			OutputStream entityStream) throws IOException {
 		CallbackRenderer callbackRenderer =
-				new CallbackRendererImpl(rendererFactory,
-				uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
+				new CallbackRendererImpl(rendererFactory, graphNodeProvider,
+						uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
 		TypeRenderlet.RequestProperties requestProperties =
 				new TypeRenderlet.RequestProperties(uriInfo, requestHeaders,
 				responseHeaders, mode, mediaType, bundleContext);
