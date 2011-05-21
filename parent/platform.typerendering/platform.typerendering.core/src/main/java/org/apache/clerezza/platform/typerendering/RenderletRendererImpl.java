@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
@@ -32,6 +31,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.osgi.framework.BundleContext;
+import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
 
 /**
  *
@@ -49,11 +49,14 @@ class RenderletRendererImpl implements Renderer {
 	private boolean builtIn;
 	private final RendererFactory rendererFactory;
 	private final BundleContext bundleContext;
+	private GraphNodeProvider graphNodeProvider;
 
-	RenderletRendererImpl(UriRef renderingSpecification,
+
+	RenderletRendererImpl(UriRef renderingSpecification, org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider graphNodeProvider,
 			Renderlet renderlet, MediaType mediaType, 
 			RendererFactory rendererFactory,
 			BundleContext bundleContext) {
+		this.graphNodeProvider = graphNodeProvider;
 		this.renderlet = renderlet;
 		this.mediaType = mediaType;
 		this.rendererFactory = rendererFactory;
@@ -82,8 +85,8 @@ class RenderletRendererImpl implements Renderer {
 			Map<String, Object> sharedRenderingValues,
 			OutputStream entityStream) throws IOException {
 		CallbackRenderer callbackRenderer =
-				new CallbackRendererImpl(rendererFactory,
-				uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
+				new CallbackRendererImpl(rendererFactory, graphNodeProvider,
+						uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
 		renderlet.render(resource, context, sharedRenderingValues, callbackRenderer,
 			renderSpecUri, mode, mediaType,
 			new Renderlet.RequestProperties(uriInfo, requestHeaders,

@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.typerendering;
 
 import java.util.*;
 import javax.ws.rs.core.MediaType;
+import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.platform.typepriority.TypePrioritizer;
 import org.apache.clerezza.platform.typerendering.utils.MediaTypeMap;
 import org.apache.clerezza.platform.typerendering.utils.RegexMap;
@@ -64,6 +65,9 @@ public class RendererFactory {
 
 	@Reference
 	private StartLevel startLevelService;
+
+	@Reference
+	private GraphNodeProvider graphNodeProvider;
 
 	/**
 	 * A Tuple Type-Renderler Startlevel, for identity only the renderlet is relevan
@@ -164,7 +168,7 @@ public class RendererFactory {
 							return new TypeRenderletRendererImpl(
 								bestRenderlet,
 								acceptableType,
-								this,
+								this, graphNodeProvider,
 								bundleContext);
 						}
 					}
