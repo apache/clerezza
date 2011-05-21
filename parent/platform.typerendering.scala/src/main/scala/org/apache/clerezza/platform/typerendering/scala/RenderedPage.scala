@@ -40,6 +40,7 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
  * the content method to produce an XML Element suitable as response to the
  * request yielding to the arguments passed to the constructor.
  */
+@deprecated("user XmlResult with SRenderlet")
 abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 
 	val RenderedPage.Arguments(
