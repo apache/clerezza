@@ -102,15 +102,19 @@ class GraphNodeProvider extends Logging {
 		addToUnion(cgGraph)
 
 		if (isLocal && uriPath.startsWith("/user/")) {
-			val nextSlash = uriPath.indexOf('/',6)
+			val nextSlash = uriPath.indexOf('/',6)		
 			if (nextSlash != -1) {
 				val userName = uriPath.substring(6, nextSlash)
 				val webIdOption = AccessController.doPrivileged(new PrivilegedAction[Option[UriRef]]() {
 						def run(): Option[UriRef] = {
 							val userNode: GraphNode = userManager.getUserInSystemGraph(userName)
-							userNode.getNode match {
-								case u: UriRef => Some(u)
-								case _ => None
+							if (userNode != null) {
+								userNode.getNode match {
+									case u: UriRef => Some(u)
+									case _ => None
+								}
+							} else {
+								None
 							}
 						}
 					}
