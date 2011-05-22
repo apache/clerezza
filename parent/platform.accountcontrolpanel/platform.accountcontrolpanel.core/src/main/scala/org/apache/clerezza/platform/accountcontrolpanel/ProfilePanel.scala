@@ -47,12 +47,13 @@ import java.security.AccessController
 import java.security.PrivilegedAction
 import java.security.interfaces.RSAPublicKey
 import org.apache.clerezza.ssl.keygen.KeygenService
-import org.apache.clerezza.platform.users.WebIdGraphsService
 import java.net.URI
 import org.apache.clerezza.rdf.scala.utils.{RichGraphNode, EasyGraphNode, EasyGraph}
 import org.apache.clerezza.rdf.ontologies._
 import org.slf4j.scala.Logging
 import javax.security.auth.Subject
+import org.apache.clerezza.platform.users.{WebIdInfo, WebIdGraphsService}
+
 
 object ProfilePanel {
 	val webIdTemplate = classOf[ProfilePanel].getAnnotation(classOf[Path]).value+"#me"
@@ -95,11 +96,13 @@ class ProfilePanel extends Logging {
 	private def getPersonalProfile(userName: String, info: UriInfo): EasyGraphNode = {
 		val profileDocUri = getSuggestedPPDUri(userName)
 
-		val (user,profile) = AccessController.doPrivileged(new PrivilegedAction[Pair[Resource,EasyGraphNode]] {
-			def run: Pair[Resource,EasyGraphNode] = {
+		val profile = AccessController.doPrivileged(new PrivilegedAction[EasyGraphNode] {
+			def run: EasyGraphNode = {
 				val userInSysGraph = userManager.getUserInSystemGraph(userName)
+				val user = userInSysGraph.getNode
 				val profile = userInSysGraph.getNode match {
-					case blank: BNode => { //user does not have a webId yet
+					case blank: BNode => {
+						//user does not have a webId yet
 						val g = new EasyGraph()
 						(
 							g.bnode ⟝ CONTROLPANEL.isLocalProfile ⟶ true
@@ -111,35 +114,34 @@ class ProfilePanel extends Logging {
 						var webIDInfo = webIdGraphsService.getWebIdInfo(webid)
 						var res = new EasyGraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.localPublicUserData))
 						(res ⟝ CONTROLPANEL.isLocalProfile ⟶ webIDInfo.isLocal
-							  ⟝ FOAF.primaryTopic ⟶ webid)
+							⟝ FOAF.primaryTopic ⟶ webid)
 						if (webIDInfo.isLocal) {
 							//the reason we need to call pingCollUri is we need a full URI because lack of support for relative URIs
-							res ⟝ PINGBACK.to ⟶ new UriRef(PingBack.pingCollUri(userName,info))
+							res ⟝ PINGBACK.to ⟶ new UriRef(PingBack.pingCollUri(userName, info))
 						}
 						res
 					}
 				}
-				(userInSysGraph.getNode,profile)
+				val friendInfo = for (kn: Triple <- profile.getGraph.filter(user.asInstanceOf[NonLiteral], FOAF.knows, null)
+				                      if kn.getObject.isInstanceOf[UriRef];
+				                      friend = kn.getObject.asInstanceOf[UriRef]
+				                      if (friend != profileDocUri)
+				) yield {
+					try {
+						val friendGraph = tcManager.getGraph(FoafBrowser.removeHash(friend))
+						new RichGraphNode(friend, friendGraph).getNodeContext
+					} catch {
+						case e => {
+							logger.warn("cought exception trying to fetch graph - these graphs should already be in store " + friend, e)
+							new EasyGraph().add(friend, SKOS.note, "problem with fetching this node: " + e)
+						}
+					}
+				}
+				for (g <- friendInfo) profile.graph.addAll(g)
+				profile
 			}
 		})
 
-		val friendInfo = for (kn: Triple <- profile.getGraph.filter(user.asInstanceOf[NonLiteral], FOAF.knows, null)
-		                     if kn.getObject.isInstanceOf[UriRef];
-		                     friend = kn.getObject.asInstanceOf[UriRef]
-									if (friend != profileDocUri)
-							) yield {
-			try {
-				tcManager.getGraph(friend)
-				new RichGraphNode(friend, tcManager.getGraph(friend)).getNodeContext
-			} catch {
-				case e => {
-					logger.warn("cought exception trying to fetch graph - these graphs should already be in store "+friend,e)
-					new EasyGraph().add(friend,SKOS.note,"problem with fetching this node: "+e)
-				}
-			}
-		}
-
-		for (g <- friendInfo) profile.graph.addAll(g)
 
 		(profile ∈   PLATFORM.HeadedPage
 		         ∈  CONTROLPANEL.ProfilePage)
@@ -333,18 +335,18 @@ class ProfilePanel extends Logging {
 	                  @FormParam("webId") webId: UriRef,
 	                  @FormParam("name") name: String,
 	                  @FormParam("description") description: String): Response = {
-		 AccessController.doPrivileged(new PrivilegedAction[Response] {
-			def run: Response = {
-				val webIDInfo = webIdGraphsService.getWebIdInfo(webId)
-				val agent: GraphNode = new GraphNode(webId, webIDInfo.localPublicUserData)
-				agent.deleteProperties(FOAF.name)
-				agent.addPropertyValue(FOAF.name, name)
-				agent.deleteProperties(DC.description)
-				agent.addPropertyValue(DC.description, description)
-				logger.debug("local graph (uri: {}) is now of size {}".format( webIDInfo.webId, webIDInfo.localPublicUserData.size))
-				RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
+		val webIDInfo = AccessController.doPrivileged(new PrivilegedAction[WebIdInfo] {
+			def run = {
+				webIdGraphsService.getWebIdInfo(webId)
 			}
-		 })
+		})
+		val agent: GraphNode = new GraphNode(webId, webIDInfo.localPublicUserData)
+		agent.deleteProperties(FOAF.name)
+		agent.addPropertyValue(FOAF.name, name)
+		agent.deleteProperties(DC.description)
+		agent.addPropertyValue(DC.description, description)
+		logger.debug("local graph (uri: {}) is now of size {}".format(webIDInfo.webId, webIDInfo.localPublicUserData.size))
+		RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
 	}
 
 	protected def bindUserManager(usermanager: UserManager): Unit = {
