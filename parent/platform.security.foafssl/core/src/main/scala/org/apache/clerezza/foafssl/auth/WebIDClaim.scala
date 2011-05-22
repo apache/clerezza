@@ -29,8 +29,8 @@ import java.util.LinkedList
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.security.PublicKey
-import org.apache.clerezza.platform.security.auth.PrincipalImpl
 import scala.None
+import org.apache.clerezza.platform.security.auth.WebIdPrincipal
 
 /**
  * An X509 Claim maintains information about the proofs associated with claims
@@ -173,20 +173,7 @@ class WebIDVerificationError(msg: String) extends Error(msg) {
 
 }
 
-object WebIdPrincipal {
-	//todo: not at all a satisfactory username method. Find something better.
-	def userName(webId: UriRef) = for (c <- webId.getUnicodeString) yield
-		c match {
-			case ':' => '_';
-			case '#' => '_';
-			case '/' => '_';
-			case _ => c
-		}
-}
 
-class WebIdPrincipal(val webId: UriRef) extends PrincipalImpl(WebIdPrincipal.userName(webId)) {
-
-}
 
 
 object Verification extends Enumeration {

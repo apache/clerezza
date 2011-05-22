@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,43 +16,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.clerezza.platform.security.auth;
+
+import org.apache.clerezza.rdf.core.UriRef;
 
 import java.security.Principal;
 
 /**
+ * A Principal for WebIDs
+ * (as there can be some for Social Security numbers,...)
  *
- * @author clemens
+ * @author bblfish
+ * @created: 21/05/2011
  */
-public class PrincipalImpl implements Principal {
-	private String name;
+public class WebIdPrincipal implements Principal {
+	protected UriRef webid;
 
-	public PrincipalImpl(String name){
-		this.name = name;
-	}
-	
-	@Override
-	public String getName() {
-		return name;
+	public WebIdPrincipal(UriRef webid) {
+		this.webid = webid;
 	}
 
-	@Override
+	public UriRef getWebId() { return webid; }
+
+    @Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof PrincipalImpl)) {
+		if (!(obj instanceof WebIdPrincipal)) {
 			return false;
 		}
-		return getName().equals(((PrincipalImpl)obj).getName());
+		return webid.equals(((WebIdPrincipal)obj).webid);
 	}
 
 	@Override
 	public String toString() {
-		return "Username Principal: '"+name+"'";
+		return "WebId Principal: '"+getName()+"'";
 	}
-
 
 	@Override
 	public int hashCode() {
-		return getName().hashCode();
+		return webid.hashCode();
 	}
 
+	@Override
+	public String getName() {
+		return webid.getUnicodeString();
+	}
 }

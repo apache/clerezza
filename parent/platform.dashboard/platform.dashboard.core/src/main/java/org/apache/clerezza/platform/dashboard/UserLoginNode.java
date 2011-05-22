@@ -37,6 +37,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
 
+import javax.security.auth.Subject;
+
 /**
  * The login name is added to the user context node. The name is accessable via
  * ssp template by using the context node
@@ -59,11 +61,11 @@ public class UserLoginNode implements UserContextProvider {
 		GraphNode agent = AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
 			@Override
 			public GraphNode run() {
-				final String userName = UserUtil.getUserName(context);
-				if (userName == null) {
+				final Subject subject = UserUtil.getSubject(context);
+				if (subject == null) {
 					return null;
 				}
-				return userManager.getUserGraphNode(userName);
+				return userManager.getUserGraphNode(subject);
 			}
 		});
 		if (agent != null) {
