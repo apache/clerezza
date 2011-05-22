@@ -29,6 +29,7 @@ import xml.{NodeSeq, Text, Node}
 import java.net.{URLEncoder, URL}
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.rdf.ontologies.{FOAF, RDF, RDFS}
+import javax.swing.UIDefaults.LazyInputMap
 
 /**
  * static methods used by person panel and that could possibly be moved to a library
@@ -71,7 +72,7 @@ object person_panel {
 			case uri: UriRef => uri.getUnicodeString
 			case _ => "http://upload.wikimedia.org/wikipedia/commons/0/0a/Gnome-stock_person.svg"
 		}
-		<a href={"people?uri="+encode(p*)}><img class="mugshot" src={pix}/></a>
+		<a href={"person?uri="+encode(p*)}><img class="mugshot" src={pix}/></a>
 	}
 
 	def personInABox(p: RichGraphNode): NodeSeq = {
@@ -117,6 +118,7 @@ object person_panel {
 		return <a href={res*}>{label}</a>
 	}
 
+	def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#"+s)
 
 }
 
@@ -149,16 +151,17 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	//lazy val webIdInfo =  $[WebProxy].getResourceInfo(webIdUri)
 	//lazy val agent : RichGraphNode=  $[WebProxy].fetchSemantics(webIdUri) match { case Some(grph) => grph; case None => res};
 	lazy val agent : RichGraphNode = res / FOAF.primaryTopic
+	lazy val user= context/platform("user")
+	lazy val username = user/platform("userName")*
+	lazy val local = username != ""
 	//
 	// setting some header info
 	//
 
 	resultDocModifier.addStyleSheet("/account-control-panel/style/profile.css");
 	resultDocModifier.setTitle("Profile Viewer");
-	resultDocModifier.addNodes2Elem("tx-module", <h1>Account Control Panel</h1>);
+	resultDocModifier.addNodes2Elem("tx-module", <h1>Profile Viewer</h1>);
 	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li class="tx-active"><a href="#">Profile Viewer</a></li>);
-	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="control-panel">Settings</a></li>);
-	resultDocModifier.addNodes2Elem("tx-module-tabs-ol", <li><a href="profile">Profile</a></li>);
 
 	//
 	// the content itself.
@@ -167,18 +170,8 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 
 	override def content = <div id="tx-content">
 		<h2>Profile Viewer</h2>
-		<form action="profile/addContact" method="POST">
-			<table>
-				{val typ: Resource = (agent / RDF.`type`).!
-			typ match {
-				case FOAF.Person => personHtml(agent)
-				case FOAF.Group => groupHtml(agent)
-				case FOAF.Agent => agentHtml(agent)
-				case _ => allAgentsHtml(agent.getGraph)
-			}}
-			</table>
-				<input type="submit" value="add contacts"/>
-		</form>
+		{if (local) <form action="browser/addContact" method="POST">{maintable}</form>
+		 else maintable }
 		<code>
 			<pre>{val s = org.apache.clerezza.rdf.core.serializedform.Serializer.getInstance();
 			import java.io._
@@ -188,6 +181,17 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 			}</pre>
 		</code>
 	</div>
+
+	 def maintable = <table>
+		 {val typ: Resource = (agent / RDF.`type`).!
+		 typ match {
+			 case FOAF.Person => personHtml(agent)
+			 case FOAF.Group => groupHtml(agent)
+			 case FOAF.Agent => agentHtml(agent)
+			 case _ => allAgentsHtml(agent.getGraph)
+		 }}
+	 </table>
+
 
 
 	//
@@ -241,9 +245,9 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 		//todo: only first image is shown
 		{<tr><td colspan="2">Person</td></tr>}++
 		ifE(p!){   case u:UriRef=> if (definedHere(u))
-			<tr><td><input type="checkbox" name="webId" value={p*}/>Add as contact</td><td><a href={p*}>{p*}</a></td></tr>
+			<tr>{if (local) <td><input type="checkbox" name="webId" value={p*}/>Add as contact</td> else <td>WebID</td>}<td><a href={p*}>{p*}</a></td></tr>
 			else
-			<tr><td><a href=""/>Explore</td><td><a href={"people?uri="+encode(u.getUnicodeString)}>{p*}</a></td></tr>
+			<tr><td><a href=""/>Explore</td><td><a href={"person?uri="+encode(u.getUnicodeString)}>{p*}</a></td></tr>
 					  case _ => emptyText;
 		}++
 		ifE(p/FOAF.name){f=>(<tr><td>Name:</td><td>{f*}</td></tr>)}++

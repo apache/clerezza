@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.clerezza.platform.accountcontrolpanel
 
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
@@ -26,36 +27,47 @@ import org.osgi.service.component.ComponentContext
 import javax.ws.rs._
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.UriInfo
-import org.apache.clerezza.rdf.scala.utils.{EasyGraph, RichGraphNode}
+import org.apache.clerezza.rdf.scala.utils.EasyGraph
 import collection.JavaConversions._
 import org.slf4j.scala._
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
+import org.apache.clerezza.platform.usermanager.UserManager
+import org.apache.clerezza.platform.security.UserUtil
+import java.security.{PrivilegedAction, AccessController}
 
 /**
- * Presents a panel where the user can create a webid and edit her profile.
+ * A Panel for browsing linked data of friends. This is a publicly accessible browser.
+ * It is different from the PersonPanel, which is for people with local accounts who wish
+ * to add friend to their local accounts.
  *
  * @author bblfish
  */
-@Path("/user/{id}/people")
-class PersonPanel extends Logging {
+@Path("/browse")
+class FoafBrowser extends Logging {
 	import org.apache.clerezza.rdf.scala.utils.EasyGraph._
 
 	protected def activate(componentContext: ComponentContext): Unit = {
 //		this.componentContext = componentContext
 	}
 
+	/**
+	 * Specialised for browsing people profiles
+	 */
 	@GET
+	@Path("person")
 	def viewPerson(@Context uriInfo: UriInfo,
 						@QueryParam("uri") uri: UriRef): GraphNode = {
 		if (uri != null) {//show some error page
-			System.out.println("uri =="+uri.getUnicodeString)
+			logger.info("id =="+uri.getUnicodeString)
 		}
 
 		//val foaf = descriptionProvider.fetchSemantics(uri, Cache.Fetch)
 		//so here the initial fetch could be used to decide if information is available at all,
 		//ie, if the URL is accessible, if there are error conditions - try later for example...
-		val profile = tcManager.getGraph(uri)
+		 val profile = AccessController.doPrivileged(new PrivilegedAction[Graph]() {
+			 def run() = tcManager.getGraph(uri)
+		 });
 
 		val inference = new EasyGraph(new UnionMGraph(new SimpleMGraph(),profile))
 
