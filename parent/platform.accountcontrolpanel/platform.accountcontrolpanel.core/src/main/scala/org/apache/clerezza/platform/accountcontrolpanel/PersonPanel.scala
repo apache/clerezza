@@ -33,7 +33,12 @@ import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 
 /**
- * Presents a panel where the user can create a webid and edit her profile.
+ * A panel where one can view remote users, in order to then add them as friends,
+ * see their friends... This is tied to a specific local user, as each user may
+ * in the future have different views on remote profiles.
+ *
+ * One should probably distinguish between local users that can create profiles, and so
+ * that can add new friends, and remote users that can only browser the web of relations.
  *
  * @author bblfish
  */
