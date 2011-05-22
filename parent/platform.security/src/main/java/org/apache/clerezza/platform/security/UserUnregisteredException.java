@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.platform.security;
 
+import java.security.Principal;
+
 /**
  * Thrown if a user with the specified name is supposed to be but not registered
  * in the system graph
@@ -26,7 +28,7 @@ package org.apache.clerezza.platform.security;
  */
 public class UserUnregisteredException extends RuntimeException {
 
-	public UserUnregisteredException(String name) {
-		super("User " + name + " does not exist in the system graph");
+	public UserUnregisteredException(Principal name) {
+		super("User with principal " + name + " does not exist in the system graph");
 	}
 }

@@ -19,12 +19,7 @@
 package org.apache.clerezza.platform.usermanager;
 
 import java.io.UnsupportedEncodingException;
-import java.security.AccessController;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Policy;
-import java.security.PrivilegedAction;
-import java.security.SecurityPermission;
+import java.security.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,19 +27,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.platform.config.SystemConfig;
+import org.apache.clerezza.platform.security.auth.WebIdPrincipal;
+import org.apache.clerezza.platform.users.WebIdGraphsService;
+import org.apache.clerezza.platform.users.WebIdInfo;
+import org.apache.clerezza.rdf.core.*;
+import org.apache.clerezza.rdf.utils.UnionMGraph;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.SecuredMGraph;
 import org.apache.clerezza.rdf.core.access.TcManager;
@@ -60,6 +53,8 @@ import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.SIOC;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
+import javax.security.auth.Subject;
+
 /**
  * @author hasan, tio
  */
@@ -72,6 +67,9 @@ public class UserManagerImpl implements UserManager {
 
 	@Reference
 	TcManager tcManager;
+
+	@Reference
+	WebIdGraphsService webIdGraphsService;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -702,21 +700,44 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public GraphNode getUserGraphNode(final String name) {
+	public GraphNode getUserGraphNode(final Subject subject) {
 		LockableMGraph systemGraph = getSystemGraph();
-		NonLiteral user = getUserByUserName(name);
+		NonLiteral user = getUserBySubject(subject);
+
 		if (user != null) {
-			GraphNode userNodeInSystemGraph =
-					new GraphNode(getUserByUserName(name), systemGraph);
+			GraphNode userNodeInSystemGraph = new GraphNode(user, systemGraph);
 			MGraph copiedUserContext = new SimpleMGraph(userNodeInSystemGraph.getNodeContext());
-			return new GraphNode(userNodeInSystemGraph.getNode(),
-					copiedUserContext);
+			if (user instanceof UriRef) {
+				WebIdInfo webIdInfo = webIdGraphsService.getWebIdInfo((UriRef) user);
+				Graph graph = new GraphNode(user, webIdInfo.publicProfile()).getNodeContext();
+				copiedUserContext.addAll(graph);
+			}
+			return new GraphNode(user,copiedUserContext);
 		} else {
 			return null;
 		}
 	}
 
-	private NonLiteral getUserByUserName(String name) {
+	private NonLiteral getUserBySubject(final Subject subject) {
+		LockableMGraph systemGraph = getSystemGraph();
+		Lock readLock = systemGraph.getLock().readLock();
+		readLock.lock();
+		try {
+			for (Principal principal : subject.getPrincipals()) {
+				//here we can verify that all principals point to the same subject
+				//but currently we just take the first. Also the method could return a list of resources
+				if (principal instanceof WebIdPrincipal) {
+					return ((WebIdPrincipal) principal).getWebId();
+				} else return getUserByName(principal.getName());
+			}
+		} finally {
+			readLock.unlock();
+		}
+		return null;
+	}
+
+
+	private NonLiteral getUserByUserName(final String name) {
 		LockableMGraph systemGraph = getSystemGraph();
 		Lock readLock = systemGraph.getLock().readLock();
 		readLock.lock();
