@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -160,6 +160,10 @@ class WebProxy extends WeightedTcProvider with Logging {
 	 */
 	def getGraph(name: UriRef, updatePolicy: Cache.Value): Graph = {
 		logger.debug("getting graph " + name)
+		if (name.getUnicodeString.indexOf('#') != -1) {
+			logger.debug("not dereferencing URI with hash sign. Please see CLEREZZA-533 for debate.")
+			throw new NoSuchEntityException(name)
+		}
 		val cacheGraphName = new UriRef("urn:x-localinstance:/cache/" + name.getUnicodeString)
 		//todo: follow redirects and keep track of them
 		//todo: keep track of headers especially date and etag. test for etag similarity
@@ -223,6 +227,8 @@ class WebProxy extends WeightedTcProvider with Logging {
 				f match {
 					//the default, well established format
 					case SupportedFormat.RDF_XML => "1.0";
+					//n3 is a bit less well defined and/or many parsers supports only subsets
+					case SupportedFormat.N3 => "0.6";
 					//we prefer most dedicated formats to (X)HTML, not because those are "better",
 					//but just because it is quite likely that the pure RDF format will be
 					//lighter (contain less presentation markup), and it is also possible that HTML does not
