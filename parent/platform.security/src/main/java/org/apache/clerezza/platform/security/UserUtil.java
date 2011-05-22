@@ -74,7 +74,7 @@ public class UserUtil {
 		if (iter.hasNext()) {
 			Principal p = iter.next();
 			if (p instanceof PrincipalImpl)
-				name = iter.next().getName();
+				name = p.getName();
 			else {
 				//one could find the username by searching the RDB, but that would have to be
 				//a service.
