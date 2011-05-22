@@ -160,10 +160,6 @@ class WebProxy extends WeightedTcProvider with Logging {
 	 */
 	def getGraph(name: UriRef, updatePolicy: Cache.Value): Graph = {
 		logger.debug("getting graph " + name)
-		if (name.getUnicodeString.indexOf('#') != -1) {
-			logger.debug("not dereferencing URI with hash sign")
-			throw new NoSuchEntityException(name)
-		}
 		val cacheGraphName = new UriRef("urn:x-localinstance:/cache/" + name.getUnicodeString)
 		//todo: follow redirects and keep track of them
 		//todo: keep track of headers especially date and etag. test for etag similarity
@@ -189,15 +185,31 @@ class WebProxy extends WeightedTcProvider with Logging {
 				tcProvider.createGraph(cacheGraphName, remoteTriples)
 			}
 		}
-		//the logic here is not quite right, as we don't look at time of previous fetch.
-		updatePolicy match {
-			case Cache.Fetch => try {
-				tcProvider.getGraph(cacheGraphName)
-			} catch {
-				case e: NoSuchEntityException => updateGraph(); tcProvider.getGraph(cacheGraphName)
+		try {
+			//the logic here is not quite right, as we don't look at time of previous fetch.
+			updatePolicy match {
+				case Cache.Fetch => try {
+					tcProvider.getGraph(cacheGraphName)
+				} catch {
+					case e: NoSuchEntityException => updateGraph(); tcProvider.getGraph(cacheGraphName)
+				}
+				case Cache.ForceUpdate => updateGraph(); tcProvider.getGraph(cacheGraphName)
+				case Cache.CacheOnly => tcProvider.getGraph(cacheGraphName)
 			}
-			case Cache.ForceUpdate => updateGraph(); tcProvider.getGraph(cacheGraphName)
-			case Cache.CacheOnly => tcProvider.getGraph(cacheGraphName)
+		} catch {
+			case ex: PrivilegedActionException => {
+				var cause: Throwable = ex.getCause
+				if (cause.isInstanceOf[UnsupportedOperationException]) {
+					throw cause.asInstanceOf[UnsupportedOperationException]
+				}
+				if (cause.isInstanceOf[EntityAlreadyExistsException]) {
+					throw cause.asInstanceOf[EntityAlreadyExistsException]
+				}
+				if (cause.isInstanceOf[RuntimeException]) {
+					throw cause.asInstanceOf[RuntimeException]
+				}
+				throw new RuntimeException(cause)
+			}
 		}
 	}
 
@@ -211,8 +223,6 @@ class WebProxy extends WeightedTcProvider with Logging {
 				f match {
 					//the default, well established format
 					case SupportedFormat.RDF_XML => "1.0";
-					//n3 is a bit less well defined and/or many parsers supports only subsets
-					case SupportedFormat.N3 => "0.6";
 					//we prefer most dedicated formats to (X)HTML, not because those are "better",
 					//but just because it is quite likely that the pure RDF format will be
 					//lighter (contain less presentation markup), and it is also possible that HTML does not
