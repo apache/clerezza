@@ -72,7 +72,7 @@ object person_panel {
 			case uri: UriRef => uri.getUnicodeString
 			case _ => "http://upload.wikimedia.org/wikipedia/commons/0/0a/Gnome-stock_person.svg"
 		}
-		<a href={"person?uri="+encode(p*)}><img class="mugshot" src={pix}/></a>
+		<a href={"/browse/person?uri="+encode(p*)}><img class="mugshot" src={pix}/></a>
 	}
 
 	def personInABox(p: RichGraphNode): NodeSeq = {
@@ -153,7 +153,7 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	lazy val agent : RichGraphNode = res / FOAF.primaryTopic
 	lazy val user= context/platform("user")
 	lazy val username = user/platform("userName")*
-	lazy val local = username != ""
+	lazy val local = username != "" && username != "anonymous"
 	//
 	// setting some header info
 	//
@@ -170,7 +170,9 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 
 	override def content = <div id="tx-content">
 		<h2>Profile Viewer</h2>
-		{if (local) <form action="browser/addContact" method="POST">{maintable}</form>
+		{if (local) <form action={"/user/"+username+"/profile/addContact"} method="POST">
+			<input type="submit" value="Add Contacts"/>{maintable}<input type="submit" value="Add Contacts"/>
+		</form>
 		 else maintable }
 		<code>
 			<pre>{val s = org.apache.clerezza.rdf.core.serializedform.Serializer.getInstance();
