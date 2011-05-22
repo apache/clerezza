@@ -30,6 +30,7 @@ import java.net.{URLEncoder, URL}
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.rdf.ontologies.{FOAF, RDF, RDFS}
 import javax.swing.UIDefaults.LazyInputMap
+import org.apache.clerezza.platform.accountcontrolpanel.FoafBrowser
 
 /**
  * static methods used by person panel and that could possibly be moved to a library
@@ -151,6 +152,7 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	//lazy val webIdInfo =  $[WebProxy].getResourceInfo(webIdUri)
 	//lazy val agent : RichGraphNode=  $[WebProxy].fetchSemantics(webIdUri) match { case Some(grph) => grph; case None => res};
 	lazy val agent : RichGraphNode = res / FOAF.primaryTopic
+	lazy val agentDoc = FoafBrowser.removeHash(agent.getNode.asInstanceOf[UriRef]).getUnicodeString
 	lazy val user= context/platform("user")
 	lazy val username = user/platform("userName")*
 	lazy val local = username != "" && username != "anonymous"
@@ -239,7 +241,7 @@ class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 	 * in the cache?
 	 *
 	 */
-	def definedHere(uri: UriRef):Boolean = uri.getUnicodeString.startsWith(agent*)
+	def definedHere(uri: UriRef):Boolean = uri.getUnicodeString.startsWith(agentDoc)
 
 
 	def personHtml(p: RichGraphNode): NodeSeq = {

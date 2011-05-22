@@ -148,7 +148,7 @@ class ProfilePanelXHTML(arguments: XmlResult.Arguments) extends XmlResult(argume
 	  </form>
 
 	  <h3>Contacts</h3>
-	  <form id="addContact" method="get" action="people">
+	  <form id="addContact" method="get" action="/browse/person">
 	  <table>{ var i =0
 		  val friends = for (friend <- agent/FOAF.knows) yield {
 		  import person_panel._
