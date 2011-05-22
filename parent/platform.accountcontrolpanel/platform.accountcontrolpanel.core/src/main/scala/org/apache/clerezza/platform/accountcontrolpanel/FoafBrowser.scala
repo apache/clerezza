@@ -20,9 +20,6 @@
 package org.apache.clerezza.platform.accountcontrolpanel
 
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
-import org.apache.clerezza.rdf.core._
-import access.TcManager
-import impl.SimpleMGraph
 import org.osgi.service.component.ComponentContext
 import javax.ws.rs._
 import javax.ws.rs.core.Context
@@ -32,9 +29,19 @@ import collection.JavaConversions._
 import org.slf4j.scala._
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
-import org.apache.clerezza.platform.usermanager.UserManager
-import org.apache.clerezza.platform.security.UserUtil
 import java.security.{PrivilegedAction, AccessController}
+import org.apache.clerezza.rdf.core._
+import access.TcManager
+import impl.SimpleMGraph
+
+object FoafBrowser {
+	def removeHash(uri: UriRef) = {
+		val uriStr =uri.getUnicodeString
+		val hashpos = uriStr.indexOf("#")
+		if (hashpos>0)  new UriRef(uriStr.substring(0,hashpos))
+		else uri
+	}
+}
 
 /**
  * A Panel for browsing linked data of friends. This is a publicly accessible browser.
@@ -46,6 +53,7 @@ import java.security.{PrivilegedAction, AccessController}
 @Path("/browse")
 class FoafBrowser extends Logging {
 	import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+	import org.apache.clerezza.platform.accountcontrolpanel.FoafBrowser._
 
 	protected def activate(componentContext: ComponentContext): Unit = {
 //		this.componentContext = componentContext
@@ -66,7 +74,7 @@ class FoafBrowser extends Logging {
 		//so here the initial fetch could be used to decide if information is available at all,
 		//ie, if the URL is accessible, if there are error conditions - try later for example...
 		 val profile = AccessController.doPrivileged(new PrivilegedAction[Graph]() {
-			 def run() = tcManager.getGraph(uri)
+			 def run() = tcManager.getGraph(removeHash (uri))
 		 });
 
 		val inference = new EasyGraph(new UnionMGraph(new SimpleMGraph(),profile))
