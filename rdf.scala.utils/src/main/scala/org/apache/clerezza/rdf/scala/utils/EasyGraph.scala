@@ -162,7 +162,7 @@ class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
 	 */
 	def add(subj: NonLiteral, relation: UriRef, obj: Resource ) = {
 		graph.add(new TripleImpl(subj,relation,obj))
-		graph
+		this
 	}
 
 	/**
@@ -173,7 +173,7 @@ class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
 	 */
 	def addType(subj: NonLiteral, clazz: UriRef) = {
 		graph.add(new TripleImpl(subj,RDF.`type`,clazz))
-		graph
+		this
 	}
 
 	//note one could have an apply for a Literal that would return a InversePredicate
