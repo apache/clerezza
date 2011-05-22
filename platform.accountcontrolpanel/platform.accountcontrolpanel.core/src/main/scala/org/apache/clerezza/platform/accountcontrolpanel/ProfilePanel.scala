@@ -52,6 +52,7 @@ import java.net.URI
 import org.apache.clerezza.rdf.scala.utils.{RichGraphNode, EasyGraphNode, EasyGraph}
 import org.apache.clerezza.rdf.ontologies._
 import org.slf4j.scala.Logging
+import javax.security.auth.Subject
 
 object ProfilePanel {
 	val webIdTemplate = classOf[ProfilePanel].getAnnotation(classOf[Path]).value+"#me"
@@ -194,10 +195,10 @@ class ProfilePanel extends Logging {
 	               @FormParam("webId") newContacts: java.util.List[UriRef]): Response = {
 		import collection.JavaConversions._
 		if (newContacts.size > 0) {
-			val userName: String = UserUtil.getCurrentUserName
+			val subject = UserUtil.getCurrentUserName
 			var me: GraphNode = AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
 				def run: GraphNode = {
-					return userManager.getUserGraphNode(userName)
+					return userManager.getUserGraphNode(subject)
 				}
 			})
 			for (contactWebID <- newContacts) {
