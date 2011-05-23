@@ -205,7 +205,9 @@ public class ClerezzaApp {
 	public void waitForStop() throws Throwable {
 		FrameworkEvent event = null;
 		try {
-			event = felixInstance.waitForStop(0);
+			if (felixInstance != null) {
+				event = felixInstance.waitForStop(0);
+			}
 			setExitCode(0);
 		} catch (Throwable t) {
 			setExitCode(-1);
