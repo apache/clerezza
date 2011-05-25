@@ -24,7 +24,7 @@
         <property name="javax.ws.rs" type="Boolean" value="true"/>
         <property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.SettingsPanel"/>
         <reference name="configurationAdmin" interface="org.osgi.service.cm.ConfigurationAdmin" cardinality="0..1" policy="dynamic" bind="bindConfigurationAdmin" unbind="unbindConfigurationAdmin"/>
-        <reference name="systemGraph" interface="org.apache.clerezza.rdf.core.MGraph" cardinality="1..1" policy="static" target="(name=http://tpf.localhost/system.graph)" bind="bindSystemGraph" unbind="unbindSystemGraph"/>
+        <reference name="systemGraph" interface="org.apache.clerezza.rdf.core.MGraph" cardinality="1..1" policy="static" target="(name=urn:x-localinstance:/system.graph)" bind="bindSystemGraph" unbind="unbindSystemGraph"/>
         <reference name="cgProvider" interface="org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider" cardinality="1..1" policy="static" bind="bindCgProvider" unbind="unbindCgProvider"/>
     </scr:component>
     <scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.pages.settings_panel">

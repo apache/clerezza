@@ -40,7 +40,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 public class RemoteConceptsDescriptionManager {
 
 	private UriRef REMOTE_CONCEPTS_DESCRIPTION_MGRAPH =
-			new UriRef("http://tpf.localhost/remote.concepts.description");
+			new UriRef("urn:x-localinstance:/remote.concepts.description");
 
 	/**
 	 * Stores SKOS:prefLabel and RDFS.comment of concepts available in the

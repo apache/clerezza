@@ -14,7 +14,7 @@
         <reference name="webIdService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
         cardinality="1..1" policy="static" bind="bindWebIdService" unbind="unbindWebIdService"/>
         <reference name="systemGraph" interface="org.apache.clerezza.rdf.core.access.LockableMGraph"
-        cardinality="1..1" policy="static" target="(name=http://tpf.localhost/system.graph)"
+        cardinality="1..1" policy="static" target="(name=urn:x-localinstance:/system.graph)"
         bind="bindSystemGraph" unbind="unbindSystemGraph"/>
 	</scr:component>
 	<scr:component enabled="true" name="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService">

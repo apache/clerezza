@@ -77,7 +77,7 @@ public class SecurityTest {
 				result.add(new TcPermission("http://example.org/graph/alreadyexists", "readwrite"));
 				result.add(new TcPermission("http://example.org/read/graph", "read"));
 				result.add(new TcPermission("http://example.org/area/allowed/*", "readwrite"));
-				result.add(new TcPermission("http://zz.localhost/graph-access.graph", "readwrite"));
+				result.add(new TcPermission("urn:x-localinstance:/graph-access.graph", "readwrite"));
 				//result.add(new AllPermission());
 				result.add(new RuntimePermission("*"));
 				result.add(new ReflectPermission("suppressAccessChecks"));
@@ -136,7 +136,7 @@ public class SecurityTest {
 		TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
 				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
 		//new FilePermission("/etc", "write").toString()));
-		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));
+		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
 		System.out.print(ag.toString());
 		TcManager.getInstance().getMGraph(graphUri);
 	}
@@ -147,7 +147,7 @@ public class SecurityTest {
 		TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
 				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
 		//new FilePermission("/etc", "write").toString()));
-		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));
+		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
 		System.out.print(ag.toString());
 		TcManager.getInstance().createMGraph(graphUri);
 	}
@@ -158,7 +158,7 @@ public class SecurityTest {
 		TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissionStrings(graphUri,
 				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
 		//new FilePermission("/etc", "write").toString()));
-		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("http://zz.localhost/graph-access.graph"));
+		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
 		System.out.print(ag.toString());
 		TcManager.getInstance().createMGraph(graphUri);
 	}

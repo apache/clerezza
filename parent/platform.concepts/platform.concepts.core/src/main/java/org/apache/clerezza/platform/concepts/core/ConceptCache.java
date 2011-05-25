@@ -51,7 +51,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 class ConceptCache {
 	private UriRef sparqlEndPoint;
 	private UriRef defaultGraph;
-	private UriRef CONCEPT_CACHE_MGRAPH = new UriRef("http://tpf.localhost/concept.cache");
+	private UriRef CONCEPT_CACHE_MGRAPH = new UriRef("urn:x-localinstance:/concept.cache");
 
 	/**
 	 * Constructs a {@link ConceptCache} for the specified SPARQL EndPoint and

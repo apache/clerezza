@@ -54,7 +54,7 @@ import org.osgi.service.component.ComponentContext;
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/graphs/smush")
 public class Smush {
-	private final UriRef tBoxName = new UriRef("http://tpf.localhost/tbox.graph");
+	private final UriRef tBoxName = new UriRef("urn:x-localinstance:/tbox.graph");
 
 	@Reference
 	private TcManager tcManager;
