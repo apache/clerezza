@@ -57,11 +57,21 @@ public class Constants {
 	 */
 	public static final UriRef CONTENT_GRAPH_URI =
 			new UriRef(CONTENT_GRAPH_URI_STRING);
+
+	/**
+	 * all hosts uri-prefix, uri scheme for references relative to the local
+	 * instance.
+	 */
+	public static final String URN_LOCAL_INSTANCE = "urn:x-localinstance:";
+
 	/**
 	 * all hosts uri-prefix, uri scheme for which the resource are also named
 	 * with the any schema/authority the instance can be reached with instead
 	 * of this prefix
+	 *
+	 * @deprecated use URN_LOCAL_INSTANCE
 	 */
-	public static final String ALL_HOSTS_URI_PREFIX = "urn:x-allhosts:";
+	@Deprecated
+	public static final String ALL_HOSTS_URI_PREFIX = URN_LOCAL_INSTANCE;
 
 }

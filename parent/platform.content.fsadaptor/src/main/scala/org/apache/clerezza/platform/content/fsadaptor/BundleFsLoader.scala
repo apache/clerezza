@@ -44,13 +44,17 @@ import org.osgi.service.startlevel.StartLevel
 import org.slf4j.LoggerFactory
 import scala.util._
 
-object BundleFsLoader {
-	private val log = LoggerFactory.getLogger(classOf[BundleFsLoader])
-}
+/**
+ * This weighted TcProvider provides a graph named urn:x-localinstance/web-resources.graph which contains descriptions
+ * of the files below the CLEREZZA-INF/web-resources directory in every bundles. The
+ * name of these descriptions (i.e. the rdf resources) use the urn:x-localinstance uri scheme to indicate that
+ * they are local to the instance and they will thus be returned as description
+ * for all uris with a local authority and the specified path-section.
+ */
 class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider {
 
-	private val RESOURCE_MGRAPH_URI = new UriRef("http://zz.localhost/web-resources.graph")
-	private val cacheGraphPrefix = "http://zz.localhost/web-resources-cache.graph"
+	private val RESOURCE_MGRAPH_URI = new UriRef(Constants.URN_LOCAL_INSTANCE+"/web-resources.graph")
+	private val cacheGraphPrefix = Constants.URN_LOCAL_INSTANCE+"/web-resources-cache.graph"
 	private var currentCacheUri: UriRef = null
 
 	private var tcManager: TcManager = null
@@ -252,4 +256,7 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 		this.startLevel = null;
 	}
 	
+}
+object BundleFsLoader {
+	private val log = LoggerFactory.getLogger(classOf[BundleFsLoader])
 }
