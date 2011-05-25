@@ -77,6 +77,7 @@ public class ContentGraphProvider {
 	private ReentrantReadWriteLock configLock = new ReentrantReadWriteLock();
 
 	protected void activate(ComponentContext context) {
+		GraphNameTransitioner.renameGraphsWithOldNames(tcManager);
 		try {
 			tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
 		} catch (NoSuchEntityException nsee) {

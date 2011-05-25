@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 		referenceInterface=LockableMGraph.class,
 		target=SystemConfig.SYSTEM_GRAPH_FILTER)})
 public class TypePrioritizer {
-	public static final UriRef typePriorityListUri = new UriRef("http://tpf.localhost/typePriorityList");
+	public static final UriRef typePriorityListUri = new UriRef("urn:x-localinstance:/typePriorityList");
 
 	private List<UriRef> typePriorityList;
 	private static final Logger log = LoggerFactory.getLogger(TypePrioritizer.class);

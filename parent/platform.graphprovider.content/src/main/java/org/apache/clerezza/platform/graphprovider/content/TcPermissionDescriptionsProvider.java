@@ -43,11 +43,11 @@ public class TcPermissionDescriptionsProvider implements PermissionDescriptionsP
 	static {
 		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content Graph Read Permission",
 				"Grants permission to the user to read the content graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"http://tpf.localhost/content.graph\" \"read\")"));
+				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/content.graph\" \"read\")"));
 
 		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content Graph Read/Write Permission",
 				"Grants permission to the user to read and write the content graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"http://tpf.localhost/content.graph\" \"readwrite\")"));
+				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/content.graph\" \"readwrite\")"));
 
 	}
 

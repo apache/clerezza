@@ -63,7 +63,7 @@ class Activator extends BundleActivator {
 			val result = new HashSet[GlobalMenuItem]();
 			try {
 				//TODO should have a more general way to say that a user has some administrative priviledges
-				AccessController.checkPermission(new TcPermission("http://tpf.localhost/content.graph", "readwrite"))
+				AccessController.checkPermission(new TcPermission("urn:x-localinstance:/content.graph", "readwrite"))
 			}
 			catch {
 				case e: AccessControlException => {

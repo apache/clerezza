@@ -9,7 +9,7 @@
 	<perm:Role>
 		<dc:title>CommunityUser</dc:title>
 		<perm:hasPermission rdf:parseType="Resource">
-			<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "http://tpf.localhost/user/{username}/*" "readwrite")</perm:javaPermissionEntry>
+			<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "urn:x-localinstance:/user/{username}/*" "readwrite")</perm:javaPermissionEntry>
 		</perm:hasPermission>
 		<perm:hasPermission rdf:parseType="Resource">
 			<perm:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.UserBundlePermission "{username}" "")</perm:javaPermissionEntry>
@@ -37,13 +37,13 @@
 					<perm:javaPermissionEntry>(org.osgi.framework.AdminPermission "*" "metadata")</perm:javaPermissionEntry>
 				</perm:hasPermission>
 				<perm:hasPermission rdf:parseType="Resource">
-					<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "http://tpf.localhost/content.graph" "read")</perm:javaPermissionEntry>
+					<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "urn:x-localinstance:/content.graph" "read")</perm:javaPermissionEntry>
 				</perm:hasPermission>
 				<perm:hasPermission rdf:parseType="Resource">
-					<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "http://tpf.localhost/documentation.graph" "read")</perm:javaPermissionEntry>
+					<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "urn:x-localinstance:/documentation.graph" "read")</perm:javaPermissionEntry>
 				</perm:hasPermission>
 				<perm:hasPermission rdf:parseType="Resource">
-					<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "http://tpf.localhost/config.graph" "read")</perm:javaPermissionEntry>
+					<perm:javaPermissionEntry>(org.apache.clerezza.rdf.core.access.security.TcPermission "urn:x-localinstance:/config.graph" "read")</perm:javaPermissionEntry>
 				</perm:hasPermission>				
 			</perm:Role>
 		</sioc:has_function>
@@ -58,7 +58,7 @@
 			<perm:javaPermissionEntry>(org.apache.clerezza.platform.accountcontrolpanel.ChangePasswordPermission "{username}" "")</perm:javaPermissionEntry>
 		</perm:hasPermission>
 	</perm:Role>
-	<rdf:Description rdf:about="http://tpf.localhost/typePriorityList">
+	<rdf:Description rdf:about="urn:x-localinstance:/typePriorityList">
 		<rdf:rest rdf:parseType="Collection">
 			<rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#Resource"/>
 		</rdf:rest>

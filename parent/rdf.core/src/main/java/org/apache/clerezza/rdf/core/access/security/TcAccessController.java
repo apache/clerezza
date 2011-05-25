@@ -50,14 +50,14 @@ import org.apache.clerezza.utils.security.PermissionParser;
  *
  * Clients with a ConfigureTcAcessPermission can set the permissions required to
  * access a TripleCollection. These permissions are stored persistently in an
- * MGraph named http://zz.localhost/graph-access.graph
+ * MGraph named urn:x-localinstance:/graph-access.graph
  *
  * @author reto
  */
 public class TcAccessController {
 
 	private final TcManager tcManager;
-	private final UriRef permissionGraphName = new UriRef("http://zz.localhost/graph-access.graph");
+	private final UriRef permissionGraphName = new UriRef("urn:x-localinstance:/graph-access.graph");
 	//we can't rely on ontology plugin in rdf core
 	private String ontologyNamespace = "http://clerezza.apache.org/2010/07/10/graphpermssions#";
 	private final UriRef readPermissionListProperty = new UriRef(ontologyNamespace + "readPermissionList");
@@ -78,7 +78,7 @@ public class TcAccessController {
 
 	/**
 	 *
-	 * @param tcManager the tcManager used to locate http://zz.localhost/graph-access.graph
+	 * @param tcManager the tcManager used to locate urn:x-localinstance:/graph-access.graph
 	 */
 	public TcAccessController(TcManager tcManager) {
 		this.tcManager = tcManager;

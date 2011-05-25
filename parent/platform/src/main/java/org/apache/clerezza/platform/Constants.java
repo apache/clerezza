@@ -25,11 +25,18 @@ import org.apache.clerezza.rdf.core.UriRef;
  * @author reto
  */
 public class Constants {
+
+	/**
+	 * all hosts uri-prefix, uri scheme for references relative to the local
+	 * instance.
+	 */
+	public static final String URN_LOCAL_INSTANCE = "urn:x-localinstance:";
+
 	/**
 	 * the uri of the system graph as string
 	 */
 	public static final String SYSTEM_GRAPH_URI_STRING =
-			"http://tpf.localhost/system.graph";
+			URN_LOCAL_INSTANCE+"/system.graph";
 	/**
 	 * the uri of the system graph
 	 */
@@ -40,7 +47,7 @@ public class Constants {
 	 * the uri of the config graph as string
 	 */
 	public static final String CONFIG_GRAPH_URI_STRING =
-			"http://tpf.localhost/config.graph";
+			URN_LOCAL_INSTANCE+"/config.graph";
 	/**
 	 * the uri of the config graph as string
 	 */
@@ -51,18 +58,13 @@ public class Constants {
 	 * the uri of the content graph as string
 	 */
 	public static final String CONTENT_GRAPH_URI_STRING =
-			"http://tpf.localhost/content.graph";
+			URN_LOCAL_INSTANCE+"/content.graph";
 	/**
 	 * the uri of the content graph
 	 */
 	public static final UriRef CONTENT_GRAPH_URI =
 			new UriRef(CONTENT_GRAPH_URI_STRING);
 
-	/**
-	 * all hosts uri-prefix, uri scheme for references relative to the local
-	 * instance.
-	 */
-	public static final String URN_LOCAL_INSTANCE = "urn:x-localinstance:";
 
 	/**
 	 * all hosts uri-prefix, uri scheme for which the resource are also named

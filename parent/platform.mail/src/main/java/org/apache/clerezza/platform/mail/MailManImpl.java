@@ -72,7 +72,7 @@ public class MailManImpl implements MailMan {
 	MailSessionFactory mailSessionFactory;
 
 
-	private static String SYSTEM_GRAPH_URI = "http://tpf.localhost/system.graph";
+	private static String SYSTEM_GRAPH_URI = "urn:x-localinstance:/system.graph";
 	private UriRef systemGraphUri = new UriRef(SYSTEM_GRAPH_URI);
 
 	@Override

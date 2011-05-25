@@ -50,7 +50,7 @@ import org.apache.clerezza.rdf.core.MGraph;
 /**
  * Manages permissions to be given to bundles and {@link Principal}s.
  * Permission information is obtained from the system graph.
- * The system graph is identified by the URI http://tpf.localhost/system.graph.
+ * The system graph is identified by the URI urn:x-localinstance:/system.graph.
  *
  * When this component is activated, it gives all permissions to itself, to
  * System Bundle, and to all bundles whose location starts with slinginstall.
