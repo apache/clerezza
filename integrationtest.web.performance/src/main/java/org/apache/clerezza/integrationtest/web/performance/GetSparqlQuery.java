@@ -97,7 +97,7 @@ public class GetSparqlQuery implements WebTestCase {
 			String queryParams = URLEncoder.encode("query", UTF8) + "=" + URLEncoder.encode(query, UTF8);
 			queryParams += "&";
 			queryParams += URLEncoder.encode("default-graph-uri", UTF8) + "=" +
-					URLEncoder.encode("http://tpf.localhost/content.graph", UTF8);
+					URLEncoder.encode("urn:x-localinstance:/content.graph", UTF8);
 			URL url = new URL(requestUri + "?" + queryParams);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			try {

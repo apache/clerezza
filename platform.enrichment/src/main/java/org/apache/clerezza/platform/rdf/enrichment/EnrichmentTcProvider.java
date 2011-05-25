@@ -47,7 +47,7 @@ import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 
 /**
- * Provides a read-only MGraph with the name http://zz.localhost/enrichment.graph
+ * Provides a read-only MGraph with the name urn:x-localinstance:/enrichment.graph
  * containing the enrichments provided by all available services of type 
  * Enricher on the content graph.
  *
@@ -71,7 +71,7 @@ import org.osgi.service.component.ComponentContext;
 )
 public class EnrichmentTcProvider implements WeightedTcProvider {
 
-	public static final UriRef ENRICHMENT_GRAPH_URI = new UriRef("http://zz.localhost/enrichment.graph");
+	public static final UriRef ENRICHMENT_GRAPH_URI = new UriRef("urn:x-localinstance:/enrichment.graph");
 	
 	private LockableMGraph contentGraph;
 	private final Collection<Enricher> enrichers = Collections.synchronizedCollection(new HashSet<Enricher>());

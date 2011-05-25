@@ -301,7 +301,7 @@ public class SimpleConceptProviderManager implements ConceptProviderManager,
 		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
 		try {
 			AccessController.checkPermission(
-					new TcPermission("http://tpf.localhost/content.graph", 
+					new TcPermission("urn:x-localinstance:/content.graph",
 					TcPermission.READWRITE));
 		} catch (AccessControlException e) {
 			return items;

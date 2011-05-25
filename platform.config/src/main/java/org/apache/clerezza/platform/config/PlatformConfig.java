@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.platform.Constants;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
+import org.apache.clerezza.platform.graphprovider.content.GraphNameTransitioner;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -181,6 +182,7 @@ public class PlatformConfig {
 	}
 
 	protected void activate(ComponentContext componentContext) {
+		GraphNameTransitioner.renameGraphsWithOldNames(tcManager);
 		this.context = componentContext.getBundleContext();
 		try {
 			tcManager.getMGraph(CONFIG_GRAPH_URI);

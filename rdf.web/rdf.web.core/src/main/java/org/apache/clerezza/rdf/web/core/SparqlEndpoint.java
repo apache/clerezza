@@ -101,7 +101,7 @@ public class SparqlEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Reference
 	TcManager tcManager;
-	@Reference(target = "(name=http://tpf.localhost/content.graph)")
+	@Reference(target = "(name=urn:x-localinstance:/content.graph)")
 	MGraph contentGraph;
 	@Reference
 	private RenderletManager renderletManager;

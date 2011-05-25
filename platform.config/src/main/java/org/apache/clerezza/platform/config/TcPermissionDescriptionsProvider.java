@@ -48,19 +48,19 @@ public class TcPermissionDescriptionsProvider implements PermissionDescriptionsP
 	static {
 		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System Graph Read Permission",
 				"Grants permission to the user to read the system graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"http://tpf.localhost/system.graph\" \"read\")"));
+				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/system.graph\" \"read\")"));
 
 		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System Graph Read/Write Permission",
 				"Grants permission to the user to read and write the system graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"http://tpf.localhost/system.graph\" \"readwrite\")"));
+				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/system.graph\" \"readwrite\")"));
 
 		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration Graph Read Permission",
 				"Grants permission to the user to read the configuration graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"http://tpf.localhost/config.graph\" \"read\")"));
+				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/config.graph\" \"read\")"));
 
 		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration Graph Read/Write Permission",
 				"Grants permission to the user to read and write the configuration graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"http://tpf.localhost/config.graph\" \"readwrite\")"));
+				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/config.graph\" \"readwrite\")"));
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.clerezza.jaxrs.extensions.ResourceMethodException;
 import org.apache.clerezza.jaxrs.extensions.RootResourceExecutor;
+import org.apache.clerezza.platform.Constants;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
@@ -74,8 +75,6 @@ public class TypeHandlerSpace {
 	 */
 	TypeHandlerDiscovery typeHandlerDiscovery;
 
-	public static final UriRef CONTENT_GRAPH_URI = new UriRef(
-			"http://tpf.localhost/content.graph");
 	
 	private final String DESCRIPTION_SUFFIX = "-description";
 	private DescriptionHandler descriptionHandler = new DescriptionHandler();
@@ -86,7 +85,7 @@ public class TypeHandlerSpace {
 	 * requested resource.
 	 * 
 	 * @param uriInfo
-	 * @param httpRequest
+	 * @param request
 	 * @return
 	 * @throws ResourceMethodException
 	 */
@@ -103,7 +102,7 @@ public class TypeHandlerSpace {
 	}
 
 	private Object getTypeHandler(String absoluteUriPath) throws ResourceMethodException {
-		LockableMGraph contentMGraph = tcManager.getMGraph(CONTENT_GRAPH_URI);
+		LockableMGraph contentMGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
 		UriRef uri = new UriRef(absoluteUriPath);
 
 		Set<UriRef> rdfTypes = getRdfTypesOfUriRef(contentMGraph, uri);
@@ -141,7 +140,7 @@ public class TypeHandlerSpace {
 		@GET
 		public Object getDescription(@Context UriInfo uriInfo){
 			String absoluteUriPath = uriInfo.getAbsolutePath().toString();
-			MGraph contentMGraph = tcManager.getMGraph(CONTENT_GRAPH_URI);
+			MGraph contentMGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
 				UriRef uri = new UriRef(absoluteUriPath.substring(0,
 						absoluteUriPath.length() - DESCRIPTION_SUFFIX.length()));
 				GraphNode graphNode = new GraphNode(uri, contentMGraph);

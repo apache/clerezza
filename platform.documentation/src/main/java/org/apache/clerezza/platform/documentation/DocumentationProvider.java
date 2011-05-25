@@ -102,7 +102,7 @@ public class DocumentationProvider implements WeightedTcProvider, BundleListener
 	 * The URI of the graph containing the documentations
 	 */
 	public static final UriRef DOCUMENTATION_GRAPH_URI =
-			new UriRef("http://tpf.localhost/documentation.graph");
+			new UriRef("urn:x-localinstance:/documentation.graph");
 
 	private int weight = 30;	
 

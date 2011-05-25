@@ -51,7 +51,7 @@ to get a <code>Typehandler</code>, the request is the forwarded to this
 returns the available <code>TypeHandler</code> for the <code>rdf:type</code>
 with the highest priority. The Priority of <code>rdf:type</code>s is
 determined by an <code>rdf:List</code> named
-&lt;http://tpf.localhost/typePriorityList> in the system graph. The
+&lt;urn:x-localinstance:/typePriorityList> in the system graph. The
 actual <code>TypeHandler</code>s are OSGi services exposing <code>java.lang.Object</code>
 as service interface and with the property <code>org.apache.clerezza.platform.typehandler=true</code>.
 <code>TypeHandler</code>s are annotated with the <code>org.apache.clerezza.platform.typehandlerspace.SupportedTypes</code>
