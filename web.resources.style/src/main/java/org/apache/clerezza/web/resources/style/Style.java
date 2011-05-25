@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesService;
+import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
@@ -59,7 +60,9 @@ public class Style {
 		sspService.registerScalaServerPage(templateURL, PLATFORM.HeadedPage, "(?!.*naked).*",
 				MediaType.APPLICATION_XHTML_XML_TYPE);
 
-
+		templateURL = getClass().getResource("headed-page-template.ssp");
+		sspService.registerScalaServerPage(templateURL, HIERARCHY.Collection, "(?!.*naked).*",
+				MediaType.APPLICATION_XHTML_XML_TYPE);
 	}
 
 }
