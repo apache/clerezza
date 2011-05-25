@@ -70,9 +70,9 @@ class GraphNodeProvider extends Logging {
 			uri.getPath
 		}
 
-		lazy val uriAuthority = {
+		lazy val uriPrefix = {
 			val uri = new java.net.URI(uriRef.getUnicodeString)
-			uri.getAuthority
+			uri.getScheme+"://"+uri.getAuthority
 		}
 
 		val isLocal: Boolean = {
@@ -91,7 +91,7 @@ class GraphNodeProvider extends Logging {
 			//}
 			if (isLocal) {
 				if (existsInGraph(anyHostUri, mGraph)) {
-					mGraphs ::= new UriMutatingTripleCollection(mGraph, Constants.ALL_HOSTS_URI_PREFIX + '/', uriAuthority)
+					mGraphs ::= new UriMutatingTripleCollection(mGraph, Constants.URN_LOCAL_INSTANCE, uriPrefix)
 				}
 			}
 		}
