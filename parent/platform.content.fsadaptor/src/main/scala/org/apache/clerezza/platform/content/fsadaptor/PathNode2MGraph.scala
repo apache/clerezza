@@ -41,7 +41,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode
  */
 object PathNode2MGraph {
 
-	private val URI_PREFIX = Constants.ALL_HOSTS_URI_PREFIX
+	private val URI_PREFIX = Constants.URN_LOCAL_INSTANCE
 
 	private val literalFactory = LiteralFactory.getInstance
 
@@ -100,7 +100,7 @@ object PathNode2MGraph {
 					val data = getData(file)
 					mGraph.add(new TripleImpl(resource, DISCOBITS.infoBit, literalFactory.createTypedLiteral(data)))
 					mGraph.add(new TripleImpl(resource, DISCOBITS.mediaType,
-											  new PlainLiteralImpl(getMediaType(file))))
+											  literalFactory.createTypedLiteral(getMediaType(file))));
 				}
 			}
 		}
