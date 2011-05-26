@@ -39,17 +39,6 @@ public class AEProviderTest {
   }
 
   @Test
-  public void testDefaulXMLPath() {
-    try {
-      String xmlPath = this.aeProvider.getDefaultXMLPath();
-      assertTrue(xmlPath != null);
-      assertTrue(xmlPath.equals("ExtServicesAE.xml"));
-    } catch (Throwable e) {
-      fail(e.getLocalizedMessage());
-    }
-  }
-
-  @Test
   public void testGetDefaultAENotNull() {
     try {
       AnalysisEngine ae = this.aeProvider.getDefaultAE();
@@ -62,7 +51,7 @@ public class AEProviderTest {
   @Test
   public void testGetAEWithPathNotNull() {
     try {
-      AnalysisEngine ae = this.aeProvider.getAE("ExtServicesAE.xml");
+      AnalysisEngine ae = this.aeProvider.getAE("/ExtServicesAE.xml");
       assertTrue(ae != null);
     } catch (Throwable e) {
       fail(e.getLocalizedMessage());
