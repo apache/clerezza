@@ -41,7 +41,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
   private Map<String, Object> parameterSetting = new HashMap<String, Object>();
 
   public ExternalServicesFacade() {
-    this.uimaExecutor = new UIMAExecutor("ExtServicesAE.xml").withResults();
+    this.uimaExecutor = new UIMAExecutor("/ExtServicesAE.xml").withResults();
   }
 
   public List<FeatureStructure> getTags(String document) throws UIMAException {
@@ -50,7 +50,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
 
     try {
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "TextKeywordExtractionAEDescriptor.xml", getParameterSetting());
+      uimaExecutor.analyzeDocument(document, "/TextKeywordExtractionAEDescriptor.xml", getParameterSetting());
 
       // get execution results
       JCas jcas = uimaExecutor.getResults();
@@ -72,7 +72,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
     try {
 
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "TextLanguageDetectionAEDescriptor.xml", getParameterSetting());
+      uimaExecutor.analyzeDocument(document, "/TextLanguageDetectionAEDescriptor.xml", getParameterSetting());
 
       // get execution results
       JCas jcas = uimaExecutor.getResults();
@@ -94,7 +94,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
     try {
 
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "OpenCalaisAnnotator.xml", getParameterSetting());
+      uimaExecutor.analyzeDocument(document, "/OpenCalaisAnnotator.xml", getParameterSetting());
 
       // get execution results
       JCas jcas = uimaExecutor.getResults();
@@ -113,7 +113,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
     try {
 
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "TextCategorizationAEDescriptor.xml", getParameterSetting());
+      uimaExecutor.analyzeDocument(document, "/TextCategorizationAEDescriptor.xml", getParameterSetting());
 
       // get execution results
       JCas jcas = uimaExecutor.getResults();
@@ -134,7 +134,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
 
     try {
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "TextConceptTaggingAEDescriptor.xml", getParameterSetting());
+      uimaExecutor.analyzeDocument(document, "/TextConceptTaggingAEDescriptor.xml", getParameterSetting());
 
       // get execution results
       JCas jcas = uimaExecutor.getResults();
