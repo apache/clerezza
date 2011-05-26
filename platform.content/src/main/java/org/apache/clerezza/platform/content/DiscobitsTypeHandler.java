@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.platform.content;
 
+import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -120,7 +121,10 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 
 	@Reference
 	PageNotFoundService notFoundPageService;
-	
+
+	@Reference
+	GraphNodeProvider graphNodeProvider;
+
 	private static final Logger logger = LoggerFactory.getLogger(DiscobitsTypeHandler.class);
 
 	private final Set<MetaDataGenerator> metaDataGenerators =
@@ -160,28 +164,8 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	}
 
 	private GraphNode getResourceAsGraphNode(UriInfo uriInfo) {
-		final MGraph mGraph = cgProvider.getContentGraph();
 		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
-		UriRef allHostsUri = createAnyHostUri(uriInfo);
-		List<TripleCollection> baseTripleCollections = new ArrayList<TripleCollection>(2);
-		if (nodeAtUriExists(allHostsUri)) {
-			GraphNode anyHostGraphNode = new GraphNode(allHostsUri, mGraph);
-			TripleCollection anyHostTriples = new UriMutatingTripleCollection(
-					anyHostGraphNode.getNodeContext(),
-					Constants.ALL_HOSTS_URI_PREFIX+'/', uriInfo.getBaseUri().toString());
-			baseTripleCollections.add(anyHostTriples);
-
-		}
-		if (nodeAtUriExists(uri)) {
-			baseTripleCollections.add(mGraph);
-		}
-		if (baseTripleCollections.isEmpty()) {
-			return null;
-		}
-		TripleCollection baseGraph = baseTripleCollections.size() == 2 ?
-			new UnionMGraph(baseTripleCollections.toArray(new TripleCollection[2])) :
-			baseTripleCollections.get(0);
-		return new GraphNode(uri, baseGraph);
+		return graphNodeProvider.getLocal(uri);
 	}
 
 
