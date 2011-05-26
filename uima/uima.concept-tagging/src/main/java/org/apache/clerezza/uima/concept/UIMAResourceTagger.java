@@ -58,7 +58,6 @@ public class UIMAResourceTagger extends ResourceTagger {
 
   @Override
   protected void activate(ComponentContext context) throws URISyntaxException {
-    super.activate(context);
     uimaServicesFacade = new ExternalServicesFacade();
   }
 
