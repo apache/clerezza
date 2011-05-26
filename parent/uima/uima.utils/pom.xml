@@ -22,15 +22,11 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>alchemy-annotator-osgi</artifactId>
       <version>2.3.1-SNAPSHOT</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/org.apache.uima.alchemyapi_2.3.1.SNAPSHOT.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>OpenCalaisAnnotator-osgi</artifactId>
       <version>2.3.1-SNAPSHOT</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/org.apache.uima.opencalais_2.3.1.SNAPSHOT.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -68,6 +64,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Import-Package>org.slf4j.*;resolution:=optional,*</Import-Package>
             <Export-Package>org.apache.clerezza.uima.utils.*</Export-Package>
           </instructions>
         </configuration>

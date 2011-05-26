@@ -25,7 +25,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
+import java.io.File;
 import java.net.URL;
+import java.rmi.activation.Activator;
 import java.util.Map;
 
 /**
@@ -37,7 +39,7 @@ public class AEProvider {
   private static String defaultXMLPath;
 
   public AEProvider() {
-    defaultXMLPath = "ExtServicesAE.xml";
+    defaultXMLPath = "/ExtServicesAE.xml";
   }
 
   public AEProvider(String xmlDescriptorPath) {
@@ -71,7 +73,7 @@ public class AEProvider {
     AnalysisEngine ae = null;
     // get Resource Specifier from XML file
     try {
-      URL url = this.getClass().getClassLoader().getResource(filePath);
+      URL url = createURLFromPath(filePath);
       XMLInputSource in = new XMLInputSource(url);
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // create AE here
@@ -83,11 +85,25 @@ public class AEProvider {
     return ae;
   }
 
+  private URL createURLFromPath(String filePath) {
+    System.err.println(filePath);
+    try {
+      File f = new File(filePath);
+      if (f.exists())
+        return f.toURI().toURL();
+      else
+        return Activator.class.getResource(filePath);
+    }
+    catch (Exception e) {
+      return Activator.class.getResource(filePath);
+    }
+  }
+
   public AnalysisEngine getAE(String filePath, Map<String, Object> parameterSettings) throws ResourceInitializationException {
     AnalysisEngine ae = null;
     // get Resource Specifier from XML file
     try {
-      URL url = this.getClass().getClassLoader().getResource(filePath);
+      URL url = createURLFromPath(filePath);
       XMLInputSource in = new XMLInputSource(url);
 
       // eventually add/override descriptor's configuration parameters
