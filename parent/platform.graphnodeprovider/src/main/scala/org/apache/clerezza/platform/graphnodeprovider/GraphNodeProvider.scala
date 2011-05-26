@@ -19,38 +19,51 @@ package org.apache.clerezza.platform.graphnodeprovider
  * under the License.
  */
 
-import org.osgi.service.component.ComponentContext
-import java.io.IOException
 import java.net.{HttpURLConnection, URL}
-import org.apache.clerezza.rdf.core.serializedform.SupportedFormat
-import org.apache.clerezza.rdf.core.serializedform.Parser
 import org.slf4j.scala._
 import org.apache.clerezza.rdf.core.access._
-import org.apache.clerezza.rdf.core.impl.AbstractMGraph
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider
 import org.apache.clerezza.platform.users.WebIdGraphsService
-import javax.ws.rs.core.UriInfo
 import org.apache.clerezza.rdf.utils.{UnionMGraph, UriMutatingTripleCollection, GraphNode}
 import java.util.concurrent.locks.Lock
 import org.apache.clerezza.platform.usermanager.UserManager
-import java.security.{PrivilegedAction, PrivilegedExceptionAction, PrivilegedActionException, AccessController}
+import java.security.{PrivilegedAction, AccessController}
 
 /**
  * A service that returns a GraphNode for a specified named resource, the returned GraphNode has
- * as BaseGraph the ContententGraph provided by the ContentGraphProvider and the for remote uris the
+ * as BaseGraph the ContentGraph provided by the ContentGraphProvider and the for remote uris the
  * Graphs they dereference to and for local URIs with a path-section starting with /user/{username}/
  * the local-public-graph of that user.
  */
 class GraphNodeProvider extends Logging {
 
 	/**
-	 *Get a GraphNode for the specified resource, see class comments for details.
+	 * Get a GraphNode for the specified resource, see class comments for details.
 	 */
 	def get(uriRef: UriRef): GraphNode = {
+		val uriString = uriRef.getUnicodeString
+		val isLocal: Boolean = {
+			import scala.collection.JavaConversions._
+			//we assume all non http* uris to be local
+			!uriString.toLowerCase.startsWith("http") || platformConfig.getBaseUris.exists(baseUri => uriString.startsWith(baseUri.getUnicodeString))
+		}
+		get(uriRef, isLocal)
+	}
 
+	/**
+	 * Get a GraphNode for the specified resource, The resource is assumed to be local, i.e. the method behaves like
+	 * get(UriRef) for a Uri with an authority section contained in the Set retuned by
+	 * <code>org.apache.clerezza.platform.config.PlatformConfig#getBaseUris()</code>
+	 */
+	def getLocal(uriRef: UriRef): GraphNode = {
+		get(uriRef, true)
+	}
+
+	private def get(uriRef: UriRef, isLocal: Boolean): GraphNode = {
+		val uriString = uriRef.getUnicodeString
 		def existsInGraph(nodeUri: UriRef, tc: LockableMGraph): Boolean =
 			{
 				var readLock: Lock = tc.getLock.readLock
@@ -63,22 +76,14 @@ class GraphNodeProvider extends Logging {
 				}
 			}
 
-		val uriString = uriRef.getUnicodeString
-
 		val uriPath = {
-			val uri = new java.net.URI(uriRef.getUnicodeString)
+			val uri = new java.net.URI(uriString)
 			uri.getPath
 		}
 
 		lazy val uriPrefix = {
-			val uri = new java.net.URI(uriRef.getUnicodeString)
+			val uri = new java.net.URI(uriString)
 			uri.getScheme+"://"+uri.getAuthority
-		}
-
-		val isLocal: Boolean = {
-			import scala.collection.JavaConversions._
-			//we assume all non http* uris to be local
-			!uriString.toLowerCase.startsWith("http") || platformConfig.getBaseUris.exists(baseUri => uriString.startsWith(baseUri.getUnicodeString))
 		}
 
 		val anyHostUri = new UriRef(Constants.ALL_HOSTS_URI_PREFIX + uriPath)
