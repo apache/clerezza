@@ -49,11 +49,7 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.users.core</artifactId>
-        </dependency>
-    </dependencies>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>

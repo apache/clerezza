@@ -45,12 +45,6 @@ public class PrincipalImpl implements Principal {
 	}
 
 	@Override
-	public String toString() {
-		return "Username Principal: '"+name+"'";
-	}
-
-
-	@Override
 	public int hashCode() {
 		return getName().hashCode();
 	}
