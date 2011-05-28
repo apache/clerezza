@@ -32,7 +32,6 @@ import org.apache.clerezza.platform.users.WebIdGraphsService
 import org.slf4j.LoggerFactory
 import java.util.Collections
 import org.apache.clerezza.platform.security.UserUtil
-import org.apache.clerezza.rdf.scala.utils.EasyGraph
 
 
 object FoafSslAuthentication {
@@ -41,10 +40,11 @@ object FoafSslAuthentication {
   final val ANONYMOUS: String = "anonymous"
 
   def createSystemUserDescription(claim: WebIDClaim): MGraph = {
-    val result = new EasyGraph()
-	 import org.apache.clerezza.rdf.scala.utils.EasyGraph._
-    result.addType(claim.webId, FOAF.Agent)
-	  //add(claim.webId, PLATFORM.userName,new String(claim.webId.hashCode())).
+    val result = new SimpleMGraph()
+    result.add(new TripleImpl(claim.webId, PLATFORM.userName,
+      new PlainLiteralImpl(claim.principal.getName)))
+    result.add(new TripleImpl(claim.webId, RDF.`type`,
+      FOAF.Agent))
     result
   }
 
@@ -84,7 +84,7 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
 		  return true
 	  } else {
 		  return false
-  }
+	  }
   }
 
   def addAgentToSystem(id: WebIDClaim) {
