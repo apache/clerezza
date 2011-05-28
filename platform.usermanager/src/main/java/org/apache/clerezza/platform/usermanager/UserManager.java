@@ -25,8 +25,6 @@ import java.util.List;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
-import javax.security.auth.Subject;
-
 /**
  * An implementation of this interface provides methods to manage data about
  * users and their roles.
@@ -189,7 +187,7 @@ public interface UserManager {
 	 * @param name The username of the user
 	 * @return GraphNode representing the user (WebID or blank node) with some context in a dedicated MGraph
 	 */
-	public GraphNode getUserGraphNode(Subject name);
+	public GraphNode getUserGraphNode(String name);
 
 	/**
 	 * Returns the <code>GraphNode</code> pointing to the user with the

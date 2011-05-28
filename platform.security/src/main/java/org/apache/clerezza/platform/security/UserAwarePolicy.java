@@ -27,13 +27,17 @@ import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.clerezza.platform.config.SystemConfig;
 
 
-import org.apache.clerezza.platform.security.auth.PrincipalImpl;
-import org.apache.clerezza.platform.security.auth.WebIdPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,21 +97,18 @@ public class UserAwarePolicy extends Policy {
 	@Override
 	public PermissionCollection getPermissions(final ProtectionDomain domain) {
 
-		PermissionCollection result=null;
+		PermissionCollection result;
 
 		Principal[] principals = domain.getPrincipals();
 		if (principals.length > 0) {
-			for (Principal user : domain.getPrincipals()) {
-				PermissionCollection res = cache.getCachedUserPermissions(user);
-				if (null == res) {
-					res = getUserPermissionsFromSystemGraph(user);
-					cache.cacheUserPermissions(user, res);
-				}
-				if (null == result) {
-				   result = res;
-				} else for (Enumeration<Permission> pnum = res.elements(); pnum.hasMoreElements(); ) {
-					result.add(pnum.nextElement());
-				}
+			final Principal user = domain.getPrincipals()[0];
+
+			result = cache.getCachedUserPermissions(user);
+			if (result != null) {
+				return result;
+			} else {
+				result = getUserPermissionsFromSystemGraph(user);
+				cache.cacheUserPermissions(user, result);
 			}
 		} else {
 			result = originalPolicy.getPermissions(domain);
@@ -139,7 +140,8 @@ public class UserAwarePolicy extends Policy {
 			public Object run() {
 				logger.debug("Get permissions for user " + user.getName());
 
-				List<String> permissions = getAllPermissionsOfAUser(user);
+				List<String> permissions = getAllPermissionsOfAUserByName(user
+						.getName());
 				for (String permissionStr : permissions) {
 					logger.debug("Add permission {}", permissionStr);
 					Permission perm = permissionMap.get(permissionStr);
@@ -170,46 +172,39 @@ public class UserAwarePolicy extends Policy {
 	 * are his/her own permissions and the permissions of his roles
 	 * 
 	 */
-	private List<String> getAllPermissionsOfAUser(Principal principal)
+	private List<String> getAllPermissionsOfAUserByName(String userName)
 			throws UserUnregisteredException {
 
-		NonLiteral user = getUser(principal);
+		NonLiteral user = getUserByName(userName);
 		
-		List<String> result = getPermissionEntriesOfAUser(user, principal);
+		List<String> result = getPermissionEntriesOfAUser(user, userName);
 		Iterator<Triple> roleTriples = systemGraph.filter(user,
 				SIOC.has_function, null);
 
 		while (roleTriples.hasNext()) {
 			NonLiteral anotherRole = (NonLiteral) roleTriples.next()
 					.getObject();
-			result.addAll(getPermissionEntriesOfARole(anotherRole, principal, user));
+			result.addAll(getPermissionEntriesOfARole(anotherRole, userName, user));
 		}
 		Iterator<NonLiteral> baseRoles = getResourcesOfType(PERMISSION.BaseRole);
 		while(baseRoles.hasNext()) {
-			result.addAll(getPermissionEntriesOfARole(baseRoles.next(), principal, user));
+			result.addAll(getPermissionEntriesOfARole(baseRoles.next(), userName, user));
 		}
 		return result;
 	}
 
-	private NonLiteral getUser(Principal principal)
+	private NonLiteral getUserByName(String userName)
 			throws UserUnregisteredException {
+		Iterator<Triple> triples = systemGraph.filter(null, PLATFORM.userName,
+				new PlainLiteralImpl(userName));
 
-		if (principal instanceof WebIdPrincipal) {
-			return ((WebIdPrincipal)principal).getWebId();
-		} else {
-			Iterator<Triple> triples = systemGraph.filter(
-					null,
-					PLATFORM.userName,
-					new PlainLiteralImpl(principal.getName()));
-
-			if (triples.hasNext()) {
-				return triples.next().getSubject();
-			}
+		if (triples.hasNext()) {
+			return triples.next().getSubject();
 		}
-		throw new UserUnregisteredException(principal);
+		throw new UserUnregisteredException(userName);
 	}
 
-	private List<String> getPermissionEntriesOfAUser(NonLiteral user, Principal userName) {
+	private List<String> getPermissionEntriesOfAUser(NonLiteral user, String userName) {
 		List<String> result = getPermissionEntriesOfARole(user, userName, user);
 		if (user instanceof UriRef) {
 			synchronized(permissionProviders) {
@@ -221,7 +216,7 @@ public class UserAwarePolicy extends Policy {
 		return result;
 	}
 	//note that users are roles too
-	private List<String> getPermissionEntriesOfARole(NonLiteral role, Principal principal, NonLiteral user) {
+	private List<String> getPermissionEntriesOfARole(NonLiteral role, String userName, NonLiteral user) {
 		List<String> result = new ArrayList<String>();
 		Iterator<Triple> permsForRole = systemGraph.filter(role,
 				PERMISSION.hasPermission, null);
@@ -234,10 +229,8 @@ public class UserAwarePolicy extends Policy {
 				PlainLiteralImpl permissionEntry = (PlainLiteralImpl) javaPermForRole
 						.next().getObject();
 				String permission = permissionEntry.getLexicalForm();
-				if(principal instanceof PrincipalImpl) {
-					if(permission.contains("{username}")) {
-						permission = permission.replace("{username}",principal.getName());
-					}
+				if(permission.contains("{username}")) {
+					permission = permission.replace("{username}",userName);
 				}
 				result.add(permission);
 			}

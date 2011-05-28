@@ -197,7 +197,7 @@ class ProfilePanel extends Logging {
 	               @FormParam("webId") newContacts: java.util.List[UriRef]): Response = {
 		import collection.JavaConversions._
 		if (newContacts.size > 0) {
-			val subject: Subject = UserUtil.getCurrentSubject
+			val subject = UserUtil.getCurrentUserName
 			var me: GraphNode = AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
 				def run: GraphNode = {
 					return userManager.getUserGraphNode(subject)
