@@ -25,8 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
- * @author tommaso
- * @version $Id$
+ * Testcase for {@link UIMARemoteResourceTaggerService}
  */
 public class UIMARemoteResourceTaggerTest {
 
