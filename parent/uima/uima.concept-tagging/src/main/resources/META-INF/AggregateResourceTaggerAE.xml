@@ -3,15 +3,15 @@
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>false</primitive>
   <delegateAnalysisEngineSpecifiers>
-    <delegateAnalysisEngine key="TextConceptTaggingAEDescriptor">
-      <import location="TextConceptTaggingAEDescriptor.xml"/>
+    <delegateAnalysisEngine key="UrlConceptTaggingAEDescriptor">
+      <import location="UrlConceptTaggingAEDescriptor.xml"/>
     </delegateAnalysisEngine>
     <delegateAnalysisEngine key="ClerezzaCASConsumerDescriptor">
       <import location="ClerezzaCASConsumerDescriptor.xml"/>
     </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>
-    <name>ExtServicesAE</name>
+    <name>AggregateResourceTaggerAE</name>
     <description/>
     <version>1.0</version>
     <vendor/>
@@ -31,14 +31,27 @@
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
         <overrides>
-          <parameter>TextConceptTaggingAEDescriptor/apikey</parameter>
+          <parameter>UrlConceptTaggingAEDescriptor/apikey</parameter>
         </overrides>
       </configurationParameter>
     </configurationParameters>
-    <configurationParameterSettings/>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>outputgraph</name>
+        <value>
+          <string></string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>alchemykey</name>
+        <value>
+          <string></string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>>
     <flowConstraints>
       <fixedFlow>
-        <node>TextConceptTaggingAEDescriptor</node>
+        <node>UrlConceptTaggingAEDescriptor</node>
         <node>ClerezzaCASConsumerDescriptor</node>
       </fixedFlow>
     </flowConstraints>

@@ -26,8 +26,8 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.activation.Activator;
 import java.util.Map;
 
 /**
@@ -37,17 +37,20 @@ import java.util.Map;
 public class AEProvider {
 
   private static String defaultXMLPath;
+  private ClassLoader delegateClassloader;
 
   public AEProvider() {
-    defaultXMLPath = "/ExtServicesAE.xml";
+    defaultXMLPath = "/META-INF/ExtServicesAE.xml"; // if no default is specified use the bundled ext services descriptor
   }
 
-  public AEProvider(String xmlDescriptorPath) {
+  public AEProvider withDefaultDescriptor(String xmlDescriptorPath) {
     defaultXMLPath = xmlDescriptorPath;
+    return this;
   }
 
-  public String getDefaultXMLPath() {
-    return defaultXMLPath;
+  public AEProvider withDelegateClassloader(ClassLoader classLoader) {
+    delegateClassloader = classLoader;
+    return this;
   }
 
   /**
@@ -85,22 +88,27 @@ public class AEProvider {
     return ae;
   }
 
-  private URL createURLFromPath(String filePath) {
-    System.err.println(filePath);
-    try {
+  private URL createURLFromPath(String filePath) throws MalformedURLException {
+    URL url;
+    // try classpath
+    if (delegateClassloader != null)
+      url = delegateClassloader.getResource(filePath);
+    else
+      url = getClass().getResource(filePath);
+
+    // else try file
+    if (url == null) {
       File f = new File(filePath);
-      if (f.exists())
-        return f.toURI().toURL();
-      else
-        return Activator.class.getResource(filePath);
+      if (f.exists()) {
+        url = f.toURI().toURL();
+      } else
+        throw new MalformedURLException();
     }
-    catch (Exception e) {
-      return Activator.class.getResource(filePath);
-    }
+    return url;
   }
 
   public AnalysisEngine getAE(String filePath, Map<String, Object> parameterSettings) throws ResourceInitializationException {
-    AnalysisEngine ae = null;
+    AnalysisEngine ae;
     // get Resource Specifier from XML file
     try {
       URL url = createURLFromPath(filePath);
@@ -109,13 +117,12 @@ public class AEProvider {
       // eventually add/override descriptor's configuration parameters
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       for (String parameter : parameterSettings.keySet()) {
-        if (desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().getParameterValue(parameter)!=null)
-          desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterValue(parameter,parameterSettings.get(parameter));
+        if (desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().getParameterValue(parameter) != null)
+          desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterValue(parameter, parameterSettings.get(parameter));
       }
 
       // create AE here
       ae = UIMAFramework.produceAnalysisEngine(desc);
-
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
     }
