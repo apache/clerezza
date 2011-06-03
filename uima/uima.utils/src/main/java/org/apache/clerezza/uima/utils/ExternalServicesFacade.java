@@ -41,7 +41,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
   private Map<String, Object> parameterSetting = new HashMap<String, Object>();
 
   public ExternalServicesFacade() {
-    this.uimaExecutor = new UIMAExecutor("/ExtServicesAE.xml").withResults();
+    this.uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
   }
 
   public List<FeatureStructure> getTags(String document) throws UIMAException {
@@ -50,10 +50,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
 
     try {
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "/TextKeywordExtractionAEDescriptor.xml", getParameterSetting());
-
-      // get execution results
-      JCas jcas = uimaExecutor.getResults();
+      JCas jcas = uimaExecutor.analyzeDocument(document, "/TextKeywordExtractionAEDescriptor.xml", getParameterSetting());
 
       // get AlchemyAPI keywords extracted using UIMA
       keywords.addAll(UIMAUtils.getAllFSofType(KeywordFS.type, jcas));
@@ -72,10 +69,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
     try {
 
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "/TextLanguageDetectionAEDescriptor.xml", getParameterSetting());
-
-      // get execution results
-      JCas jcas = uimaExecutor.getResults();
+      JCas jcas =uimaExecutor.analyzeDocument(document, "/TextLanguageDetectionAEDescriptor.xml", getParameterSetting());
 
       // extract language Feature Structure using AlchemyAPI Annotator
       languageFS = UIMAUtils.getSingletonFeatureStructure(LanguageFS.type, jcas);
@@ -94,10 +88,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
     try {
 
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "/OpenCalaisAnnotator.xml", getParameterSetting());
-
-      // get execution results
-      JCas jcas = uimaExecutor.getResults();
+      JCas jcas = uimaExecutor.analyzeDocument(document, "/OpenCalaisAnnotator.xml", getParameterSetting());
 
       // extract entities using OpenCalaisAnnotator
       calaisAnnotations.addAll(UIMAUtils.getAllAnnotationsOfType(org.apache.uima.calais.BaseType.type, jcas));
@@ -113,10 +104,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
     try {
 
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "/TextCategorizationAEDescriptor.xml", getParameterSetting());
-
-      // get execution results
-      JCas jcas = uimaExecutor.getResults();
+      JCas jcas = uimaExecutor.analyzeDocument(document, "/TextCategorizationAEDescriptor.xml", getParameterSetting());
 
       // extract category Feature Structure using AlchemyAPI Annotator
       categoryFS = UIMAUtils.getSingletonFeatureStructure(Category.type, jcas);
@@ -134,10 +122,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
 
     try {
       // analyze the document
-      uimaExecutor.analyzeDocument(document, "/TextConceptTaggingAEDescriptor.xml", getParameterSetting());
-
-      // get execution results
-      JCas jcas = uimaExecutor.getResults();
+      JCas jcas = uimaExecutor.analyzeDocument(document, "/TextConceptTaggingAEDescriptor.xml", getParameterSetting());
 
       // get AlchemyAPI concepts extracted using UIMA
       concepts.addAll(UIMAUtils.getAllFSofType(ConceptFS.type, jcas));

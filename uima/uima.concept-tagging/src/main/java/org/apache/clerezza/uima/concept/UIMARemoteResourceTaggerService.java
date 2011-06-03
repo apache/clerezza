@@ -1,18 +1,34 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.clerezza.uima.concept;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.uima.utils.UIMAExecutor;
+import org.apache.clerezza.uima.utils.UIMAExecutorFactory;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,30 +42,25 @@ import java.util.Map;
 @Path("/resourcetagger")
 public class UIMARemoteResourceTaggerService {
 
-  private static final String PATH = "/AggregateResourceTaggerAE.xml";
+  private static final String PATH = "META-INF/AggregateResourceTaggerAE.xml";
+  private static final String OUTPUTGRAPH = "outputgraph";
+  private static final String ALCHEMYKEY = "alchemykey";
 
   @GET
   @Path("tag")
   @Produces("application/rdf+xml")
   public Graph tagUri(@QueryParam("uri") String uri, @QueryParam("key") String key) {
-
     if (uri == null || uri.length() == 0)
       throw new WebApplicationException(Response.status(
               Response.Status.BAD_REQUEST).entity(new StringBuilder("No URI specified").toString()).build());
 
-    try {
-      System.err.println(new File(PATH).toURI().toURL());
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    }
-    UIMAExecutor executor = new UIMAExecutor(PATH).withResults();
+    UIMAExecutor executor = UIMAExecutorFactory.getInstance().createUIMAExecutor(getClass().getClassLoader());
     Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("outputgraph",uri);
-    parameters.put("alchemykey", key);
+    parameters.put(OUTPUTGRAPH, uri);
+    parameters.put(ALCHEMYKEY, key);
     try {
-      executor.analyzeDocument("/AggregateResourceTaggerAE.xml", uri, parameters);
-    } catch (AnalysisEngineProcessException e) {
-      e.printStackTrace();
+      executor.analyzeDocument(uri, PATH, parameters);
+    } catch (Exception e) {
       throw new WebApplicationException(Response.status(
               Response.Status.INTERNAL_SERVER_ERROR).entity(new StringBuilder("Failed UIMA execution on URI ").
               append(uri).append(" due to \n").append(e.getLocalizedMessage()).toString()).build());
