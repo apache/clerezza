@@ -117,14 +117,14 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
   private void addCategory(GraphNode node, String data) throws UIMAException {
     // get category to bind it to the node
-    FeatureStructure categoryFS = this.facade.getCategory(data);
+    FeatureStructure categoryFS = facade.getCategory(data);
     String category = categoryFS.getStringValue(categoryFS.getType().getFeatureByBaseName("text"));
     node.addPropertyValue(DC.subject, category);
   }
 
   private void addLanguage(GraphNode node, String data) throws UIMAException {
     // get language to bind it to the node
-    FeatureStructure languageFS = this.facade.getLanguage(data);
+    FeatureStructure languageFS = facade.getLanguage(data);
     String language = languageFS.getStringValue(languageFS.getType().getFeatureByBaseName("language"));
     node.addPropertyValue(DCTERMS.language, language);
   }
@@ -139,7 +139,7 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
   private void addTags(GraphNode existingNode, String data) throws UIMAException {
     // analyze document text and get the corresponding AlchemyAPI Tags
-    List<FeatureStructure> alchemyAPITags = this.facade.getTags(data);
+    List<FeatureStructure> alchemyAPITags = facade.getTags(data);
     // convert tags to nodes inside the current graph
     UIMAUtils.enhanceNode(existingNode, alchemyAPITags);
   }

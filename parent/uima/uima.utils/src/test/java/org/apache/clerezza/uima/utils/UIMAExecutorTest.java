@@ -25,28 +25,47 @@ import static org.junit.Assert.fail;
 
 /**
  * Testcase for {@link UIMAExecutor}
- *
  */
 public class UIMAExecutorTest {
 
   @Test
   public void testDefaultConstructor() {
     try {
-      UIMAExecutor uimaExecutor = new UIMAExecutor("ExtServicesAE.xml");
-      assertTrue(uimaExecutor != null);
-    } catch (Throwable e) {
-      fail(e.getLocalizedMessage());
-    }
-  }
-  
-  @Test
-  public void testWithResultsConstructor() {
-    try {
-      UIMAExecutor uimaExecutor = new UIMAExecutor("ExtServicesAE.xml").withResults();
+      UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
       assertTrue(uimaExecutor != null);
     } catch (Throwable e) {
       fail(e.getLocalizedMessage());
     }
   }
 
+  @Test
+  public void testCLConstructor() {
+    try {
+      UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor(this.getClass().getClassLoader());
+      assertTrue(uimaExecutor != null);
+    } catch (Throwable e) {
+      fail(e.getLocalizedMessage());
+    }
+  }
+
+  @Test
+  public void testPathConstructor() {
+    try {
+      UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor("/META-INF/ExtServicesAE.xml");
+      assertTrue(uimaExecutor != null);
+    } catch (Throwable e) {
+      fail(e.getLocalizedMessage());
+    }
+  }
+
+  @Test
+  public void testPathCLConstructor() {
+    try {
+      UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor(this.getClass().getClassLoader(),
+              "/META-INF/ExtServicesAE.xml");
+      assertTrue(uimaExecutor != null);
+    } catch (Throwable e) {
+      fail(e.getLocalizedMessage());
+    }
+  }
 }

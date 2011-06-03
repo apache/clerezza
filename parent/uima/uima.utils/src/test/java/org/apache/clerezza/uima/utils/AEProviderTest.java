@@ -51,7 +51,7 @@ public class AEProviderTest {
   @Test
   public void testGetAEWithPathNotNull() {
     try {
-      AnalysisEngine ae = this.aeProvider.getAE("/ExtServicesAE.xml");
+      AnalysisEngine ae = this.aeProvider.getAE("/META-INF/ExtServicesAE.xml");
       assertTrue(ae != null);
     } catch (Throwable e) {
       fail(e.getLocalizedMessage());
