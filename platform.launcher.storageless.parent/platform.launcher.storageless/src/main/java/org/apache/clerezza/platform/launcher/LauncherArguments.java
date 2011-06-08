@@ -52,7 +52,7 @@ public interface LauncherArguments {
 	public String getKeyStorePath();
 	
 	@CommandLine(longName = "https_keystore_password", shortName = {}, required = false,
-	description = "The folder with the keystore for https")
+	description = "The password for accessing the keystore for https")
 	public String getKeyStorePassword();
 	
 	@CommandLine(longName = "https_keystore_type", shortName = {}, required = false,
