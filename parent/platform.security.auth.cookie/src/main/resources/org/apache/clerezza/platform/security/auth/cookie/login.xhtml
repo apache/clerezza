@@ -5,7 +5,7 @@ def login(s: Any) = new UriRef("http://clerezza.org/2009/07/login#"+s);
 <title>Login Page</title>
 
 	<link href="/style/style.css" media="screen" rel="stylesheet" type="text/css" />
-	<link href="/style/login.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="/login-resources/style/login.css" media="screen" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -23,7 +23,7 @@ def login(s: Any) = new UriRef("http://clerezza.org/2009/07/login#"+s);
 <div id="tx-login-mask">
 	<div>
 		<div>
-			<div id="tx-logo"></div>
+			<div id="login-logo"><img src="/style/images/logo-big.png"/></div>
 			<div class="tx-info"></div>
 			{ifx((res/login("message")).length > 0) {
 				<div class="tx-error">{res/login("message")*}</div>
