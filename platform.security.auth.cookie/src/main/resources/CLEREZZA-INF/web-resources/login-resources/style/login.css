@@ -1,6 +1,6 @@
 body {
 	background-color: #eeeeee;
-	background-image: url(./images/bg/fade-login.png);
+	background-image: url(/style/images/bg/fade-login.png);
 	background-repeat: repeat-x;
 	background-position: center top;		
 }
@@ -63,15 +63,6 @@ body {
 #tx-login-mask > div > div {
 	text-align: center; 
 	margin: 1em;
-}	
-
-#tx-login-mask #tx-logo {
-	height: 2.5em;
-	width: 166px;
-	background-image: url(./images/logo-big.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	margin: 1em auto;
 }	
 
 #tx-login-mask fieldset {
