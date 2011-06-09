@@ -33,6 +33,9 @@ public class URITemplate implements Comparable<URITemplate> {
 
 	private class TemplateSection {
 		public TemplateSection(String value, boolean variable) {
+			while (value.endsWith("/")) {
+				value = value.substring(0, value.length() -1);
+			}
 			this.variable = variable;
 			if (variable) {
 				int colonPos = value.indexOf(':');
@@ -215,7 +218,11 @@ public class URITemplate implements Comparable<URITemplate> {
 				}
 				return -1;
 			}
-			return i + subPathOffSet;
+			if ((subPath.length() == (i + subPathOffSet)) || (subPath.charAt(i + subPathOffSet) == '/')) {
+				return i + subPathOffSet;
+			} else {
+				return -1;
+			}
 		}
 	}
 
