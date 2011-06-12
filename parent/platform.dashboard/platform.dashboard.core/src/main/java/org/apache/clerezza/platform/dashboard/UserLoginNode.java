@@ -19,8 +19,11 @@
 package org.apache.clerezza.platform.dashboard;
 
 import org.apache.clerezza.platform.security.UserUtil;
+import org.apache.clerezza.platform.security.WebIdBasedPermissionProvider;
 import org.apache.clerezza.platform.typerendering.UserContextProvider;
 import org.apache.clerezza.platform.usermanager.UserManager;
+import org.apache.clerezza.platform.users.WebIdGraphsService;
+import org.apache.clerezza.platform.users.WebIdInfo;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -28,6 +31,8 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.ontologies.PERMISSION;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.rdf.utils.UnionMGraph;
+import org.apache.commons.lang.Validate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -52,6 +57,9 @@ public class UserLoginNode implements UserContextProvider {
 	@Reference
 	protected UserManager userManager;
 
+	@Reference
+	private WebIdGraphsService webIdGraphsService;
+
 	@Override
 	public GraphNode addUserContext(GraphNode node) {
 
@@ -67,6 +75,11 @@ public class UserLoginNode implements UserContextProvider {
 			}
 		});
 		if (agent != null) {
+			if (agent.getNode() instanceof UriRef) {
+				WebIdInfo webIdInfo = webIdGraphsService.getWebIdInfo((UriRef)agent.getNode());
+				MGraph userGraph = webIdInfo.localPublicUserData();
+				agent = new GraphNode(agent.getNode(), new UnionMGraph(agent.getGraph(), userGraph));
+			}
 			node.addProperty(PLATFORM.user, agent.getNode());
 			MGraph userContext = new SimpleMGraph(agent.getNodeContext());
 			removeTripleWithProperty(userContext, PERMISSION.password);

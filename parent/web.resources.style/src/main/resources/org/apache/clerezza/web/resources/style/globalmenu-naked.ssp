@@ -16,13 +16,18 @@ resultDocModifier.addScriptReference("/style/scripts/login.js");
 	</div>
 	<div id="tx-login">
 				{
-					val username = (context/platform("user")/platform("userName")*)
-					if((username).equals("anonymous")) {
+					val userName = context/platform("user")/platform("userName")*
+					val displayName = if ((context/platform("user")/FOAF.name).length == 0) {
+								userName
+							} else {
+								context/platform("user")/FOAF.name*
+							}
+					if((userName).equals("anonymous")) {
 						<span>
 							<a href="#" id="tx-login-button">login</a>
 						</span>
 					} else {
-						<span><a href={"/user/" + username + "/control-panel"}>{username}</a>|<a href="/logout">logout</a></span>
+						<span><a href={"/user/" + userName + "/control-panel"}>{displayName}</a>|<a href="/logout">logout</a></span>
 					}
 				}
 	</div>
