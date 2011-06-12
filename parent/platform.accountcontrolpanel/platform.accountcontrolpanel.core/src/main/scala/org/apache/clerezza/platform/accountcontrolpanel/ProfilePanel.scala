@@ -180,6 +180,8 @@ class ProfilePanel extends Logging {
 		val webId: UriRef = new UriRef(ppd.getUnicodeString + "#me")
 		return AccessController.doPrivileged(new PrivilegedAction[Response] {
 			def run: Response = {
+				userManager.assignPermissionsToUser(userName, java.util.Collections.singletonList(new TcPermission(
+						webId.getUnicodeString, TcPermission.READWRITE).toString))
 				tcManager.getTcAccessController.setRequiredReadPermissionStrings(
 					ppd, Collections.singleton(new TcPermission(
 							Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString))
