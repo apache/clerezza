@@ -20,6 +20,7 @@ package org.apache.clerezza.platform.accountcontrolpanel
 
 import java.util.List
 import java.util.Arrays
+import java.util.Collections
 import java.util.Iterator
 import ontologies.{PINGBACK, CONTROLPANEL}
 import org.apache.clerezza.platform.security.UserUtil
@@ -32,6 +33,7 @@ import org.apache.clerezza.jaxrs.utils.TrailingSlash
 import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.usermanager.UserManager
 import org.apache.clerezza.rdf.core._
+import org.apache.clerezza.platform.Constants
 import access.TcManager
 import impl.{SimpleMGraph, TripleImpl}
 import org.apache.clerezza.rdf.utils.GraphNode
@@ -49,6 +51,7 @@ import java.security.interfaces.RSAPublicKey
 import org.apache.clerezza.ssl.keygen.KeygenService
 import java.net.URI
 import org.apache.clerezza.rdf.scala.utils.{RichGraphNode, EasyGraphNode, EasyGraph}
+import org.apache.clerezza.rdf.core.access.security.TcPermission
 import org.apache.clerezza.rdf.ontologies._
 import org.slf4j.scala.Logging
 import javax.security.auth.Subject
@@ -177,6 +180,9 @@ class ProfilePanel extends Logging {
 		val webId: UriRef = new UriRef(ppd.getUnicodeString + "#me")
 		return AccessController.doPrivileged(new PrivilegedAction[Response] {
 			def run: Response = {
+				tcManager.getTcAccessController.setRequiredReadPermissionStrings(
+					ppd, Collections.singleton(new TcPermission(
+							Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString))
 				tcManager.createMGraph(ppd)
 				val webIDInfo = webIdGraphsService.getWebIdInfo(webId)
 				webIDInfo.localPublicUserData.addAll(
