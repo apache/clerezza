@@ -6,7 +6,7 @@
 		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>app.webguiexamples</artifactId>
+	<artifactId>platform.style.classic.webguiexamples</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.2-incubating-SNAPSHOT</version>
 	<name>Clerezza - Web GUI Examples</name>
@@ -46,7 +46,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Require-Bundle>org.apache.clerezza.web.resources.style, org.apache.clerezza.web.resources.jquery</Require-Bundle>
+						<Require-Bundle>org.apache.clerezza.platform.style.classic, org.apache.clerezza.web.resources.jquery</Require-Bundle>
 					</instructions>
 				</configuration>
 			</plugin>

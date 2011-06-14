@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Launching Apache Clerezza</title>
+		<link rel="stylesheet" href="../../style/style.css" type="text/css"/>
+	</head>
+
+	<body>
+		<div class="zz-header">
+			<div class="bar"></div>
+			<div class="logo">
+				<a href="../" style=""><img src="../../images/logo.png" alt="logo" /></a>
+			</div>
+		</div>
+		<div class="column nav">
+			<ul>
+				<li class="top-nav-entry"><div class="title">Documentation</div>
+					<ul class="nav-entries">
+						<li><a href="../../getting-started/" class="active">Getting Started</a></li>
+						<li><a href="../../architecture/">The Apache Clerezza Stack</a></li>
+						<li><a href="http://incubator.apache.org/clerezza/mvn-site" target="_blank">API docs</a></li>
+						<li><a href="../../faq/">FAQ</a></li>
+					</ul>
+				</li>
+				<li class="top-nav-entry"><div class="title">Project Infos</div>
+					<ul  class="nav-entries">
+						<li><a href="../../downloads/">Downloads</a></li>
+						<li><a href="http://www.apache.org/licenses/" target="_blank">License</a></li>
+						<li><a href="../../mailinglists/">Mailing lists</a></li>
+						<li><a href="http://issues.apache.org/jira/browse/CLEREZZA" target="_blank">Issue Tracker</a></li>
+						<li><a href="http://svn.apache.org/viewvc/incubator/clerezza/trunk/" target="_blank">Source Repository</a></li>
+					</ul>
+				</li>
+				<li class="top-nav-entry"><div class="title">Sponsorship</div>
+					<ul  class="nav-entries">
+						<li><a href="../../thanks/">Thanks</a></li>
+						<li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Become a Sponsor</a></li>
+						<li><a href="http://www.apache.org/foundation/buy_stuff.html" target="_blank">Buy Stuff</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="zz-content">
+			<div class="column one-column">
+				<h1>Launching Clerezza</h1>
+				<p>The following instructions describes how to start Clerezza. If you don't have downloaded the launcher go to <a href="../../downloads/" >Downloads</a>.
+				</p>
+				<p>In order to start Clerezza you must have installed Java 1.6.</p>
+				<div>
+					<ol>
+						<li><div>Change working directory to org.apache.clerezza.platform.launcher.tdb/target or to the directory where you have downloaded the launcher</div></li>
+
+						<li><div><pre>java -Xmx512m -XX:MaxPermSize=256m -jar <br/>org.apache.clerezza.platform.launcher.tdb-0.5-incubating-SNAPSHOT.jar</pre></div></li>
+						<li><div>You should now have clerezza running on port 8080. Navigate
+								to <a href="http://localhost:8080/dashboard/" target="_blank" >http://localhost:8080/dashboard/</a></div></li>
+						<li><div>On the navigation bar on the right-hand side is a login link: default username is "admin", default password is "admin".
+								After successful login new items in the navigation bar are available:</div>
+								<br/>
+							<ul>
+								<li><div>Account Control Panel - Manage your account, install bundles and create your WebID.</div></li>
+								<li><div>Graphs - Manage and upload Graphs.</div></li>
+								<li><div>Logging - Configure logging.</div></li>
+								<li><div>Configuration - Configure Base URI.</div></li>
+								<li><div>Users - Manage Users.</div></li>
+								<li><div>Scripting - Write Scala scripts and associate execution URIs to scripts.</div></li>
+							</ul>
+						</li>
+					</ol>
+				</div>
+				<br/>
+				<span class="note">To start Clerezza as background process use the unix's tools <strong>screen</strong> or <strong>nohup</strong>.
+				These tools are also helpful on remote servers that Clerezza can continue working even when the telnet connection to the server is broken.
+				</span>
+				<br/>
+				<p>Clerezza is based on Apache Felix. Therefore, some further information is available on <a href="http://felix.apache.org/site/apache-felix-framework-usage-documentation.html#" target="_blank">the Felix usage page</a>.</p>
+				<br/>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="logos"><img src="../../images/feather.png" /><img src="../../images/sw-vert-w3c.png" /><img src="../../images/footer-logo.png" /></div>
+			<div class="divider"></div>
+			<div class="dark">
+				<div class="sitemap">
+					<div class="sitemap-title">Sitemap</div>
+					<div class="sitemap-content">
+						<div class="sitemap-column">
+							<div class="title" >Documentation</div>
+							<ul>
+								<li><a href="../../getting-started/">Getting Started</a></li>
+								<li><a href="../../architecture/">The Apache Clerezza Stack</a></li>
+								<li><a href="http://incubator.apache.org/clerezza/mvn-site" target="_blank">API docs</a></li>
+								<li><a href="../../faq/">FAQ</a></li>
+							</ul>
+
+						</div>
+						<div class="sitemap-column">
+							<div class="title" >Project Infos</div>
+							<ul >
+								<li><a href="../../downloads/">Downloads</a></li>
+								<li><a href="http://www.apache.org/licenses/" target="_blank">License</a></li>
+								<li><a href="../../mailinglists/">Mailing lists</a></li>
+								<li><a href="http://issues.apache.org/jira/browse/CLEREZZA" target="_blank">Issue Tracker</a></li>
+								<li><a href="http://svn.apache.org/viewvc/incubator/clerezza/trunk/" target="_blank">Source Repository</a></li>
+							</ul>
+						</div>
+						<div class="sitemap-column">
+							<div class="title" >Sponsorship</div>
+							<ul>
+								<li><a href="../../thanks/">Thanks</a></li>
+								<li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Become a Sponsor</a></li>
+								<li><a href="http://www.apache.org/foundation/buy_stuff.html" target="_blank">Buy Stuff</a></li>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+				<div class="copyright">Apache Clerezza, Clerezza, Apache, the Apache feather logo, and the Apache Clerezza project logo are trademarks of The Apache Software Foundation. <br></br>© 2011 The Apache Software Foundation.</div>
+			</div>
+		</div>
+	</body>
+</html>

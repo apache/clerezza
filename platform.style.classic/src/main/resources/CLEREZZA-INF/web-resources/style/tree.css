@@ -1,0 +1,314 @@
+/* tree */
+.tx-tree {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0.5em;
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 99%;
+}
+
+.tx-tree.tx-halfwidth-left {
+	width: 49%;
+}
+
+.tx-tree.tx-show-panel {
+	left: 28em;
+	width: auto;
+}
+
+.tx-tree.tx-hide-panel {
+	left: 5em;
+	width: auto;
+}
+
+.tx-tree ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.tx-tree li {
+	border-top: solid 1px #e4e4e4;
+	background-image: url(./images/icons/arr-right.png);
+	background-repeat: no-repeat;
+	background-position: 3.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li {
+	background-position: 2.3em 0.9em;
+}
+
+
+.tx-tree > div > ol > li:first-child {
+	border-top: none;
+}
+
+.tx-tree li.tx-nobg {
+	background-image: none;
+}
+
+.tx-tree li.tx-open {
+	background-image: url(./images/icons/arr-down.png);
+}
+
+
+.tx-tree li div.tx-icon-drag {
+	padding: 0;
+	margin: 0;
+	vertical-align: middle;
+	clear: none;
+	height: 2.2em;
+	width: 0.9em;
+}
+
+.tx-tree li div.tx-icon-spacer {
+	padding: 0;
+	margin: 0;
+	vertical-align: middle;
+	clear: none;
+	height: 2.2em;
+	width: 0.9em;
+}
+
+.tx-tree li a {
+	text-decoration: none;
+	padding: 0 0.2em 0 0;
+	line-height: 1.5em;
+	margin-bottom: 1em;
+	vertical-align: middle;
+	padding-left: 1.5em;
+}
+
+.tx-tree li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li a + a:visited, .tx-tree li a + a:link  {
+	text-decoration: none;
+}
+
+.tx-tree li a + a:active, .tx-tree li a + a:hover  {
+	text-decoration: underline;
+}
+
+.tx-tree > div > ol > li {
+}
+
+.tx-tree > div > ol > li:last-child {
+	border-bottom: solid 1px #e4e4e4;
+}
+
+.tx-tree li a:visited, .tx-tree li a:link  {
+}
+
+.tx-tree li a:active, .tx-tree li a:hover  {
+}
+
+.tx-tree input[type="checkbox"] {
+	margin: 0.5em 0.3em 0.5em 0.2em;
+	vertical-align: middle;
+}
+
+.tx-tree .tx-list-view input[type="checkbox"] {
+	margin: 0.5em 1em 0.5em 0.6em;
+	vertical-align: middle;
+	width: 2em;
+}
+
+.tx-tree div {
+	clear: both;
+}
+
+
+.tx-tree span.tx-info {
+	float: right;
+	vertical-align: middle;
+	padding-top: 0.3em;
+}
+
+.tx-tree span.tx-info span {
+	float: left;
+	text-align: center;
+	padding: 0 0.6em;
+	height: 2em;
+	line-height: 2em;
+}
+
+
+/* levels */
+
+.tx-tree li li {
+	background-position: 4.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li {
+	background-position: 3.3em 0.9em;
+}
+
+.tx-tree li li a {
+	padding-left: 2.5em;
+}
+
+.tx-tree li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li {
+	background-position: 5.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li {
+	background-position: 4.3em 0.9em;
+}
+
+.tx-tree li li li a {
+	padding-left: 3.5em;
+}
+
+.tx-tree li li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li li {
+	background-position: 6.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li li {
+	background-position: 5.3em 0.9em;
+}
+
+.tx-tree li li li li a {
+	padding-left: 4.5em;
+}
+
+.tx-tree li li li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li li li {
+	background-position: 7.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li li li {
+	background-position: 6.3em 0.9em;
+}
+
+.tx-tree li li li li li a {
+	padding-left: 5.5em;
+}
+
+.tx-tree li li li li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li li li li {
+	background-position: 8.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li li li li {
+	background-position: 7.3em 0.9em;
+}
+
+.tx-tree li li li li li li a {
+	padding-left: 6.5em;
+}
+
+.tx-tree li li li li li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li li li li li {
+	background-position: 9.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li li li li li {
+	background-position: 8.3em 0.9em;
+}
+
+.tx-tree li li li li li li li a {
+	padding-left: 7.5em;
+}
+
+.tx-tree li li li li li li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li li li li li li {
+	background-position: 10.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li li li li li li {
+	background-position: 9.3em 0.9em;
+}
+
+.tx-tree li li li li li li li li a {
+	padding-left: 8.5em;
+}
+
+.tx-tree li li li li li li li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li li li li li li li {
+	background-position: 11.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li li li li li li li {
+	background-position: 10.3em 0.9em;
+}
+
+.tx-tree li li li li li li li li li a {
+	padding-left: 9.5em;
+}
+
+.tx-tree li li li li li li li li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li li li li li li li li {
+	background-position: 12.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li li li li li li li li {
+	background-position: 11.3em 0.9em;
+}
+
+.tx-tree li li li li li li li li li li a {
+	padding-left: 10.5em;
+}
+
+.tx-tree li li li li li li li li li li a + a {
+	padding-left: 0em;
+}
+
+.tx-tree li li li li li li li li li li li {
+	background-position: 13.3em 0.9em;
+}
+
+.tx-tree .tx-nodrag li li li li li li li li li li li {
+	background-position: 12.3em 0.9em;
+}
+
+.tx-tree li li li li li li li li li li li a {
+	padding-left: 11.5em;
+}
+
+.tx-tree li li li li li li li li li li li a + a {
+	padding-left: 0em;
+}
+
+/* table */
+
+.tx-tree table {
+	width: 100%;
+}
+
+.tx-tree  table tr > th:first-child  {
+	width: 1.5em;
+}
+
+.tx-tree .tx-nodrag table tr > th:first-child  {
+	width: 0.5em;
+}

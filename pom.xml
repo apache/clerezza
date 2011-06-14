@@ -25,7 +25,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-				<module>app.webguiexamples</module>
+				<module>platform.style.classic.webguiexamples</module>
 				<module>ext.com.hp.hpl.jena</module>
 				<module>ext.com.hp.hpl.jena.tdb</module>
 				<module>ext.com.ibm.icu</module>
@@ -124,7 +124,8 @@
 				<module>web.fileserver</module>
 				<module>web.resources.jquery</module>
 				<module>web.resources.scripts</module>
-				<module>web.resources.style</module>
+				<module>platform.style.default</module>
+				<module>platform.style.classic</module>
 				<module>web.resources.yui</module>
 				<module>rdf.storage.externalizer</module>
 				<module>rdf.storage.web</module>
@@ -699,7 +700,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>web.resources.style</artifactId>
+				<artifactId>platform.style.default</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>platform.style.classic</artifactId>
 				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -1164,7 +1170,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>app.webguiexamples</artifactId>
+				<artifactId>platform.style.classic.webguiexamples</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>

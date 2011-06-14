@@ -1,0 +1,79 @@
+/* form */
+form, fieldset {
+	padding: 0;
+	margin: 0;	
+	border: none;
+}
+
+
+input, select, textarea, button,
+#tx-panel input, #tx-panel select, #tx-panel textarea, #tx-panel button,
+#tx-header input, #tx-header select, #tx-header textarea, #tx-header button {
+	margin: 0;
+	padding: 0.15em 0 0.1em 0.4em;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+input.radio {
+}
+
+input[type="submit"], input[type="file"] {
+}
+
+input[type="radio"], input[type="checkbox"],
+#tx-panel input[type="radio"], #tx-panel input[type="checkbox"],
+#tx-header input[type="radio"], #tx-header input[type="checkbox"] {
+	margin: auto 0;
+	padding: 0;
+	width: 1.4em !important;
+	min-height: 1.4em !important;
+	height: 1.4em !important;
+	vertical-align: text-bottom;
+	border: none !important;
+	background-image: none;
+	background-color: transparent;
+}
+
+
+input, select, textarea 
+#tx-panel input, #tx-panel select, #tx-panel textarea, #tx-panel input[type='text'], #tx-panel input[type='password'], 
+#tx-header input, #tx-header select, #tx-header textarea , #tx-header input[type='text'], #tx-header input[type='password'] {
+	border-top: solid 1px #a7a7a7;
+	border-left: solid 1px #a7a7a7;
+	border-right: solid 1px #a7a7a7;
+	border-bottom: solid 1px #cccccc;
+	background-image: url(./images/bg/fade-input.png);
+	background-repeat: repeat-x;	
+	background-color: #ffffff;
+	min-height: 1.2em;
+	vertical-align: middle;
+	font-size: 1.0em;
+	outline: none;
+}
+
+select ,
+#tx-panel select,
+#tx-header select {
+	padding-left: 0.2em;
+}
+
+textarea,
+#tx-panel textarea,
+#tx-header textarea {
+	font-size: 1.0em;
+	padding-right: 0.2em;
+}
+
+textarea:focus, input[type='text']:focus, input[type='password']:focus, select:focus ,
+#tx-panel textarea:focus, #tx-panel input[type='text']:focus, #tx-panel input[type='password']:focus, #tx-panel select:focus ,
+#tx-header textarea:focus, #tx-header input[type='text']:focus, #tx-header input[type='password']:focus, #tx-header select:focus 
+{
+	outline: none;
+	border-top: solid 1px #a7a7a7;
+	border-left: solid 1px #a7a7a7;
+	border-right: solid 1px #a7a7a7;
+	border-bottom: solid 1px #cccccc;	
+}
+
+
+

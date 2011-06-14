@@ -1,0 +1,37 @@
+/* clearfix */
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+/* full clearfix */
+/* add to floating elements which should not float afterthem */
+* html .overlay-clearfix {
+	height: 1%; /* IE5-6 */
+}
+* + html .overlay-clearfix {
+	display: inline-block; /* IE7not8 */
+}
+.overlay-clearfix:after { /* FF, IE8, O, S, etc. */
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}

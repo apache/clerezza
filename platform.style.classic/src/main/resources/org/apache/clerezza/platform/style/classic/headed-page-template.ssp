@@ -1,0 +1,53 @@
+resultDocModifier.addStyleSheet("/style/style.css");
+resultDocModifier.addScriptReference("/jquery/jquery-1.3.2.min.js");
+resultDocModifier.addScriptReference("/jquery/jquery.menu.js");
+resultDocModifier.addScriptReference("/jquery/jquery.panel.js");
+resultDocModifier.addScriptReference("/style/scripts/panel.js");
+resultDocModifier.addScriptReference("/scripts/modification-status.js");
+resultDocModifier.addScriptReference("/scripts/status-message.js");
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	    <title></title>
+	</head>
+	<body>
+		<div id="tx-header">
+				{render(context,"menu")}
+			<div id="tx-module">
+				<div id="tx-page-actions">
+					<ol id="tx-page-actions-ol">
+					</ol>
+				</div>	
+			</div>
+			<div id="tx-module-tabs">
+				<ol id="tx-module-tabs-ol">
+				</ol>
+				<div id="tx-contextual-buttons">
+					<ol id="tx-contextual-buttons-ol">
+					</ol>
+				</div>
+			</div>
+			<div id="tx-module-options">	
+				<ol id="tx-module-options-ol">
+				</ol>	
+			</div>
+		</div>
+		<div class="tx-panel" id="tx-panel">
+			<a href="#" class="tx-panel-open-close tx-icon-left-inverse" id="tx-panel-open-close">open/close</a>
+			<div id="tx-panel-title"><h3></h3></div>
+			<div class="tx-panel-window">
+				<div class="tx-panel-tab-buttons" id="tx-panel-tab-buttons">
+					<ol id="tx-panel-tab-buttons-ol">
+					</ol>
+				</div>
+				<div class="tx-panel-tabs" id="tx-panel-tabs"></div>
+			</div>
+		</div>
+		{
+			if (mode == null) {
+				render(res, "naked")
+			} else {
+				render(res, mode + "-naked")
+			}
+		}
+	</body>
+</html>
