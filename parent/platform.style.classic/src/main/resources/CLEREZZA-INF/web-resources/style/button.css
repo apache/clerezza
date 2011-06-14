@@ -1,0 +1,58 @@
+/* button */
+
+.tx-button {
+	padding: 0.2em 0.8em;
+	text-align: center;
+	min-width: 5em;
+	display: inline-block;
+	line-height: 1.1em;
+	height: 1.1em;
+	-moz-border-radius: 3px; 
+	-webkit-border-radius: 3px;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.tx-inactive {
+	filter: alpha(opacity=30);
+	opacity: 0.3;
+}
+
+a.tx-button:visited, a.tx-button:link  {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+a.tx-button:active, a.tx-button:hover  {
+	color: #ffffff;
+	text-decoration: underline;
+}
+
+a.tx-button.tx-inactive {
+	text-decoration: none;
+}
+
+.tx-button-generic {
+	background: url(./images/icons/fade-generic.png) center repeat-x;
+	border-color: #454545 #4e4e4e #4e4e4e #3a3a3a;
+}
+
+.tx-button-generic-on {
+	background: url(./images/icons/fade-generic-on.png) center repeat-x;
+	border-color: #454545 #4e4e4e #4e4e4e #3a3a3a;
+}
+
+.tx-button-remove {
+	background: url(./images/icons/fade-remove.png) center repeat-x;
+	border-color: #c6491d #a51507 #a51507 #ce4b21;
+}
+
+.tx-button-modify {
+	background: url(./images/icons/fade-modify.png) center repeat-x;
+	border-color: #2f8695 #368e9d #368e9d #487d9d;
+}
+
+.tx-button-create {
+	background: url(./images/icons/fade-create.png) center repeat-x;
+	border-color: #5f8d18 #68991d #68991d #68991d;
+}

@@ -1,0 +1,142 @@
+/* menu */
+#tx-menu {
+	top: 0.0em;
+	left: 13em; 
+	position: absolute;
+	z-index: 10000;
+}	
+
+#tx-menu ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#tx-menu ol li {
+	float: left;
+}
+
+#tx-menu ol li.active {
+}
+
+#tx-menu ol li a {
+	color: #ffffff;
+	text-decoration: none;
+	display: block;
+	padding: 0.5em 0.5em 0.6em 0.5em;
+}
+
+#tx-menu ol li a:visited, #tx-menu li a:link  {
+	text-decoration: none;
+}
+
+#tx-menu ol li a:active, #tx-menu ol li a:hover  {
+	text-decoration: underline;
+}
+
+#tx-menu ol li.active a:visited, #tx-menu ol li.active a:link  {
+	background-color: #ffffff;
+	color: #333333;
+	background-image: url(./images/bg/fade-menu.png);
+	background-repeat: repeat-x;
+}
+
+#tx-menu ol li.active a:active, #tx-menu ol li.active a:hover  {
+	background-color: #ffffff;
+	color: #333333;
+	background-image: url(./images/bg/fade-menu.png);
+	background-repeat: repeat-x;
+}
+
+#tx-menu ol h4 {
+	border-bottom: solid 1px #dddddd;
+	margin: 0;
+	padding: 0em 0 0.4em 0.4em;
+	font-weight: bold;
+	color: #000000;	
+	clear: both;
+}
+
+#tx-menu ol ol+h4 {
+	padding-top: 1.2em;
+}
+
+#tx-menu ol div {
+	background-color: #ffffff;
+	border-right: solid 3px #cccccc;
+	border-bottom: solid 3px #cccccc;
+	opacity: 0.9;
+	display: none;
+	position: absolute;	
+	padding: 1.0em 0.6em 0.8em 0.6em;
+	max-width: 15em;
+	min-width: 10em;
+	border-top: solid 1px #ffffff;
+
+	z-index: -1;	
+}
+
+#tx-menu ol div.tx-desc {
+	min-width: 30em;
+}
+
+#tx-menu ol li li {
+	border-bottom: 1px solid #c7c7c7;
+	padding: 0px;
+	min-width: 10em;
+	max-width: 15em;
+}
+
+#tx-menu ol li li:last-child, #tx-menu ol li .tx-desc li:last-child{
+	border-bottom: none;
+}
+
+
+#tx-menu ol li .tx-desc li {
+	border-bottom: 1px solid #c7c7c7;
+	padding: 0px;
+	min-width: 30em;
+}
+
+#tx-menu ol li .tx-desc li span {
+	display: block;
+	width: 16em;
+	float: left;
+	color: #555555;
+	padding: 0.3em 0 0.3em 0em;
+}
+
+#tx-menu ol li li  span {
+	display: none;
+}
+
+#tx-menu ol li .tx-desc li a {
+	font-weight: bold;
+}
+
+#tx-menu ol li li a {
+	color: #455c6a;
+	display: block;
+	padding: 0.3em 0 0.3em 0.5em;
+	width: 13em;
+	font-weight: normal;
+	float: left;
+	
+}
+
+#tx-menu ol li.active li.active {
+	background-color: #eef8fa;
+}
+
+#tx-menu ol li.active li a:visited, #tx-menu ol li.active li a:link  {
+	text-decoration: none;
+	background-image: none;
+	background-color: transparent;
+}
+
+#tx-menu ol li.active li a:active, #tx-menu ol li.active li a:hover  {
+	text-decoration: underline;
+	background-image: none;
+	background-color: transparent;
+}
+

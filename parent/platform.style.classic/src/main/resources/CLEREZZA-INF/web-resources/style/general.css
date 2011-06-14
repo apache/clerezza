@@ -1,0 +1,79 @@
+html#tx-html, html {
+	font-size: 62.8%;
+}
+
+body#tx-body, body {
+	padding: 0;
+	margin: 0;
+	background-color: #ffffff;
+	color: #333333;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.2em;
+
+}
+
+img {
+	border: none;
+}
+
+a {
+	color: #1c6d8b;
+	text-decoration: none;
+	outline: none;
+}
+
+a:active, a:hover  {
+	color: #1c6d8b;
+	text-decoration: underline;
+}
+
+.tx-right {
+	float: right;
+}
+
+.tx-left {
+	float: left;
+}
+
+#tx-header {
+	top: 0em;
+	left: 0;
+	position: absolute;
+	height: 11.7em;
+	width: 100%;
+	min-width: 80em;
+	overflow-x: visible;
+	overflow-y: visible;
+	z-index: 9999;
+}
+
+#tx-content {
+	top: 12em;
+	width: auto;
+	left: 0;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	min-width: 80em;
+	z-index: 0;
+}
+
+pre {
+	font-size: 1.1em;
+}
+
+/* a note in a documentation */
+.tx-note {
+    background-color: #f4e010;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+/* a code section */
+.tx-blockcode {
+    white-space: pre;
+    display: block;
+    background-color: #f4e0e0;
+    padding-left: 4em;
+    margin-bottom: 1em;
+}

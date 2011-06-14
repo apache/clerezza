@@ -315,11 +315,13 @@
 			<artifactId>web.resources.scripts</artifactId>
 			<scope>provided</scope>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>web.resources.style</artifactId>
+			<artifactId>platform.style.classic</artifactId>
 			<scope>provided</scope>
 		</dependency>
+-->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.scalaserverpages</artifactId>
@@ -352,7 +354,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>app.webguiexamples</artifactId>
+			<artifactId>platform.style.classic.webguiexamples</artifactId>
 			<scope>provided</scope>
 		</dependency>
 

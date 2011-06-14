@@ -1,0 +1,79 @@
+/* pager */
+.tx-pager {
+	position: absolute;
+	right: 0.8em;
+	width: 20em;
+	text-align: right;
+}	
+
+.tx-pager input {
+	width: 2.5em;
+}
+
+.tx-pager-dropdown {
+	width: 4.5em;
+	margin-right: 1.6em;
+}
+
+.tx-pager ol {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	text-align: center;
+}
+
+.tx-pager ol li {
+	display: inline;
+	margin: 0 0.2em;
+	background-image: none;
+	padding: 0;
+}
+
+.tx-pager li.active {
+	font-weight: bold;
+}
+.tx-pager li a {
+}
+
+
+.tx-pager li a:visited, .tx-pager li a:link  {
+}
+
+.tx-pager li a:active, .tx-pager li a:hover  {
+}
+
+.tx-pager li.active a:visited, .tx-pager li.active a:link  {
+}
+
+.tx-pager li.active a:active, .tx-pager li.active a:hover  {
+}
+
+
+.tx-pager .next {
+	float: right;
+	background: url(./images/icons/arr-right-dark.png) center no-repeat;
+	text-indent: -9999px;
+	height: 0.8em;
+	width: 0.8em;
+	display: block;	
+	margin-top: 0.3em;
+}
+
+.tx-pager .prev {
+	float: left;
+	background: url(./images/icons/arr-left-dark.png) center no-repeat;
+	text-indent: -9999px;
+	height: 0.8em;
+	width: 0.8em;
+	display: block;	
+	margin-top: 0.3em;
+}
+
+.tx-pager form, .tx-pager fieldset {
+	display: inline;
+}
+
+.tx-pager input {
+	text-align: center;
+	
+}
