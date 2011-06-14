@@ -512,7 +512,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>web.resources.style</artifactId>
+			<artifactId>platform.style.default</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -560,11 +560,13 @@
 			<artifactId>platform.language.core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>app.webguiexamples</artifactId>
+			<artifactId>platform.style.classic.webguiexamples</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+-->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.concepts.core</artifactId>

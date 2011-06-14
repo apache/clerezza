@@ -1,0 +1,364 @@
+/* panel */
+.tx-panel {
+	position: absolute;
+	top: 12em;
+	bottom: 0;
+	left: 0.5em;
+	width: 27em;
+	z-Index: 100;
+}
+
+.tx-panel.tx-panel-left {
+	position: absolute;
+	top: 12em;
+	bottom: 0;
+	left: 0.5em;
+	width: 27em;
+	z-Index: 100;
+}
+
+.tx-panel.tx-panel-right {
+	/*
+	position: absolute;
+	top: 0em;
+	right: 0.5em;
+	*/
+	position: static;
+	top: auto;
+	right: auto;
+	width: 16em;
+	z-Index: 100;
+	float: right;
+	margin-right: 1em;
+	clear: right;
+	margin-bottom: 1em;
+}
+.tx-panel.tx-panel-middle {
+	/*
+	position: absolute;
+	top: 0em;
+	right: 0.5em;
+	*/
+	position: static;
+	top: auto;
+	right: auto;
+	width: 31em;
+	z-Index: 100;
+	float: none;
+	margin-right: 1em;
+	clear: right;
+	margin-bottom: 1em;
+}
+
+
+.tx-panel.tx-close {
+	width: 26px;
+	overflow: hidden;
+}
+
+.tx-panel.tx-close .tx-panel-tab-buttons ol  {
+	display: none;
+}
+
+
+.tx-panel .tx-panel-window {
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: absolute;
+	top: 2.5em;
+	bottom: 0em;
+	left: 0em;
+	width: 26em;
+}
+
+.tx-panel.tx-panel-right .tx-panel-window {
+	top: auto;
+	bottom: auto;
+	left: auto;
+	width: auto;
+	overflow: visible;
+	position: static;	
+}
+
+.tx-panel.tx-panel-middle .tx-panel-window {
+	top: auto;
+	bottom: auto;
+	left: auto;
+	width: auto;
+	overflow: visible;
+	position: static;	
+}
+
+.tx-panel h3, .tx-panel div h3 {
+	background-image: url(./images/bg/fade-panel-search.png);
+	color: #ffffff;
+	font-size: 1.0em;
+	height: 27px;
+	line-height: 2.2em;
+	margin: 0 0 0.5em 26px;
+	width: 21em;
+	/* for the border of the tx-panel-tabs box */
+	padding-right: 2px;
+	padding-left: 1em;
+}
+
+.tx-panel.tx-panel-right div h3 {
+	width: 15em;
+	margin: 0 0 0.3em 0px;	
+	padding-right: 2px;
+	padding-left: 1em;
+	padding-bottom: 0;	
+}
+
+.tx-panel.tx-panel-middle div h3 {
+	width: 30.5em;
+	margin: 0 0 0.3em 0px;	
+	padding-right: 2px;
+	padding-left: 1em;
+	padding-bottom: 0;	
+}
+
+.tx-panel-tabs {
+	border: solid 1px #bdbdbd;
+	margin-left: 26px;
+	width: 22em;
+	min-height: 98%;
+}
+
+.tx-panel.tx-panel-right .tx-panel-tabs  {
+	margin-left: 0px;
+	width: 16em;
+}
+
+.tx-panel.tx-panel-middle .tx-panel-tabs  {
+	margin-left: 0px;
+	width: 31.5em;
+}
+
+.tx-panel-tabs > div {
+	padding: 1em;
+	background-image: url(./images/bg/fade-filter.png);
+	background-repeat: repeat-x;
+}
+
+
+.tx-panel label {
+	display: block;
+	height: 1.4em;
+}
+
+
+.tx-panel input[type="text"] {
+	float: none;
+	display: inline;
+	width: 16.5em;
+}
+
+.tx-panel input[type="button"], .tx-panel input[type="submit"] {
+	float: right;
+	display: inline;
+}
+
+.tx-panel input[type="radio"] {
+	margin: 0.2em 0 0.2em 0;
+	vertical-align: middle;
+}
+
+.tx-panel .tx-panel-open-close {
+	background: url(./images/icons/d-arr-left-inverse.png) center no-repeat;
+	width: 26px;
+	height: 27px;
+	text-indent: -9999px;
+	text-align: left;
+	display: block;
+	float: left;
+	border: none;
+
+}
+
+.tx-panel .tx-panel-open-close.tx-close {
+	background: url(./images/icons/d-arr-right-inverse.png) center no-repeat;
+}
+
+
+.tx-result ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.tx-result > ol > li {
+	background-image: url(./images/icons/arr-right-inverse.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em 0.4em;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #ffffff;
+	background-color: #cccccc;
+}
+
+.tx-result > ol > li.tx-open {
+	background-image: url(./images/icons/arr-down-inverse.png);
+	background-repeat: no-repeat;
+	background-position: 0.5em 0.4em;
+}
+
+.tx-result ol li a {
+	color: #ffffff;
+	text-decoration: none;
+	display: block;
+	padding: 0.2em 0.2em 0.2em 1.9em;
+}
+
+.tx-result > ol > li li:first-child {
+	border-top: none;
+}
+
+
+.tx-result > ol > li li {
+	border-top: solid 1px #e6e6e6;
+}
+
+
+.tx-result li a:visited, .tx-result li a:link  {
+	color: #ffffff;
+}
+
+.tx-result li a:active, .tx-result li a:hover  {
+	color: #ffffff;
+}
+
+.tx-result ol ol {
+	background-color: #ffffff;
+	display: none;
+}
+
+.tx-result > ol > li.tx-open > ol {
+	display: block;
+}
+
+.tx-result ol li li {
+}
+
+.tx-result ol li li a {
+	color: #666666;
+	padding: 0.2em 0.2em 0.2em 1.9em;
+}
+
+.tx-result ol li li a:visited, .tx-result ol li li a:link  {
+	color: #666666;
+}
+
+.tx-result ol li li a:active, .tx-result ol li li a:hover  {
+	color: #333333;
+}
+
+
+.tx-result li.tx-more {
+	background-image: url(./images/icons/arr-right.png);
+	background-repeat: no-repeat;
+	background-position: 1.8em 0.4em;
+}
+
+.tx-result li.tx-more a {
+	padding-left: 2.9em;
+	color: #1c6d8b;
+}
+
+.tx-result li.tx-more a:visited, .tx-result li.tx-more a:link  {
+	color: #1c6d8b;
+}
+
+.tx-result li.tx-more a:active, .tx-result li.tx-more a:hover  {
+	color: #1c6d8b;
+	text-decoration: underline;
+}
+
+/* filter (in panel)*/
+
+.tx-panel .tx-filter {
+	background-color: #FFFFFF;
+	padding: 1em 0 2em 0;
+	background-repeat: repeat-x;
+}
+
+.tx-panel .tx-filter  h4 {
+	font-weight: normal;
+	margin: 0;
+	padding: 0;
+	padding-left: 0.3em;
+	padding-bottom: 0.5em;
+	color: #666666;
+	font-size: 1.0em;
+	min-height: 1.8em;
+	line-height: 1.5em;
+}
+
+.tx-panel .tx-filter ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.tx-panel .tx-filter ol li {
+	background-color: #fff2e4;
+	margin: 0;
+	padding: 0 0 0 1.0em;
+	color: #000000;
+	height: 1.7em;
+	border-bottom: solid 1px #ffffff;
+	line-height: 1.6em;
+}
+
+.tx-panel .tx-filter a {
+	float: right;
+	color: #000000;
+}
+
+.tx-panel .tx-filter h4 a{
+	margin-left: 0.5em;
+	color: #cc3333;
+}
+
+
+/* tabs */
+
+.tx-panel .tx-panel-tab-buttons {
+
+	background-color: #dadada;
+	background-image: url(./images/panel/bg-tab.png);
+	background-repeat: repeat-y;
+
+	min-height: 98%;
+	float: left;
+	width: 26px;
+	padding-bottom: 2px;
+}
+
+.tx-panel .tx-panel-tab-buttons ol {
+	width: 26px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.tx-panel .tx-panel-tab-buttons li {
+	margin: 0;
+	padding: 0;
+}
+
+.tx-panel .tx-panel-tab-buttons li a {
+	background-image: url(./images/panel/tab-button-default.png);
+	height: 30px;
+	width: 26px;
+	display: block;
+	background-position: center;
+	background-repeat: no-repeat;
+	text-indent: -9999px;
+}
+
+.tx-panel .tx-panel-tab-buttons li.tx-active a {
+	background-color: #ffffff;
+	border: solid 1px #bdbdbd;
+	border-right: none;
+}

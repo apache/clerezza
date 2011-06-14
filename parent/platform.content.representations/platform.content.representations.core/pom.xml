@@ -41,10 +41,12 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.content</artifactId>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>web.resources.style</artifactId>
 		</dependency>
+-->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.content.representations.ontologies</artifactId>
