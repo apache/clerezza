@@ -341,15 +341,19 @@ public class TdbTcProvider implements WeightedTcProvider {
 		}
 	}
 
+
 	private void loadGraphs() {
 		File graphsDir = new File(new File(dataPathString), "graph");
 		if (graphsDir.exists()) {
 			for (String graphDirName : graphsDir.list()) {
 				try {
 					UriRef uri = new UriRef(URLDecoder.decode(graphDirName, "utf-8"));
+					log.info("loading: "+graphDirName);
 					graphMap.put(uri, getGraph(new File(graphsDir, graphDirName)));
 				} catch (UnsupportedEncodingException ex) {
 					throw new RuntimeException("utf-8 not supported", ex);
+				} catch (Exception e) {
+					log.error("Could not load tdb graph in "+graphDirName, e);
 				}
 			}
 		}
@@ -361,9 +365,12 @@ public class TdbTcProvider implements WeightedTcProvider {
 			for (String mGraphDirName : mGraphsDir.list()) {
 				try {
 					UriRef uri = new UriRef(URLDecoder.decode(mGraphDirName, "utf-8"));
+					log.info("loading: "+mGraphDirName);
 					mGraphMap.put(uri, new LockableMGraphWrapper(getMGraph(new File(mGraphsDir, mGraphDirName))));
 				} catch (UnsupportedEncodingException ex) {
 					throw new RuntimeException("utf-8 not supported", ex);
+				} catch (Exception e) {
+					log.error("Could not load tdb graph in "+mGraphDirName, e);
 				}
 			}
 		}
