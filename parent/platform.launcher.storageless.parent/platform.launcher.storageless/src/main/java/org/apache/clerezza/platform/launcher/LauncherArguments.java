@@ -62,6 +62,9 @@ public interface LauncherArguments {
 	@CommandLine(longName = "https_keystore_clientauth", shortName = {}, required = false,
 	description = "Client Auth request, one of \"none\", \"want\" or \"need\"")
 	public String getClientAuth();
-	
-	
+
+	@CommandLine(longName = "noConsoleShell", shortName = {"NCS"}, required = false,
+	isSwitch = true, description = "Disable the console shell")
+	public boolean getNotConsoleShell();
+
 }
