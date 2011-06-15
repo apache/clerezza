@@ -233,9 +233,14 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
 
 		@Override
 		public void lock() {
-			for(Lock lock : locks) {
-				lock.lock();
-			}
+			boolean isLocked = false;
+			while(!isLocked) {
+				try {
+					isLocked = tryLock(10000, TimeUnit.NANOSECONDS);
+				} catch (InterruptedException ex) {
+					
+				}
+			} 
 		}
 
 		@Override
