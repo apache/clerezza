@@ -53,7 +53,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNodeFactory;
  * Clerezza Launcher Application.
  *
  *
- * @author daniel
+ * @author daniel, reto
  */
 public class ClerezzaApp {
 
@@ -164,9 +164,11 @@ public class ClerezzaApp {
 			showUsage();
 			return;
 		}
+		start(arguments);
+	}
 
+	private void start(LauncherArguments arguments) throws Throwable {
 		Properties configProps = getConfigProps(arguments);
-
 		Policy.setPolicy(new Policy() {
 
 			@Override
@@ -364,7 +366,10 @@ public class ClerezzaApp {
 		return artsToBeInstalled;
 	}
 
-	private void showUsage() {
+	/**
+	 * Prints usage instructions to stdout
+	 */
+	public static void showUsage() {
 		System.out.print("Usage: LaunchBundle ");
 		System.out.println(AnnotatedInterfaceArguments.getArgumentsSyntax(LauncherArguments.class));
 		PrintWriter out = new PrintWriter(System.out, true);
@@ -372,11 +377,19 @@ public class ClerezzaApp {
 				LauncherArguments.class, out);
 		out.flush();
 	}
+	
 
 	private Properties getConfigProps(LauncherArguments arguments) {
 
 		Properties configProps = new Properties();
 		configProps.putAll(System.getProperties());
+		{
+			if (arguments.getNotConsoleShell()) {
+				configProps.put("clerezza.shell.disable",
+					"true");
+			}
+		}
+
 		{
 			String argLogLevel = arguments.getLogLevel();
 			if (argLogLevel == null) {

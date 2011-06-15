@@ -32,11 +32,15 @@ import java.net._
 import java.security.PrivilegedActionException
 import java.security.AccessController
 import java.security.PrivilegedAction
-import java.util.{ArrayList, Arrays};
+
 import javax.script.ScriptContext
 import javax.script.{ScriptEngineFactory => JavaxEngineFactory, Compilable,
 					 CompiledScript, ScriptEngine, AbstractScriptEngine, Bindings,
 					 SimpleBindings, ScriptException}
+import jline.CandidateListCompletionHandler
+import jline.{CompletionHandler, Completor, Terminal, ConsoleReader, ArgumentCompletor, History => JHistory}
+import java.util.{ArrayList, Arrays}
+
 //import scala.collection.immutable.Map
 import scala.actors.DaemonActor
 import scala.collection.immutable
@@ -53,9 +57,10 @@ import scala.actors.Actor
 import scala.actors.Actor._
 import org.apache.clerezza.scala.scripting._
 import java.io.File
-import jline.{ ConsoleReader, ArgumentCompletor, History => JHistory }
+import org.slf4j.scala.Logging
 
-class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputStream, shellCommands: immutable.Set[ShellCommand])  {
+class Shell(factory: InterpreterFactory, val inStream: InputStream, 
+			out: OutputStream, shellCommands: immutable.Set[ShellCommand]) extends Logging {
 
 
 	private var bundleContext: BundleContext = null
@@ -130,20 +135,73 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream, out: OutputS
 				override lazy val completion = Option(interpreter) map (x => new Completion(x))
 
 				val consoleReader = {
-					val r = new jline.ConsoleReader(inStream, out)
+					val terminal = new jline.UnixTerminal
+					/*val terminal = new jline.Terminal {
+						override def initializeTerminal() {logger.warn("JLINE: initializing echo")}
+
+						override def isEchoEnabled =  { logger.warn("JLINE: is enabled echo")
+						true}
+
+						override def isSupported = { logger.warn("JLINE: is supported echo")
+						true}
+
+						override def enableEcho() { logger.warn("JLINE: enabling echo")}
+
+						override def disableEcho() {logger.warn("JLINE: disabling echo") }
+
+						override def getTerminalHeight = 24
+
+						override def getTerminalWidth = 80
+
+						override def getEcho = false
+					}*/
+					val r = new jline.ConsoleReader(inStream, out, null, terminal)
 					r setHistory (History().jhistory)
 					r setBellEnabled false
 					completion foreach { c =>
+						logger.warn("JLINE: adding completor : "+c.jline)
 						r addCompletor c.jline
 						r setAutoprintThreshhold 250
+					}
+					import java.util.List
+					r setCompletionHandler new CompletionHandler {
+						def complete(reader: ConsoleReader, candidates: List[_], pos: Int) = {
+							val buffer = reader.getCursorBuffer()
+							if (candidates.size == 1) {
+								CandidateListCompletionHandler.setBuffer(reader, candidates.get(0).toString, pos)
+							} else {
+								import collection.JavaConversions._
+								out.println()
+								out.println(candidates.mkString("\t"))
+								out.print(prompt)
+								out.print(reader.getCursorBuffer())
+							}
+							true
+						}
+					}
+				  
+				  r addCompletor new Completor {
+						def complete(p1: String, p2: Int, candidates: java.util.List[_]) = {
+							logger.warn("JLINE: candidates : "+candidates)
+							val canStrings = candidates.asInstanceOf[List[String]]
+							canStrings.add("Clerezza")
+							canStrings.add("Apache")
+							try {
+								throw new RuntimeException
+							} catch {
+								case e => logger.warn("stack ", e)
+							}
+							0
+						}
 					}
 
 					r
 				}
 
 				def readOneLine(prompt: String) = consoleReader readLine prompt
-				val interactive = true
+				val interactive = false
 			}
+		   //in = new SimpleReader(inStream, out, true)
 
 			loadFiles(settings)
 			try {
