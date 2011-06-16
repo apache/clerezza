@@ -32,6 +32,7 @@
 				<module>ext.javax.mail</module>
 				<module>ext.org.json.simple</module>
 				<module>ext.org.ops4j.pax.swissbox.tinybundles</module>
+				<module>ext.org.apache.lucene</module>
 				<module>slf4j-scala-api</module>
 				<module>internal.archetype</module>
 				<module>scala-scripting</module>
@@ -54,6 +55,7 @@
 				<module>platform.content.default404</module>
 				<module>platform.content.fsadaptor</module>
 				<module>platform.content.representations</module>
+				<module>platform.cris</module>
 				<module>platform.curieprefixmanager</module>
 				<module>platform.dashboard</module>
 				<module>platform.dashboard.webinterface</module>
@@ -89,6 +91,7 @@
 				<module>osgi.services</module>
 				<module>rdf.core</module>
 				<module>rdf.core.test</module>
+				<module>rdf.cris</module>
 				<module>rdf.enrichment</module>
 				<module>rdf.file.storage</module>
 				<module>rdf.jena.commons</module>
