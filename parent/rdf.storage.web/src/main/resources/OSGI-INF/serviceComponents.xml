@@ -12,7 +12,7 @@
                    cardinality="1..n" policy="dynamic" bind="bindWeightedTcProvider" unbind="unbindWeightedTcProvider"/>
 		<reference name="parser" interface="org.apache.clerezza.rdf.core.serializedform.Parser"
 		cardinality="1..1" policy="static" bind="bindParser" unbind="unbindParser"/>
-		<property name="org.apache.clerezza.rdf.storage.web.network-timeout" value="3000" type="Integer"/>
+		<property name="network-timeout" value="3000" type="Integer"/>
 	</scr:component>
 
 </components>
