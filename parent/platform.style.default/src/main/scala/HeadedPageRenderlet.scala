@@ -3,6 +3,7 @@ package org.apache.clerezza.platform.style.default
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering._
 import org.apache.clerezza.rdf.core.UriRef
+import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._
@@ -19,6 +20,8 @@ class HeadedPageRenderlet extends SRenderlet {
 	val getRdfType = PLATFORM.HeadedPage
 
 	override def getModePattern = "(?!.*naked).*"
+
+	protected def defaultTitle(res: RichGraphNode) = "An incomplete titled content "+(res/DISCOBITS.contains*)
 
 	override def renderedPage(arguments: XmlResult.Arguments) = {
 		new XmlResult(arguments) {
@@ -40,7 +43,7 @@ resultDocModifier.addScriptReference("/scripts/status-message.js");
 	<head>
 		{(res/DISCOBITS.contains).find(e => ((e/DISCOBITS.pos*) == "0")) match {
 				case Some(e) => <title>{render(e/DISCOBITS.holds, "naked")}</title>
-				case None => <title>An incomplete titled content {res/DISCOBITS.contains*}</title>
+				case None => <title>{defaultTitle(res)}</title>
 			}
 		}
 	</head>
