@@ -31,6 +31,7 @@ import org.slf4j.scala._
 import org.apache.clerezza.rdf.core.access._
 import org.apache.clerezza.rdf.core.impl.AbstractMGraph
 import org.apache.clerezza.rdf.core._
+import java.sql.Time
 
 /**
  * The Web Proxy Service enables applications to request remote (and local) graphs.
@@ -38,6 +39,10 @@ import org.apache.clerezza.rdf.core._
  *
  */
 class WebProxy extends WeightedTcProvider with Logging {
+
+	val networkTimeoutKey = "network-timeout"
+
+	private var networkTimeout: Int = _
 
 	private var tcProvider: TcProviderMultiplexer = new TcProviderMultiplexer
 
@@ -63,7 +68,7 @@ class WebProxy extends WeightedTcProvider with Logging {
 
 	/**OSGI method, called on activation */
 	protected def activate(context: ComponentContext) = {
-
+		networkTimeout = Integer.parseInt(context.getProperties.get(networkTimeoutKey).toString)
 	}
 
 
@@ -174,7 +179,11 @@ class WebProxy extends WeightedTcProvider with Logging {
 			val url = new URL(name.getUnicodeString)
 			val connection = url.openConnection()
 			connection match {
-				case hc: HttpURLConnection => hc.addRequestProperty("Accept", acceptHeader);
+				case hc: HttpURLConnection => {
+					hc.addRequestProperty("Accept", acceptHeader)
+					hc.setReadTimeout(networkTimeout)
+					hc.setConnectTimeout(networkTimeout)
+				};
 			}
 			connection.connect()
 			val in = connection.getInputStream()
