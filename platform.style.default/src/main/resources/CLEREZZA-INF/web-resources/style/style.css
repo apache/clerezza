@@ -237,6 +237,7 @@ li div,span {
 .zz-control {
 	float: right;
 	margin-top:50px;
+	margin-right: 1em;
 }
 
 .zz-control .actions {
@@ -428,4 +429,10 @@ div .module-info div ol li a {
 	color: #a4a49c;
 }
 
-/* Localized */
+#tx-contextual-buttons ol li {
+	list-style-type: none
+}
+
+#tx-result ol li {
+	list-style-type: none
+}
