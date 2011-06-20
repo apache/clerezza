@@ -34,7 +34,13 @@ object EasyGraph {
 
 	private val litFactory = LiteralFactory.getInstance
 
-	implicit def string2lit(str: String) = new PlainLiteralScala(str)
+	implicit def string2litBuilder(str: String) = new LiteralBuilder(str)
+
+	implicit def string2lit(str: String) = litFactory.createTypedLiteral(str)
+
+	implicit def lit2String(lit: Literal) = lit.getLexicalForm
+
+	implicit def litBuilder2lit(litBuilder: LiteralBuilder) = litFactory.createTypedLiteral(litBuilder.lexicalForm)
 
 	implicit def date2lit(date: Date) = litFactory.createTypedLiteral(date)
 
@@ -101,24 +107,29 @@ object EasyGraph {
 }
 
 /**
- * An implementation of PlainLiteral for Scala that allows some automatic conversions to happen
- * when combined with the implicit defs in the EasyGraph object
+ * A builder for creating RDF resources from a String. provides method to created literals as well as a UriRef.
+ *
+ * When a language is added a PlainLiteral is returned, otherwise the conversion to literal results in a Literal with
+ * datatype xsd:String.
  */
-class PlainLiteralScala(string: String) extends PlainLiteralImpl(string) {
+case class LiteralBuilder(lexicalForm: String) {
 
 	/**
 	 * @return a plain literal with language specified by lang
 	 */
-	def apply(lang: String) = new PlainLiteralImpl(string, new Language(lang))
+	def apply(lang: String) = new PlainLiteralImpl(lexicalForm, new Language(lang))
 
 	/**
 	 * @return a plain literal with language specified by lang
 	 */
-	def apply(lang: Symbol) = new PlainLiteralImpl(string, new Language(lang.name))
+	def apply(lang: Symbol) = new PlainLiteralImpl(lexicalForm, new Language(lang.name))
 
-	def ^^(typ: UriRef) = new TypedLiteralImpl(string, typ)
+	//TODO get a better name for this
+	def `@`(lang: String) = apply(lang)
 
-	def uri = new UriRef(string)
+	def ^^(typ: UriRef) = new TypedLiteralImpl(lexicalForm, typ)
+
+	def uri = new UriRef(lexicalForm)
 
 }
 
