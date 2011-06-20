@@ -24,50 +24,68 @@ import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
 import org.apache.clerezza.rdf.core.{TripleCollection, UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
 
-class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGraph) {
 
-	/* because it is tedious to wrap nodes as happens in a lot of code.
-	 *
-	 * todo: does one really need to create the graph node? Is there a reason this is passed ike that,
-	 * todo: or was that just a quick hack? If it is because we don't want to use any of the superclass implementations
-	 * todo: then it would be worth creating an interface above GraphNode and implementing the interface instead...
-	 */
-	 def this(node: Resource, graph: TripleCollection ) = this(new GraphNode(node,graph))
-    /**
-     * Operator syntax shortcut to get all objects as <code>RichGraphNode</code>ref
-     */
-    def /(property: UriRef): CollectedIter[RichGraphNode] = {
-    	new CollectedIter[RichGraphNode](() => new GraphNodeIter(node.getObjects(property)), readLock)
-	}
-
-    /**
-     * Operator syntax shortcut to get all subjects as <code>RichGraphNode</code>ref
-     */
-    def /-(property: UriRef): CollectedIter[RichGraphNode] = {
-    	new CollectedIter[RichGraphNode](() => new GraphNodeIter(node.getSubjects(property)), readLock)
-    }
-
-    /**
-	 * returns a List with the elements of the rdf:List represented by this node
-	 */
-    def !! = (for (listElem <- node.asList) yield {
-			new RichGraphNode(new GraphNode(listElem, node.getGraph))
-		}).toList
-
-    /**
-	 * returns the specified index from the rdf:List represented by this node
-	 */
-    def %!!(index: Int) = new RichGraphNode(new GraphNode(node.asList.get(index),
-                                                          node.getGraph))
+/**
+ * A RichGraphNode decorates A GraphNode with additional method to be part on a DSL-style scala library.
+ *
+ * The default constructor is same a the GraphNode constructor, i.e. it takes the node and its context
+ * Triple-collection
+ *
+ * @param resource the node represented by this RichGraphNode
+ * @param graph the TripleCollection that describes the resource
+ */
+class RichGraphNode(resource: Resource, graph: TripleCollection ) extends GraphNode(resource, graph) {
 
 	/**
-	 * returns the lexical form of literals, the unicode-string for UriRef for
-	 * BNodes the value returned by toString
-	 * todo: not sure this is a good symbol as it is usually a binary symbol, and so if it is found at the end of a line the
-	 * todo: the parsers expect the expression to go on the next line
+	 * Construct a RichGraphNode given an existing [[GraphNde]]
+	 *
+	 * @param node The GraphNode to be wrapped
+	 */
+	 def this(node: GraphNode) = this(node.getNode, node.getGraph)
+
+	/**
+	 * Operator syntax shortcut to get all objects as <code>RichGraphNode</code>
+	 *
+	 * @return all objects of the specified property of the node wrapped by this object
+	 */
+	def /(property: UriRef): CollectedIter[RichGraphNode] = {
+		new CollectedIter[RichGraphNode](() => new GraphNodeIter(getObjects(property)), readLock)
+	}
+
+	/**
+	 * Operator syntax shortcut to get all subjects as <code>RichGraphNode</code>ref
+	 *
+	 * @param property the property for which the subjects pointing to this node by that property are requested
+	 * @return the matching resources
+	 */
+	def /-(property: UriRef): CollectedIter[RichGraphNode] = {
+		new CollectedIter[RichGraphNode](() => new GraphNodeIter(getSubjects(property)), readLock)
+	}
+
+	/**
+	 * Get the elements of the rdf:List represented by this node
+	 * @return a List with the elements of the rdf:List represented by this node
+	 */
+	def !! = (for (listElem <- asList) yield {
+		new RichGraphNode(new GraphNode(listElem, getGraph))
+	}).toList
+
+	/**
+	 * get a specified of the rdf:List represented by this node
+	 *
+	 * @return the specified index value
+	 */
+	def %!!(index: Int) = new RichGraphNode(new GraphNode(asList.get(index),
+																												getGraph))
+
+	/**
+	 * produces a default String representation for the node, this is the lexical form of literals,
+	 * the unicode-string for UriRef and for BNodes the value returned by toString
+	 *
+	 * @return the default string representation of the node
 	 */
 	def * : String = {
-		node.getNode() match {
+		getNode() match {
 			case lit: Literal => lit.getLexicalForm
 			case uri: UriRef => uri.getUnicodeString
 			case wrappedNode => wrappedNode.toString
@@ -75,7 +93,7 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 	}
 
 	private def asClass[T](clazz : Class[T]) : T= {
-		val typedLiteral = node.getNode().asInstanceOf[TypedLiteral]
+		val typedLiteral = getNode().asInstanceOf[TypedLiteral]
 		clazz match {
 			case c if(c == classOf[Boolean])  => LiteralFactory.getInstance().createObject(
 					classOf[java.lang.Boolean], typedLiteral).booleanValue.asInstanceOf[T]
@@ -84,33 +102,38 @@ class RichGraphNode(node: GraphNode) extends GraphNode(node.getNode, node.getGra
 	}
 
 	/**
-	 * returns the literal represenetd by this node as instance of the spcified type
+	 * Creates an instance of specified Class-Type representing the value of the literal wrapped by this
+	 * <code>GraphNode</code>
+	 *
+	 * @return the literal represented by this node as instance of the specified type
 	 */
 	def as[T](implicit m: Manifest[T]): T = {
 		asClass(m.erasure.asInstanceOf[Class[T]])
 	}
 
-    /**
-     * Operator syntax shortcut to get the <code>Resource</code> wrapped by this
-     * <code>GraphNode</code>
-     */
-    def ! = {
-    	node.getNode()
-    }
+	/**
+	 * Operator syntax shortcut to get the <code>Resource</code> wrapped by this
+	 * <code>GraphNode</code>
+	 *
+	 * @return the node represented by this GraphNode as Resource, same as <code>getNode</code>
+	 */
+	def ! = {
+		getNode()
+	}
 
-    private class GraphNodeIter[T <: Resource](base: Iterator[T]) extends Iterator[RichGraphNode] {
-        override def hasNext() = {
-            base.hasNext();
-        }
+	private class GraphNodeIter[T <: Resource](base: Iterator[T]) extends Iterator[RichGraphNode] {
+		override def hasNext() = {
+				base.hasNext();
+		}
 
-        override def next() : RichGraphNode = {
-        	new RichGraphNode(new GraphNode(base.next(), node.getGraph));
-        }
+		override def next() : RichGraphNode = {
+			new RichGraphNode(new GraphNode(base.next(), getGraph));
+		}
 
-        override def remove() {
-        	base.remove()
-        }
-    }
+		override def remove() {
+			base.remove()
+		}
+	}
 }
 
 
