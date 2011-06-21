@@ -59,7 +59,6 @@ import org.apache.felix.scr.annotations.Service;
  */
 @Component
 @Service(MailMan.class)
-@Reference
 public class MailManImpl implements MailMan {
 
 	@Reference
