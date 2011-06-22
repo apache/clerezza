@@ -38,7 +38,7 @@ object EasyGraph {
 
 	implicit def string2litBuilder(str: String) = new EzLiteral(str)
 
-//	implicit def string2lit(str: String) = litFactory.createTypedLiteral(str)
+	implicit def string2lit(str: String) = litFactory.createTypedLiteral(str)
 
 	implicit def lit2String(lit: Literal) = lit.getLexicalForm
 
@@ -75,14 +75,14 @@ object EasyGraph {
  * An Easy Literal, contains functions for mapping literals to other literals, ie from String literals to
  * typed literals.
  */
-case class EzLiteral(lexicalForm: String) extends Literal {
+case class EzLiteral(lexicalForm: String) {
 
 
 	/**
 	 * @return a plain literal with language specified by lang
 	 */
 	//TODO get a better name for this
-	def lang(lang: LangId) = new PlainLiteralImpl(lexicalForm, lang)
+	def lang(lang: Lang) = new PlainLiteralImpl(lexicalForm, lang)
 	def lang(lang: Symbol) = new PlainLiteralImpl(lexicalForm, new Language(lang.name)) //todo lookup in LangId instead
 
 	def ^^(typ: UriRef) = new TypedLiteralImpl(lexicalForm, typ)
