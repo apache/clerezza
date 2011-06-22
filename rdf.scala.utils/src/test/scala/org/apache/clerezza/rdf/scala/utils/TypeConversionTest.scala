@@ -21,6 +21,7 @@ package org.apache.clerezza.rdf.scala.utils
 import org.junit._
 import org.apache.clerezza.rdf.core._
 import impl.{TripleImpl, PlainLiteralImpl, TypedLiteralImpl}
+import com.sun.xml.internal.ws.developer.MemberSubmissionAddressing.Validation
 
 class TypeConversionTest {
 
@@ -40,17 +41,24 @@ class TypeConversionTest {
 		Assert.assertEquals(new PlainLiteralImpl("a value", new Language("en")), t.getObject)
 	}*/
 
+	@Test
 	def useStringWithLanguageTag {
-		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value"`@`"en")
-		Assert.assertEquals(new PlainLiteralImpl("a value", new Language("en")), t.getObject)
+		import org.apache.clerezza.rdf.scala.utils.Lang._
+	   val lit = new PlainLiteralImpl("a value", new Language("en"))
+		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value" lang en)
+		val t2 = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value" lang 'en)
+		Assert.assertEquals(lit, t.getObject)
+		Assert.assertEquals(lit, t2.getObject)
 	}
 
+	@Test
 	def useStringWithType {
 		val typeUri = new UriRef("http://example.org/dt")
 		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value"^^typeUri)
 		Assert.assertEquals(new TypedLiteralImpl("a value", typeUri), t.getObject)
 	}
 
+	@Test
 	def literaToString {
 		val lit = literalFactory.createTypedLiteral("a value")
 		val s: String = lit

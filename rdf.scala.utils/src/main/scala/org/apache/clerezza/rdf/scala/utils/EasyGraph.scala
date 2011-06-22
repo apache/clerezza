@@ -23,24 +23,26 @@ import org.apache.clerezza.rdf.core._
 import impl._
 import org.apache.clerezza.rdf.ontologies.RDF
 import java.math.BigInteger
-import java.util.Date
 import java.lang.Boolean
 import java.net.{URL, URI}
 import org.apache.clerezza.rdf.core._
 import reflect.Apply
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
+import java.util.Date
+import scala.collection.mutable.HashMap
+import scala.Option
 
 object EasyGraph {
 
 	private val litFactory = LiteralFactory.getInstance
 
-	implicit def string2litBuilder(str: String) = new LiteralBuilder(str)
+	implicit def string2litBuilder(str: String) = new EzLiteral(str)
 
-	implicit def string2lit(str: String) = litFactory.createTypedLiteral(str)
+//	implicit def string2lit(str: String) = litFactory.createTypedLiteral(str)
 
 	implicit def lit2String(lit: Literal) = lit.getLexicalForm
 
-	implicit def litBuilder2lit(litBuilder: LiteralBuilder) = litFactory.createTypedLiteral(litBuilder.lexicalForm)
+	implicit def litBuilder2lit(litBuilder: EzLiteral) = litFactory.createTypedLiteral(litBuilder.lexicalForm)
 
 	implicit def date2lit(date: Date) = litFactory.createTypedLiteral(date)
 
@@ -65,72 +67,29 @@ object EasyGraph {
 	implicit def URLtoUriRef(url: URL) = new UriRef(url.toExternalForm)
 
 
-	//	val g = new EasyGraph(new SimpleMGraph)
-	//	val sub = g.bnode
-
-	// example using old graph notation
-	// of course the add method could be overloaded to take triples, but it is still very repetitive
-
-	//	val gr = new SimpleMGraph
-	//	val subj= new BNode()
-	//	gr.add(new TripleImpl(subj,RDF.`type`, FOAF.Person))
-	//	gr.add(new TripleImpl(subj,FOAF.knows, new UriRef("http://bblfish.net/#hjs")))
-	//	gr.add(new TripleImpl(subj,FOAF.name, new PlainLiteralImpl("Henry Story","en")))
-	//	val other = new BNode()
-	//	gr.add(new TripleImpl(subj,FOAF.knows, other))
-	//	gr.add(new TripleImpl(subj,FOAF.name,new PlainLiteralImpl("Danny Ayers")))
-	//
-	//	//Example using english easy to type non unicode chars and simple object typing
-	//	( g.u("http://bblfish.net/#hjs") a FOAF.Person
-	//		 has FOAF.knows toUris Seq("http://www.w3.org/People/Connolly/#me", "http://farewellutopia.com/#me")
-	//		 has FOAF.name to {"Henry "+ " Story"}
-	//		 hasQ (true, FOAF.depiction){ p =>  p.to(new UriRef("hello")) }
-	//		)
-	//
-	//
-	//	   // example using arrows
-	//		(
-	//			sub ∈ FOAF.Person
-	//				⟝ FOAF.knows ⟶  "http://bblfish.net/#hjs".uri
-	//			   ⟝ FOAF.name ⟶ "Henry Story"(en)
-	//				⟝ FOAF.title ⟶ "Software"+" Architect"
-	//			   ⟝ FOAF.knows ⟶ ( g.bnode ⟝ FOAF.name ⟶ "Danny Ayers" )
-	//		)
-	//
-	//	// example using just brackets ( the apply() method )
-	//	( g.bnode(FOAF.knows)("http://bblfish.net/#hjs".uri,"http://farewellutopia.com/#me".uri)
-	//		      (FOAF.knows)(g.bnode(FOAF.name)("Danny Ayers"('en)))
-	//	)
-
-	// should work like http://programming-scala.labs.oreilly.com/ch11.html
+	//inspired from http://programming-scala.labs.oreilly.com/ch11.html
 
 }
 
 /**
- * A builder for creating RDF resources from a String. provides method to created literals as well as a UriRef.
- *
- * When a language is added a PlainLiteral is returned, otherwise the conversion to literal results in a Literal with
- * datatype xsd:String.
+ * An Easy Literal, contains functions for mapping literals to other literals, ie from String literals to
+ * typed literals.
  */
-case class LiteralBuilder(lexicalForm: String) {
+case class EzLiteral(lexicalForm: String) extends Literal {
+
 
 	/**
 	 * @return a plain literal with language specified by lang
 	 */
-	def apply(lang: String) = new PlainLiteralImpl(lexicalForm, new Language(lang))
-
-	/**
-	 * @return a plain literal with language specified by lang
-	 */
-	def apply(lang: Symbol) = new PlainLiteralImpl(lexicalForm, new Language(lang.name))
-
 	//TODO get a better name for this
-	def `@`(lang: String) = apply(lang)
+	def lang(lang: LangId) = new PlainLiteralImpl(lexicalForm, lang)
+	def lang(lang: Symbol) = new PlainLiteralImpl(lexicalForm, new Language(lang.name)) //todo lookup in LangId instead
 
 	def ^^(typ: UriRef) = new TypedLiteralImpl(lexicalForm, typ)
 
 	def uri = new UriRef(lexicalForm)
 
+	def getLexicalForm = lexicalForm
 }
 
 
@@ -145,6 +104,7 @@ case class LiteralBuilder(lexicalForm: String) {
 @deprecated("Don't use yet other than for trying out this class as it may be merged with another class or changed dramatically." +
 	" Send feedback to CLEREZZA-510. ")
 class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
+	val namedBnodes = new HashMap[String,EasyGraphNode]
 
 	/*
 	* because we can't jump straight to super constructor in Scala we need to
@@ -158,6 +118,13 @@ class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
 
 	def bnode: EasyGraphNode = {
 		new EasyGraphNode(new BNode(), graph)
+	}
+
+	def bnode(name: String): EasyGraphNode = {
+		namedBnodes.get(name) match {
+			case Some(ezGraphNode) => ezGraphNode
+			case None => { val ezgn = bnode; namedBnodes.put(name, ezgn); ezgn }
+		}
 	}
 
 	def u(url: String) = new EasyGraphNode(new UriRef(url), this)
@@ -219,13 +186,14 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 
 	def this() = this (new BNode)
 
-	def apply(rel: UriRef): Predicate = has(rel)
+	def --(rel: UriRef): Predicate = new Predicate(rel)
 
-	def apply(rel: String): Predicate = has(rel)
+	def --(rel: String): Predicate = new Predicate(new UriRef(rel))
 
-	def has(rel: UriRef): Predicate = new Predicate(rel)
-
-	def has(rel: String): Predicate = new Predicate(new UriRef(rel))
+	/**
+	 * we Can't have <-- as that messes up the balance of precedence
+	 */
+	def -<-(rel: UriRef) = new InversePredicate(rel)
 
 	// does not worked as hoped, and does not look that good either
 	//	def hasQ(yes: Boolean, rel: UriRef )(func: Predicate => EasyGraphNode): EasyGraphNode =
@@ -233,12 +201,12 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 	//		else this
 
 
-	def ⟝(rel: UriRef): Predicate = has(rel)
+	def ⟝(rel: UriRef): Predicate = --(rel)
 
-	def ⟝(rel: String): Predicate = has(rel)
+	def ⟝(rel: String): Predicate = --(rel)
 
 	/* For inverse relationships */
-	def ⟵(rel: UriRef) = new InversePredicate(rel)
+	def ⟵(rel: UriRef) = -<-(rel)
 
 	// does not work as hoped
 	//	def ⟝?(yes: Boolean, uri: UriRef)(func: Predicate => EasyGraphNode): EasyGraphNode = hasQ(yes,uri)(func)
@@ -250,6 +218,7 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 
 	def a(rdfclass: UriRef) = ∈(rdfclass)
 
+
 	def ∈(rdfclass: UriRef): EasyGraphNode = {
 		graph.add(new TripleImpl(ref, RDF.`type`, rdfclass))
 		return EasyGraphNode.this
@@ -260,6 +229,14 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 
 		def ⟞(subj: String) = add(new UriRef(subj))
 
+		def ⟞(sub: EasyGraphNode):  EasyGraphNode = {
+			EasyGraphNode.this + sub
+			add(sub.ref)
+		}
+
+		def --(subj: NonLiteral) = ⟞(subj)
+		def --(subj: String) = ⟞(subj)
+		def --(subj: EasyGraphNode) = ⟞(subj)
 		// since we can only have inverses from non literals (howto deal with bndoes?)
 
 		protected def add(subj: NonLiteral) = {
@@ -273,56 +250,46 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 		//
 		// methods that do the work
 		//
-		def to(obj: Resource): EasyGraphNode = add(obj)
+		def -->(obj: Resource): EasyGraphNode = add(obj)
 
 		/* add a relation to each object in the argument list */
-		def to(objs: Resource*): EasyGraphNode = {
+		def -->(objs: Resource*): EasyGraphNode = {
 			for (o <- objs) add(o)
 			EasyGraphNode.this
 		}
 
-		def to[T <: Resource](objs: Iterable[T]): EasyGraphNode = {
+		def -->[T <: Resource](objs: Iterable[T]): EasyGraphNode = {
 			for (o <- objs) add(o)
 			EasyGraphNode.this
 		}
 
-		def to(uri: String): EasyGraphNode = add(new PlainLiteralImpl(uri))
+		def -->(lit: String): EasyGraphNode = add(new PlainLiteralImpl(lit))
 
-		def to(sub: EasyGraphNode): EasyGraphNode = {
+		def -->(sub: EasyGraphNode): EasyGraphNode = {
 			EasyGraphNode.this + sub
 			add(sub.ref)
 		}
 
-		def toUri(uri: String) = add(new UriRef(uri))
+		def -->>(uri: String) = add(new UriRef(uri))
 
-		def toUris(uris: Seq[String]) = {
+		def -->>(uris: Seq[String]) = {
 			for (u <- uris) add(new UriRef(u))
 			EasyGraphNode.this
 		}
 
-		//
-		//apply method allows turns brackets () into an equivalent of <rel>
-		//
-		def apply(obj: Resource) = to(obj)
-
-		def apply(objs: Resource*) = to(objs: _*)
-
-		def apply(uri: String) = to(uri)
-
-		def apply(sub: EasyGraphNode) = to(sub)
 
 		//
 		// arrow notation
 		//
 		// todo: a relation to a list
 
-		def ⟶(obj: String) = to(obj)
+		def ⟶(obj: String) = -->(obj)
 
-		def ⟶(obj: Resource) = to(obj)
+		def ⟶(obj: Resource) = -->(obj)
 
-		def ⟶*[T <: Resource](objs: Iterable[T]) = to(objs)
+		def ⟶*[T <: Resource](objs: Iterable[T]) = -->(objs)
 
-		def ⟶(sub: EasyGraphNode) = to(sub)
+		def ⟶(sub: EasyGraphNode) = -->(sub)
 
 		protected def add(obj: Resource) = {
 			graph.add(new TripleImpl(ref, rel, obj))
