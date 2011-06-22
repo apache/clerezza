@@ -21,16 +21,15 @@ package org.apache.clerezza.rdf.scala.utils
 
 import org.apache.clerezza.rdf.core._
 import impl._
-import org.apache.clerezza.rdf.ontologies.RDF
 import java.math.BigInteger
 import java.lang.Boolean
 import java.net.{URL, URI}
 import org.apache.clerezza.rdf.core._
-import reflect.Apply
-import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
-import java.util.Date
+import org.apache.clerezza.rdf.utils.UnionMGraph
+import org.apache.clerezza.rdf.utils.GraphNode
 import scala.collection.mutable.HashMap
-import scala.Option
+import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
+import java.util.{HashSet, Date}
 
 object EasyGraph {
 
@@ -38,11 +37,7 @@ object EasyGraph {
 
 	implicit def string2litBuilder(str: String) = new EzLiteral(str)
 
-	implicit def string2lit(str: String) = litFactory.createTypedLiteral(str)
-
 	implicit def lit2String(lit: Literal) = lit.getLexicalForm
-
-	implicit def litBuilder2lit(litBuilder: EzLiteral) = litFactory.createTypedLiteral(litBuilder.lexicalForm)
 
 	implicit def date2lit(date: Date) = litFactory.createTypedLiteral(date)
 
@@ -75,13 +70,13 @@ object EasyGraph {
  * An Easy Literal, contains functions for mapping literals to other literals, ie from String literals to
  * typed literals.
  */
-case class EzLiteral(lexicalForm: String) {
+class EzLiteral(lexicalForm: String) extends TypedLiteral {
 
+	def unapply(lexical: String) = lexical
 
 	/**
 	 * @return a plain literal with language specified by lang
 	 */
-	//TODO get a better name for this
 	def lang(lang: Lang) = new PlainLiteralImpl(lexicalForm, lang)
 	def lang(lang: Symbol) = new PlainLiteralImpl(lexicalForm, new Language(lang.name)) //todo lookup in LangId instead
 
@@ -90,6 +85,18 @@ case class EzLiteral(lexicalForm: String) {
 	def uri = new UriRef(lexicalForm)
 
 	def getLexicalForm = lexicalForm
+
+	override def equals(other: Any) = {
+      other match {
+			case olit: TypedLiteral => (olit eq this) || (olit.getLexicalForm == lexicalForm && olit.getDataType == this.getDataType)
+			case ostr: String => ostr == lexicalForm
+			case _ => false
+		}
+	}
+
+	override def hashCode() = lexicalForm.hashCode()
+
+	def getDataType = XSD.string
 }
 
 
@@ -103,21 +110,21 @@ case class EzLiteral(lexicalForm: String) {
 
 @deprecated("Don't use yet other than for trying out this class as it may be merged with another class or changed dramatically." +
 	" Send feedback to CLEREZZA-510. ")
-class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
+class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 	val namedBnodes = new HashMap[String,EasyGraphNode]
 
 	/*
 	* because we can't jump straight to super constructor in Scala we need to
 	* create the collection here
 	**/
-	def this() = this (new SimpleMGraph())
+	def this() = this (new HashSet[Triple])
 
 	def +=(other: Graph) = {
 		if (graph ne other) graph.addAll(other)
 	}
 
 	def bnode: EasyGraphNode = {
-		new EasyGraphNode(new BNode(), graph)
+		new EasyGraphNode(new BNode(), this)
 	}
 
 	def bnode(name: String): EasyGraphNode = {
@@ -171,10 +178,10 @@ class EasyGraph(val graph: TripleCollection) extends SimpleMGraph(graph) {
  */
 class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends GraphNode(ref, graph) {
 
-	lazy val easyGraph = graph match {
-		case eg: EasyGraph => eg
-		case other: TripleCollection => new EasyGraph(graph)
-	}
+//	lazy val easyGraph = graph match {
+//		case eg: EasyGraph => eg
+//		case other: TripleCollection => new EasyGraph(graph)
+//	}
 
 	/*
 	 * create an EasyGraphNode from this one where the backing graph is protected from writes by a new
