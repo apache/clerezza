@@ -25,6 +25,12 @@
 	<skos:definition xml:lang="en">An RDF graph.</skos:definition>
 </rdfs:Class>
 
+<rdfs:Class rdf:about="#MGraph">
+	<rdf:type rdf:resource="owl:Class"/>
+	<rdfs:label xml:lang="en">MGraph</rdfs:label>
+	<skos:definition xml:lang="en">A mutable RDF graph.</skos:definition>
+</rdfs:Class>
+
 <!-- Properties -->
 
 <rdf:Property rdf:about="#file">
