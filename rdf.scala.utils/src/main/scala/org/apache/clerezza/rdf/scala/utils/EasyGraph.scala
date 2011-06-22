@@ -35,7 +35,7 @@ object EasyGraph {
 
 	private val litFactory = LiteralFactory.getInstance
 
-	implicit def string2litBuilder(str: String) = new EzLiteral(str)
+	implicit def string2lit(str: String) = new EzLiteral(str)
 
 	implicit def lit2String(lit: Literal) = lit.getLexicalForm
 
@@ -89,12 +89,11 @@ class EzLiteral(lexicalForm: String) extends TypedLiteral {
 	override def equals(other: Any) = {
       other match {
 			case olit: TypedLiteral => (olit eq this) || (olit.getLexicalForm == lexicalForm && olit.getDataType == this.getDataType)
-			case ostr: String => ostr == lexicalForm
 			case _ => false
 		}
 	}
 
-	override def hashCode() = lexicalForm.hashCode()
+	override def hashCode() = XSD.string.hashCode() +lexicalForm.hashCode()
 
 	def getDataType = XSD.string
 }
