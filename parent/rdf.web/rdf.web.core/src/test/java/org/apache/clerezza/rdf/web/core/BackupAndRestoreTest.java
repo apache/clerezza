@@ -37,6 +37,7 @@ import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
@@ -47,6 +48,7 @@ import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
 import org.apache.clerezza.rdf.jena.serializer.JenaSerializerProvider;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.web.ontologies.BACKUP;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +58,7 @@ import org.junit.Test;
  *
  * @author hasan
  */
-public class BackupTest {
+public class BackupAndRestoreTest {
 
 	private static String testGraphFileName = "test.graph";
 
@@ -149,6 +151,24 @@ public class BackupTest {
 		compressedTcs.close();
 		checkDownloadedGraphs(extractedTc,
 				downloadedBackupContentsGraph, folder);
+	}
+
+	@Test
+	public void restoreFromBackup() throws IOException {
+		byte[] backupData = backup.createBackup();
+		TcProvider tcProvider = EasyMock.createMock(TcProvider.class);
+		tcProvider.deleteTripleCollection(testMGraphUri0);
+		EasyMock.expect(tcProvider.createMGraph(testMGraphUri0)).andReturn(new SimpleMGraph());
+		tcProvider.deleteTripleCollection(testMGraphUri1);
+		EasyMock.expect(tcProvider.createMGraph(testMGraphUri1)).andReturn(new SimpleMGraph());
+		tcProvider.deleteTripleCollection(testGraphUriA);
+		EasyMock.expect(tcProvider.createGraph(EasyMock.eq(testGraphUriA),
+				EasyMock.notNull(TripleCollection.class))).andReturn(new SimpleMGraph().getGraph());
+		EasyMock.replay(tcProvider);
+		Restorer restore = new Restorer();
+		restore.parser = Parser.getInstance();
+		restore.restore(new ByteArrayInputStream(backupData), tcProvider);
+		EasyMock.verify(tcProvider);
 	}
 
 	private void checkDownloadedGraphs(Map<String, TripleCollection> extractedTc,
