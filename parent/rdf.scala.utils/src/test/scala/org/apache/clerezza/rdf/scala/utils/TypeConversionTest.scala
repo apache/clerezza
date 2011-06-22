@@ -27,7 +27,7 @@ class TypeConversionTest {
 
 	private val literalFactory = LiteralFactory.getInstance()
 
-	import EasyGraph._
+	import Preamble._
 
 	@Test
 	def useStringAsObject {
