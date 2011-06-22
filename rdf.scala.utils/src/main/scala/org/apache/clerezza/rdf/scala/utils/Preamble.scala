@@ -35,6 +35,8 @@ import org.apache.clerezza.rdf.core._
 * import org.apache.clerezza.rdf.scala.utils.Preamble._
 * }}} near the top of the
 * file using SCB Utilities for Scala
+*
+* @author hjs, reto
 */
 object Preamble extends TcIndependentConversions {
 
@@ -53,6 +55,8 @@ object Preamble extends TcIndependentConversions {
 * }}}
 * before the
 * code section using the conversions
+*
+* @author hjs, reto
 */
 class Preamble(baseTc: TripleCollection) extends TcIndependentConversions {
 	implicit def toRichGraphNode(resource: Resource) = {
@@ -75,7 +79,12 @@ protected trait TcIndependentConversions {
 
 	private val litFactory = LiteralFactory.getInstance
 
+	/*a strig is dynamically converted to 3 types of objects, a Literal, a
+	  LiteralBuilder or a UriRefBuilder*/
+
 	implicit def string2litBuilder(str: String) = new TcIndependentConversions.LiteralBuilder(str)
+
+	implicit def string2uriRefBuilder(str: String) = new TcIndependentConversions.UriRefBuilder(str)
 
 	implicit def string2lit(str: String) = litFactory.createTypedLiteral(str)
 
@@ -111,20 +120,48 @@ protected object TcIndependentConversions {
 	val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
 
 	/**
-	 * An Easy Literal, contains functions for mapping literals to other literals, ie from String literals to
-	 * typed literals.
+	 * A Literal Builder enriches a String with methods to create a literal
 	 */
 	class LiteralBuilder(val lexicalForm: String) {
 
 		/**
-		 * @return a plain literal with language specified by lang
+		 * Produces a PlainLiteral with the wrapped String as lexical form
+		 * and a given language
+		 *
+		 * @param lang the language tag of the literal to be created
+		 * @return a plain literal with the specified language
 		 */
 		def lang(lang: Lang) = new PlainLiteralImpl(lexicalForm, lang)
+
+		/**
+		 * Produces a PlainLiteral with the wrapped String as lexical form
+		 * and a given language
+		 *
+		 * @param lang a symbol of which the name is the language tag of the literal to be created
+		 * @return a plain literal with the specified language
+		 */
 		def lang(lang: Symbol) = new PlainLiteralImpl(lexicalForm, new Language(lang.name))
 
-		def ^^(typ: UriRef) = new TypedLiteralImpl(lexicalForm, typ)
+		/**
+		 * Produces a TypedLiteral with the wrapped String as lexical form
+		 * and a data type
+		 *
+		 * @param dataType the data type
+		 * @return the TypedLiteral of the specified type
+		 */
+		def ^^(dataType: UriRef) = new TypedLiteralImpl(lexicalForm, dataType)
 
-		def uri = new UriRef(lexicalForm)
+	}
+	
+	/**
+	 * A UriRef Builder enriches a String with methods to create a UriRef
+	 */
+	class UriRefBuilder(string: String) {
+
+		/**
+		 * returns a UriRef with the wrapped string as unicode representation
+		 */
+		def uri = new UriRef(string)
 
 	}
 }
