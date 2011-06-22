@@ -20,10 +20,9 @@ package org.apache.clerezza.rdf.scala.utils
 
 import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.ontologies._
-import Preamble._
-import org.apache.clerezza.rdf.core._
-import impl.{TypedLiteralImpl, TripleImpl, SimpleMGraph, PlainLiteralImpl}
 import org.junit._
+import org.apache.clerezza.rdf.core._
+import impl.{TypedLiteralImpl, PlainLiteralImpl, SimpleMGraph, TripleImpl}
 
 class EasyGraphTest {
 
@@ -64,6 +63,7 @@ class EasyGraphTest {
 		gr.add(new TripleImpl(danny,FOAF.knows, reto))
 
 		gr.add(new TripleImpl(henry,FOAF.name,new PlainLiteralImpl("Henry Story")))
+		gr.add(new TripleImpl(henry,FOAF.currentProject,new UriRef("http://webid.info/")))
 		gr.add(new TripleImpl(henry,RDF.`type`, FOAF.Person))
 		gr.add(new TripleImpl(henry,FOAF.knows, danny))
 		gr.add(new TripleImpl(henry,FOAF.knows, reto))
@@ -77,17 +77,20 @@ class EasyGraphTest {
 	}
 
 	@Test
-	def plainChracter {
-/*
-		val g = new EasyGraph(simpleMGraph)
-		val sub = g.bnode
-		( g.u("http://bblfish.net/#hjs") a FOAF.Person
-		 has FOAF.name to {"Henry Story"}
-		)
-		
-		Assert.assertEquals(tinyGraph, simpleMGraph.getGraph)
-*/
+	def testEquality {
+		val gr = new SimpleMGraph
+
+		val reto= new BNode()
+		gr.add(new TripleImpl(reto,RDF.`type`, FOAF.Person))
+
+		val ez = new EasyGraph()
+		ez.bnode ∈ FOAF.Person
+
+		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
+		Assert.assertTrue("the two graphs should be equals",gr.getGraph.equals(ez.getGraph)) //mutable graphs cannot be compared for equality
+
 	}
+
 
 	@Test
 	def usingSymbolicArrows {
@@ -100,26 +103,29 @@ class EasyGraphTest {
 			 ⟝ FOAF.name ⟶ "Reto Bachman-Gmür".lang(rm)
 			 ⟝ FOAF.title ⟶ "Mr"
 			 ⟝ FOAF.currentProject ⟶ "http://clerezza.org/".uri
-			 ⟝ FOAF.knows ⟶ (ez.u("http://bblfish.net/#hjs") ∈ FOAF.Person
+			 ⟝ FOAF.knows ⟶ (
+			     ez.u("http://bblfish.net/#hjs") ∈ FOAF.Person
 			          ⟝ FOAF.name ⟶ "Henry Story"
 			          ⟝ FOAF.currentProject ⟶ "http://webid.info/".uri
-			          ⟵ identity ⟞ ( ez.bnode ∈ RSAPublicKey
+			          ⟵ identity ⟞ (
+			              ez.bnode ∈ RSAPublicKey
 			                 ⟝ modulus ⟶ 65537
 			                 ⟝ public_exponent ⟶ (bblfishModulus^^hex) // brackets needed due to precedence
 			          )
 			          ⟝ FOAF.knows ⟶ ez.bnode("reto")
 		 			    ⟝ FOAF.knows ⟶ ez.bnode("danny")
 			 )
-			 ⟝ FOAF.knows ⟶ (ez.bnode("danny") ∈ FOAF.Person
-			          ⟝ FOAF.name ⟶ "Danny Ayers".lang('en)
+			 ⟝ FOAF.knows ⟶ (
+			     ez.bnode("danny") ∈ FOAF.Person
+			          ⟝ FOAF.name ⟶ "Danny Ayers".lang(en)
 		             ⟝ FOAF.knows ⟶ "http://bblfish.net/#hjs".uri //knows
 					    ⟝ FOAF.knows ⟶ ez.bnode("reto")
 			 )
 		 )
-		Assert.assertEquals("Both graphs should have the same size",tinyGraph.size, ez.size)
-		Assert.assertEquals("Both graphs should contain exactly the same triples", tinyGraph, ez.getGraph)
+		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
+		Assert.assertTrue("Both graphs should contain exactly the same triples",tinyGraph.equals(ez.getGraph))
 		ez.bnode("danny") ⟝  FOAF.name ⟶  "George"
-		Assert.assertFalse("Added one more triple, so graphs should no longer be equal",tinyGraph.equals(ez.getGraph))
+		Assert.assertFalse("Added one more triple, so graphs should no longer be equal", tinyGraph.equals(ez.getGraph))
 	}
 
 	@Test
@@ -133,24 +139,26 @@ class EasyGraphTest {
 			 -- FOAF.name --> "Reto Bachman-Gmür".lang(rm)
 			 -- FOAF.title --> "Mr"
 			 -- FOAF.currentProject --> "http://clerezza.org/".uri
-			 -- FOAF.knows --> ( ez.u("http://bblfish.net/#hjs").a(FOAF.Person)
+			 -- FOAF.knows --> (
+			     ez.u("http://bblfish.net/#hjs").a(FOAF.Person)
 			          -- FOAF.name --> "Henry Story"
 			          -- FOAF.currentProject --> "http://webid.info/".uri
- 			          -<- identity -- (  ez.bnode.a(RSAPublicKey) //. notation because of precedence of operators
+ 			          -<- identity -- (
+			                   ez.bnode.a(RSAPublicKey) //. notation because of precedence of operators
 			                       -- modulus --> 65537
 			                       -- public_exponent --> (bblfishModulus^^hex) // brackets needed due to precedence
-			                       )
+			                   )
 			          -- FOAF.knows --> ez.bnode("reto")
 		 			    -- FOAF.knows --> ez.bnode("danny")
 			 )
 			 -- FOAF.knows --> (ez.bnode("danny").a(FOAF.Person)
-			          -- FOAF.name --> "Danny Ayers".lang('en)
+			          -- FOAF.name --> "Danny Ayers".lang(en)
 		             -- FOAF.knows --> "http://bblfish.net/#hjs".uri //knows
 					    -- FOAF.knows --> ez.bnode("reto")
 			 )
 		 )
-		Assert.assertEquals("Both graphs should have the same size",tinyGraph.size, ez.size)
-		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph, ez.getGraph)
+		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
+		Assert.assertTrue("Both graphs should contain exactly the same triples",tinyGraph.equals(ez.getGraph))
 		ez.bnode("danny") -- FOAF.name --> "George"
 		Assert.assertFalse("Added one more triple, so graphs should no longer be equal",tinyGraph.equals(ez.getGraph))
 
