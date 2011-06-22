@@ -111,15 +111,15 @@ class EasyGraphTest {
 		 			    ⟝ FOAF.knows ⟶ ez.bnode("danny")
 			 )
 			 ⟝ FOAF.knows ⟶ (ez.bnode("danny") ∈ FOAF.Person
-			          ⟝ FOAF.name ⟶ "Danny Ayers"
+			          ⟝ FOAF.name ⟶ "Danny Ayers".lang('en)
 		             ⟝ FOAF.knows ⟶ "http://bblfish.net/#hjs".uri //knows
 					    ⟝ FOAF.knows ⟶ ez.bnode("reto")
 			 )
 		 )
-
-		Assert.assertEquals("Both graphs should contain exactly the same triples",ez, tinyGraph)
+		Assert.assertEquals("Both graphs should have the same size",tinyGraph.size, ez.size)
+		Assert.assertEquals("Both graphs should contain exactly the same triples", tinyGraph, ez.getGraph)
 		ez.bnode("danny") ⟝  FOAF.name ⟶  "George"
-		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",ez, tinyGraph)
+		Assert.assertFalse("Added one more triple, so graphs should no longer be equal",tinyGraph.equals(ez.getGraph))
 	}
 
 	@Test
@@ -144,14 +144,15 @@ class EasyGraphTest {
 		 			    -- FOAF.knows --> ez.bnode("danny")
 			 )
 			 -- FOAF.knows --> (ez.bnode("danny").a(FOAF.Person)
-			          -- FOAF.name --> "Danny Ayers"
+			          -- FOAF.name --> "Danny Ayers".lang('en)
 		             -- FOAF.knows --> "http://bblfish.net/#hjs".uri //knows
 					    -- FOAF.knows --> ez.bnode("reto")
 			 )
 		 )
+		Assert.assertEquals("Both graphs should have the same size",tinyGraph.size, ez.size)
 		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph, ez.getGraph)
 		ez.bnode("danny") -- FOAF.name --> "George"
-		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal", tinyGraph, ez.getGraph)
+		Assert.assertFalse("Added one more triple, so graphs should no longer be equal",tinyGraph.equals(ez.getGraph))
 
 	}
 
