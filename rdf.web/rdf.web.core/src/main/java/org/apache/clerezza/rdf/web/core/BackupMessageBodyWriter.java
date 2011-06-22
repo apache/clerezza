@@ -135,9 +135,15 @@ public class BackupMessageBodyWriter implements MessageBodyWriter<Backup> {
 				UriRef tcUri = tcUriRefs.next();
 				String fileName = folder + getTcFileName(tcUri, ".nt",
 						fileNameCount);
-				archive(compressedTcs, tcManager.getTriples(tcUri), fileName);
-				backupContents.add(new TripleImpl(tcUri, RDF.type,
-						BACKUP.Graph));
+				TripleCollection tripleCollection = tcManager.getTriples(tcUri);
+				archive(compressedTcs, tripleCollection, fileName);
+				if (tripleCollection instanceof MGraph) {
+					backupContents.add(new TripleImpl(tcUri, RDF.type,
+							BACKUP.MGraph));
+				} else {
+					backupContents.add(new TripleImpl(tcUri, RDF.type,
+							BACKUP.Graph));
+				}
 				backupContents.add(new TripleImpl(tcUri, BACKUP.file,
 						LiteralFactory.getInstance().createTypedLiteral(
 						fileName)));

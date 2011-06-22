@@ -22,8 +22,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -58,17 +60,26 @@ public class BackupTest {
 
 	private static String testGraphFileName = "test.graph";
 
-	private static MGraph testGraph0 = new SimpleMGraph();
-	private static UriRef testGraphUri0 = // the URI of testGraph0
+	private static MGraph testMGraph0 = new SimpleMGraph();
+	private static UriRef testMGraphUri0 = // the URI of testMGraph0
 			new UriRef("http://localhost/test0/"+testGraphFileName);
-	// a resource in testGraph0
+	// a resource in testMGraph0
 	private	static UriRef uri0 = new UriRef("http://localhost/test0/testuri");
 
-	private static MGraph testGraph1 = new SimpleMGraph();
-	private static UriRef testGraphUri1 = // the URI of testGraph1
+	private static MGraph testMGraph1 = new SimpleMGraph();
+	private static UriRef testMGraphUri1 = // the URI of testMGraph1
 			new UriRef("http://localhost/test1/"+testGraphFileName);
-	// a resource in testGraph1
+
+	// a resource in testMGraph1
 	private	static UriRef uri1 = new UriRef("http://localhost/test1/testuri");
+
+	private static Graph testGraphA;
+	private static UriRef testGraphUriA = // the URI of testGraphA
+			new UriRef("http://localhost/testA/"+testGraphFileName);
+
+	// a resource in testGraphA
+	private	static UriRef uriA = new UriRef("http://localhost/testA/testuri");
+	
 
 	private static String backupContentFileName = "triplecollections.nt";
 	private static BackupMessageBodyWriter backup;
@@ -81,20 +92,24 @@ public class BackupTest {
 		backup.serializer = Serializer.getInstance();
 		backup.serializer.bindSerializingProvider(
 				new JenaSerializerProvider());
-		testGraph0.add(new TripleImpl(uri0, uri0, uri0));
-		testGraph1.add(new TripleImpl(uri1, uri1, uri1));
+		testMGraph0.add(new TripleImpl(uri0, uri0, uri0));
+		testMGraph1.add(new TripleImpl(uri1, uri1, uri1));
+		MGraph graphBuilder = new SimpleMGraph();
+		graphBuilder.add(new TripleImpl(uriA, uriA, uriA));
+		testGraphA = graphBuilder.getGraph();
 	}
 
 	@Test
 	public void testBackup() throws IOException {
-		Graph downloadedTestGraphX = null;
-		Graph downloadedTestGraphY = null;
+		//Graph downloadedTestGraphX = null;
+		//Graph downloadedTestGraphY = null;
 		Graph downloadedBackupContentsGraph = null;
 
 		byte[] download = backup.createBackup();
 		ByteArrayInputStream bais = new ByteArrayInputStream(download);
 		ZipInputStream compressedTcs = new ZipInputStream(bais);
 
+		Map<String, TripleCollection> extractedTc = new HashMap<String, TripleCollection>();
 		String folder = "";
 		ZipEntry entry;
 		while ((entry = compressedTcs.getNextEntry()) != null) {
@@ -112,77 +127,93 @@ public class BackupTest {
 				}
 				ByteArrayInputStream serializedGraph = new ByteArrayInputStream(
 						baos.toByteArray());
-				if (entryName.equals(folder+testGraphFileName + ".nt")) {
+				/*if (entryName.equals(folder+testGraphFileName + ".nt")) {
 					downloadedTestGraphX = parser.parse(serializedGraph,
 							SupportedFormat.N_TRIPLE, null);
 				} else if (entryName.startsWith(folder+testGraphFileName)) {
 					downloadedTestGraphY = parser.parse(serializedGraph,
 							SupportedFormat.N_TRIPLE, null);
-				}
+				}*/
 				if (entryName.equals(backupContentFileName)) {
 					downloadedBackupContentsGraph = parser.parse(serializedGraph,
 							SupportedFormat.N_TRIPLE, null);
+				} else {
+					Graph deserializedGraph = parser.parse(serializedGraph,
+							SupportedFormat.N_TRIPLE, null);
+					extractedTc.put(entryName, deserializedGraph);
 				}
 				baos.flush();
 				baos.close();
 			}
 		}
 		compressedTcs.close();
-		checkDownloadedGraphs(downloadedTestGraphX, downloadedTestGraphY,
+		checkDownloadedGraphs(extractedTc,
 				downloadedBackupContentsGraph, folder);
 	}
 
-	private void checkDownloadedGraphs(Graph downloadedTestGraphX,
-			Graph downloadedTestGraphY, Graph downloadedBackupContentsGraph,
-			String folder) {
-		Assert.assertNotNull(downloadedTestGraphX);
-		Assert.assertNotNull(downloadedTestGraphY);
+	private void checkDownloadedGraphs(Map<String, TripleCollection> extractedTc,
+			Graph downloadedBackupContentsGraph, String folder) {
+		Assert.assertFalse(extractedTc.isEmpty());
 		Assert.assertNotNull(downloadedBackupContentsGraph);
 
 		Assert.assertTrue(downloadedBackupContentsGraph.contains(new TripleImpl(
-				testGraphUri0, RDF.type, BACKUP.Graph)));
+				testMGraphUri0, RDF.type, BACKUP.MGraph)));
 
 		Iterator<Triple> triples = downloadedBackupContentsGraph.filter(
-				testGraphUri0, BACKUP.file, null);
+				testMGraphUri0, BACKUP.file, null);
+		Assert.assertTrue(triples.hasNext());
+
+		String fileName0 = ((TypedLiteral) triples.next().getObject()).getLexicalForm();
+		Assert.assertTrue(fileName0.startsWith(folder+testGraphFileName));
+
+		TripleCollection extracted0 = extractedTc.get(fileName0);
+		Assert.assertNotNull(extracted0);
+		Assert.assertTrue(extracted0.filter(uri0, uri0, uri0).hasNext());
+
+		Assert.assertTrue(downloadedBackupContentsGraph.contains(new TripleImpl(
+				testMGraphUri1, RDF.type, BACKUP.MGraph)));
+
+		triples = downloadedBackupContentsGraph.filter(
+				testMGraphUri1, BACKUP.file, null);
+		Assert.assertTrue(triples.hasNext());
+
+		String fileName1 = ((TypedLiteral) triples.next().getObject()).getLexicalForm();
+		Assert.assertTrue(fileName1.startsWith(folder+testGraphFileName));
+
+		TripleCollection extracted1 = extractedTc.get(fileName1);
+		Assert.assertNotNull(extracted1);
+
+		Assert.assertTrue(extracted1.filter(uri1, uri1, uri1).hasNext());
+	
+
+
+		Assert.assertTrue(downloadedBackupContentsGraph.contains(new TripleImpl(
+				testGraphUriA, RDF.type, BACKUP.Graph)));
+
+		triples = downloadedBackupContentsGraph.filter(
+				testGraphUriA, BACKUP.file, null);
 		Assert.assertTrue(triples.hasNext());
 
 		String fileNameA = ((TypedLiteral) triples.next().getObject()).getLexicalForm();
 		Assert.assertTrue(fileNameA.startsWith(folder+testGraphFileName));
+		TripleCollection extractedA = extractedTc.get(fileNameA);
+		Assert.assertNotNull(extractedA);
 
-		if (fileNameA.equals(folder+testGraphFileName+".nt")) {
-			Assert.assertTrue(downloadedTestGraphX.filter(uri0, uri0, uri0).hasNext());
-		} else {
-			Assert.assertTrue(downloadedTestGraphY.filter(uri0, uri0, uri0).hasNext());
-		}
+		Assert.assertTrue(extractedA.filter(uriA, uriA, uriA).hasNext());
 
-		Assert.assertTrue(downloadedBackupContentsGraph.contains(new TripleImpl(
-				testGraphUri1, RDF.type, BACKUP.Graph)));
-
-		triples = downloadedBackupContentsGraph.filter(
-				testGraphUri1, BACKUP.file, null);
-		Assert.assertTrue(triples.hasNext());
-
-		String fileNameB = ((TypedLiteral) triples.next().getObject()).getLexicalForm();
-		Assert.assertTrue(fileNameB.startsWith(folder+testGraphFileName));
-
-		if (fileNameB.equals(folder+testGraphFileName+".nt")) {
-			Assert.assertTrue(downloadedTestGraphX.filter(uri1, uri1, uri1).hasNext());
-		} else {
-			Assert.assertTrue(downloadedTestGraphY.filter(uri1, uri1, uri1).hasNext());
-		}
-
-		Assert.assertFalse(fileNameA.equals(fileNameB));
 	}
 
 	private class TestTcManager extends TcManager {
 
-		// Associates testGraphUri0 with testGraph0 and testGraphUri1 with testGraph1
+		// Associates testGraphUri0 with testMGraph0 and testGraphUri1 with testGraph1
 		@Override
 		public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
-			if (name.equals(testGraphUri0)) {
-				return testGraph0;
-			} else if (name.equals(testGraphUri1)) {
-				return testGraph1;
+			if (name.equals(testMGraphUri0)) {
+				return testMGraph0;
+			} else if (name.equals(testMGraphUri1)) {
+				return testMGraph1;
+			} else if (name.equals(testGraphUriA)) {
+				return testGraphA;
 			}
 			return null;
 		}
@@ -190,8 +221,9 @@ public class BackupTest {
 		@Override
 		public Set<UriRef> listTripleCollections() {
 			Set<UriRef> result = new HashSet<UriRef>();
-			result.add(testGraphUri0);
-			result.add(testGraphUri1);
+			result.add(testMGraphUri0);
+			result.add(testMGraphUri1);
+			result.add(testGraphUriA);
 			return result;
 		}
 	}
