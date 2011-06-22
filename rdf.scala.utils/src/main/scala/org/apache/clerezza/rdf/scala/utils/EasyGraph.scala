@@ -306,19 +306,3 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 
 }
 
-/**
- * A IRI-namespace prefix
- */
-//Or should this be called EasyNameSpace ?
-class NameSpace(prefix: String) {
-
-	/**
-	 * returns a UriRef applying this namespace prefix to the given symbol
-	 */
-	def +(s: Symbol) = new UriRef(prefix + s.name)
-
-	/**
-	 * returns a UriRef applying this prefix to the given string
-	 */
-	def +(s: String) = new UriRef(prefix + s)
-}
