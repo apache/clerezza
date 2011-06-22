@@ -34,7 +34,7 @@ import org.apache.clerezza.rdf.core.Language
  * A Language Identifier can be a language and a number of Language variations
  * Would be nice if this could just implement the java
  */
-class LangId(val id: String) extends Language(id: String) {
+class Lang(val id: String) extends Language(id: String) {
 }
 
 /**
@@ -42,7 +42,7 @@ class LangId(val id: String) extends Language(id: String) {
  *    http://www.i18nguy.com/unicode/language-identifiers.html
  *
  */
-class LangRegion(lang: Lang, region: Region) extends LangId(lang.toString+"_"+region.toString)
+/*class LangRegion(lang: Lang, region: Region) extends LangId(lang.toString+"_"+region.toString)
 object LangRegion {
 	import Lang._
 	def apply(lang: Lang, region: Region) = new LangRegion(lang,region)
@@ -51,7 +51,7 @@ object LangRegion {
 	val fr_ch = LangRegion(fr,ch)
 	val de_ch = LangRegion(de,ch)
 	val it_ch = LangRegion(it,ch)
-}
+}*/
 
 /**
  * the simple two character language names
@@ -66,7 +66,6 @@ object Lang {
 	val rm = Lang("rm") //raeto-romance (swiss language)
 
 }
-class Lang(code: String) extends LangId(code)
 
 
 

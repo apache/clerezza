@@ -45,7 +45,7 @@ class EasyGraphTest {
 	final val public_exponent: UriRef = new UriRef("http://www.w3.org/ns/auth/rsa#public_exponent")
 
 
-		private val tinyGraph: Graph = {
+	private val tinyGraph: Graph = {
 		val gr = new SimpleMGraph
 		val reto= new BNode()
 		val danny = new BNode()
@@ -149,9 +149,9 @@ class EasyGraphTest {
 					    -- FOAF.knows --> ez.bnode("reto")
 			 )
 		 )
-		Assert.assertEquals("Both graphs should contain exactly the same triples",ez, tinyGraph)
+		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph, ez.getGraph)
 		ez.bnode("danny") -- FOAF.name --> "George"
-		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",ez, tinyGraph)
+		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal", tinyGraph, ez.getGraph)
 
 	}
 
