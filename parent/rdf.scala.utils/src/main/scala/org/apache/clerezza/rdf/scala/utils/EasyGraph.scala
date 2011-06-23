@@ -26,9 +26,9 @@ import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.apache.clerezza.rdf.utils.GraphNode
 import scala.collection.mutable.HashMap
 import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
-import java.util.{HashSet, Date}
 import org.apache.clerezza.rdf.core._
 import impl._
+import java.util.{HashSet, Date}
 
 object EasyGraph {
 
@@ -118,6 +118,14 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 	* create the collection here
 	**/
 	def this() = this (new HashSet[Triple])
+
+
+	/**
+	 * Constructor for collection
+	 * Because superclasses map copy information to a new HashSet, we do this now, so that this class can keep
+	 * track of the container. If super class changes this may become unnecessary
+	 */
+	def this(tripleColl: java.util.Collection[Triple]) = this(new HashSet[Triple](tripleColl))
 
 	def +=(other: Graph) = {
 		if (graph ne other) graph.addAll(other)
