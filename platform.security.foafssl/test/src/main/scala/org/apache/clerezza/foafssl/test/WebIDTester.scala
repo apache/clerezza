@@ -33,7 +33,7 @@ import impl.{PlainLiteralImpl, TypedLiteralImpl, SimpleMGraph}
 import org.apache.clerezza.foafssl.ontologies._
 import org.apache.clerezza.foafssl.auth.{WebIDClaim, Verification, WebIdPrincipal, X509Claim}
 import java.util.Date
-import org.apache.clerezza.rdf.scala.utils.Preamble._
+import org.apache.clerezza.rdf.scala.utils.Preamble.{toRichGraphNode,toFirstElement}
 import org.apache.clerezza.rdf.scala.utils.{CollectedIter, EasyGraphNode, EasyGraph, RichGraphNode}
 import serializedform.Serializer
 import java.io.ByteArrayOutputStream
@@ -131,7 +131,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 	def runTests() {
 
 		val thisDoc = (g.bnode ∈ FOAF.Document //there really has to be a way to get THIS doc url, to add relative urls to the graph
-			⟝ DCTERMS.created ⟶ now
+			               ⟝ DCTERMS.created ⟶ now
 			)
 		//
 		// Description of certificates and their public profileKeys
@@ -601,7 +601,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 			sout.serialize(out, graph, "text/rdf+n3")
 			val n3String = out.toString("UTF-8")
 			//todo: turtle mime type literal?
-			val keylit = g.bnode ⟝ OWL.sameAs ⟶ (n3String ^^ new UriRef("http://example.com/turtle"))
+			val keylit: EasyGraphNode = g.bnode ⟝  OWL.sameAs ⟶ (n3String^^"http://example.com/turtle".uri)
 
 
 			//
@@ -693,7 +693,7 @@ class Assertor {
 		for (test <- assertions) {
 			test.toRdf()
 		}
-		g.graph
+		g
 	}
 
 	class Assertion(testName: UriRef,

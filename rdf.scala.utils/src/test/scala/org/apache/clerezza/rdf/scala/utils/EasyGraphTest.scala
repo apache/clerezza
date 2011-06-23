@@ -18,11 +18,10 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
-import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.ontologies._
 import org.junit._
 import org.apache.clerezza.rdf.core._
-import impl.{TypedLiteralImpl, PlainLiteralImpl, SimpleMGraph, TripleImpl}
+import impl._
 
 class EasyGraphTest {
 
@@ -138,8 +137,6 @@ class EasyGraphTest {
 
 		val ez = new EasyGraph()
 		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
-		import org.apache.clerezza.rdf.scala.utils.Lang._
-
 		(ez.u(retoUri) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
@@ -176,8 +173,6 @@ class EasyGraphTest {
 	@Test
 	def uriEquals {
 		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
-		import org.apache.clerezza.rdf.scala.utils.Lang._
-
 		val uc = new UriRef("http://clerezza.org/")
 		val ec = "http://clerezza.org/".uri
 
@@ -188,13 +183,32 @@ class EasyGraphTest {
 	}
 
 	@Test
-	def literalEquals {
-		val exp = LiteralFactory.getInstance().createTypedLiteral(65537)
-		val mod= new TypedLiteralImpl(bblfishModulus,hex)
+	def literalTester1 {
+		val n3 = """
+		@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+		<http://bblfish.net/#hjs> a foaf:Person .
+		"""
+		val n3Lit : Literal = new TypedLiteralImpl(n3,new UriRef("http://example.com/turtle"))
+	   val gr = new SimpleMGraph
+		gr.add(new TripleImpl(new BNode,OWL.sameAs,n3Lit))
 
 		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 
+		val ez = new EasyGraph()
+
+		val res : EasyGraphNode = (ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
+
+		Assert.assertEquals("the two graphs must be equal",gr.getGraph,ez.getGraph)
+
+	}
+
+	@Test
+	def literalTester2 {
+		val exp = LiteralFactory.getInstance().createTypedLiteral(65537)
+		val mod= new TypedLiteralImpl(bblfishModulus,hex)
+
+		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
 		val modZ: TypedLiteral = bblfishModulus^^hex
 		val expZ: TypedLiteral = 65537
 
