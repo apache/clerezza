@@ -119,7 +119,40 @@ protected object TcIndependentConversions {
 	val emptyGraph = new impl.SimpleGraph(new impl.SimpleMGraph)
 	val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
 
-	
+	/**
+	 * A Literal Builder enriches a String with methods to create a literal
+	 */
+	class LiteralBuilder(val lexicalForm: String) {
+
+	/**
+		 * Produces a PlainLiteral with the wrapped String as lexical form
+		 * and a given language
+		 *
+		 * @param lang the language tag of the literal to be created
+		 * @return a plain literal with the specified language
+		 */
+		def lang(lang: Lang) = new PlainLiteralImpl(lexicalForm, lang)
+
+		/**
+		 * Produces a PlainLiteral with the wrapped String as lexical form
+		 * and a given language
+		 *
+		 * @param lang a symbol of which the name is the language tag of the literal to be created
+		 * @return a plain literal with the specified language
+		 */
+		def lang(lang: Symbol) = new PlainLiteralImpl(lexicalForm, new Language(lang.name))
+
+		/**
+		 * Produces a TypedLiteral with the wrapped String as lexical form
+		 * and a data type
+		 *
+		 * @param dataType the data type
+		 * @return the TypedLiteral of the specified type
+		 */
+		def ^^(dataType: UriRef) = new TypedLiteralImpl(lexicalForm, dataType)
+
+	}
+
 	/**
 	 * A UriRef Builder enriches a String with methods to create a UriRef
 	 */
