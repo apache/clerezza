@@ -19,17 +19,16 @@
 
 package org.apache.clerezza.rdf.scala.utils
 
-import org.apache.clerezza.rdf.core._
-import impl._
 import java.math.BigInteger
 import java.lang.Boolean
 import java.net.{URL, URI}
-import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.apache.clerezza.rdf.utils.GraphNode
 import scala.collection.mutable.HashMap
 import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
 import java.util.{HashSet, Date}
+import org.apache.clerezza.rdf.core._
+import impl._
 
 object EasyGraph {
 
@@ -93,9 +92,11 @@ class EzLiteral(lexicalForm: String) extends TypedLiteral {
 		}
 	}
 
-	override def hashCode() = XSD.string.hashCode() +lexicalForm.hashCode()
+	override def hashCode() = XSD.string.hashCode() + lexicalForm.hashCode()
 
 	def getDataType = XSD.string
+
+	override def toString() = lexicalForm
 }
 
 
@@ -129,7 +130,11 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 	def bnode(name: String): EasyGraphNode = {
 		namedBnodes.get(name) match {
 			case Some(ezGraphNode) => ezGraphNode
-			case None => { val ezgn = bnode; namedBnodes.put(name, ezgn); ezgn }
+			case None => {
+				val ezgn = bnode;
+				namedBnodes.put(name, ezgn);
+				ezgn
+			}
 		}
 	}
 
@@ -258,28 +263,24 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 		//
 		def -->(obj: Resource): EasyGraphNode = add(obj)
 
-		/* add a relation to each object in the argument list */
-		def -->(objs: Resource*): EasyGraphNode = {
-			for (o <- objs) add(o)
-			EasyGraphNode.this
-		}
+		def -->(lit: String): EasyGraphNode = add(new EzLiteral(lit))
 
-		def -->[T <: Resource](objs: Iterable[T]): EasyGraphNode = {
-			for (o <- objs) add(o)
-			EasyGraphNode.this
-		}
-
-		def -->(lit: String): EasyGraphNode = add(new PlainLiteralImpl(lit))
+		/**
+		 * Adds a relation to a real linked list.
+		 * If you want one relation to each entry use -->> or ⟶*
+		 */
+		def -->(list: List[Resource]) = addList(list)
 
 		def -->(sub: EasyGraphNode): EasyGraphNode = {
 			EasyGraphNode.this + sub
 			add(sub.ref)
 		}
 
-		def -->>(uri: String) = add(new UriRef(uri))
-
-		def -->>(uris: Seq[String]) = {
-			for (u <- uris) add(new UriRef(u))
+		/**
+		 * Add one relation for each member of the iterable collection
+		 */
+		def -->>[T <: Resource](uris: Iterable[T]): EasyGraphNode = {
+			for (u <- uris) addTriple(u)
 			EasyGraphNode.this
 		}
 
@@ -291,16 +292,53 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 
 		def ⟶(obj: String) = -->(obj)
 
-		def ⟶(obj: Resource) = -->(obj)
+		def ⟶(obj: Resource): EasyGraphNode = -->(obj)
 
-		def ⟶*[T <: Resource](objs: Iterable[T]) = -->(objs)
+		def ⟶(list: List[Resource]): EasyGraphNode = addList(list)
+
+		/**
+		 * Add one relation for each member of the iterable collection
+		 */
+		def ⟶*[T <: Resource](objs: Iterable[T]) = -->>(objs)
 
 		def ⟶(sub: EasyGraphNode) = -->(sub)
 
 		protected def add(obj: Resource) = {
-			graph.add(new TripleImpl(ref, rel, obj))
+			addTriple(obj)
 			EasyGraphNode.this
 		}
+
+		protected def addTriple(obj: Resource) {
+			graph.add(new TripleImpl(ref, rel, obj))
+		}
+
+		private def toTriples[T <: Resource](headRef: NonLiteral, list: List[T]): List[Triple] = {
+			list match {
+				case head :: next :: rest => {
+					val nextRef = new BNode
+					new TripleImpl(headRef, RDF.first, head) ::
+						new TripleImpl(headRef, RDF.rest, nextRef) ::
+						toTriples(nextRef, next :: rest)
+				}
+				case head :: nil => {
+					new TripleImpl(headRef, RDF.first, head) :: new TripleImpl(headRef, RDF.rest, RDF.nil) :: Nil
+				}
+				case nil => Nil
+			}
+		}
+
+
+		protected def addList[T <: Resource](list: List[T]) = {
+			val headNode = new BNode
+			addTriple(headNode)
+		   val tripleLst = toTriples(headNode,list);
+			graph.add(new TripleImpl(headNode,RDF.`type`,RDF.List))
+			graph.addAll(collection.JavaConversions.asJavaCollection(tripleLst))
+			EasyGraphNode.this
+		}
+
+
+
 	}
 
 }
