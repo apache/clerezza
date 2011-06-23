@@ -43,16 +43,22 @@ class EasyGraphTest {
 	final val modulus: UriRef = new UriRef("http://www.w3.org/ns/auth/rsa#modulus")
 	final val public_exponent: UriRef = new UriRef("http://www.w3.org/ns/auth/rsa#public_exponent")
 
+	val henryUri: String = "http://bblfish.net/#hjs"
+	val retoUri: String = "http://farewellutopia.com/reto/#me"
+	val danbriUri: String = "http://danbri.org/foaf.rdf#danbri"
+
+
 
 	private val tinyGraph: Graph = {
 		val gr = new SimpleMGraph
 		val reto= new BNode()
 		val danny = new BNode()
-		val henry = new UriRef("http://bblfish.net/#hjs")
+		val henry = new UriRef(henryUri)
 
 		gr.add(new TripleImpl(reto,RDF.`type`, FOAF.Person))
 		gr.add(new TripleImpl(reto,FOAF.name, new PlainLiteralImpl("Reto Bachman-Gmür", new Language("rm"))))
-		gr.add(new TripleImpl(reto,FOAF.title, new PlainLiteralImpl("Mr")))
+		//it is difficult to remember that one needs to put a string literal if one does not want to specify a language
+		gr.add(new TripleImpl(reto,FOAF.title, new TypedLiteralImpl("Mr",XSD.string)))
 		gr.add(new TripleImpl(reto,FOAF.currentProject, new UriRef("http://clerezza.org/")))
 		gr.add(new TripleImpl(reto,FOAF.knows, henry))
 		gr.add(new TripleImpl(reto,FOAF.knows, danny))
@@ -62,7 +68,7 @@ class EasyGraphTest {
 		gr.add(new TripleImpl(danny,FOAF.knows, henry))
 		gr.add(new TripleImpl(danny,FOAF.knows, reto))
 
-		gr.add(new TripleImpl(henry,FOAF.name,new PlainLiteralImpl("Henry Story")))
+		gr.add(new TripleImpl(henry,FOAF.name,new TypedLiteralImpl("Henry Story",XSD.string))) //It is tricky to remember that one needs this for pure strings
 		gr.add(new TripleImpl(henry,FOAF.currentProject,new UriRef("http://webid.info/")))
 		gr.add(new TripleImpl(henry,RDF.`type`, FOAF.Person))
 		gr.add(new TripleImpl(henry,FOAF.knows, danny))
@@ -77,7 +83,7 @@ class EasyGraphTest {
 	}
 
 	@Test
-	def testEquality {
+	def simpleGraphEquality {
 		val gr = new SimpleMGraph
 
 		val reto= new BNode()
@@ -88,6 +94,115 @@ class EasyGraphTest {
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
 		Assert.assertTrue("the two graphs should be equals",gr.getGraph.equals(ez.getGraph)) //mutable graphs cannot be compared for equality
+
+	}
+
+	@Test
+	def testList {
+		val gr = new SimpleMGraph
+		val reto= new UriRef(retoUri)
+		val todoRef = new UriRef("http://clerezza.org/ex/ont/todo")
+		val holiday = "http://dbpedia.org/resource/Holiday"
+		val list = new BNode
+		val list2 = new BNode
+		val list3 = new BNode
+
+		gr.add(new TripleImpl(reto, todoRef, list ))
+		gr.add(new TripleImpl(list,RDF.`type`, RDF.List))
+		gr.add(new TripleImpl(list,RDF.first, new PlainLiteralImpl("SPARQL update support",new Language("en"))))
+		gr.add(new TripleImpl(list,RDF.rest,list2))
+		gr.add(new TripleImpl(list2,RDF.first, new PlainLiteralImpl("XSPARQL support",new Language("en"))))
+		gr.add(new TripleImpl(list2,RDF.rest,list3))
+		gr.add(new TripleImpl(list3,RDF.first, new UriRef(holiday)))
+		gr.add(new TripleImpl(list3,RDF.rest,RDF.nil))
+		gr.add(new TripleImpl(reto,RDF.`type`, FOAF.Person))
+
+		val ez = new EasyGraph()
+
+		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.Lang._
+		( ez.u(retoUri) ∈ FOAF.Person
+			    ⟝ todoRef ⟶ List[Resource]("SPARQL update support".lang(en),"XSPARQL support".lang(en),holiday.uri))
+
+		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez.getGraph)
+
+	}
+
+	@Test
+	def oneToMany {
+		val gr = new SimpleMGraph
+		val reto= new UriRef(retoUri)
+		gr.add(new TripleImpl(reto,FOAF.knows,new UriRef(henryUri)))
+		gr.add(new TripleImpl(reto,FOAF.knows,new UriRef(danbriUri)))
+
+		val ez = new EasyGraph()
+		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.Lang._
+
+		(ez.u(retoUri) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
+
+		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez.getGraph)
+
+		val ez2 = new EasyGraph()
+		(ez2.u(retoUri) ⟝  FOAF.knows ⟶*  Set(danbriUri.uri,henryUri.uri))
+
+		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez2.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez2.getGraph)
+
+	}
+
+	@Test
+	def langEquals {
+		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.Lang._
+
+		 val lit = new PlainLiteralImpl("SPARQL update support",new Language("en"))
+		 val lit2 =  "SPARQL update support".lang(en)
+
+		Assert.assertEquals("the two literals should be equsl",lit.hashCode(),lit2.hashCode())
+		Assert.assertEquals("the two literals should be equsl",lit,lit2)
+
+		val lit3 = new PlainLiteralImpl("Reto Bachman-Gmür",new Language("rm"))
+		val lit4 = "Reto Bachman-Gmür".lang(rm)
+
+		Assert.assertEquals("the two lang literals should have same hash",lit3.hashCode(),lit4.hashCode())
+		Assert.assertEquals("the two lang literals should be equal",lit3,lit4)
+
+
+	}
+
+	@Test
+	def uriEquals {
+		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.Lang._
+
+		val uc = new UriRef("http://clerezza.org/")
+		val ec = "http://clerezza.org/".uri
+
+		Assert.assertEquals("the two uris should have an equal hash",uc.hashCode(),ec.hashCode())
+		Assert.assertEquals("the two uris should be equal",uc,ec)
+
+
+	}
+
+	@Test
+	def literalEquals {
+		val exp = LiteralFactory.getInstance().createTypedLiteral(65537)
+		val mod= new TypedLiteralImpl(bblfishModulus,hex)
+
+		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.Lang._
+
+		val modZ: TypedLiteral = bblfishModulus^^hex
+		val expZ: TypedLiteral = 65537
+
+		Assert.assertEquals("the two literals should have an equal hash",exp.hashCode(),expZ.hashCode())
+		Assert.assertEquals("the two literals should be equal",exp,expZ)
+
+		Assert.assertEquals("the two literals should have an equal hash",mod.hashCode(),modZ.hashCode())
+		Assert.assertEquals("the two literals should be equal",mod,modZ)
 
 	}
 
@@ -112,8 +227,7 @@ class EasyGraphTest {
 			                 ⟝ modulus ⟶ 65537
 			                 ⟝ public_exponent ⟶ (bblfishModulus^^hex) // brackets needed due to precedence
 			          )
-			          ⟝ FOAF.knows ⟶ ez.bnode("reto")
-		 			    ⟝ FOAF.knows ⟶ ez.bnode("danny")
+			          ⟝ FOAF.knows ⟶* Set(ez.bnode("reto").ref,ez.bnode("danny").ref)
 			 )
 			 ⟝ FOAF.knows ⟶ (
 			     ez.bnode("danny") ∈ FOAF.Person
@@ -148,8 +262,7 @@ class EasyGraphTest {
 			                       -- modulus --> 65537
 			                       -- public_exponent --> (bblfishModulus^^hex) // brackets needed due to precedence
 			                   )
-			          -- FOAF.knows --> ez.bnode("reto")
-		 			    -- FOAF.knows --> ez.bnode("danny")
+			          -- FOAF.knows -->> List(ez.bnode("reto").ref,ez.bnode("danny").ref)
 			 )
 			 -- FOAF.knows --> (ez.bnode("danny").a(FOAF.Person)
 			          -- FOAF.name --> "Danny Ayers".lang(en)
