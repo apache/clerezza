@@ -24,11 +24,11 @@ import java.lang.Boolean
 import java.net.{URL, URI}
 import org.apache.clerezza.rdf.utils.UnionMGraph
 import org.apache.clerezza.rdf.utils.GraphNode
-import scala.collection.mutable.HashMap
 import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
 import org.apache.clerezza.rdf.core._
 import impl._
 import java.util.{HashSet, Date}
+import collection.mutable.{ListBuffer, HashMap}
 
 object EasyGraph {
 
@@ -108,8 +108,6 @@ class EzLiteral(lexicalForm: String) extends TypedLiteral {
  * @created: 20/04/2011
  */
 
-@deprecated("Don't use yet other than for trying out this class as it may be merged with another class or changed dramatically." +
-	" Send feedback to CLEREZZA-510. ")
 class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 	val namedBnodes = new HashMap[String,EasyGraphNode]
 
@@ -320,19 +318,28 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 			graph.add(new TripleImpl(ref, rel, obj))
 		}
 
-		private def toTriples[T <: Resource](headRef: NonLiteral, list: List[T]): List[Triple] = {
-			list match {
-				case head :: next :: rest => {
-					val nextRef = new BNode
-					new TripleImpl(headRef, RDF.first, head) ::
-						new TripleImpl(headRef, RDF.rest, nextRef) ::
-						toTriples(nextRef, next :: rest)
+		private def toTriples[T <: Resource](head: NonLiteral,list : List[T]): List[Triple] = {
+			val answer = new ListBuffer[Triple]
+			var varList = list
+			var headRef = head
+			while (varList != Nil) {
+				varList = varList match {
+					case head :: next :: rest => {
+						val nextRef = new BNode
+						answer.append(new TripleImpl(headRef, RDF.first, head))
+						answer.append(new TripleImpl(headRef, RDF.rest, nextRef))
+						headRef = nextRef
+						next :: rest
+					}
+					case head :: Nil => {
+						answer.append(new TripleImpl(headRef, RDF.first, head))
+						answer.append(new TripleImpl(headRef, RDF.rest, RDF.nil))
+						Nil
+					}
+					case Nil => Nil
 				}
-				case head :: nil => {
-					new TripleImpl(headRef, RDF.first, head) :: new TripleImpl(headRef, RDF.rest, RDF.nil) :: Nil
-				}
-				case nil => Nil
 			}
+			answer.toList
 		}
 
 
