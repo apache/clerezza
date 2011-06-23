@@ -339,9 +339,12 @@ class ExternalizingMGraph extends AbstractMGraph {
 				ReplacementLiteral other = (ReplacementLiteral)obj;
 				return base16Hash.equals(other.base16Hash);
 			}
-			TypedLiteral other = (TypedLiteral)obj;
-			return getLexicalForm().equals(other.getLexicalForm()) &&
-					getDataType().equals(other.getDataType());
+			if (obj instanceof TypedLiteral) {
+				TypedLiteral other = (TypedLiteral)obj;
+				return getLexicalForm().equals(other.getLexicalForm()) &&
+						getDataType().equals(other.getDataType());
+			}
+			return false;
 		}
 
 		@Override
