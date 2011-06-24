@@ -292,4 +292,39 @@ class EasyGraphTest {
 	}
 
 
+	@Test
+	def usingWordOperators {
+		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.Lang._
+		 val ez = new EasyGraph()
+		 // example using arrows
+		 (
+		   ez.bnode("reto") a FOAF.Person
+			 has FOAF.name to "Reto Bachman-Gmür".lang(rm)
+			 has FOAF.title to "Mr"
+			 has FOAF.currentProject to "http://clerezza.org/".uri
+			 has FOAF.knows to (
+			     ez.u("http://bblfish.net/#hjs") a FOAF.Person
+			          has FOAF.name to "Henry Story"
+			          has FOAF.currentProject to "http://webid.info/".uri
+ 			          is identity of (
+			                   ez.bnode a RSAPublicKey //. notation because of precedence of operators
+			                       has modulus to 65537
+			                       has public_exponent to bblfishModulus^^hex // brackets needed due to precedence
+			                   )
+			          has FOAF.knows toEach List(ez.bnode("reto").ref,ez.bnode("danny").ref)
+			 )
+			 has FOAF.knows to ( ez.bnode("danny") a FOAF.Person
+			          has FOAF.name to "Danny Ayers".lang(en)
+		             has FOAF.knows to "http://bblfish.net/#hjs".uri //knows
+					    has FOAF.knows to ez.bnode("reto")
+			 )
+		 )
+		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
+		ez.bnode("danny") has FOAF.name to "George"
+		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,ez.getGraph)
+
+	}
+
 }
