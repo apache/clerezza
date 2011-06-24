@@ -469,8 +469,7 @@ public class ClerezzaApp {
 	}
 
 	private String getCommaSeparatedListOfMavenRepos() {
-		return "http://repository.apache.org/content/groups/snapshots-group@snapshots@noreleases,"
-				+ "http://repo1.maven.org/maven2/,"
-				+ "http://repository.ops4j.org/mvn-snapshots/@snapshots@noreleases";
+		return "http://repository.apache.org/content/groups/snapshots-group@snapshots@noreleases@id=apache-snapshots,"
+				+ "http://repo1.maven.org/maven2/@id=central";
 	}
 }
