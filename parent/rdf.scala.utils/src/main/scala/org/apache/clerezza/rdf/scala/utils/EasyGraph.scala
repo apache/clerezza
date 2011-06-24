@@ -193,6 +193,12 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 //		case other: TripleCollection => new EasyGraph(graph)
 //	}
 
+	def +(sub: EasyGraphNode) = {
+		if (graph ne sub.graph) graph.addAll(sub.graph)
+		this
+	}
+
+
 	/*
 	 * create an EasyGraphNode from this one where the backing graph is protected from writes by a new
 	 * SimpleGraph.
@@ -202,6 +208,12 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 	def this(s: NonLiteral) = this (s, new SimpleMGraph())
 
 	def this() = this (new BNode)
+
+	//
+	// Ascii arrow notation
+	//
+	// (easier to write but has odd precedence implications)
+
 
 	def --(rel: UriRef): Predicate = new Predicate(rel)
 
@@ -217,6 +229,10 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 	//		if (yes) func(has(rel))
 	//		else this
 
+	//
+	// symbolic notation
+	//
+	// (shorter and more predictable precedence rules, but unicode issues)
 
 	def ⟝(rel: UriRef): Predicate = --(rel)
 
@@ -225,21 +241,30 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 	/* For inverse relationships */
 	def ⟵(rel: UriRef) = -<-(rel)
 
-	// does not work as hoped
-	//	def ⟝?(yes: Boolean, uri: UriRef)(func: Predicate => EasyGraphNode): EasyGraphNode = hasQ(yes,uri)(func)
-
-	def +(sub: EasyGraphNode) = {
-		if (graph ne sub.graph) graph.addAll(sub.graph)
-		this
-	}
-
-	def a(rdfclass: UriRef) = ∈(rdfclass)
-
-
 	def ∈(rdfclass: UriRef): EasyGraphNode = {
 		graph.add(new TripleImpl(ref, RDF.`type`, rdfclass))
 		return EasyGraphNode.this
 	}
+
+
+
+
+	//
+	// symbolic notation
+	//
+	// (shorter and more predictable precedence rules - they are always the weakest, and so very few brakets are need
+	// when symbolic operators are used. But sometimes this notation is grammatically awkward)
+
+	def a(rdfclass: UriRef) = ∈(rdfclass)
+
+	def has(rel: UriRef): Predicate = --(rel)
+
+	def has(rel: String): Predicate = --(rel)
+
+	/* For inverse relationships */
+	def is(rel: UriRef) = -<-(rel)
+
+
 
 	class InversePredicate(rel: UriRef) {
 		def ⟞(subj: NonLiteral) = add(subj)
@@ -255,6 +280,10 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 		def --(subj: String) = ⟞(subj)
 		def --(subj: EasyGraphNode) = ⟞(subj)
 		// since we can only have inverses from non literals (howto deal with bndoes?)
+
+		def of(subj: NonLiteral) = ⟞(subj)
+		def of(subj: String) = ⟞(subj)
+		def of(subj: EasyGraphNode) = ⟞(subj)
 
 		protected def add(subj: NonLiteral) = {
 			graph.add(new TripleImpl(subj, rel, ref))
@@ -294,7 +323,6 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 		//
 		// arrow notation
 		//
-		// todo: a relation to a list
 
 		def ⟶(obj: String) = -->(obj)
 
@@ -308,6 +336,25 @@ class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends Gr
 		def ⟶*[T <: Resource](objs: Iterable[T]) = -->>(objs)
 
 		def ⟶(sub: EasyGraphNode) = -->(sub)
+
+
+		//
+		// text notation
+		//
+
+		def to(obj: String) = -->(obj)
+
+		def to(obj: Resource): EasyGraphNode = -->(obj)
+
+		def to(list: List[Resource]): EasyGraphNode = addList(list)
+
+		/**
+		 * Add one relation for each member of the iterable collection
+		 */
+		def toEach[T <: Resource](objs: Iterable[T]) = -->>(objs)
+
+		def to(sub: EasyGraphNode) = -->(sub)
+
 
 		protected def add(obj: Resource) = {
 			addTriple(obj)
