@@ -66,7 +66,14 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 	private val virtualMGraph = new AbstractMGraph() {
 		override def performFilter(s: NonLiteral, p: UriRef,
 				o: Resource): java.util.Iterator[Triple] = {
-			currentCacheMGraph.filter(s,p,o)
+			val baseIter = currentCacheMGraph.filter(s,p,o)
+			new java.util.Iterator[Triple]() {
+				override def next = {
+					baseIter.next
+				}
+				override def hasNext = baseIter.hasNext
+				override def remove = throw new UnsupportedOperationException
+			}
 		}
 
 		override def size = currentCacheMGraph.size
