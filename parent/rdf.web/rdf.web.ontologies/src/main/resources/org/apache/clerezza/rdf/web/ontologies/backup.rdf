@@ -31,6 +31,13 @@
 	<skos:definition xml:lang="en">A mutable RDF graph.</skos:definition>
 </rdfs:Class>
 
+<rdfs:Class rdf:about="#BackupAdminPage">
+	<rdf:type rdf:resource="owl:Class"/>
+	<rdfs:label xml:lang="en">BackupAdminPage</rdfs:label>
+	<skos:definition xml:lang="en">The administrative page to get backups and restore from backups.</skos:definition>
+</rdfs:Class>
+
+
 <!-- Properties -->
 
 <rdf:Property rdf:about="#file">
