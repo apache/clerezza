@@ -31,32 +31,42 @@ import java.util.zip.ZipInputStream;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.LiteralFactory;
+import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.web.ontologies.BACKUP;
+import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * A utility to restore the triple collection
+ * A service to restore the triple collection
  *
  * @author reto
  */
+@Component
+@Service(Restorer.class)
 public class Restorer {
+
+	private final static Logger log = LoggerFactory.getLogger(Restorer.class);
 
 	@Reference
 	Parser parser;
 
 	/**
-	 *
+	 * Restores triple-collections from a backup to a specified TcProvider
 	 *
 	 * @param backupData the bytes of a backup zip
-	 * @param target
+	 * @param target the TcProvider into which to restore the data
 	 */
 	public void restore(InputStream backupData, TcProvider target) throws IOException {
 		ZipInputStream compressedTcs = new ZipInputStream(backupData);
@@ -100,8 +110,29 @@ public class Restorer {
 				GraphNode graphGN = new GraphNode(mGraphIterator.next().getSubject(), metaGraph);
 				String fileName = graphGN.getLiterals(BACKUP.file).next().getLexicalForm();
 				TripleCollection extracted = extractedTc.get(fileName);
-				target.deleteTripleCollection((UriRef)graphGN.getNode());
-				target.createMGraph((UriRef)graphGN.getNode()).addAll(extracted);
+				
+				MGraph mGraph;
+				boolean created = false;
+				try {
+					mGraph = target.getMGraph((UriRef)graphGN.getNode());
+					try {
+						mGraph.clear();
+					} catch (UnsupportedOperationException ex) {
+						log.warn("could not restore "+graphGN.getNode()+" as the exsting triple "
+								+ "collection could not be cleared");
+						continue;
+					}
+				} catch (NoSuchEntityException ex) {
+					mGraph = target.createMGraph((UriRef)graphGN.getNode());
+					created = true;
+				}
+				try {
+					mGraph.addAll(extracted);
+				} catch (Exception ex) {
+					String actionDone = created ? "created" : "cleared";
+					log.error("after the mgraph "+graphGN.getNode()+" could successfully be "+actionDone
+							+ ", an exception occured adding the data", ex);
+				}
 			}
 		}
 		{
@@ -110,7 +141,15 @@ public class Restorer {
 				GraphNode graphGN = new GraphNode(graphIterator.next().getSubject(), metaGraph);
 				String fileName = graphGN.getLiterals(BACKUP.file).next().getLexicalForm();
 				TripleCollection extracted = extractedTc.get(fileName);
-				target.deleteTripleCollection((UriRef)graphGN.getNode());
+				try {
+					target.deleteTripleCollection((UriRef)graphGN.getNode());
+				} catch (UnsupportedOperationException ex) {
+					log.warn("could not restore "+graphGN.getNode()+" as the exsting triple "
+							+ "collection could not be deleted");
+					continue;
+				} catch (NoSuchEntityException ex) {
+					log.debug("could not remove "+graphGN.getNode()+", no such entity");
+				}
 				target.createGraph((UriRef)graphGN.getNode(), extracted);
 			}
 		}

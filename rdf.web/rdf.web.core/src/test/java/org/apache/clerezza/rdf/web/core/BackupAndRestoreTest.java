@@ -157,10 +157,10 @@ public class BackupAndRestoreTest {
 	public void restoreFromBackup() throws IOException {
 		byte[] backupData = backup.createBackup();
 		TcProvider tcProvider = EasyMock.createMock(TcProvider.class);
-		tcProvider.deleteTripleCollection(testMGraphUri0);
-		EasyMock.expect(tcProvider.createMGraph(testMGraphUri0)).andReturn(new SimpleMGraph());
-		tcProvider.deleteTripleCollection(testMGraphUri1);
-		EasyMock.expect(tcProvider.createMGraph(testMGraphUri1)).andReturn(new SimpleMGraph());
+		EasyMock.expect(tcProvider.getMGraph(testMGraphUri0)).andReturn(
+				EasyMock.createNiceMock(MGraph.class));
+		EasyMock.expect(tcProvider.getMGraph(testMGraphUri1)).andReturn(
+				EasyMock.createNiceMock(MGraph.class));
 		tcProvider.deleteTripleCollection(testGraphUriA);
 		EasyMock.expect(tcProvider.createGraph(EasyMock.eq(testGraphUriA),
 				EasyMock.notNull(TripleCollection.class))).andReturn(new SimpleMGraph().getGraph());
