@@ -147,7 +147,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 	@Produces({"*/*"})
 	public Object getResource(@Context UriInfo uriInfo) {
 		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
-		final GraphNode graphNode = getResourceAsGraphNode(uriInfo);
+			final GraphNode graphNode = getResourceAsGraphNode(uriInfo);
 		if (graphNode == null) {
 			return resourceUnavailable(uri, uriInfo);
 		}
@@ -165,7 +165,16 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 
 	private GraphNode getResourceAsGraphNode(UriInfo uriInfo) {
 		final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
-		return graphNodeProvider.getLocal(uri);
+		GraphNode result = graphNodeProvider.getLocal(uri);
+		//could chck if nodeContext > 0, but this would be less efficient
+		TripleCollection tc = result.getGraph();
+		if (tc.filter(uri, null, null).hasNext()) {
+			return result;
+		}
+		if (tc.filter(null, null, uri).hasNext()) {
+			return result;
+		}
+		return null;
 	}
 
 
