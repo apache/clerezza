@@ -31,6 +31,7 @@ import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
@@ -53,21 +54,23 @@ public class Style {
 	 * @param context
 	 */
 	protected void activate(ComponentContext context) {
+		BundleContext bundleContext = context.getBundleContext();
+
 		URL templateURL = getClass().getResource("globalmenu-naked.ssp");
 		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, RDFS.Resource, "menu",
-				MediaType.APPLICATION_XHTML_XML_TYPE));
+				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
 
 		templateURL = getClass().getResource("rdf-list-template.ssp");
 		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, RDF.List, ".*naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE));
+				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
 
 		templateURL = getClass().getResource("headed-page-template.ssp");
 		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, PLATFORM.HeadedPage, "(?!.*naked).*",
-				MediaType.APPLICATION_XHTML_XML_TYPE));
+				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
 
 		templateURL = getClass().getResource("headed-page-template.ssp");
 		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, HIERARCHY.Collection, "(?!.*naked).*",
-				MediaType.APPLICATION_XHTML_XML_TYPE));
+				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
 	}
 
 	protected void deactivate(ComponentContext context) {
