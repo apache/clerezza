@@ -18,32 +18,34 @@ package org.apache.clerezza.platform.shellcustomizer
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import org.apache.clerezza.shell.Shell
 import org.apache.clerezza.shell.ShellCustomizer
-import org.apache.clerezza.rdf.scala.utils.{EasyGraph, Preamble}
+import org.apache.clerezza.rdf.scala.utils.Preamble
 import org.apache.clerezza.rdf.core.MGraph
 import org.apache.clerezza.platform.graphprovider.content._
 
 class PlatformShellCustomizer extends ShellCustomizer {
 
-	private var contentGraphProvider: ContentGraphProvider = null
+  private var contentGraphProvider: ContentGraphProvider = null
 
-	def bindings(e: Shell.Environment): List[(String, String, Any)] = {
-		val bundleContext = e.componentContext.getBundleContext
-		List(("contentGraphPreamble", classOf[Preamble].getName, new Preamble(contentGraphProvider.getContentGraph)),
-				("platformDsl", classOf[PlatformDsl].getName, new PlatformDsl(e.out, bundleContext)))
-	}
-	def imports: List[String] = List("org.apache.clerezza.rdf.scala.utils.EasyGraph._", "contentGraphPreamble._",
-									"platformDsl._", "org.apache.clerezza.rdf.core._",
-									"org.apache.clerezza.rdf.core.access.TcManager",
-									"org.apache.clerezza.rdf.ontologies._",
-									"org.apache.clerezza.rdf.scala.utils._")
+  def bindings(e: Shell.Environment): List[(String, String, Any)] = {
+    val bundleContext = e.componentContext.getBundleContext
+    List(("contentGraphPreamble", classOf[Preamble].getName, new Preamble(contentGraphProvider.getContentGraph)),
+      ("platformDsl", classOf[PlatformDsl].getName, new PlatformDsl(e.out, bundleContext)))
+  }
 
-	protected def bindContentGraphProvider(p: ContentGraphProvider) {
-		contentGraphProvider = p
-	}
+  def imports: List[String] = List("contentGraphPreamble._",
+    "platformDsl._", "org.apache.clerezza.rdf.core._",
+    "org.apache.clerezza.rdf.core.access.TcManager",
+    "org.apache.clerezza.rdf.ontologies._",
+    "org.apache.clerezza.rdf.scala.utils._")
 
-	protected def unbindContentGraphProvider(p: ContentGraphProvider) {
-		contentGraphProvider = null
-	}
+  protected def bindContentGraphProvider(p: ContentGraphProvider) {
+    contentGraphProvider = p
+  }
+
+  protected def unbindContentGraphProvider(p: ContentGraphProvider) {
+    contentGraphProvider = null
+  }
 }
