@@ -19,6 +19,8 @@
 package org.apache.clerezza.platform.style.classic;
 
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 
 import javax.ws.rs.core.MediaType;
@@ -29,6 +31,7 @@ import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
 /**
@@ -42,6 +45,8 @@ public class Style {
 	@Reference
 	private ScalaServerPagesService sspService;
 
+	private Set<ServiceRegistration> serviceRegistrations = new HashSet<ServiceRegistration>();
+
 	/**
 	 * configuration.
 	 *
@@ -49,20 +54,26 @@ public class Style {
 	 */
 	protected void activate(ComponentContext context) {
 		URL templateURL = getClass().getResource("globalmenu-naked.ssp");
-		sspService.registerScalaServerPage(templateURL, RDFS.Resource, "menu",
-				MediaType.APPLICATION_XHTML_XML_TYPE);
+		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, RDFS.Resource, "menu",
+				MediaType.APPLICATION_XHTML_XML_TYPE));
 
 		templateURL = getClass().getResource("rdf-list-template.ssp");
-		sspService.registerScalaServerPage(templateURL, RDF.List, ".*naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE);
+		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, RDF.List, ".*naked",
+				MediaType.APPLICATION_XHTML_XML_TYPE));
 
 		templateURL = getClass().getResource("headed-page-template.ssp");
-		sspService.registerScalaServerPage(templateURL, PLATFORM.HeadedPage, "(?!.*naked).*",
-				MediaType.APPLICATION_XHTML_XML_TYPE);
+		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, PLATFORM.HeadedPage, "(?!.*naked).*",
+				MediaType.APPLICATION_XHTML_XML_TYPE));
 
 		templateURL = getClass().getResource("headed-page-template.ssp");
-		sspService.registerScalaServerPage(templateURL, HIERARCHY.Collection, "(?!.*naked).*",
-				MediaType.APPLICATION_XHTML_XML_TYPE);
+		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, HIERARCHY.Collection, "(?!.*naked).*",
+				MediaType.APPLICATION_XHTML_XML_TYPE));
+	}
+
+	protected void deactivate(ComponentContext context) {
+		for (ServiceRegistration serviceRegistration : serviceRegistrations) {
+			serviceRegistration.unregister();
+		}
 	}
 
 }
