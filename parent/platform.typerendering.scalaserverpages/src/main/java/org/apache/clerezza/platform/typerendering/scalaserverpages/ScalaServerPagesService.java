@@ -56,11 +56,38 @@ public class ScalaServerPagesService {
 		bundleContext = null;
 	}
 
+	/**
+	 * Creates a Renderle-Service registered using the BundleContext of this
+	 * service
+	 *
+	 * @param location
+	 * @param rdfType
+	 * @param modePattern
+	 * @param mediaType
+	 * @return
+	 */
 	public ServiceRegistration registerScalaServerPage(URL location,  UriRef rdfType,
 			String modePattern, MediaType mediaType) {
+		return registerScalaServerPage(location, rdfType, modePattern, mediaType, bundleContext);
+	}
+
+	/**
+	 * Creates a renderlet service registered using the given bundle context. Using
+	 * This method ensures that the passed BundleContext is used to determine the priority
+	 * of the renderlets.
+	 *
+	 * @param location
+	 * @param rdfType
+	 * @param modePattern
+	 * @param mediaType
+	 * @param callerBundleContext
+	 * @return
+	 */
+	public ServiceRegistration registerScalaServerPage(URL location,  UriRef rdfType,
+			String modePattern, MediaType mediaType, BundleContext callerBundleContext) {
 		TypeRenderlet sspTypeRenderlet = new SspTypeRenderlet(location, rdfType,
 				modePattern, mediaType, scalaCompilerService);
-		return bundleContext.registerService(TypeRenderlet.class.getName(),
+		return callerBundleContext.registerService(TypeRenderlet.class.getName(),
 				sspTypeRenderlet, null);
 	}
 
