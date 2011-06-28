@@ -1,0 +1,16 @@
+resultDocModifier.setTitle("Backup and restore");
+
+<div class="tx-content">
+	<p>
+		<form method="get" action="/admin/backup/download">
+    Retrieve a backup of all graphs. WARNING: while creating the backup parts of clerezza migh be irresponsive.
+			<input type="submit" value="Retrieve Backup" />
+		</form>
+	</p>
+	<p>
+		<form method="post" action="/admin/backup/restore" enctype="multipart/form-data">
+			<input type="file" name="file" />
+			<input type="submit" value="Restore from backup" />
+		</form>
+	</p>
+</div>
