@@ -20,5 +20,6 @@ class Activator extends ActivationHelper {
 	registerRenderlet(new GlobalMenuRenderlet)
 	registerRenderlet(new HeadedPageRenderlet)
 	registerRenderlet(new CollectionHeader)
+	registerRenderlet(new RdfListRenderlet)
 	
 }
