@@ -71,18 +71,21 @@ resultDocModifier.addScriptReference("/scripts/status-message.js");
 				<div class="login">
 						{
 							def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#"+s)
-							val username = (context/platform("user")/platform("userName")*)
-							if((username).equals("anonymous")) {
+							val userName = context/platform("user")/platform("userName")*
+							val displayName = if ((context/platform("user")/FOAF.name).length == 0) {
+										userName
+									} else {
+										context/platform("user")/FOAF.name*
+									}
+							if((userName).equals("anonymous")) {
 								<span>
-									<a href={"/login?referer=" + java.net.URLEncoder.encode(
-												arguments.requestProperties.getUriInfo.getRequestUri.toString, "utf-8")}
-										id="tx-login-button">login</a>
+									<a href="#" id="tx-login-button">login</a>
 								</span>
 							} else {
-								<span><a href={"/user/" + username + "/control-panel"}>{username}</a>|<a href="/logout">logout</a></span>
+								<span><a href={"/user/" + userName + "/control-panel"}>{displayName}</a>|<a href="/logout">logout</a></span>
 							}
 						}
-			</div>
+				</div>
 				<div class="actions" id="tx-contextual-buttons">
 						<ol id="tx-contextual-buttons-ol">
 						</ol>
