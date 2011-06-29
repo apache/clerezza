@@ -50,13 +50,12 @@ import java.security.PrivilegedAction
 import java.security.interfaces.RSAPublicKey
 import org.apache.clerezza.ssl.keygen.KeygenService
 import java.net.URI
-import org.apache.clerezza.rdf.scala.utils.{RichGraphNode, EasyGraphNode, EasyGraph}
 import org.apache.clerezza.rdf.core.access.security.TcPermission
 import org.apache.clerezza.rdf.ontologies._
 import org.slf4j.scala.Logging
 import javax.security.auth.Subject
 import org.apache.clerezza.platform.users.{WebIdInfo, WebIdGraphsService}
-
+import org.apache.clerezza.rdf.scala.utils._
 
 object ProfilePanel {
 	val webIdTemplate = classOf[ProfilePanel].getAnnotation(classOf[Path]).value+"#me"
@@ -84,6 +83,7 @@ class ProfilePanel extends Logging {
 
 	import collection.JavaConversions._
 	import EasyGraph._
+	import EzStyleChoice.unicode
 
 
 	@GET
@@ -96,11 +96,11 @@ class ProfilePanel extends Logging {
 	}
 
 	//todo: there is a bit of repetition in the graphs, and it is not clear why these relations should not go straight into the DB. What should, what should not?
-	private def getPersonalProfile(userName: String, info: UriInfo): EasyGraphNode = {
+	private def getPersonalProfile(userName: String, info: UriInfo): EzGraphNode = {
 		val profileDocUri = getSuggestedPPDUri(userName)
 
-		val profile = AccessController.doPrivileged(new PrivilegedAction[EasyGraphNode] {
-			def run: EasyGraphNode = {
+		val profile = AccessController.doPrivileged(new PrivilegedAction[EzGraphNodeU] {
+			def run: EzGraphNodeU = {
 				val userInSysGraph = userManager.getUserInSystemGraph(userName)
 				val user = userInSysGraph.getNode
 				val profile = userInSysGraph.getNode match {
@@ -115,7 +115,7 @@ class ProfilePanel extends Logging {
 					}
 					case webid: UriRef => {
 						var webIDInfo = webIdGraphsService.getWebIdInfo(webid)
-						var res = new EasyGraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.localPublicUserData))
+						var res = EzGraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.localPublicUserData))
 						(res ⟝ CONTROLPANEL.isLocalProfile ⟶ webIDInfo.isLocal
 							⟝ FOAF.primaryTopic ⟶ webid)
 						if (webIDInfo.isLocal) {

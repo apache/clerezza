@@ -99,7 +99,7 @@ class EzLiteral(lexicalForm: String) extends TypedLiteral {
 	override def toString() = lexicalForm
 }
 
-abstract class EzStyle[T<:EasyGraphNode]() {
+abstract class EzStyle[T<:EzGraphNode]() {
 	def preferred(ref: NonLiteral, tc: TripleCollection):T
 }
 
@@ -144,12 +144,12 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 		if (graph ne other) graph.addAll(other)
 	}
 
-	def bnode[T<: EasyGraphNode](implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
+	def bnode[T<: EzGraphNode](implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
 		apply(new BNode)(writingStyle)
 	}
 
 	val namedBnodes = new HashMap[String,BNode]
-	def b_[T<: EasyGraphNode](name: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
+	def b_[T<: EzGraphNode](name: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
 		namedBnodes.get(name) match {
 			case Some(bnode) => writingStyle.preferred(bnode,this)
 			case None => {
@@ -160,11 +160,11 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 		}
 	}
 
-	def u[T<: EasyGraphNode](url: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
+	def u[T<: EzGraphNode](url: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
 		apply(new UriRef(url))(writingStyle)
 	}
 
-	def apply[T<: EasyGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
+	def apply[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
 	 	writingStyle.preferred(subj,this)
 	}
 
@@ -195,7 +195,7 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 }
 
 /**
- * Unicode arrow notation for EasyGraphNode. Very clean, short and efficient, but unicode values may not
+ * Unicode arrow notation for EzGraphNode. Very clean, short and efficient, but unicode values may not
  * be available everywhere yet.
  *
  * Because of operator binding rules all the mathematical operators  bind the strongest. This means that
@@ -203,10 +203,10 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
  * bind more tightly.
  *
  *
- * @prefix graph: should this be an MGraph, since the EasyGraphNode is really designed for editing
+ * @prefix graph: should this be an MGraph, since the EzGraphNode is really designed for editing
  *
  */
-class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNode(ref, graph) {
+class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode(ref, graph) {
 	//
 	// symbolic notation
 	//
@@ -258,7 +258,7 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNo
 		 */
 		def ⟶*[T <: Resource](objs: Iterable[T]) = addMany(objs)
 
-		def ⟶(sub: EasyGraphNode) = addEG(sub)
+		def ⟶(sub: EzGraphNode) = addEG(sub)
 
 	}
 
@@ -266,7 +266,7 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNo
 }
 
 /**
- * Ascii Arrow notation for EasyGraphNode. This is easy to write using an ascii keyboard but because
+ * Ascii Arrow notation for EzGraphNode. This is easy to write using an ascii keyboard but because
  * of operator precedence rules, some operators will have higher and some lower precedence to these
  * meaning that one has to keep in mind these rules:
  *
@@ -294,7 +294,7 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNo
     ending in a colon ‘:’ are right-associative. All other operators are leftassociative.
  </blockquote>
  */
-class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNode(ref, graph) {
+class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode(ref, graph) {
 
 	type T_Pred = PredicateA
 	type T_InvP = InversePredicateA
@@ -327,7 +327,7 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNo
 		 */
 		def -->(list: List[Resource]) = addList(list)
 
-		def -->(sub: EasyGraphNode) = addEG(sub)
+		def -->(sub: EzGraphNode) = addEG(sub)
 
 		/**
 		 * Add one relation for each member of the iterable collection
@@ -340,19 +340,19 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNo
 	class InversePredicateA(ref: UriRef) extends InversePredicate(ref) {
 		def --(subj: NonLiteral) = add(subj)
 		def --(subj: String) = add(new UriRef(subj))
-		def --(subj: EasyGraphNode) = addGN(subj)
+		def --(subj: EzGraphNode) = addGN(subj)
 		// since we can only have inverses from non literals (howto deal with bndoes?)
 	}
 
 }
 
 /**
- * English language looking Notation for EasyGraphNode. This feels gives somewhat awkward
+ * English language looking Notation for EzGraphNode. This feels gives somewhat awkward
  * english, but the operator binding priorities for ascii named operators is the weakest, which
  * means that one needs very few parenthesis when writing out the code as all other operators bind
  * more tightly.
  */
-class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNode(ref, graph) {
+class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode(ref, graph) {
 
 	type T_Pred = PredicateEn
 	type T_InvP = InversePredicateEn
@@ -376,7 +376,7 @@ class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EasyGraphN
 
 		def of(subj: NonLiteral) = add(subj)
 		def of(subj: String) = add(new UriRef(subj))
-		def of(subj: EasyGraphNode) = addGN(subj)
+		def of(subj: EzGraphNode) = addGN(subj)
 	}
 
 	class PredicateEn(rel: UriRef) extends Predicate(rel) {
@@ -397,30 +397,36 @@ class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EasyGraphN
 		 */
 		def toEach[T <: Resource](objs: Iterable[T]) = addMany(objs)
 
-		def to(sub: EasyGraphNode) = addEG(sub)
+		def to(sub: EzGraphNode) = addEG(sub)
 
 	}
 
 }
 
+object EzGraphNode {
+	def apply[T<:EzGraphNode](ref: NonLiteral, graph: TripleCollection)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
+	 	writingStyle.preferred(ref,graph)
+	}
+}
+
 /**
- * EasyGraphNode. Create instances from an EasyGraph object. Differnt notations implementations can be used.
+ * EzGraphNode. Create instances from an EasyGraph object. Differnt notations implementations can be used.
  */
-abstract class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends GraphNode(ref, graph) {
+abstract class EzGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends GraphNode(ref, graph) {
 
 //	lazy val easyGraph = graph match {
 //		case eg: EasyGraph => eg
 //		case other: TripleCollection => new EasyGraph(graph)
 //	}
 
-	def +(sub: EasyGraphNode) = {
+	def +(sub: EzGraphNode) = {
 		if (graph ne sub.graph) graph.addAll(sub.graph)
 		this
 	}
 
 	type T_Pred <: Predicate
 	type T_InvP <: InversePredicate
-	type T_EzGN <: EasyGraphNode
+	type T_EzGN <: EzGraphNode
 
 	protected def predicate(rel: UriRef): T_Pred
 	protected def inverse(rel: UriRef): T_InvP
@@ -433,7 +439,7 @@ abstract class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) e
 	def make(ref: NonLiteral, graph: TripleCollection): T_EzGN
 
 	/*
-	 * create an EasyGraphNode from this one where the backing graph is protected from writes by a new
+	 * create an EzGraphNode from this one where the backing graph is protected from writes by a new
 	 * SimpleGraph.
 	 */
 	def protect(): T_EzGN = make(ref, new UnionMGraph(new SimpleMGraph(), graph))
@@ -444,14 +450,14 @@ abstract class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) e
 
 	abstract class InversePredicate(rel: UriRef) {
 
-		protected def addGN(subj: EasyGraphNode) = {
-			EasyGraphNode.this + subj
+		protected def addGN(subj: EzGraphNode) = {
+			EzGraphNode.this + subj
 			add(subj.ref)
 		}
 
 		protected def add(subj: NonLiteral) = {
 			graph.add(new TripleImpl(subj, rel, ref))
-			EasyGraphNode.this.asInstanceOf[T_EzGN]
+			EzGraphNode.this.asInstanceOf[T_EzGN]
 		}
 	}
 
@@ -459,7 +465,7 @@ abstract class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) e
 
 		protected def add(obj: Resource): T_EzGN = {
 			addTriple(obj)
-			EasyGraphNode.this.asInstanceOf[T_EzGN]
+			EzGraphNode.this.asInstanceOf[T_EzGN]
 		}
 
 		protected def addTriple(obj: Resource) {
@@ -468,11 +474,11 @@ abstract class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) e
 
 		protected def addMany[T<:Resource](uris: Iterable[T]): T_EzGN = {
 			for (u <- uris) addTriple(u)
-			EasyGraphNode.this.asInstanceOf[T_EzGN]
+			EzGraphNode.this.asInstanceOf[T_EzGN]
 		}
 
-		protected def addEG(sub: EasyGraphNode): T_EzGN = {
-			EasyGraphNode.this + sub
+		protected def addEG(sub: EzGraphNode): T_EzGN = {
+			EzGraphNode.this + sub
 			add(sub.ref)
 		}
 
@@ -507,7 +513,7 @@ abstract class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) e
 		   val tripleLst = toTriples(headNode,list);
 			graph.add(new TripleImpl(headNode,RDF.`type`,RDF.List))
 			graph.addAll(collection.JavaConversions.asJavaCollection(tripleLst))
-			EasyGraphNode.this.asInstanceOf[T_EzGN]
+			EzGraphNode.this.asInstanceOf[T_EzGN]
 		}
 
 	}
