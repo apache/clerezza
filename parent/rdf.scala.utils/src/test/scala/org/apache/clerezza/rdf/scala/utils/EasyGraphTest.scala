@@ -137,13 +137,13 @@ class EasyGraphTest {
 
 		val ez = new EasyGraph()
 		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
-		(ez.u(retoUri) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
+		(ez.u(retoUri)(EzStyleChoice.ascii) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez.getGraph)
 
 		val ez2 = new EasyGraph()
-		(ez2.u(retoUri) ⟝  FOAF.knows ⟶*  Set(danbriUri.uri,henryUri.uri))
+		(ez2.u(retoUri)(EzStyleChoice.unicode) ⟝  FOAF.knows ⟶*  Set(danbriUri.uri,henryUri.uri))
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez2.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez2.getGraph)
@@ -194,7 +194,6 @@ class EasyGraphTest {
 
 		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
-
 		val ez = new EasyGraph()
 
 		val res : EasyGraphNode = (ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
@@ -225,10 +224,11 @@ class EasyGraphTest {
 	def usingSymbolicArrows {
 		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
-		 val ez = new EasyGraph()
+		val ez = new EasyGraph()
+		import EzStyleChoice.unicode //in IntelliJ this is needed for the moment to remove the red lines
 		 // example using arrows
 		 (
-		   ez.bnode("reto") ∈ FOAF.Person
+		   ez.b_("reto") ∈ FOAF.Person
 			 ⟝ FOAF.name ⟶ "Reto Bachman-Gmür".lang(rm)
 			 ⟝ FOAF.title ⟶ "Mr"
 			 ⟝ FOAF.currentProject ⟶ "http://clerezza.org/".uri
@@ -241,18 +241,18 @@ class EasyGraphTest {
 			                 ⟝ modulus ⟶ 65537
 			                 ⟝ public_exponent ⟶ (bblfishModulus^^hex) // brackets needed due to precedence
 			          )
-			          ⟝ FOAF.knows ⟶* Set(ez.bnode("reto").ref,ez.bnode("danny").ref)
+			          ⟝ FOAF.knows ⟶* Set(ez.b_("reto").ref,ez.b_("danny").ref)
 			 )
 			 ⟝ FOAF.knows ⟶ (
-			     ez.bnode("danny") ∈ FOAF.Person
+			     ez.b_("danny") ∈ FOAF.Person
 			          ⟝ FOAF.name ⟶ "Danny Ayers".lang(en)
 		             ⟝ FOAF.knows ⟶ "http://bblfish.net/#hjs".uri //knows
-					    ⟝ FOAF.knows ⟶ ez.bnode("reto")
+					    ⟝ FOAF.knows ⟶ ez.b_("reto")
 			 )
 		 )
 		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
-		ez.bnode("danny") ⟝  FOAF.name ⟶  "George"
+		ez.b_("danny") ⟝  FOAF.name ⟶  "George"
 		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal", tinyGraph,ez.getGraph)
 	}
 
@@ -260,10 +260,11 @@ class EasyGraphTest {
 	def usingAsciiArrows {
 		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
+		import EzStyleChoice.ascii
 		 val ez = new EasyGraph()
 		 // example using arrows
 		 (
-		   ez.bnode("reto").a(FOAF.Person)
+		   ez.b_("reto").a(FOAF.Person)
 			 -- FOAF.name --> "Reto Bachman-Gmür".lang(rm)
 			 -- FOAF.title --> "Mr"
 			 -- FOAF.currentProject --> "http://clerezza.org/".uri
@@ -276,17 +277,17 @@ class EasyGraphTest {
 			                       -- modulus --> 65537
 			                       -- public_exponent --> (bblfishModulus^^hex) // brackets needed due to precedence
 			                   )
-			          -- FOAF.knows -->> List(ez.bnode("reto").ref,ez.bnode("danny").ref)
+			          -- FOAF.knows -->> List(ez.b_("reto").ref,ez.b_("danny").ref)
 			 )
-			 -- FOAF.knows --> (ez.bnode("danny").a(FOAF.Person)
+			 -- FOAF.knows --> (ez.b_("danny").a(FOAF.Person)
 			          -- FOAF.name --> "Danny Ayers".lang(en)
 		             -- FOAF.knows --> "http://bblfish.net/#hjs".uri //knows
-					    -- FOAF.knows --> ez.bnode("reto")
+					    -- FOAF.knows --> ez.b_("reto")
 			 )
 		 )
 		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
-		ez.bnode("danny") -- FOAF.name --> "George"
+		ez.b_("danny") -- FOAF.name --> "George"
 		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,ez.getGraph)
 
 	}
@@ -296,10 +297,12 @@ class EasyGraphTest {
 	def usingWordOperators {
 		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
+		import EzStyleChoice.english
+
 		 val ez = new EasyGraph()
 		 // example using arrows
 		 (
-		   ez.bnode("reto") a FOAF.Person
+		   ez.b_("reto").asInstanceOf[EzGraphNodeEn] a FOAF.Person
 			 has FOAF.name to "Reto Bachman-Gmür".lang(rm)
 			 has FOAF.title to "Mr"
 			 has FOAF.currentProject to "http://clerezza.org/".uri
@@ -312,17 +315,17 @@ class EasyGraphTest {
 			                       has modulus to 65537
 			                       has public_exponent to bblfishModulus^^hex // brackets needed due to precedence
 			                   )
-			          has FOAF.knows toEach List(ez.bnode("reto").ref,ez.bnode("danny").ref)
+			          has FOAF.knows toEach List(ez.b_("reto").ref,ez.b_("danny").ref)
 			 )
-			 has FOAF.knows to ( ez.bnode("danny") a FOAF.Person
+			 has FOAF.knows to ( ez.b_("danny") a FOAF.Person
 			          has FOAF.name to "Danny Ayers".lang(en)
 		             has FOAF.knows to "http://bblfish.net/#hjs".uri //knows
-					    has FOAF.knows to ez.bnode("reto")
+					    has FOAF.knows to ez.b_("reto")
 			 )
 		 )
 		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
-		ez.bnode("danny") has FOAF.name to "George"
+		ez.b_("danny") has FOAF.name to "George"
 		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,ez.getGraph)
 
 	}
