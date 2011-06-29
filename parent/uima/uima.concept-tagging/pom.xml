@@ -37,7 +37,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
-      <artifactId>alchemy-annotator-osgi</artifactId>
+      <artifactId>AlchemyAPIAnnotator-osgi</artifactId>
       <version>2.3.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
