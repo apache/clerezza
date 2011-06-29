@@ -25,7 +25,6 @@ import org.apache.clerezza.rdf.core.access.security.TcPermission
 import org.apache.clerezza.platform.Constants
 import java.security.{PrivilegedAction, AccessController}
 import javax.ws.rs.core.{Response, Context, UriInfo}
-import org.apache.clerezza.rdf.scala.utils.{EasyGraphNode, EasyGraph}
 import java.net._
 import org.slf4j.scala.Logger
 import javax.ws.rs._
@@ -35,6 +34,7 @@ import org.apache.clerezza.rdf.ontologies.{SIOC, PLATFORM, RDF}
 import org.apache.clerezza.rdf.core.{UriRef, MGraph}
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
+import org.apache.clerezza.rdf.scala.utils.{EzGraphNodeU, EzStyleChoice, EzGraphNode, EasyGraph}
 
 object PingBack {
 	private val log: Logger = Logger(classOf[PingBack])
@@ -88,6 +88,7 @@ object PingBack {
 class PingBack {
 
 	import PingBack._
+	import EzStyleChoice.unicode
 
 	protected def activate(componentContext: ComponentContext): Unit = {
 	}
@@ -98,7 +99,7 @@ class PingBack {
 	 * @param id: the user id
 	 * @param uriInfo jax-rs info
 	 */
-	def  pingCollection(id: String, uriInfo: UriInfo): EasyGraphNode = {
+	def  pingCollection(id: String, uriInfo: UriInfo): EzGraphNodeU = {
 		val pingRef = new UriRef(pingCollUri(id, uriInfo))
 		val pingCollG: EasyGraph = pingColl(pingRef)
 		pingCollG(pingRef)
@@ -310,7 +311,7 @@ class PingBack {
 	@Path("{item}")
 	def viewPing(@Context uriInfo: UriInfo,
 					 @PathParam("id") id: String,
-					 @PathParam("item") item: String): EasyGraphNode = {
+					 @PathParam("item") item: String): EzGraphNode = {
 
 		//ITS the wrong ping collection!!!
 
