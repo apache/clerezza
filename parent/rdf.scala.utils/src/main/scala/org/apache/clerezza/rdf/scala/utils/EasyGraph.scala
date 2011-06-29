@@ -28,7 +28,6 @@ import collection.mutable.{ListBuffer, HashMap}
 import org.apache.clerezza.rdf.utils.{GraphNode, UnionMGraph}
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.core.impl._
-import sun.security.krb5.internal.EncASRepPart
 
 object EasyGraph {
 
@@ -67,7 +66,7 @@ object EasyGraph {
 }
 
 /**
- * An Easy Literal, contains functions for mapping literals to other literals, ie from String literals to
+ * An easy Literal implementations, contains functions for mapping literals to other literals, ie from String literals to
  * typed literals.
  */
 class EzLiteral(lexicalForm: String) extends TypedLiteral {
@@ -167,7 +166,6 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 
 	def apply[T<: EasyGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
 	 	writingStyle.preferred(subj,this)
-//		new EasyGraphNode(subj, this)
 	}
 
 	/**
@@ -193,11 +191,21 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 		graph
 	}
 
-	//note one could have an apply for a Literal that would return a InversePredicate
-	//but that would require restructuring EasyGraphNode so that one can have an EasyGraphNode
-	//with a missing ref, or perhaps a sublcass of EasyGraphnode that only has the <- operator available
+
 }
 
+/**
+ * Unicode arrow notation for EasyGraphNode. Very clean, short and efficient, but unicode values may not
+ * be available everywhere yet.
+ *
+ * Because of operator binding rules all the mathematical operators  bind the strongest. This means that
+ * anything outside of these operators should be put into brackets or use dot notation if you wish them to
+ * bind more tightly.
+ *
+ *
+ * @prefix graph: should this be an MGraph, since the EasyGraphNode is really designed for editing
+ *
+ */
 class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNode(ref, graph) {
 	//
 	// symbolic notation
@@ -257,7 +265,35 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNo
 
 }
 
+/**
+ * Ascii Arrow notation for EasyGraphNode. This is easy to write using an ascii keyboard but because
+ * of operator precedence rules, some operators will have higher and some lower precedence to these
+ * meaning that one has to keep in mind these rules:
+ *
+ * <blockquote>
+      The precedence of an infix operator is determined by the operator’s first character.
+      Characters are listed below in increasing order of precedence, with characters on
+      the same line having the same precedence.
+              (all letters)
+               |
+               ^
+              &
+              < >
+              = !
+              :
+             + -
+             * / %
+           (all other special characters)
 
+    That is, operators starting with a letter have lowest precedence, followed by operators
+    starting with ‘|’, etc.
+    There’s one exception to this rule, which concerns assignment operators(§6.12.4).
+    The precedence of an assigment operator is the same as the one of simple assignment
+    (=). That is, it is lower than the precedence of any other operator.
+    The associativity of an operator is determined by the operator’s last character. Operators
+    ending in a colon ‘:’ are right-associative. All other operators are leftassociative.
+ </blockquote>
+ */
 class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNode(ref, graph) {
 
 	type T_Pred = PredicateA
@@ -310,6 +346,12 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNo
 
 }
 
+/**
+ * English language looking Notation for EasyGraphNode. This feels gives somewhat awkward
+ * english, but the operator binding priorities for ascii named operators is the weakest, which
+ * means that one needs very few parenthesis when writing out the code as all other operators bind
+ * more tightly.
+ */
 class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EasyGraphNode(ref, graph) {
 
 	type T_Pred = PredicateEn
@@ -319,14 +361,6 @@ class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EasyGraphN
 	override def make(ref: NonLiteral, graph: TripleCollection) = new EzGraphNodeEn(ref,graph)
 	override def predicate(rel: UriRef) = new PredicateEn(rel)
 	override def inverse(rel: UriRef) = new InversePredicateEn(rel)
-
-
-
-	// does not worked as hoped, and does not look that good either
-	//	def hasQ(yes: Boolean, rel: UriRef )(func: Predicate => EasyGraphNode): EasyGraphNode =
-	//		if (yes) func(has(rel))
-	//		else this
-
 
 
 	def has(rel: UriRef) = predicate(rel)
@@ -370,13 +404,7 @@ class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EasyGraphN
 }
 
 /**
- *
- * Because of operator binding rules all the mathematical operators should
- * be used together as they bind at the same strength. Since they bind strongest
- * other operators will need to be strengthened with parenthesis, such as when adding strings
- *
- * @prefix graph: should this be an MGraph, since the EasyGraphNode is really designed for editing
- *
+ * EasyGraphNode. Create instances from an EasyGraph object. Differnt notations implementations can be used.
  */
 abstract class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends GraphNode(ref, graph) {
 
@@ -428,7 +456,6 @@ abstract class EasyGraphNode(val ref: NonLiteral, val graph: TripleCollection) e
 	}
 
 	abstract class Predicate(rel: UriRef) {
-
 
 		protected def add(obj: Resource): T_EzGN = {
 			addTriple(obj)
