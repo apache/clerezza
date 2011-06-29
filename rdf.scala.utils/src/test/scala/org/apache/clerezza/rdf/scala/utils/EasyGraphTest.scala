@@ -196,7 +196,7 @@ class EasyGraphTest {
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 		val ez = new EasyGraph()
 
-		val res : EasyGraphNode = (ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
+		val res : EzGraphNode = (ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
 
 		Assert.assertEquals("the two graphs must be equal",gr.getGraph,ez.getGraph)
 
