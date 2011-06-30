@@ -80,11 +80,20 @@ class EzLiteral(lexicalForm: String) extends TypedLiteral {
 	def lang(lang: Lang) = new PlainLiteralImpl(lexicalForm, lang)
 	def lang(lang: Symbol) = new PlainLiteralImpl(lexicalForm, new Language(lang.name)) //todo lookup in LangId instead
 
+	/**
+	 * Map to a Typed Literal of given type
+	 */
 	def ^^(typ: UriRef) = new TypedLiteralImpl(lexicalForm, typ)
 
+	/**
+	 * Map to a URI of given lexical form
+	 */
 	def uri = new UriRef(lexicalForm)
 
-	def getLexicalForm = lexicalForm
+	/**
+	 * get the pure string
+	 */
+	override def getLexicalForm = lexicalForm
 
 	override def equals(other: Any) = {
       other match {
@@ -97,13 +106,23 @@ class EzLiteral(lexicalForm: String) extends TypedLiteral {
 
 	def getDataType = XSD.string
 
+	/**
+	 * String literals are just strings
+	 * See RDF Semantics rules xsd 1a and xsd 1b in http://www.w3.org/TR/rdf-mt/
+	 */
 	override def toString() = lexicalForm
 }
 
+/**
+ * A way to select one's preferred writing style
+ */
 abstract class EzStyle[T<:EzGraphNode]() {
 	def preferred(ref: NonLiteral, tc: TripleCollection):T
 }
 
+/**
+ * import your preferred writing styles into your code
+ */
 object EzStyleChoice {
 	implicit val unicode = new EzStyle[EzGraphNodeU](){
 		override def preferred(ref: NonLiteral, tc: TripleCollection): EzGraphNodeU = new EzGraphNodeU(ref,tc)
@@ -130,15 +149,25 @@ class EzGraph(val graph: TripleCollection) {
 
 	def this() = this (new SimpleMGraph())
 
+	/**
+	 * Add all triples into the other graph to this one
+	 */
 	def +=(other: Graph) = {
 		if (graph ne other) graph.addAll(other)
 	}
 
+	/**
+	 * create a new bnode based EzGraphNode with the preferred writing style
+	 */
 	def bnode[T<: EzGraphNode](implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
 		node(new BNode)(writingStyle)
 	}
 
 	val namedBnodes = new HashMap[String,BNode]
+
+	/**
+	 * create a new named bnode based EzGraphNode with the preferred writing style
+	 */
 	def b_[T<: EzGraphNode](name: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
 		namedBnodes.get(name) match {
 			case Some(bnode) => writingStyle.preferred(bnode,graph)
@@ -150,10 +179,17 @@ class EzGraph(val graph: TripleCollection) {
 		}
 	}
 
+	/**
+	 * create a new url based EzGraphNode with the preferred writing style
+	 */
 	def u[T<: EzGraphNode](url: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
 		node(new UriRef(url))(writingStyle)
 	}
 
+	/**
+	 * create a new Resource based EzGraphNode with the preferred writing style.
+	 * The EzGraphNode will contain the graph that this EzGraph is built on and point to the given subj
+	 */
 	def node[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
 	 	writingStyle.preferred(subj,graph)
 	}
@@ -210,37 +246,60 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 	override def predicate(rel: UriRef) = new PredicateU(rel)
 	override def inverse(rel: UriRef) = new InversePredicateU(rel)
 
-
+	/**
+	 * relate the subject via the given relation to....
+	 */
 	def ⟝(rel: UriRef) = predicate(rel)
 
+	/**
+	 * relate the subject via the given relation to....
+	 */
 	def ⟝(rel: String) = predicate(new UriRef(rel))
 
-	/* For inverse relationships */
+	/**
+	 * relate the subject via the inverse of the given relation to....
+	 */
 	def ⟵(rel: UriRef) = inverse(rel)
 
-	//
-	// symbolic notation
-	//
-	// (shorter and more predictable precedence rules - they are always the weakest, and so very few brakets are need
-	// when symbolic operators are used. But sometimes this notation is grammatically awkward)
-
+	/**
+	 * the subject is a member of the given class
+	 */
 	def ∈(rdfclass: UriRef) = a(rdfclass)
 
+
 	class InversePredicateU(rel: UriRef) extends InversePredicate(rel) {
+		/**
+		 * ...to the following non literal
+		 */
 		def ⟞(subj: NonLiteral) = add(subj)
 
-		def ⟞(subj: String) = add(new UriRef(subj))
+		/**
+		 * ...to the following resource (given as a string)
+		 */
+		def ⟞(uri: String) = add(new UriRef(uri))
 
+		/**
+		 * ...to the following EzGraphNode
+		 * (useful for opening a new parenthesis and specifying other things in more detail
+		 */
 		def ⟞(sub: EzGraphNodeU)  = addGN(sub)
 	}
 
 	class PredicateU(rel: UriRef) extends Predicate(rel) {
 
-
+		/**
+		 * ...to the following literal string
+		 */
 		def ⟶(obj: String) = add(new EzLiteral(obj))
 
+		/**
+		 * ...to the following resource
+		 */
 		def ⟶(obj: Resource) = add(obj)
 
+		/**
+		 * ...to the following list as an RDF List
+		 */
 		def ⟶(list: List[Resource]) = addList(list)
 
 		/**
@@ -248,6 +307,9 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 		 */
 		def ⟶*[T <: Resource](objs: Iterable[T]) = addMany(objs)
 
+		/**
+		 * ...to the EzGraphNode, which is useful for opening a parenthesis.
+		 */
 		def ⟶(sub: EzGraphNode) = addEG(sub)
 
 	}
@@ -290,25 +352,35 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 	type T_InvP = InversePredicateA
 	type T_EzGN = EzGraphNodeA
 
-	override def make(ref: NonLiteral, graph: TripleCollection) = new EzGraphNodeA(ref,graph)
-	override def predicate(rel: UriRef) = new PredicateA(rel)
-	override def inverse(rel: UriRef) = new InversePredicateA(rel)
+	override protected def  make(ref: NonLiteral, graph: TripleCollection) = new EzGraphNodeA(ref,graph)
+	override protected def  predicate(rel: UriRef) = new PredicateA(rel)
+	override protected def  inverse(rel: UriRef) = new InversePredicateA(rel)
 
+	/**
+	 * relate the subject via the given relation to....
+	 */
 	def --(rel: UriRef) = predicate(rel)
 
+	/**
+	 * relate the subject via the given (expressed as string) relation to....
+	 */
 	def --(rel: String) = predicate(new UriRef(rel))
 
 	/**
-	 * we Can't have <-- as that messes up the balance of precedence
+	 * relate the subject via the inverse of the given relation to....
+	 * note: we can't have <-- as that messes up the balance of precedence
 	 */
 	def -<-(rel: UriRef) = inverse(rel)
 
 	class PredicateA(rel: UriRef) extends Predicate(rel) {
-		//
-		// methods that do the work
-		//
+		/**
+		 * ...to the following non resource
+		 */
 		def -->(obj: Resource) = add(obj)
 
+		/**
+		 * ...to the following string literal
+		 */
 		def -->(lit: String) = add(new EzLiteral(lit))
 
 		/**
@@ -317,6 +389,9 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 		 */
 		def -->(list: List[Resource]) = addList(list)
 
+		/**
+		 * ...to the EzGraphNode, which is useful for opening a parenthesis.
+		 */
 		def -->(sub: EzGraphNode) = addEG(sub)
 
 		/**
@@ -328,8 +403,19 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 	}
 
 	class InversePredicateA(ref: UriRef) extends InversePredicate(ref) {
+		/**
+		 * ...to the following non literal
+		 */
 		def --(subj: NonLiteral) = add(subj)
+		/**
+		 * ...to the following resource (given as a string)
+		 */
 		def --(subj: String) = add(new UriRef(subj))
+
+		/**
+		 * ...to the following EzGraphNode
+		 * (useful for opening a new parenthesis and specifying other things in more detail
+		 */
 		def --(subj: EzGraphNode) = addGN(subj)
 		// since we can only have inverses from non literals (howto deal with bndoes?)
 	}
@@ -348,45 +434,70 @@ class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EzGraphNod
 	type T_InvP = InversePredicateEn
 	type T_EzGN = EzGraphNodeEn
 
-	override def make(ref: NonLiteral, graph: TripleCollection) = new EzGraphNodeEn(ref,graph)
-	override def predicate(rel: UriRef) = new PredicateEn(rel)
-	override def inverse(rel: UriRef) = new InversePredicateEn(rel)
+	override protected def make(ref: NonLiteral, graph: TripleCollection) = new EzGraphNodeEn(ref,graph)
+	override protected def predicate(rel: UriRef) = new PredicateEn(rel)
+	override protected def inverse(rel: UriRef) = new InversePredicateEn(rel)
 
-
+	/**
+	 * the subject has the given relation to....
+	 */
 	def has(rel: UriRef) = predicate(rel)
 
+	/**
+	 * the subject has the given relation (specified as string) to....
+	 */
 	def has(rel: String) = predicate(new UriRef(rel))
 
-	/* For inverse relationships */
+	/**
+	 * the subject is the inverse relation of ...
+	 */
 	def is(rel: UriRef) = inverse(rel)
 
 	class InversePredicateEn(rel: UriRef) extends InversePredicate(rel) {
 
 
-
+		/**
+		  * ...the following non literal
+		  */
 		def of(subj: NonLiteral) = add(subj)
+
+		/**
+		  * ...the following resource (as String)
+		  */
 		def of(subj: String) = add(new UriRef(subj))
+
+		/**
+		  * ...the following EzGraphNode - useful for opening a new bracket
+		  */
 		def of(subj: EzGraphNode) = addGN(subj)
 	}
 
 	class PredicateEn(rel: UriRef) extends Predicate(rel) {
 
 
-		//
-		// text notation
-		//
-
+		/**
+		 * ...to the following literal string
+		 */
 		def to(lit: String) = add(new EzLiteral(lit))
 
+		/**
+		 * ...to the following resource
+		 */
 		def to(obj: Resource) = add(obj)
 
+		/**
+		 * ...to the following RDF list
+		 */
 		def to(list: List[Resource]) = addList(list)
 
 		/**
-		 * Add one relation for each member of the iterable collection
+		 * ... each of the members of the iterable collection
 		 */
 		def toEach[T <: Resource](objs: Iterable[T]) = addMany(objs)
 
+		/**
+		 * ...to the EzGraphNode, which is useful for opening a parenthesis.
+		 */
 		def to(sub: EzGraphNode) = addEG(sub)
 
 	}
@@ -394,6 +505,9 @@ class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EzGraphNod
 }
 
 object EzGraphNode {
+	/**
+	 * create a new EzGraphNode in the preferred writing style
+	 */
 	def apply[T<:EzGraphNode](ref: NonLiteral, graph: TripleCollection)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
 	 	writingStyle.preferred(ref,graph)
 	}
@@ -420,13 +534,13 @@ abstract class EzGraphNode(val ref: NonLiteral, val graph: TripleCollection) ext
 
 	protected def predicate(rel: UriRef): T_Pred
 	protected def inverse(rel: UriRef): T_InvP
+	protected def make(ref: NonLiteral, graph: TripleCollection): T_EzGN
 
+	/** is an instance of the given class */
 	def a(rdfclass: UriRef): T_EzGN = {
 		graph.add(new TripleImpl(ref, RDF.`type`, rdfclass))
 		return this.asInstanceOf[T_EzGN]
 	}
-
-	def make(ref: NonLiteral, graph: TripleCollection): T_EzGN
 
 	/*
 	 * create an EzGraphNode from this one where the backing graph is protected from writes by a new
@@ -438,6 +552,7 @@ abstract class EzGraphNode(val ref: NonLiteral, val graph: TripleCollection) ext
 
 	def this() = this (new BNode)
 
+	/** class for Inverse relations with the current EzGraphNode.ref as object */
 	abstract class InversePredicate(rel: UriRef) {
 
 		protected def addGN(subj: EzGraphNode) = {
@@ -451,6 +566,9 @@ abstract class EzGraphNode(val ref: NonLiteral, val graph: TripleCollection) ext
 		}
 	}
 
+	/**
+	 *  class for relations with the current EzGraphNode.ref as subject
+	 */
 	abstract class Predicate(rel: UriRef) {
 
 		protected def add(obj: Resource): T_EzGN = {
