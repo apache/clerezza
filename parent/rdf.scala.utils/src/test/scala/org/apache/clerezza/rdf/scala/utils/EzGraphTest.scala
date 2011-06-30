@@ -47,7 +47,6 @@ class EzGraphTest {
 	val danbriUri: String = "http://danbri.org/foaf.rdf#danbri"
 
 
-
 	private val tinyGraph: Graph = {
 		val gr = new SimpleMGraph
 		val reto= new BNode()
@@ -91,8 +90,8 @@ class EzGraphTest {
 		val ez = EzGraph()
 		ez.bnode ∈ FOAF.Person
 
-		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
-		Assert.assertTrue("the two graphs should be equals",gr.getGraph.equals(ez.getGraph)) //mutable graphs cannot be compared for equality
+		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.graph.size())
+		Assert.assertEquals("the two graphs should be equals",gr.getGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 
 	}
 
@@ -123,8 +122,8 @@ class EzGraphTest {
 		( ez.u(retoUri) ∈ FOAF.Person
 			    ⟝ todoRef ⟶ List[Resource]("SPARQL update support".lang(en),"XSPARQL support".lang(en),holiday.uri))
 
-		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
-		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez.getGraph)
+		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.graph.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 
 	}
 
@@ -139,14 +138,14 @@ class EzGraphTest {
 		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		(ez.u(retoUri)(EzStyleChoice.ascii) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
 
-		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
-		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez.getGraph)
+		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.graph.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 
 		val ez2 = EzGraph()
 		(ez2.u(retoUri)(EzStyleChoice.unicode) ⟝  FOAF.knows ⟶*  Set(danbriUri.uri,henryUri.uri))
 
-		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez2.size())
-		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez2.getGraph)
+		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez2.graph.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,new SimpleGraph(ez2.graph)) //mutable graphs cannot be compared for equality
 
 	}
 
@@ -198,7 +197,7 @@ class EzGraphTest {
 
 		val res : EzGraphNode = (ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
 
-		Assert.assertEquals("the two graphs must be equal",gr.getGraph,ez.getGraph)
+		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 
 	}
 
@@ -250,10 +249,10 @@ class EzGraphTest {
 					    ⟝ FOAF.knows ⟶ ez.b_("reto")
 			 )
 		 )
-		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
-		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
+		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.graph.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 		ez.b_("danny") ⟝  FOAF.name ⟶  "George"
-		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal", tinyGraph,ez.getGraph)
+		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal", tinyGraph,ez.graph)
 	}
 
 	@Test
@@ -285,10 +284,10 @@ class EzGraphTest {
 					    -- FOAF.knows --> ez.b_("reto")
 			 )
 		 )
-		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
-		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
+		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.graph.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 		ez.b_("danny") -- FOAF.name --> "George"
-		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,ez.getGraph)
+		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,ez.graph)
 
 	}
 
@@ -323,10 +322,10 @@ class EzGraphTest {
 					    has FOAF.knows to ez.b_("reto")
 			 )
 		 )
-		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
-		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
+		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.graph.size())
+		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 		ez.b_("danny") has FOAF.name to "George"
-		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,ez.getGraph)
+		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,new SimpleGraph(ez.graph))
 
 	}
 

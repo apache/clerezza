@@ -23,7 +23,7 @@ import java.math.BigInteger
 import java.lang.Boolean
 import java.net.{URL, URI}
 import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
-import java.util.{HashSet, Date}
+import java.util.Date
 import collection.mutable.{ListBuffer, HashMap}
 import org.apache.clerezza.rdf.utils.{GraphNode, UnionMGraph}
 import org.apache.clerezza.rdf.core._
@@ -31,7 +31,7 @@ import org.apache.clerezza.rdf.core.impl._
 
 object EzGraph {
 
-	def apply(graph: HashSet[Triple]) = new EzGraph(graph)
+	def apply(graph: TripleCollection) = new EzGraph(graph)
 	def apply() = new EzGraph()
 
 	private val litFactory = LiteralFactory.getInstance
@@ -61,8 +61,6 @@ object EzGraph {
 	implicit def URItoUriRef(uri: URI) = new UriRef(uri.toString)
 
 	implicit def URLtoUriRef(url: URL) = new UriRef(url.toExternalForm)
-
-	import EzStyleChoice.unicode
 
 	//inspired from http://programming-scala.labs.oreilly.com/ch11.html
 
@@ -120,28 +118,17 @@ object EzStyleChoice {
 
 }
 /**
- * This is really a TripleCollection , should it just extend a TC? Or a MGraph?
+ * EzGraph enhances graph writing. Used together with EzGraphNode, it can make writing rdf graphs in code a lot more
+ * readable, as it avoids a lot of repetition.
  *
  * @param graph: a Triple collection - or should it be an MGraph since it is really meant to be modifiable
  * @author hjs
  * @created: 20/04/2011
  */
+//todo: should this take a TripleCollection or a Set[Triple]
+class EzGraph(val graph: TripleCollection) {
 
-class EzGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
-
-	/*
-	* because we can't jump straight to super constructor in Scala we need to
-	* create the collection here
-	**/
-	def this() = this (new HashSet[Triple])
-
-
-	/**
-	 * Constructor for collection
-	 * Because superclasses map copy information to a new HashSet, we do this now, so that this class can keep
-	 * track of the container. If super class changes this may become unnecessary
-	 */
-	def this(tripleColl: java.util.Collection[Triple]) = this(new HashSet[Triple](tripleColl))
+	def this() = this (new SimpleMGraph())
 
 	def +=(other: Graph) = {
 		if (graph ne other) graph.addAll(other)
@@ -154,11 +141,11 @@ class EzGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 	val namedBnodes = new HashMap[String,BNode]
 	def b_[T<: EzGraphNode](name: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
 		namedBnodes.get(name) match {
-			case Some(bnode) => writingStyle.preferred(bnode,this)
+			case Some(bnode) => writingStyle.preferred(bnode,graph)
 			case None => {
 				val bn = new BNode
 				namedBnodes.put(name, bn);
-				writingStyle.preferred(bn,this)
+				writingStyle.preferred(bn,graph)
 			}
 		}
 	}
@@ -168,7 +155,7 @@ class EzGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 	}
 
 	def node[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
-	 	writingStyle.preferred(subj,this)
+	 	writingStyle.preferred(subj,graph)
 	}
 
 	/**
