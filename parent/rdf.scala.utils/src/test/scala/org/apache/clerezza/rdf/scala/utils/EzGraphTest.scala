@@ -23,7 +23,7 @@ import org.junit._
 import org.apache.clerezza.rdf.core._
 import impl._
 
-class EasyGraphTest {
+class EzGraphTest {
 
 	val bblfishModulus = """
 	9D ☮ 79 ☮ BF ☮ E2 ☮ F4 ☮ 98 ☮ BC ☮ 79 ☮ 6D ☮ AB ☮ 73 ☮ E2 ☮ 8B ☮ 39 ☮ 4D ☮ B5 26 ✜ 68 ✜ 49 ✜ EE ✜ 71 ✜ 87 ✜
@@ -88,7 +88,7 @@ class EasyGraphTest {
 		val reto= new BNode()
 		gr.add(new TripleImpl(reto,RDF.`type`, FOAF.Person))
 
-		val ez = new EasyGraph()
+		val ez = EzGraph()
 		ez.bnode ∈ FOAF.Person
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
@@ -116,9 +116,9 @@ class EasyGraphTest {
 		gr.add(new TripleImpl(list3,RDF.rest,RDF.nil))
 		gr.add(new TripleImpl(reto,RDF.`type`, FOAF.Person))
 
-		val ez = new EasyGraph()
+		val ez = EzGraph()
 
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 		( ez.u(retoUri) ∈ FOAF.Person
 			    ⟝ todoRef ⟶ List[Resource]("SPARQL update support".lang(en),"XSPARQL support".lang(en),holiday.uri))
@@ -135,14 +135,14 @@ class EasyGraphTest {
 		gr.add(new TripleImpl(reto,FOAF.knows,new UriRef(henryUri)))
 		gr.add(new TripleImpl(reto,FOAF.knows,new UriRef(danbriUri)))
 
-		val ez = new EasyGraph()
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		val ez = EzGraph()
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		(ez.u(retoUri)(EzStyleChoice.ascii) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez.getGraph)
 
-		val ez2 = new EasyGraph()
+		val ez2 = EzGraph()
 		(ez2.u(retoUri)(EzStyleChoice.unicode) ⟝  FOAF.knows ⟶*  Set(danbriUri.uri,henryUri.uri))
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez2.size())
@@ -152,7 +152,7 @@ class EasyGraphTest {
 
 	@Test
 	def langEquals {
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 
 		 val lit = new PlainLiteralImpl("SPARQL update support",new Language("en"))
@@ -172,7 +172,7 @@ class EasyGraphTest {
 
 	@Test
 	def uriEquals {
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		val uc = new UriRef("http://clerezza.org/")
 		val ec = "http://clerezza.org/".uri
 
@@ -192,9 +192,9 @@ class EasyGraphTest {
 	   val gr = new SimpleMGraph
 		gr.add(new TripleImpl(new BNode,OWL.sameAs,n3Lit))
 
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
-		val ez = new EasyGraph()
+		val ez = EzGraph()
 
 		val res : EzGraphNode = (ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
 
@@ -207,7 +207,7 @@ class EasyGraphTest {
 		val exp = LiteralFactory.getInstance().createTypedLiteral(65537)
 		val mod= new TypedLiteralImpl(bblfishModulus,hex)
 
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		val modZ: TypedLiteral = bblfishModulus^^hex
 		val expZ: TypedLiteral = 65537
 
@@ -222,9 +222,9 @@ class EasyGraphTest {
 
 	@Test
 	def usingSymbolicArrows {
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
-		val ez = new EasyGraph()
+		val ez = EzGraph()
 		import EzStyleChoice.unicode //in IntelliJ this is needed for the moment to remove the red lines
 		 // example using arrows
 		 (
@@ -258,10 +258,10 @@ class EasyGraphTest {
 
 	@Test
 	def usingAsciiArrows {
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 		import EzStyleChoice.ascii
-		 val ez = new EasyGraph()
+		 val ez = EzGraph()
 		 // example using arrows
 		 (
 		   ez.b_("reto").a(FOAF.Person)
@@ -295,11 +295,11 @@ class EasyGraphTest {
 
 	@Test
 	def usingWordOperators {
-		import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 		import EzStyleChoice.english
 
-		 val ez = new EasyGraph()
+		 val ez = EzGraph()
 		 // example using arrows
 		 (
 		   ez.b_("reto").asInstanceOf[EzGraphNodeEn] a FOAF.Person
