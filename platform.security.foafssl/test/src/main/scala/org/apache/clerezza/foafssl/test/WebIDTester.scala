@@ -43,6 +43,7 @@ import javax.security.auth.Subject
 import collection.JavaConversions._
 import org.apache.clerezza.platform.users.WebIdGraphsService
 import org.apache.clerezza.rdf.scala.utils._
+import EzStyleChoice.unicode
 
 
 /**
@@ -122,7 +123,6 @@ class WebIDTester {
 class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends Assertor {
 
 	import EARL.{passed, failed, cantTell, untested, inapplicable}
-	import EzStyleChoice.unicode
 
 	val creds: scala.collection.mutable.Set[X509Claim] = subj.getPublicCredentials(classOf[X509Claim]);
 	val now = new Date()
@@ -698,7 +698,6 @@ class Assertor {
 
 	class Assertion(testName: UriRef,
 	                subjects: Seq[Resource]) {
-
 
 		//only add this runTests to the list of assertions if there is a result
 		//this makes it easier to write code that keeps track of assertions, without ending up having to
