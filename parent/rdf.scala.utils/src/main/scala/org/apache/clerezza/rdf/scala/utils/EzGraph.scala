@@ -29,7 +29,10 @@ import org.apache.clerezza.rdf.utils.{GraphNode, UnionMGraph}
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.core.impl._
 
-object EasyGraph {
+object EzGraph {
+
+	def apply(graph: HashSet[Triple]) = new EzGraph(graph)
+	def apply() = new EzGraph()
 
 	private val litFactory = LiteralFactory.getInstance
 
@@ -124,7 +127,7 @@ object EzStyleChoice {
  * @created: 20/04/2011
  */
 
-class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
+class EzGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 
 	/*
 	* because we can't jump straight to super constructor in Scala we need to
@@ -145,7 +148,7 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 	}
 
 	def bnode[T<: EzGraphNode](implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
-		apply(new BNode)(writingStyle)
+		node(new BNode)(writingStyle)
 	}
 
 	val namedBnodes = new HashMap[String,BNode]
@@ -161,10 +164,10 @@ class EasyGraph(val graph: HashSet[Triple]) extends SimpleMGraph(graph) {
 	}
 
 	def u[T<: EzGraphNode](url: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
-		apply(new UriRef(url))(writingStyle)
+		node(new UriRef(url))(writingStyle)
 	}
 
-	def apply[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
+	def node[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
 	 	writingStyle.preferred(subj,this)
 	}
 
@@ -410,13 +413,13 @@ object EzGraphNode {
 }
 
 /**
- * EzGraphNode. Create instances from an EasyGraph object. Differnt notations implementations can be used.
+ * EzGraphNode. Create instances from an EzGraph object. Differnt notations implementations can be used.
  */
 abstract class EzGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends GraphNode(ref, graph) {
 
 //	lazy val easyGraph = graph match {
-//		case eg: EasyGraph => eg
-//		case other: TripleCollection => new EasyGraph(graph)
+//		case eg: EzGraph => eg
+//		case other: TripleCollection => new EzGraph(graph)
 //	}
 
 	def +(sub: EzGraphNode) = {
