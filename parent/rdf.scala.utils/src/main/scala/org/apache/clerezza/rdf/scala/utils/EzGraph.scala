@@ -127,7 +127,7 @@ object EzStyleChoice {
 	implicit val unicode = new EzStyle[EzGraphNodeU](){
 		override def preferred(ref: NonLiteral, tc: TripleCollection): EzGraphNodeU = new EzGraphNodeU(ref,tc)
 	}
-	implicit val ascii = new EzStyle[EzGraphNodeA](){
+	implicit val arrow = new EzStyle[EzGraphNodeA](){
 		override def preferred(ref: NonLiteral, tc: TripleCollection): EzGraphNodeA = new EzGraphNodeA(ref,tc)
 	}
    implicit val english = new EzStyle[EzGraphNodeEn](){
@@ -159,7 +159,7 @@ class EzGraph(val graph: TripleCollection) {
 	/**
 	 * create a new bnode based EzGraphNode with the preferred writing style
 	 */
-	def bnode[T<: EzGraphNode](implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
+	def bnode[T<: EzGraphNode](implicit writingStyle: EzStyle[T]=EzStyleChoice.arrow ): T = {
 		node(new BNode)(writingStyle)
 	}
 
@@ -168,7 +168,7 @@ class EzGraph(val graph: TripleCollection) {
 	/**
 	 * create a new named bnode based EzGraphNode with the preferred writing style
 	 */
-	def b_[T<: EzGraphNode](name: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
+	def b_[T<: EzGraphNode](name: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.arrow): T = {
 		namedBnodes.get(name) match {
 			case Some(bnode) => writingStyle.preferred(bnode,graph)
 			case None => {
@@ -182,7 +182,7 @@ class EzGraph(val graph: TripleCollection) {
 	/**
 	 * create a new url based EzGraphNode with the preferred writing style
 	 */
-	def u[T<: EzGraphNode](url: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode): T = {
+	def u[T<: EzGraphNode](url: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.arrow): T = {
 		node(new UriRef(url))(writingStyle)
 	}
 
@@ -190,7 +190,7 @@ class EzGraph(val graph: TripleCollection) {
 	 * create a new Resource based EzGraphNode with the preferred writing style.
 	 * The EzGraphNode will contain the graph that this EzGraph is built on and point to the given subj
 	 */
-	def node[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
+	def node[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.arrow ): T = {
 	 	writingStyle.preferred(subj,graph)
 	}
 
@@ -508,7 +508,7 @@ object EzGraphNode {
 	/**
 	 * create a new EzGraphNode in the preferred writing style
 	 */
-	def apply[T<:EzGraphNode](ref: NonLiteral, graph: TripleCollection)(implicit writingStyle: EzStyle[T]=EzStyleChoice.unicode ): T = {
+	def apply[T<:EzGraphNode](ref: NonLiteral, graph: TripleCollection)(implicit writingStyle: EzStyle[T]=EzStyleChoice.arrow ): T = {
 	 	writingStyle.preferred(ref,graph)
 	}
 }
