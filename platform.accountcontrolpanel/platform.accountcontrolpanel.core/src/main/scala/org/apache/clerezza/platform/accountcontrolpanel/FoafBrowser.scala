@@ -24,7 +24,6 @@ import org.osgi.service.component.ComponentContext
 import javax.ws.rs._
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.UriInfo
-import org.apache.clerezza.rdf.scala.utils.EasyGraph
 import collection.JavaConversions._
 import org.slf4j.scala._
 import org.apache.clerezza.rdf.ontologies._
@@ -33,6 +32,7 @@ import java.security.{PrivilegedAction, AccessController}
 import org.apache.clerezza.rdf.core._
 import access.TcManager
 import impl.SimpleMGraph
+import org.apache.clerezza.rdf.scala.utils.{EzStyleChoice, EzGraph}
 
 object FoafBrowser {
 	def removeHash(uri: UriRef) = {
@@ -52,8 +52,9 @@ object FoafBrowser {
  */
 @Path("/browse")
 class FoafBrowser extends Logging {
-	import org.apache.clerezza.rdf.scala.utils.EasyGraph._
+	import org.apache.clerezza.rdf.scala.utils.EzGraph._
 	import org.apache.clerezza.platform.accountcontrolpanel.FoafBrowser._
+	import EzStyleChoice.unicode
 
 	protected def activate(componentContext: ComponentContext): Unit = {
 //		this.componentContext = componentContext
@@ -77,7 +78,7 @@ class FoafBrowser extends Logging {
 			 def run() = tcManager.getGraph(removeHash (uri))
 		 });
 
-		val inference = new EasyGraph(new UnionMGraph(new SimpleMGraph(),profile))
+		val inference = new EzGraph(new UnionMGraph(new SimpleMGraph(),profile))
 
 		//add a bit of inferencing for persons, until we have some reasoning
 		for (kn: Triple <- profile.filter(null,FOAF.knows,null)) {
@@ -89,7 +90,7 @@ class FoafBrowser extends Logging {
 		//todo: if possible get a bit more info about remote profiles, if these are in the db
 
 		//Here we make a BNode the subject of the properties as a workaround to CLEREZZA-447
-		return ( inference(uriInfo.getRequestUri()) ∈  PLATFORM.HeadedPage
+		return ( inference.node(uriInfo.getRequestUri()) ∈  PLATFORM.HeadedPage
 					∈  CONTROLPANEL.ProfileViewerPage
 		         ⟝ FOAF.primaryTopic ⟶ uri )
 	}

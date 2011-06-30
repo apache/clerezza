@@ -34,7 +34,7 @@ import org.apache.clerezza.rdf.ontologies.{SIOC, PLATFORM, RDF}
 import org.apache.clerezza.rdf.core.{UriRef, MGraph}
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
-import org.apache.clerezza.rdf.scala.utils.{EzGraphNodeU, EzStyleChoice, EzGraphNode, EasyGraph}
+import org.apache.clerezza.rdf.scala.utils.{EzGraphNodeU, EzStyleChoice, EzGraphNode, EzGraph}
 
 object PingBack {
 	private val log: Logger = Logger(classOf[PingBack])
@@ -101,8 +101,8 @@ class PingBack {
 	 */
 	def  pingCollection(id: String, uriInfo: UriInfo): EzGraphNodeU = {
 		val pingRef = new UriRef(pingCollUri(id, uriInfo))
-		val pingCollG: EasyGraph = pingColl(pingRef)
-		pingCollG(pingRef)
+		val pingCollG: EzGraph = pingColl(pingRef)
+		pingCollG.node(pingRef)
 	}
 
 	@GET
@@ -119,7 +119,7 @@ class PingBack {
 	/**
 	 * get Ping Collection
 	 */
-	def pingColl(pingCollRef: UriRef): EasyGraph = {
+	def pingColl(pingCollRef: UriRef): EzGraph = {
 		val tcgraph =AccessController.doPrivileged(new PrivilegedAction[MGraph] {
 			def run: MGraph = try {
 				tcManager.getMGraph(pingCollRef)
@@ -133,7 +133,7 @@ class PingBack {
 				}
 			}
 		})
-		new EasyGraph(tcgraph)
+		new EzGraph(tcgraph)
 	}
 
 	/**
@@ -228,7 +228,7 @@ class PingBack {
 		//build the graph and add to the store if ok
 		val pingColGr = pingColl(new UriRef(pingCollUriStr))
 		val item = (
-			pingColGr(pingItem) ∈ PINGBACK.Item
+			pingColGr.node(pingItem) ∈ PINGBACK.Item
 		         ⟝ PINGBACK.source ⟶  source
 		         ⟝ PINGBACK.target ⟶  target
 		         ⟝ SIOC.content ⟶  comment
@@ -282,7 +282,7 @@ class PingBack {
 	   //get the source graph
 		 val targetGrph = tcManager.getMGraph(target)
 		(
-			new EasyGraph(new UnionMGraph(new SimpleMGraph(),targetGrph)).bnode ∈ PLATFORM.HeadedPage
+			new EzGraph(new UnionMGraph(new SimpleMGraph(),targetGrph)).bnode ∈ PLATFORM.HeadedPage
 			                          ∈ ProxyForm
 				⟝ PINGBACK.source ⟶ { if (source == null) ProfilePanel.webID(id,uriInfo) else source }
 				⟝ PINGBACK.target ⟶ target
@@ -316,7 +316,7 @@ class PingBack {
 		//ITS the wrong ping collection!!!
 
 		val pinG = pingColl(new UriRef(pingCollUri(id, uriInfo)))
-		( pinG(new UriRef(uriInfo.getAbsolutePath.toString)) ∈ PLATFORM.HeadedPage
+		( pinG.node(new UriRef(uriInfo.getAbsolutePath.toString)) ∈ PLATFORM.HeadedPage
 								∈ PINGBACK.Item
 			)
 	}
