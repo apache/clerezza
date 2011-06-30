@@ -516,7 +516,7 @@ object EzGraphNode {
 /**
  * EzGraphNode. Create instances from an EzGraph object. Differnt notations implementations can be used.
  */
-abstract class EzGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends GraphNode(ref, graph) {
+abstract class EzGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends RichGraphNode(ref, graph) {
 
 //	lazy val easyGraph = graph match {
 //		case eg: EzGraph => eg
