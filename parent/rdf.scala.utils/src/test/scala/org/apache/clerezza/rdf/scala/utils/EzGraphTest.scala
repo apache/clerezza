@@ -290,7 +290,7 @@ class EzGraphTest {
 		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.graph.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 		ez.b_("danny") -- FOAF.name --> "George"
-		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,ez.graph)
+		Assert.assertNotSame("Added one more triple, so graphs should no longer be equal",tinyGraph,new SimpleGraph(ez.graph))
 
 	}
 
