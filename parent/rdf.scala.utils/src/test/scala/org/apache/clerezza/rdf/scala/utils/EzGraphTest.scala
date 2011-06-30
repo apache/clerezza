@@ -87,6 +87,7 @@ class EzGraphTest {
 		val reto= new BNode()
 		gr.add(new TripleImpl(reto,RDF.`type`, FOAF.Person))
 
+		import EzStyleChoice.unicode
 		val ez = EzGraph()
 		ez.bnode ∈ FOAF.Person
 
@@ -119,6 +120,7 @@ class EzGraphTest {
 
 		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
+		import org.apache.clerezza.rdf.scala.utils.EzStyleChoice.unicode
 		( ez.u(retoUri) ∈ FOAF.Person
 			    ⟝ todoRef ⟶ List[Resource]("SPARQL update support".lang(en),"XSPARQL support".lang(en),holiday.uri))
 
@@ -136,7 +138,8 @@ class EzGraphTest {
 
 		val ez = EzGraph()
 		import org.apache.clerezza.rdf.scala.utils.EzGraph._
-		(ez.u(retoUri)(EzStyleChoice.ascii) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
+		//default style is now arrow
+		(ez.u(retoUri) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.graph.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
@@ -191,11 +194,11 @@ class EzGraphTest {
 	   val gr = new SimpleMGraph
 		gr.add(new TripleImpl(new BNode,OWL.sameAs,n3Lit))
 
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
-		import org.apache.clerezza.rdf.scala.utils.Lang._
+		import EzGraph._
+		import EzStyleChoice.unicode
 		val ez = EzGraph()
 
-		val res : EzGraphNode = (ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
+		(ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
 
 		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,new SimpleGraph(ez.graph)) //mutable graphs cannot be compared for equality
 
@@ -259,7 +262,7 @@ class EzGraphTest {
 	def usingAsciiArrows {
 		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
-		import EzStyleChoice.ascii
+		import EzStyleChoice.arrow
 		 val ez = EzGraph()
 		 // example using arrows
 		 (
