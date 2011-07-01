@@ -229,11 +229,6 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 	def ⟝(rel: UriRef) = predicate(rel)
 
 	/**
-	 * relate the subject via the given relation to....
-	 */
-	def ⟝(rel: String) = predicate(new UriRef(rel))
-
-	/**
 	 * relate the subject via the inverse of the given relation to....
 	 */
 	def ⟵(rel: UriRef) = inverse(rel)
@@ -251,11 +246,6 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 		def ⟞(subj: NonLiteral) = add(subj)
 
 		/**
-		 * ...to the following resource (given as a string)
-		 */
-		def ⟞(uri: String) = add(new UriRef(uri))
-
-		/**
 		 * ...to the following EzGraphNode
 		 * (useful for opening a new parenthesis and specifying other things in more detail
 		 */
@@ -264,10 +254,6 @@ class EzGraphNodeU(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 
 	class PredicateU(rel: UriRef) extends Predicate(rel) {
 
-		/**
-		 * ...to the following literal string
-		 */
-		def ⟶(obj: String) = add(new EzLiteral(obj))
 
 		/**
 		 * ...to the following resource
@@ -339,11 +325,6 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 	def --(rel: UriRef) = predicate(rel)
 
 	/**
-	 * relate the subject via the given (expressed as string) relation to....
-	 */
-	def --(rel: String) = predicate(new UriRef(rel))
-
-	/**
 	 * relate the subject via the inverse of the given relation to....
 	 * note: we can't have <-- as that messes up the balance of precedence
 	 */
@@ -354,11 +335,6 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 		 * ...to the following non resource
 		 */
 		def -->(obj: Resource) = add(obj)
-
-		/**
-		 * ...to the following string literal
-		 */
-		def -->(lit: String) = add(new EzLiteral(lit))
 
 		/**
 		 * Adds a relation to a real linked list.
@@ -384,10 +360,6 @@ class EzGraphNodeA(ref: NonLiteral, graph: TripleCollection) extends EzGraphNode
 		 * ...to the following non literal
 		 */
 		def --(subj: NonLiteral) = add(subj)
-		/**
-		 * ...to the following resource (given as a string)
-		 */
-		def --(subj: String) = add(new UriRef(subj))
 
 		/**
 		 * ...to the following EzGraphNode
@@ -421,27 +393,16 @@ class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EzGraphNod
 	def has(rel: UriRef) = predicate(rel)
 
 	/**
-	 * the subject has the given relation (specified as string) to....
-	 */
-	def has(rel: String) = predicate(new UriRef(rel))
-
-	/**
 	 * the subject is the inverse relation of ...
 	 */
 	def is(rel: UriRef) = inverse(rel)
 
 	class InversePredicateEn(rel: UriRef) extends InversePredicate(rel) {
 
-
 		/**
 		  * ...the following non literal
 		  */
 		def of(subj: NonLiteral) = add(subj)
-
-		/**
-		  * ...the following resource (as String)
-		  */
-		def of(subj: String) = add(new UriRef(subj))
 
 		/**
 		  * ...the following EzGraphNode - useful for opening a new bracket
@@ -450,12 +411,6 @@ class EzGraphNodeEn(ref: NonLiteral, graph: TripleCollection) extends EzGraphNod
 	}
 
 	class PredicateEn(rel: UriRef) extends Predicate(rel) {
-
-
-		/**
-		 * ...to the following literal string
-		 */
-		def to(lit: String) = add(new EzLiteral(lit))
 
 		/**
 		 * ...to the following resource
