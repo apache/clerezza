@@ -29,10 +29,10 @@ import org.apache.clerezza.rdf.utils.{GraphNode, UnionMGraph}
 import org.apache.clerezza.rdf.core._
 import impl._
 
-object EzGraph {
+object EzMGraph {
 
-	def apply(graph: TripleCollection) = new EzGraph(graph)
-	def apply() = new EzGraph()
+	def apply(graph: TripleCollection) = new EzMGraph(graph)
+	def apply() = new EzMGraph()
 
 	private val litFactory = LiteralFactory.getInstance
 
@@ -114,7 +114,7 @@ object EzStyleChoice {
 
 }
 /**
- * EzGraph enhances graph writing. Used together with EzGraphNode, it can make writing rdf graphs in code a lot more
+ * EzMGraph enhances graph writing. Used together with EzGraphNode, it can make writing rdf graphs in code a lot more
  * readable, as it avoids a lot of repetition.
  *
  * @param graph: a Triple collection - or should it be an MGraph since it is really meant to be modifiable
@@ -122,7 +122,7 @@ object EzStyleChoice {
  * @created: 20/04/2011
  */
 //todo: should this take a TripleCollection or a Set[Triple]
-class EzGraph(val baseTc: TripleCollection) extends AbstractMGraph {
+class EzMGraph(val baseTc: TripleCollection) extends AbstractMGraph {
 
 	def this() = this (new SimpleMGraph())
 
@@ -172,7 +172,7 @@ class EzGraph(val baseTc: TripleCollection) extends AbstractMGraph {
 
 	/**
 	 * create a new Resource based EzGraphNode with the preferred writing style.
-	 * The EzGraphNode will contain the graph that this EzGraph is built on and point to the given subj
+	 * The EzGraphNode will contain the graph that this EzMGraph is built on and point to the given subj
 	 */
 	def node[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.arrow ): T = {
 	 	writingStyle.preferred(subj,baseTc)
@@ -453,13 +453,13 @@ object EzGraphNode {
 }
 
 /**
- * EzGraphNode. Create instances from an EzGraph object. Differnt notations implementations can be used.
+ * EzGraphNode. Create instances from an EzMGraph object. Differnt notations implementations can be used.
  */
 abstract class EzGraphNode(val ref: NonLiteral, val graph: TripleCollection) extends RichGraphNode(ref, graph) {
 
 //	lazy val easyGraph = graph match {
-//		case eg: EzGraph => eg
-//		case other: TripleCollection => new EzGraph(graph)
+//		case eg: EzMGraph => eg
+//		case other: TripleCollection => new EzMGraph(graph)
 //	}
 
 	def +(sub: EzGraphNode) = {

@@ -82,7 +82,7 @@ object ProfilePanel {
 class ProfilePanel extends Logging {
 
 	import collection.JavaConversions._
-	import EzGraph._
+	import EzMGraph._
 	import EzStyleChoice.unicode
 
 
@@ -106,7 +106,7 @@ class ProfilePanel extends Logging {
 				val profile = userInSysGraph.getNode match {
 					case blank: BNode => {
 						//user does not have a webId yet
-						val g = EzGraph()
+						val g = EzMGraph()
 						(
 							g.bnode ⟝ CONTROLPANEL.isLocalProfile ⟶ true
 								⟝ CONTROLPANEL.suggestedPPDUri ⟶ profileDocUri
@@ -136,7 +136,7 @@ class ProfilePanel extends Logging {
 					} catch {
 						case e => {
 							logger.warn("cought exception trying to fetch graph - these graphs should already be in store " + friend, e)
-							EzGraph().add(friend, SKOS.note, "problem with fetching this node: " + e)
+							EzMGraph().add(friend, SKOS.note, "problem with fetching this node: " + e)
 						}
 					}
 				}
@@ -289,7 +289,7 @@ class ProfilePanel extends Logging {
 		     val webIdInfo = webIdGraphsService.getWebIdInfo(webidRef);
 		     if (webIdInfo.isLocal)
 		) {
-			val certNode = new EzGraph(webIdInfo.localPublicUserData).bnode
+			val certNode = new EzMGraph(webIdInfo.localPublicUserData).bnode
 			( certNode ∈  RSA.RSAPublicKey
 			   ⟝ CERT.identity ⟶  webidRef
 			   ⟝ RSA.modulus ⟶  modulus
