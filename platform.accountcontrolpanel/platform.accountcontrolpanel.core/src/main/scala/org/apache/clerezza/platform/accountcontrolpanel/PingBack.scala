@@ -34,7 +34,7 @@ import org.apache.clerezza.rdf.ontologies.{SIOC, PLATFORM, RDF}
 import org.apache.clerezza.rdf.core.{UriRef, MGraph}
 import org.apache.clerezza.rdf.utils.{UnionMGraph, GraphNode}
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
-import org.apache.clerezza.rdf.scala.utils.{EzGraphNodeU, EzStyleChoice, EzGraphNode, EzGraph}
+import org.apache.clerezza.rdf.scala.utils._
 
 object PingBack {
 	private val log: Logger = Logger(classOf[PingBack])
@@ -88,7 +88,7 @@ object PingBack {
 class PingBack {
 
 	import PingBack._
-	import EzStyleChoice.unicode
+	import EzStyleChoice.arrow
 
 	protected def activate(componentContext: ComponentContext): Unit = {
 	}
@@ -99,7 +99,7 @@ class PingBack {
 	 * @param id: the user id
 	 * @param uriInfo jax-rs info
 	 */
-	def  pingCollection(id: String, uriInfo: UriInfo): EzGraphNodeU = {
+	def  pingCollection(id: String, uriInfo: UriInfo): EzGraphNodeA = {
 		val pingRef = new UriRef(pingCollUri(id, uriInfo))
 		val pingCollG: EzGraph = pingColl(pingRef)
 		pingCollG.node(pingRef)
@@ -111,8 +111,8 @@ class PingBack {
 					 @QueryParam("uri") uri: UriRef,
 					 @PathParam("id") id: String): GraphNode = {
 
-		( pingCollection(id, uriInfo) ∈ PLATFORM.HeadedPage
-				∈ PINGBACK.Container )
+		( pingCollection(id, uriInfo).a(PLATFORM.HeadedPage)
+				.a(PINGBACK.Container) )
 	}
 
 
@@ -224,17 +224,19 @@ class PingBack {
 		//create a new Resource for this ping (we'll use time stamps to get going)
 		val pingCollUriStr: String = pingCollUri(id, uriInfo)
 		val pingItem = new UriRef(pingCollUriStr + "/ts" + System.currentTimeMillis)
+		import org.apache.clerezza.rdf.scala.utils.EzGraph._
 
 		//build the graph and add to the store if ok
 		val pingColGr = pingColl(new UriRef(pingCollUriStr))
 		val item = (
-			pingColGr.node(pingItem) ∈ PINGBACK.Item
-		         ⟝ PINGBACK.source ⟶  source
-		         ⟝ PINGBACK.target ⟶  target
-		         ⟝ SIOC.content ⟶  comment
-		         ⟵ SIOC.container_of ⟞ pingCollUriStr)
+			pingColGr.node(pingItem).a(PINGBACK.Item)
+		         -- PINGBACK.source -->  source
+		         -- PINGBACK.target -->  target
+				   -- SIOC.content --> comment
+			      -<- SIOC.container_of -- pingCollUriStr
+			)
 
-		val resultNode = item.protect() ∈ PLATFORM.HeadedPage
+		val resultNode = item.protect().a(PLATFORM.HeadedPage)
 
 		//response
 		Response.ok(resultNode).header("Content-Location",new URI(pingItem.getUnicodeString).getPath).build()
@@ -252,9 +254,9 @@ class PingBack {
 	def viewCollection(@Context uriInfo: UriInfo,
 	                   @QueryParam("to") to: UriRef,
 							 @PathParam("id") id: String): GraphNode = {
-		val gn = (pingCollection(id,uriInfo ) ∈ PLATFORM.HeadedPage
-										∈  PINGBACK.Container )
-		if (to != null)	gn  ⟝ PINGBACK.to ⟶ to
+		val gn = (pingCollection(id,uriInfo ).a(PLATFORM.HeadedPage)
+										.a(PINGBACK.Container))
+		if (to != null)	gn  -- PINGBACK.to --> to
 		else gn
 	}
 
@@ -282,10 +284,10 @@ class PingBack {
 	   //get the source graph
 		 val targetGrph = tcManager.getMGraph(target)
 		(
-			new EzGraph(new UnionMGraph(new SimpleMGraph(),targetGrph)).bnode ∈ PLATFORM.HeadedPage
-			                          ∈ ProxyForm
-				⟝ PINGBACK.source ⟶ { if (source == null) ProfilePanel.webID(id,uriInfo) else source }
-				⟝ PINGBACK.target ⟶ target
+			new EzGraph(new UnionMGraph(new SimpleMGraph(),targetGrph)).bnode.a(PLATFORM.HeadedPage)
+			                                            .a(ProxyForm)
+				-- PINGBACK.source --> { if (source == null) ProfilePanel.webID(id,uriInfo) else source }
+				-- PINGBACK.target --> target
 		)
 	}
 
@@ -316,8 +318,8 @@ class PingBack {
 		//ITS the wrong ping collection!!!
 
 		val pinG = pingColl(new UriRef(pingCollUri(id, uriInfo)))
-		( pinG.node(new UriRef(uriInfo.getAbsolutePath.toString)) ∈ PLATFORM.HeadedPage
-								∈ PINGBACK.Item
+		( pinG.node(new UriRef(uriInfo.getAbsolutePath.toString)).a(PLATFORM.HeadedPage)
+								.a(PINGBACK.Item)
 			)
 	}
 
