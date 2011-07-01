@@ -27,7 +27,7 @@ import java.util.Date
 import collection.mutable.{ListBuffer, HashMap}
 import org.apache.clerezza.rdf.utils.{GraphNode, UnionMGraph}
 import org.apache.clerezza.rdf.core._
-import org.apache.clerezza.rdf.core.impl._
+import impl._
 
 object EzGraph {
 
@@ -70,9 +70,7 @@ object EzGraph {
  * An easy Literal implementations, contains functions for mapping literals to other literals, ie from String literals to
  * typed literals.
  */
-class EzLiteral(lexicalForm: String) extends TypedLiteral {
-
-	def unapply(lexical: String) = lexical
+class EzLiteral(lexicalForm: String) extends TypedLiteralImpl(lexicalForm,XSD.string) {
 
 	/**
 	 * @return a plain literal with language specified by lang
@@ -90,27 +88,6 @@ class EzLiteral(lexicalForm: String) extends TypedLiteral {
 	 */
 	def uri = new UriRef(lexicalForm)
 
-	/**
-	 * get the pure string
-	 */
-	override def getLexicalForm = lexicalForm
-
-	override def equals(other: Any) = {
-      other match {
-			case olit: TypedLiteral => (olit eq this) || (olit.getLexicalForm == lexicalForm && olit.getDataType == this.getDataType)
-			case _ => false
-		}
-	}
-
-	override def hashCode() = XSD.string.hashCode() + lexicalForm.hashCode()
-
-	def getDataType = XSD.string
-
-	/**
-	 * String literals are just strings
-	 * See RDF Semantics rules xsd 1a and xsd 1b in http://www.w3.org/TR/rdf-mt/
-	 */
-	override def toString() = lexicalForm
 }
 
 /**
