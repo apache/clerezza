@@ -32,7 +32,7 @@ import java.security.{PrivilegedAction, AccessController}
 import org.apache.clerezza.rdf.core._
 import access.TcManager
 import impl.SimpleMGraph
-import org.apache.clerezza.rdf.scala.utils.{EzStyleChoice, EzGraph}
+import org.apache.clerezza.rdf.scala.utils.{EzStyleChoice, EzMGraph}
 
 object FoafBrowser {
 	def removeHash(uri: UriRef) = {
@@ -52,7 +52,7 @@ object FoafBrowser {
  */
 @Path("/browse")
 class FoafBrowser extends Logging {
-	import org.apache.clerezza.rdf.scala.utils.EzGraph._
+	import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 	import org.apache.clerezza.platform.accountcontrolpanel.FoafBrowser._
 	import EzStyleChoice.unicode
 
@@ -78,7 +78,7 @@ class FoafBrowser extends Logging {
 			 def run() = tcManager.getGraph(removeHash (uri))
 		 });
 
-		val inference = new EzGraph(new UnionMGraph(new SimpleMGraph(),profile))
+		val inference = new EzMGraph(new UnionMGraph(new SimpleMGraph(),profile))
 
 		//add a bit of inferencing for persons, until we have some reasoning
 		for (kn: Triple <- profile.filter(null,FOAF.knows,null)) {
