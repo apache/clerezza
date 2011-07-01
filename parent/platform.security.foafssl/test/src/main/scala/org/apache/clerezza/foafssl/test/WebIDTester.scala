@@ -43,8 +43,7 @@ import javax.security.auth.Subject
 import collection.JavaConversions._
 import org.apache.clerezza.platform.users.WebIdGraphsService
 import org.apache.clerezza.rdf.scala.utils._
-import EzStyleChoice.unicode
-
+import EzStyleChoice.arrow
 
 /**
  * implementation of (very early) version of test server for WebID so that the following tests
@@ -130,8 +129,8 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 
 	def runTests() {
 
-		val thisDoc = (g.bnode ∈ FOAF.Document //there really has to be a way to get THIS doc url, to add relative urls to the graph
-			               ⟝ DCTERMS.created ⟶ now
+		val thisDoc = (g.bnode.a(FOAF.Document) //there really has to be a way to get THIS doc url, to add relative urls to the graph
+			               -- DCTERMS.created --> now
 			)
 		//
 		// Description of certificates and their public profileKeys
@@ -139,8 +138,8 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 		val x509claimRefs = for (claim <- creds) yield {
 			val cert = g.bnode
 			(
-				cert ∈ CERT.Certificate
-					⟝ CERT.base64der ⟶ Base64.encode(claim.cert.getEncoded())
+				cert.a(CERT.Certificate)
+					-- CERT.base64der --> Base64.encode(claim.cert.getEncoded())
 				)
 
 			//
@@ -151,11 +150,11 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 
 			pubkey match {
 				case rsa: RSAPublicKey => {
-					val pk = (g.bnode ∈ RSA.RSAPublicKey
-						⟝ RSA.modulus ⟶ new TypedLiteralImpl(rsa.getModulus.toString(16), CERT.hex)
-						⟝ RSA.public_exponent ⟶ new TypedLiteralImpl(rsa.getPublicExponent.toString(10), CERT.int_)
+					val pk = (g.bnode.a(RSA.RSAPublicKey)
+						-- RSA.modulus --> new TypedLiteralImpl(rsa.getModulus.toString(16), CERT.hex)
+						-- RSA.public_exponent --> new TypedLiteralImpl(rsa.getPublicExponent.toString(10), CERT.int_)
 						)
-					cert ⟝ CERT.principal_key ⟶ pk
+					cert -- CERT.principal_key --> pk
 					val res = testCertKey.result;
 					res.description = "Certificate contains RSA key which is recognised"
 					res.outcome = EARL.passed
@@ -192,13 +191,13 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 		//
 		val eC = x509claimRefs.size > 0
 		val ass = (
-			g.bnode ∈ EARL.Assertion
-				⟝ EARL.test ⟶ TEST.certificateProvided
-				⟝ EARL.result ⟶ (g.bnode ∈ EARL.TestResult
-				                     ⟝ DC.description ⟶ {if (eC) "Certificate available" else "No Certificate Found"}
-				                     ⟝ EARL.outcome ⟶ {if (eC) EARL.passed else EARL.failed})
+			g.bnode.a(EARL.Assertion)
+				-- EARL.test --> TEST.certificateProvided
+				-- EARL.result --> (g.bnode.a(EARL.TestResult)
+				                     -- DC.description --> {if (eC) "Certificate available" else "No Certificate Found"}
+				                     -- EARL.outcome --> {if (eC) EARL.passed else EARL.failed})
 			)
-		if (eC) ass ⟝ EARL.subject ⟶* x509claimRefs.map(p => p._1)
+		if (eC) ass -- EARL.subject -->> x509claimRefs.map(p => p._1)
 		else return g.graph
 
 
@@ -207,14 +206,14 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 		//
 		val principals = for (p <- subj.getPrincipals
 		                      if p.isInstanceOf[WebIdPrincipal]) yield p.asInstanceOf[WebIdPrincipal]
-		(g.bnode ∈ EARL.Assertion
-			⟝ EARL.test ⟶ TEST.webidAuthentication
-			⟝ EARL.result ⟶ (g.bnode ∈ EARL.TestResult
-						⟝ DC.description ⟶ {"found " + principals.size + " valid principals"}
-						⟝ EARL.outcome ⟶ {if (principals.size > 0) EARL.passed else EARL.failed}
-						⟝ EARL.pointer ⟶* principals.map(p => p.webId)
+		(g.bnode.a(EARL.Assertion)
+			-- EARL.test --> TEST.webidAuthentication
+			-- EARL.result --> (g.bnode.a(EARL.TestResult)
+						-- DC.description --> {"found " + principals.size + " valid principals"}
+						-- EARL.outcome --> {if (principals.size > 0) EARL.passed else EARL.failed}
+						-- EARL.pointer -->> principals.map(p => p.webId)
 						)
-			⟝ EARL.subject ⟶* x509claimRefs.map(p => p._1)
+			-- EARL.subject -->> x509claimRefs.map(p => p._1)
 			)
 		import collection.JavaConversions._
 
@@ -601,7 +600,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 			sout.serialize(out, graph, "text/rdf+n3")
 			val n3String = out.toString("UTF-8")
 			//todo: turtle mime type literal?
-			val keylit: EzGraphNode = g.bnode ⟝  OWL.sameAs ⟶ (n3String^^"http://example.com/turtle".uri)
+			val keylit: EzGraphNode = g.bnode --  OWL.sameAs --> (n3String^^"http://example.com/turtle".uri)
 
 
 			//
@@ -708,10 +707,10 @@ class Assertor {
 		}
 
 		def toRdf(): EzGraphNode = (
-			g.bnode ∈ EARL.Assertion
-				⟝ EARL.test ⟶ testName
-				⟝ EARL.result ⟶ result.toRdf()
-				⟝ EARL.subject ⟶* subjects
+			g.bnode.a(EARL.Assertion)
+				-- EARL.test --> testName
+				-- EARL.result --> result.toRdf()
+				-- EARL.subject -->> subjects
 			)
 	}
 
@@ -740,11 +739,11 @@ class Assertor {
 
 
 		def toRdf(): EzGraphNode =  (
-				g.bnode ∈ EARL.TestResult
-					⟝ DC.description ⟶ description
-					⟝ EARL.outcome ⟶ outcome
-					⟝ EARL.pointer ⟶* pointers
-				   ⟝ EARL.info ⟶* { for (e <- exceptions) yield new PlainLiteralImpl(e.toString)  }
+				g.bnode.a(EARL.TestResult)
+					-- DC.description --> description
+					-- EARL.outcome --> outcome
+					-- EARL.pointer -->> pointers
+				   -- EARL.info -->> { for (e <- exceptions) yield new PlainLiteralImpl(e.toString)  }
 				)
 
 	}
