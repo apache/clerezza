@@ -233,7 +233,7 @@ class PingBack {
 		         -- PINGBACK.source -->  source
 		         -- PINGBACK.target -->  target
 				   -- SIOC.content --> comment
-			      -<- SIOC.container_of -- pingCollUriStr
+			      -<- SIOC.container_of -- pingCollUriStr.uri
 			)
 
 		val resultNode = item.protect().a(PLATFORM.HeadedPage)
