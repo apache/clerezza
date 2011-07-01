@@ -122,15 +122,22 @@ object EzStyleChoice {
  * @created: 20/04/2011
  */
 //todo: should this take a TripleCollection or a Set[Triple]
-class EzGraph(val graph: TripleCollection) {
+class EzGraph(val baseTc: TripleCollection) extends AbstractMGraph {
 
 	def this() = this (new SimpleMGraph())
+
+	def performFilter(subject: NonLiteral, predicate: UriRef,
+			obj: Resource): java.util.Iterator[Triple] = baseTc.filter(subject, predicate, obj)
+
+	override def size = baseTc.size
+
+	override def add(t: Triple) = baseTc.add(t)
 
 	/**
 	 * Add all triples into the other graph to this one
 	 */
 	def +=(other: Graph) = {
-		if (graph ne other) graph.addAll(other)
+		if (baseTc ne other) baseTc.addAll(other)
 	}
 
 	/**
@@ -140,18 +147,18 @@ class EzGraph(val graph: TripleCollection) {
 		node(new BNode)(writingStyle)
 	}
 
-	val namedBnodes = new HashMap[String,BNode]
+	protected val namedBnodes = new HashMap[String,BNode]
 
 	/**
 	 * create a new named bnode based EzGraphNode with the preferred writing style
 	 */
 	def b_[T<: EzGraphNode](name: String)(implicit writingStyle: EzStyle[T]=EzStyleChoice.arrow): T = {
 		namedBnodes.get(name) match {
-			case Some(bnode) => writingStyle.preferred(bnode,graph)
+			case Some(bnode) => writingStyle.preferred(bnode,baseTc)
 			case None => {
 				val bn = new BNode
 				namedBnodes.put(name, bn);
-				writingStyle.preferred(bn,graph)
+				writingStyle.preferred(bn,baseTc)
 			}
 		}
 	}
@@ -168,7 +175,7 @@ class EzGraph(val graph: TripleCollection) {
 	 * The EzGraphNode will contain the graph that this EzGraph is built on and point to the given subj
 	 */
 	def node[T<: EzGraphNode](subj: NonLiteral)(implicit writingStyle: EzStyle[T]=EzStyleChoice.arrow ): T = {
-	 	writingStyle.preferred(subj,graph)
+	 	writingStyle.preferred(subj,baseTc)
 	}
 
 	/**
@@ -179,8 +186,8 @@ class EzGraph(val graph: TripleCollection) {
 	 * @return this, to making method chaining easier
 	 */
 	def add(subj: NonLiteral, relation: UriRef, obj: Resource ) = {
-		graph.add(new TripleImpl(subj,relation,obj))
-		graph
+		baseTc.add(new TripleImpl(subj,relation,obj))
+		baseTc
 	}
 
 	/**
@@ -190,8 +197,8 @@ class EzGraph(val graph: TripleCollection) {
 	 * @return this, to making method chaining easier
 	 */
 	def addType(subj: NonLiteral, clazz: UriRef) = {
-		graph.add(new TripleImpl(subj,RDF.`type`,clazz))
-		graph
+		baseTc.add(new TripleImpl(subj,RDF.`type`,clazz))
+		baseTc
 	}
 
 

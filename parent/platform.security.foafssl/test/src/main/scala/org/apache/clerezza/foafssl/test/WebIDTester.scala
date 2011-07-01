@@ -198,7 +198,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 				                     -- EARL.outcome --> {if (eC) EARL.passed else EARL.failed})
 			)
 		if (eC) ass -- EARL.subject -->> x509claimRefs.map(p => p._1)
-		else return g.graph
+		else return g
 
 
 		//
@@ -692,7 +692,7 @@ class Assertor {
 		for (test <- assertions) {
 			test.toRdf()
 		}
-		g.graph
+		g
 	}
 
 	class Assertion(testName: UriRef,
