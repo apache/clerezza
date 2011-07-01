@@ -23,7 +23,7 @@ import org.junit._
 import org.apache.clerezza.rdf.core._
 import impl._
 
-class EzGraphTest {
+class EzMGraphTest {
 
 	val bblfishModulus = """
 	9D ☮ 79 ☮ BF ☮ E2 ☮ F4 ☮ 98 ☮ BC ☮ 79 ☮ 6D ☮ AB ☮ 73 ☮ E2 ☮ 8B ☮ 39 ☮ 4D ☮ B5 26 ✜ 68 ✜ 49 ✜ EE ✜ 71 ✜ 87 ✜
@@ -88,7 +88,7 @@ class EzGraphTest {
 		gr.add(new TripleImpl(reto,RDF.`type`, FOAF.Person))
 
 		import EzStyleChoice.unicode
-		val ez = EzGraph()
+		val ez = EzMGraph()
 		ez.bnode ∈ FOAF.Person
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
@@ -116,9 +116,9 @@ class EzGraphTest {
 		gr.add(new TripleImpl(list3,RDF.rest,RDF.nil))
 		gr.add(new TripleImpl(reto,RDF.`type`, FOAF.Person))
 
-		val ez = EzGraph()
+		val ez = EzMGraph()
 
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 		import org.apache.clerezza.rdf.scala.utils.EzStyleChoice.unicode
 		( ez.u(retoUri) ∈ FOAF.Person
@@ -136,15 +136,15 @@ class EzGraphTest {
 		gr.add(new TripleImpl(reto,FOAF.knows,new UriRef(henryUri)))
 		gr.add(new TripleImpl(reto,FOAF.knows,new UriRef(danbriUri)))
 
-		val ez = EzGraph()
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		val ez = EzMGraph()
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 		//default style is now arrow
 		(ez.u(retoUri) -- FOAF.knows -->> List(henryUri.uri,danbriUri.uri))
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez.size())
 		Assert.assertEquals("Both graphs should contain exactly the same triples",gr.getGraph,ez.getGraph) //mutable graphs cannot be compared for equality
 
-		val ez2 = EzGraph()
+		val ez2 = EzMGraph()
 		(ez2.u(retoUri)(EzStyleChoice.unicode) ⟝  FOAF.knows ⟶*  Set(danbriUri.uri,henryUri.uri))
 
 		Assert.assertEquals("the two graphs should be of same size",gr.size(),ez2.size())
@@ -154,7 +154,7 @@ class EzGraphTest {
 
 	@Test
 	def langEquals {
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 
 		 val lit = new PlainLiteralImpl("SPARQL update support",new Language("en"))
@@ -174,7 +174,7 @@ class EzGraphTest {
 
 	@Test
 	def uriEquals {
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 		val uc = new UriRef("http://clerezza.org/")
 		val ec = "http://clerezza.org/".uri
 
@@ -194,9 +194,9 @@ class EzGraphTest {
 	   val gr = new SimpleMGraph
 		gr.add(new TripleImpl(new BNode,OWL.sameAs,n3Lit))
 
-		import EzGraph._
+		import EzMGraph._
 		import EzStyleChoice.unicode
-		val ez = EzGraph()
+		val ez = EzMGraph()
 
 		(ez.bnode ⟝  OWL.sameAs ⟶  (n3^^"http://example.com/turtle".uri))
 
@@ -209,7 +209,7 @@ class EzGraphTest {
 		val exp = LiteralFactory.getInstance().createTypedLiteral(65537)
 		val mod= new TypedLiteralImpl(bblfishModulus,hex)
 
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 		val modZ: TypedLiteral = bblfishModulus^^hex
 		val expZ: TypedLiteral = 65537
 
@@ -224,9 +224,9 @@ class EzGraphTest {
 
 	@Test
 	def usingSymbolicArrows {
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
-		val ez = EzGraph()
+		val ez = EzMGraph()
 		import EzStyleChoice.unicode //in IntelliJ this is needed for the moment to remove the red lines
 		 // example using arrows
 		 (
@@ -260,10 +260,10 @@ class EzGraphTest {
 
 	@Test
 	def usingAsciiArrows {
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 		import EzStyleChoice.arrow
-		 val ez = EzGraph()
+		 val ez = EzMGraph()
 		 // example using arrows
 		 (
 		   ez.b_("reto").a(FOAF.Person)
@@ -297,11 +297,11 @@ class EzGraphTest {
 
 	@Test
 	def usingWordOperators {
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 		import org.apache.clerezza.rdf.scala.utils.Lang._
 		import EzStyleChoice.english
 
-		 val ez = EzGraph()
+		 val ez = EzMGraph()
 		 // example using arrows
 		 (
 		   ez.b_("reto").asInstanceOf[EzGraphNodeEn] a FOAF.Person

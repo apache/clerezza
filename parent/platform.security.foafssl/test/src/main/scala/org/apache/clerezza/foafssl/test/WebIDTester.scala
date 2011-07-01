@@ -36,7 +36,7 @@ import java.util.Date
 import org.apache.clerezza.rdf.scala.utils.Preamble.{toRichGraphNode,toFirstElement}
 import serializedform.Serializer
 import java.io.ByteArrayOutputStream
-import org.apache.clerezza.rdf.scala.utils.EzGraph._
+import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 import java.math.BigInteger
 import collection.mutable.{Queue, LinkedList}
 import javax.security.auth.Subject
@@ -675,7 +675,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
   */
 class Assertor {
 
-	val g = new EzGraph(new SimpleMGraph)
+	val g = new EzMGraph(new SimpleMGraph)
 
 	var assertions: List[Assertion] = Nil
 

@@ -101,7 +101,7 @@ class PingBack {
 	 */
 	def  pingCollection(id: String, uriInfo: UriInfo): EzGraphNodeA = {
 		val pingRef = new UriRef(pingCollUri(id, uriInfo))
-		val pingCollG: EzGraph = pingColl(pingRef)
+		val pingCollG: EzMGraph = pingColl(pingRef)
 		pingCollG.node(pingRef)
 	}
 
@@ -119,7 +119,7 @@ class PingBack {
 	/**
 	 * get Ping Collection
 	 */
-	def pingColl(pingCollRef: UriRef): EzGraph = {
+	def pingColl(pingCollRef: UriRef): EzMGraph = {
 		val tcgraph =AccessController.doPrivileged(new PrivilegedAction[MGraph] {
 			def run: MGraph = try {
 				tcManager.getMGraph(pingCollRef)
@@ -133,7 +133,7 @@ class PingBack {
 				}
 			}
 		})
-		new EzGraph(tcgraph)
+		new EzMGraph(tcgraph)
 	}
 
 	/**
@@ -224,7 +224,7 @@ class PingBack {
 		//create a new Resource for this ping (we'll use time stamps to get going)
 		val pingCollUriStr: String = pingCollUri(id, uriInfo)
 		val pingItem = new UriRef(pingCollUriStr + "/ts" + System.currentTimeMillis)
-		import org.apache.clerezza.rdf.scala.utils.EzGraph._
+		import org.apache.clerezza.rdf.scala.utils.EzMGraph._
 
 		//build the graph and add to the store if ok
 		val pingColGr = pingColl(new UriRef(pingCollUriStr))
@@ -284,7 +284,7 @@ class PingBack {
 	   //get the source graph
 		 val targetGrph = tcManager.getMGraph(target)
 		(
-			new EzGraph(new UnionMGraph(new SimpleMGraph(),targetGrph)).bnode.a(PLATFORM.HeadedPage)
+			new EzMGraph(new UnionMGraph(new SimpleMGraph(),targetGrph)).bnode.a(PLATFORM.HeadedPage)
 			                                            .a(ProxyForm)
 				-- PINGBACK.source --> { if (source == null) ProfilePanel.webID(id,uriInfo) else source }
 				-- PINGBACK.target --> target
