@@ -28,8 +28,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -65,12 +63,12 @@ class SelectableProviders<T> {
 				while (available.hasNext()) {
 					MediaType availableType = available.next();
 					if (availableType.isCompatible(mediaType)) {
-						List<T> readers = type2Provider.get(
+						List<T> entityProviders = type2Provider.get(
 								availableType);
-						for (T messageBodyReader : readers) {
-							if (tester.isAcceptable(messageBodyReader, c, t, as,
+						for (T entityProvider : entityProviders) {
+							if (tester.isAcceptable(entityProvider, c, t, as,
 									availableType)) {
-								return messageBodyReader;
+								return entityProvider;
 							}
 						}
 					}
@@ -96,10 +94,10 @@ class SelectableProviders<T> {
 		type2Provider = new MultivaluedMapImpl<MediaType, T>();
 		availableProviderTypes =
 				new HashMap<BaseMediaType, SortedSet<MediaType>>();//TreeSet<MediaType>();
-		for (T bodyReader : providers) {
-			MediaType[] types = getConsumedType(bodyReader);
+		for (T entityProvider : providers) {
+			MediaType[] types = getSupportedMediaType(entityProvider);
 			for (MediaType type : types) {
-				type2Provider.add(type, bodyReader);
+				type2Provider.add(type, entityProvider);
 				BaseMediaType baseType = new BaseMediaType(type.getType(),
 						type.getSubtype());
 				while (true) {
@@ -130,7 +128,7 @@ class SelectableProviders<T> {
 		return providers;
 	}
 
-	private MediaType[] getConsumedType(T provider) {
+	private MediaType[] getSupportedMediaType(T provider) {
 		MediaType[] result;
 		String[] mediaTypeStrings  = tester.getMediaTypeAnnotationValues(provider);
 		if (mediaTypeStrings == null) {
