@@ -17,22 +17,19 @@
  * under the License.
  */
 
-package org.apache.clerezza.platform.accountcontrolpanel.pages
+package org.apache.clerezza.platform.accountcontrolpanel.html
 
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.CONTROLPANEL
 import org.apache.clerezza.platform.typerendering.scala._
 
 
-class settings_panel extends PageRenderlet {
+class SettingsPanel extends SRenderlet {
 
-	val rdfType = CONTROLPANEL.SettingsPage
-	override def mode = "naked"
+	val getRdfType = CONTROLPANEL.SettingsPage
 
-  	override def renderedPage(arguments: RenderedPage.Arguments): RenderedPage = {
- 		new RenderedPage(arguments) {
-
-			override def content = {
+  	override def renderedPage(arguments: XmlResult.Arguments) = new XmlResult(arguments ) {
+		override def content = {
 import org.apache.clerezza.rdf.core.UriRef
 import scala.xml.NodeBuffer
 import scala.collection.mutable.ListBuffer
@@ -161,7 +158,6 @@ nodeBuff +=(<h2>Change user's default language</h2>
 	}
 	</div>
 </div>
-      }
-    }
-  }
+		}
+	}
 }

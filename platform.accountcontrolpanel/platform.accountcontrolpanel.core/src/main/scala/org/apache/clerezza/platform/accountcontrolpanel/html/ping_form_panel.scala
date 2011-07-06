@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.clerezza.platform.accountcontrolpanel.pages
+package org.apache.clerezza.platform.accountcontrolpanel.html
 
 
 import org.apache.clerezza.platform.accountcontrolpanel.ontologies.PINGBACK
@@ -82,8 +82,8 @@ class XmlPingForm(args: XmlResult.Arguments) extends XmlResult(args) {
        //todo: add code in case to is on the document, not the object
 		<div id="tx-content">
 			<h2>Ping</h2>
-			<p>Ping {person_panel.getName(target)}
-			</p>{person_panel.getAgentPix(target)}
+			<p>Ping {PersonPanel.getName(target)}
+			</p>{PersonPanel.getAgentPix(target)}
 			<p>About
 				{source}
 			</p>
