@@ -58,18 +58,18 @@ import org.apache.clerezza.platform.users.{WebIdInfo, WebIdGraphsService}
 import org.apache.clerezza.rdf.scala.utils._
 
 object ProfilePanel {
-	val webIdTemplate = classOf[ProfilePanel].getAnnotation(classOf[Path]).value+"#me"
+	//val webIdTemplate = classOf[ProfilePanel].getAnnotation(classOf[Path]).value+"#me"
 
 
 	/*
 	 * return the WebID for the given user name  given the UriInfo (which contains information for
 	 * server default name)
 	 **/
-	def webID(uname: String, uriInfo: UriInfo): UriRef = {
+	/*def webID(uname: String, uriInfo: UriInfo): UriRef = {
 		val path = PingBack.interpolate(webIdTemplate, uname)
 		val uriStr = uriInfo.getBaseUri.resolve(path); //a bit expensive for something so simple
 		new UriRef(uriStr.toString)
-	}
+	}*/
 }
 
 /**
