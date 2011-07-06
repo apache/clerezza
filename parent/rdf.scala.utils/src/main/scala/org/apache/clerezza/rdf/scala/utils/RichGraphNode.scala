@@ -18,11 +18,14 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
+import org.apache.clerezza.rdf.ontologies.RDF
 import org.apache.clerezza.rdf.utils.GraphNode
 import java.util.Iterator
 import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
-import org.apache.clerezza.rdf.core.{TripleCollection, UriRef, Resource, Literal, TypedLiteral, LiteralFactory}
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph
+import org.apache.clerezza.rdf.core.{TripleCollection, UriRef, Resource, Literal, TypedLiteral, LiteralFactory, NonLiteral, BNode}
+import org.apache.clerezza.rdf.utils.UnionMGraph
 
 
 /**
@@ -42,7 +45,7 @@ class RichGraphNode(resource: Resource, graph: TripleCollection ) extends GraphN
 	 * @param node The GraphNode to be wrapped
 	 */
 	 def this(node: GraphNode) = this(node.getNode, node.getGraph)
-
+	 
 	/**
 	 * Operator syntax shortcut to get all objects as <code>RichGraphNode</code>
 	 *
@@ -132,6 +135,104 @@ class RichGraphNode(resource: Resource, graph: TripleCollection ) extends GraphN
 
 		override def remove() {
 			base.remove()
+		}
+	}
+
+	/**
+	 *Sets the RDF:type of the subject */
+	def a(rdfclass: UriRef): RichGraphNode = {
+		addProperty(RDF.`type`, rdfclass)
+		return this
+	}
+
+	/*
+	 * create an RichGraphNode from this one where the backing graph is protected from writes by a new
+	 * SimpleGraph.
+	 */
+	def protect(): RichGraphNode = new RichGraphNode(getNode, new UnionMGraph(new SimpleMGraph(), graph))
+
+
+	/**
+	 * relate the subject via the given relation to....
+	 */
+	def --(rel: Resource): DashTuple = new DashTuple(rel)
+
+	def --(rel: RichGraphNode): DashTuple = new DashTuple(rel.getNode)
+
+
+	/**
+	 * relate the subject via the inverse of the given relation to....
+	 */
+	def <--(tuple: RichGraphNode#DashTuple): RichGraphNode = {
+		val inversePropertyRes = tuple.first.getNode
+		val inverseProperty: UriRef =  inversePropertyRes match {
+			case p: UriRef => p
+			case _ => throw new RuntimeException("DashTuple must be a UriRef")
+		}
+		RichGraphNode.this.addInverseProperty(inverseProperty, tuple.second)
+		RichGraphNode.this
+	}
+
+
+	/** class for Inverse relations with the current RichGraphNode.ref as object */
+	//TODO add support for adding many for symmetry reasons
+//	class InverseDashTuple(rel: DashTuple) {
+//
+//		/**
+//		 * ...to the following non literal
+//		 */
+//		def --(subj: NonLiteral): RichGraphNode = {
+//			RichGraphNode.this.addInverseProperty(rel, subj)
+//			RichGraphNode.this
+//		}
+//
+//		/**
+//		 * ...to the following resource (given as a string)
+//		 */
+//		def --(subj: String): RichGraphNode = --(new UriRef(subj))
+//
+//		/**
+//		 * ...to the following EzGraphNode
+//		 * (useful for opening a new parenthesis and specifying other things in more detail
+//		 */
+//		def --(subj: GraphNode): RichGraphNode = {
+//			--(subj.getNode.asInstanceOf[NonLiteral])
+//		}
+//		// since we can only have inverses from non literals (howto deal with bndoes?)
+//	}
+
+	/**
+	 *  class for relations with the current RichGraphNode.ref as subject
+	 */
+	class DashTuple(val second: Resource) {
+
+		val first = RichGraphNode.this
+		/**
+		 * ...to the following non resource
+		 */
+		def -->(obj: Resource): RichGraphNode = {
+			val property = second match {
+				case u: UriRef => u;
+				case _ => throw new RuntimeException("Property must be a UriRef")
+			}
+			RichGraphNode.this.addProperty(property, obj)
+			RichGraphNode.this
+		}
+
+
+		/**
+		 * ...to the EzGraphNode, which is useful for opening a parenthesis.
+		 */
+		def -->(sub: GraphNode): RichGraphNode = {
+			//RichGraphNode.this + sub
+			-->(sub.getNode)
+		}
+		/**
+		 * Add one relation for each member of the iterable collection
+		 */
+		def -->>[T <: Resource](uris: Iterable[T]): RichGraphNode = {
+			for (u <- uris) -->(u)
+			RichGraphNode.this
 		}
 	}
 }

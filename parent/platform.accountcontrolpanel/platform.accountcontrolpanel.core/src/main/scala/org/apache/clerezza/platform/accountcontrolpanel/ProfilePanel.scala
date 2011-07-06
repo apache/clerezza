@@ -82,8 +82,7 @@ object ProfilePanel {
 class ProfilePanel extends Logging {
 
 	import collection.JavaConversions._
-	import EzMGraph._
-	import EzStyleChoice.unicode
+	import Preamble._
 
 
 	@GET
@@ -96,36 +95,33 @@ class ProfilePanel extends Logging {
 	}
 
 	//todo: there is a bit of repetition in the graphs, and it is not clear why these relations should not go straight into the DB. What should, what should not?
-	private def getPersonalProfile(userName: String, info: UriInfo): EzGraphNode = {
+	private def getPersonalProfile(userName: String, info: UriInfo): GraphNode = {
 		val profileDocUri = getSuggestedPPDUri(userName)
 
-		val profile = AccessController.doPrivileged(new PrivilegedAction[EzGraphNodeU] {
-			def run: EzGraphNodeU = {
+		val profile = AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
+			def run: GraphNode = {
 				val userInSysGraph = userManager.getUserInSystemGraph(userName)
 				val user = userInSysGraph.getNode
-				val profile = userInSysGraph.getNode match {
+				val profile: GraphNode = userInSysGraph.getNode match {
 					case blank: BNode => {
 						//user does not have a webId yet
-						val g = EzMGraph()
-						(
-							g.bnode ⟝ CONTROLPANEL.isLocalProfile ⟶ true
-								⟝ CONTROLPANEL.suggestedPPDUri ⟶ profileDocUri
-								⟝ FOAF.primaryTopic ⟶ (g.bnode ⟝ PLATFORM.userName ⟶ userName)
-							)
+						val g = new EzMGraph()
+						import g._
+						val profile = bnode
+						(profile -- CONTROLPANEL.isLocalProfile --> bool2lit(true)
+						-- CONTROLPANEL.suggestedPPDUri --> profileDocUri
+						-- FOAF.primaryTopic --> (bnode -- PLATFORM.userName --> userName))
+						profile
 					}
 					case webid: UriRef => {
 						var webIDInfo = webIdGraphsService.getWebIdInfo(webid)
-						var res = EzGraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.localPublicUserData))
-						(res ⟝ CONTROLPANEL.isLocalProfile ⟶ webIDInfo.isLocal
-							⟝ FOAF.primaryTopic ⟶ webid)
-						if (webIDInfo.isLocal) {
-							//the reason we need to call pingCollUri is we need a full URI because lack of support for relative URIs
-							res ⟝ PINGBACK.to ⟶ new UriRef(PingBack.pingCollUri(userName, info))
-						}
+						var res = new GraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.localPublicUserData))
+						(res -- CONTROLPANEL.isLocalProfile --> bool2lit(webIDInfo.isLocal)
+							-- FOAF.primaryTopic --> webid)
 						res
 					}
 				}
-				val friendInfo = for (kn: Triple <- profile.getGraph.filter(user.asInstanceOf[NonLiteral], FOAF.knows, null)
+				val friendInfo:Iterator[TripleCollection] = for (kn: Triple <- profile.getGraph.filter(user.asInstanceOf[NonLiteral], FOAF.knows, null)
 				                      if kn.getObject.isInstanceOf[UriRef];
 				                      friend = kn.getObject.asInstanceOf[UriRef]
 				                      if (friend != profileDocUri)
@@ -136,18 +132,21 @@ class ProfilePanel extends Logging {
 					} catch {
 						case e => {
 							logger.warn("cought exception trying to fetch graph - these graphs should already be in store " + friend, e)
-							EzMGraph().add(friend, SKOS.note, "problem with fetching this node: " + e)
+							new EzMGraph() {
+								friend -- SKOS.note --> ("problem with fetching this node: " + e)
+							}
 						}
 					}
 				}
-				for (g <- friendInfo) profile.graph.addAll(g)
+				//vera bad: mixing data from different sources
+				for (g <- friendInfo) profile.getGraph.addAll(g)
 				profile
 			}
 		})
 
 
-		(profile ∈   PLATFORM.HeadedPage
-		         ∈  CONTROLPANEL.ProfilePage)
+		(profile a   PLATFORM.HeadedPage
+		         a  CONTROLPANEL.ProfilePage)
 	}
 
 	/**
@@ -289,14 +288,16 @@ class ProfilePanel extends Logging {
 		     val webIdInfo = webIdGraphsService.getWebIdInfo(webidRef);
 		     if (webIdInfo.isLocal)
 		) {
-			val certNode = new EzMGraph(webIdInfo.localPublicUserData).bnode
-			( certNode ∈  RSA.RSAPublicKey
-			   ⟝ CERT.identity ⟶  webidRef
-			   ⟝ RSA.modulus ⟶  modulus
-			   ⟝ RSA.public_exponent ⟶  publicExponent
-			   ⟝ DC.date ⟶  cert.getStartDate )
+			val certGraph = new EzMGraph(webIdInfo.localPublicUserData)
+			import certGraph._
+			val certNode = certGraph.bnode
+			( (certNode a  RSA.RSAPublicKey)
+			   -- CERT.identity -->  webidRef
+			   -- RSA.modulus -->  modulus
+			   -- RSA.public_exponent -->  publicExponent
+			   -- DC.date -->  cert.getStartDate )
 			if (comment != null && comment.length > 0) {
-				certNode ⟝  RDFS.comment ⟶  comment
+				certNode --  RDFS.comment -->  comment
 			}
 		}
 		var resBuild: Response.ResponseBuilder = Response.ok(ser.getContent, MediaType.valueOf(ser.getMimeType))

@@ -32,7 +32,7 @@ import java.security.{PrivilegedAction, AccessController}
 import org.apache.clerezza.rdf.core._
 import access.TcManager
 import impl.SimpleMGraph
-import org.apache.clerezza.rdf.scala.utils.{EzStyleChoice, EzMGraph}
+import org.apache.clerezza.rdf.scala.utils.EzMGraph
 
 object FoafBrowser {
 	def removeHash(uri: UriRef) = {
@@ -52,9 +52,8 @@ object FoafBrowser {
  */
 @Path("/browse")
 class FoafBrowser extends Logging {
-	import org.apache.clerezza.rdf.scala.utils.EzMGraph._
+	import org.apache.clerezza.rdf.scala.utils.Preamble._
 	import org.apache.clerezza.platform.accountcontrolpanel.FoafBrowser._
-	import EzStyleChoice.unicode
 
 	protected def activate(componentContext: ComponentContext): Unit = {
 //		this.componentContext = componentContext
@@ -80,19 +79,20 @@ class FoafBrowser extends Logging {
 
 		val inference = new EzMGraph(new UnionMGraph(new SimpleMGraph(),profile))
 
+		import inference._
 		//add a bit of inferencing for persons, until we have some reasoning
 		for (kn: Triple <- profile.filter(null,FOAF.knows,null)) {
-			inference.addType(kn.getSubject, FOAF.Person)
+			kn.getSubject a FOAF.Person
 			if (kn.getObject.isInstanceOf[NonLiteral])
-				inference.addType(kn.getSubject,FOAF.Person)
+				kn.getObject a FOAF.Person
 		}
 
 		//todo: if possible get a bit more info about remote profiles, if these are in the db
 
 		//Here we make a BNode the subject of the properties as a workaround to CLEREZZA-447
-		return ( inference.node(uriInfo.getRequestUri()) ∈  PLATFORM.HeadedPage
-					∈  CONTROLPANEL.ProfileViewerPage
-		         ⟝ FOAF.primaryTopic ⟶ uri )
+		return ( (URItoUriRef(uriInfo.getRequestUri()) a  PLATFORM.HeadedPage
+					a  CONTROLPANEL.ProfileViewerPage)
+		         -- FOAF.primaryTopic --> uri)
 	}
 
 	protected var tcManager: TcManager = null;
