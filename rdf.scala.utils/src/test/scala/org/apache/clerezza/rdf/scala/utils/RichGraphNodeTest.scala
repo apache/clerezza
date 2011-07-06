@@ -41,11 +41,13 @@ class RichGraphNodeTest {
 		mGraph.add(new TripleImpl(johnUri, FOAF.nick, new PlainLiteralImpl("johny")));
 		mGraph.add(new TripleImpl(johnUri, FOAF.name, new PlainLiteralImpl("Johnathan Guller")));
 		mGraph.add(new TripleImpl(johnUri, FOAF.knows, billBNode))
+		mGraph.add(new TripleImpl(johnUri, RDF.`type`, FOAF.Person));
 		mGraph.add(new TripleImpl(billBNode, FOAF.nick, new PlainLiteralImpl("Bill")));
 		mGraph.add(new TripleImpl(billBNode, FOAF.name, new PlainLiteralImpl("William")));
 		mGraph.add(new TripleImpl(billBNode, RDF.`type`, FOAF.Person));
 		mGraph.add(new TripleImpl(susanneUri, FOAF.knows, johnUri));
 		mGraph.add(new TripleImpl(susanneUri, FOAF.name, new PlainLiteralImpl("Susanne")));
+		mGraph.add(new TripleImpl(susanneUri, RDF.`type`, FOAF.Person));
 		val rdfList = new RdfList(listUri, mGraph);
 		rdfList.add(johnUri)
 		rdfList.add(new PlainLiteralImpl("foo"))

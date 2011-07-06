@@ -58,7 +58,13 @@ object Preamble extends TcIndependentConversions {
 *
 * @author hjs, reto
 */
-class Preamble(baseTc: TripleCollection) extends TcIndependentConversions {
+class Preamble(val baseTc: TripleCollection) extends TcDependentConversions {
+	
+}
+protected trait TcDependentConversions extends TcIndependentConversions {
+	
+	def baseTc: TripleCollection
+	
 	implicit def toRichGraphNode(resource: Resource) = {
 		new RichGraphNode(new GraphNode(resource, baseTc))
 	}
@@ -124,14 +130,23 @@ protected object TcIndependentConversions {
 	 */
 	class LiteralBuilder(val lexicalForm: String) {
 
-	/**
+		/**
 		 * Produces a PlainLiteral with the wrapped String as lexical form
 		 * and a given language
 		 *
 		 * @param lang the language tag of the literal to be created
 		 * @return a plain literal with the specified language
 		 */
-		def lang(lang: Lang) = new PlainLiteralImpl(lexicalForm, lang)
+		def lang(lang: Language) = new PlainLiteralImpl(lexicalForm, lang)
+
+		/**
+		 * Produces a PlainLiteral with the wrapped String as lexical form
+		 * and a given language
+		 *
+		 * @param lang a sthe language tag of the literal to be created as String
+		 * @return a plain literal with the specified language
+		 */
+		def lang(lang: String) = new PlainLiteralImpl(lexicalForm, new Language(lang))
 
 		/**
 		 * Produces a PlainLiteral with the wrapped String as lexical form

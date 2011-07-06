@@ -36,14 +36,13 @@ import java.util.Date
 import org.apache.clerezza.rdf.scala.utils.Preamble.{toRichGraphNode,toFirstElement}
 import serializedform.Serializer
 import java.io.ByteArrayOutputStream
-import org.apache.clerezza.rdf.scala.utils.EzMGraph._
+import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.math.BigInteger
 import collection.mutable.{Queue, LinkedList}
 import javax.security.auth.Subject
 import collection.JavaConversions._
 import org.apache.clerezza.platform.users.WebIdGraphsService
 import org.apache.clerezza.rdf.scala.utils._
-import EzStyleChoice.arrow
 
 /**
  * implementation of (very early) version of test server for WebID so that the following tests
@@ -129,6 +128,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 
 	def runTests() {
 
+		import g._
 		val thisDoc = (g.bnode.a(FOAF.Document) //there really has to be a way to get THIS doc url, to add relative urls to the graph
 			               -- DCTERMS.created --> now
 			)
@@ -146,7 +146,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 			// Assertion public key
 			//
 			val pubkey = claim.cert.getPublicKey
-			val testCertKey = create(TEST.certificatePubkeyRecognised, cert.ref)
+			val testCertKey = create(TEST.certificatePubkeyRecognised, cert)
 
 			pubkey match {
 				case rsa: RSAPublicKey => {
@@ -158,7 +158,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 					val res = testCertKey.result;
 					res.description = "Certificate contains RSA key which is recognised"
 					res.outcome = EARL.passed
-					res.pointer(pk.ref)
+					res.pointer(pk.getNode.asInstanceOf[NonLiteral])
 				}
 				case _ => {
 					testCertKey.result.description = "Certificate contains key that is not understood by WebID layer " +
@@ -170,7 +170,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 			//
 			// Assertion time stamp of certificate
 			//
-			val dateOkAss = create(TEST.certificateDateOk, cert.ref)
+			val dateOkAss = create(TEST.certificateDateOk, cert)
 			val notBefore = claim.cert.getNotBefore
 			val notAfter = claim.cert.getNotAfter
 
@@ -178,12 +178,12 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 				dateOkAss.result("Certificate time is too early. Watch out this is often due to time " +
 					"synchronisation issues accross servers", failed)
 			} else if (now.after(notAfter)) {
-				dateOkAss.result("Certificate validity time has expired. ", failed, thisDoc.ref)
+				dateOkAss.result("Certificate validity time has expired. ", failed, thisDoc.getNode)
 			} else {
-				dateOkAss.result("Certificate time is valid", passed, thisDoc.ref)
+				dateOkAss.result("Certificate time is valid", passed, thisDoc.getNode)
 			}
 
-			cert.ref -> claim
+			cert -> claim
 		}
 
 		//
@@ -600,15 +600,16 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 			sout.serialize(out, graph, "text/rdf+n3")
 			val n3String = out.toString("UTF-8")
 			//todo: turtle mime type literal?
-			val keylit: EzGraphNode = g.bnode --  OWL.sameAs --> (n3String^^"http://example.com/turtle".uri)
+			import g._
+			val keylit: GraphNode = g.bnode --  OWL.sameAs --> (n3String^^"http://example.com/turtle".uri)
 
 
 			//
 			// some of the tester we will complete here
 			//
-			val asrtKeyModulusFunc = create(TEST.pubkeyRSAModulusFunctional, keylit.ref)
-			val asrtKeyExpoFunc = create(TEST.pubkeyRSAExponentFunctional, keylit.ref)
-			val asrtWffkey = create(TEST.profileWellFormedKey, keylit.ref)
+			val asrtKeyModulusFunc = create(TEST.pubkeyRSAModulusFunctional, keylit.getNode)
+			val asrtKeyExpoFunc = create(TEST.pubkeyRSAExponentFunctional, keylit.getNode)
+			val asrtWffkey = create(TEST.profileWellFormedKey, keylit.getNode)
 
 
 			var claimsTobeRsaKey = pkey.hasProperty(RDF.`type`, RSA.RSAPublicKey)
@@ -637,7 +638,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 			} else {
 				asrtKeyModulusFunc.result("Found one Modulus", passed)
 
-				rsaModOk = testRSAModulus(mods, keylit.ref)
+				rsaModOk = testRSAModulus(mods, keylit.getNode)
 			}
 
 			if (exps.size == 0) {
@@ -653,7 +654,7 @@ class CertTester(subj: Subject, webIdGraphsService: WebIdGraphsService) extends 
 				//we could have a problem
 			} else {
 				asrtKeyExpoFunc.result("Found one Modulus", passed)
-				rsaExpOk = testRSAExp(mods, keylit.ref)
+				rsaExpOk = testRSAExp(mods, keylit.getNode)
 			}
 
 			if (rsaExpOk && rsaModOk) {
@@ -706,7 +707,8 @@ class Assertor {
 			new TstResult
 		}
 
-		def toRdf(): EzGraphNode = (
+		import g._
+		def toRdf(): GraphNode = (
 			g.bnode.a(EARL.Assertion)
 				-- EARL.test --> testName
 				-- EARL.result --> result.toRdf()
@@ -738,13 +740,15 @@ class Assertor {
 		}
 
 
-		def toRdf(): EzGraphNode =  (
-				g.bnode.a(EARL.TestResult)
+		def toRdf(): GraphNode =  {
+				import g._
+				(g.bnode.a(EARL.TestResult)
 					-- DC.description --> description
 					-- EARL.outcome --> outcome
 					-- EARL.pointer -->> pointers
 				   -- EARL.info -->> { for (e <- exceptions) yield new PlainLiteralImpl(e.toString)  }
-				)
+				   )
+		}
 
 	}
 
