@@ -20,58 +20,51 @@
 package org.apache.clerezza.platform.accountcontrolpanel
 
 import java.security.Permission
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.scala.Logging
 
 //note: file has lower class name, as it contains many classes
 
-/**
- *
- *
- * @author bblfish
- */
-
-object AbstractPermission {
-	private  val logger: Logger = LoggerFactory.getLogger(classOf[AbstractPermission])
-}
 
 /**
  * superclass for the permission classes, to avoid a lot of boilerplate code
  *
- * @author bblfish
+ * @author bblfish, reto
  */
-
-
 abstract
-class AbstractPermission(val accountName: String, val actions: String ="") extends Permission(accountName)  {
-	import AbstractPermission.logger
+class AbstractPermission(val accountName: String, val actions: String ="")
+	extends Permission(accountName) with Logging  {
+
+	if (actions != "") {
+		throw new RuntimeException(getClass.getName+": actions must be an empty String "+
+			"(second argument only in constructor for supporting building from canonical form")
+	}
 
 	def getActions: String = actions
 
 	/**
-	 * this overriding this method, one should create a canEquals method as described in "Programming in Scala" Book
-	 * by Martin Odersky, Lex Spoon, Bill Venners
+	 * A subclass implies another permission if and only if they are equals
 	 */
-	def canEqual(other: Any): Boolean
-
    override
 	def implies(permission: Permission): Boolean = {
-		logger.debug("checking for {} in {}", permission, this)
+		logger.debug("checking for "+permission+" is implied by "+ this)
 		var result: Boolean = equals(permission)
-		logger.debug("result {}", result)
 		return result
 	}
 
 	override
 	def equals(other: Any): Boolean =
 	    other match {
-			case that:  AbstractPermission  =>  ( that eq this ) || ( that.canEqual(this) && accountName == that.accountName )
+			case that:  AbstractPermission  =>  
+				(that eq this ) || ((this.getClass == that.getClass) && accountName == that.accountName )
 			case _ => false
 	    }
 
-  //todo: the hashes for same named account names of different types would be the same here
+	/**
+	 * For the hashCode the class and the accountName is considered
+	 */
 	override
 	def hashCode: Int = {
-		return  41 * (41 + (if (accountName != null) accountName.hashCode else 0))
+		return  getClass.hashCode + (if (accountName != null) accountName.hashCode else 0)
 	}
 }
 
@@ -82,9 +75,6 @@ class AbstractPermission(val accountName: String, val actions: String ="") exten
  */
 class ChangePasswordPermission(accountName: String, actions: String ="")
 	extends AbstractPermission(accountName, actions) {
-
-	def canEqual(other: Any): Boolean = other.isInstanceOf[ChangePasswordPermission]
-
 
 }
 
@@ -97,7 +87,6 @@ class ChangePasswordPermission(accountName: String, actions: String ="")
 class AccountControlPanelAppPermission(accountName: String, actions: String ="")
 	extends AbstractPermission(accountName)  {
 
-	def canEqual(other: Any): Boolean = other.isInstanceOf[AccountControlPanelAppPermission]
 
 }
 
@@ -110,6 +99,5 @@ class AccountControlPanelAppPermission(accountName: String, actions: String ="")
 class UserBundlePermission( accountName: String, actions: String ="")
 	extends AbstractPermission(accountName)  {
 
-	def canEqual(other: Any): Boolean = other.isInstanceOf[UserBundlePermission]
 
 }

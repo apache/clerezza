@@ -1,4 +1,4 @@
-package org.apache.clerezza.platform.accountcontrolpanel.pages
+package org.apache.clerezza.platform.accountcontrolpanel.html
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
