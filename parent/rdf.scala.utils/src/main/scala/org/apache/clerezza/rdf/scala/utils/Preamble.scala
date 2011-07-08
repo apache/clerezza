@@ -108,8 +108,6 @@ protected trait TcIndependentConversions {
 
 	implicit def bool2lit(boolean: Boolean) = litFactory.createTypedLiteral(boolean)
 
-	implicit def scalaBool2lit(boolean: scala.Boolean) = litFactory.createTypedLiteral(boolean)
-
 	implicit def long2lit(long: Long) = litFactory.createTypedLiteral(long)
 
 	implicit def double2lit(double: Double) = litFactory.createTypedLiteral(double)
