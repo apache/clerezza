@@ -86,7 +86,7 @@ class GraphNodeProvider extends Logging {
 			uri.getScheme+"://"+uri.getAuthority
 		}
 
-		val anyHostUri = new UriRef(Constants.ALL_HOSTS_URI_PREFIX + uriPath)
+		val anyHostUri = new UriRef(Constants.URN_LOCAL_INSTANCE + uriPath)
 
 		var mGraphs: List[TripleCollection] = Nil
 
