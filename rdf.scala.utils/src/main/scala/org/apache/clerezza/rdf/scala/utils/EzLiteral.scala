@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.scala.utils
 
 import org.apache.clerezza.rdf.core.impl.{TypedLiteralImpl, PlainLiteralImpl}
 import org.apache.clerezza.rdf.ontologies.XSD
-import org.apache.clerezza.rdf.core.{Language, PlainLiteral, UriRef}
+import org.apache.clerezza.rdf.core.{TypedLiteral, Language, PlainLiteral, UriRef}
 
 object EzLiteral extends EzLiteralImplicits
 
@@ -56,17 +56,12 @@ class EzLiteral(string: String) extends TypedLiteralImpl(string,XSD.string) {
 	/**
 	 * @return a plain literal with language specified by lang
 	 */
-	def lang(lng: Language) = new PlainLiteralImpl(string, lng)
-
-	/**
-	 * @return a plain literal with language specified by lang symbol
-	 */
-	def lang(lng: Symbol) = lang(new Language(lng.toString()))
+	def lang(lng: Language): PlainLiteral = new PlainLiteralImpl(string, lng)
 
 	/**
 	 * Map to a Typed Literal of given type
 	 */
-	def ^^(typ: UriRef) = new TypedLiteralImpl(string, typ)
+	def ^^(typ: UriRef): TypedLiteral = new TypedLiteralImpl(string, typ)
 
 	/**
 	 * Map to a URI of given lexical form
