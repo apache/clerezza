@@ -109,8 +109,8 @@ class ProfilePanel extends Logging {
 						import g._
 						val profile = bnode
 						(profile -- CONTROLPANEL.isLocalProfile --> bool2lit(true)
-						-- CONTROLPANEL.suggestedPPDUri --> profileDocUri
-						-- FOAF.primaryTopic --> (bnode -- PLATFORM.userName --> userName))
+							-- CONTROLPANEL.suggestedPPDUri --> profileDocUri
+							-- FOAF.primaryTopic --> (bnode -- PLATFORM.userName --> userName))
 						profile
 					}
 					case webid: UriRef => {
