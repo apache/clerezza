@@ -18,11 +18,11 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
-import org.apache.clerezza.rdf.ontologies._
 import org.junit._
 import org.apache.clerezza.rdf.core._
 import impl._
 import Preamble._
+import org.apache.clerezza.rdf.ontologies._
 
 class EzMGraphTest {
 
@@ -110,41 +110,41 @@ class EzMGraphTest {
 
 	@Test
 	def usingAsciiArrows {
-		val ez = new EzMGraph() {
-			b_("reto").a(FOAF.Person) --
-			FOAF.name --> "Reto Bachman-Gmür".lang('rm) --
-			FOAF.title --> "Mr" --
-			FOAF.currentProject --> "http://clerezza.org/".uri --
-			FOAF.knows --> (
-			 "http://bblfish.net/#hjs".uri.a(FOAF.Person)
-				  -- FOAF.name --> "Henry Story"
-				  -- FOAF.currentProject --> "http://webid.info/".uri
-				  -- FOAF.knows -->> List(b_("reto"), b_("danny"))
+		val ez = new EzMGraph() {(
+			b_("reto").a(FOAF.Person) -- FOAF.name --> "Reto Bachman-Gmür".lang("rm")
+				-- FOAF.title --> "Mr"
+				-- FOAF.currentProject --> "http://clerezza.org/".uri
+				-- FOAF.knows --> (
+					"http://bblfish.net/#hjs".uri.a(FOAF.Person)
+						-- FOAF.name --> "Henry Story"
+				      -- FOAF.currentProject --> "http://webid.info/".uri
+				      -- FOAF.knows -->> List(b_("reto"), b_("danny"))
 				  //one need to list properties before inverse properties, or use brackets
 				  <-- identity -- (
 						   bnode.a(RSAPublicKey) //. notation because of precedence of operators
 							   -- modulus --> 65537
 							   -- public_exponent --> (bblfishModulus^^hex) // brackets needed due to precedence
 						   )  
-			) --
-			FOAF.knows --> (b_("danny").a(FOAF.Person) --
-							   FOAF.name --> "Danny Ayers".lang('en)
-				 -- FOAF.knows --> "http://bblfish.net/#hjs".uri //knows
-					-- FOAF.knows --> b_("reto")
-			)
-		}
-		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size(),ez.size())
+				)
+				-- FOAF.knows --> (
+					b_("danny").a(FOAF.Person)
+						-- FOAF.name --> "Danny Ayers".lang("en")
+				      -- FOAF.knows --> "http://bblfish.net/#hjs".uri //knows
+						-- FOAF.knows --> b_("reto")
+				)
+		)}
+		Assert.assertEquals("the two graphs should be of same size",tinyGraph.size,ez.size)
 		Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
 		//We can add triples by creating a new anonymous instance
 		new EzMGraph(ez) {(
 			"http://bblfish.net/#hjs".uri -- FOAF.name --> "William"
 			-- FOAF.name --> "Bill"
 		)}
-		Assert.assertEquals("the triple colletion has grown by one",tinyGraph.size()+2,ez.size())
+		Assert.assertEquals("the triple colletion has grown by one",tinyGraph.size()+2,ez.size)
 		//or by just importing it
 		import ez._
 		ez.b_("danny") -- FOAF.name --> "George"
-		Assert.assertEquals("the triple colletion has grown by one",tinyGraph.size()+3,ez.size())
+		Assert.assertEquals("the triple colletion has grown by one",tinyGraph.size()+3,ez.size)
 	}
 
 }
