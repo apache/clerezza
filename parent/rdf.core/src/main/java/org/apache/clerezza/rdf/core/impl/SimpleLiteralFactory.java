@@ -44,14 +44,12 @@ import org.apache.clerezza.rdf.core.impl.util.W3CDateFormat;
 
 public class SimpleLiteralFactory extends LiteralFactory {
 
-	final private static UriRef xsdInteger =
-			new UriRef("http://www.w3.org/2001/XMLSchema#integer");
-	final private static UriRef xsdInt =
-			new UriRef("http://www.w3.org/2001/XMLSchema#int");
-	final private static UriRef xsdShort =
-			new UriRef("http://www.w3.org/2001/XMLSchema#short");
-	final private static UriRef xsdByte =
-			new UriRef("http://www.w3.org/2001/XMLSchema#byte");
+	private static final String XSD = "http://www.w3.org/2001/XMLSchema#";
+	final private static UriRef xsdInteger = xsd("integer");
+	final private static UriRef xsdInt = xsd("int");
+	final private static UriRef xsdShort = xsd("short");
+	final private static UriRef xsdByte = xsd("byte");
+	final private static UriRef xsdLong = xsd("long");
 	
 
 	final private static Set<UriRef> decimalTypes = new HashSet<UriRef>();
@@ -60,7 +58,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 	final static Class<? extends byte[]> byteArrayType;
 
 	static {
-		Collections.addAll(decimalTypes, xsdInteger, xsdInt, xsdByte, xsdShort);
+		Collections.addAll(decimalTypes, xsdInteger, xsdInt, xsdByte, xsdShort, xsdLong );
 
 		byte[] byteArray = new byte[0];
 		byteArrayType = byteArray.getClass();
@@ -75,11 +73,12 @@ public class SimpleLiteralFactory extends LiteralFactory {
 		typeConverterMap.put(UriRef.class, new UriRefConverter());
 	}
 
-	final private static UriRef xsdDouble =
-			new UriRef("http://www.w3.org/2001/XMLSchema#double");
-	final private static UriRef xsdAnyURI =
-			new UriRef("http://www.w3.org/2001/XMLSchema#anyURI");
+	final private static UriRef xsdDouble =xsd("double");
+	final private static UriRef xsdAnyURI =xsd("anyURI");
 
+	final private static UriRef xsd(String name) {
+	   return new UriRef(XSD+name);
+	}
 
 	private static interface TypeConverter<T> {
 		TypedLiteral createTypedLiteral(T value);
@@ -88,8 +87,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class  ByteArrayConverter implements TypeConverter<byte[]> {
 
-		private static final UriRef base64Uri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#base64Binary");
+		private static final UriRef base64Uri =xsd("base64Binary");
 
 		@Override
 		public TypedLiteral createTypedLiteral(byte[] value) {
@@ -108,8 +106,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 	}
 	private static class  DateConverter implements TypeConverter<Date> {
 
-		private static final UriRef dateTimeUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#dateTime");
+		private static final UriRef dateTimeUri =xsd("dateTime");
 		private static final DateFormat DATE_FORMAT = new W3CDateFormat();
 
 		@Override
@@ -134,8 +131,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class BooleanConverter implements TypeConverter<Boolean> {
 
-		private static final UriRef booleanUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#boolean");
+		private static final UriRef booleanUri =xsd("boolean");
 		public static final TypedLiteralImpl TRUE = new TypedLiteralImpl("true", booleanUri);
 		public static final TypedLiteralImpl FALSE = new TypedLiteralImpl("false", booleanUri);
 
@@ -158,8 +154,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 	private static class StringConverter implements TypeConverter<String> {
 
-		private static final UriRef stringUri =
-			new UriRef("http://www.w3.org/2001/XMLSchema#string");
+		private static final UriRef stringUri =xsd("string");
 
 		@Override
 		public TypedLiteral createTypedLiteral(String value) {
@@ -198,7 +193,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
 		@Override
 		public TypedLiteral createTypedLiteral(Long value) {
-			return new TypedLiteralImpl(value.toString(), xsdInteger);
+			return new TypedLiteralImpl(value.toString(), xsdLong);
 		}
 
 		@Override
@@ -209,6 +204,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 			return new Long(literal.getLexicalForm());
 		}
 	}
+
 
 	private static class DoubleConverter implements TypeConverter<Double> {
 

@@ -109,7 +109,7 @@ public class LiteralFactoryTest {
 	public void longConversion() {
 		long value = 332314646;
 		TypedLiteral literal = LiteralFactory.getInstance().createTypedLiteral(value);
-		Assert.assertEquals(new UriRef("http://www.w3.org/2001/XMLSchema#integer"),
+		Assert.assertEquals(new UriRef("http://www.w3.org/2001/XMLSchema#long"),
 				literal.getDataType());
 		Long valueBack = LiteralFactory.getInstance().createObject(Long.class, literal);
 		Assert.assertEquals(value, valueBack.longValue());
