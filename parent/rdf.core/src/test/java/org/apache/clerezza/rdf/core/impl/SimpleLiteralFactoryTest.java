@@ -33,13 +33,16 @@ public class SimpleLiteralFactoryTest {
 			new UriRef("http://www.w3.org/2001/XMLSchema#integer");
 	final private static UriRef xsdInt =
 			new UriRef("http://www.w3.org/2001/XMLSchema#int");
+	final private static UriRef xsdLong =
+			new UriRef("http://www.w3.org/2001/XMLSchema#long");
+
 	SimpleLiteralFactory simpleLiteralFactory = new SimpleLiteralFactory();
 
 	@Test
 	public void longToXsdIntegerAndBackToMany() {
 		long value = 14l;
 		TypedLiteral tl = simpleLiteralFactory.createTypedLiteral(value);
-		Assert.assertEquals(xsdInteger, tl.getDataType());
+		Assert.assertEquals(xsdLong, tl.getDataType());
 		long longValue = simpleLiteralFactory.createObject(Long.class, tl);
 		Assert.assertEquals(value, longValue);
 		int intValue = simpleLiteralFactory.createObject(Integer.class, tl);
