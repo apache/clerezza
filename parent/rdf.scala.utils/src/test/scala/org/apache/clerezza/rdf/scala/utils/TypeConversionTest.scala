@@ -45,9 +45,7 @@ class TypeConversionTest {
 	def useStringWithLanguageTag {
 	   val lit = new PlainLiteralImpl("a value", new Language("en"))
 		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value" lang "en")
-		val t2 = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value" lang 'en)
 		Assert.assertEquals(lit, t.getObject)
-		Assert.assertEquals(lit, t2.getObject)
 	}
 
 	@Test
