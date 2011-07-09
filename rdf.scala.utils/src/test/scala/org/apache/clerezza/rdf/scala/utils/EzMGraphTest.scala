@@ -21,7 +21,6 @@ package org.apache.clerezza.rdf.scala.utils
 import org.junit._
 import org.apache.clerezza.rdf.core._
 import impl._
-import Preamble._
 import org.apache.clerezza.rdf.ontologies._
 
 class EzMGraphTest {
@@ -138,13 +137,13 @@ class EzMGraphTest {
 		//We can add triples by creating a new anonymous instance
 		new EzMGraph(ez) {(
 			"http://bblfish.net/#hjs".uri -- FOAF.name --> "William"
-			-- FOAF.name --> "Bill"
+					-- FOAF.name --> "Bill"
 		)}
 		Assert.assertEquals("the triple colletion has grown by one",tinyGraph.size()+2,ez.size)
 		//or by just importing it
 		import ez._
 		ez.b_("danny") -- FOAF.name --> "George"
-		Assert.assertEquals("the triple colletion has grown by one",tinyGraph.size()+3,ez.size)
+		Assert.assertEquals("the triple collection has grown by one",tinyGraph.size()+3,ez.size)
 	}
 
 }
