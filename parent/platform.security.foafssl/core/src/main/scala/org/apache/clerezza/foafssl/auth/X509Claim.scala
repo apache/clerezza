@@ -32,6 +32,7 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
 /**
  * Static methods for X509Claim. It makes it easier to read code when one knows which methods
  * have no need of any object state and which do. These methods could be moved to a library.
+ * @author bblfish
  */
 object X509Claim {
   final val logger = LoggerFactory.getLogger(classOf[X509Claim])
@@ -214,7 +215,7 @@ object X509Claim {
  *
  * todo: think of what this would look like for a chain of certificates
  *
- * @author hjs
+ * @author bblfish
  * @created: 30/03/2011
  */
 class X509Claim(val cert: X509Certificate) extends Refreshable {

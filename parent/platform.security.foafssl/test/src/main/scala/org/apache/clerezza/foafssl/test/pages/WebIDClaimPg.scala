@@ -37,7 +37,7 @@ import org.apache.clerezza.rdf.ontologies.{XSD, RDF}
 import org.apache.clerezza.platform.users.WebIdGraphsService
 
 /**
- * @author hjs
+ * @author bblfish
  * @created: 01/04/2011
  */
 

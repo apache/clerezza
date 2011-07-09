@@ -55,6 +55,7 @@ object FoafSslAuthentication {
 /**
  * Here we no longer care about verifying the web-id claims as this should
  * already have been done by X509TrustManagerWrapperService
+ * @author reto, bblfish
  */
 class FoafSslAuthentication extends WeightedAuthenticationMethod {
 

@@ -49,6 +49,8 @@ import org.apache.clerezza.rdf.scala.utils._
  * can be checked.
  *
  * http://lists.w3.org/Archives/Public/public-xg-webid/2011Jan/0107.html
+ *
+ * @author bblfish
  */
 
 object WebIDTester {
