@@ -68,7 +68,7 @@ protected trait TcDependentConversions {
 	}
 }
 
-protected trait TcIndependentConversions extends EzLiteralImplicits {
+protected[utils] trait TcIndependentConversions extends EzLiteralImplicits {
 	implicit def toRichGraphNode(node: GraphNode) = {
 		new RichGraphNode(node)
 	}
