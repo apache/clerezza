@@ -39,7 +39,7 @@ import scala.None
  *
  * todo: think of what this would look like for a chain of certificates
  *
- * @author hjs
+ * @author bblfish
  * @created 30/03/2011
  */
 class WebIDClaim(val webId: UriRef, val key: PublicKey) {

@@ -34,7 +34,7 @@ import org.apache.clerezza.rdf.core._
 * }}} near the top of the
 * file using SCB Utilities for Scala
 *
-* @author hjs, reto
+* @author bblfish, reto
 */
 object Preamble extends TcIndependentConversions {
 
@@ -54,7 +54,7 @@ object Preamble extends TcIndependentConversions {
 * before the
 * code section using the conversions
 *
-* @author hjs, reto
+* @author bblfish, reto
 */
 class Preamble(val baseTc: TripleCollection) extends TcDependentConversions with TcIndependentConversions
 

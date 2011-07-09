@@ -40,7 +40,7 @@ import java.io.StringReader;
 /**
  * Test cases always useful
  * <p/>
- * User: hjs
+ * User: bblfish
  * Date: Feb 18, 2010
  * Time: 3:59:02 PM
  */
