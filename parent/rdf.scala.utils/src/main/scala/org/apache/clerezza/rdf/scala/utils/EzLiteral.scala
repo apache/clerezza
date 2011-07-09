@@ -43,7 +43,7 @@ trait EzLiteralImplicits {
  *    "1234"^^XSD.int                    -- a number
  * </code>
  *
- * @author hjs
+ * @author bblfish
  * @created: 07/07/2011
  */
 class EzLiteral(string: String) extends TypedLiteralImpl(string,XSD.string) {

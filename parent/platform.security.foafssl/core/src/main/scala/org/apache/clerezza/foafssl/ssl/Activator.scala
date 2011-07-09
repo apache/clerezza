@@ -28,7 +28,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext
 import org.wymiwyg.jetty.httpservice.{Activator => ServiceActivator}
 
-
+/**
+ * @author reto
+ */
 class Activator() {
 
 	
