@@ -27,6 +27,7 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 import org.apache.clerezza.rdf.core.{TripleCollection, UriRef, Resource, Literal, TypedLiteral, LiteralFactory, NonLiteral, BNode}
 import org.apache.clerezza.rdf.utils.UnionMGraph
 
+object RichGraphNode extends TcIndependentConversions
 
 /**
  * A RichGraphNode decorates A GraphNode with additional method to be part on a DSL-style scala library.
