@@ -29,7 +29,7 @@ import scala.collection.mutable.HashMap
  * readable, as it avoids a lot of repetition.
  *
  * @param graph: a Triple collection
- * @author hjs, reto
+ * @author bblfish, reto
  * @created: 20/04/2011
  */
 class EzMGraph(val baseTc: MGraph) extends AbstractMGraph with TcDependentConversions {
