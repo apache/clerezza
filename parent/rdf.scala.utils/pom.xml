@@ -12,7 +12,7 @@
 	<name>Clerezza - SCB Scala Utilities</name>
 	<description>OSGi bundle providing utilities for accessing SCB
 	TripleCollections with Scala. Adding import
-	"org.apache.clerezza.rdf.scala.utils._" will allow to use
+	"org.apache.clerezza.rdf.scala.utils.Preamble._" will allow to use
 	"node/-FOAF.knows/FOAF.name!" with a GraphNode node as shortcut for
 	node.getSubject(FOAF.knows).getObject(FOAF.name).getNode(). To access
 	multiple property values the position can be indicated using the %-operator,
