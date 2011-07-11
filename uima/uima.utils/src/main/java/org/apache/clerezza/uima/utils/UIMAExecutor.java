@@ -37,13 +37,13 @@ public class UIMAExecutor {
   }
 
   /**
-   * analyze a text document using with this executor
+   * analyze a text document using the default Analysis Engine
    *
    * @param doc
    * @throws AnalysisEngineProcessException
    */
-  public void analyzeDocument(String doc) throws AnalysisEngineProcessException {
-    analyzeDocument(doc);
+  public JCas analyzeDocument(String doc) throws AnalysisEngineProcessException, ResourceInitializationException {
+    return executeAE(aeProvider.getDefaultAE(),doc);
   }
 
   /**
