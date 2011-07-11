@@ -35,11 +35,10 @@
 	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/03/controlpanel#" />
 </rdfs:Class>
 
-<rdfs:Class rdf:about="#ProfileViewerPage">
+<rdfs:Class rdf:about="#ContactConfirmPage">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-	<rdfs:label xml:lang="en">profile viewer page</rdfs:label>
-	<skos:definition xml:lang="en">A web page for viewing profiles of agents (individuals or groups) information on the
-		web. Should allow a logged in user to add them as contacts
+	<rdfs:label xml:lang="en">ContactConfirmPage</rdfs:label>
+	<skos:definition xml:lang="en">page for confiming a new contact
 	</skos:definition>
 	<rdfs:isDefinedBy rdf:resource="http://clerezza.org/2009/03/controlpanel#" />
 </rdfs:Class>

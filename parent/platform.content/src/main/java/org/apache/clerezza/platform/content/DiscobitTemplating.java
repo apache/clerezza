@@ -51,7 +51,7 @@ public class DiscobitTemplating {
 
 		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
 				new UriRef(getClass().getResource("Resource_naked.xhtml").toString()),
-				RDFS.Resource, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				RDFS.Resource, "(naked|.*-naked)", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
 		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
 				new UriRef(getClass().getResource("XHTML_InfoDiscoBit_naked.xhtml").toString()),

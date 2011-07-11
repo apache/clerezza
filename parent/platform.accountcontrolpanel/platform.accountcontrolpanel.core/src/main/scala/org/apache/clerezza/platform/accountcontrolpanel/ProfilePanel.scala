@@ -22,8 +22,8 @@ import java.util.List
 import java.util.Arrays
 import java.util.Collections
 import java.util.Iterator
-import ontologies.{PINGBACK, CONTROLPANEL}
-import org.apache.clerezza.platform.security.UserUtil
+import ontologies.CONTROLPANEL
+import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider
 import org.apache.clerezza.ssl.keygen.CertSerialisation
 import org.apache.clerezza.ssl.keygen.Certificate
 import org.apache.clerezza.foafssl.ontologies.CERT
@@ -53,24 +53,8 @@ import java.net.URI
 import org.apache.clerezza.rdf.core.access.security.TcPermission
 import org.apache.clerezza.rdf.ontologies._
 import org.slf4j.scala.Logging
-import javax.security.auth.Subject
 import org.apache.clerezza.platform.users.{WebIdInfo, WebIdGraphsService}
 import org.apache.clerezza.rdf.scala.utils._
-
-object ProfilePanel {
-	//val webIdTemplate = classOf[ProfilePanel].getAnnotation(classOf[Path]).value+"#me"
-
-
-	/*
-	 * return the WebID for the given user name  given the UriInfo (which contains information for
-	 * server default name)
-	 **/
-	/*def webID(uname: String, uriInfo: UriInfo): UriRef = {
-		val path = PingBack.interpolate(webIdTemplate, uname)
-		val uriStr = uriInfo.getBaseUri.resolve(path); //a bit expensive for something so simple
-		new UriRef(uriStr.toString)
-	}*/
-}
 
 /**
  * Presents a panel where the user can create a webid and edit her profile.
@@ -84,47 +68,53 @@ class ProfilePanel extends Logging {
 	import collection.JavaConversions._
 	import Preamble._
 
-
+	/**
+	 * Returns a GraphNode describing a ProfilePage for the user identified by
+	 * the specified UserName. A ProfilePage resourcve is retuned for any user
+	 * disregarding if they have a WebId and if this is local. The renderlet
+	 * may provide instrcutions on how a WebId is created for users that do
+	 * not have a WebId and redirect them to their WebId provider if they have
+	 * a remote WebId.
+	 */
 	@GET
 	def getPersonalProfilePage(@Context uriInfo: UriInfo,
 	                           @PathParam(value = "id") userName: String): GraphNode = {
 		TrailingSlash.enforceNotPresent(uriInfo)
+		AccessController.checkPermission(new AccountControlPanelAppPermission(userName, ""))
 		val resultNode= getPersonalProfile(userName, uriInfo)
-
 		return resultNode
 	}
 
-	//todo: there is a bit of repetition in the graphs, and it is not clear why these relations should not go straight into the DB. What should, what should not?
 	private def getPersonalProfile(userName: String, info: UriInfo): GraphNode = {
-		val profileDocUri = getSuggestedPPDUri(userName)
+		lazy val suggestedPPDUri = getSuggestedPPDUri(userName)
 
 		val profile = AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
 			def run: GraphNode = {
 				val userInSysGraph = userManager.getUserInSystemGraph(userName)
-				val user = userInSysGraph.getNode
-				val profile: GraphNode = userInSysGraph.getNode match {
+				val userResource = userInSysGraph.getNode
+				val profile: GraphNode = userResource match {
 					case blank: BNode => {
 						//user does not have a webId yet
 						val g = new EzMGraph()
 						import g._
 						val profile = bnode
 						(profile -- CONTROLPANEL.isLocalProfile --> bool2lit(true)
-							-- CONTROLPANEL.suggestedPPDUri --> profileDocUri
-							-- FOAF.primaryTopic --> (bnode -- PLATFORM.userName --> userName))
+						-- CONTROLPANEL.suggestedPPDUri --> suggestedPPDUri
+						-- FOAF.primaryTopic --> (bnode -- PLATFORM.userName --> userName))
 						profile
 					}
 					case webid: UriRef => {
 						var webIDInfo = webIdGraphsService.getWebIdInfo(webid)
-						var res = new GraphNode(profileDocUri, new UnionMGraph(new SimpleMGraph, webIDInfo.localPublicUserData))
+						var res = new GraphNode(suggestedPPDUri, new UnionMGraph(new SimpleMGraph, webIDInfo.localPublicUserData))
 						(res -- CONTROLPANEL.isLocalProfile --> bool2lit(webIDInfo.isLocal)
 							-- FOAF.primaryTopic --> webid)
 						res
 					}
 				}
-				val friendInfo:Iterator[TripleCollection] = for (kn: Triple <- profile.getGraph.filter(user.asInstanceOf[NonLiteral], FOAF.knows, null)
+				/*val friendInfo:Iterator[TripleCollection] = for (kn: Triple <- profile.getGraph.filter(userResource.asInstanceOf[NonLiteral], FOAF.knows, null)
 				                      if kn.getObject.isInstanceOf[UriRef];
 				                      friend = kn.getObject.asInstanceOf[UriRef]
-				                      if (friend != profileDocUri)
+				                      if (friend != suggestedPPDUri)
 				) yield {
 					try {
 						val friendGraph = tcManager.getGraph(FoafBrowser.removeHash(friend))
@@ -139,7 +129,7 @@ class ProfilePanel extends Logging {
 					}
 				}
 				//vera bad: mixing data from different sources
-				for (g <- friendInfo) profile.getGraph.addAll(g)
+				for (g <- friendInfo) profile.getGraph.addAll(g) */
 				profile
 			}
 		})
@@ -162,6 +152,7 @@ class ProfilePanel extends Logging {
 	def setExistingWebId(@Context uriInfo: UriInfo,
 	                     @FormParam("webid") webId: UriRef,
 	                     @PathParam(value = "id") userName: String): Response = {
+		AccessController.checkPermission(new AccountControlPanelAppPermission(userName, ""))
 		return AccessController.doPrivileged(new PrivilegedAction[Response] {
 			def run: Response = {
 				var userInSystemGraph: GraphNode = userManager.getUserInSystemGraph(userName)
@@ -177,6 +168,7 @@ class ProfilePanel extends Logging {
 	                   @PathParam(value = "id") userName: String): Response = {
 		val ppd: UriRef = getSuggestedPPDUri(userName)
 		val webId: UriRef = new UriRef(ppd.getUnicodeString + "#me")
+		AccessController.checkPermission(new AccountControlPanelAppPermission(userName, ""))
 		return AccessController.doPrivileged(new PrivilegedAction[Response] {
 			def run: Response = {
 				userManager.assignPermissionsToUser(userName, java.util.Collections.singletonList(new TcPermission(
@@ -198,16 +190,35 @@ class ProfilePanel extends Logging {
 		})
 	}
 
+	/**
+	 * Presents a confirmation form for adding a contact
+	 */
+	@GET
+	@Path("addContact")
+	def addContactConfirm(@PathParam(value = "id") userName: String,
+		@QueryParam("contactWebId") contactWebId: UriRef): GraphNode = {
+		AccessController.checkPermission(new AccountControlPanelAppPermission(userName, ""))
+		val contactNode = AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
+			def run = {
+				graphNodeProvider.get(contactWebId);
+			}
+		})
+		val resultGraph = new EzMGraph(new UnionMGraph(new SimpleMGraph, contactNode.getGraph))
+		import resultGraph._
+		val result: GraphNode = bnode
+		result a CONTROLPANEL.ContactConfirmPage
+		result -- FOAF.primaryTopic --> contactNode
+	}
+
 	@POST
 	@Path("addContact")
-	def addContact(@Context uriInfo: UriInfo,
+	def addContact(@PathParam(value = "id") userName: String, @Context uriInfo: UriInfo,
 	               @FormParam("webId") newContacts: java.util.List[UriRef]): Response = {
 		import collection.JavaConversions._
 		if (newContacts.size > 0) {
-			val subject = UserUtil.getCurrentUserName
 			var me: GraphNode = AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
 				def run: GraphNode = {
-					return userManager.getUserGraphNode(subject)
+					return userManager.getUserGraphNode(userName)
 				}
 			})
 			for (contactWebID <- newContacts) {
@@ -216,6 +227,25 @@ class ProfilePanel extends Logging {
 				meGrph.addProperty(FOAF.knows, contactWebID)
 			} //todo: one should catch errors here (bad uris sent for ex
 		}
+		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
+	}
+
+	/**
+	 * Removes a contact
+	 */
+	@POST
+	@Path("deleteContact")
+	def deleteContact(@PathParam(value = "id") userName: String, @Context uriInfo: UriInfo,
+	               @FormParam("contactWebId") contactWebId: UriRef): Response = {
+		import collection.JavaConversions._
+		var me: GraphNode = AccessController.doPrivileged(new PrivilegedAction[GraphNode] {
+			def run: GraphNode = {
+				return userManager.getUserGraphNode(userName)
+			}
+		})
+		val webIdGraphs = webIdGraphsService.getWebIdInfo(me.getNode.asInstanceOf[UriRef])
+		var meGrph: GraphNode = new GraphNode(me.getNode, webIdGraphs.localPublicUserData)
+		meGrph.deleteProperty(FOAF.knows, contactWebId)
 		return RedirectUtil.createSeeOtherResponse("../profile", uriInfo)
 	}
 
@@ -368,6 +398,14 @@ class ProfilePanel extends Logging {
 		}
 	}
 
+	protected def bindGraphNodeProvider(graphNodeProvider: GraphNodeProvider): Unit = {
+		this.graphNodeProvider = graphNodeProvider
+	}
+
+	protected def unbindGraphNodeProvider(graphNodeProvider: GraphNodeProvider): Unit = {
+		this.graphNodeProvider = null
+	}
+
 	protected def bindKeygenSrvc(keygenservice: KeygenService): Unit = {
 		keygenSrvc = keygenservice
 	}
@@ -411,6 +449,8 @@ class ProfilePanel extends Logging {
 
 
 	private var userManager: UserManager = null
+
+	private var graphNodeProvider: GraphNodeProvider = null
 
 	private var webIdGraphsService: WebIdGraphsService = null
 
