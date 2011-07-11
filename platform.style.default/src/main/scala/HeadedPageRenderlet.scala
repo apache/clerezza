@@ -1,5 +1,6 @@
 package org.apache.clerezza.platform.style.default
 
+import java.net.URLEncoder
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering._
 import org.apache.clerezza.rdf.core.UriRef
@@ -79,7 +80,8 @@ resultDocModifier.addScriptReference("/scripts/status-message.js");
 									}
 							if((userName).equals("anonymous")) {
 								<span>
-									<a href="#" id="tx-login-button">login</a>
+									<a href= {"/login?referer="+URLEncoder.encode(uriInfo.getAbsolutePath.toString, "utf-8")}
+											  id="tx-login-button">login</a>
 								</span>
 							} else {
 								<span><a href={"/user/" + userName + "/control-panel"}>{displayName}</a>|<a href="/logout">logout</a></span>
