@@ -148,15 +148,29 @@ class ProfilePanel extends SRenderlet {
 		  </form>
 
 		  <h3>Contacts</h3>
-		  <form id="addContact" method="get" action="/browse/person">
+		  
 		  <table>{ var i =0
 			  val friends = for (friend <- agent/FOAF.knows) yield {
-			  import PersonPanel._
-			  <td class="personInABox">{personInABox(friend)}</td>
+				  <td><form method="post" action="profile/deleteContact">
+					  {
+						  friend! match {
+							  case webId: UriRef => render(webId, "box-naked")
+							  case _ => render(friend, "box-naked")
+						  }
+					  }
+					  <br/>
+					  <input type="hidden" name="contactWebId" value={friend*}/>
+					  <input type="submit" value="remove contact" />
+				  </form></td>
+			  /*render(friend!.asInstanceOf[UriRef])
+							import PersonPanel._
+			  <td class="personInABox">{personInABox(friend)}</td>*/
 			 }
 			 for (row <- friends.grouped(5)) yield <tr>{row}</tr>
 		  }</table>
-		  <input type="text" name="uri" size="80"/><input type="submit" value="add contact" />
+		  <form id="addContact" method="get" action="profile/addContact">
+		  <label for="contactWebId">Add contact bei WebId:<br/></label>
+		  <input type="text" name="contactWebId" size="80"/><input type="submit" value="add contact" />
 		  </form>
 
 		  <h3>Key and Certificate Creation</h3>
