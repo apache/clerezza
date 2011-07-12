@@ -30,7 +30,6 @@ import scala.collection.mutable.HashMap
  *
  * @param graph: a Triple collection
  * @author hjs, reto
- * @created: 20/04/2011
  */
 class EzMGraph(val baseTc: MGraph) extends AbstractMGraph with TcDependentConversions {
 
