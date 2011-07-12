@@ -18,13 +18,15 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
+import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl
+import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl
+import org.apache.clerezza.rdf.ontologies.XSD
 import org.apache.clerezza.rdf.utils.GraphNode
 import java.math.BigInteger
 import java.net.URI
 import java.net.URL
 import java.util.Date
 import org.apache.clerezza.rdf.core._
-
 
 /**
 * This object provides the implicit conversions. Typically this is used by
@@ -56,10 +58,10 @@ object Preamble extends TcIndependentConversions {
 *
 * @author bblfish, reto
 */
-class Preamble(val baseTc: TripleCollection) extends TcDependentConversions with TcIndependentConversions
-
-
-protected trait TcDependentConversions {
+class Preamble(val baseTc: TripleCollection) extends TcDependentConversions {
+	
+}
+protected trait TcDependentConversions extends TcIndependentConversions {
 	
 	def baseTc: TripleCollection
 	
@@ -112,3 +114,4 @@ protected object TcIndependentConversions {
 	val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
 
 }
+
