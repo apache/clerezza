@@ -44,7 +44,6 @@ trait EzLiteralImplicits {
  * </code>
  *
  * @author bblfish
- * @created: 07/07/2011
  */
 class EzLiteral(string: String) extends TypedLiteralImpl(string,XSD.string) {
 
