@@ -25,12 +25,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza.ext</groupId>
 	<artifactId>org.ops4j.pax.swissbox.tinybundles</artifactId>
 	<name>Clerezza Ext - SwissBox TinyBundles OSGi Bundle</name>
-	<version>0.1-incubating-SNAPSHOT</version>
+	<version>0.1-incubating</version>
 	<packaging>bundle</packaging>
 	<description>json.simple parses and serializes json</description>
 	<dependencies>
