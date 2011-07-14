@@ -120,7 +120,7 @@
 				<module>templating.seedsnipe</module>
 				<module>tools.offline</module>
 				<module>triaxrs</module>
-				<module>uima</module>
+				<!-- temporarly, waiting for releases <module>uima</module> -->
 				<module>utils.customproperty</module>
 				<module>utils.imageprocessing</module>
 				<module>utils</module>
@@ -479,7 +479,7 @@
 			<dependency>
 				<groupId>org.apache.clerezza.ext</groupId>
 				<artifactId>slf4j-scala-api</artifactId>
-				<version>1.6.1-SNAPSHOT</version>
+				<version>1.6.1-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
