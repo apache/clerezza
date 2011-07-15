@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <!--
 
  Licensed to the Apache Software Foundation (ASF) under one
@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.security.conditions</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.5-incubating-SNAPSHOT</version>
+	<version>0.5-incubating</version>
 	<name>Clerezza - Platform Security Conditions</name>
 	<description>Fragment bundle for System Bundle that contains
 	conditions for the Conditional Permission Admin</description>
