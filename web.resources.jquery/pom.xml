@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>web.resources.jquery</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.5-incubating</version>
+	<version>0.6-incubating-SNAPSHOT</version>
 	<name>Clerezza - jQuery bundlized</name>
 	<description>
 		jQuery 1.3.2 as a bundle
