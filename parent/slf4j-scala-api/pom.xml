@@ -10,7 +10,7 @@
 
   <groupId>org.apache.clerezza.ext</groupId>
   <artifactId>slf4j-scala-api</artifactId>
-  <version>1.6.1-incubating</version>
+  <version>1.6.2-incubating-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>SLF4J Scala API Module</name>
 
@@ -211,11 +211,4 @@
       </plugin>
     </plugins>
   </reporting>
-
-
-  <scm>
-    <connection>scm:svn:http://svn.slf4j.org/repos/slf4j/tags/clerezza-201107</connection>
-    <developerConnection>scm:svn:https://svn.slf4j.org/repos/slf4j/tags/clerezza-201107</developerConnection>
-    <url>http://svn.slf4j.org/viewvc/slf4j/tags/clerezza-201107</url>
-  </scm>
 </project>
