@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>rdf.jena.serializer</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.9-incubating</version>
+	<version>0.10-incubating-SNAPSHOT</version>
 	<name>Clerezza - SCB Jena based Serializer</name>
 	<description>A SerializingProvider based on jena</description>
 	<dependencies>
