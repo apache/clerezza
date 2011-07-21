@@ -24,11 +24,11 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>platform.security.foafssl</artifactId>
-		<version>0.1-incubating</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.security.foafssl.test</artifactId>
-	<version>0.1-incubating</version>
+	<version>0.2-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Security foaf+ssl Test Pages</name>
 	<description>
