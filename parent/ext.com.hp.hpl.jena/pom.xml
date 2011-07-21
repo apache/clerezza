@@ -24,12 +24,12 @@
 	<parent>
         <artifactId>parent</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.3-incubating-SNAPSHOT</version>
+        <version>0.2-incubating-SNAPSHOT</version>
     </parent>
     <packaging>bundle</packaging>
     <groupId>org.apache.clerezza.ext</groupId>
     <artifactId>com.hp.hpl.jena</artifactId>
-  	<version>0.7-incubating-SNAPSHOT</version>
+  	<version>0.6-incubating-SNAPSHOT</version>
     <name>Clerezza Ext - Jena OSGi Bundle</name>
     <description>All required dependencies for Jena</description>
     <dependencies>
