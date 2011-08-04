@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.clerezza.rdf.core.NonLiteral;
@@ -96,8 +98,21 @@ public class GraphIndexer extends ResourceFinder {
 	private final GraphListener typeChangeListener;
 	private final GraphListener indexedPropertyChangeListener;
 	private Map<SortFieldArrayWrapper, Sort> sortCache = new HashMap<SortFieldArrayWrapper, Sort>();
+	private Timer timer = new Timer();
+	private final OptimizationTask optimizationTask = new OptimizationTask();
 	
-	
+	/**
+	 * Allows to schedule optimizations using a Timer.
+	 * 
+	 * NOTE: not for public access as this functionality is likely to be moved
+	 * into a stand-alone service.
+	 */
+	private class OptimizationTask extends TimerTask {
+		@Override
+		public void run() {
+			optimizeIndex();
+		}
+	}
 	
 	/**
 	 * When resources are (re)-indexed, 
@@ -513,15 +528,33 @@ public class GraphIndexer extends ResourceFinder {
 
 	@Override
 	public void optimizeIndex() {
-		try {
-			luceneTools.getIndexWriter(false).optimize();
-		} catch (CorruptIndexException ex) {
-		} catch (IOException ex) {
-		} finally {
-			luceneTools.commitChanges();
-		}
-
+		luceneTools.optimizeIndex();
 	}
+	
+	/**
+	 * Schedule optimizations for repeated executions.
+	 * 
+	 * @param delay 
+	 *		The delay before the first execution in milliseconds.
+	 * @param period 
+	 *		Time between successive executions (execution rate) in milliseconds.
+	 */
+	public void scheduleIndexOptimizations(long delay, long period) {
+		if(timer != null) {
+			timer.cancel();
+		}
+		timer = new Timer();
+		timer.scheduleAtFixedRate(optimizationTask, delay, period);
+	}
+	
+	/**
+	 * Cancel scheduled optimizations. This call does not have any effect on
+	 * optimizations that are being executed while the method is called.
+	 */
+	public void terminateIndexOptimizationSchedule() {
+		timer.cancel();
+		timer = null;
+	} 
 
 	@Override
 	public void reCreateIndex() {
