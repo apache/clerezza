@@ -21,6 +21,8 @@ package org.apache.clerezza.rdf.cris;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
@@ -47,6 +49,7 @@ public class LuceneTools {
 	private IndexWriter indexWriter = null;
 	private Analyzer analyzer = null;
 	private File luceneIndexDir = null;
+	private boolean optimizeInProgress = false;
 
 	/**
 	 * Wraps an IndexWriter to ensure that is it closed properly.
@@ -76,11 +79,13 @@ public class LuceneTools {
 
 		@Override
 		public void close() throws CorruptIndexException, IOException {
-			super.close();
-			invokeClose = false;
+			if(!optimizeInProgress) {
+				super.close();
+				invokeClose = false;
+			}
 		}
 	}
-
+	
 	/**
 	 * Constructor.
 	 * 
@@ -131,22 +136,17 @@ public class LuceneTools {
 	 */
 	public void closeIndexWriter() {
 		try {
-			if(indexWriter != null) {
-				//when should optimize be called?
-				try {
-					if(!indexWriter.getReader().isOptimized()) {
-						indexWriter.optimize();
-					}
-				} finally {
-					indexWriter.close();
-				}
+			if(indexWriter != null && !optimizeInProgress) {
+				indexWriter.close();
 			}
 		} catch (IOException ex) {
 			logger.error(ex.getMessage());
 		} catch(AlreadyClosedException ex) {
 			logger.warn("IndexWriter already closed.");
 		} finally {
-			indexWriter = null;
+			if(!optimizeInProgress) {
+				indexWriter = null;
+			}
 		}
 	}
 
@@ -156,8 +156,10 @@ public class LuceneTools {
 	 */
 	public IndexSearcher getIndexSearcher() throws RuntimeException {
 		try {
-			if (indexSearcher != null && indexSearcher.getIndexReader().isCurrent()) {
-				return indexSearcher;
+			if(indexSearcher != null) {
+				if (indexSearcher.getIndexReader().isCurrent() || optimizeInProgress) {
+					return indexSearcher;
+				}
 			}
 			if (IndexReader.indexExists(indexDirectory)) {
 				indexSearcher = new IndexSearcher(indexDirectory, true);
@@ -197,6 +199,46 @@ public class LuceneTools {
 	 */
 	public Analyzer getAnalyzer() {
 		return this.analyzer;
+	}
+	
+	/**
+	 * Starts index optimization. Optimization is started in a separate thread.
+	 * This method does not wait for optimization to finish but returns immediately 
+	 * after starting the optimize thread.
+	 */
+	synchronized public void optimizeIndex() {
+		if(optimizeInProgress) {
+			return;
+		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				optimizeInProgress = true;
+				long id = Thread.currentThread().getId();
+				Thread.currentThread().setName("CRIS Optimize Thread[" + id + "]");
+				logger.info("Starting index optimization.");
+				AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+					@Override
+					public Void run() {
+						try {
+							getIndexWriter().optimize(true);
+							commit();
+							logger.info("Index optimized.");
+						} catch(IOException ex) {
+							logger.error(ex.getMessage());
+							throw new RuntimeException("Could not optimize index.", ex);
+						} catch(OutOfMemoryError ex) {
+							logger.error(ex.getMessage());
+						} finally {
+							optimizeInProgress = false;
+							closeIndexWriter();
+						}
+						return null;
+					}
+				});
+			}
+		}).start();
 	}
 	
 	@Override
