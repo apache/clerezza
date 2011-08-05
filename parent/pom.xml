@@ -305,6 +305,11 @@
 							</goals>
 						</execution>
 					</executions>
+					<configuration>
+						<jvmArgs>
+							<jvmArg>-Xss2048k</jvmArg>
+						</jvmArgs>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>net.sf.alchim</groupId>
