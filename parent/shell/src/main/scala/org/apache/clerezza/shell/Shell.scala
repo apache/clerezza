@@ -227,7 +227,6 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 				"""|Welcome to the Apache Clerezza Console
 				|Console is based on Scala %s (%s, Java %s).
 				|Type in expressions to have them evaluated.
-				|Hint: To execute a Felix-Shell command prepend ":f "
 				|Type :help for more information.""" .
 			stripMargin.format(versionString, javaVmName, javaVersion)
 
