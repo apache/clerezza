@@ -48,7 +48,10 @@ class ShellFactory()  {
 	}
 
 	def createShell(pIn: InputStream, pOut: OutputStream) = {
-		AccessController.checkPermission(new ShellPermission())
+    var security: SecurityManager = System.getSecurityManager
+    if (security != null) {
+      AccessController.checkPermission(new ShellPermission())
+    }
 		AccessController.doPrivileged(new PrivilegedAction[Shell] {
 				override def run() = {
 					val shell = new Shell(interpreterFactory, pIn, pOut, commands)
