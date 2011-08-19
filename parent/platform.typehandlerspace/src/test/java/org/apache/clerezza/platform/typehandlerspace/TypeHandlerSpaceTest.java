@@ -43,7 +43,6 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
-import org.apache.clerezza.triaxrs.RootResourceExecutorImpl;
 import org.apache.clerezza.jaxrs.testutils.TestWebServer;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -316,7 +315,6 @@ public class TypeHandlerSpaceTest {
 						return fallbackHandler;
 					}
 				};
-				typeHandlerSpace.resourceExecutor = new RootResourceExecutorImpl();
 				result.add(typeHandlerSpace);
 				result.add(typeHandler);
 				result.add(new GraphWriterDummy());
