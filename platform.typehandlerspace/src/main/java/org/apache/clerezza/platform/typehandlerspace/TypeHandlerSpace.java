@@ -66,11 +66,6 @@ public class TypeHandlerSpace {
 	TcManager tcManager;
 
 	/**
-	 * @scr.reference
-	 */
-	RootResourceExecutor resourceExecutor;
-
-	/**
 	 * @scr.reference cardinality "1..1"
 	 */
 	TypeHandlerDiscovery typeHandlerDiscovery;
