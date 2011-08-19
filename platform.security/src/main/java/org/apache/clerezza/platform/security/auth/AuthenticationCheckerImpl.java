@@ -64,7 +64,10 @@ public class AuthenticationCheckerImpl implements AuthenticationChecker {
 	@Override
 	public boolean authenticate(String userName, String password) throws NoSuchAgent
 	{
-		AccessController.checkPermission(new CheckAuthenticationPermission());
+		SecurityManager security = System.getSecurityManager();
+		if (security != null) {
+			AccessController.checkPermission(new CheckAuthenticationPermission());
+		}
 		NonLiteral agent = getAgentFromGraph(userName);
 		String storedPassword = getPasswordOfAgent(agent);
 		if (storedPassword.equals(PasswordUtil.convertPassword(password))) {
