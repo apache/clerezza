@@ -106,6 +106,7 @@
 					<instructions>
 						<Export-Package>org.apache.clerezza.platform.security,org.apache.clerezza.platform.security.auth</Export-Package>
 						<DynamicImport-Package>*</DynamicImport-Package>
+                        <Import-Package>javax.ws.rs;resolution:=optional</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
