@@ -33,7 +33,7 @@ public class DummyWikipediaEntityAnnotator extends JCasAnnotator_ImplBase {
   public void process(JCas jcas) throws AnalysisEngineProcessException {
     WikipediaEntity wikipediaEntity = new WikipediaEntity(jcas);
     wikipediaEntity.setUri("http://en.wikipedia.org/wiki/STS-135");
-    wikipediaEntity.setName("STS-135");
+    wikipediaEntity.setLabel("STS-135");
     FSList stsAnnotationsList = findSTSAnnotations(jcas);
     wikipediaEntity.setReferences(stsAnnotationsList);
     wikipediaEntity.addToIndexes();
