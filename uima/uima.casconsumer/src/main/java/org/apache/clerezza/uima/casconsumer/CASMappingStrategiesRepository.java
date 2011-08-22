@@ -21,6 +21,8 @@ public class CASMappingStrategiesRepository {
 
   private void initialize() {
     strategies = new HashMap<String, CASMappingStrategy>();
+    strategies.put(null, new DefaultCASMappingStrategy());
+    strategies.put("", new DefaultCASMappingStrategy());
     strategies.put("default", new DefaultCASMappingStrategy());
   }
 
