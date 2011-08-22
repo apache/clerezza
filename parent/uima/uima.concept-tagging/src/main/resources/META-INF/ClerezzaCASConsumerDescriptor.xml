@@ -36,7 +36,7 @@
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>casModelFile</name>
+        <name>mappingStrategy</name>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
@@ -50,9 +50,9 @@
         </value>
       </nameValuePair>
       <nameValuePair>
-        <name>casModelFile</name>
+        <name>mappingStrategy</name>
         <value>
-          <string></string>
+          <string>default</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
