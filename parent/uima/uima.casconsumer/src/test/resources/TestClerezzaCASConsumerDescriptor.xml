@@ -52,7 +52,7 @@
       <nameValuePair>
         <name>mappingStrategy</name>
         <value>
-          <string>default</string>
+          <string></string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
