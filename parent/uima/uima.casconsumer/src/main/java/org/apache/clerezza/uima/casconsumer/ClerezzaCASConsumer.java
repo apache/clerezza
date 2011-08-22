@@ -18,20 +18,11 @@
  */
 package org.apache.clerezza.uima.casconsumer;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.uima.utils.UIMAUtils;
-import org.apache.clerezza.uima.utils.exception.FeatureStructureNotFoundException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
@@ -40,14 +31,19 @@ import org.apache.uima.resource.ResourceInitializationException;
 public class ClerezzaCASConsumer extends CasAnnotator_ImplBase {
 
   private String graphName;
-  private String casModelFilePath;
+  private CASMappingStrategy mappingStrategy;
 
   @Override
   public void initialize(UimaContext context) throws ResourceInitializationException {
     super.initialize(context);
 
-    // get the RDF model
-    casModelFilePath = String.valueOf(context.getConfigParameterValue("casModelFile"));
+    // get the CAS mapping strategy
+    try {
+      mappingStrategy = CASMappingStrategiesRepository.getInstance().getStrategy(String.valueOf(context.
+              getConfigParameterValue("mappingStrategy")));
+    } catch (UnknownStrategyException e) {
+      throw new ResourceInitializationException(e);
+    }
 
     // get the output graph name
     graphName = String.valueOf(context.getConfigParameterValue("graphName"));
@@ -55,29 +51,11 @@ public class ClerezzaCASConsumer extends CasAnnotator_ImplBase {
 
   @Override
   public void process(CAS cas) throws AnalysisEngineProcessException {
-    // create the output graph
-    MGraph outputGraph = createGraph();
-
-    // create the root node
-    GraphNode sample = new GraphNode(new BNode(), outputGraph);
-
-    // if no casModel was specified use the default mapping
-    if (casModelFilePath==null || casModelFilePath.length()==0) {
-      try {
-        UIMAUtils.enhanceNode(sample, UIMAUtils.getAllFSofType(TOP.type, cas.getJCas()));
-      } catch (FeatureStructureNotFoundException e) {
-        throw new AnalysisEngineProcessException(e);
-      } catch (CASException e) {
-        throw new AnalysisEngineProcessException(e);
-      }
+    try {
+      mappingStrategy.map(cas, graphName);
+    } catch (CASMappingException e) {
+      throw new AnalysisEngineProcessException(e);
     }
-    // TODO otherwise map UIMA FeatureStructures to Triples using the given casModel
-
   }
 
-  private MGraph createGraph() {
-    final TcManager tcManager = TcManager.getInstance();
-    final UriRef mGraphName = new UriRef(graphName);
-    return tcManager.createMGraph(mGraphName);
-  }
 }
