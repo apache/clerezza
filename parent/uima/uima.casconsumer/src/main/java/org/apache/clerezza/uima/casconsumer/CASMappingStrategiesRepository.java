@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.uima.casconsumer;
 
+import org.apache.clerezza.uima.casconsumer.ao.AOMappingStrategy;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +44,7 @@ public class CASMappingStrategiesRepository {
     strategies.put(null, new DefaultCASMappingStrategy());
     strategies.put("", new DefaultCASMappingStrategy());
     strategies.put("default", new DefaultCASMappingStrategy());
+    strategies.put("ao", new AOMappingStrategy());
   }
 
   public void register(CASMappingStrategy casMappingStrategy, String name) {
