@@ -18,38 +18,40 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.apache.clerezza.uima.utils.cl.ClerezzaUIMAExtensionClassLoader;
+import org.apache.clerezza.uima.utils.cl.AnalysisComponentsClassLoaderRepository;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
+import java.util.*;
 
 /**
  * provide the {@link AnalysisEngine} using the default descriptor or using a custom descriptor (absolute)
  * path
  */
 public class AEProvider {
+  private final static Logger log = LoggerFactory.getLogger(AEProvider.class);
 
   private static String defaultXMLPath;
-  private ClassLoader delegateClassloader;
+  private static Map<XMLInputSource, AnalysisEngine> registeredAEs;
 
   public AEProvider() {
     defaultXMLPath = "/META-INF/ExtServicesAE.xml"; // if no default is specified use the bundled ext services descriptor
+    registeredAEs = new HashMap<XMLInputSource, AnalysisEngine>();
   }
 
   public AEProvider withDefaultDescriptor(String xmlDescriptorPath) {
     defaultXMLPath = xmlDescriptorPath;
-    return this;
-  }
-
-  public AEProvider withDelegateClassloader(ClassLoader classLoader) {
-    delegateClassloader = classLoader;
     return this;
   }
 
@@ -73,7 +75,7 @@ public class AEProvider {
    *
    */
   public AnalysisEngine getAE(String filePath) throws ResourceInitializationException {
-    AnalysisEngine ae = null;
+    AnalysisEngine ae;
     // get Resource Specifier from XML file
     try {
       URL url = createURLFromPath(filePath);
@@ -89,12 +91,15 @@ public class AEProvider {
   }
 
   private URL createURLFromPath(String filePath) throws MalformedURLException {
-    URL url;
     // try classpath
-    if (delegateClassloader != null)
-      url = delegateClassloader.getResource(filePath);
-    else
-      url = getClass().getResource(filePath);
+    URL url = getClass().getResource(filePath);
+    if (url == null) {
+      for (ClassLoader c : AnalysisComponentsClassLoaderRepository.getComponents()) {
+        url = c.getResource(filePath);
+        if (url != null)
+          break;
+      }
+    }
 
     // else try file
     if (url == null) {
@@ -107,26 +112,54 @@ public class AEProvider {
     return url;
   }
 
-  public AnalysisEngine getAE(String filePath, Map<String, Object> parameterSettings) throws ResourceInitializationException {
-    AnalysisEngine ae;
-    // get Resource Specifier from XML file
+  public AnalysisEngine getAEFromSource(XMLInputSource xmlInputSource, Map<String, Object> parameterSettings) throws ResourceInitializationException {
+    AnalysisEngine ae = null;
     try {
-      URL url = createURLFromPath(filePath);
-      XMLInputSource in = new XMLInputSource(url);
+      AnalysisEngine cachedAE = registeredAEs.get(xmlInputSource);
+      if (cachedAE != null) {
+        cachedAE.reconfigure();
+        return cachedAE;
+      } else {
+        // eventually add/override descriptor's configuration parameters
+        AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(xmlInputSource);
+        for (String parameter : parameterSettings.keySet()) {
+          if (desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().getParameterValue(parameter) != null)
+            desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterValue(parameter, parameterSettings.get(parameter));
+        }
 
-      // eventually add/override descriptor's configuration parameters
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-      for (String parameter : parameterSettings.keySet()) {
-        if (desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().getParameterValue(parameter) != null)
-          desc.getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterValue(parameter, parameterSettings.get(parameter));
+        // create AE here
+        try {
+          ae = UIMAFramework.produceAnalysisEngine(desc);
+        } catch (Exception e) {
+          // do nothing
+        }
+        if (ae == null) {
+          try {
+            ResourceManager rm = UIMAFramework.newDefaultResourceManager();
+            rm.setExtensionClassPath(new ClerezzaUIMAExtensionClassLoader(getClass().getClassLoader()), "*", true);
+            ae = UIMAFramework.produceAnalysisEngine(desc, rm, null);
+          } catch (Exception e) {
+            // do nothing
+          }
+        }
+
+
+        if (ae == null) {
+          throw new AEInstantiationException();
+        } else {
+          registeredAEs.put(xmlInputSource, ae);
+        }
       }
-
-      // create AE here
-      ae = UIMAFramework.produceAnalysisEngine(desc);
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
     }
 
     return ae;
+  }
+
+  private static class AEInstantiationException extends Exception {
+    public AEInstantiationException() {
+      super();
+    }
   }
 }

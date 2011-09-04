@@ -6,19 +6,22 @@
   <version>0.1-incubating-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Clerezza - Apache UIMA extension module</name>
-  <description>Apache UIMA extension modules enable usage of UIMA for enhanced metadata extraction inside Clerezza
-  </description>
+  <description>Apache UIMA extension modules enable usage of UIMA for enhanced metadata extraction inside Clerezza</description>
   <parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>parent</artifactId>
     <version>0.2-incubating-SNAPSHOT</version>
   </parent>
+  <properties>
+    <uima.version>2.3.1</uima.version>
+  </properties>
   <modules>
     <module>uima.ontologies</module>
+    <module>uima.ontologies.ao</module>
     <module>uima.utils</module>
+    <module>uima.casconsumer</module>
     <module>uima.metadata-generator</module>
     <module>uima.concept-tagging</module>
-    <module>uima.casconsumer</module>
   </modules>
   <dependencies>
     <dependency>
@@ -31,13 +34,18 @@
     <dependencies>
       <dependency>
         <groupId>org.apache.uima</groupId>
-        <artifactId>uimaj-ep-runtime</artifactId>
-        <version>2.3.1</version>
+        <artifactId>uimaj-core</artifactId>
+        <version>${uima.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.uima</groupId>
         <artifactId>uimaj-component-test-util</artifactId>
-        <version>2.3.1</version>
+        <version>${uima.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-document-annotation</artifactId>
+        <version>${uima.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -47,6 +55,10 @@
         <groupId>org.apache.clerezza</groupId>
         <artifactId>maven-pladoc-plugin.core</artifactId>
         <version>0.3-incubating-SNAPSHOT</version>
+      </plugin>
+      <plugin>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>maven-paxexam-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

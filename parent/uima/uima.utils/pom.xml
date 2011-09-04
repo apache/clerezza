@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
   <artifactId>uima.utils</artifactId>
@@ -20,18 +20,24 @@
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
-      <artifactId>AlchemyAPIAnnotator-osgi</artifactId>
-      <version>2.3.1-SNAPSHOT</version>
+      <artifactId>AlchemyAPIAnnotator</artifactId>
+      <version>2.3.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
-      <artifactId>OpenCalaisAnnotator-osgi</artifactId>
-      <version>2.3.1-SNAPSHOT</version>
+      <artifactId>OpenCalaisAnnotator</artifactId>
+      <version>2.3.1</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.6</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.8.3</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -53,7 +59,21 @@
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-runtime</artifactId>
+      <artifactId>uimaj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-document-annotation</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-component-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
     </dependency>
   </dependencies>
   <build>
@@ -64,8 +84,9 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>org.slf4j.*;resolution:=optional,*</Import-Package>
-            <Export-Package>org.apache.clerezza.uima.utils.*</Export-Package>
+            <Export-Package>org.apache.clerezza.uima.utils.*;version=0.1.0,org.apache.uima.*;version=2.3.0</Export-Package>
+            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+            <Bundle-Activator>org.apache.clerezza.uima.utils.UIMAUtilsBundleActivator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

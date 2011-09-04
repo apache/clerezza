@@ -16,31 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.uima.utils;
+package org.apache.clerezza.uima.casconsumer;
+
+import org.apache.clerezza.uima.utils.cl.AnalysisComponentsClassLoaderRepository;
+import org.apache.clerezza.uima.utils.UIMABundleActivator;
 
 /**
- * Factory class for {@link UIMAExecutor}
+ * {@link UIMABundleActivator} to register {@link ClerezzaCASConsumer} component
  */
-public class UIMAExecutorFactory {
-
-  private static UIMAExecutorFactory instance;
-
-  private UIMAExecutorFactory() {
-  }
-
-  public static UIMAExecutorFactory getInstance() {
-    if (instance == null)
-      instance = new UIMAExecutorFactory();
-    return instance;
-  }
-
-  public UIMAExecutor createUIMAExecutor() {
-    AEProvider aeProvider = new AEProvider();
-    return new UIMAExecutor(aeProvider);
-  }
-
-  public UIMAExecutor createUIMAExecutor(String defaultXMLPath) {
-    AEProvider aeProvider = new AEProvider().withDefaultDescriptor(defaultXMLPath);
-    return new UIMAExecutor(aeProvider);
+public class ClerezzaCASConsumerActivator extends UIMABundleActivator {
+  @Override
+  protected void classRegistered() {
+    AnalysisComponentsClassLoaderRepository.registerComponent(ClerezzaCASConsumer.class);
   }
 }
