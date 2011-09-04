@@ -165,7 +165,6 @@ public class AOMappingStrategy implements CASMappingStrategy {
    * Given a documents text and a start and end offsets it returns an RDF value for the equivalent string literal. Annotations
    * have a convenience method for doing this but this method takes advantage of getting the text for the given document view once.
    *
-   * @param valueFactory used to create the RDF literal
    * @param documentText from which to extract the span of text
    * @param start        offset into the document text where the span starts if less than 0 will use zero instead
    * @param end          offset into the document text where the span ends. if the end goes beyond the length of the document text it is limited to the length

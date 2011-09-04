@@ -18,29 +18,17 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.apache.clerezza.uima.utils.cl.AnalysisComponentsClassLoaderRepository;
+import org.apache.uima.alchemy.annotator.TextRankedNamedEntityExtractionAnnotator;
+import org.apache.uima.annotator.calais.OpenCalaisAnnotator;
+
 /**
- * Factory class for {@link UIMAExecutor}
+ * {@link UIMABundleActivator} for UIMA utils project
  */
-public class UIMAExecutorFactory {
-
-  private static UIMAExecutorFactory instance;
-
-  private UIMAExecutorFactory() {
-  }
-
-  public static UIMAExecutorFactory getInstance() {
-    if (instance == null)
-      instance = new UIMAExecutorFactory();
-    return instance;
-  }
-
-  public UIMAExecutor createUIMAExecutor() {
-    AEProvider aeProvider = new AEProvider();
-    return new UIMAExecutor(aeProvider);
-  }
-
-  public UIMAExecutor createUIMAExecutor(String defaultXMLPath) {
-    AEProvider aeProvider = new AEProvider().withDefaultDescriptor(defaultXMLPath);
-    return new UIMAExecutor(aeProvider);
+public class UIMAUtilsBundleActivator extends UIMABundleActivator {
+  @Override
+  protected void classRegistered() {
+    AnalysisComponentsClassLoaderRepository.registerComponent(TextRankedNamedEntityExtractionAnnotator.class);
+    AnalysisComponentsClassLoaderRepository.registerComponent(OpenCalaisAnnotator.class);
   }
 }

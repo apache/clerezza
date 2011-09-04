@@ -26,6 +26,7 @@ import org.apache.clerezza.uima.utils.UIMAExecutorFactory;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.uima.util.XMLInputSource;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -42,7 +43,7 @@ import java.util.Map;
 @Path("/resourcetagger")
 public class UIMARemoteResourceTaggerService {
 
-  private static final String PATH = "META-INF/AggregateResourceTaggerAE.xml";
+  private static final String PATH = "/META-INF/AggregateResourceTaggerAE.xml";
   private static final String OUTPUTGRAPH = "outputgraph";
   private static final String ALCHEMYKEY = "alchemykey";
 
@@ -54,12 +55,12 @@ public class UIMARemoteResourceTaggerService {
       throw new WebApplicationException(Response.status(
               Response.Status.BAD_REQUEST).entity(new StringBuilder("No URI specified").toString()).build());
 
-    UIMAExecutor executor = UIMAExecutorFactory.getInstance().createUIMAExecutor(getClass().getClassLoader());
+    UIMAExecutor executor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put(OUTPUTGRAPH, uri);
     parameters.put(ALCHEMYKEY, key);
     try {
-      executor.analyzeDocument(uri, PATH, parameters);
+      executor.analyzeDocument(uri, new XMLInputSource(getClass().getResource(PATH)), parameters);
     } catch (Exception e) {
       throw new WebApplicationException(Response.status(
               Response.Status.INTERNAL_SERVER_ERROR).entity(new StringBuilder("Failed UIMA execution on URI ").

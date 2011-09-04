@@ -23,6 +23,9 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.uima.ontologies.ENTITY;
 import org.apache.clerezza.uima.utils.exception.FeatureStructureNotFoundException;
 import org.apache.clerezza.uima.utils.exception.NotSingletonFeatureStructureException;
+import org.apache.uima.alchemy.annotator.TextRankedNamedEntityExtractionAnnotator;
+import org.apache.uima.analysis_component.AnalysisComponent;
+import org.apache.uima.annotator.calais.OpenCalaisAnnotator;
 import org.apache.uima.cas.*;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -31,7 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 /**

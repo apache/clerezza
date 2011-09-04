@@ -39,16 +39,6 @@ public class UIMAExecutorTest {
   }
 
   @Test
-  public void testCLConstructor() {
-    try {
-      UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor(this.getClass().getClassLoader());
-      assertTrue(uimaExecutor != null);
-    } catch (Throwable e) {
-      fail(e.getLocalizedMessage());
-    }
-  }
-
-  @Test
   public void testPathConstructor() {
     try {
       UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor("/META-INF/ExtServicesAE.xml");
@@ -58,14 +48,4 @@ public class UIMAExecutorTest {
     }
   }
 
-  @Test
-  public void testPathCLConstructor() {
-    try {
-      UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor(this.getClass().getClassLoader(),
-              "/META-INF/ExtServicesAE.xml");
-      assertTrue(uimaExecutor != null);
-    } catch (Throwable e) {
-      fail(e.getLocalizedMessage());
-    }
-  }
 }
