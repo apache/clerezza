@@ -18,6 +18,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
+      <artifactId>rdf.utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.clerezza</groupId>
       <artifactId>uima.utils</artifactId>
       <version>0.1-incubating-SNAPSHOT</version>
     </dependency>
@@ -31,15 +35,6 @@
       <version>0.1-incubating-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>AlchemyAPIAnnotator-osgi</artifactId>
-      <version>2.3.1-SNAPSHOT</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -49,7 +44,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>org.slf4j.*;resolution:=optional,*</Import-Package>
+            <Import-Package>javax.ws.rs.*;org.osgi.service.component.*;org.apache.uima.*;org.apache.clerezza.*</Import-Package>
             <Export-Package>org.apache.clerezza.uima.concept.*</Export-Package>
           </instructions>
         </configuration>

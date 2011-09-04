@@ -22,6 +22,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.XMLInputSource;
 
 import java.util.Map;
 
@@ -62,13 +63,13 @@ public class UIMAExecutor {
    * analyze a text document specifying a different Analysis Engine descriptor path and specific Analysis Engine parameter settings
    *
    * @param doc
-   * @param xmlPath
+   * @param xmlInputSource
    * @param aeParameterSettings
    * @throws AnalysisEngineProcessException,
    *          ResourceInitializationException
    */
-  public JCas analyzeDocument(String doc, String xmlPath, Map<String, Object> aeParameterSettings) throws AnalysisEngineProcessException, ResourceInitializationException {
-    AnalysisEngine engine = aeProvider.getAE(xmlPath, aeParameterSettings);
+  public JCas analyzeDocument(String doc, XMLInputSource xmlInputSource, Map<String, Object> aeParameterSettings) throws AnalysisEngineProcessException, ResourceInitializationException {
+    AnalysisEngine engine = aeProvider.getAEFromSource(xmlInputSource, aeParameterSettings);
     return executeAE(engine, doc);
   }
 

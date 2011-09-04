@@ -18,29 +18,23 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
 /**
- * Factory class for {@link UIMAExecutor}
+ * {@link BundleActivator} to enable automatic registration of Annotator classes to load from UIMA utils
  */
-public class UIMAExecutorFactory {
+public abstract class UIMABundleActivator implements BundleActivator {
 
-  private static UIMAExecutorFactory instance;
-
-  private UIMAExecutorFactory() {
+  @Override
+  public void start(BundleContext context) throws Exception {
+    classRegistered();
   }
 
-  public static UIMAExecutorFactory getInstance() {
-    if (instance == null)
-      instance = new UIMAExecutorFactory();
-    return instance;
+  @Override
+  public void stop(BundleContext context) throws Exception {
+     // do nothing
   }
 
-  public UIMAExecutor createUIMAExecutor() {
-    AEProvider aeProvider = new AEProvider();
-    return new UIMAExecutor(aeProvider);
-  }
-
-  public UIMAExecutor createUIMAExecutor(String defaultXMLPath) {
-    AEProvider aeProvider = new AEProvider().withDefaultDescriptor(defaultXMLPath);
-    return new UIMAExecutor(aeProvider);
-  }
+  protected abstract void classRegistered();
 }
