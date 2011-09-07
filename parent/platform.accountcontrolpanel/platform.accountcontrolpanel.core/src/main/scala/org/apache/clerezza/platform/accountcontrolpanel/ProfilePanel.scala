@@ -80,7 +80,8 @@ class ProfilePanel extends Logging {
 	def getPersonalProfilePage(@Context uriInfo: UriInfo,
 	                           @PathParam(value = "id") userName: String): GraphNode = {
 		TrailingSlash.enforceNotPresent(uriInfo)
-		AccessController.checkPermission(new AccountControlPanelAppPermission(userName, ""))
+		//not checking as public profile must be public, more selective access control TBD
+		//AccessController.checkPermission(new AccountControlPanelAppPermission(userName, ""))
 		val resultNode= getPersonalProfile(userName, uriInfo)
 		return resultNode
 	}
