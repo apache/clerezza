@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.concepts.core;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,18 +31,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
-import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.platform.typerendering.RenderletManager;
+import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesService;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 
 /**
@@ -60,34 +62,36 @@ public class ResourceTagger {
 	@Reference
 	protected ContentGraphProvider cgProvider;
 	@Reference
-	private RenderletManager renderletManager;
+	private ScalaServerPagesService scalaServerPagesService;
 
 	protected void activate(ComponentContext context)
 			throws URISyntaxException {
 
+		BundleContext bundleContext = context.getBundleContext();
 		URL template = getClass().getResource("concept-existing-subjects.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
+
+		scalaServerPagesService.registerScalaServerPage(
+				template,
 				RDFS.Resource, "concept-existing-subjects-naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
 
 		template = getClass().getResource("concept-tagging.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
+		scalaServerPagesService.registerScalaServerPage(
+				template,
 				RDFS.Resource, "concept-tagging-naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
 
 		template = getClass().getResource("concept-find-create.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
+		scalaServerPagesService.registerScalaServerPage(
+				template,
 				RDFS.Resource, "concept-find-create-naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
 
 		template = getClass().getResource("selected-concepts.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
+		scalaServerPagesService.registerScalaServerPage(
+				template,
 				RDFS.Resource, "selectedconcepts-naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
 	}
 
 	/**

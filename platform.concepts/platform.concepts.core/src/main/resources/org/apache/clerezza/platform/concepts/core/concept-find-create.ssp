@@ -1,4 +1,7 @@
+resultDocModifier.addScriptReference("/jquery/jquery-1.3.2.min.js");
 resultDocModifier.addScriptReference("/scripts/ajax-options.js");
+//resultDocModifier.addScriptReference("/scripts/modification-status.js");
+resultDocModifier.addScriptReference("/scripts/status-message.js");
 
 resultDocModifier.addScriptReference("/concepts/generic-resource/scripts/concept-find-create.js");
 resultDocModifier.addScriptReference("/concepts/generic-resource/scripts/jquery.rdfquery.core-1.0.js");
