@@ -42,7 +42,7 @@ public class RegexMap<T> {
 			this.pattern = Pattern.compile(regex);
 			this.entry = entry;
 			for (char ch : regex.toCharArray()) {
-				if ((ch >= 'a') && (ch <= 'Z')) {regexStrength++;} else
+				if ((ch >= 'A') && (ch <= 'z')) {regexStrength++;} else
 				if ((ch >= '0') && (ch <= '9')) regexStrength++;
 			}
 
@@ -54,7 +54,7 @@ public class RegexMap<T> {
 
 		@Override
 		public int compareTo(Tuple o) {
-			return regexStrength - o.regexStrength;
+			return o.regexStrength - regexStrength;
 		}
 
 		@Override
@@ -97,6 +97,7 @@ public class RegexMap<T> {
 	public void addEntry(String pRegex, T entry) {
 		final String regex = pRegex != null ? pRegex : "";
 		tuples.add(new Tuple(regex, entry));
+		Collections.sort(tuples);
 	}
 
 	/**
