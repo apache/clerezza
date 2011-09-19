@@ -35,7 +35,6 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.felix.scr.annotations.Services;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -49,9 +48,7 @@ import org.slf4j.LoggerFactory;
  * @author mir, reto
  */
 @Component
-@Services({
-	@Service(RendererFactory.class)
-})
+@Service(RendererFactory.class)
 @Reference(name = "typeRenderlet",
 cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE,
 policy = ReferencePolicy.DYNAMIC,
@@ -73,14 +70,12 @@ public class RendererFactory {
 	 * A Tuple Type-Renderler Startlevel, for identity only the renderlet is relevan
 	 */
 	private static class TypeRenderletStartLevel {
-		final TypeRenderlet renderlet;
-		final int startLevel;
-		final String modePattern;
+		TypeRenderlet renderlet;
+		int startLevel;
 
-		private TypeRenderletStartLevel(TypeRenderlet renderlet, int startLevel, String modePattern) {
+		private TypeRenderletStartLevel(TypeRenderlet renderlet, int startLevel) {
 			this.startLevel = startLevel;
 			this.renderlet = renderlet;
-			this.modePattern = modePattern;
 		}
 
 		@Override
@@ -159,18 +154,9 @@ public class RendererFactory {
 						Iterator<TypeRenderletStartLevel> renderlets = mediaTypeMap.getMatching(acceptableType);
 						if (renderlets.hasNext()) {
 							TypeRenderlet bestRenderlet = null;
-							//an exact match is preferred over regex-matches disregarding the start-level
-							boolean hasExactMatch = false;
 							int highestStartLevel = 0;
 							while (renderlets.hasNext()) {
 								TypeRenderletStartLevel typeRenderletStartLevel = renderlets.next();
-								if (!hasExactMatch) {
-									if ((mode == null) || mode.equals(typeRenderletStartLevel.modePattern)) {
-										hasExactMatch = true;
-										highestStartLevel = typeRenderletStartLevel.startLevel;
-										bestRenderlet = typeRenderletStartLevel.renderlet;
-									}
-								}
 								if (typeRenderletStartLevel.startLevel > highestStartLevel) {
 									highestStartLevel = typeRenderletStartLevel.startLevel;
 									bestRenderlet = typeRenderletStartLevel.renderlet;
@@ -217,11 +203,11 @@ public class RendererFactory {
 			regexMap.addEntry(modePattern, mediaTypeMap);
 		}
 		final MediaType mediaType = typeRenderlet.getMediaType();
-		mediaTypeMap.addEntry(mediaType, new TypeRenderletStartLevel(typeRenderlet, startLevel, modePattern));
+		mediaTypeMap.addEntry(mediaType, new TypeRenderletStartLevel(typeRenderlet, startLevel));
 	}
 
 	protected void unbindTypeRenderlet(TypeRenderlet typeRenderlet) {
-		TypeRenderletStartLevel typeRenderletStartLevel = new TypeRenderletStartLevel(typeRenderlet, 0, null);
+		TypeRenderletStartLevel typeRenderletStartLevel = new TypeRenderletStartLevel(typeRenderlet, 0);
 		for (Map.Entry<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeEntry: typeRenderletMap.entrySet()) {
 			final RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeEntry.getValue();
 			for (Map.Entry<String, MediaTypeMap<TypeRenderletStartLevel>> regexEntry: regexMap.entrySet()) {
