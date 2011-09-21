@@ -18,6 +18,11 @@
  */
 package org.apache.clerezza.uima.casconsumer.ao;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
@@ -35,11 +40,6 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
 
 /**
  * {@link CASMappingStrategy} which maps a CAS object to the Annotation Ontology format
@@ -65,14 +65,23 @@ public class AOMappingStrategy implements CASMappingStrategy {
       // is incase we have references between
       // annotations and need to output the appropriate RDF identifier out
       // of sequence
-      Iterator<?> annotationIter = cas.getAnnotationIndex().iterator();
       Map<Annotation, Integer> annotIndex = new HashMap<Annotation, Integer>();
       int annotCnt = 0;
-      while (annotationIter.hasNext()) {
-        Annotation annot = (Annotation) annotationIter.next();
-        log.info("annotation index " + annotCnt);
-        annotIndex.put(annot, annotCnt);
-        annotCnt++;
+      for (FeatureStructure uimaObject : UIMAUtils.getAllFSofType(TOP.type, cas.getJCas())) {
+
+          // set Annotation specific properties for the node
+          if (uimaObject instanceof Annotation) {
+        	  // If type is DocumentAnnotation I skip it
+              if (uimaObject.getType().toString().equals("uima.tcas.DocumentAnnotation")) {
+                continue;
+              }
+
+              // Get persistent URI for region in document
+              Annotation annot = (Annotation) uimaObject;
+              log.info("annotation index " + annotCnt);
+              annotIndex.put(annot, annotCnt);
+              annotCnt++;
+          }
       }
 
       UriRef annotationSetUri = new UriRef(
