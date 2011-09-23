@@ -42,6 +42,10 @@ resultDocModifier.addStyleSheet("/static/concepts/style/form.css");
 resultDocModifier.addScriptReference("/jquery/jquery.tooltip.pack.js");
 resultDocModifier.addScriptReference("/jquery/jquery.ajaxQueue.js");
 resultDocModifier.addScriptReference("/jquery/jquery.autocomplete.min.js");
+resultDocModifier.addScriptReference("/yui/2/yahoo-dom-event/yahoo-dom-event.js");
+/*resultDocModifier.addScriptReference("/yui/2/container/assets/container-core.css");*/
+resultDocModifier.addScriptReference("/yui/2/container/container-min.js");
+resultDocModifier.addScriptReference("/scripts/alert-message.js");
 resultDocModifier.addScriptReference("/scripts/ajax-options.js");
 resultDocModifier.addScriptReference("/concepts/generic-resource/scripts/concept-provider-manipulation.js");
 resultDocModifier.setTitle("Resource Tagging");
