@@ -267,7 +267,7 @@ public class ClerezzaApp {
 				bundleContext.getServiceReference(StartLevel.class.getName());
 		StartLevel startLevelService = (StartLevel) bundleContext.getService(startLevelRef);
 		startLevelService.setInitialBundleStartLevel(startLevel + 1);
-		startLevelService.setStartLevel(startLevel + 1);
+		startLevelService.setStartLevel(startLevel + 20);
 	}
 
 	private Set<MavenArtifactDesc> getArtDescsFrom(PathNode pathNode) {
@@ -383,6 +383,8 @@ public class ClerezzaApp {
 
 		Properties configProps = new Properties();
 		configProps.putAll(System.getProperties());
+		//ignored as we're setting the starlevel manually to last used start-level + 20
+		//configProps.put("org.osgi.framework.startlevel.beginning", "20");
 		{
 			if (arguments.getNotConsoleShell()) {
 				configProps.put("clerezza.shell.disable",
