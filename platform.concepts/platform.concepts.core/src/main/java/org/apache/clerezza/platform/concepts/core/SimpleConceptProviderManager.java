@@ -249,8 +249,8 @@ public class SimpleConceptProviderManager implements ConceptProviderManager,
 			@FormParam("conceptSchemes") List<String> conceptSchemes) {
 
 		if (types == null) {
-			return Response.status(Status.BAD_REQUEST)
-					.entity("Form parameter \"types\" should be defined").build();
+			//types is null when all provider have been removed, processing empty list
+			types = new ArrayList<String>();
 		}
 		MGraph contentGraph = cgProvider.getContentGraph();
 		NonLiteral cplNode = getConceptProviderListNode(contentGraph);
