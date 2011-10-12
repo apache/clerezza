@@ -70,10 +70,12 @@ public class SimpleLiteralFactory extends LiteralFactory {
 		typeConverterMap.put(BigInteger.class, new BigIntegerConverter());
 		typeConverterMap.put(Long.class, new LongConverter());
 		typeConverterMap.put(Double.class, new DoubleConverter());
+		typeConverterMap.put(Float.class, new FloatConverter());
 		typeConverterMap.put(UriRef.class, new UriRefConverter());
 	}
 
 	final private static UriRef xsdDouble =xsd("double");
+    final private static UriRef xsdFloat =xsd("float");
 	final private static UriRef xsdAnyURI =xsd("anyURI");
 
 	final private static UriRef xsd(String name) {
@@ -206,6 +208,22 @@ public class SimpleLiteralFactory extends LiteralFactory {
 	}
 
 
+    private static class FloatConverter implements TypeConverter<Float> {
+
+        @Override
+        public TypedLiteral createTypedLiteral(Float value) {
+            return new TypedLiteralImpl(value.toString(), xsdFloat);
+        }
+
+        @Override
+        public Float createObject(TypedLiteral literal) {
+            if (!literal.getDataType().equals(xsdFloat)) {
+                throw new InvalidLiteralTypeException(Float.class, literal.getDataType());
+            }
+            return Float.valueOf(literal.getLexicalForm());
+        }
+    }
+    
 	private static class DoubleConverter implements TypeConverter<Double> {
 
 
