@@ -82,7 +82,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 			}
 		}
 		try {
-			serializedGraph.write(root.toJSONString().getBytes());
+			serializedGraph.write(root.toJSONString().getBytes("UTF-8"));
 		} catch (IOException ioe) {
 			logger.error(ioe.getMessage());
 			throw new RuntimeException(ioe.getMessage());
