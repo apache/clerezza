@@ -18,12 +18,19 @@ package org.apache.clerezza.rdf.rdfjson.serializer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.Language;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
@@ -31,7 +38,9 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SerializingProvider;
+import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.rdfjson.parser.RdfJsonParsingProvider;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -44,6 +53,7 @@ import org.junit.BeforeClass;
  */
 public class RdfJsonSerializerProviderTest {
 
+    private final static LiteralFactory lf = LiteralFactory.getInstance();
 	private final static UriRef RDF_NIL = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
 	private final static UriRef node1 = new UriRef("http://example.org/node1");
 	private final static UriRef node2 = new UriRef("http://example.org/node2");
@@ -58,7 +68,7 @@ public class RdfJsonSerializerProviderTest {
 	private final static PlainLiteralImpl plainLiteralA = new PlainLiteralImpl("A");
 	private final static PlainLiteralImpl plainLiteralB = new PlainLiteralImpl("B");
 	private final static PlainLiteralImpl plainLiteralC = new PlainLiteralImpl("C");
-	private final static TypedLiteral typedLiteralA = LiteralFactory.getInstance().createTypedLiteral("A");
+	private final static TypedLiteral typedLiteralA = lf.createTypedLiteral("A");
 
 	private MGraph mGraph;
 
@@ -125,6 +135,7 @@ public class RdfJsonSerializerProviderTest {
 		SerializingProvider provider = new RdfJsonSerializingProvider();
 		ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
 		provider.serialize(serializedGraph, mGraph, "application/rdf+json");
+//        System.out.println(serializedGraph.toString());
 		ParsingProvider parsingProvider = new RdfJsonParsingProvider();
 		ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph.toByteArray());
 		MGraph parsedMGraph = new SimpleMGraph();
@@ -132,5 +143,97 @@ public class RdfJsonSerializerProviderTest {
 
 		Assert.assertEquals(6, parsedMGraph.size());
 		Assert.assertEquals(mGraph.getGraph(), parsedMGraph.getGraph());
+	}
+	
+	/**
+	 * For local performance testing
+	 */
+	//@Test
+	public void testBigGraph() {
+		int NUM_TRIPLES = 100000;
+		//randoms are in the range [0..3]
+		double l = 1.0; //literal
+		double i = l / 3; //int
+		double d = l * 2 / 3;//double
+		double b = 2.0;//bNode
+		double nb = b - (l * 2 / 3); //create new bNode
+		double random;
+		NonLiteral subject = null;
+		UriRef predicate = null;
+		List<UriRef> predicateList = new ArrayList<UriRef>();
+		predicateList.add(RDF.first);
+		predicateList.add(RDF.rest);
+		predicateList.add(RDF.type);
+		predicateList.add(RDFS.label);
+		predicateList.add(RDFS.comment);
+		predicateList.add(RDFS.range);
+		predicateList.add(RDFS.domain);
+		predicateList.add(FOAF.name);
+		predicateList.add(FOAF.nick);
+		predicateList.add(FOAF.homepage);
+		predicateList.add(FOAF.age);
+		predicateList.add(FOAF.depiction);
+		String URI_PREFIX = "http://www.test.org/bigGraph/ref";
+		Language DE = new Language("de");
+		Language EN = new Language("en");
+		Iterator<UriRef> predicates = predicateList.iterator();
+		List<BNode> bNodes = new ArrayList<BNode>();
+		bNodes.add(new BNode());
+		for (int count = 0; count < NUM_TRIPLES; count++) {
+			random = Math.random() * 3;
+			if (random >= 2.5 || count == 0) {
+				if (random <= 2.75) {
+					subject = new UriRef(URI_PREFIX + count);
+				} else {
+					int rndIndex = (int) ((random - 2.75) * bNodes.size() / (3.0 - 2.75));
+					subject = bNodes.get(rndIndex);
+				}
+			}
+			if (random > 2.0 || count == 0) {
+				if (!predicates.hasNext()) {
+					Collections.shuffle(predicateList);
+					predicates = predicateList.iterator();
+				}
+				predicate = predicates.next();
+			}
+			if (random <= l) { //literal
+				if (random <= i) {
+					mGraph.add(new TripleImpl(subject, predicate, lf.createTypedLiteral(count)));
+				} else if (random <= d) {
+					mGraph.add(new TripleImpl(subject, predicate, lf.createTypedLiteral(random)));
+				} else {
+					PlainLiteral text;
+					if (random <= i) {
+						text = new PlainLiteralImpl("Literal for " + count);
+					} else if (random <= d) {
+						text = new PlainLiteralImpl("An English literal for " + count, EN);
+					} else {
+						text = new PlainLiteralImpl("Ein Dutsches Literal fÃ¼r" + count, DE);
+					}
+					mGraph.add(new TripleImpl(subject, predicate, text));
+				}
+			} else if (random <= b) { //bnode
+				BNode bnode;
+				if (random <= nb) {
+					bnode = new BNode();
+					bNodes.add(bnode);
+				} else { //>nb <b
+					int rndIndex = (int) ((random - nb) * bNodes.size() / (b - nb));
+					bnode = bNodes.get(rndIndex);
+				}
+				mGraph.add(new TripleImpl(subject, predicate, bnode));
+			} else { //UriRef
+				mGraph.add(new TripleImpl(subject, predicate,
+						new UriRef(URI_PREFIX + (int) count * random)));
+			}
+		}
+		SerializingProvider provider = new RdfJsonSerializingProvider();
+		for (int count = 0; i < 10; i++) {
+			long start = System.currentTimeMillis();
+			ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
+
+			provider.serialize(serializedGraph, mGraph, "application/rdf+json");
+			System.out.println("Serialized " + mGraph.size() + "Triples in " + (System.currentTimeMillis() - start) + "ms");
+		}
 	}
 }
