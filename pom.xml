@@ -430,6 +430,9 @@
 			                <exclude>**/.settings/**/*</exclude>
 			                <exclude>**/*.iml</exclude>
 			                <exclude>**/target/**/*</exclude>
+			                <exclude>**/test/**/*.nt</exclude>
+			                <exclude>**/test/**/*.ttl</exclude>
+			                <exclude>**/test/**/*.rdf</exclude>
 			              </excludes>
 			              <numUnapprovedLicenses>1</numUnapprovedLicenses>
 			            </configuration>
