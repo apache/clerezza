@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
  Licensed to the Apache Software Foundation (ASF) under one
@@ -19,7 +19,7 @@
  under the License.
 
 -->
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>parent</artifactId>
