@@ -55,6 +55,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
+import org.apache.clerezza.platform.Constants;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.osgi.service.component.ComponentContext;
@@ -99,9 +100,13 @@ import org.w3c.dom.ProcessingInstruction;
 public class SparqlEndpoint {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	private static final String CONTENT_GRAPH_FILTER =
+			"(name="+ Constants.CONTENT_GRAPH_URI_STRING +")";
+	
 	@Reference
 	TcManager tcManager;
-	@Reference(target = "(name=urn:x-localinstance:/content.graph)")
+	@Reference(target = CONTENT_GRAPH_FILTER)
 	MGraph contentGraph;
 	@Reference
 	private RenderletManager renderletManager;
