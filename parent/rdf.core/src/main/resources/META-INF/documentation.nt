@@ -1,19 +1,3 @@
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
 <bundle:///smart-content-binding-content-content-el/0-content> <http://discobits.org/ontology#infoBit> "<p xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\tSmart Content Binding (SCB) is an open source framework developed by \n\t\t\tclerezza.org aiming primarily at providing a java implementation of the \n\t\t\tgraph data model specified by W3C RDF [<a href=\"#ref1\">1</a>] and \n\t\t\tfunctionalities to operate on that data model. SCB offers a service \n\t\t\tinterface to access multiple named graphs and it can use various \n\t\t\tproviders to manage RDF graphs in a technology specific manner, e.g., \n\t\t\tusing Jena [<a href=\"#ref2\">2</a>] (TBD) or Sesame [<a href=\"#ref3\">3</a>]. \n\t\t\tIt also provides fa\u00E7ades that allow an application to use Jena or Sesame (TBD) \n\t\t\tAPIs to process RDF graphs (note that the choice of a fa\u00E7ade is independent of\n                        the chosen backend; you can for example use the Jena fa\u00E7ade to write\n                        your code against the Jena API while using the Sesame provider to store\n                        your data in a Sesame store). \n\t\t\tFurthermore, SCB offers a serialization and a parsing service to convert \n\t\t\ta graph into a certain representation (format) and vice versa. In order \n\t\t\tto support ontologies usage, SCB provides a tool to convert ontologies \n\t\t\tdefined in various formats including RDF/XML into Java classes.\n\t\t</p>\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <bundle:///smart-content-binding-content-content-el/0-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
 <bundle:///smart-content-binding-content-content-el/0-title> <http://discobits.org/ontology#infoBit> "Introduction"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
