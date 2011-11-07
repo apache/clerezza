@@ -433,6 +433,7 @@
 			                <exclude>**/test/**/*.nt</exclude>
 			                <exclude>**/test/**/*.ttl</exclude>
 			                <exclude>**/test/**/*.rdf</exclude>
+			                <exclude>**/documentation.nt</exclude>
 			              </excludes>
 			              <numUnapprovedLicenses>1</numUnapprovedLicenses>
 			            </configuration>
