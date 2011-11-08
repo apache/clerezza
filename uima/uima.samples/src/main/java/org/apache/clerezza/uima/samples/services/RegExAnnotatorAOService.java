@@ -52,7 +52,7 @@ public class RegExAnnotatorAOService {
   @POST
   @Path("regex")
   @Produces("application/rdf+xml")
-  public Graph enrichUri(@QueryParam("uri") String uriString) {
+  public Graph enrichUri(@FormParam("uri") String uriString) {
     if (uriString == null || uriString.length() == 0)
       throw new WebApplicationException(Response.status(
               Response.Status.BAD_REQUEST).entity(new StringBuilder("No URI specified").toString()).build());
@@ -62,7 +62,7 @@ public class RegExAnnotatorAOService {
     parameters.put(OUTPUTGRAPH, uriString);
     try {
       URL url = URI.create(uriString).toURL();
-      String text = IOUtils.toString(url.openStream());
+      String text = IOUtils.toString(url.openConnection().getInputStream());
       executor.analyzeDocument(text, new XMLInputSource(getClass().getResource(PATH)), parameters);
     } catch (Exception e) {
       e.printStackTrace();
