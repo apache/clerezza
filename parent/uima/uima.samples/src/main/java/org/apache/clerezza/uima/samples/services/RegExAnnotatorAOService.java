@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.uima.samples;
+package org.apache.clerezza.uima.samples.services;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -52,7 +52,7 @@ public class RegExAnnotatorAOService {
   @POST
   @Path("regex")
   @Produces("application/rdf+xml")
-  public Graph tagUri(@QueryParam("uri") String uriString) {
+  public Graph enrichUri(@QueryParam("uri") String uriString) {
     if (uriString == null || uriString.length() == 0)
       throw new WebApplicationException(Response.status(
               Response.Status.BAD_REQUEST).entity(new StringBuilder("No URI specified").toString()).build());
@@ -65,6 +65,7 @@ public class RegExAnnotatorAOService {
       String text = IOUtils.toString(url.openStream());
       executor.analyzeDocument(text, new XMLInputSource(getClass().getResource(PATH)), parameters);
     } catch (Exception e) {
+      e.printStackTrace();
       throw new WebApplicationException(Response.status(
               Response.Status.INTERNAL_SERVER_ERROR).entity(new StringBuilder("Failed UIMA execution on URI ").
               append(uriString).append(" due to \n").append(e.getLocalizedMessage()).toString()).build());

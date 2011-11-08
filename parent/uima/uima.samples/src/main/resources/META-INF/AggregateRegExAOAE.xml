@@ -56,12 +56,12 @@
         </overrides>
       </configurationParameter>
       <configurationParameter>
-        <name>alchemykey</name>
+        <name>concepts</name>
         <type>String</type>
-        <multiValued>false</multiValued>
+        <multiValued>true</multiValued>
         <mandatory>true</mandatory>
         <overrides>
-          <parameter>UrlConceptTaggingAEDescriptor/apikey</parameter>
+          <parameter>RegExAnnotator/ConceptFiles</parameter>
         </overrides>
       </configurationParameter>
     </configurationParameters>
@@ -78,11 +78,18 @@
           <string>ao</string>
         </value>
       </nameValuePair>
+      <nameValuePair>
+        <name>concepts</name>
+        <value>
+          <array>
+            <string>META-INF/concepts.xml</string>
+          </array>
+        </value>
+      </nameValuePair>
     </configurationParameterSettings>
-    >
     <flowConstraints>
       <fixedFlow>
-        <node>UrlConceptTaggingAEDescriptor</node>
+        <node>RegExAnnotator</node>
         <node>ClerezzaCASConsumerDescriptor</node>
       </fixedFlow>
     </flowConstraints>
