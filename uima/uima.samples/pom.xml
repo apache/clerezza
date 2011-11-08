@@ -89,11 +89,13 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>javax.xml.*;org.xml.*;org.apache.xml.*;org.apache.tools.*;com.sun.*;org.w3c.dom.*;resolution:=optional,javax.ws.rs.*;org.apache.uima.*;org.apache.clerezza.*</Import-Package>
+            <Import-Package>
+              javax.xml.*;org.xml.*;org.apache.xml.*;org.apache.tools.*;com.sun.*;org.w3c.dom.*;resolution:=optional,javax.ws.rs.*;org.apache.uima.*;org.apache.clerezza.*
+            </Import-Package>
             <Export-Package>org.apache.clerezza.uima.samples.*</Export-Package>
             <Bundle-Activator>org.apache.clerezza.uima.samples.UIMASamplesBundleActivator</Bundle-Activator>
-            <Embed-Dependency>*;artifactId=commons-io|RegularExpressionAnnotator|xmlbeans|geronimo-stax-api_1.0_spec</Embed-Dependency>
-            <!--<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>-->
+            <Embed-Dependency>*;artifactId=commons-io|RegularExpressionAnnotator|xmlbeans|geronimo-stax-api_1.0_spec
+            </Embed-Dependency>
           </instructions>
         </configuration>
       </plugin>
