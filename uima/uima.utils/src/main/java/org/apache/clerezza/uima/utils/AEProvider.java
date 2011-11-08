@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.uima.utils;
 
-import org.apache.clerezza.uima.utils.cl.ClerezzaUIMAExtensionClassLoader;
 import org.apache.clerezza.uima.utils.cl.AnalysisComponentsClassLoaderRepository;
+import org.apache.clerezza.uima.utils.cl.ClerezzaUIMAExtensionClassLoader;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -33,7 +33,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * provide the {@link AnalysisEngine} using the default descriptor or using a custom descriptor (absolute)
@@ -131,7 +132,7 @@ public class AEProvider {
         try {
           ae = UIMAFramework.produceAnalysisEngine(desc);
         } catch (Exception e) {
-          // do nothing
+          log.warn(new StringBuilder("could not get AE from default RM \n ").append(e.getMessage()).toString());
         }
         if (ae == null) {
           try {
@@ -139,7 +140,7 @@ public class AEProvider {
             rm.setExtensionClassPath(new ClerezzaUIMAExtensionClassLoader(getClass().getClassLoader()), "*", true);
             ae = UIMAFramework.produceAnalysisEngine(desc, rm, null);
           } catch (Exception e) {
-            // do nothing
+            log.warn(new StringBuilder("could not get AE from extended classpath RM \n ").append(e.getMessage()).toString());
           }
         }
 
