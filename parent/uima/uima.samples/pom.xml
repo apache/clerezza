@@ -59,6 +59,22 @@
       <version>2.3.1</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
+      <version>2.4.0</version>
+      <exclusions>
+        <exclusion> <!-- licensing issues, use geronimo instead -->
+          <groupId>stax</groupId>
+          <artifactId>stax-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.8.2</version>
@@ -73,11 +89,11 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>
-              javax.ws.rs.*;org.apache.uima.*;org.apache.clerezza.*;org.apache.commons.io.*
-            </Import-Package>
+            <Import-Package>javax.xml.*;org.xml.*;org.apache.xml.*;org.apache.tools.*;com.sun.*;org.w3c.dom.*;resolution:=optional,javax.ws.rs.*;org.apache.uima.*;org.apache.clerezza.*</Import-Package>
             <Export-Package>org.apache.clerezza.uima.samples.*</Export-Package>
             <Bundle-Activator>org.apache.clerezza.uima.samples.UIMASamplesBundleActivator</Bundle-Activator>
+            <Embed-Dependency>*;artifactId=commons-io|RegularExpressionAnnotator|xmlbeans|geronimo-stax-api_1.0_spec</Embed-Dependency>
+            <!--<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>-->
           </instructions>
         </configuration>
       </plugin>
