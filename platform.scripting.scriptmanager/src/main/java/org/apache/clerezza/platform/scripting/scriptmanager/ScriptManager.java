@@ -145,7 +145,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 				resourceDir.getFile());
 
 		fileServer = new FileServer(pathNode);
-		URL renderlet = getClass().getResource("scriptmanager-script-overview.xhtml");
+		URL renderlet = getClass().getResource("scriptmanager-script-overview.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(renderlet.toURI().toString()),
 				SCRIPTMANAGER.ScriptManagerOverviewPage,
@@ -155,12 +155,12 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 				new UriRef(renderlet.toURI().toString()),
 				SCRIPTMANAGER.ScriptList,
 				"naked" , MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderlet = getClass().getResource("scriptmanager-script-install.xhtml");
+		renderlet = getClass().getResource("scriptmanager-script-install.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(renderlet.toURI().toString()),
 				SCRIPTMANAGER.ScriptManagerInstallPage,
 				"naked" , MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderlet = getClass().getResource("scriptmanager-execution-uri-overview.xhtml");
+		renderlet = getClass().getResource("scriptmanager-execution-uri-overview.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(renderlet.toURI().toString()),
 				SCRIPTMANAGER.ExecutionUriOverviewPage,

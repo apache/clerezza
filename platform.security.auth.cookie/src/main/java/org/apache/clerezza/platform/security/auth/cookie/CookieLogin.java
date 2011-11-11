@@ -112,12 +112,12 @@ public class CookieLogin {
 
 
 
-		URL templateURL = getClass().getResource("login.xhtml");
+		URL templateURL = getClass().getResource("login.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(templateURL.toString()), LOGIN.LoginPage,
 				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		templateURL = getClass().getResource("login_naked.xhtml");
+		templateURL = getClass().getResource("login_naked.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(templateURL.toString()), LOGIN.LoginPage,
 				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
