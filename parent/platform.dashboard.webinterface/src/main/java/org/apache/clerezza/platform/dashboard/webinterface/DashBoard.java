@@ -80,7 +80,7 @@ public class DashBoard implements GlobalMenuItemsProvider{
 	protected void activate(ComponentContext cCtx) throws Exception {
 		logger.debug("Activating DashBoard");	
 	
-		URL template = getClass().getResource("dashboard-template.xhtml");
+		URL template = getClass().getResource("dashboard-template.ssp");
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(), 
 				new UriRef(template.toURI().toString()), DASHBOARD.DashBoard,
 				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);

@@ -157,46 +157,46 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-				"user-overview-template.xhtml").toURI().toString()),
+				"user-overview-template.ssp").toURI().toString()),
 				USERMANAGER.UserOverviewPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource("add-user-template.xhtml")
+				new UriRef(getClass().getResource("add-user-template.ssp")
 						.toURI().toString()), 
 				USERMANAGER.AddUserPage, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"user-permission-template.xhtml").toURI().toString()),
+						"user-permission-template.ssp").toURI().toString()),
 				USERMANAGER.UserPermissionPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-				"update-user-template.xhtml").toURI().toString()),
+				"update-user-template.ssp").toURI().toString()),
 				USERMANAGER.UpdateUserPage, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"custom-property-template.xhtml").toURI().toString()),
+						"custom-property-template.ssp").toURI().toString()),
 				USERMANAGER.CustomFieldPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-				"role-overview-template.xhtml").toURI().toString()),
+				"role-overview-template.ssp").toURI().toString()),
 				USERMANAGER.RoleOverviewPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-				"role-permission-template.xhtml").toURI().toString()),
+				"role-permission-template.ssp").toURI().toString()),
 				USERMANAGER.RolePermissionPage, "naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 				new UriRef(getClass().getResource(
-						"add-property-template.xhtml").toURI().toString()),
+						"add-property-template.ssp").toURI().toString()),
 				USERMANAGER.AddCustomPropertyPage,"naked",
 				MediaType.APPLICATION_XHTML_XML_TYPE, true);
 		renderletManager
 				.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
 						new UriRef(getClass().getResource(
-								"custom-user-infos-template.xhtml").toURI().toString()),
+								"custom-user-infos-template.ssp").toURI().toString()),
 						USERMANAGER.CustomUserInformationPage, "naked",
 						MediaType.APPLICATION_XHTML_XML_TYPE, true);
 	}
