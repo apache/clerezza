@@ -185,22 +185,35 @@
 			                <exclude>**/.*</exclude>
 			                <exclude>**/.*/**/*</exclude>
 			                <exclude>**/*.sh</exclude>
-			                <exclude>**/shell/**/*</exclude>
+			                <exclude>**/main/shell/**/*</exclude>
 			                <exclude>**/maven-eclipse.xml</exclude>
-			                <!-- <exclude>.scala_dependencies</exclude>
-			                <exclude>**/.project</exclude>
-			                <exclude>**/.settings/**/*</exclude> -->
 			                <exclude>**/*.iml</exclude>
 			                <exclude>**/target/**/*</exclude>
-			                <exclude>**/test/**/*.nt</exclude>
-			                <exclude>**/test/**/*.ttl</exclude>
-			                <exclude>**/test/**/*.rdf</exclude>
+			                <exclude>**/src/test/**/*.nt</exclude>
+			                <exclude>**/src/test/**/*.ttl</exclude>
+			                <exclude>**/src/test/**/*.rdf</exclude>
+			                <exclude>**/src/test/**/*.txt</exclude>
+			               	<exclude>**/src/test/**/*.n3</exclude>
+			               	<exclude>**/src/test/**/*.json</exclude>
+			               	<exclude>**/src/test/**/*.seed</exclude>
+			               	<exclude>**/src/test/**/*.xrdf</exclude>
+			               	<exclude>**/src/test/**/*.foaf</exclude>
+			               	<exclude>**/src/test/**/*.turtle</exclude>
 			                <exclude>**/documentation.nt</exclude>
 			                <!-- yui is bsd licensed -->
 			                <exclude>web.resources.yui/src/main/resources/**/*</exclude>
+			               	<exclude>platform.scripting.scriptmanager/src/main/resources/org/apache/clerezza/platform/scripting/scriptmanager/scriptmanager-script-information.xhtml</exclude>
+			               	<exclude>templating.seedsnipe/src/test/resources/org/apache/clerezza/templating/seedsnipe/libby-foaf.rdf</exclude>
+			               	<exclude>platform.usermanager.webinterface/src/main/resources/org/apache/clerezza/platform/usermanager/webinterface/reset_mail.txt</exclude>
+			               	<exclude>rdf.ontologies/src/main/resources/org/apache/clerezza/rdf/ontologies/*</exclude>
+			               	<exclude>platform.security.foafssl/ontologies/src/main/resources/org/apache/clerezza/foafssl/ontologies/*</exclude>
 			                <!-- text files for inclusion -->
 			                <exclude>platform.typerendering.scalaserverpages/src/main/resources/org/apache/clerezza/platform/typerendering/scalaserverpages/*.txt</exclude>
 			                <exclude>**/META-INF/services/*</exclude>
+			                <exclude>**/LICENSE*</exclude>
+			                <exclude>**/META-INF/MANIFEST.MF</exclude>
+			                <exclude>ssl.keygen/samplewebapp/src/main/webapp/cacert.crt</exclude>
+			                <exclude>web.fileserver/src/main/resources/org/apache/clerezza/web/fileserver/util/mime.types</exclude>
 			              </excludes>
 			              <numUnapprovedLicenses>1</numUnapprovedLicenses>
 			            </configuration>
