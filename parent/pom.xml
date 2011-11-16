@@ -1404,8 +1404,8 @@
 		<url>https://issues.apache.org/jira/browse/CLEREZZA</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Hudson</system>
-		<url>http://hudson.zones.apache.org/hudson/</url>
+		<system>Jenkins</system>
+		<url>https://builds.apache.org/job/clerezza-trunk-1.6/</url>
 	</ciManagement>
 
 
