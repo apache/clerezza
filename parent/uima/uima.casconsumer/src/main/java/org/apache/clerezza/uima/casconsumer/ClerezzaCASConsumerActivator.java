@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.uima.casconsumer;
 
-import org.apache.clerezza.uima.utils.cl.AnalysisComponentsClassLoaderRepository;
 import org.apache.clerezza.uima.utils.UIMABundleActivator;
+import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 
 /**
  * {@link UIMABundleActivator} to register {@link ClerezzaCASConsumer} component
@@ -27,6 +27,6 @@ import org.apache.clerezza.uima.utils.UIMABundleActivator;
 public class ClerezzaCASConsumerActivator extends UIMABundleActivator {
   @Override
   protected void classRegistered() {
-    AnalysisComponentsClassLoaderRepository.registerComponent(ClerezzaCASConsumer.class);
+    UIMAResourcesClassLoaderRepository.registerComponent(ClerezzaCASConsumer.class);
   }
 }

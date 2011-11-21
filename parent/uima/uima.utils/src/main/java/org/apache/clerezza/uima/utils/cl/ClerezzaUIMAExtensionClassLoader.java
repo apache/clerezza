@@ -41,7 +41,7 @@ public class ClerezzaUIMAExtensionClassLoader extends ClassLoader {
 
   public ClerezzaUIMAExtensionClassLoader(ClassLoader parent) {
     super(parent);
-    this.delegateClassLoaders = AnalysisComponentsClassLoaderRepository.getComponents();
+    this.delegateClassLoaders = UIMAResourcesClassLoaderRepository.getComponents();
     this.byteReader = new ResourceByteReader();
   }
 

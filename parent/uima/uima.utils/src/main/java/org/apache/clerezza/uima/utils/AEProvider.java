@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.uima.utils;
 
-import org.apache.clerezza.uima.utils.cl.AnalysisComponentsClassLoaderRepository;
 import org.apache.clerezza.uima.utils.cl.ClerezzaUIMAExtensionClassLoader;
+import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -95,7 +95,7 @@ public class AEProvider {
     // try classpath
     URL url = getClass().getResource(filePath);
     if (url == null) {
-      for (ClassLoader c : AnalysisComponentsClassLoaderRepository.getComponents()) {
+      for (ClassLoader c : UIMAResourcesClassLoaderRepository.getComponents()) {
         url = c.getResource(filePath);
         if (url != null)
           break;
