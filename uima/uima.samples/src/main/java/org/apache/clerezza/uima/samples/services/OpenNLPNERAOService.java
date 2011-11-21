@@ -65,7 +65,6 @@ public class OpenNLPNERAOService {
       String text = IOUtils.toString(url.openConnection().getInputStream());
       executor.analyzeDocument(text, new XMLInputSource(getClass().getResource(PATH)), parameters);
     } catch (Exception e) {
-      e.printStackTrace();
       throw new WebApplicationException(Response.status(
               Response.Status.INTERNAL_SERVER_ERROR).entity(new StringBuilder("Failed UIMA execution on URI ").
               append(uriString).append(" due to \n").append(e.getLocalizedMessage()).toString()).build());
