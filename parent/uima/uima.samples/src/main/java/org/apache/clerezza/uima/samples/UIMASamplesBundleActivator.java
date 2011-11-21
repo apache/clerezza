@@ -18,9 +18,11 @@
  */
 package org.apache.clerezza.uima.samples;
 
+import opennlp.uima.namefind.NameFinder;
+import opennlp.uima.sentdetect.SentenceDetector;
+import opennlp.uima.tokenize.Tokenizer;
 import org.apache.clerezza.uima.utils.UIMABundleActivator;
-import org.apache.clerezza.uima.utils.cl.AnalysisComponentsClassLoaderRepository;
-import org.apache.uima.annotator.regex.impl.RegExAnnotator;
+import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 
 /**
  * {@link org.osgi.framework.BundleActivator} for uima.samples module
@@ -28,6 +30,8 @@ import org.apache.uima.annotator.regex.impl.RegExAnnotator;
 public class UIMASamplesBundleActivator extends UIMABundleActivator {
   @Override
   protected void classRegistered() {
-    AnalysisComponentsClassLoaderRepository.registerComponent(RegExAnnotator.class);
+    UIMAResourcesClassLoaderRepository.registerComponent(Tokenizer.class);
+    UIMAResourcesClassLoaderRepository.registerComponent(SentenceDetector.class);
+    UIMAResourcesClassLoaderRepository.registerComponent(NameFinder.class);
   }
 }
