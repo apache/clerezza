@@ -46,13 +46,13 @@ import java.util.Map;
 @Path("/uima")
 public class OpenNLPNERAOService {
 
-  private static final String PATH = "/META-INF/AggregateOpenNLPNERAOAE.xml";
+  private static final String PATH = "/META-INF/OpenNLPPersonAOAE.xml";
   private static final String OUTPUTGRAPH = "outputgraph";
 
   @POST
-  @Path("regex")
+  @Path("opennlp/person")
   @Produces("application/rdf+xml")
-  public Graph enrichUri(@FormParam("uri") String uriString) {
+  public Graph extractPersons(@FormParam("uri") String uriString) {
     if (uriString == null || uriString.length() == 0)
       throw new WebApplicationException(Response.status(
               Response.Status.BAD_REQUEST).entity(new StringBuilder("No URI specified").toString()).build());

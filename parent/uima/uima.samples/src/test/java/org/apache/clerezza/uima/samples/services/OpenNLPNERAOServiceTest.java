@@ -33,7 +33,7 @@ public class OpenNLPNERAOServiceTest {
   public void serviceExecutionTest() {
     try {
       OpenNLPNERAOService service = new OpenNLPNERAOService();
-      Graph graph = service.enrichUri(getClass().getResource("/ner_test_page.html").toURI().toString());
+      Graph graph = service.extractPersons(getClass().getResource("/ner_test_page.html").toURI().toString());
       assertNotNull(graph);
     } catch (Exception e) {
       fail(e.getLocalizedMessage());
