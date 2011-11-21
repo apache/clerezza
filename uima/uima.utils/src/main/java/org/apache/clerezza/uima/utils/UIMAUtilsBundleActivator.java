@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.uima.utils;
 
-import org.apache.clerezza.uima.utils.cl.AnalysisComponentsClassLoaderRepository;
+import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 import org.apache.uima.alchemy.annotator.TextRankedNamedEntityExtractionAnnotator;
 import org.apache.uima.annotator.calais.OpenCalaisAnnotator;
 
@@ -28,7 +28,7 @@ import org.apache.uima.annotator.calais.OpenCalaisAnnotator;
 public class UIMAUtilsBundleActivator extends UIMABundleActivator {
   @Override
   protected void classRegistered() {
-    AnalysisComponentsClassLoaderRepository.registerComponent(TextRankedNamedEntityExtractionAnnotator.class);
-    AnalysisComponentsClassLoaderRepository.registerComponent(OpenCalaisAnnotator.class);
+    UIMAResourcesClassLoaderRepository.registerComponent(TextRankedNamedEntityExtractionAnnotator.class);
+    UIMAResourcesClassLoaderRepository.registerComponent(OpenCalaisAnnotator.class);
   }
 }
