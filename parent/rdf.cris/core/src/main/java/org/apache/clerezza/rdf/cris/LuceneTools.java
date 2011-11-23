@@ -159,6 +159,8 @@ public class LuceneTools {
 			if(indexSearcher != null) {
 				if (indexSearcher.getIndexReader().isCurrent() || optimizeInProgress) {
 					return indexSearcher;
+				} else {
+					indexSearcher.close();
 				}
 			}
 			if (IndexReader.indexExists(indexDirectory)) {
