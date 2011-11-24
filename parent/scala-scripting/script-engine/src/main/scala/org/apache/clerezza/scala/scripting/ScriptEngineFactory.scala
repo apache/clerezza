@@ -57,11 +57,13 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 	private var compilerService: CompilerService = null
 	var _interpreter : Interpreter = null;
 	private var bundleContext: BundleContext = null
+
+	private val out = new ResettableStringWriter 
 	def interpreter = {
 		if (_interpreter == null) {
 			this.synchronized {
 				if (_interpreter == null) {
-					_interpreter = factory.createInterpreter(new PrintWriter(System.out))
+					_interpreter = factory.createInterpreter(new PrintWriter(out))
 				}
 			}
 		}
@@ -148,8 +150,8 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 							//and binding to not inferfere
 							try {
 								val jTypeMap : java.util.Map[String, java.lang.reflect.Type] =
-								new java.util.HashMap[String, java.lang.reflect.Type]()
-									val valueMap = new java.util.HashMap[String, Any]()
+								    new java.util.HashMap[String, java.lang.reflect.Type]()
+								val valueMap = new java.util.HashMap[String, Any]()
 								import _root_.scala.collection.JavaConversions._
 								for (scope <- context.getScopes;
 									 if (context.getBindings(scope.intValue) != null);
@@ -160,9 +162,12 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 								val result = interpreter.eval[Object](script) match   {
 									case Some(x) => x
 									case None => null
+									case _ => null
 								}
+								val output = out.reset
+								println(output)
 								if (interpreter.reporter.hasErrors) {
-									throw new ScriptException("some error","script-file",1)
+									throw new ScriptException(output,"script-file",1)
 								}
 								sender ! result
 							} catch {
@@ -188,9 +193,10 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 			interpreterAction !? ((script, context)) match {
 				case ScriptEngineFactory.ActorException(e) => throw e
 				case x : Object => x
+				case _ => null
 			}
 		}
-		override def getFactory() = ScriptEngineFactory.this
+		override def getFactory(): ScriptEngineFactory = ScriptEngineFactory.this
 		override def createBindings() : Bindings = new SimpleBindings
 
 		override def compile(script: Reader): CompiledScript = {
