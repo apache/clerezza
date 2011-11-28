@@ -37,6 +37,7 @@ import org.apache.clerezza.rdf.cris.ResourceFinder;
 import org.apache.clerezza.rdf.cris.SortSpecification;
 import org.apache.clerezza.rdf.cris.VirtualProperty;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.lucene.queryParser.ParseException;
@@ -50,10 +51,18 @@ import org.slf4j.LoggerFactory;
  * 
  * @author tio
  */
-@Component
+@Component(metatype=true)
 @Service(IndexService.class)
 public class IndexService extends ResourceFinder {
 
+	@Property(intValue=0, label="The delay in minutes until the first index optimization is invoked.", 
+			description="This allows to set the time of the first invocation to some other time than now. 0 Is the lowest acceptable value ans means run instantly.")
+	static final String OPTIMIZE_DELAY = "org.apache.clerezza.platform.cris.optimizedelay";
+	
+	@Property(intValue=0, label="The period in minutes between index optimizations.", 
+			description="When a new value is set, the first invocation will happen after the specified period and the old schedule will be canceled instantly. The minimum acceptable value is 1 (min). A value of 0 turns off optimizations.")
+	static final String OPTIMIZE_PERIOD = "org.apache.clerezza.platform.cris.optimizeperiod";
+	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	IndexDefinitionManager indexDefinitionManager = null;
@@ -70,8 +79,14 @@ public class IndexService extends ResourceFinder {
 
 	LockableMGraph definitionGraph = null;
 
+	Integer optimizePeriod = 0;
+	Integer optimizeDelay = 0;
+	
 	protected void activate(ComponentContext context) {
 
+		optimizePeriod = (Integer) context.getProperties().get(OPTIMIZE_PERIOD);
+		optimizeDelay = (Integer) context.getProperties().get(OPTIMIZE_DELAY);
+		
 		try {
 			definitionGraph = tcManager.getMGraph(definitionGraphUri);
 		} catch (NoSuchEntityException ex) {
@@ -85,12 +100,24 @@ public class IndexService extends ResourceFinder {
 		try {
 			graphIndexer = new GraphIndexer(definitionGraph, cgProvider.getContentGraph(),
 					FSDirectory.open(luceneIndexDir), !createNewIndex);
+			if(optimizeDelay != null && optimizePeriod != null && optimizePeriod >= 1) {
+				long period = optimizePeriod * 60000;
+				long delay = optimizeDelay * 60000;
+				logger.info("Scheduling optimizations with delay {} min and period {} min", delay, period);
+				graphIndexer.scheduleIndexOptimizations(delay, period);
+			}
 		} catch (IOException ex) {
-
+			logger.error("Could not open lucene index directory.");
+			throw new IllegalStateException(ex);
 		}
 	}
 
 	protected void deactivate(ComponentContext context) {
+		if(optimizePeriod >= 1) {
+			graphIndexer.terminateIndexOptimizationSchedule();
+		}
+		optimizeDelay = 0;
+		optimizePeriod = 0;
 		graphIndexer.closeLuceneIndex();
 		graphIndexer = null;
 
