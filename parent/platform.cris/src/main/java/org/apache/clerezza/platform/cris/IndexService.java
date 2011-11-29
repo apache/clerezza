@@ -56,11 +56,11 @@ import org.slf4j.LoggerFactory;
 public class IndexService extends ResourceFinder {
 
 	@Property(intValue=0, label="The delay in minutes until the first index optimization is invoked.", 
-			description="This allows to set the time of the first invocation to some other time than now. 0 Is the lowest acceptable value ans means run instantly.")
+			description="This allows to set the time of the first invocation. 0 Is the lowest acceptable value and means run instantly.")
 	static final String OPTIMIZE_DELAY = "org.apache.clerezza.platform.cris.optimizedelay";
 	
 	@Property(intValue=0, label="The period in minutes between index optimizations.", 
-			description="When a new value is set, the first invocation will happen after the specified period and the old schedule will be canceled instantly. The minimum acceptable value is 1 (min). A value of 0 turns off optimizations.")
+			description="When a new value is set, the first invocation will happen after the specified delay and the old schedule will be canceled instantly. The minimum acceptable value is 1 (min). A value of 0 turns off optimizations.")
 	static final String OPTIMIZE_PERIOD = "org.apache.clerezza.platform.cris.optimizeperiod";
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -86,6 +86,9 @@ public class IndexService extends ResourceFinder {
 
 		optimizePeriod = (Integer) context.getProperties().get(OPTIMIZE_PERIOD);
 		optimizeDelay = (Integer) context.getProperties().get(OPTIMIZE_DELAY);
+		if(optimizeDelay == null || optimizeDelay < 0) {
+			optimizeDelay = 0;
+		}
 		
 		try {
 			definitionGraph = tcManager.getMGraph(definitionGraphUri);
@@ -100,7 +103,7 @@ public class IndexService extends ResourceFinder {
 		try {
 			graphIndexer = new GraphIndexer(definitionGraph, cgProvider.getContentGraph(),
 					FSDirectory.open(luceneIndexDir), !createNewIndex);
-			if(optimizeDelay != null && optimizePeriod != null && optimizePeriod >= 1) {
+			if(optimizePeriod != null && optimizePeriod >= 1) {
 				long period = optimizePeriod * 60000;
 				long delay = optimizeDelay * 60000;
 				logger.info("Scheduling optimizations with delay {} min and period {} min", delay, period);
