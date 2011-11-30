@@ -43,40 +43,48 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * A {@link org.apache.clerezza.rdf.core.serializedform.SerializingProvider} for rdf/json.
+ * A {@link org.apache.clerezza.rdf.core.serializedform.SerializingProvider} for
+ * rdf/json.
  * 
  * This implementation is based on first sorting the triples within the parsed
- * {@link TripleCollection} based on the {@link #SUBJECT_COMPARATOR subject}.<p>
+ * {@link TripleCollection} based on the {@link #SUBJECT_COMPARATOR subject}.
+ * <p>
  * The serialization is done on a subject scope. Meaning that all triples for a
- * subject are serialized and instantly written to the provided 
- * {@link OutputStream}.<p>
- * 'UFT-8' is used as encoding to write the data.  
+ * subject are serialized and instantly written to the provided
+ * {@link OutputStream}.
+ * <p>
+ * 'UFT-8' is used as encoding to write the data.
  * 
  * @author tio, hasan, rwesten
  */
-@Component(immediate=true)
+@Component(immediate = true)
 @Service(SerializingProvider.class)
 @SupportedFormat(SupportedFormat.RDF_JSON)
 public class RdfJsonSerializingProvider implements SerializingProvider {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
-		if (tc.isEmpty()) { //ensure writing an empty element in case of an empty collection
+	public void serialize(OutputStream serializedGraph, TripleCollection tc,
+			String formatIdentifier) {
+		if (tc.isEmpty()) { // ensure writing an empty element in case of an
+							// empty collection
 			try {
-				serializedGraph.write(new JSONObject().toJSONString().getBytes("UTF-8"));
+				serializedGraph.write(new JSONObject().toJSONString().getBytes(
+						"UTF-8"));
 			} catch (IOException e) {
-				throw new IllegalStateException("Exception while writing to parsed OutputStream", e);
+				throw new IllegalStateException(
+						"Exception while writing to parsed OutputStream", e);
 			}
 			return;
 		}
 		BNodeManager bNodeMgr = new BNodeManager();
 		BufferedWriter out;
 		try {
-			out = new BufferedWriter(
-					new OutputStreamWriter(serializedGraph, "UTF-8"));
+			out = new BufferedWriter(new OutputStreamWriter(serializedGraph,
+					"UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException("Encoding 'UTF-8' is not supported by this System", e);
+			throw new IllegalStateException(
+					"Encoding 'UTF-8' is not supported by this System", e);
 		}
 		Triple[] sortedTriples = tc.toArray(new Triple[tc.size()]);
 		Arrays.sort(sortedTriples, SUBJECT_COMPARATOR);
@@ -87,23 +95,26 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 		Map<UriRef, JSONArray> predicateValues = new HashMap<UriRef, JSONArray>();
 		JSONObject jSubject = new JSONObject();
 		try {
-			out.write("{"); //start the root object
+			out.write("{"); // start the root object
 			for (int i = 0; i < sortedTriples.length; i++) {
 				triple = sortedTriples[i];
 				boolean subjectChange = !triple.getSubject().equals(subject);
 				if (subjectChange) {
 					if (subject != null) {
-						//write the predicate values
-						for (Entry<UriRef, JSONArray> predicates : predicateValues.entrySet()) {
-							jSubject.put(predicates.getKey().getUnicodeString(), predicates.getValue());
+						// write the predicate values
+						for (Entry<UriRef, JSONArray> predicates : predicateValues
+								.entrySet()) {
+							jSubject.put(
+									predicates.getKey().getUnicodeString(),
+									predicates.getValue());
 						}
-						//write subject
+						// write subject
 						out.write(JSONObject.toString(subjectStr, jSubject));
 						out.write(",");
-						jSubject.clear(); //just clear
+						jSubject.clear(); // just clear
 						predicateValues.clear();
 					}
-					//init next subject
+					// init next subject
 					subject = triple.getSubject();
 					if (subject instanceof BNode) {
 						subjectStr = bNodeMgr.getBNodeId((BNode) subject);
@@ -120,15 +131,18 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 				values.add(writeObject(bNodeMgr, triple.getObject()));
 			}
 			if (subjectStr != null) {
-				for (Entry<UriRef, JSONArray> predicates : predicateValues.entrySet()) {
-					jSubject.put(predicates.getKey().getUnicodeString(), predicates.getValue());
+				for (Entry<UriRef, JSONArray> predicates : predicateValues
+						.entrySet()) {
+					jSubject.put(predicates.getKey().getUnicodeString(),
+							predicates.getValue());
 				}
 				out.write(JSONObject.toString(subjectStr, jSubject));
 			}
-			out.write("}");//end the root object
+			out.write("}");// end the root object
 			out.flush();
 		} catch (IOException e) {
-			throw new IllegalStateException("Exception while writing on the parsed OutputStream", e);
+			throw new IllegalStateException(
+					"Exception while writing on the parsed OutputStream", e);
 		}
 	}
 
@@ -140,7 +154,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 			String bNodeId = bNodeMap.get(node);
 			if (bNodeId == null) {
 				bNodeId = "_:b" + ++counter;
-				bNodeMap.put((BNode)node, bNodeId);
+				bNodeMap.put((BNode) node, bNodeId);
 			}
 			return bNodeId;
 		}
@@ -149,9 +163,11 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 	/**
 	 * Converts the {@link Resource object} of an triple to JSON
 	 * 
-	 * @param bNodeMgr	used to lookup {@link BNode} instances
-	 * @param object	the object of the triple
-	 * @return	the JSON representation of parsed object
+	 * @param bNodeMgr
+	 *            used to lookup {@link BNode} instances
+	 * @param object
+	 *            the object of the triple
+	 * @return the JSON representation of parsed object
 	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject writeObject(BNodeManager bNodeMgr, Resource object) {
@@ -179,18 +195,28 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 		}
 		return jObject;
 	}
-	
+
 	/**
-	 * Compares only the subjects of the triples. If they are equals <code>0</code>
-	 * is returned. This will ensure that all triples with the same subjects are
-	 * sorted correctly. However it does not sort predicates and objects!
+	 * Compares only the subjects of the triples. If they are equals
+	 * <code>0</code> is returned. This will ensure that all triples with the
+	 * same subjects are sorted correctly. However it does not sort predicates
+	 * and objects!
 	 */
 	public static final Comparator<Triple> SUBJECT_COMPARATOR = new Comparator<Triple>() {
 
 		@Override
 		public int compare(Triple a, Triple b) {
-			return a.getSubject().equals(b.getSubject()) ? 0
-					: a.getSubject().toString().compareTo(b.getSubject().toString());
+			return compare(a.getSubject(), b.getSubject());
 		}
+
+		private int compare(NonLiteral a, NonLiteral b) {
+			int hashA = a.hashCode();
+			int hashB = b.hashCode();
+			if (hashA != hashB) {
+				return hashB - hashA;
+			}
+			return a.toString().compareTo(b.toString());
+		}
+
 	};
 }
