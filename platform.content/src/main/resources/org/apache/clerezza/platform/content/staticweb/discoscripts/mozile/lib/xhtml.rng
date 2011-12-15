@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Test Schema -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+	xmlns:m="http://mozile.mozdev.org/ns/mes/1.0">
+
+<m:define name="Inline">
+	<!-- Text commands -->
+	<m:command name="splitInline" class="Split" target="block" accel="Return Enter"/>
+	<m:command name="nonBreakingSpace" class="Insert" priority="11" text="&#x00A0;" accel="Shift-Space"/>
+	<m:command name="nextBlock" class="Navigate" direction="next" target="block" accel="Tab"/>
+	<m:command name="prevBlock" class="Navigate" direction="previous" target="block" accel="Shift-Tab"/>
+
+	<!-- Toolbar commands -->
+	<m:command name="strong" class="Wrap" element="strong" accel="Command-B"
+		label="Bold" image="silk/text_bold" tooltip="Make text bold"/>
+	<m:command name="em" class="Wrap" element="em" accel="Command-I"
+		label="Italic" image="silk/text_italic" tooltip="Italicize text"/>
+	<m:command name="underline" class="Wrap" accel="Command-U" 
+		element="span" styleName="text-decoration" styleValue="underline"
+		label="Underline" image="silk/text_underline" tooltip="Underline text"/>
+	<m:command name="strikethrough" class="Wrap"
+		element="span" styleName="text-decoration" styleValue="line-through"
+		label="Strikethrough" image="silk/text_strikethrough" tooltip="Strikethrough text"/>
+	<m:command name="superscript" class="Wrap" element="sup"
+		label="Superscript" image="silk/text_superscript" tooltip="Raise text"/>
+	<m:command name="subscript" class="Wrap" element="sub"
+		label="Subscript" image="silk/text_subscript" tooltip="Lower text"/>
+	<m:command name="indent" class="Style" target="block" styleName="text-indent"
+		label="Indent" image="silk/text_indent" tooltip="Indent text">
+		<m:script>
+			<![CDATA[
+			this.styleValue = function(event, state) {
+				if(!state.targetNode || !state.targetNode.style) return null;
+				var value = state.targetNode.style[state.styleName];
+				if(value) {
+					var match = value.match(/(\d+)pt/);
+					if(match && match[1]) {
+						value = Number(match[1]);
+						return (value + 12) +"pt";
+					}
+				}
+				return "12pt";
+			}
+			]]>
+		</m:script>
+	</m:command>
+	<m:command name="unindent" class="Style" target="block" styleName="text-indent"
+		label="Unindent" image="silk/text_indent_remove" tooltip="Unindent text">
+		<m:script>
+			<![CDATA[
+			this.styleValue = function(event, state) {
+				if(!state.targetNode || !state.targetNode.style) return null;
+				var value = state.targetNode.style[state.styleName];
+				if(value) {
+					var match = value.match(/(\d+)pt/);
+					if(match && match[1]) {
+						value = Number(match[1]);
+						if(value - 12 > 0) return (value - 12) +"pt";
+					}
+					return "";
+				}
+				return null;
+			}
+			]]>
+		</m:script>
+	</m:command>
+
+	<m:command name="link" class="Insert" element="a" remove="false"
+		label="Link" image="silk/link_add" tooltip="Create hyperlink">
+		<m:script>
+			<![CDATA[
+			this.prompt = function(event, state) {
+				if(!state || !state.element) return false;
+				var href = prompt("What is the URL for this link?", "");
+				if(!href) return false;
+				state.element.setAttribute("href", href);
+				return true;
+			}
+			]]>
+		</m:script>
+	</m:command>
+	<m:command name="unlink" class="Unwrap" target="localName a"
+		label="Remove Link" image="silk/link_break" tooltip="Remove hyperlinks"/>
+
+	<m:group name="fonts"
+		label="Fonts" image="silk/font" tooltip="Select a font">
+		<m:command name="setFont" class="Wrap" accel="Command-Shift-F"
+			label="Set Font" image="silk/font" tooltip="Set the font">
+			<m:script>
+				<![CDATA[
+				this.element = mozile.dom.createElement("span");
+				this.prompt = function(event, state) {
+					if(!state || !state.wrapper) return false;
+					var font = prompt("What font-family should be used?", "");
+					if(!font) return false;
+					mozile.dom.setStyle(state.wrapper, "font-family", font);
+					return true;
+				}
+				]]>
+			</m:script>
+		</m:command>
+		
+		<m:separator/>
+		
+		<m:command name="times" class="Wrap"
+			element="span" styleName="font-family" styleValue="smaller"
+			label="Times" tooltip="Use Times font"/>
+		<m:command name="arial" class="Wrap"
+			element="span" styleName="font-family" styleValue="arial, sans-serif"
+			label="Arial" tooltip="Use Arial font"/>
+		<m:command name="courier" class="Wrap"
+			element="span" styleName="font-family" styleValue="courier, monospace"
+			label="Courier" tooltip="Use courier font"/>
+		<m:separator/>
+		<m:command name="serif" class="Wrap"
+			element="span" styleName="font-family" styleValue="serif"
+			label="Serif" tooltip="Use serif font"/>
+		<m:command name="sans-serif" class="Wrap"
+			element="span" styleName="font-family" styleValue="sans-serif"
+			label="Sans-Serif" tooltip="Use sans-serif font"/>
+		<m:command name="monospace" class="Wrap"
+			element="span" styleName="font-family" styleValue="monospace"
+			label="Monospace" tooltip="Use monospace font"/>
+	</m:group>
+
+	<m:group name="sizes"
+		label="Sizes" image="silk/style" tooltip="Select a font size">
+		<m:command name="setSize" class="Wrap"
+			label="Set Size" image="silk/style" tooltip="Set the font size">
+			<m:script>
+				<![CDATA[
+				this.element = mozile.dom.createElement("span");
+				this.prompt = function(event, state) {
+					if(!state || !state.wrapper) return false;
+					var size = prompt("What should the font-size be?", "");
+					if(!size) return false;
+					mozile.dom.setStyle(state.wrapper, "font-size", size);
+					return true;
+				}
+				]]>
+			</m:script>
+		</m:command>
+		
+		<m:separator/>
+		
+		<m:command name="smaller" class="Wrap"
+			element="span" styleName="font-size" styleValue="smaller"
+			label="Smaller" tooltip="Make text smaller"/>
+		<m:command name="xx-small" class="Wrap"
+			element="span" styleName="font-size" styleValue="xx-small"
+			label="Extremely Small" tooltip="Make text extremely small"/>
+		<m:command name="x-small" class="Wrap"
+			element="span" styleName="font-size" styleValue="x-small"
+			label="Very Small" tooltip="Make text very small"/>
+		<m:command name="small" class="Wrap"
+			element="span" styleName="font-size" styleValue="small"
+			label="Small" tooltip="Make text small"/>
+		<m:command name="medium" class="Wrap"
+			element="span" styleName="font-size" styleValue="medium"
+			label="Medium" tooltip="Make text medium size"/>
+		<m:command name="large" class="Wrap"
+			element="span" styleName="font-size" styleValue="large"
+			label="Large" tooltip="Make text large"/>
+		<m:command name="x-large" class="Wrap"
+			element="span" styleName="font-size" styleValue="x-large"
+			label="Very Large" tooltip="Make text very large"/>
+		<m:command name="xx-large" class="Wrap"
+			element="span" styleName="font-size" styleValue="xx-large"
+			label="Extremely Large" tooltip="Make text extremely large"/>
+		<m:command name="larger" class="Wrap"
+			element="span" styleName="font-size" styleValue="larger"
+			label="Larger" tooltip="Make text larger"/>
+	</m:group>
+
+	<m:group name="formats"
+		label="Formats" image="silk/text_heading_1" tooltip="Select a format">
+
+		<m:command name="paragraph" class="Replace" element="p" target="block"
+			label="Paragraph" image="silk/pilcrow" tooltip="Use a paragraph"/>
+		<m:command name="h1" class="Replace" element="h1" target="block" accel="Command-1"
+			label="Heading 1" image="silk/text_heading_1" tooltip="Use a first level heading"/>
+		<m:command name="h2" class="Replace" element="h2" target="block" accel="Command-2"
+			label="Heading 2" image="silk/text_heading_2" tooltip="Use a second level heading"/>
+		<m:command name="h3" class="Replace" element="h3" target="block" accel="Command-3"
+			label="Heading 3" image="silk/text_heading_3" tooltip="Use a third level heading"/>
+		<m:command name="h4" class="Replace" element="h4" target="block" accel="Command-4"
+			label="Heading 4" image="silk/text_heading_4" tooltip="Use a fourth level heading"/>
+		<m:command name="h5" class="Replace" element="h5" target="block" accel="Command-5"
+			label="Heading 5" image="silk/text_heading_5" tooltip="Use a fifth level heading"/>
+		<m:command name="h6" class="Replace" element="h6" target="block" accel="Command-6"
+			label="Heading 6" image="silk/text_heading_6" tooltip="Use a sixth level heading"/>
+		<m:command name="pre" class="Replace" element="pre" target="block"
+			label="Pre-formatted" tooltip="Use pre-formatted text."/>
+		<m:command name="divison" class="Replace" element="div" target="block"
+			label="Division" tooltip="Use a division"/>
+		<m:command name="listitem" class="Replace" element="li" target="block"
+			label="List Item" tooltip="Use list item."/>
+		<m:command name="unformat" class="Unwrap" target="block"
+			label="Unformat" tooltip="Remove formatting"/>
+
+	</m:group>
+
+	<m:group name="justifications"
+		label="Justifications" image="silk/text_align_left" tooltip="Justify text">
+
+		<m:command name="left" class="Style" styleName="text-align" styleValue="left" target="block"
+			label="Align left" image="silk/text_align_left" tooltip="Align the text to the left margin"/>
+		<m:command name="right" class="Style" styleName="text-align" styleValue="right" target="block"
+			label="Align right" image="silk/text_align_right" tooltip="Align the text to the right margin"/>
+		<m:command name="center" class="Style" styleName="text-align" styleValue="center" target="block"
+			label="Center" image="silk/text_align_center" tooltip="Center the text"/>
+		<m:command name="justify" class="Style" styleName="text-align" styleValue="justify" target="block"
+			label="Justify" image="silk/text_align_justify" tooltip="Justify the text"/>
+
+	</m:group>
+
+	<m:group name="textColor"
+		label="Text Color" image="silk/paintbrush" tooltip="Choose text color">
+
+		<m:command name="setTextColor" class="Wrap"
+			label="Set Text Color" image="silk/paintbrush" tooltip="Set the text color">
+			<m:script>
+				<![CDATA[
+				this.element = mozile.dom.createElement("span");
+				this.prompt = function(event, state) {
+					if(!state || !state.wrapper) return false;
+					var color = prompt("What color should the text be?", "");
+					if(!color) return false;
+					mozile.dom.setStyle(state.wrapper, "color", color);
+					return true;
+				}
+				]]>
+			</m:script>
+		</m:command>
+		
+		<m:separator/>
+		
+		<m:command name="blackText" class="Wrap"
+			element="span" styleName="color" styleValue="black"
+			label="Black" tooltip="Make text black"/>
+		<m:command name="whiteText" class="Wrap"
+			element="span" styleName="color" styleValue="white"
+			label="White" tooltip="Make text white"/>
+		<m:command name="grayText" class="Wrap"
+			element="span" styleName="color" styleValue="gray"
+			label="Gray" tooltip="Make text gray"/>
+		<m:command name="redText" class="Wrap"
+			element="span" styleName="color" styleValue="red"
+			label="Red" tooltip="Make text red"/>
+		<m:command name="blueText" class="Wrap"
+			element="span" styleName="color" styleValue="blue"
+			label="Blue" tooltip="Make text blue"/>
+		<m:command name="greenText" class="Wrap"
+			element="span" styleName="color" styleValue="green"
+			label="Green" tooltip="Make text green"/>
+		<m:command name="yellowText" class="Wrap"
+			element="span" styleName="color" styleValue="yellow"
+			label="Yellow" tooltip="Make text yellow"/>
+		<m:command name="orangeText" class="Wrap"
+			element="span" styleName="color" styleValue="orange"
+			label="Orange" tooltip="Make text orange"/>
+		<m:command name="purpleText" class="Wrap"
+			element="span" styleName="color" styleValue="purple"
+			label="Purple" tooltip="Make text purple"/>
+	</m:group>
+
+	<m:group name="backgroundColor"
+		label="Background Color" image="silk/paintcan" tooltip="Choose background color">
+		<m:command name="setBackgroundColor" class="Wrap"
+			label="Set Background Color" image="silk/paintcan" tooltip="Set the background color">
+			<m:script>
+				<![CDATA[
+				this.element = mozile.dom.createElement("span");
+				this.prompt = function(event, state) {
+					if(!state || !state.wrapper) return false;
+					var color = prompt("What colour should the background be?", "");
+					if(!color) return false;
+					mozile.dom.setStyle(state.wrapper, "background-color", color);
+					return true;
+				}
+				]]>
+			</m:script>
+		</m:command>
+		
+		<m:separator/>
+		
+		<m:command name="blackBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="black"
+			label="Black" tooltip="Make background black"/>
+		<m:command name="whiteBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="white"
+			label="White" tooltip="Make background white"/>
+		<m:command name="grayBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="gray"
+			label="Gray" tooltip="Make background gray"/>
+		<m:command name="redBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="red"
+			label="Red" tooltip="Make background red"/>
+		<m:command name="blueBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="blue"
+			label="Blue" tooltip="Make background blue"/>
+		<m:command name="greenBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="green"
+			label="Green" tooltip="Make background green"/>
+		<m:command name="yellowBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="yellow"
+			label="Yellow" tooltip="Make background yellow"/>
+		<m:command name="orangeBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="orange"
+			label="Orange" tooltip="Make background orange"/>
+		<m:command name="purpleBackground" class="Wrap"
+			element="span" styleName="background-color" styleValue="purple"
+			label="Purple" tooltip="Make background purple"/>
+	</m:group>
+
+	<m:group name="insertion"
+		label="Insert Objects" image="silk/photo_add" tooltip="Insert objects">
+
+		<m:command name="image" class="Insert" element="img"
+			label="Image" image="silk/photo_add" tooltip="Insert an image">
+			<m:script>
+				<![CDATA[
+				this.prompt = function(event, state) {
+					if(!state || !state.element) return false;
+					var src = prompt("What is the URL for this image?", "");
+					if(!src) return false;
+					state.element.setAttribute("src", src);
+					return true;
+				}
+				]]>
+			</m:script>
+		</m:command>
+
+		<m:command name="lineBreak" class="Insert" accel="Shift-Return Shift-Enter"
+			label="Line-Break" tooltip="Insert a line-break">			
+			<m:script>
+				<![CDATA[
+				this.prompt = function(event, state) {
+					var selection = mozile.dom.selection.get();
+					var whitespace = mozile.dom.getStyle(selection.focusNode, "white-space");
+					if(whitespace != "pre") state.element = mozile.dom.createElement("br");
+					else if(mozile.browser.isIE) state.text = "\r";
+					else state.text = "\n";
+					return true;
+				}
+				]]>
+			</m:script>
+		</m:command>
+		<m:command name="hr" class="Insert" element="hr"
+			label="Horizontal Rule" image="silk/text_horizontalrule" tooltip="Insert a horizontal rule"/>
+		<m:command name="unorderedList" class="Insert"
+			label="Unordered List" image="silk/text_list_bullets" tooltip="Insert an unordered list">
+			<m:script>
+				<![CDATA[
+				this.element = mozile.dom.createElement("ul");
+				var li = mozile.dom.createElement("li");
+				li.appendChild(document.createTextNode(mozile.emptyToken));
+				this.element.appendChild(li);
+				]]>
+			</m:script>
+		</m:command>
+		<m:command name="orderedList" class="Insert"
+			label="Ordered List" image="silk/text_list_numbers" tooltip="Insert an ordered list">
+			<m:script>
+				<![CDATA[
+				this.element = mozile.dom.createElement("ol");
+				var li = mozile.dom.createElement("li");
+				li.appendChild(document.createTextNode(mozile.emptyToken));
+				this.element.appendChild(li);
+				]]>
+			</m:script>
+		</m:command>
+			
+		<m:command name="title" class="Command"
+			label="Change Title" image="" tooltip="Change document title">
+			<m:script>
+				<![CDATA[	 
+				// Find the title node and get the new title.
+				this.prompt = function(event, state) {
+					var titles = document.documentElement.getElementsByTagName("title");
+					if(titles && titles.length != 0) {
+						state.titleNode = titles[0];
+						state.oldTitle = document.title;
+						var title = prompt("What should the title be?", state.oldTitle);
+						if(title) {
+							state.newTitle = title;
+							return true;
+						}
+					}
+					else alert("Could not set title. Document does not have a title element.");
+					return false;
+				}
+				this.execute = function(state, fresh) {
+					if(mozile.browser.isMozilla) {
+						mozile.dom.removeChildNodes(state.titleNode);
+						state.titleNode.appendChild(document.createTextNode(state.newTitle));
+					}
+					document.title = state.newTitle;
+					state.executed = true;
+					return state;
+				}
+				this.unexecute = function(state, fresh) {
+					if(mozile.browser.isMozilla) {
+						mozile.dom.removeChildNodes(state.titleNode);
+						state.titleNode.appendChild(document.createTextNode(state.oldTitle));
+					}
+					document.title = state.oldTitle;
+					state.executed = false;
+					return state;
+				}
+				]]>
+			</m:script>
+		</m:command>
+		<m:command name="style" class="Command"
+			label="Change Style" image="" tooltip="Change the element's style">
+			<m:script>
+				<![CDATA[	 
+				// Find the target and get the new style.
+				this.prompt = function(event, state) {
+					var selection = mozile.dom.selection.get();
+					if(!selection) return false;
+					var range = selection.getRangeAt(0);
+					if(!range) return false;
+					var target = range.commonAncestorContainer;
+					if(!target) return false;
+					if(target.nodeType == mozile.dom.TEXT_NODE) target = target.parentNode;
+					state.target = target;
+					state.oldStyle = "";
+					if(mozile.browser.isIE) {
+						if(target.style.cssText) state.oldStyle = target.style.cssText;
+					}
+					else if(target.getAttribute("style")) {
+						state.oldStyle = target.getAttribute("style");
+					}
+					var style = prompt("What should the style of the element '"+ target.nodeName +"' be?", state.oldStyle);
+					if(style) {
+						state.newStyle = style;
+						return true;
+					}
+					return false;
+				}
+				this.execute = function(state, fresh) {
+					if(mozile.browser.isIE) {
+						state.target.style.cssText = state.newStyle;
+					}
+					else state.target.setAttribute("style", state.newStyle);
+					state.executed = true;
+					return state;
+				}
+				this.unexecute = function(state, fresh) {
+					if(mozile.browser.isIE) {
+						state.target.style.cssText = state.oldStyle;
+					}
+					else state.target.setAttribute("style", state.oldStyle);
+					state.executed = false;
+					return state;
+				}
+				]]>
+			</m:script>
+		</m:command>
+		<m:command name="attribute" class="Command" accel="Command-Shift-A"
+			label="Change an Attribute" image="" tooltip="Change an attribute of the element">
+			<m:script>
+				<![CDATA[	 
+				// Find the target and get the new style.
+				this.prompt = function(event, state) {
+					var selection = mozile.dom.selection.get();
+					if(!selection) return false;
+					var range = selection.getRangeAt(0);
+					if(!range) return false;
+					var target = range.commonAncestorContainer;
+					if(!target) return false;
+					if(target.nodeType == mozile.dom.TEXT_NODE) target = target.parentNode;
+					state.target = target;
+					var attr = prompt("What attribute of the element '"+ target.nodeName +"' should be changed?", "");
+					if(!attr) return false;
+					state.attr = attr;
+					state.oldValue = "";
+					if(attr.toLowerCase() == "style" && mozile.browser.isIE) {
+						if(target.style.cssText) state.oldValue = target.style.cssText;
+					}
+					else if(target.getAttribute(attr)) {
+						state.oldValue = target.getAttribute(attr);
+					}
+					var value = prompt("What should the value of '"+ attr +"' be?", state.oldValue);
+					if(value) {
+						state.newValue = value;
+						return true;
+					}
+					return false;
+				}
+				this.execute = function(state, fresh) {
+					if(state.attr.toLowerCase() == "style" && mozile.browser.isIE) {
+						state.target.style.cssText = state.newValue;
+					}
+					else state.target.setAttribute(state.attr, state.newValue);
+					state.executed = true;
+					return state;
+				}
+				this.unexecute = function(state, fresh) {
+					if(state.attr.toLowerCase() == "style" && mozile.browser.isIE) {
+						state.target.style.cssText = state.oldValue;
+					}
+					else state.target.setAttribute(state.attr, state.oldValue);
+					state.executed = false;
+					return state;
+				}
+				]]>
+			</m:script>
+		</m:command>
+
+	</m:group>
+</m:define>
+
+
+<define name="Common.attrib">
+	<optional>
+		<attribute name="id"/>
+	</optional>
+	<!--<ref name="Core.attrib"/>
+	<ref name="I18n.attrib"/>-->
+</define>
+
+<define name="br">
+	<element name="br">
+		<!--<ref name="Core.attrib"/>-->
+		<ref name="Common.attrib"/>
+		<empty/>
+	</element>
+</define>
+
+<define name="span">
+	<element name="span">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="a">
+	<element name="a">
+		<ref name="a.attlist"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="a.attlist">
+	<ref name="Common.attrib"/>
+	<optional>
+		<attribute name="href">
+			<ref name="URI.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="charset">
+			<ref name="Charset.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="type">
+			<ref name="ContentType.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="hreflang">
+			<ref name="LanguageCode.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="rel">
+			<ref name="LinkTypes.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="rev">
+			<ref name="LinkTypes.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="accesskey">
+			<ref name="Character.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="tabindex">
+			<ref name="Number.datatype"/>
+		</attribute>
+	</optional>
+</define>
+
+<!--
+<define name="abbr">
+	<element name="abbr">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="acronym">
+	<element name="acronym">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="cite">
+	<element name="cite">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+-->
+
+<define name="code">
+	<element name="code">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<!--
+<define name="dfn">
+	<element name="dfn">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+-->
+
+<define name="em">
+	<element name="em">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<!--
+<define name="kbd">
+	<element name="kbd">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="q">
+	<element name="q">
+		<ref name="q.attlist"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="q.attlist">
+	<ref name="Common.attrib"/>
+	<optional>
+		<attribute name="cite">
+			<ref name="URI.datatype"/>
+		</attribute>
+	</optional>
+</define>
+
+<define name="samp">
+	<element name="samp">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+-->
+
+<define name="strong">
+	<element name="strong">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="sub">
+	<element name="sub">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="sup">
+	<element name="sup">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<!--
+<define name="var">
+	<element name="var">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+-->
+
+<define name="div">
+	<element name="div">
+		<ref name="Common.attrib"/>
+		<ref name="Flow.model"/>
+	</element>
+</define>
+
+<define name="p">
+	<element name="p">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<!--
+<define name="address">
+	<element name="address">
+		<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="blockquote">
+	<element name="blockquote">
+		<ref name="blockquote.attlist"/>
+		<ref name="Block.model"/>
+	</element>
+</define>
+
+<define name="blockquote.attlist">
+	<ref name="Common.attrib"/>
+	<optional>
+		<attribute name="cite">
+			<ref name="URI.datatype"/>
+		</attribute>
+	</optional>
+</define>
+-->
+
+<define name="pre">
+	<element name="pre">
+		<ref name="pre.attlist"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="pre.attlist">
+	<ref name="Common.attrib"/>
+	<optional>
+		<attribute name="xml:space">
+			<value>preserve</value>
+		</attribute>
+	</optional>
+</define>
+
+<define name="h1">
+	<element name="h1">
+		<ref name="Heading.attrib"/>
+		<ref name="Heading.content"/>
+	</element>
+</define>
+ 
+<define name="h2">
+	<element name="h2">
+		<ref name="Heading.attrib"/>
+		<ref name="Heading.content"/>
+	</element>
+</define>
+ 
+<define name="h3">
+	<element name="h3">
+		<ref name="Heading.attrib"/>
+		<ref name="Heading.content"/>
+	</element>
+</define>
+ 
+<define name="h4">
+	<element name="h4">
+		<ref name="Heading.attrib"/>
+		<ref name="Heading.content"/>
+	</element>
+</define>
+ 
+<define name="h5">
+	<element name="h5">
+		<ref name="Heading.attrib"/>
+		<ref name="Heading.content"/>
+	</element>
+</define>
+
+<define name="h6">
+	<element name="h6">
+		<ref name="Heading.attrib"/>
+		<ref name="Heading.content"/>
+	</element>
+</define>
+
+<define name="Heading.attrib">
+	<ref name="Common.attrib"/>
+</define>
+ 
+<define name="Heading.content">
+	<ref name="Inline.model"/>
+</define>
+
+<define name="Heading.class">
+	<choice>
+		<ref name="h1"/>
+		<ref name="h2"/>
+		<ref name="h3"/>
+		<ref name="h4"/>
+		<ref name="h5"/>
+		<ref name="h6"/>
+	</choice>
+</define>
+
+<define name="Block.class">
+	<choice>
+		<!--<ref name="address"/>
+		<ref name="blockquote"/>-->
+		<ref name="div"/>
+		<ref name="p"/>
+		<ref name="pre"/>
+		<ref name="Heading.class"/>
+		<ref name="hr"/>
+		<ref name="br"/>
+	</choice>
+</define>
+
+<define name="Inline.class">
+	<choice>
+		<ref name="a"/>
+		<!--
+		<ref name="abbr"/>
+		<ref name="acronym"/>
+		-->
+		<ref name="br"/>
+		<!--
+		<ref name="cite"/>
+		-->
+		<ref name="code"/>
+		<!--
+		<ref name="dfn"/>
+		-->
+		<ref name="em"/>
+		<!--
+		<ref name="kbd"/>
+		<ref name="q"/>
+		<ref name="samp"/>
+		-->
+		<ref name="span"/>
+		<ref name="strong"/>
+		<ref name="sub"/>
+		<ref name="sup"/>
+		<!--
+		<ref name="var"/>
+		-->
+		<ref name="br"/>
+		<!-- Added -->
+		<ref name="img"/>
+	</choice>
+</define>
+
+<define name="Inline.model">
+	<m:ref name="Inline"/>
+	<zeroOrMore>
+		<choice>
+			<text/>
+			<ref name="Inline.class"/>
+		</choice>
+	</zeroOrMore>
+</define>
+
+<!-- This is redefined by the legacy module to include inlines. -->
+<define name="Block.mix">
+	<ref name="Block.class"/>
+</define>
+
+<define name="Block.model">
+	<oneOrMore>
+		<ref name="Block.mix"/>
+	</oneOrMore>
+</define>
+
+<define name="Flow.model">
+	<zeroOrMore>
+		<choice>
+			<!--<text/>-->
+			<ref name="Inline.class"/>
+			<ref name="Block.class"/>
+		</choice>
+	</zeroOrMore>
+</define>
+
+<define name="dl">
+	<element name="dl">
+		<ref name="Common.attrib"/>
+		<oneOrMore>
+			<choice>
+	<ref name="dt"/>
+	<ref name="dd"/>
+			</choice>
+		</oneOrMore>
+	</element>
+</define>
+
+<define name="dt">
+	<element name="dt">
+	<ref name="Common.attrib"/>
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="dd">
+	<element name="dd">
+		<ref name="Common.attrib"/>
+		<ref name="Flow.model"/>
+	</element>
+</define>
+
+<define name="ol">
+	<element name="ol">
+		<ref name="Common.attrib"/>
+		<oneOrMore>
+			<ref name="li"/>
+		</oneOrMore>
+	</element>
+</define>
+
+<define name="ul">
+	<element name="ul">
+		<ref name="Common.attrib"/>
+		<oneOrMore>
+			<ref name="li"/>
+		</oneOrMore>
+	</element>
+</define>
+
+<define name="li">
+	<element name="li">
+		<ref name="Common.attrib"/>
+		<!--<ref name="Flow.model"/>-->
+		<ref name="Inline.model"/>
+	</element>
+</define>
+
+<define name="List.class">
+	<choice>
+		<ref name="ul"/>
+		<ref name="ol"/>
+		<ref name="dl"/>
+	</choice>
+</define>
+
+<define name="Block.class" combine="choice">
+	<ref name="List.class"/>
+</define>
+
+<define name="img">
+	<element name="img">
+		<ref name="img.attlist"/>
+	</element>
+</define>
+
+<define name="img.attlist">
+	<ref name="Common.attrib"/>
+	<attribute name="src">
+		<ref name="URI.datatype"/>
+	</attribute>
+	<attribute name="alt">
+		<ref name="Text.datatype"/>
+	</attribute>
+	<optional>
+		<attribute name="longdesc">
+			<ref name="URI.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="height">
+			<ref name="Length.datatype"/>
+		</attribute>
+	</optional>
+	<optional>
+		<attribute name="width">
+			<ref name="Length.datatype"/>
+		</attribute>
+	</optional>
+</define>
+
+<define name="hr">
+	<element name="hr">
+		<ref name="Common.attrib"/>
+	</element>
+</define>
+
+</grammar>
