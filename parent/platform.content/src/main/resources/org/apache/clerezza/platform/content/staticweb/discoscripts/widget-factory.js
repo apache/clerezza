@@ -116,7 +116,7 @@ WidgetFactory.create = function(terminationListener, rdfSymbol, xhtmlContainer, 
 		var RDFControl = new Object();
 	   	RDFControl.label = "RDF"
 	   	RDFControl.perform = function() {
-	   		//mozile.edit.disable();
+	   		mozile.edit.disable();
 		   	var div = document.createElementNS(xhtmlNS, "div");
 			var textarea = document.createElementNS(xhtmlNS, "textarea");
 			div.appendChild(textarea);
@@ -146,12 +146,12 @@ WidgetFactory.create = function(terminationListener, rdfSymbol, xhtmlContainer, 
 				widgetHolder.widget.remove();
 				WidgetFactory.create(function() {
 					body.removeChild(div);
-					//mozile.edit.enable();
+					mozile.edit.enable();
 				}, rdfSymbol, xhtmlContainer, providedFunctions, editedStore, widgetHolder, widgetHolder.widget.lastSavedContent);
 					   		}
 	   		discardButton.onclick = function() {
 				body.removeChild(div);
-				//mozile.edit.enable();
+				mozile.edit.enable();
 	   		}
    		}
    		controlFunctions[controlFunctions.length] = RDFControl;
@@ -204,7 +204,8 @@ WidgetFactory.create = function(terminationListener, rdfSymbol, xhtmlContainer, 
 	//saveLink.appendChild(document.createTextNode("Save"));
 	var saveIcon = document.createElementNS("http://www.w3.org/1999/xhtml", "img");
 	saveLink.appendChild(saveIcon);
-	saveIcon.src = WidgetFactory.root+"save.png";
+	saveIcon.src = WidgetFactory.root+"mozile/images/silk/page_save.png";
+	;
 	saveLink.onclick = function() {
 		widgetHolder.widget.save();
 	}
@@ -376,7 +377,7 @@ TypeSelectionWidget = function(rdfSymbol, typeWidget, xhtmlContainer, providedFu
 
 //mozile.debug.logLevel = "debug";
 
-/*{
+{
 	var found = false;
 	for(var i=0; i < mozile.edit.commands._commands.length; i++) {
 		if(mozile.edit.commands._commands[i] == mozile.edit.save);
@@ -387,16 +388,16 @@ TypeSelectionWidget = function(rdfSymbol, typeWidget, xhtmlContainer, providedFu
 		}
 	}
 	mozile.edit.commands._commands.pop();
-} */
+}
 
 	
 function XHTMLInfoDiscoBitWidget(store, rdfSymbol, xhtmlContainer, controller, terminationListener) {
 	// Configure Mozile Basics
-	/*if (!XHTMLInfoDiscoBitWidget.mozileInitialized) {
+	if (!XHTMLInfoDiscoBitWidget.mozileInitialized) {
 		mozile.root = WidgetFactory.root+"mozile/";
 		mozile.useSchema("lib/xhtml.rng");
 		XHTMLInfoDiscoBitWidget.mozileInitialized = true;
-	}*/
+	}
 	this.rdfSymbol = rdfSymbol;
 	this.controller = controller;
 	this.xhtmlContainer = xhtmlContainer;
@@ -416,7 +417,7 @@ XHTMLInfoDiscoBitWidget.prototype.getWidgetControls = function() {
    	RDFControl.label = "XHTML"
    	var widget = this;
    	RDFControl.perform = function() {
-   		//mozile.edit.disable();
+   		mozile.edit.disable();
 	   	var div = document.createElementNS(xhtmlNS, "div");
 		var textarea = document.createElementNS(xhtmlNS, "textarea");
 		div.appendChild(textarea);
@@ -451,11 +452,11 @@ XHTMLInfoDiscoBitWidget.prototype.getWidgetControls = function() {
 			}
 			widget.controller.modifiedStateChanged(true, widget);
    			body.removeChild(div);
-			//mozile.edit.enable();
+			mozile.edit.enable();
    		}
    		discardButton.onclick = function() {
 			body.removeChild(div);
-			//mozile.edit.enable();
+			mozile.edit.enable();
    		}
   		}
   		controlFunctions[controlFunctions.length] = RDFControl;
@@ -474,7 +475,7 @@ XHTMLInfoDiscoBitWidget.prototype.loadData = function(store) {
 	//xhtmlContainer.appendChild(editableParagraph);
 	WidgetFactory.appendChildrenInDiv(objectElement, this.xhtmlContainer);
 	this.editableArea = this.xhtmlContainer.childNodes[0];
-	//mozile.editElement(this.editableArea);
+	mozile.editElement(this.editableArea);
 	var controller = this.controller;
 	var widget = this;
 	var modifiedTrue = function() {

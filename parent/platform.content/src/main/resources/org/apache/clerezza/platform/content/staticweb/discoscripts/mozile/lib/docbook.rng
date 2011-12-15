@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
+
+	<start>
+		<ref name="db.book"/>
+  </start>
+	
+	<define name="db.attr.common">
+		<optional>
+			<attribute name="id"/>
+		</optional>
+	</define>
+  
+	<define name="db.book">
+		<element name="book">  
+			<ref name="db.book.info"/>
+			<oneOrMore>
+				<ref name="db.chapter"/>
+			</oneOrMore>
+		</element>
+	</define>
+	
+	<define name="db.book.info">
+		<ref name="db.title"/>
+		<optional>
+			<ref name="db.author"/>
+		</optional>
+  </define>
+	
+	<define name="db.title">
+		<element name="title">
+			<text/>
+		</element>
+	</define>
+	
+	<define name="db.author">
+		<element name="author">
+			<text/>
+		</element>
+	</define>
+	
+	<define name="db.chapter">
+		<element name="chapter">
+			<ref name="db.attr.common"/>
+			<ref name="db.title"/>
+			<oneOrMore>
+				<ref name="db.section"/>
+			</oneOrMore>
+		</element>
+	</define>
+	
+	<define name="db.section">
+		<element name="section">
+			<ref name="db.attr.common"/>
+			<ref name="db.title"/>
+			<oneOrMore>
+				<ref name="db.blocks"/>
+			</oneOrMore>
+		</element>
+	</define>
+	
+	<define name="db.para">
+		<element name="para">
+			<ref name="db.attr.common"/>
+			<ref name="db.inline"/>
+		</element>
+	</define>
+	
+	<define name="db.itemizedlist">
+		<element name="itemizedlist">
+			<ref name="db.attr.common"/>
+			<optional>
+				<attribute name="numeration"/>
+			</optional>
+			<optional>
+				<ref name="db.title"/>
+			</optional>
+			<oneOrMore>
+				<ref name="db.listitem"/>
+			</oneOrMore>
+		</element>
+	</define>
+	
+	<define name="db.listitem">
+		<element name="listitem">
+			<ref name="db.attr.common"/>
+			<ref name="db.inline"/>
+		</element>
+	</define>
+	
+	<define name="db.acronym">
+		<element name="acronym">
+			<ref name="db.attr.common"/>
+			<text/>
+		</element>
+	</define>
+	
+	<define name="db.code">
+		<element name="code">
+			<ref name="db.attr.common"/>
+			<text/>
+		</element>
+	</define>
+	
+	<define name="db.filename">
+		<element name="filename">
+			<ref name="db.attr.common"/>
+			<text/>
+		</element>
+	</define>
+	
+	<define name="db.emphasis">
+		<element name="emphasis">
+			<ref name="db.attr.common"/>
+			<text/>
+		</element>
+	</define>
+	
+	<define name="db.link">
+		<element name="link">
+			<ref name="db.attr.common"/>
+			<attribute name="href"/>
+			<text/>
+		</element>
+	</define>
+	
+	<define name="db.blocks">
+		<choice>
+			<ref name="db.section"/>
+			<ref name="db.para"/>
+			<ref name="db.itemizedlist"/>
+		</choice>
+	</define>
+	
+	<define name="db.inline">
+		<choice>
+			<text/>
+			<ref name="db.acronym"/>
+			<ref name="db.code"/>
+			<ref name="db.emphasis"/>
+			<ref name="db.filename"/>
+			<ref name="db.link"/>
+		</choice>
+	</define>
+  
+</grammar>
