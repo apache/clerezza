@@ -540,7 +540,7 @@ public class JaxRsHandler implements Handler {
 	static void handleException(Throwable exception, WebRequest request, Response response) throws HandlerException, RuntimeException {
 		if (exception instanceof WebApplicationException) {
 			WebApplicationException webEx = (WebApplicationException) exception;
-			logger.debug("Exception {}", webEx);
+			logger.info("Exception {}", webEx);
 			javax.ws.rs.core.Response jaxResponse = webEx.getResponse();
 			if ((jaxResponse == null) || (jaxResponse.getEntity() == null)) {
 				ExceptionMapper<WebApplicationException> exMapper = (ExceptionMapper<WebApplicationException>) providers
@@ -559,7 +559,7 @@ public class JaxRsHandler implements Handler {
 		}
 		ExceptionMapper exMapper = providers.getExceptionMapper(exception.getClass());
 		if (exMapper != null) {
-			logger.debug("Exception with exception mapper", exception);
+			logger.info("Exception with exception mapper", exception);
 			javax.ws.rs.core.Response jaxResponse;
 			try {
 				jaxResponse = exMapper.toResponse(exception);
@@ -584,7 +584,7 @@ public class JaxRsHandler implements Handler {
 				if (!(exception instanceof AccessControlException)) {
 					logger.warn("RuntimeException (with no exception mapper)", exception);
 				} else {
-					logger.debug("AccessControlException (will rethrow)", exception);
+					logger.info("AccessControlException (will rethrow)", exception);
 				}
 				throw (RuntimeException) exception;
 			}
