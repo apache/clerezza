@@ -183,6 +183,7 @@
 										<exclude>release.properties</exclude>
 										<!-- hidden files -->
 										<exclude>**/.*</exclude>
+										<exclude>**/.*/*</exclude>
 										<exclude>**/.*/**/*</exclude>
 										<exclude>**/*.sh</exclude>
 										<exclude>**/main/shell/**/*</exclude>
@@ -216,6 +217,7 @@
 										<exclude>web.fileserver/src/main/resources/org/apache/clerezza/web/fileserver/util/mime.types</exclude>
 									</excludes>
 									<numUnapprovedLicenses>1</numUnapprovedLicenses>
+									<excludeSubProjects>false</excludeSubProjects>
 								</configuration>
 							</execution>
 						</executions>
