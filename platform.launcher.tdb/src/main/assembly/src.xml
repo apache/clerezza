@@ -31,10 +31,10 @@
       <source>README.txt</source>
       <outputDirectory>/</outputDirectory>
     </file>
-	<file>
-		<source>target/platform.launcher.tdb-0.5-incubating-SNAPSHOT.jar</source>
+	<!-- <file>
+		<source>target/platform.launcher.tdb-*-SNAPSHOT.jar</source>
 		<outputDirectory>/</outputDirectory>
-	</file>
+	</file> -->
     <file>
       <source>LICENSE</source>
       <outputDirectory>/</outputDirectory>
@@ -44,4 +44,13 @@
       <outputDirectory>/</outputDirectory>
     </file>
   </files>
+	<fileSets>
+		<fileSet>
+			<directory>target</directory>
+			<includes>
+				<include>platform.launcher.tdb-*-SNAPSHOT.jar</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
 </assembly>
