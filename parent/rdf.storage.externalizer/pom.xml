@@ -20,17 +20,17 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>rdf.storage.externalizer</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.1-incubating-SNAPSHOT</version>
+	<version>0.1-incubating</version>
 	<name>Clerezza - SCB Literal Externalizing Storage Provider</name>
 	<description>A Storage Provider storing large literals to files before
 	and relying on another provider for storing triples.</description>
