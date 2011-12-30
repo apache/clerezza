@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>jaxrs.utils</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.6-incubating</version>
+	<version>0.6-incubating-SNAPSHOT</version>
 	<name>Clerezza - JAX-RS Utilities</name>
 	<description>Utility classes for JAX-RS (see the Javadoc)</description>
 	<dependencies>
