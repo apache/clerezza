@@ -23,7 +23,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
   <artifactId>uima</artifactId>
-  <version>0.1-incubating</version>
+  <version>0.2-incubating-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Clerezza - Apache UIMA extension module</name>
   <description>Apache UIMA extension modules enable usage of UIMA for enhanced metadata extraction inside Clerezza
@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>parent</artifactId>
-    <version>0.2-incubating</version>
+    <version>0.3-incubating-SNAPSHOT</version>
   </parent>
   <properties>
     <uima.version>2.3.1</uima.version>
@@ -76,7 +76,7 @@
       <plugin>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>maven-pladoc-plugin.core</artifactId>
-        <version>0.3-incubating</version>
+        <version>0.4-incubating-SNAPSHOT</version>
       </plugin>
       <plugin>
         <groupId>org.ops4j.pax.exam</groupId>

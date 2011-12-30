@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>tools.offline</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.1-incubating</version>
+	<version>0.2-incubating-SNAPSHOT</version>
 	<name>Clerezza - Tools Offline Site Generator</name>
 	<description>The core part of SCB Web Access</description>
 	<dependencies>

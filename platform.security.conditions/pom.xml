@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.security.conditions</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.5-incubating</version>
+	<version>0.6-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Security Conditions</name>
 	<description>Fragment bundle for System Bundle that contains
 	conditions for the Conditional Permission Admin</description>

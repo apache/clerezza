@@ -24,10 +24,10 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<artifactId>shell</artifactId>
-	<version>0.1-incubating</version>
+	<version>0.2-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Shell Service</name>
 	<dependencies>

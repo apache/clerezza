@@ -25,11 +25,11 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza.ext</groupId>
 	<artifactId>javax.mail</artifactId>
-	<version>0.4-incubating</version>
+	<version>0.5-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza Ext - Javax Mail</name>
 	<description>Javax Mail as OSGi bundle</description>
