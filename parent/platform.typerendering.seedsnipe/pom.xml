@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.typerendering.seedsnipe</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.6-incubating</version>
+	<version>0.6-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Seedsnipe Renderlet</name>
 	<description>Renderlet implementation wrapping org.apache.clerezza.templating.seedsnipe</description>
 	<dependencies>

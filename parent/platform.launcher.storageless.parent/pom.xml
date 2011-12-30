@@ -22,11 +22,11 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.launcher.storageless.parent</artifactId>
-	<version>0.8-incubating</version>
+	<version>0.8-incubating-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Clerezza - Platform Launcher Storageless Parent POM</name>
 	<description>A parent for Platform launchers, containing the platform bundles as runtime dependencies.

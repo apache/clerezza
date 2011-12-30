@@ -24,11 +24,11 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.launcher.tdb</artifactId>
-	<version>0.5-incubating</version>
+	<version>0.5-incubating-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Clerezza - Platform Launcher with Jena TDB</name>
 	<description>TDB variant of standalone java application for launching the clerezza.org platform. It is also a bundle, but there is no OSGi container known to support this (we are working on it :-) ).</description>

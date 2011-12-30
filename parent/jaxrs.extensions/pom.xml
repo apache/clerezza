@@ -24,11 +24,11 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>jaxrs.extensions</artifactId>
-	<version>0.5-incubating</version>
+	<version>0.5-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - JAXRS Extensions</name>
 	<description>Provides an interface implementable by JAX-RS implementations
