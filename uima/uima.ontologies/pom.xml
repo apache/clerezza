@@ -19,19 +19,18 @@
  under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
   <artifactId>uima.ontologies</artifactId>
-  <version>0.1-incubating-SNAPSHOT</version>
+  <version>0.1-incubating</version>
   <packaging>bundle</packaging>
   <name>Clerezza - Apache UIMA related ontologies</name>
   <description>RDFS ontologies and vocabularies modeling UIMA to be used with Clerezza</description>
   <parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>uima</artifactId>
-    <version>0.1-incubating-SNAPSHOT</version>
+    <version>0.1-incubating</version>
   </parent>
   <dependencies>
     <dependency>
