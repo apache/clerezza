@@ -24,11 +24,11 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>utils.customproperty</artifactId>
-	<version>0.4-incubating-SNAPSHOT</version>
+	<version>0.4-incubating</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Utils Custom Property</name>
 	<description>Management of additional properties of specified items.</description>
