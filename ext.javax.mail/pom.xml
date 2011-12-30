@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--
 
  Licensed to the Apache Software Foundation (ASF) under one
@@ -25,11 +25,11 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza.ext</groupId>
 	<artifactId>javax.mail</artifactId>
-	<version>0.4-incubating</version>
+	<version>0.4-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza Ext - Javax Mail</name>
 	<description>Javax Mail as OSGi bundle</description>
