@@ -24,11 +24,11 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.mail</artifactId>
-	<version>0.4-incubating</version>
+	<version>0.5-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Mail Deliverly</name>
 	<description>Provides services for mail deliverly</description>

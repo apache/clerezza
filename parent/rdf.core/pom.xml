@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>rdf.core</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.12-incubating</version>
+	<version>0.13-incubating-SNAPSHOT</version>
 	<name>Clerezza - SCB Core</name>
 	<description>Interfaces and utilities to access RDF Graphs</description>
 	<dependencies>
