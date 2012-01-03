@@ -24,11 +24,11 @@
 	<parent>
 		<artifactId>platform.content.representations</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.1-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.content.representations.core</artifactId>
-	<version>0.2-incubating-SNAPSHOT</version>
+	<version>0.1-incubating-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Content Representations Core</name>
 	<description>Provides a Meta Data Generator that generates alternative
