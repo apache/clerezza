@@ -19,7 +19,9 @@
  under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-parent</artifactId>
@@ -30,7 +32,7 @@
 
   <groupId>org.apache.clerezza.ext</groupId>
   <artifactId>slf4j-scala-api</artifactId>
-  <version>1.6.1-incubating</version>
+  <version>1.6.1-incubating-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>SLF4J Scala API Module</name>
 
@@ -199,7 +201,7 @@
         <configuration>
           <tasks>
             <echo>Removing slf4j-api's dummy StaticLoggerBinder and StaticMarkerBinder</echo>
-            <delete dir="target/classes/org/slf4j/impl" />
+            <delete dir="target/classes/org/slf4j/impl"/>
           </tasks>
         </configuration>
       </plugin-->
@@ -232,10 +234,4 @@
     </plugins>
   </reporting>
 
-
-  <scm>
-    <connection>scm:svn:http://svn.slf4j.org/repos/slf4j/tags/parent-0.2-incubating/slf4j-scala-api</connection>
-    <developerConnection>scm:svn:https://svn.slf4j.org/repos/slf4j/tags/parent-0.2-incubating/slf4j-scala-api</developerConnection>
-    <url>http://svn.slf4j.org/viewvc/slf4j/tags/parent-0.2-incubating/slf4j-scala-api</url>
-  </scm>
 </project>

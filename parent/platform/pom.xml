@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--
 
  Licensed to the Apache Software Foundation (ASF) under one
@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.2-incubating-SNAPSHOT</version>
+	<version>0.1-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform</name>
 	<description>Artifact with dependencies to the clerezza platform components
 	providing documentation and boot-status monitoring.</description>
