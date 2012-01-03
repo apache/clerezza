@@ -48,8 +48,11 @@
 		<fileSet>
 			<directory>target</directory>
 			<includes>
-				<include>platform.launcher.tdb-*-SNAPSHOT.jar</include>
+				<include>platform.launcher.tdb-*.jar</include>
 			</includes>
+			<excludes>
+				<exclude>*sources.jar</exclude>
+			</excludes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
 	</fileSets>
