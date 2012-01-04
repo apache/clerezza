@@ -24,7 +24,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>parent</artifactId>
+        <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
         <version>0.2-incubating-SNAPSHOT</version>
     </parent>

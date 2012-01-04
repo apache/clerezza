@@ -28,7 +28,7 @@
 	<version>1.0-incubating-SNAPSHOT</version>
 	<name>SCB Jaxrs Tutorial</name>	
 	<parent>
-		<artifactId>parent</artifactId>
+		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.11-incubating-SNAPSHOT</version>
 	</parent>

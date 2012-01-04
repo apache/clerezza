@@ -28,7 +28,7 @@
 		<relativePath />
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<artifactId>parent</artifactId>
+	<artifactId>clerezza</artifactId>
 	<packaging>pom</packaging>
 	<name>Clerezza - Parent for all (root)</name>
 	<url>http://incubator.apache.org/clerezza/mvn-site/</url>
