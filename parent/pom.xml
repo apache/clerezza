@@ -215,8 +215,10 @@
 										<exclude>**/META-INF/MANIFEST.MF</exclude>
 										<exclude>ssl.keygen/samplewebapp/src/main/webapp/cacert.crt</exclude>
 										<exclude>web.fileserver/src/main/resources/org/apache/clerezza/web/fileserver/util/mime.types</exclude>
+										<exclude>platform.content/src/main/resources/org/apache/clerezza/platform/content/staticweb/discoscripts/**/*</exclude>
+										<exclude>platform.content/src/main/resources/org/apache/clerezza/platform/content/*</exclude>
 									</excludes>
-									<numUnapprovedLicenses>1</numUnapprovedLicenses>
+									<numUnapprovedLicenses>0</numUnapprovedLicenses>
 									<excludeSubProjects>false</excludeSubProjects>
 								</configuration>
 							</execution>
