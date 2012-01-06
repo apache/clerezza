@@ -43,6 +43,10 @@
       <source>NOTICE.txt</source>
       <outputDirectory>/</outputDirectory>
     </file>
+    <file>
+      <source>DISCLAIMER</source>
+      <outputDirectory>/</outputDirectory>
+    </file>
   </files>
 	<fileSets>
 		<fileSet>
