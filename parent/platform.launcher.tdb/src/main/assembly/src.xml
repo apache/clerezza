@@ -40,7 +40,7 @@
       <outputDirectory>/</outputDirectory>
     </file>
     <file>
-      <source>NOTICE.txt</source>
+      <source>NOTICE</source>
       <outputDirectory>/</outputDirectory>
     </file>
     <file>
