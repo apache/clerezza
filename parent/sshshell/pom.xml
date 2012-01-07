@@ -25,12 +25,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>sshshell</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.1-incubating</version>
+	<version>0.2-incubating-SNAPSHOT</version>
 	<name>Clerezza - SSH Shell Access</name>
 	<description>SSH access to clerezza</description>
 	<dependencies>

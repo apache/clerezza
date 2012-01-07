@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.language</artifactId>
 	<packaging>pom</packaging>
-	<version>0.2-incubating</version>
+	<version>0.3-incubating-SNAPSHOT</version>
 	<name>Clerezza - Platform Language</name>
 	<description>This bundles provides methods to manage languages in the Clerezza platform.
 	</description>

@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>maven-pladoc-plugin</artifactId>
 	<packaging>pom</packaging>
-	<version>0.3-incubating</version>
+	<version>0.4-incubating-SNAPSHOT</version>
 	<name>Clerezza - Maven PlaDoc Plugin</name>
 	<description>The maven plugin starts an OSGi container and access a service provided by the OSGi BUndle in Service</description>
 	<modules>
