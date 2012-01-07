@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <!--
 
  Licensed to the Apache Software Foundation (ASF) under one
@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>rdf.rdfjson</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.3-incubating-SNAPSHOT</version>
+	<version>0.3-incubating</version>
 	<name>Clerezza - SCB rdf/json Parser and Serializer</name>
 	<description>A rdf/json Parser- and SerializerProvider</description>
 	<dependencies>
