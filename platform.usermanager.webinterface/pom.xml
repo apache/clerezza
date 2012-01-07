@@ -24,11 +24,11 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.usermanager.webinterface</artifactId>
-	<version>0.13-incubating-SNAPSHOT</version>
+	<version>0.13-incubating</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Usermanager Webinterface</name>
 	<description>Management of information about users including their roles</description>
