@@ -477,6 +477,21 @@
 				<groupId>org.codehaus.xsite</groupId>
 				<artifactId>xsite-maven-plugin</artifactId>
 			</plugin>
+			<!-- having this here has the effect that the resources copied by the resources plugin (below) have
+			priority over the remote resources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>		
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<resources>
 			<resource>
@@ -484,7 +499,7 @@
 				<filtering>false</filtering>
 				<directory>${basedir}</directory>
 				<includes>
-					<include>NOTICE.txt</include>
+					<include>NOTICE</include>
 					<include>LICENSE.*</include>
 				</includes>
 			</resource>
