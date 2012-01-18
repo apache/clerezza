@@ -36,6 +36,7 @@
 	<description>The direct or indirect parent of all Clerezza Artifacts</description>
 	<properties>
 		<scala.version>2.8.1</scala.version>
+		<sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
 	</properties>
 	<licenses>
 		<license>
@@ -44,13 +45,33 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
 	<profiles>
+		<profile>
+			<id>apache-release</id>
+			<build>
+				<plugins>
+					  <plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<dependencies>          
+						  <dependency>  <!-- here I stuck in the dependency on the above
+					saved asm descriptor -->
+							<groupId>org.apache.clerezza</groupId>
+							<artifactId>clerezza-jar-resource-bundle</artifactId>
+							<version>1-SNAPSHOT</version>
+							</dependency>
+						</dependencies>
+					  </plugin> 
+				</plugins>
+				</build>
+			</profile>
 		<profile>
 			<id>release</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
+				<module>clerezza-jar-resource-bundle</module>
 				<module>platform.style.classic.webguiexamples</module>
 				<module>ext.com.hp.hpl.jena</module>
 				<module>ext.com.hp.hpl.jena.tdb</module>
@@ -318,6 +339,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2.2</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
