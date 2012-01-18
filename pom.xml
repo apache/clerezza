@@ -43,6 +43,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.testutils</artifactId>
 			<scope>test</scope>
