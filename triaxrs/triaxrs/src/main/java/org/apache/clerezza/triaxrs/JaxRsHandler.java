@@ -540,7 +540,7 @@ public class JaxRsHandler implements Handler {
 	static void handleException(Throwable exception, WebRequest request, Response response) throws HandlerException, RuntimeException {
 		if (exception instanceof WebApplicationException) {
 			WebApplicationException webEx = (WebApplicationException) exception;
-			logger.info("Exception {}", webEx);
+			logger.debug("Exception {}", webEx);
 			javax.ws.rs.core.Response jaxResponse = webEx.getResponse();
 			if ((jaxResponse == null) || (jaxResponse.getEntity() == null)) {
 				ExceptionMapper<WebApplicationException> exMapper = (ExceptionMapper<WebApplicationException>) providers
