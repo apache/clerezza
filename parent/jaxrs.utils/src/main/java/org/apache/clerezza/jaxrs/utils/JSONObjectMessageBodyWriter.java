@@ -20,6 +20,7 @@ package org.apache.clerezza.jaxrs.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
@@ -28,15 +29,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
 
 import org.json.simple.JSONObject;
 
-/**
- * 
- * @scr.component 
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true" 
- */
+@Component
+@Service(Object.class)
+@Property(name="javax.ws.rs", boolValue=true)
 @Provider
 @Produces("application/json")
 public class JSONObjectMessageBodyWriter implements
@@ -47,7 +48,11 @@ public class JSONObjectMessageBodyWriter implements
 	@Override
 	public long getSize(JSONObject jsonObject, Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
-		return jsonObject.toJSONString().length();
+		try {
+			return jsonObject.toJSONString().getBytes(UTF8).length;
+		} catch (UnsupportedEncodingException ex) {
+			return -1;
+		}
 	}
 
 	@Override
