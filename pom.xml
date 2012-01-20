@@ -224,6 +224,7 @@
 										<exclude>**/documentation.nt</exclude>
 										<!-- yui is bsd licensed -->
 										<exclude>web.resources.yui/src/main/resources/**/*</exclude>
+										<exclude>web.resources.jquery/src/main/resources/org/apache/clerezza/web/resources/jquery/staticweb/**/*</exclude>
 										<exclude>platform.scripting.scriptmanager/src/main/resources/org/apache/clerezza/platform/scripting/scriptmanager/scriptmanager-script-information.xhtml</exclude>
 										<exclude>templating.seedsnipe/src/test/resources/org/apache/clerezza/templating/seedsnipe/libby-foaf.rdf</exclude>
 										<exclude>platform.usermanager.webinterface/src/main/resources/org/apache/clerezza/platform/usermanager/webinterface/reset_mail.txt</exclude>
