@@ -19,10 +19,13 @@ package org.apache.clerezza.rdf.rdfjson.serializer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.BNode;
@@ -31,6 +34,7 @@ import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
+import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
@@ -148,9 +152,12 @@ public class RdfJsonSerializerProviderTest {
 	/**
 	 * For local performance testing
 	 */
-	//@Test
-	public void testBigGraph() {
-		int NUM_TRIPLES = 100000;
+	@Test
+	public void testBigGraph() throws Exception {
+		//reduced Graph size to 5000 to allow equals test between the
+		//serialised and parsed RDF graphs. Equals tests on bigger graphs
+		//would take to much time
+		int NUM_TRIPLES = 5000;
 		//randoms are in the range [0..3]
 		double l = 1.0; //literal
 		double i = l / 3; //int
@@ -179,7 +186,7 @@ public class RdfJsonSerializerProviderTest {
 		Iterator<UriRef> predicates = predicateList.iterator();
 		List<BNode> bNodes = new ArrayList<BNode>();
 		bNodes.add(new BNode());
-		for (int count = 0; count < NUM_TRIPLES; count++) {
+		for (int count = 0; mGraph.size() < NUM_TRIPLES; count++) {
 			random = Math.random() * 3;
 			if (random >= 2.5 || count == 0) {
 				if (random <= 2.75) {
@@ -208,7 +215,7 @@ public class RdfJsonSerializerProviderTest {
 					} else if (random <= d) {
 						text = new PlainLiteralImpl("An English literal for " + count, EN);
 					} else {
-						text = new PlainLiteralImpl("Ein Dutsches Literal fÃ¼r" + count, DE);
+						text = new PlainLiteralImpl("Ein Dutsches Literal für " + count, DE);
 					}
 					mGraph.add(new TripleImpl(subject, predicate, text));
 				}
@@ -227,13 +234,36 @@ public class RdfJsonSerializerProviderTest {
 						new UriRef(URI_PREFIX + (int) count * random)));
 			}
 		}
+		//Asserts the correct sorting of the triples in the graph by the
+		//Comparator used by the JSON serializer
+        Set<NonLiteral> subjects = new HashSet<NonLiteral>();
+		Triple[] sortedTriples = mGraph.toArray(new Triple[mGraph.size()]);
+        Arrays.sort(sortedTriples, RdfJsonSerializingProvider.SUBJECT_COMPARATOR);
+        NonLiteral current = sortedTriples[0].getSubject();
+        for(Triple triple : sortedTriples){
+            if(!triple.getSubject().equals(current)){
+                subjects.add(current);
+                current = triple.getSubject();
+                Assert.assertFalse(subjects.contains(current));
+            }
+        }
+        sortedTriples = null;
+        subjects = null;
+        
+		int originalSize = mGraph.size();
+		
 		SerializingProvider provider = new RdfJsonSerializingProvider();
-		for (int count = 0; i < 10; i++) {
-			long start = System.currentTimeMillis();
-			ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
-
-			provider.serialize(serializedGraph, mGraph, "application/rdf+json");
-			System.out.println("Serialized " + mGraph.size() + "Triples in " + (System.currentTimeMillis() - start) + "ms");
-		}
+		ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
+		long start = System.currentTimeMillis();
+		provider.serialize(serializedGraph, mGraph, "application/rdf+json");
+		System.out.println("Serialized " + mGraph.size() + " Triples in " + (System.currentTimeMillis() - start) + " ms");
+        ParsingProvider parsingProvider = new RdfJsonParsingProvider();
+        ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph.toByteArray());
+        MGraph parsedMGraph = new SimpleMGraph();
+        parsingProvider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
+        Assert.assertEquals(originalSize, parsedMGraph.size());
+        sortedTriples = parsedMGraph.toArray(new Triple[parsedMGraph.size()]);
+        Arrays.sort(sortedTriples, RdfJsonSerializingProvider.SUBJECT_COMPARATOR);
+        Assert.assertEquals(mGraph.getGraph(), parsedMGraph.getGraph());
 	}
 }
