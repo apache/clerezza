@@ -1398,6 +1398,16 @@
 				<artifactId>bcprov-jdk16</artifactId>
 				<version>1.46</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>rdf.cris</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>platform.cris</artifactId>
+				<version>0.1-incubating-SNAPSHOT</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<distributionManagement>
