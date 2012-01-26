@@ -61,7 +61,7 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.usermanager</artifactId>
 		</dependency>
-        <dependency>
+		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
 		</dependency>
@@ -77,9 +77,13 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>osgi.services</artifactId>
 		</dependency>
-        <dependency>
+		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.clerezza.ext</groupId>
+		  <artifactId>slf4j-scala-api</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
