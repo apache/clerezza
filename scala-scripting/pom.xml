@@ -69,6 +69,10 @@
 	</dependencyManagement>
 	<distributionManagement>
 		<!-- where to deploy the artifacts -->
+		<site>
+			<id>people.apache.org</id>
+			<url>scp://people.apache.org/www/incubator.apache.org/clerezza/mvn-site/scala-scripting</url>
+		</site>
 		<repository>
 			<id>apache.releases.https</id>
 			<name>Apache Release Distribution Repository</name>
