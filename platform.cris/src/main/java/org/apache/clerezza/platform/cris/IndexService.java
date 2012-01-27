@@ -127,7 +127,7 @@ public class IndexService extends ResourceFinder {
 	}
 	
 	@Override
-	public List<NonLiteral> findResources(List<Condition> conditions, 
+	public List<NonLiteral> findResources(List<? extends Condition> conditions, 
 			SortSpecification sortSpecification, FacetCollector... facetCollectors) {
 		try {
 			return graphIndexer.findResources(conditions, sortSpecification, facetCollectors);
@@ -137,7 +137,7 @@ public class IndexService extends ResourceFinder {
 	}
 	
 	@Override
-	public List<NonLiteral> findResources(List<Condition> conditions, 
+	public List<NonLiteral> findResources(List<? extends Condition> conditions, 
 			FacetCollector... facetCollectors) {
 		try {
 			return graphIndexer.findResources(conditions, facetCollectors);
@@ -147,7 +147,7 @@ public class IndexService extends ResourceFinder {
 	}
 
 	@Override
-	public List<NonLiteral> findResources(List<Condition> conditions) {
+	public List<NonLiteral> findResources(List<? extends Condition> conditions) {
 		try {
 			return graphIndexer.findResources(conditions);
 		} catch (ParseException ex) {
