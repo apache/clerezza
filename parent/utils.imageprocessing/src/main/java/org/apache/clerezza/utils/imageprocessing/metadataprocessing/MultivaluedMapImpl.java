@@ -1,45 +1,4 @@
-/*
-*
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
-*
-* Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
-*
-* The contents of this file are subject to the terms of either the GNU
-* General Public License Version 2 only ("GPL") or the Common Development
-* and Distribution License("CDDL") (collectively, the "License"). You
-* may not use this file except in compliance with the License. You can obtain
-* a copy of the License at https://jersey.dev.java.net/CDDL+GPL.html
-* or jersey/legal/LICENSE.txt. See the License for the specific
-* language governing permissions and limitations under the License.
-*
-* When distributing the software, include this License Header Notice in each
-* file and include the License file at jersey/legal/LICENSE.txt.
-* Sun designates this particular file as subject to the "Classpath" exception
-* as provided by Sun in the GPL Version 2 section of the License file that
-* accompanied this code. If applicable, add the following below the License
-* Header, with the fields enclosed by brackets [] replaced by your own
-* identifying information: "Portions Copyrighted [year]
-* [name of copyright owner]"
-*
-* Contributor(s):
-*
-* If you wish your version of this file to be governed by only the CDDL or
-* only the GPL Version 2, indicate your decision by adding "[Contributor]
-* elects to include this software in this distribution under the [CDDL or GPL
-* Version 2] license." If you don't indicate a single choice of license, a
-* recipient has the option to distribute your version of this file under
-* either the CDDL, the GPL Version 2 or to extend the choice of license to
-* its licensees as provided above. However, if you add GPL Version 2 code
-* and therefore, elected the GPL Version 2 license, then the option applies
-* only if the new code is made subject to such option by the copyright
-* holder.
-* 
-* trialox.org (trialox AG, Switzerland) elects to include this software in this
-* distribution under the CDDL license.
-*/ 
-package org.apache.clerezza.utils.imageprocessing.metadataprocessing;
-/*
- *
+/*******************************************************************************
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -50,147 +9,225 @@ package org.apache.clerezza.utils.imageprocessing.metadataprocessing;
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
  *
-*/
+ *******************************************************************************/
+package org.apache.clerezza.utils.imageprocessing.metadataprocessing;
 
-
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-/**
-*
-* @author Paul.Sandoz@Sun.Com
-*/
+public class MultivaluedMapImpl<K, V> // extends LinkedHashMap<K,List<V>>
+		implements MultivaluedMap<K, V>, Cloneable {
 
-public class MultivaluedMapImpl<K, V> extends HashMap<K, List<V>>
-       implements MultivaluedMap<K, V> {
+	private static final long serialVersionUID = -1942980976209902832L;
+	private final Map<K, List<V>> map;
 
-   // MultivaluedMap
+	public MultivaluedMapImpl() {
+		map = new LinkedHashMap<K, List<V>>();
+	}
+
+	/**
+	 * Used to create a CaseInsensitiveMultivaluedMap
+	 *
+	 * @param keyComparator
+	 */
+	MultivaluedMapImpl(Comparator<K> keyComparator) {
+		map = new TreeMap<K, List<V>>(keyComparator);
+	}
+
+	public MultivaluedMapImpl(Map<K, V> map) {
+		this();
+		for (K key : map.keySet()) {
+			add(key, map.get(key));
+		}
+	}
+
+	public void add(K key, V value) {
+		List<V> list = getOrCreate(key);
+		list.add(value);
+	}
+
+	public V getFirst(K key) {
+		List<V> list = get(key);
+		if (list == null || list.size() == 0) {
+			return null;
+		}
+		return list.get(0);
+	}
+
+	public void putSingle(K key, V value) {
+		List<V> list = getOrCreate(key);
+		list.clear();
+		list.add(value);
+	}
+
+	private List<V> getOrCreate(K key) {
+		List<V> list = this.get(key);
+		if (list == null) {
+			list = createValueList(key);
+			this.put(key, list);
+		}
+		return list;
+	}
+
+	private List<V> createValueList(K key) {
+		return new ArrayList<V>();
+	}
+
+	public MultivaluedMapImpl<K, V> clone() {
+		return clone(this);
+	}
+
+	public static <K, V> MultivaluedMapImpl<K, V> clone(MultivaluedMap<K, V> src) {
+		MultivaluedMapImpl<K, V> clone = new MultivaluedMapImpl<K, V>();
+		copy(src, clone);
+		return clone;
+	}
+
+	public static <K, V> void copy(MultivaluedMap<K, V> src, MultivaluedMap<K, V> dest) {
+		for (K key : src.keySet()) {
+			List<V> value = src.get(key);
+			List<V> newValue = new ArrayList<V>();
+			newValue.addAll(value);
+			dest.put(key, newValue);
+		}
+	}
+
+	public static <K, V> void addAll(MultivaluedMap<K, V> src, MultivaluedMap<K, V> dest) {
+		for (K key : src.keySet()) {
+			List<V> srcList = src.get(key);
+			List<V> destList = dest.get(key);
+			if (destList == null) {
+				destList = new ArrayList<V>(srcList.size());
+				dest.put(key, destList);
+			}
+			destList.addAll(srcList);
+		}
+	}
+
 	@Override
-   public final void putSingle(K key, V value) {
-       List<V> l = getList(key);
+	public String toString() {
+		return "[" + toString(this, ",") + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
 
-       l.clear();
-       if (value != null) {
-           l.add(value);
-       } else {
-           throw new NullPointerException("Adding nulls not (yet) supported");
-       }
-   }
+	public static String toString(MultivaluedMap<?, ?> map, String delimiter) {
+		StringBuilder result = new StringBuilder();
+		MultivaluedMap<?, ?> params = map;
+		String delim = ""; //$NON-NLS-1$
+		for (Object name : params.keySet()) {
+			for (Object value : params.get(name)) {
+				result.append(delim);
+				if (name == null) {
+					result.append("null"); //$NON-NLS-1$
+				} else {
+					result.append(name.toString());
+				}
+				if (value != null) {
+					result.append('=');
+					result.append(value.toString());
+				}
+				delim = delimiter;
+			}
+		}
+		return result.toString();
+	}
 
-	@Override
-   public final void add(K key, V value) {
-       List<V> l = getList(key);
+	public static MultivaluedMap<String, String> toMultivaluedMapString(Map<String, ? extends Object> values) {
+		MultivaluedMap<String, String> mValues = new MultivaluedMapImpl<String, String>();
+		for (String key : values.keySet()) {
+			Object value = values.get(key);
+			if (value == null) {
+				mValues.add(key, null);
+			} else if (value instanceof Object[]) {
+				for (Object obj : (Object[]) value) {
+					if (obj == null) {
+						mValues.add(key, null);
+					} else {
+						mValues.add(key, obj.toString());
+					}
+				}
+			} else if (value instanceof List<?>) {
+				for (Object obj : (List<?>) value) {
+					if (obj == null) {
+						mValues.add(key, null);
+					} else {
+						mValues.add(key, obj.toString());
+					}
+				}
+			} else {
+				mValues.add(key, value.toString());
+			}
+		}
+		return mValues;
+	}
 
-       if (value != null) {
-           l.add(value);
-       } else {
-           throw new NullPointerException("Adding nulls not (yet) supported");
-       }
-   }
+	public void clear() {
+		map.clear();
+	}
 
-	@Override
-   public final V getFirst(K key) {
-       List<V> values = get(key);
-       if (values != null && values.size() > 0) {
-           return values.get(0);
-       } else {
-           return null;
-       }
-   }
-   // 
-   public final void addFirst(K key, V value) {
-       List<V> l = getList(key);
+	public boolean containsKey(Object key) {
+		return map.containsKey(key);
+	}
 
-       if (value != null) {
-           l.add(0, value);
-       } else {
-           throw new NullPointerException("Adding nulls not (yet) supported");
-       }
-   }
+	public boolean containsValue(Object value) {
+		return map.containsValue(value);
+	}
 
-   public final <A> List<A> get(K key, Class<A> type) {
-       Constructor<A> c = null;
-       try {
-           c = type.getConstructor(String.class);
-       } catch (Exception ex) {
-           throw new IllegalArgumentException(type.getName() + " has no String constructor", ex);
-       }
+	public Set<java.util.Map.Entry<K, List<V>>> entrySet() {
+		return map.entrySet();
+	}
 
-       ArrayList<A> l = null;
-       List<V> values = get(key);
-       if (values != null) {
-           l = new ArrayList<A>();
-           for (V value : values) {
-               try {
-                   l.add(c.newInstance(value));
-               } catch (Exception ex) {
-                   l.add(null);
-               }
-           }
-       }
-       return l;
-   }
+	public boolean equals(Object o) {
+		return map.equals(o);
+	}
 
+	public List<V> get(Object key) {
+		return map.get(key);
+	}
 
-   private final List<V> getList(K key) {
-       List<V> l = get(key);
-       if (l == null) {
-           l = new LinkedList<V>();
-           put(key, l);
-       }
-       return l;
-   }
+	public int hashCode() {
+		return map.hashCode();
+	}
 
-   public final <A> A getFirst(K key, Class<A> type) {
-       V value = getFirst(key);
-       if (value == null) {
-           return null;
-       }
-       Constructor<A> c = null;
-       try {
-           c = type.getConstructor(String.class);
-       } catch (Exception ex) {
-           throw new IllegalArgumentException(type.getName() + " has no String constructor", ex);
-       }
-       A retVal = null;
-       try {
-           retVal = c.newInstance(value);
-       } catch (Exception ex) {
-       }
-       return retVal;
-   }
+	public boolean isEmpty() {
+		return map.isEmpty();
+	}
 
-   @SuppressWarnings("unchecked")
-   public final <A> A getFirst(K key, A defaultValue) {
-       V value = getFirst(key);
-       if (value == null) {
-           return defaultValue;
-       }
-       Class<A> type = (Class<A>) defaultValue.getClass();
+	public Set<K> keySet() {
+		return map.keySet();
+	}
 
-       Constructor<A> c = null;
-       try {
-           c = type.getConstructor(String.class);
-       } catch (Exception ex) {
-           throw new IllegalArgumentException(type.getName() + " has no String constructor", ex);
-       }
-       A retVal = defaultValue;
-       try {
-           retVal = c.newInstance(value);
-       } catch (Exception ex) {
-       }
-       return retVal;
-   }
-}// $Log: $
+	public List<V> put(K key, List<V> value) {
+		return map.put(key, value);
+	}
+
+	public void putAll(Map<? extends K, ? extends List<V>> t) {
+		map.putAll(t);
+	}
+
+	public List<V> remove(Object key) {
+		return map.remove(key);
+	}
+
+	public int size() {
+		return map.size();
+	}
+
+	public Collection<List<V>> values() {
+		return map.values();
+	}
+}
