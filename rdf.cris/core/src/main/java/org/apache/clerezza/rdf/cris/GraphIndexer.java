@@ -20,6 +20,8 @@ package org.apache.clerezza.rdf.cris;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,12 +48,9 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.util.Version;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -59,7 +58,9 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopFieldDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +71,12 @@ import org.slf4j.LoggerFactory;
  * @author reto, tio, daniel
  */
 public class GraphIndexer extends ResourceFinder {
+	
+	/**
+	 * Default value for {@code maxhits}.
+	 */
+	public static final int DEFAULT_MAXHITS = 100000;
+	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/**
@@ -302,7 +309,9 @@ public class GraphIndexer extends ResourceFinder {
 	 *		The constructor does not check if there is a valid exiting index. 
 	 *		The user is responsible for setting this value correctly.
 	 * @param maxHits
-	 *		How many results the indexer returns.
+	 *		How many results the indexer returns. All entries in the index are 
+	 *		searched, but only @code{maxHits} resources are resolved and 
+	 *		returned in the result.
 	 * 
 	 * @see IndexDefinitionManager
 	 */
@@ -439,7 +448,8 @@ public class GraphIndexer extends ResourceFinder {
 	public GraphIndexer(TripleCollection definitionGraph,
 			TripleCollection baseGraph, Directory indexDirectory,
 			boolean createNewIndex) {
-		this(definitionGraph, baseGraph, indexDirectory, createNewIndex, 100000);
+		this(definitionGraph, baseGraph, indexDirectory, createNewIndex, 
+				DEFAULT_MAXHITS);
 	}
 
 	/**
@@ -584,12 +594,50 @@ public class GraphIndexer extends ResourceFinder {
 	}
 
 	@Override
-	public List<NonLiteral> findResources(List<Condition> conditions, 
-			SortSpecification sortSpecification, FacetCollector... facetCollectors)
+	public List<NonLiteral> findResources(List<? extends Condition> conditions, 
+			SortSpecification sortSpecification, 
+			FacetCollector... facetCollectors) throws ParseException {
+		return findResources(conditions, sortSpecification, 
+				Arrays.asList(facetCollectors), 0, maxHits + 1);
+	}
+	
+	/**
+	 * Find resources using conditions and collect facets and specify a sort order. 
+	 * 
+	 * This method allows to specify the indices of the query results to return
+	 * (e.g. for pagination).
+	 * 
+	 * @param conditions
+	 *		a list of conditions to construct a query from.
+	 * @param facetCollectors
+	 *		Facet collectors to apply to the query result. 
+	 *		Can be {@link Collections#EMPTY_LIST}, if not used.
+	 * @param sortSpecification 
+	 *		Specifies the sort order. Can be null, if not used.
+	 * @param from
+	 *		return results starting from this index (inclusive).
+	 * @param to
+	 *		return results until this index (exclusive).
+	 * @return	
+	 *		a list of resources that match the query.
+	 * 
+	 * @throws ParseException when the resulting query is illegal.
+	 */
+	public List<NonLiteral> findResources(List<? extends Condition> conditions, 
+			SortSpecification sortSpecification, 
+			List<FacetCollector> facetCollectors, int from, int to)
 			throws ParseException {
+
+		if(from < 0) {
+			from = 0;
+		}
+		
+		if(to < from) {
+			to = from + 1;
+		}
 		
 		if(facetCollectors == null) {
-			facetCollectors = new FacetCollector[0];
+			facetCollectors = Collections.EMPTY_LIST;
 		}
 		
 		BooleanQuery booleanQuery = new BooleanQuery();
@@ -598,20 +646,6 @@ public class GraphIndexer extends ResourceFinder {
 		}
 		
 		IndexSearcher searcher = luceneTools.getIndexSearcher();
-		TopScoreDocCollector testCollector = TopScoreDocCollector.create(1, true);
-		try {
-			logger.info(booleanQuery.toString());
-			searcher.search(booleanQuery, testCollector);
-		} catch (IOException ex) {
-		}
-		int totalHits = testCollector.topDocs().totalHits;
-
-		int hitsPerPage = totalHits;
-
-		if (totalHits > maxHits) {
-			hitsPerPage = maxHits;
-		}
-		
 		ScoreDoc[] hits = null;
 		try {
 			if(sortSpecification != null) {
@@ -623,10 +657,10 @@ public class GraphIndexer extends ResourceFinder {
 					sortCache.put(fieldKey, sort);
 				}
 				searcher.setDefaultFieldSortScoring(true, true);
-				TopFieldDocs topFieldDocs = searcher.search(booleanQuery, null, hitsPerPage, sort);
+				TopFieldDocs topFieldDocs = searcher.search(booleanQuery, null, to, sort);
 				hits = topFieldDocs.scoreDocs;
 			} else {
-				TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
+				TopScoreDocCollector collector = TopScoreDocCollector.create(to, true);
 				searcher.search(booleanQuery, collector);
 				hits = collector.topDocs().scoreDocs;
 			}
@@ -636,19 +670,16 @@ public class GraphIndexer extends ResourceFinder {
 
 		List<NonLiteral> result = new ArrayList<NonLiteral>();
 
-		for (ScoreDoc hit : hits) {
-			int docId = hit.doc;
+		for (int i = from; i < hits.length; ++i) {
+			int docId = hits[i].doc;
 			Document d;
 			try {
 				d = searcher.doc(docId);
 				collectFacets(facetCollectors, d);
 				result.add(getResource(d));
-			} catch (CorruptIndexException ex) {
-				logger.error("CRIS Error: ", ex);
 			} catch (IOException ex) {
 				logger.error("CRIS Error: ", ex);
 			}
-
 		}
 		
 		for(FacetCollector facetCollector : facetCollectors) {
@@ -815,8 +846,8 @@ public class GraphIndexer extends ResourceFinder {
 		throw new RuntimeException("There is no propertyList on this definition.");
 	}
 	
-	private void collectFacets(FacetCollector[] facetCollectors, Document d) {
-		if(facetCollectors.length > 0) {
+	private void collectFacets(List<FacetCollector> facetCollectors, Document d) {
+		if(facetCollectors.size() > 0) {
 			for(FacetCollector facetCollector : facetCollectors) {
 				Map<VirtualProperty, Map<String, Object>> facetMap = 
 						facetCollector.getFacetMap();
