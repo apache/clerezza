@@ -39,10 +39,10 @@
       <source>LICENSE</source>
       <outputDirectory>/</outputDirectory>
     </file>
-    <file>
+    <!-- <file>
       <source>NOTICE</source>
       <outputDirectory>/</outputDirectory>
-    </file>
+    </file> -->
     <file>
       <source>DISCLAIMER</source>
       <outputDirectory>/</outputDirectory>

@@ -36,6 +36,10 @@
 				</outputDirectoryMapping>
 				<fileSets>
 					<fileSet>
+						<directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
+						<outputDirectory>/</outputDirectory>
+					</fileSet>
+					<fileSet>
 						<outputDirectory>/</outputDirectory>
 						<useDefaultExcludes>true</useDefaultExcludes>
 						 
@@ -89,6 +93,7 @@
 				<include>pom.xml</include>
 				<include>NOTICE</include>
 				<include>LICENSE</include>
+				<include>README.*</include>
 				<include>src/**</include>
 			</includes>
 		</fileSet>
