@@ -65,7 +65,7 @@ public class JSONObjectMessageBodyWriterTest {
 
 	@Test
 	public void testMbwWithUmlaut() throws IOException {
-		testMbw("foobär");
+		testMbw("foob\u00E4r"); // foobär
 	}
 
 	private void testMbw(String param) throws IOException {
@@ -103,7 +103,7 @@ public class JSONObjectMessageBodyWriterTest {
 
 	@Test
 	public void testWriteToAndGetSizeWithUmlaut() throws Exception {
-		testWriteToAndGetSize("foobär");
+		testWriteToAndGetSize("foob\u00E4r"); // foobär
 	}
 
 	@Test
