@@ -75,7 +75,7 @@ public class JSONObjectMessageBodyWriterTest {
 		HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
 		connection.setRequestMethod("GET");
 		connection.addRequestProperty("Accept", "application/json, */*; q=.2");
-		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
 		String line = br.readLine();
 //		System.out.println(line);
 		Assert.assertEquals("{\"name\":\""+param+"\"}", line);
