@@ -24,11 +24,11 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.scripting.scriptmanager</artifactId>
-	<version>0.4-incubating-SNAPSHOT</version>
+	<version>0.4-incubating</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Script Manager</name>
 	<description>
