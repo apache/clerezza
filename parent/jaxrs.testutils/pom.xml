@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>jaxrs.testutils</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9-incubating-SNAPSHOT</version>
+	<version>0.9-incubating</version>
 	<name>Clerezza - Test Utilities for Jax-Rs Applications</name>
 	<dependencies>
 		<dependency>
