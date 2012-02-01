@@ -24,12 +24,12 @@
     <parent>
         <artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.core.test</artifactId>
     <packaging>jar</packaging>
-    <version>0.13-incubating</version>
+    <version>0.14-incubating-SNAPSHOT</version>
     <name>Clerezza - SCB Testutils</name>
     <description>Utilities to test SCB implementations</description>
     <dependencies>

@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>maven-ontologies-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>0.3-incubating</version>
+	<version>0.4-incubating-SNAPSHOT</version>
 	<name>Clerezza - Maven Ontologies Plugin</name>
 	<dependencies>	
   		<dependency>
