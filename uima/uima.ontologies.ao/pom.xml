@@ -23,14 +23,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
   <artifactId>uima.ontologies.ao</artifactId>
-  <version>0.1-incubating</version>
+  <version>0.2-incubating-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>Clerezza - Apache UIMA and Annotation Ontology</name>
   <description>Annotation Ontology (AO) modeling UIMA to be used with Clerezza</description>
   <parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>uima</artifactId>
-    <version>0.1-incubating</version>
+    <version>0.2-incubating-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>
