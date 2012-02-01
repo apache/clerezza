@@ -57,14 +57,18 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>osgi.services</artifactId>
 		</dependency>
-        <dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
+		<dependency>
+		  <groupId>org.scala-lang</groupId>
+		  <artifactId>scala-library</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>jsr311-api</artifactId>
-        </dependency>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.clerezza.ext</groupId>
+		  <artifactId>slf4j-scala-api</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>

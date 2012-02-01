@@ -39,16 +39,22 @@
       <source>LICENSE</source>
       <outputDirectory>/</outputDirectory>
     </file>
-    <file>
+    <!-- <file>
       <source>NOTICE</source>
       <outputDirectory>/</outputDirectory>
-    </file>
+    </file> -->
     <file>
       <source>DISCLAIMER</source>
       <outputDirectory>/</outputDirectory>
     </file>
   </files>
 	<fileSets>
+		<fileSet>
+			<includes>
+				<include>LICENSE*</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
 		<fileSet>
 			<directory>target</directory>
 			<includes>

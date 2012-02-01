@@ -21,20 +21,21 @@ package org.apache.clerezza.rdf.cris;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.apache.clerezza.rdf.cris.ontologies.CRIS;
 import org.apache.clerezza.rdf.core.*;
-import org.apache.clerezza.rdf.utils.*;
 import org.apache.clerezza.rdf.core.impl.*;
+import org.apache.clerezza.rdf.cris.ontologies.CRIS;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
+import org.apache.clerezza.rdf.utils.*;
 import org.apache.lucene.queryParser.ParseException;
-import org.wymiwyg.commons.util.Util;
 import org.junit.*;
+import org.wymiwyg.commons.util.Util;
 
 /**
  *
@@ -548,6 +549,68 @@ public class GraphIndexerTest {
 			//the order of properties
 			Assert.assertArrayEquals(expected.toArray(), 
 					Arrays.copyOfRange(actual.toArray(), 0, 7));
+		}
+	}
+	
+	@Test
+	public void paginationTest() throws InterruptedException, ParseException {
+		IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(definitions);
+		final PropertyHolder firstName = new PropertyHolder(FOAF.firstName);
+		List<VirtualProperty> properties = new ArrayList<VirtualProperty>();
+		properties.add(firstName);
+		indexDefinitionManager.addDefinitionVirtual(FOAF.Person, properties);
+		service.reCreateIndex();
+		
+		SortSpecification sortSpecification = new SortSpecification();
+		sortSpecification.add(firstName, SortSpecification.STRING_COMPARETO);
+		sortSpecification.add(SortSpecification.INDEX_ORDER);
+		
+		Thread.sleep(1000);
+		{
+			List<Condition> fl = new ArrayList<Condition>();
+			fl.add(new WildcardCondition(firstName, "*"));
+			List<NonLiteral> results = service.findResources(fl, sortSpecification, 
+					Collections.EMPTY_LIST, 0, 2);
+			Assert.assertTrue(results.size() == 2);
+			
+			List<String> expected = new ArrayList<String>(7);
+			expected.add("Frank");
+			expected.add("Harry");
+			
+			List<String> actual = new ArrayList<String>(results.size());
+			for(NonLiteral result : results) {
+				GraphNode node = new GraphNode(result, dataGraph);
+				Iterator<Literal> it = node.getLiterals(FOAF.firstName);
+				while(it.hasNext()) {
+					actual.add(it.next().getLexicalForm());
+				}
+			}
+			
+			Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+			
+			results = service.findResources(fl, sortSpecification, 
+					Collections.EMPTY_LIST, 2, 5);
+			Assert.assertTrue(results.size() == 3);
+			
+			expected = new ArrayList<String>(7);
+			expected.add("Harry Joe");
+			expected.add("Jane");
+			expected.add("Jane");
+			
+			actual = new ArrayList<String>(results.size());
+			for(NonLiteral result : results) {
+				GraphNode node = new GraphNode(result, dataGraph);
+				Iterator<Literal> it = node.getLiterals(FOAF.firstName);
+				while(it.hasNext()) {
+					actual.add(it.next().getLexicalForm());
+				}
+			}
+			
+			Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+			
+			results = service.findResources(fl, sortSpecification, 
+					Collections.EMPTY_LIST, 2, 100000);
+			Assert.assertTrue(results.size() == 6);
 		}
 	}
 	

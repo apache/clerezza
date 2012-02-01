@@ -36,6 +36,7 @@
 	<description>The direct or indirect parent of all Clerezza Artifacts</description>
 	<properties>
 		<scala.version>2.8.1</scala.version>
+		<sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
 	</properties>
 	<licenses>
 		<license>
@@ -44,13 +45,33 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
 	<profiles>
+		<profile>
+			<id>apache-release</id>
+			<build>
+				<plugins>
+					  <plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<dependencies>          
+						  <dependency>  <!-- here I stuck in the dependency on the above
+					saved asm descriptor -->
+							<groupId>org.apache.clerezza</groupId>
+							<artifactId>clerezza-jar-resource-bundle</artifactId>
+							<version>1-SNAPSHOT</version>
+							</dependency>
+						</dependencies>
+					  </plugin> 
+				</plugins>
+				</build>
+			</profile>
 		<profile>
 			<id>release</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
+				<module>clerezza-jar-resource-bundle</module>
 				<module>platform.style.classic.webguiexamples</module>
 				<module>ext.com.hp.hpl.jena</module>
 				<module>ext.com.hp.hpl.jena.tdb</module>
@@ -203,6 +224,7 @@
 										<exclude>**/documentation.nt</exclude>
 										<!-- yui is bsd licensed -->
 										<exclude>web.resources.yui/src/main/resources/**/*</exclude>
+										<exclude>web.resources.jquery/src/main/resources/org/apache/clerezza/web/resources/jquery/staticweb/**/*</exclude>
 										<exclude>platform.scripting.scriptmanager/src/main/resources/org/apache/clerezza/platform/scripting/scriptmanager/scriptmanager-script-information.xhtml</exclude>
 										<exclude>templating.seedsnipe/src/test/resources/org/apache/clerezza/templating/seedsnipe/libby-foaf.rdf</exclude>
 										<exclude>platform.usermanager.webinterface/src/main/resources/org/apache/clerezza/platform/usermanager/webinterface/reset_mail.txt</exclude>
@@ -320,6 +342,11 @@
 					<version>2.4</version>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2.2</version>
+				</plugin>
+				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>2.3</version>
 				</plugin>
@@ -339,7 +366,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>2.0.1</version>
+					<version>2.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -512,10 +539,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza.ext</groupId>
-			<artifactId>slf4j-scala-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -1375,6 +1398,21 @@
 				<artifactId>bcprov-jdk16</artifactId>
 				<version>1.46</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>rdf.cris.core</artifactId>
+				<version>0.1-incubating</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>rdf.cris.ontologies</artifactId>
+				<version>0.1-incubating</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.clerezza</groupId>
+				<artifactId>platform.cris</artifactId>
+				<version>0.1-incubating</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<distributionManagement>
@@ -1396,26 +1434,6 @@
 			<url>https://repository.apache.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	<!-- apache plugin repositories are to be removed before relase -->
-	<repositories>
-		<repository>
-			<id>apache</id>
-			<name>apache repository</name>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<url>http://repository.apache.org/content/groups/snapshots-group</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>apache-plugin-snapshot</id>
-			<name>apache.org snapshot repository</name>
-			<url>http://repository.apache.org/content/groups/snapshots-group</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<!-- jira -->
 	<issueManagement>

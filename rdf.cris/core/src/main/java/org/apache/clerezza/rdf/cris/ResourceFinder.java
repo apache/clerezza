@@ -54,7 +54,7 @@ import org.apache.lucene.queryParser.QueryParser;
 	 *
 	 * @throws ParseException when the resulting query is illegal.
 	 */
-	public List<NonLiteral> findResources(List<Condition> conditions)
+	public List<NonLiteral> findResources(List<? extends Condition> conditions)
 			throws ParseException {
 		return findResources(conditions, new FacetCollector[0]);
 	}
@@ -71,7 +71,7 @@ import org.apache.lucene.queryParser.QueryParser;
 	 * 
 	 * @throws ParseException when the resulting query is illegal.
 	 */
-	public List<NonLiteral> findResources(List<Condition> conditions, 
+	public List<NonLiteral> findResources(List<? extends Condition> conditions, 
 			FacetCollector... facetCollectors) throws ParseException {
 		
 		return findResources(conditions, null, facetCollectors);
@@ -91,7 +91,7 @@ import org.apache.lucene.queryParser.QueryParser;
 	 * 
 	 * @throws ParseException when the resulting query is illegal.
 	 */
-	public abstract List<NonLiteral> findResources(List<Condition> conditions, 
+	public abstract List<NonLiteral> findResources(List<? extends Condition> conditions, 
 			SortSpecification sortSpecification, FacetCollector... facetCollectors) 
 			throws ParseException;
 

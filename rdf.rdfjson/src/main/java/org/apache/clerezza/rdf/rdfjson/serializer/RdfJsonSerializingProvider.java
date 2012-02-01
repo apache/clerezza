@@ -213,7 +213,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 			int hashA = a.hashCode();
 			int hashB = b.hashCode();
 			if (hashA != hashB) {
-				return hashB - hashA;
+				return hashA > hashB ? 1 : -1;
 			}
 			return a.toString().compareTo(b.toString());
 		}

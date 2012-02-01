@@ -30,12 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.felix.scr.annotations.Component;
@@ -112,11 +112,12 @@ public class RdfJsonParsingProvider implements ParsingProvider {
 				JSONObject values = (JSONObject) object;
 				String value = (String) values.get("value");
 				if (values.get("type").equals("literal")) {
-					if (values.containsKey("datatype")
-							&& !values.get("datatype").equals("")
-							&& values.get("datatype") != null) {
+				    Object dataType = values.get("datatype");
+					if (dataType != null && 
+					        !dataType.toString().isEmpty()) {
 						mGraph.add(new TripleImpl(subject, new UriRef((String) predicate),
-								LiteralFactory.getInstance().createTypedLiteral(value)));
+								//LiteralFactory.getInstance().createTypedLiteral(value)));
+						        new TypedLiteralImpl(value.toString(),new UriRef(dataType.toString()))));
 					} else if (values.containsKey("lang")
 							&& !values.get("lang").equals("")
 							&& values.get("lang") != null) {

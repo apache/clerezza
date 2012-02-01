@@ -81,5 +81,9 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
+		<dependency>
+		  <groupId>org.apache.clerezza.ext</groupId>
+		  <artifactId>slf4j-scala-api</artifactId>
+		</dependency>
 	</dependencies>
 </project>
