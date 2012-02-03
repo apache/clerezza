@@ -25,12 +25,12 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.typerendering.scalaserverpages</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.3-incubating-SNAPSHOT</version>
+	<version>0.3-incubating</version>
 	<name>Clerezza - Platform ScalaServerPages Renderlet</name>
 	<description>Renderlet implementation wrapping org.apache.clerezza.scala</description>
 	<dependencies>
