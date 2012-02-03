@@ -39,10 +39,10 @@
       <source>LICENSE</source>
       <outputDirectory>/</outputDirectory>
     </file>
-    <!-- <file>
-      <source>NOTICE</source>
+    <file>
+      <source>target/classes/META-INF/NOTICE</source>
       <outputDirectory>/</outputDirectory>
-    </file> -->
+    </file>
     <file>
       <source>DISCLAIMER</source>
       <outputDirectory>/</outputDirectory>
