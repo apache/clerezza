@@ -25,12 +25,12 @@
    <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.2-incubating</version>
+        <version>0.3-incubating-SNAPSHOT</version>
    </parent>
    <groupId>org.apache.clerezza</groupId>
    <artifactId>ssl.keygen</artifactId>
    <packaging>pom</packaging>
-   <version>0.5-incubating</version>
+   <version>0.6-incubating-SNAPSHOT</version>
    <name>Clerezza - FOAF+SSL Keygen Lib :: Creating WebIDs in one Click</name>
    <url>http://www.rcs.manchester.ac.uk/</url>
 

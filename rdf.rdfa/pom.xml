@@ -25,12 +25,12 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.2-incubating</version>
+        <version>0.3-incubating-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.rdfa</artifactId>
     <packaging>bundle</packaging>
-    <version>0.1-incubating</version>
+    <version>0.2-incubating-SNAPSHOT</version>
     <name>Clerezza - SCB RDFa parsing support</name>
     <description>
         A SAX-based parser for RDFa 

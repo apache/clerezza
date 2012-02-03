@@ -26,12 +26,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>ssl.keygen</artifactId>
-		<version>0.5-incubating</version>
+		<version>0.6-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>ssl.keygen.base</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.5-incubating</version>
+	<version>0.6-incubating-SNAPSHOT</version>
 	<name>Clerezza - FOAF+SSL Keygen :: Base Component</name>
 	<build>
 		<plugins>

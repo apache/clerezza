@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.style.classic.webguiexamples</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.2-incubating</version>
+	<version>0.3-incubating-SNAPSHOT</version>
 	<name>Clerezza - Web GUI Examples</name>
 	<description>GUI Examples for building wep apps on clerezza platform</description>
 	<dependencies>
