@@ -24,12 +24,12 @@
  	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>templating</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.8-incubating</version>
+	<version>0.9-incubating-SNAPSHOT</version>
 	<name>Clerezza - Templating Engine</name>
 	<dependencies>
 		<dependency>

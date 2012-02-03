@@ -22,11 +22,11 @@
   <parent>
   	<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
   
   <artifactId>clerezza-jar-resource-bundle</artifactId>
-  <version>1</version>
+  <version>2-SNAPSHOT</version>
   <name>Clerezza Jar shared resources</name>
   <description>An archive which contains templates for generating 
     the necessary license files and notices for all Apache releases.

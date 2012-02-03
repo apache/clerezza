@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>rdf.cris</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1-incubating</version>
+	<version>0.2-incubating-SNAPSHOT</version>
 	<name>Clerezza - RDF Composite Resource Index Service</name>
 	<description>
 		A service indexing selected properties of resources of a defined type.
@@ -43,7 +43,7 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>rdf.cris.ontologies</artifactId>
-				<version>0.1-incubating</version>
+				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
