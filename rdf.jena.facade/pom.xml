@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--
 
  Licensed to the Apache Software Foundation (ASF) under one
@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.2-incubating-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>rdf.jena.facade</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.13-incubating-SNAPSHOT</version>
+	<version>0.12-incubating-SNAPSHOT</version>
 	<name>Clerezza - Jena API on SCB</name>
 	<description>An implementation of the Jena API based on triamodel, allows to
 	run code written against the Jena API on a Triamodel store.</description>
