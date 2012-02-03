@@ -19,12 +19,11 @@
  under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
   <artifactId>uima</artifactId>
-  <version>0.1-incubating-SNAPSHOT</version>
+  <version>0.1-incubating</version>
   <packaging>pom</packaging>
   <name>Clerezza - Apache UIMA extension module</name>
   <description>Apache UIMA extension modules enable usage of UIMA for enhanced metadata extraction inside Clerezza
@@ -32,7 +31,7 @@
   <parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>clerezza</artifactId>
-    <version>0.2-incubating-SNAPSHOT</version>
+    <version>0.2-incubating</version>
   </parent>
   <properties>
     <uima.version>2.3.1</uima.version>
@@ -77,7 +76,7 @@
       <plugin>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>maven-pladoc-plugin.core</artifactId>
-        <version>0.3-incubating-SNAPSHOT</version>
+        <version>0.3-incubating</version>
       </plugin>
       <plugin>
         <groupId>org.ops4j.pax.exam</groupId>
