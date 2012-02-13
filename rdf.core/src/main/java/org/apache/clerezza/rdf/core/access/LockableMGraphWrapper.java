@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.clerezza.rdf.core.access.debug.ReentrantReadWriteLockTracker;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
@@ -30,6 +29,7 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.debug.ReentrantReadWriteLockTracker;
 import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphListener;
 
@@ -236,4 +236,18 @@ public class LockableMGraphWrapper implements LockableMGraph {
 		wrapped.removeGraphListener(listener);
 	}
 
+	@Override
+	public int hashCode() {
+		return wrapped.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return wrapped.equals(obj);
+	}
+
+	@Override
+	public String toString() {
+		return wrapped.toString();
+	}
 }
