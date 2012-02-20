@@ -243,7 +243,18 @@ public class LockableMGraphWrapper implements LockableMGraph {
 
 	@Override
 	public boolean equals(Object obj) {
-		return wrapped.equals(obj);
+		if(obj == null) {
+			return false;
+		}
+		if(obj == this) {
+			return true;
+		}
+		if(obj.getClass() != getClass()) {
+			return false;
+		}
+		
+		LockableMGraphWrapper other = (LockableMGraphWrapper) obj;
+		return wrapped.equals(other.wrapped);
 	}
 
 	@Override
