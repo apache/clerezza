@@ -38,13 +38,4 @@
 		<module>ontologies</module>
 		<module>core</module>
 	</modules>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
-				<artifactId>rdf.cris.ontologies</artifactId>
-				<version>0.2-incubating-SNAPSHOT</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>
