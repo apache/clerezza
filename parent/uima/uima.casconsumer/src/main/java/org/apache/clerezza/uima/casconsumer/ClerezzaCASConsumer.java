@@ -30,6 +30,9 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 public class ClerezzaCASConsumer extends CasAnnotator_ImplBase {
 
+  private static final String MAPPING_STRATEGY = "mappingStrategy";
+  private static final String GRAPH_NAME = "graphName";
+
   private String graphName;
   private CASMappingStrategy mappingStrategy;
 
@@ -40,13 +43,13 @@ public class ClerezzaCASConsumer extends CasAnnotator_ImplBase {
     // get the CAS mapping strategy
     try {
       mappingStrategy = CASMappingStrategiesRepository.getInstance().getStrategy(String.valueOf(context.
-              getConfigParameterValue("mappingStrategy")));
+        getConfigParameterValue(MAPPING_STRATEGY)));
     } catch (UnknownStrategyException e) {
       throw new ResourceInitializationException(e);
     }
 
     // get the output graph name
-    graphName = String.valueOf(context.getConfigParameterValue("graphName"));
+    graphName = String.valueOf(context.getConfigParameterValue(GRAPH_NAME));
   }
 
   @Override
