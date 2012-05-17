@@ -25,44 +25,45 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class SelectorRegistry {
-	public class Selector {
-		public final UriRef uri;
-		public final int start;
-		public final int end;
+  public class Selector {
+    public final UriRef uri;
+    public final int start;
+    public final int end;
 
-		public Selector(UriRef uri, int start, int end) {
-			this.uri=uri;
-			this.start = start;
-			this.end = end;
-		}
+    public Selector(UriRef uri, int start, int end) {
+      this.uri = uri;
+      this.start = start;
+      this.end = end;
+    }
 
-	}
-	private HashMap<String,Selector> registry;
-	private int count;
-	
-	public SelectorRegistry() {
-		registry=new HashMap<String, Selector>();
-		count=1;
-	}
-	
-	public UriRef get(int start, int end) {
-		String key = start+":"+end;
-		Selector sel = registry.get(key);
-		if(sel==null) {
-			UriRef uri= new UriRef(new StringBuilder(AO.Selector.getUnicodeString()).
-	                append("/").append(count++).toString());
-			
-			sel=new Selector(uri,start,end);
-			registry.put(key,sel);
-		}
-		return sel.uri;
-	}
+  }
 
-	public Iterator<Selector> iterator() {
-		return registry.values().iterator();
-	}
+  private HashMap<String, Selector> registry;
+  private int count;
 
-	public int getSize() {
-		return registry.size();
-	}
+  public SelectorRegistry() {
+    registry = new HashMap<String, Selector>();
+    count = 1;
+  }
+
+  public UriRef get(int start, int end) {
+    String key = start + ":" + end;
+    Selector sel = registry.get(key);
+    if (sel == null) {
+      UriRef uri = new UriRef(new StringBuilder(AO.Selector.getUnicodeString()).
+        append("/").append(count++).toString());
+
+      sel = new Selector(uri, start, end);
+      registry.put(key, sel);
+    }
+    return sel.uri;
+  }
+
+  public Iterator<Selector> iterator() {
+    return registry.values().iterator();
+  }
+
+  public int getSize() {
+    return registry.size();
+  }
 }

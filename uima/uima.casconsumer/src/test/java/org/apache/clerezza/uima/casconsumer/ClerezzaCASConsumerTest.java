@@ -72,7 +72,6 @@ public class ClerezzaCASConsumerTest {
       MGraph createdGraph = TcManager.getInstance().getMGraph(new UriRef("mytest-clerezza-uima-graph"));
       assertNotNull(createdGraph);
     } catch (Exception e) {
-      e.printStackTrace();
       fail(e.getLocalizedMessage());
     }
   }

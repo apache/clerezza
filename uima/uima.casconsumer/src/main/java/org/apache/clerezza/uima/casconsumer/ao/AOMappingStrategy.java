@@ -18,11 +18,6 @@
  */
 package org.apache.clerezza.uima.casconsumer.ao;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
@@ -40,6 +35,11 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 /**
  * {@link CASMappingStrategy} which maps a CAS object to the Annotation Ontology format
@@ -69,29 +69,31 @@ public class AOMappingStrategy implements CASMappingStrategy {
       int annotCnt = 0;
       for (FeatureStructure uimaObject : UIMAUtils.getAllFSofType(TOP.type, cas.getJCas())) {
 
-          // set Annotation specific properties for the node
-          if (uimaObject instanceof Annotation) {
-        	  // If type is DocumentAnnotation I skip it
-              if (uimaObject.getType().toString().equals("uima.tcas.DocumentAnnotation")) {
-                continue;
-              }
-
-              // Get persistent URI for region in document
-              Annotation annot = (Annotation) uimaObject;
-              log.info("annotation index " + annotCnt);
-              annotIndex.put(annot, annotCnt);
-              annotCnt++;
+        // set Annotation specific properties for the node
+        if (uimaObject instanceof Annotation) {
+          // If type is DocumentAnnotation I skip it
+          if (uimaObject.getType().toString().equals("uima.tcas.DocumentAnnotation")) {
+            continue;
           }
+
+          // Get persistent URI for region in document
+          Annotation annot = (Annotation) uimaObject;
+          log.info("annotation index " + annotCnt);
+          annotIndex.put(annot, annotCnt);
+          annotCnt++;
+        }
       }
 
       UriRef annotationSetUri = new UriRef(
-              new StringBuilder(AO.AnnotationSet.getUnicodeString()).toString());
-      log.info("AO: Annotation set uri " + annotationSetUri);
+        new StringBuilder(AO.AnnotationSet.getUnicodeString()).toString());
+      if (log.isDebugEnabled())
+        log.debug(new StringBuilder("AO: Annotation set uri ").append(annotationSetUri).toString());
 
       GraphNode annotationSet = new GraphNode(annotationSetUri, node.getGraph());
-      log.info(new StringBuilder("AO: Set created ").toString());
+      if (log.isDebugEnabled())
+        log.debug(new StringBuilder("AO: Set created ").toString());
       annotationSet.addProperty(new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-              AO.AnnotationSet);
+        AO.AnnotationSet);
 
       for (FeatureStructure uimaObject : UIMAUtils.getAllFSofType(TOP.type, cas.getJCas())) {
 
@@ -110,15 +112,17 @@ public class AOMappingStrategy implements CASMappingStrategy {
           // Annotation URI
           int annotId = annotIndex.get((Annotation) uimaObject);
           UriRef annotationUri = new UriRef(new StringBuilder(AO.Annotation.getUnicodeString())
-                  .append("/").append(annotId).toString());
-          log.info("annotation uri " + annotationUri);
+            .append("/").append(annotId).toString());
+          if (log.isDebugEnabled())
+            log.debug(new StringBuilder("annotation uri ").append(annotationUri).toString());
 
           // Annotation Graph
           GraphNode annotationNode = new GraphNode(annotationUri, annotationSet.getGraph());
-          log.info(new StringBuilder("AO: Node created for Type ").append(
-                  uimaObject.getType().toString()).toString());
+          if (log.isDebugEnabled())
+            log.debug(new StringBuilder("AO: Node created for Type ").append(
+              uimaObject.getType().toString()).toString());
           annotationNode.addProperty(new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-                  new UriRef("http://purl.org/ao/Annotation"));
+            new UriRef("http://purl.org/ao/Annotation"));
 
           annotationNode.addProperty(AO.context, selectorUri);
 
@@ -137,27 +141,30 @@ public class AOMappingStrategy implements CASMappingStrategy {
 
         // create a new feature node
         GraphNode selectorNode = new GraphNode(selectorUri, node.getGraph());
-        log.info(new StringBuilder("Node created for Selector " + selectorUri).toString());
+        if (log.isDebugEnabled())
+          log.debug(new StringBuilder("Node created for Selector ").append(selectorUri).toString());
 
         String documentText = cas.getDocumentText();
         selectorNode.addProperty(new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-                AO.Selector);
+          AO.Selector);
         selectorNode.addProperty(new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-                AOSELECTORS.OffsetRangeTextSelector);
+          AOSELECTORS.OffsetRangeTextSelector);
         selectorNode.addProperty(new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-                AOSELECTORS.PrefixPostfixTextSelector);
+          AOSELECTORS.PrefixPostfixTextSelector);
         selectorNode.addPropertyValue(AOSELECTORS.exact, getSpan(documentText, sel.start, sel.end));
         selectorNode.addPropertyValue(AOSELECTORS.prefix,
-                getSpan(documentText, sel.start - 50, sel.start));
+          getSpan(documentText, sel.start - 50, sel.start));
         selectorNode.addPropertyValue(AOSELECTORS.postfix,
-                getSpan(documentText, sel.end, sel.end + 50));
+          getSpan(documentText, sel.end, sel.end + 50));
         selectorNode.addPropertyValue(AOSELECTORS.offset, sel.start);
         selectorNode.addPropertyValue(AOSELECTORS.range, sel.end);
       }
 
-      TripleCollection tc = node.getGraph();
-      for (Triple t : tc) {
-        log.info(t.toString());
+      if (log.isDebugEnabled()) {
+        TripleCollection tc = node.getGraph();
+        for (Triple t : tc) {
+          log.debug(t.toString());
+        }
       }
 
 

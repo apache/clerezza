@@ -18,9 +18,6 @@
  */
 package org.apache.clerezza.uima.casconsumer.ao;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
@@ -37,6 +34,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.AnnotatorTester;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * TestCase for {@link ClerezzaCASConsumer} using {@link AOMappingStrategy}
@@ -63,7 +63,6 @@ public class AnnotationOntologyCASConsumerTest {
       MGraph createdGraph = TcManager.getInstance().getMGraph(new UriRef("mytest-clerezza-ao-graph"));
       assertNotNull(createdGraph);
     } catch (Exception e) {
-      e.printStackTrace();
       fail(e.getLocalizedMessage());
     }
   }
