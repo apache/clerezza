@@ -32,6 +32,7 @@
 		cardinality="1..1" policy="static" bind="bindContentGraphProvider" unbind="unbindContentGraphProvider"/>
 		<reference name="startLevel" interface="org.osgi.service.startlevel.StartLevel"
 		cardinality="1..1" policy="static" bind="bindStartLevel" unbind="unbindStartLevel"/>
-
+		<reference name="pathNode" interface="org.wymiwyg.commons.util.dirbrowser.PathNode"
+		cardinality="0..n" policy="dynamic" bind="bindPathNode" unbind="unbindPathNode"/>
 	</scr:component>
 </components>

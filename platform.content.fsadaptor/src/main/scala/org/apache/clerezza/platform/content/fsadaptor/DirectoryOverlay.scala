@@ -33,44 +33,54 @@ import java.util.Iterator
 class DirectoryOverlay(pathNode: PathNode, base: TripleCollection)
 	extends AbstractTripleCollection {
 
-	private val addedTriples = new SimpleMGraph()
-
-	PathNode2MGraph.describeInGraph(pathNode, addedTriples)
+	
 
 	import collection.JavaConversions._
 
-	val subjects = (for (triple <- addedTriples; subject = triple.getSubject) yield {
-		subject
-	}).toSet
-
-	class FilteringIterator(baseIter: Iterator[Triple]) extends Iterator[Triple] {
-		var nextElem: Triple = null
-		def prepareNext {
-			nextElem = if (baseIter.hasNext) baseIter.next else null
-			if ((nextElem != null) && 
-				(subjects.contains(nextElem.getSubject))) {
-					//println("skipping "+nextElem)
-					prepareNext
-			}
-		}
-		prepareNext
-
-		override def next = {
-			val result = nextElem
-			prepareNext
-			result
-		}
-		override def hasNext = nextElem != null
-		override def remove = throw new UnsupportedOperationException
-	}
+	
 
 	override def performFilter(s: NonLiteral, p: UriRef,
-			o: Resource): Iterator[Triple] = {
+		o: Resource): Iterator[Triple] = {
+		val addedTriples = new SimpleMGraph()
+
+		PathNode2MGraph.describeInGraph(pathNode, addedTriples)
+		
+		val subjects = (for (triple <- addedTriples; subject = triple.getSubject) yield {
+			subject
+		}).toSet
+	
+		class FilteringIterator(baseIter: Iterator[Triple]) extends Iterator[Triple] {
+			var nextElem: Triple = null
+			def prepareNext {
+				nextElem = if (baseIter.hasNext) baseIter.next else null
+				if ((nextElem != null) && 
+					(subjects.contains(nextElem.getSubject))) {
+						//println("skipping "+nextElem)
+						prepareNext
+				}
+			}
+			prepareNext
+	
+			override def next = {
+				val result = nextElem
+				prepareNext
+				result
+			}
+			override def hasNext = nextElem != null
+			override def remove = throw new UnsupportedOperationException
+		}
+			
 		new IteratorMerger(new FilteringIterator(base.filter(s, p, o)), addedTriples.filter(s,p, o))
 	}
 
 	/**
 	 * returns an upper bound of the size (removals in abse are not deducted)
 	 */
-	override def size = base.size+addedTriples.size
+	override def size = {
+	  val addedTriples = new SimpleMGraph()
+
+			PathNode2MGraph.describeInGraph(pathNode, addedTriples)
+
+	 base.size+addedTriples.size 
+	}
 }
