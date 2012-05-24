@@ -37,7 +37,7 @@ import org.osgi.service.packageadmin.PackageAdmin
 import tools.nsc.io.{AbstractFile, VirtualDirectory}
 import java.io.{File, FileInputStream, ByteArrayInputStream}
 import org.apache.clerezza.utils.osgi.BundlePathNode
-import org.wymiwyg.commons.util.dirbrowser.PathNode
+import org.wymiwyg.commons.util.dirbrowser.{PathNode, FilePathNode}
 
 /**
  * Provides a service that allows to register directories containing a maven-style project
@@ -160,9 +160,13 @@ class BundleRoot {
 		var stopped = false
 		var logger = LoggerFactory.getLogger(classOf[SourceBundle])
 
-		val sourcePath = Path.fromFile(dir)
+		val sourcePath = Path.fromFile(new File(dir,"src"))
 		var watchState = WatchState.empty
 		var bundle: Bundle = existingBundle
+		
+		val pathNode = new PermissionGrantingPathNode(new FilePathNode(new File(dir,"src/main/resources/CLEREZZA-INF/web-resources/")))
+		val registration = bundleContext.registerService(Array(classOf[PathNode].getName), pathNode, null: java.util.Dictionary[_, _])
+		println("registered "+classOf[PathNode].getName+": "+registration)
 
 		def getFilesAsCharArrays(file: File): List[Array[Char]] = {
 			logger.debug("getting sources in "+file)
@@ -278,6 +282,7 @@ class BundleRoot {
 				logger.debug("wathcing "+dir)
 				val (triggered, newWatchState) =
 					SourceModificationWatch.watch(sourcePath**(-HiddenFileFilter), 1, watchState)(stopped)
+				logger.debug("watching got "+triggered+", "+newWatchState)
 				if (!stopped) {
 					try {
 						updateBundle()
