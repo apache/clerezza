@@ -42,6 +42,8 @@ import org.osgi.framework.BundleListener
 import org.osgi.service.component.ComponentContext
 import org.osgi.service.startlevel.StartLevel
 import org.slf4j.LoggerFactory
+import org.wymiwyg.commons.util.dirbrowser.MultiPathNode
+import org.wymiwyg.commons.util.dirbrowser.PathNode
 import scala.util._
 
 /**
@@ -60,8 +62,11 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 	private var tcManager: TcManager = null
 	private var cgProvider: ContentGraphProvider = null
 	private var startLevel: StartLevel = null
+	private var pathNodes: List[PathNode] = Nil 
 	private var bundleList = List[Bundle]()
 	private var currentCacheMGraph: MGraph = null
+	
+	private var frequentUpdateDirectory: Option[PathNode] = None
 
 	private val virtualMGraph = new AbstractMGraph() {
 		override def performFilter(s: NonLiteral, p: UriRef,
@@ -178,7 +183,27 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 
 	override def getMGraph(name: UriRef) = {
 		if (name.equals(RESOURCE_MGRAPH_URI)) {
-			virtualMGraph
+		  frequentUpdateDirectory match {
+		    case Some(p) =>   val directoryOverlay =
+								    new DirectoryOverlay(p, virtualMGraph)
+							  new AbstractMGraph() {
+									override def performFilter(s: NonLiteral, p: UriRef,
+											o: Resource): java.util.Iterator[Triple] = {
+										val baseIter = directoryOverlay.filter(s,p,o)
+										new java.util.Iterator[Triple]() {
+											override def next = {
+												baseIter.next
+											}
+											override def hasNext = baseIter.hasNext
+											override def remove = throw new UnsupportedOperationException
+										}
+									}
+							
+									override def size = directoryOverlay.size
+								}
+		    case None => virtualMGraph
+		  }
+		  
 		} else {
 			throw new NoSuchEntityException(name);
 		}
@@ -261,6 +286,19 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 
 	def unbindStartLevel(startLevel: StartLevel) {
 		this.startLevel = null;
+	}
+	
+	def bindPathNode(pathNode: PathNode) {
+		this.pathNodes ::= pathNode;
+		frequentUpdateDirectory = Some(new MultiPathNode(pathNodes: _*))
+	}
+	
+	def unbindPathNode(pathNode: PathNode) {
+		this.pathNodes -= pathNode;
+		frequentUpdateDirectory = pathNodes match {
+		  case Nil => None
+		  case _ => Some(new MultiPathNode(pathNodes: _*))
+		}
 	}
 	
 }
