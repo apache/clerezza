@@ -277,6 +277,18 @@
 				<module>rdf.sesame.parser</module>
 			</modules>
 		</profile>
+		<profile>
+			<id>site-build</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+                        <pluginRepositories>
+                            <pluginRepository>
+                                <id>apache.snapshots</id>
+                                <url>http://repository.apache.org/snapshots/</url>
+                            </pluginRepository>
+                        </pluginRepositories>
+		</profile>
 	</profiles>
 	<build>
 		<pluginManagement>
