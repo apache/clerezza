@@ -171,6 +171,18 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 								CandidateListCompletionHandler.setBuffer(reader, candidates.get(0).toString, pos)
 							} else {
 								import collection.JavaConversions._
+								def commonHead(a: String,b: String):String = {
+									if (a.isEmpty || b.isEmpty) {
+									  ""
+									} else {
+										if (a(0) == b(0)) {
+											a(0)+commonHead(a.tail, b.tail)
+										} else ""
+									}
+								}
+								val canStrings = candidates.map(_.toString)
+								val longestCommonPrefix = canStrings.tail.foldRight(canStrings.head)((a,b) => commonHead(a,b))
+								CandidateListCompletionHandler.setBuffer(reader, longestCommonPrefix, pos)
 								out.println()
 								out.println(candidates.mkString("\t"))
 								out.print(prompt)
