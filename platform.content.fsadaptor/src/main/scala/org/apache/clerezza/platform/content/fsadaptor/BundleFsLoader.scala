@@ -68,10 +68,16 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 	
 	private var frequentUpdateDirectory: Option[PathNode] = None
 
-	private val virtualMGraph = new AbstractMGraph() {
+	private val virtualMGraph: MGraph = new AbstractMGraph() {
+	  
+		private def baseGraph: TripleCollection = frequentUpdateDirectory match {
+		    case Some(p) => new DirectoryOverlay(p, currentCacheMGraph)
+		    case None => currentCacheMGraph
+		}
+		
 		override def performFilter(s: NonLiteral, p: UriRef,
-				o: Resource): java.util.Iterator[Triple] = {
-			val baseIter = currentCacheMGraph.filter(s,p,o)
+											o: Resource): java.util.Iterator[Triple] = {
+			val baseIter = baseGraph.filter(s,p,o)
 			new java.util.Iterator[Triple]() {
 				override def next = {
 					baseIter.next
@@ -81,7 +87,10 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 			}
 		}
 
-		override def size = currentCacheMGraph.size
+		override def size = baseGraph.size
+		
+		override def toString = "BundleFsLoader virtual graph"
+		
 	}
 
 	class UpdateThread extends Thread {
@@ -183,27 +192,7 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 
 	override def getMGraph(name: UriRef) = {
 		if (name.equals(RESOURCE_MGRAPH_URI)) {
-		  frequentUpdateDirectory match {
-		    case Some(p) =>   val directoryOverlay =
-								    new DirectoryOverlay(p, virtualMGraph)
-							  new AbstractMGraph() {
-									override def performFilter(s: NonLiteral, p: UriRef,
-											o: Resource): java.util.Iterator[Triple] = {
-										val baseIter = directoryOverlay.filter(s,p,o)
-										new java.util.Iterator[Triple]() {
-											override def next = {
-												baseIter.next
-											}
-											override def hasNext = baseIter.hasNext
-											override def remove = throw new UnsupportedOperationException
-										}
-									}
-							
-									override def size = directoryOverlay.size
-								}
-		    case None => virtualMGraph
-		  }
-		  
+		  virtualMGraph
 		} else {
 			throw new NoSuchEntityException(name);
 		}
