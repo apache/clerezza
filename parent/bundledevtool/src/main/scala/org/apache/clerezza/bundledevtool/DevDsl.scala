@@ -59,6 +59,18 @@ class DevDsl(outputStream: OutputStream, bundleContext: BundleContext) {
 				$[BundleRoot].addSourceBundle(dir)
 			}
 		}
+		
+		def help() {
+		  out println "The Dev utitly can be used as follows:"
+		  out println "Dev listArchetypes"
+		  out println "\tlists the available archetypes"
+		  out println "Dev create <archetype-name> in \"/path/to/directory\""
+		  out println "\tCreates a new project in /path/to/directory using the specified archetype"
+		  out println "Dev load \"/path/to/directory\""
+		  out println "\tLoads the project in /path/to/directory"
+		}
+		
+		override def toString = "Run 'Dev help' for usage instructions"
 	}
 
 }
