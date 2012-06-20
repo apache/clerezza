@@ -65,7 +65,8 @@ class BundleRoot {
 			if (location.startsWith(BundleRoot.sourceBundleUriPrefix)) {
 				val dir = new File(location.substring(
 						BundleRoot.sourceBundleUriPrefix.length))
-				val sourceBundle = new SourceBundle(dir, bundle)
+				//TODO encode fileFastUpdate in location
+				val sourceBundle = new SourceBundle(dir, bundle, true)
 				sourceBundle.start()
 				sourceBundles += sourceBundle
 			}
@@ -79,15 +80,13 @@ class BundleRoot {
 	/**
 	 * adds a SourceBundle for the sources in the specified dir
 	 */
-	def addSourceBundle(dir: File) = {
-		val sourceBundle = new SourceBundle(dir)
+	def addSourceBundle(dir: File, fileFastUpdate: Boolean) = {
+		val sourceBundle = new SourceBundle(dir, fileFastUpdate)
 		sourceBundle.start()
 		sourceBundles += sourceBundle
 		sourceBundle
 	}
 
-	@deprecated
-	def createSourceBundle(dir: File) = addSourceBundle(dir)
 
 	/**
 	* list of the available skletons
@@ -132,7 +131,7 @@ class BundleRoot {
 		}
 
 		processDir(skeletonNode, dir)
-		addSourceBundle(dir)
+		addSourceBundle(dir, true)
 	}
 
 	def bindCompilerService(cs: CompilerService) {
@@ -151,10 +150,10 @@ class BundleRoot {
 		packageAdmin = null
 	}
 
-	class SourceBundle(dir: File, existingBundle: Bundle) extends DaemonActor {
+	class SourceBundle(dir: File, existingBundle: Bundle, fileFastUpdate: Boolean) extends DaemonActor {
 
-		def this(dir: File) {
-			this(dir, null)
+		def this(dir: File, fileFastUpdate: Boolean) {
+			this(dir, null, fileFastUpdate)
 		}
 
 		var stopped = false
@@ -163,11 +162,12 @@ class BundleRoot {
 		val sourcePath = Path.fromFile(new File(dir,"src"))
 		var watchState = WatchState.empty
 		var bundle: Bundle = existingBundle
+		if (fileFastUpdate) {
+			val pathNode = new PermissionGrantingPathNode(new FilePathNode(new File(dir,"src/main/resources/CLEREZZA-INF/web-resources/")))
+			val registration = bundleContext.registerService(Array(classOf[PathNode].getName), pathNode, null: java.util.Dictionary[_, _])
+			//println("registered "+classOf[PathNode].getName+": "+registration)
+		}
 		
-		val pathNode = new PermissionGrantingPathNode(new FilePathNode(new File(dir,"src/main/resources/CLEREZZA-INF/web-resources/")))
-		val registration = bundleContext.registerService(Array(classOf[PathNode].getName), pathNode, null: java.util.Dictionary[_, _])
-		println("registered "+classOf[PathNode].getName+": "+registration)
-
 		def getFilesAsCharArrays(file: File): List[Array[Char]] = {
 			logger.debug("getting sources in "+file)
 			var result: List[Array[Char]] = Nil
