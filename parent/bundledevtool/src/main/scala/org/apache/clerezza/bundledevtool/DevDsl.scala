@@ -28,6 +28,19 @@ import org.apache.clerezza.osgi.services.ServicesDsl
 
 class DevDsl(outputStream: OutputStream, bundleContext: BundleContext) {
 
+	sealed class FastUpdateMode;
+  
+	var fastUpdate = new FastUpdateMode;
+	var noFastUpdate = new FastUpdateMode();
+	
+	case class LocationSpec(location: String, fastUpdateMode: FastUpdateMode) {
+		def this(location: String) {
+		  this(location, fastUpdate)
+		}
+	}
+	
+	implicit def locationSpecBuilder(location: String) = new LocationSpec(location)
+	
 	object Dev {
 		private val serviceDsl = new ServicesDsl(bundleContext)
 		import serviceDsl._
@@ -51,12 +64,12 @@ class DevDsl(outputStream: OutputStream, bundleContext: BundleContext) {
 			}
 		}
 
-		def load(location: String) {
-			val dir = new File(location)
+		def load(locationSpec: LocationSpec) {
+			val dir = new File(locationSpec.location)
 			if (!dir.isDirectory) {
-				out println "No directory "+location+" found"
+				out println "No directory "+locationSpec.location+" found"
 			} else {
-				$[BundleRoot].addSourceBundle(dir)
+				$[BundleRoot].addSourceBundle(dir, locationSpec.fastUpdateMode == fastUpdate)
 			}
 		}
 		
@@ -68,6 +81,10 @@ class DevDsl(outputStream: OutputStream, bundleContext: BundleContext) {
 		  out println "\tCreates a new project in /path/to/directory using the specified archetype"
 		  out println "Dev load \"/path/to/directory\""
 		  out println "\tLoads the project in /path/to/directory"
+		  out println "Dev load \"/path/to/directory\""
+		  out println "\tLoads the project in /path/to/directory enabling fast-updating of static files"
+		  out println "Dev load LocationSpec(\"/path/to/directory\",fastUpdate|noFastUpdate)"
+		  out println "\tLoads the project in /path/to/directory enabling or diabling fast-updating of static files"
 		}
 		
 		override def toString = "Run 'Dev help' for usage instructions"
