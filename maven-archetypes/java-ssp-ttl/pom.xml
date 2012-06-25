@@ -2,8 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
-		<artifactId>parent</artifactId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<artifactId>clerezza</artifactId>
+		<version>0.2-incubating</version>
 	</parent>
 	<groupId>org.apache.clerezza.java-ssp-ttl-skeleton</groupId>
 	<artifactId>parent</artifactId>
