@@ -1,1 +1,0 @@
-${ns:sportex=http://www.exampleRatings.com/terms/}${if lexicalForm(sportex:numberStars) = "5"}${sportex:ratingBy}${/if}

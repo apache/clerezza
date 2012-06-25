@@ -1,5 +1,0 @@
-{	
-	"http://example.org/node1":	{
-		"http://example.org/prop1": [{"value":"_:bnode1","type":"bnode"}]
-	}
-}
