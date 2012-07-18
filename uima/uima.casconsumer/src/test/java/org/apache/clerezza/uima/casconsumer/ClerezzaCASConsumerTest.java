@@ -35,7 +35,6 @@ import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 /**
  * TestCase for {@link ClerezzaCASConsumer}
@@ -43,37 +42,28 @@ import static org.junit.Assert.fail;
 public class ClerezzaCASConsumerTest {
 
   @Test
-  public void configurationTest() {
-    try {
-      AnnotatorTester.doConfigurationTest("src/main/resources/ClerezzaCASConsumerDescriptor.xml");
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail(e.getLocalizedMessage());
-    }
+  public void configurationTest() throws Exception {
+    AnnotatorTester.doConfigurationTest("src/main/resources/ClerezzaCASConsumerDescriptor.xml");
   }
 
   @Test
-  public void simpleRunningTest() {
-    try {
-      AnnotatorTester annotatorTester = new AnnotatorTester("src/test/resources/TestClerezzaCASConsumerDescriptor.xml");
+  public void simpleRunningTest() throws Exception {
+    AnnotatorTester annotatorTester = new AnnotatorTester("src/test/resources/TestClerezzaCASConsumerDescriptor.xml");
 
-      /* create a mock CAS */
-      CAS cas = createCAS();
+    /* create a mock CAS */
+    CAS cas = createCAS();
 
-      cas.setDocumentText("Clerezza is an Apache project");
-      cas.setDocumentLanguage("en");
+    cas.setDocumentText("Clerezza is an Apache project");
+    cas.setDocumentLanguage("en");
 
-      AnnotationFS annotation = cas.createAnnotation(cas.getAnnotationType(), 0, 9);
-      cas.addFsToIndexes(annotation);
+    AnnotationFS annotation = cas.createAnnotation(cas.getAnnotationType(), 0, 9);
+    cas.addFsToIndexes(annotation);
 
-      /* execute ClerezzaCASConsumer on the created CAS */
-      annotatorTester.performTest(cas);
+    /* execute ClerezzaCASConsumer on the created CAS */
+    annotatorTester.performTest(cas);
 
-      MGraph createdGraph = TcManager.getInstance().getMGraph(new UriRef("mytest-clerezza-uima-graph"));
-      assertNotNull(createdGraph);
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
+    MGraph createdGraph = TcManager.getInstance().getMGraph(new UriRef("mytest-clerezza-uima-graph"));
+    assertNotNull(createdGraph);
   }
 
   private CAS createCAS() throws ResourceInitializationException, CASException {

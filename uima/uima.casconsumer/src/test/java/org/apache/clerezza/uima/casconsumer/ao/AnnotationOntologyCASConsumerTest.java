@@ -36,7 +36,6 @@ import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 /**
  * TestCase for {@link ClerezzaCASConsumer} using {@link AOMappingStrategy}
@@ -44,8 +43,7 @@ import static org.junit.Assert.fail;
 public class AnnotationOntologyCASConsumerTest {
 
   @Test
-  public void simpleRunningTest() {
-    try {
+  public void simpleRunningTest() throws Exception {
       AnnotatorTester annotatorTester = new AnnotatorTester("src/test/resources/TestAnnotationOntologyCASConsumerDescriptor.xml");
 
       /* create a mock CAS */
@@ -62,9 +60,6 @@ public class AnnotationOntologyCASConsumerTest {
 
       MGraph createdGraph = TcManager.getInstance().getMGraph(new UriRef("mytest-clerezza-ao-graph"));
       assertNotNull(createdGraph);
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
   }
 
   private CAS createCAS() throws ResourceInitializationException, CASException {
