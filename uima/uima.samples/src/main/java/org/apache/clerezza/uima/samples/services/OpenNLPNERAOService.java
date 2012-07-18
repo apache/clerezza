@@ -58,7 +58,7 @@ public class OpenNLPNERAOService {
               Response.Status.BAD_REQUEST).entity(new StringBuilder("No URI specified").toString()).build());
 
     UIMAExecutor executor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
-    Map<String, Object> parameters = new HashMap<String, Object>();
+    Map<String, Object> parameters = new HashMap<String, Object>(1);
     parameters.put(OUTPUTGRAPH, uriString);
     try {
       URL url = URI.create(uriString).toURL();

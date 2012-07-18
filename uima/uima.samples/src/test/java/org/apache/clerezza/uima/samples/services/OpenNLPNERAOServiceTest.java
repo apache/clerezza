@@ -22,7 +22,6 @@ import org.apache.clerezza.rdf.core.Graph;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 /**
  * Testcase for {@link OpenNLPNERAOService}
@@ -30,13 +29,9 @@ import static org.junit.Assert.fail;
 public class OpenNLPNERAOServiceTest {
 
   @Test
-  public void serviceExecutionTest() {
-    try {
-      OpenNLPNERAOService service = new OpenNLPNERAOService();
-      Graph graph = service.extractPersons(getClass().getResource("/ner_test_page.html").toURI().toString());
-      assertNotNull(graph);
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
+  public void serviceExecutionTest() throws Exception {
+    OpenNLPNERAOService service = new OpenNLPNERAOService();
+    Graph graph = service.extractPersons(getClass().getResource("/ner_test_page.html").toURI().toString());
+    assertNotNull(graph);
   }
 }
