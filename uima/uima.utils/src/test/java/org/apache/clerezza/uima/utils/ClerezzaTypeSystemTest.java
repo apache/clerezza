@@ -40,41 +40,33 @@ import static org.junit.Assert.*;
 public class ClerezzaTypeSystemTest {
 
   @Test
-  public void parsingTest() {
-    try {
-      TypeSystemDescription tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-              new XMLInputSource(getClass().getResource("/ClerezzaTestTypeSystemDescriptor.xml")));
-      assertNotNull(tsd);
-      assertNotNull(tsd.getType("org.apache.clerezza.uima.utils.ts.WikipediaEntity"));
-      assertNotNull(tsd.getType("org.apache.clerezza.uima.utils.ts.WikipediaEntityAnnotation"));
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
+  public void parsingTest() throws Exception {
+    TypeSystemDescription tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(getClass().getResource("/ClerezzaTestTypeSystemDescriptor.xml")));
+    assertNotNull(tsd);
+    assertNotNull(tsd.getType("org.apache.clerezza.uima.utils.ts.WikipediaEntity"));
+    assertNotNull(tsd.getType("org.apache.clerezza.uima.utils.ts.WikipediaEntityAnnotation"));
   }
 
   @Test
-  public void dummyTypeSystemWithAnnotatorTest() {
-    try {
-      CAS cas = AnnotatorTester.performTest("src/test/resources/SampleWikipediaAEDescriptor.xml",
-              "this is useless", null);
-      assertNotNull(cas);
-      /* check annotations */
-      AnnotationIndex<Annotation> annotationIndex = cas.getJCas().getAnnotationIndex(
-              WikipediaEntityAnnotation.type);
-      assertNotNull(annotationIndex);
-      assertTrue(annotationIndex.size() == 1);
-      /* check entities */
-      Type type = cas.getTypeSystem().getType("org.apache.clerezza.uima.utils.ts.WikipediaEntity");
-      FSIterator<FeatureStructure> entities = cas.getJCas().getIndexRepository()
-              .getAllIndexedFS(type);
-      assertTrue(entities.hasNext());
-      while (entities.hasNext()) {
-        FSList references = (FSList) entities.next().getFeatureValue(
-                type.getFeatureByBaseName("references"));
-        assertNotNull(references.getNthElement(0));
-      }
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
+  public void dummyTypeSystemWithAnnotatorTest() throws Exception {
+    CAS cas = AnnotatorTester.performTest("src/test/resources/SampleWikipediaAEDescriptor.xml",
+            "this is useless", null);
+    assertNotNull(cas);
+    /* check annotations */
+    AnnotationIndex<Annotation> annotationIndex = cas.getJCas().getAnnotationIndex(
+            WikipediaEntityAnnotation.type);
+    assertNotNull(annotationIndex);
+    assertTrue(annotationIndex.size() == 1);
+    /* check entities */
+    Type type = cas.getTypeSystem().getType("org.apache.clerezza.uima.utils.ts.WikipediaEntity");
+    FSIterator<FeatureStructure> entities = cas.getJCas().getIndexRepository()
+            .getAllIndexedFS(type);
+    assertTrue(entities.hasNext());
+    while (entities.hasNext()) {
+      FSList references = (FSList) entities.next().getFeatureValue(
+              type.getFeatureByBaseName("references"));
+      assertNotNull(references.getNthElement(0));
     }
   }
 }

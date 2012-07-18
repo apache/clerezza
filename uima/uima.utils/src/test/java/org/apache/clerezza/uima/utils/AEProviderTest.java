@@ -27,7 +27,6 @@ import static org.junit.Assert.fail;
 
 /**
  * Testcase for {@link AEProvider}
- * 
  */
 public class AEProviderTest {
 
@@ -39,23 +38,15 @@ public class AEProviderTest {
   }
 
   @Test
-  public void testGetDefaultAENotNull() {
-    try {
-      AnalysisEngine ae = this.aeProvider.getDefaultAE();
-      assertTrue(ae != null);
-    } catch (Throwable e) {
-      fail(e.getLocalizedMessage());
-    }
+  public void testGetDefaultAENotNull() throws Exception {
+    AnalysisEngine ae = this.aeProvider.getDefaultAE();
+    assertTrue(ae != null);
   }
 
   @Test
-  public void testGetAEWithPathNotNull() {
-    try {
-      AnalysisEngine ae = this.aeProvider.getAE("/META-INF/ExtServicesAE.xml");
-      assertTrue(ae != null);
-    } catch (Throwable e) {
-      fail(e.getLocalizedMessage());
-    }
+  public void testGetAEWithPathNotNull() throws Exception {
+    AnalysisEngine ae = this.aeProvider.getAE("/META-INF/ExtServicesAE.xml");
+    assertTrue(ae != null);
   }
 
   @Test

@@ -50,71 +50,54 @@ public class UIMAUtilsTest {
   private static final String DOCUMENT_TEXT = "the server will return a \"A concept with the same label and language already exists!\", so there are actually 2 issues:";
 
   @Test
-  public void testGetAllFSOfAnnotationType() {
-    try {
-      JCas cas = getCAS().getJCas();
-      cas.setDocumentText(DOCUMENT_TEXT);
+  public void testGetAllFSOfAnnotationType() throws Exception {
+    JCas cas = getCAS().getJCas();
+    cas.setDocumentText(DOCUMENT_TEXT);
 
-      FeatureStructure firstFeatureStructure = new TOP(cas);
-      cas.addFsToIndexes(firstFeatureStructure);
-      FeatureStructure secondFeatureStructure = new TOP(cas);
-      cas.addFsToIndexes(secondFeatureStructure);
+    FeatureStructure firstFeatureStructure = new TOP(cas);
+    cas.addFsToIndexes(firstFeatureStructure);
+    FeatureStructure secondFeatureStructure = new TOP(cas);
+    cas.addFsToIndexes(secondFeatureStructure);
 
-      List<FeatureStructure> featureStructures = UIMAUtils.getAllFSofType(TOP.type, cas);
+    List<FeatureStructure> featureStructures = UIMAUtils.getAllFSofType(TOP.type, cas);
 
-      assertTrue(featureStructures != null);
-      assertTrue(!featureStructures.isEmpty());
-      assertTrue(featureStructures.size() == 3); // two simple FSs and the DocumentAnnotation, both extend TOP
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail(e.toString());
-    }
-
+    assertTrue(featureStructures != null);
+    assertTrue(!featureStructures.isEmpty());
+    assertTrue(featureStructures.size() == 3); // two simple FSs and the DocumentAnnotation, both extend TOP
   }
 
   @Test
-  public void testGetAllAnnotationsOfCustomType() {
-    try {
-      JCas cas = getCAS().getJCas();
-      cas.setDocumentText(DOCUMENT_TEXT);
+  public void testGetAllAnnotationsOfCustomType() throws Exception {
+    JCas cas = getCAS().getJCas();
+    cas.setDocumentText(DOCUMENT_TEXT);
 
-      Annotation simpleAnnotation = new Annotation(cas);
-      simpleAnnotation.setBegin(10);
-      simpleAnnotation.setEnd(24);
-      simpleAnnotation.addToIndexes();
+    Annotation simpleAnnotation = new Annotation(cas);
+    simpleAnnotation.setBegin(10);
+    simpleAnnotation.setEnd(24);
+    simpleAnnotation.addToIndexes();
 
-      Annotation secondSimpleAnnotation = new Annotation(cas);
-      secondSimpleAnnotation.setBegin(32);
-      secondSimpleAnnotation.setEnd(44);
-      secondSimpleAnnotation.addToIndexes();
+    Annotation secondSimpleAnnotation = new Annotation(cas);
+    secondSimpleAnnotation.setBegin(32);
+    secondSimpleAnnotation.setEnd(44);
+    secondSimpleAnnotation.addToIndexes();
 
-      List<Annotation> foundAnnotations = UIMAUtils.getAllAnnotationsOfType(DocumentAnnotation.type, cas);
+    List<Annotation> foundAnnotations = UIMAUtils.getAllAnnotationsOfType(DocumentAnnotation.type, cas);
 
-      assertTrue(foundAnnotations != null);
-      assertTrue(!foundAnnotations.isEmpty());
-      assertTrue(foundAnnotations.size() == 1);
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail(e.toString());
-    }
-
+    assertTrue(foundAnnotations != null);
+    assertTrue(!foundAnnotations.isEmpty());
+    assertTrue(foundAnnotations.size() == 1);
   }
 
   @Test
-  public void testGetSingletonFS() {
-    try {
-      JCas cas = getCAS().getJCas();
-      cas.setDocumentText(DOCUMENT_TEXT);
-      FeatureStructure documentAnnotation = UIMAUtils.getSingletonFeatureStructure(DocumentAnnotation.type, cas);
-      assertTrue(documentAnnotation != null);
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail(e.toString());
-    }
+  public void testGetSingletonFS() throws Exception {
+    JCas cas = getCAS().getJCas();
+    cas.setDocumentText(DOCUMENT_TEXT);
+    FeatureStructure documentAnnotation = UIMAUtils.getSingletonFeatureStructure(DocumentAnnotation.type, cas);
+    assertTrue(documentAnnotation != null);
   }
 
   @Test
-  public void testFailingGetSingletonFS() {
+  public void testFailingGetSingletonFS() throws Exception {
     try {
       JCas cas = getCAS().getJCas();
       cas.setDocumentText(DOCUMENT_TEXT);
@@ -136,9 +119,7 @@ public class UIMAUtilsTest {
   }
 
   @Test
-  public void testEnhanceNode() {
-
-    try {
+  public void testEnhanceNode() throws Exception {
       JCas cas = getCAS().getJCas();
       cas.setDocumentText(DOCUMENT_TEXT);
 
@@ -156,12 +137,6 @@ public class UIMAUtilsTest {
       GraphNode node = new GraphNode(new UriRef(cas.toString()), mGraph);
 
       UIMAUtils.enhanceNode(node, UIMAUtils.getAllAnnotationsOfType(Annotation.type, cas));
-
-
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
-
   }
 
 

@@ -21,7 +21,6 @@ package org.apache.clerezza.uima.utils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Testcase for {@link UIMAExecutor}
@@ -29,23 +28,15 @@ import static org.junit.Assert.fail;
 public class UIMAExecutorTest {
 
   @Test
-  public void testDefaultConstructor() {
-    try {
-      UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
-      assertTrue(uimaExecutor != null);
-    } catch (Throwable e) {
-      fail(e.getLocalizedMessage());
-    }
+  public void testDefaultConstructor() throws Exception {
+    UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
+    assertTrue(uimaExecutor != null);
   }
 
   @Test
-  public void testPathConstructor() {
-    try {
-      UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor("/META-INF/ExtServicesAE.xml");
-      assertTrue(uimaExecutor != null);
-    } catch (Throwable e) {
-      fail(e.getLocalizedMessage());
-    }
+  public void testPathConstructor() throws Exception {
+    UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor("/META-INF/ExtServicesAE.xml");
+    assertTrue(uimaExecutor != null);
   }
 
 }
