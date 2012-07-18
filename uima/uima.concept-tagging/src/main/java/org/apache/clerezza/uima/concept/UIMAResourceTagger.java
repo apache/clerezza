@@ -54,6 +54,8 @@ import java.util.List;
 @Path("/concepts/tagger/")
 public class UIMAResourceTagger extends ResourceTagger {
 
+  public static final String RELEVANCE = "relevance";
+  public static final String TEXT = "text";
   private UIMAServicesFacade uimaServicesFacade;
 
   @Override
@@ -73,7 +75,7 @@ public class UIMAResourceTagger extends ResourceTagger {
   public Response updateConcepts(@FormParam("uri") UriRef uri, @Context UriInfo uriInfo, @FormParam("override") boolean override) {
     if (uri != null) {
       GraphNode node = new GraphNode(uri, cgProvider.getContentGraph());
-      List<FeatureStructure> conceptsFS = null;
+      List<FeatureStructure> conceptsFS;
       try {
         /* extract concepts */
         conceptsFS = uimaServicesFacade.getConcepts(node.toString());
@@ -85,9 +87,9 @@ public class UIMAResourceTagger extends ResourceTagger {
         if (conceptsFS != null && !conceptsFS.isEmpty()) {
           for (FeatureStructure conceptFS : conceptsFS) {
             Type conceptType = conceptFS.getType();
-            Double relevance = Double.valueOf(conceptFS.getStringValue(conceptType.getFeatureByBaseName("relevance")));
+            Double relevance = Double.valueOf(conceptFS.getStringValue(conceptType.getFeatureByBaseName(RELEVANCE)));
             if (relevance > 0.6) {
-              node.addProperty(DCTERMS.subject, new UriRef(conceptFS.getStringValue(conceptType.getFeatureByBaseName("text"))));
+              node.addProperty(DCTERMS.subject, new UriRef(conceptFS.getStringValue(conceptType.getFeatureByBaseName(TEXT))));
             }
           }
         }

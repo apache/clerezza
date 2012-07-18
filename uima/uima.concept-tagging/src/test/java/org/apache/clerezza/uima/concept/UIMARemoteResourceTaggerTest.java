@@ -22,7 +22,6 @@ import org.apache.clerezza.rdf.core.Graph;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 /**
  * Testcase for {@link UIMARemoteResourceTaggerService}
@@ -30,13 +29,9 @@ import static org.junit.Assert.fail;
 public class UIMARemoteResourceTaggerTest {
 
   @Test
-  public void serviceExecutionTest() {
-    try {
-      UIMARemoteResourceTaggerService service = new UIMARemoteResourceTaggerService();
-      Graph graph = service.tagUri("http://incubator.apache.org/clerezza", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
-      assertNotNull(graph);
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
+  public void serviceExecutionTest() throws Exception {
+    UIMARemoteResourceTaggerService service = new UIMARemoteResourceTaggerService();
+    Graph graph = service.tagUri("http://incubator.apache.org/clerezza", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
+    assertNotNull(graph);
   }
 }
