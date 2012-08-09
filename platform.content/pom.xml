@@ -26,8 +26,8 @@
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
 		<version>0.3-incubating-SNAPSHOT</version>
-	</parent>
-    <groupId>org.apache.clerezza</groupId>
+		<relativePath>../parent</relativePath>
+	</parent>    <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.content</artifactId>
     <version>0.14-incubating-SNAPSHOT</version>
     <packaging>bundle</packaging>

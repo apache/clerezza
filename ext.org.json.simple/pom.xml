@@ -25,8 +25,8 @@
     	<artifactId>clerezza</artifactId>
     	<groupId>org.apache.clerezza</groupId>
     	<version>0.3-incubating-SNAPSHOT</version>
-  	</parent>
-  	<groupId>org.apache.clerezza.ext</groupId>
+  		<relativePath>../parent</relativePath>
+	</parent>  	<groupId>org.apache.clerezza.ext</groupId>
   	<artifactId>org.json.simple</artifactId>
   	<name>Clerezza Ext - Json.simple OSGi Bundle</name>
   	<version>0.4-incubating-SNAPSHOT</version>

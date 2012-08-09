@@ -31,6 +31,7 @@
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
 		<version>0.11-incubating-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 	<repositories>
 		<repository>

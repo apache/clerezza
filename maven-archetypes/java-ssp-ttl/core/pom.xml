@@ -4,6 +4,7 @@
 		<groupId>org.apache.clerezza.java-ssp-ttl-skeleton</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.1-incubating-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza.java-ssp-ttl-skeleton</groupId>
 	<artifactId>core</artifactId>

@@ -26,6 +26,7 @@
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>main.parent</artifactId>
 		<version>0.5-incubating-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>${project.groupId}</groupId>
 	<artifactId>${project.artifactId}</artifactId>
