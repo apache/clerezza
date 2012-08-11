@@ -32,7 +32,7 @@
 	<packaging>pom</packaging>
 	<name>Clerezza - Reactor build (root)</name>
 	<url>http://incubator.apache.org/clerezza/mvn-site/</url>
-	<version>0.3-incubating-SNAPSHOT</version>
+	<version>0.3-shellrelease-incubating-SNAPSHOT</version>
 	<description>A recator to build all of clerezza</description>
 	<properties>
 		<sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
@@ -57,7 +57,7 @@
 					saved asm descriptor -->
 							<groupId>org.apache.clerezza</groupId>
 							<artifactId>clerezza-jar-resource-bundle</artifactId>
-							<version>1-SNAPSHOT</version>
+							<version>1</version>
 							</dependency>
 						</dependencies>
 					  </plugin> 
@@ -71,7 +71,7 @@
 			</activation>
 			<modules>
 				<module>parent</module>
-				<module>clerezza-jar-resource-bundle</module>
+			<!--	<module>clerezza-jar-resource-bundle</module>
 				<module>platform.style.classic.webguiexamples</module>
 				<module>ext.com.hp.hpl.jena</module>
 				<module>ext.com.hp.hpl.jena.tdb</module>
@@ -158,9 +158,9 @@
 				<module>rdf.simple.storage</module>
 				<module>rdf.stable.serializer</module>
 				<module>rdf.utils</module>
-				<module>rdf.web</module>
+				<module>rdf.web</module> -->
 				<module>shell</module>
-				<module>shell.felixshellcommand</module>
+				<!-- <module>shell.felixshellcommand</module>
 				<module>bundledevtool</module>
 				<module>sshshell</module>
 				<module>templating</module>
@@ -178,7 +178,7 @@
 				<module>platform.style.classic</module>
 				<module>web.resources.yui</module>
 				<module>rdf.storage.externalizer</module>
-				<module>rdf.storage.web</module>
+				<module>rdf.storage.web</module> -->
 			</modules>
 		</profile>
 		<profile>
