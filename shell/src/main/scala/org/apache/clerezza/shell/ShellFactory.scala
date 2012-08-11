@@ -21,13 +21,13 @@ package org.apache.clerezza.shell;
 
 
 
-import org.osgi.service.component.ComponentContext;
-
+import org.osgi.service.component.ComponentContext
 import java.io.InputStream
 import java.io.OutputStream
 import java.security.AccessController
 import java.security.PrivilegedAction
 import org.apache.clerezza.scala.scripting.InterpreterFactory
+import jline.Terminal
 
 
 class ShellFactory()  {
@@ -47,14 +47,20 @@ class ShellFactory()  {
 		this.componentContext = componentContext
 	}
 
-	def createShell(pIn: InputStream, pOut: OutputStream) = {
+	/* 
+	 * Using overloading instead of default, as default is not supported when calling from java
+	 */
+	def createShell(pIn: InputStream, pOut: OutputStream): Shell = {
+	  createShell(pIn, pOut, None)
+	}
+	def createShell(pIn: InputStream, pOut: OutputStream, terminalOption: Option[Terminal]): Shell = {
     var security: SecurityManager = System.getSecurityManager
     if (security != null) {
       AccessController.checkPermission(new ShellPermission())
     }
 		AccessController.doPrivileged(new PrivilegedAction[Shell] {
 				override def run() = {
-					val shell = new Shell(interpreterFactory, pIn, pOut, commands)
+					val shell = new Shell(interpreterFactory, pIn, pOut, commands, terminalOption)
 					//shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
 					//shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
 					shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext, pOut))

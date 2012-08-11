@@ -60,7 +60,7 @@ import java.io.File
 import org.slf4j.scala.Logging
 
 class Shell(factory: InterpreterFactory, val inStream: InputStream, 
-			out: OutputStream, shellCommands: immutable.Set[ShellCommand]) extends Logging {
+			out: OutputStream, shellCommands: immutable.Set[ShellCommand], terminalOption: Option[Terminal] = None ) extends Logging {
 
 
 	private var bundleContext: BundleContext = null
@@ -69,7 +69,10 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 	private var imports = Set[String]()
 	private var terminationListeners = Set[Shell.TerminationListener]();
 
-	val terminal = new jline.UnixTerminal
+	val terminal = terminalOption match {
+	  case Some(x) => x
+	  case None => new jline.UnixTerminal
+	}
 
 	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(inStream)), new PrintWriter(out, true)) {
 		override def createInterpreter() {

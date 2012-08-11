@@ -54,12 +54,12 @@ class ConsoleShell()  {
 				stoppedBundle = Some(bundle)
 			}
 			//this call sets the console terminal to the right settings
-			//and it mast not be invoked when there is no console input, or the system will stop
-			jline.Terminal.setupTerminal()
+			//and it must not be invoked when there is no console input, or the system will stop
+			val terminalOption = Some(jline.Terminal.setupTerminal())
 			val in =  Channels.newInputStream(
 				(new FileInputStream(FileDescriptor.in)).getChannel());
 			interruptibleIn = new InterruptibleInputStream(in)
-			val shell = factory.createShell(interruptibleIn, System.out)
+			val shell = factory.createShell(interruptibleIn, System.out, terminalOption)
 			shell.start()
 			shellOption = Some(shell)
 		}
