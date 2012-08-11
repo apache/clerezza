@@ -45,7 +45,8 @@ class ConsoleShell()  {
 
 	def activate(componentContext: ComponentContext)= {
 		bundleContext = componentContext.getBundleContext
-		if ("true" != bundleContext.getProperty("clerezza.shell.disable")) {
+		if (("true" != bundleContext.getProperty("clerezza.shell.disable")) &&
+		    (System.console != null)) {
 			for (bundle <- bundleContext.getBundles;
 					if (bundle.getSymbolicName == "org.apache.felix.shell.tui");
 					if (bundle.getState == Bundle.ACTIVE)) {
