@@ -32,7 +32,7 @@
 	<packaging>pom</packaging>
 	<name>Clerezza - Reactor build (root)</name>
 	<url>http://incubator.apache.org/clerezza/mvn-site/</url>
-	<version>0.3-shellrelease-incubating-SNAPSHOT</version>
+	<version>0.3-shellrelease-incubating</version>
 	<description>A recator to build all of clerezza</description>
 	<properties>
 		<sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
@@ -434,7 +434,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -550,9 +550,9 @@
 
 
 	<scm>
-		<url>http://svn.apache.org/viewvc/incubator/clerezza</url>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/trunk/</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/trunk/</developerConnection>
+		<url>http://svn.apache.org/viewvc/incubator/clerezza/tags/reactor-0.3-shellrelease-incubating</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/tags/reactor-0.3-shellrelease-incubating</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/tags/reactor-0.3-shellrelease-incubating</developerConnection>
 	</scm>
 
 	<!-- lets generate reports -->
