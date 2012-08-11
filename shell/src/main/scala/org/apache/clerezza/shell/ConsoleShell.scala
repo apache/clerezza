@@ -53,6 +53,9 @@ class ConsoleShell()  {
 				bundle.stop()
 				stoppedBundle = Some(bundle)
 			}
+			//this call sets the console terminal to the right settings
+			//and it mast not be invoked when there is no console input, or the system will stop
+			jline.Terminal.setupTerminal()
 			val in =  Channels.newInputStream(
 				(new FileInputStream(FileDescriptor.in)).getChannel());
 			interruptibleIn = new InterruptibleInputStream(in)

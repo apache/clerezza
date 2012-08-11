@@ -69,6 +69,7 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 	private var imports = Set[String]()
 	private var terminationListeners = Set[Shell.TerminationListener]();
 
+	val terminal = new jline.UnixTerminal
 
 	val interpreterLoop = new InterpreterLoop(new BufferedReader(new InputStreamReader(inStream)), new PrintWriter(out, true)) {
 		override def createInterpreter() {
@@ -135,31 +136,11 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 				override lazy val completion = Option(interpreter) map (x => new Completion(x))
 
 				val consoleReader = {
-					val terminal = new jline.UnixTerminal
-					/*val terminal = new jline.Terminal {
-						override def initializeTerminal() {logger.warn("JLINE: initializing echo")}
-
-						override def isEchoEnabled =  { logger.warn("JLINE: is enabled echo")
-						true}
-
-						override def isSupported = { logger.warn("JLINE: is supported echo")
-						true}
-
-						override def enableEcho() { logger.warn("JLINE: enabling echo")}
-
-						override def disableEcho() {logger.warn("JLINE: disabling echo") }
-
-						override def getTerminalHeight = 24
-
-						override def getTerminalWidth = 80
-
-						override def getEcho = false
-					}*/
+				    
 					val r = new jline.ConsoleReader(inStream, out, null, terminal)
 					r setHistory (History().jhistory)
 					r setBellEnabled false
 					completion foreach { c =>
-						logger.warn("JLINE: adding completor : "+c.jline)
 						r addCompletor c.jline
 						r setAutoprintThreshhold 250
 					}
@@ -191,7 +172,7 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 							true
 						}
 					}
-				  
+				  /* a second completor is ignored, would have to wrapp the above
 				  r addCompletor new Completor {
 						def complete(p1: String, p2: Int, candidates: java.util.List[_]) = {
 							logger.warn("JLINE: candidates : "+candidates)
@@ -205,7 +186,7 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 							}
 							0
 						}
-					}
+					}*/
 
 					r
 				}
