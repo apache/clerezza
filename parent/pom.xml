@@ -32,7 +32,7 @@
 	<packaging>pom</packaging>
 	<name>Clerezza - Parent for all (root)</name>
 	<url>http://incubator.apache.org/clerezza/mvn-site/</url>
-	<version>0.3-incubating</version>
+	<version>0.4-incubating-SNAPSHOT</version>
 	<description>The direct or indirect parent of all Clerezza Artifacts</description>
 	<properties>
 		<scala.version>2.8.1</scala.version>
@@ -1136,7 +1136,7 @@
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>shell</artifactId>
-				<version>0.3-incubating</version>
+				<version>0.4-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
@@ -1232,9 +1232,9 @@
 
 
 	<scm>
-		<url>http://svn.apache.org/viewvc/incubator/clerezza/tags/clerezza-incubating/clerezza</url>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/tags/clerezza-incubating/parent</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/tags/clerezza-incubating/parent</developerConnection>
+		<url>http://svn.apache.org/viewvc/incubator/clerezza</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/trunk/parent/</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/trunk/parent/</developerConnection>
 	</scm>
 
 	<!-- lets generate reports -->
