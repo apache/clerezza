@@ -553,9 +553,9 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             throw new IllegalArgumentException("The parsed Graph UriRef MUST NOT be NULL!");
         }
         synchronized (dataset) {
-            if(graphNames.contains(name)){
+            if(graphNames.contains(name) || name.equals(defaultGraphName)){
                 return getGraph(name);
-            } else if(mGraphNames.contains(name) || name.equals(defaultGraphName)){
+            } else if(mGraphNames.contains(name)){
                 return getMGraph(name);
             } else {
                 throw new NoSuchEntityException(name);

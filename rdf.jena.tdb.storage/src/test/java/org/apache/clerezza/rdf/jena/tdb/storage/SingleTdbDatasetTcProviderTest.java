@@ -122,6 +122,10 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
         
         //now get the union graph
         Graph data = provider.getGraph(UNION_GRAPH_NAME);
+        Assert.assertNotNull(data);
+        //CLEREZZA-714: getTriples need to correctly return the UnionGraph
+        data = (Graph)provider.getTriples(UNION_GRAPH_NAME);
+        Assert.assertNotNull(data);
         //NOTE: Jena TDB does not support getSize for the union graph
 //        int expectedTripleCount = persons.size()+orgdata.size();
 //        Assert.assertEquals("Uniongraph has "+data.size()
