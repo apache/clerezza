@@ -32,7 +32,7 @@
 	<packaging>pom</packaging>
 	<name>Clerezza - Parent for all (root)</name>
 	<url>http://incubator.apache.org/clerezza/mvn-site/</url>
-	<version>0.4-incubating-SNAPSHOT</version>
+	<version>0.3-incubating-SNAPSHOT</version>
 	<description>The direct or indirect parent of all Clerezza Artifacts</description>
 	<properties>
 		<scala.version>2.8.1</scala.version>
