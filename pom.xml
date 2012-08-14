@@ -551,8 +551,8 @@
 
 	<scm>
 		<url>http://svn.apache.org/viewvc/incubator/clerezza</url>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/trunk/</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/trunk/</developerConnection>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/branches/shellrelease/</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/branches/shellrelease/</developerConnection>
 	</scm>
 
 	<!-- lets generate reports -->
