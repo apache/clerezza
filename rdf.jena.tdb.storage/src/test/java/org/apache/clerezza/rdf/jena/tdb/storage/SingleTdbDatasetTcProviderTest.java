@@ -73,7 +73,7 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
         }
     }
     /**
-     * The union grpah is read only!
+     * The union graph is read only!
      */
     @Test(expected=NoSuchEntityException.class)
     public void testUnionMgraph(){
@@ -147,5 +147,16 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
         }
         Assert.assertTrue("Missing "+expected, expected.isEmpty());
         
-    }    
+    }
+    
+    @Test
+    public void testListGraph(){
+    	TcProvider provider = getInstance();
+    	//No union graph in listMGraphs
+    	Set<UriRef> mgl = provider.listMGraphs();
+        Assert.assertFalse("Mgraph list don't contain the read-only union-graph", mgl.contains(UNION_GRAPH_NAME));
+        //Union graph in listGraphs
+        Set<UriRef> gl = provider.listGraphs();
+        Assert.assertTrue("Graph list contain the read-only union-graph", gl.contains(UNION_GRAPH_NAME));
+    }
 }

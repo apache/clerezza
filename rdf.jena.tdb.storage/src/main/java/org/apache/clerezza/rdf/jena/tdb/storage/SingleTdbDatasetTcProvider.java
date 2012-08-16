@@ -582,6 +582,9 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
     public Set<UriRef> listMGraphs() {
         Set<UriRef> tcNames = listTripleCollections();
         tcNames.removeAll(graphNames);
+        if(defaultGraphName != null){
+            tcNames.remove(defaultGraphName);
+        }
         return tcNames;
     }
     /*
