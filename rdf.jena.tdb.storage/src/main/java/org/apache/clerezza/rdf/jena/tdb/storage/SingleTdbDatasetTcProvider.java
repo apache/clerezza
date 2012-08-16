@@ -140,7 +140,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
          * subclass is used that prevents the creation of an in-memory copy
          * of the data when calling {@link JenaGraphAdaptor#getGraph()}.
          */
-        private JenaGraphAdaptor jenaAdatper;
+        private JenaGraphAdaptor jenaAdapter;
         /**
          * The {@link Graph}(in case of read-only) or {@link MGraph} (if read/write)
          * that can be shared with other components. The instance stored by this
@@ -150,15 +150,15 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
          */
         private TripleCollection graph;
         /**
-         * keeps the state if this represnets an {@link Graph} (read-only) or
+         * keeps the state if this represents an {@link Graph} (read-only) or
          * {@link MGraph}(read/write) ModelGraph.
          */
         private final boolean readWrite;
         
         /**
-         * Constructs and initialises the ModelGraph
+         * Constructs and initializes the ModelGraph
          * @param model the Jena Model
-         * @param readWrite if the Clerezza conterpart should be read- and 
+         * @param readWrite if the Clerezza counterpart should be read- and 
          * write-able or read-only.
          */
         protected ModelGraph(Model model, boolean readWrite){
@@ -168,7 +168,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             this.model = model;
             this.readWrite = readWrite;
             if(!readWrite){ //construct an graph
-                jenaAdatper = new JenaGraphAdaptor(model.getGraph()){
+                jenaAdapter = new JenaGraphAdaptor(model.getGraph()){
                     /**
                      * Ensure that no in-memory copies are created for read only
                      * Jena Graphs
@@ -179,11 +179,11 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                         return new SimpleGraph(this,true);
                     }
                 };
-                graph = new PrivilegedGraphWrapper(jenaAdatper.getGraph());
+                graph = new PrivilegedGraphWrapper(jenaAdapter.getGraph());
             } else { //construct an MGraph
-                jenaAdatper = new JenaGraphAdaptor(model.getGraph());
+                jenaAdapter = new JenaGraphAdaptor(model.getGraph());
                 this.graph =  new LockableMGraphWrapper(
-                    new PrivilegedMGraphWrapper(jenaAdatper));
+                    new PrivilegedMGraphWrapper(jenaAdapter));
             }
         }
         /**
@@ -193,7 +193,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
          * @return the plain {@link JenaGraphAdaptor}
          */
         protected JenaGraphAdaptor getJenaAdapter(){
-            return jenaAdatper;
+            return jenaAdapter;
         }
 //        public boolean isReadonly(){
 //            return !readWrite;
@@ -230,12 +230,12 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
          */
         public void close(){
             this.graph = null;
-            this.jenaAdatper = null;
+            this.jenaAdapter = null;
             sync();
             this.model.close();
         }
         /**
-         * Synchronize the Jena Model with the fiel system by calling
+         * Synchronize the Jena Model with the field system by calling
          * {@link TDB#sync(Model)}
          */
         public void sync(){
@@ -254,7 +254,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         
     }
     /**
-     * This backround thread ensures that changes to {@link Model}s are
+     * This background thread ensures that changes to {@link Model}s are
      * synchronized with the file system. Only {@link ModelGraph}s where
      * <code>{@link ModelGraph#isReadWrite()} == true</code> are synced.<p>
      * This is similar to the synchronize thread used by the {@link TdbTcProvider}.
@@ -291,7 +291,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         }
     }
     /**
-     * Defualt constructor used by OSGI
+     * Default constructor used by OSGI
      */
     public SingleTdbDatasetTcProvider(){}
     
@@ -300,7 +300,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
      * configuration.<p>
      * The following properties are supported:<ul>
      * <li> {@link #TDB_DIR} (required): The directory used by Jena TDB. Property
-     * substitution "${proeprty-name}" with {@link System#getProperties()} is
+     * substitution "${property-name}" with {@link System#getProperties()} is
      * supported.
      * <li> {@link #DEFAULT_GRAPH_NAME}: The name ({@link UriRef}) of the
      * {@link Graph} that exports the union graph. This graph allows to query
@@ -322,7 +322,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         activate(null,config);
     }
     /**
-     * Activate method sed by OSGI
+     * Activate method used by OSGI
      * @param ctx
      * @throws ConfigurationException
      * @throws IOException
@@ -342,7 +342,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
      * @param config The configuration for this Instance. Note that {@link #TDB_DIR}
      * is required to be present.
      * @throws ConfigurationException if the parsed configuration is invalid
-     * @throws IOException on any error while creating/accesing the Jena TDB
+     * @throws IOException on any error while creating/accessing the Jena TDB
      * directory.
      */
     private void activate(BundleContext bc,Dictionary<String,Object> config) throws ConfigurationException, IOException {
@@ -481,14 +481,14 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
     
     /**
      * Internal method used to retrieve an existing Jena {@link ModelGraph} 
-     * instance from {@link #initModels} or initialises a new Jena TDB {@link Model}
+     * instance from {@link #initModels} or initializes a new Jena TDB {@link Model}
      * and Clerezza {@link Graph}s/{@link MGraph}s.
-     * @param name the name of the Graph to initialise/create
-     * @param readWrite if <code>true</code> a {@link MGraph} is initialised.
+     * @param name the name of the Graph to initialize/create
+     * @param readWrite if <code>true</code> a {@link MGraph} is initialized.
      * Otherwise a {@link Graph} is created.
      * @param create if this method is allowed to create an new {@link Model} or
-     * if an already existing model is initialised.
-     * @return the initialised {@link Model} and @link Graph} or {@link MGraph}.
+     * if an already existing model is initialized.
+     * @return the initialized {@link Model} and @link Graph} or {@link MGraph}.
      * The returned instance will be also cached in {@link #initModels}. 
      * @throws NoSuchEntityException If <code>create == false</code> and no
      * {@link Model} for the parsed <code>name</code> exists.
@@ -776,14 +776,14 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final byte[] lineSep = "\n".getBytes(UTF8);
     /**
-     * Writes the configuration file storing the initialised {@link Graph} names
+     * Writes the configuration file storing the initialized {@link Graph} names
      * @throws IOException
      */
     private void writeGraphConfig() throws IOException {
         writeConfig(graphConfigFile,graphNames);
     }
     /**
-     * Writes the configuration file storing the initialised {@link MGraph} names
+     * Writes the configuration file storing the initialized {@link MGraph} names
      * @throws IOException
      */
     private void writeMGraphConfig() throws IOException {
@@ -796,7 +796,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
      * {@link Dataset#getDefaultModel() default model} of the TDB 
      * {@link Dataset}.<br>
      * However for now I have decided against that, because this way makes it
-     * more easy to manually play around with the condiguration (such as
+     * more easy to manually play around with the configuration (such as
      * manually adding the name of an Graph/MGraph that already exists in
      * an pre-existing Dataset.
      * @throws IOException
