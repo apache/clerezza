@@ -35,16 +35,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.imageio.ImageIO;
-
-import org.osgi.service.component.ComponentContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.utils.imageprocessing.ImageProcessor;
+import org.apache.clerezza.utils.imageprocessing.ImageReaderService;
 import org.apache.clerezza.utils.imageprocessing.metadataprocessing.ExifTagDataSet;
 import org.apache.clerezza.utils.imageprocessing.metadataprocessing.IptcDataSet;
 import org.apache.clerezza.utils.imageprocessing.metadataprocessing.MetaData;
@@ -54,7 +50,9 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.felix.scr.annotations.Services;
+import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements interfaces that execute system calls to imageMagick.
@@ -78,9 +76,9 @@ import org.apache.felix.scr.annotations.Services;
 	@Property(name="minor_release_number", intValue=10, description="Specifies ImageMagick minor revision number (Syntax: release.version.majorRevision-minorRevision)."),
 	@Property(name="service.ranking", value="100")
 	})
-@Services({
-	@Service(ImageProcessor.class),
-	@Service(MetaDataProcessor.class)
+@Service({
+	ImageProcessor.class,
+	MetaDataProcessor.class
 	})
 
 public class ImageMagickProvider extends ImageProcessor implements MetaDataProcessor {
@@ -94,6 +92,9 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 
 	@Reference
 	private Serializer serializer;
+        
+        @Reference
+	private ImageReaderService imageReaderService;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -564,8 +565,8 @@ public class ImageMagickProvider extends ImageProcessor implements MetaDataProce
 				return null;
 			}
 
-			return ImageIO.read(execCommand(command, baos.toByteArray()).
-					getInputStream());
+			return imageReaderService.getBufferedImage(execCommand(
+                                command, baos.toByteArray()).getInputStream());
 			
 		} catch (InterruptedException ex) {
 			logger.warn("ImageMagick has been interrupted");

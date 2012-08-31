@@ -27,16 +27,16 @@ import javax.imageio.ImageIO;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.content.DiscobitsHandler;
 import org.apache.clerezza.platform.content.InfoDiscobit;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
+import org.apache.clerezza.rdf.ontologies.DISCOBITS;
+import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.utils.imageprocessing.ImageProcessor;
+import org.apache.clerezza.utils.imageprocessing.ImageReaderService;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.utils.imageprocessing.ImageProcessor;
-import org.apache.clerezza.rdf.ontologies.DISCOBITS;
-import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
-import org.apache.felix.scr.annotations.Services;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -50,9 +50,9 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author mir
  */
 @Component(metatype=true)
-@Services({
-	@Service(MetaDataGenerator.class),
-	@Service(AlternativeRepresentationGenerator.class)
+@Service({
+	MetaDataGenerator.class,
+	AlternativeRepresentationGenerator.class
 })
 
 public class AlternativeRepresentationGenerator implements MetaDataGenerator {
@@ -97,6 +97,9 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 
 	@Reference
 	private ImageProcessor imageProcessor;
+        
+        @Reference
+	private ImageReaderService imageReaderService;
 
 	@Property(value="100x100,200x200", description="Specifies the resolutions of alternative" +
 			" representations in the format [width]x[height]. Multiple resolutions" +
@@ -202,7 +205,8 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 		try {
 			isAltRepresentation.set(Boolean.TRUE);
 			InfoDiscobit infoBit = InfoDiscobit.createInstance(infoBitNode);
-			BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(infoBit.getData()));
+			BufferedImage buffImage = imageReaderService.getBufferedImage(
+                                new ByteArrayInputStream(infoBit.getData()));
 			return generateAlternativeImage(buffImage, new Resolution(width, height), 
 					MediaType.valueOf(infoBit.getContentType()), infoBitNode, exact);
 		} catch (IOException ex) {
@@ -216,7 +220,8 @@ public class AlternativeRepresentationGenerator implements MetaDataGenerator {
 			GraphNode node) throws RuntimeException {
 		try {
 			isAltRepresentation.set(Boolean.TRUE);
-			BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(data));
+			BufferedImage buffImage = imageReaderService.getBufferedImage(
+                                new ByteArrayInputStream(data));
 			int imgWidth = buffImage.getWidth();
 			int imgHeigth = buffImage.getHeight();
 			for (Resolution resolution : resolutions) {

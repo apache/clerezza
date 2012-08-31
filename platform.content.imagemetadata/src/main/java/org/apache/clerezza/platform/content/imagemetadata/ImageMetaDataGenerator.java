@@ -21,14 +21,15 @@ package org.apache.clerezza.platform.content.imagemetadata;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.ws.rs.core.MediaType;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import org.apache.clerezza.rdf.ontologies.EXIF;
+import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.utils.imageprocessing.ImageReaderService;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * This class generates metadata about image data.
@@ -39,12 +40,16 @@ import org.apache.clerezza.rdf.ontologies.EXIF;
 @Service(MetaDataGenerator.class)
 public class ImageMetaDataGenerator implements MetaDataGenerator {
 
+	@Reference
+	private ImageReaderService imageReaderService;
+        
 	@Override
 	public void generate(GraphNode node, byte[] data, MediaType mediaType) {
 
 		if (mediaType.getType().startsWith("image")) {
 			try {
-				BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(data));
+				BufferedImage buffImage = imageReaderService.getBufferedImage(
+                                        new ByteArrayInputStream(data));
 				node.deleteProperties(EXIF.width);
 				node.deleteProperties(EXIF.height);
 				node.addProperty(EXIF.width, LiteralFactory.getInstance().

@@ -45,6 +45,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
+			<artifactId>utils.imageprocessing</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.metadata</artifactId>
 		</dependency>
 		<dependency>
