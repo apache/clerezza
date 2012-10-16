@@ -21,6 +21,7 @@ package org.apache.clerezza.uima.utils;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import static org.junit.Assert.*;
 /**
  * Testcase for {@link ExternalServicesFacade}
  */
+@Ignore
 public class ExternalServicesFacadeTest {
 
   private static final String AN_ENGLISH_TEXT = "this is a document supposed to be recognized as written in the language of Queen Elizabeth";
@@ -40,11 +42,14 @@ public class ExternalServicesFacadeTest {
 
   private static final String ANOTHER_ENGLISH_TEXT = "President Obama vows to \"make BP pay\" for the Gulf oil spill, and says the US must end its fossil fuel \"addiction\".";
 
-  @Test
+  public static final String YOUR_ALCHEMYAPI_KEY_HERE = "...";
+  public static final String YOUR_OPENCALAIS_LICENSEID_HERE = "...";
+
+    @Test
   public void getLanguageTest() throws Exception {
     ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
     Map<String, Object> parameterSettings = new HashMap<String, Object>();
-    parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
+    parameterSettings.put("apikey", YOUR_ALCHEMYAPI_KEY_HERE);
     externalServicesFacade.setParameterSetting(parameterSettings);
     FeatureStructure languageFS = externalServicesFacade.getLanguage(AN_ENGLISH_TEXT);
     String language = languageFS.getStringValue(languageFS.getType().getFeatureByBaseName("language"));
@@ -57,7 +62,7 @@ public class ExternalServicesFacadeTest {
   public void getTagsTest() throws Exception {
     ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
     Map<String, Object> parameterSettings = new HashMap<String, Object>();
-    parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
+    parameterSettings.put("apikey", YOUR_ALCHEMYAPI_KEY_HERE);
     externalServicesFacade.setParameterSetting(parameterSettings);
     List<FeatureStructure> tags = externalServicesFacade.getTags(AN_ENGLISH_TEXT);
     assertTrue(tags != null);
@@ -73,7 +78,7 @@ public class ExternalServicesFacadeTest {
   @Test
   public void getNamedEntitiesTest() throws Exception {
     ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
-    String licenseId = "g6h9zamsdtwhb93nc247ecrs";
+    String licenseId = YOUR_OPENCALAIS_LICENSEID_HERE;
     Map<String, Object> parameterSettings = new HashMap<String, Object>();
     parameterSettings.put("licenseID", licenseId);
     externalServicesFacade.setParameterSetting(parameterSettings);
@@ -93,7 +98,7 @@ public class ExternalServicesFacadeTest {
   public void getCategoryTest() throws Exception {
     ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
     Map<String, Object> parameterSettings = new HashMap<String, Object>();
-    parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
+    parameterSettings.put("apikey", YOUR_ALCHEMYAPI_KEY_HERE);
     externalServicesFacade.setParameterSetting(parameterSettings);
     FeatureStructure categoryFS = externalServicesFacade.getCategory(CLEREZZA_RELATED_TEXT);
     String category = categoryFS.getStringValue(categoryFS.getType().getFeatureByBaseName("text"));
@@ -104,7 +109,7 @@ public class ExternalServicesFacadeTest {
   public void getConceptsTest() throws Exception {
     ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
     Map<String, Object> parameterSettings = new HashMap<String, Object>();
-    parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
+    parameterSettings.put("apikey", YOUR_ALCHEMYAPI_KEY_HERE);
     externalServicesFacade.setParameterSetting(parameterSettings);
     List<FeatureStructure> concepts = externalServicesFacade.getConcepts(ANOTHER_ENGLISH_TEXT);
     assertTrue(concepts != null);

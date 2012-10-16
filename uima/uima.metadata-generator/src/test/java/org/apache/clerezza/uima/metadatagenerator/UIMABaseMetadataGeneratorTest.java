@@ -23,6 +23,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.uima.utils.ExternalServicesFacade;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
@@ -34,6 +35,8 @@ import java.util.Map;
  */
 public class UIMABaseMetadataGeneratorTest {
   private static final String TEXT_TO_ANALYZE = "Italy, the defending champions and four-time World Cup winners, suffer a shock World Cup defeat to Slovakia, who win a remarkable game 3-2 to book their place in the last 16";
+  public static final String YOUR_ALCHEMYAPI_KEY_HERE = "...";
+  public static final String YOUR_OPENCALAIS_LICENSEID_HERE = "...";
 
   @Test
   public void testConstructor() throws Exception {
@@ -51,11 +54,12 @@ public class UIMABaseMetadataGeneratorTest {
   }
 
   @Test
+  @Ignore
   public void testGenerateMethodWithsupportedMediaType() throws Exception {
     ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
     Map<String, Object> parameterSettings = new HashMap<String, Object>();
-    parameterSettings.put("apikey", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
-    parameterSettings.put("licenseID", "g6h9zamsdtwhb93nc247ecrs");
+    parameterSettings.put("apikey", YOUR_ALCHEMYAPI_KEY_HERE);
+    parameterSettings.put("licenseID", YOUR_OPENCALAIS_LICENSEID_HERE);
     externalServicesFacade.setParameterSetting(parameterSettings);
     UIMABaseMetadataGenerator baseMetadataGenerator = new UIMABaseMetadataGenerator(externalServicesFacade);
     String textToAnalyze = TEXT_TO_ANALYZE;

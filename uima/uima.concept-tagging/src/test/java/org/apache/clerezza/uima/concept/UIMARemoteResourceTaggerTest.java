@@ -19,6 +19,7 @@
 package org.apache.clerezza.uima.concept;
 
 import org.apache.clerezza.rdf.core.Graph;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
@@ -26,12 +27,15 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Testcase for {@link UIMARemoteResourceTaggerService}
  */
+@Ignore
 public class UIMARemoteResourceTaggerTest {
+
+  public static final String YOUR_ALCHEMYAPI_KEY_HERE = "...";
 
   @Test
   public void serviceExecutionTest() throws Exception {
     UIMARemoteResourceTaggerService service = new UIMARemoteResourceTaggerService();
-    Graph graph = service.tagUri("http://incubator.apache.org/clerezza", "04490000a72fe7ec5cb3497f14e77f338c86f2fe");
+    Graph graph = service.tagUri("http://incubator.apache.org/clerezza", YOUR_ALCHEMYAPI_KEY_HERE);
     assertNotNull(graph);
   }
 }
