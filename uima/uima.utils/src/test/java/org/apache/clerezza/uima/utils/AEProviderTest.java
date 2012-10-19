@@ -22,6 +22,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -40,13 +41,13 @@ public class AEProviderTest {
   @Test
   public void testGetDefaultAENotNull() throws Exception {
     AnalysisEngine ae = this.aeProvider.getDefaultAE();
-    assertTrue(ae != null);
+    assertNotNull(ae);
   }
 
   @Test
   public void testGetAEWithPathNotNull() throws Exception {
     AnalysisEngine ae = this.aeProvider.getAE("/META-INF/ExtServicesAE.xml");
-    assertTrue(ae != null);
+    assertNotNull(ae);
   }
 
   @Test

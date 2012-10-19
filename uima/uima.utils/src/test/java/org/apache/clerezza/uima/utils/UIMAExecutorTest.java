@@ -20,6 +20,7 @@ package org.apache.clerezza.uima.utils;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -30,13 +31,13 @@ public class UIMAExecutorTest {
   @Test
   public void testDefaultConstructor() throws Exception {
     UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
-    assertTrue(uimaExecutor != null);
+    assertNotNull(uimaExecutor);
   }
 
   @Test
   public void testPathConstructor() throws Exception {
     UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor("/META-INF/ExtServicesAE.xml");
-    assertTrue(uimaExecutor != null);
+    assertNotNull(uimaExecutor);
   }
 
 }
