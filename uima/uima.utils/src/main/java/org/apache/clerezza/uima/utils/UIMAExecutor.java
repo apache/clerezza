@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class UIMAExecutor {
 
-  private AEProvider aeProvider;
+  private final AEProvider aeProvider;
 
   public UIMAExecutor(AEProvider aeProvider) {
     this.aeProvider = aeProvider;

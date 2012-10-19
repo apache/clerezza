@@ -129,7 +129,7 @@ public class UIMAUtils {
           if (featureValue != null) {
             featureNode.addPropertyValue(ENTITY.featureValue, featureValue);
             log.info(new StringBuilder("Added feature ").append(feature.getName()).append(" with value ")
-                    .append(featureValue.toString()).toString());
+                    .append(featureValue).toString());
           }
 
           // add feature to the annotation node

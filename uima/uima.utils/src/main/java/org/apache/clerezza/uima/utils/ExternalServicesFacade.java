@@ -38,7 +38,7 @@ import java.util.Map;
  */
 public class ExternalServicesFacade implements UIMAServicesFacade {
 
-  private UIMAExecutor uimaExecutor;
+  private final UIMAExecutor uimaExecutor;
 
   private Map<String, Object> parameterSetting = new HashMap<String, Object>();
 
@@ -68,7 +68,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
 
   public FeatureStructure getLanguage(String document) throws UIMAException {
 
-    FeatureStructure languageFS = null;
+    FeatureStructure languageFS;
 
     try {
 
@@ -108,7 +108,7 @@ public class ExternalServicesFacade implements UIMAServicesFacade {
   }
 
   public FeatureStructure getCategory(String document) throws UIMAException {
-    FeatureStructure categoryFS = null;
+    FeatureStructure categoryFS;
     try {
 
       // analyze the document
