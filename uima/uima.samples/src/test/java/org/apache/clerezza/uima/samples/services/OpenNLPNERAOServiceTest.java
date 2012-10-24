@@ -21,6 +21,7 @@ package org.apache.clerezza.uima.samples.services;
 import org.apache.clerezza.rdf.core.Graph;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -33,5 +34,6 @@ public class OpenNLPNERAOServiceTest {
     OpenNLPNERAOService service = new OpenNLPNERAOService();
     Graph graph = service.extractPersons(getClass().getResource("/ner_test_page.html").toURI().toString());
     assertNotNull(graph);
+    assertFalse(graph.isEmpty());
   }
 }

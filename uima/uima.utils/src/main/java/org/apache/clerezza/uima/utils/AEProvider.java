@@ -20,6 +20,8 @@ package org.apache.clerezza.uima.utils;
 
 import org.apache.clerezza.uima.utils.cl.ClerezzaUIMAExtensionClassLoader;
 import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -40,11 +42,15 @@ import java.util.Map;
  * provide the {@link AnalysisEngine} using the default descriptor or using a custom descriptor (absolute)
  * path
  */
+@Component
 public class AEProvider {
   private final static Logger log = LoggerFactory.getLogger(AEProvider.class);
 
   private static String defaultXMLPath;
   private static Map<XMLInputSource, AnalysisEngine> registeredAEs;
+
+  @Reference
+  private UIMAResourcesClassLoaderRepository classLoaderRepository;
 
   public AEProvider() {
     defaultXMLPath = "/META-INF/ExtServicesAE.xml"; // if no default is specified use the bundled ext services descriptor
@@ -95,7 +101,7 @@ public class AEProvider {
     // try classpath
     URL url = getClass().getResource(filePath);
     if (url == null) {
-      for (ClassLoader c : UIMAResourcesClassLoaderRepository.getComponents()) {
+      for (ClassLoader c : classLoaderRepository.getComponents()) {
         url = c.getResource(filePath);
         if (url != null)
           break;
@@ -137,7 +143,7 @@ public class AEProvider {
         if (ae == null) {
           try {
             ResourceManager rm = UIMAFramework.newDefaultResourceManager();
-            rm.setExtensionClassPath(new ClerezzaUIMAExtensionClassLoader(getClass().getClassLoader()), "*", true);
+            rm.setExtensionClassPath(new ClerezzaUIMAExtensionClassLoader(getClass().getClassLoader(), classLoaderRepository.getComponents()), "*", true);
             ae = UIMAFramework.produceAnalysisEngine(desc, rm, null);
           } catch (Exception e) {
             log.warn(new StringBuilder("could not get AE from extended classpath RM \n ").append(e.getMessage()).toString());

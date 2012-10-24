@@ -18,6 +18,12 @@
  */
 package org.apache.clerezza.uima.metadatagenerator;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.ws.rs.core.MediaType;
+
 import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import org.apache.clerezza.rdf.ontologies.DC;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
@@ -30,26 +36,17 @@ import org.apache.clerezza.uima.utils.UIMAServicesFacade;
 import org.apache.clerezza.uima.utils.UIMAUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.felix.scr.annotations.Services;
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.FeatureStructure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * An implementation of {@link MetaDataGenerator} generates meta data about specified data
  * depending on its media type using Apache UIMA.
  */
 @Component(metatype = true)
-@Services({
-        @Service(MetaDataGenerator.class),
-        @Service(UIMABaseMetadataGenerator.class)
-})
+@Service(MetaDataGenerator.class)
 public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
   private final static Logger log = LoggerFactory.getLogger(UIMABaseMetadataGenerator.class);
@@ -60,7 +57,7 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
   public UIMABaseMetadataGenerator() {
     this.facade = new ExternalServicesFacade();
-    this.textExtractors = new TreeSet<MediaTypeTextExtractor>();
+    this.textExtractors = new HashSet<MediaTypeTextExtractor>();
   }
 
   public UIMABaseMetadataGenerator(ExternalServicesFacade facade) {

@@ -30,8 +30,8 @@ import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 public class UIMASamplesBundleActivator extends UIMABundleActivator {
   @Override
   protected void classRegistered() {
-    UIMAResourcesClassLoaderRepository.registerComponent(Tokenizer.class);
-    UIMAResourcesClassLoaderRepository.registerComponent(SentenceDetector.class);
-    UIMAResourcesClassLoaderRepository.registerComponent(NameFinder.class);
+    classLoaderRepository.registerComponent(Tokenizer.class);
+    classLoaderRepository.registerComponent(SentenceDetector.class);
+    classLoaderRepository.registerComponent(NameFinder.class);
   }
 }

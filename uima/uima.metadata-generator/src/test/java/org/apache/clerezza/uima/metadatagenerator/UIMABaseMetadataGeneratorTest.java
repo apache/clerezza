@@ -55,7 +55,7 @@ public class UIMABaseMetadataGeneratorTest {
 
   @Test
   @Ignore
-  public void testGenerateMethodWithsupportedMediaType() throws Exception {
+  public void testGenerateMethodWithSupportedMediaType() throws Exception {
     ExternalServicesFacade externalServicesFacade = new ExternalServicesFacade();
     Map<String, Object> parameterSettings = new HashMap<String, Object>();
     parameterSettings.put("apikey", YOUR_ALCHEMYAPI_KEY_HERE);

@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.uima.utils.cl;
 
+import org.apache.felix.scr.annotations.Service;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.resource.Resource;
 import org.slf4j.Logger;
@@ -30,22 +31,23 @@ import java.util.Set;
 /**
  * Repository for UIMA {@link AnalysisComponent}s' {@link ClassLoader}s
  */
+@Service
 public class UIMAResourcesClassLoaderRepository {
   private final static Logger log = LoggerFactory.getLogger(UIMAResourcesClassLoaderRepository.class);
 
   private final static Set<ClassLoader> registeredComponents = new HashSet<ClassLoader>();
 
-  public static <C extends AnalysisComponent> void registerComponent(Class<C> component) {
+  public <C extends AnalysisComponent> void registerComponent(Class<C> component) {
     log.info(new StringBuilder("Component ").append(component.getName()).append(" registered").toString());
     registeredComponents.add(component.getClassLoader());
   }
 
-  public static <R extends Resource> void registerResource(Class<R> component) {
+  public <R extends Resource> void registerResource(Class<R> component) {
     log.info(new StringBuilder("Component ").append(component.getName()).append(" registered").toString());
     registeredComponents.add(component.getClassLoader());
   }
 
-  public static Collection<ClassLoader> getComponents() {
+  public Collection<ClassLoader> getComponents() {
     return registeredComponents;
   }
 }

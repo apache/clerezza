@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.felix.scr.annotations.Reference;
+
 /**
  * An extension {@link ClassLoader} to be used as UIMA extension CL within a
  * {@link org.apache.uima.resource.ResourceManager}. This delegates class loading to
@@ -39,9 +41,9 @@ public class ClerezzaUIMAExtensionClassLoader extends ClassLoader {
   private final Collection<ClassLoader> delegateClassLoaders;
   private final ResourceByteReader byteReader;
 
-  public ClerezzaUIMAExtensionClassLoader(ClassLoader parent) {
+  public ClerezzaUIMAExtensionClassLoader(ClassLoader parent, Collection<ClassLoader> delegateClassLoaders) {
     super(parent);
-    this.delegateClassLoaders = UIMAResourcesClassLoaderRepository.getComponents();
+    this.delegateClassLoaders = delegateClassLoaders;
     this.byteReader = new ResourceByteReader();
   }
 

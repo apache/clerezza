@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
+import org.apache.felix.scr.annotations.Reference;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -25,6 +27,9 @@ import org.osgi.framework.BundleContext;
  * {@link BundleActivator} to enable automatic registration of Annotator classes to load from UIMA utils
  */
 public abstract class UIMABundleActivator implements BundleActivator {
+
+  @Reference
+  protected UIMAResourcesClassLoaderRepository classLoaderRepository;
 
   @Override
   public void start(BundleContext context) throws Exception {

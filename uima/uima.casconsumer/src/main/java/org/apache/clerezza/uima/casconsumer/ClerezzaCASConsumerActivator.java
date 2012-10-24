@@ -27,6 +27,6 @@ import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 public class ClerezzaCASConsumerActivator extends UIMABundleActivator {
   @Override
   protected void classRegistered() {
-    UIMAResourcesClassLoaderRepository.registerComponent(ClerezzaCASConsumer.class);
+    classLoaderRepository.registerComponent(ClerezzaCASConsumer.class);
   }
 }

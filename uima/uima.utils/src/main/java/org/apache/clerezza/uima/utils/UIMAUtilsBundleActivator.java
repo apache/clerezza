@@ -28,7 +28,7 @@ import org.apache.uima.annotator.calais.OpenCalaisAnnotator;
 public class UIMAUtilsBundleActivator extends UIMABundleActivator {
   @Override
   protected void classRegistered() {
-    UIMAResourcesClassLoaderRepository.registerComponent(TextRankedNamedEntityExtractionAnnotator.class);
-    UIMAResourcesClassLoaderRepository.registerComponent(OpenCalaisAnnotator.class);
+    classLoaderRepository.registerComponent(TextRankedNamedEntityExtractionAnnotator.class);
+    classLoaderRepository.registerComponent(OpenCalaisAnnotator.class);
   }
 }
