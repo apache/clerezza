@@ -24,7 +24,6 @@ import org.junit.Test;
 /**
  * Reference test case for {@link org.apache.clerezza.uima.metadatagenerator.mediatype.PlainTextExtractor} class.
  *
- * @author Davide Palmisano
  */
 public class PlainTextExtractorTest {
 

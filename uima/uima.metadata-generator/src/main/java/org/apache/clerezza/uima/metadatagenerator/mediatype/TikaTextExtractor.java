@@ -31,7 +31,6 @@ import java.io.*;
 /**
  * An implementation based on <a href="http://tika.apache.org">Apache Tika</a>.
  *
- * @author Davide Palmisano
  */
 public class TikaTextExtractor implements MediaTypeTextExtractor {
 

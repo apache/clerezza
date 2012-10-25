@@ -31,7 +31,6 @@ import java.lang.reflect.Field;
 /**
  * Reference test for {@link org.apache.clerezza.uima.metadatagenerator.mediatype.TikaTextExtractor} class.
  *
- * @author Davide Palmisano
  */
 public class TikaTextExtractorTest {
 
