@@ -65,7 +65,7 @@ public class TikaTextExtractorTest {
    */
   @Test
   public void testSupports() throws UnsupportedMediaTypeException, IllegalAccessException {
-    Class mediaTypeClass = MediaType.class;
+    Class<MediaType> mediaTypeClass = MediaType.class;
     for (Field field : mediaTypeClass.getFields()) {
       if (field.getType().equals(MediaType.class)) {
         MediaType objectInstance = new MediaType();

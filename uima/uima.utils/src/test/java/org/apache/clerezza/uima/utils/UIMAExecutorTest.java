@@ -21,7 +21,6 @@ package org.apache.clerezza.uima.utils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Testcase for {@link UIMAExecutor}

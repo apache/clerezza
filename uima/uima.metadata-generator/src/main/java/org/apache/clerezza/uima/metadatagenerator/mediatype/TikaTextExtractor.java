@@ -24,7 +24,6 @@ package org.apache.clerezza.uima.metadatagenerator.mediatype;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MimeTypes;
 
 import javax.ws.rs.core.MediaType;
 import java.io.*;
@@ -40,8 +39,6 @@ public class TikaTextExtractor implements MediaTypeTextExtractor {
 
   private TikaConfig config;
 
-  private MimeTypes types;
-
   /**
    * Construct an instance using the default {@link org.apache.tika.Tika} configuration.
    */
@@ -51,7 +48,6 @@ public class TikaTextExtractor implements MediaTypeTextExtractor {
     } catch (Exception e) {
       throw new RuntimeException("Error while loading Tika configuration.", e);
     }
-    types = config.getMimeRepository();
     tika = new Tika(config);
   }
 
@@ -68,7 +64,6 @@ public class TikaTextExtractor implements MediaTypeTextExtractor {
     } catch (Exception e) {
       throw new RuntimeException("Error while loading Tika configuration.", e);
     }
-    types = config.getMimeRepository();
     tika = new Tika(config);
   }
 
@@ -76,7 +71,7 @@ public class TikaTextExtractor implements MediaTypeTextExtractor {
    * {@inheritDoc}
    */
   public boolean supports(MediaType mediaType) {
-    return this.types.getMimeType(mediaType.getType()) != null;
+    return tika.detect(mediaType.getType()) != null;
   }
 
   /**
@@ -90,7 +85,7 @@ public class TikaTextExtractor implements MediaTypeTextExtractor {
     } catch (IOException e) {
       throw new RuntimeException("Error while detecting mime type", e);
     }
-    if (this.types.getMimeType(mimeType) == null) {
+    if (tika.detect(mimeType) == null) {
       throw new UnsupportedMediaTypeException(
               String.format("[%s] mime type is not supported", mimeType)
       );

@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * When a {@link javax.ws.rs.core.MediaType} is not supported this exception is thrown
  */
+@SuppressWarnings("serial")
 public class UnsupportedMediaTypeException extends Exception {
   private static final String UNSUPPORTED = " is not supported";
 

@@ -19,7 +19,6 @@
 package org.apache.clerezza.uima.casconsumer;
 
 import org.apache.clerezza.uima.utils.UIMABundleActivator;
-import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 
 /**
  * {@link UIMABundleActivator} to register {@link ClerezzaCASConsumer} component

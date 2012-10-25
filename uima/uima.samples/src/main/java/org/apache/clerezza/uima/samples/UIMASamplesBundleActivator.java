@@ -22,7 +22,6 @@ import opennlp.uima.namefind.NameFinder;
 import opennlp.uima.sentdetect.SentenceDetector;
 import opennlp.uima.tokenize.Tokenizer;
 import org.apache.clerezza.uima.utils.UIMABundleActivator;
-import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 
 /**
  * {@link org.osgi.framework.BundleActivator} for uima.samples module
