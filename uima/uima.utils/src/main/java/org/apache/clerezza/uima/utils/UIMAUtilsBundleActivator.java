@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.uima.utils;
 
-import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
 import org.apache.uima.alchemy.annotator.TextRankedNamedEntityExtractionAnnotator;
 import org.apache.uima.annotator.calais.OpenCalaisAnnotator;
 

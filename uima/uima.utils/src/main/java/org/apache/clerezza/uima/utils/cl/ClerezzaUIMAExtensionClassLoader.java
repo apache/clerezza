@@ -25,8 +25,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import org.apache.felix.scr.annotations.Reference;
-
 /**
  * An extension {@link ClassLoader} to be used as UIMA extension CL within a
  * {@link org.apache.uima.resource.ResourceManager}. This delegates class loading to

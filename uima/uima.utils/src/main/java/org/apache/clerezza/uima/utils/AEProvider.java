@@ -164,6 +164,7 @@ public class AEProvider {
     return ae;
   }
 
+  @SuppressWarnings("serial")
   private static class AEInstantiationException extends Exception {
     public AEInstantiationException() {
       super();

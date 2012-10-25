@@ -21,8 +21,6 @@ package org.apache.clerezza.uima.utils;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.uima.ontologies.ENTITY;
-import org.apache.uima.alchemy.annotator.TextRankedNamedEntityExtractionAnnotator;
-import org.apache.uima.annotator.calais.OpenCalaisAnnotator;
 import org.apache.uima.cas.*;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
