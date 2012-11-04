@@ -24,8 +24,7 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<artifactId>skeleton</artifactId>
 	<version>0.1-incubating-SNAPSHOT</version>
@@ -75,7 +74,7 @@
 	</dependencies>
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
-    <testSourceDirectory>src/test/scala</testSourceDirectory>
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
