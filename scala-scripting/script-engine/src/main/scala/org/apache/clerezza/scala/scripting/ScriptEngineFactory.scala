@@ -46,11 +46,13 @@ import scala.tools.nsc.reporters.ConsoleReporter
 import scala.actors.Actor
 import scala.actors.Actor._
 
+//TODO have the interpretatin function back running, consider using http://code.google.com/p/scalascriptengine
 class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 
 
 	def bundleChanged(event: BundleEvent) = {
 		MyScriptEngine.interpreterAction ! ScriptEngineFactory.RefreshInterpreter
+	  //_interpreter = null
 	}
 
 	private var factory: InterpreterFactory = null
@@ -71,7 +73,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 
 	//methods from ScriptEngineFactory
 	override def getEngineName() = "Scala Scripting Engine for OSGi"
-	override def getEngineVersion() = "0.2/scala 2.8.1"
+	override def getEngineVersion() = "0.3/scala 2.9.2"
 	override def getExtensions() = java.util.Collections.singletonList("scala")
 	override def getMimeTypes() = java.util.Collections.singletonList("application/x-scala")
 	override def getNames() = java.util.Collections.singletonList("scala")
@@ -157,11 +159,15 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 									interpreter.bind(entry._1,
 													 getAccessibleClass(entry._2.getClass).getName, entry._2)
 								}
-								val result = interpreter.interpret(script)
+							  interpreter.interpret("val zzScriptResult = {"+script+"}")
+							  println("visible stuff:")
+							  System.out.println("stuff stuff stuff");
+								println("interpreter.valueOfTerm(\"zzScriptResult\"): "+interpreter.valueOfTerm("zzScriptResult"))
+							  interpreter.visibleTermNames.foreach(println)
 								if (interpreter.reporter.hasErrors) {
 									throw new ScriptException("some error","script-file",1)
 								}
-								sender ! result
+								sender ! interpreter.valueOfTerm("zzScriptResult")
 							} catch {
 								case e => sender ! ScriptEngineFactory.ActorException(e)
 							}
@@ -184,9 +190,13 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 			}*/
 			interpreterAction !? ((script, context)) match {
 				case ScriptEngineFactory.ActorException(e) => throw e
-				case x : Object => x
+				case x : Object => x match {
+				  case Some(y:Object) => y
+				  case None => null
+				}
 			}
 		}
+		
 		override def getFactory() = ScriptEngineFactory.this
 		override def createBindings() : Bindings = new SimpleBindings
 
