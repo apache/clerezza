@@ -77,12 +77,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.jline</artifactId>
-			<version>0.9.94_1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.clerezza.scala</groupId>
 			<artifactId>script-engine</artifactId>
 			<scope>provided</scope>

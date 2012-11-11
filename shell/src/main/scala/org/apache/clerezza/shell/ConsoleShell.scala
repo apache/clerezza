@@ -56,7 +56,7 @@ class ConsoleShell()  {
 			}
 			//this call sets the console terminal to the right settings
 			//and it must not be invoked when there is no console input, or the system will stop
-			val terminalOption = Some(jline.Terminal.setupTerminal())
+			val terminalOption = Some(scala.tools.jline.TerminalFactory.create())
 			val in =  Channels.newInputStream(
 				(new FileInputStream(FileDescriptor.in)).getChannel());
 			interruptibleIn = new InterruptibleInputStream(in)

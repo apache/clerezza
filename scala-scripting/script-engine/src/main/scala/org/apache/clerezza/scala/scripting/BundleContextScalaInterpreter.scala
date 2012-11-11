@@ -29,7 +29,7 @@ import scala.tools.nsc.reporters.Reporter
 
 
 class BundleContextScalaInterpreter(bundleContext : BundleContext, out: PrintWriter)
-		extends Interpreter(new Settings, out) {
+		extends IMain(new Settings, out) {
 
 	def this(bundleContext : BundleContext) = {
 		this(bundleContext, new PrintWriter(System.out))

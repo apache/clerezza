@@ -55,7 +55,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 
 	private var factory: InterpreterFactory = null
 	private var compilerService: CompilerService = null
-	var _interpreter : Interpreter = null;
+	var _interpreter : IMain = null;
 	private var bundleContext: BundleContext = null
 	def interpreter = {
 		if (_interpreter == null) {
@@ -157,10 +157,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 									interpreter.bind(entry._1,
 													 getAccessibleClass(entry._2.getClass).getName, entry._2)
 								}
-								val result = interpreter.eval[Object](script) match   {
-									case Some(x) => x
-									case None => null
-								}
+								val result = interpreter.interpret(script)
 								if (interpreter.reporter.hasErrors) {
 									throw new ScriptException("some error","script-file",1)
 								}

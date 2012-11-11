@@ -24,7 +24,7 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating</version>
+		<version>0.3-incubating-SNAPSHOT</version>
 	</parent>
 	<artifactId>shell</artifactId>
 	<version>0.2-incubating-SNAPSHOT</version>
@@ -40,17 +40,17 @@
 			<artifactId>osgi.services</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>jline</groupId>
-			<artifactId>jline</artifactId>
-			<version>0.9.94</version>
-		</dependency>
-		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-compiler</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>jline</artifactId>
+			<version>2.9.0-1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -79,9 +79,14 @@
 				<configuration>
 					<instructions>
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>org.apache.clerezza.shell</Export-Package>
+						<Export-Package>org.apache.clerezza.shell,
+						scala.tools.jline,
+						scala.tools.jline.console, 
+						scala.tools.jline.console.history, 
+						scala.tools.jline.console.completer</Export-Package>
 						<Bundle-SymbolicName>org.apache.clerezza.shell</Bundle-SymbolicName>
                         <Import-Package>org.apache.clerezza.platform.security;resolution:=optional, *</Import-Package>
+                        <Embed-Dependency>jline</Embed-Dependency>
 					</instructions>
 				</configuration>
 			</plugin>

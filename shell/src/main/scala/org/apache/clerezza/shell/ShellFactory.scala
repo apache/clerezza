@@ -27,7 +27,7 @@ import java.io.OutputStream
 import java.security.AccessController
 import java.security.PrivilegedAction
 import org.apache.clerezza.scala.scripting.InterpreterFactory
-import jline.Terminal
+import scala.tools.jline.Terminal
 
 
 class ShellFactory()  {

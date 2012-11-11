@@ -25,7 +25,6 @@
 		<groupId>org.apache</groupId>
 		<artifactId>apache</artifactId>
 		<version>10</version>
-		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>clerezza</artifactId>
@@ -35,7 +34,7 @@
 	<version>0.3-incubating-SNAPSHOT</version>
 	<description>The direct or indirect parent of all Clerezza Artifacts</description>
 	<properties>
-		<scala.version>2.8.1</scala.version>
+		<scala.version>2.9.2</scala.version>
 		<sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
 	</properties>
 	<licenses>
