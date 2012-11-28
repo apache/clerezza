@@ -18,8 +18,7 @@
  */
 package org.apache.clerezza.platform.dashboard;
 
-import org.apache.clerezza.platform.security.UserUtil;
-import org.apache.clerezza.platform.security.WebIdBasedPermissionProvider;
+import org.apache.stanbol.commons.security.UserUtil;
 import org.apache.clerezza.platform.typerendering.UserContextProvider;
 import org.apache.clerezza.platform.usermanager.UserManager;
 import org.apache.clerezza.platform.users.WebIdGraphsService;

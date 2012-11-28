@@ -121,10 +121,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>triaxrs</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.seedsnipe</artifactId>
 		</dependency>
 		<dependency>

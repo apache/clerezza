@@ -102,16 +102,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
-			<artifactId>triaxrs</artifactId>
-		 	<exclusions>
-		 		<exclusion>
-					<artifactId>osgi_R4_compendium</artifactId>
-					<groupId>org.osgi</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.parser</artifactId>
 			<!-- <scope>provided</scope> -->
 		</dependency>

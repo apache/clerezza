@@ -320,7 +320,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	}
 
 	@POST
-	@Consumes("multipart/form")
+	@Consumes("multipart/form-data")
 	@Path("add-user")
 	public Response addUser(MultiPartBody form, @Context UriInfo uriInfo) {
 		AccessController.checkPermission(new UserManagerAccessPermission());
@@ -842,7 +842,7 @@ public class UserManagerWeb implements GlobalMenuItemsProvider {
 	}
 
 	@POST
-	@Consumes("multipart/form")
+	@Consumes("multipart/form-data")
 	@Path("update-user")
 	public Response updateUser(MultiPartBody form, @Context UriInfo uriInfo)
 			throws UnsupportedEncodingException {

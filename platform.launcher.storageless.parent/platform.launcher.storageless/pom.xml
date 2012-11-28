@@ -273,7 +273,7 @@
 			<scope>provided</scope>
 			<version>0.7.2</version>
 		</dependency> -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.wymiwyg</groupId>
 			<artifactId>jetty-osgi-httpservice</artifactId>
 			<scope>provided</scope>
@@ -332,7 +332,17 @@
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
 			<version>3.0.20100224</version>
-		</dependency>
+		</dependency> -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.jetty</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.whiteboard</artifactId>
+            <version>2.2.0</version>
+        </dependency>
         <!-- Apache Felix framework bundles -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>

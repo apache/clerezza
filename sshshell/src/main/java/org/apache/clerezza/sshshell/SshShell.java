@@ -20,19 +20,17 @@ package org.apache.clerezza.sshshell;
  *
 */
 
-
-import java.security.PrivilegedActionException;
-import java.util.logging.Level;
-import org.apache.clerezza.shell.Shell;
-import org.apache.felix.scr.annotations.Reference;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import javax.security.auth.Subject;
+import org.apache.clerezza.shell.Shell;
+import org.apache.clerezza.shell.ShellFactory;
 import org.apache.felix.scr.annotations.Component;
-import org.apache.clerezza.platform.security.auth.AuthenticationChecker;
-import org.apache.clerezza.platform.security.UserUtil;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.sshd.*;
 import org.apache.sshd.common.Factory;
 import org.apache.sshd.server.Command;
@@ -41,10 +39,9 @@ import org.apache.sshd.server.ExitCallback;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
+import org.apache.stanbol.commons.security.UserUtil;
+import org.apache.stanbol.commons.security.auth.AuthenticationChecker;
 import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.shell.ShellFactory;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.sshd.server.shell.ProcessShellFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

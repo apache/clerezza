@@ -90,7 +90,6 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM
 import org.apache.clerezza.rdf.ontologies.RDF
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.utils.UnionMGraph
-import org.apache.clerezza.triaxrs.prefixmanager.TriaxrsPrefixManager
 
 object SettingPanel {
 	val logger: Logger = LoggerFactory.getLogger(classOf[SettingsPanel])
@@ -296,7 +295,7 @@ class SettingsPanel {
 
 	private def addBundlePrefix(bundle: Bundle, prefix: String): Unit = {
 		var symbolicName: String = bundle.getSymbolicName
-		if (configAdmin != null) {
+		/*if (configAdmin != null) {
 			try {
 				var configuration: Configuration = configAdmin.getConfiguration(classOf[TriaxrsPrefixManager].getName)
 				val properties = configuration.getProperties match {
@@ -318,12 +317,12 @@ class SettingsPanel {
 		}
 		else {
 			logger.warn("Cannot add prefix mapping. Configuration Admin is missing")
-		}
+		}*/
 	}
 
 	private[accountcontrolpanel] def removeBundlePrefix(bundle: Bundle): Unit = {
 		var symbolicName: String = bundle.getSymbolicName
-		if ((this.configAdmin != null) && (symbolicName != null)) {
+		/*if ((this.configAdmin != null) && (symbolicName != null)) {
 			try {
 				val configuration: Configuration = configAdmin.getConfiguration(classOf[TriaxrsPrefixManager].getName)
 				val properties = configuration.getProperties match {
@@ -344,7 +343,7 @@ class SettingsPanel {
 		}
 		else {
 			logger.warn("Cannot add prefix mapping. Configuration Admin is missing")
-		}
+		}*/
 	}
 
 	/**

@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.apache.clerezza.platform.security.UserUtil;
+import org.apache.stanbol.commons.security.UserUtil;
 
 /**
  * A permission to send e-mails as a specific user.

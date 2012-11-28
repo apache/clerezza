@@ -56,7 +56,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.wymiwyg.wrhapi.HeaderName;
 
 /**
  *
@@ -174,7 +173,7 @@ class WebDavUtils {
 	 */
 	static Response options(Class<?> clazz){
 		Response.ResponseBuilder builder = Response.ok();
-		builder.header(HeaderName.DAV.toString(), "1");
+		builder.header("Dav", "1");
 		Set<String> allow = new HashSet<String>();
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods){
@@ -187,7 +186,7 @@ class WebDavUtils {
 			}
 		}
 		if (allow.isEmpty()) {
-			builder.header(HeaderName.ALLOW.toString(), "");
+			builder.header("Allow", "");
 		} else {
 			final Iterator<String> iterator = allow.iterator();
 			final StringBuffer buffer = new StringBuffer(iterator.next());
@@ -195,7 +194,7 @@ class WebDavUtils {
 				buffer.append(", ");
 				buffer.append(iterator.next());
 			}
-			builder.header(HeaderName.ALLOW.toString(), buffer.toString());
+			builder.header("Allow", buffer.toString());
 		}
 		return builder.build();
 	}

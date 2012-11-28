@@ -86,7 +86,6 @@ import org.osgi.service.component.ComponentContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.wymiwyg.wrhapi.HeaderName;
 
 /**
  * This Class allows getting and putting content structured using the
@@ -98,9 +97,9 @@ import org.wymiwyg.wrhapi.HeaderName;
  * @author reto, tho, agron, mir
  */
 @Component(metatype=true)
-@Services({
-	@Service(Object.class),
-	@Service(DiscobitsHandler.class)
+@Service({
+	Object.class,
+	DiscobitsHandler.class
 })
 @Property(name="org.apache.clerezza.platform.typehandler", boolValue=true)
 @Reference(name="metaDataGenerator",
@@ -468,7 +467,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 			return resourceUnavailable(nodeUri, uriInfo);
 		}
 			Response.ResponseBuilder builder = Response.ok();
-			builder.header(HeaderName.DAV.toString(), "1");
+			builder.header("Dav", "1");
 			Set<String> allow = new HashSet<String>();
 			Method[] methods = this.getClass().getMethods();
 			for (Method method : methods) {
@@ -480,7 +479,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 				}
 			}
 			if (allow.isEmpty()) {
-				builder.header(HeaderName.ALLOW.toString(), "");
+				builder.header("Allow", "");
 			} else {
 				final Iterator<String> iterator = allow.iterator();
 				final StringBuffer buffer = new StringBuffer(iterator.next());
@@ -488,7 +487,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 					buffer.append(", ");
 					buffer.append(iterator.next());
 				}
-				builder.header(HeaderName.ALLOW.toString(), buffer.toString());
+				builder.header("Allow", buffer.toString());
 			}
 		return builder.build();
 	}

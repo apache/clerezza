@@ -23,7 +23,7 @@ import java.security.PrivilegedAction;
 import java.util.Collections;
 import javax.security.auth.Subject;
 import org.junit.Test;
-import org.apache.clerezza.platform.security.auth.PrincipalImpl;
+import org.apache.stanbol.commons.security.auth.PrincipalImpl;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;

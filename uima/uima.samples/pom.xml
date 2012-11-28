@@ -38,8 +38,8 @@
       <version>0.2-incubating-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.clerezza</groupId>
-      <artifactId>triaxrs</artifactId>
+        <groupId>javax.ws.rs</groupId>
+        <artifactId>jsr311-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>

@@ -67,10 +67,10 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.graphprovider.content</artifactId>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security</artifactId>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 	<build>
 		<plugins>

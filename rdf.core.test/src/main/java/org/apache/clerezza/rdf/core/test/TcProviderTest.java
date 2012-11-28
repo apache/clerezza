@@ -18,10 +18,10 @@
  */
 package org.apache.clerezza.rdf.core.test;
 
+import java.util.HashSet;
 import java.util.Iterator;
 
 import java.util.Set;
-import java.util.TreeSet;
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
@@ -310,7 +310,7 @@ public abstract class TcProviderTest {
 	public void testGraphIsNotMutable() throws Exception {
 
 		Triple t1 = createTestTriple();
-		Set<Triple> t = new TreeSet<Triple>();
+		Set<Triple> t = new HashSet<Triple>();
 		t.add(t1);
 
 		TcProvider provider = getInstance();
@@ -457,7 +457,7 @@ public abstract class TcProviderTest {
 	}
 
 	private TripleCollection createTestTripleCollection(Triple t) {
-		Set<Triple> ts = new TreeSet<Triple>();
+		Set<Triple> ts = new HashSet<Triple>();
 		ts.add(t);
 		return new SimpleMGraph(ts);
 	}

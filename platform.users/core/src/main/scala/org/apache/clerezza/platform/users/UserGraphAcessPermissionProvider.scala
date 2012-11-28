@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.apache.clerezza.platform.users
+/*package org.apache.clerezza.platform.users
 
 import org.apache.clerezza.platform.security.WebIdBasedPermissionProvider
 import org.apache.clerezza.rdf.core.UriRef
@@ -36,3 +36,4 @@ class UserGraphAcessPermissionProvider extends WebIdBasedPermissionProvider {
 		List("(org.apache.clerezza.rdf.core.access.security.TcPermission \""+uriStringWithoutFragment+"\" \"readwrite\")")
 	}
 }
+*/

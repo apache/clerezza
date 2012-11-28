@@ -83,11 +83,32 @@
 			<artifactId>jaxrs.rdf.providers</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- testing with last released version, testutils is doscontinued as
+       triaxrs is -->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.testutils</artifactId>
 			<scope>test</scope>
+            <version>0.9-incubating</version>
 		</dependency>
+	 <dependency>
+	  <groupId>javax.servlet</groupId>
+	  <artifactId>servlet-api</artifactId>
+	  <version>2.5</version>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
+	  <groupId>org.apache.wink</groupId>
+	  <artifactId>wink-osgi</artifactId>
+	  <version>1.2.1-incubating</version>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
+	  <groupId>org.apache.clerezza</groupId>
+	  <artifactId>platform.graphnodeprovider</artifactId>
+	  <version>0.2-incubating-SNAPSHOT</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<plugins>

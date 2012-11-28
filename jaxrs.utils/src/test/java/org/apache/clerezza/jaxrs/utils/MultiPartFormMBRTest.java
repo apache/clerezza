@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.apache.clerezza.jaxrs.utils.form.FormFile;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartFormMessageBodyReader;
-import org.apache.clerezza.triaxrs.delegate.RuntimeDelegateImpl;
 
 /**
  * @author mir
@@ -50,7 +49,7 @@ public class MultiPartFormMBRTest {
 	@Test
 	public void testMultiPartForm() throws Exception {
 		
-		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
+		//RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
 		StringBuilder sb = new StringBuilder();
 		sb.append("--AaB03x\r\n");
 		sb.append("Content-Disposition: form-data; name=\""+ paramName1 +"\"\r\n");

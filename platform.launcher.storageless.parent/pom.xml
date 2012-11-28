@@ -46,16 +46,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.wymiwyg</groupId>
-			<artifactId>wrhapi-osgi</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.wymiwyg</groupId>
-			<artifactId>wrhapi</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>com.hp.hpl.jena</artifactId>
 			<scope>runtime</scope>
@@ -205,13 +195,18 @@
 			<artifactId>platform.accountcontrolpanel.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>triaxrs</artifactId>
-			<!-- this has to start early, because of the MEdiaType requiring RuntimeImpl in 
+        <dependency>
+            <groupId>org.apache.wink</groupId>
+            <artifactId>wink-osgi</artifactId>
+            <version>1.2.1-incubating</version>
+            <!-- this has to start early, because of the MEdiaType requiring RuntimeImpl in 
 			static iinitializer -->
-			<scope>provided</scope>
-		</dependency>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.utils</artifactId>
@@ -370,17 +365,17 @@
 			<artifactId>rdf.web.ontologies</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security</artifactId>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security.conditions</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security.foafssl.core</artifactId>
 			<scope>runtime</scope>
@@ -409,7 +404,27 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.security.auth.cookie</artifactId>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency> --> 
+    <dependency>
+      <groupId>org.apache.stanbol</groupId>
+      <artifactId>org.apache.stanbol.commons.security</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.stanbol</groupId>
+      <artifactId>org.apache.stanbol.commons.authentication.basic</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.stanbol</groupId>
+        <artifactId>org.apache.stanbol.commons.security.fexilwebconsole</artifactId>
+        <version>0.10.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.stanbol</groupId>
+        <artifactId>org.apache.stanbol.commons.usermanagement</artifactId>
+        <version>0.10.0-SNAPSHOT</version>
+    </dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typehandlerspace</artifactId>
@@ -560,7 +575,7 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.style.classic.webguiexamples</artifactId>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency>wr
 -->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>

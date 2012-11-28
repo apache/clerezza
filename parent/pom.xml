@@ -24,7 +24,7 @@
 	<parent>
 		<groupId>org.apache</groupId>
 		<artifactId>apache</artifactId>
-		<version>10</version>
+		<version>12</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>clerezza</artifactId>
@@ -642,16 +642,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>triaxrs</artifactId>
-				<version>0.12-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
-				<artifactId>jaxrs.testutils</artifactId>
-				<version>0.10-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
 			</dependency>
@@ -830,20 +820,15 @@
 				<artifactId>rdf.sesame.storage</artifactId>
 				<version>0.13-incubating-SNAPSHOT</version>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.security</artifactId>
 				<version>0.9-incubating-SNAPSHOT</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.security.conditions</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
-				<artifactId>platform.security.auth.basic</artifactId>
-				<version>0.5-incubating-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
@@ -852,19 +837,14 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
-				<artifactId>platform.security.auth.cookie</artifactId>
-				<version>0.5-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.typehandlerspace</artifactId>
 				<version>0.9-incubating-SNAPSHOT</version>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.security.foafssl.core</artifactId>
 				<version>0.2-incubating-SNAPSHOT</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>platform.security.foafssl.test</artifactId>
@@ -884,26 +864,6 @@
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>ssl.keygen.base</artifactId>
 				<version>0.6-incubating-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.wymiwyg</groupId>
-				<artifactId>jetty-osgi-httpservice</artifactId>
-				<version>0.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.wymiwyg</groupId>
-				<artifactId>wrhapi</artifactId>
-				<version>0.9</version>
-			</dependency>
-			<dependency>
-				<groupId>org.wymiwyg</groupId>
-				<artifactId>wrhapi-osgi</artifactId>
-				<version>0.4.2</version>
-			</dependency>
-			<dependency>
-				<groupId>org.wymiwyg</groupId>
-				<artifactId>wrhapi-jetty</artifactId>
-				<version>0.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wymiwyg</groupId>

@@ -85,7 +85,6 @@
 				<module>scala-scripting</module>
 				<module>jaxrs.extensions</module>
 				<module>jaxrs.rdf.providers</module>
-				<module>jaxrs.testutils</module>
 				<module>jaxrs.utils</module>
 				<module>maven-jaxrs-report-plugin</module>
 				<module>maven-ontologies-plugin</module>
@@ -118,11 +117,8 @@
 				<module>platform.mail</module>
 				<module>platform.scripting</module>
 				<module>platform.scripting.scriptmanager</module>
-				<module>platform.security.auth.basic</module>
-				<module>platform.security.auth.cookie</module>
-				<module>platform.security.foafssl</module>
+				<!-- <module>platform.security.foafssl</module> -->
 				<module>platform.security.conditions</module>
-				<module>platform.security</module>
 				<module>platform.shellcustomizer</module>
 				<module>platform.typehandlerspace</module>
 				<module>platform.typerendering</module>
@@ -166,7 +162,6 @@
 				<module>templating</module>
 				<module>templating.seedsnipe</module>
 				<module>tools.offline</module>
-				<module>triaxrs</module>
 				<module>uima</module>
 				<module>utils.customproperty</module>
 				<module>utils.imageprocessing</module>

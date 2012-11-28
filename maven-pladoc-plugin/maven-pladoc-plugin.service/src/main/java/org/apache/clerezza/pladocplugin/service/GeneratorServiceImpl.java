@@ -45,7 +45,7 @@ import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.wymiwyg.wrhapi.Handler;
+
 
 /**
  *
@@ -62,8 +62,9 @@ public class GeneratorServiceImpl implements GeneratorService {
 	/**
 	 * this is just to activate Triaxrs in order for MediaType to work
 	 */
-	@Reference
-	Handler triaxrs;
+	//TODO find the wink way to ensure this
+    /*@Reference
+	Handler triaxrs;*/
 
 	protected void activate(ComponentContext componentContext) {
 		System.out.println("activating generator service");

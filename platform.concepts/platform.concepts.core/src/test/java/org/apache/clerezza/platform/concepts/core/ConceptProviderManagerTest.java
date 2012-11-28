@@ -21,6 +21,7 @@ package org.apache.clerezza.platform.concepts.core;
 import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.RuntimeDelegate;
 import org.apache.clerezza.platform.concepts.ontologies.CONCEPTS;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.Graph;
@@ -28,6 +29,7 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.wink.common.internal.runtime.RuntimeDelegateImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +63,7 @@ public class ConceptProviderManagerTest {
 
 	@Before
 	public void setUp() {
+        RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
 		testedConceptProviderManager = new TestedConceptProviderManager();
 		testedConceptProviderManager.cgProvider = new ContentGraphProvider() {
 

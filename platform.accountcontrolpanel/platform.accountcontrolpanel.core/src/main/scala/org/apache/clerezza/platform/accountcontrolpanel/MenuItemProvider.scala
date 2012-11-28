@@ -34,7 +34,7 @@ import org.apache.felix.scr.annotations.Component
 import org.apache.felix.scr.annotations.Service
 import org.apache.clerezza.platform.dashboard.GlobalMenuItem
 import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider
-import org.apache.clerezza.platform.security.UserUtil
+import org.apache.stanbol.commons.security.UserUtil
 
 /**
  *

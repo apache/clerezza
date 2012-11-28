@@ -18,10 +18,13 @@
  */
 package org.apache.clerezza.platform.typehandlerspace;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,9 +32,20 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.clerezza.jaxrs.extensions.ResourceMethodException;
 import org.apache.clerezza.jaxrs.extensions.RootResourceExecutor;
 import org.apache.clerezza.platform.Constants;
+import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
+import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
@@ -40,6 +54,12 @@ import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.wink.osgi.WinkRequestProcessor;
 
 
 /**
@@ -51,29 +71,62 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * resource, that is registered with TypeHandlerDiscovery to handle a specific
  * rdf-type.
  * 
- * @author mir, agron
  * 
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
- */
-@Path("/")
-public class TypeHandlerSpace {
+  */
+@Component(immediate = true, metatype = false)
+@Service(value = javax.servlet.Filter.class)
+@Properties({
+	@Property(name ="pattern", value=".*"),
+    @Property(name ="service.ranking", intValue=100)
+    
+})
+public class TypeHandlerSpace implements Filter {
 
-	/**
-	 * @scr.reference
-	 */
-	TcManager tcManager;
+	@Reference
+	GraphNodeProvider gnp;
 
-	/**
-	 * @scr.reference cardinality "1..1"
-	 */
+	@Reference
 	TypeHandlerDiscovery typeHandlerDiscovery;
 
 	
+    @Reference
+	private WinkRequestProcessor winkProvider;
+    
 	private final String DESCRIPTION_SUFFIX = "-description";
 	private DescriptionHandler descriptionHandler = new DescriptionHandler();
 
+    
+    public void init(FilterConfig filterConfig) throws ServletException {
+		//no initialization needed
+	}
+
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+		if (request instanceof HttpServletRequest) {
+			doFilter((HttpServletRequest)request, (HttpServletResponse)response, chain);
+		} else {
+			chain.doFilter(request, response);
+		}	
+	}
+    
+    public void doFilter(HttpServletRequest request, HttpServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+        try {
+            Object resource = getTypeHandler(request.getRequestURL().toString());
+            if (resource != null) {
+                winkProvider.handleRequest(request, response, resource);
+            } else {
+                chain.doFilter(request, response);
+            }
+        } catch (ResourceMethodException ex) {
+            throw new ServletException(ex);
+        }
+        
+    }
+
+	public void destroy() {
+		//not
+	}
 
 	/**
 	 * Returns a TypeHandler according the most important rdf-type of the
@@ -84,7 +137,7 @@ public class TypeHandlerSpace {
 	 * @return
 	 * @throws ResourceMethodException
 	 */
-	@Path("{path:.*}")
+	/*@Path("{path:.*}")
 	public Object getHandler(@Context UriInfo uriInfo,
 			@Context Request request) throws ResourceMethodException  {
 		String absoluteUriPath = uriInfo.getAbsolutePath().toString();
@@ -94,39 +147,39 @@ public class TypeHandlerSpace {
 			}
 		}
 		return getTypeHandler(absoluteUriPath);
-	}
+	}*/
 
 	private Object getTypeHandler(String absoluteUriPath) throws ResourceMethodException {
-		LockableMGraph contentMGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
 		UriRef uri = new UriRef(absoluteUriPath);
-
-		Set<UriRef> rdfTypes = getRdfTypesOfUriRef(contentMGraph, uri);
-
-		return typeHandlerDiscovery.getTypeHandler(rdfTypes);
-		
+        if (gnp.existsLocal(uri)) {
+            GraphNode node = gnp.getLocal(uri);
+            Lock lock =node.readLock();
+            lock.lock();
+            try {
+                Set<UriRef> rdfTypes = getRdfTypesOfUriRef(node);
+                return typeHandlerDiscovery.getTypeHandler(rdfTypes);
+            } finally {
+                lock.unlock();
+            }
+        }
+        
+		return null;
 	}
 
-	private Set<UriRef> getRdfTypesOfUriRef(LockableMGraph contentMGraph, UriRef uri) {
+	private Set<UriRef> getRdfTypesOfUriRef(GraphNode node) {
 		Set<UriRef> rdfTypes = new HashSet<UriRef>();
-		Lock readLock = contentMGraph.getLock().readLock();
-		readLock.lock();
-		try {
-			Iterator<Triple> typeStmts = contentMGraph.filter(uri, RDF.type, null);
-
-			while (typeStmts.hasNext()) {
-				Triple triple = typeStmts.next();
-				Resource typeStmtObj = triple.getObject();
-				if (!(typeStmtObj instanceof UriRef)) {
-					throw new RuntimeException(
-							"RDF type is expected to be a URI but is " + typeStmtObj
-							+ "(in " + triple + ")");
-				}
-				UriRef rdfType = (UriRef) typeStmtObj;
-				rdfTypes.add(rdfType);
-			}
-		} finally {
-			readLock.unlock();
-		}
+        Iterator<Resource> types = node.getObjects(RDF.type);
+        while (types.hasNext()) {
+            Resource typeStmtObj = types.next();
+            if (!(typeStmtObj instanceof UriRef)) {
+                throw new RuntimeException(
+                        "RDF type is expected to be a URI but is " + typeStmtObj
+                        + "(of " + node.getNode() + ")");
+            }
+            UriRef rdfType = (UriRef) typeStmtObj;
+            rdfTypes.add(rdfType);
+        }
+		
 		return rdfTypes;
 	}
 
@@ -135,10 +188,10 @@ public class TypeHandlerSpace {
 		@GET
 		public Object getDescription(@Context UriInfo uriInfo){
 			String absoluteUriPath = uriInfo.getAbsolutePath().toString();
-			MGraph contentMGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
+			//MGraph contentMGraph = cgp.getContentGraph();
 				UriRef uri = new UriRef(absoluteUriPath.substring(0,
 						absoluteUriPath.length() - DESCRIPTION_SUFFIX.length()));
-				GraphNode graphNode = new GraphNode(uri, contentMGraph);
+				GraphNode graphNode = gnp.getLocal(uri);
 				return graphNode.getNodeContext();
 		}
 	}

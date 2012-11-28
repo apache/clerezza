@@ -89,10 +89,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.wymiwyg</groupId>
-			<artifactId>wrhapi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wymiwyg</groupId>
 			<artifactId>wymiwyg-commons-core</artifactId>
 		</dependency>
 		<dependency>
@@ -124,11 +120,6 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>utils.customproperty</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>triaxrs</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -401,10 +392,7 @@
 			<artifactId>pax-exam-container-default</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.wymiwyg</groupId>
-			<artifactId>wrhapi-osgi</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>com.ibm.icu</artifactId>

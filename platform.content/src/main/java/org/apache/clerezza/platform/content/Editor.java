@@ -28,6 +28,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -149,6 +150,8 @@ public class Editor extends FileServer {
 	}
 
 	@GET
+    //this is to work around
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public PathNode getStaticFile(@Context UriInfo uriInfo) {
 		TrailingSlash.enforcePresent(uriInfo);
 		final PathNode node = getNode("disco.xhtml");

@@ -61,20 +61,36 @@ class GraphNodeProvider extends Logging {
 	def getLocal(uriRef: UriRef): GraphNode = {
 		get(uriRef, true)
 	}
-
+    
+    
+    /**
+     *return true iff getLocal(uriRef).getNodeContext.size > 0
+     */
+    def existsLocal(uriRef: UriRef): Boolean = {
+        val cgGraph = cgProvider.getContentGraph
+        lazy val localInstanceUri = {
+            val uri = new java.net.URI(uriRef.getUnicodeString)
+			new UriRef(Constants.URN_LOCAL_INSTANCE + uri.getPath)
+		}
+        //TODO handle /user/
+        existsInGraph(uriRef,cgGraph) || existsInGraph(localInstanceUri, cgGraph)
+    }
+  
+    private[this] def existsInGraph(nodeUri: UriRef, tc: LockableMGraph): Boolean = {
+        var readLock: Lock = tc.getLock.readLock
+        readLock.lock
+        try {
+            return tc.filter(nodeUri, null, null).hasNext || tc.filter(null, null, nodeUri).hasNext
+        }
+        finally {
+            readLock.unlock
+        }
+    }
+    
+  
 	private def get(uriRef: UriRef, isLocal: Boolean): GraphNode = {
 		val uriString = uriRef.getUnicodeString
-		def existsInGraph(nodeUri: UriRef, tc: LockableMGraph): Boolean =
-			{
-				var readLock: Lock = tc.getLock.readLock
-				readLock.lock
-				try {
-					return tc.filter(nodeUri, null, null).hasNext || tc.filter(null, null, nodeUri).hasNext
-				}
-				finally {
-					readLock.unlock
-				}
-			}
+		
 
 		val uriPath = {
 			val uri = new java.net.URI(uriString)

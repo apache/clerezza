@@ -47,10 +47,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
-      <artifactId>triaxrs</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.clerezza</groupId>
       <artifactId>uima.casconsumer</artifactId>
       <version>0.2-incubating-SNAPSHOT</version>
       <scope>runtime</scope>
