@@ -286,9 +286,10 @@ public class ScriptManager implements GlobalMenuItemsProvider{
 	@Path("script-list")
 	@Produces("text/plain")
 	public GraphNode getScriptList(
-			@QueryParam(value = "resource") NonLiteral resource) {
+			@QueryParam(value = "resource") UriRef uriRef) {
 
 		AccessController.checkPermission(new ScriptManagerAppPermission());
+        NonLiteral resource = uriRef;
 		if(resource == null) {
 			resource = new BNode();
 		}
