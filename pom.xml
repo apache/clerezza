@@ -85,6 +85,7 @@
 				<module>scala-scripting</module>
 				<module>jaxrs.extensions</module>
 				<module>jaxrs.rdf.providers</module>
+                <module>jaxrs.stanbol.fragments</module>
 				<module>jaxrs.utils</module>
 				<module>maven-jaxrs-report-plugin</module>
 				<module>maven-ontologies-plugin</module>
