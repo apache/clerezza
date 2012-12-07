@@ -54,6 +54,9 @@
 				<perm:hasPermission rdf:parseType="Resource">
 					<perm:javaPermissionEntry>(org.osgi.framework.ServicePermission "*" "get")</perm:javaPermissionEntry>
 				</perm:hasPermission>
+                <perm:hasPermission rdf:parseType="Resource">
+					<perm:javaPermissionEntry>(java.lang.RuntimePermission "accessDeclaredMembers" "")</perm:javaPermissionEntry>
+				</perm:hasPermission>
 				<!-- it seems pax-logger impl needs this, see comment to https://issues.apache.org/jira/browse/CLEREZZA-205 -->
 				<perm:hasPermission rdf:parseType="Resource">
 					<perm:javaPermissionEntry>(org.osgi.framework.AdminPermission "*" "metadata")</perm:javaPermissionEntry>
