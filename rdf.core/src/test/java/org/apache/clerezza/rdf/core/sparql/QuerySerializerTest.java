@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.sparql.query.BinaryOperation;
@@ -44,6 +42,8 @@ import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleOptionalGraphPattern
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleOrderCondition;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleSelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleTriplePattern;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *

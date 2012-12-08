@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,9 +31,15 @@ import java.util.Set;
 public interface BasicGraphPattern extends GraphPattern {
 
 	/**
-	 *
+	 * @deprecated use getTriplePatternList instead and convert the result to a Set if needed
 	 * @return a set of all triple patterns to match.
 	 */
 	public Set<TriplePattern> getTriplePatterns();
+
+	/**
+	 *
+	 * @return a list of all triple patterns to match.
+	 */
+	public List<TriplePattern> getTriplePatternList();
 
 }

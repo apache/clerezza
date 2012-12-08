@@ -31,10 +31,17 @@ import java.util.Set;
 public interface GroupGraphPattern extends GraphPattern {
 
 	/**
+	 * @deprecated use getGraphPatternList instead and convert the result to a Set if needed
 	 *
 	 * @return a set of all patterns, ANDed together.
 	 */
 	public Set<GraphPattern> getGraphPatterns();
+
+	/**
+	 *
+	 * @return a list of all patterns, ANDed together.
+	 */
+	public List<GraphPattern> getGraphPatternList();
 
 	/**
 	 * @return 
