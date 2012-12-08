@@ -18,9 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.sparql.query.BasicGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
@@ -31,36 +29,20 @@ import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
  */
 public class SimpleBasicGraphPattern implements BasicGraphPattern {
 
-	private List<TriplePattern> triplePatterns = new ArrayList<TriplePattern>();
+	private Set<TriplePattern> triplePatterns;
 
 	public SimpleBasicGraphPattern(Set<TriplePattern> triplePatterns) {
-		if (triplePatterns != null) {
-			this.triplePatterns.addAll(triplePatterns);
-		}
-	}
-
-	public SimpleBasicGraphPattern(List<TriplePattern> triplePatterns) {
-		if (triplePatterns != null) {
-			this.triplePatterns = triplePatterns;
-		}
+		this.triplePatterns = (triplePatterns == null)
+				? new LinkedHashSet<TriplePattern>()
+				: triplePatterns;
 	}
 
 	@Override
-	@Deprecated
 	public Set<TriplePattern> getTriplePatterns() {
-		return new HashSet(triplePatterns);
-	}
-
-	@Override
-	public List<TriplePattern> getTriplePatternList() {
 		return triplePatterns;
 	}
 
 	public void addTriplePatterns(Set<TriplePattern> triplePatterns) {
-		this.triplePatterns.addAll(triplePatterns);
-	}
-
-	public void addTriplePatterns(List<TriplePattern> triplePatterns) {
 		this.triplePatterns.addAll(triplePatterns);
 	}
 }

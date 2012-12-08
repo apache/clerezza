@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.sparql.query.Expression;
@@ -39,14 +39,8 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 	private List<GraphPattern> graphPatterns = new ArrayList<GraphPattern>();
 
 	@Override
-	@Deprecated
 	public Set<GraphPattern> getGraphPatterns() {
-		return new HashSet(graphPatterns);
-	}
-
-	@Override
-	public List<GraphPattern> getGraphPatternList() {
-		return graphPatterns;
+		return new LinkedHashSet(graphPatterns);
 	}
 
 	@Override
@@ -86,21 +80,6 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 	 *		{@link SimpleBasicGraphPattern} of the group.
 	 */
 	public void addTriplePatterns(Set<TriplePattern> triplePatterns) {
-		addTriplePatterns(new ArrayList(triplePatterns));
-	}
-
-	/**
-	 * If the last {@link GraphPattern} added to the group is not a 
-	 * {@link SimpleBasicGraphPattern}, then creates one containing the 
-	 * specified {@link TriplePattern}s and adds it to the group.
-	 * Otherwise, adds the specified {@link TriplePattern}s to the last
-	 * added {@link SimpleBasicGraphPattern} in the group.
-	 * 
-	 * @param triplePatterns
-	 *		a list of {@link TriplePattern}s to be added into a 
-	 *		{@link SimpleBasicGraphPattern} of the group.
-	 */
-	public void addTriplePatterns(List<TriplePattern> triplePatterns) {
 		GraphPattern prevGraphPattern;
 		int size = graphPatterns.size();
 		if (size > 0) {

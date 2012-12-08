@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.List;
+import java.util.Set;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -113,7 +114,7 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
 			GroupGraphPattern groupGraphPattern) {
 
 		s.append("{ ");
-		for (GraphPattern graphPattern : groupGraphPattern.getGraphPatternList()) {
+		for (GraphPattern graphPattern : groupGraphPattern.getGraphPatterns()) {
 			appendGraphPattern(s, graphPattern);
 		}
 		for (Expression e : groupGraphPattern.getFilter()) {
@@ -135,7 +136,7 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
 	private void appendGraphPattern(StringBuffer s, GraphPattern graphPattern) {
 		if (graphPattern instanceof BasicGraphPattern) {
 			appendTriplePatterns(s,
-					((BasicGraphPattern) graphPattern).getTriplePatternList());
+					((BasicGraphPattern) graphPattern).getTriplePatterns());
 		} else if (graphPattern instanceof GroupGraphPattern) {
 			appendGroupGraphPattern(s, (GroupGraphPattern) graphPattern);
 		} else if (graphPattern instanceof OptionalGraphPattern) {
@@ -169,7 +170,7 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
 	}
 
 	private void appendTriplePatterns(StringBuffer s,
-			List<TriplePattern> triplePatterns) {
+			Set<TriplePattern> triplePatterns) {
 
 		for (TriplePattern p : triplePatterns) {
 			appendResourceOrVariable(s, p.getSubject());
@@ -270,7 +271,7 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
 	@Override
 	public String serialize(ConstructQuery constructQuery) {
 		StringBuffer s = new StringBuffer("CONSTRUCT\n");
-		List<TriplePattern> triplePatterns = constructQuery.getTemplate();
+		Set<TriplePattern> triplePatterns = constructQuery.getConstructTemplate();
 		s.append("{ ");
 		if (triplePatterns != null && !triplePatterns.isEmpty()) {
 			appendTriplePatterns(s, triplePatterns);

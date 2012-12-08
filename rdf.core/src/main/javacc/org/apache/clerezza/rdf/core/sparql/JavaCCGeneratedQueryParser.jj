@@ -33,8 +33,10 @@ package org.apache.clerezza.rdf.core.sparql;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.clerezza.rdf.core.BNode;
@@ -143,10 +145,10 @@ class JavaCCGeneratedQueryParser {
 		return v;
 	}
 
-	private void addTriplePatterns(List<TriplePattern> triplePatterns,
+	private void addTriplePatterns(Set<TriplePattern> triplePatterns,
 			ResourceOrVariable subject,
 			UriRefOrVariable predicate,
-			List<ResourceOrVariable> objects) {
+			Set<ResourceOrVariable> objects) {
 
 		for (ResourceOrVariable object : objects) {
 			triplePatterns.add(
@@ -156,7 +158,7 @@ class JavaCCGeneratedQueryParser {
 
 	// nodes contain at least one element
 	private ResourceOrVariable addTriplePatterns(
-			List<TriplePattern> triplePatterns,
+			Set<TriplePattern> triplePatterns,
 			List<ResourceOrVariable> nodes) {
 
 		ResourceOrVariable head = null;
@@ -342,7 +344,7 @@ private void SelectQuery() : {
 
 /* [6]      ConstructQuery    ::=   'CONSTRUCT' ConstructTemplate DatasetClause* WhereClause SolutionModifier */
 private void ConstructQuery() : {
-	List<TriplePattern> triplePatterns = null; } {
+	Set<TriplePattern> triplePatterns = null; } {
 
 	<CONSTRUCT>
 	triplePatterns=ConstructTemplate() {
@@ -489,7 +491,7 @@ private GroupGraphPattern GroupGraphPattern() : {
 
 /* [21]    TriplesBlock    ::=    TriplesSameSubject ( '.' TriplesBlock? )? */
 private void TriplesBlock(GroupGraphPattern groupGraphPattern) : {
-	List<TriplePattern> triplePatterns; } {
+	Set<TriplePattern> triplePatterns; } {
 
 	triplePatterns=TriplesSameSubject() {
 	((SimpleGroupGraphPattern) groupGraphPattern).addTriplePatterns(triplePatterns); }
@@ -602,8 +604,8 @@ private List<Expression> ArgList() : {
 }
 
 /* [30]    ConstructTemplate    ::=    '{' ConstructTriples? '}' */
-private List<TriplePattern> ConstructTemplate() : {
-	List<TriplePattern> triplePatterns = null; } {
+private Set<TriplePattern> ConstructTemplate() : {
+	Set<TriplePattern> triplePatterns = null; } {
 
 	"{" (
 	triplePatterns=ConstructTriples()
@@ -612,8 +614,8 @@ private List<TriplePattern> ConstructTemplate() : {
 }
 
 /* [31]    ConstructTriples    ::=    TriplesSameSubject ( '.' ConstructTriples? )? */
-private List<TriplePattern> ConstructTriples() : {
-	List<TriplePattern> triplePatterns, t; } {
+private Set<TriplePattern> ConstructTriples() : {
+	Set<TriplePattern> triplePatterns, t; } {
 
 	triplePatterns=TriplesSameSubject()
 	( "."
@@ -626,8 +628,8 @@ private List<TriplePattern> ConstructTriples() : {
 }
 
 /* [32]    TriplesSameSubject    ::=    VarOrTerm PropertyListNotEmpty |  TriplesNode PropertyList */
-private List<TriplePattern> TriplesSameSubject() : {
-	List<TriplePattern> triplePatterns = new ArrayList<TriplePattern>();
+private Set<TriplePattern> TriplesSameSubject() : {
+	Set<TriplePattern> triplePatterns = new LinkedHashSet<TriplePattern>();
 	ResourceOrVariable subject; } {
 
 	( subject=VarOrTerm() PropertyListNotEmpty(subject, triplePatterns) {
@@ -641,9 +643,9 @@ private List<TriplePattern> TriplesSameSubject() : {
 
 /* [33]    PropertyListNotEmpty    ::=    Verb ObjectList ( ';' ( Verb ObjectList )? )* */
 private void PropertyListNotEmpty(ResourceOrVariable subject,
-		List<TriplePattern> triplePatterns) : {
+		Set<TriplePattern> triplePatterns) : {
 	UriRefOrVariable predicate;
-	List<ResourceOrVariable> objects; } {
+	Set<ResourceOrVariable> objects; } {
 	predicate=Verb()
 	objects=ObjectList(triplePatterns) {
 	addTriplePatterns(triplePatterns, subject, predicate, objects); }
@@ -657,16 +659,16 @@ private void PropertyListNotEmpty(ResourceOrVariable subject,
 
 /* [34]    PropertyList    ::=    PropertyListNotEmpty? */
 private void PropertyList(ResourceOrVariable subject,
-		List<TriplePattern> triplePatterns) : { } {
+		Set<TriplePattern> triplePatterns) : { } {
 	( PropertyListNotEmpty(subject, triplePatterns) )?
 }
 
 /* [35]    ObjectList    ::=    Object ( ',' Object )* */
-private List<ResourceOrVariable> ObjectList(List<TriplePattern> triplePatterns) : {
+private Set<ResourceOrVariable> ObjectList(Set<TriplePattern> triplePatterns) : {
 	ResourceOrVariable object; } {
 
 	{
-	List<ResourceOrVariable> objects = new ArrayList<ResourceOrVariable>();
+	Set<ResourceOrVariable> objects = new LinkedHashSet<ResourceOrVariable>();
 	}
 	object=Object(triplePatterns) {
 	objects.add(object); }
@@ -679,7 +681,7 @@ private List<ResourceOrVariable> ObjectList(List<TriplePattern> triplePatterns) 
 }
 
 /* [36]    Object    ::=    GraphNode */
-private ResourceOrVariable Object(List<TriplePattern> triplePatterns) : {
+private ResourceOrVariable Object(Set<TriplePattern> triplePatterns) : {
 	ResourceOrVariable object; } {
 
 	object=GraphNode(triplePatterns) {
@@ -696,9 +698,9 @@ private UriRefOrVariable Verb() : {
 	return new UriRefOrVariable(RDF_TYPE); }
 }
 
-// Fill in the specified list of TriplePattern and returns the subject node
+// Fill in the specified set of TriplePattern and returns the subject node
 /* [38]    TriplesNode    ::=    Collection |  BlankNodePropertyList */
-private ResourceOrVariable TriplesNode(List<TriplePattern> triplePatterns) : {
+private ResourceOrVariable TriplesNode(Set<TriplePattern> triplePatterns) : {
 	ResourceOrVariable subject; } {
 	(
 		subject=Collection(triplePatterns)
@@ -709,7 +711,7 @@ private ResourceOrVariable TriplesNode(List<TriplePattern> triplePatterns) : {
 }
 
 /* [39]    BlankNodePropertyList    ::=    '[' PropertyListNotEmpty ']' */
-private ResourceOrVariable BlankNodePropertyList(List<TriplePattern> triplePatterns) : { } {
+private ResourceOrVariable BlankNodePropertyList(Set<TriplePattern> triplePatterns) : { } {
 	{
 	ResourceOrVariable subject = getNewBNode();
 	}
@@ -718,7 +720,7 @@ private ResourceOrVariable BlankNodePropertyList(List<TriplePattern> triplePatte
 }
 
 /* [40]    Collection    ::=    '(' GraphNode+ ')' */
-private ResourceOrVariable Collection(List<TriplePattern> triplePatterns) : {
+private ResourceOrVariable Collection(Set<TriplePattern> triplePatterns) : {
 	ResourceOrVariable node;
 	List<ResourceOrVariable> nodes = new ArrayList<ResourceOrVariable>(); } {
 
@@ -732,7 +734,7 @@ private ResourceOrVariable Collection(List<TriplePattern> triplePatterns) : {
 }
 
 /* [41]    GraphNode    ::=    VarOrTerm |  TriplesNode */
-private ResourceOrVariable GraphNode(List<TriplePattern> triplePatterns) : {
+private ResourceOrVariable GraphNode(Set<TriplePattern> triplePatterns) : {
 	ResourceOrVariable node; } {
 
 	(

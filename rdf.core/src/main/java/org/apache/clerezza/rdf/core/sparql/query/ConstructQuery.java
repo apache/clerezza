@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,8 +31,6 @@ import java.util.Set;
 public interface ConstructQuery extends QueryWithSolutionModifier {
 
 	/**
-	 * @deprecated use getTemplate instead and convert the result to a Set if needed
-	 * 
 	 * <p>Gets the template for constructing triples in a CONSTRUCT query.</p>
 	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#construct">
 	 * SPARQL Query Language: 10.2 CONSTRUCT</a>
@@ -41,13 +38,4 @@ public interface ConstructQuery extends QueryWithSolutionModifier {
 	 *         new triples.
 	 */
 	public Set<TriplePattern> getConstructTemplate();
-
-	/**
-	 * <p>Gets the template for constructing triples in a CONSTRUCT query.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#construct">
-	 * SPARQL Query Language: 10.2 CONSTRUCT</a>
-	 * @return a template as a list of triple patterns for constructing
-	 *         new triples.
-	 */
-	public List<TriplePattern> getTemplate();
 }

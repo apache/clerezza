@@ -18,9 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
@@ -32,28 +30,16 @@ import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 public class SimpleConstructQuery extends SimpleQueryWithSolutionModifier
 		implements ConstructQuery {
 
-	private List<TriplePattern> triplePatterns = new ArrayList<TriplePattern>();
+	private Set<TriplePattern> triplePatterns;
 
 	public SimpleConstructQuery(Set<TriplePattern> triplePatterns) {
-		if (triplePatterns != null) {
-			this.triplePatterns.addAll(triplePatterns);
-		}
-	}
-
-	public SimpleConstructQuery(List<TriplePattern> triplePatterns) {
-		if (triplePatterns != null) {
-			this.triplePatterns = triplePatterns;
-		}
+		this.triplePatterns = (triplePatterns == null)
+				? new LinkedHashSet<TriplePattern>()
+				: triplePatterns;
 	}
 
 	@Override
-	@Deprecated
 	public Set<TriplePattern> getConstructTemplate() {
-		return new HashSet(triplePatterns);
-	}
-
-	@Override
-	public List<TriplePattern> getTemplate() {
 		return triplePatterns;
 	}
 
