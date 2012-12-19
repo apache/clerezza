@@ -198,9 +198,9 @@
         <dependency>
             <groupId>org.apache.wink</groupId>
             <artifactId>wink-osgi</artifactId>
-            <version>1.2.1-incubating</version>
-            <!-- this has to start early, because of the MEdiaType requiring RuntimeImpl in 
-			static iinitializer -->
+            <version>1.3.0-incubating-SNAPSHOT</version>
+            <!-- this has to start early, because of the MediaType requiring RuntimeImpl in 
+			static initializer -->
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -412,6 +412,11 @@
 		</dependency> --> 
     <dependency>
       <groupId>org.apache.stanbol</groupId>
+      <artifactId>org.apache.stanbol.commons.web.resources</artifactId>
+      <version>0.10.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.security</artifactId>
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
@@ -458,7 +463,7 @@
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.web.base</artifactId>
-      <version>0.10.1-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
