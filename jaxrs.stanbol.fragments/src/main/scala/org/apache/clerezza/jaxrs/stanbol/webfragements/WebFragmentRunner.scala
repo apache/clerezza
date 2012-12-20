@@ -208,7 +208,7 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
     servletContext.setAttribute(BaseStanbolResource.NAVIGATION_LINKS, navigationLinks);
     servletContext.setAttribute(CORS_ORIGIN, corsOrigins);
     servletContext.setAttribute(CORS_ACCESS_CONTROL_EXPOSE_HEADERS, exposedHeaders);
-    contextResolverImpl = new ContextResolverImpl(servletContext)
+    contextResolverImpl = new ContextResolverImpl(servletContext, bundleContext)
     winkRequestProcessor.bindComponent(contextResolverImpl)
   }
   
@@ -225,9 +225,49 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
 }
 
 @Provider
-class ContextResolverImpl(servletContext: ServletContext) extends ContextResolver[ServletContext] {
+class ContextResolverImpl(servletContext: ServletContext, bundleContext: BundleContext) extends ContextResolver[ServletContext] {
 
     def getContext(clazz: Class[_]): ServletContext = {
-        servletContext;
+        def wrapped = servletContext;
+        new ServletContext() {
+          def getServletContextName() :String = { wrapped.getServletContextName()}
+			def removeAttribute(name: String) :Unit = { wrapped.removeAttribute(name)}
+			def setAttribute(name: String, value: Any) :Unit = { wrapped.setAttribute(name, value)}
+			def getAttributeNames() :java.util.Enumeration[_] = { wrapped.getAttributeNames()}
+			def getAttribute(name: String) :Object = { 
+              val result = wrapped.getAttribute(name)
+              if (result != null) {
+                result
+              } else {
+                val serviceReference = bundleContext.getServiceReference(name)
+                if (serviceReference != null) {
+                  bundleContext.getService(serviceReference)
+                } else null
+              }
+            }
+			def getInitParameterNames() :java.util.Enumeration[_] = { wrapped.getInitParameterNames()}
+			def getInitParameter(name: String) :String = { wrapped.getInitParameter(name)}
+			def getServerInfo() :String = { wrapped.getServerInfo()}
+			def getRealPath(name: String) :String = { wrapped.getRealPath(name)}
+			def log(message: String, exception: Throwable) :Unit = { wrapped.log(message,exception)}
+			def log(exception: Exception, message: String) :Unit = { wrapped.log(exception, message)}
+			def log(message: String) :Unit = { wrapped.log(message)}
+			@Deprecated
+			def getServletNames() :java.util.Enumeration[_] = { wrapped.getServletNames()}
+			@Deprecated
+			def getServlets() :java.util.Enumeration[_] = { wrapped.getServlets()}
+			@Deprecated
+			def getServlet(name: String) :javax.servlet.Servlet = { wrapped.getServlet(name)}
+			def getNamedDispatcher(name: String) :javax.servlet.RequestDispatcher = { wrapped.getNamedDispatcher(name)}
+			def getRequestDispatcher(path: String) :javax.servlet.RequestDispatcher = { wrapped.getRequestDispatcher(path)}
+			def getResourceAsStream(path: String) :java.io.InputStream = { wrapped.getResourceAsStream(path)}
+			def getResource(path: String) :java.net.URL = { wrapped.getResource(path)}
+			def getResourcePaths(path: String) :java.util.Set[_] = { wrapped.getResourcePaths(path)}
+			def getMimeType(file: String) :String = { wrapped.getMimeType(file)}
+			def getMinorVersion() :Int = { wrapped.getMajorVersion()}
+			def getMajorVersion() :Int = { wrapped.getMajorVersion()}
+			def getContext(uripath: String) :javax.servlet.ServletContext = { wrapped.getContext(uripath)}
+			def getContextPath() :String = { wrapped.getContextPath()}
+        }
     }
 }
