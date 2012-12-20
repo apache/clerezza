@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServlet
 import javax.ws.rs.ext.ContextResolver
 import javax.ws.rs.ext.Provider
 import org.apache.clerezza.osgi.services.ActivationHelper
+import org.apache.clerezza.platform.dashboard.GlobalMenuItem
+import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider
 import org.apache.felix.scr.annotations._
 import org.apache.stanbol.commons.web.base.LinkResource
 import org.apache.stanbol.commons.web.base.NavigationLink
@@ -47,9 +49,9 @@ import org.slf4j.scala.Logging
            policy = ReferencePolicy.DYNAMIC)
 //@Service(Array(classOf[Servlet]))
 //@Property(name = "alias", value = Array("/stanbol-ugly-servlet-context-initializer"))
-@Service(value = Array(classOf[javax.servlet.Filter]))
+@Service(value = Array(classOf[javax.servlet.Filter], classOf[GlobalMenuItemsProvider]))
 @Property(name ="pattern", value=Array(".*"))
-class WebFragmentRunner extends javax.servlet.Filter with Logging {
+class WebFragmentRunner extends javax.servlet.Filter with GlobalMenuItemsProvider with Logging {
 
   @Reference
   private var winkRequestProcessor: WinkRequestProcessor = _
@@ -84,7 +86,8 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
   private var corsOrigins : java.util.Set[String] = _
   private var exposedHeaders : java.util.Set[String] = _
   private var contextResolverImpl : ContextResolverImpl = _
-
+  
+  val menuItems = new java.util.HashSet[GlobalMenuItem]
 
 
   @Activate
@@ -168,6 +171,12 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
     linkResources.addAll(f.getLinkResources());
     scriptResources.addAll(f.getScriptResources());
     navigationLinks.addAll(f.getNavigationLinks());
+    {
+      import scala.collection.JavaConverters._
+      for (nl <- f.getNavigationLinks.asScala) {
+        menuItems.add(new GlobalMenuItem("/"+nl.path, nl.label, nl.label, nl.order, "Stanbol"))
+      }
+    };
     synchronized {
       webFragments ::= f
       activator.foreach { a =>
@@ -182,6 +191,12 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
     linkResources.removeAll(f.getLinkResources());
     scriptResources.removeAll(f.getScriptResources());
     navigationLinks.removeAll(f.getNavigationLinks());
+    {
+      import scala.collection.JavaConverters._
+      for (nl <- f.getNavigationLinks.asScala) {
+        menuItems.remove(new GlobalMenuItem("/"+nl.path, nl.label, nl.label, nl.order, "Stanbol"))
+      }
+    };
     synchronized {
       webFragments = webFragments diff List(f)
       activator.foreach { a=>
@@ -208,7 +223,7 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
     servletContext.setAttribute(BaseStanbolResource.NAVIGATION_LINKS, navigationLinks);
     servletContext.setAttribute(CORS_ORIGIN, corsOrigins);
     servletContext.setAttribute(CORS_ACCESS_CONTROL_EXPOSE_HEADERS, exposedHeaders);
-    contextResolverImpl = new ContextResolverImpl(servletContext, bundleContext)
+    contextResolverImpl = new ContextResolverImpl(servletContext)
     winkRequestProcessor.bindComponent(contextResolverImpl)
   }
   
@@ -221,11 +236,13 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
       winkRequestProcessor.unbindComponent(contextResolverImpl)
 	}
 
+  def getMenuItems() : java.util.Set[GlobalMenuItem]  = {
 
-}
+    return menuItems
+  }
 
-@Provider
-class ContextResolverImpl(servletContext: ServletContext, bundleContext: BundleContext) extends ContextResolver[ServletContext] {
+  @Provider
+  class ContextResolverImpl(servletContext: ServletContext) extends ContextResolver[ServletContext] {
 
     def getContext(clazz: Class[_]): ServletContext = {
         def wrapped = servletContext;
@@ -270,4 +287,7 @@ class ContextResolverImpl(servletContext: ServletContext, bundleContext: BundleC
 			def getContextPath() :String = { wrapped.getContextPath()}
         }
     }
+  }
 }
+
+
