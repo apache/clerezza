@@ -83,6 +83,7 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
   
   private var corsOrigins : java.util.Set[String] = _
   private var exposedHeaders : java.util.Set[String] = _
+  private var contextResolverImpl : ContextResolverImpl = _
 
 
 
@@ -207,7 +208,8 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
     servletContext.setAttribute(BaseStanbolResource.NAVIGATION_LINKS, navigationLinks);
     servletContext.setAttribute(CORS_ORIGIN, corsOrigins);
     servletContext.setAttribute(CORS_ACCESS_CONTROL_EXPOSE_HEADERS, exposedHeaders);
-    winkRequestProcessor.bindComponent(new ContextResolverImpl(servletContext))
+    contextResolverImpl = new ContextResolverImpl(servletContext)
+    winkRequestProcessor.bindComponent(contextResolverImpl)
   }
   
   override def doFilter(request: ServletRequest, response: ServletResponse,
@@ -216,6 +218,7 @@ class WebFragmentRunner extends javax.servlet.Filter with Logging {
 	}
 
 	override def destroy() {
+      winkRequestProcessor.unbindComponent(contextResolverImpl)
 	}
 
 
