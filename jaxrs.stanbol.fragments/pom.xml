@@ -115,7 +115,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-scr-plugin</artifactId>
-                <version>1.8.1-SNAPSHOT</version>
                 <configuration>
                     <scanClasses>true</scanClasses>
                     <instructions>
