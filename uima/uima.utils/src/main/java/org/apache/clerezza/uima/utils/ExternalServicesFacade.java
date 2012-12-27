@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.apache.felix.scr.annotations.Service;
 import org.apache.uima.UIMAException;
 import org.apache.uima.alchemy.ts.categorization.Category;
 import org.apache.uima.alchemy.ts.concept.ConceptFS;
@@ -36,6 +37,7 @@ import java.util.Map;
 /**
  * Facade for querying UIMA external services
  */
+@Service(value = UIMAServicesFacade.class)
 public class ExternalServicesFacade implements UIMAServicesFacade {
 
   private final UIMAExecutor uimaExecutor;
