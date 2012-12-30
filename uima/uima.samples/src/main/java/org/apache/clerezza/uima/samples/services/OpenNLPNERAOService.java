@@ -21,7 +21,7 @@ package org.apache.clerezza.uima.samples.services;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.uima.utils.InMemoryUIMAExecutor;
+import org.apache.clerezza.uima.utils.UIMAExecutor;
 import org.apache.commons.io.IOUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
@@ -50,7 +50,7 @@ public class OpenNLPNERAOService implements OpenNLPService {
   private static final String OUTPUTGRAPH = "outputgraph";
 
   @Reference
-  private InMemoryUIMAExecutor executor;
+  private UIMAExecutor executor;
 
   @POST
   @Path("opennlp/person")

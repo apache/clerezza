@@ -21,7 +21,7 @@ package org.apache.clerezza.uima.concept;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.uima.utils.InMemoryUIMAExecutor;
+import org.apache.clerezza.uima.utils.UIMAExecutor;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -48,7 +48,7 @@ public class UIMARemoteResourceTaggerService {
   private static final String ALCHEMYKEY = "alchemykey";
 
   @Reference
-  private InMemoryUIMAExecutor executor;
+  private UIMAExecutor executor;
 
   @GET
   @Path("tag")

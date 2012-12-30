@@ -32,41 +32,27 @@ import java.util.Map;
  * Executes UIMA pipelines collecting results in a {@link JCas}
  */
 @Service
-public class InMemoryUIMAExecutor {
+public class InMemoryUIMAExecutor implements UIMAExecutor {
 
   @Reference
   private AEProvider aeProvider;
 
   /**
-   * analyze a text document using the default Analysis Engine
-   *
-   * @param doc
-   * @throws AnalysisEngineProcessException
+   * {@inheritDoc}
    */
   public JCas analyzeDocument(String doc) throws AnalysisEngineProcessException, ResourceInitializationException {
     return executeAE(aeProvider.getDefaultAE(),doc);
   }
 
   /**
-   * analyze a text document specifying a different Analysis Engine descriptor path
-   *
-   * @param doc
-   * @param xmlPath
-   * @throws AnalysisEngineProcessException,
-   *          ResourceInitializationException
+   * {@inheritDoc}
    */
   public JCas analyzeDocument(String doc, String xmlPath) throws AnalysisEngineProcessException, ResourceInitializationException {
     return executeAE(aeProvider.getAE(xmlPath), doc);
   }
 
   /**
-   * analyze a text document specifying a different Analysis Engine descriptor path and specific Analysis Engine parameter settings
-   *
-   * @param doc
-   * @param xmlInputSource
-   * @param aeParameterSettings
-   * @throws AnalysisEngineProcessException,
-   *          ResourceInitializationException
+   * {@inheritDoc}
    */
   public JCas analyzeDocument(String doc, XMLInputSource xmlInputSource, Map<String, Object> aeParameterSettings) throws AnalysisEngineProcessException, ResourceInitializationException {
     AnalysisEngine engine = aeProvider.getAEFromSource(xmlInputSource, aeParameterSettings);

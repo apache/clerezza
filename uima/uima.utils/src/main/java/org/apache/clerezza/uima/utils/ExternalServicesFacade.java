@@ -42,7 +42,7 @@ import java.util.Map;
 public class ExternalServicesFacade implements UIMAServicesFacade {
 
   @Reference
-  private InMemoryUIMAExecutor uimaExecutor;
+  private UIMAExecutor uimaExecutor;
 
   private Map<String, Object> parameterSetting = new HashMap<String, Object>();
 
