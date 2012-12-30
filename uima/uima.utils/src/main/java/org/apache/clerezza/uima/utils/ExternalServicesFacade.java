@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.uima.UIMAException;
 import org.apache.uima.alchemy.ts.categorization.Category;
@@ -40,13 +41,10 @@ import java.util.Map;
 @Service(value = UIMAServicesFacade.class)
 public class ExternalServicesFacade implements UIMAServicesFacade {
 
-  private final UIMAExecutor uimaExecutor;
+  @Reference
+  private InMemoryUIMAExecutor uimaExecutor;
 
   private Map<String, Object> parameterSetting = new HashMap<String, Object>();
-
-  public ExternalServicesFacade() {
-    this.uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
-  }
 
   public List<FeatureStructure> getTags(String document) throws UIMAException {
 

@@ -34,7 +34,10 @@ import org.apache.clerezza.uima.metadatagenerator.mediatype.UnsupportedMediaType
 import org.apache.clerezza.uima.utils.ExternalServicesFacade;
 import org.apache.clerezza.uima.utils.UIMAServicesFacade;
 import org.apache.clerezza.uima.utils.UIMAUtils;
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.FeatureStructure;
@@ -51,18 +54,19 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
 
   private final static Logger log = LoggerFactory.getLogger(UIMABaseMetadataGenerator.class);
 
+  @Reference
   private UIMAServicesFacade facade;
 
   private Set<MediaTypeTextExtractor> textExtractors;
 
-  public UIMABaseMetadataGenerator() {
-    this.facade = new ExternalServicesFacade();
-    this.textExtractors = new HashSet<MediaTypeTextExtractor>();
+  @Activate
+  protected void activte() throws Exception {
+    initializeExtractors();
   }
 
-  public UIMABaseMetadataGenerator(ExternalServicesFacade facade) {
-    this.facade = facade;
-    this.textExtractors = new TreeSet<MediaTypeTextExtractor>();
+  @Deactivate
+  protected void deactivte() throws Exception {
+    textExtractors = null;
   }
 
   public void generate(GraphNode node, byte[] data, MediaType mediaType) {
@@ -93,7 +97,8 @@ public class UIMABaseMetadataGenerator implements MetaDataGenerator {
   /* initialize text extractors sorted set */
 
   private void initializeExtractors() {
-    this.textExtractors.add(new PlainTextExtractor());
+    textExtractors = new HashSet<MediaTypeTextExtractor>();
+    textExtractors.add(new PlainTextExtractor());
   }
 
   private String getTextToAnalyze(byte[] data, MediaType mediaType) throws UnsupportedMediaTypeException {

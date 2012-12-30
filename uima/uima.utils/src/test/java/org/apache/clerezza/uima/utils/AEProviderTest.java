@@ -18,12 +18,18 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import java.util.Dictionary;
+import java.util.Properties;
+
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.service.component.ComponentContext;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Testcase for {@link AEProvider}
@@ -33,8 +39,12 @@ public class AEProviderTest {
   private AEProvider aeProvider;
 
   @Before
-  public void setUp() {
-    this.aeProvider = new AEProvider();
+  public void setUp() throws Exception {
+    aeProvider = new AEProvider();
+    ComponentContext componentContext = mock(ComponentContext.class);
+    Dictionary dictionary = new Properties();
+    when(componentContext.getProperties()).thenReturn(dictionary);
+    aeProvider.activate(componentContext);
   }
 
   @Test
@@ -52,7 +62,7 @@ public class AEProviderTest {
   @Test
   public void testGetAEWithWrongPath() {
     try {
-      this.aeProvider.getAE("thisIsSomethingWeird");
+      aeProvider.getAE("thisIsSomethingWeird");
       fail();
     } catch (Throwable e) {
     }

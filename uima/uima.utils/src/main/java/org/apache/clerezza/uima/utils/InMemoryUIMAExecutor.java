@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
@@ -29,13 +31,11 @@ import java.util.Map;
 /**
  * Executes UIMA pipelines collecting results in a {@link JCas}
  */
-public class UIMAExecutor {
+@Service
+public class InMemoryUIMAExecutor {
 
-  private final AEProvider aeProvider;
-
-  public UIMAExecutor(AEProvider aeProvider) {
-    this.aeProvider = aeProvider;
-  }
+  @Reference
+  private AEProvider aeProvider;
 
   /**
    * analyze a text document using the default Analysis Engine

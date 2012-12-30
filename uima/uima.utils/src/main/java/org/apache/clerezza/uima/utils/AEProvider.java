@@ -19,8 +19,10 @@
 package org.apache.clerezza.uima.utils;
 
 import org.apache.clerezza.uima.utils.cl.ClerezzaUIMAExtensionClassLoader;
-import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
+import org.apache.clerezza.uima.utils.cl.UIMAClassLoaderRepository;
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -29,6 +31,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
+import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,16 +53,23 @@ public class AEProvider {
   private static Map<XMLInputSource, AnalysisEngine> registeredAEs;
 
   @Reference
-  private UIMAResourcesClassLoaderRepository classLoaderRepository;
+  private UIMAClassLoaderRepository classLoaderRepository;
 
-  public AEProvider() {
-    defaultXMLPath = "/META-INF/ExtServicesAE.xml"; // if no default is specified use the bundled ext services descriptor
+  @Activate
+  protected void activate(ComponentContext componentContext) throws Exception {
+    Object descriptor = componentContext.getProperties().get("serviceFacadeDescriptor");
+    if (descriptor != null) {
+      defaultXMLPath = String.valueOf(descriptor);
+    } else {
+      defaultXMLPath = "/META-INF/ExtServicesAE.xml"; // if no default is specified use the bundled ext services descriptor
+    }
     registeredAEs = new HashMap<XMLInputSource, AnalysisEngine>();
   }
 
-  public AEProvider withDefaultDescriptor(String xmlDescriptorPath) {
-    defaultXMLPath = xmlDescriptorPath;
-    return this;
+  @Deactivate
+  protected void deactivate() throws Exception {
+    defaultXMLPath = null;
+    registeredAEs = null;
   }
 
   /**

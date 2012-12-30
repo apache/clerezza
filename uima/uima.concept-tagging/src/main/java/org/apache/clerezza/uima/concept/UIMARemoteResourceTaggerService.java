@@ -21,10 +21,10 @@ package org.apache.clerezza.uima.concept;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.uima.utils.UIMAExecutor;
-import org.apache.clerezza.uima.utils.UIMAExecutorFactory;
+import org.apache.clerezza.uima.utils.InMemoryUIMAExecutor;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.uima.util.XMLInputSource;
 
@@ -47,6 +47,9 @@ public class UIMARemoteResourceTaggerService {
   private static final String OUTPUTGRAPH = "outputgraph";
   private static final String ALCHEMYKEY = "alchemykey";
 
+  @Reference
+  private InMemoryUIMAExecutor executor;
+
   @GET
   @Path("tag")
   @Produces("application/rdf+xml")
@@ -55,7 +58,6 @@ public class UIMARemoteResourceTaggerService {
       throw new WebApplicationException(Response.status(
               Response.Status.BAD_REQUEST).entity(new StringBuilder("No URI specified").toString()).build());
 
-    UIMAExecutor executor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put(OUTPUTGRAPH, uri);
     parameters.put(ALCHEMYKEY, key);

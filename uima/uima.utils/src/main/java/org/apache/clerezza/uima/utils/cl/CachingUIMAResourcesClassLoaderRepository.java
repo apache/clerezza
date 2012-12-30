@@ -29,11 +29,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Repository for UIMA {@link AnalysisComponent}s' {@link ClassLoader}s
+ * In memory cache implementation of {@link UIMAClassLoaderRepository}
  */
-@Service
-public class UIMAResourcesClassLoaderRepository {
-  private final static Logger log = LoggerFactory.getLogger(UIMAResourcesClassLoaderRepository.class);
+@Service( value = UIMAClassLoaderRepository.class )
+public class CachingUIMAResourcesClassLoaderRepository implements UIMAClassLoaderRepository {
+  private final static Logger log = LoggerFactory.getLogger(CachingUIMAResourcesClassLoaderRepository.class);
 
   private final static Set<ClassLoader> registeredComponents = new HashSet<ClassLoader>();
 

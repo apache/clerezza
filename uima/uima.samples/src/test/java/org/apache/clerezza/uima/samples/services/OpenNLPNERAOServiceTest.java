@@ -19,21 +19,57 @@
 package org.apache.clerezza.uima.samples.services;
 
 import org.apache.clerezza.rdf.core.Graph;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Inject;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.Configuration;
+import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.ops4j.pax.exam.CoreOptions.felix;
+import static org.ops4j.pax.exam.CoreOptions.frameworks;
+import static org.ops4j.pax.exam.CoreOptions.mavenConfiguration;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.configProfile;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.dsProfile;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.webProfile;
+import static org.ops4j.pax.exam.junit.JUnitOptions.junitBundles;
 
 /**
  * Testcase for {@link OpenNLPNERAOService}
  */
+@Ignore
+@RunWith(JUnit4TestRunner.class)
 public class OpenNLPNERAOServiceTest {
+
+  @Configuration
+  public static Option[] configuration() {
+    return options(
+            mavenConfiguration(),
+            dsProfile(),
+            configProfile(),
+            webProfile(),
+            junitBundles(),
+            frameworks(felix()));
+  }
+
+
+
+
+  @Inject
+  private BundleContext bundleContext;
 
   @Test
   public void serviceExecutionTest() throws Exception {
-    OpenNLPNERAOService service = new OpenNLPNERAOService();
-    Graph graph = service.extractPersons(getClass().getResource("/ner_test_page.html").toURI().toString());
-    assertNotNull(graph);
-    assertFalse(graph.isEmpty());
+    ServiceReference serviceReference = bundleContext.getServiceReference(OpenNLPService.class.getName());
+    assertNotNull(serviceReference);
+//    OpenNLPNERAOService service = new OpenNLPNERAOService();
+//    Graph graph = service.extractPersons(getClass().getResource("/ner_test_page.html").toURI().toString());
+//    assertNotNull(graph);
+//    assertFalse(graph.isEmpty());
   }
 }

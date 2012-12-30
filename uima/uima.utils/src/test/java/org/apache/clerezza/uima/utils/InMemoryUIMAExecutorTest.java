@@ -18,29 +18,19 @@
  */
 package org.apache.clerezza.uima.utils;
 
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+
 /**
- * Factory class for {@link UIMAExecutor}
+ * Testcase for {@link InMemoryUIMAExecutor}
  */
-public class UIMAExecutorFactory {
+public class InMemoryUIMAExecutorTest {
 
-  private static UIMAExecutorFactory instance;
-
-  private UIMAExecutorFactory() {
+  @Test
+  public void testConstructor() throws Exception {
+    InMemoryUIMAExecutor uimaExecutor = new InMemoryUIMAExecutor();
+    assertNotNull(uimaExecutor);
   }
 
-  public static UIMAExecutorFactory getInstance() {
-    if (instance == null)
-      instance = new UIMAExecutorFactory();
-    return instance;
-  }
-
-  public UIMAExecutor createUIMAExecutor() {
-    AEProvider aeProvider = new AEProvider();
-    return new UIMAExecutor(aeProvider);
-  }
-
-  public UIMAExecutor createUIMAExecutor(String defaultXMLPath) {
-    AEProvider aeProvider = new AEProvider().withDefaultDescriptor(defaultXMLPath);
-    return new UIMAExecutor(aeProvider);
-  }
 }

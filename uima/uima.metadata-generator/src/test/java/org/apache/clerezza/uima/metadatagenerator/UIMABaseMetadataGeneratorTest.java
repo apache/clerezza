@@ -23,6 +23,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.uima.utils.ExternalServicesFacade;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -38,6 +39,14 @@ public class UIMABaseMetadataGeneratorTest {
   public static final String YOUR_ALCHEMYAPI_KEY_HERE = "...";
   public static final String YOUR_OPENCALAIS_LICENSEID_HERE = "...";
 
+  private UIMABaseMetadataGenerator baseMetadataGenerator;
+
+  @Before
+  public void setUp() throws Exception {
+    baseMetadataGenerator = new UIMABaseMetadataGenerator();
+    baseMetadataGenerator.activte();
+  }
+
   @Test
   public void testConstructor() throws Exception {
     new UIMABaseMetadataGenerator();
@@ -45,7 +54,6 @@ public class UIMABaseMetadataGeneratorTest {
 
   @Test
   public void testGenerateMethodWithUnsupportedMediaType() throws Exception {
-    UIMABaseMetadataGenerator baseMetadataGenerator = new UIMABaseMetadataGenerator();
     String textToAnalyze = TEXT_TO_ANALYZE;
     MGraph mGraph = new SimpleMGraph();
     GraphNode node = new GraphNode(new UriRef("test"), mGraph);
@@ -61,7 +69,6 @@ public class UIMABaseMetadataGeneratorTest {
     parameterSettings.put("apikey", YOUR_ALCHEMYAPI_KEY_HERE);
     parameterSettings.put("licenseID", YOUR_OPENCALAIS_LICENSEID_HERE);
     externalServicesFacade.setParameterSetting(parameterSettings);
-    UIMABaseMetadataGenerator baseMetadataGenerator = new UIMABaseMetadataGenerator(externalServicesFacade);
     String textToAnalyze = TEXT_TO_ANALYZE;
     MGraph mGraph = new SimpleMGraph();
     GraphNode node = new GraphNode(new UriRef("test"), mGraph);

@@ -21,11 +21,11 @@ package org.apache.clerezza.uima.samples.services;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.uima.utils.UIMAExecutor;
-import org.apache.clerezza.uima.utils.UIMAExecutorFactory;
+import org.apache.clerezza.uima.utils.InMemoryUIMAExecutor;
 import org.apache.commons.io.IOUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.uima.util.XMLInputSource;
 
@@ -41,13 +41,16 @@ import java.util.Map;
  * from the text of a given URI
  */
 @Component
-@Service(Object.class)
+@Service(OpenNLPService.class)
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("/uima")
-public class OpenNLPNERAOService {
+public class OpenNLPNERAOService implements OpenNLPService {
 
   private static final String PATH = "/META-INF/OpenNLPPersonAOAE.xml";
   private static final String OUTPUTGRAPH = "outputgraph";
+
+  @Reference
+  private InMemoryUIMAExecutor executor;
 
   @POST
   @Path("opennlp/person")
@@ -57,7 +60,6 @@ public class OpenNLPNERAOService {
       throw new WebApplicationException(Response.status(
               Response.Status.BAD_REQUEST).entity(new StringBuilder("No URI specified").toString()).build());
 
-    UIMAExecutor executor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
     Map<String, Object> parameters = new HashMap<String, Object>(1);
     parameters.put(OUTPUTGRAPH, uriString);
     try {

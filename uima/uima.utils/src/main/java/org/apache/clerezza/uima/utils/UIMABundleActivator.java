@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.uima.utils;
 
-import org.apache.clerezza.uima.utils.cl.UIMAResourcesClassLoaderRepository;
+import org.apache.clerezza.uima.utils.cl.CachingUIMAResourcesClassLoaderRepository;
 import org.apache.felix.scr.annotations.Reference;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -29,7 +29,7 @@ import org.osgi.framework.BundleContext;
 public abstract class UIMABundleActivator implements BundleActivator {
 
   @Reference
-  protected UIMAResourcesClassLoaderRepository classLoaderRepository;
+  protected CachingUIMAResourcesClassLoaderRepository classLoaderRepository;
 
   @Override
   public void start(BundleContext context) throws Exception {

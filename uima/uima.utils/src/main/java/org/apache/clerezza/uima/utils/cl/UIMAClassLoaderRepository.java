@@ -16,27 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.uima.utils;
+package org.apache.clerezza.uima.utils.cl;
 
-import org.junit.Test;
+import java.util.Collection;
 
-import static org.junit.Assert.assertNotNull;
+import org.apache.uima.analysis_component.AnalysisComponent;
+import org.apache.uima.resource.Resource;
 
 /**
- * Testcase for {@link UIMAExecutor}
+ * Repository for UIMA {@link AnalysisComponent}s' {@link ClassLoader}s
  */
-public class UIMAExecutorTest {
+public interface UIMAClassLoaderRepository {
 
-  @Test
-  public void testDefaultConstructor() throws Exception {
-    UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor();
-    assertNotNull(uimaExecutor);
-  }
+  public <C extends AnalysisComponent> void registerComponent(Class<C> component);
 
-  @Test
-  public void testPathConstructor() throws Exception {
-    UIMAExecutor uimaExecutor = UIMAExecutorFactory.getInstance().createUIMAExecutor("/META-INF/ExtServicesAE.xml");
-    assertNotNull(uimaExecutor);
-  }
+  public <R extends Resource> void registerResource(Class<R> component);
 
+  public Collection<ClassLoader> getComponents();
 }
