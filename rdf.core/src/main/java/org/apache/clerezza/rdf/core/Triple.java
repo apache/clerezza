@@ -42,7 +42,7 @@ public interface Triple {
 
 	/**
 	 * The hash code is computed as follow
-	 * (subject.hashCode() >> 1) ^  subject.hashCode() ^ subject.hashCode() << 1)
+	 * (subject.hashCode() >> 1) ^  predicate.hashCode() ^ object.hashCode() << 1)
 	 * 
 	 * Note that the hash returned is computed including the hash of BNodes, so 
 	 * it is not blank-node blind as in Graph.
@@ -53,4 +53,5 @@ public interface Triple {
 	 */
 	@Override
 	int hashCode();
+
 }

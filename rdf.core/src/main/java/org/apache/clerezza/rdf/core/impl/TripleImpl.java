@@ -77,7 +77,7 @@ public class TripleImpl implements Triple {
 
 	@Override
 	public int hashCode() {
-		return (subject.hashCode() >> 1) ^ subject.hashCode() ^ (subject.hashCode() << 1);
+		return (subject.hashCode() >> 1) ^ predicate.hashCode() ^ (object.hashCode() << 1);
 	}
 
 	@Override
