@@ -169,6 +169,10 @@ class WebProxy extends WeightedTcProvider with Logging {
 			logger.debug("not dereferencing URI with hash sign. Please see CLEREZZA-533 for debate.")
 			throw new NoSuchEntityException(name)
 		}
+		if (name.getUnicodeString.startsWith("urn")) {
+		  //these are not dereferenceable
+		  throw new NoSuchEntityException(name)
+		}
 		val cacheGraphName = new UriRef("urn:x-localinstance:/cache/" + name.getUnicodeString)
 		//todo: follow redirects and keep track of them
 		//todo: keep track of headers especially date and etag. test for etag similarity

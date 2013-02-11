@@ -45,7 +45,7 @@ class Activator extends BundleActivator {
 				case _ => throw new RuntimeException("org.ops4j.pax.logging.pax-logging-service not found")
 			}
 		val serviceReference = context.getServiceReference(configurationAdminClassName);
-		def configureIfUnconfigured(serviceReference: ServiceReference) {
+		def configureIfUnconfigured(serviceReference: ServiceReference[_]) {
 			val configurationAdmin = context.getService(serviceReference).asInstanceOf[ConfigurationAdmin]
 			val config: Configuration = configurationAdmin.getConfiguration(
 				"org.ops4j.pax.logging", paxLoggingLocation);

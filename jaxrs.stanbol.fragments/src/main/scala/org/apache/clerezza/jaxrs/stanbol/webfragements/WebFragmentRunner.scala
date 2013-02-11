@@ -37,6 +37,7 @@ import org.apache.stanbol.commons.web.base.NavigationLink
 import org.apache.stanbol.commons.web.base.ScriptResource
 import org.apache.stanbol.commons.web.base.WebFragment
 import org.osgi.framework.BundleContext
+import org.osgi.framework.ServiceReference
 import org.osgi.service.component.ComponentContext
 import org.slf4j.scala.Logging
 
@@ -256,16 +257,16 @@ class WebFragmentRunner extends javax.servlet.Filter with GlobalMenuItemsProvide
               if (result != null) {
                 result
               } else {
-                val serviceReference = bundleContext.getServiceReference(name)
+                val serviceReference = bundleContext.getServiceReference(name) //: ServiceReference[Object]
                 if (serviceReference != null) {
-                  bundleContext.getService(serviceReference)
+                  bundleContext.getService(serviceReference).asInstanceOf[Object]
                 } else null
               }
             }
 			def getInitParameterNames() :java.util.Enumeration[_] = { wrapped.getInitParameterNames()}
 			def getInitParameter(name: String) :String = { wrapped.getInitParameter(name)}
 			def getServerInfo() :String = { wrapped.getServerInfo()}
-			def getRealPath(name: String) :String = { wrapped.getRealPath(name)}
+			def getRealPath(name: String) :String = { wrapped.getRealPath(name)}  
 			def log(message: String, exception: Throwable) :Unit = { wrapped.log(message,exception)}
 			def log(exception: Exception, message: String) :Unit = { wrapped.log(exception, message)}
 			def log(message: String) :Unit = { wrapped.log(message)}

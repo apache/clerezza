@@ -382,6 +382,7 @@ public class ClerezzaApp {
 	private Properties getConfigProps(LauncherArguments arguments) {
 
 		Properties configProps = new Properties();
+        
 		configProps.putAll(System.getProperties());
 		//ignored as we're setting the starlevel manually to last used start-level + 20
 		//configProps.put("org.osgi.framework.startlevel.beginning", "20");
@@ -391,7 +392,7 @@ public class ClerezzaApp {
 					"true");
 			}
 		}
-
+        
 		{
 			String argLogLevel = arguments.getLogLevel();
 			if (argLogLevel == null) {
@@ -408,15 +409,16 @@ public class ClerezzaApp {
 			}
 			configProps.put("org.ops4j.pax.url.mvn.repositories", getCommaSeparatedListOfMavenRepos());
 		}
+        
 		{
+            //sun.reflect added because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6265952 and loading of scala scripts
 			String extraPackages = (String) configProps.get("org.osgi.framework.system.packages.extra");
 			if (extraPackages == null) {
-				extraPackages = "";
-			}
-			//sun.reflect added because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6265952 and loading of scala scripts
-			configProps.put("org.osgi.framework.system.packages.extra",
-					"sun.misc;sun.reflect;"
-					+ extraPackages);
+                extraPackages = "sun.misc;sun.reflect";
+            } else {
+                extraPackages = "sun.misc;sun.reflect;"+extraPackages;
+            }
+			configProps.put("org.osgi.framework.system.packages.extra",extraPackages);
 		}
 
 		//public static final String CONTEXT_PROPERTY_HTTP_PORT_SECURE = "";

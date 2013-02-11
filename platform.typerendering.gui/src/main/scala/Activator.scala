@@ -41,8 +41,9 @@ import java.security.{AccessControlException, AccessController}
  */
 class Activator extends BundleActivator {
 
-	private var renderletsOverview: ServiceRegistration = null
-	private var renderletRegistration, menuProviderRegistration: ServiceRegistration = null
+	private var renderletsOverview: ServiceRegistration[Object] = null
+	private var renderletRegistration: ServiceRegistration[TypeRenderlet] = null
+    private var menuProviderRegistration: ServiceRegistration[GlobalMenuItemsProvider] = null
 	private var bundleContext: BundleContext = null
 
 
@@ -102,13 +103,13 @@ class Activator extends BundleActivator {
 	def start(context: BundleContext) {
 		this.bundleContext = context
 		val args = scala.collection.mutable.Map("javax.ws.rs" -> true)
-		renderletsOverview = context.registerService(classOf[Object].getName,
+		renderletsOverview = context.registerService(classOf[Object],
 													 RenderletsOverview, args)
 		val renderlet = new RenderletDescriptionRenderlet
 		val serviceReference = context.getServiceReference(classOf[RenderletManager].getName)
-		renderletRegistration = context.registerService(classOf[TypeRenderlet].getName,
+		renderletRegistration = context.registerService(classOf[TypeRenderlet],
 														renderlet, null)
-		menuProviderRegistration = context.registerService(classOf[GlobalMenuItemsProvider].getName,
+		menuProviderRegistration = context.registerService(classOf[GlobalMenuItemsProvider],
 														MenuProvider, null)
 	}
 

@@ -24,7 +24,7 @@
 	<parent>
 		<groupId>org.apache</groupId>
 		<artifactId>apache</artifactId>
-		<version>12</version>
+		<version>13</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>clerezza</artifactId>
@@ -398,7 +398,7 @@
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.core</artifactId>
-				<version>4.2.0</version>
+				<version>4.3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -438,7 +438,7 @@
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.compendium</artifactId>
-				<version>4.2.0</version>
+				<version>4.3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.felix</groupId>

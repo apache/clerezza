@@ -109,5 +109,5 @@ trait ActivationHelper extends BundleActivator {
 
 	private var managedServices: List[(() => Any, Seq[String], Map[String, Any])] = Nil
 
-	private var registeredServices: List[ServiceRegistration] = null
+	private var registeredServices: List[ServiceRegistration[_]] = null
 }

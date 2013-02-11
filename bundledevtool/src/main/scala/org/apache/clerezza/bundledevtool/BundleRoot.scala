@@ -164,7 +164,7 @@ class BundleRoot {
 		var bundle: Bundle = existingBundle
 		if (fileFastUpdate) {
 			val pathNode = new PermissionGrantingPathNode(new FilePathNode(new File(dir,"src/main/resources/CLEREZZA-INF/web-resources/")))
-			val registration = bundleContext.registerService(Array(classOf[PathNode].getName), pathNode, null: java.util.Dictionary[_, _])
+			val registration = bundleContext.registerService(Array(classOf[PathNode].getName), pathNode, null: java.util.Dictionary[String, _])
 			//println("registered "+classOf[PathNode].getName+": "+registration)
 		}
 		
