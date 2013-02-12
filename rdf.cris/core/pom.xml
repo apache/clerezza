@@ -45,14 +45,6 @@
 			<artifactId>rdf.utils</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.scala.utils</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-highlighter</artifactId>
 			<version>3.0.3</version>
@@ -91,27 +83,6 @@
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<plugins>
-<!--			<plugin>
-				<groupId>org.scala-tools</groupId>
-				<artifactId>maven-scala-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<Export-Package>org.apache.clerezza.rdf.cris.*</Export-Package>
-						<Bundle-SymbolicName>org.apache.clerezza.rdf.cris</Bundle-SymbolicName>
-					</instructions>
-				</configuration>
-			</plugin>-->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>

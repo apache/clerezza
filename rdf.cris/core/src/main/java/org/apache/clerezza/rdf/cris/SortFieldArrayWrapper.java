@@ -19,8 +19,8 @@
 
 package org.apache.clerezza.rdf.cris;
 
+import java.util.Arrays;
 import org.apache.lucene.search.SortField;
-import scala.actors.threadpool.Arrays;
 
 /**
  * Wrapper that allows to store SortField arrays as keys in a HashMap.
