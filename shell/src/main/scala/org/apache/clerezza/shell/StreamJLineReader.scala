@@ -31,27 +31,7 @@ import java.io.OutputStream
  */
 class StreamJLineReader(_completion: => Completion, in: InputStream, out: OutputStream, terminal: Terminal) extends InteractiveReader {
   val interactive = false
-  val consoleReader = new StreamJLineConsoleReader()
-
-  lazy val completion = _completion
-  lazy val history: JLineHistory = JLineHistory()
-  lazy val keyBindings =
-    try KeyBinding parse slurp(term.getDefaultBindings)
-    catch { case _: Exception => Nil }
-
-  private def term = consoleReader.getTerminal()
-  def reset() = term.reset()
-  def init()  = term.init()
-
-  def scalaToJline(tc: ScalaCompleter): Completer = new Completer {
-    def complete(_buf: String, cursor: Int, candidates: JList[CharSequence]): Int = {
-      val buf   = if (_buf == null) "" else _buf
-      val Candidates(newCursor, newCandidates) = tc.complete(buf, cursor)
-      newCandidates foreach (candidates add _)
-      newCursor
-    }
-  }
-
+  
   class StreamJLineConsoleReader extends ConsoleReader(in, out, null, terminal) with ConsoleReaderHelper {
     // working around protected/trait/java insufficiencies.
     def goBack(num: Int): Unit = back(num)
@@ -80,6 +60,53 @@ class StreamJLineReader(_completion: => Completion, in: InputStream, out: Output
       }
     }
   }
+  val consoleReader = new StreamJLineConsoleReader()
+  
+ lazy val completion = _completion
+  lazy val history: JLineHistory = JLineHistory()
+
+  private def term = consoleReader.getTerminal()
+  def reset() = term.reset()
+  def init() = term.init()
+
+  def scalaToJline(tc: ScalaCompleter): Completer = new Completer {
+    def complete(_buf: String, cursor: Int, candidates: JList[CharSequence]): Int = {
+      val buf = if (_buf == null) "" else _buf
+      val Candidates(newCursor, newCandidates) = tc.complete(buf, cursor)
+      newCandidates foreach (candidates add _)
+      newCursor
+    }
+  }
+
+  class JLineConsoleReader extends ConsoleReader with ConsoleReaderHelper {
+    if ((history: History) ne NoHistory)
+      this setHistory history
+
+    // working around protected/trait/java insufficiencies.
+    def goBack(num: Int): Unit = back(num)
+    def readOneKey(prompt: String) = {
+      this.print(prompt)
+      this.flush()
+      this.readVirtualKey()
+    }
+    def eraseLine() = consoleReader.resetPromptLine("", "", 0)
+    def redrawLineAndFlush(): Unit = { flush() ; drawLine() ; flush() }
+    // override def readLine(prompt: String): String
+
+    // A hook for running code after the repl is done initializing.
+    lazy val postInit: Unit = {
+      this setBellEnabled false
+
+      if (completion ne NoCompletion) {
+        val argCompletor: ArgumentCompleter =
+          new ArgumentCompleter(new JLineDelimiter, scalaToJline(completion.completer()))
+        argCompletor setStrict false
+
+        this addCompleter argCompletor
+        this setAutoprintThreshold 400 // max completion candidates without warning
+      }
+    }
+  }
 
   def currentLine = consoleReader.getCursorBuffer.buffer.toString
   def redrawLine() = consoleReader.redrawLineAndFlush()
@@ -87,5 +114,5 @@ class StreamJLineReader(_completion: => Completion, in: InputStream, out: Output
   // Alternate implementation, not sure if/when I need this.
   // def eraseLine() = while (consoleReader.delete()) { }
   def readOneLine(prompt: String) = consoleReader readLine prompt
-  def readOneKey(prompt: String)  = consoleReader readOneKey prompt
+  def readOneKey(prompt: String) = consoleReader readOneKey prompt
 }

@@ -55,14 +55,14 @@
     </dependency>
     <dependency>
       <groupId>org.scala-tools.testing</groupId>
-      <artifactId>specs_2.8.0</artifactId>
-      <version>1.6.5</version>
+      <artifactId>specs_2.10</artifactId>
+      <version>1.6.9</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.8.4</version>
+      <version>1.9.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -84,7 +84,6 @@
         <groupId>org.scala-tools</groupId>
         <artifactId>maven-scala-plugin</artifactId>
         <configuration>
-          <scalaVersion>${scala.version}</scalaVersion>
           <charset>${project.build.sourceEncoding}</charset>
           <jvmArgs>
             <jvmArg>-Xmx1024m</jvmArg>
@@ -121,13 +120,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.5,JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
             <Export-Package>org.slf4j.scala.*;version="${project.version}"</Export-Package>
-            <Import-Package>
-              scala.*;version="[${scala.version},${scala.version}]",
-              *
-            </Import-Package>
-            <_versionpolicy>[$(@),$(version;=+;$(@)))</_versionpolicy>
           </instructions>
         </configuration>
       </plugin>

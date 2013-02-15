@@ -106,7 +106,7 @@ abstract class XmlResult(arguments: XmlResult.Arguments) {
 	 * - $variable = value allows one to update the sharedRenderingValues hash
 	 * - $[ClassName] allows to access an osgi service annotated to be a WebRenderingService
 	 */
-	object $ {
+	object dollar {
 		def apply(key: String) = sharedRenderingValues.get(key)
 
 		def update(key: String, value: Object) = sharedRenderingValues.put(key, value)
@@ -117,6 +117,10 @@ abstract class XmlResult(arguments: XmlResult.Arguments) {
 		}
 	}
 
+    /** no idea why, but since scala 2.10 it doesn't work if the object 
+    * is called $ directly */
+    val $ = dollar
+   
 	def ifx[T](con: => Boolean)(f: => T): T = {
 		if (con) f else null.asInstanceOf[T]
 	}

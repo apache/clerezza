@@ -283,7 +283,7 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 	}
 	
 	def unbindPathNode(pathNode: PathNode) {
-		this.pathNodes -= pathNode;
+		this.pathNodes = this.pathNodes.filter(_ != pathNode);
 		frequentUpdateDirectory = pathNodes match {
 		  case Nil => None
 		  case _ => Some(new MultiPathNode(pathNodes: _*))
