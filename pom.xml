@@ -34,7 +34,6 @@
 	<version>0.3-incubating-SNAPSHOT</version>
 	<description>The direct or indirect parent of all Clerezza Artifacts</description>
 	<properties>
-		<scala.version>2.9.2</scala.version>
 		<sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
 	</properties>
 	<licenses>
@@ -183,7 +182,7 @@
 				<plugin>
 					<groupId>org.scala-tools</groupId>
 					<artifactId>maven-scala-plugin</artifactId>
-					<version>2.9.1</version>
+					<version>2.15.2</version>
 					<executions>
 						<execution>
 							<goals>
@@ -368,12 +367,12 @@
 			<dependency>
 				<groupId>org.scala-lang</groupId>
 				<artifactId>scala-library</artifactId>
-				<version>${scala.version}</version>
+				<version>2.10.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.scala-lang</groupId>
 				<artifactId>scala-compiler</artifactId>
-				<version>${scala.version}</version>
+				<version>2.10.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hp.hpl.jena</groupId>
