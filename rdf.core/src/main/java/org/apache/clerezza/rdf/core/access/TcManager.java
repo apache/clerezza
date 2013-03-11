@@ -74,7 +74,18 @@ import org.osgi.framework.BundleContext;
  *
  * This class returns <code>LockableMGraph</code>s a subtype of <code>MGraph</code>
  * that allows read/write locks.
- *
+ * 
+ * This class also registers all TripleCollections as services with the property 
+ * 'name' indicating there name.
+ * 
+ * Security checks are done when a TripleCollection is retrieved. The returned 
+ * TripleCollection will do no further security checks. Because of this it should 
+ * not be passed to a context where different access control applies. If an MGraph
+ * is retrieved without having write permission the returned mGraph will be read-only.
+ * 
+ * If a TripleCollections needs to passed around across different security contexts
+ * the one retrieved from the OSGi service whiteboard should be used as this 
+ * performs access control on every access.
  *
  * @author reto, mir, hasan
  * 
