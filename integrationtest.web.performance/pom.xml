@@ -22,13 +22,13 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>integrationtest.web.performance</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.6-incubating-SNAPSHOT</version>
+	<version>0.6-SNAPSHOT</version>
 	<name>Clerezza - Web Performance Integration Tests</name>
 	<dependencies>
 		<dependency>
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>integrationtest.web</artifactId>
-			<version>0.5-incubating-SNAPSHOT</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
             <groupId>commons-httpclient</groupId>

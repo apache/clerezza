@@ -21,34 +21,34 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.clerezza</groupId>
   <artifactId>uima.concept-tagging</artifactId>
-  <version>0.2-incubating-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>Clerezza - Apache UIMA extension for concept tagging</name>
   <parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>uima</artifactId>
-    <version>0.2-incubating-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
       <artifactId>platform.concepts.core</artifactId>
-    	<version>0.2-incubating-SNAPSHOT</version>
+    	<version>0.2-SNAPSHOT</version>
 		</dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
       <artifactId>rdf.utils</artifactId>
-    	<version>0.14-incubating-SNAPSHOT</version>
+    	<version>0.14-SNAPSHOT</version>
 		</dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
       <artifactId>uima.utils</artifactId>
-      <version>0.2-incubating-SNAPSHOT</version>
+      <version>0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.clerezza</groupId>
       <artifactId>uima.casconsumer</artifactId>
-      <version>0.2-incubating-SNAPSHOT</version>
+      <version>0.2-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>

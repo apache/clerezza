@@ -24,12 +24,12 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>utils.customproperty</artifactId>
-	<version>0.5-incubating-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Utils Custom Property</name>
 	<description>Management of additional properties of specified items.</description>
@@ -37,12 +37,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
-			<version>0.12-incubating-SNAPSHOT</version>
+			<version>0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.graphprovider.content</artifactId>
-			<version>0.7-incubating-SNAPSHOT</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

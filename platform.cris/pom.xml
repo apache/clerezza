@@ -24,13 +24,13 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.cris</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.2-incubating-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>Clerezza - Platform CRIS service for the content graph</name>
 	<description>
 		A composite resource index service for resources described in the content graph
@@ -39,27 +39,27 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.cris.ontologies</artifactId>
-			<version>0.2-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.cris.core</artifactId>
-			<version>0.2-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
-			<version>0.13-incubating-SNAPSHOT</version>
+			<version>0.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.utils</artifactId>
-			<version>0.14-incubating-SNAPSHOT</version>
+			<version>0.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.scala.utils</artifactId>
-			<version>0.4-incubating-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.graphprovider.content</artifactId>
-			<version>0.7-incubating-SNAPSHOT</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>

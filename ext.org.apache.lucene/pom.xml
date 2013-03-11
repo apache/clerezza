@@ -22,12 +22,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza.ext</groupId>
 	<artifactId>org.apache.lucene</artifactId>
-	<version>0.2-incubating-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>Clerezza Ext - Apache Lucene</name>
 	<description>Apache Lucene is a high-performance, full-featured text search engine library written entirely in Java. It is a technology suitable for nearly any application that requires full-text search, especially cross-platfor</description>
 	<packaging>bundle</packaging>

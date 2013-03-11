@@ -22,12 +22,12 @@
 	<groupId>org.example.clerezza</groupId>
 	<artifactId>combined.tutorial</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0-incubating-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>SCB Jaxrs Tutorial</name>	
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.11-incubating-SNAPSHOT</version>
+		<version>0.11-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<repositories>
@@ -48,12 +48,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.rdf.providers</artifactId>
-			<version>0.14-incubating-SNAPSHOT</version>
+			<version>0.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.seedsnipe</artifactId>
-			<version>0.7-incubating-SNAPSHOT</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 	</dependencies>	
 </project>

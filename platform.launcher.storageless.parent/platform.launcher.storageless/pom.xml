@@ -22,11 +22,11 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>platform.launcher.storageless.parent</artifactId>
-		<version>0.9-incubating-SNAPSHOT</version>
+		<version>0.9-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.launcher.storageless</artifactId>
-	<version>0.9-incubating-SNAPSHOT</version>
+	<version>0.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Clerezza - Platform Launcher Storageless</name>
 	<description>A standalone java application for launching the clerezza.org platform. It is also a bundle, but there is no OSGi container known to support this (we are working on it :-) ).
@@ -244,7 +244,7 @@
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>slf4j-scala-api</artifactId>
 			<scope>provided</scope>
-			<version>1.6.2-incubating-SNAPSHOT</version>
+			<version>1.6.2-SNAPSHOT</version>
 		</dependency>
 		  <!-- Core Felix. -->
 		<dependency>

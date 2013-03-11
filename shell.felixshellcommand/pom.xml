@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>shell.felixshellcommand</artifactId>
-	<version>0.2-incubating-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Integartion of felix shell commands into clerezza shell</name>
 	<description>
@@ -40,12 +40,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>shell</artifactId>
-			<version>0.3-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>web.fileserver</artifactId>
-			<version>0.10-incubating-SNAPSHOT</version>
+			<version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

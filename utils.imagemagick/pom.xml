@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>utils.imagemagick</artifactId>
-	<version>0.5-incubating-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Utils ImageMagick based Image Processor</name>
 	<description>A utility to manipulate images using ImageMagick</description>
@@ -46,18 +46,18 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>utils.imageprocessing</artifactId>
-			<version>0.8-incubating-SNAPSHOT</version>
+			<version>0.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
-			<version>0.12-incubating-SNAPSHOT</version>
+			<version>0.12-SNAPSHOT</version>
 		</dependency>
         <dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.serializer</artifactId>
 			<scope>test</scope>
-			<version>0.10-incubating-SNAPSHOT</version>
+			<version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

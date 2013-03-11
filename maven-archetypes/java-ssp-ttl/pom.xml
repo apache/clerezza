@@ -9,7 +9,7 @@
 	<groupId>org.apache.clerezza.java-ssp-ttl-skeleton</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1-incubating-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<name>Clerezza - Skeleton for a project using Java, ScalaServerPages and Turtle</name>
 	<modules>
 		<module>ontologies</module>
@@ -20,7 +20,7 @@
 			<dependency>
 				<groupId>org.apache.clerezza.java-ssp-ttl-skeleton</groupId>
 				<artifactId>ontologies</artifactId>
-				<version>0.1-incubating-SNAPSHOT</version>
+				<version>0.1-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

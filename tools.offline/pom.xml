@@ -24,13 +24,13 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>tools.offline</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.2-incubating-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>Clerezza - Tools Offline Site Generator</name>
 	<description>The core part of SCB Web Access</description>
 	<dependencies>
@@ -42,29 +42,29 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.core</artifactId>
-			<version>0.3-incubating-SNAPSHOT</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.scalaserverpages</artifactId>
-			<version>0.4-incubating-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
-			<version>0.13-incubating-SNAPSHOT</version>
+			<version>0.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.serializer</artifactId>
 			<scope>test</scope>
-			<version>0.10-incubating-SNAPSHOT</version>
+			<version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.parser</artifactId>
 			<scope>test</scope>
-			<version>0.11-incubating-SNAPSHOT</version>
+			<version>0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
@@ -73,32 +73,32 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.utils</artifactId>
-			<version>0.7-incubating-SNAPSHOT</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
-			<version>0.12-incubating-SNAPSHOT</version>
+			<version>0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.web.ontologies</artifactId>
-			<version>0.3-incubating-SNAPSHOT</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>web.fileserver</artifactId>
-			<version>0.10-incubating-SNAPSHOT</version>
+			<version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>utils</artifactId>
-			<version>0.2-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.content.representations.core</artifactId>
-			<version>0.2-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

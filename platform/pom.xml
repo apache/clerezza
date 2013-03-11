@@ -24,13 +24,13 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.2-incubating-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>Clerezza - Platform</name>
 	<description>Artifact with dependencies to the clerezza platform components
 	providing documentation and boot-status monitoring.</description>
@@ -51,7 +51,7 @@
 		<dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-        	<version>0.13-incubating-SNAPSHOT</version>
+        	<version>0.13-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -22,12 +22,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>platform.concepts</artifactId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.concepts.core</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.2-incubating-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>Clerezza - Platform Concepts Core</name>
 	<description>The core part of Platform Concepts</description>
 	<dependencies>
@@ -43,63 +43,63 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
-			<version>0.13-incubating-SNAPSHOT</version>
+			<version>0.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
-			<version>0.12-incubating-SNAPSHOT</version>
+			<version>0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.utils</artifactId>
-			<version>0.14-incubating-SNAPSHOT</version>
+			<version>0.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.concepts.ontologies</artifactId>
-			<version>0.2-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.graphprovider.content</artifactId>
-			<version>0.7-incubating-SNAPSHOT</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.core</artifactId>
-			<version>0.3-incubating-SNAPSHOT</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.scalaserverpages</artifactId>
-			<version>0.4-incubating-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.utils</artifactId>
-			<version>0.7-incubating-SNAPSHOT</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.config</artifactId>
-			<version>0.4-incubating-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.dashboard.core</artifactId>
-			<version>0.3-incubating-SNAPSHOT</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>permissiondescriptions</artifactId>
-			<version>0.2-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>web.fileserver</artifactId>
 			<scope>compile</scope>
-			<version>0.10-incubating-SNAPSHOT</version>
+			<version>0.10-SNAPSHOT</version>
 		</dependency>
         <dependency>
             <groupId>org.apache.wink</groupId>

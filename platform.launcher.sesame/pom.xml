@@ -22,12 +22,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.launcher.sesame</artifactId>
-	<version>0.5-incubating-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Clerezza - Platform Launcher with Sesame Storage</name>
 	<description>Sesame variant of standalone java application for launching the clerezza.org platform. It is also a bundle, but there is no OSGi container known to support this (we are working on it :-) ).</description>
@@ -159,20 +159,20 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.launcher.storageless</artifactId>
 			<scope>provided</scope>
-			<version>0.9-incubating-SNAPSHOT</version>
+			<version>0.9-SNAPSHOT</version>
 		</dependency>
 		<!-- what makes this variant special -->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.sesame.storage</artifactId>
 			<scope>runtime</scope>
-			<version>0.13-incubating-SNAPSHOT</version>
+			<version>0.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>org.openrdf.sesame</artifactId>
 			<scope>runtime</scope>
-			<version>0.5-incubating-SNAPSHOT</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

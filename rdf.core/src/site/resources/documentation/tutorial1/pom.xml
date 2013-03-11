@@ -22,7 +22,7 @@
 	<groupId>org.example.clerezza.scb</groupId>
 	<artifactId>tutorial1</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-incubating-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>tutorial1</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
@@ -35,29 +35,29 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
-			<version>0.7-incubating-SNAPSHOT</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.utils</artifactId>
-			<version>0.7-incubating-SNAPSHOT</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
-			<version>0.5-incubating-SNAPSHOT</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.parser</artifactId>
-			<version>0.5-incubating-SNAPSHOT</version>
+			<version>0.5-SNAPSHOT</version>
 	<!-- <scope>runtime</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.serializer</artifactId>
-			<version>0.4-incubating-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 	<!-- <scope>runtime</scope> -->
 		</dependency>
 		<dependency>
@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.simple.storage</artifactId>
-			<version>0.2-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 			<!-- <scope>runtime</scope> -->
 		</dependency>
 

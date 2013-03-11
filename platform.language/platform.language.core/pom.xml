@@ -25,11 +25,11 @@
 	<parent>
 		<artifactId>platform.language</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.language.core</artifactId>
-	<version>0.3-incubating-SNAPSHOT</version>
+	<version>0.3-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>Clerezza - Platform Language Core</name>
 	<description>This bundles provides methods to manage languages in the Clerezza platform
@@ -42,32 +42,32 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
-			<version>0.13-incubating-SNAPSHOT</version>
+			<version>0.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
-			<version>0.12-incubating-SNAPSHOT</version>
+			<version>0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.utils</artifactId>
-			<version>0.14-incubating-SNAPSHOT</version>
+			<version>0.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.core</artifactId>
-			<version>0.3-incubating-SNAPSHOT</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.scalaserverpages</artifactId>
-			<version>0.4-incubating-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.config</artifactId>
-			<version>0.4-incubating-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -76,12 +76,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>web.fileserver</artifactId>
-			<version>0.10-incubating-SNAPSHOT</version>
+			<version>0.10-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.language.ontologies</artifactId>
-			<version>0.3-incubating-SNAPSHOT</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

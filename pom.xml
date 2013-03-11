@@ -30,7 +30,7 @@
 	<packaging>pom</packaging>
 	<name>Clerezza - Reactor build (root)</name>
 	<url>http://incubator.apache.org/clerezza/mvn-site/</url>
-	<version>0.3-incubating-SNAPSHOT</version>
+	<version>0.3-SNAPSHOT</version>
 	<description>A recator to build all of clerezza</description>
 	<properties>
 		<sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
@@ -117,6 +117,7 @@
 				<module>platform.scripting</module>
 				<module>platform.scripting.scriptmanager</module>
 				<!-- <module>platform.security.foafssl</module> -->
+                <module>platform.security.foafssl/ontologies</module>
 				<module>platform.security.conditions</module>
 				<module>platform.shellcustomizer</module>
 				<module>platform.typehandlerspace</module>
@@ -334,12 +335,12 @@
 				<plugin>
 					<groupId>org.apache.clerezza</groupId>
 					<artifactId>maven-ontologies-plugin</artifactId>
-					<version>0.4-incubating-SNAPSHOT</version>
+					<version>0.4-SNAPSHOT</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.clerezza</groupId>
 					<artifactId>maven-pladoc-plugin.core</artifactId>
-					<version>0.4-incubating-SNAPSHOT</version>
+					<version>0.4-SNAPSHOT</version>
 				</plugin>
 				<plugin>
 					<groupId>org.ops4j.pax.exam</groupId>
@@ -579,7 +580,7 @@
 			<plugin>
 				<groupId>org.apache.clerezza</groupId>
 				<artifactId>maven-jaxrs-report-plugin</artifactId>
-				<version>0.2-incubating-SNAPSHOT</version>
+				<version>0.2-SNAPSHOT</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

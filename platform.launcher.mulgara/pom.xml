@@ -24,12 +24,12 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>platform.launcher.mulgara</artifactId>
-	<version>0.5-incubating-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Clerezza - Platform Launcher with Mulgara</name>
 	<description>Mulgara variant of standalone java application for launching the clerezza.org platform. It is also a bundle, but there is no OSGi container known to support this (we are working on it :-) ).</description>

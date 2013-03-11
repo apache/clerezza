@@ -24,13 +24,13 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>web.resources.jquery</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.6-incubating-SNAPSHOT</version>
+	<version>0.6-SNAPSHOT</version>
 	<name>Clerezza - jQuery bundlized</name>
 	<description>
 		jQuery 1.3.2 as a bundle
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>web.fileserver</artifactId>
-			<version>0.10-incubating-SNAPSHOT</version>
+			<version>0.10-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

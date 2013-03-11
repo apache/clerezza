@@ -24,13 +24,13 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>internal.archetype</artifactId>
 	<packaging>maven-archetype</packaging>
-	<version>0.10-incubating-SNAPSHOT</version>
+	<version>0.10-SNAPSHOT</version>
 	<name>Clerezza - Archetype for clerezza.org projects</name>
 	<description>Generic archetype for clerezza projects</description>
 	<build>

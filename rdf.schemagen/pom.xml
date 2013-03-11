@@ -24,11 +24,11 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
-	<version>0.11-incubating-SNAPSHOT</version>
+	<version>0.11-SNAPSHOT</version>
 	<artifactId>rdf.schemagen</artifactId>
 	<packaging>jar</packaging>
 	<name>Clerezza - SCB Schema-Class Generator</name>
@@ -45,12 +45,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
-			<version>0.13-incubating-SNAPSHOT</version>
+			<version>0.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.parser</artifactId>
-			<version>0.11-incubating-SNAPSHOT</version>
+			<version>0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
             <groupId>org.slf4j</groupId>

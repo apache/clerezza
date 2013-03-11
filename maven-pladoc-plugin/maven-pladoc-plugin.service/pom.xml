@@ -24,18 +24,18 @@
 	<parent>
 		<artifactId>maven-pladoc-plugin</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.4-incubating-SNAPSHOT</version>
+		<version>0.4-SNAPSHOT</version>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>maven-pladoc-plugin.service</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.4-incubating-SNAPSHOT</version>
+	<version>0.4-SNAPSHOT</version>
 	<name>Clerezza - Maven PlaDoc Plugin Service</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>maven-pladoc-plugin.api</artifactId>
-			<version>0.4-incubating-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -50,7 +50,7 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.utils</artifactId>
 			<!-- <scope>provided</scope> -->
-			<version>0.14-incubating-SNAPSHOT</version>
+			<version>0.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.core</artifactId>
-			<version>0.3-incubating-SNAPSHOT</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

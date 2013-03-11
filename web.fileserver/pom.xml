@@ -24,13 +24,13 @@
 	<parent>
 		<groupId>org.apache.clerezza</groupId>
 		<artifactId>clerezza</artifactId>
-		<version>0.3-incubating-SNAPSHOT</version>
+		<version>0.3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>web.fileserver</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.10-incubating-SNAPSHOT</version>
+	<version>0.10-SNAPSHOT</version>
 	<name>Clerezza - Jax-Rs File Server</name>
 	<dependencies>
 		<dependency>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>utils</artifactId>
-			<version>0.2-incubating-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

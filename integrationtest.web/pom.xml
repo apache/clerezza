@@ -22,13 +22,13 @@
 	<parent>
 		<artifactId>clerezza</artifactId>
 		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-incubating-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<groupId>org.apache.clerezza</groupId>
 	<artifactId>integrationtest.web</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.5-incubating-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<name>Clerezza - Web Test Framework</name>
 	<description>A framework to run tests against a webserver</description>
 	<dependencies>
@@ -43,7 +43,7 @@
 		<dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>javax.mail</artifactId>
-        	<version>0.5-incubating-SNAPSHOT</version>
+        	<version>0.5-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
