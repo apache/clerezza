@@ -28,18 +28,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * This JAX-RS provider converts a request body of the content type
  * "multipart/form-data" (format according RFC 2388) into a
  * <code>MultiPartBody</code> object.
  * 
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
- * 
- * @author rbn
  */
+@Component
+@Service(Object.class)
+@Property(name="javax.ws.rs", boolValue=true)
 @Provider
 @Consumes("multipart/form-data")
 public class MultiPartFormMessageBodyReader implements
@@ -48,8 +49,9 @@ public class MultiPartFormMessageBodyReader implements
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
-		return (mediaType.getType().equals("multipart") && mediaType
-				.getSubtype().equals("form-data"));
+		return type.isAssignableFrom(MultiPartBody.class) 
+                && mediaType.getType().equals("multipart") 
+                && mediaType.getSubtype().equals("form-data");
 	}
 
 	@Override
