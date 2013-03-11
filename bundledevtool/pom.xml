@@ -35,6 +35,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza.scala</groupId>
 			<artifactId>script-engine</artifactId>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -59,10 +60,12 @@
         <dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>utils</artifactId>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>shell</artifactId>
+			<version>0.3-incubating-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -119,5 +122,3 @@
 		</plugins>
 	</build>
 </project>
-
-

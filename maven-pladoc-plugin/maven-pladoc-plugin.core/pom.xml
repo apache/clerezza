@@ -40,10 +40,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>maven-pladoc-plugin.api</artifactId>
+			<version>0.4-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>maven-pladoc-plugin.service</artifactId>
+			<version>0.4-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -94,16 +96,19 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.content</artifactId>
 			<!--<scope>provided</scope> -->
+			<version>0.14-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.simple.storage</artifactId>
 			<!-- <scope>provided</scope> -->
+			<version>0.8-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.parser</artifactId>
 			<!-- <scope>provided</scope> -->
+			<version>0.11-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>
@@ -115,11 +120,13 @@
 					<groupId>xerces</groupId>
 				</exclusion>
 			</exclusions>
+			<version>0.7-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>com.ibm.icu</artifactId>
 			<!-- <scope>provided</scope> -->
+			<version>0.6-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>

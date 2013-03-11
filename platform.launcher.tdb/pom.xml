@@ -161,17 +161,20 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.launcher.storageless</artifactId>
 			<scope>provided</scope>
+			<version>0.9-incubating-SNAPSHOT</version>
 		</dependency>
 		<!-- what makes this variant special -->
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.tdb.storage</artifactId>
 			<scope>runtime</scope>
+			<version>0.6-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>com.hp.hpl.jena.tdb</artifactId>
 			<scope>runtime</scope>
+			<version>0.4-incubating-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

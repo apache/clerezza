@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -18,9 +17,7 @@
  specific language governing permissions and limitations
  under the License.
 
--->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>platform.dashboard</artifactId>
 		<groupId>org.apache.clerezza</groupId>
@@ -38,86 +35,103 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
 			<scope>provided</scope>
+			<version>0.13-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.utils</artifactId>
 			<scope>provided</scope>
+			<version>0.7-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.core</artifactId>
 			<scope>provided</scope>
+			<version>0.3-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.ontologies</artifactId>
 			<scope>provided</scope>
+			<version>0.3-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typerendering.scalaserverpages</artifactId>
 			<scope>provided</scope>
+			<version>0.4-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId> 	                         
 			<artifactId>platform.typerendering.scala</artifactId>
 			<scope>provided</scope>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.scala.utils</artifactId>
 			<scope>provided</scope>
+			<version>0.4-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.graphprovider.content</artifactId>
 			<scope>provided</scope>
+			<version>0.7-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.utils</artifactId>
 			<scope>provided</scope>
+			<version>0.14-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>permissiondescriptions</artifactId>
 			<scope>provided</scope>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>utils</artifactId>
 			<scope>provided</scope>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>org.json.simple</artifactId>
 			<scope>provided</scope>
+			<version>0.4-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.dashboard.core</artifactId>
 			<scope>provided</scope>
+			<version>0.3-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.dashboard.ontologies</artifactId>
 			<scope>provided</scope>
+			<version>0.3-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
 			<scope>provided</scope>
+			<version>0.12-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>templating</artifactId>
 			<scope>provided</scope>
+			<version>0.9-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>templating.seedsnipe</artifactId>
 			<scope>provided</scope>
+			<version>0.9-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
@@ -128,6 +142,7 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.extensions</artifactId>
 			<scope>provided</scope>
+			<version>0.6-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -143,6 +158,7 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>utils</artifactId>
 			<scope>provided</scope>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -180,6 +196,7 @@
 			<groupId>org.apache.clerezza.ext</groupId>
 			<artifactId>com.ibm.icu</artifactId>
 			<scope>provided</scope>
+			<version>0.6-incubating-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -197,16 +214,19 @@
 			<groupId>org.apache.clerezza.scala</groupId>
 			<artifactId>scala-library-osgi</artifactId>
 			<scope>provided</scope>
+			<version>0.1-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.scala</groupId>
 			<artifactId>scala-compiler-osgi</artifactId>
 			<scope>provided</scope>
+			<version>0.1-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza.scala</groupId>
 			<artifactId>script-engine</artifactId>
 			<scope>provided</scope>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>

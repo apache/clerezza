@@ -39,6 +39,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
+			<version>0.13-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -48,11 +49,13 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.serializer</artifactId>
 			<scope>test</scope>
+			<version>0.10-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.jena.parser</artifactId>
 			<scope>test</scope>
+			<version>0.11-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
@@ -73,4 +76,3 @@
 		</dependency>
 	</dependencies>
 </project>
-

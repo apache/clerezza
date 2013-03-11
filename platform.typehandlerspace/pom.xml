@@ -48,18 +48,22 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
+			<version>0.13-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.utils</artifactId>
+			<version>0.14-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.ontologies</artifactId>
+			<version>0.12-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.extensions</artifactId>
+			<version>0.6-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -68,10 +72,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.config</artifactId>
+			<version>0.4-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.typepriority</artifactId>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -82,6 +88,7 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>jaxrs.rdf.providers</artifactId>
 			<scope>test</scope>
+			<version>0.14-incubating-SNAPSHOT</version>
 		</dependency>
 		<!-- testing with last released version, testutils is doscontinued as
        triaxrs is -->

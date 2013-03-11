@@ -35,10 +35,12 @@
 		<dependency>
 			<groupId>org.apache.clerezza.scala</groupId>
 			<artifactId>script-engine</artifactId>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>osgi.services</artifactId>
+			<version>0.2-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -73,6 +75,7 @@
 		<dependency>
 		  <groupId>org.apache.clerezza.ext</groupId>
 		  <artifactId>slf4j-scala-api</artifactId>
+			<version>1.6.2-incubating-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -124,5 +127,3 @@
 		</plugins>
 	</build>
 </project>
-
-

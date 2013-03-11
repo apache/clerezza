@@ -46,15 +46,17 @@
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>platform.content</artifactId>
 			<!-- <scope>provided</scope> -->
+			<version>0.14-incubating-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.simple.storage</artifactId>
 			<!-- <scope>provided</scope> -->
+			<version>0.8-incubating-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<reporting>
 		<excludeDefaults>true</excludeDefaults>
-		<plugins />
+		<plugins/>
 	</reporting>
 </project>
