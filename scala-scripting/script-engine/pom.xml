@@ -73,7 +73,7 @@
 						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
 						<Export-Package>org.apache.clerezza.scala.scripting,org.apache.clerezza.scala.scripting.util</Export-Package>
                         <Import-Package>!com.sun.*,!javax.servlet,!javax.servlet.*,
-                            !org.fusesource.*,!org.mozilla.*,!scala.reflect.*,*
+                            !org.fusesource.*,!org.mozilla.*,!scala.reflect.*,!javax.ws.rs,!javax.ws.rs.*,*
                         </Import-Package>
                         <Private-Package>org.fusesource.*</Private-Package>
 						<DynamicImport-Package>*</DynamicImport-Package>

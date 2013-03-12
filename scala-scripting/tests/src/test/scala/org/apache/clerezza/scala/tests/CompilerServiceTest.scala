@@ -172,7 +172,7 @@ object """+objectName+""" {
 							testRunner ! (message, receivedMessage)
 						}
 					} catch {
-						case t => testRunner ! t
+						case t: Throwable => testRunner ! t
 					}
 				}
 			}
@@ -199,7 +199,7 @@ object """+objectName+""" {
 			})
 		} catch {
 			case e: PrivilegedActionException => throw e.getCause
-			case e => throw e
+			case e: Throwable => throw e
 		}
 	}
 

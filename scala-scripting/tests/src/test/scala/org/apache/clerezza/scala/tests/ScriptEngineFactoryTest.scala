@@ -170,7 +170,7 @@ class ScriptEngineFactoryTest {
 		try {
 			val compiledScript = engine.compile(script)
 		} catch {
-			case e => Assert.assertEquals(classOf[ScriptException], e.getClass)
+			case e: Throwable => Assert.assertEquals(classOf[ScriptException], e.getClass)
 		}
 		val string = "hello"
 		val script2 = "\""+string+"\""

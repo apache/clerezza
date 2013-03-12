@@ -52,6 +52,11 @@
 				<artifactId>scala-actors</artifactId>
 				<version>2.10.0</version>
 			</dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-reflect</artifactId>
+                <version>2.10.0</version>
+            </dependency>
 			<dependency>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.scr.annotations</artifactId>
