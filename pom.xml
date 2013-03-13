@@ -156,7 +156,6 @@
 				<plugin>
 					<groupId>org.apache.clerezza</groupId>
 					<artifactId>maven-pladoc-plugin.core</artifactId>
-					<version>0.4-SNAPSHOT</version>
 				</plugin>
 				<plugin>
 					<groupId>org.ops4j.pax.exam</groupId>
@@ -555,10 +554,10 @@
 	</dependencyManagement>
 	<distributionManagement>
 		<!-- where to deploy the web site -->
-		<site>
+		<!-- <site>
 			<id>people.apache.org</id>
-			<url>scp://people.apache.org/www/incubator.apache.org/clerezza/mvn-site/</url>
-		</site>
+			<url>scp://people.apache.org/www/incubator.apache.org/content/clerezza/mvn-site/</url>
+		</site> -->
 
 		<!-- where to deploy the artifacts -->
 		<repository>
@@ -585,9 +584,9 @@
 
 
 	<scm>
-		<url>http://svn.apache.org/viewvc/incubator/clerezza</url>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/trunk/parent/</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/trunk/parent/</developerConnection>
+		<url>http://svn.apache.org/viewvc/clerezza</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/trunk/parent/</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/trunk/parent/</developerConnection>
 	</scm>
 
 	<!-- lets generate reports -->
