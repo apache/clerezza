@@ -60,7 +60,8 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+				<version>0.4-SNAPSHOT</version>
+		</plugin>
 		</plugins>
 	</build>
 </project>
