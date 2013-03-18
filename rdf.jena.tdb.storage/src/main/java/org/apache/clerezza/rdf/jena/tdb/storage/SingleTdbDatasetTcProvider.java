@@ -12,23 +12,32 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
+import org.apache.clerezza.rdf.core.event.FilterTriple;
+import org.apache.clerezza.rdf.core.event.GraphListener;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedMGraphWrapper;
@@ -40,7 +49,6 @@ import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
-import org.openjena.atlas.lib.Tuple;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -111,6 +119,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
     private SyncThread syncThread;
 
     private Dataset dataset;
+    private final ReadWriteLock datasetLock = new ReentrantReadWriteLock();;
     
     private File graphConfigFile;
     private File mGraphConfigFile;
@@ -182,7 +191,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                 graph = new PrivilegedGraphWrapper(jenaAdapter.getGraph());
             } else { //construct an MGraph
                 jenaAdapter = new JenaGraphAdaptor(model.getGraph());
-                this.graph =  new LockableMGraphWrapper(
+                this.graph =  new DatasetLockedMGraph(
                     new PrivilegedMGraphWrapper(jenaAdapter));
             }
         }
@@ -275,12 +284,15 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                     interrupt();
                 }
                 if (!stopRequested) {
-                    synchronized (dataset) {
+                	datasetLock.writeLock().lock();
+                	try {
                         for(ModelGraph mg : initModels.values()){
                             if(mg.isReadWrite()){
                                 mg.sync();
                             } //else we do not need to sync read-only models
                         }
+                    } finally {
+                    	datasetLock.writeLock().unlock();
                     }
                 }
             }
@@ -415,7 +427,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         } //else exists and is a directory ... nothing to do
         TDB.getContext().set(TDB.symUnionDefaultGraph, true);
         dataset = TDBFactory.createDataset(dataDir.getAbsolutePath());
-
+        //init the read/write lock
+        
         //init the graph config (stores the graph and mgraph names in a config file)
         initGraphConfigs(dataDir,config);
         
@@ -458,13 +471,16 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
     @Deactivate
     protected void deactivate(ComponentContext ctx) {
         if(dataset != null){ //avoid NPE on multiple calls
-            synchronized (dataset) {
+            datasetLock.writeLock().lock();
+            try {
                 for(ModelGraph mg : initModels.values()){
                     mg.close(); //close also syncs!
                 }
                 TDB.sync(dataset);
                 dataset.close();
                 dataset = null;
+            } finally {
+            	datasetLock.writeLock().unlock();
             }
         }
         if(syncThread != null){
@@ -472,7 +488,6 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             syncThread = null;
         }
         initModels = null;
-        dataset = null;
         graphConfigFile = null;
         graphNames = null;
         mGraphConfigFile = null;
@@ -495,7 +510,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
      */
     private ModelGraph getModelGraph(UriRef name, boolean readWrite,boolean create) throws NoSuchEntityException {
         ModelGraph modelGraph;
-        synchronized (dataset) {
+        datasetLock.readLock().lock();
+        try {
             modelGraph = initModels.get(name);
             if(modelGraph != null && create){
                 throw new EntityAlreadyExistsException(name);
@@ -506,6 +522,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                             dataset.getNamedModel(modelName),readWrite);
                 this.initModels.put(name, modelGraph);
             }
+        } finally {
+        	datasetLock.readLock().unlock();
         }
         return modelGraph;
     }
@@ -518,12 +536,15 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         if(name == null){
             throw new IllegalArgumentException("The parsed Graph UriRef MUST NOT be NULL!");
         }
-        synchronized (dataset) {
+        datasetLock.readLock().lock();
+        try {
             if(graphNames.contains(name) || name.equals(defaultGraphName)){
                 return getModelGraph(name,false,false).getGraph();
             } else {
                 throw new NoSuchEntityException(name);
             }
+        } finally {
+        	datasetLock.readLock().unlock();
         }
     }
     /*
@@ -535,12 +556,15 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         if(name == null){
             throw new IllegalArgumentException("The parsed Graph UriRef MUST NOT be NULL!");
         }
-        synchronized (dataset) {
+        datasetLock.readLock().lock();
+        try {
             if(mGraphNames.contains(name)){
                 return getModelGraph(name,true,false).getMGraph();
             } else {
                 throw new NoSuchEntityException(name);
             }
+        } finally {
+        	datasetLock.readLock().unlock();
         }
     }
     /*
@@ -552,7 +576,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         if(name == null){
             throw new IllegalArgumentException("The parsed Graph UriRef MUST NOT be NULL!");
         }
-        synchronized (dataset) {
+        datasetLock.readLock().lock();
+        try {
             if(graphNames.contains(name) || name.equals(defaultGraphName)){
                 return getGraph(name);
             } else if(mGraphNames.contains(name)){
@@ -560,6 +585,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             } else {
                 throw new NoSuchEntityException(name);
             }
+        } finally {
+        	datasetLock.readLock().unlock();
         }
     }
     /*
@@ -594,10 +621,13 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
     @Override
     public Set<UriRef> listTripleCollections() {
         Set<UriRef> graphNames = new HashSet<UriRef>();
-        synchronized (dataset) {
+        datasetLock.readLock().lock();
+        try {
             for(Iterator<String> names = dataset.listNames(); 
                 names.hasNext();
                     graphNames.add(new UriRef(names.next())));
+        } finally {
+        	datasetLock.readLock().unlock();
         }
         if(defaultGraphName != null){
             graphNames.add(defaultGraphName);
@@ -614,7 +644,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         if(name == null){
             throw new IllegalArgumentException("The parsed MGrpah name MUST NOT be NULL!");
         }
-        synchronized (dataset) {
+        datasetLock.writeLock().lock();
+        try {
             if(graphNames.contains(name) || mGraphNames.contains(name) || name.equals(defaultGraphName)){
                 throw new EntityAlreadyExistsException(name);
             }
@@ -627,6 +658,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                         + mGraphConfigFile+"'!",e);
             }
             return graph;
+        } finally {
+        	datasetLock.writeLock().unlock();
         }
     }
     /*
@@ -640,7 +673,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             throw new IllegalArgumentException("The parsed Grpah name MUST NOT be NULL!");
         }
         ModelGraph mg;
-        synchronized (dataset) {
+        datasetLock.writeLock().lock();
+        try {
             if(graphNames.contains(name) || mGraphNames.contains(name) || name.equals(defaultGraphName)){
                 throw new EntityAlreadyExistsException(name);
             }
@@ -652,13 +686,13 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                 throw new IllegalStateException("Unable to wirte GraphName config file '"
                         + graphConfigFile+"'!",e);
             }
-        }
-        //add the parsed data!
-        if(triples != null) { //load the initial and final set of triples
-            mg.getJenaAdapter().addAll(triples);
-            synchronized(dataset){
-                mg.sync();
+            //add the parsed data!
+            if(triples != null) { //load the initial and final set of triples
+                mg.getJenaAdapter().addAll(triples);
+                    mg.sync();
             }
+        } finally {
+        	datasetLock.writeLock().unlock();
         }
         return mg.getGraph();
     }
@@ -673,7 +707,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         if(name == null){
             throw new IllegalArgumentException("The parsed MGrpah name MUST NOT be NULL!");
         }
-        synchronized (dataset) {
+        datasetLock.writeLock().lock();
+        try {
             if(mGraphNames.remove(name)){
                 try {
                     writeMGraphConfig();
@@ -699,6 +734,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             }
             //delete the graph from the initModels list
             initModels.remove(name);
+        } finally {
+        	datasetLock.writeLock().unlock();
         }
     }
     /*
@@ -822,8 +859,13 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         graphNames = new HashSet<UriRef>();
         boolean configPresent = readGraphConfig(graphConfigFile, graphNames);
         log.info("Present named Models");
-        for(Iterator<String> it = dataset.listNames();it.hasNext();){
-            log.info(" > {}",it.next());
+        datasetLock.readLock().lock();
+        try {
+	        for(Iterator<String> it = dataset.listNames();it.hasNext();){
+	            log.info(" > {}",it.next());
+	        }
+        } finally {
+        	datasetLock.readLock().unlock();
         }
         if(configPresent) {
             //validate that all Graphs and MGraphs in the configFile also are 
@@ -880,11 +922,14 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
 //                }
 //            }
         } else { //read pre-existing models in the dataset
-            synchronized (dataset) {
+            datasetLock.readLock().lock();
+            try {
                 for(Iterator<String> it = dataset.listNames();it.hasNext();){
                     mGraphNames.add(new UriRef(it.next()));
                 }
                 writeMGraphConfig();
+            } finally {
+            	datasetLock.readLock().unlock();
             }
         }
     }
@@ -912,6 +957,207 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         } else {// no config file indicates first initialisation
             return false;
         }
+    }
+    /**
+     * {@link LockableMGraph} wrapper that uses a single {@link ReadWriteLock} for
+     * the Jena TDB {@link SingleTdbDatasetTcProvider#dataset}
+     * @author Rupert Westenthaler
+     *
+     */
+    private class DatasetLockedMGraph implements LockableMGraph {
+
+    	private final MGraph wrapped;
+
+    	/**
+    	 * Constructs a LocalbleMGraph for an MGraph.
+    	 *
+    	 * @param providedMGraph a non-lockable mgraph
+    	 */
+    	public DatasetLockedMGraph(final MGraph providedMGraph) {
+    		this.wrapped = providedMGraph;
+    	}
+
+    	@Override
+    	public ReadWriteLock getLock() {
+    		return datasetLock;
+    	}
+
+    	@Override
+    	public Graph getGraph() {
+    		datasetLock.readLock().lock();
+    		try {
+    			return wrapped.getGraph();
+    		} finally {
+    			datasetLock.readLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
+			//users will need to aquire a readlock while iterating
+			return wrapped.filter(subject, predicate, object);
+    	}
+
+    	@Override
+    	public int size() {
+    		datasetLock.readLock().lock();
+    		try {
+    			return wrapped.size();
+    		} finally {
+    			datasetLock.readLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public boolean isEmpty() {
+    		datasetLock.readLock().lock();
+    		try {
+    			return wrapped.isEmpty();
+    		} finally {
+    			datasetLock.readLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public boolean contains(Object o) {
+    		datasetLock.readLock().lock();
+    		try {
+    			return wrapped.contains(o);
+    		} finally {
+    			datasetLock.readLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public Iterator<Triple> iterator() {
+    		//users will need it acquire a read lock while iterating!
+			return wrapped.iterator();
+    	}
+
+    	@Override
+    	public Object[] toArray() {
+    		datasetLock.readLock().lock();
+    		try {
+    			return wrapped.toArray();
+    		} finally {
+    			datasetLock.readLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public <T> T[] toArray(T[] a) {
+    		datasetLock.readLock().lock();
+    		try {
+    			return wrapped.toArray(a);
+    		} finally {
+    			datasetLock.readLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public boolean containsAll(Collection<?> c) {
+    		datasetLock.readLock().lock();
+    		try {
+    			return wrapped.containsAll(c);
+    		} finally {
+    			datasetLock.readLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public boolean add(Triple e) {
+    		datasetLock.writeLock().lock();
+    		try {
+    			return wrapped.add(e);
+    		} finally {
+    			datasetLock.writeLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public boolean remove(Object o) {
+    		datasetLock.writeLock().lock();
+    		try {
+    			return wrapped.remove(o);
+    		} finally {
+    			datasetLock.writeLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public boolean addAll(Collection<? extends Triple> c) {
+    		datasetLock.writeLock().lock();
+    		try {
+    			return wrapped.addAll(c);
+    		} finally {
+    			datasetLock.writeLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public boolean removeAll(Collection<?> c) {
+    		datasetLock.writeLock().lock();
+    		try {
+    			return wrapped.removeAll(c);
+    		} finally {
+    			datasetLock.writeLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public boolean retainAll(Collection<?> c) {
+    		datasetLock.writeLock().lock();
+    		try {
+    			return wrapped.retainAll(c);
+    		} finally {
+    			datasetLock.writeLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public void clear() {
+    		datasetLock.writeLock().lock();
+    		try {
+    			wrapped.clear();
+    		} finally {
+    			datasetLock.writeLock().unlock();
+    		}
+    	}
+
+    	@Override
+    	public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
+    		wrapped.addGraphListener(listener, filter, delay);
+    	}
+
+    	@Override
+    	public void addGraphListener(GraphListener listener, FilterTriple filter) {
+    		wrapped.addGraphListener(listener, filter);
+    	}
+
+    	@Override
+    	public void removeGraphListener(GraphListener listener) {
+    		wrapped.removeGraphListener(listener);
+    	}
+
+    	@Override
+    	public int hashCode() {
+    		return wrapped.hashCode();
+    	}
+
+    	@Override
+    	public boolean equals(Object obj) {
+    		if(obj instanceof DatasetLockedMGraph){
+    			DatasetLockedMGraph other = (DatasetLockedMGraph) obj;
+    			return wrapped.equals(other.wrapped);
+    		} else {
+    			return false;
+    		}
+    	}
+
+    	@Override
+    	public String toString() {
+    		return wrapped.toString();
+    	}    	
     }
 
 }
