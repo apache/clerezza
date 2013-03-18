@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
 @Component
 @Service(Object.class)
 @Property(name="javax.ws.rs", boolValue=true)
-@Produces({"application/xml", "text/xml"})
+@Produces({"application/xml", "text/xml", "application/sparql-results+xml"})
 @Provider
 public class ResultSetMessageBodyWriter implements MessageBodyWriter<ResultSet> {
 
