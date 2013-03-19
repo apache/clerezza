@@ -54,7 +54,7 @@ public class TdbMGraphTest extends MGraphTest {
     }
 
     @AfterClass
-    public static void cleanUpDirectory() {
+    public static void cleanUpDirectory() throws IOException {
         TdbTcProvider.delete(tempFile);
     }
 

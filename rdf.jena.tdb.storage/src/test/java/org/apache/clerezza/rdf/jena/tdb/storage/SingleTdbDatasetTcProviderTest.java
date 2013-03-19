@@ -64,7 +64,7 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
         return provider;
     }
     @After
-    public void cleanData(){
+    public void cleanData() throws IOException{
         //We need to remove all remaining data after a test
         if(provider != null){
             provider.deactivate(null);

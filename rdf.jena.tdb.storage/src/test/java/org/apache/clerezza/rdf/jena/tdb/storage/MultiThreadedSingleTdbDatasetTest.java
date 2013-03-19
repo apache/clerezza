@@ -255,7 +255,7 @@ public class MultiThreadedSingleTdbDatasetTest {
         Assert.assertEquals(addedTriples, graphTriples);
     }
     @AfterClass
-    public static void cleanUpDirectory() {
+    public static void cleanUpDirectory() throws IOException {
         provider.deactivate(null);
         TdbTcProvider.delete(tempFile);
     }

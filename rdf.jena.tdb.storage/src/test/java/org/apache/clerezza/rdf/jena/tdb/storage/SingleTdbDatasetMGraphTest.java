@@ -33,7 +33,7 @@ public class SingleTdbDatasetMGraphTest extends MGraphTest {
         provider = new SingleTdbDatasetTcProvider(config);
     }
     @AfterClass
-    public static void cleanUpDirectory() {
+    public static void cleanUpDirectory() throws IOException {
         for(int i = 0; i < testGraphCounter;i++){
             provider.deleteTripleCollection(new UriRef(MGRAPHNAME_PREFIX+i));
         }

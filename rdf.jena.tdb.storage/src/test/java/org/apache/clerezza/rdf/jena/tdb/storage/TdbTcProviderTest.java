@@ -46,7 +46,7 @@ public class TdbTcProviderTest extends TcProviderTest {
     }
 
     @After
-    public void cleanUp() {
+    public void cleanUp() throws IOException {
         TdbTcProvider.delete(tempFile);
     }
 

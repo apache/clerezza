@@ -27,10 +27,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -245,7 +247,11 @@ public class TdbTcProvider implements WeightedTcProvider {
                 dir2Dataset.get(tcDir).close();
                 dir2Dataset.remove(tcDir);
             }
-            delete(tcDir);
+            try {
+                delete(tcDir);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             return true;
         }
         return false;
@@ -255,7 +261,7 @@ public class TdbTcProvider implements WeightedTcProvider {
      * Cleans the content of the specified directory recursively.
      * @param dir  Abstract path denoting the directory to clean.
      */
-    private static void cleanDirectory(File dir) {
+    private static void cleanDirectory(File dir) throws IOException {
         File[] files = dir.listFiles();
         if (files != null && files.length > 0) {
             for (File file : files) {
@@ -268,11 +274,11 @@ public class TdbTcProvider implements WeightedTcProvider {
      * Deletes the specified file or directory.
      * @param file  Abstract path denoting the file or directory to clean.
      */
-    protected static void delete(File file) {
+    protected static void delete(File file) throws IOException {
         if (file.isDirectory()) {
             cleanDirectory(file);
         }
-        file.delete();
+        Files.delete(file.toPath());
     }
 
     @Override
