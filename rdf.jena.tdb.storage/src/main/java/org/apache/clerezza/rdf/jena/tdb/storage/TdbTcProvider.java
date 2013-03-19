@@ -22,17 +22,17 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.block.FileMode;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +71,12 @@ import org.apache.felix.scr.annotations.Service;
 @Property(name="weight", intValue=105)
 public class TdbTcProvider implements WeightedTcProvider {
 
+    static {
+        //not sure what the perfomance implication of this is
+        //it is only needed so that on windows the files of a dataset can be deleteds
+        SystemTDB.setFileMode(FileMode.direct);
+    }
+    
     @Property(intValue=6, description="Specifies the number of seconds to wait "
     + "between synchronizations of the TDB datasets to the filesystem")
     public static final String SYNC_INTERVAL = "sync-interval";
@@ -228,6 +234,7 @@ public class TdbTcProvider implements WeightedTcProvider {
     public void deleteTripleCollection(UriRef name)
             throws UnsupportedOperationException, NoSuchEntityException,
             EntityUndeletableException {
+        syncWithFileSystem();
         if (deleteTcDir(getGraphDir(name))) {
             graphMap.remove(name);
             return;
@@ -278,7 +285,11 @@ public class TdbTcProvider implements WeightedTcProvider {
         if (file.isDirectory()) {
             cleanDirectory(file);
         }
-        Files.delete(file.toPath());
+        //better but only in java 7
+        //Files.delete(file.toPath());
+        if (!file.delete()) {
+            throw new IOException("couldn't delete "+file.getAbsolutePath());
+        }
     }
 
     @Override

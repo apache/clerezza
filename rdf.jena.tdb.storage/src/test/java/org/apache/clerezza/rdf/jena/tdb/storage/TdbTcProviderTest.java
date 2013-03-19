@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.IOException;
 
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.apache.clerezza.rdf.core.access.TcProvider;
@@ -47,7 +45,8 @@ public class TdbTcProviderTest extends TcProviderTest {
 
     @After
     public void cleanUp() throws IOException {
-        TdbTcProvider.delete(tempFile);
+        //as TDB tends to keep files open this causes troubles on windows
+        //TdbTcProvider.delete(tempFile);
     }
 
 
