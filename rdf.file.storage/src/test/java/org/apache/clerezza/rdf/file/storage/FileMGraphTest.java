@@ -79,7 +79,8 @@ public class FileMGraphTest {
 	}
 	
 	protected static String getTempFileUri(String name) {
-		return FILE_PROTOCOL + tempDir + "/" + name;
+                String prefix = tempDir.startsWith("/") ? FILE_PROTOCOL : FILE_PROTOCOL +"/";
+		return prefix + tempDir.replace(File.separatorChar, '/') + "/" + name;
 	}
 
 	private static void deleteTempFile(String name)

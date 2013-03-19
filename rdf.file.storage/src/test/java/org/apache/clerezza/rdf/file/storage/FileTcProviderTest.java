@@ -55,7 +55,8 @@ public class FileTcProviderTest extends TcProviderTest {
 	
 	@Override
 	protected UriRef generateUri(String name) {
-		String path = FILE_PROTOCOL + testDir + "/";
+            String prefix = testDir.startsWith("/") ? FILE_PROTOCOL : FILE_PROTOCOL +"/";
+		String path =  prefix + testDir.replace('\\', '/') + "/";
 		return new UriRef(path + name + ".rdf");
 	}
 
