@@ -41,32 +41,32 @@ import org.json.simple.JSONObject;
 @Provider
 @Produces("application/json")
 public class JSONObjectMessageBodyWriter implements
-		MessageBodyWriter<JSONObject> {
+        MessageBodyWriter<JSONObject> {
 
-	private static final String UTF8 = "UTF-8";
+    private static final String UTF8 = "UTF-8";
 
-	@Override
-	public long getSize(JSONObject jsonObject, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		try {
-			return jsonObject.toJSONString().getBytes(UTF8).length;
-		} catch (UnsupportedEncodingException ex) {
-			return -1;
-		}
-	}
+    @Override
+    public long getSize(JSONObject jsonObject, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        try {
+            return jsonObject.toJSONString().getBytes(UTF8).length;
+        } catch (UnsupportedEncodingException ex) {
+            return -1;
+        }
+    }
 
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return JSONObject.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return JSONObject.class.isAssignableFrom(type);
+    }
 
-	@Override
-	public void writeTo(JSONObject value, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders, OutputStream out)
-			throws IOException {
-		out.write(value.toJSONString().getBytes(UTF8));
-		out.flush();
-	}
+    @Override
+    public void writeTo(JSONObject value, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders, OutputStream out)
+            throws IOException {
+        out.write(value.toJSONString().getBytes(UTF8));
+        out.flush();
+    }
 }

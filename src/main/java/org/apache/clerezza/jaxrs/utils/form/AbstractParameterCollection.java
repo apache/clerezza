@@ -30,63 +30,63 @@ import java.util.List;
  * 
  */
 public abstract class AbstractParameterCollection extends
-		AbstractCollection<KeyValuePair<ParameterValue>> {
+        AbstractCollection<KeyValuePair<ParameterValue>> {
 
-	/**
-	 * the rawColletion contains the KeyValuePairS, this may be set a value by
-	 * the subclass or it is given a value on invocation of the size() and
-	 * getParameter* methods of this class.
-	 */
-	protected List<KeyValuePair<ParameterValue>> rawCollection = null;
+    /**
+     * the rawColletion contains the KeyValuePairS, this may be set a value by
+     * the subclass or it is given a value on invocation of the size() and
+     * getParameter* methods of this class.
+     */
+    protected List<KeyValuePair<ParameterValue>> rawCollection = null;
 
-	public String[] getParameterNames() {
-		if (rawCollection == null) {
-			createRawCollection();
-		}
-		List<String> resultList = new ArrayList<String>();
-		for (KeyValuePair<ParameterValue> keyValuePair : rawCollection) {
-			String key = keyValuePair.getKey();
-			if (!resultList.contains(key)) {
-				resultList.add(key);
-			}
-		}
-		return resultList.toArray(new String[resultList.size()]);
-	}
+    public String[] getParameterNames() {
+        if (rawCollection == null) {
+            createRawCollection();
+        }
+        List<String> resultList = new ArrayList<String>();
+        for (KeyValuePair<ParameterValue> keyValuePair : rawCollection) {
+            String key = keyValuePair.getKey();
+            if (!resultList.contains(key)) {
+                resultList.add(key);
+            }
+        }
+        return resultList.toArray(new String[resultList.size()]);
+    }
 
-	public ParameterValue[] getParameteValues(String parameterName) {
-		if (rawCollection == null) {
-			createRawCollection();
-		}
-		List<ParameterValue> resultList = new ArrayList<ParameterValue>();
-		for (KeyValuePair<ParameterValue> keyValuePair : rawCollection) {
-			if (keyValuePair.getKey().equals(parameterName)) {
-				resultList.add(keyValuePair.getValue());
-			}
-		}
-		return resultList.toArray(new ParameterValue[resultList.size()]);
-	}
+    public ParameterValue[] getParameteValues(String parameterName) {
+        if (rawCollection == null) {
+            createRawCollection();
+        }
+        List<ParameterValue> resultList = new ArrayList<ParameterValue>();
+        for (KeyValuePair<ParameterValue> keyValuePair : rawCollection) {
+            if (keyValuePair.getKey().equals(parameterName)) {
+                resultList.add(keyValuePair.getValue());
+            }
+        }
+        return resultList.toArray(new ParameterValue[resultList.size()]);
+    }
 
-	@Override
-	public int size() {
-		if (rawCollection == null) {
-			createRawCollection();
-		}
-		return rawCollection.size();
-	}
+    @Override
+    public int size() {
+        if (rawCollection == null) {
+            createRawCollection();
+        }
+        return rawCollection.size();
+    }
 
-	/**
-	 * 
-	 */
-	private void createRawCollection() {
-		Iterator<KeyValuePair<ParameterValue>> iterator = iterator();
-		if (rawCollection == null) {
-			// the call to the implementations iterator() didn't create
-			// rawCollection
-			rawCollection = new ArrayList<KeyValuePair<ParameterValue>>();
-			while (iterator.hasNext()) {
-				rawCollection.add(iterator.next());
-			}
-		}
-	}
+    /**
+     * 
+     */
+    private void createRawCollection() {
+        Iterator<KeyValuePair<ParameterValue>> iterator = iterator();
+        if (rawCollection == null) {
+            // the call to the implementations iterator() didn't create
+            // rawCollection
+            rawCollection = new ArrayList<KeyValuePair<ParameterValue>>();
+            while (iterator.hasNext()) {
+                rawCollection.add(iterator.next());
+            }
+        }
+    }
 
 }

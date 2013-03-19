@@ -20,44 +20,44 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>jaxrs.utils</artifactId>
-	<packaging>bundle</packaging>
-	<version>0.7-SNAPSHOT</version>
-	<name>Clerezza - JAX-RS Utilities</name>
-	<description>Utility classes for JAX-RS (see the Javadoc)</description>
-	<dependencies>
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>jaxrs.utils</artifactId>
+    <packaging>bundle</packaging>
+    <version>0.7-SNAPSHOT</version>
+    <name>Clerezza - JAX-RS Utilities</name>
+    <description>Utility classes for JAX-RS (see the Javadoc)</description>
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
         <!-- testing with last released version, testutils is doscontinued as
        triaxrs is -->
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>jaxrs.testutils</artifactId>
-			<scope>test</scope>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>jaxrs.testutils</artifactId>
+            <scope>test</scope>
             <version>0.9-incubating</version>
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-		</dependency>
-	</dependencies>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -40,77 +40,77 @@ import org.apache.clerezza.jaxrs.testutils.TestWebServer;
  */
 public class TrailingSlashTest {
 
-	private String path;
-	
-	@Path("/foo")
-	public class MyResource {
-		
-		@Path("bar")
-		@GET
-		public void myMethod(@Context UriInfo uriInfo){
-			TrailingSlash.enforcePresent(uriInfo);
-			path = uriInfo.getAbsolutePath().toString();
-		}
-	}
-	
-	@Path("/one")
-	public class MyResource2 {
-		
-		@Path("two")
-		@GET
-		public void myMethod(@Context UriInfo uriInfo){
-			TrailingSlash.enforceNotPresent(uriInfo);
-			path = uriInfo.getAbsolutePath().toString();
-		}
-	}	
-	
-	@Test
-	public void testEnforceSlash() throws IOException {		
-		final TestWebServer testWebServer = createTestWebServer(new MyResource());
-		int port = testWebServer.getPort();
-		URL serverURL = new URL("http://localhost:" + port + "/foo/bar");
-		HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
-		connection = (HttpURLConnection) serverURL.openConnection();
-		connection.setRequestMethod("GET");
-		connection.addRequestProperty("Accept", "text/html, */*; q=.2");	
-		Assert.assertEquals(204, connection.getResponseCode());
-		Assert.assertTrue(path.endsWith("/"));
-		testWebServer.stop();
-	}
-	
-	@Test
-	public void testEnforceNoSlash() throws IOException {
-		final TestWebServer testWebServer = createTestWebServer(new MyResource2());
-		int port = testWebServer.getPort();
-		URL serverURL = new URL("http://localhost:" + port + "/one/two/");
-		HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
-		connection = (HttpURLConnection) serverURL.openConnection();
-		connection.setRequestMethod("GET");
+    private String path;
+    
+    @Path("/foo")
+    public class MyResource {
+        
+        @Path("bar")
+        @GET
+        public void myMethod(@Context UriInfo uriInfo){
+            TrailingSlash.enforcePresent(uriInfo);
+            path = uriInfo.getAbsolutePath().toString();
+        }
+    }
+    
+    @Path("/one")
+    public class MyResource2 {
+        
+        @Path("two")
+        @GET
+        public void myMethod(@Context UriInfo uriInfo){
+            TrailingSlash.enforceNotPresent(uriInfo);
+            path = uriInfo.getAbsolutePath().toString();
+        }
+    }    
+    
+    @Test
+    public void testEnforceSlash() throws IOException {        
+        final TestWebServer testWebServer = createTestWebServer(new MyResource());
+        int port = testWebServer.getPort();
+        URL serverURL = new URL("http://localhost:" + port + "/foo/bar");
+        HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
+        connection = (HttpURLConnection) serverURL.openConnection();
+        connection.setRequestMethod("GET");
+        connection.addRequestProperty("Accept", "text/html, */*; q=.2");    
+        Assert.assertEquals(204, connection.getResponseCode());
+        Assert.assertTrue(path.endsWith("/"));
+        testWebServer.stop();
+    }
+    
+    @Test
+    public void testEnforceNoSlash() throws IOException {
+        final TestWebServer testWebServer = createTestWebServer(new MyResource2());
+        int port = testWebServer.getPort();
+        URL serverURL = new URL("http://localhost:" + port + "/one/two/");
+        HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
+        connection = (HttpURLConnection) serverURL.openConnection();
+        connection.setRequestMethod("GET");
 
-		connection.addRequestProperty("Accept", "text/html, */*; q=.2");
-		Assert.assertEquals(204, connection.getResponseCode());
-		Assert.assertFalse(path.endsWith("/"));
-		testWebServer.stop();
-	}
-	
-	
-	private TestWebServer createTestWebServer(final Object resource) {
-		return new TestWebServer(new Application() {
+        connection.addRequestProperty("Accept", "text/html, */*; q=.2");
+        Assert.assertEquals(204, connection.getResponseCode());
+        Assert.assertFalse(path.endsWith("/"));
+        testWebServer.stop();
+    }
+    
+    
+    private TestWebServer createTestWebServer(final Object resource) {
+        return new TestWebServer(new Application() {
 
-			@Override
-			public Set<Class<?>> getClasses() {
-				Set<Class<?>> result = new HashSet<Class<?>>();
-				return result;
-			}
-			
-			@Override
-			public Set<Object> getSingletons() {
-				Set<Object> result = new HashSet<Object>();
-				result.add(resource);
-				return result;
-			}
-		});
-	}
+            @Override
+            public Set<Class<?>> getClasses() {
+                Set<Class<?>> result = new HashSet<Class<?>>();
+                return result;
+            }
+            
+            @Override
+            public Set<Object> getSingletons() {
+                Set<Object> result = new HashSet<Object>();
+                result.add(resource);
+                return result;
+            }
+        });
+    }
 
-	
+    
 }
