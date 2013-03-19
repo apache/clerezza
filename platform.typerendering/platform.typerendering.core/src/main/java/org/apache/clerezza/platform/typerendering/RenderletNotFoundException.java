@@ -24,8 +24,8 @@ package org.apache.clerezza.platform.typerendering;
  */
 class RenderletNotFoundException extends RuntimeException {
 
-	public RenderletNotFoundException(String message) {
-		super(message);
-	}
+    public RenderletNotFoundException(String message) {
+        super(message);
+    }
 
 }

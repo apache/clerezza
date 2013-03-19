@@ -32,47 +32,47 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class SimpleGraph extends AbstractGraph {
 
-	private TripleCollection tripleCollection;
-	
-	/**
-	 * Creates a graph with the triples in tripleCollection
-	 * 
-	 * @param tripleCollection the collection of triples this Graph shall consist of
-	 */
-	public SimpleGraph(TripleCollection tripleCollection) {
-		this.tripleCollection = new SimpleTripleCollection(tripleCollection.iterator());
-	}
+    private TripleCollection tripleCollection;
+    
+    /**
+     * Creates a graph with the triples in tripleCollection
+     * 
+     * @param tripleCollection the collection of triples this Graph shall consist of
+     */
+    public SimpleGraph(TripleCollection tripleCollection) {
+        this.tripleCollection = new SimpleTripleCollection(tripleCollection.iterator());
+    }
 
-	/**
-	 * Creates a graph with the triples in tripleCollection.
-	 *
-	 * This construction allows to specify if the tripleCollection might change
-	 * in future. If tripleCollectionWillNeverChange is set to true it will
-	 * assume that the collection never changes, in this case the collection
-	 * isn't copied making things more efficient.
-	 *
-	 * @param tripleCollection the collection of triples this Graph shall consist of
-	 * @param tripleCollectionWillNeverChange true if the caller promises tripleCollection will never change
-	 */
-	public SimpleGraph(TripleCollection tripleCollection, boolean tripleCollectionWillNeverChange) {
-		if (!tripleCollectionWillNeverChange) {
-			this.tripleCollection = new SimpleTripleCollection(tripleCollection.iterator());
-		} else {
-			this.tripleCollection = tripleCollection;
-		}
-	}
-	
-	public SimpleGraph(Iterator<Triple> tripleIter) {
-		this.tripleCollection = new SimpleTripleCollection(tripleIter);
-	}
+    /**
+     * Creates a graph with the triples in tripleCollection.
+     *
+     * This construction allows to specify if the tripleCollection might change
+     * in future. If tripleCollectionWillNeverChange is set to true it will
+     * assume that the collection never changes, in this case the collection
+     * isn't copied making things more efficient.
+     *
+     * @param tripleCollection the collection of triples this Graph shall consist of
+     * @param tripleCollectionWillNeverChange true if the caller promises tripleCollection will never change
+     */
+    public SimpleGraph(TripleCollection tripleCollection, boolean tripleCollectionWillNeverChange) {
+        if (!tripleCollectionWillNeverChange) {
+            this.tripleCollection = new SimpleTripleCollection(tripleCollection.iterator());
+        } else {
+            this.tripleCollection = tripleCollection;
+        }
+    }
+    
+    public SimpleGraph(Iterator<Triple> tripleIter) {
+        this.tripleCollection = new SimpleTripleCollection(tripleIter);
+    }
 
-	@Override
-	public int size() {
-		return tripleCollection.size();
-	}
+    @Override
+    public int size() {
+        return tripleCollection.size();
+    }
 
-	@Override
-	public Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate, Resource object) {
-		return tripleCollection.filter(subject, predicate, object);
-	}
+    @Override
+    public Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate, Resource object) {
+        return tripleCollection.filter(subject, predicate, object);
+    }
 }

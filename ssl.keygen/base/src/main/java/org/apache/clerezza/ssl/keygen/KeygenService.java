@@ -62,50 +62,50 @@ package org.apache.clerezza.ssl.keygen;
  * @author Henry J. Story
  */
 public interface KeygenService {
-	static final String issuer = "O=FOAF\\+SSL, OU=The Community of Self Signers, CN=Not a Certification Authority"; //the exact name for the FOAF+SSL issuer is still being decided
+    static final String issuer = "O=FOAF\\+SSL, OU=The Community of Self Signers, CN=Not a Certification Authority"; //the exact name for the FOAF+SSL issuer is still being decided
 
-	/**
-	 * Creates a certificate stub from the given <a href="http://en.wikipedia.org/wiki/PEM">PEM</a> <a href="http://en.wikipedia.org/wiki/Certification_request">CSR</a>.
-	 * The returned certificate will be filled out with info from the CSR and a number of other defaults.
-	 * Other information may then be added programatically before generating a certificate to return.
-	 * <p/>
-	 * Internet Explorer sends PEM CSRs to the server.
-	 *
-	 * @param csr a <a href="http://en.wikipedia.org/wiki/PEM">PEM</a> <a href="http://en.wikipedia.org/wiki/Certification_request">Certificate Signing Request</a>
-	 * @return a certificate using the CSR, and cert defaults
-	 */
-	Certificate createFromPEM(String csr);
+    /**
+     * Creates a certificate stub from the given <a href="http://en.wikipedia.org/wiki/PEM">PEM</a> <a href="http://en.wikipedia.org/wiki/Certification_request">CSR</a>.
+     * The returned certificate will be filled out with info from the CSR and a number of other defaults.
+     * Other information may then be added programatically before generating a certificate to return.
+     * <p/>
+     * Internet Explorer sends PEM CSRs to the server.
+     *
+     * @param csr a <a href="http://en.wikipedia.org/wiki/PEM">PEM</a> <a href="http://en.wikipedia.org/wiki/Certification_request">Certificate Signing Request</a>
+     * @return a certificate using the CSR, and cert defaults
+     */
+    Certificate createFromPEM(String csr);
 
-	/**
-	 * Creates a certificate stub from the given <a href="http://en.wikipedia.org/wiki/Spkac">SPKAC</a>
-	 * <a href="http://en.wikipedia.org/wiki/Certification_request">CSR</a>.
-	 * The returned certificate will be filled out with info from the CSR and a number of other defaults.
-	 * Other information may then be added programatically before generating a certificate to return.
-	 * <p/>
-	 * Safari, Firefox, Opera, return through the <code>&lt;keygen&gt;</code> element an SPKAC request
-	 * (see the specification in html5)
-	 *
-	 * @param spkac a <a href="http://en.wikipedia.org/wiki/Spkac">SPKAC</a> <a href="http://en.wikipedia.org/wiki/Certification_request">Certificate Signing Request</a>
-	 * @return a certificate using the CSR, and cert defaults
-	 */
-	Certificate createFromSpkac(String spkac);
+    /**
+     * Creates a certificate stub from the given <a href="http://en.wikipedia.org/wiki/Spkac">SPKAC</a>
+     * <a href="http://en.wikipedia.org/wiki/Certification_request">CSR</a>.
+     * The returned certificate will be filled out with info from the CSR and a number of other defaults.
+     * Other information may then be added programatically before generating a certificate to return.
+     * <p/>
+     * Safari, Firefox, Opera, return through the <code>&lt;keygen&gt;</code> element an SPKAC request
+     * (see the specification in html5)
+     *
+     * @param spkac a <a href="http://en.wikipedia.org/wiki/Spkac">SPKAC</a> <a href="http://en.wikipedia.org/wiki/Certification_request">Certificate Signing Request</a>
+     * @return a certificate using the CSR, and cert defaults
+     */
+    Certificate createFromSpkac(String spkac);
 
 
-	/**
-	 * <p>CRMF requests are produced by the javascript <a href="https://developer.mozilla.org/en/GenerateCRMFRequest">generateCRMFRequest()</a>
-	 * method in Netscape and are documented by <a href="http://tools.ietf.org/html/rfc2511">RFC 2511</a>.</p>
-	 * <p>Using this method may be needed when the server has to produce XHTML (should be rare!) as the <code>keygen</code>
-	 * tag in Netscape browsers is only supported by html. This should be fixed soon, now that html5 supports the <code>keygen</code>
-	 * element. For progress on this issue check  <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=101019">bug report 101019</a>.
-	 * </p>
-	 * <p>
-	 * A CRMF request can contain more details about the certificate, but those would better be passed using a form,
-	 * as in the keygen examples, the server then setting those fields directly on the returned request. Currently
-	 * we extract only the public key to generate the returned Certificate.
-	 * </p>
-	 *
-	 * @param crmfReq the request
-	 * @return a certificate that may be filled in with some extra details in the requests such as webid
-	 */
-	Certificate createFromCRMF(String crmfReq);
+    /**
+     * <p>CRMF requests are produced by the javascript <a href="https://developer.mozilla.org/en/GenerateCRMFRequest">generateCRMFRequest()</a>
+     * method in Netscape and are documented by <a href="http://tools.ietf.org/html/rfc2511">RFC 2511</a>.</p>
+     * <p>Using this method may be needed when the server has to produce XHTML (should be rare!) as the <code>keygen</code>
+     * tag in Netscape browsers is only supported by html. This should be fixed soon, now that html5 supports the <code>keygen</code>
+     * element. For progress on this issue check  <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=101019">bug report 101019</a>.
+     * </p>
+     * <p>
+     * A CRMF request can contain more details about the certificate, but those would better be passed using a form,
+     * as in the keygen examples, the server then setting those fields directly on the returned request. Currently
+     * we extract only the public key to generate the returned Certificate.
+     * </p>
+     *
+     * @param crmfReq the request
+     * @return a certificate that may be filled in with some extra details in the requests such as webid
+     */
+    Certificate createFromCRMF(String crmfReq);
 }

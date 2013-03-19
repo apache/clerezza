@@ -27,8 +27,8 @@ package org.apache.clerezza.rdf.cris;
 import org.apache.lucene.search.Query;
 
 public abstract class Condition {
-	
-	protected abstract Query query();
+    
+    protected abstract Query query();
 
 }
 

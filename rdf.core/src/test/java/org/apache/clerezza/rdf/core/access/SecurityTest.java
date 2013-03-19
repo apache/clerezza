@@ -48,133 +48,133 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
  * @author reto
  */
 public class SecurityTest {
-	
-	public SecurityTest() {
-	}
+    
+    public SecurityTest() {
+    }
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		////needed to unbind because this is injected with META-INF/services - file
-		TcManager.getInstance().unbindWeightedTcProvider(new WeightedA());
-		TcManager.getInstance().bindWeightedTcProvider(new WeightedDummy());
-		TcManager.getInstance().createMGraph(new UriRef("http://example.org/graph/alreadyexists"));
-		TcManager.getInstance().createMGraph(new UriRef("http://example.org/read/graph"));
-	}
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        ////needed to unbind because this is injected with META-INF/services - file
+        TcManager.getInstance().unbindWeightedTcProvider(new WeightedA());
+        TcManager.getInstance().bindWeightedTcProvider(new WeightedDummy());
+        TcManager.getInstance().createMGraph(new UriRef("http://example.org/graph/alreadyexists"));
+        TcManager.getInstance().createMGraph(new UriRef("http://example.org/read/graph"));
+    }
 
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-	}
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
 
-	@Before
-	public void setUp() {
-		
-		Policy.setPolicy(new Policy() {
+    @Before
+    public void setUp() {
+        
+        Policy.setPolicy(new Policy() {
 
-			@Override
-			public PermissionCollection getPermissions(CodeSource codeSource) {
-				PermissionCollection result = new Permissions();
-				result.add(new TcPermission("http://example.org/permitted", "read"));
-				result.add(new TcPermission("http://example.org/graph/alreadyexists", "readwrite"));
-				result.add(new TcPermission("http://example.org/read/graph", "read"));
-				result.add(new TcPermission("http://example.org/area/allowed/*", "readwrite"));
-				result.add(new TcPermission("urn:x-localinstance:/graph-access.graph", "readwrite"));
-				//result.add(new AllPermission());
-				result.add(new RuntimePermission("*"));
-				result.add(new ReflectPermission("suppressAccessChecks"));
-				result.add(new PropertyPermission("*", "read"));
-				//(java.util.PropertyPermission line.separator read)
-				result.add(new FilePermission("/-", "read,write"));
-				return result;
-			}
-		});
-		System.setSecurityManager(new SecurityManager() {
+            @Override
+            public PermissionCollection getPermissions(CodeSource codeSource) {
+                PermissionCollection result = new Permissions();
+                result.add(new TcPermission("http://example.org/permitted", "read"));
+                result.add(new TcPermission("http://example.org/graph/alreadyexists", "readwrite"));
+                result.add(new TcPermission("http://example.org/read/graph", "read"));
+                result.add(new TcPermission("http://example.org/area/allowed/*", "readwrite"));
+                result.add(new TcPermission("urn:x-localinstance:/graph-access.graph", "readwrite"));
+                //result.add(new AllPermission());
+                result.add(new RuntimePermission("*"));
+                result.add(new ReflectPermission("suppressAccessChecks"));
+                result.add(new PropertyPermission("*", "read"));
+                //(java.util.PropertyPermission line.separator read)
+                result.add(new FilePermission("/-", "read,write"));
+                return result;
+            }
+        });
+        System.setSecurityManager(new SecurityManager() {
 
-			@Override
-			public void checkPermission(Permission perm) {
-				//System.out.println("Checking "+perm);
-				super.checkPermission(perm);
-			}
+            @Override
+            public void checkPermission(Permission perm) {
+                //System.out.println("Checking "+perm);
+                super.checkPermission(perm);
+            }
 
-			@Override
-			public void checkPermission(Permission perm, Object context) {
-				//System.out.println("Checking "+perm);
-				super.checkPermission(perm, context);
-			}
+            @Override
+            public void checkPermission(Permission perm, Object context) {
+                //System.out.println("Checking "+perm);
+                super.checkPermission(perm, context);
+            }
 
-		});
-	}
+        });
+    }
 
-	@After
-	public void tearDown() {
-		System.setSecurityManager(null);
-	}
+    @After
+    public void tearDown() {
+        System.setSecurityManager(null);
+    }
 
 
-	@Test(expected=NoSuchEntityException.class)
-	public void testAcessGraph() {		
-		TcManager.getInstance().getGraph(new UriRef("http://example.org/permitted"));
-	}
-	
-	@Test(expected=AccessControlException.class)
-	public void testNoWildCard() {
-		TcManager.getInstance().getGraph(new UriRef("http://example.org/permitted/subthing"));
-	}
-	
-	@Test(expected=NoSuchEntityException.class)
-	public void testAllowedArea() {
-		TcManager.getInstance().getGraph(new UriRef("http://example.org/area/allowed/something"));
-	}
-	
-	@Test(expected=AccessControlException.class)
-	public void testAcessForbiddenGraph() {
-		TcManager.getInstance().getGraph(new UriRef("http://example.org/forbidden"));
-	}
+    @Test(expected=NoSuchEntityException.class)
+    public void testAcessGraph() {        
+        TcManager.getInstance().getGraph(new UriRef("http://example.org/permitted"));
+    }
+    
+    @Test(expected=AccessControlException.class)
+    public void testNoWildCard() {
+        TcManager.getInstance().getGraph(new UriRef("http://example.org/permitted/subthing"));
+    }
+    
+    @Test(expected=NoSuchEntityException.class)
+    public void testAllowedArea() {
+        TcManager.getInstance().getGraph(new UriRef("http://example.org/area/allowed/something"));
+    }
+    
+    @Test(expected=AccessControlException.class)
+    public void testAcessForbiddenGraph() {
+        TcManager.getInstance().getGraph(new UriRef("http://example.org/forbidden"));
+    }
 
-	@Test(expected=NoSuchEntityException.class)
-	public void testCustomPermissions() {
-		UriRef graphUri = new UriRef("http://example.org/custom");
-		TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
-				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
-		//new FilePermission("/etc", "write").toString()));
-		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
-		System.out.print(ag.toString());
-		TcManager.getInstance().getMGraph(graphUri);
-	}
+    @Test(expected=NoSuchEntityException.class)
+    public void testCustomPermissions() {
+        UriRef graphUri = new UriRef("http://example.org/custom");
+        TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
+                Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
+        //new FilePermission("/etc", "write").toString()));
+        TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
+        System.out.print(ag.toString());
+        TcManager.getInstance().getMGraph(graphUri);
+    }
 
-	@Test(expected=AccessControlException.class)
-	public void testCustomPermissionsIncorrect() {
-		UriRef graphUri = new UriRef("http://example.org/custom");
-		TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
-				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
-		//new FilePermission("/etc", "write").toString()));
-		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
-		System.out.print(ag.toString());
-		TcManager.getInstance().createMGraph(graphUri);
-	}
+    @Test(expected=AccessControlException.class)
+    public void testCustomPermissionsIncorrect() {
+        UriRef graphUri = new UriRef("http://example.org/custom");
+        TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
+                Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
+        //new FilePermission("/etc", "write").toString()));
+        TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
+        System.out.print(ag.toString());
+        TcManager.getInstance().createMGraph(graphUri);
+    }
 
-	@Test
-	public void testCustomReadWritePermissions() {
-		UriRef graphUri = new UriRef("http://example.org/read-write-custom");
-		TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissionStrings(graphUri,
-				Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
-		//new FilePermission("/etc", "write").toString()));
-		TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
-		System.out.print(ag.toString());
-		TcManager.getInstance().createMGraph(graphUri);
-	}
-	
-	@Test(expected=EntityAlreadyExistsException.class)
-	public void testCreateMGraph() {
-		TcManager.getInstance().createMGraph(new UriRef("http://example.org/graph/alreadyexists"));
-	}
-	@Test(expected=AccessControlException.class)
-	public void testCreateMGraphWithoutWritePermission() {
-		TcManager.getInstance().createMGraph(new UriRef("http://example.org/read/graph"));
-	}
-	@Test(expected=ReadOnlyException.class)
-	public void testAddTripleToMGraph() {
-		MGraph mGraph = TcManager.getInstance().getMGraph(new UriRef("http://example.org/read/graph"));
-		Triple triple = new TripleImpl(new UriRef("http://example.org/definition/isNonLiteral"), new UriRef("http://example.org/definition/isTest"), new PlainLiteralImpl("test"));
-		mGraph.add(triple);
-	}
+    @Test
+    public void testCustomReadWritePermissions() {
+        UriRef graphUri = new UriRef("http://example.org/read-write-custom");
+        TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissionStrings(graphUri,
+                Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
+        //new FilePermission("/etc", "write").toString()));
+        TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
+        System.out.print(ag.toString());
+        TcManager.getInstance().createMGraph(graphUri);
+    }
+    
+    @Test(expected=EntityAlreadyExistsException.class)
+    public void testCreateMGraph() {
+        TcManager.getInstance().createMGraph(new UriRef("http://example.org/graph/alreadyexists"));
+    }
+    @Test(expected=AccessControlException.class)
+    public void testCreateMGraphWithoutWritePermission() {
+        TcManager.getInstance().createMGraph(new UriRef("http://example.org/read/graph"));
+    }
+    @Test(expected=ReadOnlyException.class)
+    public void testAddTripleToMGraph() {
+        MGraph mGraph = TcManager.getInstance().getMGraph(new UriRef("http://example.org/read/graph"));
+        Triple triple = new TripleImpl(new UriRef("http://example.org/definition/isNonLiteral"), new UriRef("http://example.org/definition/isTest"), new PlainLiteralImpl("test"));
+        mGraph.add(triple);
+    }
 }

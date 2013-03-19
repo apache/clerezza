@@ -26,9 +26,9 @@ import org.junit.Test;
  */
 public class UriUtilTest {
 
-	@Test
-	public void encodePartlyEncodedPath() throws UriException {
-		Assert.assertEquals("!@%23$%25%5E&*()%7B%7D+", UriUtil.encodePartlyEncodedPath("!@#$%^&*(){}+", "UTF-8"));
-		Assert.assertEquals("!@%23$%25%5E&*()%7B%7D+", UriUtil.encodePartlyEncodedPath("!@%23$%25%5E&*()%7B%7D+", "UTF-8"));
-	}
+    @Test
+    public void encodePartlyEncodedPath() throws UriException {
+        Assert.assertEquals("!@%23$%25%5E&*()%7B%7D+", UriUtil.encodePartlyEncodedPath("!@#$%^&*(){}+", "UTF-8"));
+        Assert.assertEquals("!@%23$%25%5E&*()%7B%7D+", UriUtil.encodePartlyEncodedPath("!@%23$%25%5E&*()%7B%7D+", "UTF-8"));
+    }
 }

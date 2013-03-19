@@ -48,94 +48,94 @@ import org.slf4j.LoggerFactory;
  */
 public class ImageMagickUtilsTest {
 
-	private static boolean correctlyInstalled = true;
-	private final static Logger logger = LoggerFactory.getLogger(ImageMagickUtilsTest.class);
+    private static boolean correctlyInstalled = true;
+    private final static Logger logger = LoggerFactory.getLogger(ImageMagickUtilsTest.class);
 
-	@BeforeClass
-	public static void checkIfImageMagickInstalled() {
-		try {
-			new ImageMagickProvider().checkImageMagickInstallation();
-		} catch (RuntimeException ex) {
-			logger.warn("No valid imagemagick installation found, skipping tests.");
-			correctlyInstalled = false;
-		}
-	}
+    @BeforeClass
+    public static void checkIfImageMagickInstalled() {
+        try {
+            new ImageMagickProvider().checkImageMagickInstallation();
+        } catch (RuntimeException ex) {
+            logger.warn("No valid imagemagick installation found, skipping tests.");
+            correctlyInstalled = false;
+        }
+    }
 
-	@Test
-	public void TestFlip() throws IOException {
-		Assume.assumeTrue(correctlyInstalled);
-		ImageMagickProvider ip = new ImageMagickProvider();
+    @Test
+    public void TestFlip() throws IOException {
+        Assume.assumeTrue(correctlyInstalled);
+        ImageMagickProvider ip = new ImageMagickProvider();
 
-		InputStream in = getClass().getResourceAsStream("test.png");
-		BufferedImage bimg = ip.flip(ImageIO.read(in), 0);
-		assert(bimg != null);
-	}
-	
-	@Test
-	public void extractMetaDataTest() throws IOException {
-		Assume.assumeTrue(correctlyInstalled);
+        InputStream in = getClass().getResourceAsStream("test.png");
+        BufferedImage bimg = ip.flip(ImageIO.read(in), 0);
+        assert(bimg != null);
+    }
+    
+    @Test
+    public void extractMetaDataTest() throws IOException {
+        Assume.assumeTrue(correctlyInstalled);
 
-		ImageMagickProvider ip = new ImageMagickProvider();
+        ImageMagickProvider ip = new ImageMagickProvider();
 
-		InputStream in = getClass().getResourceAsStream("metadata.jpg");
+        InputStream in = getClass().getResourceAsStream("metadata.jpg");
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-		int ch;
-		while((ch = in.read()) > -1) {
-			baos.write(ch);
-		}
+        int ch;
+        while((ch = in.read()) > -1) {
+            baos.write(ch);
+        }
 
-		byte[] img = baos.toByteArray();
+        byte[] img = baos.toByteArray();
 
-		Assert.assertTrue(ip.extractIPTC(img).get("2:80").
-				contains(new IptcDataSet(2, 80, ".Joe O'Shaughnessy")));
-		Assert.assertTrue(ip.extractEXIF(img).get(String.valueOf(ExifTagDataSet.Make)).
-				contains(new ExifTagDataSet(ExifTagDataSet.Make, "Canon")));
-		TripleCollection tc = ip.extractXMP(img);
-		Iterator<Triple> it = tc.filter(null, DC.creator, null);
-		Assert.assertTrue(tc.contains(
-				new TripleImpl(
-						(NonLiteral) it.next().getObject(),
-						new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#_1"),
-						new PlainLiteralImpl(".Joe O'Shaughnessy"))));
-	}
+        Assert.assertTrue(ip.extractIPTC(img).get("2:80").
+                contains(new IptcDataSet(2, 80, ".Joe O'Shaughnessy")));
+        Assert.assertTrue(ip.extractEXIF(img).get(String.valueOf(ExifTagDataSet.Make)).
+                contains(new ExifTagDataSet(ExifTagDataSet.Make, "Canon")));
+        TripleCollection tc = ip.extractXMP(img);
+        Iterator<Triple> it = tc.filter(null, DC.creator, null);
+        Assert.assertTrue(tc.contains(
+                new TripleImpl(
+                        (NonLiteral) it.next().getObject(),
+                        new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#_1"),
+                        new PlainLiteralImpl(".Joe O'Shaughnessy"))));
+    }
 
-	@Test
-	public void writeXMPTest() throws IOException {
-		Assume.assumeTrue(correctlyInstalled);
+    @Test
+    public void writeXMPTest() throws IOException {
+        Assume.assumeTrue(correctlyInstalled);
 
-		ImageMagickProvider ip = new ImageMagickProvider();
+        ImageMagickProvider ip = new ImageMagickProvider();
 
-		InputStream in = getClass().getResourceAsStream("metadata.jpg");
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        InputStream in = getClass().getResourceAsStream("metadata.jpg");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-		int ch;
-		while((ch = in.read()) > -1) {
-			baos.write(ch);
-		}
+        int ch;
+        while((ch = in.read()) > -1) {
+            baos.write(ch);
+        }
 
-		byte[] img = baos.toByteArray();
+        byte[] img = baos.toByteArray();
 
-		TripleCollection tc = ip.extractXMP(img);
+        TripleCollection tc = ip.extractXMP(img);
 
-		InputStream in2 = getClass().getResourceAsStream("no-metadata.jpg");
-		ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+        InputStream in2 = getClass().getResourceAsStream("no-metadata.jpg");
+        ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
 
-		while((ch = in2.read()) > -1) {
-			baos2.write(ch);
-		}
+        while((ch = in2.read()) > -1) {
+            baos2.write(ch);
+        }
 
-		byte[] img2 = baos2.toByteArray();
+        byte[] img2 = baos2.toByteArray();
 
-		byte[] fileWithMetaData = ip.writeXMP(img2, tc);
+        byte[] fileWithMetaData = ip.writeXMP(img2, tc);
 
-		TripleCollection tc2 = ip.extractXMP(fileWithMetaData);
-		Iterator<Triple> it = tc2.filter(null, DC.creator, null);
-		Assert.assertTrue(tc2.contains(
-				new TripleImpl(
-						(NonLiteral) it.next().getObject(),
-						new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#_1"),
-						new PlainLiteralImpl(".Joe O'Shaughnessy"))));
-	}
+        TripleCollection tc2 = ip.extractXMP(fileWithMetaData);
+        Iterator<Triple> it = tc2.filter(null, DC.creator, null);
+        Assert.assertTrue(tc2.contains(
+                new TripleImpl(
+                        (NonLiteral) it.next().getObject(),
+                        new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#_1"),
+                        new PlainLiteralImpl(".Joe O'Shaughnessy"))));
+    }
 }

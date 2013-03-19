@@ -34,39 +34,39 @@ import org.apache.clerezza.rdf.core.sparql.query.Query;
 @Service(QueryParser.class)
 public class QueryParser {
 
-	private static volatile QueryParser instance;
-	public QueryParser() {
-		QueryParser.instance = this;
-	}
+    private static volatile QueryParser instance;
+    public QueryParser() {
+        QueryParser.instance = this;
+    }
 
-	/**
-	 * Returns an instance of this class.
-	 * This method is provided due to backward compatibility.
-	 */
-	public static QueryParser getInstance() {
-		if (instance == null) {
-			synchronized (QueryParser.class) {
-				if (instance == null) {
-					new QueryParser();
-				}
-			}
-		}
-		return instance;
-	}
+    /**
+     * Returns an instance of this class.
+     * This method is provided due to backward compatibility.
+     */
+    public static QueryParser getInstance() {
+        if (instance == null) {
+            synchronized (QueryParser.class) {
+                if (instance == null) {
+                    new QueryParser();
+                }
+            }
+        }
+        return instance;
+    }
 
-	/**
-	 * Parses a SPARQL query string into a {@link Query} object.
-	 *
-	 * @param queryString
-	 *		SPARQL query string
-	 * @return
-	 *		{@link Query} object corresponding to the specified query string
-	 *
-	 * @throws org.apache.clerezza.rdf.core.sparql.ParseException
-	 */
-	public Query parse(final String queryString) throws ParseException {
-		JavaCCGeneratedQueryParser parser = new JavaCCGeneratedQueryParser(
-				new StringReader(queryString));
-		return parser.parse();
-	}
+    /**
+     * Parses a SPARQL query string into a {@link Query} object.
+     *
+     * @param queryString
+     *        SPARQL query string
+     * @return
+     *        {@link Query} object corresponding to the specified query string
+     *
+     * @throws org.apache.clerezza.rdf.core.sparql.ParseException
+     */
+    public Query parse(final String queryString) throws ParseException {
+        JavaCCGeneratedQueryParser parser = new JavaCCGeneratedQueryParser(
+                new StringReader(queryString));
+        return parser.parse();
+    }
 }

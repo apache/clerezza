@@ -37,23 +37,23 @@ import org.apache.felix.scr.annotations.Service;
 @Service(PermissionDescriptionsProvider.class)
 public class MailPermissionDescriptionsProvider implements PermissionDescriptionsProvider {
 
-	private static final Set<PermissionDescripton> MAIL_PERMISSION_DESCRIPTIONS = new HashSet<PermissionDescripton>();
-	static {
-		MAIL_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Send Mails From Account Permission",
-				"Grants permission to the user to send emails from his/her account. The sender email address will" +
-				" be the address associated to the user account.", null, MailManPermission.class,
-				"(org.apache.clerezza.platform.mail.MailManPermission \"" + MailManPermission.SELF_ACTION +
-				"\" \"" + MailManPermission.SEND_FROM + "\")"));
+    private static final Set<PermissionDescripton> MAIL_PERMISSION_DESCRIPTIONS = new HashSet<PermissionDescripton>();
+    static {
+        MAIL_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Send Mails From Account Permission",
+                "Grants permission to the user to send emails from his/her account. The sender email address will" +
+                " be the address associated to the user account.", null, MailManPermission.class,
+                "(org.apache.clerezza.platform.mail.MailManPermission \"" + MailManPermission.SELF_ACTION +
+                "\" \"" + MailManPermission.SEND_FROM + "\")"));
 
-		MAIL_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Send Mails Permission",
-				"Grants permission to send emails. The sender email address can be freely specified. " +
-				"This permission does not grant permission to send emails from any accounts.", null, MailManPermission.class,
-				"(org.apache.clerezza.platform.mail.MailManPermission \"\" \"" + MailManPermission.SEND_MAIL + "\")"));
-	}
+        MAIL_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Send Mails Permission",
+                "Grants permission to send emails. The sender email address can be freely specified. " +
+                "This permission does not grant permission to send emails from any accounts.", null, MailManPermission.class,
+                "(org.apache.clerezza.platform.mail.MailManPermission \"\" \"" + MailManPermission.SEND_MAIL + "\")"));
+    }
 
-	@Override
-	public Set<PermissionDescripton> getPermissionDescriptors() {
-		return MAIL_PERMISSION_DESCRIPTIONS;
-	}
+    @Override
+    public Set<PermissionDescripton> getPermissionDescriptors() {
+        return MAIL_PERMISSION_DESCRIPTIONS;
+    }
 
 }

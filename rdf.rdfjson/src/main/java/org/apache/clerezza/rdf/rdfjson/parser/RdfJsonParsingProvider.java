@@ -52,87 +52,87 @@ import org.apache.felix.scr.annotations.Service;
 @SupportedFormat(SupportedFormat.RDF_JSON)
 public class RdfJsonParsingProvider implements ParsingProvider {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Override
-	public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+    @Override
+    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 
-		BNodeManager bNodeMgr = new BNodeManager();
+        BNodeManager bNodeMgr = new BNodeManager();
 
-		JSONParser parser = new JSONParser();
-		InputStreamReader reader;
-		try {
-			reader = new InputStreamReader(serializedGraph, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			String msg = "Encoding 'UTF-8' is not supported by this System";
-			logger.error("{} (message: {})", msg, e.getMessage());
-			throw new IllegalStateException(msg, e);
-		}
+        JSONParser parser = new JSONParser();
+        InputStreamReader reader;
+        try {
+            reader = new InputStreamReader(serializedGraph, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            String msg = "Encoding 'UTF-8' is not supported by this System";
+            logger.error("{} (message: {})", msg, e.getMessage());
+            throw new IllegalStateException(msg, e);
+        }
 
-		try {
-			JSONObject root = (JSONObject) parser.parse(reader);
+        try {
+            JSONObject root = (JSONObject) parser.parse(reader);
 
-			NonLiteral nonLiteral = null;
-			for (Object key : root.keySet()) {
-				String keyString = (String) key;
-				if (keyString.startsWith("_:")) {
-					nonLiteral = bNodeMgr.getBNode(keyString);
-				} else {
-					nonLiteral = new UriRef(keyString);
-				}
-				JSONObject predicates = (JSONObject) root.get(keyString);
-				addTriplesToGraph(nonLiteral, bNodeMgr, predicates, target);
-			}
-		} catch (IOException ioe) {
-			logger.error(ioe.getMessage());
-			throw new RuntimeException(ioe.getMessage());
-		} catch (ParseException pe) {
-			logger.error(pe.getMessage());
-			throw new RuntimeException(pe.getMessage());
-		}
-	}
+            NonLiteral nonLiteral = null;
+            for (Object key : root.keySet()) {
+                String keyString = (String) key;
+                if (keyString.startsWith("_:")) {
+                    nonLiteral = bNodeMgr.getBNode(keyString);
+                } else {
+                    nonLiteral = new UriRef(keyString);
+                }
+                JSONObject predicates = (JSONObject) root.get(keyString);
+                addTriplesToGraph(nonLiteral, bNodeMgr, predicates, target);
+            }
+        } catch (IOException ioe) {
+            logger.error(ioe.getMessage());
+            throw new RuntimeException(ioe.getMessage());
+        } catch (ParseException pe) {
+            logger.error(pe.getMessage());
+            throw new RuntimeException(pe.getMessage());
+        }
+    }
 
-	private class BNodeManager {
-		private Map<String, BNode> bNodeMap = new HashMap<String, BNode>();
+    private class BNodeManager {
+        private Map<String, BNode> bNodeMap = new HashMap<String, BNode>();
 
-		public BNode getBNode(String id) {
-			BNode bNode = bNodeMap.get(id);
-			if (bNode == null) {
-				bNode = new BNode();
-				bNodeMap.put(id, bNode);
-			}
-			return bNode;
-		}
-	}
+        public BNode getBNode(String id) {
+            BNode bNode = bNodeMap.get(id);
+            if (bNode == null) {
+                bNode = new BNode();
+                bNodeMap.put(id, bNode);
+            }
+            return bNode;
+        }
+    }
 
-	private void addTriplesToGraph(NonLiteral subject, BNodeManager bNodeMgr, JSONObject predicates, MGraph mGraph) {
-		for (Object predicate : predicates.keySet()) {
-			JSONArray objects = (JSONArray) predicates.get(predicate);
-			for (Object object : objects) {
-				JSONObject values = (JSONObject) object;
-				String value = (String) values.get("value");
-				if (values.get("type").equals("literal")) {
-				    Object dataType = values.get("datatype");
-					if (dataType != null && 
-					        !dataType.toString().isEmpty()) {
-						mGraph.add(new TripleImpl(subject, new UriRef((String) predicate),
-								//LiteralFactory.getInstance().createTypedLiteral(value)));
-						        new TypedLiteralImpl(value.toString(),new UriRef(dataType.toString()))));
-					} else if (values.containsKey("lang")
-							&& !values.get("lang").equals("")
-							&& values.get("lang") != null) {
-						mGraph.add(new TripleImpl(subject, new UriRef((String) predicate),
-								new PlainLiteralImpl(value, new Language((String) values.get("lang")))));
-					} else {
-						mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), new PlainLiteralImpl(value)));
-					}
-				} else if (values.get("type").equals("uri")) {
-					mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), new UriRef(value)));
-				} else if (values.get("type").equals("bnode")) {
-					NonLiteral bNode = bNodeMgr.getBNode(value);
-					mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), bNode));
-				}
-			}
-		}
-	}
+    private void addTriplesToGraph(NonLiteral subject, BNodeManager bNodeMgr, JSONObject predicates, MGraph mGraph) {
+        for (Object predicate : predicates.keySet()) {
+            JSONArray objects = (JSONArray) predicates.get(predicate);
+            for (Object object : objects) {
+                JSONObject values = (JSONObject) object;
+                String value = (String) values.get("value");
+                if (values.get("type").equals("literal")) {
+                    Object dataType = values.get("datatype");
+                    if (dataType != null && 
+                            !dataType.toString().isEmpty()) {
+                        mGraph.add(new TripleImpl(subject, new UriRef((String) predicate),
+                                //LiteralFactory.getInstance().createTypedLiteral(value)));
+                                new TypedLiteralImpl(value.toString(),new UriRef(dataType.toString()))));
+                    } else if (values.containsKey("lang")
+                            && !values.get("lang").equals("")
+                            && values.get("lang") != null) {
+                        mGraph.add(new TripleImpl(subject, new UriRef((String) predicate),
+                                new PlainLiteralImpl(value, new Language((String) values.get("lang")))));
+                    } else {
+                        mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), new PlainLiteralImpl(value)));
+                    }
+                } else if (values.get("type").equals("uri")) {
+                    mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), new UriRef(value)));
+                } else if (values.get("type").equals("bnode")) {
+                    NonLiteral bNode = bNodeMgr.getBNode(value);
+                    mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), bNode));
+                }
+            }
+        }
+    }
 }

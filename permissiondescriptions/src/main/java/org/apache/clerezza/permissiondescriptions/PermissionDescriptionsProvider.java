@@ -30,10 +30,10 @@ import java.util.Set;
 public interface PermissionDescriptionsProvider {
 
 
-	/**
-	 * Returns a set of <code>PermissionDescriptor</code>s.
-	 *
-	 * @return
-	 */
-	public Set<PermissionDescripton> getPermissionDescriptors();
+    /**
+     * Returns a set of <code>PermissionDescriptor</code>s.
+     *
+     * @return
+     */
+    public Set<PermissionDescripton> getPermissionDescriptors();
 }

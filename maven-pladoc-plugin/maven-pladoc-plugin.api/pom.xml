@@ -20,43 +20,43 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>maven-pladoc-plugin</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.4-SNAPSHOT</version>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>maven-pladoc-plugin.api</artifactId>
-	<packaging>jar</packaging>
-	<version>0.4-SNAPSHOT</version>
-	<name>Clerezza - Maven PlaDoc Plugin API</name>
-	<description>API exposed from the service to the host application</description>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.content</artifactId>
-			<!-- <scope>provided</scope> -->
-			<version>0.14-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.simple.storage</artifactId>
-			<!-- <scope>provided</scope> -->
-			<version>0.8-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
-	<reporting>
-		<excludeDefaults>true</excludeDefaults>
-		<plugins/>
-	</reporting>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>maven-pladoc-plugin</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.4-SNAPSHOT</version>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>maven-pladoc-plugin.api</artifactId>
+    <packaging>jar</packaging>
+    <version>0.4-SNAPSHOT</version>
+    <name>Clerezza - Maven PlaDoc Plugin API</name>
+    <description>API exposed from the service to the host application</description>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.content</artifactId>
+            <!-- <scope>provided</scope> -->
+            <version>0.14-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.simple.storage</artifactId>
+            <!-- <scope>provided</scope> -->
+            <version>0.8-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins/>
+    </reporting>
 </project>

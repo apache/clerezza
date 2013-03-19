@@ -25,39 +25,39 @@ package org.apache.clerezza.rdf.core;
  */
 public class Language {
 
-	private String id;
+    private String id;
 
-	/**
-	 * Constructs the language tag defined by RDF 4646, normalized to lowercase.
-	 *
-	 * @param the id as defined by RDF 4646, normalized to lowercase.
-	 */
-	public Language(String id) {
-		if ((id == null) || (id.equals(""))) {
-			throw new IllegalArgumentException("A language id may not be null or empty");
-		}
-		this.id = id;
-	}
+    /**
+     * Constructs the language tag defined by RDF 4646, normalized to lowercase.
+     *
+     * @param the id as defined by RDF 4646, normalized to lowercase.
+     */
+    public Language(String id) {
+        if ((id == null) || (id.equals(""))) {
+            throw new IllegalArgumentException("A language id may not be null or empty");
+        }
+        this.id = id;
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		if (other == null) {
-			return false;
-		}
-		if (other instanceof Language) {
-			return id.equals(((Language) other).id);
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other instanceof Language) {
+            return id.equals(((Language) other).id);
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		return id;
-	}
+    @Override
+    public String toString() {
+        return id;
+    }
 }

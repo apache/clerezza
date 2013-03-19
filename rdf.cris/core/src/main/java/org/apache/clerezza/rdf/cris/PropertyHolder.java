@@ -35,47 +35,47 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * @author rbn, daniel
  */
 public class PropertyHolder extends VirtualProperty {
-	
-	/**
-	 * The wrapped property.
-	 */
-	UriRef property;
-	
-	/**
-	 * Creates a new PropertyHolder that wraps an RDF property.
-	 * 
-	 * @param property	the property to wrap. 
-	 */
-	public PropertyHolder(UriRef property) {
-		this.property = property;
-		stringKey = property.getUnicodeString();
-		baseProperties = new HashSet();
-		baseProperties.add(property);
-	}
-	
-	@Override
-	protected List<String> value(GraphNode node) {
-		List<String> list = new ArrayList<String>();
-		Lock lock = node.readLock();
-		lock.lock();
-		try {
-			Iterator<Resource> iter = node.getObjects(this.property);
-			while(iter.hasNext()) {
-				Resource resource = iter.next();
-				if(resource instanceof Literal) {
-					list.add(((Literal)resource).getLexicalForm());
-				} else if(resource instanceof UriRef) {
-					list.add(((UriRef) resource).getUnicodeString());
-				}
-			}
-		} finally {
-			lock.unlock();
-		}
-		return list;
-	}
-	
-	@Override
-	protected List<UriRef> pathToIndexedResource(UriRef property) {
-		return new ArrayList<UriRef>();
-	}
+    
+    /**
+     * The wrapped property.
+     */
+    UriRef property;
+    
+    /**
+     * Creates a new PropertyHolder that wraps an RDF property.
+     * 
+     * @param property    the property to wrap. 
+     */
+    public PropertyHolder(UriRef property) {
+        this.property = property;
+        stringKey = property.getUnicodeString();
+        baseProperties = new HashSet();
+        baseProperties.add(property);
+    }
+    
+    @Override
+    protected List<String> value(GraphNode node) {
+        List<String> list = new ArrayList<String>();
+        Lock lock = node.readLock();
+        lock.lock();
+        try {
+            Iterator<Resource> iter = node.getObjects(this.property);
+            while(iter.hasNext()) {
+                Resource resource = iter.next();
+                if(resource instanceof Literal) {
+                    list.add(((Literal)resource).getLexicalForm());
+                } else if(resource instanceof UriRef) {
+                    list.add(((UriRef) resource).getUnicodeString());
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return list;
+    }
+    
+    @Override
+    protected List<UriRef> pathToIndexedResource(UriRef property) {
+        return new ArrayList<UriRef>();
+    }
 }

@@ -28,33 +28,33 @@ import org.apache.clerezza.rdf.core.sparql.query.ResourceOrVariable;
  * @author hasan
  */
 public class SimpleDescribeQuery extends SimpleQueryWithSolutionModifier
-		implements DescribeQuery {
+        implements DescribeQuery {
 
-	private boolean describeAll;
-	private List<ResourceOrVariable> resourcesToDescribe =
-			new ArrayList<ResourceOrVariable>();
+    private boolean describeAll;
+    private List<ResourceOrVariable> resourcesToDescribe =
+            new ArrayList<ResourceOrVariable>();
 
-	@Override
-	public boolean isDescribeAll() {
-		return describeAll;
-	}
+    @Override
+    public boolean isDescribeAll() {
+        return describeAll;
+    }
 
-	@Override
-	public List<ResourceOrVariable> getResourcesToDescribe() {
-		return resourcesToDescribe;
-	}
+    @Override
+    public List<ResourceOrVariable> getResourcesToDescribe() {
+        return resourcesToDescribe;
+    }
 
-	public void setDescribeAll() {
-		assert resourcesToDescribe.isEmpty();
-		describeAll = true;
-	}
+    public void setDescribeAll() {
+        assert resourcesToDescribe.isEmpty();
+        describeAll = true;
+    }
 
-	public void addResourceToDescribe(ResourceOrVariable node) {
-		resourcesToDescribe.add(node);
-	}
+    public void addResourceToDescribe(ResourceOrVariable node) {
+        resourcesToDescribe.add(node);
+    }
 
-	@Override
-	public String toString() {
-		return (new SimpleStringQuerySerializer()).serialize(this);
-	}
+    @Override
+    public String toString() {
+        return (new SimpleStringQuerySerializer()).serialize(this);
+    }
 }

@@ -34,44 +34,44 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class GenericTest {
 
-	private final UriRef root = new UriRef("http://tests.clerezza.org/root#");
-	private final SeedsnipeRenderlet renderlet = new SeedsnipeRenderlet();
+    private final UriRef root = new UriRef("http://tests.clerezza.org/root#");
+    private final SeedsnipeRenderlet renderlet = new SeedsnipeRenderlet();
 
-	@Test
-	public void verysimpleTest() throws Exception {
-		testWithFiles("data-1.turtle", "template-1.seed", "result-1.txt");
-		
-	}
+    @Test
+    public void verysimpleTest() throws Exception {
+        testWithFiles("data-1.turtle", "template-1.seed", "result-1.txt");
+        
+    }
 
-	@Test
-	public void lexicalFormTest() throws Exception {
-		testWithFiles("lexicalForm.turtle", "lexicalForm.seed", "lexicalForm.txt");
-	}
+    @Test
+    public void lexicalFormTest() throws Exception {
+        testWithFiles("lexicalForm.turtle", "lexicalForm.seed", "lexicalForm.txt");
+    }
 
-	@Test
-	public void ifTest() throws Exception {
-		testWithFiles("ifTest.turtle", "ifTest.seed", "ifTest.txt");
-	}
+    @Test
+    public void ifTest() throws Exception {
+        testWithFiles("ifTest.turtle", "ifTest.seed", "ifTest.txt");
+    }
 
-	private void testWithFiles(String triples, String template, String expected) 
-			throws Exception {
-		TripleCollection tc = Parser.getInstance().parse(
-				getClass().getResourceAsStream(triples),
-				"text/turtle");
-		GraphNode res = new GraphNode(root, tc);
-		ByteArrayOutputStream baosRendered = new ByteArrayOutputStream();
-		renderlet.render(res, null, null, null,
-				getClass().getResource(template).toURI(),
-				null, null, null, baosRendered);
-		ByteArrayOutputStream baosExpected = new ByteArrayOutputStream();
-		InputStream expectedIn = getClass().getResourceAsStream(expected);
-		for (int ch = expectedIn.read(); ch != -1; ch = expectedIn.read()) {
-			baosExpected.write(ch);
-		}
-		//convertring byte[] to String for more readable output when failing
-		Assert.assertEquals(new String(baosExpected.toByteArray(), "utf-8"),
-				new String(baosRendered.toByteArray(), "utf-8"));
-	}
+    private void testWithFiles(String triples, String template, String expected) 
+            throws Exception {
+        TripleCollection tc = Parser.getInstance().parse(
+                getClass().getResourceAsStream(triples),
+                "text/turtle");
+        GraphNode res = new GraphNode(root, tc);
+        ByteArrayOutputStream baosRendered = new ByteArrayOutputStream();
+        renderlet.render(res, null, null, null,
+                getClass().getResource(template).toURI(),
+                null, null, null, baosRendered);
+        ByteArrayOutputStream baosExpected = new ByteArrayOutputStream();
+        InputStream expectedIn = getClass().getResourceAsStream(expected);
+        for (int ch = expectedIn.read(); ch != -1; ch = expectedIn.read()) {
+            baosExpected.write(ch);
+        }
+        //convertring byte[] to String for more readable output when failing
+        Assert.assertEquals(new String(baosExpected.toByteArray(), "utf-8"),
+                new String(baosRendered.toByteArray(), "utf-8"));
+    }
 
 
 

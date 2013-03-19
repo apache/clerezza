@@ -32,15 +32,15 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public interface TypeHandlerDiscovery {
 
-	/**
-	 * Returns the type handler for handling requests against resource of the
-	 * most important rdf-type in the types set.
-	 * 
-	 * @param rdfTypes
-	 *            Set of RDF-Types of the resource against which a request is to
-	 *            be handled
-	 * @return the type handler for most important rdf-type in the set
-	 */
-	public Object getTypeHandler(Set<UriRef> rdfTypes);
+    /**
+     * Returns the type handler for handling requests against resource of the
+     * most important rdf-type in the types set.
+     * 
+     * @param rdfTypes
+     *            Set of RDF-Types of the resource against which a request is to
+     *            be handled
+     * @return the type handler for most important rdf-type in the set
+     */
+    public Object getTypeHandler(Set<UriRef> rdfTypes);
 
 }

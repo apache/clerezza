@@ -29,19 +29,19 @@ import org.osgi.service.condpermadmin.ConditionInfo;
  */
 public class NotBundleLocationCondition {
 
-	/**
-	 * Returns the negated <code>Condition</code> of 
-	 * <code>BundleLocationCondition</code>.
-	 * 
-	 * @param bundle The Bundle being evaluated.
-	 * @param info The ConditionInfo to construct the condition for. 
-	 * @return Condition object for the requested condition.
-	 */
-	static public Condition getCondition(final Bundle bundle, ConditionInfo info) {
-		ConditionInfo bundleLocationInfo = new ConditionInfo(
-				BundleLocationCondition.class.getName(), info.getArgs());
-		Condition result = BundleLocationCondition.getCondition(bundle,
-				bundleLocationInfo);
-		return result == Condition.TRUE ? Condition.FALSE: Condition.TRUE;
-	}
+    /**
+     * Returns the negated <code>Condition</code> of 
+     * <code>BundleLocationCondition</code>.
+     * 
+     * @param bundle The Bundle being evaluated.
+     * @param info The ConditionInfo to construct the condition for. 
+     * @return Condition object for the requested condition.
+     */
+    static public Condition getCondition(final Bundle bundle, ConditionInfo info) {
+        ConditionInfo bundleLocationInfo = new ConditionInfo(
+                BundleLocationCondition.class.getName(), info.getArgs());
+        Condition result = BundleLocationCondition.getCondition(bundle,
+                bundleLocationInfo);
+        return result == Condition.TRUE ? Condition.FALSE: Condition.TRUE;
+    }
 }

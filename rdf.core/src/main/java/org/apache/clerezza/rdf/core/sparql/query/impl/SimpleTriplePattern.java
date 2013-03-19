@@ -32,105 +32,105 @@ import org.apache.clerezza.rdf.core.sparql.query.Variable;
  */
 public class SimpleTriplePattern implements TriplePattern {
 
-	private ResourceOrVariable subject;
-	private UriRefOrVariable predicate;
-	private ResourceOrVariable object;
+    private ResourceOrVariable subject;
+    private UriRefOrVariable predicate;
+    private ResourceOrVariable object;
 
-	public SimpleTriplePattern(ResourceOrVariable subject,
-			UriRefOrVariable predicate,
-			ResourceOrVariable object) {
-		if (subject == null) {
-			throw new IllegalArgumentException("Invalid subject: null");
-		}
-		if (predicate == null) {
-			throw new IllegalArgumentException("Invalid predicate: null");
-		}
-		if (object == null) {
-			throw new IllegalArgumentException("Invalid object: null");
-		}
-		this.subject = subject;
-		this.predicate = predicate;
-		this.object = object;
-	}
+    public SimpleTriplePattern(ResourceOrVariable subject,
+            UriRefOrVariable predicate,
+            ResourceOrVariable object) {
+        if (subject == null) {
+            throw new IllegalArgumentException("Invalid subject: null");
+        }
+        if (predicate == null) {
+            throw new IllegalArgumentException("Invalid predicate: null");
+        }
+        if (object == null) {
+            throw new IllegalArgumentException("Invalid object: null");
+        }
+        this.subject = subject;
+        this.predicate = predicate;
+        this.object = object;
+    }
 
-	public SimpleTriplePattern(Variable subject, Variable predicate, Variable object) {
-		this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
-				new ResourceOrVariable(object));
-	}
+    public SimpleTriplePattern(Variable subject, Variable predicate, Variable object) {
+        this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
+                new ResourceOrVariable(object));
+    }
 
-	public SimpleTriplePattern(NonLiteral subject, Variable predicate, Variable object) {
-		this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
-				new ResourceOrVariable(object));
-	}
+    public SimpleTriplePattern(NonLiteral subject, Variable predicate, Variable object) {
+        this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
+                new ResourceOrVariable(object));
+    }
 
-	public SimpleTriplePattern(Variable subject, UriRef predicate, Variable object) {
-		this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
-				new ResourceOrVariable(object));
-	}
+    public SimpleTriplePattern(Variable subject, UriRef predicate, Variable object) {
+        this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
+                new ResourceOrVariable(object));
+    }
 
-	public SimpleTriplePattern(NonLiteral subject, UriRef predicate, Variable object) {
-		this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
-				new ResourceOrVariable(object));
-	}
+    public SimpleTriplePattern(NonLiteral subject, UriRef predicate, Variable object) {
+        this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
+                new ResourceOrVariable(object));
+    }
 
-	public SimpleTriplePattern(Variable subject, Variable predicate, Resource object) {
-		this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
-				new ResourceOrVariable(object));
-	}
+    public SimpleTriplePattern(Variable subject, Variable predicate, Resource object) {
+        this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
+                new ResourceOrVariable(object));
+    }
 
-	public SimpleTriplePattern(NonLiteral subject, Variable predicate, Resource object) {
-		this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
-				new ResourceOrVariable(object));
-	}
+    public SimpleTriplePattern(NonLiteral subject, Variable predicate, Resource object) {
+        this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
+                new ResourceOrVariable(object));
+    }
 
-	public SimpleTriplePattern(Variable subject, UriRef predicate, Resource object) {
-		this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
-				new ResourceOrVariable(object));
-	}
+    public SimpleTriplePattern(Variable subject, UriRef predicate, Resource object) {
+        this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
+                new ResourceOrVariable(object));
+    }
 
-	public SimpleTriplePattern(NonLiteral subject, UriRef predicate, Resource object) {
-		this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
-				new ResourceOrVariable(object));
-	}
+    public SimpleTriplePattern(NonLiteral subject, UriRef predicate, Resource object) {
+        this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
+                new ResourceOrVariable(object));
+    }
 
-	@Override
-	public ResourceOrVariable getSubject() {
-		return subject;
-	}
+    @Override
+    public ResourceOrVariable getSubject() {
+        return subject;
+    }
 
-	@Override
-	public UriRefOrVariable getPredicate() {
-		return predicate;
-	}
+    @Override
+    public UriRefOrVariable getPredicate() {
+        return predicate;
+    }
 
-	@Override
-	public ResourceOrVariable getObject() {
-		return object;
-	}
+    @Override
+    public ResourceOrVariable getObject() {
+        return object;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof TriplePattern)) {
-			return false;
-		}
-		final TriplePattern other = (TriplePattern) obj;
-		if (!this.subject.equals(other.getSubject())) {
-			return false;
-		}
-		if (!this.predicate.equals(other.getPredicate())) {
-			return false;
-		}
-		if (!this.object.equals(other.getObject())) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof TriplePattern)) {
+            return false;
+        }
+        final TriplePattern other = (TriplePattern) obj;
+        if (!this.subject.equals(other.getSubject())) {
+            return false;
+        }
+        if (!this.predicate.equals(other.getPredicate())) {
+            return false;
+        }
+        if (!this.object.equals(other.getObject())) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		return (subject.hashCode() >> 1) ^ subject.hashCode() ^ (subject.hashCode() << 1);
-	}
+    @Override
+    public int hashCode() {
+        return (subject.hashCode() >> 1) ^ subject.hashCode() ^ (subject.hashCode() << 1);
+    }
 }

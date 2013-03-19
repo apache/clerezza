@@ -66,31 +66,31 @@ import java.nio.charset.Charset;
  * @author Henry Story
  */
 public abstract class DefaultCertSerialisation implements CertSerialisation {
-	Certificate cer;
+    Certificate cer;
 
-	DefaultCertSerialisation(Certificate cer) {
-		this.cer = cer;
-	}
+    DefaultCertSerialisation(Certificate cer) {
+        this.cer = cer;
+    }
 
-	@Override
-	public int getLength() {
-		return getContent().length;
-	}
+    @Override
+    public int getLength() {
+        return getContent().length;
+    }
 
-	@Override
-	public void writeTo(OutputStream out) throws IOException {
-		out.write(getContent());
-	}
+    @Override
+    public void writeTo(OutputStream out) throws IOException {
+        out.write(getContent());
+    }
 
-	/**
-	 * Should not be used, only for testing!
-	 *
-	 * @return a string representation of the output
-	 */
-	@Override
-	public String toString() {
-		return "DO NOT USE FOR OUTPUT! use write(ServletResponse res) instead!\r\n" +
-			new String(getContent(), Charset.forName("UTF-8"));
+    /**
+     * Should not be used, only for testing!
+     *
+     * @return a string representation of the output
+     */
+    @Override
+    public String toString() {
+        return "DO NOT USE FOR OUTPUT! use write(ServletResponse res) instead!\r\n" +
+            new String(getContent(), Charset.forName("UTF-8"));
 
-	}
+    }
 }

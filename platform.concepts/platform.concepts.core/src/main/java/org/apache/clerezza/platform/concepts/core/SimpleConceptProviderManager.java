@@ -76,244 +76,244 @@ import org.osgi.service.component.ComponentContext;
  */
 @Component
 @Services({
-	@Service(Object.class),
-	@Service(ConceptProviderManager.class),
-	@Service(GlobalMenuItemsProvider.class)
+    @Service(Object.class),
+    @Service(ConceptProviderManager.class),
+    @Service(GlobalMenuItemsProvider.class)
 })
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("/concepts/provider-manager")
 public class SimpleConceptProviderManager implements ConceptProviderManager,
-		GlobalMenuItemsProvider {
+        GlobalMenuItemsProvider {
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	@Reference
-	protected ContentGraphProvider cgProvider;
+    @Reference
+    protected ContentGraphProvider cgProvider;
 
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private RenderletManager renderletManager;
 
-	private List<ConceptProvider> conceptProviderList =
-			new ArrayList<ConceptProvider>();
+    private List<ConceptProvider> conceptProviderList =
+            new ArrayList<ConceptProvider>();
 
-	/**
-	 * The activate method is called when SCR activates the component
-	 * configuration. 
-	 * 
-	 * @param context
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 */
-	protected void activate(ComponentContext context)
-			throws IOException,
-			URISyntaxException {
+    /**
+     * The activate method is called when SCR activates the component
+     * configuration. 
+     * 
+     * @param context
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    protected void activate(ComponentContext context)
+            throws IOException,
+            URISyntaxException {
 
-		URL template = getClass().getResource("manage-concept-providers-page.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
-				CONCEPTS.ManageConceptProvidersPage, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        URL template = getClass().getResource("manage-concept-providers-page.ssp");
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(template.toURI().toString()),
+                CONCEPTS.ManageConceptProvidersPage, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		instantiateConceptProviders();
-	}
+        instantiateConceptProviders();
+    }
 
-	protected void deactivate(ComponentContext context) {
-		conceptProviderList.clear();
-	}
+    protected void deactivate(ComponentContext context) {
+        conceptProviderList.clear();
+    }
 
-	private void instantiateConceptProviders() {
-		conceptProviderList.clear();
-		MGraph contentGraph = cgProvider.getContentGraph();
+    private void instantiateConceptProviders() {
+        conceptProviderList.clear();
+        MGraph contentGraph = cgProvider.getContentGraph();
 
-		NonLiteral cplNode = getConceptProviderListNode(contentGraph);
-		RdfList cpl = new RdfList(cplNode, contentGraph);
-		for (int i = 0; i < cpl.size(); i++) {
-			NonLiteral conceptProvider = (NonLiteral) cpl.get(i);
-			Iterator<Triple> conceptProviderTypes = contentGraph.filter(
-					conceptProvider, RDF.type, null);
-			if (conceptProviderTypes.hasNext()) {
-				UriRef conceptProviderType = (UriRef) conceptProviderTypes.next().getObject();
-				if (conceptProviderType.equals(CONCEPTS.LocalConceptProvider)) {
-					instantiateLocalConceptProvider(contentGraph, conceptProvider);
-				} else {
-					instantiateRemoteConceptProvider(contentGraph, conceptProvider);
-				}
-			}
-		}
-	}
+        NonLiteral cplNode = getConceptProviderListNode(contentGraph);
+        RdfList cpl = new RdfList(cplNode, contentGraph);
+        for (int i = 0; i < cpl.size(); i++) {
+            NonLiteral conceptProvider = (NonLiteral) cpl.get(i);
+            Iterator<Triple> conceptProviderTypes = contentGraph.filter(
+                    conceptProvider, RDF.type, null);
+            if (conceptProviderTypes.hasNext()) {
+                UriRef conceptProviderType = (UriRef) conceptProviderTypes.next().getObject();
+                if (conceptProviderType.equals(CONCEPTS.LocalConceptProvider)) {
+                    instantiateLocalConceptProvider(contentGraph, conceptProvider);
+                } else {
+                    instantiateRemoteConceptProvider(contentGraph, conceptProvider);
+                }
+            }
+        }
+    }
 
-	private NonLiteral getConceptProviderListNode(MGraph contentGraph) {
-		Iterator<Triple> triples = contentGraph.filter(null, RDF.type,
-				CONCEPTS.ConceptProviderList);
-		if (triples.hasNext()) {
-			return triples.next().getSubject();
-		}
-		NonLiteral cplNode = new BNode();
-		new RdfList(cplNode, contentGraph);
-		contentGraph.add(new TripleImpl(cplNode, RDF.type,
-				CONCEPTS.ConceptProviderList));
-		return cplNode;
-	}
+    private NonLiteral getConceptProviderListNode(MGraph contentGraph) {
+        Iterator<Triple> triples = contentGraph.filter(null, RDF.type,
+                CONCEPTS.ConceptProviderList);
+        if (triples.hasNext()) {
+            return triples.next().getSubject();
+        }
+        NonLiteral cplNode = new BNode();
+        new RdfList(cplNode, contentGraph);
+        contentGraph.add(new TripleImpl(cplNode, RDF.type,
+                CONCEPTS.ConceptProviderList));
+        return cplNode;
+    }
 
-	private void instantiateLocalConceptProvider(MGraph contentGraph,
-			NonLiteral conceptProvider) {
-		Iterator<Triple> selectedSchemes = contentGraph.filter(
-				conceptProvider, CONCEPTS.selectedScheme, null);
-		if (selectedSchemes.hasNext()) {
-			UriRef selectedScheme = (UriRef) selectedSchemes.next().getObject();
-			conceptProviderList.add(new LocalConceptProvider(tcManager,
-					cgProvider, selectedScheme));
-		}
-	}
+    private void instantiateLocalConceptProvider(MGraph contentGraph,
+            NonLiteral conceptProvider) {
+        Iterator<Triple> selectedSchemes = contentGraph.filter(
+                conceptProvider, CONCEPTS.selectedScheme, null);
+        if (selectedSchemes.hasNext()) {
+            UriRef selectedScheme = (UriRef) selectedSchemes.next().getObject();
+            conceptProviderList.add(new LocalConceptProvider(tcManager,
+                    cgProvider, selectedScheme));
+        }
+    }
 
-	private void instantiateRemoteConceptProvider(MGraph contentGraph,
-			NonLiteral conceptProvider) {
-		Iterator<Triple> endPoints = contentGraph.filter(
-				conceptProvider, CONCEPTS.sparqlEndPoint, null);
-		if (endPoints.hasNext()) {
-			UriRef sparqlEndPoint = (UriRef) endPoints.next().getObject();
-			Iterator<Triple> defaultGraphs = contentGraph.filter(
-					conceptProvider, CONCEPTS.defaultGraph, null);
-			UriRef defaultGraph = null;
-			if (defaultGraphs.hasNext()) {
-				defaultGraph = (UriRef) defaultGraphs.next().getObject();
-			}
-			Iterator<Triple> queryTemplates = contentGraph.filter(
-					conceptProvider, CONCEPTS.queryTemplate, null);
-			if (queryTemplates.hasNext()) {
-				TypedLiteral queryTemplate =
-						(TypedLiteral) queryTemplates.next().getObject();
-				conceptProviderList.add(
-						new RemoteConceptProvider(sparqlEndPoint,
-						defaultGraph, queryTemplate.getLexicalForm()));
-			}
-		}
-	}
+    private void instantiateRemoteConceptProvider(MGraph contentGraph,
+            NonLiteral conceptProvider) {
+        Iterator<Triple> endPoints = contentGraph.filter(
+                conceptProvider, CONCEPTS.sparqlEndPoint, null);
+        if (endPoints.hasNext()) {
+            UriRef sparqlEndPoint = (UriRef) endPoints.next().getObject();
+            Iterator<Triple> defaultGraphs = contentGraph.filter(
+                    conceptProvider, CONCEPTS.defaultGraph, null);
+            UriRef defaultGraph = null;
+            if (defaultGraphs.hasNext()) {
+                defaultGraph = (UriRef) defaultGraphs.next().getObject();
+            }
+            Iterator<Triple> queryTemplates = contentGraph.filter(
+                    conceptProvider, CONCEPTS.queryTemplate, null);
+            if (queryTemplates.hasNext()) {
+                TypedLiteral queryTemplate =
+                        (TypedLiteral) queryTemplates.next().getObject();
+                conceptProviderList.add(
+                        new RemoteConceptProvider(sparqlEndPoint,
+                        defaultGraph, queryTemplate.getLexicalForm()));
+            }
+        }
+    }
 
-	/**
-	 * Returns a GraphNode containing a list of {@link ConceptProvider}s stored
-	 * in the content graph to be managed. The order in the list represents
-	 * the priority of the providers.
-	 * This resource is accessible through a GET request on the URI sub-path
-	 * "edit-concept-provider-list".
-	 *
-	 */
-	@GET
-	@Path("edit-concept-provider-list")
-	public GraphNode getProviderList(@Context UriInfo uriInfo) {
-		AccessController.checkPermission(
-				new ConceptProviderManagerAppPermission());
-		TrailingSlash.enforceNotPresent(uriInfo);
-		MGraph contentGraph = cgProvider.getContentGraph();
-		MGraph resultGraph = new SimpleMGraph();
+    /**
+     * Returns a GraphNode containing a list of {@link ConceptProvider}s stored
+     * in the content graph to be managed. The order in the list represents
+     * the priority of the providers.
+     * This resource is accessible through a GET request on the URI sub-path
+     * "edit-concept-provider-list".
+     *
+     */
+    @GET
+    @Path("edit-concept-provider-list")
+    public GraphNode getProviderList(@Context UriInfo uriInfo) {
+        AccessController.checkPermission(
+                new ConceptProviderManagerAppPermission());
+        TrailingSlash.enforceNotPresent(uriInfo);
+        MGraph contentGraph = cgProvider.getContentGraph();
+        MGraph resultGraph = new SimpleMGraph();
 
-		NonLiteral cplNode = getConceptProviderListNode(contentGraph);
-		GraphNode resultNode = new GraphNode(cplNode, resultGraph);
+        NonLiteral cplNode = getConceptProviderListNode(contentGraph);
+        GraphNode resultNode = new GraphNode(cplNode, resultGraph);
 
-		resultNode.addProperty(RDF.type, CONCEPTS.ManageConceptProvidersPage);
-		resultNode.addProperty(RDF.type, PLATFORM.HeadedPage);
-		return new GraphNode(resultNode.getNode(),
-				new UnionMGraph(resultGraph, contentGraph));
-	}
+        resultNode.addProperty(RDF.type, CONCEPTS.ManageConceptProvidersPage);
+        resultNode.addProperty(RDF.type, PLATFORM.HeadedPage);
+        return new GraphNode(resultNode.getNode(),
+                new UnionMGraph(resultGraph, contentGraph));
+    }
 
-	/**
-	 * Allows the list of {@link ConceptProvider}s stored in the content graph
-	 * to be updated with the list POSTed via the URI sub-path
-	 * "update-concept-provider-list".
-	 * The order in the list represents the priority of the providers.
-	 *
-	 * @param types
-	 *		specify the type of each ConceptProvider: either a
-	 *		LocalConceptProvider or a RemoteConceptProvider.
-	 * @param sparqlEndPoints
-	 *		the SPARQL EndPoint to connect to in case of a RemoteConceptProvider.
-	 * @param defaultGraphs
-	 *		the Graph to be queried in case of a RemoteConceptProvider.
-	 * @param queryTemplates
-	 *		the template for the query to be used in case of a RemoteConceptProvider.
-	 * @param conceptSchemes
-	 *		the concept scheme within which concepts are to be searched,
-	 *		in case of a LocalConceptProvider.
-	 * @return
-	 *		- a 200 (OK) response if everything is fine.
-	 *		- a 400 (BAD REQUEST) response if types parameter is undefined.
-	 */
-	@POST
-	@Path("update-concept-provider-list")
-	public Response updateConceptProviders(
-			@FormParam("types") List<String> types,
-			@FormParam("sparqlEndPoints") List<String> sparqlEndPoints,
-			@FormParam("defaultGraphs") List<String> defaultGraphs,
-			@FormParam("queryTemplates") List<String> queryTemplates,
-			@FormParam("conceptSchemes") List<String> conceptSchemes) {
+    /**
+     * Allows the list of {@link ConceptProvider}s stored in the content graph
+     * to be updated with the list POSTed via the URI sub-path
+     * "update-concept-provider-list".
+     * The order in the list represents the priority of the providers.
+     *
+     * @param types
+     *        specify the type of each ConceptProvider: either a
+     *        LocalConceptProvider or a RemoteConceptProvider.
+     * @param sparqlEndPoints
+     *        the SPARQL EndPoint to connect to in case of a RemoteConceptProvider.
+     * @param defaultGraphs
+     *        the Graph to be queried in case of a RemoteConceptProvider.
+     * @param queryTemplates
+     *        the template for the query to be used in case of a RemoteConceptProvider.
+     * @param conceptSchemes
+     *        the concept scheme within which concepts are to be searched,
+     *        in case of a LocalConceptProvider.
+     * @return
+     *        - a 200 (OK) response if everything is fine.
+     *        - a 400 (BAD REQUEST) response if types parameter is undefined.
+     */
+    @POST
+    @Path("update-concept-provider-list")
+    public Response updateConceptProviders(
+            @FormParam("types") List<String> types,
+            @FormParam("sparqlEndPoints") List<String> sparqlEndPoints,
+            @FormParam("defaultGraphs") List<String> defaultGraphs,
+            @FormParam("queryTemplates") List<String> queryTemplates,
+            @FormParam("conceptSchemes") List<String> conceptSchemes) {
 
-		if (types == null) {
-			//types is null when all provider have been removed, processing empty list
-			types = new ArrayList<String>();
-		}
-		MGraph contentGraph = cgProvider.getContentGraph();
-		NonLiteral cplNode = getConceptProviderListNode(contentGraph);
-		GraphNode cplGraphNode = new GraphNode(cplNode, contentGraph);
-		cplGraphNode.deleteNodeContext();
+        if (types == null) {
+            //types is null when all provider have been removed, processing empty list
+            types = new ArrayList<String>();
+        }
+        MGraph contentGraph = cgProvider.getContentGraph();
+        NonLiteral cplNode = getConceptProviderListNode(contentGraph);
+        GraphNode cplGraphNode = new GraphNode(cplNode, contentGraph);
+        cplGraphNode.deleteNodeContext();
 
-		cplNode = getConceptProviderListNode(contentGraph);
-		RdfList cpl = new RdfList(cplNode, contentGraph);
+        cplNode = getConceptProviderListNode(contentGraph);
+        RdfList cpl = new RdfList(cplNode, contentGraph);
 
-		int length = types.size();
-		for (int i=0; i<length; i++) {
-			UriRef conceptProviderType = new UriRef(types.get(i));
-			BNode conceptProvider = new BNode();
-			contentGraph.add(new TripleImpl(conceptProvider, RDF.type,
-					conceptProviderType));
-			if (conceptProviderType.equals(CONCEPTS.LocalConceptProvider)) {
-				contentGraph.add(new TripleImpl(conceptProvider,
-						CONCEPTS.selectedScheme,
-						new UriRef(conceptSchemes.get(i))));
-			} else {
-				contentGraph.add(new TripleImpl(conceptProvider,
-						CONCEPTS.sparqlEndPoint,
-						new UriRef(sparqlEndPoints.get(i))));
-				String defaultGraph = defaultGraphs.get(i);
-				if (!defaultGraph.trim().isEmpty()) {
-					contentGraph.add(new TripleImpl(conceptProvider,
-							CONCEPTS.defaultGraph,
-							new UriRef(defaultGraph)));
-				}
-				contentGraph.add(new TripleImpl(conceptProvider,
-						CONCEPTS.queryTemplate,
-						LiteralFactory.getInstance().createTypedLiteral(
-						queryTemplates.get(i))));
-			}
-			cpl.add(i, conceptProvider);
-		}
-		instantiateConceptProviders();
-		return Response.status(Status.OK).build();
-	}
+        int length = types.size();
+        for (int i=0; i<length; i++) {
+            UriRef conceptProviderType = new UriRef(types.get(i));
+            BNode conceptProvider = new BNode();
+            contentGraph.add(new TripleImpl(conceptProvider, RDF.type,
+                    conceptProviderType));
+            if (conceptProviderType.equals(CONCEPTS.LocalConceptProvider)) {
+                contentGraph.add(new TripleImpl(conceptProvider,
+                        CONCEPTS.selectedScheme,
+                        new UriRef(conceptSchemes.get(i))));
+            } else {
+                contentGraph.add(new TripleImpl(conceptProvider,
+                        CONCEPTS.sparqlEndPoint,
+                        new UriRef(sparqlEndPoints.get(i))));
+                String defaultGraph = defaultGraphs.get(i);
+                if (!defaultGraph.trim().isEmpty()) {
+                    contentGraph.add(new TripleImpl(conceptProvider,
+                            CONCEPTS.defaultGraph,
+                            new UriRef(defaultGraph)));
+                }
+                contentGraph.add(new TripleImpl(conceptProvider,
+                        CONCEPTS.queryTemplate,
+                        LiteralFactory.getInstance().createTypedLiteral(
+                        queryTemplates.get(i))));
+            }
+            cpl.add(i, conceptProvider);
+        }
+        instantiateConceptProviders();
+        return Response.status(Status.OK).build();
+    }
 
-	@Override
-	public List<ConceptProvider> getConceptProviders() {
-		return conceptProviderList;
-	}
+    @Override
+    public List<ConceptProvider> getConceptProviders() {
+        return conceptProviderList;
+    }
 
-	@Override
-	public Set<GlobalMenuItem> getMenuItems() {
-		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-		try {
-			AccessController.checkPermission(
-					new TcPermission("urn:x-localinstance:/content.graph",
-					TcPermission.READWRITE));
-		} catch (AccessControlException e) {
-			return items;
-		}
-		try {
-			AccessController.checkPermission(
-					new ConceptProviderManagerAppPermission());
-		} catch (AccessControlException e) {
-			return items;
-		}
-		items.add(new GlobalMenuItem("/concepts/provider-manager/edit-concept-provider-list",
-				"CPM", "Concept Providers", 5, "Administration"));
-		return items;
-	}
+    @Override
+    public Set<GlobalMenuItem> getMenuItems() {
+        Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+        try {
+            AccessController.checkPermission(
+                    new TcPermission("urn:x-localinstance:/content.graph",
+                    TcPermission.READWRITE));
+        } catch (AccessControlException e) {
+            return items;
+        }
+        try {
+            AccessController.checkPermission(
+                    new ConceptProviderManagerAppPermission());
+        } catch (AccessControlException e) {
+            return items;
+        }
+        items.add(new GlobalMenuItem("/concepts/provider-manager/edit-concept-provider-list",
+                "CPM", "Concept Providers", 5, "Administration"));
+        return items;
+    }
 }

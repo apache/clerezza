@@ -59,73 +59,73 @@ import org.osgi.service.component.ComponentContext;
 @Path("/concepts/tagger/")
 public class ResourceTagger {
 
-	@Reference
-	protected ContentGraphProvider cgProvider;
-	@Reference
-	private ScalaServerPagesService scalaServerPagesService;
+    @Reference
+    protected ContentGraphProvider cgProvider;
+    @Reference
+    private ScalaServerPagesService scalaServerPagesService;
 
-	protected void activate(ComponentContext context)
-			throws URISyntaxException {
+    protected void activate(ComponentContext context)
+            throws URISyntaxException {
 
-		BundleContext bundleContext = context.getBundleContext();
-		URL template = getClass().getResource("concept-existing-subjects.ssp");
+        BundleContext bundleContext = context.getBundleContext();
+        URL template = getClass().getResource("concept-existing-subjects.ssp");
 
-		scalaServerPagesService.registerScalaServerPage(
-				template,
-				RDFS.Resource, "concept-existing-subjects-naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
+        scalaServerPagesService.registerScalaServerPage(
+                template,
+                RDFS.Resource, "concept-existing-subjects-naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
 
-		template = getClass().getResource("concept-tagging.ssp");
-		scalaServerPagesService.registerScalaServerPage(
-				template,
-				RDFS.Resource, "concept-tagging-naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
+        template = getClass().getResource("concept-tagging.ssp");
+        scalaServerPagesService.registerScalaServerPage(
+                template,
+                RDFS.Resource, "concept-tagging-naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
 
-		template = getClass().getResource("concept-find-create.ssp");
-		scalaServerPagesService.registerScalaServerPage(
-				template,
-				RDFS.Resource, "concept-find-create-naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
+        template = getClass().getResource("concept-find-create.ssp");
+        scalaServerPagesService.registerScalaServerPage(
+                template,
+                RDFS.Resource, "concept-find-create-naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
 
-		template = getClass().getResource("selected-concepts.ssp");
-		scalaServerPagesService.registerScalaServerPage(
-				template,
-				RDFS.Resource, "selectedconcepts-naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
-	}
+        template = getClass().getResource("selected-concepts.ssp");
+        scalaServerPagesService.registerScalaServerPage(
+                template,
+                RDFS.Resource, "selectedconcepts-naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext);
+    }
 
-	/**
-	 * Adds concepts to a resource. If parameters uri and
-	 * concepts are not defined a response with code BAD_REQUEST is returned. If
-	 * the relation is succefully added a redirect to /concepts/generic-resource with
-	 * the UriRef of the resource as parameter.
-	 *
-	 * @param uri specifies the uri of a resource
-	 * @param concepts specifies a list of concept uris.
-	 *
-	 * @return
-	 *		A Response
-	 */
-	@POST
-	@Path("set")
-	public Response updateConcepts(@FormParam("uri") UriRef uri,
-			@FormParam("concepts") List<String> concepts,
-			@Context UriInfo uriInfo) {
+    /**
+     * Adds concepts to a resource. If parameters uri and
+     * concepts are not defined a response with code BAD_REQUEST is returned. If
+     * the relation is succefully added a redirect to /concepts/generic-resource with
+     * the UriRef of the resource as parameter.
+     *
+     * @param uri specifies the uri of a resource
+     * @param concepts specifies a list of concept uris.
+     *
+     * @return
+     *        A Response
+     */
+    @POST
+    @Path("set")
+    public Response updateConcepts(@FormParam("uri") UriRef uri,
+            @FormParam("concepts") List<String> concepts,
+            @Context UriInfo uriInfo) {
 
-		
-		if (uri != null) {
-			GraphNode node = new GraphNode(uri, cgProvider.getContentGraph());
-			node.deleteProperties(DCTERMS.subject);
-			if(concepts != null) {
-				for (String subject : concepts) {
-					node.addProperty(DCTERMS.subject, new UriRef(subject));
-				}
-			}
-		} else {
-			throw new WebApplicationException(Response.status(
-					Status.BAD_REQUEST).entity("No resource uri defined.").build());
-		}
-		return RedirectUtil.createSeeOtherResponse("/concepts/generic-resource?uri=" +
-				uri.getUnicodeString(), uriInfo);
-	}
+        
+        if (uri != null) {
+            GraphNode node = new GraphNode(uri, cgProvider.getContentGraph());
+            node.deleteProperties(DCTERMS.subject);
+            if(concepts != null) {
+                for (String subject : concepts) {
+                    node.addProperty(DCTERMS.subject, new UriRef(subject));
+                }
+            }
+        } else {
+            throw new WebApplicationException(Response.status(
+                    Status.BAD_REQUEST).entity("No resource uri defined.").build());
+        }
+        return RedirectUtil.createSeeOtherResponse("/concepts/generic-resource?uri=" +
+                uri.getUnicodeString(), uriInfo);
+    }
 }

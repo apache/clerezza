@@ -32,39 +32,39 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public interface DiscobitsHandler {
 
-	/**
-	 * Creates an InfoDiscoBit
-	 * 
-	 * @param infoDiscoBitUri
-	 * @param mediaType
-	 * @param data
-	 */
-	public abstract void put(UriRef infoDiscoBitUri, MediaType mediaType,
-			byte[] data);
+    /**
+     * Creates an InfoDiscoBit
+     * 
+     * @param infoDiscoBitUri
+     * @param mediaType
+     * @param data
+     */
+    public abstract void put(UriRef infoDiscoBitUri, MediaType mediaType,
+            byte[] data);
 
-	/**
-	 * Removes InfoDiscoBits (aka binary contents), other DiscoBits and
-	 * the context of the specified node. If it is in a hierarchy then it
-	 * will be removed also form its container.
-	 * 
-	 * @param node
-	 */
-	public abstract void remove(NonLiteral node);
+    /**
+     * Removes InfoDiscoBits (aka binary contents), other DiscoBits and
+     * the context of the specified node. If it is in a hierarchy then it
+     * will be removed also form its container.
+     * 
+     * @param node
+     */
+    public abstract void remove(NonLiteral node);
 
-	/**
-	 * 
-	 * @param uriRef
-	 * @return the media type of the InfoDiscoBit with the specified URI or null
-	 *         if no MediaType for that URI is known
-	 */
-	public MediaType getMediaType(UriRef uriRef);
+    /**
+     * 
+     * @param uriRef
+     * @return the media type of the InfoDiscoBit with the specified URI or null
+     *         if no MediaType for that URI is known
+     */
+    public MediaType getMediaType(UriRef uriRef);
 
-	/**
-	 * 
-	 * @param uriRef
-	 * @return a byte[] with the data of the InfoDiscoBit with the specified URI
-	 *         or null if no data for that URI is known
-	 */
-	public byte[] getData(UriRef uriRef);
+    /**
+     * 
+     * @param uriRef
+     * @return a byte[] with the data of the InfoDiscoBit with the specified URI
+     *         or null if no data for that URI is known
+     */
+    public byte[] getData(UriRef uriRef);
 
 }

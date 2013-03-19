@@ -40,52 +40,52 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class NTriplesSerializerTest {
 
-	private String inputFileName;
-	private String format;
+    private String inputFileName;
+    private String format;
 
-	public NTriplesSerializerTest(String inputFileName, String format) {
-		this.inputFileName = inputFileName;
-		this.format = format;
-	}
+    public NTriplesSerializerTest(String inputFileName, String format) {
+        this.inputFileName = inputFileName;
+        this.format = format;
+    }
 
-	@Parameterized.Parameters
-	public static Collection<String[]> inputFileNames() {
-		return Arrays.asList(new String[][] {
-			{"amp-in-url-test001.rdf", "application/rdf+xml"},
-			{"datatypes-test001.rdf", "application/rdf+xml"},
-			{"datatypes-test002.rdf", "application/rdf+xml"},
-			{"rdf-charmod-literals-test001.rdf", "application/rdf+xml"},
-			{"rdf-charmod-uris-test001.rdf", "application/rdf+xml"},
-			{"rdf-charmod-uris-test002.rdf", "application/rdf+xml"},
-			{"xml-canon-test001.rdf", "application/rdf+xml"},
-			{"css3deps.rdf", "application/rdf+xml"},
-			{"agenda_62.rdf", "application/rdf+xml"},
-			{"Talks.rdf", "application/rdf+xml"},
-			{"elvisimp.rdf", "application/rdf+xml"},
-			//{"images.xrdf", "application/rdf+xml"}, //large
-			{"libby.foaf", "application/rdf+xml"}
-		});
-	}
+    @Parameterized.Parameters
+    public static Collection<String[]> inputFileNames() {
+        return Arrays.asList(new String[][] {
+            {"amp-in-url-test001.rdf", "application/rdf+xml"},
+            {"datatypes-test001.rdf", "application/rdf+xml"},
+            {"datatypes-test002.rdf", "application/rdf+xml"},
+            {"rdf-charmod-literals-test001.rdf", "application/rdf+xml"},
+            {"rdf-charmod-uris-test001.rdf", "application/rdf+xml"},
+            {"rdf-charmod-uris-test002.rdf", "application/rdf+xml"},
+            {"xml-canon-test001.rdf", "application/rdf+xml"},
+            {"css3deps.rdf", "application/rdf+xml"},
+            {"agenda_62.rdf", "application/rdf+xml"},
+            {"Talks.rdf", "application/rdf+xml"},
+            {"elvisimp.rdf", "application/rdf+xml"},
+            //{"images.xrdf", "application/rdf+xml"}, //large
+            {"libby.foaf", "application/rdf+xml"}
+        });
+    }
 
-	@Test
-	public void RDFTestCases() {
-		NTriplesSerializer nts = new NTriplesSerializer();
+    @Test
+    public void RDFTestCases() {
+        NTriplesSerializer nts = new NTriplesSerializer();
 
-		Parser parser = Parser.getInstance();
-		Graph deserializedGraphOld = parser.parse(
-				getClass().getResourceAsStream(inputFileName), format);
+        Parser parser = Parser.getInstance();
+        Graph deserializedGraphOld = parser.parse(
+                getClass().getResourceAsStream(inputFileName), format);
 
-		TripleCollection tc = new SimpleMGraph();
-		tc.addAll(deserializedGraphOld);
+        TripleCollection tc = new SimpleMGraph();
+        tc.addAll(deserializedGraphOld);
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		nts.serialize(baos, tc);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        nts.serialize(baos, tc);
 
-		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 
-		Graph deserializedGraphNew = parser.parse(bais, "text/rdf+nt");
+        Graph deserializedGraphNew = parser.parse(bais, "text/rdf+nt");
 
-		Assert.assertEquals(deserializedGraphNew, deserializedGraphOld);
-	}
+        Assert.assertEquals(deserializedGraphNew, deserializedGraphOld);
+    }
 
 }

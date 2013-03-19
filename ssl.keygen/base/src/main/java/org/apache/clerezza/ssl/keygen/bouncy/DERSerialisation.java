@@ -65,27 +65,27 @@ import java.util.logging.Logger;
  * @since Mar 12, 2010
  */
 public class DERSerialisation extends DefaultCertSerialisation {
-	final static transient Logger log = Logger.getLogger(DERSerialisation.class.getName());
+    final static transient Logger log = Logger.getLogger(DERSerialisation.class.getName());
 
-	byte[] ser = null;
+    byte[] ser = null;
 
-	DERSerialisation(Certificate cer) {
-		super(cer);
-	}
+    DERSerialisation(Certificate cer) {
+        super(cer);
+    }
 
-	@Override
-	public byte[] getContent() {
-		if (ser == null) {
-			try {
-				ser = cer.getCertificate().getEncoded();
-			} catch (CertificateEncodingException e) {
-				log.log(Level.WARNING, "could not DER encode the give certificate.");
-			}
-		}
-		return ser;
-	}
+    @Override
+    public byte[] getContent() {
+        if (ser == null) {
+            try {
+                ser = cer.getCertificate().getEncoded();
+            } catch (CertificateEncodingException e) {
+                log.log(Level.WARNING, "could not DER encode the give certificate.");
+            }
+        }
+        return ser;
+    }
 
-	public String getMimeType() {
-		return "application/x-x509-user-cert";
-	}
+    public String getMimeType() {
+        return "application/x-x509-user-cert";
+    }
 }

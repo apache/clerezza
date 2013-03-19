@@ -28,30 +28,30 @@ package org.apache.clerezza.rdf.core;
  */
 public interface TypedLiteral extends Literal {
 
-	/** 
-	 * Returns the data type which is a UriRef.
-	 * Note that the return value is not a node in the graph
-	 * 
-	 * @return UriRef
-	 */
-	public UriRef getDataType();
-	
-	/** 
-	 * Two TypedLiteral nodes are equal iff they have the same lexical form and
-	 * the same data type
-	 *
-	 * @param obj
-	 * @return true if <code>obj</code> is an instance of <code>TypedLiteral</code> 
-	 * for which the lexical form and the data type URI are equal to the ones 
-	 * of this instance, false otherwise
-	 */
-	public boolean equals(Object obj);
+    /** 
+     * Returns the data type which is a UriRef.
+     * Note that the return value is not a node in the graph
+     * 
+     * @return UriRef
+     */
+    public UriRef getDataType();
+    
+    /** 
+     * Two TypedLiteral nodes are equal iff they have the same lexical form and
+     * the same data type
+     *
+     * @param obj
+     * @return true if <code>obj</code> is an instance of <code>TypedLiteral</code> 
+     * for which the lexical form and the data type URI are equal to the ones 
+     * of this instance, false otherwise
+     */
+    public boolean equals(Object obj);
 
-	/** 
-	 * The hash code is equal to the hash code of the lexical form 
-	 * plus the hash code of the dataType
-	 * 
-	 * @return hash code
-	 */
-	public int hashCode();
+    /** 
+     * The hash code is equal to the hash code of the lexical form 
+     * plus the hash code of the dataType
+     * 
+     * @return hash code
+     */
+    public int hashCode();
 }

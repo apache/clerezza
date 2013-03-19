@@ -63,130 +63,130 @@ import org.osgi.service.component.ComponentContext;
 @Component
 @Service(WeightedTcProvider.class)
 @References(
-	{
-		@Reference(referenceInterface=Enricher.class, name="enricher",
-				cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
-				policy=ReferencePolicy.DYNAMIC)
-	}
+    {
+        @Reference(referenceInterface=Enricher.class, name="enricher",
+                cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
+                policy=ReferencePolicy.DYNAMIC)
+    }
 )
 public class EnrichmentTcProvider implements WeightedTcProvider {
 
-	public static final UriRef ENRICHMENT_GRAPH_URI = new UriRef("urn:x-localinstance:/enrichment.graph");
-	
-	private LockableMGraph contentGraph;
-	private final Collection<Enricher> enrichers = Collections.synchronizedCollection(new HashSet<Enricher>());
+    public static final UriRef ENRICHMENT_GRAPH_URI = new UriRef("urn:x-localinstance:/enrichment.graph");
+    
+    private LockableMGraph contentGraph;
+    private final Collection<Enricher> enrichers = Collections.synchronizedCollection(new HashSet<Enricher>());
 
-	@Reference
-	private ContentGraphProvider cgProvider;
+    @Reference
+    private ContentGraphProvider cgProvider;
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	@Override
-	public Graph getGraph(UriRef name) throws NoSuchEntityException {
-		throw new NoSuchEntityException(name);
-	}
+    @Override
+    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+        throw new NoSuchEntityException(name);
+    }
 
-	@Override
-	public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
-		if (ENRICHMENT_GRAPH_URI.equals(name)) {
-			return getEnrichmentGraph();
-		}
-		throw new NoSuchEntityException(name);
-	}
+    @Override
+    public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+        if (ENRICHMENT_GRAPH_URI.equals(name)) {
+            return getEnrichmentGraph();
+        }
+        throw new NoSuchEntityException(name);
+    }
 
-	@Override
-	public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
-		if (ENRICHMENT_GRAPH_URI.equals(name)) {
-			return getEnrichmentGraph();
-		}
-		throw new NoSuchEntityException(name);
-	}
+    @Override
+    public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
+        if (ENRICHMENT_GRAPH_URI.equals(name)) {
+            return getEnrichmentGraph();
+        }
+        throw new NoSuchEntityException(name);
+    }
 
-	@Override
-	public Set<UriRef> listGraphs() {
-		return new HashSet<UriRef>(0);
-	}
+    @Override
+    public Set<UriRef> listGraphs() {
+        return new HashSet<UriRef>(0);
+    }
 
-	@Override
-	public Set<UriRef> listMGraphs() {
-		return Collections.singleton(ENRICHMENT_GRAPH_URI);
-	}
+    @Override
+    public Set<UriRef> listMGraphs() {
+        return Collections.singleton(ENRICHMENT_GRAPH_URI);
+    }
 
-	@Override
-	public Set<UriRef> listTripleCollections() {
-		return Collections.singleton(ENRICHMENT_GRAPH_URI);
-	}
+    @Override
+    public Set<UriRef> listTripleCollections() {
+        return Collections.singleton(ENRICHMENT_GRAPH_URI);
+    }
 
-	@Override
-	public MGraph createMGraph(UriRef name) throws UnsupportedOperationException, EntityAlreadyExistsException {
-		throw new UnsupportedOperationException("creating entities not supported");
-	}
+    @Override
+    public MGraph createMGraph(UriRef name) throws UnsupportedOperationException, EntityAlreadyExistsException {
+        throw new UnsupportedOperationException("creating entities not supported");
+    }
 
-	@Override
-	public Graph createGraph(UriRef name, TripleCollection triples) throws UnsupportedOperationException, EntityAlreadyExistsException {
-		throw new UnsupportedOperationException("creating entities not supported");
-	}
+    @Override
+    public Graph createGraph(UriRef name, TripleCollection triples) throws UnsupportedOperationException, EntityAlreadyExistsException {
+        throw new UnsupportedOperationException("creating entities not supported");
+    }
 
-	@Override
-	public void deleteTripleCollection(UriRef name) throws UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
-		throw new UnsupportedOperationException("deleting entities not supported");
-	}
+    @Override
+    public void deleteTripleCollection(UriRef name) throws UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
+        throw new UnsupportedOperationException("deleting entities not supported");
+    }
 
-	@Override
-	public Set<UriRef> getNames(Graph graph) {
-		return new HashSet<UriRef>(0);
-	}
+    @Override
+    public Set<UriRef> getNames(Graph graph) {
+        return new HashSet<UriRef>(0);
+    }
 
-	@Override
-	public int getWeight() {
-		return 0;
-	}
+    @Override
+    public int getWeight() {
+        return 0;
+    }
 
-	private MGraph getEnrichmentGraph() {
-		return new EnrichmentTriples(contentGraph, enrichers);
-	}
+    private MGraph getEnrichmentGraph() {
+        return new EnrichmentTriples(contentGraph, enrichers);
+    }
 
-	/**
-	 * avtivates the component and adds the enrichment-graph to the virtual
-	 * content graph.
-	 * 
-	 * gets the base content-graph from tcManager and sets the permission
-	 * required to access the enrichment-graph accordingly
-	 */
-	protected void activate(ComponentContext context) {
-		contentGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
-		Collection<Permission> requiredReadPermissions =
-				tcManager.getTcAccessController().getRequiredReadPermissions(Constants.CONTENT_GRAPH_URI);
-		if (requiredReadPermissions.isEmpty()) {
-			tcManager.getTcAccessController().setRequiredReadPermissionStrings(
-					ENRICHMENT_GRAPH_URI, Collections.singleton(
-						new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString()
-					));
-		} else {
-			tcManager.getTcAccessController().setRequiredReadPermissions(
-					ENRICHMENT_GRAPH_URI, requiredReadPermissions);
-		}
-		cgProvider.addTemporaryAdditionGraph(ENRICHMENT_GRAPH_URI);
-	}
+    /**
+     * avtivates the component and adds the enrichment-graph to the virtual
+     * content graph.
+     * 
+     * gets the base content-graph from tcManager and sets the permission
+     * required to access the enrichment-graph accordingly
+     */
+    protected void activate(ComponentContext context) {
+        contentGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI);
+        Collection<Permission> requiredReadPermissions =
+                tcManager.getTcAccessController().getRequiredReadPermissions(Constants.CONTENT_GRAPH_URI);
+        if (requiredReadPermissions.isEmpty()) {
+            tcManager.getTcAccessController().setRequiredReadPermissionStrings(
+                    ENRICHMENT_GRAPH_URI, Collections.singleton(
+                        new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString()
+                    ));
+        } else {
+            tcManager.getTcAccessController().setRequiredReadPermissions(
+                    ENRICHMENT_GRAPH_URI, requiredReadPermissions);
+        }
+        cgProvider.addTemporaryAdditionGraph(ENRICHMENT_GRAPH_URI);
+    }
 
-	/**
-	 * deactivates the compononent removing the enrichment-graph from the
-	 * virtual content graph
-	 */
-	protected void deactivate(ComponentContext context) {
-		cgProvider.removeTemporaryAdditionGraph(ENRICHMENT_GRAPH_URI);
-		contentGraph = null;
-	}
+    /**
+     * deactivates the compononent removing the enrichment-graph from the
+     * virtual content graph
+     */
+    protected void deactivate(ComponentContext context) {
+        cgProvider.removeTemporaryAdditionGraph(ENRICHMENT_GRAPH_URI);
+        contentGraph = null;
+    }
 
 
 
-	protected void bindEnricher(Enricher enricher) {
-		enrichers.add(enricher);
-	}
+    protected void bindEnricher(Enricher enricher) {
+        enrichers.add(enricher);
+    }
 
-	protected void unbindEnricher(Enricher enricher) {
-		enrichers.remove(enricher);
-	}
+    protected void unbindEnricher(Enricher enricher) {
+        enrichers.remove(enricher);
+    }
 
 }

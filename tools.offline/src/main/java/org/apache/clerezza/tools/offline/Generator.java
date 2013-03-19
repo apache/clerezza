@@ -76,266 +76,266 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 @Path("/admin/offline")
 public class Generator {
 
-	@Reference
-	private ContentGraphProvider cgp;
+    @Reference
+    private ContentGraphProvider cgp;
 
-	@Reference
-	private Serializer serializer;
+    @Reference
+    private Serializer serializer;
 
-	@Reference
-	private RendererFactory rendererFactory;
+    @Reference
+    private RendererFactory rendererFactory;
 
-	@Reference
-	private ThumbnailService thumbnailService;
+    @Reference
+    private ThumbnailService thumbnailService;
 
-	private MediaTypeGuesser mediaTypeGuesser = MediaTypeGuesser.getInstance();
+    private MediaTypeGuesser mediaTypeGuesser = MediaTypeGuesser.getInstance();
 
-	final Logger logger = LoggerFactory.getLogger(Generator.class);
+    final Logger logger = LoggerFactory.getLogger(Generator.class);
 
-	final private Charset UTF8 = Charset.forName("utf-8");
+    final private Charset UTF8 = Charset.forName("utf-8");
 
-	/**
-	 *
-	 * The service takes the following argumens:
-	 * - 1 base-uri: for all resources with a URI starting with this Uri
-	 * creation of the specified target fomats is attempted
-	 * - 1 target-uri: where base-uri appears in the representations it is
-	 * replaces with target-uri
-	 * - 0 or 1 root link prefix: prefix to be prepended to links with Uri
-	 * reference starting with a slash
-	 * - 1 - n target formats: the file- extensions represing the different
-	 * formats to be produced, the extensions are added to the generated files
-	 * where the file would not otherwise end with the extension.
-	 *
-	 * The service generates a zip containing a directory structure matching the
-	 * subpaths from base-uri, the directories contains files for the individual
-	 * representations, URIs ending with / are matched to a file called
-	 * "index"+format extension within the respective directory.
-	 *
-	 * @return
-	 *		a zipped file
-	 */
-	@GET
-	@Path("download")
-	@Produces("application/zip")
-	public Response download(@QueryParam("baseUri") String baseUri,
-			@QueryParam("targetUri") String targetUri,
-			@QueryParam("rootLinkPrefix") String rootLinkPrefix,
-			@QueryParam("formatExtension") List<String> formatExtensions) throws IOException {
+    /**
+     *
+     * The service takes the following argumens:
+     * - 1 base-uri: for all resources with a URI starting with this Uri
+     * creation of the specified target fomats is attempted
+     * - 1 target-uri: where base-uri appears in the representations it is
+     * replaces with target-uri
+     * - 0 or 1 root link prefix: prefix to be prepended to links with Uri
+     * reference starting with a slash
+     * - 1 - n target formats: the file- extensions represing the different
+     * formats to be produced, the extensions are added to the generated files
+     * where the file would not otherwise end with the extension.
+     *
+     * The service generates a zip containing a directory structure matching the
+     * subpaths from base-uri, the directories contains files for the individual
+     * representations, URIs ending with / are matched to a file called
+     * "index"+format extension within the respective directory.
+     *
+     * @return
+     *        a zipped file
+     */
+    @GET
+    @Path("download")
+    @Produces("application/zip")
+    public Response download(@QueryParam("baseUri") String baseUri,
+            @QueryParam("targetUri") String targetUri,
+            @QueryParam("rootLinkPrefix") String rootLinkPrefix,
+            @QueryParam("formatExtension") List<String> formatExtensions) throws IOException {
 
-		if (baseUri == null) {
-			throw new WebApplicationException(Response.
-					status(Status.BAD_REQUEST).entity(
-					"Parameter baseUri missing").build());
-		}
-		if (targetUri == null) {
-			targetUri = baseUri;
-		}
-		if (rootLinkPrefix == null) {
-			rootLinkPrefix = "";
-		}
-		if (formatExtensions == null) {
-			throw new WebApplicationException(Response.
-					status(Status.BAD_REQUEST).entity(
-					"Parameter formatExtension missing, at least one required").build());
-		}
-		byte[] byteArray = createOfflineSite(baseUri, targetUri, rootLinkPrefix,
-				formatExtensions);
-		ResponseBuilder responseBuilder = Response.status(Status.OK).
-				entity(byteArray);
-		responseBuilder.header("Content-Disposition",
-				"attachment; filename=site" + getCurrentDate() + ".zip");
-		return responseBuilder.build();
-	}
+        if (baseUri == null) {
+            throw new WebApplicationException(Response.
+                    status(Status.BAD_REQUEST).entity(
+                    "Parameter baseUri missing").build());
+        }
+        if (targetUri == null) {
+            targetUri = baseUri;
+        }
+        if (rootLinkPrefix == null) {
+            rootLinkPrefix = "";
+        }
+        if (formatExtensions == null) {
+            throw new WebApplicationException(Response.
+                    status(Status.BAD_REQUEST).entity(
+                    "Parameter formatExtension missing, at least one required").build());
+        }
+        byte[] byteArray = createOfflineSite(baseUri, targetUri, rootLinkPrefix,
+                formatExtensions);
+        ResponseBuilder responseBuilder = Response.status(Status.OK).
+                entity(byteArray);
+        responseBuilder.header("Content-Disposition",
+                "attachment; filename=site" + getCurrentDate() + ".zip");
+        return responseBuilder.build();
+    }
 
-	private byte[] createOfflineSite(String baseUri, String targetUri,
-			String rootLinkPrefix, List<String> formatExtensions) throws IOException {
-		PathNode baseNode = createFileHierarchy(baseUri, baseUri, targetUri, rootLinkPrefix,
-				formatExtensions);
-		PathNode allHostsNode = createFileHierarchy(Constants.ALL_HOSTS_URI_PREFIX+"/",
-				baseUri,targetUri, rootLinkPrefix, formatExtensions);
-		PathNode rootNode = new MultiPathNode(allHostsNode, baseNode);
-		try {
-			return ZipCreationUtil.createZip(rootNode);
-		} catch (IOException ex) {
-			throw new WebApplicationException(ex);
-		}
-	}
+    private byte[] createOfflineSite(String baseUri, String targetUri,
+            String rootLinkPrefix, List<String> formatExtensions) throws IOException {
+        PathNode baseNode = createFileHierarchy(baseUri, baseUri, targetUri, rootLinkPrefix,
+                formatExtensions);
+        PathNode allHostsNode = createFileHierarchy(Constants.ALL_HOSTS_URI_PREFIX+"/",
+                baseUri,targetUri, rootLinkPrefix, formatExtensions);
+        PathNode rootNode = new MultiPathNode(allHostsNode, baseNode);
+        try {
+            return ZipCreationUtil.createZip(rootNode);
+        } catch (IOException ex) {
+            throw new WebApplicationException(ex);
+        }
+    }
 
-	private PathNode createFileHierarchy(String baseUri, String retrievalBaseUri, String targetUri,
-			String rootLinkPrefix, List<String> formatExtensions) throws IOException {
-		Hierarchy result = new Hierarchy("");
-		MGraph contentGraph = cgp.getContentGraph();
-		Set<UriRef> matchingUri = new HashSet<UriRef>();
-		for (Triple triple : contentGraph) {
-			final NonLiteral subject = triple.getSubject();
-			if ((subject instanceof UriRef) &&
-					((UriRef)subject).getUnicodeString().startsWith(baseUri)) {
-				matchingUri.add((UriRef)subject);
-			}
-		}
-		for (UriRef uriRef : matchingUri) {
-			if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index"))) {
-				continue;
-			}
-			if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index.html"))) {
-				continue;
-			}
-			generateFilesForResource(baseUri, retrievalBaseUri, targetUri,
-					rootLinkPrefix, uriRef, contentGraph, formatExtensions,
-					result);
-		}
-		return result;
-	}
+    private PathNode createFileHierarchy(String baseUri, String retrievalBaseUri, String targetUri,
+            String rootLinkPrefix, List<String> formatExtensions) throws IOException {
+        Hierarchy result = new Hierarchy("");
+        MGraph contentGraph = cgp.getContentGraph();
+        Set<UriRef> matchingUri = new HashSet<UriRef>();
+        for (Triple triple : contentGraph) {
+            final NonLiteral subject = triple.getSubject();
+            if ((subject instanceof UriRef) &&
+                    ((UriRef)subject).getUnicodeString().startsWith(baseUri)) {
+                matchingUri.add((UriRef)subject);
+            }
+        }
+        for (UriRef uriRef : matchingUri) {
+            if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index"))) {
+                continue;
+            }
+            if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index.html"))) {
+                continue;
+            }
+            generateFilesForResource(baseUri, retrievalBaseUri, targetUri,
+                    rootLinkPrefix, uriRef, contentGraph, formatExtensions,
+                    result);
+        }
+        return result;
+    }
 
-	/**
-	 * Currently not using graph, but in future this might be used for special
-	 * handling of infodicscobits
-	 */
-	private void generateFilesForResource(String baseUri, String retrievalBaseUri,
-			String targetBaseUri, String rootLinkPrefix, UriRef resourceUriRef, TripleCollection graph,
-			List<String> formatExtensions, Hierarchy hierarchy) throws IOException {
-		final String path = getPathForUriRef(resourceUriRef, baseUri);
-		UriRef retreivalUriRef = new UriRef(retrievalBaseUri+path);
-		for (String formatExtension : formatExtensions) {
-			MediaType mediaType = mediaTypeGuesser.getTypeForExtension(formatExtension);
-			try {
-				final byte[] variant = getVariant(retreivalUriRef, mediaType);
-				if (mediaType.getSubtype().equals("png"))
-					logger.info("Got variant of length : {}",variant.length);
-				final byte[] addedThumbnailUris = applyThumbnailService(variant);
-				final byte[] dataPrefixApplied = applyRootLinkPrefix(addedThumbnailUris,
-						rootLinkPrefix, mediaType);
-				final String filePath = resourceUriRef.getUnicodeString().endsWith("/") ? path+"index" : path;
-				final String dottedExtension = "."+formatExtension;
-				final String extendedPath = filePath.endsWith(dottedExtension) ?
-					filePath : filePath + dottedExtension;
-				if (mediaType.getSubtype().equals("png"))
-					logger.info("Processed length : {}",dataPrefixApplied.length);
-				hierarchy.addChild(extendedPath, 
-						changeBaseUri(dataPrefixApplied, baseUri, targetBaseUri));
-			} catch (VariantUnavailableException ex) {
-				logger.debug("{} not available as {}", resourceUriRef, mediaType);
-			}
-		}	
-	}
+    /**
+     * Currently not using graph, but in future this might be used for special
+     * handling of infodicscobits
+     */
+    private void generateFilesForResource(String baseUri, String retrievalBaseUri,
+            String targetBaseUri, String rootLinkPrefix, UriRef resourceUriRef, TripleCollection graph,
+            List<String> formatExtensions, Hierarchy hierarchy) throws IOException {
+        final String path = getPathForUriRef(resourceUriRef, baseUri);
+        UriRef retreivalUriRef = new UriRef(retrievalBaseUri+path);
+        for (String formatExtension : formatExtensions) {
+            MediaType mediaType = mediaTypeGuesser.getTypeForExtension(formatExtension);
+            try {
+                final byte[] variant = getVariant(retreivalUriRef, mediaType);
+                if (mediaType.getSubtype().equals("png"))
+                    logger.info("Got variant of length : {}",variant.length);
+                final byte[] addedThumbnailUris = applyThumbnailService(variant);
+                final byte[] dataPrefixApplied = applyRootLinkPrefix(addedThumbnailUris,
+                        rootLinkPrefix, mediaType);
+                final String filePath = resourceUriRef.getUnicodeString().endsWith("/") ? path+"index" : path;
+                final String dottedExtension = "."+formatExtension;
+                final String extendedPath = filePath.endsWith(dottedExtension) ?
+                    filePath : filePath + dottedExtension;
+                if (mediaType.getSubtype().equals("png"))
+                    logger.info("Processed length : {}",dataPrefixApplied.length);
+                hierarchy.addChild(extendedPath, 
+                        changeBaseUri(dataPrefixApplied, baseUri, targetBaseUri));
+            } catch (VariantUnavailableException ex) {
+                logger.debug("{} not available as {}", resourceUriRef, mediaType);
+            }
+        }    
+    }
 
-	private byte[] changeBaseUri(byte[] variant, String baseUri,
-			String targetBaseUri) {
-		try {
-			//here we should locate some mediaType specific handlers
-			//a quick hack
-			final ByteArrayOutputStream resultWriter = new ByteArrayOutputStream(variant.length + 1000);
-			final OutputStream out = new ReplacingOutputStream(resultWriter,
-						baseUri.getBytes(UTF8),
-						targetBaseUri.getBytes(UTF8));
-			out.write(variant);
-			out.close();
-			return resultWriter.toByteArray();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    private byte[] changeBaseUri(byte[] variant, String baseUri,
+            String targetBaseUri) {
+        try {
+            //here we should locate some mediaType specific handlers
+            //a quick hack
+            final ByteArrayOutputStream resultWriter = new ByteArrayOutputStream(variant.length + 1000);
+            final OutputStream out = new ReplacingOutputStream(resultWriter,
+                        baseUri.getBytes(UTF8),
+                        targetBaseUri.getBytes(UTF8));
+            out.write(variant);
+            out.close();
+            return resultWriter.toByteArray();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	private byte[] getVariant(UriRef uriRef, MediaType mediaType) throws 
-			IOException, VariantUnavailableException {
-		logger.info("requested uri " + uriRef.getUnicodeString() + ",mediatype " + mediaType.toString());
-		try{
-			final URL url = new URL(uriRef.getUnicodeString());
+    private byte[] getVariant(UriRef uriRef, MediaType mediaType) throws 
+            IOException, VariantUnavailableException {
+        logger.info("requested uri " + uriRef.getUnicodeString() + ",mediatype " + mediaType.toString());
+        try{
+            final URL url = new URL(uriRef.getUnicodeString());
 
-			final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-			urlConnection.setRequestProperty("Accept", mediaType.toString());
-			urlConnection.connect();
-			final int responseCode = urlConnection.getResponseCode();
-			if (responseCode != 200) {
-				throw new VariantUnavailableException("response code: "+responseCode);
-			}
-			final String responseContentType = urlConnection.getContentType();
-			if (!responseContentType.startsWith(mediaType.toString())) {
-				throw new VariantUnavailableException("Got " + responseContentType + " and not " + mediaType);
-			}
-			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			final InputStream in = urlConnection.getInputStream();
-			try {
-				for (int ch = in.read(); ch != -1; ch = in.read()) {
-					baos.write(ch);
-				}
-			} finally {
-				in.close();
-			}
-			return baos.toByteArray();
-		} catch(SocketException ex) {
-			try {
-				logger.info("SocketException thrown");
-				Thread.sleep(5000);		
-			} catch (InterruptedException ex1) {
-				new RuntimeException(ex1);
-			}
-			return getVariant(uriRef, mediaType);
-		}
-	}
+            final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestProperty("Accept", mediaType.toString());
+            urlConnection.connect();
+            final int responseCode = urlConnection.getResponseCode();
+            if (responseCode != 200) {
+                throw new VariantUnavailableException("response code: "+responseCode);
+            }
+            final String responseContentType = urlConnection.getContentType();
+            if (!responseContentType.startsWith(mediaType.toString())) {
+                throw new VariantUnavailableException("Got " + responseContentType + " and not " + mediaType);
+            }
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final InputStream in = urlConnection.getInputStream();
+            try {
+                for (int ch = in.read(); ch != -1; ch = in.read()) {
+                    baos.write(ch);
+                }
+            } finally {
+                in.close();
+            }
+            return baos.toByteArray();
+        } catch(SocketException ex) {
+            try {
+                logger.info("SocketException thrown");
+                Thread.sleep(5000);        
+            } catch (InterruptedException ex1) {
+                new RuntimeException(ex1);
+            }
+            return getVariant(uriRef, mediaType);
+        }
+    }
 
-	private String getPathForUriRef(UriRef uriRef, String baseUri) {
-		if (!uriRef.getUnicodeString().startsWith(baseUri)) {
-			throw new RuntimeException(uriRef+" doesn't start with "+baseUri);
-		}
-		return uriRef.getUnicodeString().substring(baseUri.length());
-	}
+    private String getPathForUriRef(UriRef uriRef, String baseUri) {
+        if (!uriRef.getUnicodeString().startsWith(baseUri)) {
+            throw new RuntimeException(uriRef+" doesn't start with "+baseUri);
+        }
+        return uriRef.getUnicodeString().substring(baseUri.length());
+    }
 
-	private String getCurrentDate() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-		Date date = new Date();
-		return dateFormat.format(date);
-	}
-
-
-	private Set<String> rootLinkIndicators = new HashSet<String>();
-	{
-		rootLinkIndicators.add("src=\"");
-		rootLinkIndicators.add("href=\"");
-		rootLinkIndicators.add("url\\(");
-	}
-
-	private byte[] applyRootLinkPrefix(byte[] variant, String rootLinkPrefix,
-			MediaType mediaType) {
-		try {
-			//here we should locate some mediaType specific handlers
-			//a quick hack
-			final ByteArrayOutputStream resultWriter = new ByteArrayOutputStream(variant.length + 1000);
-			OutputStream out = resultWriter;
-			for (String rootLinkIndicator : rootLinkIndicators) {
-				out = new ReplacingOutputStream(out, 
-						(rootLinkIndicator + "/").getBytes(UTF8),
-						(rootLinkIndicator + rootLinkPrefix + "/").getBytes(UTF8));
-			}
-			out.write(variant);
-			out.close();
-			return resultWriter.toByteArray();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
-	private byte[] applyThumbnailService(byte[] variant) {
-		try {			
-			final ByteArrayOutputStream resultWriter = new ByteArrayOutputStream(variant.length);
-			OutputStream thumbnailCorrectingStream = new ConditionalOutputStream(resultWriter,
-					new ThumbnailCondition(thumbnailService));
-			thumbnailCorrectingStream.write(variant);
-			thumbnailCorrectingStream.close();
-			return resultWriter.toByteArray();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    private String getCurrentDate() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
 
 
+    private Set<String> rootLinkIndicators = new HashSet<String>();
+    {
+        rootLinkIndicators.add("src=\"");
+        rootLinkIndicators.add("href=\"");
+        rootLinkIndicators.add("url\\(");
+    }
 
-	private static class VariantUnavailableException extends Exception {
+    private byte[] applyRootLinkPrefix(byte[] variant, String rootLinkPrefix,
+            MediaType mediaType) {
+        try {
+            //here we should locate some mediaType specific handlers
+            //a quick hack
+            final ByteArrayOutputStream resultWriter = new ByteArrayOutputStream(variant.length + 1000);
+            OutputStream out = resultWriter;
+            for (String rootLinkIndicator : rootLinkIndicators) {
+                out = new ReplacingOutputStream(out, 
+                        (rootLinkIndicator + "/").getBytes(UTF8),
+                        (rootLinkIndicator + rootLinkPrefix + "/").getBytes(UTF8));
+            }
+            out.write(variant);
+            out.close();
+            return resultWriter.toByteArray();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-		VariantUnavailableException(String message) {
-			super(message);
-		}
+    private byte[] applyThumbnailService(byte[] variant) {
+        try {            
+            final ByteArrayOutputStream resultWriter = new ByteArrayOutputStream(variant.length);
+            OutputStream thumbnailCorrectingStream = new ConditionalOutputStream(resultWriter,
+                    new ThumbnailCondition(thumbnailService));
+            thumbnailCorrectingStream.write(variant);
+            thumbnailCorrectingStream.close();
+            return resultWriter.toByteArray();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	}
+
+
+    private static class VariantUnavailableException extends Exception {
+
+        VariantUnavailableException(String message) {
+            super(message);
+        }
+
+    }
 }

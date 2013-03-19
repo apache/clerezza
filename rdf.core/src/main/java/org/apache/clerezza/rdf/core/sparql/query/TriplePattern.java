@@ -27,18 +27,18 @@ package org.apache.clerezza.rdf.core.sparql.query;
  */
 public interface TriplePattern {
 
-	/**
-	 * @return the subject
-	 */
-	public ResourceOrVariable getSubject();
+    /**
+     * @return the subject
+     */
+    public ResourceOrVariable getSubject();
 
-	/**
-	 * @return the predicate
-	 */
-	public UriRefOrVariable getPredicate();
+    /**
+     * @return the predicate
+     */
+    public UriRefOrVariable getPredicate();
 
-	/**
-	 * @return the object
-	 */
-	public ResourceOrVariable getObject();
+    /**
+     * @return the object
+     */
+    public ResourceOrVariable getObject();
 }

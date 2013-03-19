@@ -32,26 +32,26 @@ import org.apache.clerezza.rdf.core.access.LockableMGraph;
 * @author tsuy
 */
 public class WriteBlockedMGraph extends WriteBlockedTripleCollection 
-		implements LockableMGraph {
+        implements LockableMGraph {
 
-	private LockableMGraph mGraph;
-	/**
-	 * Creates a wrapper of <code>SimpleMGraph</code>
-	 */
-	public WriteBlockedMGraph(LockableMGraph mGraph) {
-		super(mGraph);
-		this.mGraph = mGraph;
-	}
+    private LockableMGraph mGraph;
+    /**
+     * Creates a wrapper of <code>SimpleMGraph</code>
+     */
+    public WriteBlockedMGraph(LockableMGraph mGraph) {
+        super(mGraph);
+        this.mGraph = mGraph;
+    }
 
-	@Override
-	public Graph getGraph() {
-		return this.mGraph.getGraph();
-	}
+    @Override
+    public Graph getGraph() {
+        return this.mGraph.getGraph();
+    }
 
-	@Override
-	public ReadWriteLock getLock() {
-		return mGraph.getLock();
-	}
+    @Override
+    public ReadWriteLock getLock() {
+        return mGraph.getLock();
+    }
 }
 
-	
+    

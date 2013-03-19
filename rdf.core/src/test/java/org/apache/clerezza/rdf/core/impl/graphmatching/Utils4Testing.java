@@ -32,20 +32,20 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
  */
 public class Utils4Testing {
 
-	static MGraph generateLine(int size, final NonLiteral firstNode) {
-		if (size < 1) {
-			throw new IllegalArgumentException();
-		}
-		MGraph result = new SimpleMGraph();
-		NonLiteral lastNode = firstNode;
-		for (int i = 0; i < size; i++) {
-			final BNode newNode = new BNode();
-			result.add(new TripleImpl(lastNode, u1, newNode));
-			lastNode = newNode;
-		}
-		return result;
-	}
+    static MGraph generateLine(int size, final NonLiteral firstNode) {
+        if (size < 1) {
+            throw new IllegalArgumentException();
+        }
+        MGraph result = new SimpleMGraph();
+        NonLiteral lastNode = firstNode;
+        for (int i = 0; i < size; i++) {
+            final BNode newNode = new BNode();
+            result.add(new TripleImpl(lastNode, u1, newNode));
+            lastNode = newNode;
+        }
+        return result;
+    }
 
-	final static UriRef u1 = new UriRef("http://example.org/u1");
+    final static UriRef u1 = new UriRef("http://example.org/u1");
 
 }

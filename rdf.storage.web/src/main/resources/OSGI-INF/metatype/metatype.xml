@@ -22,8 +22,8 @@
 
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0" localization="OSGI-INF/metatype/metatype">
     <OCD id="org.apache.clerezza.rdf.storage.web.WebProxy"
-		 name="Clerezza SCB Web Storage Provider"
-		 description="%org.apache.clerezza.rdf.storage.web.WebProxy.description">
+         name="Clerezza SCB Web Storage Provider"
+         description="%org.apache.clerezza.rdf.storage.web.WebProxy.description">
         <AD id="network-timeout" type="int" default="false" name="Network Timeout" description="Specifies the network timeout in ms."/>
     </OCD>
     <Designate pid="org.apache.clerezza.rdf.storage.web.WebProxy">

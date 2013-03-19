@@ -26,32 +26,32 @@ package org.apache.clerezza.rdf.core;
  */
 public interface Triple {
 
-	NonLiteral getSubject();
+    NonLiteral getSubject();
 
-	UriRef getPredicate();
+    UriRef getPredicate();
 
-	Resource getObject();
+    Resource getObject();
 
-	/**
-	 * 
-	 * @param obj
-	 * @return true iff subject, predicate, and object of both triples are equal
-	 */
-	@Override
-	boolean equals(Object obj);
+    /**
+     * 
+     * @param obj
+     * @return true iff subject, predicate, and object of both triples are equal
+     */
+    @Override
+    boolean equals(Object obj);
 
-	/**
-	 * The hash code is computed as follow
-	 * (subject.hashCode() >> 1) ^  predicate.hashCode() ^ object.hashCode() << 1)
-	 * 
-	 * Note that the hash returned is computed including the hash of BNodes, so 
-	 * it is not blank-node blind as in Graph.
-	 * 
-	 * This would have to change if triple should extend Graph
-	 * 
-	 * @return hash code
-	 */
-	@Override
-	int hashCode();
+    /**
+     * The hash code is computed as follow
+     * (subject.hashCode() >> 1) ^  predicate.hashCode() ^ object.hashCode() << 1)
+     * 
+     * Note that the hash returned is computed including the hash of BNodes, so 
+     * it is not blank-node blind as in Graph.
+     * 
+     * This would have to change if triple should extend Graph
+     * 
+     * @return hash code
+     */
+    @Override
+    int hashCode();
 
 }

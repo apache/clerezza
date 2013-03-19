@@ -26,8 +26,8 @@ import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
  */
 public class SimpleAskQuery extends SimpleQuery implements AskQuery {
 
-	@Override
-	public String toString() {
-		return (new SimpleStringQuerySerializer()).serialize(this);
-	}
+    @Override
+    public String toString() {
+        return (new SimpleStringQuerySerializer()).serialize(this);
+    }
 }

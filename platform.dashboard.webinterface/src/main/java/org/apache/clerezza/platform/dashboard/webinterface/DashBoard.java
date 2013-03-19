@@ -61,71 +61,71 @@ import org.apache.felix.scr.annotations.Services;
  */
 @Component
 @Services({
-	@Service(Object.class),
-	@Service(GlobalMenuItemsProvider.class)
+    @Service(Object.class),
+    @Service(GlobalMenuItemsProvider.class)
 })
 
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/dashboard")
 public class DashBoard implements GlobalMenuItemsProvider{
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Reference
-	private TcManager tcMgr;
-	
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private TcManager tcMgr;
+    
+    @Reference
+    private RenderletManager renderletManager;
 
-	protected void activate(ComponentContext cCtx) throws Exception {
-		logger.debug("Activating DashBoard");	
-	
-		URL template = getClass().getResource("dashboard-template.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(), 
-				new UriRef(template.toURI().toString()), DASHBOARD.DashBoard,
-				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
-	}
-	
-	/**
-	 * Redirects to the overview page
-	 * 
-	 * @return {@link Response}
-	 * 
-	 */
-	@GET
-	public Response redirectToHomePage(@Context UriInfo uriInfo) {
-		if (uriInfo.getAbsolutePath().toString().endsWith("/")) {
-			return RedirectUtil.createSeeOtherResponse("overview", uriInfo);
-		}
-		return RedirectUtil.createSeeOtherResponse(
-				"dashboard/overview", uriInfo);
-	}
+    protected void activate(ComponentContext cCtx) throws Exception {
+        logger.debug("Activating DashBoard");    
+    
+        URL template = getClass().getResource("dashboard-template.ssp");
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(), 
+                new UriRef(template.toURI().toString()), DASHBOARD.DashBoard,
+                "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    }
+    
+    /**
+     * Redirects to the overview page
+     * 
+     * @return {@link Response}
+     * 
+     */
+    @GET
+    public Response redirectToHomePage(@Context UriInfo uriInfo) {
+        if (uriInfo.getAbsolutePath().toString().endsWith("/")) {
+            return RedirectUtil.createSeeOtherResponse("overview", uriInfo);
+        }
+        return RedirectUtil.createSeeOtherResponse(
+                "dashboard/overview", uriInfo);
+    }
 
-	/**
-	 * Returns the overview page of the dashboard.
-	 * 
-	 * @return {@link GraphNode}
-	 * 
-	 */
-	@GET
-	@Path("overview")
-	public GraphNode getHomePage(@Context UriInfo uriInfo) {
+    /**
+     * Returns the overview page of the dashboard.
+     * 
+     * @return {@link GraphNode}
+     * 
+     */
+    @GET
+    @Path("overview")
+    public GraphNode getHomePage(@Context UriInfo uriInfo) {
 
-		TrailingSlash.enforceNotPresent(uriInfo);
+        TrailingSlash.enforceNotPresent(uriInfo);
 
-		MGraph mGraph = new SimpleMGraph(); 
-		NonLiteral overview = new BNode();
-		mGraph.add(new TripleImpl(overview, RDF.type, DASHBOARD.DashBoard));
-		mGraph.add(new TripleImpl(overview, RDF.type, PLATFORM.HeadedPage));
-		return new GraphNode(overview, mGraph);
-	}
+        MGraph mGraph = new SimpleMGraph(); 
+        NonLiteral overview = new BNode();
+        mGraph.add(new TripleImpl(overview, RDF.type, DASHBOARD.DashBoard));
+        mGraph.add(new TripleImpl(overview, RDF.type, PLATFORM.HeadedPage));
+        return new GraphNode(overview, mGraph);
+    }
 
-	@Override
-	public Set<GlobalMenuItem> getMenuItems() {
-		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-		items.add(new GlobalMenuItem("/dashboard", "DHB", "Dashboard", 10000,
-				null));
-		return items;
-	}
+    @Override
+    public Set<GlobalMenuItem> getMenuItems() {
+        Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+        items.add(new GlobalMenuItem("/dashboard", "DHB", "Dashboard", 10000,
+                null));
+        return items;
+    }
 
 }

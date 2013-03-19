@@ -38,21 +38,21 @@ import org.apache.felix.scr.annotations.Service;
 @Service(PermissionDescriptionsProvider.class)
 public class TcPermissionDescriptionsProvider implements PermissionDescriptionsProvider {
 
-	private static final Set<PermissionDescripton> GRAPH_ACCESS_PERMISSION_DESCRIPTIONS =
-			new HashSet<PermissionDescripton>();
-	static {
-		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content Graph Read Permission",
-				"Grants permission to the user to read the content graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/content.graph\" \"read\")"));
+    private static final Set<PermissionDescripton> GRAPH_ACCESS_PERMISSION_DESCRIPTIONS =
+            new HashSet<PermissionDescripton>();
+    static {
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content Graph Read Permission",
+                "Grants permission to the user to read the content graph", null, TcPermission.class,
+                "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/content.graph\" \"read\")"));
 
-		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content Graph Read/Write Permission",
-				"Grants permission to the user to read and write the content graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/content.graph\" \"readwrite\")"));
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content Graph Read/Write Permission",
+                "Grants permission to the user to read and write the content graph", null, TcPermission.class,
+                "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/content.graph\" \"readwrite\")"));
 
-	}
+    }
 
-	@Override
-	public Set<PermissionDescripton> getPermissionDescriptors() {
-		return GRAPH_ACCESS_PERMISSION_DESCRIPTIONS;
-	}
+    @Override
+    public Set<PermissionDescripton> getPermissionDescriptors() {
+        return GRAPH_ACCESS_PERMISSION_DESCRIPTIONS;
+    }
 }

@@ -26,61 +26,61 @@ import org.apache.clerezza.rdf.core.UriRef;
  * @author reto
  */
 public class TypedLiteralImpl implements TypedLiteral {
-	private String lexicalForm;
-	private UriRef dataType;
-	private int hashCode;
+    private String lexicalForm;
+    private UriRef dataType;
+    private int hashCode;
 
-	/**
-	 * @param lexicalForm 
-	 * @param dataType 
-	 */
-	public TypedLiteralImpl(String lexicalForm, UriRef dataType) {
-		this.lexicalForm = lexicalForm;
-		this.dataType = dataType;
-		this.hashCode = lexicalForm.hashCode()+dataType.hashCode();
-	}
-	
-	public UriRef getDataType() {
-		return dataType;
-	}
+    /**
+     * @param lexicalForm 
+     * @param dataType 
+     */
+    public TypedLiteralImpl(String lexicalForm, UriRef dataType) {
+        this.lexicalForm = lexicalForm;
+        this.dataType = dataType;
+        this.hashCode = lexicalForm.hashCode()+dataType.hashCode();
+    }
+    
+    public UriRef getDataType() {
+        return dataType;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.apache.clerezza.rdf.core.LiteralNode#getLexicalForm()
-	 */
-	@Override
-	public String getLexicalForm() {
-		return lexicalForm;
-	}
+    /* (non-Javadoc)
+     * @see org.apache.clerezza.rdf.core.LiteralNode#getLexicalForm()
+     */
+    @Override
+    public String getLexicalForm() {
+        return lexicalForm;
+    }
 
-	@Override
-	public int hashCode() {
-		return hashCode;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof TypedLiteral) {
-			TypedLiteral other = (TypedLiteral) obj;
-			boolean res = getDataType().equals(other.getDataType())
-					&& getLexicalForm().equals(other.getLexicalForm());
-			return res;
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof TypedLiteral) {
+            TypedLiteral other = (TypedLiteral) obj;
+            boolean res = getDataType().equals(other.getDataType())
+                    && getLexicalForm().equals(other.getLexicalForm());
+            return res;
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public String toString() {
-		StringBuffer result = new StringBuffer();
-		result.append('\"');
-		result.append(getLexicalForm());
-		result.append('\"');
-		result.append("^^");
-		result.append(getDataType());
-		return result.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuffer result = new StringBuffer();
+        result.append('\"');
+        result.append(getLexicalForm());
+        result.append('\"');
+        result.append("^^");
+        result.append(getDataType());
+        return result.toString();
+    }
 
 }

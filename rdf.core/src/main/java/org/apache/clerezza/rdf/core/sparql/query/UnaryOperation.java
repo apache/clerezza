@@ -25,14 +25,14 @@ package org.apache.clerezza.rdf.core.sparql.query;
  */
 public class UnaryOperation extends AbstractOperation {
 
-	private Expression operand;
+    private Expression operand;
 
-	public UnaryOperation(String operator, Expression operand) {
-		super(operator);
-		this.operand = operand;
-	}
+    public UnaryOperation(String operator, Expression operand) {
+        super(operator);
+        this.operand = operand;
+    }
 
-	public Expression getOperand() {
-		return operand;
-	}
+    public Expression getOperand() {
+        return operand;
+    }
 }

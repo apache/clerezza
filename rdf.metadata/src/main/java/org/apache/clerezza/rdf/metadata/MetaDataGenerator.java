@@ -30,13 +30,13 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public interface MetaDataGenerator {
 
-	/**
-	 * Generates meta data about the specified bytes depending on its mediaType.
-	 * The meta data will be added to the specified graph node.
-	 * @param node The graph node to which the meta data will be added
-	 * @param data The data from which the meta data is generated
-	 * @param mediaType The media type of the data
-	 */
-	public void generate(GraphNode node, byte[] data, MediaType mediaType);
-	
+    /**
+     * Generates meta data about the specified bytes depending on its mediaType.
+     * The meta data will be added to the specified graph node.
+     * @param node The graph node to which the meta data will be added
+     * @param data The data from which the meta data is generated
+     * @param mediaType The media type of the data
+     */
+    public void generate(GraphNode node, byte[] data, MediaType mediaType);
+    
 }

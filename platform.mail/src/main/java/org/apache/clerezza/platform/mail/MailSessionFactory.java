@@ -38,62 +38,62 @@ import org.osgi.service.component.ComponentContext;
 @Component(metatype=true)
 @Service(MailSessionFactory.class)
 public class MailSessionFactory {
-	/**
-	 * Service property
-	 *
-	 */
-	@Property(value="false", description="Specifies if TLS (SSL) encryption is used.")
-	public static final String MAIL_USE_TLS = "useTLS";
-	/**
-	 * Service property
-	 *
-	 */
-	@Property(value="localhost", description="Specifies the SMTP host.")
-	public static final String MAIL_SMTP_HOST = "smtpHost";
-	/**
-	 * Service property
-	 */
-	@Property(value="25", description="Specifies the SMTP port.")
-	public static final String MAIL_SMTP_PORT = "smtpPort";
-	/**
-	 * Service property
-	 *
-	 */
-	@Property(value="myPassword", description="Specifies the authentication password for SMTP.")
-	public static final String MAIL_SMTP_PASSWORD = "smtpPassword";
-	/**
-	 * Service property
-	 *
-	 */
-	@Property(value="myUserName", description="Specifies the User to authenticate for SMTP.")
-	public static final String MAIL_SMTP_USER = "smtpUser";
+    /**
+     * Service property
+     *
+     */
+    @Property(value="false", description="Specifies if TLS (SSL) encryption is used.")
+    public static final String MAIL_USE_TLS = "useTLS";
+    /**
+     * Service property
+     *
+     */
+    @Property(value="localhost", description="Specifies the SMTP host.")
+    public static final String MAIL_SMTP_HOST = "smtpHost";
+    /**
+     * Service property
+     */
+    @Property(value="25", description="Specifies the SMTP port.")
+    public static final String MAIL_SMTP_PORT = "smtpPort";
+    /**
+     * Service property
+     *
+     */
+    @Property(value="myPassword", description="Specifies the authentication password for SMTP.")
+    public static final String MAIL_SMTP_PASSWORD = "smtpPassword";
+    /**
+     * Service property
+     *
+     */
+    @Property(value="myUserName", description="Specifies the User to authenticate for SMTP.")
+    public static final String MAIL_SMTP_USER = "smtpUser";
 
-	private Properties properties;
+    private Properties properties;
 
-	protected void activate(ComponentContext componentContext) {
-		properties = new Properties();
-		properties.setProperty("mail.debug", "false");
-		if (((String) componentContext.getProperties().get(MAIL_USE_TLS)).equals("true")) {
-			properties.setProperty("mail.smtp.starttls.enable", "true");
-			properties.setProperty("mail.smtp.auth", "true");
-			properties.setProperty("mail.smtp.socketFactory.fallback", "false");
-		}
-		properties.setProperty("mail.transport.protocol", "smtp");
-		properties.setProperty("mail.smtp.port", (String) componentContext.getProperties().get(MAIL_SMTP_PORT));
-		properties.setProperty("mail.smtp.host", (String) componentContext.getProperties().get(MAIL_SMTP_HOST));
-		properties.setProperty("smtpUser", (String) componentContext.getProperties().get(MAIL_SMTP_USER));
-		properties.setProperty("smtpPassword", (String) componentContext.getProperties().get(MAIL_SMTP_PASSWORD));
-	}
+    protected void activate(ComponentContext componentContext) {
+        properties = new Properties();
+        properties.setProperty("mail.debug", "false");
+        if (((String) componentContext.getProperties().get(MAIL_USE_TLS)).equals("true")) {
+            properties.setProperty("mail.smtp.starttls.enable", "true");
+            properties.setProperty("mail.smtp.auth", "true");
+            properties.setProperty("mail.smtp.socketFactory.fallback", "false");
+        }
+        properties.setProperty("mail.transport.protocol", "smtp");
+        properties.setProperty("mail.smtp.port", (String) componentContext.getProperties().get(MAIL_SMTP_PORT));
+        properties.setProperty("mail.smtp.host", (String) componentContext.getProperties().get(MAIL_SMTP_HOST));
+        properties.setProperty("smtpUser", (String) componentContext.getProperties().get(MAIL_SMTP_USER));
+        properties.setProperty("smtpPassword", (String) componentContext.getProperties().get(MAIL_SMTP_PASSWORD));
+    }
 
-	public Session getSession() {
-		Authenticator auth = new Authenticator() {
-			@Override
-			public PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(properties.
-						getProperty("smtpUser"),
-						properties.getProperty("smtpPassword"));
-			}
-		};
-		return Session.getInstance(properties, auth);
-	}
+    public Session getSession() {
+        Authenticator auth = new Authenticator() {
+            @Override
+            public PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(properties.
+                        getProperty("smtpUser"),
+                        properties.getProperty("smtpPassword"));
+            }
+        };
+        return Session.getInstance(properties, auth);
+    }
 }

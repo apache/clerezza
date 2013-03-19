@@ -18,32 +18,32 @@
  under the License.
 
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>integrationtest.web</artifactId>
-	<packaging>bundle</packaging>
-	<version>0.5-SNAPSHOT</version>
-	<name>Clerezza - Web Test Framework</name>
-	<description>A framework to run tests against a webserver</description>
-	<dependencies>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.2-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>integrationtest.web</artifactId>
+    <packaging>bundle</packaging>
+    <version>0.5-SNAPSHOT</version>
+    <name>Clerezza - Web Test Framework</name>
+    <description>A framework to run tests against a webserver</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>javax.mail</artifactId>
-        	<version>0.5-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+            <version>0.5-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

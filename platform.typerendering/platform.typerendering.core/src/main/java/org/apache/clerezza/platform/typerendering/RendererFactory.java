@@ -55,170 +55,170 @@ policy = ReferencePolicy.DYNAMIC,
 referenceInterface = TypeRenderlet.class)
 public class RendererFactory {
 
-	private Logger logger = LoggerFactory.getLogger(RendererFactory.class);
-	
-	@Reference
-	private TypePrioritizer typePrioritizer;
+    private Logger logger = LoggerFactory.getLogger(RendererFactory.class);
+    
+    @Reference
+    private TypePrioritizer typePrioritizer;
 
-	@Reference
-	private StartLevel startLevelService;
+    @Reference
+    private StartLevel startLevelService;
 
-	@Reference
-	private GraphNodeProvider graphNodeProvider;
+    @Reference
+    private GraphNodeProvider graphNodeProvider;
 
-	/**
-	 * A Tuple Type-Renderler Startlevel, for identity only the renderlet is relevan
-	 */
-	private static class TypeRenderletStartLevel {
-		TypeRenderlet renderlet;
-		int startLevel;
+    /**
+     * A Tuple Type-Renderler Startlevel, for identity only the renderlet is relevan
+     */
+    private static class TypeRenderletStartLevel {
+        TypeRenderlet renderlet;
+        int startLevel;
 
-		private TypeRenderletStartLevel(TypeRenderlet renderlet, int startLevel) {
-			this.startLevel = startLevel;
-			this.renderlet = renderlet;
-		}
+        private TypeRenderletStartLevel(TypeRenderlet renderlet, int startLevel) {
+            this.startLevel = startLevel;
+            this.renderlet = renderlet;
+        }
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			TypeRenderletStartLevel that = (TypeRenderletStartLevel) o;
-			return renderlet.equals(that.renderlet);
-		}
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            TypeRenderletStartLevel that = (TypeRenderletStartLevel) o;
+            return renderlet.equals(that.renderlet);
+        }
 
-		@Override
-		public int hashCode() {
-			return renderlet.hashCode();
-		}
-	}
+        @Override
+        public int hashCode() {
+            return renderlet.hashCode();
+        }
+    }
 
-	private Map<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeRenderletMap =
-			Collections.synchronizedMap(new HashMap<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>>());
+    private Map<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeRenderletMap =
+            Collections.synchronizedMap(new HashMap<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>>());
 
-	private BundleContext bundleContext;
+    private BundleContext bundleContext;
 
-	private Set<ServiceReference> pendingRenderletRegistrations = new HashSet<ServiceReference>();
+    private Set<ServiceReference> pendingRenderletRegistrations = new HashSet<ServiceReference>();
 
-	protected void activate(ComponentContext componentContext) {
-		bundleContext = componentContext.getBundleContext();
-		for (ServiceReference r : pendingRenderletRegistrations) {
-			registerTypeRenderlet(r);
-		}
-	}
+    protected void activate(ComponentContext componentContext) {
+        bundleContext = componentContext.getBundleContext();
+        for (ServiceReference r : pendingRenderletRegistrations) {
+            registerTypeRenderlet(r);
+        }
+    }
 
-	protected void deactivate(ComponentContext componentContext) {
-		bundleContext = null;
-	}
+    protected void deactivate(ComponentContext componentContext) {
+        bundleContext = null;
+    }
 
-	/**
-	 * Creates a <code>Renderer</code> for the specified mode, acceptable 
-	 * media-types as well as the types of <code>GraphNode</code>.
-	 * The <code>acceptableMediaTypes</code> list represent the media
-	 * types that are acceptable for the rendered output. The list has a
-	 * order where the most desirable media type is a the beginning of the list.
-	 * The media type of the rendered output will be compatible to at least one
-	 * media type in the list.
-	 *
-	 * @param resource The <code>GraphNode</code> to be rendered
-	 * @param mode mode
-	 * @param acceptableMediaTypes acceptable media types for the rendered output
-	 * @return the Renderer or null if no renderer could be created for the specified parameters
-	 */
-	public Renderer createRenderer(GraphNode resource, String mode,
-			List<MediaType> acceptableMediaTypes) {
-		Set<UriRef> types = new HashSet<UriRef>();
-		if (resource.getNode() instanceof TypedLiteral) {
-			types.add(((TypedLiteral) resource.getNode()).getDataType());
-		} else {
-			// extract rdf types
-			Iterator<UriRef> it = resource.getUriRefObjects(RDF.type);
-			while (it.hasNext()) {
-				final UriRef rdfType = it.next();
-				types.add(rdfType);
-			}
-			types.add(RDFS.Resource);
-		}
-		return getRenderer(types, mode, acceptableMediaTypes);
-	}
+    /**
+     * Creates a <code>Renderer</code> for the specified mode, acceptable 
+     * media-types as well as the types of <code>GraphNode</code>.
+     * The <code>acceptableMediaTypes</code> list represent the media
+     * types that are acceptable for the rendered output. The list has a
+     * order where the most desirable media type is a the beginning of the list.
+     * The media type of the rendered output will be compatible to at least one
+     * media type in the list.
+     *
+     * @param resource The <code>GraphNode</code> to be rendered
+     * @param mode mode
+     * @param acceptableMediaTypes acceptable media types for the rendered output
+     * @return the Renderer or null if no renderer could be created for the specified parameters
+     */
+    public Renderer createRenderer(GraphNode resource, String mode,
+            List<MediaType> acceptableMediaTypes) {
+        Set<UriRef> types = new HashSet<UriRef>();
+        if (resource.getNode() instanceof TypedLiteral) {
+            types.add(((TypedLiteral) resource.getNode()).getDataType());
+        } else {
+            // extract rdf types
+            Iterator<UriRef> it = resource.getUriRefObjects(RDF.type);
+            while (it.hasNext()) {
+                final UriRef rdfType = it.next();
+                types.add(rdfType);
+            }
+            types.add(RDFS.Resource);
+        }
+        return getRenderer(types, mode, acceptableMediaTypes);
+    }
 
-	private Renderer getRenderer(Set<UriRef> types, String mode,
-			List<MediaType> acceptableMediaTypes) {
-		Iterator<UriRef> sortedTypes = typePrioritizer.iterate(types);
-		while (sortedTypes.hasNext()) {
-			final UriRef currentType = sortedTypes.next();
-			final RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeRenderletMap.get(currentType);
-			if (regexMap != null) {
-				Iterator<MediaTypeMap<TypeRenderletStartLevel>> mediaTypeMapIter = regexMap.getMatching(mode);
-				while (mediaTypeMapIter.hasNext()) {
-					MediaTypeMap<TypeRenderletStartLevel> mediaTypeMap = mediaTypeMapIter.next();
-					for (MediaType acceptableType : acceptableMediaTypes) {
-						Iterator<TypeRenderletStartLevel> renderlets = mediaTypeMap.getMatching(acceptableType);
-						if (renderlets.hasNext()) {
-							TypeRenderlet bestRenderlet = null;
-							int highestStartLevel = 0;
-							while (renderlets.hasNext()) {
-								TypeRenderletStartLevel typeRenderletStartLevel = renderlets.next();
-								if (typeRenderletStartLevel.startLevel > highestStartLevel) {
-									highestStartLevel = typeRenderletStartLevel.startLevel;
-									bestRenderlet = typeRenderletStartLevel.renderlet;
-								}
-							}
-							return new TypeRenderletRendererImpl(
-								bestRenderlet,
-								acceptableType,
-								this, graphNodeProvider,
-								bundleContext);
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
+    private Renderer getRenderer(Set<UriRef> types, String mode,
+            List<MediaType> acceptableMediaTypes) {
+        Iterator<UriRef> sortedTypes = typePrioritizer.iterate(types);
+        while (sortedTypes.hasNext()) {
+            final UriRef currentType = sortedTypes.next();
+            final RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeRenderletMap.get(currentType);
+            if (regexMap != null) {
+                Iterator<MediaTypeMap<TypeRenderletStartLevel>> mediaTypeMapIter = regexMap.getMatching(mode);
+                while (mediaTypeMapIter.hasNext()) {
+                    MediaTypeMap<TypeRenderletStartLevel> mediaTypeMap = mediaTypeMapIter.next();
+                    for (MediaType acceptableType : acceptableMediaTypes) {
+                        Iterator<TypeRenderletStartLevel> renderlets = mediaTypeMap.getMatching(acceptableType);
+                        if (renderlets.hasNext()) {
+                            TypeRenderlet bestRenderlet = null;
+                            int highestStartLevel = 0;
+                            while (renderlets.hasNext()) {
+                                TypeRenderletStartLevel typeRenderletStartLevel = renderlets.next();
+                                if (typeRenderletStartLevel.startLevel > highestStartLevel) {
+                                    highestStartLevel = typeRenderletStartLevel.startLevel;
+                                    bestRenderlet = typeRenderletStartLevel.renderlet;
+                                }
+                            }
+                            return new TypeRenderletRendererImpl(
+                                bestRenderlet,
+                                acceptableType,
+                                this, graphNodeProvider,
+                                bundleContext);
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-	protected void bindTypeRenderlet(ServiceReference serviceReference) {
-		if (bundleContext == null) {
-			pendingRenderletRegistrations.add(serviceReference);
-		} else {
-			registerTypeRenderlet(serviceReference);
-		}
-	}
+    protected void bindTypeRenderlet(ServiceReference serviceReference) {
+        if (bundleContext == null) {
+            pendingRenderletRegistrations.add(serviceReference);
+        } else {
+            registerTypeRenderlet(serviceReference);
+        }
+    }
 
-	private void registerTypeRenderlet(ServiceReference serviceReference) {
-		int startLevel = startLevelService.getBundleStartLevel(serviceReference.getBundle());
-		TypeRenderlet renderlet = (TypeRenderlet) bundleContext.getService(serviceReference);
-		registerRenderlet(renderlet, startLevel);
-	}
+    private void registerTypeRenderlet(ServiceReference serviceReference) {
+        int startLevel = startLevelService.getBundleStartLevel(serviceReference.getBundle());
+        TypeRenderlet renderlet = (TypeRenderlet) bundleContext.getService(serviceReference);
+        registerRenderlet(renderlet, startLevel);
+    }
 
-	private void registerRenderlet(TypeRenderlet typeRenderlet, int startLevel) {
-		final UriRef rdfType = typeRenderlet.getRdfType();
-		RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeRenderletMap.get(rdfType);
-		if (regexMap == null) {
-			regexMap = new RegexMap<MediaTypeMap<TypeRenderletStartLevel>>();
-			typeRenderletMap.put(rdfType, regexMap);
-		}
-		final String modePattern = typeRenderlet.getModePattern();
-		MediaTypeMap<TypeRenderletStartLevel> mediaTypeMap = regexMap.getFirstExactMatch(modePattern);
-		if (mediaTypeMap == null) {
-			mediaTypeMap = new MediaTypeMap<TypeRenderletStartLevel>();
-			regexMap.addEntry(modePattern, mediaTypeMap);
-		}
-		final MediaType mediaType = typeRenderlet.getMediaType();
-		mediaTypeMap.addEntry(mediaType, new TypeRenderletStartLevel(typeRenderlet, startLevel));
-	}
+    private void registerRenderlet(TypeRenderlet typeRenderlet, int startLevel) {
+        final UriRef rdfType = typeRenderlet.getRdfType();
+        RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeRenderletMap.get(rdfType);
+        if (regexMap == null) {
+            regexMap = new RegexMap<MediaTypeMap<TypeRenderletStartLevel>>();
+            typeRenderletMap.put(rdfType, regexMap);
+        }
+        final String modePattern = typeRenderlet.getModePattern();
+        MediaTypeMap<TypeRenderletStartLevel> mediaTypeMap = regexMap.getFirstExactMatch(modePattern);
+        if (mediaTypeMap == null) {
+            mediaTypeMap = new MediaTypeMap<TypeRenderletStartLevel>();
+            regexMap.addEntry(modePattern, mediaTypeMap);
+        }
+        final MediaType mediaType = typeRenderlet.getMediaType();
+        mediaTypeMap.addEntry(mediaType, new TypeRenderletStartLevel(typeRenderlet, startLevel));
+    }
 
-	protected void unbindTypeRenderlet(TypeRenderlet typeRenderlet) {
-		TypeRenderletStartLevel typeRenderletStartLevel = new TypeRenderletStartLevel(typeRenderlet, 0);
-		for (Map.Entry<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeEntry: typeRenderletMap.entrySet()) {
-			final RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeEntry.getValue();
-			for (Map.Entry<String, MediaTypeMap<TypeRenderletStartLevel>> regexEntry: regexMap.entrySet()) {
-				final MediaTypeMap<TypeRenderletStartLevel> mediaTypeMap = regexEntry.getValue();
-				if (mediaTypeMap.remove(typeRenderletStartLevel)) {
-					//for now we just leave the potentially empty mediaTypeMap there
-					//IMPROVEMENT remove without entries
-					return;
-				}
-			}
-		}
-	}
+    protected void unbindTypeRenderlet(TypeRenderlet typeRenderlet) {
+        TypeRenderletStartLevel typeRenderletStartLevel = new TypeRenderletStartLevel(typeRenderlet, 0);
+        for (Map.Entry<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeEntry: typeRenderletMap.entrySet()) {
+            final RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeEntry.getValue();
+            for (Map.Entry<String, MediaTypeMap<TypeRenderletStartLevel>> regexEntry: regexMap.entrySet()) {
+                final MediaTypeMap<TypeRenderletStartLevel> mediaTypeMap = regexEntry.getValue();
+                if (mediaTypeMap.remove(typeRenderletStartLevel)) {
+                    //for now we just leave the potentially empty mediaTypeMap there
+                    //IMPROVEMENT remove without entries
+                    return;
+                }
+            }
+        }
+    }
 
 }

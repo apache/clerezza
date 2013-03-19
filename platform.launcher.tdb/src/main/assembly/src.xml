@@ -31,10 +31,10 @@
       <source>README.txt</source>
       <outputDirectory>/</outputDirectory>
     </file>
-	<!-- <file>
-		<source>target/platform.launcher.tdb-*-SNAPSHOT.jar</source>
-		<outputDirectory>/</outputDirectory>
-	</file> -->
+    <!-- <file>
+        <source>target/platform.launcher.tdb-*-SNAPSHOT.jar</source>
+        <outputDirectory>/</outputDirectory>
+    </file> -->
     <file>
       <source>LICENSE</source>
       <outputDirectory>/</outputDirectory>
@@ -48,22 +48,22 @@
       <outputDirectory>/</outputDirectory>
     </file>
   </files>
-	<fileSets>
-		<fileSet>
-			<includes>
-				<include>LICENSE*</include>
-			</includes>
-			<outputDirectory>/</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>target</directory>
-			<includes>
-				<include>platform.launcher.tdb-*.jar</include>
-			</includes>
-			<excludes>
-				<exclude>*sources.jar</exclude>
-			</excludes>
-			<outputDirectory>/</outputDirectory>
-		</fileSet>
-	</fileSets>
+    <fileSets>
+        <fileSet>
+            <includes>
+                <include>LICENSE*</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>target</directory>
+            <includes>
+                <include>platform.launcher.tdb-*.jar</include>
+            </includes>
+            <excludes>
+                <exclude>*sources.jar</exclude>
+            </excludes>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
 </assembly>

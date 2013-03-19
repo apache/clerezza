@@ -22,30 +22,30 @@
      Runs only at the top level -->
      
 <assembly>
-	<id>source-release</id>
-	<formats>
-		<format>zip</format>
-	</formats>
-	<moduleSets>
-		<moduleSet>
-			<includeSubModules>false</includeSubModules>
-			<sources>
-				<excludeSubModuleDirectories>false</excludeSubModuleDirectories>
-				<outputDirectoryMapping>
-					${module.basedir.name}
-				</outputDirectoryMapping>
-				<fileSets>
-					<fileSet>
-						<directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
-						<outputDirectory>/</outputDirectory>
-					</fileSet>
-					<fileSet>
-						<outputDirectory>/</outputDirectory>
-						<useDefaultExcludes>true</useDefaultExcludes>
-						 
-						<excludes>
+    <id>source-release</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <moduleSets>
+        <moduleSet>
+            <includeSubModules>false</includeSubModules>
+            <sources>
+                <excludeSubModuleDirectories>false</excludeSubModuleDirectories>
+                <outputDirectoryMapping>
+                    ${module.basedir.name}
+                </outputDirectoryMapping>
+                <fileSets>
+                    <fileSet>
+                        <directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
+                        <outputDirectory>/</outputDirectory>
+                    </fileSet>
+                    <fileSet>
+                        <outputDirectory>/</outputDirectory>
+                        <useDefaultExcludes>true</useDefaultExcludes>
+                         
+                        <excludes>
               <!-- build output -->
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/).*${project.build.directory}.*]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/).*${project.build.directory}.*]</exclude>
       
               <!-- NOTE: Most of the following excludes should not be required
                    if the standard release process is followed. This is because the
@@ -60,48 +60,48 @@
               -->
       
               <!-- IDEs -->
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?maven-eclipse\.xml]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.project]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.classpath]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.scala_dependencies]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.iws]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.ipr]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.iml]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.settings(/.*)?]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.externalToolBuilders(/.*)?]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.deployables(/.*)?]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.wtpmodules(/.*)?]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?maven-eclipse\.xml]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.project]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.classpath]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.scala_dependencies]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.iws]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.ipr]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?[^/]*\.iml]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.settings(/.*)?]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.externalToolBuilders(/.*)?]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.deployables(/.*)?]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?\.wtpmodules(/.*)?]</exclude>
       
               <!-- misc -->
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?cobertura\.ser]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?cobertura\.ser]</exclude>
       
               <!-- release-plugin temp files -->
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?pom\.xml\.releaseBackup]</exclude>
-							<exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?release\.properties]</exclude>
-						</excludes>
-					</fileSet>
-				</fileSets>
-			</sources>
-		</moduleSet>
-	</moduleSets>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?pom\.xml\.releaseBackup]</exclude>
+                            <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?release\.properties]</exclude>
+                        </excludes>
+                    </fileSet>
+                </fileSets>
+            </sources>
+        </moduleSet>
+    </moduleSets>
     
-	<fileSets>
-		<fileSet>
-			<directory>.</directory>
-			<outputDirectory>/</outputDirectory>
-			<useDefaultExcludes>true</useDefaultExcludes>
-			<includes>
-				<include>pom.xml</include>
-				<include>NOTICE</include>
-				<include>LICENSE</include>
-				<include>README.*</include>
-				<include>src/**</include>
-			</includes>
-		</fileSet>
+    <fileSets>
+        <fileSet>
+            <directory>.</directory>
+            <outputDirectory>/</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+            <includes>
+                <include>pom.xml</include>
+                <include>NOTICE</include>
+                <include>LICENSE</include>
+                <include>README.*</include>
+                <include>src/**</include>
+            </includes>
+        </fileSet>
     <!-- license, readme, etc. calculated at build time -->
-		<fileSet>
-			<directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
-			<outputDirectory>/</outputDirectory>
-		</fileSet>
-	</fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
 </assembly>

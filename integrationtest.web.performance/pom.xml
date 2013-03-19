@@ -18,36 +18,36 @@
  under the License.
 
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>integrationtest.web.performance</artifactId>
-	<packaging>bundle</packaging>
-	<version>0.6-SNAPSHOT</version>
-	<name>Clerezza - Web Performance Integration Tests</name>
-	<dependencies>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>integrationtest.web</artifactId>
-			<version>0.5-SNAPSHOT</version>
-		</dependency>
-		<dependency>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.2-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>integrationtest.web.performance</artifactId>
+    <packaging>bundle</packaging>
+    <version>0.6-SNAPSHOT</version>
+    <name>Clerezza - Web Performance Integration Tests</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>integrationtest.web</artifactId>
+            <version>0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
-    	</dependency>
-	</dependencies>
+        </dependency>
+    </dependencies>
 </project>

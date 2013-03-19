@@ -57,423 +57,423 @@ import org.wymiwyg.commons.util.dirbrowser.PathNodeFactory;
  */
 public class ClerezzaApp {
 
-	private Felix felixInstance = null;
-	private int exitCode = -1;
-	private List<ShutdownListener> shutdownListeners =
-			new ArrayList<ShutdownListener>(1);
+    private Felix felixInstance = null;
+    private int exitCode = -1;
+    private List<ShutdownListener> shutdownListeners =
+            new ArrayList<ShutdownListener>(1);
 
-	/**
-	 * Install bundles after core framework launch.
-	 *
-	 * @param context	the bundle context.
-	 * @param artDescs	the bundles to install.
-	 * @param nextLevel	the start level to change to after the installation.
-	 * 
-	 * @return	the installed bundles.
-	 *
-	 */
-	static Set<Bundle> installBundles(BundleContext context,
-			Collection<MavenArtifactDesc> artDescs,
-			int nextLevel) throws IOException, BundleException {
+    /**
+     * Install bundles after core framework launch.
+     *
+     * @param context    the bundle context.
+     * @param artDescs    the bundles to install.
+     * @param nextLevel    the start level to change to after the installation.
+     * 
+     * @return    the installed bundles.
+     *
+     */
+    static Set<Bundle> installBundles(BundleContext context,
+            Collection<MavenArtifactDesc> artDescs,
+            int nextLevel) throws IOException, BundleException {
 
-		Set<Bundle> installedBundles = new HashSet<Bundle>();
-		for (MavenArtifactDesc artDesc : artDescs) {
-			try {
-				final Bundle installedBundle = context.installBundle(artDesc.toString(), artDesc.getInputStream());
-				installedBundles.add(installedBundle);
-			} catch (BundleException e) {
-				System.out.println(e.toString());
-			}
-		}
+        Set<Bundle> installedBundles = new HashSet<Bundle>();
+        for (MavenArtifactDesc artDesc : artDescs) {
+            try {
+                final Bundle installedBundle = context.installBundle(artDesc.toString(), artDesc.getInputStream());
+                installedBundles.add(installedBundle);
+            } catch (BundleException e) {
+                System.out.println(e.toString());
+            }
+        }
 
-		ServiceReference startLevelRef =
-				context.getServiceReference(StartLevel.class.getName());
-		StartLevel startLevel = (StartLevel) context.getService(startLevelRef);
-		for (Bundle bundle : installedBundles) {
-			startLevel.setBundleStartLevel(bundle, nextLevel);
-		}
-		return installedBundles;
-	}
+        ServiceReference startLevelRef =
+                context.getServiceReference(StartLevel.class.getName());
+        StartLevel startLevel = (StartLevel) context.getService(startLevelRef);
+        for (Bundle bundle : installedBundles) {
+            startLevel.setBundleStartLevel(bundle, nextLevel);
+        }
+        return installedBundles;
+    }
 
-	/**
-	 * Set Clerezza Instance system exit code.
-	 *
-	 * @param code	the code to set.
-	 */
-	public void setExitCode(int code) {
-		exitCode = code;
-	}
+    /**
+     * Set Clerezza Instance system exit code.
+     *
+     * @param code    the code to set.
+     */
+    public void setExitCode(int code) {
+        exitCode = code;
+    }
 
-	/**
-	 * Get Clerezza Instance system exit code.
-	 *
-	 * @return	the exit code.
-	 */
-	public int getExitCode() {
-		return exitCode;
-	}
+    /**
+     * Get Clerezza Instance system exit code.
+     *
+     * @return    the exit code.
+     */
+    public int getExitCode() {
+        return exitCode;
+    }
 
-	/**
-	 * Add a shutdown listener.
-	 * 
-	 * @param shutdownListener	the shutdown listener.
-	 */
-	public void addShutdownListener(ShutdownListener shutdownListener) {
-		shutdownListeners.add(shutdownListener);
-	}
+    /**
+     * Add a shutdown listener.
+     * 
+     * @param shutdownListener    the shutdown listener.
+     */
+    public void addShutdownListener(ShutdownListener shutdownListener) {
+        shutdownListeners.add(shutdownListener);
+    }
 
-	/**
-	 * Remove a shutdown Listener.
-	 *
-	 * @param shutdownListener	the shutdown listener.
-	 */
-	public void removeShutdownListener(ShutdownListener shutdownListener) {
-		shutdownListeners.remove(shutdownListener);
-	}
+    /**
+     * Remove a shutdown Listener.
+     *
+     * @param shutdownListener    the shutdown listener.
+     */
+    public void removeShutdownListener(ShutdownListener shutdownListener) {
+        shutdownListeners.remove(shutdownListener);
+    }
 
-	/**
-	 * Start this Clerezza Instance.
-	 *
-	 * Starts the Felix framework and installs CLerezza Bundles.
-	 *
-	 * This method exits after installing all bundles.
-	 * It does not wait for the bundle installations to complete.
-	 *
-	 * @param args	Command line arguments.
-	 */
-	public void start(String... args) throws Throwable {
-		LauncherArguments arguments;
-		try {
-			final ArgumentHandler argumentHandler = new ArgumentHandler(args);
-			arguments = argumentHandler.getInstance(LauncherArguments.class);
-			argumentHandler.processArguments(new ArgumentProcessor() {
+    /**
+     * Start this Clerezza Instance.
+     *
+     * Starts the Felix framework and installs CLerezza Bundles.
+     *
+     * This method exits after installing all bundles.
+     * It does not wait for the bundle installations to complete.
+     *
+     * @param args    Command line arguments.
+     */
+    public void start(String... args) throws Throwable {
+        LauncherArguments arguments;
+        try {
+            final ArgumentHandler argumentHandler = new ArgumentHandler(args);
+            arguments = argumentHandler.getInstance(LauncherArguments.class);
+            argumentHandler.processArguments(new ArgumentProcessor() {
 
-				@Override
-				public void process(List<String> remaining) throws InvalidArgumentsException {
-					if (remaining.size() > 0) {
-						throw new InvalidArgumentsException("The following arguments could not be understood: " + remaining);
-					}
-				}
-			});
-		} catch (InvalidArgumentsException e) {
-			System.out.println(e.getMessage());
-			showUsage();
-			return;
-		}
-		if (arguments.getHelp()) {
-			showUsage();
-			return;
-		}
-		start(arguments);
-	}
+                @Override
+                public void process(List<String> remaining) throws InvalidArgumentsException {
+                    if (remaining.size() > 0) {
+                        throw new InvalidArgumentsException("The following arguments could not be understood: " + remaining);
+                    }
+                }
+            });
+        } catch (InvalidArgumentsException e) {
+            System.out.println(e.getMessage());
+            showUsage();
+            return;
+        }
+        if (arguments.getHelp()) {
+            showUsage();
+            return;
+        }
+        start(arguments);
+    }
 
-	private void start(LauncherArguments arguments) throws Throwable {
-		Properties configProps = getConfigProps(arguments);
-		Policy.setPolicy(new Policy() {
+    private void start(LauncherArguments arguments) throws Throwable {
+        Properties configProps = getConfigProps(arguments);
+        Policy.setPolicy(new Policy() {
 
-			@Override
-			public PermissionCollection getPermissions(ProtectionDomain domain) {
-				PermissionCollection result = new Permissions();
-				result.add(new AllPermission());
-				return result;
-			}
-		});
-		System.setSecurityManager(new SecurityManager());
-		felixInstance = new Felix(configProps);
-		System.out.println("starting felix");
-		felixInstance.start();
-		final String revertParam = arguments.getRevertParam();
-		final PathNode bundlesRoot = PathNodeFactory.getPathNode(Main.class.getResource("/bundles"));
-		final BundleContext bundleContext = felixInstance.getBundleContext();
-		installBundlesForStartLevels(bundleContext, bundlesRoot, revertParam);
-	}
+            @Override
+            public PermissionCollection getPermissions(ProtectionDomain domain) {
+                PermissionCollection result = new Permissions();
+                result.add(new AllPermission());
+                return result;
+            }
+        });
+        System.setSecurityManager(new SecurityManager());
+        felixInstance = new Felix(configProps);
+        System.out.println("starting felix");
+        felixInstance.start();
+        final String revertParam = arguments.getRevertParam();
+        final PathNode bundlesRoot = PathNodeFactory.getPathNode(Main.class.getResource("/bundles"));
+        final BundleContext bundleContext = felixInstance.getBundleContext();
+        installBundlesForStartLevels(bundleContext, bundlesRoot, revertParam);
+    }
 
-	/**
-	 * Stop this Clerezza instance.
-	 *
-	 * This method does not wait for the shutdown to complete before it exits.
-	 */
-	public void stop() throws Throwable {
-		if (felixInstance != null) {
-			felixInstance.stop();
-		}
-	}
+    /**
+     * Stop this Clerezza instance.
+     *
+     * This method does not wait for the shutdown to complete before it exits.
+     */
+    public void stop() throws Throwable {
+        if (felixInstance != null) {
+            felixInstance.stop();
+        }
+    }
 
-	/**
-	 * Wait for this Clerezza instance to shut down.
-	 *
-	 * After shut down all shutdown listeners are notified.
-	 */
-	public void waitForStop() throws Throwable {
-		FrameworkEvent event = null;
-		try {
-			if (felixInstance != null) {
-				event = felixInstance.waitForStop(0);
-			}
-			setExitCode(0);
-		} catch (Throwable t) {
-			setExitCode(-1);
-			event = new FrameworkEvent(FrameworkEvent.ERROR, null, t);
-			throw t;
-		} finally {
-			notifyShutdownListeners(event);
-		}
-	}
+    /**
+     * Wait for this Clerezza instance to shut down.
+     *
+     * After shut down all shutdown listeners are notified.
+     */
+    public void waitForStop() throws Throwable {
+        FrameworkEvent event = null;
+        try {
+            if (felixInstance != null) {
+                event = felixInstance.waitForStop(0);
+            }
+            setExitCode(0);
+        } catch (Throwable t) {
+            setExitCode(-1);
+            event = new FrameworkEvent(FrameworkEvent.ERROR, null, t);
+            throw t;
+        } finally {
+            notifyShutdownListeners(event);
+        }
+    }
 
-	private void notifyShutdownListeners(FrameworkEvent event) {
-		for (ShutdownListener shutdownListener : shutdownListeners) {
-			shutdownListener.notify(event);
-		}
-	}
+    private void notifyShutdownListeners(FrameworkEvent event) {
+        for (ShutdownListener shutdownListener : shutdownListeners) {
+            shutdownListener.notify(event);
+        }
+    }
 
-	private void installBundlesForStartLevels(final BundleContext bundleContext,
-			final PathNode bundlesRoot, final String revertParam) throws IOException, BundleException {
-		final String startlevelpathprefix = "startlevel-";
-		final String[] startLevelePaths = bundlesRoot.list(new PathNameFilter() {
+    private void installBundlesForStartLevels(final BundleContext bundleContext,
+            final PathNode bundlesRoot, final String revertParam) throws IOException, BundleException {
+        final String startlevelpathprefix = "startlevel-";
+        final String[] startLevelePaths = bundlesRoot.list(new PathNameFilter() {
 
-			@Override
-			public boolean accept(PathNode dir, String name) {
-				return name.startsWith(startlevelpathprefix);
-			}
-		});
-		Arrays.sort(startLevelePaths);
-		final Bundle[] installedBundles = bundleContext.getBundles();
-		final Set<Bundle> newlyInstalledBundles = new HashSet<Bundle>();
-		byte startLevel = 0;
-		for (String startLevelPath : startLevelePaths) {
-			startLevel = Byte.parseByte(
-					startLevelPath.substring(startlevelpathprefix.length(),
-					startLevelPath.length() - 1));
-			final PathNode startLevelPathNode = bundlesRoot.getSubPath(startLevelPath);
-			Set<MavenArtifactDesc> artDescs = getArtDescsFrom(startLevelPathNode);
-			if (revertParam != null) {
-				artDescs = getRevertArtifacts(revertParam, artDescs, installedBundles);
-			}
-			if (!alreadyInstalled(artDescs, installedBundles) || revertParam != null) {
-				newlyInstalledBundles.addAll(installBundles(bundleContext, new TreeSet(artDescs), startLevel));
-				System.out.println("level " + startLevel + " bundles installed");
-			}
-		}
+            @Override
+            public boolean accept(PathNode dir, String name) {
+                return name.startsWith(startlevelpathprefix);
+            }
+        });
+        Arrays.sort(startLevelePaths);
+        final Bundle[] installedBundles = bundleContext.getBundles();
+        final Set<Bundle> newlyInstalledBundles = new HashSet<Bundle>();
+        byte startLevel = 0;
+        for (String startLevelPath : startLevelePaths) {
+            startLevel = Byte.parseByte(
+                    startLevelPath.substring(startlevelpathprefix.length(),
+                    startLevelPath.length() - 1));
+            final PathNode startLevelPathNode = bundlesRoot.getSubPath(startLevelPath);
+            Set<MavenArtifactDesc> artDescs = getArtDescsFrom(startLevelPathNode);
+            if (revertParam != null) {
+                artDescs = getRevertArtifacts(revertParam, artDescs, installedBundles);
+            }
+            if (!alreadyInstalled(artDescs, installedBundles) || revertParam != null) {
+                newlyInstalledBundles.addAll(installBundles(bundleContext, new TreeSet(artDescs), startLevel));
+                System.out.println("level " + startLevel + " bundles installed");
+            }
+        }
 
-		for (Bundle bundle : newlyInstalledBundles) {
-			try {
-				bundle.start();
-			} catch (BundleException e) {
-				System.out.println("Exception installing Bundle " + bundle + ": " + e.toString());
-			}
-		}
+        for (Bundle bundle : newlyInstalledBundles) {
+            try {
+                bundle.start();
+            } catch (BundleException e) {
+                System.out.println("Exception installing Bundle " + bundle + ": " + e.toString());
+            }
+        }
 
-		ServiceReference startLevelRef =
-				bundleContext.getServiceReference(StartLevel.class.getName());
-		StartLevel startLevelService = (StartLevel) bundleContext.getService(startLevelRef);
-		startLevelService.setInitialBundleStartLevel(startLevel + 1);
-		startLevelService.setStartLevel(startLevel + 20);
-	}
+        ServiceReference startLevelRef =
+                bundleContext.getServiceReference(StartLevel.class.getName());
+        StartLevel startLevelService = (StartLevel) bundleContext.getService(startLevelRef);
+        startLevelService.setInitialBundleStartLevel(startLevel + 1);
+        startLevelService.setStartLevel(startLevel + 20);
+    }
 
-	private Set<MavenArtifactDesc> getArtDescsFrom(PathNode pathNode) {
-		Set<MavenArtifactDesc> result = new HashSet<MavenArtifactDesc>();
-		List<PathNode> jarPaths = getJarPaths(pathNode);
-		for (PathNode jarPath : jarPaths) {
-			result.add(MavenArtifactDesc.parseFromPath(jarPath));
-		}
+    private Set<MavenArtifactDesc> getArtDescsFrom(PathNode pathNode) {
+        Set<MavenArtifactDesc> result = new HashSet<MavenArtifactDesc>();
+        List<PathNode> jarPaths = getJarPaths(pathNode);
+        for (PathNode jarPath : jarPaths) {
+            result.add(MavenArtifactDesc.parseFromPath(jarPath));
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	private List<PathNode> getJarPaths(PathNode pathNode) {
-		List<PathNode> result = new ArrayList<PathNode>();
-		for (String childName : pathNode.list()) {
-			PathNode childNode = pathNode.getSubPath(childName);
-			if ((!childNode.isDirectory()) && (childName.endsWith(".jar"))) {
-				result.add(childNode);
-			} else {
-				for (PathNode subPath : getJarPaths(childNode)) {
-					result.add(subPath);
-				}
-			}
-		}
-		return result;
-	}
+    private List<PathNode> getJarPaths(PathNode pathNode) {
+        List<PathNode> result = new ArrayList<PathNode>();
+        for (String childName : pathNode.list()) {
+            PathNode childNode = pathNode.getSubPath(childName);
+            if ((!childNode.isDirectory()) && (childName.endsWith(".jar"))) {
+                result.add(childNode);
+            } else {
+                for (PathNode subPath : getJarPaths(childNode)) {
+                    result.add(subPath);
+                }
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * Returns true if a bundle is found, whose location starts with a short URI
-	 * ("mvn:[groupId]/[artifactId]") of a Maven Artifact specified.
-	 *
-	 * Returns false iff none of the specified Maven Artifacts is installed.
-	 *
-	 * @param artDescs MavenArtifacts to be checked if a corresponding bundle is
-	 *		already installed
-	 * @param installedBundles Bundles installed in the framework
-	 * @return
-	 */
-	private boolean alreadyInstalled(Set<MavenArtifactDesc> artDescs,
-			Bundle[] installedBundles) {
-		for (int i = 0; i < installedBundles.length; i++) {
-			String bundleLocation = installedBundles[i].getLocation();
-			for (Iterator<MavenArtifactDesc> it = artDescs.iterator(); it.hasNext();) {
-				MavenArtifactDesc mavenArtifactDesc = it.next();
-				if (bundleLocation.matches(mavenArtifactDesc.getShortUri() + "/.*[0-9].*")) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    /**
+     * Returns true if a bundle is found, whose location starts with a short URI
+     * ("mvn:[groupId]/[artifactId]") of a Maven Artifact specified.
+     *
+     * Returns false iff none of the specified Maven Artifacts is installed.
+     *
+     * @param artDescs MavenArtifacts to be checked if a corresponding bundle is
+     *        already installed
+     * @param installedBundles Bundles installed in the framework
+     * @return
+     */
+    private boolean alreadyInstalled(Set<MavenArtifactDesc> artDescs,
+            Bundle[] installedBundles) {
+        for (int i = 0; i < installedBundles.length; i++) {
+            String bundleLocation = installedBundles[i].getLocation();
+            for (Iterator<MavenArtifactDesc> it = artDescs.iterator(); it.hasNext();) {
+                MavenArtifactDesc mavenArtifactDesc = it.next();
+                if (bundleLocation.matches(mavenArtifactDesc.getShortUri() + "/.*[0-9].*")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Returns the Maven Artifacts that have to be reverted to default.
-	 * If the revertParam equals "all", then all platform bundles already installed
-	 * are uninstalled and the returned <code>Set</code> contains all
-	 * Maven Artifacts.
-	 * If the revertParam is a regular expression, then the returned <code>Set</code>
-	 * contains all Maven Artifacts, whose short URI matches the expression. If
-	 * a corresponding bundle is installed, then it is uninstalled.
-	 * If the revertParam equals "missing" then the returned <code>Set</code>
-	 * contains all Maven Artifacts that are not installed.
-	 * @param revertParam
-	 * @param artDescs
-	 * @param installedBundles
-	 * @return
-	 * @throws org.osgi.framework.BundleException
-	 */
-	private Set<MavenArtifactDesc> getRevertArtifacts(String revertParam,
-			Set<MavenArtifactDesc> artDescs,
-			Bundle[] installedBundles) throws BundleException {
-		boolean installMissing = revertParam.toLowerCase().equals("missing");
-		if (revertParam.equals("all")) {
-			revertParam = ".*";
-		}
-		Set<MavenArtifactDesc> artsToBeInstalled = new HashSet<MavenArtifactDesc>();
-		for (Iterator<MavenArtifactDesc> it = artDescs.iterator(); it.hasNext();) {
-			MavenArtifactDesc mavenArtifactDesc = it.next();
-			boolean isInstalled = false;
-			if (mavenArtifactDesc.getShortUri().matches(revertParam) || installMissing) {
-				for (int i = 0; i < installedBundles.length; i++) {
-					Bundle bundle = installedBundles[i];
-					if (bundle.getLocation().matches(mavenArtifactDesc.getShortUri() + "/.*[0-9].*")) {
-						if (installMissing) {
-							isInstalled = true;
-						} else {
-							bundle.uninstall();
-						}
-					}
-				}
-				if (!installMissing || (installMissing && !isInstalled)) {
-					artsToBeInstalled.add(mavenArtifactDesc);
-				}
-			}
-		}
-		return artsToBeInstalled;
-	}
+    /**
+     * Returns the Maven Artifacts that have to be reverted to default.
+     * If the revertParam equals "all", then all platform bundles already installed
+     * are uninstalled and the returned <code>Set</code> contains all
+     * Maven Artifacts.
+     * If the revertParam is a regular expression, then the returned <code>Set</code>
+     * contains all Maven Artifacts, whose short URI matches the expression. If
+     * a corresponding bundle is installed, then it is uninstalled.
+     * If the revertParam equals "missing" then the returned <code>Set</code>
+     * contains all Maven Artifacts that are not installed.
+     * @param revertParam
+     * @param artDescs
+     * @param installedBundles
+     * @return
+     * @throws org.osgi.framework.BundleException
+     */
+    private Set<MavenArtifactDesc> getRevertArtifacts(String revertParam,
+            Set<MavenArtifactDesc> artDescs,
+            Bundle[] installedBundles) throws BundleException {
+        boolean installMissing = revertParam.toLowerCase().equals("missing");
+        if (revertParam.equals("all")) {
+            revertParam = ".*";
+        }
+        Set<MavenArtifactDesc> artsToBeInstalled = new HashSet<MavenArtifactDesc>();
+        for (Iterator<MavenArtifactDesc> it = artDescs.iterator(); it.hasNext();) {
+            MavenArtifactDesc mavenArtifactDesc = it.next();
+            boolean isInstalled = false;
+            if (mavenArtifactDesc.getShortUri().matches(revertParam) || installMissing) {
+                for (int i = 0; i < installedBundles.length; i++) {
+                    Bundle bundle = installedBundles[i];
+                    if (bundle.getLocation().matches(mavenArtifactDesc.getShortUri() + "/.*[0-9].*")) {
+                        if (installMissing) {
+                            isInstalled = true;
+                        } else {
+                            bundle.uninstall();
+                        }
+                    }
+                }
+                if (!installMissing || (installMissing && !isInstalled)) {
+                    artsToBeInstalled.add(mavenArtifactDesc);
+                }
+            }
+        }
+        return artsToBeInstalled;
+    }
 
-	/**
-	 * Prints usage instructions to stdout
-	 */
-	public static void showUsage() {
-		System.out.print("Usage: LaunchBundle ");
-		System.out.println(AnnotatedInterfaceArguments.getArgumentsSyntax(LauncherArguments.class));
-		PrintWriter out = new PrintWriter(System.out, true);
-		AnnotatedInterfaceArguments.printArgumentDescriptions(
-				LauncherArguments.class, out);
-		out.flush();
-	}
-	
+    /**
+     * Prints usage instructions to stdout
+     */
+    public static void showUsage() {
+        System.out.print("Usage: LaunchBundle ");
+        System.out.println(AnnotatedInterfaceArguments.getArgumentsSyntax(LauncherArguments.class));
+        PrintWriter out = new PrintWriter(System.out, true);
+        AnnotatedInterfaceArguments.printArgumentDescriptions(
+                LauncherArguments.class, out);
+        out.flush();
+    }
+    
 
-	private Properties getConfigProps(LauncherArguments arguments) {
+    private Properties getConfigProps(LauncherArguments arguments) {
 
-		Properties configProps = new Properties();
+        Properties configProps = new Properties();
         
-		configProps.putAll(System.getProperties());
-		//ignored as we're setting the starlevel manually to last used start-level + 20
-		//configProps.put("org.osgi.framework.startlevel.beginning", "20");
-		{
-			if (arguments.getNotConsoleShell()) {
-				configProps.put("clerezza.shell.disable",
-					"true");
-			}
-		}
+        configProps.putAll(System.getProperties());
+        //ignored as we're setting the starlevel manually to last used start-level + 20
+        //configProps.put("org.osgi.framework.startlevel.beginning", "20");
+        {
+            if (arguments.getNotConsoleShell()) {
+                configProps.put("clerezza.shell.disable",
+                    "true");
+            }
+        }
         
-		{
-			String argLogLevel = arguments.getLogLevel();
-			if (argLogLevel == null) {
-				argLogLevel = "INFO";
-			}
-			System.out.println("setting log-level to: " + argLogLevel);
-			configProps.put("org.ops4j.pax.logging.DefaultServiceLog.level",
-					argLogLevel);
-		}
-		{
-			final String port = arguments.getPort();
-			if (port != null) {
-				configProps.put("org.osgi.service.http.port", port);
-			}
-			configProps.put("org.ops4j.pax.url.mvn.repositories", getCommaSeparatedListOfMavenRepos());
-		}
+        {
+            String argLogLevel = arguments.getLogLevel();
+            if (argLogLevel == null) {
+                argLogLevel = "INFO";
+            }
+            System.out.println("setting log-level to: " + argLogLevel);
+            configProps.put("org.ops4j.pax.logging.DefaultServiceLog.level",
+                    argLogLevel);
+        }
+        {
+            final String port = arguments.getPort();
+            if (port != null) {
+                configProps.put("org.osgi.service.http.port", port);
+            }
+            configProps.put("org.ops4j.pax.url.mvn.repositories", getCommaSeparatedListOfMavenRepos());
+        }
         
-		{
+        {
             //sun.reflect added because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6265952 and loading of scala scripts
-			String extraPackages = (String) configProps.get("org.osgi.framework.system.packages.extra");
-			if (extraPackages == null) {
+            String extraPackages = (String) configProps.get("org.osgi.framework.system.packages.extra");
+            if (extraPackages == null) {
                 extraPackages = "sun.misc;sun.reflect";
             } else {
                 extraPackages = "sun.misc;sun.reflect;"+extraPackages;
             }
-			configProps.put("org.osgi.framework.system.packages.extra",extraPackages);
-		}
+            configProps.put("org.osgi.framework.system.packages.extra",extraPackages);
+        }
 
-		//public static final String CONTEXT_PROPERTY_HTTP_PORT_SECURE = "";
-		boolean httpsEnabled = false;
-		{
+        //public static final String CONTEXT_PROPERTY_HTTP_PORT_SECURE = "";
+        boolean httpsEnabled = false;
+        {
 
-			final String httpsPort = arguments.getSecurePort();
-			if (httpsPort != null && !"".equals(httpsPort)) {
-				configProps.put("org.osgi.service.http.port.secure", httpsPort);
-				httpsEnabled = true;
-			}
-		}
-		{
+            final String httpsPort = arguments.getSecurePort();
+            if (httpsPort != null && !"".equals(httpsPort)) {
+                configProps.put("org.osgi.service.http.port.secure", httpsPort);
+                httpsEnabled = true;
+            }
+        }
+        {
 
-			final String keyStorePath = arguments.getKeyStorePath();
-			if (keyStorePath != null && !"".equals(keyStorePath)) {
-				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.path", keyStorePath);
-				httpsEnabled = true;
-			}
-		}
-		{
+            final String keyStorePath = arguments.getKeyStorePath();
+            if (keyStorePath != null && !"".equals(keyStorePath)) {
+                configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.path", keyStorePath);
+                httpsEnabled = true;
+            }
+        }
+        {
 
-			final String keyStorePassword = arguments.getKeyStorePassword();
-			if (keyStorePassword != null && !"".equals(keyStorePassword)) {
-				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.password", keyStorePassword);
-				httpsEnabled = true;
-			}
-		}
-		{
+            final String keyStorePassword = arguments.getKeyStorePassword();
+            if (keyStorePassword != null && !"".equals(keyStorePassword)) {
+                configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.password", keyStorePassword);
+                httpsEnabled = true;
+            }
+        }
+        {
 
-			final String keyStoreType = arguments.getKeyStoreType();
-			if (keyStoreType != null && !"".equals(keyStoreType)) {
-				configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.type", keyStoreType);
-				httpsEnabled = true;
-			}
-		}
+            final String keyStoreType = arguments.getKeyStoreType();
+            if (keyStoreType != null && !"".equals(keyStoreType)) {
+                configProps.put("org.wymiwyg.jetty.httpservice.https.keystore.type", keyStoreType);
+                httpsEnabled = true;
+            }
+        }
 
-		{
+        {
 
-			final String clientAuth = arguments.getClientAuth();
-			if (clientAuth != null && !"".equals(clientAuth)) {
-				configProps.put("org.wymiwyg.jetty.httpservice.clientauth", clientAuth);
-				httpsEnabled = true;
-			}
-		}
+            final String clientAuth = arguments.getClientAuth();
+            if (clientAuth != null && !"".equals(clientAuth)) {
+                configProps.put("org.wymiwyg.jetty.httpservice.clientauth", clientAuth);
+                httpsEnabled = true;
+            }
+        }
 
-		if (httpsEnabled) {
-			configProps.put("org.osgi.service.http.secure.enabled", "true");
-		}
-		return configProps;
+        if (httpsEnabled) {
+            configProps.put("org.osgi.service.http.secure.enabled", "true");
+        }
+        return configProps;
 
-	}
+    }
 
-	private String getCommaSeparatedListOfMavenRepos() {
-		return "http://repository.apache.org/content/groups/snapshots-group@snapshots@noreleases@id=apache-snapshots,"
-				+ "http://repo1.maven.org/maven2/@id=central";
-	}
+    private String getCommaSeparatedListOfMavenRepos() {
+        return "http://repository.apache.org/content/groups/snapshots-group@snapshots@noreleases@id=apache-snapshots,"
+                + "http://repo1.maven.org/maven2/@id=central";
+    }
 }

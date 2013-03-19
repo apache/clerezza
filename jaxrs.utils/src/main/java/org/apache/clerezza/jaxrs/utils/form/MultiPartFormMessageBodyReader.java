@@ -44,22 +44,22 @@ import org.apache.felix.scr.annotations.Service;
 @Provider
 @Consumes("multipart/form-data")
 public class MultiPartFormMessageBodyReader implements
-		MessageBodyReader<MultiPartBody> {
+        MessageBodyReader<MultiPartBody> {
 
-	@Override
-	public boolean isReadable(Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return type.isAssignableFrom(MultiPartBody.class) 
+    @Override
+    public boolean isReadable(Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return type.isAssignableFrom(MultiPartBody.class) 
                 && mediaType.getType().equals("multipart") 
                 && mediaType.getSubtype().equals("form-data");
-	}
+    }
 
-	@Override
-	public MultiPartBody readFrom(Class<MultiPartBody> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-			throws IOException, WebApplicationException {
-		return new MultiPartBodyImpl(entityStream, mediaType);
-	}
+    @Override
+    public MultiPartBody readFrom(Class<MultiPartBody> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+            throws IOException, WebApplicationException {
+        return new MultiPartBodyImpl(entityStream, mediaType);
+    }
 
 }

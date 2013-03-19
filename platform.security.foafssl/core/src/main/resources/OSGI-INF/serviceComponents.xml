@@ -21,27 +21,27 @@
 -->
 
 <components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-	<scr:component enabled="true" name="org.apache.clerezza.foafssl.ssl.Activator" immediate="true">
-		<implementation class="org.apache.clerezza.foafssl.ssl.Activator"/>
-		<reference name="x509TrustManagerWrapperService"
-		interface="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"
-		cardinality="1..1" policy="static" bind="bindX509TrustManagerWrapperService" unbind="unbindX509TrustManagerWrapperService"/>
-	</scr:component>
-	<scr:component enabled="true" name="org.apache.clerezza.foafssl.auth.FoafSslAuthentication" immediate="true">
-		<implementation class="org.apache.clerezza.foafssl.auth.FoafSslAuthentication"/>
-		<service servicefactory="false">
-			<provide interface="org.apache.clerezza.platform.security.auth.WeightedAuthenticationMethod"/>
-		</service>
+    <scr:component enabled="true" name="org.apache.clerezza.foafssl.ssl.Activator" immediate="true">
+        <implementation class="org.apache.clerezza.foafssl.ssl.Activator"/>
+        <reference name="x509TrustManagerWrapperService"
+        interface="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"
+        cardinality="1..1" policy="static" bind="bindX509TrustManagerWrapperService" unbind="unbindX509TrustManagerWrapperService"/>
+    </scr:component>
+    <scr:component enabled="true" name="org.apache.clerezza.foafssl.auth.FoafSslAuthentication" immediate="true">
+        <implementation class="org.apache.clerezza.foafssl.auth.FoafSslAuthentication"/>
+        <service servicefactory="false">
+            <provide interface="org.apache.clerezza.platform.security.auth.WeightedAuthenticationMethod"/>
+        </service>
         <reference name="webIdService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
         cardinality="1..1" policy="static" bind="bindWebIdService" unbind="unbindWebIdService"/>
         <reference name="systemGraph" interface="org.apache.clerezza.rdf.core.access.LockableMGraph"
         cardinality="1..1" policy="static" target="(name=urn:x-localinstance:/system.graph)"
         bind="bindSystemGraph" unbind="unbindSystemGraph"/>
-	</scr:component>
-	<scr:component enabled="true" name="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService">
-		<implementation class="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"/>
-		<service servicefactory="false">
-			<provide interface="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"/>
-		</service>
-	</scr:component>
+    </scr:component>
+    <scr:component enabled="true" name="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService">
+        <implementation class="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"/>
+        <service servicefactory="false">
+            <provide interface="org.apache.clerezza.foafssl.ssl.X509TrustManagerWrapperService"/>
+        </service>
+    </scr:component>
 </components>

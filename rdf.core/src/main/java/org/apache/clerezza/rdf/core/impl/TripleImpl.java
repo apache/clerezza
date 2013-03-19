@@ -29,72 +29,72 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class TripleImpl implements Triple {
 
-	private final NonLiteral subject;
-	private final UriRef predicate;
-	private final Resource object;
+    private final NonLiteral subject;
+    private final UriRef predicate;
+    private final Resource object;
 
-	/**
-	 * Creates a new <code>TripleImpl</code>.
-	 *
-	 * @param subject  the subject.
-	 * @param predicate  the predicate.
-	 * @param object  the object.
-	 * @throws IllegalArgumentException  if an attribute is <code>null</code>.
-	 */
-	public TripleImpl(NonLiteral subject, UriRef predicate, Resource object) {
-		if (subject == null) {
-			throw new IllegalArgumentException("Invalid subject: null");
-		} else if (predicate == null) {
-			throw new IllegalArgumentException("Invalid predicate: null");
-		} else if (object == null) {
-			throw new IllegalArgumentException("Invalid object: null");
-		}
-		this.subject = subject;
-		this.predicate = predicate;
-		this.object = object;
-	}
+    /**
+     * Creates a new <code>TripleImpl</code>.
+     *
+     * @param subject  the subject.
+     * @param predicate  the predicate.
+     * @param object  the object.
+     * @throws IllegalArgumentException  if an attribute is <code>null</code>.
+     */
+    public TripleImpl(NonLiteral subject, UriRef predicate, Resource object) {
+        if (subject == null) {
+            throw new IllegalArgumentException("Invalid subject: null");
+        } else if (predicate == null) {
+            throw new IllegalArgumentException("Invalid predicate: null");
+        } else if (object == null) {
+            throw new IllegalArgumentException("Invalid object: null");
+        }
+        this.subject = subject;
+        this.predicate = predicate;
+        this.object = object;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof Triple)) {
-			return false;
-		}
-		final Triple other = (Triple) obj;
-		if (!this.subject.equals(other.getSubject())) {
-			return false;
-		}
-		if (!this.predicate.equals(other.getPredicate())) {
-			return false;
-		}
-		if (!this.object.equals(other.getObject())) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Triple)) {
+            return false;
+        }
+        final Triple other = (Triple) obj;
+        if (!this.subject.equals(other.getSubject())) {
+            return false;
+        }
+        if (!this.predicate.equals(other.getPredicate())) {
+            return false;
+        }
+        if (!this.object.equals(other.getObject())) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		return (subject.hashCode() >> 1) ^ predicate.hashCode() ^ (object.hashCode() << 1);
-	}
+    @Override
+    public int hashCode() {
+        return (subject.hashCode() >> 1) ^ predicate.hashCode() ^ (object.hashCode() << 1);
+    }
 
-	@Override
-	public NonLiteral getSubject() {
-		return subject;
-	}
+    @Override
+    public NonLiteral getSubject() {
+        return subject;
+    }
 
-	public UriRef getPredicate() {
-		return predicate;
-	}
+    public UriRef getPredicate() {
+        return predicate;
+    }
 
-	public Resource getObject() {
-		return object;
-	}
+    public Resource getObject() {
+        return object;
+    }
 
-	@Override
-	public String toString() {
-		return subject + " " + predicate + " " + object + ".";
-	}
+    @Override
+    public String toString() {
+        return subject + " " + predicate + " " + object + ".";
+    }
 }

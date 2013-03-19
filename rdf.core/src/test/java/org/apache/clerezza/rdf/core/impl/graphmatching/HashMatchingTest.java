@@ -33,18 +33,18 @@ import org.junit.Test;
  */
 public class HashMatchingTest {
 
-	@Test
-	public void twoLine() throws GraphNotIsomorphicException {
-		NonLiteral start1 = new BNode();
-		MGraph tc1 = Utils4Testing.generateLine(4,start1);
-		tc1.addAll(Utils4Testing.generateLine(5,start1));
-		NonLiteral start2 = new BNode();
-		MGraph tc2 = Utils4Testing.generateLine(5,start2);
-		tc2.addAll(Utils4Testing.generateLine(4,start2));
-		Assert.assertEquals(9, tc1.size());
-		final Map<BNode, BNode> mapping = new HashMatching(tc1, tc2).getMatchings();
-		Assert.assertNotNull(mapping);
-		Assert.assertEquals(10, mapping.size());
-	}
+    @Test
+    public void twoLine() throws GraphNotIsomorphicException {
+        NonLiteral start1 = new BNode();
+        MGraph tc1 = Utils4Testing.generateLine(4,start1);
+        tc1.addAll(Utils4Testing.generateLine(5,start1));
+        NonLiteral start2 = new BNode();
+        MGraph tc2 = Utils4Testing.generateLine(5,start2);
+        tc2.addAll(Utils4Testing.generateLine(4,start2));
+        Assert.assertEquals(9, tc1.size());
+        final Map<BNode, BNode> mapping = new HashMatching(tc1, tc2).getMatchings();
+        Assert.assertNotNull(mapping);
+        Assert.assertEquals(10, mapping.size());
+    }
 
 }

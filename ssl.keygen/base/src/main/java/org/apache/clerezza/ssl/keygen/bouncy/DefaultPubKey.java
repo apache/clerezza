@@ -72,67 +72,67 @@ import static java.security.KeyFactory.getInstance;
  */
 public abstract class DefaultPubKey implements PubKey {
 
-	static public PubKey create(PublicKey p) {
-		if (p instanceof RSAPublicKey) {
-			return new DefaultRSAPubKey((RSAPublicKey) p);
-		} else return null; //we don't deal with other keys yet
-	}
+    static public PubKey create(PublicKey p) {
+        if (p instanceof RSAPublicKey) {
+            return new DefaultRSAPubKey((RSAPublicKey) p);
+        } else return null; //we don't deal with other keys yet
+    }
 
 
 }
 
 class DefaultRSAPubKey implements RSAPubKey {
-	RSAPublicKey rpk;
-	BigInteger mod, exp;
+    RSAPublicKey rpk;
+    BigInteger mod, exp;
 
-	DefaultRSAPubKey(RSAPublicKey pk) {
-		rpk = pk;
-		exp = pk.getPublicExponent();
-		mod = pk.getModulus();
-	}
+    DefaultRSAPubKey(RSAPublicKey pk) {
+        rpk = pk;
+        exp = pk.getPublicExponent();
+        mod = pk.getModulus();
+    }
 
-	DefaultRSAPubKey(BigInteger exponent, BigInteger modulus) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		this.exp = exponent;
-		this.mod = modulus;
+    DefaultRSAPubKey(BigInteger exponent, BigInteger modulus) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        this.exp = exponent;
+        this.mod = modulus;
 
-		rpk =  (RSAPublicKey)getInstance("RSA").
-				generatePublic( new RSAPublicKeySpec(mod,exp));
-	}
+        rpk =  (RSAPublicKey)getInstance("RSA").
+                generatePublic( new RSAPublicKeySpec(mod,exp));
+    }
 
-	/**
-	 * A very simple beautify script to cut a large hex string into 60 character lengths
-	 * (this should not really be in this class but somewhere else)
-	 *
-	 * @param s a string to beautify
-	 * @return a beautified string
-	 */
-	static String beautify(String s) {
-		StringBuilder answer = new StringBuilder();
-		int start = 0;
-		while (start < s.length()) {
-			int end = start + 60;
-			if (end > s.length()) end = s.length();
+    /**
+     * A very simple beautify script to cut a large hex string into 60 character lengths
+     * (this should not really be in this class but somewhere else)
+     *
+     * @param s a string to beautify
+     * @return a beautified string
+     */
+    static String beautify(String s) {
+        StringBuilder answer = new StringBuilder();
+        int start = 0;
+        while (start < s.length()) {
+            int end = start + 60;
+            if (end > s.length()) end = s.length();
 
-			String line = s.substring(start, end);
-			answer.append(line);
-			answer.append("\r\n");
-			start = end;
-		}
-		return answer.toString();
-	}
+            String line = s.substring(start, end);
+            answer.append(line);
+            answer.append("\r\n");
+            start = end;
+        }
+        return answer.toString();
+    }
 
-	@Override
-	public String getHexModulus() {
-		return beautify(mod.toString(16));  
-	}
+    @Override
+    public String getHexModulus() {
+        return beautify(mod.toString(16));  
+    }
 
-	@Override
-	public String getIntExponent() {
-		return exp.toString();
-	}
+    @Override
+    public String getIntExponent() {
+        return exp.toString();
+    }
 
-	@Override
-	public PublicKey getPublicKey() {
-		return rpk;
-	}
+    @Override
+    public PublicKey getPublicKey() {
+        return rpk;
+    }
 }

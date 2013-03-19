@@ -22,11 +22,11 @@
 -->
 
 <project>
-	<body>
-		<menu name="Documentation">
-			<item name="SCB Overview" href="documentation/overview.xhtml"/>
-			<item name="Tutorial 1" href="documentation/tutorial_1.xhtml"/> 
-			<item name="Tutorial 2" href="documentation/scb-triaxrs-tutorial.xhtml"/>
-		</menu>
-	</body>
+    <body>
+        <menu name="Documentation">
+            <item name="SCB Overview" href="documentation/overview.xhtml"/>
+            <item name="Tutorial 1" href="documentation/tutorial_1.xhtml"/> 
+            <item name="Tutorial 2" href="documentation/scb-triaxrs-tutorial.xhtml"/>
+        </menu>
+    </body>
 </project>

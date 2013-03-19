@@ -18,48 +18,48 @@
  under the License.
 
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.clerezza</groupId>
-		<artifactId>platform.concepts</artifactId>
-		<version>0.2-SNAPSHOT</version>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>platform.concepts.ontologies</artifactId>
-	<version>0.2-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<name>Clerezza - Platform Concepts Ontologies</name>
-	<description>
-		Ontologies for Platform Concepts Core
-	</description>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.core</artifactId>
-			<version>0.13-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.clerezza</groupId>
-				<artifactId>maven-ontologies-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<configuration>
-							<resourcePath>${basedir}/src/main/resources</resourcePath>
-							<sources>
-								<source>${basedir}/target/generated-sources/main/java</source>
-							</sources>
-						</configuration>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<version>0.4-SNAPSHOT</version>
-		</plugin>
-		</plugins>
-	</build>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>platform.concepts</artifactId>
+        <version>0.2-SNAPSHOT</version>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>platform.concepts.ontologies</artifactId>
+    <version>0.2-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <name>Clerezza - Platform Concepts Ontologies</name>
+    <description>
+        Ontologies for Platform Concepts Core
+    </description>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.core</artifactId>
+            <version>0.13-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.clerezza</groupId>
+                <artifactId>maven-ontologies-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <resourcePath>${basedir}/src/main/resources</resourcePath>
+                            <sources>
+                                <source>${basedir}/target/generated-sources/main/java</source>
+                            </sources>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <version>0.4-SNAPSHOT</version>
+        </plugin>
+        </plugins>
+    </build>
 </project>

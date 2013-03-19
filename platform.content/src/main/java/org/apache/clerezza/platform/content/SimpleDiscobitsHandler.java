@@ -27,22 +27,22 @@ import org.apache.clerezza.rdf.core.MGraph;
  * @author reto
  */
 class SimpleDiscobitsHandler extends AbstractDiscobitsHandler {
-	
-	private final MGraph mGraph;
+    
+    private final MGraph mGraph;
 
-	public SimpleDiscobitsHandler(MGraph mGraph) {
-		this.mGraph = mGraph;
-	}
+    public SimpleDiscobitsHandler(MGraph mGraph) {
+        this.mGraph = mGraph;
+    }
 
-	@Override
-	protected MGraph getMGraph() {
-		return mGraph;
-	}
+    @Override
+    protected MGraph getMGraph() {
+        return mGraph;
+    }
 
-	@Override
-	protected Set<MetaDataGenerator> getMetaDataGenerators() {
-		return null;
-	}
+    @Override
+    protected Set<MetaDataGenerator> getMetaDataGenerators() {
+        return null;
+    }
 
 
 

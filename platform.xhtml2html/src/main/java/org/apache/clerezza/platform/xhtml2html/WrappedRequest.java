@@ -32,22 +32,22 @@ import org.wymiwyg.wrhapi.util.RequestWrapper;
  */
 class WrappedRequest extends RequestWrapper {
 
-	public WrappedRequest(Request request) {
-		super(request);
-	}
+    public WrappedRequest(Request request) {
+        super(request);
+    }
 
-	@Override
-	public String[] getHeaderValues(HeaderName headerName) throws HandlerException {
-		if (headerName.equals(HeaderName.ACCEPT)) {
-			List<String> newList = new ArrayList();
-			newList.add("text/html");
-			newList.add("application/xhtml+xml;q=.9");
-			newList.add("*/*;q=.1");
-			return newList.toArray(new String[newList.size()]);
-		} else {
-			return super.getHeaderValues(headerName);
-		}
-	}
+    @Override
+    public String[] getHeaderValues(HeaderName headerName) throws HandlerException {
+        if (headerName.equals(HeaderName.ACCEPT)) {
+            List<String> newList = new ArrayList();
+            newList.add("text/html");
+            newList.add("application/xhtml+xml;q=.9");
+            newList.add("*/*;q=.1");
+            return newList.toArray(new String[newList.size()]);
+        } else {
+            return super.getHeaderValues(headerName);
+        }
+    }
 
 
 

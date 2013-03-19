@@ -35,62 +35,62 @@ import org.junit.Test;
  */
 public class TestMediaTypeGuesser {
 
-	@Before
-	public void setUp() {
-		RuntimeDelegate.setInstance(new RuntimeDelegate() {
+    @Before
+    public void setUp() {
+        RuntimeDelegate.setInstance(new RuntimeDelegate() {
 
-			@Override
-			public UriBuilder createUriBuilder() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
+            @Override
+            public UriBuilder createUriBuilder() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
 
-			@Override
-			public ResponseBuilder createResponseBuilder() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
+            @Override
+            public ResponseBuilder createResponseBuilder() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
 
-			@Override
-			public VariantListBuilder createVariantListBuilder() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
+            @Override
+            public VariantListBuilder createVariantListBuilder() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
 
-			@Override
-			public <T> T createEndpoint(Application application, Class<T> endpointType) throws IllegalArgumentException, UnsupportedOperationException {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
+            @Override
+            public <T> T createEndpoint(Application application, Class<T> endpointType) throws IllegalArgumentException, UnsupportedOperationException {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
 
-			@Override
-			public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
-				if (type.equals(MediaType.class)) {
-					return (HeaderDelegate<T>) new HeaderDelegate<MediaType>() {
+            @Override
+            public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
+                if (type.equals(MediaType.class)) {
+                    return (HeaderDelegate<T>) new HeaderDelegate<MediaType>() {
 
-						@Override
-						public MediaType fromString(String value) throws IllegalArgumentException {
-							String[] tokens = value.split("/");
-							return new MediaType(tokens[0], tokens[1]);
-						}
+                        @Override
+                        public MediaType fromString(String value) throws IllegalArgumentException {
+                            String[] tokens = value.split("/");
+                            return new MediaType(tokens[0], tokens[1]);
+                        }
 
-						@Override
-						public String toString(MediaType value) {
-							return value.getType()+"/"+value.getSubtype();
-						}
+                        @Override
+                        public String toString(MediaType value) {
+                            return value.getType()+"/"+value.getSubtype();
+                        }
 
-					};
-				}
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		});
-	}
+                    };
+                }
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+    }
 
-	@Test
-	public void testExtension() throws IOException {
-		MediaTypeGuesser guesser = MediaTypeGuesser.getInstance();
-		Assert.assertEquals(MediaType.valueOf("text/plain"), guesser.getTypeForExtension("txt"));
-	}
-	
-	@Test
-	public void testFileName() throws IOException {
-		MediaTypeGuesser guesser = MediaTypeGuesser.getInstance();
-		Assert.assertEquals(MediaType.valueOf("text/plain"), guesser.guessTypeForName("foo/bla/bar.txt"));
-	}
+    @Test
+    public void testExtension() throws IOException {
+        MediaTypeGuesser guesser = MediaTypeGuesser.getInstance();
+        Assert.assertEquals(MediaType.valueOf("text/plain"), guesser.getTypeForExtension("txt"));
+    }
+    
+    @Test
+    public void testFileName() throws IOException {
+        MediaTypeGuesser guesser = MediaTypeGuesser.getInstance();
+        Assert.assertEquals(MediaType.valueOf("text/plain"), guesser.guessTypeForName("foo/bla/bar.txt"));
+    }
 }

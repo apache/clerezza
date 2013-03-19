@@ -35,104 +35,104 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * @author mir
  */
 public class RenderingspecificationException extends TypeRenderingException{
-	
-	private int lineNumber, columnNumber;
-	private GraphNode node;
-	private URI renderingSpecification;
+    
+    private int lineNumber, columnNumber;
+    private GraphNode node;
+    private URI renderingSpecification;
 
-	/**
-	 * Creates a <code>RenderingspecificationException</code> with message,
-	 * scriptUri, lineNumber, columnNumber and renderNode to be used in an
-	 * <code>GraphNode</code> that can be used to render an exception page.
-	 *
-	 * @param message A message about the error that caused the exception
-	 * @param renderingSpecification The uri of the rendering specification
-	 *		which contains error.
-	 * @param lineNumber The line number on which the error is located in the
-	 *		rendering specificiation.
-	 * @param columnNumber The column number on which the error is located in the
-	 *		rendering specificiation.
-	 * @param renderNode The graph node which were given to the renderlet to
-	 *		be rendered.
-	 */
-	public RenderingspecificationException(String message, URI renderingSpecification,
-			int lineNumber,	int columnNumber, GraphNode renderNode, GraphNode context) {
-		super(message, renderingSpecification, renderNode, context);
-		this.lineNumber = lineNumber;
-		this.columnNumber = columnNumber;
-		this.node = renderNode;
-		this.renderingSpecification = renderingSpecification;
-	}
+    /**
+     * Creates a <code>RenderingspecificationException</code> with message,
+     * scriptUri, lineNumber, columnNumber and renderNode to be used in an
+     * <code>GraphNode</code> that can be used to render an exception page.
+     *
+     * @param message A message about the error that caused the exception
+     * @param renderingSpecification The uri of the rendering specification
+     *        which contains error.
+     * @param lineNumber The line number on which the error is located in the
+     *        rendering specificiation.
+     * @param columnNumber The column number on which the error is located in the
+     *        rendering specificiation.
+     * @param renderNode The graph node which were given to the renderlet to
+     *        be rendered.
+     */
+    public RenderingspecificationException(String message, URI renderingSpecification,
+            int lineNumber,    int columnNumber, GraphNode renderNode, GraphNode context) {
+        super(message, renderingSpecification, renderNode, context);
+        this.lineNumber = lineNumber;
+        this.columnNumber = columnNumber;
+        this.node = renderNode;
+        this.renderingSpecification = renderingSpecification;
+    }
 
-	/**
-	 * Creates a <code>RenderingspecificationException</code> with message,
-	 * scriptUri, and renderNode to be used in an <code>GraphNode</code> that
-	 * can be used to render an exception page.
-	 *
-	 * @param message A message about the error that caused the exception
-	 * @param renderingSpecification The uri of the rendering specification
-	 *		which contains error.
-	 * @param renderNode The graph node which were given to the renderlet to
-	 *		be rendered.
-	 */
-	public RenderingspecificationException(String message, URI renderingSpecification,
-			GraphNode renderNode, GraphNode context) {
-		super(message, renderingSpecification, renderNode, context);
-		this.lineNumber = -1;
-		this.columnNumber = -1;
-		this.node = renderNode;
-		this.renderingSpecification = renderingSpecification;
-	}
+    /**
+     * Creates a <code>RenderingspecificationException</code> with message,
+     * scriptUri, and renderNode to be used in an <code>GraphNode</code> that
+     * can be used to render an exception page.
+     *
+     * @param message A message about the error that caused the exception
+     * @param renderingSpecification The uri of the rendering specification
+     *        which contains error.
+     * @param renderNode The graph node which were given to the renderlet to
+     *        be rendered.
+     */
+    public RenderingspecificationException(String message, URI renderingSpecification,
+            GraphNode renderNode, GraphNode context) {
+        super(message, renderingSpecification, renderNode, context);
+        this.lineNumber = -1;
+        this.columnNumber = -1;
+        this.node = renderNode;
+        this.renderingSpecification = renderingSpecification;
+    }
 
-	/**
-	 * Returns the column number on which the error is located in the rendering
-	 * specificiation.
-	 *
-	 * @return the column number on which the error occurred.
-	 */
-	public int getColumnNumber() {
-		return columnNumber;
-	}
+    /**
+     * Returns the column number on which the error is located in the rendering
+     * specificiation.
+     *
+     * @return the column number on which the error occurred.
+     */
+    public int getColumnNumber() {
+        return columnNumber;
+    }
 
-	/**
-	 * Returns the line number on which the error is located in the rendering
-	 * specificiation.
-	 *
-	 * @return the line number on which the error occurred.
-	 */
-	public int getLineNumber() {
-		return lineNumber;
-	}
+    /**
+     * Returns the line number on which the error is located in the rendering
+     * specificiation.
+     *
+     * @return the line number on which the error occurred.
+     */
+    public int getLineNumber() {
+        return lineNumber;
+    }
 
-	/**
-	 * Returns a message composed of the information about the occurred error.
-	 * @return
-	 */
-	public String getComposedMessage() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Error occurred in " + renderingSpecification.toString() + " ");
-		if (getLineNumber() != -1 || getColumnNumber() != -1) {
-			sb.append("at line number " + getLineNumber() + " ");
-			sb.append("at column number " + getColumnNumber() + ": ");
-		}
-		sb.append(getMessage() + "\n");
-		return sb.toString();
-	}
+    /**
+     * Returns a message composed of the information about the occurred error.
+     * @return
+     */
+    public String getComposedMessage() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Error occurred in " + renderingSpecification.toString() + " ");
+        if (getLineNumber() != -1 || getColumnNumber() != -1) {
+            sb.append("at line number " + getLineNumber() + " ");
+            sb.append("at column number " + getColumnNumber() + ": ");
+        }
+        sb.append(getMessage() + "\n");
+        return sb.toString();
+    }
 
-	@Override
-	public GraphNode getExceptionGraphNode() {
-		GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
-		result.addProperty(RDF.type, TYPERENDERING.Exception);
-		LiteralFactory factory = LiteralFactory.getInstance();
-		result.addProperty(TYPERENDERING.errorSource, new UriRef(renderingSpecification.toString()));
-		if (lineNumber != -1) {
-			result.addProperty(TYPERENDERING.line, factory.createTypedLiteral(new Integer(lineNumber)));
-		}
-		if (columnNumber != -1) {
-			result.addProperty(TYPERENDERING.column, factory.createTypedLiteral(Integer.valueOf(columnNumber)));
-		}
-		result.addProperty(TYPERENDERING.message, new PlainLiteralImpl(getMessage()));
-		return result;
-	}
+    @Override
+    public GraphNode getExceptionGraphNode() {
+        GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
+        result.addProperty(RDF.type, TYPERENDERING.Exception);
+        LiteralFactory factory = LiteralFactory.getInstance();
+        result.addProperty(TYPERENDERING.errorSource, new UriRef(renderingSpecification.toString()));
+        if (lineNumber != -1) {
+            result.addProperty(TYPERENDERING.line, factory.createTypedLiteral(new Integer(lineNumber)));
+        }
+        if (columnNumber != -1) {
+            result.addProperty(TYPERENDERING.column, factory.createTypedLiteral(Integer.valueOf(columnNumber)));
+        }
+        result.addProperty(TYPERENDERING.message, new PlainLiteralImpl(getMessage()));
+        return result;
+    }
 
 }

@@ -26,23 +26,23 @@ package org.apache.clerezza.templating.seedsnipe.datastructure;
  * 
  * @see DataFieldResolver
  */
-public class InvalidElementException extends Exception {	
-	private static final long serialVersionUID = 3509023467187582727L;
-	private final String message;
+public class InvalidElementException extends Exception {    
+    private static final long serialVersionUID = 3509023467187582727L;
+    private final String message;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param fieldName  The name of the field that cannot be resolved.
-	 */
-	public InvalidElementException(final String fieldName) {
-		final StringBuffer message = new StringBuffer("Could not resolve "
-				+ fieldName);
-		this.message = message.toString();
-	}
+    /**
+     * Constructor.
+     * 
+     * @param fieldName  The name of the field that cannot be resolved.
+     */
+    public InvalidElementException(final String fieldName) {
+        final StringBuffer message = new StringBuffer("Could not resolve "
+                + fieldName);
+        this.message = message.toString();
+    }
 
-	@Override
-	public String getMessage() {
-		return message;
-	}
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }

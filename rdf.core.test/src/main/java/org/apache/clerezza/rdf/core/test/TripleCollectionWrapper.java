@@ -35,95 +35,95 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  */
 class TripleCollectionWrapper implements TripleCollection {
 
-	protected TripleCollection wrapped;
+    protected TripleCollection wrapped;
 
-	public TripleCollectionWrapper(TripleCollection tc) {
-		this.wrapped = tc;
-	}
+    public TripleCollectionWrapper(TripleCollection tc) {
+        this.wrapped = tc;
+    }
 
-	@Override
-	public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
-		return wrapped.filter(subject, predicate, object);
-	}
+    @Override
+    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
+        return wrapped.filter(subject, predicate, object);
+    }
 
-	@Override
-	public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
-		wrapped.addGraphListener(listener, filter, delay);
-	}
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
+        wrapped.addGraphListener(listener, filter, delay);
+    }
 
-	@Override
-	public void addGraphListener(GraphListener listener, FilterTriple filter) {
-		wrapped.addGraphListener(listener, filter);
-	}
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter) {
+        wrapped.addGraphListener(listener, filter);
+    }
 
-	@Override
-	public void removeGraphListener(GraphListener listener) {
-		wrapped.removeGraphListener(listener);
-	}
+    @Override
+    public void removeGraphListener(GraphListener listener) {
+        wrapped.removeGraphListener(listener);
+    }
 
-	@Override
-	public int size() {
-		return wrapped.size();
-	}
+    @Override
+    public int size() {
+        return wrapped.size();
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return wrapped.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return wrapped.isEmpty();
+    }
 
-	@Override
-	public boolean contains(Object o) {
-		return wrapped.contains(o);
-	}
+    @Override
+    public boolean contains(Object o) {
+        return wrapped.contains(o);
+    }
 
-	@Override
-	public Iterator<Triple> iterator() {
-		return wrapped.iterator();
-	}
+    @Override
+    public Iterator<Triple> iterator() {
+        return wrapped.iterator();
+    }
 
-	@Override
-	public Object[] toArray() {
-		return wrapped.toArray();
-	}
+    @Override
+    public Object[] toArray() {
+        return wrapped.toArray();
+    }
 
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return wrapped.toArray(a);
-	}
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return wrapped.toArray(a);
+    }
 
-	@Override
-	public boolean add(Triple e) {
-		return wrapped.add(e);
-	}
+    @Override
+    public boolean add(Triple e) {
+        return wrapped.add(e);
+    }
 
-	@Override
-	public boolean remove(Object o) {
-		return wrapped.remove(o);
-	}
+    @Override
+    public boolean remove(Object o) {
+        return wrapped.remove(o);
+    }
 
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		return wrapped.containsAll(c);
-	}
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return wrapped.containsAll(c);
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends Triple> c) {
-		return wrapped.addAll(c);
-	}
+    @Override
+    public boolean addAll(Collection<? extends Triple> c) {
+        return wrapped.addAll(c);
+    }
 
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		return wrapped.removeAll(c);
-	}
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return wrapped.removeAll(c);
+    }
 
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		return wrapped.retainAll(c);
-	}
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return wrapped.retainAll(c);
+    }
 
-	@Override
-	public void clear() {
-		wrapped.clear();
-	}
+    @Override
+    public void clear() {
+        wrapped.clear();
+    }
 
 }

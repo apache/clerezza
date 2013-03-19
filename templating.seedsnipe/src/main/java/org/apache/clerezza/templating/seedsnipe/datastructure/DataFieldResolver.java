@@ -29,48 +29,48 @@ import org.apache.clerezza.templating.seedsnipe.simpleparser.DefaultParser;
  */
 public abstract class DataFieldResolver {
 
-	/**
-	 * This method resolves the specified <code>fieldName</code> to its object value,
-	 * if any level of the <code>fieldName</code> is an array, 
-	 * the corresponding entry in <code>arrayPos</code> is used for resolution. 
-	 * 
-	 * @param fieldName  name of the data field to resolve.
-	 * @param arrayPos  An array containing array indices (the loop variables) 
-	 * 					for array fields.
-	 * @return  The java object the field maps to.
-	 * 	
-	 * @throws FieldDoesNotHaveDimensionException  
-	 * 				If <code>arrayPos</code> is longer than the field has dimensions.
-	 * @throws FieldIndexOutOfBoundsException
-	 * 				If a value of <code>arrayPos</code> is larger than the 
-	 * 				number of elements in field.
-	 * @throws InvalidElementException
-	 * 				If field-name is invalid.
-	 */
-	public abstract Object resolveAsObject(String fieldName, int[] arrayPos)
-			throws FieldDoesNotHaveDimensionException,
-			FieldIndexOutOfBoundsException, InvalidElementException,
-			IOException;
+    /**
+     * This method resolves the specified <code>fieldName</code> to its object value,
+     * if any level of the <code>fieldName</code> is an array, 
+     * the corresponding entry in <code>arrayPos</code> is used for resolution. 
+     * 
+     * @param fieldName  name of the data field to resolve.
+     * @param arrayPos  An array containing array indices (the loop variables) 
+     *                     for array fields.
+     * @return  The java object the field maps to.
+     *     
+     * @throws FieldDoesNotHaveDimensionException  
+     *                 If <code>arrayPos</code> is longer than the field has dimensions.
+     * @throws FieldIndexOutOfBoundsException
+     *                 If a value of <code>arrayPos</code> is larger than the 
+     *                 number of elements in field.
+     * @throws InvalidElementException
+     *                 If field-name is invalid.
+     */
+    public abstract Object resolveAsObject(String fieldName, int[] arrayPos)
+            throws FieldDoesNotHaveDimensionException,
+            FieldIndexOutOfBoundsException, InvalidElementException,
+            IOException;
 
-	/**
-	 * invokes resolveAsObject and transforms its result to a String
-	 * 
-	 * @param fieldName  name of the data field to resolve.
-	 * @param arrayPos  An array containing array indices (the loop variables) 
-	 * 					for array fields.
-	 * @return  The string representation (obtained by invoking .toString()) of the resolved object.
-	 * @throws FieldDoesNotHaveDimensionException
-	 * 				If <code>arrayPos</code> is longer than the field has dimensions.
-	 * @throws FieldIndexOutOfBoundsException  
-	 * 				If a value of <code>arrayPos</code> is larger than the 
-	 * 				number of elements in field.
-	 * @throws InvalidElementException  
-	 * 				If field-name is invalid.
-	 */
-	public String resolve(String fieldName, int[] arrayPos)
-			throws FieldDoesNotHaveDimensionException,
-			FieldIndexOutOfBoundsException, InvalidElementException,
-			IOException {
-		return resolveAsObject(fieldName, arrayPos).toString();
-	}
+    /**
+     * invokes resolveAsObject and transforms its result to a String
+     * 
+     * @param fieldName  name of the data field to resolve.
+     * @param arrayPos  An array containing array indices (the loop variables) 
+     *                     for array fields.
+     * @return  The string representation (obtained by invoking .toString()) of the resolved object.
+     * @throws FieldDoesNotHaveDimensionException
+     *                 If <code>arrayPos</code> is longer than the field has dimensions.
+     * @throws FieldIndexOutOfBoundsException  
+     *                 If a value of <code>arrayPos</code> is larger than the 
+     *                 number of elements in field.
+     * @throws InvalidElementException  
+     *                 If field-name is invalid.
+     */
+    public String resolve(String fieldName, int[] arrayPos)
+            throws FieldDoesNotHaveDimensionException,
+            FieldIndexOutOfBoundsException, InvalidElementException,
+            IOException {
+        return resolveAsObject(fieldName, arrayPos).toString();
+    }
 }

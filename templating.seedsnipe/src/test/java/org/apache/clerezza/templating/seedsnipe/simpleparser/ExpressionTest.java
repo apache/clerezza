@@ -31,77 +31,77 @@ import org.apache.clerezza.templating.seedsnipe.datastructure.InvalidElementExce
  */
 public class ExpressionTest {
 
-	private DataFieldResolver dataFieldResolver = new DataFieldResolver() {
+    private DataFieldResolver dataFieldResolver = new DataFieldResolver() {
 
-		@Override
-		public Object resolveAsObject(String fieldName, int[] arrayPos) throws FieldDoesNotHaveDimensionException, FieldIndexOutOfBoundsException, InvalidElementException {
-			if ("testfield".equals(fieldName)) {
-				return "testvalue";
-			}
-			if ("aliasfield".equals(fieldName)) {
-				return "testvalue";
-			}
-			if ("yes()".equals(fieldName)) {
-				return true;
-			}
-			if ("object()".equals(fieldName)) {
-				return new Object();
-			}
-			if ("complexfield".equals(fieldName)) {
-				return "foo=\"bar\"";
-			}
-			if ("two".equals(fieldName)) {
-				return 2;
-			}
-			throw new UnsupportedOperationException("Not supported yet.");
-		}
-	};
+        @Override
+        public Object resolveAsObject(String fieldName, int[] arrayPos) throws FieldDoesNotHaveDimensionException, FieldIndexOutOfBoundsException, InvalidElementException {
+            if ("testfield".equals(fieldName)) {
+                return "testvalue";
+            }
+            if ("aliasfield".equals(fieldName)) {
+                return "testvalue";
+            }
+            if ("yes()".equals(fieldName)) {
+                return true;
+            }
+            if ("object()".equals(fieldName)) {
+                return new Object();
+            }
+            if ("complexfield".equals(fieldName)) {
+                return "foo=\"bar\"";
+            }
+            if ("two".equals(fieldName)) {
+                return 2;
+            }
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    };
 
-	@Test
-	public void stringEquality() throws Exception {
-		Expression expression = new Expression("\"hello\" = \"hello\"");
-		Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
-	}
+    @Test
+    public void stringEquality() throws Exception {
+        Expression expression = new Expression("\"hello\" = \"hello\"");
+        Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
+    }
 
-	@Test
-	public void stringInequality() throws Exception {
-		Expression expression = new Expression("\"hullo\" = \"hello\"");
-		Assert.assertFalse(expression.evaluate(dataFieldResolver, new int[0]));
-	}
+    @Test
+    public void stringInequality() throws Exception {
+        Expression expression = new Expression("\"hullo\" = \"hello\"");
+        Assert.assertFalse(expression.evaluate(dataFieldResolver, new int[0]));
+    }
 
-	@Test
-	public void stringFieldEquality() throws Exception {
-		Expression expression = new Expression("testfield = \"testvalue\"");
-		Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
-	}
+    @Test
+    public void stringFieldEquality() throws Exception {
+        Expression expression = new Expression("testfield = \"testvalue\"");
+        Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
+    }
 
-	@Test
-	public void complexStringFieldEquality() throws Exception {
-		Expression expression = new Expression("complexfield = \"foo=\\\"bar\\\"\"");
-		Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
-	}
+    @Test
+    public void complexStringFieldEquality() throws Exception {
+        Expression expression = new Expression("complexfield = \"foo=\\\"bar\\\"\"");
+        Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
+    }
 
-	@Test
-	public void fieldEquality() throws Exception {
-		Expression expression = new Expression("testfield = aliasfield");
-		Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
-	}
+    @Test
+    public void fieldEquality() throws Exception {
+        Expression expression = new Expression("testfield = aliasfield");
+        Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
+    }
 
-	@Test
-	public void booleanField() throws Exception {
-		Expression expression = new Expression("yes()");
-		Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
-	}
+    @Test
+    public void booleanField() throws Exception {
+        Expression expression = new Expression("yes()");
+        Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
+    }
 
-	@Test
-	public void fieldExistence() throws Exception {
-		Expression expression = new Expression("object()");
-		Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
-	}
+    @Test
+    public void fieldExistence() throws Exception {
+        Expression expression = new Expression("object()");
+        Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
+    }
 
-	@Test
-	public void compareStringAndNumber() throws Exception {
-		Expression expression = new Expression("two = \"2\"");
-		Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
-	}
+    @Test
+    public void compareStringAndNumber() throws Exception {
+        Expression expression = new Expression("two = \"2\"");
+        Assert.assertTrue(expression.evaluate(dataFieldResolver, new int[0]));
+    }
 }

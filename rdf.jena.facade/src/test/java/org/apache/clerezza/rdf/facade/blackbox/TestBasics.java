@@ -47,77 +47,77 @@ import org.wymiwyg.commons.util.Util;
  * @author reto
  */
 public class TestBasics {
-	
-	@Test
-	public void serializeGraph() {
-		final String uriString = "http://example.org/foo#bar";
-		UriRef uri = new UriRef(uriString);
-		MGraph mGraph = new SimpleMGraph();
-		mGraph.add(new TripleImpl(uri, uri, new PlainLiteralImpl("bla bla")));
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
-		Model model = ModelFactory.createModelForGraph(graph);
-		StringWriter writer = new StringWriter();
-		model.write(writer);
-		Assert.assertTrue(writer.toString().contains("about=\""+uriString));
-	}
-	
-	@Test
-	public void graphSize() {
-		UriRef uri = new UriRef("http://example.org/foo#bar");
-		MGraph mGraph = new SimpleMGraph();
-		mGraph.add(new TripleImpl(uri, uri, new PlainLiteralImpl("bla bla")));
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
-		Assert.assertEquals(1, graph.size());
-	}
+    
+    @Test
+    public void serializeGraph() {
+        final String uriString = "http://example.org/foo#bar";
+        UriRef uri = new UriRef(uriString);
+        MGraph mGraph = new SimpleMGraph();
+        mGraph.add(new TripleImpl(uri, uri, new PlainLiteralImpl("bla bla")));
+        com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
+        Model model = ModelFactory.createModelForGraph(graph);
+        StringWriter writer = new StringWriter();
+        model.write(writer);
+        Assert.assertTrue(writer.toString().contains("about=\""+uriString));
+    }
+    
+    @Test
+    public void graphSize() {
+        UriRef uri = new UriRef("http://example.org/foo#bar");
+        MGraph mGraph = new SimpleMGraph();
+        mGraph.add(new TripleImpl(uri, uri, new PlainLiteralImpl("bla bla")));
+        com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
+        Assert.assertEquals(1, graph.size());
+    }
 
-	@Test
-	public void modifyingJenaGraph() {
-		MGraph mGraph = new SimpleMGraph();
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
-		Model model = ModelFactory.createModelForGraph(graph);
-		model.add(RDFS.Class, RDF.type, RDFS.Class);
-		Assert.assertEquals(1, mGraph.size());
-	}
-	
-	@Test
-	public void typedLiterals() {
-		MGraph mGraph = new SimpleMGraph();
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
-		Model model = ModelFactory.createModelForGraph(graph);
-		Literal typedLiteral = model.createTypedLiteral("<elem>foo</elem>", XMLLiteralType.theXMLLiteralType);
-		model.add(RDFS.Class, RDFS.label, typedLiteral);
-		Assert.assertEquals(1, mGraph.size());
-		StmtIterator iter = model.listStatements(RDFS.Class, RDFS.label, (Resource)null);
-		Assert.assertTrue(iter.hasNext());
-		RDFNode gotObject = iter.nextStatement().getObject();
-		Assert.assertEquals(typedLiteral, gotObject);
-	}
-	
-	@Test
-	public void reifications() {
-		MGraph mGraph = new SimpleMGraph();
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
-		//Model memModel = ModelFactory.createDefaultModel();
-		Model model = ModelFactory.createModelForGraph(graph);
-		model.add(RDFS.Resource, RDF.type, RDFS.Resource);
-		Resource bnode = model.createResource();
-		model.add(bnode, RDF.type, RDF.Statement);
-		model.add(bnode, RDF.subject, RDFS.Resource);
-		model.add(bnode, RDF.predicate, RDF.type);
-		model.add(bnode, RDF.object, RDFS.Resource);
-		model.add(bnode, RDFS.comment, "we knew that before");
-		StmtIterator stmts = model.listStatements(RDFS.Resource, null, (RDFNode)null);
-		Statement returnedStmt = stmts.nextStatement();
-		RSIterator rsIterator = returnedStmt.listReifiedStatements();
-		Assert.assertTrue("got back reified statement", rsIterator.hasNext());
-		//recreating jena-graph
-		graph = new JenaGraph(mGraph);
-		model = ModelFactory.createModelForGraph(graph);
-		stmts = model.listStatements(RDFS.Resource, null, (RDFNode)null);
-		returnedStmt = stmts.nextStatement();
-		rsIterator = returnedStmt.listReifiedStatements();
-		Assert.assertTrue("got back reified statement on recreated graph",
-				rsIterator.hasNext());
-	}
+    @Test
+    public void modifyingJenaGraph() {
+        MGraph mGraph = new SimpleMGraph();
+        com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
+        Model model = ModelFactory.createModelForGraph(graph);
+        model.add(RDFS.Class, RDF.type, RDFS.Class);
+        Assert.assertEquals(1, mGraph.size());
+    }
+    
+    @Test
+    public void typedLiterals() {
+        MGraph mGraph = new SimpleMGraph();
+        com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
+        Model model = ModelFactory.createModelForGraph(graph);
+        Literal typedLiteral = model.createTypedLiteral("<elem>foo</elem>", XMLLiteralType.theXMLLiteralType);
+        model.add(RDFS.Class, RDFS.label, typedLiteral);
+        Assert.assertEquals(1, mGraph.size());
+        StmtIterator iter = model.listStatements(RDFS.Class, RDFS.label, (Resource)null);
+        Assert.assertTrue(iter.hasNext());
+        RDFNode gotObject = iter.nextStatement().getObject();
+        Assert.assertEquals(typedLiteral, gotObject);
+    }
+    
+    @Test
+    public void reifications() {
+        MGraph mGraph = new SimpleMGraph();
+        com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
+        //Model memModel = ModelFactory.createDefaultModel();
+        Model model = ModelFactory.createModelForGraph(graph);
+        model.add(RDFS.Resource, RDF.type, RDFS.Resource);
+        Resource bnode = model.createResource();
+        model.add(bnode, RDF.type, RDF.Statement);
+        model.add(bnode, RDF.subject, RDFS.Resource);
+        model.add(bnode, RDF.predicate, RDF.type);
+        model.add(bnode, RDF.object, RDFS.Resource);
+        model.add(bnode, RDFS.comment, "we knew that before");
+        StmtIterator stmts = model.listStatements(RDFS.Resource, null, (RDFNode)null);
+        Statement returnedStmt = stmts.nextStatement();
+        RSIterator rsIterator = returnedStmt.listReifiedStatements();
+        Assert.assertTrue("got back reified statement", rsIterator.hasNext());
+        //recreating jena-graph
+        graph = new JenaGraph(mGraph);
+        model = ModelFactory.createModelForGraph(graph);
+        stmts = model.listStatements(RDFS.Resource, null, (RDFNode)null);
+        returnedStmt = stmts.nextStatement();
+        rsIterator = returnedStmt.listReifiedStatements();
+        Assert.assertTrue("got back reified statement on recreated graph",
+                rsIterator.hasNext());
+    }
 
 }

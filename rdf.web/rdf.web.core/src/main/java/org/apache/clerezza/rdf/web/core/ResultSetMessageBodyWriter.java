@@ -70,144 +70,144 @@ import org.w3c.dom.Element;
 @Provider
 public class ResultSetMessageBodyWriter implements MessageBodyWriter<ResultSet> {
 
-	@Reference
-	TcManager tcManager;
+    @Reference
+    TcManager tcManager;
 
 
-	private Providers providers;
+    private Providers providers;
 
-	final Logger logger = LoggerFactory.getLogger(ResultSetMessageBodyWriter.class);
+    final Logger logger = LoggerFactory.getLogger(ResultSetMessageBodyWriter.class);
 
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-			MediaType mediaType) {
-		return ResultSet.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
+            MediaType mediaType) {
+        return ResultSet.class.isAssignableFrom(type);
+    }
 
-	@Override
-	public long getSize(ResultSet t, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return -1;
-	}
+    @Override
+    public long getSize(ResultSet t, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return -1;
+    }
 
-	@Override
-	public void writeTo(ResultSet resultSet, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType, MultivaluedMap<String,
-			Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+    @Override
+    public void writeTo(ResultSet resultSet, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType, MultivaluedMap<String,
+            Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
 
-		Source source = toXmlSource(resultSet);
-		MessageBodyWriter<Source> sourceMessageBodyWriter = 
-				providers.getMessageBodyWriter(Source.class, null, null, mediaType);
-		sourceMessageBodyWriter.writeTo(source, Source.class, null, null, mediaType,
-				httpHeaders, entityStream);
-	}
+        Source source = toXmlSource(resultSet);
+        MessageBodyWriter<Source> sourceMessageBodyWriter = 
+                providers.getMessageBodyWriter(Source.class, null, null, mediaType);
+        sourceMessageBodyWriter.writeTo(source, Source.class, null, null, mediaType,
+                httpHeaders, entityStream);
+    }
 
-	@Context
-	public void setProviders(Providers providers) {
-		this.providers = providers;
-	}
+    @Context
+    public void setProviders(Providers providers) {
+        this.providers = providers;
+    }
 
-	/**
-	 * Helper: transforms a {@link ResultSet} or a {@link Boolean} to a
-	 * {@link DOMSource}
-	 *
-	 * @param queryResult
-	 * @param query
-	 * @param applyStyle
-	 */
-	private Source toXmlSource(ResultSet queryResult) {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		try {
-			Document doc = dbf.newDocumentBuilder().newDocument();
-			// adding root element
-			Element root = doc.createElement("sparql");
-			root.setAttribute("xmlns", "http://www.w3.org/2005/sparql-results#");
-			doc.appendChild(root);
-			Element head = doc.createElement("head");
-			root.appendChild(head);
-			Set<Object> variables = new HashSet<Object>();
-			Element results = doc.createElement("results");
-			SolutionMapping solutionMapping = null;
-			while (queryResult.hasNext()) {
-				solutionMapping = queryResult.next();				
-				createResultElement(solutionMapping, results, doc);				
-			}
-			createVariable(solutionMapping, head, doc);
-			root.appendChild(results);
+    /**
+     * Helper: transforms a {@link ResultSet} or a {@link Boolean} to a
+     * {@link DOMSource}
+     *
+     * @param queryResult
+     * @param query
+     * @param applyStyle
+     */
+    private Source toXmlSource(ResultSet queryResult) {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        try {
+            Document doc = dbf.newDocumentBuilder().newDocument();
+            // adding root element
+            Element root = doc.createElement("sparql");
+            root.setAttribute("xmlns", "http://www.w3.org/2005/sparql-results#");
+            doc.appendChild(root);
+            Element head = doc.createElement("head");
+            root.appendChild(head);
+            Set<Object> variables = new HashSet<Object>();
+            Element results = doc.createElement("results");
+            SolutionMapping solutionMapping = null;
+            while (queryResult.hasNext()) {
+                solutionMapping = queryResult.next();                
+                createResultElement(solutionMapping, results, doc);                
+            }
+            createVariable(solutionMapping, head, doc);
+            root.appendChild(results);
 
-			DOMSource source = new DOMSource(doc);
-			return source;
+            DOMSource source = new DOMSource(doc);
+            return source;
 
-		} catch (ParserConfigurationException e) {
-			throw createWebApplicationException(e);
-		}
-	}
+        } catch (ParserConfigurationException e) {
+            throw createWebApplicationException(e);
+        }
+    }
 
-	/**
-	 * Creates a WebApplicationexception and prints a logger entry
-	 */
-	private WebApplicationException createWebApplicationException(Exception e) {
-		return new WebApplicationException(Response.status(Status.BAD_REQUEST)
-				.entity(e.getMessage().replace("<", "&lt;").replace("\n",
-						"<br/>")).build());
-	}
+    /**
+     * Creates a WebApplicationexception and prints a logger entry
+     */
+    private WebApplicationException createWebApplicationException(Exception e) {
+        return new WebApplicationException(Response.status(Status.BAD_REQUEST)
+                .entity(e.getMessage().replace("<", "&lt;").replace("\n",
+                        "<br/>")).build());
+    }
 
 
-	/**
-	 * Helper: creates value element from {@link Resource} depending on its
-	 * class
-	 *
-	 */
-	private Element createValueElement(Resource resource, Document doc) {
-		Element value = null;
-		if (resource instanceof UriRef) {
-			value = doc.createElement("uri");
-			value.appendChild(doc.createTextNode(((UriRef) resource)
-					.getUnicodeString()));
-		} else if (resource instanceof TypedLiteral) {
-			value = doc.createElement("literal");
-			value.appendChild(doc.createTextNode(((TypedLiteral) resource)
-					.getLexicalForm()));
-			value.setAttribute("datatype", (((TypedLiteral) resource)
-					.getDataType().getUnicodeString()));
-		} else if (resource instanceof PlainLiteral) {
-			value = doc.createElement("literal");
-			value.appendChild(doc.createTextNode(((PlainLiteral) resource)
-					.getLexicalForm()));
-			Language lang = ((PlainLiteral) resource).getLanguage();
-			if (lang != null) {
-				value.setAttribute("xml:lang", (lang.toString()));
-			}
-		} else {
-			value = doc.createElement("bnode");
-			value.appendChild(doc.createTextNode(((BNode) resource).toString()));
-		}
-		return value;
-	}
+    /**
+     * Helper: creates value element from {@link Resource} depending on its
+     * class
+     *
+     */
+    private Element createValueElement(Resource resource, Document doc) {
+        Element value = null;
+        if (resource instanceof UriRef) {
+            value = doc.createElement("uri");
+            value.appendChild(doc.createTextNode(((UriRef) resource)
+                    .getUnicodeString()));
+        } else if (resource instanceof TypedLiteral) {
+            value = doc.createElement("literal");
+            value.appendChild(doc.createTextNode(((TypedLiteral) resource)
+                    .getLexicalForm()));
+            value.setAttribute("datatype", (((TypedLiteral) resource)
+                    .getDataType().getUnicodeString()));
+        } else if (resource instanceof PlainLiteral) {
+            value = doc.createElement("literal");
+            value.appendChild(doc.createTextNode(((PlainLiteral) resource)
+                    .getLexicalForm()));
+            Language lang = ((PlainLiteral) resource).getLanguage();
+            if (lang != null) {
+                value.setAttribute("xml:lang", (lang.toString()));
+            }
+        } else {
+            value = doc.createElement("bnode");
+            value.appendChild(doc.createTextNode(((BNode) resource).toString()));
+        }
+        return value;
+    }
 
-	/**
-	 * Helper: creates results element from ResultSet
-	 *
-	 */
-	private void createResultElement(SolutionMapping solutionMap, Element results, Document doc) {
-		Set<Variable> keys = solutionMap.keySet();
-		Element result = doc.createElement("result");
-		results.appendChild(result);
-		for (Variable key : keys) {
-			Element bindingElement = doc.createElement("binding");
-			bindingElement.setAttribute("name", key.getName());
-			bindingElement.appendChild(createValueElement(
-					(Resource) solutionMap.get(key), doc));
-			result.appendChild(bindingElement);
-		}
-	}
+    /**
+     * Helper: creates results element from ResultSet
+     *
+     */
+    private void createResultElement(SolutionMapping solutionMap, Element results, Document doc) {
+        Set<Variable> keys = solutionMap.keySet();
+        Element result = doc.createElement("result");
+        results.appendChild(result);
+        for (Variable key : keys) {
+            Element bindingElement = doc.createElement("binding");
+            bindingElement.setAttribute("name", key.getName());
+            bindingElement.appendChild(createValueElement(
+                    (Resource) solutionMap.get(key), doc));
+            result.appendChild(bindingElement);
+        }
+    }
 
-	private void createVariable(SolutionMapping solutionMap, Element head, Document doc) {
-		Set<Variable> keys = solutionMap.keySet();
-		for (Variable key : keys) {
-			Element varElement = doc.createElement("variable");
-			varElement.setAttribute("name", key.getName());
-			head.appendChild(varElement);
-		}
-	}
+    private void createVariable(SolutionMapping solutionMap, Element head, Document doc) {
+        Set<Variable> keys = solutionMap.keySet();
+        for (Variable key : keys) {
+            Element varElement = doc.createElement("variable");
+            varElement.setAttribute("name", key.getName());
+            head.appendChild(varElement);
+        }
+    }
 }

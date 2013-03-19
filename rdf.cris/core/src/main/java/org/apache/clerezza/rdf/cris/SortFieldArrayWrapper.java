@@ -28,31 +28,31 @@ import org.apache.lucene.search.SortField;
  * @author daniel
  */
 final class SortFieldArrayWrapper {
-	private final SortField[] wrappedArray;
+    private final SortField[] wrappedArray;
 
-	/**
-	 * Wrap the provided array.
-	 * 
-	 * @param arrayToWrap the array to wrap.
-	 */
-	public SortFieldArrayWrapper(SortField[] arrayToWrap) {
-		this.wrappedArray = arrayToWrap;
-	}
+    /**
+     * Wrap the provided array.
+     * 
+     * @param arrayToWrap the array to wrap.
+     */
+    public SortFieldArrayWrapper(SortField[] arrayToWrap) {
+        this.wrappedArray = arrayToWrap;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == null) {
-			return false;
-		}
-		if(!(obj instanceof SortFieldArrayWrapper)) {
-			return false;
-		}
-		
-		return Arrays.equals(wrappedArray, ((SortFieldArrayWrapper) obj).wrappedArray);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) {
+            return false;
+        }
+        if(!(obj instanceof SortFieldArrayWrapper)) {
+            return false;
+        }
+        
+        return Arrays.equals(wrappedArray, ((SortFieldArrayWrapper) obj).wrappedArray);
+    }
 
-	@Override
-	public int hashCode() {
-		return Arrays.hashCode(wrappedArray);
-	}
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(wrappedArray);
+    }
 }

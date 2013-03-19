@@ -32,63 +32,63 @@ import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
  */
 public abstract class StringQuerySerializer {
 
-	/**
-	 * Serializes a {@link Query} object to a {@link String}.
-	 *
-	 * @param query
-	 *		the Query object to be serialized
-	 * @return
-	 *		a String representation of the specified Query object.
-	 */
-	public String serialize(Query query) {
-		if (query instanceof SelectQuery) {
-			return serialize((SelectQuery) query);
-		} else if (query instanceof ConstructQuery) {
-			return serialize((ConstructQuery) query);
-		} else if (query instanceof DescribeQuery) {
-			return serialize((DescribeQuery) query);
-		} else {
-			return serialize((AskQuery) query);
-		}
-	}
+    /**
+     * Serializes a {@link Query} object to a {@link String}.
+     *
+     * @param query
+     *        the Query object to be serialized
+     * @return
+     *        a String representation of the specified Query object.
+     */
+    public String serialize(Query query) {
+        if (query instanceof SelectQuery) {
+            return serialize((SelectQuery) query);
+        } else if (query instanceof ConstructQuery) {
+            return serialize((ConstructQuery) query);
+        } else if (query instanceof DescribeQuery) {
+            return serialize((DescribeQuery) query);
+        } else {
+            return serialize((AskQuery) query);
+        }
+    }
 
-	/**
-	 * Serializes a {@link SelectQuery} object to a {@link String}.
-	 *
-	 * @param selectQuery
-	 *		the SelectQuery object to be serialized
-	 * @return
-	 *		a String representation of the specified SelectQuery object.
-	 */
-	public abstract String serialize(SelectQuery selectQuery);
+    /**
+     * Serializes a {@link SelectQuery} object to a {@link String}.
+     *
+     * @param selectQuery
+     *        the SelectQuery object to be serialized
+     * @return
+     *        a String representation of the specified SelectQuery object.
+     */
+    public abstract String serialize(SelectQuery selectQuery);
 
-	/**
-	 * Serializes a {@link ConstructQuery} object to a {@link String}.
-	 *
-	 * @param constructQuery
-	 *		the ConstructQuery object to be serialized
-	 * @return
-	 *		a String representation of the specified ConstructQuery object.
-	 */
-	public abstract String serialize(ConstructQuery constructQuery);
+    /**
+     * Serializes a {@link ConstructQuery} object to a {@link String}.
+     *
+     * @param constructQuery
+     *        the ConstructQuery object to be serialized
+     * @return
+     *        a String representation of the specified ConstructQuery object.
+     */
+    public abstract String serialize(ConstructQuery constructQuery);
 
-	/**
-	 * Serializes a {@link DescribeQuery} object to a {@link String}.
-	 *
-	 * @param describeQuery
-	 *		the DescribeQuery object to be serialized
-	 * @return
-	 *		a String representation of the specified DescribeQuery object.
-	 */
-	public abstract String serialize(DescribeQuery describeQuery);
+    /**
+     * Serializes a {@link DescribeQuery} object to a {@link String}.
+     *
+     * @param describeQuery
+     *        the DescribeQuery object to be serialized
+     * @return
+     *        a String representation of the specified DescribeQuery object.
+     */
+    public abstract String serialize(DescribeQuery describeQuery);
 
-	/**
-	 * Serializes an {@link AskQuery} object to a {@link String}.
-	 *
-	 * @param askQuery
-	 *		the AskQuery object to be serialized
-	 * @return
-	 *		a String representation of the specified AskQuery object.
-	 */
-	public abstract String serialize(AskQuery askQuery);
+    /**
+     * Serializes an {@link AskQuery} object to a {@link String}.
+     *
+     * @param askQuery
+     *        the AskQuery object to be serialized
+     * @return
+     *        a String representation of the specified AskQuery object.
+     */
+    public abstract String serialize(AskQuery askQuery);
 }

@@ -28,16 +28,16 @@ import org.apache.clerezza.rdf.core.test.TcProviderTest;
  */
 public class GenericTcProviderTest extends TcProviderTest {
 
-	SimpleTcProvider provider = new SimpleTcProvider();
+    SimpleTcProvider provider = new SimpleTcProvider();
 
-	@After
-	public void cleanUp() {
-		provider = new SimpleTcProvider();
-	}
+    @After
+    public void cleanUp() {
+        provider = new SimpleTcProvider();
+    }
 
-	@Override
-	protected TcProvider getInstance() {
-		return provider;
-	}
+    @Override
+    protected TcProvider getInstance() {
+        return provider;
+    }
 
 }

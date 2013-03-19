@@ -36,48 +36,48 @@ import org.apache.clerezza.rdf.core.impl.SimpleLiteralFactory;
  */
 public abstract class LiteralFactory {
 
-	private static LiteralFactory instance = new SimpleLiteralFactory();
+    private static LiteralFactory instance = new SimpleLiteralFactory();
 
-	/**
-	 * Get a <code>LiteralFactory</code>. If this has not been set using
-	 * setInstance it returns an instance of
-	 * {@link org.apache.clerezza.model.impl.SimpleLiteralFactory}.
-	 *
-	 * @return a concrete <code>LiteralFactory</code>
-	 */
-	public static LiteralFactory getInstance() {
-		return instance;
-	}
+    /**
+     * Get a <code>LiteralFactory</code>. If this has not been set using
+     * setInstance it returns an instance of
+     * {@link org.apache.clerezza.model.impl.SimpleLiteralFactory}.
+     *
+     * @return a concrete <code>LiteralFactory</code>
+     */
+    public static LiteralFactory getInstance() {
+        return instance;
+    }
 
-	/**
-	 * Set the instance returned by <code>getInstance</code>.
-	 *
-	 * @param instance the new default <code>LiteralFactory</code>
-	 */
-	public static void setInstance(LiteralFactory instance) {
-		LiteralFactory.instance = instance;
-	}
+    /**
+     * Set the instance returned by <code>getInstance</code>.
+     *
+     * @param instance the new default <code>LiteralFactory</code>
+     */
+    public static void setInstance(LiteralFactory instance) {
+        LiteralFactory.instance = instance;
+    }
 
-	/**
-	 * Create a typed literal for the specified object
-	 *
-	 * @param value the value of the literal to be created
-	 * @return a TypedLiteral representing the value
-	 * @throws NoConvertorException thrown if <code>value</code> is of an invalid type
-	 */
-	public abstract TypedLiteral createTypedLiteral(Object value)
-			throws NoConvertorException;
+    /**
+     * Create a typed literal for the specified object
+     *
+     * @param value the value of the literal to be created
+     * @return a TypedLiteral representing the value
+     * @throws NoConvertorException thrown if <code>value</code> is of an invalid type
+     */
+    public abstract TypedLiteral createTypedLiteral(Object value)
+            throws NoConvertorException;
 
-	/**
-	 * Converts a literal to an instance of the specified class
-	 *
-	 * @param <T>
-	 * @param type the <code>Class</code> of the returned object
-	 * @param literal the literal to be converted
-	 * @return a java object representing the value of the literal
-	 * @throws NoConvertorException thrown if <code>type</code> is unsupported
-	 * @throws InvalidLiteralTypeException if the literal type doesn't match the requested java type
-	 */
-	public abstract <T> T createObject(Class<T> type, TypedLiteral literal)
-			throws NoConvertorException, InvalidLiteralTypeException;
+    /**
+     * Converts a literal to an instance of the specified class
+     *
+     * @param <T>
+     * @param type the <code>Class</code> of the returned object
+     * @param literal the literal to be converted
+     * @return a java object representing the value of the literal
+     * @throws NoConvertorException thrown if <code>type</code> is unsupported
+     * @throws InvalidLiteralTypeException if the literal type doesn't match the requested java type
+     */
+    public abstract <T> T createObject(Class<T> type, TypedLiteral literal)
+            throws NoConvertorException, InvalidLiteralTypeException;
 }

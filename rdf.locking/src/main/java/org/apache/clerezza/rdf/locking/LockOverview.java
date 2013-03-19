@@ -46,123 +46,123 @@ import org.apache.felix.scr.annotations.Services;
  */
 @Component()
 @Services({
-	@Service(value=Object.class),
-	@Service(value=GlobalMenuItemsProvider.class)
+    @Service(value=Object.class),
+    @Service(value=GlobalMenuItemsProvider.class)
 })
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("admin/graphs/locks")
 public class LockOverview implements GlobalMenuItemsProvider {
 
-	@Reference
-	TcManager tcManager;
+    @Reference
+    TcManager tcManager;
 
-	@GET
-	public String getOverview() {
-		Set<Thread> threadSet = getAllThreads();
-		Iterator<UriRef> mGraphUris = tcManager.listMGraphs().iterator();
+    @GET
+    public String getOverview() {
+        Set<Thread> threadSet = getAllThreads();
+        Iterator<UriRef> mGraphUris = tcManager.listMGraphs().iterator();
 
-		StringWriter stringWriter = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(stringWriter);
-		while (mGraphUris.hasNext()) {
-			UriRef uriRef = mGraphUris.next();
-			ReentrantReadWriteLock lock = (ReentrantReadWriteLock) tcManager.getMGraph(uriRef).getLock();
-			int readLockCount = lock.getReadLockCount();
-			printWriter.append(uriRef.getUnicodeString());
-			printWriter.append("\n");
-			printWriter.append("Read-Lock count:    " + readLockCount);
-			printWriter.append("\n");
-			printWriter.append("Write-Locked:       " + (lock.isWriteLocked() ? "YES" : "NO"));
-			printWriter.append("\n");
-			printWriter.append("Has queued threads: " + (lock.hasQueuedThreads() ? "YES" : "NO"));
-			printWriter.append("\n");
-			if (readLockCount > 0 && lock instanceof ReentrantReadWriteLockTracker) {
-				ReentrantReadWriteLockTracker debugLock = (ReentrantReadWriteLockTracker) lock;
-				printWriter.append("Threads holding read-lock: \n");
-				Set<ReadLockDebug> lockedReadLocks = debugLock.getLockedReadLocks();
-				for (ReadLockDebug readLockDebug : lockedReadLocks) {
-					printStackTrace(readLockDebug.getStackTrace(), printWriter);
-					printWriter.append("\n");
-				}
-				printWriter.append("\n");
-			}
-			if (lock.isWriteLocked() && lock instanceof ReentrantReadWriteLockTracker) {
-				ReentrantReadWriteLockTracker debugLock = (ReentrantReadWriteLockTracker) lock;
-				printWriter.append("Thread holding write-lock: \n");
-				printStackTrace(debugLock.writeLock().getStackTrace(), printWriter);
-				printWriter.append("\n");
-			}
-			printWriter.append("Queue length:       " + lock.getQueueLength());
-			printWriter.append("\n");
-			printWriter.append("Queued threads: ");
-			printWriter.append("\n");
-			printQueuedThreads(lock, printWriter, threadSet);
-			printWriter.append("----------------------------------------------------");
-			printWriter.append("\n");
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        while (mGraphUris.hasNext()) {
+            UriRef uriRef = mGraphUris.next();
+            ReentrantReadWriteLock lock = (ReentrantReadWriteLock) tcManager.getMGraph(uriRef).getLock();
+            int readLockCount = lock.getReadLockCount();
+            printWriter.append(uriRef.getUnicodeString());
+            printWriter.append("\n");
+            printWriter.append("Read-Lock count:    " + readLockCount);
+            printWriter.append("\n");
+            printWriter.append("Write-Locked:       " + (lock.isWriteLocked() ? "YES" : "NO"));
+            printWriter.append("\n");
+            printWriter.append("Has queued threads: " + (lock.hasQueuedThreads() ? "YES" : "NO"));
+            printWriter.append("\n");
+            if (readLockCount > 0 && lock instanceof ReentrantReadWriteLockTracker) {
+                ReentrantReadWriteLockTracker debugLock = (ReentrantReadWriteLockTracker) lock;
+                printWriter.append("Threads holding read-lock: \n");
+                Set<ReadLockDebug> lockedReadLocks = debugLock.getLockedReadLocks();
+                for (ReadLockDebug readLockDebug : lockedReadLocks) {
+                    printStackTrace(readLockDebug.getStackTrace(), printWriter);
+                    printWriter.append("\n");
+                }
+                printWriter.append("\n");
+            }
+            if (lock.isWriteLocked() && lock instanceof ReentrantReadWriteLockTracker) {
+                ReentrantReadWriteLockTracker debugLock = (ReentrantReadWriteLockTracker) lock;
+                printWriter.append("Thread holding write-lock: \n");
+                printStackTrace(debugLock.writeLock().getStackTrace(), printWriter);
+                printWriter.append("\n");
+            }
+            printWriter.append("Queue length:       " + lock.getQueueLength());
+            printWriter.append("\n");
+            printWriter.append("Queued threads: ");
+            printWriter.append("\n");
+            printQueuedThreads(lock, printWriter, threadSet);
+            printWriter.append("----------------------------------------------------");
+            printWriter.append("\n");
 
-		}
-		return stringWriter.toString();
-	}
+        }
+        return stringWriter.toString();
+    }
 
-	private void printQueuedThreads(ReentrantReadWriteLock lock, PrintWriter printWriter,
-			Set<Thread> threadSet) {
-		for (Thread thread : threadSet) {
-			if (lock.hasQueuedThread(thread)) {
-				printWriter.append("" + thread.getId());
-				printStackTrace(thread.getStackTrace(), printWriter);
-				printWriter.append("\n");
-			}
-		}
-	}
+    private void printQueuedThreads(ReentrantReadWriteLock lock, PrintWriter printWriter,
+            Set<Thread> threadSet) {
+        for (Thread thread : threadSet) {
+            if (lock.hasQueuedThread(thread)) {
+                printWriter.append("" + thread.getId());
+                printStackTrace(thread.getStackTrace(), printWriter);
+                printWriter.append("\n");
+            }
+        }
+    }
 
-	private void printStackTrace(StackTraceElement[] stackTrace, PrintWriter printWriter) {
-		Throwable throwable = new Throwable();
-		throwable.setStackTrace(stackTrace);
-		throwable.printStackTrace(printWriter);
-	}
+    private void printStackTrace(StackTraceElement[] stackTrace, PrintWriter printWriter) {
+        Throwable throwable = new Throwable();
+        throwable.setStackTrace(stackTrace);
+        throwable.printStackTrace(printWriter);
+    }
 
-	public Set<Thread> getAllThreads() {
-		// Find the root thread group
-		ThreadGroup root = Thread.currentThread().getThreadGroup().getParent();
-		while (root.getParent() != null) {
-			root = root.getParent();
-		}
-		HashSet<Thread> threadSet = new HashSet<Thread>();
-		visit(root, 0, threadSet);
-		return threadSet;
-	}
+    public Set<Thread> getAllThreads() {
+        // Find the root thread group
+        ThreadGroup root = Thread.currentThread().getThreadGroup().getParent();
+        while (root.getParent() != null) {
+            root = root.getParent();
+        }
+        HashSet<Thread> threadSet = new HashSet<Thread>();
+        visit(root, 0, threadSet);
+        return threadSet;
+    }
 
-	public void visit(ThreadGroup group, int level, HashSet<Thread> threadSet) {
-		// Get threads in `group'
-		int numThreads = group.activeCount();
-		Thread[] threads = new Thread[numThreads * 2];
-		numThreads = group.enumerate(threads, false);
-		// Enumerate each thread in `group'
-		for (int i = 0; i < numThreads; i++) {
-			// Get thread
-			Thread thread = threads[i];
-			threadSet.add(thread);
-		}
-		// Get thread subgroups of `group'
-		int numGroups = group.activeGroupCount();
-		ThreadGroup[] groups = new ThreadGroup[numGroups * 2];
-		numGroups = group.enumerate(groups, false);
-		// Recursively visit each subgroup
-		for (int i = 0; i < numGroups; i++) {
-			visit(groups[i], level + 1, threadSet);
-		}
-	}
+    public void visit(ThreadGroup group, int level, HashSet<Thread> threadSet) {
+        // Get threads in `group'
+        int numThreads = group.activeCount();
+        Thread[] threads = new Thread[numThreads * 2];
+        numThreads = group.enumerate(threads, false);
+        // Enumerate each thread in `group'
+        for (int i = 0; i < numThreads; i++) {
+            // Get thread
+            Thread thread = threads[i];
+            threadSet.add(thread);
+        }
+        // Get thread subgroups of `group'
+        int numGroups = group.activeGroupCount();
+        ThreadGroup[] groups = new ThreadGroup[numGroups * 2];
+        numGroups = group.enumerate(groups, false);
+        // Recursively visit each subgroup
+        for (int i = 0; i < numGroups; i++) {
+            visit(groups[i], level + 1, threadSet);
+        }
+    }
 
-	@Override
-	public Set<GlobalMenuItem> getMenuItems() {
-		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-		try {
-			AccessController.checkPermission(
-					new LockOverviewPermission());
-		} catch (AccessControlException e) {
-			return items;
-		}
-		items.add(new GlobalMenuItem("/admin/graphs/locks", "SCM", "MGraph Locking", 1,
-				"Development"));
-		return items;
-	}
+    @Override
+    public Set<GlobalMenuItem> getMenuItems() {
+        Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+        try {
+            AccessController.checkPermission(
+                    new LockOverviewPermission());
+        } catch (AccessControlException e) {
+            return items;
+        }
+        items.add(new GlobalMenuItem("/admin/graphs/locks", "SCM", "MGraph Locking", 1,
+                "Development"));
+        return items;
+    }
 }

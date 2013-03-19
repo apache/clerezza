@@ -20,33 +20,33 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>jaxrs.extensions</artifactId>
-	<version>0.6-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<name>Clerezza - JAXRS Extensions</name>
-	<description>Provides an interface implementable by JAX-RS implementations
-	that allows to forward a request to an instance of a root resource class.</description>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-	</dependencies>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>jaxrs.extensions</artifactId>
+    <version>0.6-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <name>Clerezza - JAXRS Extensions</name>
+    <description>Provides an interface implementable by JAX-RS implementations
+    that allows to forward a request to an instance of a root resource class.</description>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+    </dependencies>
 </project>

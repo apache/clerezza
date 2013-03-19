@@ -31,62 +31,62 @@ import java.util.Set;
  * @author daniel
  */
 public class CountFacetCollector extends FacetCollector<Integer> {
-	final Map<VirtualProperty, Map<String, Integer>> facetMap;
+    final Map<VirtualProperty, Map<String, Integer>> facetMap;
 
-	/**
-	 * Creates a new CountFacetCollector that collects facet data over the 
-	 * supplied Properties.
-	 * 
-	 * @param properties VirtualProperties over which facet data is collected. 
-	 */
-	public CountFacetCollector(Collection<VirtualProperty> properties) {
-		this();
-		for(VirtualProperty property : properties) {
-			facetMap.put(property, new HashMap<String, Integer>());
-		}
-	}
-	
-	/**
-	 * Default Constructor.
-	 */
-	public CountFacetCollector() {
-		facetMap = new HashMap<VirtualProperty, Map<String, Integer>>();
-	}
-	
-	@Override
-	public void addFacetProperty(VirtualProperty property) {
-		facetMap.put(property, new HashMap<String, Integer>());
-	}
-	
-	@Override
-	public Collection<VirtualProperty> getProperties() {
-		return Collections.unmodifiableCollection(facetMap.keySet());
-	}
+    /**
+     * Creates a new CountFacetCollector that collects facet data over the 
+     * supplied Properties.
+     * 
+     * @param properties VirtualProperties over which facet data is collected. 
+     */
+    public CountFacetCollector(Collection<VirtualProperty> properties) {
+        this();
+        for(VirtualProperty property : properties) {
+            facetMap.put(property, new HashMap<String, Integer>());
+        }
+    }
+    
+    /**
+     * Default Constructor.
+     */
+    public CountFacetCollector() {
+        facetMap = new HashMap<VirtualProperty, Map<String, Integer>>();
+    }
+    
+    @Override
+    public void addFacetProperty(VirtualProperty property) {
+        facetMap.put(property, new HashMap<String, Integer>());
+    }
+    
+    @Override
+    public Collection<VirtualProperty> getProperties() {
+        return Collections.unmodifiableCollection(facetMap.keySet());
+    }
 
-	@Override
-	void addFacetValue(VirtualProperty field, String value) {
-		Map<String, Integer> propertyMap = facetMap.get(field);
-		Integer old = propertyMap.get(value);
-		propertyMap.put(value, old == null ? 1 : old + 1);
-	}
+    @Override
+    void addFacetValue(VirtualProperty field, String value) {
+        Map<String, Integer> propertyMap = facetMap.get(field);
+        Integer old = propertyMap.get(value);
+        propertyMap.put(value, old == null ? 1 : old + 1);
+    }
 
-	@Override
-	public Set<Map.Entry<String, Integer>> getFacets(VirtualProperty property) {
-		return Collections.unmodifiableSet(facetMap.get(property).entrySet());
-	}
+    @Override
+    public Set<Map.Entry<String, Integer>> getFacets(VirtualProperty property) {
+        return Collections.unmodifiableSet(facetMap.get(property).entrySet());
+    }
 
-	@Override
-	public Integer getFacetValue(VirtualProperty property, String facet) {
-		return facetMap.get(property).get(facet);
-	}
-	
-	@Override
-	Map<VirtualProperty, Map<String, Integer>> getFacetMap() {
-		return facetMap;
-	}
-	
-	@Override
-	void postProcess() {
-		//do nothing
-	}
+    @Override
+    public Integer getFacetValue(VirtualProperty property, String facet) {
+        return facetMap.get(property).get(facet);
+    }
+    
+    @Override
+    Map<VirtualProperty, Map<String, Integer>> getFacetMap() {
+        return facetMap;
+    }
+    
+    @Override
+    void postProcess() {
+        //do nothing
+    }
 }

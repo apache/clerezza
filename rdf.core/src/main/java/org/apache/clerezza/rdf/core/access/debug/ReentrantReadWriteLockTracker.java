@@ -32,102 +32,102 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class ReentrantReadWriteLockTracker extends ReentrantReadWriteLock {
 
 
-	private Set<ReadLockDebug> lockedReadLocks = Collections.synchronizedSet(new HashSet<ReadLockDebug>());
-	private final WriteLockDebug writeLock = new WriteLockDebug(this);
-	@Override
-	protected Thread getOwner() {
-		return super.getOwner();
-	}
+    private Set<ReadLockDebug> lockedReadLocks = Collections.synchronizedSet(new HashSet<ReadLockDebug>());
+    private final WriteLockDebug writeLock = new WriteLockDebug(this);
+    @Override
+    protected Thread getOwner() {
+        return super.getOwner();
+    }
 
-	@Override
-	protected Collection<Thread> getQueuedReaderThreads() {
-		return super.getQueuedReaderThreads();
-	}
+    @Override
+    protected Collection<Thread> getQueuedReaderThreads() {
+        return super.getQueuedReaderThreads();
+    }
 
-	@Override
-	protected Collection<Thread> getQueuedThreads() {
-		return super.getQueuedThreads();
-	}
+    @Override
+    protected Collection<Thread> getQueuedThreads() {
+        return super.getQueuedThreads();
+    }
 
-	@Override
-	protected Collection<Thread> getQueuedWriterThreads() {
-		return super.getQueuedWriterThreads();
-	}
+    @Override
+    protected Collection<Thread> getQueuedWriterThreads() {
+        return super.getQueuedWriterThreads();
+    }
 
-	@Override
-	public int getReadHoldCount() {
-		return super.getReadHoldCount();
-	}
+    @Override
+    public int getReadHoldCount() {
+        return super.getReadHoldCount();
+    }
 
-	@Override
-	public int getReadLockCount() {
-		return super.getReadLockCount();
-	}
+    @Override
+    public int getReadLockCount() {
+        return super.getReadLockCount();
+    }
 
-	@Override
-	public int getWaitQueueLength(Condition condition) {
-		return super.getWaitQueueLength(condition);
-	}
+    @Override
+    public int getWaitQueueLength(Condition condition) {
+        return super.getWaitQueueLength(condition);
+    }
 
-	@Override
-	protected Collection<Thread> getWaitingThreads(Condition condition) {
-		return super.getWaitingThreads(condition);
-	}
+    @Override
+    protected Collection<Thread> getWaitingThreads(Condition condition) {
+        return super.getWaitingThreads(condition);
+    }
 
-	@Override
-	public int getWriteHoldCount() {
-		return super.getWriteHoldCount();
-	}
+    @Override
+    public int getWriteHoldCount() {
+        return super.getWriteHoldCount();
+    }
 
-	@Override
-	public boolean hasWaiters(Condition condition) {
-		return super.hasWaiters(condition);
-	}
+    @Override
+    public boolean hasWaiters(Condition condition) {
+        return super.hasWaiters(condition);
+    }
 
-	@Override
-	public boolean isWriteLocked() {
-		return super.isWriteLocked();
-	}
+    @Override
+    public boolean isWriteLocked() {
+        return super.isWriteLocked();
+    }
 
-	@Override
-	public boolean isWriteLockedByCurrentThread() {
-		return super.isWriteLockedByCurrentThread();
-	}
+    @Override
+    public boolean isWriteLockedByCurrentThread() {
+        return super.isWriteLockedByCurrentThread();
+    }
 
-	@Override
-	public ReadLock readLock() {
-		return new ReadLockDebug(this);
-	}
+    @Override
+    public ReadLock readLock() {
+        return new ReadLockDebug(this);
+    }
 
-	ReadLock realReadLock() {
-		return super.readLock();
-	}
+    ReadLock realReadLock() {
+        return super.readLock();
+    }
 
-	WriteLock realWriteLock() {
-		return super.writeLock();
-	}
+    WriteLock realWriteLock() {
+        return super.writeLock();
+    }
 
-	@Override
-	public String toString() {
-		return super.toString();
-	}
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 
-	@Override
-	public WriteLockDebug writeLock() {
-		return writeLock;
-	}
+    @Override
+    public WriteLockDebug writeLock() {
+        return writeLock;
+    }
 
-	void addLockedReadLock(ReadLockDebug lock) {
-		lockedReadLocks.add(lock);
-	}
+    void addLockedReadLock(ReadLockDebug lock) {
+        lockedReadLocks.add(lock);
+    }
 
-	void removeReadLock(ReadLockDebug lock) {
-		lockedReadLocks.remove(lock);
-	}
+    void removeReadLock(ReadLockDebug lock) {
+        lockedReadLocks.remove(lock);
+    }
 
-	public Set<ReadLockDebug> getLockedReadLocks() {
-		return lockedReadLocks;
-	}
+    public Set<ReadLockDebug> getLockedReadLocks() {
+        return lockedReadLocks;
+    }
 
 
 }

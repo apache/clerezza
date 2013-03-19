@@ -37,79 +37,79 @@ import org.junit.Test;
  */
 public class IfpSmushTest {
 
-	private MGraph ontology = new SimpleMGraph();
-	{
-		ontology.add(new TripleImpl(FOAF.mbox, RDF.type, OWL.InverseFunctionalProperty));
-	}
+    private MGraph ontology = new SimpleMGraph();
+    {
+        ontology.add(new TripleImpl(FOAF.mbox, RDF.type, OWL.InverseFunctionalProperty));
+    }
 
-	@Test
-	public void simpleBNode()  {
-		MGraph mGraph = new SimpleMGraph();
-		UriRef mbox1 = new UriRef("mailto:foo@example.org");
-		final BNode bNode1 = new BNode();
-		mGraph.add(new TripleImpl(bNode1, FOAF.mbox, mbox1));
-		mGraph.add(new TripleImpl(bNode1, RDFS.comment, 
-				new PlainLiteralImpl("a comment")));
-		final BNode bNode2 = new BNode();
-		mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
-		mGraph.add(new TripleImpl(bNode2, RDFS.comment, 
-				new PlainLiteralImpl("another comment")));
-		Smusher.smush(mGraph, ontology);
-		Assert.assertEquals(3, mGraph.size());
-	}
+    @Test
+    public void simpleBNode()  {
+        MGraph mGraph = new SimpleMGraph();
+        UriRef mbox1 = new UriRef("mailto:foo@example.org");
+        final BNode bNode1 = new BNode();
+        mGraph.add(new TripleImpl(bNode1, FOAF.mbox, mbox1));
+        mGraph.add(new TripleImpl(bNode1, RDFS.comment, 
+                new PlainLiteralImpl("a comment")));
+        final BNode bNode2 = new BNode();
+        mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
+        mGraph.add(new TripleImpl(bNode2, RDFS.comment, 
+                new PlainLiteralImpl("another comment")));
+        Smusher.smush(mGraph, ontology);
+        Assert.assertEquals(3, mGraph.size());
+    }
 
-	@Test
-	public void overlappingEquivalenceClasses()  {
-		MGraph mGraph = new SimpleMGraph();
-		UriRef mbox1 = new UriRef("mailto:foo@example.org");
-		final BNode bNode1 = new BNode();
-		mGraph.add(new TripleImpl(bNode1, FOAF.mbox, mbox1));
-		mGraph.add(new TripleImpl(bNode1, RDFS.comment,
-				new PlainLiteralImpl("a comment")));
-		final BNode bNode2 = new BNode();
-		UriRef mbox2 = new UriRef("mailto:bar@example.org");
-		mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
-		mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox2));
-		mGraph.add(new TripleImpl(bNode2, RDFS.comment,
-				new PlainLiteralImpl("another comment")));
-		final BNode bNode3 = new BNode();
-		mGraph.add(new TripleImpl(bNode3, FOAF.mbox, mbox2));
-		mGraph.add(new TripleImpl(bNode3, RDFS.comment,
-				new PlainLiteralImpl("yet another comment")));
-		Smusher.smush(mGraph, ontology);
-		Assert.assertEquals(5, mGraph.size());
-	}
+    @Test
+    public void overlappingEquivalenceClasses()  {
+        MGraph mGraph = new SimpleMGraph();
+        UriRef mbox1 = new UriRef("mailto:foo@example.org");
+        final BNode bNode1 = new BNode();
+        mGraph.add(new TripleImpl(bNode1, FOAF.mbox, mbox1));
+        mGraph.add(new TripleImpl(bNode1, RDFS.comment,
+                new PlainLiteralImpl("a comment")));
+        final BNode bNode2 = new BNode();
+        UriRef mbox2 = new UriRef("mailto:bar@example.org");
+        mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
+        mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox2));
+        mGraph.add(new TripleImpl(bNode2, RDFS.comment,
+                new PlainLiteralImpl("another comment")));
+        final BNode bNode3 = new BNode();
+        mGraph.add(new TripleImpl(bNode3, FOAF.mbox, mbox2));
+        mGraph.add(new TripleImpl(bNode3, RDFS.comment,
+                new PlainLiteralImpl("yet another comment")));
+        Smusher.smush(mGraph, ontology);
+        Assert.assertEquals(5, mGraph.size());
+    }
 
-	@Test
-	public void oneUriRef()  {
-		MGraph mGraph = new SimpleMGraph();
-		UriRef mbox1 = new UriRef("mailto:foo@example.org");
-		final UriRef resource = new UriRef("http://example.org/");
-		mGraph.add(new TripleImpl(resource, FOAF.mbox, mbox1));
-		mGraph.add(new TripleImpl(resource, RDFS.comment,
-				new PlainLiteralImpl("a comment")));
-		final BNode bNode2 = new BNode();
-		mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
-		mGraph.add(new TripleImpl(bNode2, RDFS.comment,
-				new PlainLiteralImpl("another comment")));
-		Smusher.smush(mGraph, ontology);
-		Assert.assertEquals(3, mGraph.size());
-	}
+    @Test
+    public void oneUriRef()  {
+        MGraph mGraph = new SimpleMGraph();
+        UriRef mbox1 = new UriRef("mailto:foo@example.org");
+        final UriRef resource = new UriRef("http://example.org/");
+        mGraph.add(new TripleImpl(resource, FOAF.mbox, mbox1));
+        mGraph.add(new TripleImpl(resource, RDFS.comment,
+                new PlainLiteralImpl("a comment")));
+        final BNode bNode2 = new BNode();
+        mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
+        mGraph.add(new TripleImpl(bNode2, RDFS.comment,
+                new PlainLiteralImpl("another comment")));
+        Smusher.smush(mGraph, ontology);
+        Assert.assertEquals(3, mGraph.size());
+    }
 
-	@Test
-	public void twoUriRefs()  {
-		MGraph mGraph = new SimpleMGraph();
-		UriRef mbox1 = new UriRef("mailto:foo@example.org");
-		final UriRef resource1 = new UriRef("http://example.org/");
-		mGraph.add(new TripleImpl(resource1, FOAF.mbox, mbox1));
-		mGraph.add(new TripleImpl(resource1, RDFS.comment,
-				new PlainLiteralImpl("a comment")));
-		final UriRef resource2 = new UriRef("http://2.example.org/");
-		mGraph.add(new TripleImpl(resource2, FOAF.mbox, mbox1));
-		mGraph.add(new TripleImpl(resource2, RDFS.comment,
-				new PlainLiteralImpl("another comment")));
-		Smusher.smush(mGraph, ontology);
-		Assert.assertEquals(4, mGraph.size());
-	}
+    @Test
+    public void twoUriRefs()  {
+        MGraph mGraph = new SimpleMGraph();
+        UriRef mbox1 = new UriRef("mailto:foo@example.org");
+        final UriRef resource1 = new UriRef("http://example.org/");
+        mGraph.add(new TripleImpl(resource1, FOAF.mbox, mbox1));
+        mGraph.add(new TripleImpl(resource1, RDFS.comment,
+                new PlainLiteralImpl("a comment")));
+        final UriRef resource2 = new UriRef("http://2.example.org/");
+        mGraph.add(new TripleImpl(resource2, FOAF.mbox, mbox1));
+        mGraph.add(new TripleImpl(resource2, RDFS.comment,
+                new PlainLiteralImpl("another comment")));
+        Smusher.smush(mGraph, ontology);
+        Assert.assertEquals(4, mGraph.size());
+    }
 
 }

@@ -30,19 +30,19 @@ import javax.ws.rs.core.MediaType;
  */
 public interface FormFile extends ParameterValue {
 
-	/**
-	 * @return the content of the file
-	 */
-	public byte[] getContent();
+    /**
+     * @return the content of the file
+     */
+    public byte[] getContent();
 
-	/**
-	 * @return the filename provided by the sender or null if not supplied
-	 */
-	public String getFileName();
+    /**
+     * @return the filename provided by the sender or null if not supplied
+     */
+    public String getFileName();
 
-	/**
-	 * @return the mime-type of the file
-	 */
-	public MediaType getMediaType();
+    /**
+     * @return the mime-type of the file
+     */
+    public MediaType getMediaType();
 
 }

@@ -34,54 +34,54 @@ import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
  */
 public class RdfJsonParserProviderTest {
 
-	@Test
-	public void testParsingOfObjectBNode() {
-		ParsingProvider provider = new RdfJsonParsingProvider();
-		InputStream jsonIn = getClass().getResourceAsStream("test-object-bnode.json");
-		MGraph parsedMGraph = new SimpleMGraph();
-		provider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
-		Assert.assertEquals(parsedMGraph.size(), 1);
-		Iterator<Triple> triples = parsedMGraph.filter(new UriRef("http://example.org/node1"),
-				new UriRef("http://example.org/prop1"), null);
-		Assert.assertTrue(triples.hasNext());
-		Assert.assertTrue(triples.next().getObject() instanceof BNode);
-	}
+    @Test
+    public void testParsingOfObjectBNode() {
+        ParsingProvider provider = new RdfJsonParsingProvider();
+        InputStream jsonIn = getClass().getResourceAsStream("test-object-bnode.json");
+        MGraph parsedMGraph = new SimpleMGraph();
+        provider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
+        Assert.assertEquals(parsedMGraph.size(), 1);
+        Iterator<Triple> triples = parsedMGraph.filter(new UriRef("http://example.org/node1"),
+                new UriRef("http://example.org/prop1"), null);
+        Assert.assertTrue(triples.hasNext());
+        Assert.assertTrue(triples.next().getObject() instanceof BNode);
+    }
 
-	@Test
-	public void testParsingOfSubjectBNode() {
-		ParsingProvider provider = new RdfJsonParsingProvider();
-		InputStream jsonIn = getClass().getResourceAsStream("test-subject-bnode.json");
-		MGraph parsedMGraph = new SimpleMGraph();
-		provider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
-		Assert.assertEquals(3, parsedMGraph.size());
-		Iterator<Triple> triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop1"),
-				new UriRef("http://example.org/node1"));
-		Assert.assertTrue(triples.hasNext());
-		NonLiteral subject = triples.next().getSubject();
-		Assert.assertTrue(subject instanceof BNode);
+    @Test
+    public void testParsingOfSubjectBNode() {
+        ParsingProvider provider = new RdfJsonParsingProvider();
+        InputStream jsonIn = getClass().getResourceAsStream("test-subject-bnode.json");
+        MGraph parsedMGraph = new SimpleMGraph();
+        provider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
+        Assert.assertEquals(3, parsedMGraph.size());
+        Iterator<Triple> triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop1"),
+                new UriRef("http://example.org/node1"));
+        Assert.assertTrue(triples.hasNext());
+        NonLiteral subject = triples.next().getSubject();
+        Assert.assertTrue(subject instanceof BNode);
 
-		triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop2"),
-				new UriRef("http://example.org/node2"));
-		Assert.assertTrue(triples.hasNext());
-		Assert.assertTrue(subject.equals(triples.next().getSubject()));
+        triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop2"),
+                new UriRef("http://example.org/node2"));
+        Assert.assertTrue(triples.hasNext());
+        Assert.assertTrue(subject.equals(triples.next().getSubject()));
 
-		triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop3"),
-				new UriRef("http://example.org/node3"));
-		Assert.assertTrue(triples.hasNext());
-		Assert.assertFalse(subject.equals(triples.next().getSubject()));
-	}
+        triples = parsedMGraph.filter(null, new UriRef("http://example.org/prop3"),
+                new UriRef("http://example.org/node3"));
+        Assert.assertTrue(triples.hasNext());
+        Assert.assertFalse(subject.equals(triples.next().getSubject()));
+    }
 
-	@Test
-	public void testParser() {
-		ParsingProvider provider = new RdfJsonParsingProvider();
-		InputStream jsonIn = getClass().getResourceAsStream("test.json");
-		MGraph deserializedMGraph = new SimpleMGraph();
-		provider.parse(deserializedMGraph, jsonIn, "application/rdf+json", null);
-		Assert.assertEquals(deserializedMGraph.size(), 6);
-		Iterator<Triple> triples = deserializedMGraph.filter(new UriRef("http://base/child1"), null, null);
-		while (triples.hasNext()) {
-			UriRef uri = triples.next().getPredicate();
-			Assert.assertEquals(uri.getUnicodeString(), "http://base/propertyB");
-		}
-	}
+    @Test
+    public void testParser() {
+        ParsingProvider provider = new RdfJsonParsingProvider();
+        InputStream jsonIn = getClass().getResourceAsStream("test.json");
+        MGraph deserializedMGraph = new SimpleMGraph();
+        provider.parse(deserializedMGraph, jsonIn, "application/rdf+json", null);
+        Assert.assertEquals(deserializedMGraph.size(), 6);
+        Iterator<Triple> triples = deserializedMGraph.filter(new UriRef("http://base/child1"), null, null);
+        while (triples.hasNext()) {
+            UriRef uri = triples.next().getPredicate();
+            Assert.assertEquals(uri.getUnicodeString(), "http://base/propertyB");
+        }
+    }
 }

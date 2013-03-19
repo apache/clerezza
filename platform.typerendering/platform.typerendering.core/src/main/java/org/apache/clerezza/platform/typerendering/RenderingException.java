@@ -38,32 +38,32 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  */
 public class RenderingException extends TypeRenderingException {
 
-	private URI renderingSpecification;
-	private Exception cause;
+    private URI renderingSpecification;
+    private Exception cause;
 
-	public RenderingException(Exception cause, URI renderingSpecification,
-			GraphNode renderNode, GraphNode context) {
-		super(cause.getClass().getName() + ": " + cause.getMessage(), renderingSpecification,
-				renderNode, context, cause);
-		this.cause = cause;
-		this.renderingSpecification = renderingSpecification;
-	}
+    public RenderingException(Exception cause, URI renderingSpecification,
+            GraphNode renderNode, GraphNode context) {
+        super(cause.getClass().getName() + ": " + cause.getMessage(), renderingSpecification,
+                renderNode, context, cause);
+        this.cause = cause;
+        this.renderingSpecification = renderingSpecification;
+    }
 
-	@Override
-	public GraphNode getExceptionGraphNode() {
-		GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
-		result.addProperty(RDF.type, TYPERENDERING.Exception);
-		result.addProperty(TYPERENDERING.errorSource, new UriRef(renderingSpecification.toString()));
-		result.addProperty(TYPERENDERING.message, new PlainLiteralImpl(getMessage()));
-		result.addProperty(TYPERENDERING.stackTrace, getStackTraceLiteral());
-		return result;
-	}
+    @Override
+    public GraphNode getExceptionGraphNode() {
+        GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
+        result.addProperty(RDF.type, TYPERENDERING.Exception);
+        result.addProperty(TYPERENDERING.errorSource, new UriRef(renderingSpecification.toString()));
+        result.addProperty(TYPERENDERING.message, new PlainLiteralImpl(getMessage()));
+        result.addProperty(TYPERENDERING.stackTrace, getStackTraceLiteral());
+        return result;
+    }
 
-	private PlainLiteral getStackTraceLiteral() {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		cause.printStackTrace(pw);
-		pw.flush();
-		return new PlainLiteralImpl(sw.toString());
-	}
+    private PlainLiteral getStackTraceLiteral() {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        cause.printStackTrace(pw);
+        pw.flush();
+        return new PlainLiteralImpl(sw.toString());
+    }
 }

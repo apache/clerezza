@@ -63,63 +63,63 @@ import org.osgi.service.component.ComponentContext;
  */
 @Component
 @Services({
-	@Service(value = Object.class),
-	@Service(value = GlobalMenuItemsProvider.class)
+    @Service(value = Object.class),
+    @Service(value = GlobalMenuItemsProvider.class)
 })
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/graphs")
 public class GraphManagement implements GlobalMenuItemsProvider {
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private RenderletManager renderletManager;
 
-	protected void activate(ComponentContext componentContext) {
-		URL templateURL = getClass().getResource("graph-management.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), GRAPHMANAGEMENT.GraphManagementPage,
-				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
-	}
+    protected void activate(ComponentContext componentContext) {
+        URL templateURL = getClass().getResource("graph-management.ssp");
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(templateURL.toString()), GRAPHMANAGEMENT.GraphManagementPage,
+                "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    }
 
-	@GET
-	public GraphNode mainPage(@Context UriInfo uriInfo) {
-		AccessController.checkPermission(new GraphManagementAppPermission());
-		TrailingSlash.enforcePresent(uriInfo);
-		final SimpleMGraph resultGraph = new SimpleMGraph();
-		GraphNode graphNode = new GraphNode(new BNode(), resultGraph);
-		Set<UriRef> tripleCollections = tcManager.listTripleCollections();
-		for (UriRef uriRef : tripleCollections) {
-			graphNode.addProperty(GRAPHMANAGEMENT.tripleCollection, uriRef);
-			final TripleCollection tripleCollection = tcManager.getTriples(uriRef);
-			resultGraph.add(new TripleImpl(uriRef,GRAPHMANAGEMENT.size,
-					LiteralFactory.getInstance().createTypedLiteral(
-					tripleCollection.size())));
-			if (tripleCollection instanceof Graph) {
-				resultGraph.add(new TripleImpl(uriRef,RDF.type, TCPROVIDER.Graph));
-			} else {
-				resultGraph.add(new TripleImpl(uriRef,RDF.type, TCPROVIDER.MGraph));
-			}
-		}
-		graphNode.addProperty(RDF.type, GRAPHMANAGEMENT.GraphManagementPage);
-		graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
-		return graphNode;
-	}
+    @GET
+    public GraphNode mainPage(@Context UriInfo uriInfo) {
+        AccessController.checkPermission(new GraphManagementAppPermission());
+        TrailingSlash.enforcePresent(uriInfo);
+        final SimpleMGraph resultGraph = new SimpleMGraph();
+        GraphNode graphNode = new GraphNode(new BNode(), resultGraph);
+        Set<UriRef> tripleCollections = tcManager.listTripleCollections();
+        for (UriRef uriRef : tripleCollections) {
+            graphNode.addProperty(GRAPHMANAGEMENT.tripleCollection, uriRef);
+            final TripleCollection tripleCollection = tcManager.getTriples(uriRef);
+            resultGraph.add(new TripleImpl(uriRef,GRAPHMANAGEMENT.size,
+                    LiteralFactory.getInstance().createTypedLiteral(
+                    tripleCollection.size())));
+            if (tripleCollection instanceof Graph) {
+                resultGraph.add(new TripleImpl(uriRef,RDF.type, TCPROVIDER.Graph));
+            } else {
+                resultGraph.add(new TripleImpl(uriRef,RDF.type, TCPROVIDER.MGraph));
+            }
+        }
+        graphNode.addProperty(RDF.type, GRAPHMANAGEMENT.GraphManagementPage);
+        graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
+        return graphNode;
+    }
 
-	@Override
-	public Set<GlobalMenuItem> getMenuItems() {
+    @Override
+    public Set<GlobalMenuItem> getMenuItems() {
 
-		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-		try {
-			AccessController.checkPermission(
-					new GraphManagementAppPermission());
-		} catch (AccessControlException e) {
-			return items;
-		}
-		String path = "/admin/graphs";
-		items.add(new GlobalMenuItem(path, "GM", "Graphs", 5,"Administration"));
-		return items;
-	}
+        Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+        try {
+            AccessController.checkPermission(
+                    new GraphManagementAppPermission());
+        } catch (AccessControlException e) {
+            return items;
+        }
+        String path = "/admin/graphs";
+        items.add(new GlobalMenuItem(path, "GM", "Graphs", 5,"Administration"));
+        return items;
+    }
 
 }

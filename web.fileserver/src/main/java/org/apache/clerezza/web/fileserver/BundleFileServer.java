@@ -52,60 +52,60 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("static")
 public class BundleFileServer implements BundleListener {
-	private volatile FileServer fileServer;
-	private Map<Bundle, PathNode> bundleNodeMap =
-			Collections.synchronizedMap(new HashMap<Bundle, PathNode>());
-	//an option path for addditional static files
-	private String extraPath;
+    private volatile FileServer fileServer;
+    private Map<Bundle, PathNode> bundleNodeMap =
+            Collections.synchronizedMap(new HashMap<Bundle, PathNode>());
+    //an option path for addditional static files
+    private String extraPath;
 
-	protected void activate(ComponentContext context) throws IOException,
-			URISyntaxException {
+    protected void activate(ComponentContext context) throws IOException,
+            URISyntaxException {
 
-		for (Bundle bundle : context.getBundleContext().getBundles()) {
-			registerStaticFiles(bundle);
-		}
-		context.getBundleContext().addBundleListener(this);
-		extraPath = context.getBundleContext().getProperty("org.apache.clerezza.web.fileserver.static.extra");
-		updateFileServer();
-	}
+        for (Bundle bundle : context.getBundleContext().getBundles()) {
+            registerStaticFiles(bundle);
+        }
+        context.getBundleContext().addBundleListener(this);
+        extraPath = context.getBundleContext().getProperty("org.apache.clerezza.web.fileserver.static.extra");
+        updateFileServer();
+    }
 
-	@Override
-	public void bundleChanged(BundleEvent event) {
-		Bundle bundle = event.getBundle();
-		switch (event.getType()) {
-			case BundleEvent.STARTED:
-				registerStaticFiles(bundle);
-				break;
-			case BundleEvent.STOPPED:
-				unregisterStaticFiles(bundle);
-				break;
-		}
-		updateFileServer();
-	}
+    @Override
+    public void bundleChanged(BundleEvent event) {
+        Bundle bundle = event.getBundle();
+        switch (event.getType()) {
+            case BundleEvent.STARTED:
+                registerStaticFiles(bundle);
+                break;
+            case BundleEvent.STOPPED:
+                unregisterStaticFiles(bundle);
+                break;
+        }
+        updateFileServer();
+    }
 
-	private void registerStaticFiles(Bundle bundle) {
-		PathNode pathNode = new BundlePathNode(bundle, "META-INF/static-web");
-		bundleNodeMap.put(bundle, pathNode);
-	}
+    private void registerStaticFiles(Bundle bundle) {
+        PathNode pathNode = new BundlePathNode(bundle, "META-INF/static-web");
+        bundleNodeMap.put(bundle, pathNode);
+    }
 
-	private void unregisterStaticFiles(Bundle bundle) {
-		bundleNodeMap.remove(bundle);
-	}
+    private void unregisterStaticFiles(Bundle bundle) {
+        bundleNodeMap.remove(bundle);
+    }
 
-	@GET
-	@Path("{path:.+}")
-	public PathNode getStaticFile(@PathParam("path") String path) {
-		final PathNode node = fileServer.getNode(path);
-		return node;
-	}
+    @GET
+    @Path("{path:.+}")
+    public PathNode getStaticFile(@PathParam("path") String path) {
+        final PathNode node = fileServer.getNode(path);
+        return node;
+    }
 
-	private void updateFileServer() {
-		final Collection<PathNode> nodes = new HashSet<PathNode>(bundleNodeMap.values());
-		if (extraPath != null) {
-			nodes.add(new FilePathNode(extraPath));
-		}
-		MultiPathNode multiPathNode = new MultiPathNode(nodes.
-				toArray(new PathNode[nodes.size()]));
-		fileServer = new FileServer(multiPathNode);
-	}
+    private void updateFileServer() {
+        final Collection<PathNode> nodes = new HashSet<PathNode>(bundleNodeMap.values());
+        if (extraPath != null) {
+            nodes.add(new FilePathNode(extraPath));
+        }
+        MultiPathNode multiPathNode = new MultiPathNode(nodes.
+                toArray(new PathNode[nodes.size()]));
+        fileServer = new FileServer(multiPathNode);
+    }
 }

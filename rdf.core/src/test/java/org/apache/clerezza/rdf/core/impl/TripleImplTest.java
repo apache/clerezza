@@ -43,15 +43,15 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
 
 public class TripleImplTest {
     
-	
-	@Test public void tripleEquality() {
-		NonLiteral subject = new UriRef("http://example.org/");
-		UriRef predicate = new UriRef("http://example.org/property");
-		Resource object = new PlainLiteralImpl("property value");
-		Triple triple1 = new TripleImpl(subject, predicate, object);
-		Triple triple2 = new TripleImpl(subject, predicate, object);
-		Assert.assertEquals(triple1.hashCode(), triple2.hashCode());
-		Assert.assertEquals(triple1, triple2);	
-	}
+    
+    @Test public void tripleEquality() {
+        NonLiteral subject = new UriRef("http://example.org/");
+        UriRef predicate = new UriRef("http://example.org/property");
+        Resource object = new PlainLiteralImpl("property value");
+        Triple triple1 = new TripleImpl(subject, predicate, object);
+        Triple triple2 = new TripleImpl(subject, predicate, object);
+        Assert.assertEquals(triple1.hashCode(), triple2.hashCode());
+        Assert.assertEquals(triple1, triple2);    
+    }
 
 }

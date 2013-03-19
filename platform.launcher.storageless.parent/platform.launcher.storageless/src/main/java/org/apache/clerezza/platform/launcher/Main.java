@@ -26,23 +26,23 @@ import java.io.IOException;
  * @author daniel
  */
 public class Main {
-	
-	public static void main(String... args) throws IOException {
-		ClerezzaApp clerezza = new ClerezzaApp();
+    
+    public static void main(String... args) throws IOException {
+        ClerezzaApp clerezza = new ClerezzaApp();
 
-		try {
-			clerezza.start(args);
-		} catch (Throwable t) {
-			System.err.println("Could not start Clerezza: " + t);
-			t.printStackTrace();
-			System.exit(clerezza.getExitCode());
-		}
-		try {
-			clerezza.waitForStop();
-		} catch (Throwable t) {
-			System.err.println("Exception during Clerezza shutdown: " + t);
-			t.printStackTrace();
-			System.exit(-1);
-		}
-	}
+        try {
+            clerezza.start(args);
+        } catch (Throwable t) {
+            System.err.println("Could not start Clerezza: " + t);
+            t.printStackTrace();
+            System.exit(clerezza.getExitCode());
+        }
+        try {
+            clerezza.waitForStop();
+        } catch (Throwable t) {
+            System.err.println("Exception during Clerezza shutdown: " + t);
+            t.printStackTrace();
+            System.exit(-1);
+        }
+    }
 }

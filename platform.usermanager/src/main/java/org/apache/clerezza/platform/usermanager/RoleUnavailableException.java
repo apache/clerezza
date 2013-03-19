@@ -26,7 +26,7 @@ package org.apache.clerezza.platform.usermanager;
  */
 public class RoleUnavailableException extends RuntimeException {
 
-	public RoleUnavailableException(String title) {
-		super("Role " + title + " does not exist in the system graph");
-	}
+    public RoleUnavailableException(String title) {
+        super("Role " + title + " does not exist in the system graph");
+    }
 }

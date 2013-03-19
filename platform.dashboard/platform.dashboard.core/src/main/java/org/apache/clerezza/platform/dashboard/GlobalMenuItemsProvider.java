@@ -29,11 +29,11 @@ import java.util.Set;
  */
 public interface  GlobalMenuItemsProvider {
 
-	/**
-	 * Returns a <code>Set</code> of <code>GlobalMenuItem</code>S. If there is
-	 * no <code>GlobalMenuItem</code> available (e.g. the current user has not
-	 * the needed permissions) then the returned set is empty.
-	 * @return
-	 */
-	public Set<GlobalMenuItem> getMenuItems();
+    /**
+     * Returns a <code>Set</code> of <code>GlobalMenuItem</code>S. If there is
+     * no <code>GlobalMenuItem</code> available (e.g. the current user has not
+     * the needed permissions) then the returned set is empty.
+     * @return
+     */
+    public Set<GlobalMenuItem> getMenuItems();
 }

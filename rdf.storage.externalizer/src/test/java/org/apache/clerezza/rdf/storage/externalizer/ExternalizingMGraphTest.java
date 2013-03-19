@@ -33,32 +33,32 @@ import org.junit.Test;
  */
 public class ExternalizingMGraphTest {
 
-	@Test
-	public void replaceLiteral() throws Exception {
-		File dataDir = File.createTempFile("test", "externalizer");
-		dataDir.delete();
-		dataDir.mkdir();
-		ExternalizingMGraph graph = new ExternalizingMGraph(new SimpleMGraph(), dataDir);
-		TypedLiteral lit = new TypedLiteralImpl("jkjkj", ExternalizingMGraph.base64Uri);
-		UriRef replacement = graph.replace(lit);
-		TypedLiteral reconstructed = graph.getLiteralForUri(replacement.getUnicodeString());
-		Assert.assertEquals(replacement, graph.replace(reconstructed));
-	}
+    @Test
+    public void replaceLiteral() throws Exception {
+        File dataDir = File.createTempFile("test", "externalizer");
+        dataDir.delete();
+        dataDir.mkdir();
+        ExternalizingMGraph graph = new ExternalizingMGraph(new SimpleMGraph(), dataDir);
+        TypedLiteral lit = new TypedLiteralImpl("jkjkj", ExternalizingMGraph.base64Uri);
+        UriRef replacement = graph.replace(lit);
+        TypedLiteral reconstructed = graph.getLiteralForUri(replacement.getUnicodeString());
+        Assert.assertEquals(replacement, graph.replace(reconstructed));
+    }
 
-	@Test
-	public void base16Ints() throws Exception {
-		File dataDir = File.createTempFile("test", "externalizer");
-		dataDir.delete();
-		dataDir.mkdir();
-		ExternalizingMGraph graph = new ExternalizingMGraph(new SimpleMGraph(), dataDir);
-		//int value = -1291264412;
-		int value = -0x10;
-		byte[] bytes = new byte[4];
-		bytes[0] = (byte) (0xFF & (value >>> 24));
+    @Test
+    public void base16Ints() throws Exception {
+        File dataDir = File.createTempFile("test", "externalizer");
+        dataDir.delete();
+        dataDir.mkdir();
+        ExternalizingMGraph graph = new ExternalizingMGraph(new SimpleMGraph(), dataDir);
+        //int value = -1291264412;
+        int value = -0x10;
+        byte[] bytes = new byte[4];
+        bytes[0] = (byte) (0xFF & (value >>> 24));
         bytes[1] = (byte) (0xFF & (value >>> 16));
         bytes[2] = (byte) (0xFF & (value >>> 8));
         bytes[3] = (byte) (0xFF & value);
-		Assert.assertEquals(value, graph.parseHexInt(graph.toBase16(bytes)));
-	}
+        Assert.assertEquals(value, graph.parseHexInt(graph.toBase16(bytes)));
+    }
 
 }

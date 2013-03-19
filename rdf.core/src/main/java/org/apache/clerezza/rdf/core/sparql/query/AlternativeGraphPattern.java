@@ -29,10 +29,10 @@ import java.util.List;
  */
 public interface AlternativeGraphPattern extends GraphPattern {
 
-	/**
-	 *
-	 * @return
-	 *		a list of alternative {@link GroupGraphPattern}s
-	 */
-	public List<GroupGraphPattern> getAlternativeGraphPatterns();
+    /**
+     *
+     * @return
+     *        a list of alternative {@link GroupGraphPattern}s
+     */
+    public List<GroupGraphPattern> getAlternativeGraphPatterns();
 }

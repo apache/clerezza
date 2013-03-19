@@ -32,46 +32,46 @@ import org.junit.Test;
  */
 public class PermutationIteratorTest {
 
-	@Test
-	public void simple() {
-		List<String> list = new ArrayList<String>();
-		PermutationIterator<String> pi = new PermutationIterator<String>(list);
-		Assert.assertFalse(pi.hasNext());
-	}
+    @Test
+    public void simple() {
+        List<String> list = new ArrayList<String>();
+        PermutationIterator<String> pi = new PermutationIterator<String>(list);
+        Assert.assertFalse(pi.hasNext());
+    }
 
-	@Test
-	public void lessSimple() {
-		List<String> list = new ArrayList<String>();
-		list.add("Hasan");
-		PermutationIterator<String> pi = new PermutationIterator<String>(list);
-		Assert.assertTrue(pi.hasNext());
-	}
+    @Test
+    public void lessSimple() {
+        List<String> list = new ArrayList<String>();
+        list.add("Hasan");
+        PermutationIterator<String> pi = new PermutationIterator<String>(list);
+        Assert.assertTrue(pi.hasNext());
+    }
 
-	@Test
-	public void regular() {
-		List<String> list = new ArrayList<String>();
-		list.add("Hasan");
-		list.add("Tsuy");
-		PermutationIterator<String> pi = new PermutationIterator<String>(list);
-		Set<List<String>> permutations = new HashSet<List<String>>();
-		while (pi.hasNext()) {
-			permutations.add(pi.next());
-		}
-		Assert.assertEquals(2, permutations.size());
-	}
+    @Test
+    public void regular() {
+        List<String> list = new ArrayList<String>();
+        list.add("Hasan");
+        list.add("Tsuy");
+        PermutationIterator<String> pi = new PermutationIterator<String>(list);
+        Set<List<String>> permutations = new HashSet<List<String>>();
+        while (pi.hasNext()) {
+            permutations.add(pi.next());
+        }
+        Assert.assertEquals(2, permutations.size());
+    }
 
-	@Test
-	public void extended() {
-		List<String> list = new ArrayList<String>();
-		list.add("Hasan");
-		list.add("Tsuy");
-		list.add("Llena");
-		PermutationIterator<String> pi = new PermutationIterator<String>(list);
-		Set<List<String>> permutations = new HashSet<List<String>>();
-		while (pi.hasNext()) {
-			permutations.add(pi.next());
-		}
-		Assert.assertEquals(6, permutations.size());
-	}
+    @Test
+    public void extended() {
+        List<String> list = new ArrayList<String>();
+        list.add("Hasan");
+        list.add("Tsuy");
+        list.add("Llena");
+        PermutationIterator<String> pi = new PermutationIterator<String>(list);
+        Set<List<String>> permutations = new HashSet<List<String>>();
+        while (pi.hasNext()) {
+            permutations.add(pi.next());
+        }
+        Assert.assertEquals(6, permutations.size());
+    }
 
 }

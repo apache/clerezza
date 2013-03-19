@@ -32,29 +32,29 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  */
 public abstract class AbstractFileServer {
 
-	/**
-	 * This method return the root of the served hierarchy. For example
-	 * if the instance is to server all Files in /var/www, this method would
-	 * return an instance of org.wymiwyg.commons.util.dirbrowser.FilePathNode
-	 * initialized with "/var/www".
-	 *
-	 * @return the root of the served hierarchy
-	 */
-	protected abstract PathNode getRootNode();
+    /**
+     * This method return the root of the served hierarchy. For example
+     * if the instance is to server all Files in /var/www, this method would
+     * return an instance of org.wymiwyg.commons.util.dirbrowser.FilePathNode
+     * initialized with "/var/www".
+     *
+     * @return the root of the served hierarchy
+     */
+    protected abstract PathNode getRootNode();
 
-	@Path("{path:.*}")
-	@GET
-	public PathNode getNode(@PathParam("path") String path) {
-		String[] pathSections = path.split("/");
-		PathNode current = getRootNode();
-		for (String pathSection : pathSections) {
-			current = current.getSubPath(pathSection);
-			if (!current.exists()) {
-				throw new WebApplicationException(404);
-			}
-		}
-		return current;
+    @Path("{path:.*}")
+    @GET
+    public PathNode getNode(@PathParam("path") String path) {
+        String[] pathSections = path.split("/");
+        PathNode current = getRootNode();
+        for (String pathSection : pathSections) {
+            current = current.getSubPath(pathSection);
+            if (!current.exists()) {
+                throw new WebApplicationException(404);
+            }
+        }
+        return current;
 
-	}
+    }
 
 }

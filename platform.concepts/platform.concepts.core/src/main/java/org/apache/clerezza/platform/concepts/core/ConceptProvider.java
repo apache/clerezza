@@ -27,14 +27,14 @@ import org.apache.clerezza.rdf.core.Graph;
  * @author hasan
  */
 public interface ConceptProvider {
-	/**
-	 * Returns a graph containing all concepts whose SKOS:prefLabels
-	 * or SKOS:altLabels contain the search term.
-	 *
-	 * @param searchTerm a filter condition that specifies the term that must
-	 *		be contained within SKOS:prefLabels or SKOS:altLabels of a concept.
-	 * @return a Graph containing all concepts that meet the filter condition.
-	 *
-	 */
-	public Graph retrieveConcepts(String searchTerm);
+    /**
+     * Returns a graph containing all concepts whose SKOS:prefLabels
+     * or SKOS:altLabels contain the search term.
+     *
+     * @param searchTerm a filter condition that specifies the term that must
+     *        be contained within SKOS:prefLabels or SKOS:altLabels of a concept.
+     * @return a Graph containing all concepts that meet the filter condition.
+     *
+     */
+    public Graph retrieveConcepts(String searchTerm);
 }

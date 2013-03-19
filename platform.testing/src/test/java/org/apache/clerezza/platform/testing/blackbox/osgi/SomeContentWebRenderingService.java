@@ -26,7 +26,7 @@ import org.apache.clerezza.platform.typerendering.WebRenderingService;
 @WebRenderingService
 public class SomeContentWebRenderingService {
 
-	public String getSomeContent() {
-		return "some content";
-	}
+    public String getSomeContent() {
+        return "some content";
+    }
 }

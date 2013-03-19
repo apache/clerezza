@@ -33,17 +33,17 @@ import org.apache.clerezza.rdf.core.UriRef;
 @SupportedFormat("application/x-test+rdf")
 public class TestServiceManagedProvider implements ParsingProvider {
 
-	private static boolean parseInvoked;
+    private static boolean parseInvoked;
 
-	@Override
-	public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
-		parseInvoked = true;
-	}
-	
-	@Test
-	public void registerOneProvider() {
-		Parser parser = Parser.getInstance();
-		parser.parse(null, "application/x-test+rdf");
-		Assert.assertTrue(parseInvoked);
-	}
+    @Override
+    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+        parseInvoked = true;
+    }
+    
+    @Test
+    public void registerOneProvider() {
+        Parser parser = Parser.getInstance();
+        parser.parse(null, "application/x-test+rdf");
+        Assert.assertTrue(parseInvoked);
+    }
 }

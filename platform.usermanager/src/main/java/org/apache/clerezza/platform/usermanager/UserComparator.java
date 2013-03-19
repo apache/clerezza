@@ -27,17 +27,17 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM;
 
 public class UserComparator implements Comparator<GraphNode> {
 
-	@Override
-	public int compare(GraphNode user1, GraphNode user2) {
-		Iterator<Literal> names1 = user1.getLiterals(PLATFORM.userName);
-		Iterator<Literal> names2 = user2.getLiterals(PLATFORM.userName);
-		if (names1.hasNext() && names2.hasNext()) {
-			return names1.next().getLexicalForm()
-					.compareTo(names2.next().getLexicalForm());
-		}
-		else {
-			throw new RuntimeException("Cannot compare users!");
-		}
-	}
+    @Override
+    public int compare(GraphNode user1, GraphNode user2) {
+        Iterator<Literal> names1 = user1.getLiterals(PLATFORM.userName);
+        Iterator<Literal> names2 = user2.getLiterals(PLATFORM.userName);
+        if (names1.hasNext() && names2.hasNext()) {
+            return names1.next().getLexicalForm()
+                    .compareTo(names2.next().getLexicalForm());
+        }
+        else {
+            throw new RuntimeException("Cannot compare users!");
+        }
+    }
 
 }

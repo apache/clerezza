@@ -39,41 +39,41 @@ import org.apache.clerezza.utils.IteratorMerger;
  */
 public class EnrichmentTriples extends AbstractMGraph {
 
-	private TripleCollection base;
-	private final Collection<Enricher> enrichers;
-	
-	public EnrichmentTriples(TripleCollection base, Collection<Enricher> enrichers) {
-		this.base = base;
-		this.enrichers = enrichers;
-	}
+    private TripleCollection base;
+    private final Collection<Enricher> enrichers;
+    
+    public EnrichmentTriples(TripleCollection base, Collection<Enricher> enrichers) {
+        this.base = base;
+        this.enrichers = enrichers;
+    }
 
-	@Override
-	protected Iterator<Triple> performFilter(NonLiteral subject,
-			UriRef predicate, Resource object) {
-		Collection<Iterator<Triple>> iteratorCollection =
-				new ArrayList<Iterator<Triple>>(enrichers.size());
-		synchronized(enrichers) {
-			for (Enricher enricher : enrichers) {
-				if (((subject == null) || enricher.getSubjectFilter().accept(subject, base)) &&
-					((predicate == null) || enricher.getPredicateFilter().accept(predicate, base)) &&
-					((object == null) || enricher.getObjectFilter().accept(object, base))) {
-					iteratorCollection.add(enricher.filter(subject, predicate, object, base));
+    @Override
+    protected Iterator<Triple> performFilter(NonLiteral subject,
+            UriRef predicate, Resource object) {
+        Collection<Iterator<Triple>> iteratorCollection =
+                new ArrayList<Iterator<Triple>>(enrichers.size());
+        synchronized(enrichers) {
+            for (Enricher enricher : enrichers) {
+                if (((subject == null) || enricher.getSubjectFilter().accept(subject, base)) &&
+                    ((predicate == null) || enricher.getPredicateFilter().accept(predicate, base)) &&
+                    ((object == null) || enricher.getObjectFilter().accept(object, base))) {
+                    iteratorCollection.add(enricher.filter(subject, predicate, object, base));
 
-				}
-			}
-		}
-		return new IteratorMerger<Triple>(iteratorCollection.iterator());
-	}
+                }
+            }
+        }
+        return new IteratorMerger<Triple>(iteratorCollection.iterator());
+    }
 
-	@Override
-	public int size() {
-		int totalSize = 0;
-		synchronized(enrichers) {
-			for (Enricher enricher : enrichers) {
-				totalSize += enricher.providedTriplesCount(base);
-			}
-		}
-		return totalSize;
-	}
+    @Override
+    public int size() {
+        int totalSize = 0;
+        synchronized(enrichers) {
+            for (Enricher enricher : enrichers) {
+                totalSize += enricher.providedTriplesCount(base);
+            }
+        }
+        return totalSize;
+    }
 
 }

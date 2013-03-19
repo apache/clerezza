@@ -27,47 +27,47 @@ import java.io.PushbackInputStream;
  */
 public class DelimiterInputStream extends PushbackInputStream {
 
-	static int MAX_DELIMITER_SIZE = 300;
+    static int MAX_DELIMITER_SIZE = 300;
 
-	/**
-	 * @param in
-	 */
-	public DelimiterInputStream(InputStream in) {
-		super(in, MAX_DELIMITER_SIZE);
-	}
+    /**
+     * @param in
+     */
+    public DelimiterInputStream(InputStream in) {
+        super(in, MAX_DELIMITER_SIZE);
+    }
 
-	/**
-	 * reads till delimiter is found
-	 * 
-	 * @param delimiter
-	 * @return the bytes read till the beginning of delimiter
-	 * @throws IOException
-	 * @throws DelimiterNotFoundException
-	 */
-	public byte[] readTill(byte[] delimiter) throws IOException,
-			DelimiterNotFoundException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		int posInDelimiter = 0;
-		while (true) {
-			int ch = read();
-			if (ch == -1) {
-				throw new DelimiterNotFoundException(baos.toByteArray());
-			}
-			if (ch == delimiter[posInDelimiter]) {
-				posInDelimiter++;
-				if (posInDelimiter == delimiter.length) {
-					return baos.toByteArray();
-				}
-			} else {
-				if (posInDelimiter > 0) {
-					unread(ch);
-					unread(delimiter, 1, posInDelimiter - 1);
-					posInDelimiter = 0;
-					ch = delimiter[0];
-				}
-				baos.write(ch);
-			}
-		}
-	}
+    /**
+     * reads till delimiter is found
+     * 
+     * @param delimiter
+     * @return the bytes read till the beginning of delimiter
+     * @throws IOException
+     * @throws DelimiterNotFoundException
+     */
+    public byte[] readTill(byte[] delimiter) throws IOException,
+            DelimiterNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int posInDelimiter = 0;
+        while (true) {
+            int ch = read();
+            if (ch == -1) {
+                throw new DelimiterNotFoundException(baos.toByteArray());
+            }
+            if (ch == delimiter[posInDelimiter]) {
+                posInDelimiter++;
+                if (posInDelimiter == delimiter.length) {
+                    return baos.toByteArray();
+                }
+            } else {
+                if (posInDelimiter > 0) {
+                    unread(ch);
+                    unread(delimiter, 1, posInDelimiter - 1);
+                    posInDelimiter = 0;
+                    ch = delimiter[0];
+                }
+                baos.write(ch);
+            }
+        }
+    }
 
 }

@@ -29,11 +29,11 @@ import javax.ws.rs.Produces;
 @Path("/foo")
 public class SimpleRootResource {
 
-	static final public String greeting = "hello";
-	
-	@GET
-	@Produces("text/plain")
-	public String sayHello() {
-		return greeting;
-	}
+    static final public String greeting = "hello";
+    
+    @GET
+    @Produces("text/plain")
+    public String sayHello() {
+        return greeting;
+    }
 }

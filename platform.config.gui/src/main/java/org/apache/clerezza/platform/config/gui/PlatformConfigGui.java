@@ -73,118 +73,118 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  */
 @Component
 @Services({
-	@Service(value = Object.class),
-	@Service(value = GlobalMenuItemsProvider.class)
+    @Service(value = Object.class),
+    @Service(value = GlobalMenuItemsProvider.class)
 })
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("/admin/configuration")
 public class PlatformConfigGui implements GlobalMenuItemsProvider {
 
-	private final static char SLASH = '/';
-	@Reference
-	private PlatformConfig platformConfig;
-	@Reference
-	private RenderletManager renderletManager;
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final UriRef CONFIG_PAGE = new UriRef("http://clerezza.org/2009/08/platform#ConfigPage");
-	private FileServer fileServer;
+    private final static char SLASH = '/';
+    @Reference
+    private PlatformConfig platformConfig;
+    @Reference
+    private RenderletManager renderletManager;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final UriRef CONFIG_PAGE = new UriRef("http://clerezza.org/2009/08/platform#ConfigPage");
+    private FileServer fileServer;
 
-	protected void activate(ComponentContext context) throws IOException,
-			URISyntaxException {
-		Bundle bundle = context.getBundleContext().getBundle();
-		URL resourceDir = getClass().getResource("staticweb");
-		PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
+    protected void activate(ComponentContext context) throws IOException,
+            URISyntaxException {
+        Bundle bundle = context.getBundleContext().getBundle();
+        URL resourceDir = getClass().getResource("staticweb");
+        PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
 
-		logger.debug("Initializing file server for {} ({})", resourceDir,
-				resourceDir.getFile());
+        logger.debug("Initializing file server for {} ({})", resourceDir,
+                resourceDir.getFile());
 
-		fileServer = new FileServer(pathNode);
+        fileServer = new FileServer(pathNode);
 
-		URL template = getClass().getResource(
-				"config.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
-				CONFIG_PAGE, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        URL template = getClass().getResource(
+                "config.ssp");
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(template.toURI().toString()),
+                CONFIG_PAGE, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-	}
+    }
 
-	protected void deactivate(ComponentContext context) {
-		fileServer = null;
-	}
+    protected void deactivate(ComponentContext context) {
+        fileServer = null;
+    }
 
-	/**
-	 * Returns a headed page listing RSS Feeds. The optional parameter query is a
-	 * search term, which tests if the term is contained in thee title or uri
-	 * of the feed.
-	 *
-	 * @param query an optional parameter which specifies a search term criteria.
-	 * The search term will be tested if contained in the title or the uri of the feed.
-	 *
-	 * @return {@link GraphNode}
-	 *
-	 */
-	@GET
-	public GraphNode getConfig() {
-		AccessController.checkPermission(new ConfigGuiAccessPermission());
-		GraphNode node = new GraphNode(new BNode(), new SimpleMGraph());
-		node.addProperty(RDF.type, CONFIG_PAGE);
-		node.addProperty(RDF.type, PLATFORM.HeadedPage);
-		node.addProperty(PLATFORM.defaultBaseUri, platformConfig.getDefaultBaseUri());
-		return node;
+    /**
+     * Returns a headed page listing RSS Feeds. The optional parameter query is a
+     * search term, which tests if the term is contained in thee title or uri
+     * of the feed.
+     *
+     * @param query an optional parameter which specifies a search term criteria.
+     * The search term will be tested if contained in the title or the uri of the feed.
+     *
+     * @return {@link GraphNode}
+     *
+     */
+    @GET
+    public GraphNode getConfig() {
+        AccessController.checkPermission(new ConfigGuiAccessPermission());
+        GraphNode node = new GraphNode(new BNode(), new SimpleMGraph());
+        node.addProperty(RDF.type, CONFIG_PAGE);
+        node.addProperty(RDF.type, PLATFORM.HeadedPage);
+        node.addProperty(PLATFORM.defaultBaseUri, platformConfig.getDefaultBaseUri());
+        return node;
 
-	}
+    }
 
-	@POST
-	public Response setConfig(@FormParam(value = "defaultBaseUri") String defaultBaseUri,
-			@Context UriInfo uriInfo) {
-		AccessController.checkPermission(new ConfigGuiAccessPermission());
-		logger.debug("Setting base-uri to {}", defaultBaseUri);
-		if (defaultBaseUri.charAt(defaultBaseUri.length() - 1) != SLASH) {
-			defaultBaseUri += SLASH;
-		}
-		UriRef uri = new UriRef(defaultBaseUri);
-		GraphNode node = platformConfig.getPlatformInstance();
-		LockableMGraph sysGraph = (LockableMGraph) node.getGraph();
-		Lock writeLock = sysGraph.getLock().writeLock();
-		writeLock.lock();
-		try {
-			node.deleteProperties(PLATFORM.defaultBaseUri);
-			node.addProperty(PLATFORM.defaultBaseUri, uri);
-		} finally {
-			writeLock.unlock();
-		}
-		return Response.status(Response.Status.ACCEPTED).build();
-	}
+    @POST
+    public Response setConfig(@FormParam(value = "defaultBaseUri") String defaultBaseUri,
+            @Context UriInfo uriInfo) {
+        AccessController.checkPermission(new ConfigGuiAccessPermission());
+        logger.debug("Setting base-uri to {}", defaultBaseUri);
+        if (defaultBaseUri.charAt(defaultBaseUri.length() - 1) != SLASH) {
+            defaultBaseUri += SLASH;
+        }
+        UriRef uri = new UriRef(defaultBaseUri);
+        GraphNode node = platformConfig.getPlatformInstance();
+        LockableMGraph sysGraph = (LockableMGraph) node.getGraph();
+        Lock writeLock = sysGraph.getLock().writeLock();
+        writeLock.lock();
+        try {
+            node.deleteProperties(PLATFORM.defaultBaseUri);
+            node.addProperty(PLATFORM.defaultBaseUri, uri);
+        } finally {
+            writeLock.unlock();
+        }
+        return Response.status(Response.Status.ACCEPTED).build();
+    }
 
-	@Override
-	public Set<GlobalMenuItem> getMenuItems() {
-		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-		try {
-			AccessController.checkPermission(new ConfigGuiAccessPermission());
-			AccessController.checkPermission(
-					new TcPermission(SystemConfig.SYSTEM_GRAPH_URI.toString(),
-					TcPermission.READWRITE));
-		} catch (AccessControlException e) {
-			return items;
-		}
-		items.add(new GlobalMenuItem("/admin/configuration", "Configuration", "Configuration", 2,
-				"Administration"));
-		return items;
-	}
+    @Override
+    public Set<GlobalMenuItem> getMenuItems() {
+        Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+        try {
+            AccessController.checkPermission(new ConfigGuiAccessPermission());
+            AccessController.checkPermission(
+                    new TcPermission(SystemConfig.SYSTEM_GRAPH_URI.toString(),
+                    TcPermission.READWRITE));
+        } catch (AccessControlException e) {
+            return items;
+        }
+        items.add(new GlobalMenuItem("/admin/configuration", "Configuration", "Configuration", 2,
+                "Administration"));
+        return items;
+    }
 
-	/**
-	 * Returns a PathNode of a static file from the staticweb folder.
-	 *
-	 * @param path specifies the path parameter
-	 * @return {@link PathNode}
-	 */
-	@GET
-	@Path("{path:.+}")
-	public PathNode getStaticFile(
-			@PathParam("path") String path) {
-		return fileServer.getNode(path);
+    /**
+     * Returns a PathNode of a static file from the staticweb folder.
+     *
+     * @param path specifies the path parameter
+     * @return {@link PathNode}
+     */
+    @GET
+    @Path("{path:.+}")
+    public PathNode getStaticFile(
+            @PathParam("path") String path) {
+        return fileServer.getNode(path);
 
 
-	}
+    }
 }

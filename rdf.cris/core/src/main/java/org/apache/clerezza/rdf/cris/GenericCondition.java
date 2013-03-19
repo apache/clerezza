@@ -38,55 +38,55 @@ import org.apache.lucene.util.Version;
  */
 public class GenericCondition extends Condition {
 
-	private final MultiFieldQueryParser queryParser;
-	private final String searchQuery;
-	private final String[] fields;
+    private final MultiFieldQueryParser queryParser;
+    private final String searchQuery;
+    private final String[] fields;
 
-	/**
-	 * Creates a new GenericCondition.
-	 * 
-	 * Special characters in the query string are not escaped.
-	 *
-	 * @param properties	the properties to search for.
-	 * @param searchQuery	the search string (pattern).
-	 */
-	public GenericCondition(Collection<VirtualProperty> properties, String searchQuery) {
-		this(properties, searchQuery, false);
-	}
-	
-	/**
-	 * Creates a new GenericCondition.
-	 *
-	 * @param properties	the properties to search for.
-	 * @param searchQuery	the search string (pattern).
-	 * @param escapeQuery	whether to escape special characters in the query string or not.
-	 */
-	public GenericCondition(Collection<VirtualProperty> properties, String searchQuery, boolean escapeQuery) {
-		fields = new String[properties.size()];
-		Iterator<VirtualProperty> it = properties.iterator();
-		for(int i = 0; i < properties.size(); ++i) {
-			fields[i] = it.next().stringKey;
-		}
-		
-		if(escapeQuery) {
-			searchQuery = QueryParser.escape(searchQuery);
-		}
-		this.searchQuery = searchQuery;
+    /**
+     * Creates a new GenericCondition.
+     * 
+     * Special characters in the query string are not escaped.
+     *
+     * @param properties    the properties to search for.
+     * @param searchQuery    the search string (pattern).
+     */
+    public GenericCondition(Collection<VirtualProperty> properties, String searchQuery) {
+        this(properties, searchQuery, false);
+    }
+    
+    /**
+     * Creates a new GenericCondition.
+     *
+     * @param properties    the properties to search for.
+     * @param searchQuery    the search string (pattern).
+     * @param escapeQuery    whether to escape special characters in the query string or not.
+     */
+    public GenericCondition(Collection<VirtualProperty> properties, String searchQuery, boolean escapeQuery) {
+        fields = new String[properties.size()];
+        Iterator<VirtualProperty> it = properties.iterator();
+        for(int i = 0; i < properties.size(); ++i) {
+            fields[i] = it.next().stringKey;
+        }
+        
+        if(escapeQuery) {
+            searchQuery = QueryParser.escape(searchQuery);
+        }
+        this.searchQuery = searchQuery;
 
-		this.queryParser = new MultiFieldQueryParser(Version.LUCENE_30,
-				fields,
-				new StandardAnalyzer(Version.LUCENE_30));
-		queryParser.setAllowLeadingWildcard(true);
-	}
+        this.queryParser = new MultiFieldQueryParser(Version.LUCENE_30,
+                fields,
+                new StandardAnalyzer(Version.LUCENE_30));
+        queryParser.setAllowLeadingWildcard(true);
+    }
 
-	@Override
-	public Query query() {
-		try {
-			Query q = queryParser.parse(searchQuery);
-			return q;
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
+    @Override
+    public Query query() {
+        try {
+            Query q = queryParser.parse(searchQuery);
+            return q;
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
 
 }

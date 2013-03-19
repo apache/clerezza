@@ -54,66 +54,66 @@ import org.wymiwyg.wrhapi.util.EnhancedRequest;
 @Property(name="pattern", value={".*MSIE.*", ""})
 public class Xhtml2HtmlFilter implements Filter {
 
-	private Pattern[] patterns;
-	final MimeType xhtmlMimeType;
-	final MimeType htmlMimeType;
-	{
-		try {
-			xhtmlMimeType = new MimeType("application", "xhtml+xml");
-			htmlMimeType = new MimeType("text", "html");
-		} catch (MimeTypeParseException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    private Pattern[] patterns;
+    final MimeType xhtmlMimeType;
+    final MimeType htmlMimeType;
+    {
+        try {
+            xhtmlMimeType = new MimeType("application", "xhtml+xml");
+            htmlMimeType = new MimeType("text", "html");
+        } catch (MimeTypeParseException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	@Override
-	public void handle(Request request, Response response, Handler handler)
-			throws HandlerException {
-		if (!isApplicable(request)) {
-			handler.handle(request, response);
-		} else {
-			handler.handle(new WrappedRequest(request), new WrappedResponse(response));
-		}
-	}
+    @Override
+    public void handle(Request request, Response response, Handler handler)
+            throws HandlerException {
+        if (!isApplicable(request)) {
+            handler.handle(request, response);
+        } else {
+            handler.handle(new WrappedRequest(request), new WrappedResponse(response));
+        }
+    }
 
-	private boolean isApplicable(final Request request) throws HandlerException {
-		if (htmlPreferredInAccept(request)) {
-			return true;
-		}
-		final String[] userAgentStrings = request.getHeaderValues(HeaderName.USER_AGENT);
-		for (final String userAgentString : userAgentStrings) {
-			for (final Pattern pattern : patterns) {
-				if (pattern.matcher(userAgentString).matches()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    private boolean isApplicable(final Request request) throws HandlerException {
+        if (htmlPreferredInAccept(request)) {
+            return true;
+        }
+        final String[] userAgentStrings = request.getHeaderValues(HeaderName.USER_AGENT);
+        for (final String userAgentString : userAgentStrings) {
+            for (final Pattern pattern : patterns) {
+                if (pattern.matcher(userAgentString).matches()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	private boolean htmlPreferredInAccept(Request request) throws HandlerException {
-		EnhancedRequest ehRequest = new EnhancedRequest(request);
-		Iterator<AcceptHeaderEntry> iter = ehRequest.getAccept();
-		while (iter.hasNext()) {
-			AcceptHeaderEntry entry = iter.next();
-			if (entry.getRange().match(xhtmlMimeType)) {
-				return false;
-			}
-			if (entry.getRange().match(htmlMimeType)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean htmlPreferredInAccept(Request request) throws HandlerException {
+        EnhancedRequest ehRequest = new EnhancedRequest(request);
+        Iterator<AcceptHeaderEntry> iter = ehRequest.getAccept();
+        while (iter.hasNext()) {
+            AcceptHeaderEntry entry = iter.next();
+            if (entry.getRange().match(xhtmlMimeType)) {
+                return false;
+            }
+            if (entry.getRange().match(htmlMimeType)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	protected void activate(ComponentContext context) throws Exception {
-		final String[] patternStrings = (String[]) context.getProperties().
-				get("pattern");
-		patterns = new Pattern[patternStrings.length];
-		for(int i = 0; i < patternStrings.length; i++) {
-			patterns[i] = Pattern.compile(patternStrings[i]);
-		}
-	}
+    protected void activate(ComponentContext context) throws Exception {
+        final String[] patternStrings = (String[]) context.getProperties().
+                get("pattern");
+        patterns = new Pattern[patternStrings.length];
+        for(int i = 0; i < patternStrings.length; i++) {
+            patterns[i] = Pattern.compile(patternStrings[i]);
+        }
+    }
 
 
 

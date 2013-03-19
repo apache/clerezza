@@ -25,38 +25,38 @@ import org.apache.clerezza.permissiondescriptions.PermissionInfo;
  * @author reto
  */
 @PermissionInfo(value="Lock Overview Permission", description="Grants access " +
-	"to the Lock overview Pafe")
+    "to the Lock overview Pafe")
 class LockOverviewPermission extends Permission{
 
-	public LockOverviewPermission() {
-		super("LockOverviewPermission");
-	}
-	/**
-	 *
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public LockOverviewPermission(String target, String actions) {
-		super("LockOverviewPermission");
-	}
+    public LockOverviewPermission() {
+        super("LockOverviewPermission");
+    }
+    /**
+     *
+     * @param target ignored
+     * @param action ignored
+     */
+    public LockOverviewPermission(String target, String actions) {
+        super("LockOverviewPermission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 17587;
-	}
+    @Override
+    public int hashCode() {
+        return 17587;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 }

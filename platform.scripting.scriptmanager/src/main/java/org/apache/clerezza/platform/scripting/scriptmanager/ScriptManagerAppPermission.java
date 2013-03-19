@@ -29,38 +29,38 @@ import org.apache.clerezza.permissiondescriptions.PermissionInfo;
  * @author mir
  */
 @PermissionInfo(value="Script Manager Access Permission", description="Grants access " +
-	"to the Script Manager")
+    "to the Script Manager")
 public class ScriptManagerAppPermission extends Permission{
 
-	public ScriptManagerAppPermission() {
-		super("Script Manager permission");
-	}
-	/**
-	 *
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public ScriptManagerAppPermission(String target, String actions) {
-		super("Script Manager permission");
-	}
+    public ScriptManagerAppPermission() {
+        super("Script Manager permission");
+    }
+    /**
+     *
+     * @param target ignored
+     * @param action ignored
+     */
+    public ScriptManagerAppPermission(String target, String actions) {
+        super("Script Manager permission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 77987;
-	}
+    @Override
+    public int hashCode() {
+        return 77987;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 }

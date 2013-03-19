@@ -31,42 +31,42 @@ import org.apache.lucene.index.Term;
  */
 public class WildcardCondition extends Condition{
 
-	/**
-	 * The property to search for.
-	 */
-	VirtualProperty property;
-	
-	/**
-	 * The search-query
-	 */
-	String pattern;
+    /**
+     * The property to search for.
+     */
+    VirtualProperty property;
+    
+    /**
+     * The search-query
+     */
+    String pattern;
 
-	/**
-	 * A condition for searches with wildcard (? = any single character, 
-	 * * = any number of any character)
-	 * 
-	 * @param property	the resource type to search for
-	 * @param pattern	the search query
-	 */
-	public WildcardCondition(VirtualProperty property, String pattern) {
-			this.pattern = pattern;
-			this.property = property;
-	}
-	
-	/**
-	 * A condition for searches with wildcard (? = any single character, 
-	 * * = any number of any character)
-	 * 
-	 * @param property	the resource type to search for
-	 * @param pattern	the search query
-	 */
-	public WildcardCondition(UriRef uriRefProperty,String pattern) {
-		this(new PropertyHolder(uriRefProperty), pattern);
+    /**
+     * A condition for searches with wildcard (? = any single character, 
+     * * = any number of any character)
+     * 
+     * @param property    the resource type to search for
+     * @param pattern    the search query
+     */
+    public WildcardCondition(VirtualProperty property, String pattern) {
+            this.pattern = pattern;
+            this.property = property;
+    }
+    
+    /**
+     * A condition for searches with wildcard (? = any single character, 
+     * * = any number of any character)
+     * 
+     * @param property    the resource type to search for
+     * @param pattern    the search query
+     */
+    public WildcardCondition(UriRef uriRefProperty,String pattern) {
+        this(new PropertyHolder(uriRefProperty), pattern);
 
-	}
-	
-	@Override
-	public Query query() {
-		return new WildcardQuery(new Term(property.stringKey, pattern));
-	}
+    }
+    
+    @Override
+    public Query query() {
+        return new WildcardQuery(new Term(property.stringKey, pattern));
+    }
 }

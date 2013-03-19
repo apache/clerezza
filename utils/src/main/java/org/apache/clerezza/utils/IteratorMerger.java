@@ -31,96 +31,96 @@ import java.util.Iterator;
  */
 public class IteratorMerger<T> implements Iterator<T> {
 
-	/**
-	 * This is the iterator of the merged iterators.
-	 */
-	protected Iterator<Iterator<T>> baseIterators;
-	
-	/**
-	 * This is the current iterator of the merged iterators. Over this iterator
-	 * iterates the merged iterator currently.
-	 */
-	protected Iterator<T> current;
+    /**
+     * This is the iterator of the merged iterators.
+     */
+    protected Iterator<Iterator<T>> baseIterators;
+    
+    /**
+     * This is the current iterator of the merged iterators. Over this iterator
+     * iterates the merged iterator currently.
+     */
+    protected Iterator<T> current;
 
-	/**
-	 * constructs an iterator that will return the elements of the baseIterators
-	 * 
-	 * @param baseIterators
-	 */
-	public IteratorMerger(Iterator<Iterator<T>> baseIterators) {
-		init(baseIterators);
-	}
+    /**
+     * constructs an iterator that will return the elements of the baseIterators
+     * 
+     * @param baseIterators
+     */
+    public IteratorMerger(Iterator<Iterator<T>> baseIterators) {
+        init(baseIterators);
+    }
 
-	/**
-	 * constructs an iterator that will return the elements of the baseIterators
-	 *
-	 * @param baseIterators
-	 */
-	public IteratorMerger(Iterator<T>... baseIterators) {
-		init(Arrays.asList(baseIterators).iterator());
-	}
+    /**
+     * constructs an iterator that will return the elements of the baseIterators
+     *
+     * @param baseIterators
+     */
+    public IteratorMerger(Iterator<T>... baseIterators) {
+        init(Arrays.asList(baseIterators).iterator());
+    }
 
-	/**
-	 * Constructs an iterator that iterates over all elements of the collections
-	 * contained in the collection.
-	 * 
-	 * @param collectionOfCollections
-	 */
-	public IteratorMerger(Collection<Collection<T>> collectionOfCollections) {
-		final Iterator<Collection<T>> setIter = collectionOfCollections.iterator();
-		init(new Iterator<Iterator<T>>() {
+    /**
+     * Constructs an iterator that iterates over all elements of the collections
+     * contained in the collection.
+     * 
+     * @param collectionOfCollections
+     */
+    public IteratorMerger(Collection<Collection<T>> collectionOfCollections) {
+        final Iterator<Collection<T>> setIter = collectionOfCollections.iterator();
+        init(new Iterator<Iterator<T>>() {
 
-			@Override
-			public boolean hasNext() {
-				return setIter.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return setIter.hasNext();
+            }
 
-			@Override
-			public Iterator<T> next() {
-				return setIter.next().iterator();
-			}
+            @Override
+            public Iterator<T> next() {
+                return setIter.next().iterator();
+            }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		});
-	}
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+    }
 
-	private void init(Iterator<Iterator<T>> baseIterators) {
-		this.baseIterators = baseIterators;
-		if (baseIterators.hasNext()) {
-			current = baseIterators.next();
-		} else {
-			current = new ArrayList<T>(0).iterator();
-		}
-	}
+    private void init(Iterator<Iterator<T>> baseIterators) {
+        this.baseIterators = baseIterators;
+        if (baseIterators.hasNext()) {
+            current = baseIterators.next();
+        } else {
+            current = new ArrayList<T>(0).iterator();
+        }
+    }
 
-	private void updateCurrentIfNeeded() {
-		while (!current.hasNext()) {
-			if (baseIterators.hasNext()) {
-				current = baseIterators.next();
-			} else {
-				return;
-			}
-		}
-	}
+    private void updateCurrentIfNeeded() {
+        while (!current.hasNext()) {
+            if (baseIterators.hasNext()) {
+                current = baseIterators.next();
+            } else {
+                return;
+            }
+        }
+    }
 
-	@Override
-	public boolean hasNext() {
-		updateCurrentIfNeeded();
-		return current.hasNext();
-	}
+    @Override
+    public boolean hasNext() {
+        updateCurrentIfNeeded();
+        return current.hasNext();
+    }
 
-	@Override
-	public T next() {
-		updateCurrentIfNeeded();
-		return current.next();
-	}
+    @Override
+    public T next() {
+        updateCurrentIfNeeded();
+        return current.next();
+    }
 
-	@Override
-	public void remove() {
-		current.remove();
-	}
+    @Override
+    public void remove() {
+        current.remove();
+    }
 
 }

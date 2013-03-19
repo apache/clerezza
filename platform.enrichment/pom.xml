@@ -20,44 +20,44 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.clerezza</groupId>
-		<artifactId>clerezza</artifactId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>platform.enrichment</artifactId>
-	<packaging>bundle</packaging>
-	<version>0.2-SNAPSHOT</version>
-	<name>Clerezza - Platform RDF Enrichment</name>
-	<description>Provides a Content-Graph Extension using Enrichers</description>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform</artifactId>
-			<version>0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.graphprovider.content</artifactId>
-			<version>0.7-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.core</artifactId>
-			<version>0.13-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.enrichment</artifactId>
-			<version>0.2-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>clerezza</artifactId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>platform.enrichment</artifactId>
+    <packaging>bundle</packaging>
+    <version>0.2-SNAPSHOT</version>
+    <name>Clerezza - Platform RDF Enrichment</name>
+    <description>Provides a Content-Graph Extension using Enrichers</description>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.graphprovider.content</artifactId>
+            <version>0.7-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.core</artifactId>
+            <version>0.13-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.enrichment</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

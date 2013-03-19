@@ -20,41 +20,41 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>platform.security.conditions</artifactId>
-	<packaging>bundle</packaging>
-	<version>0.6-SNAPSHOT</version>
-	<name>Clerezza - Platform Security Conditions</name>
-	<description>Fragment bundle for System Bundle that contains
-	conditions for the Conditional Permission Admin</description>
-	<dependencies>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-	</dependencies>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>platform.security.conditions</artifactId>
+    <packaging>bundle</packaging>
+    <version>0.6-SNAPSHOT</version>
+    <name>Clerezza - Platform Security Conditions</name>
+    <description>Fragment bundle for System Bundle that contains
+    conditions for the Conditional Permission Admin</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<version>2.0.0</version>
-				<configuration>
-					<instructions>
-						<Import-Package>!*</Import-Package>
-						<Fragment-Host>system.bundle; extension:=framework</Fragment-Host>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>2.0.0</version>
+                <configuration>
+                    <instructions>
+                        <Import-Package>!*</Import-Package>
+                        <Fragment-Host>system.bundle; extension:=framework</Fragment-Host>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

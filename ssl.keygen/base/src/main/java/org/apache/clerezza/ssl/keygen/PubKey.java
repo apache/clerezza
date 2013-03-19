@@ -65,11 +65,11 @@ import java.security.PublicKey;
 
 public interface PubKey {
 
-	/**
-	 * The underlying class
-	 *
-	 * @return the public key, on which this wrapper class is basd
-	 */
-	PublicKey getPublicKey();
+    /**
+     * The underlying class
+     *
+     * @return the public key, on which this wrapper class is basd
+     */
+    PublicKey getPublicKey();
 
 }

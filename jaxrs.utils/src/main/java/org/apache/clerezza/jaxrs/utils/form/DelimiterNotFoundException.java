@@ -25,33 +25,33 @@ import java.io.UnsupportedEncodingException;
  */
 public class DelimiterNotFoundException extends IOException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2002878162243872583L;
-	byte[] remainingBytes;
-	/**
-	 * @param remainingBytes
-	 */
-	public DelimiterNotFoundException(byte[] remainingBytes) {
-		super("Delimiter not found");
-		this.remainingBytes = remainingBytes;
-	}
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2002878162243872583L;
+    byte[] remainingBytes;
+    /**
+     * @param remainingBytes
+     */
+    public DelimiterNotFoundException(byte[] remainingBytes) {
+        super("Delimiter not found");
+        this.remainingBytes = remainingBytes;
+    }
 
-	/**
-	 * @return Returns the remainingBytes.
-	 */
-	public byte[] getRemainingBytes() {
-		return remainingBytes;
-	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		try {
-			return  "The following "+remainingBytes.length+" bytes remain: "+new String(remainingBytes, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    /**
+     * @return Returns the remainingBytes.
+     */
+    public byte[] getRemainingBytes() {
+        return remainingBytes;
+    }
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        try {
+            return  "The following "+remainingBytes.length+" bytes remain: "+new String(remainingBytes, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

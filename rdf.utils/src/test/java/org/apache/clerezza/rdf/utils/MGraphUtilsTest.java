@@ -34,71 +34,71 @@ import org.junit.Test;
  */
 public class MGraphUtilsTest {
 
-	final UriRef u1 = new UriRef("http://ex.org/1");
-	final UriRef u2 = new UriRef("http://ex.org/2");
-	final UriRef u3 = new UriRef("http://ex.org/3");
+    final UriRef u1 = new UriRef("http://ex.org/1");
+    final UriRef u2 = new UriRef("http://ex.org/2");
+    final UriRef u3 = new UriRef("http://ex.org/3");
 
-	@Test
-	public void removeSubGraph() throws NoSuchSubGraphException {
-		MGraph baseGraph = createBaseGraph();
+    @Test
+    public void removeSubGraph() throws NoSuchSubGraphException {
+        MGraph baseGraph = createBaseGraph();
 
-		MGraph subGraph = new SimpleMGraph();
-		{
-			BNode bNode1 = new BNode();
-			BNode bNode2 = new BNode();
-			subGraph.add(new TripleImpl(u1, u2, bNode2));
-			subGraph.add(new TripleImpl(bNode2, u2, bNode2));
-			subGraph.add(new TripleImpl(bNode2, u2, bNode1));
-		}
-		MGraphUtils.removeSubGraph(baseGraph, subGraph);
-		Assert.assertEquals(1, baseGraph.size());
-	}
+        MGraph subGraph = new SimpleMGraph();
+        {
+            BNode bNode1 = new BNode();
+            BNode bNode2 = new BNode();
+            subGraph.add(new TripleImpl(u1, u2, bNode2));
+            subGraph.add(new TripleImpl(bNode2, u2, bNode2));
+            subGraph.add(new TripleImpl(bNode2, u2, bNode1));
+        }
+        MGraphUtils.removeSubGraph(baseGraph, subGraph);
+        Assert.assertEquals(1, baseGraph.size());
+    }
 
-	private MGraph createBaseGraph() {
-		MGraph baseGraph = new SimpleMGraph();
-		{
-			BNode bNode1 = new BNode();
-			BNode bNode2 = new BNode();
-			baseGraph.add(new TripleImpl(u1, u2, bNode2));
-			baseGraph.add(new TripleImpl(bNode2, u2, bNode2));
-			baseGraph.add(new TripleImpl(bNode2, u2, bNode1));
-			baseGraph.add(new TripleImpl(u3, u2, u1));
-		}
-		return baseGraph;
-	}
-	
-	/** It is required that the subgraph comprises the whole context of the Bnodes it ioncludes
-	 * 
-	 * @throws org.apache.clerezza.rdf.utils.MGraphUtils.NoSuchSubGraphException
-	 */
-	@Test(expected=NoSuchSubGraphException.class)
-	public void removeIncompleteSubGraph() throws NoSuchSubGraphException {
-		MGraph baseGraph = createBaseGraph();
+    private MGraph createBaseGraph() {
+        MGraph baseGraph = new SimpleMGraph();
+        {
+            BNode bNode1 = new BNode();
+            BNode bNode2 = new BNode();
+            baseGraph.add(new TripleImpl(u1, u2, bNode2));
+            baseGraph.add(new TripleImpl(bNode2, u2, bNode2));
+            baseGraph.add(new TripleImpl(bNode2, u2, bNode1));
+            baseGraph.add(new TripleImpl(u3, u2, u1));
+        }
+        return baseGraph;
+    }
+    
+    /** It is required that the subgraph comprises the whole context of the Bnodes it ioncludes
+     * 
+     * @throws org.apache.clerezza.rdf.utils.MGraphUtils.NoSuchSubGraphException
+     */
+    @Test(expected=NoSuchSubGraphException.class)
+    public void removeIncompleteSubGraph() throws NoSuchSubGraphException {
+        MGraph baseGraph = createBaseGraph();
 
-		MGraph subGraph = new SimpleMGraph();
-		{
-			BNode bNode1 = new BNode();
-			BNode bNode2 = new BNode();
-			subGraph.add(new TripleImpl(u1, u2, bNode2));
-			subGraph.add(new TripleImpl(bNode2, u2, bNode2));
-		}
-		MGraphUtils.removeSubGraph(baseGraph, subGraph);
-	}
+        MGraph subGraph = new SimpleMGraph();
+        {
+            BNode bNode1 = new BNode();
+            BNode bNode2 = new BNode();
+            subGraph.add(new TripleImpl(u1, u2, bNode2));
+            subGraph.add(new TripleImpl(bNode2, u2, bNode2));
+        }
+        MGraphUtils.removeSubGraph(baseGraph, subGraph);
+    }
 
-	@Test(expected=NoSuchSubGraphException.class)
-	public void removeInvalidSubGraph() throws NoSuchSubGraphException {
-		MGraph baseGraph = createBaseGraph();
+    @Test(expected=NoSuchSubGraphException.class)
+    public void removeInvalidSubGraph() throws NoSuchSubGraphException {
+        MGraph baseGraph = createBaseGraph();
 
-		MGraph subGraph = new SimpleMGraph();
-		{
-			BNode bNode1 = new BNode();
-			BNode bNode2 = new BNode();
-			subGraph.add(new TripleImpl(u1, u2, bNode2));
-			subGraph.add(new TripleImpl(bNode2, u2, bNode2));
-			baseGraph.add(new TripleImpl(bNode2, u2, bNode1));
-			baseGraph.add(new TripleImpl(bNode2, u2, new BNode()));
-		}
-		MGraphUtils.removeSubGraph(baseGraph, subGraph);
-	}
+        MGraph subGraph = new SimpleMGraph();
+        {
+            BNode bNode1 = new BNode();
+            BNode bNode2 = new BNode();
+            subGraph.add(new TripleImpl(u1, u2, bNode2));
+            subGraph.add(new TripleImpl(bNode2, u2, bNode2));
+            baseGraph.add(new TripleImpl(bNode2, u2, bNode1));
+            baseGraph.add(new TripleImpl(bNode2, u2, new BNode()));
+        }
+        MGraphUtils.removeSubGraph(baseGraph, subGraph);
+    }
 }
 

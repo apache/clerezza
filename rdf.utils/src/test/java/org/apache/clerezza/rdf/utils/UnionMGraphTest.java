@@ -34,45 +34,45 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
  */
 public class UnionMGraphTest {
 
-	private final UriRef uriRef1 =
-			new UriRef("http://example.org/ontology#res1");
-	private final UriRef uriRef2 =
-			new UriRef("http://example.org/ontology#res2");
-	private final UriRef uriRef3 =
-			new UriRef("http://example.org/ontology#res3");
-	private final UriRef uriRef4 =
-			new UriRef("http://example.org/ontology#res4");
+    private final UriRef uriRef1 =
+            new UriRef("http://example.org/ontology#res1");
+    private final UriRef uriRef2 =
+            new UriRef("http://example.org/ontology#res2");
+    private final UriRef uriRef3 =
+            new UriRef("http://example.org/ontology#res3");
+    private final UriRef uriRef4 =
+            new UriRef("http://example.org/ontology#res4");
 
-	@Test
-	public void readAccess() {
-		MGraph graph = new SimpleMGraph();
-		MGraph graph2 = new SimpleMGraph();
-		BNode bnode = new BNode() {
-		};
-		graph.add(new TripleImpl(uriRef1, uriRef2, uriRef1));
-		graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
-		MGraph unionGraph = new UnionMGraph(graph, graph2);
-		Iterator<Triple> unionTriples = unionGraph.iterator();
-		Assert.assertTrue(unionTriples.hasNext());
-		unionTriples.next();
-		Assert.assertTrue(unionTriples.hasNext());
-		unionTriples.next();
-		Assert.assertFalse(unionTriples.hasNext());
-		Assert.assertEquals(2, unionGraph.size());
-	}
-	
-	@Test
-	public void writeAccess() {
-		MGraph graph = new SimpleMGraph();
-		MGraph graph2 = new SimpleMGraph();
-		BNode bnode = new BNode() {
-		};
-		graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
-		MGraph unionGraph = new UnionMGraph(graph, graph2);
-		Assert.assertEquals(1, unionGraph.size());
-		unionGraph.add(new TripleImpl(uriRef4, uriRef1, uriRef3));
-		Assert.assertEquals(1, graph.size());
-		Assert.assertEquals(2, unionGraph.size());
-		Assert.assertEquals(1, graph2.size());
-	}
+    @Test
+    public void readAccess() {
+        MGraph graph = new SimpleMGraph();
+        MGraph graph2 = new SimpleMGraph();
+        BNode bnode = new BNode() {
+        };
+        graph.add(new TripleImpl(uriRef1, uriRef2, uriRef1));
+        graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
+        MGraph unionGraph = new UnionMGraph(graph, graph2);
+        Iterator<Triple> unionTriples = unionGraph.iterator();
+        Assert.assertTrue(unionTriples.hasNext());
+        unionTriples.next();
+        Assert.assertTrue(unionTriples.hasNext());
+        unionTriples.next();
+        Assert.assertFalse(unionTriples.hasNext());
+        Assert.assertEquals(2, unionGraph.size());
+    }
+    
+    @Test
+    public void writeAccess() {
+        MGraph graph = new SimpleMGraph();
+        MGraph graph2 = new SimpleMGraph();
+        BNode bnode = new BNode() {
+        };
+        graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
+        MGraph unionGraph = new UnionMGraph(graph, graph2);
+        Assert.assertEquals(1, unionGraph.size());
+        unionGraph.add(new TripleImpl(uriRef4, uriRef1, uriRef3));
+        Assert.assertEquals(1, graph.size());
+        Assert.assertEquals(2, unionGraph.size());
+        Assert.assertEquals(1, graph2.size());
+    }
 }

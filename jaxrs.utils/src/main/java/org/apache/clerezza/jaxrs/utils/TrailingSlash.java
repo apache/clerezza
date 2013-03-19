@@ -38,48 +38,48 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  */
 public class TrailingSlash {
 
-	/**
-	 * Checks if an slash ('/') is present at the end of the URI given by
-	 * <code>UriInfo</code>. If not then a redirect is triggered to the URI with
-	 * the slash at the end.
-	 * 
-	 * @param uriInfo
-	 */
-	public static void enforcePresent(UriInfo uriInfo) {
-		String absolutPath = uriInfo.getAbsolutePath().toString();
-		if (!absolutPath.endsWith("/")) {
-			String redirectUri = absolutPath + "/";
-			Response response = createSeeOtherResponse(redirectUri);
-			throw new WebApplicationException(response);
-		}
-	}
+    /**
+     * Checks if an slash ('/') is present at the end of the URI given by
+     * <code>UriInfo</code>. If not then a redirect is triggered to the URI with
+     * the slash at the end.
+     * 
+     * @param uriInfo
+     */
+    public static void enforcePresent(UriInfo uriInfo) {
+        String absolutPath = uriInfo.getAbsolutePath().toString();
+        if (!absolutPath.endsWith("/")) {
+            String redirectUri = absolutPath + "/";
+            Response response = createSeeOtherResponse(redirectUri);
+            throw new WebApplicationException(response);
+        }
+    }
 
-	/**
-	 * Checks if no slash ('/') is present at the end of the URI given by
-	 * <code>UriInfo</code>. If a slash is present, a redirect is triggered to
-	 * the URI with no slash at the end.
-	 * 
-	 * @param uriInfo
-	 */
-	public static void enforceNotPresent(UriInfo uriInfo) {
-		String absolutPath = uriInfo.getAbsolutePath().toString();
-		if (absolutPath.endsWith("/")) {
-			String redirectUri = absolutPath.substring(0,
-					absolutPath.length() - 1);
-			Response response = createSeeOtherResponse(redirectUri);
-			throw new WebApplicationException(response);
-		}
-	}
+    /**
+     * Checks if no slash ('/') is present at the end of the URI given by
+     * <code>UriInfo</code>. If a slash is present, a redirect is triggered to
+     * the URI with no slash at the end.
+     * 
+     * @param uriInfo
+     */
+    public static void enforceNotPresent(UriInfo uriInfo) {
+        String absolutPath = uriInfo.getAbsolutePath().toString();
+        if (absolutPath.endsWith("/")) {
+            String redirectUri = absolutPath.substring(0,
+                    absolutPath.length() - 1);
+            Response response = createSeeOtherResponse(redirectUri);
+            throw new WebApplicationException(response);
+        }
+    }
 
-	private static Response createSeeOtherResponse(String redirectUri) {
-		URI seeOtherUri = null;
-		try {
-			seeOtherUri = new URI(redirectUri);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-		ResponseBuilder rb = Response.seeOther(seeOtherUri);
-		return rb.build();
-	}
+    private static Response createSeeOtherResponse(String redirectUri) {
+        URI seeOtherUri = null;
+        try {
+            seeOtherUri = new URI(redirectUri);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        ResponseBuilder rb = Response.seeOther(seeOtherUri);
+        return rb.build();
+    }
 }

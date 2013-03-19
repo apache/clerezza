@@ -20,33 +20,33 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>internal.archetype</artifactId>
-	<packaging>maven-archetype</packaging>
-	<version>0.10-SNAPSHOT</version>
-	<name>Clerezza - Archetype for clerezza.org projects</name>
-	<description>Generic archetype for clerezza projects</description>
-	<build>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.archetype</groupId>
-				<artifactId>archetype-packaging</artifactId>
-				<version>2.0-alpha-4</version>
-			</extension>
-		</extensions>
-		<plugins>
-			<plugin>
-				<artifactId>maven-archetype-plugin</artifactId>
-				<version>2.0-alpha-4</version>
-				<extensions>true</extensions>
-			</plugin>
-		</plugins>
-	</build>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>internal.archetype</artifactId>
+    <packaging>maven-archetype</packaging>
+    <version>0.10-SNAPSHOT</version>
+    <name>Clerezza - Archetype for clerezza.org projects</name>
+    <description>Generic archetype for clerezza projects</description>
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.archetype</groupId>
+                <artifactId>archetype-packaging</artifactId>
+                <version>2.0-alpha-4</version>
+            </extension>
+        </extensions>
+        <plugins>
+            <plugin>
+                <artifactId>maven-archetype-plugin</artifactId>
+                <version>2.0-alpha-4</version>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

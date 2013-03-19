@@ -32,22 +32,22 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PermissionInfo {
-	
-	/**
-	 * The name of the permission in a human comprehensible form.
-	 */
-	String value();
-	
-	/**
-	 * A description about the permission.
-	 */
-	String description() default "";
+    
+    /**
+     * The name of the permission in a human comprehensible form.
+     */
+    String value();
+    
+    /**
+     * A description about the permission.
+     */
+    String description() default "";
 
-	/**
-	 * A relative path to the icon resource that describes pictorgraphically what 
-	 * the permission does. E.g. the icon of a file read permission may depict an eye,
-	 * while the icon for a file write permission might be a pencil.
-	 */
-	String icon() default "";
+    /**
+     * A relative path to the icon resource that describes pictorgraphically what 
+     * the permission does. E.g. the icon of a file read permission may depict an eye,
+     * while the icon for a file write permission might be a pencil.
+     */
+    String icon() default "";
 
 }

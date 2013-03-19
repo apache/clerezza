@@ -27,36 +27,36 @@ import java.util.Iterator;
  */
 public class IntHashSet extends HashSet<Integer> implements IntSet {
 
-	@Override
-	public IntIterator intIterator() {
-		final Iterator<Integer> base = iterator();
-		return new IntIterator() {
+    @Override
+    public IntIterator intIterator() {
+        final Iterator<Integer> base = iterator();
+        return new IntIterator() {
 
-			@Override
-			public int nextInt() {
-				return base.next();
-			}
+            @Override
+            public int nextInt() {
+                return base.next();
+            }
 
-			@Override
-			public boolean hasNext() {
-				return base.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return base.hasNext();
+            }
 
-			@Override
-			public Integer next() {
-				return base.next();
-			}
+            @Override
+            public Integer next() {
+                return base.next();
+            }
 
-			@Override
-			public void remove() {
-				base.remove();
-			}
-		};
-	}
+            @Override
+            public void remove() {
+                base.remove();
+            }
+        };
+    }
 
-	@Override
-	public void add(int i) {
-		super.add((Integer)i);
-	}
+    @Override
+    public void add(int i) {
+        super.add((Integer)i);
+    }
 
 }

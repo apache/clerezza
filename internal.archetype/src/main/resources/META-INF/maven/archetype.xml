@@ -21,9 +21,9 @@
 -->
 
 <archetype>
-	<id>org.apache.clerezza.internal.archetype</id>
-	<resources>
-		<resource>NOTICE.txt</resource>
-		<resource>.hgignore</resource>
-	</resources>
+    <id>org.apache.clerezza.internal.archetype</id>
+    <resources>
+        <resource>NOTICE.txt</resource>
+        <resource>.hgignore</resource>
+    </resources>
 </archetype>

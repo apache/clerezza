@@ -30,8 +30,8 @@ import org.apache.clerezza.rdf.core.TripleCollection;
 public class AddEvent extends GraphEvent {
 
 
-	public AddEvent(TripleCollection graph,  Triple triple) {
-		super(graph, triple);
-	}
+    public AddEvent(TripleCollection graph,  Triple triple) {
+        super(graph, triple);
+    }
 
 }

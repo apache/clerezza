@@ -25,7 +25,7 @@ package org.apache.clerezza.platform.usermanager;
  */
 public class UserHasNoNameException extends RuntimeException {
 
-	public UserHasNoNameException(String msg) {
-		super(msg);
-	}
+    public UserHasNoNameException(String msg) {
+        super(msg);
+    }
 }

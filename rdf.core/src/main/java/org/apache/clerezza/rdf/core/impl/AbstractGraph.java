@@ -35,72 +35,72 @@ import org.apache.clerezza.rdf.core.impl.graphmatching.GraphMatcher;
  * 
  */
 public abstract class AbstractGraph extends AbstractTripleCollection
-		implements Graph {
+        implements Graph {
 
-	public final synchronized int hashCode() {
-		int result = 0;
-		for (Iterator<Triple> iter = iterator(); iter.hasNext();) {
-			result += getBlankNodeBlindHash(iter.next());
-		}
-		return result;
-	}
+    public final synchronized int hashCode() {
+        int result = 0;
+        for (Iterator<Triple> iter = iterator(); iter.hasNext();) {
+            result += getBlankNodeBlindHash(iter.next());
+        }
+        return result;
+    }
 
-	/**
-	 * @param triple
-	 * @return hash without BNode hashes
-	 */
-	private int getBlankNodeBlindHash(Triple triple) {
-		int hash = triple.getPredicate().hashCode();
-		Resource subject = triple.getSubject();
+    /**
+     * @param triple
+     * @return hash without BNode hashes
+     */
+    private int getBlankNodeBlindHash(Triple triple) {
+        int hash = triple.getPredicate().hashCode();
+        Resource subject = triple.getSubject();
 
-		if (!(subject instanceof BNode)) {
-			hash ^= subject.hashCode() >> 1;
-		}
-		Resource object = triple.getObject();
-		if (!(object instanceof BNode)) {
-			hash ^= object.hashCode() << 1;
-		}
+        if (!(subject instanceof BNode)) {
+            hash ^= subject.hashCode() >> 1;
+        }
+        Resource object = triple.getObject();
+        if (!(object instanceof BNode)) {
+            hash ^= object.hashCode() << 1;
+        }
 
-		return hash;
-	}
+        return hash;
+    }
 
-	@Override
-	public boolean add(Triple e) {
-		throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+    @Override
+    public boolean add(Triple e) {
+        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
 
-	}
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends Triple> c) {
-		throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
-	}
+    @Override
+    public boolean addAll(Collection<? extends Triple> c) {
+        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+    }
 
-	@Override
-	public boolean remove(Object o) {
-		throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
-	}
+    @Override
+    public boolean remove(Object o) {
+        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+    }
 
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
-	}
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+    }
 
-	@Override
-	public void clear() {
-		throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
-	}
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Graph)) {
-			return false;
-		}
-		if (hashCode() != obj.hashCode()) {
-			return false;
-		}
-		return GraphMatcher.getValidMapping(this, (Graph) obj) != null;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Graph)) {
+            return false;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
+        return GraphMatcher.getValidMapping(this, (Graph) obj) != null;
+    }
 }

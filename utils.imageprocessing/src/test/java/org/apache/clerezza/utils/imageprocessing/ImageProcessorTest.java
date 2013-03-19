@@ -35,65 +35,65 @@ import org.junit.Test;
  */
 public class ImageProcessorTest {
 
-	private ImageProcessor processor;
-	
-	private BufferedImage bimg;
-	@Before
-	public void setUp() throws IOException {
-		processor = new JavaGraphicsProvider();		
-		bimg = ImageIO.read(new File(getClass().getResource("testimage.png").getPath()));
-	}
+    private ImageProcessor processor;
+    
+    private BufferedImage bimg;
+    @Before
+    public void setUp() throws IOException {
+        processor = new JavaGraphicsProvider();        
+        bimg = ImageIO.read(new File(getClass().getResource("testimage.png").getPath()));
+    }
 
-	/**
-	 * Tests if a copy of an image which was rotated 360 degrees is the same 
-	 * as the original image
-	 */
-	@Test
-	public void testRotateImage360() throws IOException {
-		BufferedImage tempImg = processor.rotate(bimg, 360);
+    /**
+     * Tests if a copy of an image which was rotated 360 degrees is the same 
+     * as the original image
+     */
+    @Test
+    public void testRotateImage360() throws IOException {
+        BufferedImage tempImg = processor.rotate(bimg, 360);
 
-		Assert.assertTrue(bimg.getWidth() == tempImg.getWidth());
-		Assert.assertTrue(bimg.getHeight() == tempImg.getHeight());
+        Assert.assertTrue(bimg.getWidth() == tempImg.getWidth());
+        Assert.assertTrue(bimg.getHeight() == tempImg.getHeight());
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ByteArrayOutputStream tempBaos = new ByteArrayOutputStream();
-		ImageIO.write(bimg, "png", baos);
-		ImageIO.write(tempImg, "png", tempBaos);
-		byte[] bytesOut = baos.toByteArray();
-		baos.flush();
-		byte[] tempBytesOut = tempBaos.toByteArray();
-		tempBaos.flush();
-		Assert.assertArrayEquals(bytesOut, tempBytesOut);
-	}
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream tempBaos = new ByteArrayOutputStream();
+        ImageIO.write(bimg, "png", baos);
+        ImageIO.write(tempImg, "png", tempBaos);
+        byte[] bytesOut = baos.toByteArray();
+        baos.flush();
+        byte[] tempBytesOut = tempBaos.toByteArray();
+        tempBaos.flush();
+        Assert.assertArrayEquals(bytesOut, tempBytesOut);
+    }
 
-	/**
-	 * Tests if a a copy of an image which was rotated 180 degrees keeps
-	 * the width and the height
-	 */
-	@Test
-	public void testRotateImage180() throws IOException {
-		BufferedImage tempImg = processor.rotate(bimg, 180);
+    /**
+     * Tests if a a copy of an image which was rotated 180 degrees keeps
+     * the width and the height
+     */
+    @Test
+    public void testRotateImage180() throws IOException {
+        BufferedImage tempImg = processor.rotate(bimg, 180);
 
-		Assert.assertTrue(bimg.getWidth() == tempImg.getWidth());
-		Assert.assertTrue(bimg.getHeight() == tempImg.getHeight());
-	}
+        Assert.assertTrue(bimg.getWidth() == tempImg.getWidth());
+        Assert.assertTrue(bimg.getHeight() == tempImg.getHeight());
+    }
 
-	/**
-	 * Tests if the resulted thumbnail has the specified size.
-	 * @throws java.io.IOException
-	 */
-	@Test
-	public void testMakeAThumbnail() throws IOException {
-		BufferedImage tempImg = processor.makeAThumbnail(bimg, 50, 70);
-		Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
-		Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
-		bimg = ImageIO.read(new File(getClass().getResource("testimage1.jpg").getPath()));
-		tempImg = processor.makeAThumbnail(bimg, 50, 70);
-		Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
-		Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
-		bimg = ImageIO.read(new File(getClass().getResource("testimage2.jpg").getPath()));
-		tempImg = processor.makeAThumbnail(bimg, 50, 70);
-		Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
-		Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
-	}
+    /**
+     * Tests if the resulted thumbnail has the specified size.
+     * @throws java.io.IOException
+     */
+    @Test
+    public void testMakeAThumbnail() throws IOException {
+        BufferedImage tempImg = processor.makeAThumbnail(bimg, 50, 70);
+        Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
+        Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
+        bimg = ImageIO.read(new File(getClass().getResource("testimage1.jpg").getPath()));
+        tempImg = processor.makeAThumbnail(bimg, 50, 70);
+        Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
+        Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
+        bimg = ImageIO.read(new File(getClass().getResource("testimage2.jpg").getPath()));
+        tempImg = processor.makeAThumbnail(bimg, 50, 70);
+        Assert.assertTrue(50 == tempImg.getWidth()||70 == tempImg.getHeight());
+        Assert.assertTrue(tempImg.getWidth() <= 50 && tempImg.getHeight() <= 70);
+    }
 }

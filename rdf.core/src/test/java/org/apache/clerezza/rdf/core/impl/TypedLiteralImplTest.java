@@ -31,30 +31,30 @@ import org.apache.clerezza.rdf.core.UriRef;
 
 public class TypedLiteralImplTest {
     
-	
-	@Test public void typedLiteralEquality() {
-		String stringValue = "some text";
-		UriRef uriRef = new UriRef("http://example.org/datatypes/magic");
-		TypedLiteral literal1 = new TypedLiteralImpl(stringValue, uriRef);
-		TypedLiteral literal2 = new TypedLiteralImpl(stringValue, uriRef);		
-		Assert.assertEquals(literal1, literal2);
-		Assert.assertEquals(literal1.hashCode(), literal2.hashCode());
-		TypedLiteral literal3 = new TypedLiteralImpl("something else", uriRef);
-		Assert.assertFalse(literal1.equals(literal3));
-		UriRef uriRef2 = new UriRef("http://example.org/datatypes/other");
-		TypedLiteral literal4 = new TypedLiteralImpl(stringValue, uriRef2);
-		Assert.assertFalse(literal1.equals(literal4));
-	}
+    
+    @Test public void typedLiteralEquality() {
+        String stringValue = "some text";
+        UriRef uriRef = new UriRef("http://example.org/datatypes/magic");
+        TypedLiteral literal1 = new TypedLiteralImpl(stringValue, uriRef);
+        TypedLiteral literal2 = new TypedLiteralImpl(stringValue, uriRef);        
+        Assert.assertEquals(literal1, literal2);
+        Assert.assertEquals(literal1.hashCode(), literal2.hashCode());
+        TypedLiteral literal3 = new TypedLiteralImpl("something else", uriRef);
+        Assert.assertFalse(literal1.equals(literal3));
+        UriRef uriRef2 = new UriRef("http://example.org/datatypes/other");
+        TypedLiteral literal4 = new TypedLiteralImpl(stringValue, uriRef2);
+        Assert.assertFalse(literal1.equals(literal4));
+    }
 
 
-	/**
-	 * The hascode is equals to the hascode of the lexical form plus the hashcode of the dataTyp
-	 */
-	@Test public void checkHashCode() {
-		String stringValue = "some text";
-		UriRef uriRef = new UriRef("http://example.org/datatypes/magic");
-		TypedLiteral literal =  new TypedLiteralImpl(stringValue, uriRef);
-		Assert.assertEquals(stringValue.hashCode() + uriRef.hashCode(), literal.hashCode());
-	}
+    /**
+     * The hascode is equals to the hascode of the lexical form plus the hashcode of the dataTyp
+     */
+    @Test public void checkHashCode() {
+        String stringValue = "some text";
+        UriRef uriRef = new UriRef("http://example.org/datatypes/magic");
+        TypedLiteral literal =  new TypedLiteralImpl(stringValue, uriRef);
+        Assert.assertEquals(stringValue.hashCode() + uriRef.hashCode(), literal.hashCode());
+    }
 
 }

@@ -27,22 +27,22 @@ import junit.framework.Assert;
  * @author reto
  */
 public class LanguageTest {
-	
-	@Test
-	public void languageEqualityTest() {
-		Language lang1 = new Language("DE");
-		Language lang2 = new Language("DE");
-		Assert.assertEquals(lang1, lang2);
-		Assert.assertEquals(lang1.hashCode(), lang2.hashCode());
-		Language lang3 = new Language("EN");
-		Assert.assertFalse(lang1.equals(lang3));
-	}
-	
-	@Test
-	public void toStringTest() {
-		final String id = "DE";
-		Language lang1 = new Language(id);
-		Assert.assertEquals(lang1.toString(), id);
-	}
+    
+    @Test
+    public void languageEqualityTest() {
+        Language lang1 = new Language("DE");
+        Language lang2 = new Language("DE");
+        Assert.assertEquals(lang1, lang2);
+        Assert.assertEquals(lang1.hashCode(), lang2.hashCode());
+        Language lang3 = new Language("EN");
+        Assert.assertFalse(lang1.equals(lang3));
+    }
+    
+    @Test
+    public void toStringTest() {
+        final String id = "DE";
+        Language lang1 = new Language(id);
+        Assert.assertEquals(lang1.toString(), id);
+    }
 
 }

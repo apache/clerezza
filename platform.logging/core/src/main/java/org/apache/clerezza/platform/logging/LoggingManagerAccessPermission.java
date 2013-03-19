@@ -30,42 +30,42 @@ import org.apache.clerezza.permissiondescriptions.PermissionInfo;
  * @author tio
  */
 @PermissionInfo(value="Logging Manager Access Permission", description="Grants access " +
-	"to the logging manager.")
+    "to the logging manager.")
 public class LoggingManagerAccessPermission extends Permission {
 
-	public LoggingManagerAccessPermission() {
-		super("LoggingMangerAccess");
-	}
+    public LoggingManagerAccessPermission() {
+        super("LoggingMangerAccess");
+    }
 
-	public LoggingManagerAccessPermission(String name, String actions) {
-		super("LoggingMangerAccess");
-	}
+    public LoggingManagerAccessPermission(String name, String actions) {
+        super("LoggingMangerAccess");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return (permission instanceof LoggingManagerAccessPermission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return (permission instanceof LoggingManagerAccessPermission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 13;
-		hash = 101 * hash + "LoggingMangerAccess".hashCode();
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 13;
+        hash = 101 * hash + "LoggingMangerAccess".hashCode();
+        return hash;
+    }
 }

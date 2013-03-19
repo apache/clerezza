@@ -43,46 +43,46 @@ import org.apache.felix.scr.annotations.Service;
 @Component
 @Service(SerializingProvider.class)
 @Property(name="supportedFormat", value={SupportedFormat.RDF_XML,
-	SupportedFormat.TURTLE,	SupportedFormat.X_TURTLE,
-	SupportedFormat.N_TRIPLE, SupportedFormat.N3})
+    SupportedFormat.TURTLE,    SupportedFormat.X_TURTLE,
+    SupportedFormat.N_TRIPLE, SupportedFormat.N3})
 @SupportedFormat({SupportedFormat.RDF_XML,
-	SupportedFormat.TURTLE,	SupportedFormat.X_TURTLE,
-	SupportedFormat.N_TRIPLE, SupportedFormat.N3})
+    SupportedFormat.TURTLE,    SupportedFormat.X_TURTLE,
+    SupportedFormat.N_TRIPLE, SupportedFormat.N3})
 public class JenaSerializerProvider implements SerializingProvider {
 
-	@Override
-	public void serialize(OutputStream serializedGraph, TripleCollection tc,
-			String formatIdentifier) {
-		String jenaFormat = getJenaFormat(formatIdentifier);
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(tc);
-		Model model = ModelFactory.createModelForGraph(graph);
-		RDFWriter writer = model.getWriter(jenaFormat);
-		if ("RDF/XML".equals(jenaFormat)) {
-			//jena complains about some URIs that aren't truely bad
-			//see: http://tech.groups.yahoo.com/group/jena-dev/message/38313
-			writer.setProperty("allowBadURIs", Boolean.TRUE);
-		}
-		writer.write(model, serializedGraph, "");
-	}
+    @Override
+    public void serialize(OutputStream serializedGraph, TripleCollection tc,
+            String formatIdentifier) {
+        String jenaFormat = getJenaFormat(formatIdentifier);
+        com.hp.hpl.jena.graph.Graph graph = new JenaGraph(tc);
+        Model model = ModelFactory.createModelForGraph(graph);
+        RDFWriter writer = model.getWriter(jenaFormat);
+        if ("RDF/XML".equals(jenaFormat)) {
+            //jena complains about some URIs that aren't truely bad
+            //see: http://tech.groups.yahoo.com/group/jena-dev/message/38313
+            writer.setProperty("allowBadURIs", Boolean.TRUE);
+        }
+        writer.write(model, serializedGraph, "");
+    }
 
-	private String getJenaFormat(String formatIdentifier) {
-		int semicolonPos = formatIdentifier.indexOf(';');
-		if (semicolonPos > -1) {
-			formatIdentifier = formatIdentifier.substring(0, semicolonPos);
-		}
-		if (formatIdentifier.equals(SupportedFormat.RDF_XML)) {
-			return "RDF/XML";
-		}
-		if (formatIdentifier.equals(SupportedFormat.TURTLE) ||
-				formatIdentifier.equals(SupportedFormat.X_TURTLE)) {
-			return "TURTLE";
-		}
-		if (formatIdentifier.equals(SupportedFormat.N3)) {
-			return "N3";
-		}
-		if (formatIdentifier.equals(SupportedFormat.N_TRIPLE)) {
-			return "N-TRIPLE";
-		}
-		throw new UnsupportedSerializationFormatException(formatIdentifier);
-	}
+    private String getJenaFormat(String formatIdentifier) {
+        int semicolonPos = formatIdentifier.indexOf(';');
+        if (semicolonPos > -1) {
+            formatIdentifier = formatIdentifier.substring(0, semicolonPos);
+        }
+        if (formatIdentifier.equals(SupportedFormat.RDF_XML)) {
+            return "RDF/XML";
+        }
+        if (formatIdentifier.equals(SupportedFormat.TURTLE) ||
+                formatIdentifier.equals(SupportedFormat.X_TURTLE)) {
+            return "TURTLE";
+        }
+        if (formatIdentifier.equals(SupportedFormat.N3)) {
+            return "N3";
+        }
+        if (formatIdentifier.equals(SupportedFormat.N_TRIPLE)) {
+            return "N-TRIPLE";
+        }
+        throw new UnsupportedSerializationFormatException(formatIdentifier);
+    }
 }

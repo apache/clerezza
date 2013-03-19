@@ -29,9 +29,9 @@ import org.apache.clerezza.rdf.core.test.MGraphTest;
  */
 public class SimpleMGraphGenericTest extends MGraphTest{
 
-	@Override
-	protected MGraph getEmptyMGraph() {
-		return new SimpleMGraph();
-	}
+    @Override
+    protected MGraph getEmptyMGraph() {
+        return new SimpleMGraph();
+    }
 
 }

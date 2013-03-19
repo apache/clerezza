@@ -26,54 +26,54 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class Constants {
 
-	/**
-	 * all hosts uri-prefix, uri scheme for references relative to the local
-	 * instance.
-	 */
-	public static final String URN_LOCAL_INSTANCE = "urn:x-localinstance:";
+    /**
+     * all hosts uri-prefix, uri scheme for references relative to the local
+     * instance.
+     */
+    public static final String URN_LOCAL_INSTANCE = "urn:x-localinstance:";
 
-	/**
-	 * the uri of the system graph as string
-	 */
-	public static final String SYSTEM_GRAPH_URI_STRING =
-			URN_LOCAL_INSTANCE+"/system.graph";
-	/**
-	 * the uri of the system graph
-	 */
-	public static final UriRef SYSTEM_GRAPH_URI =
-			new UriRef(SYSTEM_GRAPH_URI_STRING);
+    /**
+     * the uri of the system graph as string
+     */
+    public static final String SYSTEM_GRAPH_URI_STRING =
+            URN_LOCAL_INSTANCE+"/system.graph";
+    /**
+     * the uri of the system graph
+     */
+    public static final UriRef SYSTEM_GRAPH_URI =
+            new UriRef(SYSTEM_GRAPH_URI_STRING);
 
-	/**
-	 * the uri of the config graph as string
-	 */
-	public static final String CONFIG_GRAPH_URI_STRING =
-			URN_LOCAL_INSTANCE+"/config.graph";
-	/**
-	 * the uri of the config graph as string
-	 */
-	public static final UriRef CONFIG_GRAPH_URI =
-			new UriRef(CONFIG_GRAPH_URI_STRING);
+    /**
+     * the uri of the config graph as string
+     */
+    public static final String CONFIG_GRAPH_URI_STRING =
+            URN_LOCAL_INSTANCE+"/config.graph";
+    /**
+     * the uri of the config graph as string
+     */
+    public static final UriRef CONFIG_GRAPH_URI =
+            new UriRef(CONFIG_GRAPH_URI_STRING);
 
-	/**
-	 * the uri of the content graph as string
-	 */
-	public static final String CONTENT_GRAPH_URI_STRING =
-			URN_LOCAL_INSTANCE+"/content.graph";
-	/**
-	 * the uri of the content graph
-	 */
-	public static final UriRef CONTENT_GRAPH_URI =
-			new UriRef(CONTENT_GRAPH_URI_STRING);
+    /**
+     * the uri of the content graph as string
+     */
+    public static final String CONTENT_GRAPH_URI_STRING =
+            URN_LOCAL_INSTANCE+"/content.graph";
+    /**
+     * the uri of the content graph
+     */
+    public static final UriRef CONTENT_GRAPH_URI =
+            new UriRef(CONTENT_GRAPH_URI_STRING);
 
 
-	/**
-	 * all hosts uri-prefix, uri scheme for which the resource are also named
-	 * with the any schema/authority the instance can be reached with instead
-	 * of this prefix
-	 *
-	 * @deprecated use URN_LOCAL_INSTANCE
-	 */
-	@Deprecated
-	public static final String ALL_HOSTS_URI_PREFIX = URN_LOCAL_INSTANCE;
+    /**
+     * all hosts uri-prefix, uri scheme for which the resource are also named
+     * with the any schema/authority the instance can be reached with instead
+     * of this prefix
+     *
+     * @deprecated use URN_LOCAL_INSTANCE
+     */
+    @Deprecated
+    public static final String ALL_HOSTS_URI_PREFIX = URN_LOCAL_INSTANCE;
 
 }

@@ -25,43 +25,43 @@ package org.apache.clerezza.templating.seedsnipe.datastructure;
  * @author reto
  */
 public class FieldIndexOutOfBoundsException extends Exception {
-	
-	private static final long serialVersionUID = 3632533344966727297L;
-	private final String message;
-	private final int dimension; 
+    
+    private static final long serialVersionUID = 3632533344966727297L;
+    private final String message;
+    private final int dimension; 
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param fieldName  The name of the field that has exceeded its bounds.
-	 * @param arrayPos  The indices of the field exceeding its bounds.
-	 * @param dimension  The arrayPos dimension that caused the exception
-	 * 						 (equals the index of arrayPos used).  
-	 */
-	public FieldIndexOutOfBoundsException(final String fieldName, final int[] arrayPos, final int dimension) {
-		this.dimension = dimension;
-		final StringBuffer message = new StringBuffer("Could not resolve "
-				+ fieldName + " with arrayPos (");
-		for (int i = 0; i < arrayPos.length; i++) {
-			message.append(arrayPos[i] + ",");
-		}
-		message.append(")");
-		this.message = message.toString();
+    /**
+     * Constructor.
+     * 
+     * @param fieldName  The name of the field that has exceeded its bounds.
+     * @param arrayPos  The indices of the field exceeding its bounds.
+     * @param dimension  The arrayPos dimension that caused the exception
+     *                          (equals the index of arrayPos used).  
+     */
+    public FieldIndexOutOfBoundsException(final String fieldName, final int[] arrayPos, final int dimension) {
+        this.dimension = dimension;
+        final StringBuffer message = new StringBuffer("Could not resolve "
+                + fieldName + " with arrayPos (");
+        for (int i = 0; i < arrayPos.length; i++) {
+            message.append(arrayPos[i] + ",");
+        }
+        message.append(")");
+        this.message = message.toString();
 
-	}
-	
-	/**
-	 * Returns which dimension (equals the index of arrayPos) that has been used
-	 * when the Exception has been thrown.
-	 * 
-	 * @return  The dimension.
-	 */
-	public int getDimension() {
-		return dimension;
-	}
+    }
+    
+    /**
+     * Returns which dimension (equals the index of arrayPos) that has been used
+     * when the Exception has been thrown.
+     * 
+     * @return  The dimension.
+     */
+    public int getDimension() {
+        return dimension;
+    }
 
-	@Override
-	public String getMessage() {
-		return message;
-	}
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }

@@ -53,31 +53,31 @@ import org.slf4j.LoggerFactory;
  */
 public class TypePrioritizerTest {
 
-	TypePrioritizer typePrioritizer;
+    TypePrioritizer typePrioritizer;
 
-	@Before
-	public void before() {
-		typePrioritizer = new TypePrioritizer();
-		MGraph mGraph = new SimpleMGraph();
-		RdfList rdfList = new RdfList(TypePrioritizer.typePriorityListUri, mGraph);
-		rdfList.add(FOAF.Person);
-		rdfList.add(FOAF.Group);
-		rdfList.add(FOAF.Agent);
-		final LockableMGraph systemGraph = new LockableMGraphWrapperForTesting(mGraph);
-		typePrioritizer.bindSystemGraph(systemGraph);
-	}
+    @Before
+    public void before() {
+        typePrioritizer = new TypePrioritizer();
+        MGraph mGraph = new SimpleMGraph();
+        RdfList rdfList = new RdfList(TypePrioritizer.typePriorityListUri, mGraph);
+        rdfList.add(FOAF.Person);
+        rdfList.add(FOAF.Group);
+        rdfList.add(FOAF.Agent);
+        final LockableMGraph systemGraph = new LockableMGraphWrapperForTesting(mGraph);
+        typePrioritizer.bindSystemGraph(systemGraph);
+    }
 
-	@Test
-	public void oderList() {
-		List<UriRef> l = new ArrayList<UriRef>();
-		l.add(FOAF.Agent);
-		l.add(RDF.Bag);
-		l.add(FOAF.Person);
-		Iterator<UriRef> iter = typePrioritizer.iterate(l);
-		Assert.assertEquals(FOAF.Person, iter.next());
-		Assert.assertEquals(FOAF.Agent, iter.next());
-		Assert.assertEquals(RDF.Bag, iter.next());
-		Assert.assertFalse(iter.hasNext());
-	}
+    @Test
+    public void oderList() {
+        List<UriRef> l = new ArrayList<UriRef>();
+        l.add(FOAF.Agent);
+        l.add(RDF.Bag);
+        l.add(FOAF.Person);
+        Iterator<UriRef> iter = typePrioritizer.iterate(l);
+        Assert.assertEquals(FOAF.Person, iter.next());
+        Assert.assertEquals(FOAF.Agent, iter.next());
+        Assert.assertEquals(RDF.Bag, iter.next());
+        Assert.assertFalse(iter.hasNext());
+    }
 
 }

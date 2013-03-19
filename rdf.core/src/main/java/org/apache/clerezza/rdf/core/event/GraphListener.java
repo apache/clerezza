@@ -30,14 +30,14 @@ import java.util.List;
  */
 public interface GraphListener {
 
-	/**
-	 * This method is called when a <code>ListenableTripleCollection</code> was
-	 * modified, to which this <code>GraphListener</code> was added. A
-	 * <code>List</code> containing <code>GraphEvent</code>s are passed as
-	 * argument. The list contains all events in which a triple was part of
-	 * the modification that matched the <code>FilterTriple</code> which was passed
-	 * as argument when the listener was added.
-	 * @param events
-	 */
-	public void graphChanged(List<GraphEvent> events);
+    /**
+     * This method is called when a <code>ListenableTripleCollection</code> was
+     * modified, to which this <code>GraphListener</code> was added. A
+     * <code>List</code> containing <code>GraphEvent</code>s are passed as
+     * argument. The list contains all events in which a triple was part of
+     * the modification that matched the <code>FilterTriple</code> which was passed
+     * as argument when the listener was added.
+     * @param events
+     */
+    public void graphChanged(List<GraphEvent> events);
 }

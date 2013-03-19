@@ -45,14 +45,14 @@ public class SesameGraphTestSupport {
      */
     public SesameMGraph setUp(String testName) throws RepositoryException, IOException {
         final File dataDir= File.createTempFile("SesameGraph", "Test");
-		dataDir.delete();
+        dataDir.delete();
         dataDir.mkdirs();
         cleanDirectory(dataDir);
         
 
         
         graph= new SesameMGraph();
-		graph.initialize(dataDir);
+        graph.initialize(dataDir);
         //graph.activate(cCtx);
         return graph;
     }

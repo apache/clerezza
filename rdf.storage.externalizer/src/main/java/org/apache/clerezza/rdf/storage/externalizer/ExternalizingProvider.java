@@ -69,279 +69,279 @@ import org.slf4j.LoggerFactory;
 @Service(WeightedTcProvider.class)
 @Property(name = "weight", intValue = 500)
 @Reference(name="weightedTcProvider", policy=ReferencePolicy.DYNAMIC,
-		referenceInterface=WeightedTcProvider.class,
-		cardinality=ReferenceCardinality.MANDATORY_MULTIPLE)
+        referenceInterface=WeightedTcProvider.class,
+        cardinality=ReferenceCardinality.MANDATORY_MULTIPLE)
 public class ExternalizingProvider implements WeightedTcProvider {
 
-	private static final String EXTERNALIZEDLITERALS_SUFFIX = "-externalizedliterals";
+    private static final String EXTERNALIZEDLITERALS_SUFFIX = "-externalizedliterals";
 
-	//@Reference(policy=ReferencePolicy.DYNAMIC, cardinality=ReferenceCardinality.OPTIONAL_UNARY)
-	private TcProviderMultiplexer tcProvider = new TcProviderMultiplexer();
-	/**
-	 *	directory where all graphs are stored
-	 */
-	private static final String RELATIVE_DATA_PATH_NAME = "externalized-literals/";
-	private File dataPath;
-	private static final Logger log = LoggerFactory.getLogger(ExternalizingProvider.class);
-	private int weight = 500;
+    //@Reference(policy=ReferencePolicy.DYNAMIC, cardinality=ReferenceCardinality.OPTIONAL_UNARY)
+    private TcProviderMultiplexer tcProvider = new TcProviderMultiplexer();
+    /**
+     *    directory where all graphs are stored
+     */
+    private static final String RELATIVE_DATA_PATH_NAME = "externalized-literals/";
+    private File dataPath;
+    private static final Logger log = LoggerFactory.getLogger(ExternalizingProvider.class);
+    private int weight = 500;
 
-	public ExternalizingProvider() {
-	}
+    public ExternalizingProvider() {
+    }
 
-	ExternalizingProvider(File directory) {
-		dataPath = directory;
-		tcProvider = TcManager.getInstance();
-	}
+    ExternalizingProvider(File directory) {
+        dataPath = directory;
+        tcProvider = TcManager.getInstance();
+    }
 
-	protected void activate(ComponentContext cCtx) {
-		log.info("Activating literal externalizing provider");
-		if (cCtx != null) {
-			weight = (Integer) cCtx.getProperties().get("weight");
-			dataPath = cCtx.getBundleContext().getDataFile(RELATIVE_DATA_PATH_NAME);
-		}
-	}
+    protected void activate(ComponentContext cCtx) {
+        log.info("Activating literal externalizing provider");
+        if (cCtx != null) {
+            weight = (Integer) cCtx.getProperties().get("weight");
+            dataPath = cCtx.getBundleContext().getDataFile(RELATIVE_DATA_PATH_NAME);
+        }
+    }
 
-	protected void deactivate(ComponentContext cCtx) {
-		dataPath = null;
-	}
+    protected void deactivate(ComponentContext cCtx) {
+        dataPath = null;
+    }
 
-	@Override
-	public int getWeight() {
-		return weight;
-	}
+    @Override
+    public int getWeight() {
+        return weight;
+    }
 
-	/**
-	 * we don't do graphs
-	 * 
-	 * @param name
-	 * @return
-	 * @throws NoSuchEntityException
-	 */
-	@Override
-	public Graph getGraph(UriRef name) throws NoSuchEntityException {
-		throw new NoSuchEntityException(name);
-	}
+    /**
+     * we don't do graphs
+     * 
+     * @param name
+     * @return
+     * @throws NoSuchEntityException
+     */
+    @Override
+    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+        throw new NoSuchEntityException(name);
+    }
 
-	@Override
-	public synchronized MGraph getMGraph(UriRef name) throws NoSuchEntityException {
-		if (name.getUnicodeString().endsWith(EXTERNALIZEDLITERALS_SUFFIX)) {
-			throw new IllegalArgumentException();
-		}
-		try {
-			final UriRef baseGraphName = new UriRef(name.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
-			if (tcProvider == null) {
-				throw new RuntimeException("MGraph retrieval currently not possible: tcManager unavailable");
-			}
-			final MGraph baseGraph = AccessController.doPrivileged(new PrivilegedExceptionAction<MGraph>() {
+    @Override
+    public synchronized MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+        if (name.getUnicodeString().endsWith(EXTERNALIZEDLITERALS_SUFFIX)) {
+            throw new IllegalArgumentException();
+        }
+        try {
+            final UriRef baseGraphName = new UriRef(name.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
+            if (tcProvider == null) {
+                throw new RuntimeException("MGraph retrieval currently not possible: tcManager unavailable");
+            }
+            final MGraph baseGraph = AccessController.doPrivileged(new PrivilegedExceptionAction<MGraph>() {
 
-				@Override
-				public MGraph run() {
-					return tcProvider.getMGraph(baseGraphName);
-				}
-			});
-			return new ExternalizingMGraph(baseGraph, getHashStoreDir(name));
-		} catch (PrivilegedActionException ex) {
-			Throwable cause = ex.getCause();
-			if (cause instanceof UnsupportedOperationException) {
-				throw (UnsupportedOperationException)cause;
-			}
-			if (cause instanceof EntityAlreadyExistsException) {
-				throw (EntityAlreadyExistsException)cause;
-			}
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException)cause;
-			}
-			throw new RuntimeException(cause);
-		}
-	}
+                @Override
+                public MGraph run() {
+                    return tcProvider.getMGraph(baseGraphName);
+                }
+            });
+            return new ExternalizingMGraph(baseGraph, getHashStoreDir(name));
+        } catch (PrivilegedActionException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof UnsupportedOperationException) {
+                throw (UnsupportedOperationException)cause;
+            }
+            if (cause instanceof EntityAlreadyExistsException) {
+                throw (EntityAlreadyExistsException)cause;
+            }
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException)cause;
+            }
+            throw new RuntimeException(cause);
+        }
+    }
 
-	@Override
-	public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
-		return getMGraph(name);
+    @Override
+    public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
+        return getMGraph(name);
 
-	}
+    }
 
-	@Override
-	public synchronized MGraph createMGraph(UriRef name)
-			throws UnsupportedOperationException, EntityAlreadyExistsException {
-		try {
-			if (name.getUnicodeString().endsWith(EXTERNALIZEDLITERALS_SUFFIX)) {
-				throw new IllegalArgumentException();
-			}
-			final UriRef baseGraphName = new UriRef(name.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
-			if (tcProvider == null) {
-				throw new RuntimeException("MGraph creation currently not possible: tcManager unavailable");
-			}
-			final MGraph baseGraph = AccessController.doPrivileged(new PrivilegedExceptionAction<MGraph>() {
+    @Override
+    public synchronized MGraph createMGraph(UriRef name)
+            throws UnsupportedOperationException, EntityAlreadyExistsException {
+        try {
+            if (name.getUnicodeString().endsWith(EXTERNALIZEDLITERALS_SUFFIX)) {
+                throw new IllegalArgumentException();
+            }
+            final UriRef baseGraphName = new UriRef(name.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
+            if (tcProvider == null) {
+                throw new RuntimeException("MGraph creation currently not possible: tcManager unavailable");
+            }
+            final MGraph baseGraph = AccessController.doPrivileged(new PrivilegedExceptionAction<MGraph>() {
 
-				@Override
-				public MGraph run() {
-					return tcProvider.createMGraph(baseGraphName);
-				}
-			});
-			File hashStoreDir = getHashStoreDir(name);
-			hashStoreDir.mkdirs();
-			return new ExternalizingMGraph(baseGraph, hashStoreDir);
-		} catch (PrivilegedActionException ex) {
-			Throwable cause = ex.getCause();
-			if (cause instanceof UnsupportedOperationException) {
-				throw (UnsupportedOperationException)cause;
-			}
-			if (cause instanceof EntityAlreadyExistsException) {
-				throw (EntityAlreadyExistsException)cause;
-			}
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException)cause;
-			}
-			throw new RuntimeException(cause);
-		}
-	}
+                @Override
+                public MGraph run() {
+                    return tcProvider.createMGraph(baseGraphName);
+                }
+            });
+            File hashStoreDir = getHashStoreDir(name);
+            hashStoreDir.mkdirs();
+            return new ExternalizingMGraph(baseGraph, hashStoreDir);
+        } catch (PrivilegedActionException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof UnsupportedOperationException) {
+                throw (UnsupportedOperationException)cause;
+            }
+            if (cause instanceof EntityAlreadyExistsException) {
+                throw (EntityAlreadyExistsException)cause;
+            }
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException)cause;
+            }
+            throw new RuntimeException(cause);
+        }
+    }
 
-	@Override
-	public Graph createGraph(UriRef name, TripleCollection triples)
-			throws UnsupportedOperationException, EntityAlreadyExistsException {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public Graph createGraph(UriRef name, TripleCollection triples)
+            throws UnsupportedOperationException, EntityAlreadyExistsException {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void deleteTripleCollection(UriRef name)
-			throws UnsupportedOperationException, NoSuchEntityException,
-			EntityUndeletableException {
-		try {
-			final UriRef baseGraphName = new UriRef(name.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
-			AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+    @Override
+    public void deleteTripleCollection(UriRef name)
+            throws UnsupportedOperationException, NoSuchEntityException,
+            EntityUndeletableException {
+        try {
+            final UriRef baseGraphName = new UriRef(name.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
-				@Override
-				public Object run() {
-					tcProvider.deleteTripleCollection(baseGraphName);
-					return null;
-				}
-			});
-			delete(getHashStoreDir(name));
-		} catch (PrivilegedActionException ex) {
-			Throwable cause = ex.getCause();
-			if (cause instanceof UnsupportedOperationException) {
-				throw (UnsupportedOperationException)cause;
-			}
-			if (cause instanceof EntityAlreadyExistsException) {
-				throw (EntityAlreadyExistsException)cause;
-			}
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException)cause;
-			}
-			throw new RuntimeException(cause);
-		}
-	}
+                @Override
+                public Object run() {
+                    tcProvider.deleteTripleCollection(baseGraphName);
+                    return null;
+                }
+            });
+            delete(getHashStoreDir(name));
+        } catch (PrivilegedActionException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof UnsupportedOperationException) {
+                throw (UnsupportedOperationException)cause;
+            }
+            if (cause instanceof EntityAlreadyExistsException) {
+                throw (EntityAlreadyExistsException)cause;
+            }
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException)cause;
+            }
+            throw new RuntimeException(cause);
+        }
+    }
 
-	/**
-	 * Cleans the content of the specified directory recursively.
-	 * @param dir  Abstract path denoting the directory to clean.
-	 */
-	private static void cleanDirectory(File dir) {
-		File[] files = dir.listFiles();
-		if (files != null && files.length > 0) {
-			for (File file : files) {
-				delete(file);
-			}
-		}
-	}
+    /**
+     * Cleans the content of the specified directory recursively.
+     * @param dir  Abstract path denoting the directory to clean.
+     */
+    private static void cleanDirectory(File dir) {
+        File[] files = dir.listFiles();
+        if (files != null && files.length > 0) {
+            for (File file : files) {
+                delete(file);
+            }
+        }
+    }
 
-	/**
-	 * Deletes the specified file or directory.
-	 * @param file  Abstract path denoting the file or directory to clean.
-	 */
-	protected static void delete(File file) {
-		if (file.isDirectory()) {
-			cleanDirectory(file);
-		}
-		file.delete();
-	}
+    /**
+     * Deletes the specified file or directory.
+     * @param file  Abstract path denoting the file or directory to clean.
+     */
+    protected static void delete(File file) {
+        if (file.isDirectory()) {
+            cleanDirectory(file);
+        }
+        file.delete();
+    }
 
-	@Override
-	public Set<UriRef> getNames(Graph graph) {
-		//this could be done more efficiently with an index, could be done with
-		//a MultiBidiMap (BidiMap allowing multiple keys for the same value)
-		Set<UriRef> result = new HashSet<UriRef>();
-		for (UriRef name : listGraphs()) {
-			if (getGraph(name).equals(graph)) {
-				result.add(name);
-			}
-		}
-		return result;
-	}
+    @Override
+    public Set<UriRef> getNames(Graph graph) {
+        //this could be done more efficiently with an index, could be done with
+        //a MultiBidiMap (BidiMap allowing multiple keys for the same value)
+        Set<UriRef> result = new HashSet<UriRef>();
+        for (UriRef name : listGraphs()) {
+            if (getGraph(name).equals(graph)) {
+                result.add(name);
+            }
+        }
+        return result;
+    }
 
-	@Override
-	public Set<UriRef> listTripleCollections() {
-		Set<UriRef> result = new HashSet<UriRef>();
-		result.addAll(listGraphs());
-		result.addAll(listMGraphs());
-		return result;
-	}
+    @Override
+    public Set<UriRef> listTripleCollections() {
+        Set<UriRef> result = new HashSet<UriRef>();
+        result.addAll(listGraphs());
+        result.addAll(listMGraphs());
+        return result;
+    }
 
-	@Override
-	public Set<UriRef> listGraphs() {
-		return new HashSet<UriRef>();
-	}
+    @Override
+    public Set<UriRef> listGraphs() {
+        return new HashSet<UriRef>();
+    }
 
-	@Override
-	public Set<UriRef> listMGraphs() {
-		Set<UriRef> result = getHashStoreUris();
-		for (Iterator<UriRef> it = result.iterator(); it.hasNext();) {
-			UriRef graphName = it.next();
-			final UriRef baseGraphName = new UriRef(graphName.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
-			try {
-				tcProvider.getMGraph(baseGraphName);
-			} catch (NoSuchEntityException e) {
-				log.warn("Store for externalized literals but no base graph found for {}.", graphName);
-				it.remove();
-			}
+    @Override
+    public Set<UriRef> listMGraphs() {
+        Set<UriRef> result = getHashStoreUris();
+        for (Iterator<UriRef> it = result.iterator(); it.hasNext();) {
+            UriRef graphName = it.next();
+            final UriRef baseGraphName = new UriRef(graphName.getUnicodeString() + EXTERNALIZEDLITERALS_SUFFIX);
+            try {
+                tcProvider.getMGraph(baseGraphName);
+            } catch (NoSuchEntityException e) {
+                log.warn("Store for externalized literals but no base graph found for {}.", graphName);
+                it.remove();
+            }
 
-		}
-		return result;
-	}
+        }
+        return result;
+    }
 
-	private File getHashStoreDir(UriRef name) {
-		try {
-			String subDirName = URLEncoder.encode(name.getUnicodeString(), "utf-8");
-			File result = new File(dataPath, subDirName);
-			return result;
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException("utf-8 not supported", ex);
-		}
-	}
+    private File getHashStoreDir(UriRef name) {
+        try {
+            String subDirName = URLEncoder.encode(name.getUnicodeString(), "utf-8");
+            File result = new File(dataPath, subDirName);
+            return result;
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException("utf-8 not supported", ex);
+        }
+    }
 
-	private Set<UriRef> getHashStoreUris() {
-		Set<UriRef> result = new HashSet<UriRef>();
-		if (dataPath.exists()) {
-			for (String mGraphDirName : dataPath.list()) {
-				try {
-					UriRef uri = new UriRef(URLDecoder.decode(mGraphDirName, "utf-8"));
-					result.add(uri);
-				} catch (UnsupportedEncodingException ex) {
-					throw new RuntimeException("utf-8 not supported", ex);
-				}
-			}
-		}
-		return result;
-	}
+    private Set<UriRef> getHashStoreUris() {
+        Set<UriRef> result = new HashSet<UriRef>();
+        if (dataPath.exists()) {
+            for (String mGraphDirName : dataPath.list()) {
+                try {
+                    UriRef uri = new UriRef(URLDecoder.decode(mGraphDirName, "utf-8"));
+                    result.add(uri);
+                } catch (UnsupportedEncodingException ex) {
+                    throw new RuntimeException("utf-8 not supported", ex);
+                }
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * Register a provider
-	 *
-	 * @param provider
-	 *            the provider to be registered
-	 */
-	protected void bindWeightedTcProvider(WeightedTcProvider provider) {
-		tcProvider.addWeightedTcProvider(provider);
-	}
+    /**
+     * Register a provider
+     *
+     * @param provider
+     *            the provider to be registered
+     */
+    protected void bindWeightedTcProvider(WeightedTcProvider provider) {
+        tcProvider.addWeightedTcProvider(provider);
+    }
 
-	/**
-	 * Deregister a provider
-	 *
-	 * @param provider
-	 *            the provider to be deregistered
-	 */
-	protected void unbindWeightedTcProvider(WeightedTcProvider provider) {
-		tcProvider.removeWeightedTcProvider(provider);
-	}
+    /**
+     * Deregister a provider
+     *
+     * @param provider
+     *            the provider to be deregistered
+     */
+    protected void unbindWeightedTcProvider(WeightedTcProvider provider) {
+        tcProvider.removeWeightedTcProvider(provider);
+    }
 }

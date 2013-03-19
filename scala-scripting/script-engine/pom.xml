@@ -18,24 +18,24 @@
  under the License.
 
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.clerezza.scala</groupId>
-		<artifactId>scala</artifactId>
-		<version>0.2-SNAPSHOT</version>
-	</parent>
-	<artifactId>script-engine</artifactId>
-	<packaging>bundle</packaging>
-	<name>Scala OSGi Services - Script Engine</name>
-	<dependencies>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-compiler</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-		</dependency>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.clerezza.scala</groupId>
+        <artifactId>scala</artifactId>
+        <version>0.2-SNAPSHOT</version>
+    </parent>
+    <artifactId>script-engine</artifactId>
+    <packaging>bundle</packaging>
+    <name>Scala OSGi Services - Script Engine</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-actors</artifactId>
@@ -45,63 +45,63 @@
             <artifactId>scalate-core_2.10</artifactId>
             <version>1.6.1</version>
         </dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
         <dependency>
-		  <groupId>org.apache.clerezza.ext</groupId>
-		  <artifactId>slf4j-scala-api</artifactId>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.clerezza.ext</groupId>
+          <artifactId>slf4j-scala-api</artifactId>
           <version>1.6.2-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>org.apache.clerezza.scala.scripting,org.apache.clerezza.scala.scripting.util</Export-Package>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
+                        <Export-Package>org.apache.clerezza.scala.scripting,org.apache.clerezza.scala.scripting.util</Export-Package>
                         <Import-Package>!com.sun.*,!javax.servlet,!javax.servlet.*,
                             !org.fusesource.*,!org.mozilla.*,!scala.reflect.*,!javax.ws.rs,!javax.ws.rs.*,*
                         </Import-Package>
                         <Private-Package>org.fusesource.*</Private-Package>
-						<DynamicImport-Package>*</DynamicImport-Package>
-						<Bundle-SymbolicName>org.apache.clerezza.scala.scripting</Bundle-SymbolicName>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Bundle-SymbolicName>org.apache.clerezza.scala.scripting</Bundle-SymbolicName>
                         <Embed-Dependency>scalate-core_2.10</Embed-Dependency>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-					<buildcommands>
-						<buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
-					</buildcommands>
-					<additionalProjectnatures>
-						<projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
-					</additionalProjectnatures>
-					<classpathContainers>
-						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER
-						</classpathContainer>
-						<classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER
-						</classpathContainer>
-					</classpathContainers>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                    <buildcommands>
+                        <buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
+                    </buildcommands>
+                    <additionalProjectnatures>
+                        <projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
+                    </additionalProjectnatures>
+                    <classpathContainers>
+                        <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER
+                        </classpathContainer>
+                        <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER
+                        </classpathContainer>
+                    </classpathContainers>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

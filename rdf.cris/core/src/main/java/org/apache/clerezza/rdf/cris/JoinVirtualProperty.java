@@ -32,64 +32,64 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class JoinVirtualProperty extends VirtualProperty {
 
-	/**
-	 * The properties that constitute this join-property.
-	 */
-	List<VirtualProperty> properties;
+    /**
+     * The properties that constitute this join-property.
+     */
+    List<VirtualProperty> properties;
 
-	/**
-	 * Creates a JoinVirtualPorperty from the supplied properties.
-	 * 
-	 * @param properties the properties.
-	 */
-	public JoinVirtualProperty(List<VirtualProperty> properties) {
-		this.stringKey = "J" + VirtualProperty.listDigest(properties);
-		this.properties = properties;
+    /**
+     * Creates a JoinVirtualPorperty from the supplied properties.
+     * 
+     * @param properties the properties.
+     */
+    public JoinVirtualProperty(List<VirtualProperty> properties) {
+        this.stringKey = "J" + VirtualProperty.listDigest(properties);
+        this.properties = properties;
 
 
-		this.baseProperties = new HashSet<UriRef>();
+        this.baseProperties = new HashSet<UriRef>();
 
-		for (VirtualProperty property : this.properties) {
-			for (UriRef p : property.baseProperties) {
-				this.baseProperties.add(p);
-			}
-		}
-	}
+        for (VirtualProperty property : this.properties) {
+            for (UriRef p : property.baseProperties) {
+                this.baseProperties.add(p);
+            }
+        }
+    }
 
-	@Override
-	public List<String> value(GraphNode node) {
-		List<String> list = new ArrayList();
-		list.add(singleValue(node));
-		return list;
-	}
+    @Override
+    public List<String> value(GraphNode node) {
+        List<String> list = new ArrayList();
+        list.add(singleValue(node));
+        return list;
+    }
 
-	@Override
-	protected List<UriRef> pathToIndexedResource(UriRef property) {
+    @Override
+    protected List<UriRef> pathToIndexedResource(UriRef property) {
 
-		List tempList = null;
-		for (VirtualProperty p : this.properties) {
-			List currentList = p.pathToIndexedResource(property);
-			if (tempList == null) {
-				tempList = currentList;
-			} else if (tempList.size() < currentList.size()) {
-				tempList = currentList;
+        List tempList = null;
+        for (VirtualProperty p : this.properties) {
+            List currentList = p.pathToIndexedResource(property);
+            if (tempList == null) {
+                tempList = currentList;
+            } else if (tempList.size() < currentList.size()) {
+                tempList = currentList;
 
-			}
-		}
-		return tempList;
-	}
-	
-	private String singleValue(GraphNode node) {
-		StringBuilder builder = new StringBuilder();	
-		for (VirtualProperty property : this.properties) {
-			for(String p : property.value(node)) {
-				builder.append(p);
-				builder.append(" ");
-			}
-		}
-		if(builder.length() == 0) {
-			return "";
-		}
-		return builder.deleteCharAt(builder.length() -1 ).toString();
-	}
+            }
+        }
+        return tempList;
+    }
+    
+    private String singleValue(GraphNode node) {
+        StringBuilder builder = new StringBuilder();    
+        for (VirtualProperty property : this.properties) {
+            for(String p : property.value(node)) {
+                builder.append(p);
+                builder.append(" ");
+            }
+        }
+        if(builder.length() == 0) {
+            return "";
+        }
+        return builder.deleteCharAt(builder.length() -1 ).toString();
+    }
 }

@@ -31,19 +31,19 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SupportedTypes {
 
-	/**
-	 *
-	 * @return the URIs of the types supported by this TypeHandler
-	 */
-	public String[] types();
+    /**
+     *
+     * @return the URIs of the types supported by this TypeHandler
+     */
+    public String[] types();
 
-	/**
-	 * Indicates if this TypeHandler has to be prepended or appended to the
-	 * list of TypeHandlers. Normally a typehandler is to be prepended, this
-	 * option is only set to false in the rare case when one is installing a
-	 * fallback-handler.
-	 *
-	 * @return true is the typehandler has to be prepended to the list of TypeHandlers
-	 */
-	public boolean prioritize() default true;
+    /**
+     * Indicates if this TypeHandler has to be prepended or appended to the
+     * list of TypeHandlers. Normally a typehandler is to be prepended, this
+     * option is only set to false in the rare case when one is installing a
+     * fallback-handler.
+     *
+     * @return true is the typehandler has to be prepended to the list of TypeHandlers
+     */
+    public boolean prioritize() default true;
 }

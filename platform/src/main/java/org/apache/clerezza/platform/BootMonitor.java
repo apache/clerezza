@@ -58,64 +58,64 @@ referenceInterface = Object.class,
 target = "(javax.ws.rs=true)")
 public class BootMonitor {
 
-	@Reference(target = "(javax.script.language=scala)")
-	private ScriptEngineFactory scalaScriptEngineFactory;
-	private Set<Object> rootResources =
-			Collections.synchronizedSet(new HashSet<Object>());
-	/**
-	 * true when the user has been notified that clerezza started
-	 */
-	private boolean clerezzaStarted = false;
-	private volatile boolean activated = false;
-	private final Logger logger = LoggerFactory.getLogger(BootMonitor.class);
+    @Reference(target = "(javax.script.language=scala)")
+    private ScriptEngineFactory scalaScriptEngineFactory;
+    private Set<Object> rootResources =
+            Collections.synchronizedSet(new HashSet<Object>());
+    /**
+     * true when the user has been notified that clerezza started
+     */
+    private boolean clerezzaStarted = false;
+    private volatile boolean activated = false;
+    private final Logger logger = LoggerFactory.getLogger(BootMonitor.class);
 
-	protected void activate(ComponentContext context) {
-		//compile a script to initialize scala-compiler (needed by scal a server pages)
-		Thread t = new Thread() {
+    protected void activate(ComponentContext context) {
+        //compile a script to initialize scala-compiler (needed by scal a server pages)
+        Thread t = new Thread() {
 
-			@Override
-			public void run() {
-				try {
-					((Compilable) scalaScriptEngineFactory.getScriptEngine()).compile("println(\"helo\")");
-				} catch (ScriptException ex) {
-					logger.warn(ex.toString());
-				}
-				activated = true;
-			}
-		};
-		t.start();
-	}
+            @Override
+            public void run() {
+                try {
+                    ((Compilable) scalaScriptEngineFactory.getScriptEngine()).compile("println(\"helo\")");
+                } catch (ScriptException ex) {
+                    logger.warn(ex.toString());
+                }
+                activated = true;
+            }
+        };
+        t.start();
+    }
 
-	protected void bindJaxrsResource(Object p) {
-		rootResources.add(p);
-		if (!clerezzaStarted && (rootResources.size() == 35)) {
-			Thread t = new Thread() {
+    protected void bindJaxrsResource(Object p) {
+        rootResources.add(p);
+        if (!clerezzaStarted && (rootResources.size() == 35)) {
+            Thread t = new Thread() {
 
-				@Override
-				public void run() {
-					int lastSize = 0;
-					for (int i = 0; i < 100; i++) {
-						if (rootResources.size() == lastSize) {
-							clerezzaStarted = true;
-							if (activated) {
-								logger.info("The Apache Clerezza Platform is now operational.");
-								return;
-							}
-						}
-						lastSize = rootResources.size();
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException ex) {
-							throw new RuntimeException();
-						}
-					}
-				}
-			};
-			t.start();
-		}
-	}
+                @Override
+                public void run() {
+                    int lastSize = 0;
+                    for (int i = 0; i < 100; i++) {
+                        if (rootResources.size() == lastSize) {
+                            clerezzaStarted = true;
+                            if (activated) {
+                                logger.info("The Apache Clerezza Platform is now operational.");
+                                return;
+                            }
+                        }
+                        lastSize = rootResources.size();
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException();
+                        }
+                    }
+                }
+            };
+            t.start();
+        }
+    }
 
-	protected void unbindJaxrsResource(Object p) {
-		rootResources.remove(p);
-	}
+    protected void unbindJaxrsResource(Object p) {
+        rootResources.remove(p);
+    }
 }

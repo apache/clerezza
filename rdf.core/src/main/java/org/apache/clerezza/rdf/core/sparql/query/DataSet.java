@@ -28,19 +28,19 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public interface DataSet {
 
-	/**
-	 * 
-	 * @return
-	 *		an empty set if no default graph is specified,
-	 *		otherwise a set of their UriRefs
-	 */
-	public Set<UriRef> getDefaultGraphs();
+    /**
+     * 
+     * @return
+     *        an empty set if no default graph is specified,
+     *        otherwise a set of their UriRefs
+     */
+    public Set<UriRef> getDefaultGraphs();
 
-	/**
-	 *
-	 * @return
-	 *		an empty set if no named graph is specified,
-	 *		otherwise a set of their UriRefs
-	 */
-	public Set<UriRef> getNamedGraphs();
+    /**
+     *
+     * @return
+     *        an empty set if no named graph is specified,
+     *        otherwise a set of their UriRefs
+     */
+    public Set<UriRef> getNamedGraphs();
 }

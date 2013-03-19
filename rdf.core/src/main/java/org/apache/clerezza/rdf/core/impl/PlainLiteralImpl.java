@@ -27,68 +27,68 @@ import org.apache.clerezza.rdf.core.PlainLiteral;
  */
 public class PlainLiteralImpl implements PlainLiteral {
 
-	private String lexicalForm;
-	private Language language = null;
+    private String lexicalForm;
+    private Language language = null;
 
-	public PlainLiteralImpl(String value) {
-		if (value == null) {
-			throw new IllegalArgumentException("The literal string cannot be null");
-		}
-		this.lexicalForm = value;
-	}
+    public PlainLiteralImpl(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("The literal string cannot be null");
+        }
+        this.lexicalForm = value;
+    }
 
-	public PlainLiteralImpl(String value, Language language) {
-		if (value == null) {
-			throw new IllegalArgumentException("The literal string cannot be null");
-		}
-		this.lexicalForm = value;
-		this.language = language;
-	}
+    public PlainLiteralImpl(String value, Language language) {
+        if (value == null) {
+            throw new IllegalArgumentException("The literal string cannot be null");
+        }
+        this.lexicalForm = value;
+        this.language = language;
+    }
 
-	@Override
-	public String getLexicalForm() {
-		return lexicalForm;
-	}
+    @Override
+    public String getLexicalForm() {
+        return lexicalForm;
+    }
 
-	@Override
-	public boolean equals(Object otherObj) {
-		if (!(otherObj instanceof PlainLiteral)) {
-			return false;
-		}
-		PlainLiteral other = (PlainLiteral) otherObj;
-		if (!lexicalForm.equals(other.getLexicalForm())) {
-			return false;
-		}
-		if (language != null) {
-			return language.equals(other.getLanguage());
-		}
-		if (other.getLanguage() != null) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object otherObj) {
+        if (!(otherObj instanceof PlainLiteral)) {
+            return false;
+        }
+        PlainLiteral other = (PlainLiteral) otherObj;
+        if (!lexicalForm.equals(other.getLexicalForm())) {
+            return false;
+        }
+        if (language != null) {
+            return language.equals(other.getLanguage());
+        }
+        if (other.getLanguage() != null) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = lexicalForm.hashCode();
-		if (language != null) {
-			hash += language.hashCode();
-		}
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = lexicalForm.hashCode();
+        if (language != null) {
+            hash += language.hashCode();
+        }
+        return hash;
+    }
 
-	@Override
-	public Language getLanguage() {
-		return language;
-	}
+    @Override
+    public Language getLanguage() {
+        return language;
+    }
 
-	@Override
-	public String toString() {
-		StringBuffer result = new StringBuffer();
-		result.append('\"').append(lexicalForm).append('\"');
-		if (language != null) {
-			result.append("@").append(language.toString());
-		}
-		return result.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuffer result = new StringBuffer();
+        result.append('\"').append(lexicalForm).append('\"');
+        if (language != null) {
+            result.append("@").append(language.toString());
+        }
+        return result.toString();
+    }
 }

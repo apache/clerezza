@@ -39,64 +39,64 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
  */
 public class WeightedAHeavy implements WeightedTcProvider {
 
-	@Override
-	public int getWeight() {
-		return 20;
-	}
+    @Override
+    public int getWeight() {
+        return 20;
+    }
 
-	@Override
-	public Graph getGraph(UriRef name) throws NoSuchEntityException {
-		if (name.equals(TcManagerTest.uriRefA)) {
-			MGraph mResult = new SimpleMGraph();
-			mResult.add(new TripleImpl(TcManagerTest.uriRefAHeavy, 
-					TcManagerTest.uriRefAHeavy, TcManagerTest.uriRefAHeavy));
-			return mResult.getGraph();
-		}
-		throw new NoSuchEntityException(name);
-	}
+    @Override
+    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+        if (name.equals(TcManagerTest.uriRefA)) {
+            MGraph mResult = new SimpleMGraph();
+            mResult.add(new TripleImpl(TcManagerTest.uriRefAHeavy, 
+                    TcManagerTest.uriRefAHeavy, TcManagerTest.uriRefAHeavy));
+            return mResult.getGraph();
+        }
+        throw new NoSuchEntityException(name);
+    }
 
-	@Override
-	public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
-		return getGraph(name);
-	}
+    @Override
+    public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
+        return getGraph(name);
+    }
 
-	@Override
-	public MGraph createMGraph(UriRef name) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public MGraph createMGraph(UriRef name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public Graph createGraph(UriRef name, TripleCollection triples) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Graph createGraph(UriRef name, TripleCollection triples) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public void deleteTripleCollection(UriRef name) throws NoSuchEntityException, 
-			EntityUndeletableException {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public void deleteTripleCollection(UriRef name) throws NoSuchEntityException, 
+            EntityUndeletableException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public Set<UriRef> getNames(Graph graph) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-	@Override
-	public Set<UriRef> listGraphs() {
-		return Collections.singleton(TcManagerTest.uriRefA);
-	}
+    @Override
+    public Set<UriRef> getNames(Graph graph) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    @Override
+    public Set<UriRef> listGraphs() {
+        return Collections.singleton(TcManagerTest.uriRefA);
+    }
 
-	@Override
-	public Set<UriRef> listMGraphs() {
-		return new HashSet<UriRef>();
-	}
+    @Override
+    public Set<UriRef> listMGraphs() {
+        return new HashSet<UriRef>();
+    }
 
-	@Override
-	public Set<UriRef> listTripleCollections() {
-		return listGraphs();
-	}
+    @Override
+    public Set<UriRef> listTripleCollections() {
+        return listGraphs();
+    }
 }

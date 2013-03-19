@@ -21,31 +21,31 @@
 -->
 
 <components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.shell.ConsoleShell">
+    <scr:component enabled="true" immediate="true" name="org.apache.clerezza.shell.ConsoleShell">
         <implementation class="org.apache.clerezza.shell.ConsoleShell"/>
         <property name="service.pid" value="org.apache.clerezza.shell.ConsoleShell"/>
-		<reference name="shellFactory"
-				interface="org.apache.clerezza.shell.ShellFactory"
-				cardinality="1..1"
-				bind="bindShellFactory" unbind="unbindShellFactory"/>
+        <reference name="shellFactory"
+                interface="org.apache.clerezza.shell.ShellFactory"
+                cardinality="1..1"
+                bind="bindShellFactory" unbind="unbindShellFactory"/>
     </scr:component>
-	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.shell.ShellFactory">
+    <scr:component enabled="true" immediate="true" name="org.apache.clerezza.shell.ShellFactory">
         <implementation class="org.apache.clerezza.shell.ShellFactory"/>
-		<service servicefactory="false">
+        <service servicefactory="false">
             <provide interface="org.apache.clerezza.shell.ShellFactory"/>
         </service>
         <property name="service.pid" value="org.apache.clerezza.shell.ShellFactory"/>
-		<reference name="interpreterFactory"
-				interface="org.apache.clerezza.scala.scripting.InterpreterFactory"
-				cardinality="1..1"
-				bind="bindInterpreterFactory" unbind="unbindInterpreterFactory"/>
-		<reference name="commands"
-				interface="org.apache.clerezza.shell.ShellCommand"
-				cardinality="0..n" policy="dynamic"
-				bind="bindCommand" unbind="unbindCommand"/>
-		<reference name="customizers"
-				interface="org.apache.clerezza.shell.ShellCustomizer"
-				cardinality="0..n" policy="dynamic"
-				bind="bindCustomizer" unbind="unbindCustomizer"/>
+        <reference name="interpreterFactory"
+                interface="org.apache.clerezza.scala.scripting.InterpreterFactory"
+                cardinality="1..1"
+                bind="bindInterpreterFactory" unbind="unbindInterpreterFactory"/>
+        <reference name="commands"
+                interface="org.apache.clerezza.shell.ShellCommand"
+                cardinality="0..n" policy="dynamic"
+                bind="bindCommand" unbind="unbindCommand"/>
+        <reference name="customizers"
+                interface="org.apache.clerezza.shell.ShellCustomizer"
+                cardinality="0..n" policy="dynamic"
+                bind="bindCustomizer" unbind="unbindCustomizer"/>
     </scr:component>
 </components>

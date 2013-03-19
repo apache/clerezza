@@ -31,24 +31,24 @@ import org.apache.clerezza.rdf.core.access.security.TcAccessController;
  * @author mir
  */
 public class MGraphServiceFactory implements ServiceFactory {
-	
-	private TcManager tcManager;
-	private UriRef name;
-	private final TcAccessController tcAccessController;
+    
+    private TcManager tcManager;
+    private UriRef name;
+    private final TcAccessController tcAccessController;
 
-	MGraphServiceFactory(TcManager tcManager, UriRef name,
-			TcAccessController tcAccessController) {
-		this.tcManager = tcManager;
-		this.name = name;
-		this.tcAccessController = tcAccessController;
-	}
+    MGraphServiceFactory(TcManager tcManager, UriRef name,
+            TcAccessController tcAccessController) {
+        this.tcManager = tcManager;
+        this.name = name;
+        this.tcAccessController = tcAccessController;
+    }
 
-	@Override
-	public Object getService(Bundle arg0, ServiceRegistration arg1) {
-		return new SecuredMGraph(tcManager.getMGraph(name), name, tcAccessController);
-	}
+    @Override
+    public Object getService(Bundle arg0, ServiceRegistration arg1) {
+        return new SecuredMGraph(tcManager.getMGraph(name), name, tcAccessController);
+    }
 
-	@Override
-	public void ungetService(Bundle arg0, ServiceRegistration arg1, Object arg2) {
-	}
+    @Override
+    public void ungetService(Bundle arg0, ServiceRegistration arg1, Object arg2) {
+    }
 }

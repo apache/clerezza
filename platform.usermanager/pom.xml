@@ -25,78 +25,78 @@
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
         <version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+        <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.usermanager</artifactId>
     <version>0.14-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Usermanager</name>
-	<description>A service to manage descriptions of users and their roles
-	in the system graph.</description>
+    <description>A service to manage descriptions of users and their roles
+    in the system graph.</description>
     <dependencies>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-        	<version>0.13-SNAPSHOT</version>
-		</dependency>
+            <version>0.13-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-        	<version>0.14-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
+            <version>0.14-SNAPSHOT</version>
         </dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
-        	<version>0.12-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.config</artifactId>
-			<version>0.4-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.graphprovider.content</artifactId>
-			<version>0.7-SNAPSHOT</version>
-		</dependency>
-		<!-- <dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.security</artifactId>
-		</dependency> -->
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.xsite</groupId>
-				<artifactId>xsite-maven-plugin</artifactId>
-				<configuration>
-					<sourceDirectoryPath>${basedir}/src/site/xsite</sourceDirectoryPath>
-					<sitemapPath>content/sitemap.xml</sitemapPath>
-					<skinPath>templates/skin.html</skinPath>
-					<outputDirectoryPath>${basedir}/target/site/documentation</outputDirectoryPath>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>site</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+            <version>0.12-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.config</artifactId>
+            <version>0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.graphprovider.content</artifactId>
+            <version>0.7-SNAPSHOT</version>
+        </dependency>
+        <!-- <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.security</artifactId>
+        </dependency> -->
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.xsite</groupId>
+                <artifactId>xsite-maven-plugin</artifactId>
+                <configuration>
+                    <sourceDirectoryPath>${basedir}/src/site/xsite</sourceDirectoryPath>
+                    <sitemapPath>content/sitemap.xml</sitemapPath>
+                    <skinPath>templates/skin.html</skinPath>
+                    <outputDirectoryPath>${basedir}/target/site/documentation</outputDirectoryPath>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

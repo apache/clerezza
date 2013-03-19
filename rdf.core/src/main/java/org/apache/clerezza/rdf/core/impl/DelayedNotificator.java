@@ -32,81 +32,81 @@ import org.slf4j.LoggerFactory;
  */
 class DelayedNotificator {
 
-	private static final Logger log = LoggerFactory.getLogger(DelayedNotificator.class);
-	private static Timer timer = new Timer("Event delivery timer",true);
+    private static final Logger log = LoggerFactory.getLogger(DelayedNotificator.class);
+    private static Timer timer = new Timer("Event delivery timer",true);
 
-	static class ListenerHolder {
+    static class ListenerHolder {
 
-		long delay;
-		List<GraphEvent> events = null;
-		WeakReference<GraphListener> listenerRef;
+        long delay;
+        List<GraphEvent> events = null;
+        WeakReference<GraphListener> listenerRef;
 
-		public ListenerHolder(GraphListener listener, long delay) {
-			this.listenerRef = new WeakReference<GraphListener>(listener);
-			this.delay = delay;
-		}
+        public ListenerHolder(GraphListener listener, long delay) {
+            this.listenerRef = new WeakReference<GraphListener>(listener);
+            this.delay = delay;
+        }
 
-		private void registerEvent(GraphEvent event) {
-			synchronized (this) {
-				if (events == null) {
-					events = new ArrayList<GraphEvent>();
-					events.add(event);
-					timer.schedule(new TimerTask() {
+        private void registerEvent(GraphEvent event) {
+            synchronized (this) {
+                if (events == null) {
+                    events = new ArrayList<GraphEvent>();
+                    events.add(event);
+                    timer.schedule(new TimerTask() {
 
-						@Override
-						public void run() {
-							List<GraphEvent> eventsLocal;
-							synchronized (ListenerHolder.this) {
-								eventsLocal = events;
-								events = null;
-							}
-							GraphListener listener = listenerRef.get();
-							if (listener == null) {
-								log.debug("Ignoring garbage collected listener");
-							} else {
-								try {
-									listener.graphChanged(eventsLocal);
-								} catch (Exception e) {
-									log.warn("Exception delivering graph event", e);
-								}
-							}
-						}
-					}, delay);
-				} else {
-					events.add(event);
-				}
-			}
-		}
-	}
-	
-	private final Map<GraphListener, ListenerHolder> map = Collections.synchronizedMap(
-			new WeakHashMap<GraphListener, ListenerHolder>());
+                        @Override
+                        public void run() {
+                            List<GraphEvent> eventsLocal;
+                            synchronized (ListenerHolder.this) {
+                                eventsLocal = events;
+                                events = null;
+                            }
+                            GraphListener listener = listenerRef.get();
+                            if (listener == null) {
+                                log.debug("Ignoring garbage collected listener");
+                            } else {
+                                try {
+                                    listener.graphChanged(eventsLocal);
+                                } catch (Exception e) {
+                                    log.warn("Exception delivering graph event", e);
+                                }
+                            }
+                        }
+                    }, delay);
+                } else {
+                    events.add(event);
+                }
+            }
+        }
+    }
+    
+    private final Map<GraphListener, ListenerHolder> map = Collections.synchronizedMap(
+            new WeakHashMap<GraphListener, ListenerHolder>());
 
-	void addDelayedListener(GraphListener listener, long delay) {
-		map.put(listener, new ListenerHolder(listener, delay));
-	}
+    void addDelayedListener(GraphListener listener, long delay) {
+        map.put(listener, new ListenerHolder(listener, delay));
+    }
 
-	/**
-	 * removes a Listener, this doesn't prevent the listenerRef from receiving
-	 * events alreay scheduled.
-	 *
-	 * @param listenerRef
-	 */
-	void removeDelayedListener(GraphListener listener) {
-		map.remove(listener);
-	}
+    /**
+     * removes a Listener, this doesn't prevent the listenerRef from receiving
+     * events alreay scheduled.
+     *
+     * @param listenerRef
+     */
+    void removeDelayedListener(GraphListener listener) {
+        map.remove(listener);
+    }
 
-	/**
-	 * if the listenerRef has not been registered as delayed listenerRef te events is
-	 * forwarded synchroneously
-	 * @param event
-	 */
-	void sendEventToListener(GraphListener listener, GraphEvent event) {
-		ListenerHolder holder = map.get(listener);
-		if (holder == null) {
-			listener.graphChanged(Collections.singletonList(event));
-		} else {
-			holder.registerEvent(event);
-		}
-	}
+    /**
+     * if the listenerRef has not been registered as delayed listenerRef te events is
+     * forwarded synchroneously
+     * @param event
+     */
+    void sendEventToListener(GraphListener listener, GraphEvent event) {
+        ListenerHolder holder = map.get(listener);
+        if (holder == null) {
+            listener.graphChanged(Collections.singletonList(event));
+        } else {
+            holder.registerEvent(event);
+        }
+    }
 }

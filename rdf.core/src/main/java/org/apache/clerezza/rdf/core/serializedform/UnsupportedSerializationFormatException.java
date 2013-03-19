@@ -23,13 +23,13 @@ package org.apache.clerezza.rdf.core.serializedform;
  * @author reto
  */
 public class UnsupportedSerializationFormatException extends UnsupportedFormatException {
-	/**
-	 * Creates an instance for a specified unsupported format.
-	 * 
-	 * @param formatIdentifier the unsupported format
-	 */
-	public UnsupportedSerializationFormatException(String formatIdentifier) {
-		super("No serializer available for "+formatIdentifier);
-	}
+    /**
+     * Creates an instance for a specified unsupported format.
+     * 
+     * @param formatIdentifier the unsupported format
+     */
+    public UnsupportedSerializationFormatException(String formatIdentifier) {
+        super("No serializer available for "+formatIdentifier);
+    }
 
 }

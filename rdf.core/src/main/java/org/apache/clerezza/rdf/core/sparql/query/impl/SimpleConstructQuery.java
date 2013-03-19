@@ -28,23 +28,23 @@ import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
  * @author hasan
  */
 public class SimpleConstructQuery extends SimpleQueryWithSolutionModifier
-		implements ConstructQuery {
+        implements ConstructQuery {
 
-	private Set<TriplePattern> triplePatterns;
+    private Set<TriplePattern> triplePatterns;
 
-	public SimpleConstructQuery(Set<TriplePattern> triplePatterns) {
-		this.triplePatterns = (triplePatterns == null)
-				? new LinkedHashSet<TriplePattern>()
-				: triplePatterns;
-	}
+    public SimpleConstructQuery(Set<TriplePattern> triplePatterns) {
+        this.triplePatterns = (triplePatterns == null)
+                ? new LinkedHashSet<TriplePattern>()
+                : triplePatterns;
+    }
 
-	@Override
-	public Set<TriplePattern> getConstructTemplate() {
-		return triplePatterns;
-	}
+    @Override
+    public Set<TriplePattern> getConstructTemplate() {
+        return triplePatterns;
+    }
 
-	@Override
-	public String toString() {
-		return (new SimpleStringQuerySerializer()).serialize(this);
-	}
+    @Override
+    public String toString() {
+        return (new SimpleStringQuerySerializer()).serialize(this);
+    }
 }

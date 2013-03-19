@@ -38,17 +38,17 @@ import org.xml.sax.XMLReader;
 @SupportedFormat("text/html")
 public class HTMLRDFaParser extends ClerezzaRDFaParser {
 
-	@Override
-	public XMLReader getReader() {
-		HtmlParser reader = new HtmlParser();
-		reader.setXmlPolicy(XmlViolationPolicy.ALLOW);
-		reader.setXmlnsPolicy(XmlViolationPolicy.ALLOW);
-		reader.setMappingLangToXmlLang(false);
-		return reader;
-	}
+    @Override
+    public XMLReader getReader() {
+        HtmlParser reader = new HtmlParser();
+        reader.setXmlPolicy(XmlViolationPolicy.ALLOW);
+        reader.setXmlnsPolicy(XmlViolationPolicy.ALLOW);
+        reader.setMappingLangToXmlLang(false);
+        return reader;
+    }
 
-	@Override
-	public void initParser(Parser parser) {
-		parser.enable(Setting.ManualNamespaces);
-	}
+    @Override
+    public void initParser(Parser parser) {
+        parser.enable(Setting.ManualNamespaces);
+    }
 }

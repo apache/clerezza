@@ -61,149 +61,149 @@ import org.apache.felix.scr.annotations.Service;
 @Service(MailMan.class)
 public class MailManImpl implements MailMan {
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	@Reference
-	RendererFactory rendererFactory;
+    @Reference
+    RendererFactory rendererFactory;
 
-	@Reference
-	MailSessionFactory mailSessionFactory;
+    @Reference
+    MailSessionFactory mailSessionFactory;
 
 
-	private static String SYSTEM_GRAPH_URI = "urn:x-localinstance:/system.graph";
-	private UriRef systemGraphUri = new UriRef(SYSTEM_GRAPH_URI);
+    private static String SYSTEM_GRAPH_URI = "urn:x-localinstance:/system.graph";
+    private UriRef systemGraphUri = new UriRef(SYSTEM_GRAPH_URI);
 
-	@Override
-	public void sendEmailToUser(final String fromUser, final String toUser,
-			final String subject, final String message) throws MessagingException {
-		try {
-			AccessController.checkPermission(new MailManPermission(fromUser, MailManPermission.SEND_FROM));
-			AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+    @Override
+    public void sendEmailToUser(final String fromUser, final String toUser,
+            final String subject, final String message) throws MessagingException {
+        try {
+            AccessController.checkPermission(new MailManPermission(fromUser, MailManPermission.SEND_FROM));
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
-				@Override
-				public Object run() throws MessagingException {
-					InternetAddress fromAddress = getUserAddress(fromUser);
-					InternetAddress toAddress = getUserAddress(toUser);
-					sendEmail(fromAddress, toAddress, null, null, subject, message);
-					return null;
-				}
-			});
-		} catch (PrivilegedActionException ex) {
-			if (ex.getException() instanceof MessagingException) {
-				throw (MessagingException) ex.getException();
-			} else {
-				throw new RuntimeException(ex.getException());
-			}
+                @Override
+                public Object run() throws MessagingException {
+                    InternetAddress fromAddress = getUserAddress(fromUser);
+                    InternetAddress toAddress = getUserAddress(toUser);
+                    sendEmail(fromAddress, toAddress, null, null, subject, message);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException ex) {
+            if (ex.getException() instanceof MessagingException) {
+                throw (MessagingException) ex.getException();
+            } else {
+                throw new RuntimeException(ex.getException());
+            }
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public void sendEmailToUser(final String fromUser, final String toUser,
-			final String subject, final GraphNode graphNode,
-			final List<MediaType> acceptableMediaTypes, final String mode)
-			throws MessagingException {
-		try {
-			AccessController.checkPermission(
-					new MailManPermission(fromUser, MailManPermission.SEND_FROM));
-			AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+    @Override
+    public void sendEmailToUser(final String fromUser, final String toUser,
+            final String subject, final GraphNode graphNode,
+            final List<MediaType> acceptableMediaTypes, final String mode)
+            throws MessagingException {
+        try {
+            AccessController.checkPermission(
+                    new MailManPermission(fromUser, MailManPermission.SEND_FROM));
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
-				@Override
-				public Object run() throws MessagingException {
-					InternetAddress fromAddress = getUserAddress(fromUser);
-					InternetAddress toAddress = getUserAddress(toUser);
-					sendEmail(fromAddress, toAddress, null, null, subject, graphNode,
-							acceptableMediaTypes, mode);
-					return null;
-				}
-			});
-		} catch (PrivilegedActionException ex) {
-			if (ex.getException() instanceof MessagingException) {
-				throw (MessagingException) ex.getException();
-			} else {
-				throw new RuntimeException(ex.getException());
-			}
-		}
-	}
+                @Override
+                public Object run() throws MessagingException {
+                    InternetAddress fromAddress = getUserAddress(fromUser);
+                    InternetAddress toAddress = getUserAddress(toUser);
+                    sendEmail(fromAddress, toAddress, null, null, subject, graphNode,
+                            acceptableMediaTypes, mode);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException ex) {
+            if (ex.getException() instanceof MessagingException) {
+                throw (MessagingException) ex.getException();
+            } else {
+                throw new RuntimeException(ex.getException());
+            }
+        }
+    }
 
-	@Override
-	public void sendEmailToUsers(final String fromUser, final String[] toUsers,
-			final String subject, final String message) throws MessagingException {
+    @Override
+    public void sendEmailToUsers(final String fromUser, final String[] toUsers,
+            final String subject, final String message) throws MessagingException {
 
-		try {
-			AccessController.checkPermission(
-					new MailManPermission(fromUser, MailManPermission.SEND_FROM));
-			AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+        try {
+            AccessController.checkPermission(
+                    new MailManPermission(fromUser, MailManPermission.SEND_FROM));
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
-				@Override
-				public Object run() throws MessagingException {
-					for (int i = 0; i < toUsers.length; i++) {
-						String toUser = toUsers[i];
-						sendEmailToUser(fromUser, toUser, subject, message);
-					}
-					return null;
-				}
-			});
-		} catch (PrivilegedActionException ex) {
-			if (ex.getException() instanceof MessagingException) {
-				throw (MessagingException) ex.getException();
-			} else {
-				throw new RuntimeException(ex.getException());
-			}
-		}
-	}
+                @Override
+                public Object run() throws MessagingException {
+                    for (int i = 0; i < toUsers.length; i++) {
+                        String toUser = toUsers[i];
+                        sendEmailToUser(fromUser, toUser, subject, message);
+                    }
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException ex) {
+            if (ex.getException() instanceof MessagingException) {
+                throw (MessagingException) ex.getException();
+            } else {
+                throw new RuntimeException(ex.getException());
+            }
+        }
+    }
 
-	@Override
-	public void sendEmailToUsers(final String fromUser, final String[] toUsers,
-			final String subject, final GraphNode graphNode,
-			final List<MediaType> acceptableMediaTypes, final String mode)
-			throws MessagingException {
-		try {
-			AccessController.checkPermission(
-					new MailManPermission(fromUser, MailManPermission.SEND_FROM));
-			AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+    @Override
+    public void sendEmailToUsers(final String fromUser, final String[] toUsers,
+            final String subject, final GraphNode graphNode,
+            final List<MediaType> acceptableMediaTypes, final String mode)
+            throws MessagingException {
+        try {
+            AccessController.checkPermission(
+                    new MailManPermission(fromUser, MailManPermission.SEND_FROM));
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
-				@Override
-				public Object run() throws MessagingException {
-					for (int i = 0; i < toUsers.length; i++) {
-						String toUser = toUsers[i];
-						sendEmailToUser(fromUser, toUser, subject, graphNode,
-								acceptableMediaTypes, mode);
-					}
-					return null;
-				}
-			});
-		} catch (PrivilegedActionException ex) {
-			if (ex.getException() instanceof MessagingException) {
-				throw (MessagingException) ex.getException();
-			} else {
-				throw new RuntimeException(ex.getException());
-			}
-		}
-	}
+                @Override
+                public Object run() throws MessagingException {
+                    for (int i = 0; i < toUsers.length; i++) {
+                        String toUser = toUsers[i];
+                        sendEmailToUser(fromUser, toUser, subject, graphNode,
+                                acceptableMediaTypes, mode);
+                    }
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException ex) {
+            if (ex.getException() instanceof MessagingException) {
+                throw (MessagingException) ex.getException();
+            } else {
+                throw new RuntimeException(ex.getException());
+            }
+        }
+    }
 
-	@Override
-	public void sendEmail(InternetAddress from, InternetAddress to,
-			InternetAddress[] cc, InternetAddress[] bcc, String subject,
-			GraphNode graphNode, List<MediaType> acceptableMediaTypes,
-			String mode) throws MessagingException {
-		AccessController.checkPermission(
-				new MailManPermission("", MailManPermission.SEND_MAIL));
-		sendEmail(from, to, cc, bcc, subject, graphNode, null, acceptableMediaTypes,
-				mode);
-	}
+    @Override
+    public void sendEmail(InternetAddress from, InternetAddress to,
+            InternetAddress[] cc, InternetAddress[] bcc, String subject,
+            GraphNode graphNode, List<MediaType> acceptableMediaTypes,
+            String mode) throws MessagingException {
+        AccessController.checkPermission(
+                new MailManPermission("", MailManPermission.SEND_MAIL));
+        sendEmail(from, to, cc, bcc, subject, graphNode, null, acceptableMediaTypes,
+                mode);
+    }
 
-	@Override
-	public void sendEmail(InternetAddress from, InternetAddress to,
-			InternetAddress[] cc, InternetAddress[] bcc, String subject,
-			String message) throws MessagingException {
-		AccessController.checkPermission(
-				new MailManPermission("", MailManPermission.SEND_MAIL));
-		sendEmail(from, to, cc, bcc, subject, message, "text/plain", null, null);
-	}
+    @Override
+    public void sendEmail(InternetAddress from, InternetAddress to,
+            InternetAddress[] cc, InternetAddress[] bcc, String subject,
+            String message) throws MessagingException {
+        AccessController.checkPermission(
+                new MailManPermission("", MailManPermission.SEND_MAIL));
+        sendEmail(from, to, cc, bcc, subject, message, "text/plain", null, null);
+    }
 
-	@Override
+    @Override
     public void sendEmail(InternetAddress from, InternetAddress to,
             InternetAddress[] cc, InternetAddress[] bcc, String subject,
             String message, String mediaType) throws MessagingException {
@@ -212,80 +212,80 @@ public class MailManImpl implements MailMan {
         sendEmail(from, to, cc, bcc, subject, message, mediaType, null, null);
     }
 
-	private void sendEmail(final InternetAddress from, final InternetAddress to,
-			final InternetAddress[] cc, final InternetAddress[] bcc,
-			final String subject, final Object content, final String mediaType,
-			final List<MediaType> acceptableMediaTypes, final String mode)
-			throws MessagingException {
-		final Session session = mailSessionFactory.getSession();
-		try {
-			AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+    private void sendEmail(final InternetAddress from, final InternetAddress to,
+            final InternetAddress[] cc, final InternetAddress[] bcc,
+            final String subject, final Object content, final String mediaType,
+            final List<MediaType> acceptableMediaTypes, final String mode)
+            throws MessagingException {
+        final Session session = mailSessionFactory.getSession();
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 
-				@Override
-				public Object run() throws MessagingException {
-					MimeMessage mimeMessage = new MimeMessage(session);
-					Date date = new Date();
-					mimeMessage.setSentDate(date);
-					mimeMessage.setSubject(subject);
-					if (content instanceof GraphNode) {
-						GraphNode graphNode = (GraphNode) content;
-						Renderer renderer = rendererFactory.createRenderer(graphNode, mode,
-								acceptableMediaTypes == null ? Collections.singletonList(
-								MediaType.WILDCARD_TYPE) : acceptableMediaTypes);
-						if (renderer == null) {
-							throw new MessagingException("No renderer appropriate found");
-						}
-						mimeMessage.setDataHandler(
-								new GraphNodeDataHandler(graphNode, renderer));
-					} else {
-						mimeMessage.setContent(content, mediaType);
-					}
-					mimeMessage.setFrom(from);
-					if (to != null) {
-						mimeMessage.addRecipient(Message.RecipientType.TO, to);
-					}
-					if (cc != null) {
-						mimeMessage.addRecipients(Message.RecipientType.CC, cc);
-					}
-					if (bcc != null) {
-						mimeMessage.addRecipients(Message.RecipientType.BCC, bcc);
-					}
-					Transport.send(mimeMessage);
-					return null;
-				}
-			});
-		} catch (PrivilegedActionException ex) {
-			if (ex.getException() instanceof MessagingException) {
-				throw (MessagingException) ex.getException();
-			} else {
-				throw new RuntimeException(ex.getException());
-			}
-		}
+                @Override
+                public Object run() throws MessagingException {
+                    MimeMessage mimeMessage = new MimeMessage(session);
+                    Date date = new Date();
+                    mimeMessage.setSentDate(date);
+                    mimeMessage.setSubject(subject);
+                    if (content instanceof GraphNode) {
+                        GraphNode graphNode = (GraphNode) content;
+                        Renderer renderer = rendererFactory.createRenderer(graphNode, mode,
+                                acceptableMediaTypes == null ? Collections.singletonList(
+                                MediaType.WILDCARD_TYPE) : acceptableMediaTypes);
+                        if (renderer == null) {
+                            throw new MessagingException("No renderer appropriate found");
+                        }
+                        mimeMessage.setDataHandler(
+                                new GraphNodeDataHandler(graphNode, renderer));
+                    } else {
+                        mimeMessage.setContent(content, mediaType);
+                    }
+                    mimeMessage.setFrom(from);
+                    if (to != null) {
+                        mimeMessage.addRecipient(Message.RecipientType.TO, to);
+                    }
+                    if (cc != null) {
+                        mimeMessage.addRecipients(Message.RecipientType.CC, cc);
+                    }
+                    if (bcc != null) {
+                        mimeMessage.addRecipients(Message.RecipientType.BCC, bcc);
+                    }
+                    Transport.send(mimeMessage);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException ex) {
+            if (ex.getException() instanceof MessagingException) {
+                throw (MessagingException) ex.getException();
+            } else {
+                throw new RuntimeException(ex.getException());
+            }
+        }
 
-	}
+    }
 
 
-	private InternetAddress getUserAddress(String user) throws MessagingException {
-		MGraph systemGraph = tcManager.getMGraph(systemGraphUri);
+    private InternetAddress getUserAddress(String user) throws MessagingException {
+        MGraph systemGraph = tcManager.getMGraph(systemGraphUri);
 
-		final String queryString = "SELECT ?email WHERE { "
-				+ "?x " + FOAF.mbox + " ?email . "
-				+ "?x " + PLATFORM.userName + " \"" + user + "\" . "
-				+ "}";
-		try {
-			SelectQuery selectQuery = (SelectQuery) QueryParser.getInstance().parse(queryString);
-			ResultSet result = tcManager.executeSparqlQuery(selectQuery, systemGraph);
-			if (result.hasNext()) {
-				Resource email = result.next().get("email");
-				String emailString = ((UriRef) email).getUnicodeString();
-				//TODO should add personal name (if available) as well
-				return new InternetAddress(emailString.substring("mailto:".length()));
-			}
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex);
-		} catch (AddressException ex) {
-			throw new RuntimeException(ex);
-		}
-		throw new MessagingException("No address found for user " + user);
-	}
+        final String queryString = "SELECT ?email WHERE { "
+                + "?x " + FOAF.mbox + " ?email . "
+                + "?x " + PLATFORM.userName + " \"" + user + "\" . "
+                + "}";
+        try {
+            SelectQuery selectQuery = (SelectQuery) QueryParser.getInstance().parse(queryString);
+            ResultSet result = tcManager.executeSparqlQuery(selectQuery, systemGraph);
+            if (result.hasNext()) {
+                Resource email = result.next().get("email");
+                String emailString = ((UriRef) email).getUnicodeString();
+                //TODO should add personal name (if available) as well
+                return new InternetAddress(emailString.substring("mailto:".length()));
+            }
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex);
+        } catch (AddressException ex) {
+            throw new RuntimeException(ex);
+        }
+        throw new MessagingException("No address found for user " + user);
+    }
 }

@@ -57,106 +57,106 @@ import org.slf4j.LoggerFactory;
 @Service(Restorer.class)
 public class Restorer {
 
-	private final static Logger log = LoggerFactory.getLogger(Restorer.class);
+    private final static Logger log = LoggerFactory.getLogger(Restorer.class);
 
-	@Reference
-	Parser parser;
+    @Reference
+    Parser parser;
 
-	/**
-	 * Restores triple-collections from a backup to a specified TcProvider
-	 *
-	 * @param backupData the bytes of a backup zip
-	 * @param target the TcProvider into which to restore the data
-	 */
-	public void restore(InputStream backupData, TcProvider target) throws IOException {
-		ZipInputStream compressedTcs = new ZipInputStream(backupData);
+    /**
+     * Restores triple-collections from a backup to a specified TcProvider
+     *
+     * @param backupData the bytes of a backup zip
+     * @param target the TcProvider into which to restore the data
+     */
+    public void restore(InputStream backupData, TcProvider target) throws IOException {
+        ZipInputStream compressedTcs = new ZipInputStream(backupData);
 
-		Map<String, TripleCollection> extractedTc = new HashMap<String, TripleCollection>();
-		String folder = "";
-		ZipEntry entry;
-		Graph metaGraph = null;
-		while ((entry = compressedTcs.getNextEntry()) != null) {
-			String entryName = entry.getName();
-			if (entry.isDirectory()) {
-				folder = entryName;
-			} else {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				int count;
-				byte buffer[] = new byte[2048];
-				while ((count = compressedTcs.read(buffer, 0, 2048)) != -1) {
-					baos.write(buffer, 0, count);
-				}
-				ByteArrayInputStream serializedGraph = new ByteArrayInputStream(
-						baos.toByteArray());
-				if (entryName.equals("triplecollections.nt")) {
-					metaGraph = parser.parse(serializedGraph,
-							SupportedFormat.N_TRIPLE, null);
-				} else {
-					Graph deserializedGraph = parser.parse(serializedGraph,
-							SupportedFormat.N_TRIPLE, null);
-					extractedTc.put(entryName, deserializedGraph);
-				}
-				baos.flush();
-				baos.close();
-			}
-		}
-		if (metaGraph == null) {
-			throw new RuntimeException("No metadata graph found in backup.");
-		}
-		compressedTcs.close();
-		{
-			final Iterator<Triple> mGraphIterator = metaGraph.filter(null, RDF.type, BACKUP.MGraph);
-			while (mGraphIterator.hasNext()) {
-				GraphNode graphGN = new GraphNode(mGraphIterator.next().getSubject(), metaGraph);
-				String fileName = graphGN.getLiterals(BACKUP.file).next().getLexicalForm();
-				TripleCollection extracted = extractedTc.get(fileName);
-				
-				MGraph mGraph;
-				boolean created = false;
-				try {
-					mGraph = target.getMGraph((UriRef)graphGN.getNode());
-					try {
-						mGraph.clear();
-					} catch (UnsupportedOperationException ex) {
-						log.warn("could not restore "+graphGN.getNode()+" as the exsting triple "
-								+ "collection could not be cleared");
-						continue;
-					}
-				} catch (NoSuchEntityException ex) {
-					mGraph = target.createMGraph((UriRef)graphGN.getNode());
-					created = true;
-				}
-				try {
-					mGraph.addAll(extracted);
-				} catch (Exception ex) {
-					String actionDone = created ? "created" : "cleared";
-					log.error("after the mgraph "+graphGN.getNode()+" could successfully be "+actionDone
-							+ ", an exception occured adding the data", ex);
-				}
-			}
-		}
-		{
-			final Iterator<Triple> graphIterator = metaGraph.filter(null, RDF.type, BACKUP.Graph);
-			while (graphIterator.hasNext()) {
-				GraphNode graphGN = new GraphNode(graphIterator.next().getSubject(), metaGraph);
-				String fileName = graphGN.getLiterals(BACKUP.file).next().getLexicalForm();
-				TripleCollection extracted = extractedTc.get(fileName);
-				try {
-					target.deleteTripleCollection((UriRef)graphGN.getNode());
-				} catch (UnsupportedOperationException ex) {
-					log.warn("could not restore "+graphGN.getNode()+" as the exsting triple "
-							+ "collection could not be deleted");
-					continue;
-				} catch (NoSuchEntityException ex) {
-					log.debug("could not remove "+graphGN.getNode()+", no such entity");
-				}
-				target.createGraph((UriRef)graphGN.getNode(), extracted);
-			}
-		}
-		for (Map.Entry<String, TripleCollection> pathTcPair : extractedTc.entrySet()) {
-			Literal fileNameLit = LiteralFactory.getInstance().createTypedLiteral(
-						pathTcPair.getKey());
-			Iterator<Triple> graphResIterator = metaGraph.filter(null, BACKUP.file, fileNameLit);
-		}
-	}
+        Map<String, TripleCollection> extractedTc = new HashMap<String, TripleCollection>();
+        String folder = "";
+        ZipEntry entry;
+        Graph metaGraph = null;
+        while ((entry = compressedTcs.getNextEntry()) != null) {
+            String entryName = entry.getName();
+            if (entry.isDirectory()) {
+                folder = entryName;
+            } else {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int count;
+                byte buffer[] = new byte[2048];
+                while ((count = compressedTcs.read(buffer, 0, 2048)) != -1) {
+                    baos.write(buffer, 0, count);
+                }
+                ByteArrayInputStream serializedGraph = new ByteArrayInputStream(
+                        baos.toByteArray());
+                if (entryName.equals("triplecollections.nt")) {
+                    metaGraph = parser.parse(serializedGraph,
+                            SupportedFormat.N_TRIPLE, null);
+                } else {
+                    Graph deserializedGraph = parser.parse(serializedGraph,
+                            SupportedFormat.N_TRIPLE, null);
+                    extractedTc.put(entryName, deserializedGraph);
+                }
+                baos.flush();
+                baos.close();
+            }
+        }
+        if (metaGraph == null) {
+            throw new RuntimeException("No metadata graph found in backup.");
+        }
+        compressedTcs.close();
+        {
+            final Iterator<Triple> mGraphIterator = metaGraph.filter(null, RDF.type, BACKUP.MGraph);
+            while (mGraphIterator.hasNext()) {
+                GraphNode graphGN = new GraphNode(mGraphIterator.next().getSubject(), metaGraph);
+                String fileName = graphGN.getLiterals(BACKUP.file).next().getLexicalForm();
+                TripleCollection extracted = extractedTc.get(fileName);
+                
+                MGraph mGraph;
+                boolean created = false;
+                try {
+                    mGraph = target.getMGraph((UriRef)graphGN.getNode());
+                    try {
+                        mGraph.clear();
+                    } catch (UnsupportedOperationException ex) {
+                        log.warn("could not restore "+graphGN.getNode()+" as the exsting triple "
+                                + "collection could not be cleared");
+                        continue;
+                    }
+                } catch (NoSuchEntityException ex) {
+                    mGraph = target.createMGraph((UriRef)graphGN.getNode());
+                    created = true;
+                }
+                try {
+                    mGraph.addAll(extracted);
+                } catch (Exception ex) {
+                    String actionDone = created ? "created" : "cleared";
+                    log.error("after the mgraph "+graphGN.getNode()+" could successfully be "+actionDone
+                            + ", an exception occured adding the data", ex);
+                }
+            }
+        }
+        {
+            final Iterator<Triple> graphIterator = metaGraph.filter(null, RDF.type, BACKUP.Graph);
+            while (graphIterator.hasNext()) {
+                GraphNode graphGN = new GraphNode(graphIterator.next().getSubject(), metaGraph);
+                String fileName = graphGN.getLiterals(BACKUP.file).next().getLexicalForm();
+                TripleCollection extracted = extractedTc.get(fileName);
+                try {
+                    target.deleteTripleCollection((UriRef)graphGN.getNode());
+                } catch (UnsupportedOperationException ex) {
+                    log.warn("could not restore "+graphGN.getNode()+" as the exsting triple "
+                            + "collection could not be deleted");
+                    continue;
+                } catch (NoSuchEntityException ex) {
+                    log.debug("could not remove "+graphGN.getNode()+", no such entity");
+                }
+                target.createGraph((UriRef)graphGN.getNode(), extracted);
+            }
+        }
+        for (Map.Entry<String, TripleCollection> pathTcPair : extractedTc.entrySet()) {
+            Literal fileNameLit = LiteralFactory.getInstance().createTypedLiteral(
+                        pathTcPair.getKey());
+            Iterator<Triple> graphResIterator = metaGraph.filter(null, BACKUP.file, fileNameLit);
+        }
+    }
 }

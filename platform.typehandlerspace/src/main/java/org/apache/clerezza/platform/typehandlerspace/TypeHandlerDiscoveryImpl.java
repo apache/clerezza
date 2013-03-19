@@ -51,65 +51,65 @@ import org.apache.felix.scr.annotations.ReferencePolicy;
 @Component
 @Service(value=TypeHandlerDiscovery.class)
 @References({
-	@Reference(name="typeHandler",
-		cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
-		referenceInterface=Object.class,
-		target="(org.apache.clerezza.platform.typehandler=true)",
-		policy=ReferencePolicy.DYNAMIC)})
+    @Reference(name="typeHandler",
+        cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE,
+        referenceInterface=Object.class,
+        target="(org.apache.clerezza.platform.typehandler=true)",
+        policy=ReferencePolicy.DYNAMIC)})
 public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
 
 
-	@Reference
-	private TypePrioritizer typePrioritizer;
+    @Reference
+    private TypePrioritizer typePrioritizer;
 
-	private final Map<UriRef, Object> typeHandlerMap = Collections.synchronizedMap(
-			new HashMap<UriRef, Object>());
-	
-	protected void bindTypeHandler(Object typeHandler) {
-		SupportedTypes supportedTypes = typeHandler.getClass()
-				.getAnnotation(SupportedTypes.class);
-		if (supportedTypes == null) {
-			return;
-		}
-		for (String typeUriString : supportedTypes.types()) {
-			UriRef typeUri = new UriRef(typeUriString);
-			typeHandlerMap.put(typeUri, typeHandler);
-		}
-	}
-		
-	protected void unbindTypeHandler(Object typeHandler) {
-		Iterator<UriRef> keys = typeHandlerMap.keySet().iterator();
-		Set<UriRef> toRemove = new HashSet<UriRef>(typeHandlerMap.size());
-		synchronized(typeHandlerMap) {
-			while (keys.hasNext()) {
-				UriRef uriRef = keys.next();
-				if(typeHandlerMap.get(uriRef) == typeHandler) {
-					toRemove.add(uriRef);
-				}
-			}
-		}
-		keys = toRemove.iterator();
-		while (keys.hasNext()) {
-			typeHandlerMap.remove(keys.next());
-		}
-	}
+    private final Map<UriRef, Object> typeHandlerMap = Collections.synchronizedMap(
+            new HashMap<UriRef, Object>());
+    
+    protected void bindTypeHandler(Object typeHandler) {
+        SupportedTypes supportedTypes = typeHandler.getClass()
+                .getAnnotation(SupportedTypes.class);
+        if (supportedTypes == null) {
+            return;
+        }
+        for (String typeUriString : supportedTypes.types()) {
+            UriRef typeUri = new UriRef(typeUriString);
+            typeHandlerMap.put(typeUri, typeHandler);
+        }
+    }
+        
+    protected void unbindTypeHandler(Object typeHandler) {
+        Iterator<UriRef> keys = typeHandlerMap.keySet().iterator();
+        Set<UriRef> toRemove = new HashSet<UriRef>(typeHandlerMap.size());
+        synchronized(typeHandlerMap) {
+            while (keys.hasNext()) {
+                UriRef uriRef = keys.next();
+                if(typeHandlerMap.get(uriRef) == typeHandler) {
+                    toRemove.add(uriRef);
+                }
+            }
+        }
+        keys = toRemove.iterator();
+        while (keys.hasNext()) {
+            typeHandlerMap.remove(keys.next());
+        }
+    }
 
-	@Override
-	public Object getTypeHandler(final Set<UriRef> types) {
-		return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+    @Override
+    public Object getTypeHandler(final Set<UriRef> types) {
+        return AccessController.doPrivileged(new PrivilegedAction<Object>() {
 
-			@Override
-			public Object run() {
-				Iterator<UriRef> prioritizedTypes = typePrioritizer.iterate(types);
-				while (prioritizedTypes.hasNext()) {
-					Object result = typeHandlerMap.get(prioritizedTypes.next());
-					if (result != null) {
-						return result;
-					}
-				}
-				return typeHandlerMap.get(RDFS.Resource);
-			}
-		});		
-	}
+            @Override
+            public Object run() {
+                Iterator<UriRef> prioritizedTypes = typePrioritizer.iterate(types);
+                while (prioritizedTypes.hasNext()) {
+                    Object result = typeHandlerMap.get(prioritizedTypes.next());
+                    if (result != null) {
+                        return result;
+                    }
+                }
+                return typeHandlerMap.get(RDFS.Resource);
+            }
+        });        
+    }
 
 }

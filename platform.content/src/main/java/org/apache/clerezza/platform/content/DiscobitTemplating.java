@@ -39,39 +39,39 @@ import org.apache.clerezza.rdf.ontologies.RDFS;
 @Component(immediate = true)
 public class DiscobitTemplating {
 
-	@Reference
-	RenderletManager renderletManager;
+    @Reference
+    RenderletManager renderletManager;
 
-	protected void activate(ComponentContext context) {
+    protected void activate(ComponentContext context) {
 
-		// register seedsnipe renderlets
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(getClass().getResource("Resource.xhtml").toString()),
-				RDFS.Resource, null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        // register seedsnipe renderlets
+        renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+                new UriRef(getClass().getResource("Resource.xhtml").toString()),
+                RDFS.Resource, null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(getClass().getResource("Resource_naked.xhtml").toString()),
-				RDFS.Resource, "(naked|.*-naked)", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+                new UriRef(getClass().getResource("Resource_naked.xhtml").toString()),
+                RDFS.Resource, "(naked|.*-naked)", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(getClass().getResource("XHTML_InfoDiscoBit_naked.xhtml").toString()),
-				DISCOBITS.XHTMLInfoDiscoBit, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+                new UriRef(getClass().getResource("XHTML_InfoDiscoBit_naked.xhtml").toString()),
+                DISCOBITS.XHTMLInfoDiscoBit, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(getClass().getResource("OrderedContent_naked.xhtml").toString()),
-				DISCOBITS.OrderedContent, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+                new UriRef(getClass().getResource("OrderedContent_naked.xhtml").toString()),
+                DISCOBITS.OrderedContent, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(getClass().getResource("TitledContent.xhtml").toString()),
-				DISCOBITS.TitledContent, null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+                new UriRef(getClass().getResource("TitledContent.xhtml").toString()),
+                DISCOBITS.TitledContent, null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		renderletManager.registerRenderlet(TitledContentRenderlet.class.getName(),
-				null, DISCOBITS.TitledContent, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        renderletManager.registerRenderlet(TitledContentRenderlet.class.getName(),
+                null, DISCOBITS.TitledContent, "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		// registre renderlet for XMLLiteral datatype.
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource("XmlLiteral.ssp").toString()),
-				new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"), null,
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-	}
+        // registre renderlet for XMLLiteral datatype.
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(getClass().getResource("XmlLiteral.ssp").toString()),
+                new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"), null,
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    }
 }

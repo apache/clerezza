@@ -28,23 +28,23 @@ import java.security.AccessControlException;
  */
 public class ReadOnlyException extends AccessControlException {
 
-	private String action;
+    private String action;
 
-	/**
-	 * creates an exception indicating that the mutable graph is read-only
-	 * 
-	 * @param action
-	 */
-	public ReadOnlyException(String action) {
-		super("read only mutable graph, not allowed to "+action);
-		this.action = action;
-	}
+    /**
+     * creates an exception indicating that the mutable graph is read-only
+     * 
+     * @param action
+     */
+    public ReadOnlyException(String action) {
+        super("read only mutable graph, not allowed to "+action);
+        this.action = action;
+    }
 
-	/**
-	 * 
-	 * @return the name of the action
-	 */
-	public String getAction() {
-		return action;
-	}
+    /**
+     * 
+     * @return the name of the action
+     */
+    public String getAction() {
+        return action;
+    }
 }

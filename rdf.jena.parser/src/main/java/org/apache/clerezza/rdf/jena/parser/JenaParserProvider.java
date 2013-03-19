@@ -47,46 +47,46 @@ import org.apache.clerezza.rdf.core.serializedform.UnsupportedParsingFormatExcep
 @Component(immediate=true)
 @Service(ParsingProvider.class)
 @Property(name="supportedFormat", value={SupportedFormat.RDF_XML,
-	SupportedFormat.TURTLE,	SupportedFormat.X_TURTLE,
-	SupportedFormat.N_TRIPLE, SupportedFormat.N3})
+    SupportedFormat.TURTLE,    SupportedFormat.X_TURTLE,
+    SupportedFormat.N_TRIPLE, SupportedFormat.N3})
 @SupportedFormat({SupportedFormat.RDF_XML,
-	SupportedFormat.TURTLE,	SupportedFormat.X_TURTLE,
-	SupportedFormat.N_TRIPLE, SupportedFormat.N3})
+    SupportedFormat.TURTLE,    SupportedFormat.X_TURTLE,
+    SupportedFormat.N_TRIPLE, SupportedFormat.N3})
 public class JenaParserProvider implements ParsingProvider {
 
-	@Override
-	public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
-		String jenaFormat = getJenaFormat(formatIdentifier);
-		com.hp.hpl.jena.graph.Graph graph = new JenaGraph(target);
-		Model model = ModelFactory.createModelForGraph(graph);
-		String base;
-		if (baseUri == null) {
-			base = "http://relative-uri.fake/";
-		} else {
-			base = baseUri.getUnicodeString();
-		}
-		model.read(serializedGraph, base, jenaFormat);
-	}
+    @Override
+    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+        String jenaFormat = getJenaFormat(formatIdentifier);
+        com.hp.hpl.jena.graph.Graph graph = new JenaGraph(target);
+        Model model = ModelFactory.createModelForGraph(graph);
+        String base;
+        if (baseUri == null) {
+            base = "http://relative-uri.fake/";
+        } else {
+            base = baseUri.getUnicodeString();
+        }
+        model.read(serializedGraph, base, jenaFormat);
+    }
 
-	private String getJenaFormat(String formatIdentifier) {
-		int semicolonPos = formatIdentifier.indexOf(';');
-		if (semicolonPos > -1) {
-			formatIdentifier = formatIdentifier.substring(0, semicolonPos);
-		}
-		if (formatIdentifier.equals(SupportedFormat.RDF_XML)) {
-			return "RDF/XML-ABBREV";
-		}
-		if (formatIdentifier.equals(SupportedFormat.TURTLE) ||
-				formatIdentifier.equals(SupportedFormat.X_TURTLE)) {
-			return "TURTLE";
-		}
-		if (formatIdentifier.equals(SupportedFormat.N3)) {
-			return "N3";
-		}
-		if (formatIdentifier.equals(SupportedFormat.N_TRIPLE)) {
-			return "N-TRIPLE";
-		}
-		throw new UnsupportedParsingFormatException(formatIdentifier);
-	}
+    private String getJenaFormat(String formatIdentifier) {
+        int semicolonPos = formatIdentifier.indexOf(';');
+        if (semicolonPos > -1) {
+            formatIdentifier = formatIdentifier.substring(0, semicolonPos);
+        }
+        if (formatIdentifier.equals(SupportedFormat.RDF_XML)) {
+            return "RDF/XML-ABBREV";
+        }
+        if (formatIdentifier.equals(SupportedFormat.TURTLE) ||
+                formatIdentifier.equals(SupportedFormat.X_TURTLE)) {
+            return "TURTLE";
+        }
+        if (formatIdentifier.equals(SupportedFormat.N3)) {
+            return "N3";
+        }
+        if (formatIdentifier.equals(SupportedFormat.N_TRIPLE)) {
+            return "N-TRIPLE";
+        }
+        throw new UnsupportedParsingFormatException(formatIdentifier);
+    }
 
 }

@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>clerezza</artifactId>
     <version>0.3-SNAPSHOT</version>
-	<relativePath>../parent</relativePath>
+    <relativePath>../parent</relativePath>
   </parent>
   <properties>
     <uima.version>2.3.1</uima.version>

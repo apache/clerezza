@@ -65,174 +65,174 @@ import org.apache.clerezza.rdf.utils.UnionMGraph;
 @Path("/documentation")
 public class DocumentationViewer {
 
-	/**
-	 * @scr.reference
-	 */
-	private TcManager tcManager;
-		
-	/**
-	 * Redirects to the overview page
-	 *
-	 * @return {@link Response}
-	 *
-	 */
-	@GET
-	public GraphNode documentationPage(@Context UriInfo uriInfo) {
-		TrailingSlash.enforcePresent(uriInfo);
-		Graph documentations = tcManager.getGraph(
-				DocumentationProvider.DOCUMENTATION_GRAPH_URI);		
-		Collection<DocumentationItem> docItems = getDocItems(documentations);		
-		List<DocumentationItem> sortedDocItems = sortDocItems(docItems);		
-		MGraph mGraph = new SimpleMGraph();
-		BNode orderedContent = createOrderedContent(sortedDocItems, mGraph);
-		BNode titledContent = createTitledContent(orderedContent, mGraph);
-		MGraph resultGraph = new UnionMGraph(mGraph, documentations);
-		GraphNode resultNode = new GraphNode(titledContent, resultGraph);
-		return resultNode;
-	}
+    /**
+     * @scr.reference
+     */
+    private TcManager tcManager;
+        
+    /**
+     * Redirects to the overview page
+     *
+     * @return {@link Response}
+     *
+     */
+    @GET
+    public GraphNode documentationPage(@Context UriInfo uriInfo) {
+        TrailingSlash.enforcePresent(uriInfo);
+        Graph documentations = tcManager.getGraph(
+                DocumentationProvider.DOCUMENTATION_GRAPH_URI);        
+        Collection<DocumentationItem> docItems = getDocItems(documentations);        
+        List<DocumentationItem> sortedDocItems = sortDocItems(docItems);        
+        MGraph mGraph = new SimpleMGraph();
+        BNode orderedContent = createOrderedContent(sortedDocItems, mGraph);
+        BNode titledContent = createTitledContent(orderedContent, mGraph);
+        MGraph resultGraph = new UnionMGraph(mGraph, documentations);
+        GraphNode resultNode = new GraphNode(titledContent, resultGraph);
+        return resultNode;
+    }
 
-	private Collection<DocumentationItem> getDocItems(Graph documentations) {
-		Iterator<Triple> docs = documentations.filter(null, 
-				DOCUMENTATION.documentation, null);		
+    private Collection<DocumentationItem> getDocItems(Graph documentations) {
+        Iterator<Triple> docs = documentations.filter(null, 
+                DOCUMENTATION.documentation, null);        
 
-		Map<UriRef,DocumentationItem> uri2docItemObj = 
-			new HashMap<UriRef,DocumentationItem>();
-		
-		while (docs.hasNext()) {
-			Triple docc = docs.next();
-			UriRef docItem = (UriRef) docc.getObject();
-			Iterator<Triple> afterDocItemsIter = documentations.filter(docItem,
-				DOCUMENTATION.after, null);
-			Set<UriRef> afterDocItems = new HashSet<UriRef>();
-			while (afterDocItemsIter.hasNext()) {
-				afterDocItems.add((UriRef) afterDocItemsIter.next().getObject());
-			}
-			DocumentationItem docItemObj = new DocumentationItem(
-					docItem, afterDocItems, uri2docItemObj);
-			uri2docItemObj.put(docItem, docItemObj);
-		}		
-		return uri2docItemObj.values();
-	}
+        Map<UriRef,DocumentationItem> uri2docItemObj = 
+            new HashMap<UriRef,DocumentationItem>();
+        
+        while (docs.hasNext()) {
+            Triple docc = docs.next();
+            UriRef docItem = (UriRef) docc.getObject();
+            Iterator<Triple> afterDocItemsIter = documentations.filter(docItem,
+                DOCUMENTATION.after, null);
+            Set<UriRef> afterDocItems = new HashSet<UriRef>();
+            while (afterDocItemsIter.hasNext()) {
+                afterDocItems.add((UriRef) afterDocItemsIter.next().getObject());
+            }
+            DocumentationItem docItemObj = new DocumentationItem(
+                    docItem, afterDocItems, uri2docItemObj);
+            uri2docItemObj.put(docItem, docItemObj);
+        }        
+        return uri2docItemObj.values();
+    }
 
-	protected List<DocumentationItem> sortDocItems(
-		Collection<DocumentationItem> docItems) {
-		List<DocumentationItem> result = 
-				new ArrayList<DocumentationItem>();
-		Iterator<DocumentationItem> items = docItems.iterator();
+    protected List<DocumentationItem> sortDocItems(
+        Collection<DocumentationItem> docItems) {
+        List<DocumentationItem> result = 
+                new ArrayList<DocumentationItem>();
+        Iterator<DocumentationItem> items = docItems.iterator();
 
-		OUTER: while (items.hasNext()) {
-			DocumentationItem item = items.next();
-			for (int i = 0; i < result.size(); i++ ) {
-				if (result.get(i).isAfer(item.documentationItem)) {
-					result.add(i, item);
-					continue OUTER;
-				}
-			}
-			result.add(item);
-		}
-		return result;
-	}
+        OUTER: while (items.hasNext()) {
+            DocumentationItem item = items.next();
+            for (int i = 0; i < result.size(); i++ ) {
+                if (result.get(i).isAfer(item.documentationItem)) {
+                    result.add(i, item);
+                    continue OUTER;
+                }
+            }
+            result.add(item);
+        }
+        return result;
+    }
 
-	private BNode createOrderedContent(List<DocumentationItem> sortedDocItems,
-		MGraph mGraph) {
-		BNode orderedContent = new BNode();
-		mGraph.add(new TripleImpl(orderedContent, RDF.type, DISCOBITS.OrderedContent));
-		Integer pos = 0;
-		Iterator<DocumentationItem> docItemObjsIter = sortedDocItems.iterator();
-		while (docItemObjsIter.hasNext()) {
-			DocumentationItem docItemObj = docItemObjsIter.next();
-			BNode containedDoc = new BNode();
-			mGraph.add(new TripleImpl(orderedContent, DISCOBITS.contains,
-					containedDoc));
-			mGraph.add(new TripleImpl(containedDoc, DISCOBITS.pos,
-					new PlainLiteralImpl(pos.toString())));
-			mGraph.add(new TripleImpl(containedDoc, DISCOBITS.holds,
-					docItemObj.documentationItem));
-			pos++;
-		}
-		return orderedContent;
-	}
+    private BNode createOrderedContent(List<DocumentationItem> sortedDocItems,
+        MGraph mGraph) {
+        BNode orderedContent = new BNode();
+        mGraph.add(new TripleImpl(orderedContent, RDF.type, DISCOBITS.OrderedContent));
+        Integer pos = 0;
+        Iterator<DocumentationItem> docItemObjsIter = sortedDocItems.iterator();
+        while (docItemObjsIter.hasNext()) {
+            DocumentationItem docItemObj = docItemObjsIter.next();
+            BNode containedDoc = new BNode();
+            mGraph.add(new TripleImpl(orderedContent, DISCOBITS.contains,
+                    containedDoc));
+            mGraph.add(new TripleImpl(containedDoc, DISCOBITS.pos,
+                    new PlainLiteralImpl(pos.toString())));
+            mGraph.add(new TripleImpl(containedDoc, DISCOBITS.holds,
+                    docItemObj.documentationItem));
+            pos++;
+        }
+        return orderedContent;
+    }
 
-	private BNode createTitledContent(BNode orderedContent, MGraph mGraph) {
-		BNode titledContent = new BNode();
-		mGraph.add(new TripleImpl(titledContent, RDF.type, DISCOBITS.TitledContent));
-		BNode title = new BNode();
-		mGraph.add(new TripleImpl(title, DISCOBITS.pos, new PlainLiteralImpl("0")));
-		BNode titleXml = new BNode();
-		mGraph.add(new TripleImpl(titleXml, RDF.type, DISCOBITS.XHTMLInfoDiscoBit));
-		mGraph.add(new TripleImpl(titleXml, DISCOBITS.infoBit,
-				LiteralFactory.getInstance().createTypedLiteral("Documentation")));
-		mGraph.add(new TripleImpl(title, DISCOBITS.holds, titleXml));
-		mGraph.add(new TripleImpl(title, RDF.type, DISCOBITS.Entry));
-		mGraph.add(new TripleImpl(titledContent, DISCOBITS.contains, title));		
-		BNode content = new BNode();
-		mGraph.add(new TripleImpl(content, DISCOBITS.pos, new PlainLiteralImpl("1")));
-		mGraph.add(new TripleImpl(content, DISCOBITS.holds, orderedContent));
-		mGraph.add(new TripleImpl(content, RDF.type, DISCOBITS.Entry));
-		mGraph.add(new TripleImpl(titledContent, DISCOBITS.contains, content));		
-		return titledContent;
-	}
+    private BNode createTitledContent(BNode orderedContent, MGraph mGraph) {
+        BNode titledContent = new BNode();
+        mGraph.add(new TripleImpl(titledContent, RDF.type, DISCOBITS.TitledContent));
+        BNode title = new BNode();
+        mGraph.add(new TripleImpl(title, DISCOBITS.pos, new PlainLiteralImpl("0")));
+        BNode titleXml = new BNode();
+        mGraph.add(new TripleImpl(titleXml, RDF.type, DISCOBITS.XHTMLInfoDiscoBit));
+        mGraph.add(new TripleImpl(titleXml, DISCOBITS.infoBit,
+                LiteralFactory.getInstance().createTypedLiteral("Documentation")));
+        mGraph.add(new TripleImpl(title, DISCOBITS.holds, titleXml));
+        mGraph.add(new TripleImpl(title, RDF.type, DISCOBITS.Entry));
+        mGraph.add(new TripleImpl(titledContent, DISCOBITS.contains, title));        
+        BNode content = new BNode();
+        mGraph.add(new TripleImpl(content, DISCOBITS.pos, new PlainLiteralImpl("1")));
+        mGraph.add(new TripleImpl(content, DISCOBITS.holds, orderedContent));
+        mGraph.add(new TripleImpl(content, RDF.type, DISCOBITS.Entry));
+        mGraph.add(new TripleImpl(titledContent, DISCOBITS.contains, content));        
+        return titledContent;
+    }
 
-	protected static class DocumentationItem {
+    protected static class DocumentationItem {
 
-		private UriRef documentationItem;
-		private Set<UriRef> afterDocItems;
-		
-		private boolean transitiveAfterDocItemsAdded = false;
-		private Map<UriRef, DocumentationItem> uri2docItemObj;
+        private UriRef documentationItem;
+        private Set<UriRef> afterDocItems;
+        
+        private boolean transitiveAfterDocItemsAdded = false;
+        private Map<UriRef, DocumentationItem> uri2docItemObj;
 
-		DocumentationItem(UriRef doumentationItem, Set<UriRef> explicitAfterDocItems,
-			Map<UriRef, DocumentationItem> uri2docItemObj) {
-			this.documentationItem = doumentationItem;
-			this.afterDocItems = explicitAfterDocItems;
-			this.uri2docItemObj = uri2docItemObj;
-		}
+        DocumentationItem(UriRef doumentationItem, Set<UriRef> explicitAfterDocItems,
+            Map<UriRef, DocumentationItem> uri2docItemObj) {
+            this.documentationItem = doumentationItem;
+            this.afterDocItems = explicitAfterDocItems;
+            this.uri2docItemObj = uri2docItemObj;
+        }
 
-		public boolean isAfer(UriRef docItem) {
-			return getAfterDocItems().contains(docItem);
-		}
-		
-		private Set<UriRef> getAfterDocItems() {
-			Stack<DocumentationItem> stack = new Stack<DocumentationItem>();
-			stack.add(this);
-			return getAfterDocItems(stack);
-		}
-		
-		private Set<UriRef> getAfterDocItems(Stack<DocumentationItem> stack) {
-			if (!transitiveAfterDocItemsAdded) {
-				Iterator<UriRef> afterDocUrisIter = afterDocItems.iterator();
-				while (afterDocUrisIter.hasNext()) {
-					UriRef uriRef = afterDocUrisIter.next();
-					DocumentationItem docItem = uri2docItemObj.get(uriRef);
-					if (stack.contains(docItem)) {
-						throw new RuntimeException("Documentation: cycle detected!\n"
-							+ stack.toString());
-					}
-					stack.add(docItem);
-					afterDocItems.addAll(docItem.getAfterDocItems(stack));
-					
-				}
-				transitiveAfterDocItemsAdded = true;
-			} 			
-			return afterDocItems;
-		}
+        public boolean isAfer(UriRef docItem) {
+            return getAfterDocItems().contains(docItem);
+        }
+        
+        private Set<UriRef> getAfterDocItems() {
+            Stack<DocumentationItem> stack = new Stack<DocumentationItem>();
+            stack.add(this);
+            return getAfterDocItems(stack);
+        }
+        
+        private Set<UriRef> getAfterDocItems(Stack<DocumentationItem> stack) {
+            if (!transitiveAfterDocItemsAdded) {
+                Iterator<UriRef> afterDocUrisIter = afterDocItems.iterator();
+                while (afterDocUrisIter.hasNext()) {
+                    UriRef uriRef = afterDocUrisIter.next();
+                    DocumentationItem docItem = uri2docItemObj.get(uriRef);
+                    if (stack.contains(docItem)) {
+                        throw new RuntimeException("Documentation: cycle detected!\n"
+                            + stack.toString());
+                    }
+                    stack.add(docItem);
+                    afterDocItems.addAll(docItem.getAfterDocItems(stack));
+                    
+                }
+                transitiveAfterDocItemsAdded = true;
+            }             
+            return afterDocItems;
+        }
 
-		@Override
-		public String toString() {
-			StringWriter writer = new StringWriter();
-			writer.append("[");
-			writer.append(documentationItem.getUnicodeString());
-			writer.append(" is after (");
-			Iterator<UriRef> afterDocs = afterDocItems.iterator();
-			while (afterDocs.hasNext()) {
-				UriRef uriRef = afterDocs.next();
-				writer.append(uriRef.getUnicodeString());
-				if (afterDocs.hasNext()) {
-					writer.append(",");
-				}
-			}
-			writer.append(")]");
-			return writer.toString();
-		}
-	}
+        @Override
+        public String toString() {
+            StringWriter writer = new StringWriter();
+            writer.append("[");
+            writer.append(documentationItem.getUnicodeString());
+            writer.append(" is after (");
+            Iterator<UriRef> afterDocs = afterDocItems.iterator();
+            while (afterDocs.hasNext()) {
+                UriRef uriRef = afterDocs.next();
+                writer.append(uriRef.getUnicodeString());
+                if (afterDocs.hasNext()) {
+                    writer.append(",");
+                }
+            }
+            writer.append(")]");
+            return writer.toString();
+        }
+    }
 }

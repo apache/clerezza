@@ -35,139 +35,139 @@ import java.util.Arrays;
  * @author mir
  */
 class SelfClosing2ClosingTagsByteChannel implements WritableByteChannel {
-	
-	
-	private final static byte SPACE = " ".getBytes()[0];
-	private final static byte SLASH = "/".getBytes()[0];
-	private final static byte LESS_THAN = "<".getBytes()[0];
-	private final static byte GREATER_THAN = ">".getBytes()[0];
+    
+    
+    private final static byte SPACE = " ".getBytes()[0];
+    private final static byte SLASH = "/".getBytes()[0];
+    private final static byte LESS_THAN = "<".getBytes()[0];
+    private final static byte GREATER_THAN = ">".getBytes()[0];
 
-	private static byte[][] allowedTagNamesBytes = {
-		"area".getBytes(),
-		"base".getBytes(),
-		"basefont".getBytes(),
-		"br".getBytes(),
-		"hr".getBytes(),
-		"input".getBytes(),
-		"img".getBytes(),
-		"link".getBytes(),
-		"meta".getBytes()
-	};
+    private static byte[][] allowedTagNamesBytes = {
+        "area".getBytes(),
+        "base".getBytes(),
+        "basefont".getBytes(),
+        "br".getBytes(),
+        "hr".getBytes(),
+        "input".getBytes(),
+        "img".getBytes(),
+        "link".getBytes(),
+        "meta".getBytes()
+    };
 
-	private WritableByteChannel wrappedByteChannel;
-	private ResponseStatusInfo responseStatusInfo;
-	
-	private ByteArrayOutputStream tagNameStream = new ByteArrayOutputStream();
-	private OutputStream bytes = new ByteArrayOutputStream();
+    private WritableByteChannel wrappedByteChannel;
+    private ResponseStatusInfo responseStatusInfo;
+    
+    private ByteArrayOutputStream tagNameStream = new ByteArrayOutputStream();
+    private OutputStream bytes = new ByteArrayOutputStream();
 
-	private enum Status {SEARCH_TAG, DETERMINE_IF_IS_OPENING_TAG, READ_TAG_NAME,
-		SEARCH_SLASH,SEARCH_GREATER_THAN, FOUND}
-	
-	private Status status = Status.SEARCH_TAG;
-	
-	public SelfClosing2ClosingTagsByteChannel(WritableByteChannel byteChannel,
-			ResponseStatusInfo responseStatusInfo) {
-		this.wrappedByteChannel = byteChannel;
-		this.responseStatusInfo = responseStatusInfo;
-		bytes = Channels.newOutputStream(wrappedByteChannel);
-	}	
+    private enum Status {SEARCH_TAG, DETERMINE_IF_IS_OPENING_TAG, READ_TAG_NAME,
+        SEARCH_SLASH,SEARCH_GREATER_THAN, FOUND}
+    
+    private Status status = Status.SEARCH_TAG;
+    
+    public SelfClosing2ClosingTagsByteChannel(WritableByteChannel byteChannel,
+            ResponseStatusInfo responseStatusInfo) {
+        this.wrappedByteChannel = byteChannel;
+        this.responseStatusInfo = responseStatusInfo;
+        bytes = Channels.newOutputStream(wrappedByteChannel);
+    }    
 
-	@Override
-	public int write(ByteBuffer byteBuffer) throws IOException {
-		if (responseStatusInfo.convertXhtml2Html()) {
-			int bytesWritten = byteBuffer.remaining();
-			while (byteBuffer.remaining() > 0) {
-				byte b = byteBuffer.get();
-				switch (status) {
-					case SEARCH_TAG:
-						if (b == LESS_THAN) {
-							status = Status.DETERMINE_IF_IS_OPENING_TAG;
-						}
-						break;
+    @Override
+    public int write(ByteBuffer byteBuffer) throws IOException {
+        if (responseStatusInfo.convertXhtml2Html()) {
+            int bytesWritten = byteBuffer.remaining();
+            while (byteBuffer.remaining() > 0) {
+                byte b = byteBuffer.get();
+                switch (status) {
+                    case SEARCH_TAG:
+                        if (b == LESS_THAN) {
+                            status = Status.DETERMINE_IF_IS_OPENING_TAG;
+                        }
+                        break;
 
-					case DETERMINE_IF_IS_OPENING_TAG:
-						if (b != SLASH) {
-							status = Status.READ_TAG_NAME;
-						} else {
-							status = Status.SEARCH_TAG;
-							break;
-						}
-					case READ_TAG_NAME:
-						if (b == SPACE) {
-							status = Status.SEARCH_SLASH;
-						} else if (b == GREATER_THAN) {
-							reset();
-						} else if (b == SLASH) {
-							status = Status.SEARCH_GREATER_THAN;
-							continue;
-						} else {
-							tagNameStream.write(b);
-						}
-						break;
-					case SEARCH_SLASH:
-						if (b == SLASH) {
-							status = Status.SEARCH_GREATER_THAN;
-							continue;
-						}
-						if (b == GREATER_THAN) {
-							reset();
-						}
-						break;
+                    case DETERMINE_IF_IS_OPENING_TAG:
+                        if (b != SLASH) {
+                            status = Status.READ_TAG_NAME;
+                        } else {
+                            status = Status.SEARCH_TAG;
+                            break;
+                        }
+                    case READ_TAG_NAME:
+                        if (b == SPACE) {
+                            status = Status.SEARCH_SLASH;
+                        } else if (b == GREATER_THAN) {
+                            reset();
+                        } else if (b == SLASH) {
+                            status = Status.SEARCH_GREATER_THAN;
+                            continue;
+                        } else {
+                            tagNameStream.write(b);
+                        }
+                        break;
+                    case SEARCH_SLASH:
+                        if (b == SLASH) {
+                            status = Status.SEARCH_GREATER_THAN;
+                            continue;
+                        }
+                        if (b == GREATER_THAN) {
+                            reset();
+                        }
+                        break;
 
-					case SEARCH_GREATER_THAN:
-						if (b == GREATER_THAN) {
-							status = Status.FOUND;
-						} else {
-							bytes.write(SLASH); // write the slash that we didn't write when we found it
-							status = Status.SEARCH_SLASH;
-						}
-						break;
-				}
-				if (status == Status.FOUND) {
-					byte[] tagNameBytes = tagNameStream.toByteArray();
-					if (isAllowedTagName(tagNameBytes)) {
-						bytes.write(SLASH);
-						bytes.write(GREATER_THAN);
-					} else {
-						bytes.write(GREATER_THAN);
-						bytes.write(LESS_THAN);
-						bytes.write(SLASH);
-						bytes.write(tagNameBytes);
-						bytes.write(GREATER_THAN);					
-					}
-					reset();
-				} else {
-					bytes.write(b);
-				}
-			}
-			return bytesWritten - byteBuffer.remaining();
-		} else {
-			return wrappedByteChannel.write(byteBuffer);
-		}
-	}
+                    case SEARCH_GREATER_THAN:
+                        if (b == GREATER_THAN) {
+                            status = Status.FOUND;
+                        } else {
+                            bytes.write(SLASH); // write the slash that we didn't write when we found it
+                            status = Status.SEARCH_SLASH;
+                        }
+                        break;
+                }
+                if (status == Status.FOUND) {
+                    byte[] tagNameBytes = tagNameStream.toByteArray();
+                    if (isAllowedTagName(tagNameBytes)) {
+                        bytes.write(SLASH);
+                        bytes.write(GREATER_THAN);
+                    } else {
+                        bytes.write(GREATER_THAN);
+                        bytes.write(LESS_THAN);
+                        bytes.write(SLASH);
+                        bytes.write(tagNameBytes);
+                        bytes.write(GREATER_THAN);                    
+                    }
+                    reset();
+                } else {
+                    bytes.write(b);
+                }
+            }
+            return bytesWritten - byteBuffer.remaining();
+        } else {
+            return wrappedByteChannel.write(byteBuffer);
+        }
+    }
 
-	private void reset() {
-		tagNameStream.reset();
-		status = Status.SEARCH_TAG;
-	}
-	
-	private boolean isAllowedTagName(byte[] tagNameBytes) {
-		for (int i = 0; i < allowedTagNamesBytes.length; i++) {
-			byte[] allowedTagNameBytes = allowedTagNamesBytes[i];
-			if (Arrays.equals(allowedTagNameBytes, tagNameBytes)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private void reset() {
+        tagNameStream.reset();
+        status = Status.SEARCH_TAG;
+    }
+    
+    private boolean isAllowedTagName(byte[] tagNameBytes) {
+        for (int i = 0; i < allowedTagNamesBytes.length; i++) {
+            byte[] allowedTagNameBytes = allowedTagNamesBytes[i];
+            if (Arrays.equals(allowedTagNameBytes, tagNameBytes)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean isOpen() {
-		return wrappedByteChannel.isOpen();
-	}
+    @Override
+    public boolean isOpen() {
+        return wrappedByteChannel.isOpen();
+    }
 
-	@Override
-	public void close()	throws IOException {
-		wrappedByteChannel.close();
-	}
+    @Override
+    public void close()    throws IOException {
+        wrappedByteChannel.close();
+    }
 }

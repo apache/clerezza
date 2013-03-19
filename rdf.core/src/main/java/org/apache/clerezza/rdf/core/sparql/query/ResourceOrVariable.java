@@ -27,80 +27,80 @@ import org.apache.clerezza.rdf.core.Resource;
  */
 public class ResourceOrVariable {
 
-	private final Resource resource;
-	private final Variable variable;
+    private final Resource resource;
+    private final Variable variable;
 
-	public ResourceOrVariable(Resource resource) {
-		if (resource == null) {
-			throw new IllegalArgumentException("Invalid resource: null");
-		}
-		this.resource = resource;
-		variable = null;
-	}
+    public ResourceOrVariable(Resource resource) {
+        if (resource == null) {
+            throw new IllegalArgumentException("Invalid resource: null");
+        }
+        this.resource = resource;
+        variable = null;
+    }
 
-	public ResourceOrVariable(Variable variable) {
-		if (variable == null) {
-			throw new IllegalArgumentException("Invalid variable: null");
-		}
-		this.variable = variable;
-		resource = null;
-	}
+    public ResourceOrVariable(Variable variable) {
+        if (variable == null) {
+            throw new IllegalArgumentException("Invalid variable: null");
+        }
+        this.variable = variable;
+        resource = null;
+    }
 
-	/**
-	 *
-	 * @return
-	 *		true if it is a {@link Variable}, false if it is a {@link Resource}
-	 */
-	public boolean isVariable() {
-		return resource == null;
-	}
+    /**
+     *
+     * @return
+     *        true if it is a {@link Variable}, false if it is a {@link Resource}
+     */
+    public boolean isVariable() {
+        return resource == null;
+    }
 
-	/**
-	 * 
-	 * @return
-	 *		the wrapped Resource if it is a Resource, null otherwise
-	 */
-	public Resource getResource() {
-		return resource;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 *		the wrapped Variable if it is a Variable, null otherwise
-	 */
-	public Variable getVariable() {
-		return variable;
-	}
+    /**
+     * 
+     * @return
+     *        the wrapped Resource if it is a Resource, null otherwise
+     */
+    public Resource getResource() {
+        return resource;
+    }
+    
+    /**
+     * 
+     * @return
+     *        the wrapped Variable if it is a Variable, null otherwise
+     */
+    public Variable getVariable() {
+        return variable;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof ResourceOrVariable)) {
-			return false;
-		}
-		final ResourceOrVariable other = (ResourceOrVariable) obj;
-		if (this.isVariable() != other.isVariable()) {
-			return false;
-		}
-		if (this.isVariable()) {
-			if (!this.getVariable().equals(other.getVariable())) {
-				return false;
-			}
-		} else {
-			if (!this.getResource().equals(other.getResource())) {
-				return false;
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof ResourceOrVariable)) {
+            return false;
+        }
+        final ResourceOrVariable other = (ResourceOrVariable) obj;
+        if (this.isVariable() != other.isVariable()) {
+            return false;
+        }
+        if (this.isVariable()) {
+            if (!this.getVariable().equals(other.getVariable())) {
+                return false;
+            }
+        } else {
+            if (!this.getResource().equals(other.getResource())) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		return (isVariable()
-				? 13 * getVariable().hashCode() + 7
-				: 13 * getResource().hashCode() + 7);
-	}
+    @Override
+    public int hashCode() {
+        return (isVariable()
+                ? 13 * getVariable().hashCode() + 7
+                : 13 * getResource().hashCode() + 7);
+    }
 }

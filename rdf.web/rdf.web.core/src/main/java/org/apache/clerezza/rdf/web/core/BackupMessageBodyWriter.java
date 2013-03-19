@@ -70,112 +70,112 @@ import org.apache.clerezza.rdf.web.ontologies.BACKUP;
 @Provider
 public class BackupMessageBodyWriter implements MessageBodyWriter<Backup> {
 
-	@Reference
-	TcManager tcManager;
+    @Reference
+    TcManager tcManager;
 
-	@Reference
-	Serializer serializer;
+    @Reference
+    Serializer serializer;
 
-	final Logger logger = LoggerFactory.getLogger(BackupMessageBodyWriter.class);
+    final Logger logger = LoggerFactory.getLogger(BackupMessageBodyWriter.class);
 
-	private final String folder = "graphs/";
+    private final String folder = "graphs/";
 
 
-	byte[] createBackup() {
-		ByteArrayOutputStream result = new ByteArrayOutputStream();
-		writeBackup(result);
-		return result.toByteArray();
-	}
+    byte[] createBackup() {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        writeBackup(result);
+        return result.toByteArray();
+    }
 
-	private void archive(ZipOutputStream compressedTcs, 
-			TripleCollection tripleCollection,
-			String fileName) throws IOException, UnsupportedFormatException {
-		Lock readLock = null;
-		compressedTcs.putNextEntry(new ZipEntry(fileName));
-		if (tripleCollection instanceof LockableMGraph) {
-			readLock = ((LockableMGraph) tripleCollection).getLock().readLock();
-			readLock.lock();
-		}
-		try {
-			serializer.serialize(compressedTcs, tripleCollection,
-					SupportedFormat.N_TRIPLE);
-		} finally {
-			if (readLock != null) {
-				readLock.unlock();
-			}
-		}
-	}
+    private void archive(ZipOutputStream compressedTcs, 
+            TripleCollection tripleCollection,
+            String fileName) throws IOException, UnsupportedFormatException {
+        Lock readLock = null;
+        compressedTcs.putNextEntry(new ZipEntry(fileName));
+        if (tripleCollection instanceof LockableMGraph) {
+            readLock = ((LockableMGraph) tripleCollection).getLock().readLock();
+            readLock.lock();
+        }
+        try {
+            serializer.serialize(compressedTcs, tripleCollection,
+                    SupportedFormat.N_TRIPLE);
+        } finally {
+            if (readLock != null) {
+                readLock.unlock();
+            }
+        }
+    }
 
-	private String getTcFileName(UriRef tcUri, String extension,
-			Map<String, Integer> fileNameCount) {
-		String fileName = tcUri.getUnicodeString();
-		fileName = fileName.substring(fileName.lastIndexOf("/")+1);
-		Integer count = fileNameCount.get(fileName);
-		if (count == null) {
-			fileNameCount.put(fileName, 0);
-		} else {
-			count++;
-			fileNameCount.put(fileName, count);
-			fileName = fileName.concat("_" + count);
-		}
-		return  fileName.concat(extension);
-	}
+    private String getTcFileName(UriRef tcUri, String extension,
+            Map<String, Integer> fileNameCount) {
+        String fileName = tcUri.getUnicodeString();
+        fileName = fileName.substring(fileName.lastIndexOf("/")+1);
+        Integer count = fileNameCount.get(fileName);
+        if (count == null) {
+            fileNameCount.put(fileName, 0);
+        } else {
+            count++;
+            fileNameCount.put(fileName, count);
+            fileName = fileName.concat("_" + count);
+        }
+        return  fileName.concat(extension);
+    }
 
-	private void writeBackup(OutputStream result) {
-		Map<String, Integer> fileNameCount = new HashMap<String, Integer>();
-		MGraph backupContents = new SimpleMGraph();
-		try {
-			ZipOutputStream compressedTcs = new ZipOutputStream(result);
+    private void writeBackup(OutputStream result) {
+        Map<String, Integer> fileNameCount = new HashMap<String, Integer>();
+        MGraph backupContents = new SimpleMGraph();
+        try {
+            ZipOutputStream compressedTcs = new ZipOutputStream(result);
 
-			compressedTcs.putNextEntry(new ZipEntry(folder));
+            compressedTcs.putNextEntry(new ZipEntry(folder));
 
-			Set<UriRef> tripleCollections = tcManager.listTripleCollections();
-			Iterator<UriRef> tcUriRefs = tripleCollections.iterator();
-			while (tcUriRefs.hasNext()) {
-				UriRef tcUri = tcUriRefs.next();
-				String fileName = folder + getTcFileName(tcUri, ".nt",
-						fileNameCount);
-				TripleCollection tripleCollection = tcManager.getTriples(tcUri);
-				archive(compressedTcs, tripleCollection, fileName);
-				if (tripleCollection instanceof MGraph) {
-					backupContents.add(new TripleImpl(tcUri, RDF.type,
-							BACKUP.MGraph));
-				} else {
-					backupContents.add(new TripleImpl(tcUri, RDF.type,
-							BACKUP.Graph));
-				}
-				backupContents.add(new TripleImpl(tcUri, BACKUP.file,
-						LiteralFactory.getInstance().createTypedLiteral(
-						fileName)));
-			}
-			archive(compressedTcs, backupContents, "triplecollections.nt");
-			compressedTcs.close();
+            Set<UriRef> tripleCollections = tcManager.listTripleCollections();
+            Iterator<UriRef> tcUriRefs = tripleCollections.iterator();
+            while (tcUriRefs.hasNext()) {
+                UriRef tcUri = tcUriRefs.next();
+                String fileName = folder + getTcFileName(tcUri, ".nt",
+                        fileNameCount);
+                TripleCollection tripleCollection = tcManager.getTriples(tcUri);
+                archive(compressedTcs, tripleCollection, fileName);
+                if (tripleCollection instanceof MGraph) {
+                    backupContents.add(new TripleImpl(tcUri, RDF.type,
+                            BACKUP.MGraph));
+                } else {
+                    backupContents.add(new TripleImpl(tcUri, RDF.type,
+                            BACKUP.Graph));
+                }
+                backupContents.add(new TripleImpl(tcUri, BACKUP.file,
+                        LiteralFactory.getInstance().createTypedLiteral(
+                        fileName)));
+            }
+            archive(compressedTcs, backupContents, "triplecollections.nt");
+            compressedTcs.close();
 
-		} catch (UnsupportedFormatException ufe) {
-			throw new WebApplicationException(Response.status(
-					Status.NOT_ACCEPTABLE).entity(ufe.getMessage()).build());
-		} catch (IOException ex) {
-			throw new WebApplicationException(ex);
-		}
-	}
+        } catch (UnsupportedFormatException ufe) {
+            throw new WebApplicationException(Response.status(
+                    Status.NOT_ACCEPTABLE).entity(ufe.getMessage()).build());
+        } catch (IOException ex) {
+            throw new WebApplicationException(ex);
+        }
+    }
 
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return Backup.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return Backup.class.isAssignableFrom(type);
+    }
 
-	@Override
-	public long getSize(Backup t, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return -1;
-	}
+    @Override
+    public long getSize(Backup t, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return -1;
+    }
 
-	@Override
-	public void writeTo(Backup t, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders,
-			OutputStream entityStream) throws IOException, WebApplicationException {
-		writeBackup(entityStream);
-	}
+    @Override
+    public void writeTo(Backup t, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders,
+            OutputStream entityStream) throws IOException, WebApplicationException {
+        writeBackup(entityStream);
+    }
 }

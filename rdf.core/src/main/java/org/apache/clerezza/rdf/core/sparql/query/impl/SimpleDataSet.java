@@ -28,24 +28,24 @@ import org.apache.clerezza.rdf.core.sparql.query.DataSet;
  * @author hasan
  */
 public class SimpleDataSet implements DataSet {
-	private Set<UriRef> defaultGraphs = new HashSet<UriRef>();
-	private Set<UriRef> namedGraphs = new HashSet<UriRef>();
+    private Set<UriRef> defaultGraphs = new HashSet<UriRef>();
+    private Set<UriRef> namedGraphs = new HashSet<UriRef>();
 
-	@Override
-	public Set<UriRef> getDefaultGraphs() {
-		return defaultGraphs;
-	}
+    @Override
+    public Set<UriRef> getDefaultGraphs() {
+        return defaultGraphs;
+    }
 
-	@Override
-	public Set<UriRef> getNamedGraphs() {
-		return namedGraphs;
-	}
+    @Override
+    public Set<UriRef> getNamedGraphs() {
+        return namedGraphs;
+    }
 
-	void addDefaultGraph(UriRef defaultGraph) {
-		defaultGraphs.add(defaultGraph);
-	}
+    void addDefaultGraph(UriRef defaultGraph) {
+        defaultGraphs.add(defaultGraph);
+    }
 
-	void addNamedGraph(UriRef namedGraph) {
-		namedGraphs.add(namedGraph);
-	}
+    void addNamedGraph(UriRef namedGraph) {
+        namedGraphs.add(namedGraph);
+    }
 }

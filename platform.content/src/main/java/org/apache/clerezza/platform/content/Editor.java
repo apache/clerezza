@@ -71,92 +71,92 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 @Path("tools/editor")
 public class Editor extends FileServer {
 
-	@Reference
-	private ContentGraphProvider cgProvider;
+    @Reference
+    private ContentGraphProvider cgProvider;
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	
-	private static final Logger logger = LoggerFactory.getLogger(Editor.class);
+    
+    private static final Logger logger = LoggerFactory.getLogger(Editor.class);
 
-	private Providers providers;
-	private final MediaType rdfXmlType = MediaType.valueOf("application/rdf+xml");
-	
-	
-	/**
-	 * On activation the {@link FileServer} is prepared
-	 *
-	 * @param context
-	 */
-	protected void activate(ComponentContext context) {
-		configure(context.getBundleContext());
-	}
+    private Providers providers;
+    private final MediaType rdfXmlType = MediaType.valueOf("application/rdf+xml");
+    
+    
+    /**
+     * On activation the {@link FileServer} is prepared
+     *
+     * @param context
+     */
+    protected void activate(ComponentContext context) {
+        configure(context.getBundleContext());
+    }
 
-	
-	/**
-	 * The providers are injected by the Jax-rs implementation and used to
-	 * locate readers for the RDF content of the body
-	 *
-	 * @param providers
-	 */
-	@Context
-	public void setProviders(Providers providers) {
-		this.providers = providers;
-	}
+    
+    /**
+     * The providers are injected by the Jax-rs implementation and used to
+     * locate readers for the RDF content of the body
+     *
+     * @param providers
+     */
+    @Context
+    public void setProviders(Providers providers) {
+        this.providers = providers;
+    }
 
 
-	@GET
-	@Path("get")
-	public GraphNode getDiscobit(@QueryParam("resource") UriRef uri,
-			@QueryParam("graph") UriRef graphUri) {
-		final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
-			tcManager.getMGraph(graphUri);
-		return new GraphNode(uri, mGraph);
-	}
+    @GET
+    @Path("get")
+    public GraphNode getDiscobit(@QueryParam("resource") UriRef uri,
+            @QueryParam("graph") UriRef graphUri) {
+        final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
+            tcManager.getMGraph(graphUri);
+        return new GraphNode(uri, mGraph);
+    }
 
-	/**
-	 * replaces the subgraph serialized with RDF/XML in <code>revokedString
-	 * </code> with the one from <code>assertedString</code>.
-	 *
-	 * @param graphUri the graph within which the replacement has to take place or null
-	 * for the content graph
-	 * @param assertedString the asserted Graph as RDF/XML
-	 * @param revokedString the revoked Graph as RDF/XML
-	 */
-	@POST
-	@Path("post")
-	public void postDiscobit(@QueryParam("graph") UriRef graphUri,
-			@FormParam("assert") String assertedString,
-			@FormParam("revoke") String revokedString) {
-		MessageBodyReader<Graph> graphReader = providers.getMessageBodyReader(Graph.class, Graph.class, null,rdfXmlType);
-		final Graph assertedGraph;
-		final Graph revokedGraph;
-		try {
-			assertedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(assertedString.getBytes()));
-			revokedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(revokedString.getBytes()));
-		} catch (IOException ex) {
-			logger.error("reading graph {}", ex);
-			throw new WebApplicationException(ex, 500);
-		}
-		final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
-			tcManager.getMGraph(graphUri);
-		try {
-			MGraphUtils.removeSubGraph(mGraph, revokedGraph);
-		} catch (NoSuchSubGraphException ex) {
-			throw new RuntimeException(ex);
-		}
-		mGraph.addAll(assertedGraph);
-	}
+    /**
+     * replaces the subgraph serialized with RDF/XML in <code>revokedString
+     * </code> with the one from <code>assertedString</code>.
+     *
+     * @param graphUri the graph within which the replacement has to take place or null
+     * for the content graph
+     * @param assertedString the asserted Graph as RDF/XML
+     * @param revokedString the revoked Graph as RDF/XML
+     */
+    @POST
+    @Path("post")
+    public void postDiscobit(@QueryParam("graph") UriRef graphUri,
+            @FormParam("assert") String assertedString,
+            @FormParam("revoke") String revokedString) {
+        MessageBodyReader<Graph> graphReader = providers.getMessageBodyReader(Graph.class, Graph.class, null,rdfXmlType);
+        final Graph assertedGraph;
+        final Graph revokedGraph;
+        try {
+            assertedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(assertedString.getBytes()));
+            revokedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(revokedString.getBytes()));
+        } catch (IOException ex) {
+            logger.error("reading graph {}", ex);
+            throw new WebApplicationException(ex, 500);
+        }
+        final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
+            tcManager.getMGraph(graphUri);
+        try {
+            MGraphUtils.removeSubGraph(mGraph, revokedGraph);
+        } catch (NoSuchSubGraphException ex) {
+            throw new RuntimeException(ex);
+        }
+        mGraph.addAll(assertedGraph);
+    }
 
-	@GET
+    @GET
     //this is to work around
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public PathNode getStaticFile(@Context UriInfo uriInfo) {
-		TrailingSlash.enforcePresent(uriInfo);
-		final PathNode node = getNode("disco.xhtml");
-		logger.debug("serving static {}", node);
-		return node;
-	}
-	
+    public PathNode getStaticFile(@Context UriInfo uriInfo) {
+        TrailingSlash.enforcePresent(uriInfo);
+        final PathNode node = getNode("disco.xhtml");
+        logger.debug("serving static {}", node);
+        return node;
+    }
+    
 }

@@ -31,19 +31,19 @@ import org.apache.clerezza.rdf.core.TripleCollection;
  * @author mir
  */
 public interface SerializingProvider {
-	
-	/** Serializes a <code>TripleCollection</code> to a specified
-	 * <code>OutputStream</code> in the format identified by
-	 * <code>formatIdentifier</code>. This method will be invoked
-	 * for a supported format, a format is considered as supported if the part
-	 * before a ';'-character in the <code>formatIdentifier</code> matches
-	 * a <code>SupportedFormat</code> annotation of the implementing class.
-	 * 
-	 * @param outputStream
-	 * @param tc
-	 * @param formatIdentifier
-	 */
-	public void serialize(OutputStream outputStream, TripleCollection tc,
-			String formatIdentifier);
+    
+    /** Serializes a <code>TripleCollection</code> to a specified
+     * <code>OutputStream</code> in the format identified by
+     * <code>formatIdentifier</code>. This method will be invoked
+     * for a supported format, a format is considered as supported if the part
+     * before a ';'-character in the <code>formatIdentifier</code> matches
+     * a <code>SupportedFormat</code> annotation of the implementing class.
+     * 
+     * @param outputStream
+     * @param tc
+     * @param formatIdentifier
+     */
+    public void serialize(OutputStream outputStream, TripleCollection tc,
+            String formatIdentifier);
 
 }

@@ -38,219 +38,219 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public interface UserManager {
 
-	/**
-	 *
-	 * @param title
-	 *		the title of the role, may not be null
-	 */
-	public void storeRole(String title);
+    /**
+     *
+     * @param title
+     *        the title of the role, may not be null
+     */
+    public void storeRole(String title);
 
-	/**
-	 * Checks if a role with this title exists
-	 *
-	 * @param title specifies the title of the role
-	 *
-	 * @return true if the role exists otherwise false
-	 */
-	public boolean roleExists(String title);
+    /**
+     * Checks if a role with this title exists
+     *
+     * @param title specifies the title of the role
+     *
+     * @return true if the role exists otherwise false
+     */
+    public boolean roleExists(String title);
 
-	/**
-	 *
-	 * @param title
-	 * @return NonLiteral which is either a BNode or a UriRef
-	 */
-	public NonLiteral getRoleByTitle(String title);
+    /**
+     *
+     * @param title
+     * @return NonLiteral which is either a BNode or a UriRef
+     */
+    public NonLiteral getRoleByTitle(String title);
 
-	/**
-	 *
-	 * @return Iterator defining all roles, except base roles
-	 */
-	public Iterator<NonLiteral> getRoles();
+    /**
+     *
+     * @return Iterator defining all roles, except base roles
+     */
+    public Iterator<NonLiteral> getRoles();
 
-	/**
-	 *
-	 * @param user
-	 *			the user is either a BNode or a UriRef
-	 *
-	 * @return Iterator defining all the Roles the specified user owns
-	 */
-	public Iterator<NonLiteral> getRolesOfUser(NonLiteral user);
+    /**
+     *
+     * @param user
+     *            the user is either a BNode or a UriRef
+     *
+     * @return Iterator defining all the Roles the specified user owns
+     */
+    public Iterator<NonLiteral> getRolesOfUser(NonLiteral user);
 
-	/**
-	 *
-	 * @param title
-	 *		the title of the role to be deleted, may not be null
-	 */
-	public void deleteRole(String title);
+    /**
+     *
+     * @param title
+     *        the title of the role to be deleted, may not be null
+     */
+    public void deleteRole(String title);
 
-	/**
-	 * Assigns a permission to a role
-	 *
-	 * @param title specifies the title of the role, may not be null
-	 * @param permissionEntries specifies a list of permissions
-	 */
-	public void assignPermissionsToRole(String title,
-			List<String> permissionEntries);
+    /**
+     * Assigns a permission to a role
+     *
+     * @param title specifies the title of the role, may not be null
+     * @param permissionEntries specifies a list of permissions
+     */
+    public void assignPermissionsToRole(String title,
+            List<String> permissionEntries);
 
-	/**
-	 *
-	 * @param role
-	 *			the role is either a BNode or an UriRef
-	 *
-	 * @return Iterator defining all permissions of a role
-	 */
-	public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role);
+    /**
+     *
+     * @param role
+     *            the role is either a BNode or an UriRef
+     *
+     * @return Iterator defining all permissions of a role
+     */
+    public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role);
 
-	/**
-	 *  Deletes the defined permissions of the role
-	 *
-	 * @param title specifies the title of the role, may not be null
-	 * @param permissionEntries
-	 */
-	public void deletePermissionsOfRole(String title,
-			List<String> permissionEntries);
-	/**
-	 * Deletes all permission of a role
-	 *
-	 * @param title specifies the title of the role, may not be null
-	 */
-	public void deleteAllPermissionsOfRole(String title);
+    /**
+     *  Deletes the defined permissions of the role
+     *
+     * @param title specifies the title of the role, may not be null
+     * @param permissionEntries
+     */
+    public void deletePermissionsOfRole(String title,
+            List<String> permissionEntries);
+    /**
+     * Deletes all permission of a role
+     *
+     * @param title specifies the title of the role, may not be null
+     */
+    public void deleteAllPermissionsOfRole(String title);
 
-	/**
-	 *
-	 * @param name
-	 *		the username of the user, may not be null
-	 * @param email
-	 * @param password
-	 * @param assignedRoles
-	 * @param pathPrefix
-	 * @throws java.security.NoSuchAlgorithmException
-	 * @throws java.io.UnsupportedEncodingException
-	 */
-	public void storeUser(String name, String email, String password,
-			List<String> assignedRoles, String pathPrefix);
+    /**
+     *
+     * @param name
+     *        the username of the user, may not be null
+     * @param email
+     * @param password
+     * @param assignedRoles
+     * @param pathPrefix
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.io.UnsupportedEncodingException
+     */
+    public void storeUser(String name, String email, String password,
+            List<String> assignedRoles, String pathPrefix);
 
-	/**
-	 * Updates the user with the specified userName
-	 * 
-	 * @param name, may not be null
-	 * @param email the email address (note that this is not the mailto-uri)
-	 * @param password
-	 * @param assignedRoles
-	 * @param pathPrefix
-	 */
-	public void updateUser(String name, String email, String password,
-			Collection<String> assignedRoles, String pathPrefix);
+    /**
+     * Updates the user with the specified userName
+     * 
+     * @param name, may not be null
+     * @param email the email address (note that this is not the mailto-uri)
+     * @param password
+     * @param assignedRoles
+     * @param pathPrefix
+     */
+    public void updateUser(String name, String email, String password,
+            Collection<String> assignedRoles, String pathPrefix);
 
-	/**
-	 *	Checks if the username exists
-	 *
-	 * @param name specifies the username, may not be null
-	 * @return true if exists otherwise false
-	 */
-	public boolean nameExists(String name);
+    /**
+     *    Checks if the username exists
+     *
+     * @param name specifies the username, may not be null
+     * @return true if exists otherwise false
+     */
+    public boolean nameExists(String name);
 
-	/**
-	 * Checks if thereis already an agent with that email address.
-	 *
-	 * @param email
-	 * @return true if exists otherwise false
-	 */
-	public boolean emailExists(String email);
+    /**
+     * Checks if thereis already an agent with that email address.
+     *
+     * @param email
+     * @return true if exists otherwise false
+     */
+    public boolean emailExists(String email);
 
-	/**
-	 *
-	 * @param email
-	 * @return
-	 *		null if the email is null or the email does not exist in the
-	 *		storage, otherwise returns the name of the user who owns the email
-	 * @throws org.apache.clerezza.platform.usermanager.UserHasNoNameException
-	 */
-	public String getNameByEmail(String email) throws UserHasNoNameException;
+    /**
+     *
+     * @param email
+     * @return
+     *        null if the email is null or the email does not exist in the
+     *        storage, otherwise returns the name of the user who owns the email
+     * @throws org.apache.clerezza.platform.usermanager.UserHasNoNameException
+     */
+    public String getNameByEmail(String email) throws UserHasNoNameException;
 
-	/**
-	 *
-	 * @param name specifies the username of the user
-	 * @return NonLiteral representing the user in the system Graph
-	 */
-	@Deprecated
-	public NonLiteral getUserByName(String name);
+    /**
+     *
+     * @param name specifies the username of the user
+     * @return NonLiteral representing the user in the system Graph
+     */
+    @Deprecated
+    public NonLiteral getUserByName(String name);
 
-	/**
-	 * Returns the user with the specified name in an (editable) MGraph
-	 * (i.e. a SimpleGraph but this is implementation specific) with the context
-	 * of the user node, editing the graphnode('s Mgraph) doesn't cause any
-	 * changes elsewhere. Returns null if the user does not exist.
-	 * The caller of this method needs the permission to read the system graph,
-	 * otherwise a AccessControlException will be thrown.
-	 *
-	 * @param name The username of the user
-	 * @return GraphNode representing the user (WebID or blank node) with some context in a dedicated MGraph
-	 */
-	public GraphNode getUserGraphNode(String name);
+    /**
+     * Returns the user with the specified name in an (editable) MGraph
+     * (i.e. a SimpleGraph but this is implementation specific) with the context
+     * of the user node, editing the graphnode('s Mgraph) doesn't cause any
+     * changes elsewhere. Returns null if the user does not exist.
+     * The caller of this method needs the permission to read the system graph,
+     * otherwise a AccessControlException will be thrown.
+     *
+     * @param name The username of the user
+     * @return GraphNode representing the user (WebID or blank node) with some context in a dedicated MGraph
+     */
+    public GraphNode getUserGraphNode(String name);
 
-	/**
-	 * Returns the <code>GraphNode</code> pointing to the user with the
-	 * specified name in the system graph. Returns null if the user does not
-	 * exist.
-	 *
-	 * @param name The username of the user
-	 * @return GraphNode representing the user in the system graph
-	 */
-	public GraphNode getUserInSystemGraph(String name);
+    /**
+     * Returns the <code>GraphNode</code> pointing to the user with the
+     * specified name in the system graph. Returns null if the user does not
+     * exist.
+     *
+     * @param name The username of the user
+     * @return GraphNode representing the user in the system graph
+     */
+    public GraphNode getUserInSystemGraph(String name);
 
-	/**
-	 * Returns the <code>GraphNode</code> pointing to the user with the
-	 * specified name in the content graph. If the user does not exist in the
-	 * content graph, but in the system graph, then the it is created with the
-	 * PLATFORM.userName property copied from the system graph. Returns null if
-	 * the user does not exist.
-	 *
-	 * @param name The username of the user
-	 * @return GraphNode representing the user in the content graph
-	 */
-	public GraphNode getUserInContentGraph(String name);
+    /**
+     * Returns the <code>GraphNode</code> pointing to the user with the
+     * specified name in the content graph. If the user does not exist in the
+     * content graph, but in the system graph, then the it is created with the
+     * PLATFORM.userName property copied from the system graph. Returns null if
+     * the user does not exist.
+     *
+     * @param name The username of the user
+     * @return GraphNode representing the user in the content graph
+     */
+    public GraphNode getUserInContentGraph(String name);
 
-	/**
-	 * Returns all users.
-	 *
-	 * @return Iterator of users in the system Graph.
-	 */
-	public Iterator<NonLiteral> getUsers();
+    /**
+     * Returns all users.
+     *
+     * @return Iterator of users in the system Graph.
+     */
+    public Iterator<NonLiteral> getUsers();
 
-	/**
-	 *
-	 * @param name specifies the username of the user, may not be null
-	 */
-	public void deleteUser(String name);
+    /**
+     *
+     * @param name specifies the username of the user, may not be null
+     */
+    public void deleteUser(String name);
 
-	/**
-	 *
-	 * @param name specifies the username of the user, may not be null
-	 * @param permissionEntries
-	 */
-	public void assignPermissionsToUser(String name,
-			List<String> permissionEntries);
-	/**
-	 *
-	 * @param user
-	 *			the user is either a BNode or a UriRef
-	 * @return  Iterator defining all permissions of the specified user
-	 */
-	public Iterator<NonLiteral> getPermissionsOfUser(NonLiteral user);
+    /**
+     *
+     * @param name specifies the username of the user, may not be null
+     * @param permissionEntries
+     */
+    public void assignPermissionsToUser(String name,
+            List<String> permissionEntries);
+    /**
+     *
+     * @param user
+     *            the user is either a BNode or a UriRef
+     * @return  Iterator defining all permissions of the specified user
+     */
+    public Iterator<NonLiteral> getPermissionsOfUser(NonLiteral user);
 
-	/**
-	 *
-	 * @param name specifies the username of the user, may not be null
-	 * @param permissionEntries
-	 */
-	public void deletePermissionsOfUser(String name,
-			List<String> permissionEntries);
+    /**
+     *
+     * @param name specifies the username of the user, may not be null
+     * @param permissionEntries
+     */
+    public void deletePermissionsOfUser(String name,
+            List<String> permissionEntries);
 
-	/**
-	 * Deletes all permission of a user
-	 *
-	 * @param name specifies the username of the user, may not be null
-	 */
-	public void deleteAllPermissionsOfUser(String name);
+    /**
+     * Deletes all permission of a user
+     *
+     * @param name specifies the username of the user, may not be null
+     */
+    public void deleteAllPermissionsOfUser(String name);
 }

@@ -18,24 +18,24 @@
  under the License.
 
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.clerezza</groupId>
-		<artifactId>main.parent</artifactId>
-		<version>0.5-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>${project.groupId}</groupId>
-	<artifactId>${project.artifactId}</artifactId>
-	<packaging>bundle</packaging>
-	<version>${project.version}</version>
-	<name>Clerezza - ${project.artifactId}</name>
-	<description>A clerezza project</description>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>main.parent</artifactId>
+        <version>0.5-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>${project.groupId}</groupId>
+    <artifactId>${project.artifactId}</artifactId>
+    <packaging>bundle</packaging>
+    <version>${project.version}</version>
+    <name>Clerezza - ${project.artifactId}</name>
+    <description>A clerezza project</description>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

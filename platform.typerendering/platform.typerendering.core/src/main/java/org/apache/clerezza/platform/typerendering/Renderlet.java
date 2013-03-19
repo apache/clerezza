@@ -42,90 +42,90 @@ import org.osgi.framework.ServiceReference;
  */
 public interface Renderlet {
 
-	/**
-	 * A class repressing properties of the http request within which the
-	 * Renderlet is used, it also allows access to contextual rendering services.
-	 */
-	static class RequestProperties {
-		private UriInfo uriInfo;
-		private MultivaluedMap<String, Object> responseHeaders;
-		private HttpHeaders requestHeaders;
-		public final BundleContext bundleContext;      //public only to test an idea
+    /**
+     * A class repressing properties of the http request within which the
+     * Renderlet is used, it also allows access to contextual rendering services.
+     */
+    static class RequestProperties {
+        private UriInfo uriInfo;
+        private MultivaluedMap<String, Object> responseHeaders;
+        private HttpHeaders requestHeaders;
+        public final BundleContext bundleContext;      //public only to test an idea
 
-		public RequestProperties(UriInfo uriInfo, 
-				HttpHeaders requestHeaders,
-				MultivaluedMap<String, Object> responseHeaders,
-				BundleContext bundleContext) {
-			this.uriInfo = uriInfo;
-			this.requestHeaders = requestHeaders;
-			this.responseHeaders = responseHeaders;
-			this.bundleContext = bundleContext;
-		}
+        public RequestProperties(UriInfo uriInfo, 
+                HttpHeaders requestHeaders,
+                MultivaluedMap<String, Object> responseHeaders,
+                BundleContext bundleContext) {
+            this.uriInfo = uriInfo;
+            this.requestHeaders = requestHeaders;
+            this.responseHeaders = responseHeaders;
+            this.bundleContext = bundleContext;
+        }
 
-		public HttpHeaders getRequestHeaders() {
-			return requestHeaders;
-		}
+        public HttpHeaders getRequestHeaders() {
+            return requestHeaders;
+        }
 
-		public MultivaluedMap<String, Object> getResponseHeaders() {
-			return responseHeaders;
-		}
+        public MultivaluedMap<String, Object> getResponseHeaders() {
+            return responseHeaders;
+        }
 
-		public UriInfo getUriInfo() {
-			return uriInfo;
-		}
+        public UriInfo getUriInfo() {
+            return uriInfo;
+        }
 
-		/**
-		 * Rendering services
-		 *
-		 * @param type
-		 * @return a instance of the requested rendering services
-		 */
-		public <T> T getRenderingService(final Class<T> type) {
-			return AccessController.doPrivileged(
-				new PrivilegedAction<T>() {				
+        /**
+         * Rendering services
+         *
+         * @param type
+         * @return a instance of the requested rendering services
+         */
+        public <T> T getRenderingService(final Class<T> type) {
+            return AccessController.doPrivileged(
+                new PrivilegedAction<T>() {                
 
-					@Override
-					public T run() {
-							ServiceReference serviceReference = bundleContext.getServiceReference(type.getName());
-							if (serviceReference != null) {
-								T resultCandidate = (T) bundleContext.getService(serviceReference);
-								if (resultCandidate.getClass().getAnnotation(WebRenderingService.class) != null) {
-									return resultCandidate;
-								} else {
-									return null;
-								}
-							} else {
-								return null;
-							}
-						}
-					});
-		}
-	}
-	
-	
-	/**
-	 * Renders the data from <code>res</code> with a appropriate rendering
-	 * engine.
-	 *
-	 * @param res  RDF resource to be rendered with the template.
-	 * @param context  RDF resource providing a rendering context.
-	 * @param sharedRenderingValues	a map that can be used for sharing values
-	 * across the different Renderlets involved in a rendering process
-	 * @param callbackRenderer  renderer for call backs.
-	 * @param renderingSpecification  the rendering specification
-	 * @param mediaType  the media type this media produces (a part of)
-	 * @param mode  the mode this Renderlet was invoked with, this is mainly used
-	 * so that the callbackRenderer can be claeed inheriting the mode.
-	 * @param requestProperties properties of the http request, may be null
-	 * @param os  where the output will be written to.
-	 */
-	public void render(GraphNode res,
-			GraphNode context,
-			Map<String, Object> sharedRenderingValues,
-			CallbackRenderer callbackRenderer,
-			URI renderingSpecification,
-			String mode,
-			MediaType mediaType,
-			RequestProperties requestProperties,
-			OutputStream os) throws IOException;
+                    @Override
+                    public T run() {
+                            ServiceReference serviceReference = bundleContext.getServiceReference(type.getName());
+                            if (serviceReference != null) {
+                                T resultCandidate = (T) bundleContext.getService(serviceReference);
+                                if (resultCandidate.getClass().getAnnotation(WebRenderingService.class) != null) {
+                                    return resultCandidate;
+                                } else {
+                                    return null;
+                                }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+        }
+    }
+    
+    
+    /**
+     * Renders the data from <code>res</code> with a appropriate rendering
+     * engine.
+     *
+     * @param res  RDF resource to be rendered with the template.
+     * @param context  RDF resource providing a rendering context.
+     * @param sharedRenderingValues    a map that can be used for sharing values
+     * across the different Renderlets involved in a rendering process
+     * @param callbackRenderer  renderer for call backs.
+     * @param renderingSpecification  the rendering specification
+     * @param mediaType  the media type this media produces (a part of)
+     * @param mode  the mode this Renderlet was invoked with, this is mainly used
+     * so that the callbackRenderer can be claeed inheriting the mode.
+     * @param requestProperties properties of the http request, may be null
+     * @param os  where the output will be written to.
+     */
+    public void render(GraphNode res,
+            GraphNode context,
+            Map<String, Object> sharedRenderingValues,
+            CallbackRenderer callbackRenderer,
+            URI renderingSpecification,
+            String mode,
+            MediaType mediaType,
+            RequestProperties requestProperties,
+            OutputStream os) throws IOException;
 }

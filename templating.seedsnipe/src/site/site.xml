@@ -22,9 +22,9 @@
 -->
 
 <project>
-	<body>
-		<menu name="Documentation">
-			<item name="Overview" href="documentation/overview.xhtml"/>
-		</menu>
-	</body>
+    <body>
+        <menu name="Documentation">
+            <item name="Overview" href="documentation/overview.xhtml"/>
+        </menu>
+    </body>
 </project>

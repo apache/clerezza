@@ -21,7 +21,7 @@
 -->
 
 <sitemap>
-	<section>
+    <section>
         <name>Documentation</name>
         <page>reference.xhtml</page>
     </section>

@@ -27,14 +27,14 @@ import org.apache.clerezza.rdf.core.Literal;
  */
 public class LiteralExpression implements Expression {
 
-	private final Literal literal;
+    private final Literal literal;
 
-	public LiteralExpression(Literal literal) {
-		this.literal = literal;
-	}
+    public LiteralExpression(Literal literal) {
+        this.literal = literal;
+    }
 
-	public Literal getLiteral() {
-		return literal;
-	}
+    public Literal getLiteral() {
+        return literal;
+    }
 
 }

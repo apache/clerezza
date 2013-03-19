@@ -36,31 +36,31 @@ import org.junit.Test;
 
 
 public class DocumentationStabilityTest {
-	
-	@Test
-	public void RDFTestCases() throws Exception {
-		
-		Parser parser = Parser.getInstance();
-		Graph tc1 = parser.parse(
-				getClass().getResourceAsStream("documentation-example.nt"), SupportedFormat.N_TRIPLE);
-		final Set<String> lines1 = serializeToLines(tc1);
-		TripleCollection tc2 = new SimpleMGraph();
-		tc2.addAll(tc1);
-		//add <bundle:///intro> <http://clerezza.org/2009/08/documentation#after> <bundle://org.apache.clerezza.platform.documentation/intro> .
-		tc2.add(new TripleImpl(new UriRef("bundle:///intro"), 
-				new UriRef("http://clerezza.org/2009/08/documentation#after"), 
-				new UriRef("bundle://org.apache.clerezza.platform.documentation/intro")));
-		final Set<String> lines2 = serializeToLines(tc2);
-		lines2.removeAll(lines1);
-		Assert.assertEquals(1, lines2.size());
-	}
-	
-	private Set<String> serializeToLines(TripleCollection tc) throws UnsupportedEncodingException {
-		StableSerializerProvider ssp = new StableSerializerProvider();
-		final ByteArrayOutputStream os1 = new ByteArrayOutputStream();
-		ssp.serialize(os1, tc, SupportedFormat.N_TRIPLE);
-		return new HashSet<String>(Arrays.asList(new String(os1.toByteArray(), "utf-8").split("\n")));
-		
-	}
+    
+    @Test
+    public void RDFTestCases() throws Exception {
+        
+        Parser parser = Parser.getInstance();
+        Graph tc1 = parser.parse(
+                getClass().getResourceAsStream("documentation-example.nt"), SupportedFormat.N_TRIPLE);
+        final Set<String> lines1 = serializeToLines(tc1);
+        TripleCollection tc2 = new SimpleMGraph();
+        tc2.addAll(tc1);
+        //add <bundle:///intro> <http://clerezza.org/2009/08/documentation#after> <bundle://org.apache.clerezza.platform.documentation/intro> .
+        tc2.add(new TripleImpl(new UriRef("bundle:///intro"), 
+                new UriRef("http://clerezza.org/2009/08/documentation#after"), 
+                new UriRef("bundle://org.apache.clerezza.platform.documentation/intro")));
+        final Set<String> lines2 = serializeToLines(tc2);
+        lines2.removeAll(lines1);
+        Assert.assertEquals(1, lines2.size());
+    }
+    
+    private Set<String> serializeToLines(TripleCollection tc) throws UnsupportedEncodingException {
+        StableSerializerProvider ssp = new StableSerializerProvider();
+        final ByteArrayOutputStream os1 = new ByteArrayOutputStream();
+        ssp.serialize(os1, tc, SupportedFormat.N_TRIPLE);
+        return new HashSet<String>(Arrays.asList(new String(os1.toByteArray(), "utf-8").split("\n")));
+        
+    }
 
 }

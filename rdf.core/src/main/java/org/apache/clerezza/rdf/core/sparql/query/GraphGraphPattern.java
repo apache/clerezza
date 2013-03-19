@@ -27,16 +27,16 @@ package org.apache.clerezza.rdf.core.sparql.query;
  */
 public interface GraphGraphPattern extends GraphPattern {
 
-	/**
-	 *
-	 * @return a {@link UriRefOrVariable} which specifies the graph
-	 *		against which the pattern should match.
-	 */
-	public UriRefOrVariable getGraph();
+    /**
+     *
+     * @return a {@link UriRefOrVariable} which specifies the graph
+     *        against which the pattern should match.
+     */
+    public UriRefOrVariable getGraph();
 
-	/**
-	 * 
-	 * @return the pattern to match.
-	 */
-	public GroupGraphPattern getGroupGraphPattern();
+    /**
+     * 
+     * @return the pattern to match.
+     */
+    public GroupGraphPattern getGroupGraphPattern();
 }

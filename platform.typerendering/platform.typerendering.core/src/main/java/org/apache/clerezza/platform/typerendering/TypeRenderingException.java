@@ -28,65 +28,65 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public abstract class TypeRenderingException extends RuntimeException{
 
-	private GraphNode node;
-	private URI renderingSpecification;
-	private GraphNode context;
+    private GraphNode node;
+    private URI renderingSpecification;
+    private GraphNode context;
 
-	public TypeRenderingException(String message, URI renderingSpecification,
-			GraphNode renderNode, GraphNode context) {
-		super(message+" in "+renderingSpecification);
-		this.node = renderNode;
-		this.renderingSpecification = renderingSpecification;
-		this.context = context;
-	}
+    public TypeRenderingException(String message, URI renderingSpecification,
+            GraphNode renderNode, GraphNode context) {
+        super(message+" in "+renderingSpecification);
+        this.node = renderNode;
+        this.renderingSpecification = renderingSpecification;
+        this.context = context;
+    }
 
-	public TypeRenderingException(String message, URI renderingSpecification,
-			GraphNode renderNode, GraphNode context, Throwable cause) {
-		super(message, cause);
-		this.node = renderNode;
-		this.renderingSpecification = renderingSpecification;
-		this.context = context;
-	}
+    public TypeRenderingException(String message, URI renderingSpecification,
+            GraphNode renderNode, GraphNode context, Throwable cause) {
+        super(message, cause);
+        this.node = renderNode;
+        this.renderingSpecification = renderingSpecification;
+        this.context = context;
+    }
 
 
-	/**
-	 * Returns the <code>GraphNode</code> that should have been rendered with
-	 * the rendering specification containing the error.
-	 *
-	 * @return the graph node to be rendered.
-	 */
-	public GraphNode getRenderNode() {
-		return node;
-	}
+    /**
+     * Returns the <code>GraphNode</code> that should have been rendered with
+     * the rendering specification containing the error.
+     *
+     * @return the graph node to be rendered.
+     */
+    public GraphNode getRenderNode() {
+        return node;
+    }
 
-	/**
-	 * Returns the context <code>GraphNode</code> that should have been rendered with
-	 * the rendering specification containing the error.
-	 *
-	 * @return the graph node to be rendered.
-	 */
-	public GraphNode getContextNode() {
-		return node;
-	}
+    /**
+     * Returns the context <code>GraphNode</code> that should have been rendered with
+     * the rendering specification containing the error.
+     *
+     * @return the graph node to be rendered.
+     */
+    public GraphNode getContextNode() {
+        return node;
+    }
 
-	/**
-	 * Return the uri of the rendering specifiacion that contains the error.
-	 * @return the renderering specification containing the error
-	 */
-	public URI getRenderingSpecification() {
-		return renderingSpecification;
-	}
+    /**
+     * Return the uri of the rendering specifiacion that contains the error.
+     * @return the renderering specification containing the error
+     */
+    public URI getRenderingSpecification() {
+        return renderingSpecification;
+    }
 
-	/**
-	 * Returns a <code>GraphNode</code> of the type typerendering:Exception
-	 * which contains all information used to render an exception page.
-	 * The node contains the following information: the line and column number
-	 * on which the error occurred in the rendering specification. The uri of
-	 * the rendering specification in which the error is. A message with details
-	 * about error.
-	 *
-	 * @return the graph node containing all information about the exception
-	 */
-	public abstract GraphNode getExceptionGraphNode();
-	
+    /**
+     * Returns a <code>GraphNode</code> of the type typerendering:Exception
+     * which contains all information used to render an exception page.
+     * The node contains the following information: the line and column number
+     * on which the error occurred in the rendering specification. The uri of
+     * the rendering specification in which the error is. A message with details
+     * about error.
+     *
+     * @return the graph node containing all information about the exception
+     */
+    public abstract GraphNode getExceptionGraphNode();
+    
 }

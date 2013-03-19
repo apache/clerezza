@@ -57,108 +57,108 @@ import org.osgi.service.component.ComponentContext;
 
 @Component
 @Services({
-	@Service(Object.class),
-	@Service(CollectionTypeHandler.class)
+    @Service(Object.class),
+    @Service(CollectionTypeHandler.class)
 })
 @Property(name = "org.apache.clerezza.platform.typehandler", boolValue = true)
 @SupportedTypes(types = { "http://clerezza.org/2009/09/hierarchy#Collection" }, prioritize = true)
 public class CollectionTypeHandler extends DiscobitsTypeHandler{
 
-	private Logger logger = LoggerFactory.getLogger(CollectionTypeHandler.class);
-	
-	@Reference
-	private RenderletManager renderletManager;
+    private Logger logger = LoggerFactory.getLogger(CollectionTypeHandler.class);
+    
+    @Reference
+    private RenderletManager renderletManager;
 
-	/**
-	 * The activate method is called when SCR activates the component configuration.
-	 * This method gets the system graph or create a new one if it doesn't exist.
-	 *
-	 * @param componentContext
-	 */
-	protected void activate(ComponentContext componentContext) {
-		URL templateURL = getClass().getResource("collection.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), HIERARCHY.Collection,
-				"naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    /**
+     * The activate method is called when SCR activates the component configuration.
+     * This method gets the system graph or create a new one if it doesn't exist.
+     *
+     * @param componentContext
+     */
+    protected void activate(ComponentContext componentContext) {
+        URL templateURL = getClass().getResource("collection.ssp");
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(templateURL.toString()), HIERARCHY.Collection,
+                "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		logger.info("CollectionTypeHandler activated.");
-	}
+        logger.info("CollectionTypeHandler activated.");
+    }
 
-	/**
-	 * Returns a GraphNode of the requested collection
-	 * @return 
-	 */
-	@GET
-	@Override
-	public GraphNode getResource(@Context UriInfo uriInfo) {
-		final MGraph contentGraph = cgProvider.getContentGraph();
-		final String uriString = uriInfo.getAbsolutePath().toString();
-		final UriRef indexUri = new UriRef(uriString+"index");
-		if (contentGraph.filter(indexUri, null, null).hasNext()) {
-			return new GraphNode(indexUri, contentGraph);
-		}
-		final UriRef uri = new UriRef(uriString);
-		MGraph mGraph = new UnionMGraph(new SimpleMGraph(), contentGraph);
-		final GraphNode graphNode = new GraphNode(uri, mGraph);
-		graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
+    /**
+     * Returns a GraphNode of the requested collection
+     * @return 
+     */
+    @GET
+    @Override
+    public GraphNode getResource(@Context UriInfo uriInfo) {
+        final MGraph contentGraph = cgProvider.getContentGraph();
+        final String uriString = uriInfo.getAbsolutePath().toString();
+        final UriRef indexUri = new UriRef(uriString+"index");
+        if (contentGraph.filter(indexUri, null, null).hasNext()) {
+            return new GraphNode(indexUri, contentGraph);
+        }
+        final UriRef uri = new UriRef(uriString);
+        MGraph mGraph = new UnionMGraph(new SimpleMGraph(), contentGraph);
+        final GraphNode graphNode = new GraphNode(uri, mGraph);
+        graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
 
-		UriRef collectionUri = new UriRef(uriInfo.getAbsolutePath().toString());
-		return graphNode;
-	}
+        UriRef collectionUri = new UriRef(uriInfo.getAbsolutePath().toString());
+        return graphNode;
+    }
 
-	@Override
-	Map<UriRef, PropertyMap> getPropNames(GraphNode node, String depthHeader) {
-		return WebDavUtils.getCollectionProps(null, null, null, node,
-							depthHeader, false /* doesNotIncludeValues */);
-	}
+    @Override
+    Map<UriRef, PropertyMap> getPropNames(GraphNode node, String depthHeader) {
+        return WebDavUtils.getCollectionProps(null, null, null, node,
+                            depthHeader, false /* doesNotIncludeValues */);
+    }
 
-	@Override
-	Map<UriRef, PropertyMap> getPropsByName(Node requestNode, GraphNode node,
-			String depthHeader) {
-		Map<UriRef, PropertyMap> result;
-		NodeList children = requestNode.getChildNodes();
-		result = WebDavUtils.getPropsByName(children, node, depthHeader,
-				true /* includeValues */);
-		return result;
-	}
+    @Override
+    Map<UriRef, PropertyMap> getPropsByName(Node requestNode, GraphNode node,
+            String depthHeader) {
+        Map<UriRef, PropertyMap> result;
+        NodeList children = requestNode.getChildNodes();
+        result = WebDavUtils.getPropsByName(children, node, depthHeader,
+                true /* includeValues */);
+        return result;
+    }
 
-	@Override
-	Map<UriRef, PropertyMap> getAllProps(GraphNode node, String depthHeader) {
-		return WebDavUtils.getCollectionProps(null, null, null, node,
-							depthHeader, true /* includeValues */);
-	}
+    @Override
+    Map<UriRef, PropertyMap> getAllProps(GraphNode node, String depthHeader) {
+        return WebDavUtils.getCollectionProps(null, null, null, node,
+                            depthHeader, true /* includeValues */);
+    }
 
-	/*-----------------------*
-	 * Not Supported Methods * 
-	 *-----------------------*/
-	
-	/**
-	 * Locks a resource
-	 *
-	 * @return returns a 501 Not Implemented response
-	 */
-	@LOCK
-	public Object lock() {
-		return Response.status(501/* Not Implemented */).build();
-	}
+    /*-----------------------*
+     * Not Supported Methods * 
+     *-----------------------*/
+    
+    /**
+     * Locks a resource
+     *
+     * @return returns a 501 Not Implemented response
+     */
+    @LOCK
+    public Object lock() {
+        return Response.status(501/* Not Implemented */).build();
+    }
 
-	/**
-	 * Unlocks a resource
-	 *
-	 * @return returns a 501 Not Implemented response
-	 */
-	@UNLOCK
-	public Object unlock() {
-		return Response.status(501/* Not Implemented */).build();
-	}
+    /**
+     * Unlocks a resource
+     *
+     * @return returns a 501 Not Implemented response
+     */
+    @UNLOCK
+    public Object unlock() {
+        return Response.status(501/* Not Implemented */).build();
+    }
 
-	/**
-	 * Copies a resource
-	 *
-	 * @return returns a 501 Not Implemented response
-	 */
-	@COPY
-	public Object copy() {
-		return Response.status(501/* Not Implemented */).build();
-	}
+    /**
+     * Copies a resource
+     *
+     * @return returns a 501 Not Implemented response
+     */
+    @COPY
+    public Object copy() {
+        return Response.status(501/* Not Implemented */).build();
+    }
 }

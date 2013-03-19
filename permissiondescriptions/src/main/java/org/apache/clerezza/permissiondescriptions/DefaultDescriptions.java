@@ -29,7 +29,7 @@ import org.apache.felix.scr.annotations.Service;
  * the OSGi framework.
  * The following permissions are described:
  * <ul>
- *	<li>java.security.AllPermission</li>
+ *    <li>java.security.AllPermission</li>
  *
  * </ul>
  *
@@ -39,17 +39,17 @@ import org.apache.felix.scr.annotations.Service;
 @Component
 @Service(PermissionDescriptionsProvider.class)
 public class DefaultDescriptions implements PermissionDescriptionsProvider {
-	
-	private Set<PermissionDescripton> defaultDescriptions = new HashSet<PermissionDescripton>();
-	{
-		defaultDescriptions.add(new PermissionDescripton("All permissions", 
-				"Grants all permissions", null, AllPermission.class,
-				"(java.security.AllPermission \"\" \"\")"));
-	}
+    
+    private Set<PermissionDescripton> defaultDescriptions = new HashSet<PermissionDescripton>();
+    {
+        defaultDescriptions.add(new PermissionDescripton("All permissions", 
+                "Grants all permissions", null, AllPermission.class,
+                "(java.security.AllPermission \"\" \"\")"));
+    }
 
-	@Override
-	public Set<PermissionDescripton> getPermissionDescriptors() {		
-		return defaultDescriptions;		
-	}
+    @Override
+    public Set<PermissionDescripton> getPermissionDescriptors() {        
+        return defaultDescriptions;        
+    }
 
 }

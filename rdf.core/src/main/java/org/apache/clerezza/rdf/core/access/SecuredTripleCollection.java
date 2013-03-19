@@ -38,141 +38,141 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  */
 public class SecuredTripleCollection implements TripleCollection {
 
-	private final TripleCollection wrapped;
-	private final UriRef name;
-	private final TcAccessController tcAccessController;
+    private final TripleCollection wrapped;
+    private final UriRef name;
+    private final TcAccessController tcAccessController;
 
-	public SecuredTripleCollection(TripleCollection wrapped, UriRef name,
-			TcAccessController tcAccessController) {
-		this.wrapped = wrapped;
-		this.name = name;
-		this.tcAccessController = tcAccessController;
-	}
+    public SecuredTripleCollection(TripleCollection wrapped, UriRef name,
+            TcAccessController tcAccessController) {
+        this.wrapped = wrapped;
+        this.name = name;
+        this.tcAccessController = tcAccessController;
+    }
 
-	@Override
-	public Iterator<Triple> filter(final NonLiteral subject, final UriRef predicate, final Resource object) {
-		final Iterator<Triple> baseIter = wrapped.filter(subject, predicate, object);
-		return new Iterator<Triple>() {
+    @Override
+    public Iterator<Triple> filter(final NonLiteral subject, final UriRef predicate, final Resource object) {
+        final Iterator<Triple> baseIter = wrapped.filter(subject, predicate, object);
+        return new Iterator<Triple>() {
 
-			@Override
-			public boolean hasNext() {
-				checkRead();
-				return baseIter.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                checkRead();
+                return baseIter.hasNext();
+            }
 
-			@Override
-			public Triple next() {
-				checkRead();
-				return baseIter.next();
-			}
+            @Override
+            public Triple next() {
+                checkRead();
+                return baseIter.next();
+            }
 
-			@Override
-			public void remove() {
-				checkWrite();
-				baseIter.remove();
-			}
-		};
-	}
+            @Override
+            public void remove() {
+                checkWrite();
+                baseIter.remove();
+            }
+        };
+    }
 
-	@Override
-	public int size() {
-		checkRead();
-		return wrapped.size();
-	}
+    @Override
+    public int size() {
+        checkRead();
+        return wrapped.size();
+    }
 
-	@Override
-	public boolean isEmpty() {
-		checkRead();
-		return wrapped.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        checkRead();
+        return wrapped.isEmpty();
+    }
 
-	@Override
-	public Object[] toArray() {
-		checkRead();
-		return wrapped.toArray();
-	}
+    @Override
+    public Object[] toArray() {
+        checkRead();
+        return wrapped.toArray();
+    }
 
-	@Override
-	public <T> T[] toArray(T[] a) {
-		checkRead();
-		return wrapped.toArray(a);
-	}
+    @Override
+    public <T> T[] toArray(T[] a) {
+        checkRead();
+        return wrapped.toArray(a);
+    }
 
-	@Override
-	public boolean add(Triple e) {
-		checkWrite();
-		return wrapped.add(e);
-	}
+    @Override
+    public boolean add(Triple e) {
+        checkWrite();
+        return wrapped.add(e);
+    }
 
-	@Override
-	public boolean remove(Object o) {
-		checkWrite();
-		return wrapped.remove(o);
-	}
+    @Override
+    public boolean remove(Object o) {
+        checkWrite();
+        return wrapped.remove(o);
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends Triple> c) {
-		checkWrite();
-		return wrapped.addAll(c);
-	}
+    @Override
+    public boolean addAll(Collection<? extends Triple> c) {
+        checkWrite();
+        return wrapped.addAll(c);
+    }
 
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		checkWrite();
-		return wrapped.removeAll(c);
-	}
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        checkWrite();
+        return wrapped.removeAll(c);
+    }
 
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		checkWrite();
-		return wrapped.retainAll(c);
-	}
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        checkWrite();
+        return wrapped.retainAll(c);
+    }
 
-	@Override
-	public void clear() {
-		checkWrite();
-		wrapped.clear();
-	}
+    @Override
+    public void clear() {
+        checkWrite();
+        wrapped.clear();
+    }
 
-	void checkRead() {
-		tcAccessController.checkReadPermission(name);
-	}
+    void checkRead() {
+        tcAccessController.checkReadPermission(name);
+    }
 
-	void checkWrite() {
-		tcAccessController.checkReadWritePermission(name);
-	}
+    void checkWrite() {
+        tcAccessController.checkReadWritePermission(name);
+    }
 
-	@Override
-	public boolean contains(Object o) {
-		checkRead();
-		return wrapped.contains((Triple) o);
-	}
+    @Override
+    public boolean contains(Object o) {
+        checkRead();
+        return wrapped.contains((Triple) o);
+    }
 
-	@Override
-	public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
-		checkRead();
-		wrapped.addGraphListener(listener, filter, delay);
-	}
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
+        checkRead();
+        wrapped.addGraphListener(listener, filter, delay);
+    }
 
-	@Override
-	public void addGraphListener(GraphListener listener, FilterTriple filter) {
-		checkRead();
-		wrapped.addGraphListener(listener, filter);
-	}
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter) {
+        checkRead();
+        wrapped.addGraphListener(listener, filter);
+    }
 
-	@Override
-	public void removeGraphListener(GraphListener listener) {
-		wrapped.removeGraphListener(listener);
-	}
+    @Override
+    public void removeGraphListener(GraphListener listener) {
+        wrapped.removeGraphListener(listener);
+    }
 
-	@Override
-	public Iterator<Triple> iterator() {
-		return filter(null, null, null);
-	}
+    @Override
+    public Iterator<Triple> iterator() {
+        return filter(null, null, null);
+    }
 
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		checkRead();
-		return wrapped.containsAll(c);
-	}
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        checkRead();
+        return wrapped.containsAll(c);
+    }
 }

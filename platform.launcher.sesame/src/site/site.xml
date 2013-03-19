@@ -18,9 +18,9 @@
 -->
 
 <project>
-	<body>
-		<menu name="Documentation">
-			<item name="Information" href="documentation/information.xhtml"/>
-		</menu>
-	</body>
+    <body>
+        <menu name="Documentation">
+            <item name="Information" href="documentation/information.xhtml"/>
+        </menu>
+    </body>
 </project>

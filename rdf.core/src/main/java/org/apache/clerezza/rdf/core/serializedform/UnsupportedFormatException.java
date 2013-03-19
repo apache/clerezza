@@ -27,11 +27,11 @@ package org.apache.clerezza.rdf.core.serializedform;
  */
 public abstract class UnsupportedFormatException extends RuntimeException {
 
-	public UnsupportedFormatException(String message) {
-		super(message);
-	}
+    public UnsupportedFormatException(String message) {
+        super(message);
+    }
 
 
-	
+    
 
 }

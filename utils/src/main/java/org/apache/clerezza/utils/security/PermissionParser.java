@@ -37,152 +37,152 @@ import org.slf4j.LoggerFactory;
  */
 public class PermissionParser {
 
-	final static Logger logger = LoggerFactory.getLogger(PermissionParser.class);
+    final static Logger logger = LoggerFactory.getLogger(PermissionParser.class);
 
-	/**
-	 * Parsers permissionDescription and instantiates the permission using
-	 * the ClassLoader of this class.
-	 *  
-	 * @param permissionDescription
-	 * @return
-	 */
-	public static Permission getPermission(String permissionDescription) {
-		return getPermission(permissionDescription, PermissionParser.class.getClassLoader());
-	}
+    /**
+     * Parsers permissionDescription and instantiates the permission using
+     * the ClassLoader of this class.
+     *  
+     * @param permissionDescription
+     * @return
+     */
+    public static Permission getPermission(String permissionDescription) {
+        return getPermission(permissionDescription, PermissionParser.class.getClassLoader());
+    }
 
-	/**
-	 * Parsers permissionDescription and instantiates the permission using
-	 * classLoader.
-	 *
-	 * @param permissionDescription
-	 * @param classLoader
-	 * @return
-	 */
-	public static Permission getPermission(String permissionDescription, ClassLoader classLoader) {
-		PermissionInfo permissionInfo = parse(permissionDescription);
-		try {
-			Class clazz = classLoader.loadClass(permissionInfo.className);
-			Constructor<?> constructor = clazz.getConstructor(
-					String.class, String.class);
-			return (Permission) constructor.newInstance(
-					permissionInfo.name, permissionInfo.actions);
-		} catch (InstantiationException ie) {
-			logger.warn("{}", ie);
-			throw new RuntimeException(ie);
-		} catch (ClassNotFoundException cnfe) {
-			logger.warn("{}", cnfe);
-			throw new RuntimeException(cnfe);
-		} catch (NoSuchMethodException nsme) {
-			logger.warn("{}", nsme);
-			throw new RuntimeException(nsme);
-		} catch (InvocationTargetException ite) {
-			logger.warn("{}", ite);
-			throw new RuntimeException(ite);
-		} catch (IllegalAccessException iae) {
-			logger.warn("{}", iae);
-			throw new RuntimeException(iae);
-		}
-	}
+    /**
+     * Parsers permissionDescription and instantiates the permission using
+     * classLoader.
+     *
+     * @param permissionDescription
+     * @param classLoader
+     * @return
+     */
+    public static Permission getPermission(String permissionDescription, ClassLoader classLoader) {
+        PermissionInfo permissionInfo = parse(permissionDescription);
+        try {
+            Class clazz = classLoader.loadClass(permissionInfo.className);
+            Constructor<?> constructor = clazz.getConstructor(
+                    String.class, String.class);
+            return (Permission) constructor.newInstance(
+                    permissionInfo.name, permissionInfo.actions);
+        } catch (InstantiationException ie) {
+            logger.warn("{}", ie);
+            throw new RuntimeException(ie);
+        } catch (ClassNotFoundException cnfe) {
+            logger.warn("{}", cnfe);
+            throw new RuntimeException(cnfe);
+        } catch (NoSuchMethodException nsme) {
+            logger.warn("{}", nsme);
+            throw new RuntimeException(nsme);
+        } catch (InvocationTargetException ite) {
+            logger.warn("{}", ite);
+            throw new RuntimeException(ite);
+        } catch (IllegalAccessException iae) {
+            logger.warn("{}", iae);
+            throw new RuntimeException(iae);
+        }
+    }
 
-	private static PermissionInfo parse(String permissionDescription) {
-		StringReader reader = new StringReader(permissionDescription);
-		try {
-			return parse(reader);
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    private static PermissionInfo parse(String permissionDescription) {
+        StringReader reader = new StringReader(permissionDescription);
+        try {
+            return parse(reader);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	private static PermissionInfo parse(StringReader reader) throws IOException {
-		PermissionInfo result = new PermissionInfo();
-		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
-			if (ch == ' ') {
-				continue;
-			}
-			if (ch =='(') {
-				parseFromClassName(reader, result);
-				break;
-			} else {
-				throw new IllegalArgumentException("Permission description does not start with '('");
-			}
-		}
-		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
-			if (ch != ' ') {
-				throw new IllegalArgumentException("Unparsable characters after closing ')'");
-			}
-		}
-		return result;
-	}
+    private static PermissionInfo parse(StringReader reader) throws IOException {
+        PermissionInfo result = new PermissionInfo();
+        for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+            if (ch == ' ') {
+                continue;
+            }
+            if (ch =='(') {
+                parseFromClassName(reader, result);
+                break;
+            } else {
+                throw new IllegalArgumentException("Permission description does not start with '('");
+            }
+        }
+        for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+            if (ch != ' ') {
+                throw new IllegalArgumentException("Unparsable characters after closing ')'");
+            }
+        }
+        return result;
+    }
 
-	private static void parseFromClassName(StringReader StringReader, PermissionInfo result) throws IOException {
-		PushbackReader reader = new PushbackReader(StringReader, 1);
-		result.className = readSection(reader);
-		result.name = readSection(reader);
-		result.actions = readSection(reader);
-		byte closingBracketsCount = 0;
-		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
-			if (ch == ' ')  {
-				continue;
-			}
-			if (ch == ')')  {
-				closingBracketsCount++;
-				if (closingBracketsCount > 1) {
-					throw new IllegalArgumentException("more than 1 closing bracket");
-				}
-				continue;
-			}
-			else {
-				throw new IllegalArgumentException("illegal character at this position: "+ch);
-			}
-		}
-	}
+    private static void parseFromClassName(StringReader StringReader, PermissionInfo result) throws IOException {
+        PushbackReader reader = new PushbackReader(StringReader, 1);
+        result.className = readSection(reader);
+        result.name = readSection(reader);
+        result.actions = readSection(reader);
+        byte closingBracketsCount = 0;
+        for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+            if (ch == ' ')  {
+                continue;
+            }
+            if (ch == ')')  {
+                closingBracketsCount++;
+                if (closingBracketsCount > 1) {
+                    throw new IllegalArgumentException("more than 1 closing bracket");
+                }
+                continue;
+            }
+            else {
+                throw new IllegalArgumentException("illegal character at this position: "+ch);
+            }
+        }
+    }
 
-	private static String readSection(PushbackReader reader) throws IOException {
-		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
-			if (ch == ' ')  {
-				continue;
-			} else {
-				reader.unread(ch);
-				return readSectionWithNoHeadingSpace(reader);
-			}
-		}
-		return null;
-	}
+    private static String readSection(PushbackReader reader) throws IOException {
+        for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+            if (ch == ' ')  {
+                continue;
+            } else {
+                reader.unread(ch);
+                return readSectionWithNoHeadingSpace(reader);
+            }
+        }
+        return null;
+    }
 
-	private static String readSectionWithNoHeadingSpace(PushbackReader reader) throws IOException {
-		StringBuilder sectionWriter = new StringBuilder();
-		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
-			if (ch == '"')  {
-				if (sectionWriter.length() > 0) {
-					throw new IllegalArgumentException("Quote at wrong position, characters before quote: "+sectionWriter.toString());
-				}
-				sectionWriter = null;
-				return readTillQuote(reader);
-			}
-			if (ch == ' ') {
-				return sectionWriter.toString();
-			}
-			if (ch  == ')') {
-				reader.unread(ch);
-				return sectionWriter.toString();
-			}
-			sectionWriter.append((char)ch);
-		}
-		throw new IllegalArgumentException("missing closing bracket (')')");
-	}
+    private static String readSectionWithNoHeadingSpace(PushbackReader reader) throws IOException {
+        StringBuilder sectionWriter = new StringBuilder();
+        for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+            if (ch == '"')  {
+                if (sectionWriter.length() > 0) {
+                    throw new IllegalArgumentException("Quote at wrong position, characters before quote: "+sectionWriter.toString());
+                }
+                sectionWriter = null;
+                return readTillQuote(reader);
+            }
+            if (ch == ' ') {
+                return sectionWriter.toString();
+            }
+            if (ch  == ')') {
+                reader.unread(ch);
+                return sectionWriter.toString();
+            }
+            sectionWriter.append((char)ch);
+        }
+        throw new IllegalArgumentException("missing closing bracket (')')");
+    }
 
-	private static String readTillQuote(PushbackReader reader) throws IOException {
-		StringBuilder sectionWriter = new StringBuilder();
-		for (int ch = reader.read(); ch != -1; ch = reader.read()) {
-			if (ch == '"')  {
-				return sectionWriter.toString();
-			}
-			sectionWriter.append((char)ch);
-		}
-		throw new IllegalArgumentException("missing closing quote ('=')");
-	}
+    private static String readTillQuote(PushbackReader reader) throws IOException {
+        StringBuilder sectionWriter = new StringBuilder();
+        for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+            if (ch == '"')  {
+                return sectionWriter.toString();
+            }
+            sectionWriter.append((char)ch);
+        }
+        throw new IllegalArgumentException("missing closing quote ('=')");
+    }
 
-	private static class PermissionInfo {
-		String className, name, actions;
-	}
+    private static class PermissionInfo {
+        String className, name, actions;
+    }
 }

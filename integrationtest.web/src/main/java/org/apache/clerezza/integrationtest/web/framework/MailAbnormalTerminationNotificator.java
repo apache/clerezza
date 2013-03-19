@@ -47,162 +47,162 @@ import org.osgi.service.component.ComponentContext;
  *              "org.apache.clerezza.integrationtest.web.framework.AbnormalTeminationNotificator"
  */
 public class MailAbnormalTerminationNotificator implements
-		AbnormalTeminationNotificator {
+        AbnormalTeminationNotificator {
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="false"
-	 *               description="Specifies if TLS (SSL) encryption is used."
-	 */
-	public static final String MAIL_USE_TLS = "useTLS";
+    /**
+     * Service property
+     * 
+     * @scr.property value="false"
+     *               description="Specifies if TLS (SSL) encryption is used."
+     */
+    public static final String MAIL_USE_TLS = "useTLS";
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="smtp.myHost.org"
-	 *               description="Specifies the SMTP host."
-	 */
-	public static final String MAIL_SMTP_HOST = "smtpHost";
+    /**
+     * Service property
+     * 
+     * @scr.property value="smtp.myHost.org"
+     *               description="Specifies the SMTP host."
+     */
+    public static final String MAIL_SMTP_HOST = "smtpHost";
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="25" description="Specifies the SMTP port."
-	 */
-	public static final String MAIL_SMTP_PORT = "smtpPort";
+    /**
+     * Service property
+     * 
+     * @scr.property value="25" description="Specifies the SMTP port."
+     */
+    public static final String MAIL_SMTP_PORT = "smtpPort";
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="myPassword" description=
-	 *               "Specifies the authentication password (plain text) for SMTP."
-	 */
-	public static final String MAIL_SMTP_PASSWORD = "smtpPassword";
+    /**
+     * Service property
+     * 
+     * @scr.property value="myPassword" description=
+     *               "Specifies the authentication password (plain text) for SMTP."
+     */
+    public static final String MAIL_SMTP_PASSWORD = "smtpPassword";
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="myUserName"
-	 *               description="Specifies the User to authenticate for SMTP."
-	 */
-	public static final String MAIL_SMTP_USER = "smtpUser";
+    /**
+     * Service property
+     * 
+     * @scr.property value="myUserName"
+     *               description="Specifies the User to authenticate for SMTP."
+     */
+    public static final String MAIL_SMTP_USER = "smtpUser";
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="integrationtest@myHost.org"
-	 *               description="Specifies the E-Mail address of the sender."
-	 */
-	public static final String MAIL_SENDER = "emailSender";
+    /**
+     * Service property
+     * 
+     * @scr.property value="integrationtest@myHost.org"
+     *               description="Specifies the E-Mail address of the sender."
+     */
+    public static final String MAIL_SENDER = "emailSender";
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="myName@myHost.org"
-	 *               description="Specifies the E-Mail address of the recipient."
-	 */
-	public static final String MAIL_RECIPIENT = "emailRecipient";
+    /**
+     * Service property
+     * 
+     * @scr.property value="myName@myHost.org"
+     *               description="Specifies the E-Mail address of the recipient."
+     */
+    public static final String MAIL_RECIPIENT = "emailRecipient";
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="[Integrationtest-Framework]"
-	 *               description="Specifies the begining of the E-Mail subject."
-	 */
-	public static final String MAIL_SUBJECT_INTRO = "subjectIntro";
+    /**
+     * Service property
+     * 
+     * @scr.property value="[Integrationtest-Framework]"
+     *               description="Specifies the begining of the E-Mail subject."
+     */
+    public static final String MAIL_SUBJECT_INTRO = "subjectIntro";
 
-	private Properties properties;
+    private Properties properties;
 
-	protected void activate(ComponentContext componentContext) {
-		properties = new Properties();
+    protected void activate(ComponentContext componentContext) {
+        properties = new Properties();
 
-		properties.setProperty("mail.debug", "false");
-		
-		if (((String) componentContext.getProperties().get(MAIL_USE_TLS))
-				.equals("true")) {
+        properties.setProperty("mail.debug", "false");
+        
+        if (((String) componentContext.getProperties().get(MAIL_USE_TLS))
+                .equals("true")) {
 
-			properties.setProperty("mail.smtp.starttls.enable", "true");
-			properties.setProperty("mail.smtp.auth", "true");
-			properties.setProperty("mail.smtp.socketFactory.fallback", "false");
-		}
+            properties.setProperty("mail.smtp.starttls.enable", "true");
+            properties.setProperty("mail.smtp.auth", "true");
+            properties.setProperty("mail.smtp.socketFactory.fallback", "false");
+        }
 
-		properties.setProperty("mail.transport.protocol", "smtp");
-		properties.setProperty("mail.smtp.port", (String) componentContext
-				.getProperties().get(MAIL_SMTP_PORT));
-		properties.setProperty("emailRecipient", (String) componentContext
-				.getProperties().get(MAIL_RECIPIENT));
-		properties.setProperty("mail.from", (String) componentContext
-				.getProperties().get(MAIL_SENDER));
-		properties.setProperty("mail.smtp.host", (String) componentContext
-				.getProperties().get(MAIL_SMTP_HOST));
-		properties.setProperty("smtpUser", (String) componentContext
-				.getProperties().get(MAIL_SMTP_USER));
-		properties.setProperty("smtpPassword", (String) componentContext
-				.getProperties().get(MAIL_SMTP_PASSWORD));
-		properties.setProperty("subjectIntro", (String) componentContext
-				.getProperties().get(MAIL_SUBJECT_INTRO));
+        properties.setProperty("mail.transport.protocol", "smtp");
+        properties.setProperty("mail.smtp.port", (String) componentContext
+                .getProperties().get(MAIL_SMTP_PORT));
+        properties.setProperty("emailRecipient", (String) componentContext
+                .getProperties().get(MAIL_RECIPIENT));
+        properties.setProperty("mail.from", (String) componentContext
+                .getProperties().get(MAIL_SENDER));
+        properties.setProperty("mail.smtp.host", (String) componentContext
+                .getProperties().get(MAIL_SMTP_HOST));
+        properties.setProperty("smtpUser", (String) componentContext
+                .getProperties().get(MAIL_SMTP_USER));
+        properties.setProperty("smtpPassword", (String) componentContext
+                .getProperties().get(MAIL_SMTP_PASSWORD));
+        properties.setProperty("subjectIntro", (String) componentContext
+                .getProperties().get(MAIL_SUBJECT_INTRO));
 
-	}
+    }
 
-	@Override
-	public void notifyAbnormalTermination(
-			List<ExceptionDescription> exeptionDescriptionList) {
+    @Override
+    public void notifyAbnormalTermination(
+            List<ExceptionDescription> exeptionDescriptionList) {
 
-		StringWriter messageBody = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(messageBody);
+        StringWriter messageBody = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(messageBody);
 
-		Date date = new Date();
+        Date date = new Date();
 
-		printWriter.println(date);
+        printWriter.println(date);
 
-		for (ExceptionDescription exceptionDescription : exeptionDescriptionList) {
-			printWriter.print("The test-thread ");
-			printWriter.print(exceptionDescription.getTestThread().getName());
-			printWriter.print(" got a ");
-			printWriter.print(exceptionDescription.getException().getClass()
-					.getName());
-			printWriter.print(" after ");
-			printWriter.print(exceptionDescription.getTimeInNanos());
-			printWriter.println(" ns");
-			exceptionDescription.getException().printStackTrace(printWriter);
-		}
+        for (ExceptionDescription exceptionDescription : exeptionDescriptionList) {
+            printWriter.print("The test-thread ");
+            printWriter.print(exceptionDescription.getTestThread().getName());
+            printWriter.print(" got a ");
+            printWriter.print(exceptionDescription.getException().getClass()
+                    .getName());
+            printWriter.print(" after ");
+            printWriter.print(exceptionDescription.getTimeInNanos());
+            printWriter.println(" ns");
+            exceptionDescription.getException().printStackTrace(printWriter);
+        }
 
-		printWriter.close();
+        printWriter.close();
 
-		try {
-			Address to = new InternetAddress(properties
-					.getProperty("emailRecipient"));
+        try {
+            Address to = new InternetAddress(properties
+                    .getProperty("emailRecipient"));
 
-			Authenticator auth = new Authenticator() {
-				@Override
-				public PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(properties
-							.getProperty("smtpUser"), properties
-							.getProperty("smtpPassword"));
-				}
-			};
+            Authenticator auth = new Authenticator() {
+                @Override
+                public PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(properties
+                            .getProperty("smtpUser"), properties
+                            .getProperty("smtpPassword"));
+                }
+            };
 
-			Session session = Session.getInstance(properties, auth);
+            Session session = Session.getInstance(properties, auth);
 
-			MimeMessage message = new MimeMessage(session);
-			message.setSentDate(date);
-			message
-					.setSubject(properties.getProperty("subjectIntro")
-							+ " "
-							+ exeptionDescriptionList.get(0).getException()
-									.getClass().getName()
-							+ " in "
-							+ exeptionDescriptionList.get(0).getTestThread()
-									.getName() + ".");
-			message.setText(messageBody.toString());
-			message.setFrom();
-			message.addRecipient(Message.RecipientType.TO, to);
+            MimeMessage message = new MimeMessage(session);
+            message.setSentDate(date);
+            message
+                    .setSubject(properties.getProperty("subjectIntro")
+                            + " "
+                            + exeptionDescriptionList.get(0).getException()
+                                    .getClass().getName()
+                            + " in "
+                            + exeptionDescriptionList.get(0).getTestThread()
+                                    .getName() + ".");
+            message.setText(messageBody.toString());
+            message.setFrom();
+            message.addRecipient(Message.RecipientType.TO, to);
 
-			Transport.send(message);
+            Transport.send(message);
 
-		} catch (MessagingException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+        } catch (MessagingException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

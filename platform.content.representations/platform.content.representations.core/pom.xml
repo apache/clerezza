@@ -20,68 +20,68 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>platform.content.representations</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.2-SNAPSHOT</version>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>platform.content.representations.core</artifactId>
-	<version>0.2-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<name>Clerezza - Platform Content Representations Core</name>
-	<description>Provides a Meta Data Generator that generates alternative
-		representations for data of	various media types</description>
-	<dependencies>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.core</artifactId>
-			<version>0.13-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.utils</artifactId>
-			<version>0.14-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.metadata</artifactId>
-			<version>0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>jaxrs.utils</artifactId>
-			<version>0.7-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>utils.imageprocessing</artifactId>
-			<version>0.8-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.content</artifactId>
-			<version>0.14-SNAPSHOT</version>
-		</dependency>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>platform.content.representations</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.2-SNAPSHOT</version>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>platform.content.representations.core</artifactId>
+    <version>0.2-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <name>Clerezza - Platform Content Representations Core</name>
+    <description>Provides a Meta Data Generator that generates alternative
+        representations for data of    various media types</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.core</artifactId>
+            <version>0.13-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.utils</artifactId>
+            <version>0.14-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.metadata</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>jaxrs.utils</artifactId>
+            <version>0.7-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>utils.imageprocessing</artifactId>
+            <version>0.8-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.content</artifactId>
+            <version>0.14-SNAPSHOT</version>
+        </dependency>
 <!--
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>web.resources.style</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>web.resources.style</artifactId>
+        </dependency>
 -->
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.content.representations.ontologies</artifactId>
-			<version>0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.content.representations.ontologies</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
+    </dependencies>
 </project>

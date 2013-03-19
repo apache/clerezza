@@ -44,78 +44,78 @@ import org.apache.clerezza.integrationtest.web.framework.WebTestCase;
  */
 public class Get404 implements WebTestCase {
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property type="Integer" value="5" description=
-	 *               "Specifies the number of threads to execute the run method."
-	 */
-	public static final String THREAD_COUNT = "threadCount";
-	private String testSubjectUriPrefix;
-	
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="admin" description=
-	 *               "Specifies the user name used in the authorization header."
-	 */
-	public static final String USER_NAME = "user";
-	private String username;
+    /**
+     * Service property
+     * 
+     * @scr.property type="Integer" value="5" description=
+     *               "Specifies the number of threads to execute the run method."
+     */
+    public static final String THREAD_COUNT = "threadCount";
+    private String testSubjectUriPrefix;
+    
+    /**
+     * Service property
+     * 
+     * @scr.property value="admin" description=
+     *               "Specifies the user name used in the authorization header."
+     */
+    public static final String USER_NAME = "user";
+    private String username;
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="admin" description=
-	 *               "Specifies the user password used in the authorization header."
-	 */
-	public static final String USER_PASSWORD = "password";
-	private String password;
+    /**
+     * Service property
+     * 
+     * @scr.property value="admin" description=
+     *               "Specifies the user password used in the authorization header."
+     */
+    public static final String USER_PASSWORD = "password";
+    private String password;
 
-	final Logger logger = LoggerFactory.getLogger(Get404.class);
+    final Logger logger = LoggerFactory.getLogger(Get404.class);
 
-	protected void activate(ComponentContext componentContext) {
-		username = (String) componentContext.getProperties().get(USER_NAME);
-		password = (String) componentContext.getProperties().get(USER_PASSWORD);
-	}
-	
-	@Override
-	public void init(String testSubjectUriPrefix) {
-		logger.info("Init Get404");
-		this.testSubjectUriPrefix = testSubjectUriPrefix;
-	}
+    protected void activate(ComponentContext componentContext) {
+        username = (String) componentContext.getProperties().get(USER_NAME);
+        password = (String) componentContext.getProperties().get(USER_PASSWORD);
+    }
+    
+    @Override
+    public void init(String testSubjectUriPrefix) {
+        logger.info("Init Get404");
+        this.testSubjectUriPrefix = testSubjectUriPrefix;
+    }
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
 
-		try {
-			URL serverURL = new URL(testSubjectUriPrefix + "/foobar");
-			HttpClient client = new HttpClient();
+        try {
+            URL serverURL = new URL(testSubjectUriPrefix + "/foobar");
+            HttpClient client = new HttpClient();
 
-			client.getState().setCredentials(AuthScope.ANY,
-					new UsernamePasswordCredentials(username, password));
-			HttpMethod method = new GetMethod(serverURL.toString());
-			method.setRequestHeader("Accept", "*/*");
-			method.setDoAuthentication(true);
+            client.getState().setCredentials(AuthScope.ANY,
+                    new UsernamePasswordCredentials(username, password));
+            HttpMethod method = new GetMethod(serverURL.toString());
+            method.setRequestHeader("Accept", "*/*");
+            method.setDoAuthentication(true);
 
-			try {
-				int responseCode = client.executeMethod(method);
+            try {
+                int responseCode = client.executeMethod(method);
 
-				if (responseCode != HttpStatus.SC_NOT_FOUND) {
-					throw new RuntimeException("Get404: unexpected "
-							+ "response code: " + responseCode);
-				}
-			} finally {
-				method.releaseConnection();
-			}
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+                if (responseCode != HttpStatus.SC_NOT_FOUND) {
+                    throw new RuntimeException("Get404: unexpected "
+                            + "response code: " + responseCode);
+                }
+            } finally {
+                method.releaseConnection();
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	public boolean multiThreadingCapable() {
-		return true;
-	}
+    @Override
+    public boolean multiThreadingCapable() {
+        return true;
+    }
 }

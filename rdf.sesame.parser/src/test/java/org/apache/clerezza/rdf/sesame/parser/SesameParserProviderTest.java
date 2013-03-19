@@ -38,35 +38,35 @@ import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
  */
 public class SesameParserProviderTest {
 
-	/*
-	 * comparing result from nt and turtle parsing,
-	 */
-	@Test
-	public void testTurtleParser() {
-		ParsingProvider provider = new SesameParserProvider();
-		InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
-		InputStream turtleIn = getClass().getResourceAsStream("test-04.ttl");
-		Graph graphFromNTriples = parse(provider, nTriplesIn, SupportedFormat.N_TRIPLE, null);
-		Graph graphFromTurtle = parse(provider, turtleIn, SupportedFormat.TURTLE, null);
-		Assert.assertEquals(graphFromNTriples, graphFromTurtle);
-	}
+    /*
+     * comparing result from nt and turtle parsing,
+     */
+    @Test
+    public void testTurtleParser() {
+        ParsingProvider provider = new SesameParserProvider();
+        InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
+        InputStream turtleIn = getClass().getResourceAsStream("test-04.ttl");
+        Graph graphFromNTriples = parse(provider, nTriplesIn, SupportedFormat.N_TRIPLE, null);
+        Graph graphFromTurtle = parse(provider, turtleIn, SupportedFormat.TURTLE, null);
+        Assert.assertEquals(graphFromNTriples, graphFromTurtle);
+    }
 
-	/*
-	 * comparing result from nt and rdf/xml parsing,
-	 */
-	@Test
-	public void testRdfXmlParser() {
-		ParsingProvider provider = new SesameParserProvider();
-		InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
-		InputStream rdfXmlIn = getClass().getResourceAsStream("test-04.rdf");
-		Graph graphFromNTriples = parse(provider, nTriplesIn, SupportedFormat.N_TRIPLE, null);
-		Graph graphFromRdfXml = parse(provider, rdfXmlIn, SupportedFormat.RDF_XML, null);
-		Assert.assertEquals(graphFromNTriples, graphFromRdfXml);
-	}
+    /*
+     * comparing result from nt and rdf/xml parsing,
+     */
+    @Test
+    public void testRdfXmlParser() {
+        ParsingProvider provider = new SesameParserProvider();
+        InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
+        InputStream rdfXmlIn = getClass().getResourceAsStream("test-04.rdf");
+        Graph graphFromNTriples = parse(provider, nTriplesIn, SupportedFormat.N_TRIPLE, null);
+        Graph graphFromRdfXml = parse(provider, rdfXmlIn, SupportedFormat.RDF_XML, null);
+        Assert.assertEquals(graphFromNTriples, graphFromRdfXml);
+    }
 
-	private Graph parse(ParsingProvider parsingProvider, InputStream in, String type, UriRef base) {
-		MGraph simpleMGraph = new SimpleMGraph();
-		parsingProvider.parse(simpleMGraph, in, type, base);
-		return simpleMGraph.getGraph();
-	}
+    private Graph parse(ParsingProvider parsingProvider, InputStream in, String type, UriRef base) {
+        MGraph simpleMGraph = new SimpleMGraph();
+        parsingProvider.parse(simpleMGraph, in, type, base);
+        return simpleMGraph.getGraph();
+    }
 }

@@ -21,20 +21,20 @@ package org.apache.clerezza.jaxrs.utils.form;
  * 
  */
 public interface ParameterCollection extends
-		java.util.Collection<KeyValuePair<ParameterValue>> {
+        java.util.Collection<KeyValuePair<ParameterValue>> {
 
-	/**
-	 * @return the parameter names in the order they first appear in the request
-	 */
-	public String[] getParameterNames();
+    /**
+     * @return the parameter names in the order they first appear in the request
+     */
+    public String[] getParameterNames();
 
-	/**
-	 * 
-	 * @param parameterName
-	 *            the name of the parameter
-	 * @return an array with the values of the parameter or null if the
-	 *         parameter is not present
-	 */
-	public ParameterValue[] getParameteValues(String parameterName);
+    /**
+     * 
+     * @param parameterName
+     *            the name of the parameter
+     * @return an array with the values of the parameter or null if the
+     *         parameter is not present
+     */
+    public ParameterValue[] getParameteValues(String parameterName);
 
 }

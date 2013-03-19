@@ -31,20 +31,20 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * @author daniel
  */
 public interface TemplatingEngine {
-	
-	/**
-	 * Parses and expands the <code>template</code> 
-	 * with data from <code>res</code>.
-	 * 
-	 * @param res  RDF resource to be rendered with the template.
-	 * @param user  RDF resource describing the current user.
-	 * @param RenderingFunctions functions that can be applied on the valued from the <code>GraphNode</code>s
-	 * @param template  the template URL. 
-	 * @param os  where the output will be written to.
-	 */
-	public void process(GraphNode res, 
-			GraphNode user,
-			RenderingFunctions renderingFunctions,
-			URL template,
-			OutputStream os) throws IOException;
+    
+    /**
+     * Parses and expands the <code>template</code> 
+     * with data from <code>res</code>.
+     * 
+     * @param res  RDF resource to be rendered with the template.
+     * @param user  RDF resource describing the current user.
+     * @param RenderingFunctions functions that can be applied on the valued from the <code>GraphNode</code>s
+     * @param template  the template URL. 
+     * @param os  where the output will be written to.
+     */
+    public void process(GraphNode res, 
+            GraphNode user,
+            RenderingFunctions renderingFunctions,
+            URL template,
+            OutputStream os) throws IOException;
 }

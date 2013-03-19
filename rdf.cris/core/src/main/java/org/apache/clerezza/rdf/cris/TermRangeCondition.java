@@ -30,63 +30,63 @@ import org.apache.lucene.search.TermRangeQuery;
  */
 public class TermRangeCondition extends Condition {
 
-	/**
-	 * The property to search for.
-	 */
-	VirtualProperty property;
-	
-	/**
-	 * the lower limit of the search
-	 */
-	String lowerTerm;
-	
-	/**
-	 * the upper limit of the search
-	 */
-	String upperTerm;
-	
-	boolean includeUpper;
-	boolean includeLower;
+    /**
+     * The property to search for.
+     */
+    VirtualProperty property;
+    
+    /**
+     * the lower limit of the search
+     */
+    String lowerTerm;
+    
+    /**
+     * the upper limit of the search
+     */
+    String upperTerm;
+    
+    boolean includeUpper;
+    boolean includeLower;
 
-	/**
-	 * A condition for searches on {@code property} that returns property-objects 
-	 * (values) that lie between {@code lowerTerm} and {@code upperTerm}
-	 * according to {@link String#compareTo(java.lang.String)}.
-	 * 
-	 * @param property	the resource type to search for
-	 * @param lowerTerm	the lower limit of the range
-	 * @param upperTerm the upper limit of the range
-	 * @param includeUpper whether to include the upper limit in the results
-	 * @param includeLower whether to include the lower limit in the results
-	 */
-	public TermRangeCondition(VirtualProperty property , String lowerTerm, String upperTerm,
-		boolean includeUpper,  boolean includeLower)  {
+    /**
+     * A condition for searches on {@code property} that returns property-objects 
+     * (values) that lie between {@code lowerTerm} and {@code upperTerm}
+     * according to {@link String#compareTo(java.lang.String)}.
+     * 
+     * @param property    the resource type to search for
+     * @param lowerTerm    the lower limit of the range
+     * @param upperTerm the upper limit of the range
+     * @param includeUpper whether to include the upper limit in the results
+     * @param includeLower whether to include the lower limit in the results
+     */
+    public TermRangeCondition(VirtualProperty property , String lowerTerm, String upperTerm,
+        boolean includeUpper,  boolean includeLower)  {
 
-		this.property = property;
-		this.lowerTerm = lowerTerm;
-		this.upperTerm = upperTerm;
-		this.includeUpper = includeUpper;
-		this.includeLower = includeLower;	
-	}
+        this.property = property;
+        this.lowerTerm = lowerTerm;
+        this.upperTerm = upperTerm;
+        this.includeUpper = includeUpper;
+        this.includeLower = includeLower;    
+    }
 
-	/**
-	 * A condition for searches on {@code property} that returns property-objects 
-	 * (values) that lie between {@code lowerTerm} and {@code upperTerm}
-	 * according to {@link String#compareTo(java.lang.String)}.
-	 * 
-	 * @param property	the resource type to search for
-	 * @param lowerTerm	the lower limit of the range
-	 * @param upperTerm the upper limit of the range
-	 * @param includeUpper whether to include the upper limit in the results
-	 * @param includeLower whether to include the lower limit in the results
-	 */
-	public TermRangeCondition(UriRef uriRefProperty, String lowerTerm,String upperTerm,
-							   boolean includeUpper, boolean includeLower) {
-		this(new PropertyHolder(uriRefProperty), lowerTerm, upperTerm, includeUpper, includeLower);
-	}
-	
-	@Override
-	public Query query() {
-		return new TermRangeQuery(property.stringKey, lowerTerm, upperTerm, includeUpper, includeLower);
-	}
+    /**
+     * A condition for searches on {@code property} that returns property-objects 
+     * (values) that lie between {@code lowerTerm} and {@code upperTerm}
+     * according to {@link String#compareTo(java.lang.String)}.
+     * 
+     * @param property    the resource type to search for
+     * @param lowerTerm    the lower limit of the range
+     * @param upperTerm the upper limit of the range
+     * @param includeUpper whether to include the upper limit in the results
+     * @param includeLower whether to include the lower limit in the results
+     */
+    public TermRangeCondition(UriRef uriRefProperty, String lowerTerm,String upperTerm,
+                               boolean includeUpper, boolean includeLower) {
+        this(new PropertyHolder(uriRefProperty), lowerTerm, upperTerm, includeUpper, includeLower);
+    }
+    
+    @Override
+    public Query query() {
+        return new TermRangeQuery(property.stringKey, lowerTerm, upperTerm, includeUpper, includeLower);
+    }
 }

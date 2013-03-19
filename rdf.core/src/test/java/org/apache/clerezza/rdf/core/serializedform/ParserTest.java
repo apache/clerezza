@@ -30,58 +30,58 @@ import org.junit.Test;
  */
 public class ParserTest {
 
-	private static boolean providerAInvoked;
-	private static boolean providerBInvoked;
-	private ParsingProvider parsingProviderA = new ParsingProviderA();
-	private ParsingProvider parsingProviderB = new ParsingProviderB();
+    private static boolean providerAInvoked;
+    private static boolean providerBInvoked;
+    private ParsingProvider parsingProviderA = new ParsingProviderA();
+    private ParsingProvider parsingProviderB = new ParsingProviderB();
 
-	@Test
-	public void registerOneProvider() {
-		Parser parser = new Parser(null);
-		parser.bindParsingProvider(parsingProviderA);
-		providerAInvoked = false;
-		parser.parse(null, "application/x-fantasy2+rdf");
-		Assert.assertTrue(providerAInvoked);
-	}
-	
-	@Test
-	public void registerAndUnregisterSecond() {
-		Parser parser = new Parser(null);
-		parser.bindParsingProvider(parsingProviderA);
-		parser.bindParsingProvider(parsingProviderB);
-		providerAInvoked = false;
-		providerBInvoked = false;
-		parser.parse(null, "application/x-fantasy2+rdf");
-		Assert.assertFalse(providerAInvoked);
-		Assert.assertTrue(providerBInvoked);
-		providerAInvoked = false;
-		providerBInvoked = false;
-		parser.parse(null, "application/x-fantasy1+rdf");
-		Assert.assertTrue(providerAInvoked);
-		Assert.assertFalse(providerBInvoked);
-		parser.unbindParsingProvider(parsingProviderB);
-		providerAInvoked = false;
-		providerBInvoked = false;
-		parser.parse(null, "application/x-fantasy2+rdf");
-		Assert.assertTrue(providerAInvoked);
-		Assert.assertFalse(providerBInvoked);
-		
-	}
+    @Test
+    public void registerOneProvider() {
+        Parser parser = new Parser(null);
+        parser.bindParsingProvider(parsingProviderA);
+        providerAInvoked = false;
+        parser.parse(null, "application/x-fantasy2+rdf");
+        Assert.assertTrue(providerAInvoked);
+    }
+    
+    @Test
+    public void registerAndUnregisterSecond() {
+        Parser parser = new Parser(null);
+        parser.bindParsingProvider(parsingProviderA);
+        parser.bindParsingProvider(parsingProviderB);
+        providerAInvoked = false;
+        providerBInvoked = false;
+        parser.parse(null, "application/x-fantasy2+rdf");
+        Assert.assertFalse(providerAInvoked);
+        Assert.assertTrue(providerBInvoked);
+        providerAInvoked = false;
+        providerBInvoked = false;
+        parser.parse(null, "application/x-fantasy1+rdf");
+        Assert.assertTrue(providerAInvoked);
+        Assert.assertFalse(providerBInvoked);
+        parser.unbindParsingProvider(parsingProviderB);
+        providerAInvoked = false;
+        providerBInvoked = false;
+        parser.parse(null, "application/x-fantasy2+rdf");
+        Assert.assertTrue(providerAInvoked);
+        Assert.assertFalse(providerBInvoked);
+        
+    }
 
-	@SupportedFormat({"application/x-fantasy1+rdf", "application/x-fantasy2+rdf"})
-	static class ParsingProviderA implements ParsingProvider {
+    @SupportedFormat({"application/x-fantasy1+rdf", "application/x-fantasy2+rdf"})
+    static class ParsingProviderA implements ParsingProvider {
 
-		@Override
-		public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
-			providerAInvoked = true;
-		}
-	};
-	@SupportedFormat("application/x-fantasy2+rdf")
-	static class ParsingProviderB implements ParsingProvider {
+        @Override
+        public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+            providerAInvoked = true;
+        }
+    };
+    @SupportedFormat("application/x-fantasy2+rdf")
+    static class ParsingProviderB implements ParsingProvider {
 
-		@Override
-		public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
-			providerBInvoked = true;
-		}
-	};
+        @Override
+        public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+            providerBInvoked = true;
+        }
+    };
 }

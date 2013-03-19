@@ -38,63 +38,63 @@ import org.apache.clerezza.rdf.ontologies.DC;
  */
 public class SimpleTest {
 
-	@Test
-	public void simpleSelectQuery() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
-		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
-				DC.title, new PlainLiteralImpl(titleValue)));
-		String query = "SELECT ?title WHERE" +
-				"{" +
-				"	<http://example.org/book/book1> <"+DC.title.getUnicodeString()+"> ?title ." +
-				"}";
-		ResultSet resultSet = (ResultSet) TcManager.getInstance().executeSparqlQuery(
-				QueryParser.getInstance().parse(query), data);
-		Assert.assertEquals(titleValue, 
-				((Literal)resultSet.next().get("title")).getLexicalForm());
-	}
+    @Test
+    public void simpleSelectQuery() throws ParseException {
+        SimpleMGraph data = new SimpleMGraph();
+        final String titleValue = "SPARQL Tutorial";
+        data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+                DC.title, new PlainLiteralImpl(titleValue)));
+        String query = "SELECT ?title WHERE" +
+                "{" +
+                "    <http://example.org/book/book1> <"+DC.title.getUnicodeString()+"> ?title ." +
+                "}";
+        ResultSet resultSet = (ResultSet) TcManager.getInstance().executeSparqlQuery(
+                QueryParser.getInstance().parse(query), data);
+        Assert.assertEquals(titleValue, 
+                ((Literal)resultSet.next().get("title")).getLexicalForm());
+    }
 
-	@Test
-	public void simpleAskQuery() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
-		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
-				DC.title, new PlainLiteralImpl(titleValue)));
-		String query = "ASK WHERE" +
-				"{" +
-				"	<http://example.org/book/book1> <"+DC.title.getUnicodeString()+"> ?title ." +
-				"}";
-		Assert.assertEquals(Boolean.TRUE,
-				TcManager.getInstance().executeSparqlQuery(
-				QueryParser.getInstance().parse(query), data));
-	}
+    @Test
+    public void simpleAskQuery() throws ParseException {
+        SimpleMGraph data = new SimpleMGraph();
+        final String titleValue = "SPARQL Tutorial";
+        data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+                DC.title, new PlainLiteralImpl(titleValue)));
+        String query = "ASK WHERE" +
+                "{" +
+                "    <http://example.org/book/book1> <"+DC.title.getUnicodeString()+"> ?title ." +
+                "}";
+        Assert.assertEquals(Boolean.TRUE,
+                TcManager.getInstance().executeSparqlQuery(
+                QueryParser.getInstance().parse(query), data));
+    }
 
-	@Test
-	public void simpleDescribe() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
-		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
-				DC.title, new PlainLiteralImpl(titleValue)));
-		String query = "DESCRIBE "+
-				"	<http://example.org/book/book1>";
-		Assert.assertEquals(1,
-				((Graph)TcManager.getInstance().executeSparqlQuery(
-				QueryParser.getInstance().parse(query), data)).size());
-	}
+    @Test
+    public void simpleDescribe() throws ParseException {
+        SimpleMGraph data = new SimpleMGraph();
+        final String titleValue = "SPARQL Tutorial";
+        data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+                DC.title, new PlainLiteralImpl(titleValue)));
+        String query = "DESCRIBE "+
+                "    <http://example.org/book/book1>";
+        Assert.assertEquals(1,
+                ((Graph)TcManager.getInstance().executeSparqlQuery(
+                QueryParser.getInstance().parse(query), data)).size());
+    }
 
-	@Test
-	public void simpleConstruct() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
-		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
-				DC.title, new PlainLiteralImpl(titleValue)));
-		String query = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/> " +
-				"CONSTRUCT { <http://foo/bar> foaf:name ?title } WHERE" +
-				"{" +
-				"	<http://example.org/book/book1> <"+DC.title.getUnicodeString()+"> ?title ." +
-				"}";
-		Assert.assertEquals(1,
-				((Graph)TcManager.getInstance().executeSparqlQuery(
-				QueryParser.getInstance().parse(query), data)).size());
-	}
+    @Test
+    public void simpleConstruct() throws ParseException {
+        SimpleMGraph data = new SimpleMGraph();
+        final String titleValue = "SPARQL Tutorial";
+        data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+                DC.title, new PlainLiteralImpl(titleValue)));
+        String query = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/> " +
+                "CONSTRUCT { <http://foo/bar> foaf:name ?title } WHERE" +
+                "{" +
+                "    <http://example.org/book/book1> <"+DC.title.getUnicodeString()+"> ?title ." +
+                "}";
+        Assert.assertEquals(1,
+                ((Graph)TcManager.getInstance().executeSparqlQuery(
+                QueryParser.getInstance().parse(query), data)).size());
+    }
 }

@@ -33,35 +33,35 @@ import org.apache.clerezza.templating.seedsnipe.datastructure.DataFieldResolver;
  */
 public interface KeywordResolver {
 
-	/**
-	 * Resolves a keyword using the passed <code>parameters</code>.
-	 *
-	 * It may use template code following the keyword, typically ending at a
-	 * closingt tag. Any output it generates is written to <code>out</code>.
-	 *
-	 * When the method returns the parser will continue parsing at the next char
-	 * in <code>in</code>
-	 * 
-	 * @param parser
-	 *            the parser instance that might be used for callbacks, i.e. for
-	 *            parsing nested template sections.
-	 * @param parameters
-	 *            the parameters for this keyword.
-	 * @param in
-	 *            the template input <code>Reader</code> at the position
-	 *            immediately after the keyword.
-	 * @param out
-	 *            may be null, this means the Keyword is within a section that
-	 *            will not be part of the result, the resolver may just skip
-	 *            till the endmarker
-	 * @param dataFieldResolver  the data structure used for fields.
-	 * @param arrayPositioner
-	 *            the current loop variables.
-	 * 
-	 * 
-	 * @throws IOException
-	 */
-	public abstract void resolve(DefaultParser parser, String parameters,
-			Reader in, Writer out, DataFieldResolver dataFieldResolver,
-			int[] arrayPositioner) throws IOException;
+    /**
+     * Resolves a keyword using the passed <code>parameters</code>.
+     *
+     * It may use template code following the keyword, typically ending at a
+     * closingt tag. Any output it generates is written to <code>out</code>.
+     *
+     * When the method returns the parser will continue parsing at the next char
+     * in <code>in</code>
+     * 
+     * @param parser
+     *            the parser instance that might be used for callbacks, i.e. for
+     *            parsing nested template sections.
+     * @param parameters
+     *            the parameters for this keyword.
+     * @param in
+     *            the template input <code>Reader</code> at the position
+     *            immediately after the keyword.
+     * @param out
+     *            may be null, this means the Keyword is within a section that
+     *            will not be part of the result, the resolver may just skip
+     *            till the endmarker
+     * @param dataFieldResolver  the data structure used for fields.
+     * @param arrayPositioner
+     *            the current loop variables.
+     * 
+     * 
+     * @throws IOException
+     */
+    public abstract void resolve(DefaultParser parser, String parameters,
+            Reader in, Writer out, DataFieldResolver dataFieldResolver,
+            int[] arrayPositioner) throws IOException;
 }

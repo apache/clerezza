@@ -30,51 +30,51 @@ import java.io.OutputStream;
  */
 public class ReplacingOutputStream extends FilterOutputStream {
 
-	private byte[] replaceFrom;
-	private byte[] replaceTo;
-	private int posInFrom = 0;
+    private byte[] replaceFrom;
+    private byte[] replaceTo;
+    private int posInFrom = 0;
 
-	/**
-	 * Constructs a ReplacingOutputStream replacing replaceFrom with replaceTo
-	 *
-	 * @param out The base outputream to which the data is to be written after
-	 * the replacement
-	 * @param replaceFrom the byte-sequence to be replaced
-	 * @param replaceTo the replacement byte sequence
-	 */
-	public ReplacingOutputStream(OutputStream out, byte[] replaceFrom, byte[] replaceTo) {
-		super(out);
-		this.replaceFrom = replaceFrom;
-		this.replaceTo = replaceTo;
-	}
+    /**
+     * Constructs a ReplacingOutputStream replacing replaceFrom with replaceTo
+     *
+     * @param out The base outputream to which the data is to be written after
+     * the replacement
+     * @param replaceFrom the byte-sequence to be replaced
+     * @param replaceTo the replacement byte sequence
+     */
+    public ReplacingOutputStream(OutputStream out, byte[] replaceFrom, byte[] replaceTo) {
+        super(out);
+        this.replaceFrom = replaceFrom;
+        this.replaceTo = replaceTo;
+    }
 
-	@Override
-	public void write(int b) throws IOException {
-		if (b == replaceFrom[posInFrom]) {
-			posInFrom++;
-			if (posInFrom == replaceFrom.length) {
-				for (int i = 0; i < replaceTo.length; i++) {
-					super.write(replaceTo[i]);
-				}
-				posInFrom = 0;
-			}
-		} else {
-			for (int i = 0; i < posInFrom; i++) {
-				super.write(replaceFrom[i]);
-			}
-			posInFrom = 0;
-			super.write(b);
-		}
-	}
+    @Override
+    public void write(int b) throws IOException {
+        if (b == replaceFrom[posInFrom]) {
+            posInFrom++;
+            if (posInFrom == replaceFrom.length) {
+                for (int i = 0; i < replaceTo.length; i++) {
+                    super.write(replaceTo[i]);
+                }
+                posInFrom = 0;
+            }
+        } else {
+            for (int i = 0; i < posInFrom; i++) {
+                super.write(replaceFrom[i]);
+            }
+            posInFrom = 0;
+            super.write(b);
+        }
+    }
 
-	@Override
-	public void close() throws IOException {
-		if (posInFrom == replaceFrom.length) {
-			for (int i = 0; i < replaceTo.length; i++) {
-				super.write(replaceTo[i]);
-			}
-			posInFrom = 0;
-		}
-		super.close();
-	}
+    @Override
+    public void close() throws IOException {
+        if (posInFrom == replaceFrom.length) {
+            for (int i = 0; i < replaceTo.length; i++) {
+                super.write(replaceTo[i]);
+            }
+            posInFrom = 0;
+        }
+        super.close();
+    }
 }

@@ -27,31 +27,31 @@ package org.apache.clerezza.templating.seedsnipe.datastructure;
  *
  */
 public class FieldDoesNotHaveDimensionException extends Exception {
-	
-	private static final long serialVersionUID = 6643439103753447016L;
-	private final Object solutionObtainedReducingDimensions;
+    
+    private static final long serialVersionUID = 6643439103753447016L;
+    private final Object solutionObtainedReducingDimensions;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param fieldName  The name of the data field that caused the exception.
-	 * @param arrayPos  The indices belonging to this field 
-	 * 					at the time of the exception.
-	 * @param solutionObtainedReducingDimensions The corrected field. 
-	 */
-	public FieldDoesNotHaveDimensionException(final String fieldName, final int[] arrayPos,
-			final Object solutionObtainedReducingDimensions) {
-		super("Could not resolve " + fieldName + " with " + arrayPos.length
-				+ " dimension");
-		this.solutionObtainedReducingDimensions = solutionObtainedReducingDimensions;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param fieldName  The name of the data field that caused the exception.
+     * @param arrayPos  The indices belonging to this field 
+     *                     at the time of the exception.
+     * @param solutionObtainedReducingDimensions The corrected field. 
+     */
+    public FieldDoesNotHaveDimensionException(final String fieldName, final int[] arrayPos,
+            final Object solutionObtainedReducingDimensions) {
+        super("Could not resolve " + fieldName + " with " + arrayPos.length
+                + " dimension");
+        this.solutionObtainedReducingDimensions = solutionObtainedReducingDimensions;
+    }
 
-	/**
-	 * Returns the corrected field.
-	 * 
-	 * @return The corrected field.
-	 */
-	public Object getSolutionObtainedReducingDimensions() {
-		return solutionObtainedReducingDimensions;
-	}
+    /**
+     * Returns the corrected field.
+     * 
+     * @return The corrected field.
+     */
+    public Object getSolutionObtainedReducingDimensions() {
+        return solutionObtainedReducingDimensions;
+    }
 }

@@ -39,17 +39,17 @@ public class WikipediaEntity_Type extends ClerezzaBaseEntity_Type {
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
       public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (WikipediaEntity_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = WikipediaEntity_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new WikipediaEntity(addr, WikipediaEntity_Type.this);
-  			   WikipediaEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
+               if (WikipediaEntity_Type.this.useExistingInstance) {
+                 // Return eq fs instance if already created
+               FeatureStructure fs = WikipediaEntity_Type.this.jcas.getJfsFromCaddr(addr);
+               if (null == fs) {
+                 fs = new WikipediaEntity(addr, WikipediaEntity_Type.this);
+                 WikipediaEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
+                 return fs;
+               }
+               return fs;
         } else return new WikipediaEntity(addr, WikipediaEntity_Type.this);
-  	  }
+        }
     };
   /** @generated */
   public final static int typeIndexID = WikipediaEntity.typeIndexID;
@@ -96,7 +96,7 @@ public class WikipediaEntity_Type extends ClerezzaBaseEntity_Type {
 
 
   /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+    * @generated */
   public WikipediaEntity_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());

@@ -21,18 +21,18 @@
 -->
 
 <components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.platform.content.fsadaptor.BundleFsLoader">
-		<implementation class="org.apache.clerezza.platform.content.fsadaptor.BundleFsLoader"/>
-		<service servicefactory="false">
+    <scr:component enabled="true" immediate="true" name="org.apache.clerezza.platform.content.fsadaptor.BundleFsLoader">
+        <implementation class="org.apache.clerezza.platform.content.fsadaptor.BundleFsLoader"/>
+        <service servicefactory="false">
             <provide interface="org.apache.clerezza.rdf.core.access.WeightedTcProvider"/>
         </service>
-		<reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
-		cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
-		<reference name="cgProvider" interface="org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider"
-		cardinality="1..1" policy="static" bind="bindContentGraphProvider" unbind="unbindContentGraphProvider"/>
-		<reference name="startLevel" interface="org.osgi.service.startlevel.StartLevel"
-		cardinality="1..1" policy="static" bind="bindStartLevel" unbind="unbindStartLevel"/>
-		<reference name="pathNode" interface="org.wymiwyg.commons.util.dirbrowser.PathNode"
-		cardinality="0..n" policy="dynamic" bind="bindPathNode" unbind="unbindPathNode"/>
-	</scr:component>
+        <reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
+        cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
+        <reference name="cgProvider" interface="org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider"
+        cardinality="1..1" policy="static" bind="bindContentGraphProvider" unbind="unbindContentGraphProvider"/>
+        <reference name="startLevel" interface="org.osgi.service.startlevel.StartLevel"
+        cardinality="1..1" policy="static" bind="bindStartLevel" unbind="unbindStartLevel"/>
+        <reference name="pathNode" interface="org.wymiwyg.commons.util.dirbrowser.PathNode"
+        cardinality="0..n" policy="dynamic" bind="bindPathNode" unbind="unbindPathNode"/>
+    </scr:component>
 </components>

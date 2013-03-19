@@ -29,8 +29,8 @@ import org.apache.clerezza.rdf.core.MGraph;
  */
 public abstract class AbstractMGraph extends AbstractTripleCollection implements MGraph {
 
-	@Override
-	public Graph getGraph() {
-		return new SimpleGraph(this);
-	}
+    @Override
+    public Graph getGraph() {
+        return new SimpleGraph(this);
+    }
 }

@@ -55,189 +55,189 @@ import org.slf4j.LoggerFactory;
 @Service(IndexService.class)
 public class IndexService extends ResourceFinder {
 
-	@Property(intValue=0, label="The delay in minutes until the first index optimization is invoked.", 
-			description="This allows to set the time of the first invocation. 0 Is the lowest acceptable value and means run instantly.")
-	static final String OPTIMIZE_DELAY = "org.apache.clerezza.platform.cris.optimizedelay";
-	
-	@Property(intValue=0, label="The period in minutes between index optimizations.", 
-			description="When a new value is set, the first invocation will happen after the specified delay and the old schedule will be canceled instantly. The minimum acceptable value is 1 (min). A value of 0 turns off optimizations.")
-	static final String OPTIMIZE_PERIOD = "org.apache.clerezza.platform.cris.optimizeperiod";
-	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Property(intValue=0, label="The delay in minutes until the first index optimization is invoked.", 
+            description="This allows to set the time of the first invocation. 0 Is the lowest acceptable value and means run instantly.")
+    static final String OPTIMIZE_DELAY = "org.apache.clerezza.platform.cris.optimizedelay";
+    
+    @Property(intValue=0, label="The period in minutes between index optimizations.", 
+            description="When a new value is set, the first invocation will happen after the specified delay and the old schedule will be canceled instantly. The minimum acceptable value is 1 (min). A value of 0 turns off optimizations.")
+    static final String OPTIMIZE_PERIOD = "org.apache.clerezza.platform.cris.optimizeperiod";
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	IndexDefinitionManager indexDefinitionManager = null;
+    IndexDefinitionManager indexDefinitionManager = null;
 
-	GraphIndexer graphIndexer  = null;
+    GraphIndexer graphIndexer  = null;
 
-	@Reference
-	ContentGraphProvider cgProvider;
+    @Reference
+    ContentGraphProvider cgProvider;
 
-	@Reference
-	TcManager tcManager;
+    @Reference
+    TcManager tcManager;
 
-	UriRef definitionGraphUri = new UriRef("http://zz.localhost/cris.definitions.graph");
+    UriRef definitionGraphUri = new UriRef("http://zz.localhost/cris.definitions.graph");
 
-	LockableMGraph definitionGraph = null;
+    LockableMGraph definitionGraph = null;
 
-	Integer optimizePeriod = 0;
-	Integer optimizeDelay = 0;
-	
-	protected void activate(ComponentContext context) {
+    Integer optimizePeriod = 0;
+    Integer optimizeDelay = 0;
+    
+    protected void activate(ComponentContext context) {
 
-		optimizePeriod = (Integer) context.getProperties().get(OPTIMIZE_PERIOD);
-		optimizeDelay = (Integer) context.getProperties().get(OPTIMIZE_DELAY);
-		if(optimizeDelay == null || optimizeDelay < 0) {
-			optimizeDelay = 0;
-		}
-		
-		try {
-			definitionGraph = tcManager.getMGraph(definitionGraphUri);
-		} catch (NoSuchEntityException ex) {
-			definitionGraph = tcManager.createMGraph(definitionGraphUri);
-		}
-		File luceneIndexDir = context.getBundleContext().getDataFile("lucene-index");
-		boolean createNewIndex = luceneIndexDir.exists();
-		logger.info("Create new index: {}", !createNewIndex);
+        optimizePeriod = (Integer) context.getProperties().get(OPTIMIZE_PERIOD);
+        optimizeDelay = (Integer) context.getProperties().get(OPTIMIZE_DELAY);
+        if(optimizeDelay == null || optimizeDelay < 0) {
+            optimizeDelay = 0;
+        }
+        
+        try {
+            definitionGraph = tcManager.getMGraph(definitionGraphUri);
+        } catch (NoSuchEntityException ex) {
+            definitionGraph = tcManager.createMGraph(definitionGraphUri);
+        }
+        File luceneIndexDir = context.getBundleContext().getDataFile("lucene-index");
+        boolean createNewIndex = luceneIndexDir.exists();
+        logger.info("Create new index: {}", !createNewIndex);
 
-		indexDefinitionManager = new IndexDefinitionManager(definitionGraph);
-		try {
-			graphIndexer = new GraphIndexer(definitionGraph, cgProvider.getContentGraph(),
-					FSDirectory.open(luceneIndexDir), !createNewIndex);
-			if(optimizePeriod != null && optimizePeriod >= 1) {
-				long period = optimizePeriod * 60000;
-				long delay = optimizeDelay * 60000;
-				logger.info("Scheduling optimizations with delay {} min and period {} min", delay, period);
-				graphIndexer.scheduleIndexOptimizations(delay, period);
-			}
-		} catch (IOException ex) {
-			logger.error("Could not open lucene index directory.");
-			throw new IllegalStateException(ex);
-		}
-	}
+        indexDefinitionManager = new IndexDefinitionManager(definitionGraph);
+        try {
+            graphIndexer = new GraphIndexer(definitionGraph, cgProvider.getContentGraph(),
+                    FSDirectory.open(luceneIndexDir), !createNewIndex);
+            if(optimizePeriod != null && optimizePeriod >= 1) {
+                long period = optimizePeriod * 60000;
+                long delay = optimizeDelay * 60000;
+                logger.info("Scheduling optimizations with delay {} min and period {} min", delay, period);
+                graphIndexer.scheduleIndexOptimizations(delay, period);
+            }
+        } catch (IOException ex) {
+            logger.error("Could not open lucene index directory.");
+            throw new IllegalStateException(ex);
+        }
+    }
 
-	protected void deactivate(ComponentContext context) {
-		if(optimizePeriod >= 1) {
-			graphIndexer.terminateIndexOptimizationSchedule();
-		}
-		optimizeDelay = 0;
-		optimizePeriod = 0;
-		graphIndexer.closeLuceneIndex();
-		graphIndexer = null;
+    protected void deactivate(ComponentContext context) {
+        if(optimizePeriod >= 1) {
+            graphIndexer.terminateIndexOptimizationSchedule();
+        }
+        optimizeDelay = 0;
+        optimizePeriod = 0;
+        graphIndexer.closeLuceneIndex();
+        graphIndexer = null;
 
-	}
-	
-	@Override
-	public List<NonLiteral> findResources(List<? extends Condition> conditions, 
-			SortSpecification sortSpecification, FacetCollector... facetCollectors) {
-		try {
-			return graphIndexer.findResources(conditions, sortSpecification, facetCollectors);
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
-	
-	@Override
-	public List<NonLiteral> findResources(List<? extends Condition> conditions, 
-			FacetCollector... facetCollectors) {
-		try {
-			return graphIndexer.findResources(conditions, facetCollectors);
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
+    }
+    
+    @Override
+    public List<NonLiteral> findResources(List<? extends Condition> conditions, 
+            SortSpecification sortSpecification, FacetCollector... facetCollectors) {
+        try {
+            return graphIndexer.findResources(conditions, sortSpecification, facetCollectors);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+    
+    @Override
+    public List<NonLiteral> findResources(List<? extends Condition> conditions, 
+            FacetCollector... facetCollectors) {
+        try {
+            return graphIndexer.findResources(conditions, facetCollectors);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
 
-	@Override
-	public List<NonLiteral> findResources(List<? extends Condition> conditions) {
-		try {
-			return graphIndexer.findResources(conditions);
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
+    @Override
+    public List<NonLiteral> findResources(List<? extends Condition> conditions) {
+        try {
+            return graphIndexer.findResources(conditions);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
 
-	@Override
-	public List<NonLiteral> findResources(UriRef uriRef, String pattern) {
-		try {
-			return graphIndexer.findResources(uriRef, pattern);
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
-	
-	@Override
-	public List<NonLiteral> findResources(UriRef uriRef, String pattern, 
-			boolean escapePattern) {
-		
-		try {
-			return graphIndexer.findResources(uriRef, pattern, escapePattern);
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
-	
-	@Override
-	public List<NonLiteral> findResources(UriRef uriRef, String pattern, 
-			boolean escapePattern, FacetCollector... facetCollectors) {
-		
-		try {
-			return graphIndexer.findResources(uriRef, pattern, escapePattern, facetCollectors);
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
-	
-	@Override
-	public List<NonLiteral> findResources(UriRef uriRef, String pattern, 
-			boolean escapePattern, SortSpecification sortSpecification, 
-			FacetCollector... facetCollectors) {
-		
-		try {
-			return graphIndexer.findResources(uriRef, pattern, escapePattern, 
-					sortSpecification, facetCollectors);
-		} catch (ParseException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-	}
-	
-	@Override
-	public void reCreateIndex() {
-		graphIndexer.reCreateIndex();
-	}
+    @Override
+    public List<NonLiteral> findResources(UriRef uriRef, String pattern) {
+        try {
+            return graphIndexer.findResources(uriRef, pattern);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+    
+    @Override
+    public List<NonLiteral> findResources(UriRef uriRef, String pattern, 
+            boolean escapePattern) {
+        
+        try {
+            return graphIndexer.findResources(uriRef, pattern, escapePattern);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+    
+    @Override
+    public List<NonLiteral> findResources(UriRef uriRef, String pattern, 
+            boolean escapePattern, FacetCollector... facetCollectors) {
+        
+        try {
+            return graphIndexer.findResources(uriRef, pattern, escapePattern, facetCollectors);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+    
+    @Override
+    public List<NonLiteral> findResources(UriRef uriRef, String pattern, 
+            boolean escapePattern, SortSpecification sortSpecification, 
+            FacetCollector... facetCollectors) {
+        
+        try {
+            return graphIndexer.findResources(uriRef, pattern, escapePattern, 
+                    sortSpecification, facetCollectors);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+    
+    @Override
+    public void reCreateIndex() {
+        graphIndexer.reCreateIndex();
+    }
 
-	@Override
-	public void optimizeIndex() {
-		graphIndexer.optimizeIndex();
-	}
+    @Override
+    public void optimizeIndex() {
+        graphIndexer.optimizeIndex();
+    }
 
-	public void addDefintion(UriRef propertyType, List<UriRef> predicates) {
-		Lock lock = definitionGraph.getLock().writeLock();
-		lock.lock();
-		try {
-			indexDefinitionManager.addDefinition(propertyType, predicates);
-		} finally {
-			lock.unlock();
-		}
-	}
+    public void addDefintion(UriRef propertyType, List<UriRef> predicates) {
+        Lock lock = definitionGraph.getLock().writeLock();
+        lock.lock();
+        try {
+            indexDefinitionManager.addDefinition(propertyType, predicates);
+        } finally {
+            lock.unlock();
+        }
+    }
 
-	public void addDefinitionVirtual(UriRef propertyType, List<VirtualProperty> predicates) {
-		Lock lock = definitionGraph.getLock().writeLock();
-		lock.lock();
-		try {
-			indexDefinitionManager.addDefinitionVirtual(propertyType, predicates);
-		} finally {
-			lock.unlock();
-		}
+    public void addDefinitionVirtual(UriRef propertyType, List<VirtualProperty> predicates) {
+        Lock lock = definitionGraph.getLock().writeLock();
+        lock.lock();
+        try {
+            indexDefinitionManager.addDefinitionVirtual(propertyType, predicates);
+        } finally {
+            lock.unlock();
+        }
 
-	}
+    }
 
-	public void deleteDefintion(UriRef propertyType) {
-		Lock lock = definitionGraph.getLock().writeLock();
-		lock.lock();
-		try {
-			indexDefinitionManager.deleteDefinition(propertyType);
-		} finally {
-			lock.unlock();
-		}
+    public void deleteDefintion(UriRef propertyType) {
+        Lock lock = definitionGraph.getLock().writeLock();
+        lock.lock();
+        try {
+            indexDefinitionManager.deleteDefinition(propertyType);
+        } finally {
+            lock.unlock();
+        }
 
-	}
+    }
 }

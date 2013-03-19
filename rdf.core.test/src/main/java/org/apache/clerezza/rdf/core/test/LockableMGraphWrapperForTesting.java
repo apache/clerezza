@@ -37,40 +37,40 @@ import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
  */
 public class LockableMGraphWrapperForTesting extends LockableMGraphWrapper {
 
-	private final ReentrantReadWriteLock lock = (ReentrantReadWriteLock) getLock();
-	private final Lock readLock = lock.readLock();
-	private final MGraph wrapped;
+    private final ReentrantReadWriteLock lock = (ReentrantReadWriteLock) getLock();
+    private final Lock readLock = lock.readLock();
+    private final MGraph wrapped;
 
-	/**
-	 * Constructs a LocalbleMGraph for an MGraph.
-	 *
-	 * @param providedMGraph a non-lockable mgraph
-	 */
-	public LockableMGraphWrapperForTesting(final MGraph providedMGraph) {
-		super(providedMGraph);
-		this.wrapped = providedMGraph;
-	}
+    /**
+     * Constructs a LocalbleMGraph for an MGraph.
+     *
+     * @param providedMGraph a non-lockable mgraph
+     */
+    public LockableMGraphWrapperForTesting(final MGraph providedMGraph) {
+        super(providedMGraph);
+        this.wrapped = providedMGraph;
+    }
 
-	@Override
-	public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
-		LockChecker.checkIfReadLocked(lock);
-		readLock.lock();
-		try {
-			return new LockingIteratorForTesting(wrapped.filter(subject, predicate, object), lock);
-		} finally {
-			readLock.unlock();
-		}
-	}
+    @Override
+    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
+        LockChecker.checkIfReadLocked(lock);
+        readLock.lock();
+        try {
+            return new LockingIteratorForTesting(wrapped.filter(subject, predicate, object), lock);
+        } finally {
+            readLock.unlock();
+        }
+    }
 
-	@Override
-	public Iterator<Triple> iterator() {
-		LockChecker.checkIfReadLocked(lock);
-		readLock.lock();
-		try {
-			return new LockingIteratorForTesting(wrapped.iterator(), lock);
-		} finally {
-			readLock.unlock();
-		}
-	}
+    @Override
+    public Iterator<Triple> iterator() {
+        LockChecker.checkIfReadLocked(lock);
+        readLock.lock();
+        try {
+            return new LockingIteratorForTesting(wrapped.iterator(), lock);
+        } finally {
+            readLock.unlock();
+        }
+    }
 
 }

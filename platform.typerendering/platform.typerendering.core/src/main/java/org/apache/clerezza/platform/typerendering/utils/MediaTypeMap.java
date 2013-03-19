@@ -43,99 +43,99 @@ import javax.ws.rs.core.MediaType;
  */
 public class MediaTypeMap<T> {
 
-	private final Map<MediaType, Set<T>> exactTypeEntries = new HashMap<MediaType, Set<T>>();
-	private final Map<String, Set<T>> primaryTypeEntries = new HashMap<String, Set<T>>();
-	private final Set<T> wildCardEntries = new HashSet<T>();
+    private final Map<MediaType, Set<T>> exactTypeEntries = new HashMap<MediaType, Set<T>>();
+    private final Map<String, Set<T>> primaryTypeEntries = new HashMap<String, Set<T>>();
+    private final Set<T> wildCardEntries = new HashSet<T>();
 
 
-	public void addEntry(final MediaType mediaType, final T entry) {
-		if (mediaType.isWildcardType()) {
-			wildCardEntries.add(entry);
-			return;
-		}
-		if (mediaType.isWildcardSubtype()) {
-			String primaryType = mediaType.getType();
-			Set<T> entries = primaryTypeEntries.get(primaryType);
-			if (entries == null) {
-				entries = new HashSet<T>();
-				primaryTypeEntries.put(primaryType, entries);
-			}
-			entries.add(entry);
-			return;
-		}
-		Set<T> entries = exactTypeEntries.get(mediaType);
-		if (entries == null) {
-			entries = new HashSet<T>();
-			exactTypeEntries.put(mediaType, entries);
-		}
-		entries.add(entry);
-	}
+    public void addEntry(final MediaType mediaType, final T entry) {
+        if (mediaType.isWildcardType()) {
+            wildCardEntries.add(entry);
+            return;
+        }
+        if (mediaType.isWildcardSubtype()) {
+            String primaryType = mediaType.getType();
+            Set<T> entries = primaryTypeEntries.get(primaryType);
+            if (entries == null) {
+                entries = new HashSet<T>();
+                primaryTypeEntries.put(primaryType, entries);
+            }
+            entries.add(entry);
+            return;
+        }
+        Set<T> entries = exactTypeEntries.get(mediaType);
+        if (entries == null) {
+            entries = new HashSet<T>();
+            exactTypeEntries.put(mediaType, entries);
+        }
+        entries.add(entry);
+    }
 
 
-	/**
-	 * Returns entries matching the specified media-type.
-	 *
-	 * The current implementation is efficient for concrete media-types while
-	 * wildcards require iterating throw parts of the entries
-	 *
-	 * @param mediaType
-	 * @return an iterator of available entries, the one with the most concrete key media type first
-	 */
-	public Iterator<T> getMatching(final MediaType mediaType) {
-		List<T> resultList = new ArrayList<T>();
-		if (mediaType.isWildcardType()) {
-			for (Set<T> entries: exactTypeEntries.values()) {
-				resultList.addAll(entries);
-			}
-			for (Set<T> entries: primaryTypeEntries.values()) {
-				resultList.addAll(entries);
-			}
-		} else {
-			final String primaryType = mediaType.getType();
-			if (!mediaType.isWildcardSubtype()) {
-				//exact media types
-				if (exactTypeEntries.containsKey(mediaType)) {
-					resultList.addAll(exactTypeEntries.get(mediaType));
-				}
-			} else {
-				//primary  type and wildcard subtype
-				for (Map.Entry<MediaType, Set<T>> mapEntry: exactTypeEntries.entrySet()) {
-					if (mapEntry.getKey().getType().equals(primaryType)) {
-						resultList.addAll(mapEntry.getValue());
-					}
-				}
-			}
-			if (primaryTypeEntries.containsKey(primaryType)) {
-				resultList.addAll(primaryTypeEntries.get(primaryType));
-			}
-		}
-		resultList.addAll(wildCardEntries);
-		return resultList.iterator();
-	}
+    /**
+     * Returns entries matching the specified media-type.
+     *
+     * The current implementation is efficient for concrete media-types while
+     * wildcards require iterating throw parts of the entries
+     *
+     * @param mediaType
+     * @return an iterator of available entries, the one with the most concrete key media type first
+     */
+    public Iterator<T> getMatching(final MediaType mediaType) {
+        List<T> resultList = new ArrayList<T>();
+        if (mediaType.isWildcardType()) {
+            for (Set<T> entries: exactTypeEntries.values()) {
+                resultList.addAll(entries);
+            }
+            for (Set<T> entries: primaryTypeEntries.values()) {
+                resultList.addAll(entries);
+            }
+        } else {
+            final String primaryType = mediaType.getType();
+            if (!mediaType.isWildcardSubtype()) {
+                //exact media types
+                if (exactTypeEntries.containsKey(mediaType)) {
+                    resultList.addAll(exactTypeEntries.get(mediaType));
+                }
+            } else {
+                //primary  type and wildcard subtype
+                for (Map.Entry<MediaType, Set<T>> mapEntry: exactTypeEntries.entrySet()) {
+                    if (mapEntry.getKey().getType().equals(primaryType)) {
+                        resultList.addAll(mapEntry.getValue());
+                    }
+                }
+            }
+            if (primaryTypeEntries.containsKey(primaryType)) {
+                resultList.addAll(primaryTypeEntries.get(primaryType));
+            }
+        }
+        resultList.addAll(wildCardEntries);
+        return resultList.iterator();
+    }
 
-	public boolean remove(T toBeRemoved) {
-		if (removeFromSetMap(exactTypeEntries, toBeRemoved)) {
-			return true;
-		}
-		if (removeFromSetMap(primaryTypeEntries, toBeRemoved)) {
-			return true;
-		}
-		return wildCardEntries.remove(toBeRemoved);
-	}
+    public boolean remove(T toBeRemoved) {
+        if (removeFromSetMap(exactTypeEntries, toBeRemoved)) {
+            return true;
+        }
+        if (removeFromSetMap(primaryTypeEntries, toBeRemoved)) {
+            return true;
+        }
+        return wildCardEntries.remove(toBeRemoved);
+    }
 
-	private <U> boolean removeFromSetMap(Map<U, Set<T>> map, T toBeRemoved) {
-		Iterator<Map.Entry<U, Set<T>>> iter = map.entrySet().iterator();
-		while (iter.hasNext()) {
-			Map.Entry<?, Set<T>> entry = iter.next();
-			Set<T> values = entry.getValue();
-			if (values.remove(toBeRemoved)) {
-				if (values.isEmpty()) {
-					iter.remove();
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+    private <U> boolean removeFromSetMap(Map<U, Set<T>> map, T toBeRemoved) {
+        Iterator<Map.Entry<U, Set<T>>> iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<?, Set<T>> entry = iter.next();
+            Set<T> values = entry.getValue();
+            if (values.remove(toBeRemoved)) {
+                if (values.isEmpty()) {
+                    iter.remove();
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

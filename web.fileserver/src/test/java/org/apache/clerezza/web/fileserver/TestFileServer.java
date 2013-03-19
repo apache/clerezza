@@ -31,15 +31,15 @@ import org.wymiwyg.commons.util.dirbrowser.PathNodeFactory;
  */
 public class TestFileServer {
 
-	@Test
-	public void testGetResource() throws IOException {
-		URL testRoot = getClass().getResource("test-root");
-		PathNode pathNode = PathNodeFactory.getPathNode(testRoot);
-		FileServer fileServer = new FileServer(pathNode);
-		PathNode file = fileServer.getNode("dir/subdir/file.txt");
-		Assert.assertEquals(PathNodeFactory.
-				getPathNode(getClass().
-				getResource("test-root/dir/subdir/file.txt")).getPath(), file.getPath());
+    @Test
+    public void testGetResource() throws IOException {
+        URL testRoot = getClass().getResource("test-root");
+        PathNode pathNode = PathNodeFactory.getPathNode(testRoot);
+        FileServer fileServer = new FileServer(pathNode);
+        PathNode file = fileServer.getNode("dir/subdir/file.txt");
+        Assert.assertEquals(PathNodeFactory.
+                getPathNode(getClass().
+                getResource("test-root/dir/subdir/file.txt")).getPath(), file.getPath());
 
-	}
+    }
 }

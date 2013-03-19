@@ -25,66 +25,66 @@ package org.apache.clerezza.platform.scripting;
  * @author daniel
  */
 public class ScriptLanguageDescription {
-	private final String language;
-	private final String version;
+    private final String language;
+    private final String version;
 
-	/**
-	 * Creates an new script language description.
-	 *
-	 * @param language  the script language.
-	 * @param version  the script version.
-	 * @throws IllegalArgumentException  if <code>language</code> is null.
-	 */
-	public ScriptLanguageDescription(String language, String version)
-			throws IllegalArgumentException {
-		if(language == null) {
-			throw new IllegalArgumentException("Script Language can not be null");
-		}
-		if(version == null) {
-			version = "";
-		}
-		this.language = language;
-		this.version = version;
-	}
+    /**
+     * Creates an new script language description.
+     *
+     * @param language  the script language.
+     * @param version  the script version.
+     * @throws IllegalArgumentException  if <code>language</code> is null.
+     */
+    public ScriptLanguageDescription(String language, String version)
+            throws IllegalArgumentException {
+        if(language == null) {
+            throw new IllegalArgumentException("Script Language can not be null");
+        }
+        if(version == null) {
+            version = "";
+        }
+        this.language = language;
+        this.version = version;
+    }
 
-	/**
-	 * Returns the script language (e.g. "Scala").
-	 *
-	 * @return  the script language
-	 */
-	public String getLanguage() {
-		return language;
-	}
+    /**
+     * Returns the script language (e.g. "Scala").
+     *
+     * @return  the script language
+     */
+    public String getLanguage() {
+        return language;
+    }
 
-	/**
-	 * Returns the script version (e.g. "1.8.6" if the described
-	 * script language is "Ruby 1.8.6".
-	 *
-	 * @return  the script version
-	 */
-	public String getVersion() {
-		return version;
-	}
+    /**
+     * Returns the script version (e.g. "1.8.6" if the described
+     * script language is "Ruby 1.8.6".
+     *
+     * @return  the script version
+     */
+    public String getVersion() {
+        return version;
+    }
 
-	@Override
-	public int hashCode() {
-		return (language + version).hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return (language + version).hashCode();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if(obj.getClass().getName().equals(this.getClass().getName())) {
-			ScriptLanguageDescription sld = (ScriptLanguageDescription) obj;
-			return (this.language.equals(sld.language) &&
-					this.version.equals(sld.version));
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass().getName().equals(this.getClass().getName())) {
+            ScriptLanguageDescription sld = (ScriptLanguageDescription) obj;
+            return (this.language.equals(sld.language) &&
+                    this.version.equals(sld.version));
+        }
+        return false;
+    }
 
-	@Override
-	public String toString() {
-		return language+" "+version;
-	}
+    @Override
+    public String toString() {
+        return language+" "+version;
+    }
 
 
 }

@@ -31,33 +31,33 @@ import org.openrdf.rio.RDFHandlerException;
  */
 public class SesameRdfHandler implements RDFHandler {
 
-	final TripleCollection tc;
-	private SesameScbConverter sesameScbConverter;
+    final TripleCollection tc;
+    private SesameScbConverter sesameScbConverter;
 
-	public SesameRdfHandler(TripleCollection tc) {
-		this.tc = tc;
-	}
+    public SesameRdfHandler(TripleCollection tc) {
+        this.tc = tc;
+    }
 
-	@Override
-	public void startRDF() throws RDFHandlerException {
-		sesameScbConverter = new SesameScbConverter();
-	}
+    @Override
+    public void startRDF() throws RDFHandlerException {
+        sesameScbConverter = new SesameScbConverter();
+    }
 
-	@Override
-	public void endRDF() throws RDFHandlerException {
-		sesameScbConverter = null;
-	}
+    @Override
+    public void endRDF() throws RDFHandlerException {
+        sesameScbConverter = null;
+    }
 
-	@Override
-	public void handleNamespace(String string, String string1) throws RDFHandlerException {
-	}
+    @Override
+    public void handleNamespace(String string, String string1) throws RDFHandlerException {
+    }
 
-	@Override
-	public void handleStatement(Statement stmnt) throws RDFHandlerException {
-		tc.add(sesameScbConverter.createTriple(stmnt));
-	}
+    @Override
+    public void handleStatement(Statement stmnt) throws RDFHandlerException {
+        tc.add(sesameScbConverter.createTriple(stmnt));
+    }
 
-	@Override
-	public void handleComment(String string) throws RDFHandlerException {
-	}
+    @Override
+    public void handleComment(String string) throws RDFHandlerException {
+    }
 }

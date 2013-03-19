@@ -28,40 +28,40 @@ import org.apache.clerezza.permissiondescriptions.PermissionInfo;
  * @author reto
  */
 @PermissionInfo(value="Graph Management Access Permission", description="Grants access " +
-	"to the Graph Management page")
+    "to the Graph Management page")
 public class GraphManagementAppPermission extends Permission {
 
 
-	public GraphManagementAppPermission() {
-		super("Graph Management permission");
-	}
-	/**
-	 * 
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public GraphManagementAppPermission(String target, String actions) {
-		super("Graph Management permission");
-	}
+    public GraphManagementAppPermission() {
+        super("Graph Management permission");
+    }
+    /**
+     * 
+     * @param target ignored
+     * @param action ignored
+     */
+    public GraphManagementAppPermission(String target, String actions) {
+        super("Graph Management permission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 77985;
-	}
+    @Override
+    public int hashCode() {
+        return 77985;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 
 }

@@ -37,10 +37,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
 @SupportedFormat("application/xhtml+xml")
 public class XHTMLRDFaParser extends ClerezzaRDFaParser {
 
-	@Override
-	public XMLReader getReader() throws SAXException {
-		XMLReader reader = XMLReaderFactory.createXMLReader();
-		reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-		return reader;
-	}
+    @Override
+    public XMLReader getReader() throws SAXException {
+        XMLReader reader = XMLReaderFactory.createXMLReader();
+        reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        return reader;
+    }
 }

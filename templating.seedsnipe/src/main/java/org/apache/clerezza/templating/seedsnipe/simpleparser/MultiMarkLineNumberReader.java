@@ -32,78 +32,78 @@ import java.util.Stack;
  */
 public class MultiMarkLineNumberReader extends LineNumberReader {
 
-	private Stack<Mark> marksInBuffer = new Stack<Mark>();
-	private StringWriter buffer = new StringWriter();
-	private boolean buffering = false;
-	private boolean repeating = false;
-	private int repeatingPosition;
+    private Stack<Mark> marksInBuffer = new Stack<Mark>();
+    private StringWriter buffer = new StringWriter();
+    private boolean buffering = false;
+    private boolean repeating = false;
+    private int repeatingPosition;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param in  The Reader to wrap. 
-	 */
-	public MultiMarkLineNumberReader(Reader in) {
-		super(in);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param in  The Reader to wrap. 
+     */
+    public MultiMarkLineNumberReader(Reader in) {
+        super(in);
+    }
 
-	@Override
-	public void mark(int i) {
-		buffering = true; //there is something in the buffer
-		Mark mark;
-		if (!repeating) { //new mark
-			mark = new Mark(buffer.getBuffer().length(), getLineNumber());
-		} else {
-			mark = new Mark(repeatingPosition, getLineNumber());
-		}
-		marksInBuffer.push(mark);
-	}
+    @Override
+    public void mark(int i) {
+        buffering = true; //there is something in the buffer
+        Mark mark;
+        if (!repeating) { //new mark
+            mark = new Mark(buffer.getBuffer().length(), getLineNumber());
+        } else {
+            mark = new Mark(repeatingPosition, getLineNumber());
+        }
+        marksInBuffer.push(mark);
+    }
 
-	/**
-	 * Remove the topmost mark.
-	 */
-	public void removeMark() {
-		marksInBuffer.pop();
-	}
+    /**
+     * Remove the topmost mark.
+     */
+    public void removeMark() {
+        marksInBuffer.pop();
+    }
 
-	@Override
-	public int read() throws IOException {
-		if (repeating) {
-			if (repeatingPosition < buffer.getBuffer().length()) {
-				return buffer.getBuffer().charAt(repeatingPosition++);
-			} else {
-				repeating = false;
-			}
-		}
-		int back = super.read();
-		if (buffering) {
-			buffer.write(back);
-		}
-		return back;
+    @Override
+    public int read() throws IOException {
+        if (repeating) {
+            if (repeatingPosition < buffer.getBuffer().length()) {
+                return buffer.getBuffer().charAt(repeatingPosition++);
+            } else {
+                repeating = false;
+            }
+        }
+        int back = super.read();
+        if (buffering) {
+            buffer.write(back);
+        }
+        return back;
 
-	}
+    }
 
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
+    @Override
+    public int read(char[] cbuf, int off, int len) throws IOException {
 
-		int charactersRead;
-		for (charactersRead = 0; charactersRead < len; charactersRead++) {
-			int thisChar = read();
-			if (thisChar == -1) {
-				break;
-			}
-			cbuf[off + charactersRead] = (char) thisChar;
-		}
-		return charactersRead;
-	}
-	
-	@Override
-	public void reset() throws IOException {
-		repeating = true;
-		Mark mark = marksInBuffer.peek();
-		repeatingPosition = mark.getPositionInBuffer();
-		setLineNumber(mark.getLineNumber());
-	}
+        int charactersRead;
+        for (charactersRead = 0; charactersRead < len; charactersRead++) {
+            int thisChar = read();
+            if (thisChar == -1) {
+                break;
+            }
+            cbuf[off + charactersRead] = (char) thisChar;
+        }
+        return charactersRead;
+    }
+    
+    @Override
+    public void reset() throws IOException {
+        repeating = true;
+        Mark mark = marksInBuffer.peek();
+        repeatingPosition = mark.getPositionInBuffer();
+        setLineNumber(mark.getLineNumber());
+    }
 
 }
 
@@ -114,43 +114,43 @@ public class MultiMarkLineNumberReader extends LineNumberReader {
  * @author reto
  */
 class Mark {
-	
-	private int positionInBuffer;
-	private int lineNumber;
+    
+    private int positionInBuffer;
+    private int lineNumber;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param positionInBuffer
-	 * @param lineNumber  The current line number.
-	 */
-	protected Mark(int positionInBuffer, int lineNumber) {
-		this.positionInBuffer = positionInBuffer;
-		this.lineNumber = lineNumber;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param positionInBuffer
+     * @param lineNumber  The current line number.
+     */
+    protected Mark(int positionInBuffer, int lineNumber) {
+        this.positionInBuffer = positionInBuffer;
+        this.lineNumber = lineNumber;
+    }
 
-	/**
-	 * Returns the index of the mark within 
-	 * the reader's buffer.
-	 * 
-	 * @return the index of the mark within the reader's buffer.
-	 */
-	protected int getPositionInBuffer() {
-		return positionInBuffer;
-	}
-	
-	/**
-	 * Returns the line number this mark has been set on.
-	 * 
-	 * @return the line number.
-	 */
-	protected int getLineNumber() {
-		return lineNumber;
-	}
+    /**
+     * Returns the index of the mark within 
+     * the reader's buffer.
+     * 
+     * @return the index of the mark within the reader's buffer.
+     */
+    protected int getPositionInBuffer() {
+        return positionInBuffer;
+    }
+    
+    /**
+     * Returns the line number this mark has been set on.
+     * 
+     * @return the line number.
+     */
+    protected int getLineNumber() {
+        return lineNumber;
+    }
 
-	@Override
-	public String toString() {
-		return "Mark: positionInBuffer=" + positionInBuffer + " lineNumber="
-				+ lineNumber;
-	}
+    @Override
+    public String toString() {
+        return "Mark: positionInBuffer=" + positionInBuffer + " lineNumber="
+                + lineNumber;
+    }
 }

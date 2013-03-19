@@ -38,93 +38,93 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class GraphNodeDataHandler extends DataHandler{
 
-	private GraphNode graphNode;
-	private Renderer renderer;
-	
-	
-	public GraphNodeDataHandler(GraphNode graphNode,
-			Renderer renderer) {
-		super(null, null);
-		this.graphNode = graphNode;
-		this.renderer = renderer;
-	}
-	
+    private GraphNode graphNode;
+    private Renderer renderer;
+    
+    
+    public GraphNodeDataHandler(GraphNode graphNode,
+            Renderer renderer) {
+        super(null, null);
+        this.graphNode = graphNode;
+        this.renderer = renderer;
+    }
+    
 
-	@Override
-	public CommandInfo[] getAllCommands() {
-		throw new UnsupportedOperationException("Operation not supported 1");
-	}
+    @Override
+    public CommandInfo[] getAllCommands() {
+        throw new UnsupportedOperationException("Operation not supported 1");
+    }
 
-	@Override
-	public Object getBean(CommandInfo arg0) {
-		throw new UnsupportedOperationException("Operation not supported 2");
-	}
+    @Override
+    public Object getBean(CommandInfo arg0) {
+        throw new UnsupportedOperationException("Operation not supported 2");
+    }
 
-	@Override
-	public CommandInfo getCommand(String arg0) {
-		throw new UnsupportedOperationException("Operation not supported 3");
-	}
+    @Override
+    public CommandInfo getCommand(String arg0) {
+        throw new UnsupportedOperationException("Operation not supported 3");
+    }
 
-	@Override
-	public Object getContent() throws IOException {
-		throw new UnsupportedOperationException("Operation not supported 4");
-	}
+    @Override
+    public Object getContent() throws IOException {
+        throw new UnsupportedOperationException("Operation not supported 4");
+    }
 
-	@Override
-	public String getContentType() {
-		return renderer.getMediaType().toString();
-	}
+    @Override
+    public String getContentType() {
+        return renderer.getMediaType().toString();
+    }
 
-	@Override
-	public DataSource getDataSource() {
-		throw new UnsupportedOperationException("Operation not supported 6");
-	}
+    @Override
+    public DataSource getDataSource() {
+        throw new UnsupportedOperationException("Operation not supported 6");
+    }
 
-	@Override
-	public InputStream getInputStream() throws IOException {
-		throw new UnsupportedOperationException("Operation not supported 7");
-	}
+    @Override
+    public InputStream getInputStream() throws IOException {
+        throw new UnsupportedOperationException("Operation not supported 7");
+    }
 
-	@Override
-	public String getName() {
-		return null;
-	}
+    @Override
+    public String getName() {
+        return null;
+    }
 
-	@Override
-	public OutputStream getOutputStream() throws IOException {
-		throw new UnsupportedOperationException("Operation not supported 9");
-	}
+    @Override
+    public OutputStream getOutputStream() throws IOException {
+        throw new UnsupportedOperationException("Operation not supported 9");
+    }
 
-	@Override
-	public CommandInfo[] getPreferredCommands() {
-		throw new UnsupportedOperationException("Operation not supported 10");
-	}
+    @Override
+    public CommandInfo[] getPreferredCommands() {
+        throw new UnsupportedOperationException("Operation not supported 10");
+    }
 
-	@Override
-	public Object getTransferData(DataFlavor arg0)
-			throws UnsupportedFlavorException, IOException {
-		throw new UnsupportedOperationException("Operation not supported 11");
-	}
+    @Override
+    public Object getTransferData(DataFlavor arg0)
+            throws UnsupportedFlavorException, IOException {
+        throw new UnsupportedOperationException("Operation not supported 11");
+    }
 
-	@Override
-	public synchronized DataFlavor[] getTransferDataFlavors() {
-		throw new UnsupportedOperationException("Operation not supported 12");
-	}
+    @Override
+    public synchronized DataFlavor[] getTransferDataFlavors() {
+        throw new UnsupportedOperationException("Operation not supported 12");
+    }
 
-	@Override
-	public boolean isDataFlavorSupported(DataFlavor arg0) {
-		throw new UnsupportedOperationException("Operation not supported 13");
-	}
+    @Override
+    public boolean isDataFlavorSupported(DataFlavor arg0) {
+        throw new UnsupportedOperationException("Operation not supported 13");
+    }
 
-	@Override
-	public synchronized void setCommandMap(CommandMap arg0) {
-		throw new UnsupportedOperationException("Operation not supported 14");
-	}
+    @Override
+    public synchronized void setCommandMap(CommandMap arg0) {
+        throw new UnsupportedOperationException("Operation not supported 14");
+    }
 
-	@Override
-	public void writeTo(OutputStream os) throws IOException {
-		renderer.render(graphNode, null, null, null, null, null, new HashMap<String, Object>(), os);
-	}
+    @Override
+    public void writeTo(OutputStream os) throws IOException {
+        renderer.render(graphNode, null, null, null, null, null, new HashMap<String, Object>(), os);
+    }
 
 
 

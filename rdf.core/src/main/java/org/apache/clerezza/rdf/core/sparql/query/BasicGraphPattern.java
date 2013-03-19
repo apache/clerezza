@@ -29,10 +29,10 @@ import java.util.Set;
  */
 public interface BasicGraphPattern extends GraphPattern {
 
-	/**
-	 *
-	 * @return a set of all triple patterns to match.
-	 */
-	public Set<TriplePattern> getTriplePatterns();
+    /**
+     *
+     * @return a set of all triple patterns to match.
+     */
+    public Set<TriplePattern> getTriplePatterns();
 
 }

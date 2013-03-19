@@ -54,36 +54,36 @@ import org.osgi.service.component.ComponentContext;
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/graphs/smush")
 public class Smush {
-	private final UriRef tBoxName = new UriRef("urn:x-localinstance:/tbox.graph");
+    private final UriRef tBoxName = new UriRef("urn:x-localinstance:/tbox.graph");
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private RenderletManager renderletManager;
 
-	private TripleCollection tBox;
+    private TripleCollection tBox;
 
-	protected void activate(ComponentContext componentContext) {
-		try {
-			//getting the tBox here means no read right on Tbox is necessary
-			//when smushing
-			tBox = tcManager.getTriples(tBoxName);
-		} catch (NoSuchEntityException e) {
-			tBox = new SimpleMGraph();
-			tBox.add(new TripleImpl(FOAF.mbox, RDF.type, OWL.InverseFunctionalProperty));
-			tBox.add(new TripleImpl(FOAF.mbox_sha1sum, RDF.type, OWL.InverseFunctionalProperty));
-			tBox.add(new TripleImpl(PLATFORM.userName, RDF.type, OWL.InverseFunctionalProperty));
-			tBox = tcManager.createGraph(tBoxName, tBox);
-		}
-	}
+    protected void activate(ComponentContext componentContext) {
+        try {
+            //getting the tBox here means no read right on Tbox is necessary
+            //when smushing
+            tBox = tcManager.getTriples(tBoxName);
+        } catch (NoSuchEntityException e) {
+            tBox = new SimpleMGraph();
+            tBox.add(new TripleImpl(FOAF.mbox, RDF.type, OWL.InverseFunctionalProperty));
+            tBox.add(new TripleImpl(FOAF.mbox_sha1sum, RDF.type, OWL.InverseFunctionalProperty));
+            tBox.add(new TripleImpl(PLATFORM.userName, RDF.type, OWL.InverseFunctionalProperty));
+            tBox = tcManager.createGraph(tBoxName, tBox);
+        }
+    }
 
 
-	
-	@POST
-	public Response smush(@Context UriInfo uriInfo, @FormParam("graphName") UriRef graphName) {
-		MGraph mGraph = tcManager.getMGraph(graphName);
-		Smusher.smush(mGraph, tBox);
-		return RedirectUtil.createSeeOtherResponse("./", uriInfo);
-	}
+    
+    @POST
+    public Response smush(@Context UriInfo uriInfo, @FormParam("graphName") UriRef graphName) {
+        MGraph mGraph = tcManager.getMGraph(graphName);
+        Smusher.smush(mGraph, tBox);
+        return RedirectUtil.createSeeOtherResponse("./", uriInfo);
+    }
 }

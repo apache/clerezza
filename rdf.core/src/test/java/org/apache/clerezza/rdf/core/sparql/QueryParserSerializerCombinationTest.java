@@ -31,59 +31,59 @@ import org.junit.Test;
  * @author hasan
  */
 public class QueryParserSerializerCombinationTest {
-	
-	public QueryParserSerializerCombinationTest() {
-	}
-	
-	@BeforeClass
-	public static void setUpClass() {
-	}
-	
-	@AfterClass
-	public static void tearDownClass() {
-	}
-	
-	@Before
-	public void setUp() {
-	}
-	
-	@After
-	public void tearDown() {
-	}
+    
+    public QueryParserSerializerCombinationTest() {
+    }
+    
+    @BeforeClass
+    public static void setUpClass() {
+    }
+    
+    @AfterClass
+    public static void tearDownClass() {
+    }
+    
+    @Before
+    public void setUp() {
+    }
+    
+    @After
+    public void tearDown() {
+    }
 
-	@Test
+    @Test
     public void testPatternOrderPreservation() throws Exception {
         String queryString =
-				"SELECT ?property ?range ?property_description ?subproperty ?subproperty_description \n"
-				+ "WHERE\n"
-				+ "{ ?property <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .\n"
-				+ "{ { ?property <http://www.w3.org/2000/01/rdf-schema#domain> ?superclass .\n"
-				+ "<http://example.org/ontologies/market_ontology.owl#Company> <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?superclass .\n"
-				+ "}  UNION { ?property <http://www.w3.org/2000/01/rdf-schema#domain> ?dunion .\n"
-				+ "?dunion <http://www.w3.org/2002/07/owl#unionOf> ?dlist .\n"
-				+ "?dlist <http://jena.hpl.hp.com/ARQ/list#member> ?superclass .\n"
-				+ "<http://example.org/ontologies/market_ontology.owl#Company> <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?superclass .\n"
-				+ "} } { { ?property <http://www.w3.org/2000/01/rdf-schema#range> ?superrange .\n"
-				+ "?range <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?superrange .\n"
-				+ "FILTER (! (isBLANK(?range)))\n"
-				+ "}  UNION { ?property <http://www.w3.org/2000/01/rdf-schema#range> ?range .\n"
-				+ "FILTER (! (isBLANK(?range)))\n"
-				+ "} }  OPTIONAL { ?somesub <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?range .\n"
-				+ "FILTER (((?somesub) != (<http://www.w3.org/2002/07/owl#Nothing>)) && ((?somesub) != (?range)))\n"
-				+ "}  OPTIONAL { ?subproperty <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> ?property .\n"
- 				+ " OPTIONAL { ?subproperty <http://purl.org/dc/elements/1.1/description> ?subproperty_description .\n"
-				+ "} FILTER (((?subproperty) != (<http://www.w3.org/2002/07/owl#bottomObjectProperty>)) && ((?subproperty) != (?property)))\n"
-				+ "}  OPTIONAL { ?property <http://purl.org/dc/elements/1.1/description> ?property_description .\n"
-				+ "} FILTER ((?property) != (<http://www.w3.org/2002/07/owl#bottomObjectProperty>))\n"
-				+ "FILTER ((?range) != (<http://www.w3.org/2002/07/owl#Nothing>))\n"
-				+ "FILTER (! (BOUND(?somesub)))\n"
-				+ "} \n";
+                "SELECT ?property ?range ?property_description ?subproperty ?subproperty_description \n"
+                + "WHERE\n"
+                + "{ ?property <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .\n"
+                + "{ { ?property <http://www.w3.org/2000/01/rdf-schema#domain> ?superclass .\n"
+                + "<http://example.org/ontologies/market_ontology.owl#Company> <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?superclass .\n"
+                + "}  UNION { ?property <http://www.w3.org/2000/01/rdf-schema#domain> ?dunion .\n"
+                + "?dunion <http://www.w3.org/2002/07/owl#unionOf> ?dlist .\n"
+                + "?dlist <http://jena.hpl.hp.com/ARQ/list#member> ?superclass .\n"
+                + "<http://example.org/ontologies/market_ontology.owl#Company> <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?superclass .\n"
+                + "} } { { ?property <http://www.w3.org/2000/01/rdf-schema#range> ?superrange .\n"
+                + "?range <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?superrange .\n"
+                + "FILTER (! (isBLANK(?range)))\n"
+                + "}  UNION { ?property <http://www.w3.org/2000/01/rdf-schema#range> ?range .\n"
+                + "FILTER (! (isBLANK(?range)))\n"
+                + "} }  OPTIONAL { ?somesub <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?range .\n"
+                + "FILTER (((?somesub) != (<http://www.w3.org/2002/07/owl#Nothing>)) && ((?somesub) != (?range)))\n"
+                + "}  OPTIONAL { ?subproperty <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> ?property .\n"
+                 + " OPTIONAL { ?subproperty <http://purl.org/dc/elements/1.1/description> ?subproperty_description .\n"
+                + "} FILTER (((?subproperty) != (<http://www.w3.org/2002/07/owl#bottomObjectProperty>)) && ((?subproperty) != (?property)))\n"
+                + "}  OPTIONAL { ?property <http://purl.org/dc/elements/1.1/description> ?property_description .\n"
+                + "} FILTER ((?property) != (<http://www.w3.org/2002/07/owl#bottomObjectProperty>))\n"
+                + "FILTER ((?range) != (<http://www.w3.org/2002/07/owl#Nothing>))\n"
+                + "FILTER (! (BOUND(?somesub)))\n"
+                + "} \n";
 
         Query query = QueryParser.getInstance().parse(queryString);
         Assert.assertEquals(queryString.replaceAll("\\s", "").trim(), query.toString().replaceAll("\\s", "").trim());
-	}
+    }
 
-	@Test
+    @Test
     public void testParsingAndSerializationStability() throws Exception {
         String queryString =
                 "PREFIX mo: <http://example.org/ontologies/market_ontology.owl#>\n"

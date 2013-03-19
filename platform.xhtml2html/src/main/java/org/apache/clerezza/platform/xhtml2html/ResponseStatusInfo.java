@@ -24,11 +24,11 @@ package org.apache.clerezza.platform.xhtml2html;
  */
 interface ResponseStatusInfo {
 
-	/**
-	 *
-	 * @return true if the content of the response has to be converted from
-	 *		xhtml to html, false otherwise
-	 */
-	boolean convertXhtml2Html();
+    /**
+     *
+     * @return true if the content of the response has to be converted from
+     *        xhtml to html, false otherwise
+     */
+    boolean convertXhtml2Html();
 
 }

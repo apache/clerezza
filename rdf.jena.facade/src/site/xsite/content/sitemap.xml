@@ -21,7 +21,7 @@
 -->
 
 <sitemap>
-	<section>
+    <section>
         <name>Sparql Howto</name>
         <page>sparql-howto.xhtml</page>
     </section>

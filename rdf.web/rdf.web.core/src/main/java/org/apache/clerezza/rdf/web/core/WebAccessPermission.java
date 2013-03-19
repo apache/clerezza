@@ -29,38 +29,38 @@ import org.apache.clerezza.permissiondescriptions.PermissionInfo;
  * @author mir
  */
 @PermissionInfo(value="Graph via Web Access Permission", description="Grants access " +
-	"to the Graph via Web")
+    "to the Graph via Web")
 public class WebAccessPermission extends Permission{
 
-	public WebAccessPermission() {
-		super("Graph via Web access permission");
-	}
-	/**
-	 *
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public WebAccessPermission(String target, String actions) {
-		super("Graph via Web access permission");
-	}
+    public WebAccessPermission() {
+        super("Graph via Web access permission");
+    }
+    /**
+     *
+     * @param target ignored
+     * @param action ignored
+     */
+    public WebAccessPermission(String target, String actions) {
+        super("Graph via Web access permission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 477987;
-	}
+    @Override
+    public int hashCode() {
+        return 477987;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 }

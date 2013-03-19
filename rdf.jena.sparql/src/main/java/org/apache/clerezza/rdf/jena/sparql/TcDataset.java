@@ -38,74 +38,74 @@ import org.apache.clerezza.rdf.jena.facade.JenaGraph;
  */
 public class TcDataset implements Dataset {
 
-	private TcManager tcManager;
-	private TripleCollection defaultGraph;
+    private TcManager tcManager;
+    private TripleCollection defaultGraph;
 
-	TcDataset(TcManager tcManager, TripleCollection defaultGraph) {
-		this.tcManager = tcManager;
-		this.defaultGraph = defaultGraph;
-	}
+    TcDataset(TcManager tcManager, TripleCollection defaultGraph) {
+        this.tcManager = tcManager;
+        this.defaultGraph = defaultGraph;
+    }
 
-	@Override
-	public Model getDefaultModel() {
-		final JenaGraph jenaGraph = new JenaGraph(defaultGraph);
-		final Model model = ModelFactory.createModelForGraph(jenaGraph);
-		return model;
-	}
+    @Override
+    public Model getDefaultModel() {
+        final JenaGraph jenaGraph = new JenaGraph(defaultGraph);
+        final Model model = ModelFactory.createModelForGraph(jenaGraph);
+        return model;
+    }
 
-	@Override
-	public Model getNamedModel(String name) {
-		final JenaGraph jenaGraph = new JenaGraph(
-				tcManager.getTriples(new UriRef(name)));
-		final Model model = ModelFactory.createModelForGraph(jenaGraph);
-		return model;
-	}
+    @Override
+    public Model getNamedModel(String name) {
+        final JenaGraph jenaGraph = new JenaGraph(
+                tcManager.getTriples(new UriRef(name)));
+        final Model model = ModelFactory.createModelForGraph(jenaGraph);
+        return model;
+    }
 
-	@Override
-	public boolean containsNamedModel(String name) {
-		try {
-			tcManager.getTriples(new UriRef(name));
-			return true;
-		} catch (NoSuchEntityException e) {
-			return false;
-		}
-	}
+    @Override
+    public boolean containsNamedModel(String name) {
+        try {
+            tcManager.getTriples(new UriRef(name));
+            return true;
+        } catch (NoSuchEntityException e) {
+            return false;
+        }
+    }
 
-	@Override
-	public Iterator<String> listNames() {
-		final Iterator<UriRef> tcs = tcManager.listTripleCollections().iterator();
-		return new Iterator<String>() {
+    @Override
+    public Iterator<String> listNames() {
+        final Iterator<UriRef> tcs = tcManager.listTripleCollections().iterator();
+        return new Iterator<String>() {
 
-			@Override
-			public boolean hasNext() {
-				return tcs.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return tcs.hasNext();
+            }
 
-			@Override
-			public String next() {
-				UriRef next = tcs.next();
-				return next != null ? next.getUnicodeString() : null;
-			}
+            @Override
+            public String next() {
+                UriRef next = tcs.next();
+                return next != null ? next.getUnicodeString() : null;
+            }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
 
-	}
+    }
 
-	@Override
-	public Lock getLock() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Lock getLock() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public DatasetGraph asDatasetGraph() {
-		return new TcDatasetGraph(tcManager, defaultGraph);
-	}
+    @Override
+    public DatasetGraph asDatasetGraph() {
+        return new TcDatasetGraph(tcManager, defaultGraph);
+    }
 
-	@Override
-	public void close() {
-	}
+    @Override
+    public void close() {
+    }
 }

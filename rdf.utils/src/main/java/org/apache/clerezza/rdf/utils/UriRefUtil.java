@@ -26,38 +26,38 @@ package org.apache.clerezza.rdf.utils;
  */
 public class UriRefUtil {
 
-	/**
-	 * Strips #x00 - #x1F and #x7F-#x9F from a Unicode string
-	 * @see <a href="http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">
-	 * http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference</a> and
-	 * replaces all US-ASCII space character with a "+".
-	 *
-	 * @param inputChars
-	 * @return the stripped string
-	 * 
-	 */
-	public static String stripNonUriRefChars(CharSequence inputChars) {
+    /**
+     * Strips #x00 - #x1F and #x7F-#x9F from a Unicode string
+     * @see <a href="http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">
+     * http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference</a> and
+     * replaces all US-ASCII space character with a "+".
+     *
+     * @param inputChars
+     * @return the stripped string
+     * 
+     */
+    public static String stripNonUriRefChars(CharSequence inputChars) {
 
-		if (inputChars == null) {
-			return "";
-		}
+        if (inputChars == null) {
+            return "";
+        }
 
-		StringBuffer buffer = new StringBuffer();
+        StringBuffer buffer = new StringBuffer();
 
-		for (int i = 0; i < inputChars.length(); i++) {
-			char c = inputChars.charAt(i);
+        for (int i = 0; i < inputChars.length(); i++) {
+            char c = inputChars.charAt(i);
 
-			if (!isIllegal(c)) {
-				buffer.append(c);
-			}
-		}
-		return buffer.toString().replaceAll("\\s+", "+");
-	}
+            if (!isIllegal(c)) {
+                buffer.append(c);
+            }
+        }
+        return buffer.toString().replaceAll("\\s+", "+");
+    }
 
-	private static boolean isIllegal(char ch) {
-		if ((ch >= 0x7F) && (ch <= 0x9F)) {
-			return true;
-		}
-		return false;
-	}
+    private static boolean isIllegal(char ch) {
+        if ((ch >= 0x7F) && (ch <= 0x9F)) {
+            return true;
+        }
+        return false;
+    }
 }

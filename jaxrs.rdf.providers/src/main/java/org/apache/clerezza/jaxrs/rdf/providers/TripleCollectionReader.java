@@ -43,24 +43,24 @@ import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
  */
 @Provider
 @Consumes({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
-	SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
-	SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
+    SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
+    SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class TripleCollectionReader implements MessageBodyReader<TripleCollection> {
 
-	/**
-	 * @scr.reference
-	 */
-	private Parser parser;
-	
-	@Override
-	public boolean isReadable(Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return type.isAssignableFrom(TripleCollection.class);
-	}
+    /**
+     * @scr.reference
+     */
+    private Parser parser;
+    
+    @Override
+    public boolean isReadable(Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return type.isAssignableFrom(TripleCollection.class);
+    }
 
-	@Override
-	public TripleCollection readFrom(Class<TripleCollection> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
-		TripleCollection result = new SimpleMGraph();
-		return parser.parse(entityStream, mediaType.toString());
-	}
+    @Override
+    public TripleCollection readFrom(Class<TripleCollection> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+        TripleCollection result = new SimpleMGraph();
+        return parser.parse(entityStream, mediaType.toString());
+    }
 }

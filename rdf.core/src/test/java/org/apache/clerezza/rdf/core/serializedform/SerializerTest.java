@@ -31,58 +31,58 @@ import org.junit.Test;
  */
 public class SerializerTest {
 
-	private static boolean providerAInvoked;
-	private static boolean providerBInvoked;
-	private SerializingProvider serializingProviderA = new SerializingProviderA();
-	private SerializingProvider serializingProviderB = new SerializingProviderB();
+    private static boolean providerAInvoked;
+    private static boolean providerBInvoked;
+    private SerializingProvider serializingProviderA = new SerializingProviderA();
+    private SerializingProvider serializingProviderB = new SerializingProviderB();
 
-	@Test
-	public void registerOneProvider() {
-		Serializer serializer = new Serializer(null);
-		serializer.bindSerializingProvider(serializingProviderA);
-		providerAInvoked = false;
-		serializer.serialize(null, null, "application/x-fantasy2+rdf");
-		Assert.assertTrue(providerAInvoked);
-	}
-	
-	@Test
-	public void registerAndUnregisterSecond() {
-		Serializer serializer = new Serializer(null);
-		serializer.bindSerializingProvider(serializingProviderA);
-		serializer.bindSerializingProvider(serializingProviderB);
-		providerAInvoked = false;
-		providerBInvoked = false;
-		serializer.serialize(null, null, "application/x-fantasy2+rdf");
-		Assert.assertFalse(providerAInvoked);
-		Assert.assertTrue(providerBInvoked);
-		providerAInvoked = false;
-		providerBInvoked = false;
-		serializer.serialize(null, null, "application/x-fantasy1+rdf");
-		Assert.assertTrue(providerAInvoked);
-		Assert.assertFalse(providerBInvoked);
-		serializer.unbindSerializingProvider(serializingProviderB);
-		providerAInvoked = false;
-		providerBInvoked = false;
-		serializer.serialize(null, null, "application/x-fantasy2+rdf");
-		Assert.assertTrue(providerAInvoked);
-		Assert.assertFalse(providerBInvoked);
-		
-	}
+    @Test
+    public void registerOneProvider() {
+        Serializer serializer = new Serializer(null);
+        serializer.bindSerializingProvider(serializingProviderA);
+        providerAInvoked = false;
+        serializer.serialize(null, null, "application/x-fantasy2+rdf");
+        Assert.assertTrue(providerAInvoked);
+    }
+    
+    @Test
+    public void registerAndUnregisterSecond() {
+        Serializer serializer = new Serializer(null);
+        serializer.bindSerializingProvider(serializingProviderA);
+        serializer.bindSerializingProvider(serializingProviderB);
+        providerAInvoked = false;
+        providerBInvoked = false;
+        serializer.serialize(null, null, "application/x-fantasy2+rdf");
+        Assert.assertFalse(providerAInvoked);
+        Assert.assertTrue(providerBInvoked);
+        providerAInvoked = false;
+        providerBInvoked = false;
+        serializer.serialize(null, null, "application/x-fantasy1+rdf");
+        Assert.assertTrue(providerAInvoked);
+        Assert.assertFalse(providerBInvoked);
+        serializer.unbindSerializingProvider(serializingProviderB);
+        providerAInvoked = false;
+        providerBInvoked = false;
+        serializer.serialize(null, null, "application/x-fantasy2+rdf");
+        Assert.assertTrue(providerAInvoked);
+        Assert.assertFalse(providerBInvoked);
+        
+    }
 
-	@SupportedFormat({"application/x-fantasy1+rdf", "application/x-fantasy2+rdf"})
-	static class SerializingProviderA implements SerializingProvider {
+    @SupportedFormat({"application/x-fantasy1+rdf", "application/x-fantasy2+rdf"})
+    static class SerializingProviderA implements SerializingProvider {
 
-		@Override
-		public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
-			providerAInvoked = true;
-		}
-	};
-	@SupportedFormat("application/x-fantasy2+rdf")
-	static class SerializingProviderB implements SerializingProvider {
+        @Override
+        public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
+            providerAInvoked = true;
+        }
+    };
+    @SupportedFormat("application/x-fantasy2+rdf")
+    static class SerializingProviderB implements SerializingProvider {
 
-		@Override
-		public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
-			providerBInvoked = true;
-		}
-	};
+        @Override
+        public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
+            providerBInvoked = true;
+        }
+    };
 }

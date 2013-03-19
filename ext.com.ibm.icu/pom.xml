@@ -21,11 +21,11 @@
 -->
 
     <modelVersion>4.0.0</modelVersion>
-	<parent>
+    <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
         <version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+        <relativePath>../parent</relativePath>
     </parent>
 
     <groupId>org.apache.clerezza.ext</groupId>
@@ -50,7 +50,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-						<_exportcontents>${project.artifactId}.*</_exportcontents>
+                        <_exportcontents>${project.artifactId}.*</_exportcontents>
                         <Embed-Dependency>icu4j</Embed-Dependency>
                     </instructions>
                 </configuration>

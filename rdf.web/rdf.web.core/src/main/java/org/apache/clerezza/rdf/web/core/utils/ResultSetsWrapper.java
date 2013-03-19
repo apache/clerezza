@@ -28,35 +28,35 @@ import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
  */
 public class ResultSetsWrapper implements ResultSet {
 
-	private Iterator<ResultSet> resultSetsIter;
-	private ResultSet currentResultSet;
+    private Iterator<ResultSet> resultSetsIter;
+    private ResultSet currentResultSet;
 
-	public ResultSetsWrapper(Set<ResultSet> resultSets) {
-		this.resultSetsIter = resultSets.iterator();
-		currentResultSet = resultSetsIter.next();
-	}
+    public ResultSetsWrapper(Set<ResultSet> resultSets) {
+        this.resultSetsIter = resultSets.iterator();
+        currentResultSet = resultSetsIter.next();
+    }
 
-	@Override
-	public boolean hasNext() {
-		if (currentResultSet.hasNext()) {
-			return true;
-		} else {
-			if (resultSetsIter.hasNext()) {
-				currentResultSet = resultSetsIter.next();
-				return hasNext();
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean hasNext() {
+        if (currentResultSet.hasNext()) {
+            return true;
+        } else {
+            if (resultSetsIter.hasNext()) {
+                currentResultSet = resultSetsIter.next();
+                return hasNext();
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public SolutionMapping next() {
-		hasNext();
-		return currentResultSet.next();
-	}
+    @Override
+    public SolutionMapping next() {
+        hasNext();
+        return currentResultSet.next();
+    }
 
-	@Override
-	public void remove() {
-		currentResultSet.remove();
-	}
+    @Override
+    public void remove() {
+        currentResultSet.remove();
+    }
 }

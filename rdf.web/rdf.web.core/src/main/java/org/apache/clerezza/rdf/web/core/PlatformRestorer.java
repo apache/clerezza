@@ -54,42 +54,42 @@ import org.apache.felix.scr.annotations.Service;
 @Path("/admin/backup/restore")
 public class PlatformRestorer {
 
-	@Reference
-	private Restorer restorer;
+    @Reference
+    private Restorer restorer;
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	/**
-	 * Restores the triple collection of TcManager from a backup
-	 *
-	 * @param backupData the backup data
-	 */
-	public void restore(InputStream backupData) throws IOException {
-		restorer.restore(backupData, tcManager);
-	}
+    /**
+     * Restores the triple collection of TcManager from a backup
+     *
+     * @param backupData the backup data
+     */
+    public void restore(InputStream backupData) throws IOException {
+        restorer.restore(backupData, tcManager);
+    }
 
-	@POST
-	public Response restore(MultiPartBody body, @Context final UriInfo uriInfo) 
-			throws Throwable {
-		AccessController.checkPermission(new RestorePermission());
-		FormFile[] files = body.getFormFileParameterValues("file");
-		if (files.length != 1) {
-			throw new RuntimeException("Must submit exactly one file");
-		}
-		final FormFile file = files[0];
-		try {
-			return AccessController.doPrivileged(new PrivilegedExceptionAction<Response>() {
+    @POST
+    public Response restore(MultiPartBody body, @Context final UriInfo uriInfo) 
+            throws Throwable {
+        AccessController.checkPermission(new RestorePermission());
+        FormFile[] files = body.getFormFileParameterValues("file");
+        if (files.length != 1) {
+            throw new RuntimeException("Must submit exactly one file");
+        }
+        final FormFile file = files[0];
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Response>() {
 
-				@Override
-				public Response run() throws IOException {
-					restore(new ByteArrayInputStream(file.getContent()));
-					return RedirectUtil.createSeeOtherResponse("/admin/backup", uriInfo);
-				}
-			});
-		} catch (PrivilegedActionException ex) {
-			throw ex.getCause();
-		}
-	}
+                @Override
+                public Response run() throws IOException {
+                    restore(new ByteArrayInputStream(file.getContent()));
+                    return RedirectUtil.createSeeOtherResponse("/admin/backup", uriInfo);
+                }
+            });
+        } catch (PrivilegedActionException ex) {
+            throw ex.getCause();
+        }
+    }
 
 }

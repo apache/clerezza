@@ -35,26 +35,26 @@ import org.junit.Test;
  */
 public class ZipCreationUtilTest {
 
-	@Test
-	public void simple() throws Exception {
-		Hierarchy root = new Hierarchy();
-		root.addChild("/foo/bar/test", "my testdata".getBytes());
-		root.addChild("/foo/bar/test1", "another testdata".getBytes());
-		root.addChild("/foo/something", "something else".getBytes());
-		byte[] zipData = ZipCreationUtil.createZip(root);
-		File tmpFile = File.createTempFile("test", "zip");
-		FileOutputStream fout = new FileOutputStream(tmpFile);
-		fout.write(zipData);
-		fout.close();
-		ZipFile zipFile = new ZipFile(tmpFile);
-		Enumeration<? extends ZipEntry> entriesEnum = zipFile.entries();
-		Set<ZipEntry> entries = new HashSet<ZipEntry>();
-		while (entriesEnum.hasMoreElements()) {
-			final ZipEntry nextElement = entriesEnum.nextElement();
-			System.out.println(nextElement);
-			entries.add(nextElement);
-		}
-		Assert.assertEquals(3, entries.size());
+    @Test
+    public void simple() throws Exception {
+        Hierarchy root = new Hierarchy();
+        root.addChild("/foo/bar/test", "my testdata".getBytes());
+        root.addChild("/foo/bar/test1", "another testdata".getBytes());
+        root.addChild("/foo/something", "something else".getBytes());
+        byte[] zipData = ZipCreationUtil.createZip(root);
+        File tmpFile = File.createTempFile("test", "zip");
+        FileOutputStream fout = new FileOutputStream(tmpFile);
+        fout.write(zipData);
+        fout.close();
+        ZipFile zipFile = new ZipFile(tmpFile);
+        Enumeration<? extends ZipEntry> entriesEnum = zipFile.entries();
+        Set<ZipEntry> entries = new HashSet<ZipEntry>();
+        while (entriesEnum.hasMoreElements()) {
+            final ZipEntry nextElement = entriesEnum.nextElement();
+            System.out.println(nextElement);
+            entries.add(nextElement);
+        }
+        Assert.assertEquals(3, entries.size());
 
-	}
+    }
 }

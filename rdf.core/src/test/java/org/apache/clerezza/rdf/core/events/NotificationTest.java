@@ -38,62 +38,62 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
  * @author reto
  */
 public class NotificationTest {
-	@Test public void getEventsTogether() throws Exception {
-		final TripleCollection tc = new SimpleMGraph();
-		final List<List<GraphEvent>> eventChunks = new ArrayList<List<GraphEvent>>();
-		GraphListener myGraphListener = new GraphListener() {
-			@Override
-			public void graphChanged(List<GraphEvent> events) {
-				eventChunks.add(events);
-				//the following causes an event to be added to events
-				//(the List we already got)! This is because it doesn't wait
-				//on a synhronized(this) as we are already in an evnet dispatch
-				//thread
-				//tc.add(generateTriple());
-			}
-		};
-		tc.addGraphListener(myGraphListener, new FilterTriple(null, null, null),
-				500);
-		for (int i = 0; i < 100; i++) {
-			tc.add(generateTriple());
-		}
-		Thread.sleep(600);
-		Assert.assertEquals(1, eventChunks.size());
-		Assert.assertEquals(100, eventChunks.get(0).size());
-		tc.add(generateTriple());
-		Thread.sleep(600);
-		Assert.assertEquals(2, eventChunks.size());
-		Assert.assertEquals(1, eventChunks.get(1).size());
-	}
+    @Test public void getEventsTogether() throws Exception {
+        final TripleCollection tc = new SimpleMGraph();
+        final List<List<GraphEvent>> eventChunks = new ArrayList<List<GraphEvent>>();
+        GraphListener myGraphListener = new GraphListener() {
+            @Override
+            public void graphChanged(List<GraphEvent> events) {
+                eventChunks.add(events);
+                //the following causes an event to be added to events
+                //(the List we already got)! This is because it doesn't wait
+                //on a synhronized(this) as we are already in an evnet dispatch
+                //thread
+                //tc.add(generateTriple());
+            }
+        };
+        tc.addGraphListener(myGraphListener, new FilterTriple(null, null, null),
+                500);
+        for (int i = 0; i < 100; i++) {
+            tc.add(generateTriple());
+        }
+        Thread.sleep(600);
+        Assert.assertEquals(1, eventChunks.size());
+        Assert.assertEquals(100, eventChunks.get(0).size());
+        tc.add(generateTriple());
+        Thread.sleep(600);
+        Assert.assertEquals(2, eventChunks.size());
+        Assert.assertEquals(1, eventChunks.get(1).size());
+    }
 
 
-	@Test public void synchroneousEvents() throws Exception {
-		final TripleCollection tc = new SimpleMGraph();
-		final List<List<GraphEvent>> eventChunks = new ArrayList<List<GraphEvent>>();
-		GraphListener myGraphListener = new GraphListener() {
-			@Override
-			public void graphChanged(List<GraphEvent> events) {
-				eventChunks.add(events);
-			}
-		};
-		tc.addGraphListener(myGraphListener, new FilterTriple(null, null, null),
-				0);
-		for (int i = 0; i < 100; i++) {
-			tc.add(generateTriple());
-		}
-		Assert.assertEquals(100, eventChunks.size());
-		Assert.assertEquals(1, eventChunks.get(97).size());
-		tc.add(generateTriple());
-		Assert.assertEquals(101, eventChunks.size());
-		Assert.assertEquals(1, eventChunks.get(100).size());
-	}
+    @Test public void synchroneousEvents() throws Exception {
+        final TripleCollection tc = new SimpleMGraph();
+        final List<List<GraphEvent>> eventChunks = new ArrayList<List<GraphEvent>>();
+        GraphListener myGraphListener = new GraphListener() {
+            @Override
+            public void graphChanged(List<GraphEvent> events) {
+                eventChunks.add(events);
+            }
+        };
+        tc.addGraphListener(myGraphListener, new FilterTriple(null, null, null),
+                0);
+        for (int i = 0; i < 100; i++) {
+            tc.add(generateTriple());
+        }
+        Assert.assertEquals(100, eventChunks.size());
+        Assert.assertEquals(1, eventChunks.get(97).size());
+        tc.add(generateTriple());
+        Assert.assertEquals(101, eventChunks.size());
+        Assert.assertEquals(1, eventChunks.get(100).size());
+    }
 
-	private static Triple generateTriple() {
-		return new TripleImpl(generateRandomUriRef(), generateRandomUriRef(),
-				generateRandomUriRef());
-	}
+    private static Triple generateTriple() {
+        return new TripleImpl(generateRandomUriRef(), generateRandomUriRef(),
+                generateRandomUriRef());
+    }
 
-	private static UriRef generateRandomUriRef() {
-		return new UriRef("http://example.org/"+Math.random());
-	}
+    private static UriRef generateRandomUriRef() {
+        return new UriRef("http://example.org/"+Math.random());
+    }
 }

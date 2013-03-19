@@ -27,25 +27,25 @@ import org.apache.clerezza.rdf.core.UriRef;
  * @author reto
  */
 public class NoSuchEntityException extends RuntimeException {
-	private UriRef entityName;
+    private UriRef entityName;
 
-	/**
-	 * creates an exception indicating that the entity with the specified name
-	 * does not exist.
-	 * 
-	 * @param entityName the name for which no entity exists
-	 */
-	public NoSuchEntityException(UriRef entityName) {
-		super("No such entity: "+entityName);
-		this.entityName = entityName;
-	}
+    /**
+     * creates an exception indicating that the entity with the specified name
+     * does not exist.
+     * 
+     * @param entityName the name for which no entity exists
+     */
+    public NoSuchEntityException(UriRef entityName) {
+        super("No such entity: "+entityName);
+        this.entityName = entityName;
+    }
 
-	/**
-	 * the name for which no entity exists.
-	 * 
-	 * @return the name of the entity that doesn't exist
-	 */
-	public UriRef getEntityName() {
-		return entityName;
-	}
+    /**
+     * the name for which no entity exists.
+     * 
+     * @return the name of the entity that doesn't exist
+     */
+    public UriRef getEntityName() {
+        return entityName;
+    }
 }

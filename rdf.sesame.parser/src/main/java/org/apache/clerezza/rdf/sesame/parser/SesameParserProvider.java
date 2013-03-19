@@ -43,31 +43,31 @@ import org.openrdf.rio.RDFParser;
 @Component(immediate=true)
 @Service(ParsingProvider.class)
 @Property(name="supportedFormat", value={SupportedFormat.RDF_XML,
-	SupportedFormat.TURTLE,	SupportedFormat.X_TURTLE,
-	SupportedFormat.N_TRIPLE, SupportedFormat.N3})
+    SupportedFormat.TURTLE,    SupportedFormat.X_TURTLE,
+    SupportedFormat.N_TRIPLE, SupportedFormat.N3})
 @SupportedFormat({SupportedFormat.RDF_XML,
-	SupportedFormat.TURTLE,	SupportedFormat.X_TURTLE,
-	SupportedFormat.N_TRIPLE, SupportedFormat.N3})
+    SupportedFormat.TURTLE,    SupportedFormat.X_TURTLE,
+    SupportedFormat.N_TRIPLE, SupportedFormat.N3})
 public class SesameParserProvider implements ParsingProvider {
 
-	@Override
-	public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+    @Override
+    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
 
-		RDFParser rdfParser = ParserFactory.createRdfParser(formatIdentifier);
-		if (rdfParser == null) {
-			throw new UnsupportedParsingFormatException(formatIdentifier);
-		}
-		SesameRdfHandler sesameRdfHandler = new SesameRdfHandler(target);
-		rdfParser.setRDFHandler(sesameRdfHandler);
-		String base = (baseUri == null) ? "http://relative-uri.fake/" : baseUri.getUnicodeString();
-		try {
-			rdfParser.parse(serializedGraph, base);
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		} catch (RDFParseException ex) {
-			throw new RuntimeException(ex);
-		} catch (RDFHandlerException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+        RDFParser rdfParser = ParserFactory.createRdfParser(formatIdentifier);
+        if (rdfParser == null) {
+            throw new UnsupportedParsingFormatException(formatIdentifier);
+        }
+        SesameRdfHandler sesameRdfHandler = new SesameRdfHandler(target);
+        rdfParser.setRDFHandler(sesameRdfHandler);
+        String base = (baseUri == null) ? "http://relative-uri.fake/" : baseUri.getUnicodeString();
+        try {
+            rdfParser.parse(serializedGraph, base);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        } catch (RDFParseException ex) {
+            throw new RuntimeException(ex);
+        } catch (RDFHandlerException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

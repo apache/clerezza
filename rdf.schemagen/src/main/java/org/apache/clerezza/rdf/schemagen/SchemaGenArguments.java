@@ -28,22 +28,22 @@ import org.wymiwyg.commons.util.arguments.CommandLine;
  * @author reto
  */
 public interface SchemaGenArguments {
-	// comments ommitted as redundant with description
+    // comments ommitted as redundant with description
 
-	@CommandLine(longName = "schema", shortName = { "S" }, required = true, 
-			description = "The URL from which the vocabulary can be retrieved")
-	public URL getSchemaUrl();
+    @CommandLine(longName = "schema", shortName = { "S" }, required = true, 
+            description = "The URL from which the vocabulary can be retrieved")
+    public URL getSchemaUrl();
 
-	@CommandLine(longName = "namespace", shortName = { "N" }, required = false, 
-			description = "Namespace of the vocabulary, by default it uses the URI of a resource of type owl:Ontology found in the vocabulary")
-	public String getNamespace();
+    @CommandLine(longName = "namespace", shortName = { "N" }, required = false, 
+            description = "Namespace of the vocabulary, by default it uses the URI of a resource of type owl:Ontology found in the vocabulary")
+    public String getNamespace();
 
-	@CommandLine(longName = "format", shortName = { "F" }, required = false, 
-			description = "The RDF content-type of the schema (Content-Type in an HTTP-Response is ignored)",
-			defaultValue = "application/rdf+xml")
-	public String getFormatIdentifier();
-	
-	@CommandLine(longName = "classname", shortName = { "C" }, required = true, 
-			description = "The fully qualified class name of the class to be created")
-	public String getClassName();
+    @CommandLine(longName = "format", shortName = { "F" }, required = false, 
+            description = "The RDF content-type of the schema (Content-Type in an HTTP-Response is ignored)",
+            defaultValue = "application/rdf+xml")
+    public String getFormatIdentifier();
+    
+    @CommandLine(longName = "classname", shortName = { "C" }, required = true, 
+            description = "The fully qualified class name of the class to be created")
+    public String getClassName();
 }

@@ -21,25 +21,25 @@
 -->
 
 <components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-	<scr:component enabled="true" immediate="true" name="org.apache.clerezza.sourcebundle.BundleRoot">
+    <scr:component enabled="true" immediate="true" name="org.apache.clerezza.sourcebundle.BundleRoot">
         <implementation class="org.apache.clerezza.bundledevtool.BundleRoot"/>
         <property name="service.pid" value="org.apache.clerezza.bundledevtool.BundleRoot"/>
-		<service servicefactory="false">
+        <service servicefactory="false">
             <provide interface="org.apache.clerezza.bundledevtool.BundleRoot"/>
         </service>
-		<reference name="CompilerService"
-				interface="org.apache.clerezza.scala.scripting.CompilerService"
-				cardinality="1..1"
-				bind="bindCompilerService" unbind="unbindCompilerService"/>
-		<reference name="PackageAdmin"
-				interface="org.osgi.service.packageadmin.PackageAdmin"
-				cardinality="1..1"
-				bind="bindPackageAdmin" unbind="unbindPackageAdmin"/>
+        <reference name="CompilerService"
+                interface="org.apache.clerezza.scala.scripting.CompilerService"
+                cardinality="1..1"
+                bind="bindCompilerService" unbind="unbindCompilerService"/>
+        <reference name="PackageAdmin"
+                interface="org.osgi.service.packageadmin.PackageAdmin"
+                cardinality="1..1"
+                bind="bindPackageAdmin" unbind="unbindPackageAdmin"/>
     </scr:component>
-	<scr:component enabled="true"  name="org.apache.clerezza.sourcebundle.DevShellCustomizer">
+    <scr:component enabled="true"  name="org.apache.clerezza.sourcebundle.DevShellCustomizer">
         <implementation class="org.apache.clerezza.bundledevtool.DevShellCustomizer"/>
         <property name="service.pid" value="org.apache.clerezza.bundledevtool.DevShellCustomizer"/>
-		<service servicefactory="false">
+        <service servicefactory="false">
             <provide interface="org.apache.clerezza.shell.ShellCustomizer"/>
         </service>
     </scr:component>

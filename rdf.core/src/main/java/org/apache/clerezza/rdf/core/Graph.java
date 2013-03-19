@@ -33,23 +33,23 @@ package org.apache.clerezza.rdf.core;
  */
 public interface Graph extends TripleCollection {
 
-	/** 
-	 * Returns true if two graphs are isomorphic
-	 * 
-	 * @return true if two graphs are isomorphic
-	 */
-	@Override
-	public boolean equals(Object obj);
+    /** 
+     * Returns true if two graphs are isomorphic
+     * 
+     * @return true if two graphs are isomorphic
+     */
+    @Override
+    public boolean equals(Object obj);
 
-	/** 
-	 * Return the sum of the blank-nodes independent hashes of the triples. 
-	 * More precisely the hash of the triple is calculated as follows:
-	 * (hash(subject) >> 1) ^  hash(hashCode) ^ (hash(hashCode) << 1)
-	 * Where the hash-fucntion return the hashCode of the argument 
-	 * for grounded arguments and 0 otherwise. 
-	 * 
-	 * @return hash code
-	 */
-	@Override
-	public int hashCode();
+    /** 
+     * Return the sum of the blank-nodes independent hashes of the triples. 
+     * More precisely the hash of the triple is calculated as follows:
+     * (hash(subject) >> 1) ^  hash(hashCode) ^ (hash(hashCode) << 1)
+     * Where the hash-fucntion return the hashCode of the argument 
+     * for grounded arguments and 0 otherwise. 
+     * 
+     * @return hash code
+     */
+    @Override
+    public int hashCode();
 }

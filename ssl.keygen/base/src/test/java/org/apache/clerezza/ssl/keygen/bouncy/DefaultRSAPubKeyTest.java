@@ -66,24 +66,24 @@ import java.io.StringReader;
  * Time: 3:59:02 PM
  */
 public class DefaultRSAPubKeyTest extends TestCase {
-	public void testGetHexModulus() throws Exception {
-	}
+    public void testGetHexModulus() throws Exception {
+    }
 
-	public void testGetIntExponent() throws Exception {
-	}
+    public void testGetIntExponent() throws Exception {
+    }
 
-	public void testGetPublicKey() throws Exception {
-	}
+    public void testGetPublicKey() throws Exception {
+    }
 
-	public void testBeautify() throws Exception {
-		String longStr = "The Velocity User Guide is intended to help page designers and content providers get acquainted with Velocity and the syntax of its simple yet powerful scripting language, the Velocity Template Language (VTL). Many of the examples in this guide deal with using Velocity to embed dynamic content in web sites, but all VTL examples are equally applicable to other pages and templates.";
-		String res = DefaultRSAPubKey.beautify(longStr);
-		BufferedReader sbuf = new BufferedReader(new StringReader(res));
-		String line;
-		while ((line = sbuf.readLine()) != null) {
-			if (line.length() != 60) {
-				assertTrue("only the last line can be less than 60 chars", sbuf.readLine() == null);
-			}
-		}
-	}
+    public void testBeautify() throws Exception {
+        String longStr = "The Velocity User Guide is intended to help page designers and content providers get acquainted with Velocity and the syntax of its simple yet powerful scripting language, the Velocity Template Language (VTL). Many of the examples in this guide deal with using Velocity to embed dynamic content in web sites, but all VTL examples are equally applicable to other pages and templates.";
+        String res = DefaultRSAPubKey.beautify(longStr);
+        BufferedReader sbuf = new BufferedReader(new StringReader(res));
+        String line;
+        while ((line = sbuf.readLine()) != null) {
+            if (line.length() != 60) {
+                assertTrue("only the last line can be less than 60 chars", sbuf.readLine() == null);
+            }
+        }
+    }
 }

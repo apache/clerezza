@@ -48,220 +48,220 @@ import org.codehaus.doxia.site.renderer.SiteRenderer;
  */
 public class JaxRsReportMojo extends AbstractMavenReport {
 
-	/**
-	 * Path to the root directory
-	 *
-	 * @parameter expression="${basedir}"
-	 */
-	private String baseDir;
-	/**
-	 * Location where generated html will be created.
-	 *
-	 * @parameter expression="${project.reporting.outputDirectory}"
-	 */
-	private String outputDirectory;
-	/**
-	 * Doxia Site Renderer
-	 *
-	 * @parameter expression="${component.org.codehaus.doxia.site.renderer.SiteRenderer}"
-	 * @required @readonly
-	 */
-	private SiteRenderer siteRenderer;
-	/**
-	 * Maven Project
-	 *
-	 * @parameter expression="${project}"
-	 * @required @readonly
-	 */
-	private MavenProject project;
+    /**
+     * Path to the root directory
+     *
+     * @parameter expression="${basedir}"
+     */
+    private String baseDir;
+    /**
+     * Location where generated html will be created.
+     *
+     * @parameter expression="${project.reporting.outputDirectory}"
+     */
+    private String outputDirectory;
+    /**
+     * Doxia Site Renderer
+     *
+     * @parameter expression="${component.org.codehaus.doxia.site.renderer.SiteRenderer}"
+     * @required @readonly
+     */
+    private SiteRenderer siteRenderer;
+    /**
+     * Maven Project
+     *
+     * @parameter expression="${project}"
+     * @required @readonly
+     */
+    private MavenProject project;
 
-	@Override
-	protected SiteRenderer getSiteRenderer() {
-		return siteRenderer;
-	}
+    @Override
+    protected SiteRenderer getSiteRenderer() {
+        return siteRenderer;
+    }
 
-	@Override
-	protected String getOutputDirectory() {
-		return outputDirectory;
+    @Override
+    protected String getOutputDirectory() {
+        return outputDirectory;
 
-	}
+    }
 
-	@Override
-	protected MavenProject getProject() {
-		return project;
-	}
+    @Override
+    protected MavenProject getProject() {
+        return project;
+    }
 
-	@Override
-	protected void executeReport(Locale arg0)
-			throws MavenReportException {
+    @Override
+    protected void executeReport(Locale arg0)
+            throws MavenReportException {
 
-		JavaClass[] classes = getJavaClassesFromSources();
-		boolean pathAnnotationExists = false;
-		for (JavaClass clazz : classes) {
-			if (hasPathAnnotation(clazz)) {
-				pathAnnotationExists = true;
-				break;
-			}
-		}
-		Sink sink = getSink();
-		sink.head();
-		sink.title();
-		sink.text("JaxRs Report");
-		sink.title_();
-		sink.head_();
-		sink.body();
-		if(pathAnnotationExists) {
-			
+        JavaClass[] classes = getJavaClassesFromSources();
+        boolean pathAnnotationExists = false;
+        for (JavaClass clazz : classes) {
+            if (hasPathAnnotation(clazz)) {
+                pathAnnotationExists = true;
+                break;
+            }
+        }
+        Sink sink = getSink();
+        sink.head();
+        sink.title();
+        sink.text("JaxRs Report");
+        sink.title_();
+        sink.head_();
+        sink.body();
+        if(pathAnnotationExists) {
+            
 
-			for (JavaClass clazz : classes) {
-				if (hasPathAnnotation(clazz)) {
-					sink.section1();
-					sink.sectionTitle1();
-					sink.text("Class: " + clazz.getName());
-					sink.sectionTitle1_();
-					sink.lineBreak();
-					sink.text("Package: " + clazz.getPackage().getName());
-					sink.lineBreak();
-					sink.lineBreak();
-					for (Annotation annotation : clazz.getAnnotations()) {
-						if (annotation.getParameterValue().toString().contains("javax.ws.rs.Path")) {
-							sink.bold();
-							sink.text("Root Resource Path: " + annotation.getNamedParameter("value").toString());
-							sink.bold_();
-						}
-					}
-					sink.lineBreak();
-					sink.lineBreak();
-					sink.paragraph();
-					sink.text(clazz.getComment());
-					sink.paragraph_();
-					sink.section1_();
-					sink.horizontalRule();
-					for (JavaMethod mth : clazz.getMethods()) {
-						if (hasPathAnnotation(mth)) {
-							for (Annotation annotation : mth.getAnnotations()) {
-								if (annotation.getParameterValue().toString().contains("javax.ws.rs.Path")) {
-									sink.section2();
-									sink.sectionTitle2();
-									sink.text("Path: " + annotation.getNamedParameter("value"));
-									sink.sectionTitle2_();
-								}
-							}
-							for (Annotation annotation : mth.getAnnotations()) {
-								if (annotation.getParameterValue().toString().contains("javax.ws.rs.Produces")) {
-									sink.bold();
-									sink.text("Produces: " + annotation.getNamedParameter("value"));
-									sink.bold_();
-									sink.lineBreak();
-									sink.lineBreak();
-								} else if (annotation.getParameterValue().toString()
-										.contains("javax.ws.rs") && !annotation.getParameterValue().toString()
-										.contains("javax.ws.rs.Path")) {
-									sink.bold();
-									sink.text("Http Method: " + annotation.getType()
-											.toString().substring("javax.ws.rs.".length()));
-									sink.bold_();
-									sink.lineBreak();
-									sink.lineBreak();
-								}
-							}
-							sink.bold();
-							sink.text("Method: " + mth.getName());
-							sink.bold_();
-							sink.lineBreak();
-							sink.lineBreak();
-							sink.paragraph();
-							sink.text(mth.getComment());
-							sink.paragraph_();
-							DocletTag[] params = mth.getTagsByName("param");
-							if (params != null) {
-								sink.numberedList(params.length);
-								for (DocletTag param : params) {
-									sink.numberedListItem();
-									sink.text("param: " + param.getValue());
-									sink.numberedListItem_();
-								}
-								sink.numberedList_();
-							}
-							DocletTag returns = mth.getTagByName("return");
-							if (returns != null) {
-								sink.text("Returns " + returns.getValue());
-							}
-							sink.lineBreak();
-							sink.lineBreak();
-							sink.paragraph();
-							sink.bold();
-							sink.text("Method Declaration Signature: ");
-							sink.bold_();
-							sink.text(mth.getDeclarationSignature(true));
-							sink.paragraph_();
-							sink.section2_();
-						}
-					}
-					sink.section1_();
-				}
-			}
-		} else {
-			sink.section1();
-			sink.bold();
-			sink.text("This project doesn't expose any JaxRs resources");
-			sink.bold_();
-			sink.section1_();
-		}
-		sink.body_();
-		sink.flush();
-		sink.close();
-	}
+            for (JavaClass clazz : classes) {
+                if (hasPathAnnotation(clazz)) {
+                    sink.section1();
+                    sink.sectionTitle1();
+                    sink.text("Class: " + clazz.getName());
+                    sink.sectionTitle1_();
+                    sink.lineBreak();
+                    sink.text("Package: " + clazz.getPackage().getName());
+                    sink.lineBreak();
+                    sink.lineBreak();
+                    for (Annotation annotation : clazz.getAnnotations()) {
+                        if (annotation.getParameterValue().toString().contains("javax.ws.rs.Path")) {
+                            sink.bold();
+                            sink.text("Root Resource Path: " + annotation.getNamedParameter("value").toString());
+                            sink.bold_();
+                        }
+                    }
+                    sink.lineBreak();
+                    sink.lineBreak();
+                    sink.paragraph();
+                    sink.text(clazz.getComment());
+                    sink.paragraph_();
+                    sink.section1_();
+                    sink.horizontalRule();
+                    for (JavaMethod mth : clazz.getMethods()) {
+                        if (hasPathAnnotation(mth)) {
+                            for (Annotation annotation : mth.getAnnotations()) {
+                                if (annotation.getParameterValue().toString().contains("javax.ws.rs.Path")) {
+                                    sink.section2();
+                                    sink.sectionTitle2();
+                                    sink.text("Path: " + annotation.getNamedParameter("value"));
+                                    sink.sectionTitle2_();
+                                }
+                            }
+                            for (Annotation annotation : mth.getAnnotations()) {
+                                if (annotation.getParameterValue().toString().contains("javax.ws.rs.Produces")) {
+                                    sink.bold();
+                                    sink.text("Produces: " + annotation.getNamedParameter("value"));
+                                    sink.bold_();
+                                    sink.lineBreak();
+                                    sink.lineBreak();
+                                } else if (annotation.getParameterValue().toString()
+                                        .contains("javax.ws.rs") && !annotation.getParameterValue().toString()
+                                        .contains("javax.ws.rs.Path")) {
+                                    sink.bold();
+                                    sink.text("Http Method: " + annotation.getType()
+                                            .toString().substring("javax.ws.rs.".length()));
+                                    sink.bold_();
+                                    sink.lineBreak();
+                                    sink.lineBreak();
+                                }
+                            }
+                            sink.bold();
+                            sink.text("Method: " + mth.getName());
+                            sink.bold_();
+                            sink.lineBreak();
+                            sink.lineBreak();
+                            sink.paragraph();
+                            sink.text(mth.getComment());
+                            sink.paragraph_();
+                            DocletTag[] params = mth.getTagsByName("param");
+                            if (params != null) {
+                                sink.numberedList(params.length);
+                                for (DocletTag param : params) {
+                                    sink.numberedListItem();
+                                    sink.text("param: " + param.getValue());
+                                    sink.numberedListItem_();
+                                }
+                                sink.numberedList_();
+                            }
+                            DocletTag returns = mth.getTagByName("return");
+                            if (returns != null) {
+                                sink.text("Returns " + returns.getValue());
+                            }
+                            sink.lineBreak();
+                            sink.lineBreak();
+                            sink.paragraph();
+                            sink.bold();
+                            sink.text("Method Declaration Signature: ");
+                            sink.bold_();
+                            sink.text(mth.getDeclarationSignature(true));
+                            sink.paragraph_();
+                            sink.section2_();
+                        }
+                    }
+                    sink.section1_();
+                }
+            }
+        } else {
+            sink.section1();
+            sink.bold();
+            sink.text("This project doesn't expose any JaxRs resources");
+            sink.bold_();
+            sink.section1_();
+        }
+        sink.body_();
+        sink.flush();
+        sink.close();
+    }
 
 
-	@Override
-	public String getOutputName() {
-		return "jaxrs-report";
-	}
+    @Override
+    public String getOutputName() {
+        return "jaxrs-report";
+    }
 
-	@Override
-	public String getName(Locale locale) {
-		return "JaxRs Report";
-	}
+    @Override
+    public String getName(Locale locale) {
+        return "JaxRs Report";
+    }
 
-	@Override
-	public String getDescription(Locale locale) {
-		return "Description of the REST webservices";
-	}
+    @Override
+    public String getDescription(Locale locale) {
+        return "Description of the REST webservices";
+    }
 
-	public boolean hasPathAnnotation(AbstractBaseJavaEntity entity) {
+    public boolean hasPathAnnotation(AbstractBaseJavaEntity entity) {
 
-		for (Annotation annotation : entity.getAnnotations()) {
-			if (annotation.getParameterValue().toString().contains("javax.ws.rs.Path")) {
-				return true;
-			}
+        for (Annotation annotation : entity.getAnnotations()) {
+            if (annotation.getParameterValue().toString().contains("javax.ws.rs.Path")) {
+                return true;
+            }
 
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 
-	public JavaSource[] getSources() {
-		String src = baseDir + File.separator + "src";
-		File file = new File(src);
-		JavaDocBuilder builder = new JavaDocBuilder();
-		builder.addSourceTree(file);
-		return builder.getSources();
+    public JavaSource[] getSources() {
+        String src = baseDir + File.separator + "src";
+        File file = new File(src);
+        JavaDocBuilder builder = new JavaDocBuilder();
+        builder.addSourceTree(file);
+        return builder.getSources();
 
-	}
+    }
 
-	private JavaClass[] getJavaClassesFromSources() {
-		final JavaSource[] sources = this.getSources();
-		final List<JavaClass> classes = new ArrayList<JavaClass>();
-		for (int i = 0; i < sources.length; i++) {
-			for (int j = 0; j < sources[i].getClasses().length; j++) {
-				final JavaClass clazz = sources[i].getClasses()[j];
-				classes.add(clazz);
-				for (int k = 0; k < clazz.getNestedClasses().length; k++) {
-					final JavaClass nestedClass = clazz.getNestedClasses()[k];
-					classes.add(nestedClass);
-				}
-			}
-		}
-		return classes.toArray(new JavaClass[classes.size()]);
-	}
+    private JavaClass[] getJavaClassesFromSources() {
+        final JavaSource[] sources = this.getSources();
+        final List<JavaClass> classes = new ArrayList<JavaClass>();
+        for (int i = 0; i < sources.length; i++) {
+            for (int j = 0; j < sources[i].getClasses().length; j++) {
+                final JavaClass clazz = sources[i].getClasses()[j];
+                classes.add(clazz);
+                for (int k = 0; k < clazz.getNestedClasses().length; k++) {
+                    final JavaClass nestedClass = clazz.getNestedClasses()[k];
+                    classes.add(nestedClass);
+                }
+            }
+        }
+        return classes.toArray(new JavaClass[classes.size()]);
+    }
 }

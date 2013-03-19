@@ -31,77 +31,77 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class SimpleTripleCollectionTest {
 
-	private UriRef uriRef1 = new UriRef("http://example.org/foo");
-	private UriRef uriRef2 = new UriRef("http://example.org/bar");
-	private UriRef uriRef3 = new UriRef("http://example.org/test");
-	private Triple triple1 = new TripleImpl(uriRef1, uriRef2, uriRef3);
-	private Triple triple2 = new TripleImpl(uriRef2, uriRef2, uriRef1);
-	private Triple triple3 = new TripleImpl(uriRef3, uriRef1, uriRef3);
-	private Triple triple4 = new TripleImpl(uriRef1, uriRef3, uriRef2);
-	private Triple triple5 = new TripleImpl(uriRef2, uriRef3, uriRef2);
-		
-	@Test
-	public void iteratorRemove() {
-		SimpleTripleCollection stc = new SimpleTripleCollection();
-		stc.add(triple1);
-		stc.add(triple2);
-		stc.add(triple3);
-		stc.add(triple4);
-		stc.add(triple5);
-		Iterator<Triple> iter = stc.iterator();
-		while (iter.hasNext()) {
-			Triple triple = iter.next();
-			iter.remove();
-		}
-		Assert.assertEquals(0, stc.size());
-	}
+    private UriRef uriRef1 = new UriRef("http://example.org/foo");
+    private UriRef uriRef2 = new UriRef("http://example.org/bar");
+    private UriRef uriRef3 = new UriRef("http://example.org/test");
+    private Triple triple1 = new TripleImpl(uriRef1, uriRef2, uriRef3);
+    private Triple triple2 = new TripleImpl(uriRef2, uriRef2, uriRef1);
+    private Triple triple3 = new TripleImpl(uriRef3, uriRef1, uriRef3);
+    private Triple triple4 = new TripleImpl(uriRef1, uriRef3, uriRef2);
+    private Triple triple5 = new TripleImpl(uriRef2, uriRef3, uriRef2);
+        
+    @Test
+    public void iteratorRemove() {
+        SimpleTripleCollection stc = new SimpleTripleCollection();
+        stc.add(triple1);
+        stc.add(triple2);
+        stc.add(triple3);
+        stc.add(triple4);
+        stc.add(triple5);
+        Iterator<Triple> iter = stc.iterator();
+        while (iter.hasNext()) {
+            Triple triple = iter.next();
+            iter.remove();
+        }
+        Assert.assertEquals(0, stc.size());
+    }
 
-	@Test
-	public void removeAll() {
-		SimpleTripleCollection stc = new SimpleTripleCollection();
-		stc.add(triple1);
-		stc.add(triple2);
-		stc.add(triple3);
-		stc.add(triple4);
-		stc.add(triple5);
-		SimpleTripleCollection stc2 = new SimpleTripleCollection();
-		stc2.add(triple1);
-		stc2.add(triple3);
-		stc2.add(triple5);
-		stc.removeAll(stc2);
-		Assert.assertEquals(2, stc.size());
-	}
-	
-	@Test
-	public void filterIteratorRemove() {
-		SimpleTripleCollection stc = new SimpleTripleCollection();
-		stc.add(triple1);
-		stc.add(triple2);
-		stc.add(triple3);
-		stc.add(triple4);
-		stc.add(triple5);		
-		Iterator<Triple> iter = stc.filter(uriRef1, null, null);
-		while (iter.hasNext()) {
-			Triple triple = iter.next();
-			iter.remove();
-		}
-		Assert.assertEquals(3, stc.size());
-	}
+    @Test
+    public void removeAll() {
+        SimpleTripleCollection stc = new SimpleTripleCollection();
+        stc.add(triple1);
+        stc.add(triple2);
+        stc.add(triple3);
+        stc.add(triple4);
+        stc.add(triple5);
+        SimpleTripleCollection stc2 = new SimpleTripleCollection();
+        stc2.add(triple1);
+        stc2.add(triple3);
+        stc2.add(triple5);
+        stc.removeAll(stc2);
+        Assert.assertEquals(2, stc.size());
+    }
+    
+    @Test
+    public void filterIteratorRemove() {
+        SimpleTripleCollection stc = new SimpleTripleCollection();
+        stc.add(triple1);
+        stc.add(triple2);
+        stc.add(triple3);
+        stc.add(triple4);
+        stc.add(triple5);        
+        Iterator<Triple> iter = stc.filter(uriRef1, null, null);
+        while (iter.hasNext()) {
+            Triple triple = iter.next();
+            iter.remove();
+        }
+        Assert.assertEquals(3, stc.size());
+    }
 
-	@Test(expected=ConcurrentModificationException.class)
-	public void remove() {
-		SimpleTripleCollection stc = new SimpleTripleCollection();
-		stc.setCheckConcurrency(true);
-		stc.add(triple1);
-		stc.add(triple2);
-		stc.add(triple3);
-		stc.add(triple4);
-		stc.add(triple5);
-		Iterator<Triple> iter = stc.filter(uriRef1, null, null);
-		while (iter.hasNext()) {
-			Triple triple = iter.next();
-			stc.remove(triple);
-		}
-		Assert.assertEquals(3, stc.size());
-	}
+    @Test(expected=ConcurrentModificationException.class)
+    public void remove() {
+        SimpleTripleCollection stc = new SimpleTripleCollection();
+        stc.setCheckConcurrency(true);
+        stc.add(triple1);
+        stc.add(triple2);
+        stc.add(triple3);
+        stc.add(triple4);
+        stc.add(triple5);
+        Iterator<Triple> iter = stc.filter(uriRef1, null, null);
+        while (iter.hasNext()) {
+            Triple triple = iter.next();
+            stc.remove(triple);
+        }
+        Assert.assertEquals(3, stc.size());
+    }
 }

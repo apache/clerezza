@@ -25,9 +25,9 @@ package org.apache.clerezza.jaxrs.utils.form;
  */
 public interface ParameterValue {
 
-	/**
-	 * @return the String-value of the paramter, for text-values this is the
-	 *         text
-	 */
-	public String toString();
+    /**
+     * @return the String-value of the paramter, for text-values this is the
+     *         text
+     */
+    public String toString();
 }

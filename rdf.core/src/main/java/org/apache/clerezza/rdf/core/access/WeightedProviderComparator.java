@@ -29,13 +29,13 @@ import java.util.Comparator;
  */
 public class WeightedProviderComparator implements Comparator<WeightedTcProvider> {
 
-	@Override
-	public int compare(WeightedTcProvider o1, WeightedTcProvider o2) {
-		int o1Weight = o1.getWeight();
-		int o2Weight = o2.getWeight();
-		if (o1Weight != o2Weight) {
-			return o2Weight - o1Weight;
-		}
-		return o1.getClass().toString().compareTo(o2.getClass().toString());
-	}
+    @Override
+    public int compare(WeightedTcProvider o1, WeightedTcProvider o2) {
+        int o1Weight = o1.getWeight();
+        int o2Weight = o2.getWeight();
+        if (o1Weight != o2Weight) {
+            return o2Weight - o1Weight;
+        }
+        return o1.getClass().toString().compareTo(o2.getClass().toString());
+    }
 }

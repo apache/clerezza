@@ -41,63 +41,63 @@ import org.junit.Test;
  * @author reto
  */
 public class TdbMGraphTest extends MGraphTest {
-	private static File tempFile;
-	final private UriRef MGRAPHNAME = new UriRef("http://text.example.org/");
-	static private TdbTcProvider tdbTcProvider;
+    private static File tempFile;
+    final private UriRef MGRAPHNAME = new UriRef("http://text.example.org/");
+    static private TdbTcProvider tdbTcProvider;
 
-	@BeforeClass
-	public static void setupDirectory() throws IOException {
-		tempFile = File.createTempFile("tdbtest", null);
-		tempFile.delete();
-		tempFile.mkdirs();
-		tdbTcProvider = new TdbTcProvider(tempFile);
-	}
+    @BeforeClass
+    public static void setupDirectory() throws IOException {
+        tempFile = File.createTempFile("tdbtest", null);
+        tempFile.delete();
+        tempFile.mkdirs();
+        tdbTcProvider = new TdbTcProvider(tempFile);
+    }
 
-	@AfterClass
-	public static void cleanUpDirectory() {
-		TdbTcProvider.delete(tempFile);
-	}
+    @AfterClass
+    public static void cleanUpDirectory() {
+        TdbTcProvider.delete(tempFile);
+    }
 
-	@After
-	public void cleanUpGraph() {
-		tdbTcProvider.deleteTripleCollection(MGRAPHNAME);
-	}
+    @After
+    public void cleanUpGraph() {
+        tdbTcProvider.deleteTripleCollection(MGRAPHNAME);
+    }
 
-	@Override
-	protected MGraph getEmptyMGraph() {
-		return tdbTcProvider.createMGraph(MGRAPHNAME);
-	}
+    @Override
+    protected MGraph getEmptyMGraph() {
+        return tdbTcProvider.createMGraph(MGRAPHNAME);
+    }
 
-	@Test
-	public void dateStorage() {
-		MGraph graph = getEmptyMGraph();
-		Date date = new Date(0);
-		LiteralFactory literalFactory = LiteralFactory.getInstance();
-		TypedLiteral dateLiteral = literalFactory.createTypedLiteral(date);
-		Triple triple = new TripleImpl(new BNode(), new UriRef("http://example.com/property"), dateLiteral);
-		graph.add(triple);
-		Assert.assertTrue(graph.contains(triple));
-	}
+    @Test
+    public void dateStorage() {
+        MGraph graph = getEmptyMGraph();
+        Date date = new Date(0);
+        LiteralFactory literalFactory = LiteralFactory.getInstance();
+        TypedLiteral dateLiteral = literalFactory.createTypedLiteral(date);
+        Triple triple = new TripleImpl(new BNode(), new UriRef("http://example.com/property"), dateLiteral);
+        graph.add(triple);
+        Assert.assertTrue(graph.contains(triple));
+    }
 
-	@Test
-	public void dateStorage2() {
-		MGraph graph = getEmptyMGraph();
-		Date date = new Date(0);
-		LiteralFactory literalFactory = LiteralFactory.getInstance();
-		TypedLiteral dateLiteral = literalFactory.createTypedLiteral(date);
-		System.out.println(dateLiteral);
-		UriRef property = new UriRef("http://example.com/property");
-		Triple triple = new TripleImpl(new BNode(), property, dateLiteral);
-		graph.add(triple);
+    @Test
+    public void dateStorage2() {
+        MGraph graph = getEmptyMGraph();
+        Date date = new Date(0);
+        LiteralFactory literalFactory = LiteralFactory.getInstance();
+        TypedLiteral dateLiteral = literalFactory.createTypedLiteral(date);
+        System.out.println(dateLiteral);
+        UriRef property = new UriRef("http://example.com/property");
+        Triple triple = new TripleImpl(new BNode(), property, dateLiteral);
+        graph.add(triple);
 
-		Triple tripleFromGraph = null;
-		Iterator<Triple> propertyTriples = graph.filter(null, property, dateLiteral);
-		if (propertyTriples.hasNext()) {
-			tripleFromGraph = propertyTriples.next();
-		} else {
-			Assert.assertTrue(false);
-		}
-		Assert.assertEquals(dateLiteral, tripleFromGraph.getObject());
-	}
+        Triple tripleFromGraph = null;
+        Iterator<Triple> propertyTriples = graph.filter(null, property, dateLiteral);
+        if (propertyTriples.hasNext()) {
+            tripleFromGraph = propertyTriples.next();
+        } else {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(dateLiteral, tripleFromGraph.getObject());
+    }
 
 }

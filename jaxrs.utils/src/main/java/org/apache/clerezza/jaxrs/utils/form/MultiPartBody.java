@@ -26,33 +26,33 @@ package org.apache.clerezza.jaxrs.utils.form;
  */
 public interface MultiPartBody extends ParameterCollection {
 
-	/**
-	 * @return the file parameter names in the order they appear in the message
-	 */
-	public abstract String[] getFileParameterNames();
+    /**
+     * @return the file parameter names in the order they appear in the message
+     */
+    public abstract String[] getFileParameterNames();
 
-	/**
-	 * @param name
-	 *            the name of the parameter
-	 * @return the values of the parameter
-	 */
-	public abstract FormFile[] getFormFileParameterValues(String name);
+    /**
+     * @param name
+     *            the name of the parameter
+     * @return the values of the parameter
+     */
+    public abstract FormFile[] getFormFileParameterValues(String name);
 
-	/**
-	 * @return all parameter names in the order they appear in the message
-	 */
-	public abstract String[] getParameterNames();
+    /**
+     * @return all parameter names in the order they appear in the message
+     */
+    public abstract String[] getParameterNames();
 
-	/**
-	 * @return the text parameter names in the order they appear in the message
-	 */
-	public abstract String[] getTextParameterNames();
+    /**
+     * @return the text parameter names in the order they appear in the message
+     */
+    public abstract String[] getTextParameterNames();
 
-	/**
-	 * @param name
-	 *            the name of the parameter
-	 * @return the values of the parameter
-	 */
-	public abstract String[] getTextParameterValues(String name);
+    /**
+     * @param name
+     *            the name of the parameter
+     * @return the values of the parameter
+     */
+    public abstract String[] getTextParameterValues(String name);
 
 }

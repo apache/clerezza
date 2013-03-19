@@ -27,24 +27,24 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class EntityAlreadyExistsException extends RuntimeException {
 
-	private UriRef entityName;
+    private UriRef entityName;
 
-	/**
-	 * creates an exception indicating that an entity with the specified name
-	 * already exists.
-	 * 
-	 * @param entityName the name of the entity which already exists
-	 */
-	public EntityAlreadyExistsException(UriRef entityName) {
-		super("An entity with this name already exists: "+entityName);
-		this.entityName = entityName;
-	}
+    /**
+     * creates an exception indicating that an entity with the specified name
+     * already exists.
+     * 
+     * @param entityName the name of the entity which already exists
+     */
+    public EntityAlreadyExistsException(UriRef entityName) {
+        super("An entity with this name already exists: "+entityName);
+        this.entityName = entityName;
+    }
 
-	/**
-	 * 
-	 * @return the name of the entity which already exists
-	 */
-	public UriRef getEntityName() {
-		return entityName;
-	}
+    /**
+     * 
+     * @return the name of the entity which already exists
+     */
+    public UriRef getEntityName() {
+        return entityName;
+    }
 }

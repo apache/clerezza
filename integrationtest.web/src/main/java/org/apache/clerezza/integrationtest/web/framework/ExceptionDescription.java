@@ -27,54 +27,54 @@ package org.apache.clerezza.integrationtest.web.framework;
  */
 public final class ExceptionDescription {
 
-	private final long timeInNanos;
-	private final TestThread testThread;
-	private final RuntimeException exception;
+    private final long timeInNanos;
+    private final TestThread testThread;
+    private final RuntimeException exception;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param timeInNanos
-	 *            The time the test iteration was running until the
-	 *            <code>RuntimeException</code> occurred.
-	 * @param testThread
-	 *            The TestThread that the exception occurred in.
-	 * @param exception
-	 *            The exception that occurred.
-	 */
-	public ExceptionDescription(long timeInNanos, TestThread testThread,
-			RuntimeException exception) {
+    /**
+     * Constructor.
+     * 
+     * @param timeInNanos
+     *            The time the test iteration was running until the
+     *            <code>RuntimeException</code> occurred.
+     * @param testThread
+     *            The TestThread that the exception occurred in.
+     * @param exception
+     *            The exception that occurred.
+     */
+    public ExceptionDescription(long timeInNanos, TestThread testThread,
+            RuntimeException exception) {
 
-		this.timeInNanos = timeInNanos;
-		this.testThread = testThread;
-		this.exception = exception;
-	}
+        this.timeInNanos = timeInNanos;
+        this.testThread = testThread;
+        this.exception = exception;
+    }
 
-	/**
-	 * Returns the time the test iteration was running until the exception
-	 * occurred.
-	 * 
-	 * @return the time in nano-seconds.
-	 */
-	public long getTimeInNanos() {
-		return timeInNanos;
-	}
+    /**
+     * Returns the time the test iteration was running until the exception
+     * occurred.
+     * 
+     * @return the time in nano-seconds.
+     */
+    public long getTimeInNanos() {
+        return timeInNanos;
+    }
 
-	/**
-	 * Returns the thread in which the exception occurred.
-	 * 
-	 * @return the thread instance.
-	 */
-	public TestThread getTestThread() {
-		return testThread;
-	}
+    /**
+     * Returns the thread in which the exception occurred.
+     * 
+     * @return the thread instance.
+     */
+    public TestThread getTestThread() {
+        return testThread;
+    }
 
-	/**
-	 * Returns the <code>RuntimeException</code> that occurred.
-	 * 
-	 * @return the exception instance.
-	 */
-	public RuntimeException getException() {
-		return exception;
-	}
+    /**
+     * Returns the <code>RuntimeException</code> that occurred.
+     * 
+     * @return the exception instance.
+     */
+    public RuntimeException getException() {
+        return exception;
+    }
 }

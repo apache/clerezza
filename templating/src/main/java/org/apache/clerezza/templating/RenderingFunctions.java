@@ -30,17 +30,17 @@ import java.util.Map;
  */
 public interface RenderingFunctions {
 
-	/**
-	 *
-	 * @return the function that is the outermost function of all access to values
-	 */
-	public RenderingFunction<Object, String> getDefaultFunction();
+    /**
+     *
+     * @return the function that is the outermost function of all access to values
+     */
+    public RenderingFunction<Object, String> getDefaultFunction();
 
-	/**
-	 *
-	 * @return a set of named functions to be used in templates to have values
-	 *         rendered in non default-ways
-	 */
-	public Map<String, RenderingFunction> getNamedFunctions();
+    /**
+     *
+     * @return a set of named functions to be used in templates to have values
+     *         rendered in non default-ways
+     */
+    public Map<String, RenderingFunction> getNamedFunctions();
 
 }

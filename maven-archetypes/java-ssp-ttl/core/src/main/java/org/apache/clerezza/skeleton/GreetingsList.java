@@ -63,39 +63,39 @@ import org.osgi.service.component.ComponentContext;
 @Path("/greeting/list")
 public class GreetingsList {
 
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private RenderletManager renderletManager;
 
-	@Reference
-	private ContentGraphProvider cgProvider;
+    @Reference
+    private ContentGraphProvider cgProvider;
 
-	public void activate(ComponentContext context) throws URISyntaxException {
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource(
-				"greeting-list-naked.ssp").toURI().toString()),
-				GREETINGS.GreetingList, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-	}
+    public void activate(ComponentContext context) throws URISyntaxException {
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(getClass().getResource(
+                "greeting-list-naked.ssp").toURI().toString()),
+                GREETINGS.GreetingList, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    }
 
-	@GET
-	public GraphNode list() {
-		TripleCollection resultGraph = new SimpleMGraph();
-		GraphNode result = new GraphNode(new BNode(), resultGraph);
-		RdfList list = new RdfList(result);
-		LockableMGraph contentGraph = cgProvider.getContentGraph();
-		Lock l = contentGraph.getLock().readLock();
-		l.lock();
-		try {
-			Iterator<Triple> greetings = contentGraph.filter(null, RDF.type, GREETINGS.Greeting);
-			while (greetings.hasNext()) {
-				list.add(greetings.next().getSubject());
-			}
-		} finally {
-			l.unlock();
-		}
-		result.addProperty(RDF.type, GREETINGS.GreetingList);
-		return result;
-	}
+    @GET
+    public GraphNode list() {
+        TripleCollection resultGraph = new SimpleMGraph();
+        GraphNode result = new GraphNode(new BNode(), resultGraph);
+        RdfList list = new RdfList(result);
+        LockableMGraph contentGraph = cgProvider.getContentGraph();
+        Lock l = contentGraph.getLock().readLock();
+        l.lock();
+        try {
+            Iterator<Triple> greetings = contentGraph.filter(null, RDF.type, GREETINGS.Greeting);
+            while (greetings.hasNext()) {
+                list.add(greetings.next().getSubject());
+            }
+        } finally {
+            l.unlock();
+        }
+        result.addProperty(RDF.type, GREETINGS.GreetingList);
+        return result;
+    }
 
 
 }

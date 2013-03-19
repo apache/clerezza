@@ -49,99 +49,99 @@ import org.slf4j.LoggerFactory;
 @Component
 @Service(value=TypePrioritizer.class)
 @References({
-	@Reference(name="systemGraph",
-		cardinality=ReferenceCardinality.MANDATORY_UNARY,
-		referenceInterface=LockableMGraph.class,
-		target=SystemConfig.SYSTEM_GRAPH_FILTER)})
+    @Reference(name="systemGraph",
+        cardinality=ReferenceCardinality.MANDATORY_UNARY,
+        referenceInterface=LockableMGraph.class,
+        target=SystemConfig.SYSTEM_GRAPH_FILTER)})
 public class TypePrioritizer {
-	public static final UriRef typePriorityListUri = new UriRef("urn:x-localinstance:/typePriorityList");
+    public static final UriRef typePriorityListUri = new UriRef("urn:x-localinstance:/typePriorityList");
 
-	private List<UriRef> typePriorityList;
-	private static final Logger log = LoggerFactory.getLogger(TypePrioritizer.class);
-	
-	LockableMGraph systemGraph;
+    private List<UriRef> typePriorityList;
+    private static final Logger log = LoggerFactory.getLogger(TypePrioritizer.class);
+    
+    LockableMGraph systemGraph;
 
-	protected void bindSystemGraph(LockableMGraph systemGraph) {
-		Lock l = systemGraph.getLock().readLock();
-		l.lock();
-		try {
-			List<Resource> rdfTypePriorityList = new RdfList(
-				 typePriorityListUri, systemGraph);
-			typePriorityList  = new ArrayList<UriRef>(rdfTypePriorityList.size());
-			for (Resource resource : rdfTypePriorityList) {
-				if (resource instanceof UriRef) {
-					typePriorityList.add((UriRef) resource);
-				} else {
-					log.warn("Type priority list contains a resource "
-							+ "that is not a uri, skipping.");
-				}
-			}
-		} finally {
-			l.unlock();
-		}
-		this.systemGraph = (LockableMGraph) systemGraph;
-	}
+    protected void bindSystemGraph(LockableMGraph systemGraph) {
+        Lock l = systemGraph.getLock().readLock();
+        l.lock();
+        try {
+            List<Resource> rdfTypePriorityList = new RdfList(
+                 typePriorityListUri, systemGraph);
+            typePriorityList  = new ArrayList<UriRef>(rdfTypePriorityList.size());
+            for (Resource resource : rdfTypePriorityList) {
+                if (resource instanceof UriRef) {
+                    typePriorityList.add((UriRef) resource);
+                } else {
+                    log.warn("Type priority list contains a resource "
+                            + "that is not a uri, skipping.");
+                }
+            }
+        } finally {
+            l.unlock();
+        }
+        this.systemGraph = (LockableMGraph) systemGraph;
+    }
 
-	protected void unbindSystemGraph(LockableMGraph systemGraph) {
-		typePriorityList = null;
-		this.systemGraph = null;
-	}
+    protected void unbindSystemGraph(LockableMGraph systemGraph) {
+        typePriorityList = null;
+        this.systemGraph = null;
+    }
 
-	/**
-	 *
-	 * @param rdfTypes the rdf types to be sorted
-	 * @return a sorted iterator of the types
-	 */
-	public Iterator<UriRef> iterate(final Collection<UriRef> rdfTypes) {
-		return new Iterator<UriRef>() {
-			final Set<UriRef> remaining = new HashSet<UriRef>(rdfTypes);
-			boolean rdfsResourceRemovedAndNotYetReturned = remaining.remove(RDFS.Resource);
-			final Iterator<UriRef> typePriorityIter = typePriorityList.iterator();
-			Iterator<UriRef> remainingIter = null;
-			UriRef next = prepareNext();
-			
-			private UriRef prepareNext() {
-				while (typePriorityIter.hasNext()) {
-					UriRef nextPriority = typePriorityIter.next();
-					if (remaining.contains(nextPriority)) {
-						remaining.remove(nextPriority);
-						return nextPriority;
-					}
-				}
-				if (remainingIter == null) {
-					remainingIter = remaining.iterator();
-				}
-				if (remainingIter.hasNext()) {
-					return remainingIter.next();
-				} else {
-					if (rdfsResourceRemovedAndNotYetReturned) {
-						rdfsResourceRemovedAndNotYetReturned = false;
-						return RDFS.Resource;
-					} else {
-						return null;
-					}
-				}
-			}
+    /**
+     *
+     * @param rdfTypes the rdf types to be sorted
+     * @return a sorted iterator of the types
+     */
+    public Iterator<UriRef> iterate(final Collection<UriRef> rdfTypes) {
+        return new Iterator<UriRef>() {
+            final Set<UriRef> remaining = new HashSet<UriRef>(rdfTypes);
+            boolean rdfsResourceRemovedAndNotYetReturned = remaining.remove(RDFS.Resource);
+            final Iterator<UriRef> typePriorityIter = typePriorityList.iterator();
+            Iterator<UriRef> remainingIter = null;
+            UriRef next = prepareNext();
+            
+            private UriRef prepareNext() {
+                while (typePriorityIter.hasNext()) {
+                    UriRef nextPriority = typePriorityIter.next();
+                    if (remaining.contains(nextPriority)) {
+                        remaining.remove(nextPriority);
+                        return nextPriority;
+                    }
+                }
+                if (remainingIter == null) {
+                    remainingIter = remaining.iterator();
+                }
+                if (remainingIter.hasNext()) {
+                    return remainingIter.next();
+                } else {
+                    if (rdfsResourceRemovedAndNotYetReturned) {
+                        rdfsResourceRemovedAndNotYetReturned = false;
+                        return RDFS.Resource;
+                    } else {
+                        return null;
+                    }
+                }
+            }
 
-			@Override
-			public boolean hasNext() {
-				return next != null;
-			}
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
 
-			@Override
-			public UriRef next() {
-				if (next == null) {
-					throw new NoSuchElementException();
-				}
-				UriRef current = next;
-				next = prepareNext();
-				return current;
-			}
+            @Override
+            public UriRef next() {
+                if (next == null) {
+                    throw new NoSuchElementException();
+                }
+                UriRef current = next;
+                next = prepareNext();
+                return current;
+            }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-		};
-	}
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+    }
 }

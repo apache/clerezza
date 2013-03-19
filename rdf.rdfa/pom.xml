@@ -23,7 +23,7 @@
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
         <version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+        <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.rdfa</artifactId>
@@ -46,8 +46,8 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-        	<version>0.13-SNAPSHOT</version>
-		</dependency>
+            <version>0.13-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>net.rootdev</groupId>
             <artifactId>java-rdfa</artifactId>
@@ -64,8 +64,8 @@
             <version>1.2.0</version>
         </dependency>
         <!-- see http://weblogs.java.net/blog/kohsuke/archive/2009/03/my_project_of_t.html
-		not in central repo
-		<dependency>
+        not in central repo
+        <dependency>
             <groupId>org.kohsuke.metainf-services</groupId>
             <artifactId>metainf-services</artifactId>
             <version>1.1</version>

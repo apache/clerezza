@@ -32,18 +32,18 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public interface ParsingProvider {
 
-	/**
-	 * Parses a stream as the specified RDF-format. This method will be invoked
-	 * for a supported format, a format is considered as supported if the part
-	 * before a ';'-character in the <code>formatIdentifier</code> matches
-	 * a <code>SupportedFormat</code> annotation of the implementing class.
-	 *
-	 * @param target the mutable graph to which the read triples shall be added
-	 * @param serializedGraph the stream from which the serialized graph is read
-	 * @param formatIdentifier a String identifying the format
-	 * @param baseUri the baseUri for interpreting relative uris, may be null
-	 */
-	void parse(MGraph target, InputStream serializedGraph,
-			String formatIdentifier, UriRef baseUri);
+    /**
+     * Parses a stream as the specified RDF-format. This method will be invoked
+     * for a supported format, a format is considered as supported if the part
+     * before a ';'-character in the <code>formatIdentifier</code> matches
+     * a <code>SupportedFormat</code> annotation of the implementing class.
+     *
+     * @param target the mutable graph to which the read triples shall be added
+     * @param serializedGraph the stream from which the serialized graph is read
+     * @param formatIdentifier a String identifying the format
+     * @param baseUri the baseUri for interpreting relative uris, may be null
+     */
+    void parse(MGraph target, InputStream serializedGraph,
+            String formatIdentifier, UriRef baseUri);
 
 }

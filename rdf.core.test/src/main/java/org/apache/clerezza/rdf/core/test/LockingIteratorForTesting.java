@@ -30,50 +30,50 @@ import org.apache.clerezza.rdf.core.Triple;
  */
 class LockingIteratorForTesting implements Iterator<Triple> {
 
-	private Iterator<Triple> base;
-	private Lock readLock;
-	private Lock writeLock;
-	private ReentrantReadWriteLock lock;
+    private Iterator<Triple> base;
+    private Lock readLock;
+    private Lock writeLock;
+    private ReentrantReadWriteLock lock;
 
-	public LockingIteratorForTesting(Iterator<Triple> iterator, ReentrantReadWriteLock lock) {
-		base = iterator;
-		readLock = lock.readLock();
-		writeLock = lock.writeLock();
-		this.lock = lock;
-	}
+    public LockingIteratorForTesting(Iterator<Triple> iterator, ReentrantReadWriteLock lock) {
+        base = iterator;
+        readLock = lock.readLock();
+        writeLock = lock.writeLock();
+        this.lock = lock;
+    }
 
-	@Override
-	public boolean hasNext() {
-		LockChecker.checkIfReadLocked(lock);
-		readLock.lock();
-		try {
-			return base.hasNext();
-		} finally {
-			readLock.unlock();
-		}
-	}
+    @Override
+    public boolean hasNext() {
+        LockChecker.checkIfReadLocked(lock);
+        readLock.lock();
+        try {
+            return base.hasNext();
+        } finally {
+            readLock.unlock();
+        }
+    }
 
-	@Override
-	public Triple next() {
-		LockChecker.checkIfReadLocked(lock);
-		readLock.lock();
-		try {
-			return base.next();
-		} finally {
-			readLock.unlock();
-		}
-	}
+    @Override
+    public Triple next() {
+        LockChecker.checkIfReadLocked(lock);
+        readLock.lock();
+        try {
+            return base.next();
+        } finally {
+            readLock.unlock();
+        }
+    }
 
-	@Override
-	public void remove() {
-		LockChecker.checkIfWriteLocked(lock);
-		writeLock.lock();
-		try {
-			base.remove();
-		} finally {
-			writeLock.unlock();
-		}
-	}
+    @Override
+    public void remove() {
+        LockChecker.checkIfWriteLocked(lock);
+        writeLock.lock();
+        try {
+            base.remove();
+        } finally {
+            writeLock.unlock();
+        }
+    }
 
 
 }

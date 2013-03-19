@@ -63,26 +63,26 @@ import java.io.OutputStream;
  */
 public interface CertSerialisation {
 
-	/**
-	 * @return the length in bytes of this serialisation
-	 */
-	int getLength();
+    /**
+     * @return the length in bytes of this serialisation
+     */
+    int getLength();
 
-	/**
-	 * @return the mime type of this serialisation
-	 */
-	String getMimeType();
+    /**
+     * @return the mime type of this serialisation
+     */
+    String getMimeType();
 
-	/**
-	 * @return the content as an array of bytes, for frameworks that don't take streams
-	 */
-	byte[] getContent();
+    /**
+     * @return the content as an array of bytes, for frameworks that don't take streams
+     */
+    byte[] getContent();
 
 
-	/**
-	 * @param out the output stream to write this serialisation too
-	 */
-	void writeTo(OutputStream out) throws IOException;
+    /**
+     * @param out the output stream to write this serialisation too
+     */
+    void writeTo(OutputStream out) throws IOException;
 
 
 }

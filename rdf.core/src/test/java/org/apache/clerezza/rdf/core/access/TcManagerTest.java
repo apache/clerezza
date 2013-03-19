@@ -39,81 +39,81 @@ import static org.junit.Assert.*;
  */
 public class TcManagerTest {
 
-	public static UriRef uriRefAHeavy = new UriRef("http://example.org/aHeavy");
-	public static UriRef uriRefB = new UriRef("http://example.org/b");
-	;
-	public static final UriRef uriRefA = new UriRef("http://example.org/a");
-	public static final UriRef uriRefA1 = new UriRef("http://example.org/a1");
-	private TcManager graphAccess;
-	private final WeightedA weightedA = new WeightedA();
-	private final WeightedA1 weightedA1 = new WeightedA1();
-	private WeightedTcProvider weightedBlight = new WeightedBlight();
+    public static UriRef uriRefAHeavy = new UriRef("http://example.org/aHeavy");
+    public static UriRef uriRefB = new UriRef("http://example.org/b");
+    ;
+    public static final UriRef uriRefA = new UriRef("http://example.org/a");
+    public static final UriRef uriRefA1 = new UriRef("http://example.org/a1");
+    private TcManager graphAccess;
+    private final WeightedA weightedA = new WeightedA();
+    private final WeightedA1 weightedA1 = new WeightedA1();
+    private WeightedTcProvider weightedBlight = new WeightedBlight();
 
-	@Before
-	public void setUp() {
-		graphAccess = TcManager.getInstance();
-		graphAccess.bindWeightedTcProvider(weightedA);
-		graphAccess.bindWeightedTcProvider(weightedA1);
-		graphAccess.bindWeightedTcProvider(weightedBlight);
-	}
+    @Before
+    public void setUp() {
+        graphAccess = TcManager.getInstance();
+        graphAccess.bindWeightedTcProvider(weightedA);
+        graphAccess.bindWeightedTcProvider(weightedA1);
+        graphAccess.bindWeightedTcProvider(weightedBlight);
+    }
 
-	@After
-	public void tearDown() {
-		graphAccess = TcManager.getInstance();
-		graphAccess.unbindWeightedTcProvider(weightedA);
-		graphAccess.unbindWeightedTcProvider(weightedA1);
-		graphAccess.unbindWeightedTcProvider(weightedBlight);
-	}
+    @After
+    public void tearDown() {
+        graphAccess = TcManager.getInstance();
+        graphAccess.unbindWeightedTcProvider(weightedA);
+        graphAccess.unbindWeightedTcProvider(weightedA1);
+        graphAccess.unbindWeightedTcProvider(weightedBlight);
+    }
 
-	@Test
-	public void getGraphFromA() {
-		Graph graphA = graphAccess.getGraph(uriRefA);
-		Iterator<Triple> iterator = graphA.iterator();
-		assertEquals(new TripleImpl(uriRefA, uriRefA, uriRefA), iterator.next());
-		assertFalse(iterator.hasNext());
-		TripleCollection triplesA = graphAccess.getTriples(uriRefA);
-		iterator = triplesA.iterator();
-		assertEquals(new TripleImpl(uriRefA, uriRefA, uriRefA), iterator.next());
-		assertFalse(iterator.hasNext());
-	}
+    @Test
+    public void getGraphFromA() {
+        Graph graphA = graphAccess.getGraph(uriRefA);
+        Iterator<Triple> iterator = graphA.iterator();
+        assertEquals(new TripleImpl(uriRefA, uriRefA, uriRefA), iterator.next());
+        assertFalse(iterator.hasNext());
+        TripleCollection triplesA = graphAccess.getTriples(uriRefA);
+        iterator = triplesA.iterator();
+        assertEquals(new TripleImpl(uriRefA, uriRefA, uriRefA), iterator.next());
+        assertFalse(iterator.hasNext());
+    }
 
-	@Test
-	public void getGraphFromB() {
-		Graph graphA = graphAccess.getGraph(uriRefB);
-		Iterator<Triple> iterator = graphA.iterator();
-		assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
-		assertFalse(iterator.hasNext());
-		TripleCollection triplesA = graphAccess.getTriples(uriRefB);
-		iterator = triplesA.iterator();
-		assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
-		assertFalse(iterator.hasNext());
-	}
+    @Test
+    public void getGraphFromB() {
+        Graph graphA = graphAccess.getGraph(uriRefB);
+        Iterator<Triple> iterator = graphA.iterator();
+        assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
+        assertFalse(iterator.hasNext());
+        TripleCollection triplesA = graphAccess.getTriples(uriRefB);
+        iterator = triplesA.iterator();
+        assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
+        assertFalse(iterator.hasNext());
+    }
 
-	@Test
-	public void getGraphFromAAfterUnbinding() {
-		graphAccess.unbindWeightedTcProvider(weightedA);
-		Graph graphA = graphAccess.getGraph(uriRefA);
-		Iterator<Triple> iterator = graphA.iterator();
-		assertEquals(new TripleImpl(uriRefA1, uriRefA1, uriRefA1), iterator.next());
-		assertFalse(iterator.hasNext());
-		TripleCollection triplesA = graphAccess.getTriples(uriRefA);
-		iterator = triplesA.iterator();
-		assertEquals(new TripleImpl(uriRefA1, uriRefA1, uriRefA1), iterator.next());
-		assertFalse(iterator.hasNext());
-	}
+    @Test
+    public void getGraphFromAAfterUnbinding() {
+        graphAccess.unbindWeightedTcProvider(weightedA);
+        Graph graphA = graphAccess.getGraph(uriRefA);
+        Iterator<Triple> iterator = graphA.iterator();
+        assertEquals(new TripleImpl(uriRefA1, uriRefA1, uriRefA1), iterator.next());
+        assertFalse(iterator.hasNext());
+        TripleCollection triplesA = graphAccess.getTriples(uriRefA);
+        iterator = triplesA.iterator();
+        assertEquals(new TripleImpl(uriRefA1, uriRefA1, uriRefA1), iterator.next());
+        assertFalse(iterator.hasNext());
+    }
 
-	@Test
-	public void getGraphFromAWithHeavy() {
-		final WeightedAHeavy weightedAHeavy = new WeightedAHeavy();
-		graphAccess.bindWeightedTcProvider(weightedAHeavy);
-		Graph graphA = graphAccess.getGraph(uriRefA);
-		Iterator<Triple> iterator = graphA.iterator();
-		assertEquals(new TripleImpl(uriRefAHeavy, uriRefAHeavy, uriRefAHeavy), iterator.next());
-		assertFalse(iterator.hasNext());
-		TripleCollection triplesA = graphAccess.getTriples(uriRefA);
-		iterator = triplesA.iterator();
-		assertEquals(new TripleImpl(uriRefAHeavy, uriRefAHeavy, uriRefAHeavy), iterator.next());
-		assertFalse(iterator.hasNext());
-		graphAccess.unbindWeightedTcProvider(weightedAHeavy);
-	}
+    @Test
+    public void getGraphFromAWithHeavy() {
+        final WeightedAHeavy weightedAHeavy = new WeightedAHeavy();
+        graphAccess.bindWeightedTcProvider(weightedAHeavy);
+        Graph graphA = graphAccess.getGraph(uriRefA);
+        Iterator<Triple> iterator = graphA.iterator();
+        assertEquals(new TripleImpl(uriRefAHeavy, uriRefAHeavy, uriRefAHeavy), iterator.next());
+        assertFalse(iterator.hasNext());
+        TripleCollection triplesA = graphAccess.getTriples(uriRefA);
+        iterator = triplesA.iterator();
+        assertEquals(new TripleImpl(uriRefAHeavy, uriRefAHeavy, uriRefAHeavy), iterator.next());
+        assertFalse(iterator.hasNext());
+        graphAccess.unbindWeightedTcProvider(weightedAHeavy);
+    }
 }

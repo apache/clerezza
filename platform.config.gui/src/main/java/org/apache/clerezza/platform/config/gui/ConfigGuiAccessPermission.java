@@ -29,38 +29,38 @@ import org.apache.clerezza.permissiondescriptions.PermissionInfo;
  * @author tio
  */
 @PermissionInfo(value="Config GUI Access Permission", description="Grants access " +
-	"to the Config GUI")
+    "to the Config GUI")
 public class ConfigGuiAccessPermission extends Permission{
 
-	public ConfigGuiAccessPermission() {
-		super("Config GUI Access permission");
-	}
-	/**
-	 *
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public ConfigGuiAccessPermission(String target, String actions) {
-		super("Config GUI Access permission");
-	}
+    public ConfigGuiAccessPermission() {
+        super("Config GUI Access permission");
+    }
+    /**
+     *
+     * @param target ignored
+     * @param action ignored
+     */
+    public ConfigGuiAccessPermission(String target, String actions) {
+        super("Config GUI Access permission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 2177987;
-	}
+    @Override
+    public int hashCode() {
+        return 2177987;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 }

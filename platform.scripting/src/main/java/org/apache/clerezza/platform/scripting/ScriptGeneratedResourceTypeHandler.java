@@ -58,71 +58,71 @@ import org.apache.felix.scr.annotations.Service;
 @SupportedTypes(types = { "http://clerezza.org/2009/07/script#ScriptGeneratedResource" }, prioritize = true)
 public class ScriptGeneratedResourceTypeHandler {
 
-	private static final Logger logger =
-			LoggerFactory.getLogger(ScriptGeneratedResourceTypeHandler.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(ScriptGeneratedResourceTypeHandler.class);
 
         @Reference
-	private ContentGraphProvider cgProvider;
+    private ContentGraphProvider cgProvider;
 
         @Reference
-	private ScriptExecution scriptExecution;
+    private ScriptExecution scriptExecution;
 
-	/**
-	 * Handles HTTP GET requests for resources of type ScriptGeneratedResource.
-	 *
-	 * The generated resource is either a GraphNode or a response with
-	 * the media type specified by the producedType property
-	 * of the associated script.
-	 *
-	 * GraphNodes can be rendered by Renderlets registered for the type
-	 * of the GraphNode.
-	 *
-	 * {@code UriInfo}, {@code Request}, and {@code HttpHeaders} are provided
-	 * to the generating script for use in execution. In a script, they are
-	 * accessible under the names: uriInfo, request, and httpHeaders respectively.
-	 *
-	 * @param uriInfo
-	 *			info about the request URI.
-	 * @param request
-	 *			helper for request processing
-	 * @param httpHeaders
-	 *			provides access to HTTP header information
-	 * 
-	 * @return	The generated resource. If no script is found, a NOT FOUND (404)
-	 *			response is returned.
-	 *
-	 * @see org.apache.clerezza.rdf.ontologies.SCRIPT#producedType
-	 * @see org.apache.clerezza.platform.typerendering.Renderlet
-	 */
-	@GET
-	public Object get(@Context UriInfo uriInfo, @Context Request request,
-			@Context HttpHeaders httpHeaders) {
-		TrailingSlash.enforceNotPresent(uriInfo);
+    /**
+     * Handles HTTP GET requests for resources of type ScriptGeneratedResource.
+     *
+     * The generated resource is either a GraphNode or a response with
+     * the media type specified by the producedType property
+     * of the associated script.
+     *
+     * GraphNodes can be rendered by Renderlets registered for the type
+     * of the GraphNode.
+     *
+     * {@code UriInfo}, {@code Request}, and {@code HttpHeaders} are provided
+     * to the generating script for use in execution. In a script, they are
+     * accessible under the names: uriInfo, request, and httpHeaders respectively.
+     *
+     * @param uriInfo
+     *            info about the request URI.
+     * @param request
+     *            helper for request processing
+     * @param httpHeaders
+     *            provides access to HTTP header information
+     * 
+     * @return    The generated resource. If no script is found, a NOT FOUND (404)
+     *            response is returned.
+     *
+     * @see org.apache.clerezza.rdf.ontologies.SCRIPT#producedType
+     * @see org.apache.clerezza.platform.typerendering.Renderlet
+     */
+    @GET
+    public Object get(@Context UriInfo uriInfo, @Context Request request,
+            @Context HttpHeaders httpHeaders) {
+        TrailingSlash.enforceNotPresent(uriInfo);
 
-		UriRef requestUri = new UriRef(uriInfo.getAbsolutePath().toString());
-		Iterator<Triple> it = cgProvider.getContentGraph().
-				filter(requestUri, SCRIPT.scriptSource, null);
+        UriRef requestUri = new UriRef(uriInfo.getAbsolutePath().toString());
+        Iterator<Triple> it = cgProvider.getContentGraph().
+                filter(requestUri, SCRIPT.scriptSource, null);
 
-		if(it.hasNext()) {
-			NonLiteral scriptResource = (NonLiteral) it.next().getObject();
-			try {
-				Bindings bindings = new SimpleBindings();
-				bindings.put("uriInfo", uriInfo);
-				bindings.put("request", request);
-				bindings.put("httpHeaders", httpHeaders);
-				return scriptExecution.execute(scriptResource, bindings);
-			} catch (ScriptException ex) {
-				logger.warn("Exception while executing script {}",
-						((UriRef) scriptResource).getUnicodeString());
-				throw new WebApplicationException(
-						Response.status(Status.INTERNAL_SERVER_ERROR).
-						entity(ex.getMessage()).build());
-			}
-		}
+        if(it.hasNext()) {
+            NonLiteral scriptResource = (NonLiteral) it.next().getObject();
+            try {
+                Bindings bindings = new SimpleBindings();
+                bindings.put("uriInfo", uriInfo);
+                bindings.put("request", request);
+                bindings.put("httpHeaders", httpHeaders);
+                return scriptExecution.execute(scriptResource, bindings);
+            } catch (ScriptException ex) {
+                logger.warn("Exception while executing script {}",
+                        ((UriRef) scriptResource).getUnicodeString());
+                throw new WebApplicationException(
+                        Response.status(Status.INTERNAL_SERVER_ERROR).
+                        entity(ex.getMessage()).build());
+            }
+        }
 
-		logger.warn("There is no script associated with {}",
-				requestUri.getUnicodeString());
-		return Response.status(Status.NOT_FOUND).build();
-	}
+        logger.warn("There is no script associated with {}",
+                requestUri.getUnicodeString());
+        return Response.status(Status.NOT_FOUND).build();
+    }
 
 }

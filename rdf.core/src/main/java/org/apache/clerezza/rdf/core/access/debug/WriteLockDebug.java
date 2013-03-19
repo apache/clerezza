@@ -29,61 +29,61 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  */
 public class WriteLockDebug extends WriteLock {
 
-	private ReentrantReadWriteLockTracker lock;
-	private WriteLock writeLock;
-	private StackTraceElement[] stackTrace;
+    private ReentrantReadWriteLockTracker lock;
+    private WriteLock writeLock;
+    private StackTraceElement[] stackTrace;
 
-	public WriteLockDebug(ReentrantReadWriteLockTracker lock) {
-		super(lock);
-		this.lock = lock;
-		this.writeLock = lock.realWriteLock();
-	}
+    public WriteLockDebug(ReentrantReadWriteLockTracker lock) {
+        super(lock);
+        this.lock = lock;
+        this.writeLock = lock.realWriteLock();
+    }
 
-	@Override
-	public int getHoldCount() {
-		return writeLock.getHoldCount();
-	}
+    @Override
+    public int getHoldCount() {
+        return writeLock.getHoldCount();
+    }
 
-	@Override
-	public boolean isHeldByCurrentThread() {
-		return writeLock.isHeldByCurrentThread();
-	}
+    @Override
+    public boolean isHeldByCurrentThread() {
+        return writeLock.isHeldByCurrentThread();
+    }
 
-	@Override
-	public void lock() {
-		writeLock.lock();
-		stackTrace = Thread.currentThread().getStackTrace();
-	}
+    @Override
+    public void lock() {
+        writeLock.lock();
+        stackTrace = Thread.currentThread().getStackTrace();
+    }
 
-	@Override
-	public void lockInterruptibly() throws InterruptedException {
-		writeLock.lockInterruptibly();
-	}
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        writeLock.lockInterruptibly();
+    }
 
-	@Override
-	public Condition newCondition() {
-		return writeLock.newCondition();
-	}
+    @Override
+    public Condition newCondition() {
+        return writeLock.newCondition();
+    }
 
-	@Override
-	public boolean tryLock() {
-		return writeLock.tryLock();
-	}
+    @Override
+    public boolean tryLock() {
+        return writeLock.tryLock();
+    }
 
-	@Override
-	public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
-		return writeLock.tryLock(timeout, unit);
-	}
+    @Override
+    public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
+        return writeLock.tryLock(timeout, unit);
+    }
 
-	@Override
-	public void unlock() {
-		writeLock.unlock();
-		stackTrace = null;
-	}
+    @Override
+    public void unlock() {
+        writeLock.unlock();
+        stackTrace = null;
+    }
 
-	public StackTraceElement[] getStackTrace() {
-		return stackTrace;
-	}
+    public StackTraceElement[] getStackTrace() {
+        return stackTrace;
+    }
 
 
 }

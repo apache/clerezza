@@ -21,7 +21,7 @@
 -->
 
 <sitemap>
-	<section>
+    <section>
         <name>Documentation</name>
         <page>usage-user.xhtml</page>
         <page>usage-role.xhtml</page>

@@ -51,149 +51,149 @@ import org.slf4j.LoggerFactory;
 @Component(metatype = true, enabled = true)
 public class SshShell {
 
-	@Property(intValue = 8022, description = "The port on which the ssh service listens)")
-	public static final String PORT = "port";
-	@Reference
-	private ShellFactory shellFactory;
-	@Reference
-	AuthenticationChecker authenticationChecker;
-	public int port = 8022;
-	private SshServer sshd;
-	private static ThreadLocal<Subject> currentSubject = new ThreadLocal<Subject>();
-	private static Logger log = LoggerFactory.getLogger(SshShell.class);
+    @Property(intValue = 8022, description = "The port on which the ssh service listens)")
+    public static final String PORT = "port";
+    @Reference
+    private ShellFactory shellFactory;
+    @Reference
+    AuthenticationChecker authenticationChecker;
+    public int port = 8022;
+    private SshServer sshd;
+    private static ThreadLocal<Subject> currentSubject = new ThreadLocal<Subject>();
+    private static Logger log = LoggerFactory.getLogger(SshShell.class);
 
-	public SshShell() {
-		sshd = SshServer.setUpDefaultServer();
-		sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("hostkey.ser"));
-		sshd.setPasswordAuthenticator(new MyPasswordAuthenticator());
-	}
+    public SshShell() {
+        sshd = SshServer.setUpDefaultServer();
+        sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("hostkey.ser"));
+        sshd.setPasswordAuthenticator(new MyPasswordAuthenticator());
+    }
 
-	protected void activate(ComponentContext cc) throws IOException {
-		port = (Integer) cc.getProperties().get(PORT);
-		sshd.setPort(port);
-		sshd.setShellFactory(new Factory<Command>() {
+    protected void activate(ComponentContext cc) throws IOException {
+        port = (Integer) cc.getProperties().get(PORT);
+        sshd.setPort(port);
+        sshd.setShellFactory(new Factory<Command>() {
 
-			@Override
-			public Command create() {
+            @Override
+            public Command create() {
 
-				return new Command() {
+                return new Command() {
 
-					private InputStream in;
-					private OutputStream out;
-					private Shell shell;
-					private ExitCallback ec;
+                    private InputStream in;
+                    private OutputStream out;
+                    private Shell shell;
+                    private ExitCallback ec;
 
-					@Override
-					public void setInputStream(InputStream in) {
-						this.in = in;
-					}
+                    @Override
+                    public void setInputStream(InputStream in) {
+                        this.in = in;
+                    }
 
-					@Override
-					public void setOutputStream(OutputStream out) {
-						this.out = out;
-					}
+                    @Override
+                    public void setOutputStream(OutputStream out) {
+                        this.out = out;
+                    }
 
-					@Override
-					public void setErrorStream(OutputStream out) {
-					}
+                    @Override
+                    public void setErrorStream(OutputStream out) {
+                    }
 
-					@Override
-					public void setExitCallback(ExitCallback ec) {
-						this.ec = ec;
-					}
+                    @Override
+                    public void setExitCallback(ExitCallback ec) {
+                        this.ec = ec;
+                    }
 
-					@Override
-					public void start(Environment e) throws IOException {
+                    @Override
+                    public void start(Environment e) throws IOException {
 
-						final OutputStream newLineWrapperStream = new OutputStream() {
+                        final OutputStream newLineWrapperStream = new OutputStream() {
 
-							@Override
-							public void write(int b) throws IOException {
-								if (b == '\n') {
-									out.write('\r');
-									out.write('\n');
-								} else {
-									out.write(b);
-								}
-							}
+                            @Override
+                            public void write(int b) throws IOException {
+                                if (b == '\n') {
+                                    out.write('\r');
+                                    out.write('\n');
+                                } else {
+                                    out.write(b);
+                                }
+                            }
 
-							@Override
-							public void flush() throws IOException {
-								out.flush();
-							}
+                            @Override
+                            public void flush() throws IOException {
+                                out.flush();
+                            }
 
-							@Override
-							public void close() throws IOException {
-								out.close();
-							}
-						};
-						Subject subject = currentSubject.get();
-						log.debug("doing as {}", subject);
-						try {
-							Subject.doAsPrivileged(subject, new PrivilegedExceptionAction<Object>() {
+                            @Override
+                            public void close() throws IOException {
+                                out.close();
+                            }
+                        };
+                        Subject subject = currentSubject.get();
+                        log.debug("doing as {}", subject);
+                        try {
+                            Subject.doAsPrivileged(subject, new PrivilegedExceptionAction<Object>() {
 
-								@Override
-								public Object run() throws Exception {
-									shell = shellFactory.createShell(in, newLineWrapperStream);
-									shell.addTerminationListener(new Shell.TerminationListener() {
+                                @Override
+                                public Object run() throws Exception {
+                                    shell = shellFactory.createShell(in, newLineWrapperStream);
+                                    shell.addTerminationListener(new Shell.TerminationListener() {
 
-										public void terminated() {
-											ec.onExit(0);
-										}
+                                        public void terminated() {
+                                            ec.onExit(0);
+                                        }
 
-									});
-									shell.start();
-									return null;
-								}
-							}, null);
-						} catch (PrivilegedActionException ex) {
-							Throwable cause = ex.getCause();
-							if (cause instanceof RuntimeException) {
-								throw (RuntimeException) cause;
-							} else {
-								throw new RuntimeException(cause);
-							}
-						}
+                                    });
+                                    shell.start();
+                                    return null;
+                                }
+                            }, null);
+                        } catch (PrivilegedActionException ex) {
+                            Throwable cause = ex.getCause();
+                            if (cause instanceof RuntimeException) {
+                                throw (RuntimeException) cause;
+                            } else {
+                                throw new RuntimeException(cause);
+                            }
+                        }
 
-					}
+                    }
 
-					@Override
-					public void destroy() {
-						if (shell != null) {
-							shell.stop();
-						}
-						shell = null;
-					}
-				};
-			}
-		});
+                    @Override
+                    public void destroy() {
+                        if (shell != null) {
+                            shell.stop();
+                        }
+                        shell = null;
+                    }
+                };
+            }
+        });
 
-		sshd.start();
-	}
+        sshd.start();
+    }
 
-	protected void deactivate(ComponentContext cc) throws Exception {
-		sshd.stop();
-	}
+    protected void deactivate(ComponentContext cc) throws Exception {
+        sshd.stop();
+    }
 
-	private class MyPasswordAuthenticator implements PasswordAuthenticator {
+    private class MyPasswordAuthenticator implements PasswordAuthenticator {
 
-		public MyPasswordAuthenticator() {
-		}
+        public MyPasswordAuthenticator() {
+        }
 
-		@Override
-		public boolean authenticate(String userName, String password, ServerSession ss) {
-			log.debug("Authenticating {}, {}.", userName, password);
-			try {
-				if (authenticationChecker.authenticate(userName, password)) {
-					Subject subject = UserUtil.createSubject(userName);
-					currentSubject.set(subject);
-					return true;
-				} else {
-					return false;
-				}
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
+        @Override
+        public boolean authenticate(String userName, String password, ServerSession ss) {
+            log.debug("Authenticating {}, {}.", userName, password);
+            try {
+                if (authenticationChecker.authenticate(userName, password)) {
+                    Subject subject = UserUtil.createSubject(userName);
+                    currentSubject.set(subject);
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

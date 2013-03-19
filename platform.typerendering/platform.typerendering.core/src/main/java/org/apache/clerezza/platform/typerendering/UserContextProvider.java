@@ -29,20 +29,20 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public interface UserContextProvider {
 
-	/**
-	 * Returns a <code>GraphNode</code> containing user context information in
-	 * addition to the information already existing in the provided
-	 * <code>GraphNode</code>.
-	 * The information previously existing in the provided <code>GraphNode</code>
-	 * are not changed by this method.
-	 * The method may add the context information directly to the provided
-	 * <code>GraphNode</code> or create a new <code>GraphNode</code> instance,
-	 * in the latter the returned GraphNode must be modifiable.
-	 * In both cases the resulting <code>GraphNode</code> is returned by the
-	 * method.
-	 * 
-	 * @param node
-	 * @return The GraphNode with additional user context information
-	 */
-	public GraphNode addUserContext(GraphNode node);
+    /**
+     * Returns a <code>GraphNode</code> containing user context information in
+     * addition to the information already existing in the provided
+     * <code>GraphNode</code>.
+     * The information previously existing in the provided <code>GraphNode</code>
+     * are not changed by this method.
+     * The method may add the context information directly to the provided
+     * <code>GraphNode</code> or create a new <code>GraphNode</code> instance,
+     * in the latter the returned GraphNode must be modifiable.
+     * In both cases the resulting <code>GraphNode</code> is returned by the
+     * method.
+     * 
+     * @param node
+     * @return The GraphNode with additional user context information
+     */
+    public GraphNode addUserContext(GraphNode node);
 }

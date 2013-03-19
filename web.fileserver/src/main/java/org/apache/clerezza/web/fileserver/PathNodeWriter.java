@@ -48,50 +48,50 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 @Provider
 public class PathNodeWriter implements MessageBodyWriter<PathNode> {
 
-	@Property(value="600", label="Max-Age", description="Specifies the value of the max-age field"
-		+ "set in the cache-control header, as per RFC 2616 this is a number of "
-		+ "seconds")
-	public static final String MAX_AGE = "max-age";
+    @Property(value="600", label="Max-Age", description="Specifies the value of the max-age field"
+        + "set in the cache-control header, as per RFC 2616 this is a number of "
+        + "seconds")
+    public static final String MAX_AGE = "max-age";
 
-	private final Logger logger = LoggerFactory.getLogger(PathNodeWriter.class);
-	private String cacheControlHeaderValue;
+    private final Logger logger = LoggerFactory.getLogger(PathNodeWriter.class);
+    private String cacheControlHeaderValue;
 
-	protected void activate(ComponentContext context) {
-		cacheControlHeaderValue = "max-age="+(String) context.getProperties().get(MAX_AGE);
-	}
+    protected void activate(ComponentContext context) {
+        cacheControlHeaderValue = "max-age="+(String) context.getProperties().get(MAX_AGE);
+    }
 
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		return PathNode.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+        return PathNode.class.isAssignableFrom(type);
+    }
 
-	@Override
-	public long getSize(PathNode t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		return t.getLength();
-	}
+    @Override
+    public long getSize(PathNode t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+        return t.getLength();
+    }
 
-	@Override
-	public void writeTo(PathNode t, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders,
-			OutputStream entityStream) throws IOException, WebApplicationException {
-		logger.debug("Invoked with media type: {}", mediaType);
-		logger.debug("Invoked with pathnode: {}", t);
-		if (mediaType.equals(MediaType.APPLICATION_OCTET_STREAM_TYPE)) {
-			MediaType guessedMediaType = MediaTypeGuesser.getInstance().guessTypeForName(t.getPath());
-			if (guessedMediaType != null) {
-				httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, guessedMediaType);
-				logger.debug("Set media-type to: {}", guessedMediaType);
-			}
-		}
-		if (!httpHeaders.containsKey(HttpHeaders.CACHE_CONTROL)) {
-			httpHeaders.putSingle(HttpHeaders.CACHE_CONTROL, cacheControlHeaderValue);
-		} else {
-			logger.debug("httpHeaders already contain CACHE_CONTROL");
-		}
-		InputStream in = t.getInputStream();
-		for (int ch = in.read(); ch != -1; ch = in.read()) {
-			entityStream.write(ch);
-		}
-	}
+    @Override
+    public void writeTo(PathNode t, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders,
+            OutputStream entityStream) throws IOException, WebApplicationException {
+        logger.debug("Invoked with media type: {}", mediaType);
+        logger.debug("Invoked with pathnode: {}", t);
+        if (mediaType.equals(MediaType.APPLICATION_OCTET_STREAM_TYPE)) {
+            MediaType guessedMediaType = MediaTypeGuesser.getInstance().guessTypeForName(t.getPath());
+            if (guessedMediaType != null) {
+                httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, guessedMediaType);
+                logger.debug("Set media-type to: {}", guessedMediaType);
+            }
+        }
+        if (!httpHeaders.containsKey(HttpHeaders.CACHE_CONTROL)) {
+            httpHeaders.putSingle(HttpHeaders.CACHE_CONTROL, cacheControlHeaderValue);
+        } else {
+            logger.debug("httpHeaders already contain CACHE_CONTROL");
+        }
+        InputStream in = t.getInputStream();
+        for (int ch = in.read(); ch != -1; ch = in.read()) {
+            entityStream.write(ch);
+        }
+    }
 }

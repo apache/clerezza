@@ -20,7 +20,7 @@
 
 -->
 <sitemap>
-	<section>
+    <section>
         <name>Documentation</name>
         <page>information.xhtml</page>
     </section>

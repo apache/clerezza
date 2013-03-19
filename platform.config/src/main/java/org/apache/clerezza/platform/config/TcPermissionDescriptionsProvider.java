@@ -33,8 +33,8 @@ import org.apache.felix.scr.annotations.Service;
  * the graphs used by the platform.
  * The access permissions for the following graphs are described:
  * <ul>
- *	<li>system graph</li>
- *	<li>config graph</li>
+ *    <li>system graph</li>
+ *    <li>config graph</li>
  * </ul>
  *
  * @author mir
@@ -43,28 +43,28 @@ import org.apache.felix.scr.annotations.Service;
 @Service(PermissionDescriptionsProvider.class)
 public class TcPermissionDescriptionsProvider implements PermissionDescriptionsProvider {
 
-	private static final Set<PermissionDescripton> GRAPH_ACCESS_PERMISSION_DESCRIPTIONS =
-			new HashSet<PermissionDescripton>();
-	static {
-		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System Graph Read Permission",
-				"Grants permission to the user to read the system graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/system.graph\" \"read\")"));
+    private static final Set<PermissionDescripton> GRAPH_ACCESS_PERMISSION_DESCRIPTIONS =
+            new HashSet<PermissionDescripton>();
+    static {
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System Graph Read Permission",
+                "Grants permission to the user to read the system graph", null, TcPermission.class,
+                "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/system.graph\" \"read\")"));
 
-		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System Graph Read/Write Permission",
-				"Grants permission to the user to read and write the system graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/system.graph\" \"readwrite\")"));
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System Graph Read/Write Permission",
+                "Grants permission to the user to read and write the system graph", null, TcPermission.class,
+                "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/system.graph\" \"readwrite\")"));
 
-		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration Graph Read Permission",
-				"Grants permission to the user to read the configuration graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/config.graph\" \"read\")"));
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration Graph Read Permission",
+                "Grants permission to the user to read the configuration graph", null, TcPermission.class,
+                "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/config.graph\" \"read\")"));
 
-		GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration Graph Read/Write Permission",
-				"Grants permission to the user to read and write the configuration graph", null, TcPermission.class,
-				"(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/config.graph\" \"readwrite\")"));
-	}
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration Graph Read/Write Permission",
+                "Grants permission to the user to read and write the configuration graph", null, TcPermission.class,
+                "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/config.graph\" \"readwrite\")"));
+    }
 
-	@Override
-	public Set<PermissionDescripton> getPermissionDescriptors() {
-		return GRAPH_ACCESS_PERMISSION_DESCRIPTIONS;
-	}
+    @Override
+    public Set<PermissionDescripton> getPermissionDescriptors() {
+        return GRAPH_ACCESS_PERMISSION_DESCRIPTIONS;
+    }
 }

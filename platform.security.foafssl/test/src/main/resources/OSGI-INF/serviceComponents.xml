@@ -28,7 +28,7 @@
         </service>
         <property name="javax.ws.rs" type="Boolean" value="true"/>
         <reference name="webIdGraphsService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
-				   cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
+                   cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
 
     </scr:component>
     <scr:component enabled="true" name="org.apache.clerezza.foafssl.testservlets.pages.CertificateDescription">
@@ -38,6 +38,6 @@
         </service>
         <property name="service.pid" value="org.apache.clerezza.foafssl.test.pages.WebIDClaimPg"/>
         <reference name="webIdGraphsService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
-				   cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
+                   cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
     </scr:component>
 </components>

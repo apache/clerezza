@@ -39,19 +39,19 @@ import org.apache.clerezza.rdf.ontologies.SKOS;
  */
 public class RoundTripTest {
 
-	@Test
-	public void addAndCount() {
-		MGraph mGraph = new SimpleMGraph();
-		Graph jenaGraph = new JenaGraph(mGraph);
-		Model model = ModelFactory.createModelForGraph(jenaGraph);
-		model.add(DC.title, RDFS.label, "title");
-		MGraph rewrappedMGraph = new JenaGraphAdaptor(jenaGraph);
-		Assert.assertEquals(1, rewrappedMGraph.size());
-		rewrappedMGraph.add(new TripleImpl(new BNode(), SKOS.prefLabel,
-				LiteralFactory.getInstance().createTypedLiteral("foo")));
-		Assert.assertEquals(2, rewrappedMGraph.size());
-		Assert.assertEquals(2, mGraph.size());
-		rewrappedMGraph.clear();
-		Assert.assertEquals(0, rewrappedMGraph.size());
-	}
+    @Test
+    public void addAndCount() {
+        MGraph mGraph = new SimpleMGraph();
+        Graph jenaGraph = new JenaGraph(mGraph);
+        Model model = ModelFactory.createModelForGraph(jenaGraph);
+        model.add(DC.title, RDFS.label, "title");
+        MGraph rewrappedMGraph = new JenaGraphAdaptor(jenaGraph);
+        Assert.assertEquals(1, rewrappedMGraph.size());
+        rewrappedMGraph.add(new TripleImpl(new BNode(), SKOS.prefLabel,
+                LiteralFactory.getInstance().createTypedLiteral("foo")));
+        Assert.assertEquals(2, rewrappedMGraph.size());
+        Assert.assertEquals(2, mGraph.size());
+        rewrappedMGraph.clear();
+        Assert.assertEquals(0, rewrappedMGraph.size());
+    }
 }

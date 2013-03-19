@@ -42,105 +42,105 @@ import org.apache.clerezza.templating.seedsnipe.datastructure.InvalidElementExce
  */
 public class Expression {
 
-	/**
-	 * the char of the operand or -1 is no operand
-	 */
-	private int operand = -1;
-	private String leftString,  rightString;
+    /**
+     * the char of the operand or -1 is no operand
+     */
+    private int operand = -1;
+    private String leftString,  rightString;
 
-	Expression(String stringRepresentation) {
-		StringReader representationReader = new StringReader(stringRepresentation);
-		leftString = readPart(representationReader);
-		rightString = readPart(representationReader);
-	}
+    Expression(String stringRepresentation) {
+        StringReader representationReader = new StringReader(stringRepresentation);
+        leftString = readPart(representationReader);
+        rightString = readPart(representationReader);
+    }
 
-	boolean evaluate(final DataFieldResolver dataFieldResolver,
-			final int[] arrayPositioner) throws
-			FieldDoesNotHaveDimensionException,
-			FieldIndexOutOfBoundsException, InvalidElementException, IOException {
-		Object leftValue = evaluate(leftString, dataFieldResolver, arrayPositioner);
-		if (operand == '=') {
-			Object rightValue = evaluate(rightString, dataFieldResolver, arrayPositioner);
-			return leftValue.toString().equals(rightValue.toString());
-		}
-		return evaluateSingle(leftValue);
-	}
+    boolean evaluate(final DataFieldResolver dataFieldResolver,
+            final int[] arrayPositioner) throws
+            FieldDoesNotHaveDimensionException,
+            FieldIndexOutOfBoundsException, InvalidElementException, IOException {
+        Object leftValue = evaluate(leftString, dataFieldResolver, arrayPositioner);
+        if (operand == '=') {
+            Object rightValue = evaluate(rightString, dataFieldResolver, arrayPositioner);
+            return leftValue.toString().equals(rightValue.toString());
+        }
+        return evaluateSingle(leftValue);
+    }
 
-	private Object evaluate(String string, DataFieldResolver dataFieldResolver,
-			int[] arrayPositioner) throws FieldDoesNotHaveDimensionException,
-			FieldIndexOutOfBoundsException,
-			InvalidElementException,
-			IOException {
-		String trimmed = string.trim();
-		if (trimmed.charAt(0) == '\"') {
-			if (trimmed.charAt(trimmed.length() - 1) != '\"') {
-				throw new RuntimeException("String expression must end with a quote (\")");
-			}
-			return trimmed.substring(1, trimmed.length() - 1);
-		} else {
-			return dataFieldResolver.resolveAsObject(trimmed, arrayPositioner);
-		}
-	}
+    private Object evaluate(String string, DataFieldResolver dataFieldResolver,
+            int[] arrayPositioner) throws FieldDoesNotHaveDimensionException,
+            FieldIndexOutOfBoundsException,
+            InvalidElementException,
+            IOException {
+        String trimmed = string.trim();
+        if (trimmed.charAt(0) == '\"') {
+            if (trimmed.charAt(trimmed.length() - 1) != '\"') {
+                throw new RuntimeException("String expression must end with a quote (\")");
+            }
+            return trimmed.substring(1, trimmed.length() - 1);
+        } else {
+            return dataFieldResolver.resolveAsObject(trimmed, arrayPositioner);
+        }
+    }
 
-	private boolean evaluateSingle(Object value) {
-		if (value == null) {
-			return false;
-		}
-		if (value instanceof Class) {
-			return false;
-		}
-		if (value.getClass().isArray()) {
-			if (((Object[]) value).length > 0) {
-				value = ((Object[]) value)[0];
-			} else {
-				return false;
-			}
-		}
-		if (value instanceof String) {
-			return Boolean.parseBoolean((String) value);
-		}
-		if (value instanceof Boolean) {
-			return ((Boolean) value).booleanValue();
-		}
-		return true;
-	}
+    private boolean evaluateSingle(Object value) {
+        if (value == null) {
+            return false;
+        }
+        if (value instanceof Class) {
+            return false;
+        }
+        if (value.getClass().isArray()) {
+            if (((Object[]) value).length > 0) {
+                value = ((Object[]) value)[0];
+            } else {
+                return false;
+            }
+        }
+        if (value instanceof String) {
+            return Boolean.parseBoolean((String) value);
+        }
+        if (value instanceof Boolean) {
+            return ((Boolean) value).booleanValue();
+        }
+        return true;
+    }
 
-	/**
-	 * reads till an operator that is not in a quoted section
-	 * 
-	 * @param representationReader
-	 * @return
-	 */
-	private String readPart(Reader representationReader) {
-		try {
-			StringWriter resultWriter = new StringWriter();
-			boolean isInQuotedSection = false;
-			boolean charEscaped = false;
-			for (int ch = representationReader.read(); ch != -1; ch = representationReader.read()) {
-				if (charEscaped) {
-					charEscaped = false;
-				} else {
-					if (ch == '\"') {
-						isInQuotedSection = !isInQuotedSection;
-					} else {
-						if ((ch == '=') && !isInQuotedSection) {
-							//to support string with multiple (non braketed) operations
-							//we would add this to a list
-							operand = '=';
-							break;
-						} else {
-							if (ch == '\\') {
-								charEscaped = true;
-								continue;
-							}
-						}
-					}
-				}
-				resultWriter.write(ch);
-			}
-			return resultWriter.toString().trim();
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    /**
+     * reads till an operator that is not in a quoted section
+     * 
+     * @param representationReader
+     * @return
+     */
+    private String readPart(Reader representationReader) {
+        try {
+            StringWriter resultWriter = new StringWriter();
+            boolean isInQuotedSection = false;
+            boolean charEscaped = false;
+            for (int ch = representationReader.read(); ch != -1; ch = representationReader.read()) {
+                if (charEscaped) {
+                    charEscaped = false;
+                } else {
+                    if (ch == '\"') {
+                        isInQuotedSection = !isInQuotedSection;
+                    } else {
+                        if ((ch == '=') && !isInQuotedSection) {
+                            //to support string with multiple (non braketed) operations
+                            //we would add this to a list
+                            operand = '=';
+                            break;
+                        } else {
+                            if (ch == '\\') {
+                                charEscaped = true;
+                                continue;
+                            }
+                        }
+                    }
+                }
+                resultWriter.write(ch);
+            }
+            return resultWriter.toString().trim();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

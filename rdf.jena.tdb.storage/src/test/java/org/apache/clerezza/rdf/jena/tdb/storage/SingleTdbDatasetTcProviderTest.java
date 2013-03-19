@@ -151,9 +151,9 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
     
     @Test
     public void testListGraph(){
-    	TcProvider provider = getInstance();
-    	//No union graph in listMGraphs
-    	Set<UriRef> mgl = provider.listMGraphs();
+        TcProvider provider = getInstance();
+        //No union graph in listMGraphs
+        Set<UriRef> mgl = provider.listMGraphs();
         Assert.assertFalse("Mgraph list don't contain the read-only union-graph", mgl.contains(UNION_GRAPH_NAME));
         //Union graph in listGraphs
         Set<UriRef> gl = provider.listGraphs();

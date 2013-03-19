@@ -79,188 +79,188 @@ import org.osgi.service.component.ComponentContext;
 @Path("/concepts/find")
 public class ConceptsFinder {
 
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private RenderletManager renderletManager;
 
-	@Reference
-	protected ConceptProviderManager conceptProviderManager;
+    @Reference
+    protected ConceptProviderManager conceptProviderManager;
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	@Reference
-	private ContentGraphProvider cgProvider;
+    @Reference
+    private ContentGraphProvider cgProvider;
 
-	@Reference
-	private PlatformConfig platformConfig;
+    @Reference
+    private PlatformConfig platformConfig;
 
-	private LocalConceptProvider freeConceptProvider = null;
+    private LocalConceptProvider freeConceptProvider = null;
 
-	private UriRef freeConceptScheme = null;
+    private UriRef freeConceptScheme = null;
 
-	protected void activate(ComponentContext context) throws URISyntaxException {
-		URL template = getClass().getResource("skos-collection-json.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
-				SKOS.Collection, null,
-				MediaType.APPLICATION_JSON_TYPE, true);
+    protected void activate(ComponentContext context) throws URISyntaxException {
+        URL template = getClass().getResource("skos-collection-json.ssp");
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(template.toURI().toString()),
+                SKOS.Collection, null,
+                MediaType.APPLICATION_JSON_TYPE, true);
 
-		freeConceptScheme =
-				new UriRef(platformConfig.getDefaultBaseUri().getUnicodeString()
-				+ ConceptManipulator.FREE_CONCEPT_SCHEME);
-		freeConceptProvider = new LocalConceptProvider(tcManager, cgProvider,
-				freeConceptScheme);
-	}
+        freeConceptScheme =
+                new UriRef(platformConfig.getDefaultBaseUri().getUnicodeString()
+                + ConceptManipulator.FREE_CONCEPT_SCHEME);
+        freeConceptProvider = new LocalConceptProvider(tcManager, cgProvider,
+                freeConceptScheme);
+    }
 
-	/**
-	 * Searches concepts for a specified search term. The actual search task
-	 * is delegated to each {@link ConceptProvider} instance. The results from
-	 * each {@link ConceptProvider} are merged into a single result graph.
-	 * However, concepts from providers of lower priority are only considered if
-	 * they are not staying in an OWL:sameAs relation with concepts from
-	 * providers of higher priority.
-	 * 
-	 * @param searchTerm
-	 *            The search term in form of a String.
-	 * @return
-	 *		A GraphNode containing the search results.
-	 */
-	@GET
-	@Produces("application/rdf+json")
-	public GraphNode findConcepts(@QueryParam(value="searchTerm")
-			String searchTerm) {
+    /**
+     * Searches concepts for a specified search term. The actual search task
+     * is delegated to each {@link ConceptProvider} instance. The results from
+     * each {@link ConceptProvider} are merged into a single result graph.
+     * However, concepts from providers of lower priority are only considered if
+     * they are not staying in an OWL:sameAs relation with concepts from
+     * providers of higher priority.
+     * 
+     * @param searchTerm
+     *            The search term in form of a String.
+     * @return
+     *        A GraphNode containing the search results.
+     */
+    @GET
+    @Produces("application/rdf+json")
+    public GraphNode findConcepts(@QueryParam(value="searchTerm")
+            String searchTerm) {
 
-		boolean freeConceptProviderFound = false;
+        boolean freeConceptProviderFound = false;
 
-		List<ConceptProvider> conceptProviderList = conceptProviderManager
-				.getConceptProviders();
+        List<ConceptProvider> conceptProviderList = conceptProviderManager
+                .getConceptProviders();
 
-		MGraph resultMGraph = new SimpleMGraph();
-		GraphNode resultNode = new GraphNode(new BNode(), resultMGraph);
-		boolean first = true;
-		for (ConceptProvider cp : conceptProviderList) {
-			if (!freeConceptProviderFound) {
-				if (cp instanceof LocalConceptProvider) {
-					if (((LocalConceptProvider) cp).getSelectedScheme().equals(
-							freeConceptScheme)) {
-						freeConceptProviderFound = true;
-					}
-				}
-			}
-			retrieveConcepts(cp, first, resultNode, searchTerm);
-			if (first) {
-				first = false;
-			}
-		}
-		if (!freeConceptProviderFound && freeConceptProvider != null) {
-			retrieveConcepts(freeConceptProvider, first, resultNode, searchTerm);
-		}
-		addCreationOfNewFreeConceptSuggested(resultNode, searchTerm);
-		resultNode.addProperty(RDF.type, QUERYRESULT.QueryResult);
-		return resultNode;
-	}
+        MGraph resultMGraph = new SimpleMGraph();
+        GraphNode resultNode = new GraphNode(new BNode(), resultMGraph);
+        boolean first = true;
+        for (ConceptProvider cp : conceptProviderList) {
+            if (!freeConceptProviderFound) {
+                if (cp instanceof LocalConceptProvider) {
+                    if (((LocalConceptProvider) cp).getSelectedScheme().equals(
+                            freeConceptScheme)) {
+                        freeConceptProviderFound = true;
+                    }
+                }
+            }
+            retrieveConcepts(cp, first, resultNode, searchTerm);
+            if (first) {
+                first = false;
+            }
+        }
+        if (!freeConceptProviderFound && freeConceptProvider != null) {
+            retrieveConcepts(freeConceptProvider, first, resultNode, searchTerm);
+        }
+        addCreationOfNewFreeConceptSuggested(resultNode, searchTerm);
+        resultNode.addProperty(RDF.type, QUERYRESULT.QueryResult);
+        return resultNode;
+    }
 
-	/**
-	 * Adds a boolean value that answers whether the UI shall suggest to create
-	 * a new free concept. A new free concept may not be added if the has the
-	 * same base uri and search term. Therefore the consumer shall be suggested
-	 * not to propose creation.
-	 * 
-	 * @param resultNode
-	 *            the result node to add the property to
-	 * @param searchTerm
-	 *            the search term the data was searched for
-	 */
-	private void addCreationOfNewFreeConceptSuggested(GraphNode resultNode,
-			String searchTerm) {
-		UriRef conceptUriRef = ConceptManipulator.getConceptUriRef(
-				platformConfig, searchTerm);
-		resultNode.addProperty(QUERYRESULT.creationOfNewFreeConceptSuggested,
-				LiteralFactory.getInstance().createTypedLiteral(
-						!cgProvider.getContentGraph().contains(
-								new TripleImpl(conceptUriRef, RDF.type,
-										SKOS.Concept))));
-	}
+    /**
+     * Adds a boolean value that answers whether the UI shall suggest to create
+     * a new free concept. A new free concept may not be added if the has the
+     * same base uri and search term. Therefore the consumer shall be suggested
+     * not to propose creation.
+     * 
+     * @param resultNode
+     *            the result node to add the property to
+     * @param searchTerm
+     *            the search term the data was searched for
+     */
+    private void addCreationOfNewFreeConceptSuggested(GraphNode resultNode,
+            String searchTerm) {
+        UriRef conceptUriRef = ConceptManipulator.getConceptUriRef(
+                platformConfig, searchTerm);
+        resultNode.addProperty(QUERYRESULT.creationOfNewFreeConceptSuggested,
+                LiteralFactory.getInstance().createTypedLiteral(
+                        !cgProvider.getContentGraph().contains(
+                                new TripleImpl(conceptUriRef, RDF.type,
+                                        SKOS.Concept))));
+    }
 
-	/**
-	 * Retrieve concepts for the given search term.
-	 * 
-	 * @param conceptProvider
-	 *            the provider delivers concepts
-	 * @param first
-	 *            is this the first execution
-	 * @param resultNode
-	 *            the node to attach the concepts to
-	 * @param searchTerm
-	 *            the search term that the concepts have to match against
-	 */
-	private void retrieveConcepts(ConceptProvider conceptProvider,
-			boolean first, GraphNode resultNode, String searchTerm) {
-		MGraph resultMGraph = (MGraph) resultNode.getGraph();
-		Graph graph = conceptProvider.retrieveConcepts(searchTerm);
-		Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
-		if (first) {
-			while (concepts.hasNext()) {
-				resultNode.addProperty(QUERYRESULT.concept, concepts.next()
-						.getSubject());
-			}
-			resultMGraph.addAll(graph);
-		} else {
-			while (concepts.hasNext()) {
-				NonLiteral concept = concepts.next().getSubject();
-				GraphNode conceptGraphNode = new GraphNode(concept, graph);
-				Iterator<Resource> sameAsConcepts = conceptGraphNode
-						.getObjects(OWL.sameAs);
-				if (!(hasSameAs(resultMGraph, concept) || hasAnyConcept(
-						resultMGraph, sameAsConcepts))) {
-					resultNode.addProperty(QUERYRESULT.concept, concept);
-					addConceptToResultMGraph(resultMGraph, conceptGraphNode);
-				}
+    /**
+     * Retrieve concepts for the given search term.
+     * 
+     * @param conceptProvider
+     *            the provider delivers concepts
+     * @param first
+     *            is this the first execution
+     * @param resultNode
+     *            the node to attach the concepts to
+     * @param searchTerm
+     *            the search term that the concepts have to match against
+     */
+    private void retrieveConcepts(ConceptProvider conceptProvider,
+            boolean first, GraphNode resultNode, String searchTerm) {
+        MGraph resultMGraph = (MGraph) resultNode.getGraph();
+        Graph graph = conceptProvider.retrieveConcepts(searchTerm);
+        Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
+        if (first) {
+            while (concepts.hasNext()) {
+                resultNode.addProperty(QUERYRESULT.concept, concepts.next()
+                        .getSubject());
+            }
+            resultMGraph.addAll(graph);
+        } else {
+            while (concepts.hasNext()) {
+                NonLiteral concept = concepts.next().getSubject();
+                GraphNode conceptGraphNode = new GraphNode(concept, graph);
+                Iterator<Resource> sameAsConcepts = conceptGraphNode
+                        .getObjects(OWL.sameAs);
+                if (!(hasSameAs(resultMGraph, concept) || hasAnyConcept(
+                        resultMGraph, sameAsConcepts))) {
+                    resultNode.addProperty(QUERYRESULT.concept, concept);
+                    addConceptToResultMGraph(resultMGraph, conceptGraphNode);
+                }
 
-			}
-		}
-	}
+            }
+        }
+    }
 
-	private boolean hasSameAs(MGraph graph, NonLiteral sameAsConcept) {
-		Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
-		while (concepts.hasNext()) {
-			NonLiteral concept = concepts.next().getSubject();
-			if (graph.filter(concept, OWL.sameAs, sameAsConcept).hasNext()) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean hasSameAs(MGraph graph, NonLiteral sameAsConcept) {
+        Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
+        while (concepts.hasNext()) {
+            NonLiteral concept = concepts.next().getSubject();
+            if (graph.filter(concept, OWL.sameAs, sameAsConcept).hasNext()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	private boolean hasAnyConcept(MGraph graph, Iterator<Resource> concepts) {
-		while (concepts.hasNext()) {
-			NonLiteral concept = (NonLiteral) concepts.next();
-			if (graph.filter(concept, RDF.type, SKOS.Concept).hasNext()) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean hasAnyConcept(MGraph graph, Iterator<Resource> concepts) {
+        while (concepts.hasNext()) {
+            NonLiteral concept = (NonLiteral) concepts.next();
+            if (graph.filter(concept, RDF.type, SKOS.Concept).hasNext()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	private void addConceptToResultMGraph(MGraph resultMGraph,
-			GraphNode graphNode) {
-		NonLiteral concept = (NonLiteral) graphNode.getNode();
-		resultMGraph.add(new TripleImpl(concept, RDF.type, SKOS.Concept));
+    private void addConceptToResultMGraph(MGraph resultMGraph,
+            GraphNode graphNode) {
+        NonLiteral concept = (NonLiteral) graphNode.getNode();
+        resultMGraph.add(new TripleImpl(concept, RDF.type, SKOS.Concept));
 
-		Iterator<Literal> prefLabelStatements = graphNode.getLiterals(SKOS.prefLabel);
-		while (prefLabelStatements.hasNext()) {
-			resultMGraph.add(new TripleImpl(concept, SKOS.prefLabel,
-					prefLabelStatements.next()));
-		}
-		Iterator<Literal> commentStatements = graphNode.getLiterals(RDFS.comment);
-		while (commentStatements.hasNext()) {
-			resultMGraph.add(new TripleImpl(concept, RDFS.comment,
-					commentStatements.next()));
-		}
-		Iterator<UriRef> sameAsStatements = graphNode.getUriRefObjects(OWL.sameAs);
-		while (sameAsStatements.hasNext()) {
-			resultMGraph.add(new TripleImpl(concept, OWL.sameAs,
-					sameAsStatements.next()));
-		}
-	}
+        Iterator<Literal> prefLabelStatements = graphNode.getLiterals(SKOS.prefLabel);
+        while (prefLabelStatements.hasNext()) {
+            resultMGraph.add(new TripleImpl(concept, SKOS.prefLabel,
+                    prefLabelStatements.next()));
+        }
+        Iterator<Literal> commentStatements = graphNode.getLiterals(RDFS.comment);
+        while (commentStatements.hasNext()) {
+            resultMGraph.add(new TripleImpl(concept, RDFS.comment,
+                    commentStatements.next()));
+        }
+        Iterator<UriRef> sameAsStatements = graphNode.getUriRefObjects(OWL.sameAs);
+        while (sameAsStatements.hasNext()) {
+            resultMGraph.add(new TripleImpl(concept, OWL.sameAs,
+                    sameAsStatements.next()));
+        }
+    }
 }

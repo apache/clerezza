@@ -66,176 +66,176 @@ import org.apache.clerezza.rdf.core.serializedform.Serializer;
  */
 public class FileTcProvider implements WeightedTcProvider {
 
-	/**
-	 * @scr.reference
-	 */
-	private Parser parser;
-	/**
-	 * @scr.reference
-	 */
-	private Serializer serializer;
-	
-	private Map<UriRef, FileMGraph> uriRef2MGraphMap =
-			new HashMap<UriRef, FileMGraph>();
+    /**
+     * @scr.reference
+     */
+    private Parser parser;
+    /**
+     * @scr.reference
+     */
+    private Serializer serializer;
+    
+    private Map<UriRef, FileMGraph> uriRef2MGraphMap =
+            new HashMap<UriRef, FileMGraph>();
 
-	protected static File dataFile = new File("data");
+    protected static File dataFile = new File("data");
 
-	boolean initialized = false;
+    boolean initialized = false;
 
-	private int weight = 300;
-
-
-	public FileTcProvider() {
-		this.parser = Parser.getInstance();
-		this.serializer = Serializer.getInstance();
-	}
-
-	protected void activate(final ComponentContext componentContext) {
-		weight = (Integer) componentContext.getProperties().get("weight");
-		dataFile = componentContext.getBundleContext().
-						getDataFile("data");
-	}
-
-	@Override
-	public int getWeight() {
-		return weight;
-	}
-
-	@Override
-	public Graph getGraph(UriRef name) throws NoSuchEntityException {
-		throw new NoSuchEntityException(name);
-	}
-
-	/**
-	 * Get an <code>MGraph</code> by its name. If the file at the specified
-	 * location already exists, then a MGraph is returned even though it was not
-	 * created with createMGraph().
-	 *
-	 * @param the name of the <code>MGraph</code>
-	 * @return name the <code>MGraph</code> with the specified name
-	 * @throws NoSuchEntityException if there is no <code>MGraph</code>
-	 *         with the specified name or the file didn't exist.
-	 */
-	@Override
-	public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
-		initialize();
-		MGraph mGraph = uriRef2MGraphMap.get(name);
-		if (mGraph == null) {
-			final String uriString = name.getUnicodeString();
-			if (!uriString.startsWith("file:")) {
-				throw new NoSuchEntityException(name);
-			}
-			File file = new File(URI.create(uriString));
-			if (file.exists()) {
-				return createMGraph(name);
-			} else {
-				throw new NoSuchEntityException(name);
-			}			
-		}
-		return mGraph;
-	}
-
-	@Override
-	public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
-		return getMGraph(name);
-	}
-
-	@Override
-	public Set<UriRef> listGraphs() {
-		throw new UnsupportedOperationException("Not supported.");
-	}
-
-	@Override
-	public Set<UriRef> listMGraphs() {
-		initialize();
-		return uriRef2MGraphMap.keySet();
-	}
-
-	@Override
-	public Set<UriRef> listTripleCollections() {
-		return listMGraphs();
-	}
+    private int weight = 300;
 
 
-	@Override
-	public MGraph createMGraph(UriRef name) throws 
-			UnsupportedOperationException, EntityAlreadyExistsException {
-		initialize();
-		if (uriRef2MGraphMap.containsKey(name)) {
-			throw new EntityAlreadyExistsException(name);
-		}
-		FileMGraph mGraph = new FileMGraph(name, parser, serializer);
-		uriRef2MGraphMap.put(name, mGraph);
-		writeDataFile();
-		return mGraph;
-	}
+    public FileTcProvider() {
+        this.parser = Parser.getInstance();
+        this.serializer = Serializer.getInstance();
+    }
 
-	@Override
-	public Graph createGraph(UriRef name, TripleCollection triples) throws
-			UnsupportedOperationException, EntityAlreadyExistsException {
-		throw new UnsupportedOperationException("Not supported.");
-	}
+    protected void activate(final ComponentContext componentContext) {
+        weight = (Integer) componentContext.getProperties().get("weight");
+        dataFile = componentContext.getBundleContext().
+                        getDataFile("data");
+    }
 
-	@Override
-	public void deleteTripleCollection(UriRef name) throws 
-			UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
-		initialize();
-		FileMGraph mGraph = (FileMGraph)getMGraph(name);
-		mGraph.delete();
-		uriRef2MGraphMap.remove(name);
-		writeDataFile();
-	}
+    @Override
+    public int getWeight() {
+        return weight;
+    }
 
-	@Override
-	public Set<UriRef> getNames(Graph graph) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+        throw new NoSuchEntityException(name);
+    }
 
-	private void initialize() throws RuntimeException {
-		if (!initialized) {
-			readDataFile();
-			initialized = true;
-		}
-	}
+    /**
+     * Get an <code>MGraph</code> by its name. If the file at the specified
+     * location already exists, then a MGraph is returned even though it was not
+     * created with createMGraph().
+     *
+     * @param the name of the <code>MGraph</code>
+     * @return name the <code>MGraph</code> with the specified name
+     * @throws NoSuchEntityException if there is no <code>MGraph</code>
+     *         with the specified name or the file didn't exist.
+     */
+    @Override
+    public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+        initialize();
+        MGraph mGraph = uriRef2MGraphMap.get(name);
+        if (mGraph == null) {
+            final String uriString = name.getUnicodeString();
+            if (!uriString.startsWith("file:")) {
+                throw new NoSuchEntityException(name);
+            }
+            File file = new File(URI.create(uriString));
+            if (file.exists()) {
+                return createMGraph(name);
+            } else {
+                throw new NoSuchEntityException(name);
+            }            
+        }
+        return mGraph;
+    }
 
-	private void readDataFile() throws RuntimeException {
-		try {
-			if (dataFile.exists()) {
-				FileInputStream fstream = new FileInputStream(dataFile);
-				DataInputStream in = new DataInputStream(fstream);
-				BufferedReader br = new BufferedReader(new InputStreamReader(in));
-				String strLine;
-				while ((strLine = br.readLine()) != null) {
-					UriRef uriRef = new UriRef(strLine);
-					uriRef2MGraphMap.put(uriRef, new FileMGraph(uriRef, parser, serializer));
-				}
-				in.close();
-			} else {
-				dataFile.createNewFile();
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private void writeDataFile() {
-		FileOutputStream fout = null;
-		try {
-			fout = new FileOutputStream(dataFile);
-			for (UriRef uri : uriRef2MGraphMap.keySet()) {
-				fout.write((uri.getUnicodeString() + "\n").getBytes());
-			}
-		} catch (FileNotFoundException ex) {
-			throw new RuntimeException(ex);
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-		finally {
-			try {
-				fout.close();
-			} catch (IOException ex) {
-				Logger.getLogger(FileTcProvider.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		}
-	}
+    @Override
+    public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
+        return getMGraph(name);
+    }
+
+    @Override
+    public Set<UriRef> listGraphs() {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Set<UriRef> listMGraphs() {
+        initialize();
+        return uriRef2MGraphMap.keySet();
+    }
+
+    @Override
+    public Set<UriRef> listTripleCollections() {
+        return listMGraphs();
+    }
+
+
+    @Override
+    public MGraph createMGraph(UriRef name) throws 
+            UnsupportedOperationException, EntityAlreadyExistsException {
+        initialize();
+        if (uriRef2MGraphMap.containsKey(name)) {
+            throw new EntityAlreadyExistsException(name);
+        }
+        FileMGraph mGraph = new FileMGraph(name, parser, serializer);
+        uriRef2MGraphMap.put(name, mGraph);
+        writeDataFile();
+        return mGraph;
+    }
+
+    @Override
+    public Graph createGraph(UriRef name, TripleCollection triples) throws
+            UnsupportedOperationException, EntityAlreadyExistsException {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public void deleteTripleCollection(UriRef name) throws 
+            UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
+        initialize();
+        FileMGraph mGraph = (FileMGraph)getMGraph(name);
+        mGraph.delete();
+        uriRef2MGraphMap.remove(name);
+        writeDataFile();
+    }
+
+    @Override
+    public Set<UriRef> getNames(Graph graph) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void initialize() throws RuntimeException {
+        if (!initialized) {
+            readDataFile();
+            initialized = true;
+        }
+    }
+
+    private void readDataFile() throws RuntimeException {
+        try {
+            if (dataFile.exists()) {
+                FileInputStream fstream = new FileInputStream(dataFile);
+                DataInputStream in = new DataInputStream(fstream);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String strLine;
+                while ((strLine = br.readLine()) != null) {
+                    UriRef uriRef = new UriRef(strLine);
+                    uriRef2MGraphMap.put(uriRef, new FileMGraph(uriRef, parser, serializer));
+                }
+                in.close();
+            } else {
+                dataFile.createNewFile();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private void writeDataFile() {
+        FileOutputStream fout = null;
+        try {
+            fout = new FileOutputStream(dataFile);
+            for (UriRef uri : uriRef2MGraphMap.keySet()) {
+                fout.write((uri.getUnicodeString() + "\n").getBytes());
+            }
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        finally {
+            try {
+                fout.close();
+            } catch (IOException ex) {
+                Logger.getLogger(FileTcProvider.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }

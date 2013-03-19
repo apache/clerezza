@@ -35,69 +35,69 @@ import org.slf4j.LoggerFactory;
  */
 public class ClerezzaStatementSink implements StatementSink {
 
-	private static Logger log = LoggerFactory.getLogger(ClerezzaStatementSink.class);
-	private Map<String, BNode> bnodeLookup;
-	MGraph mgraph;
+    private static Logger log = LoggerFactory.getLogger(ClerezzaStatementSink.class);
+    private Map<String, BNode> bnodeLookup;
+    MGraph mgraph;
 
-	public ClerezzaStatementSink(MGraph mGraph) {
-		this.mgraph = mGraph;
-	}
+    public ClerezzaStatementSink(MGraph mGraph) {
+        this.mgraph = mGraph;
+    }
 
-	@Override
-	public void start() {
-		bnodeLookup = new HashMap<String, BNode>();
-	}
+    @Override
+    public void start() {
+        bnodeLookup = new HashMap<String, BNode>();
+    }
 
-	@Override
-	public void end() {
-		bnodeLookup = null;
-	}
+    @Override
+    public void end() {
+        bnodeLookup = null;
+    }
 
-	@Override
-	public void addObject(String subject, String predicate, String object) {
-		mgraph.add(new TripleImpl(transform(subject), new UriRef(predicate), transform(object)));
-	}
+    @Override
+    public void addObject(String subject, String predicate, String object) {
+        mgraph.add(new TripleImpl(transform(subject), new UriRef(predicate), transform(object)));
+    }
 
-	private NonLiteral transform(String nonLiteral) {
-		NonLiteral s;
-		Resource o;
-		if (nonLiteral.startsWith("_:")) {
-			s = bnodeLookup.get(nonLiteral);
-			if (s == null) {
-				s = new BNode();
-				bnodeLookup.put(nonLiteral, (BNode) s);
-			}
-		} else {
-			s = new UriRef(nonLiteral);
-		}
-		return s;
-	}
+    private NonLiteral transform(String nonLiteral) {
+        NonLiteral s;
+        Resource o;
+        if (nonLiteral.startsWith("_:")) {
+            s = bnodeLookup.get(nonLiteral);
+            if (s == null) {
+                s = new BNode();
+                bnodeLookup.put(nonLiteral, (BNode) s);
+            }
+        } else {
+            s = new UriRef(nonLiteral);
+        }
+        return s;
+    }
 
-	@Override
-	public void addLiteral(String subject, String predicate, String lex, String lang, String datatype) {
-		Literal obj;
-		if (datatype == null) {
-			if (lang == null) {
-				obj = new PlainLiteralImpl(lex);
-			} else {
-				obj = new PlainLiteralImpl(lex, new Language(lang));
-			}
-		} else {
-			obj = new TypedLiteralImpl(lex, new UriRef(datatype));
-		}
-		mgraph.add(new TripleImpl(transform(subject), new UriRef(predicate), obj));
-	}
+    @Override
+    public void addLiteral(String subject, String predicate, String lex, String lang, String datatype) {
+        Literal obj;
+        if (datatype == null) {
+            if (lang == null) {
+                obj = new PlainLiteralImpl(lex);
+            } else {
+                obj = new PlainLiteralImpl(lex, new Language(lang));
+            }
+        } else {
+            obj = new TypedLiteralImpl(lex, new UriRef(datatype));
+        }
+        mgraph.add(new TripleImpl(transform(subject), new UriRef(predicate), obj));
+    }
 
-	@Override
-	public void addPrefix(String prefix, String uri) {
+    @Override
+    public void addPrefix(String prefix, String uri) {
 //       try {
 //         handler.handleNamespace(prefix, uri);
 //      } catch (RDFHandlerException rDFHandlerException) {
 //         java.util.logging.Logger.getLogger(ClerezzaStatementSink.class.getName()).log(Level.WARNING, null, rDFHandlerException);
 //      }
-	}
+    }
 
-	@Override
-	public void setBase(String base) {
-	}
+    @Override
+    public void setBase(String base) {
+    }
 }

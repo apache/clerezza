@@ -25,17 +25,17 @@ package org.apache.clerezza.platform.scripting;
  * @author hasan
  */
 public class NoEngineException extends RuntimeException {
-	private ScriptLanguageDescription languageDescription;
+    private ScriptLanguageDescription languageDescription;
 
-	NoEngineException(ScriptLanguageDescription languageDescription) {
-		super("No script engine found for "+languageDescription);
-		this.languageDescription = languageDescription;
-	}
+    NoEngineException(ScriptLanguageDescription languageDescription) {
+        super("No script engine found for "+languageDescription);
+        this.languageDescription = languageDescription;
+    }
 
-	/**
-	 * @return the ScriptLanguageDescription for which no script engine could be found
-	 */
-	public ScriptLanguageDescription getLanguageDescription() {
-		return languageDescription;
-	}
+    /**
+     * @return the ScriptLanguageDescription for which no script engine could be found
+     */
+    public ScriptLanguageDescription getLanguageDescription() {
+        return languageDescription;
+    }
 }

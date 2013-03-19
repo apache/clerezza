@@ -28,45 +28,45 @@ import java.util.UUID;
  */
 public class Variable implements Expression {
 
-	private String name;
+    private String name;
 
-	public Variable() {
-		this.name = UUID.randomUUID().toString();
-	}
+    public Variable() {
+        this.name = UUID.randomUUID().toString();
+    }
 
-	/**
-	 * Creates a variable with the specified name
-	 *
-	 * @param name
-	 */
-	public Variable(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("name may not be null");
-		}
-		this.name = name;
-	}
+    /**
+     * Creates a variable with the specified name
+     *
+     * @param name
+     */
+    public Variable(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("name may not be null");
+        }
+        this.name = name;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Variable other = (Variable) obj;
-		return name.equals(other.name);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Variable other = (Variable) obj;
+        return name.equals(other.name);
+    }
 
-	@Override
-	public int hashCode() {
-		return name.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

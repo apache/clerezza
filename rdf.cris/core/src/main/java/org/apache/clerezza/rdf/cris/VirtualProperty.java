@@ -39,36 +39,36 @@ import org.wymiwyg.commons.util.Util;
  * @see PropertyHolder
  */
 public abstract class VirtualProperty {
-	/**
-	 * As opposed to toString this doesn't need to be human readable but unique (as with
-	 * a strong hash.
-	 */
-	String stringKey;
-	
-	/**
-	 * The RDF properties that are used to compute the value of this virtual property.
-	 */
-	Set<UriRef> baseProperties;
+    /**
+     * As opposed to toString this doesn't need to be human readable but unique (as with
+     * a strong hash.
+     */
+    String stringKey;
+    
+    /**
+     * The RDF properties that are used to compute the value of this virtual property.
+     */
+    Set<UriRef> baseProperties;
 
-	/**
-	 * Returns the key of this property.
-	 * 
-	 * @return the key.
-	 */
-	public String getStringKey() {
-		return stringKey;
-	}
+    /**
+     * Returns the key of this property.
+     * 
+     * @return the key.
+     */
+    public String getStringKey() {
+        return stringKey;
+    }
 
-	/**
-	 * Returns the properties this virtual property consists of.
-	 * 
-	 * @return	the properties. 
-	 */
-	public Set<UriRef> getBaseProperties() {
-		return baseProperties;
-	}
-	
-	@Override
+    /**
+     * Returns the properties this virtual property consists of.
+     * 
+     * @return    the properties. 
+     */
+    public Set<UriRef> getBaseProperties() {
+        return baseProperties;
+    }
+    
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -82,44 +82,44 @@ public abstract class VirtualProperty {
         }
         return true;
     }
-	
-	@Override
+    
+    @Override
     public int hashCode() {
         return stringKey.hashCode();
     }
 
-	/*
-	 * Computes a SHA-1 hash of the supplied properties.
-	 */
-	protected static String listDigest(List<VirtualProperty> properties) {
+    /*
+     * Computes a SHA-1 hash of the supplied properties.
+     */
+    protected static String listDigest(List<VirtualProperty> properties) {
 
-		StringBuilder builder = new StringBuilder();
-		
-		for (VirtualProperty p : properties) {
-			if (builder.length() > 0) { 
-				builder.append("|");
-			}
+        StringBuilder builder = new StringBuilder();
+        
+        for (VirtualProperty p : properties) {
+            if (builder.length() > 0) { 
+                builder.append("|");
+            }
             builder.append(p.stringKey);
-		}
-		return Util.sha1(builder.toString());
-	}
-	
-	/**
-	 * Returns the value of this property.
-	 * 
-	 * @param node The node containing the original properties (where to get the literal value).
-	 * @return The value.
-	 */
-	protected abstract List<String> value(GraphNode node);
-	
-	/**
-	 * The shortest path of inverse RDF properties from property to the indexed resource, this is an
-	 * empty List for PropertyHolders, for properties in a PathVirtualProperties this is a list with the elements
-	 * passed to its constructor till the first occurrence of property in reverse order.<br/>
-	 * This method just returns the shortest path as virtual properties with the same base property in
-	 * different positions are assumed to be very rare.
-	 * 
-	 * @param property the property.
-	 */
-	protected abstract List<UriRef> pathToIndexedResource(UriRef property);
+        }
+        return Util.sha1(builder.toString());
+    }
+    
+    /**
+     * Returns the value of this property.
+     * 
+     * @param node The node containing the original properties (where to get the literal value).
+     * @return The value.
+     */
+    protected abstract List<String> value(GraphNode node);
+    
+    /**
+     * The shortest path of inverse RDF properties from property to the indexed resource, this is an
+     * empty List for PropertyHolders, for properties in a PathVirtualProperties this is a list with the elements
+     * passed to its constructor till the first occurrence of property in reverse order.<br/>
+     * This method just returns the shortest path as virtual properties with the same base property in
+     * different positions are assumed to be very rare.
+     * 
+     * @param property the property.
+     */
+    protected abstract List<UriRef> pathToIndexedResource(UriRef property);
 }

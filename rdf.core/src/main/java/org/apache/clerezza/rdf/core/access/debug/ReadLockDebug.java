@@ -29,57 +29,57 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
  */
 public class ReadLockDebug extends ReadLock {
 
-	ReentrantReadWriteLockTracker lock;
-	StackTraceElement[] stackTrace;
+    ReentrantReadWriteLockTracker lock;
+    StackTraceElement[] stackTrace;
 
-	ReadLock readLock;
-	public ReadLockDebug(ReentrantReadWriteLockTracker lock) {
-		super(lock);
-		this.lock = lock;
-		this.readLock = lock.realReadLock();
-	}
+    ReadLock readLock;
+    public ReadLockDebug(ReentrantReadWriteLockTracker lock) {
+        super(lock);
+        this.lock = lock;
+        this.readLock = lock.realReadLock();
+    }
 
-	@Override
-	public void lock() {
-		readLock.lock();
-		lock.addLockedReadLock(this);
-		stackTrace = Thread.currentThread().getStackTrace();
-	}
+    @Override
+    public void lock() {
+        readLock.lock();
+        lock.addLockedReadLock(this);
+        stackTrace = Thread.currentThread().getStackTrace();
+    }
 
-	@Override
-	public void lockInterruptibly() throws InterruptedException {
-		readLock.lockInterruptibly();
-	}
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        readLock.lockInterruptibly();
+    }
 
-	@Override
-	public Condition newCondition() {
-		return readLock.newCondition();
-	}
+    @Override
+    public Condition newCondition() {
+        return readLock.newCondition();
+    }
 
-	@Override
-	public String toString() {
-		return readLock.toString();
-	}
+    @Override
+    public String toString() {
+        return readLock.toString();
+    }
 
-	@Override
-	public boolean tryLock() {
-		return readLock.tryLock();
-	}
+    @Override
+    public boolean tryLock() {
+        return readLock.tryLock();
+    }
 
-	@Override
-	public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
-		return readLock.tryLock(timeout, unit);
-	}
+    @Override
+    public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
+        return readLock.tryLock(timeout, unit);
+    }
 
-	@Override
-	public void unlock() {
-		readLock.unlock();
-		lock.removeReadLock(this);
-		stackTrace = null;
-	}
+    @Override
+    public void unlock() {
+        readLock.unlock();
+        lock.removeReadLock(this);
+        stackTrace = null;
+    }
 
-	public StackTraceElement[] getStackTrace() {
-		return stackTrace;
-	}
+    public StackTraceElement[] getStackTrace() {
+        return stackTrace;
+    }
 
 }

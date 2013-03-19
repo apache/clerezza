@@ -35,20 +35,20 @@ import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
  */
 class HashMapSolutionMapping extends HashMap<Variable, Resource> implements SolutionMapping {
 
-	Jena2TriaUtil convertor = new Jena2TriaUtil(new HashMap<Node,BNode>());
-	public HashMapSolutionMapping(QuerySolution querySolution) {
-		final Iterator<String> varNames = querySolution.varNames();
-		while (varNames.hasNext()) {
-			final String varName = varNames.next();
-			put(new Variable(varName), toResource(querySolution.get(varName)));
-		}
-	}
-	@Override
-	public Resource get(String name) {
-		return get(new Variable(name));
-	}
+    Jena2TriaUtil convertor = new Jena2TriaUtil(new HashMap<Node,BNode>());
+    public HashMapSolutionMapping(QuerySolution querySolution) {
+        final Iterator<String> varNames = querySolution.varNames();
+        while (varNames.hasNext()) {
+            final String varName = varNames.next();
+            put(new Variable(varName), toResource(querySolution.get(varName)));
+        }
+    }
+    @Override
+    public Resource get(String name) {
+        return get(new Variable(name));
+    }
 
-	private Resource toResource(RDFNode node) {
-		return convertor.convertJenaNode2Resource(node.asNode());
-	}
+    private Resource toResource(RDFNode node) {
+        return convertor.convertJenaNode2Resource(node.asNode());
+    }
 }

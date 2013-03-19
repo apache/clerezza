@@ -22,11 +22,11 @@
 -->
 
 <project>
-	<body>
-		<menu name="Documentation">
-			<item name="User Manager" href="documentation/usage-user.xhtml"/>
-			<item name="Role Manager" href="documentation/usage-role.xhtml"/>
-			<item name="JAAS Permissions" href="documentation/jaas.xhtml"/>
-		</menu>
-	</body>
+    <body>
+        <menu name="Documentation">
+            <item name="User Manager" href="documentation/usage-user.xhtml"/>
+            <item name="Role Manager" href="documentation/usage-role.xhtml"/>
+            <item name="JAAS Permissions" href="documentation/jaas.xhtml"/>
+        </menu>
+    </body>
 </project>

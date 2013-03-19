@@ -31,13 +31,13 @@ import org.apache.clerezza.rdf.core.impl.SimpleGraph;
  */
 public class PrivilegedMGraphWrapper extends PrivilegedTripleCollectionWrapper implements MGraph {
 
-	public PrivilegedMGraphWrapper(MGraph wrappedMGraph) {
-		super(wrappedMGraph);
-	}
+    public PrivilegedMGraphWrapper(MGraph wrappedMGraph) {
+        super(wrappedMGraph);
+    }
 
-	@Override
-	public Graph getGraph() {
-		return new SimpleGraph(this);
-	}
+    @Override
+    public Graph getGraph() {
+        return new SimpleGraph(this);
+    }
 
 }

@@ -32,28 +32,28 @@ import org.apache.clerezza.rdf.core.Triple;
  */
 public class SimpleMGraph extends SimpleTripleCollection implements MGraph {
 
-	/**
-	 * Creates an empty SimpleMGraph
-	 */
-	public SimpleMGraph() {
-	}
+    /**
+     * Creates an empty SimpleMGraph
+     */
+    public SimpleMGraph() {
+    }
 
-	public SimpleMGraph(Set<Triple> baseSet) {
-		super(baseSet);
-	}
+    public SimpleMGraph(Set<Triple> baseSet) {
+        super(baseSet);
+    }
 
-	public SimpleMGraph(Collection<Triple> baseCollection) {
-		super(baseCollection);
-	}
+    public SimpleMGraph(Collection<Triple> baseCollection) {
+        super(baseCollection);
+    }
 
-	public SimpleMGraph(Iterator<Triple> iterator) {
-		super(iterator);
-	}
+    public SimpleMGraph(Iterator<Triple> iterator) {
+        super(iterator);
+    }
 
-	@Override
-	public Graph getGraph() {
-		return new SimpleGraph(this);
-	}
+    @Override
+    public Graph getGraph() {
+        return new SimpleGraph(this);
+    }
 }
 
-	
+    

@@ -20,109 +20,109 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.clerezza</groupId>
-		<artifactId>platform.users</artifactId>
-		<version>0.2-SNAPSHOT</version>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>platform.users.core</artifactId>
-	<version>0.2-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<name>Clerezza - Platform Users Core</name>
-	<description>
-		User Graphs Core
-	</description>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>platform.users</artifactId>
+        <version>0.2-SNAPSHOT</version>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>platform.users.core</artifactId>
+    <version>0.2-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <name>Clerezza - Platform Users Core</name>
+    <description>
+        User Graphs Core
+    </description>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform</artifactId>
-			<version>0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.security.foafssl.ontologies</artifactId>
-			<version>0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.core</artifactId>
-			<version>0.13-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.scala.utils</artifactId>
-			<version>0.4-SNAPSHOT</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.security.foafssl.ontologies</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.core</artifactId>
+            <version>0.13-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.scala.utils</artifactId>
+            <version>0.4-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.storage.web</artifactId>
-        	<version>0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.config</artifactId>
-			<version>0.4-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jsslutils</groupId>
-			<artifactId>jsslutils</artifactId>
-		</dependency>
-		<!-- <dependency>
-			<groupId>org.wymiwyg</groupId>
-			<artifactId>jetty-osgi-httpservice</artifactId>
-		</dependency> -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.config</artifactId>
+            <version>0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jsslutils</groupId>
+            <artifactId>jsslutils</artifactId>
+        </dependency>
+        <!-- <dependency>
+            <groupId>org.wymiwyg</groupId>
+            <artifactId>jetty-osgi-httpservice</artifactId>
+        </dependency> -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<sourceDirectory>src/main/scala</sourceDirectory>
-		<!--testSourceDirectory>src/test/scala</testSourceDirectory-->
-		<plugins>
-			<plugin>
-				<groupId>org.scala-tools</groupId>
-				<artifactId>maven-scala-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<!-- <scalaVersion>${scala.version}</scalaVersion> -->
-					<!-- <args>
-						<arg>-target:jvm-1.5</arg>
-					</args> -->
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
-						<Export-Package>!org.apache.clerezza.platform.users.ontologies,
-								org.apache.clerezza.platform.users</Export-Package>
-						<Bundle-SymbolicName>org.apache.clerezza.platform.users.core</Bundle-SymbolicName>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <!--testSourceDirectory>src/test/scala</testSourceDirectory-->
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- <scalaVersion>${scala.version}</scalaVersion> -->
+                    <!-- <args>
+                        <arg>-target:jvm-1.5</arg>
+                    </args> -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
+                        <Export-Package>!org.apache.clerezza.platform.users.ontologies,
+                                org.apache.clerezza.platform.users</Export-Package>
+                        <Bundle-SymbolicName>org.apache.clerezza.platform.users.core</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

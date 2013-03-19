@@ -41,25 +41,25 @@ import org.apache.clerezza.templating.seedsnipe.simpleparser.SeedsnipeTemplating
  */
 public class SeedsnipeRenderlet implements Renderlet{
 
-	private SeedsnipeTemplatingEngine seedsnipeEngine;
+    private SeedsnipeTemplatingEngine seedsnipeEngine;
 
-	public SeedsnipeRenderlet() {
-		seedsnipeEngine = new SeedsnipeTemplatingEngine();
-	}
+    public SeedsnipeRenderlet() {
+        seedsnipeEngine = new SeedsnipeTemplatingEngine();
+    }
 
-	@Override
-	public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
-			CallbackRenderer callbackRenderer,
-			URI renderingSpecification,
-			String mode,
-			MediaType mediaType, RequestProperties requestProperties,
-			OutputStream os) throws IOException {
-		try {
-			RenderingFunctions renderingFunctions = new WebRenderingFunctions(
-					res.getGraph(), context, callbackRenderer, mode);
-			seedsnipeEngine.process(res, context, renderingFunctions, renderingSpecification.toURL(), os);
-		} catch (MalformedURLException ex) {
-			throw new WebApplicationException(ex);
-		}
-	}
+    @Override
+    public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
+            CallbackRenderer callbackRenderer,
+            URI renderingSpecification,
+            String mode,
+            MediaType mediaType, RequestProperties requestProperties,
+            OutputStream os) throws IOException {
+        try {
+            RenderingFunctions renderingFunctions = new WebRenderingFunctions(
+                    res.getGraph(), context, callbackRenderer, mode);
+            seedsnipeEngine.process(res, context, renderingFunctions, renderingSpecification.toURL(), os);
+        } catch (MalformedURLException ex) {
+            throw new WebApplicationException(ex);
+        }
+    }
 }

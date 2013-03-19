@@ -27,5 +27,5 @@ import org.osgi.framework.Bundle;
  * @author mir
  */
 public interface BundlePrefixManager {
-	public String getPrefix(Bundle bundle);
+    public String getPrefix(Bundle bundle);
 }

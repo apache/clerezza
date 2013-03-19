@@ -20,23 +20,23 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.clerezza</groupId>
-		<artifactId>clerezza</artifactId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>platform.dashboard</artifactId>
-	<packaging>pom</packaging>
-	<version>0.5-SNAPSHOT</version>
-	<name>Clerezza - Platform Dashboard</name>
-	<description>Provides a global contextual menu.</description>
-	
-	<modules>
-		<module>platform.dashboard.ontologies</module>
-		<module>platform.dashboard.core</module>
-		<!-- disabled because of problems with pax-exam: <module>platform.dashboard.tests</module> -->
-	</modules>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>clerezza</artifactId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>platform.dashboard</artifactId>
+    <packaging>pom</packaging>
+    <version>0.5-SNAPSHOT</version>
+    <name>Clerezza - Platform Dashboard</name>
+    <description>Provides a global contextual menu.</description>
+    
+    <modules>
+        <module>platform.dashboard.ontologies</module>
+        <module>platform.dashboard.core</module>
+        <!-- disabled because of problems with pax-exam: <module>platform.dashboard.tests</module> -->
+    </modules>
 </project>

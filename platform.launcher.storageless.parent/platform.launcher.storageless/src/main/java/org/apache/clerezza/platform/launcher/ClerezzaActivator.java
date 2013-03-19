@@ -35,39 +35,39 @@ import org.osgi.service.startlevel.StartLevel;
  */
 public class ClerezzaActivator implements BundleActivator {
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		System.out.println("starting platform launcher");
-		ServiceReference startLevelRef =
-				context.getServiceReference(StartLevel.class.getName());
-		StartLevel startLevel = (StartLevel) context.getService(startLevelRef);
-		final int currentBundleStartLevel =
-				startLevel.getBundleStartLevel(context.getBundle());
-		startLevel.setStartLevel(currentBundleStartLevel);
-		final int originalStartLevel = startLevel.getStartLevel();
-		int nextLevel = currentBundleStartLevel + 1;
-		Enumeration<URL> bundleJars =
-				context.getBundle().findEntries("platform-bundles", "*.jar", true);
-		Set<MavenArtifactDesc> artDescs = new HashSet<MavenArtifactDesc>();
+    @Override
+    public void start(BundleContext context) throws Exception {
+        System.out.println("starting platform launcher");
+        ServiceReference startLevelRef =
+                context.getServiceReference(StartLevel.class.getName());
+        StartLevel startLevel = (StartLevel) context.getService(startLevelRef);
+        final int currentBundleStartLevel =
+                startLevel.getBundleStartLevel(context.getBundle());
+        startLevel.setStartLevel(currentBundleStartLevel);
+        final int originalStartLevel = startLevel.getStartLevel();
+        int nextLevel = currentBundleStartLevel + 1;
+        Enumeration<URL> bundleJars =
+                context.getBundle().findEntries("platform-bundles", "*.jar", true);
+        Set<MavenArtifactDesc> artDescs = new HashSet<MavenArtifactDesc>();
 
-		while (bundleJars.hasMoreElements()) {
-			MavenArtifactDesc artDesc =
-					MavenArtifactDesc.parseFromURL(bundleJars.nextElement());
-			artDescs.add(artDesc);
-		}
-		ClerezzaApp.installBundles(context, artDescs, nextLevel);
+        while (bundleJars.hasMoreElements()) {
+            MavenArtifactDesc artDesc =
+                    MavenArtifactDesc.parseFromURL(bundleJars.nextElement());
+            artDescs.add(artDesc);
+        }
+        ClerezzaApp.installBundles(context, artDescs, nextLevel);
 
-		final int newStartLevel =
-				originalStartLevel > nextLevel + 1 ? originalStartLevel : nextLevel + 1;
-		startLevel.setStartLevel(newStartLevel);
-		if (startLevel.getInitialBundleStartLevel() < nextLevel + 1) {
-			startLevel.setInitialBundleStartLevel(nextLevel + 1);
-		}
-		System.out.println("uninstalling platform launcher");
-		context.getBundle().uninstall();
-	}
+        final int newStartLevel =
+                originalStartLevel > nextLevel + 1 ? originalStartLevel : nextLevel + 1;
+        startLevel.setStartLevel(newStartLevel);
+        if (startLevel.getInitialBundleStartLevel() < nextLevel + 1) {
+            startLevel.setInitialBundleStartLevel(nextLevel + 1);
+        }
+        System.out.println("uninstalling platform launcher");
+        context.getBundle().uninstall();
+    }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-	}
+    @Override
+    public void stop(BundleContext context) throws Exception {
+    }
 }

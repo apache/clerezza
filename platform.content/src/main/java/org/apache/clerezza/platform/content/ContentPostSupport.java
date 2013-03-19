@@ -49,50 +49,50 @@ import org.apache.felix.scr.annotations.Service;
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("content")
 public class ContentPostSupport {
-	
-	@Reference
-	private DiscobitsHandler handler;
+    
+    @Reference
+    private DiscobitsHandler handler;
 
-	@Reference
-	private ContentGraphProvider cgProvider;
+    @Reference
+    private ContentGraphProvider cgProvider;
 
-	/**
-	 * Creates an InfoDiscoBt (aka Binary Content) in the content graph.<br/>
-	 * This JAX-RS method is available under the path "content". It requires
-	 * a multipart/form with two fields: "content", which is the content of the
-	 * InfoDiscobit to be created and "uri" which is the uri of the new
-	 * InfoDiscoBit.
-	 *
-	 * @param form
-	 * @return Returns a Created (201) response, if the info bit was successfully
-	 * uploaded. Returns Bad Request (400) response, if required form fields are
-	 * missing. Returns a Conflict (409) response, if at the specified URI a
-	 * resource already exists.
-	 */
-	@POST
-	@Consumes("multipart/form")
-	public Response postContent(MultiPartBody form) {
-		FormFile formFile = form.getFormFileParameterValues("content")[0];
-		String uri = form.getTextParameterValues("uri")[0];
-		byte[] content = formFile.getContent();
-		if (content == null || uri == null) {
-			return Response.status(400).entity("Required form field is missing").
-					type(MediaType.TEXT_PLAIN_TYPE).build();
-		}
-		LockableMGraph contentGraph = cgProvider.getContentGraph();
-		Lock readLock = contentGraph.getLock().readLock();
-		readLock.lock();
-		try {
-			if (contentGraph.filter(new UriRef(uri), RDF.type, null).hasNext()) {
-				return Response.status(Response.Status.CONFLICT).
-						entity("A resource with the specified URI already exists").
-						type(MediaType.TEXT_PLAIN_TYPE).build();
-			}
-		} finally {
-			readLock.unlock();
-		}
-		handler.put(new UriRef(uri), formFile.getMediaType(), content);
-		return Response.created(URI.create(uri)).build();
-	}	
-	
+    /**
+     * Creates an InfoDiscoBt (aka Binary Content) in the content graph.<br/>
+     * This JAX-RS method is available under the path "content". It requires
+     * a multipart/form with two fields: "content", which is the content of the
+     * InfoDiscobit to be created and "uri" which is the uri of the new
+     * InfoDiscoBit.
+     *
+     * @param form
+     * @return Returns a Created (201) response, if the info bit was successfully
+     * uploaded. Returns Bad Request (400) response, if required form fields are
+     * missing. Returns a Conflict (409) response, if at the specified URI a
+     * resource already exists.
+     */
+    @POST
+    @Consumes("multipart/form")
+    public Response postContent(MultiPartBody form) {
+        FormFile formFile = form.getFormFileParameterValues("content")[0];
+        String uri = form.getTextParameterValues("uri")[0];
+        byte[] content = formFile.getContent();
+        if (content == null || uri == null) {
+            return Response.status(400).entity("Required form field is missing").
+                    type(MediaType.TEXT_PLAIN_TYPE).build();
+        }
+        LockableMGraph contentGraph = cgProvider.getContentGraph();
+        Lock readLock = contentGraph.getLock().readLock();
+        readLock.lock();
+        try {
+            if (contentGraph.filter(new UriRef(uri), RDF.type, null).hasNext()) {
+                return Response.status(Response.Status.CONFLICT).
+                        entity("A resource with the specified URI already exists").
+                        type(MediaType.TEXT_PLAIN_TYPE).build();
+            }
+        } finally {
+            readLock.unlock();
+        }
+        handler.put(new UriRef(uri), formFile.getMediaType(), content);
+        return Response.created(URI.create(uri)).build();
+    }    
+    
 }

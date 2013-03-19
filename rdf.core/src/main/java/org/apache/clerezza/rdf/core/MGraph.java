@@ -26,22 +26,22 @@ package org.apache.clerezza.rdf.core;
  */
 public interface MGraph extends TripleCollection {
 
-	/**
-	 * Returns true if <code>other</code> represents the same mutable graph as
-	 * this instance, false otherwise. It returns true if this == other or if it
-	 * is otherwise guaranteed that changes to one of the instances are
-	 * immediately reflected in the other.
-	 *
-	 * @param other
-	 * @return true if other == this
-	 */
-	@Override
-	public boolean equals(Object other);
+    /**
+     * Returns true if <code>other</code> represents the same mutable graph as
+     * this instance, false otherwise. It returns true if this == other or if it
+     * is otherwise guaranteed that changes to one of the instances are
+     * immediately reflected in the other.
+     *
+     * @param other
+     * @return true if other == this
+     */
+    @Override
+    public boolean equals(Object other);
 
-	/**
-	 * Returns the graph
-	 *
-	 * @return graph
-	 */
-	public Graph getGraph();
+    /**
+     * Returns the graph
+     *
+     * @return graph
+     */
+    public Graph getGraph();
 }

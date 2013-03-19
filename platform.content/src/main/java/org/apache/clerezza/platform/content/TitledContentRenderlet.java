@@ -52,91 +52,91 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class TitledContentRenderlet implements Renderlet {
 
-	private static ThreadLocal<Integer> headingLevel  = new ThreadLocal<Integer>() {
+    private static ThreadLocal<Integer> headingLevel  = new ThreadLocal<Integer>() {
 
-		@Override
-		protected Integer initialValue() {
-			return 1;
-		}
+        @Override
+        protected Integer initialValue() {
+            return 1;
+        }
 
-	};
-	@Override
-	public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
-			CallbackRenderer callbackRenderer,
-			URI renderingSpecification,
-			String mode,
-			MediaType mediaType, RequestProperties requestProperties,
-			OutputStream os) throws IOException {
-		PrintWriter writer = new PrintWriter(os);
-		List<GraphNode> containedNodes = getContainedNodes(res);
-		if (containedNodes.size() < 2) {
-			String nodeLabel = res.getNode() instanceof UriRef ?
-				((UriRef)res.getNode()).getUnicodeString() : " Bnode";
-			writer.print(nodeLabel+": titled and/or content could not be found");
-			writer.flush();
-			return;
-		}
-		writer.print(getHeaderOpen());
-		writer.flush();
-		callbackRenderer.render(
-				containedNodes.get(0),
-				context, mode, os);
-		writer.println(getHeaderClose());
-		headingLevel.set(headingLevel.get()+1);
-		writer.print("<div class='tx-content'>");
-		writer.flush();
-		callbackRenderer.render(
-				containedNodes.get(1),
-				context, mode, os);
-		headingLevel.set(headingLevel.get()-1);
-		writer.println("</div>");
-		writer.flush();
-	}
+    };
+    @Override
+    public void render(GraphNode res, GraphNode context, Map<String, Object> sharedRenderingValues,
+            CallbackRenderer callbackRenderer,
+            URI renderingSpecification,
+            String mode,
+            MediaType mediaType, RequestProperties requestProperties,
+            OutputStream os) throws IOException {
+        PrintWriter writer = new PrintWriter(os);
+        List<GraphNode> containedNodes = getContainedNodes(res);
+        if (containedNodes.size() < 2) {
+            String nodeLabel = res.getNode() instanceof UriRef ?
+                ((UriRef)res.getNode()).getUnicodeString() : " Bnode";
+            writer.print(nodeLabel+": titled and/or content could not be found");
+            writer.flush();
+            return;
+        }
+        writer.print(getHeaderOpen());
+        writer.flush();
+        callbackRenderer.render(
+                containedNodes.get(0),
+                context, mode, os);
+        writer.println(getHeaderClose());
+        headingLevel.set(headingLevel.get()+1);
+        writer.print("<div class='tx-content'>");
+        writer.flush();
+        callbackRenderer.render(
+                containedNodes.get(1),
+                context, mode, os);
+        headingLevel.set(headingLevel.get()-1);
+        writer.println("</div>");
+        writer.flush();
+    }
 
 
-	private List<GraphNode> getContainedNodes(GraphNode titledContent) {
-		final SortedSet<GraphNode> entries = new TreeSet<GraphNode>(new Comparator<GraphNode>() {
+    private List<GraphNode> getContainedNodes(GraphNode titledContent) {
+        final SortedSet<GraphNode> entries = new TreeSet<GraphNode>(new Comparator<GraphNode>() {
 
-			@Override
-			public int compare(GraphNode o1, GraphNode o2) {
-					int pos1 = getPos(o1);
-					int pos2 = getPos(o2);
-					return pos1 - pos2;
-			}
-			private int getPos(GraphNode o) {
-				try {
-					return Integer.parseInt(o.getLiterals(DISCOBITS.pos).next().getLexicalForm());
-				} catch (NullPointerException e) {
-					return -1;
-				}
-			}
+            @Override
+            public int compare(GraphNode o1, GraphNode o2) {
+                    int pos1 = getPos(o1);
+                    int pos2 = getPos(o2);
+                    return pos1 - pos2;
+            }
+            private int getPos(GraphNode o) {
+                try {
+                    return Integer.parseInt(o.getLiterals(DISCOBITS.pos).next().getLexicalForm());
+                } catch (NullPointerException e) {
+                    return -1;
+                }
+            }
 
-		});
-		final Iterator<Resource> entriesIter = titledContent.getObjects(DISCOBITS.contains);
-		while (entriesIter.hasNext()) {
-			Resource resource = entriesIter.next();
-			entries.add(new GraphNode((NonLiteral) resource,titledContent.getGraph()));
-		}
-		final List<GraphNode> result = new ArrayList<GraphNode>();
-		for (GraphNode graphNode : entries) {
-			Iterator<Resource> holded = graphNode.getObjects(DISCOBITS.holds);
-			if (!holded.hasNext()) {
-				throw new RuntimeException(
-						"Titled Content must contain a first element: "+graphNode.getNodeContext());
-			}
-			result.add(new GraphNode(holded.next(),
-					titledContent.getGraph()));
-		}
-		return result;
-	}
+        });
+        final Iterator<Resource> entriesIter = titledContent.getObjects(DISCOBITS.contains);
+        while (entriesIter.hasNext()) {
+            Resource resource = entriesIter.next();
+            entries.add(new GraphNode((NonLiteral) resource,titledContent.getGraph()));
+        }
+        final List<GraphNode> result = new ArrayList<GraphNode>();
+        for (GraphNode graphNode : entries) {
+            Iterator<Resource> holded = graphNode.getObjects(DISCOBITS.holds);
+            if (!holded.hasNext()) {
+                throw new RuntimeException(
+                        "Titled Content must contain a first element: "+graphNode.getNodeContext());
+            }
+            result.add(new GraphNode(holded.next(),
+                    titledContent.getGraph()));
+        }
+        return result;
+    }
 
-	private String getHeaderOpen() {
-		final Integer level = headingLevel.get();
-		return level < 7 ? "<h"+level+">" : "<div class = \"heading\">";
-	}
+    private String getHeaderOpen() {
+        final Integer level = headingLevel.get();
+        return level < 7 ? "<h"+level+">" : "<div class = \"heading\">";
+    }
 
-	private String getHeaderClose() {
-		final Integer level = headingLevel.get();
-		return level < 7 ? "</h"+level+">" : "</div>";
-	}
+    private String getHeaderClose() {
+        final Integer level = headingLevel.get();
+        return level < 7 ? "</h"+level+">" : "</div>";
+    }
 }

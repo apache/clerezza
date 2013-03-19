@@ -23,7 +23,7 @@
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
         <version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+        <relativePath>../parent</relativePath>
    </parent>
    <groupId>org.apache.clerezza</groupId>
    <artifactId>ssl.keygen</artifactId>
@@ -42,8 +42,8 @@
 
    <modules>
       <module>base</module>
-	  <!-- The sameplewebapp is just here as an example code for jsp based webapps on 
-	   how to use keygen -->
+      <!-- The sameplewebapp is just here as an example code for jsp based webapps on 
+       how to use keygen -->
       <!--module>samplewebapp</module-->
    </modules>
 

@@ -60,99 +60,99 @@ public class JenaGraph extends GraphBase implements Graph {
 
 
 
-	final TripleCollection graph;
-	final BidiMap<BNode, Node> tria2JenaBNodes = new BidiMapImpl<BNode, Node>();
-	final Jena2TriaUtil jena2TriaUtil =
-			new Jena2TriaUtil(tria2JenaBNodes.inverse());
-	final Tria2JenaUtil tria2JenaUtil =
-			new Tria2JenaUtil(tria2JenaBNodes);
+    final TripleCollection graph;
+    final BidiMap<BNode, Node> tria2JenaBNodes = new BidiMapImpl<BNode, Node>();
+    final Jena2TriaUtil jena2TriaUtil =
+            new Jena2TriaUtil(tria2JenaBNodes.inverse());
+    final Tria2JenaUtil tria2JenaUtil =
+            new Tria2JenaUtil(tria2JenaBNodes);
 
-	public JenaGraph(TripleCollection graph) {
-		this.graph = graph;
-	}
+    public JenaGraph(TripleCollection graph) {
+        this.graph = graph;
+    }
 
-	@Override
-	public void performAdd(com.hp.hpl.jena.graph.Triple triple) {
-		graph.add(jena2TriaUtil.convertTriple(triple));
-	}
+    @Override
+    public void performAdd(com.hp.hpl.jena.graph.Triple triple) {
+        graph.add(jena2TriaUtil.convertTriple(triple));
+    }
 
-	@Override
-	public void performDelete(com.hp.hpl.jena.graph.Triple triple) {
-		Triple clerezzaTriple = jena2TriaUtil.convertTriple(triple);
-		if (clerezzaTriple != null) {
-			graph.remove(clerezzaTriple);
-		}
-	}
+    @Override
+    public void performDelete(com.hp.hpl.jena.graph.Triple triple) {
+        Triple clerezzaTriple = jena2TriaUtil.convertTriple(triple);
+        if (clerezzaTriple != null) {
+            graph.remove(clerezzaTriple);
+        }
+    }
 
-	private Iterator<com.hp.hpl.jena.graph.Triple> convert(
-			final Iterator<Triple> base) {
-		return new Iterator<com.hp.hpl.jena.graph.Triple>() {
+    private Iterator<com.hp.hpl.jena.graph.Triple> convert(
+            final Iterator<Triple> base) {
+        return new Iterator<com.hp.hpl.jena.graph.Triple>() {
 
-			Triple lastReturned = null;
+            Triple lastReturned = null;
 
-			@Override
-			public boolean hasNext() {
-				return base.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return base.hasNext();
+            }
 
-			@Override
-			public com.hp.hpl.jena.graph.Triple next() {
-				Triple baseNext = base.next();
-				lastReturned = baseNext;
-				return (baseNext == null) ? null : tria2JenaUtil.convertTriple(baseNext, true);
-			}
+            @Override
+            public com.hp.hpl.jena.graph.Triple next() {
+                Triple baseNext = base.next();
+                lastReturned = baseNext;
+                return (baseNext == null) ? null : tria2JenaUtil.convertTriple(baseNext, true);
+            }
 
-			@Override
-			public void remove() {
-				graph.remove(lastReturned);
-			}
-		};
-	}
+            @Override
+            public void remove() {
+                graph.remove(lastReturned);
+            }
+        };
+    }
 
-	/**
-	 * An iterator (over a filtered TripleCollection) that can return its next element as a triple. As parameter a tripleMatch is required.
-	 * Triple matches are defined by subject, predicate, and object.
-	 * @param m
-	 * @return TripleCollection
-	 */
-	private Iterator<Triple> filter(TripleMatch m) {
-		NonLiteral subject = null;
-		UriRef predicate = null;
-		Resource object = null;
-		if (m.getMatchSubject() != null) {
-			subject = jena2TriaUtil.convertNonLiteral(m.getMatchSubject());
-			if (subject == null) {
-				return Collections.EMPTY_SET.iterator();
-			}
-		}
-		if (m.getMatchObject() != null) {
-			object = jena2TriaUtil.convertJenaNode2Resource(m.getMatchObject());
-			if (object == null) {
-				return Collections.EMPTY_SET.iterator();
-			}
-		}		
-		if (m.getMatchPredicate() != null) {
-			predicate = jena2TriaUtil.convertJenaUri2UriRef(m.getMatchPredicate());
-		}
+    /**
+     * An iterator (over a filtered TripleCollection) that can return its next element as a triple. As parameter a tripleMatch is required.
+     * Triple matches are defined by subject, predicate, and object.
+     * @param m
+     * @return TripleCollection
+     */
+    private Iterator<Triple> filter(TripleMatch m) {
+        NonLiteral subject = null;
+        UriRef predicate = null;
+        Resource object = null;
+        if (m.getMatchSubject() != null) {
+            subject = jena2TriaUtil.convertNonLiteral(m.getMatchSubject());
+            if (subject == null) {
+                return Collections.EMPTY_SET.iterator();
+            }
+        }
+        if (m.getMatchObject() != null) {
+            object = jena2TriaUtil.convertJenaNode2Resource(m.getMatchObject());
+            if (object == null) {
+                return Collections.EMPTY_SET.iterator();
+            }
+        }        
+        if (m.getMatchPredicate() != null) {
+            predicate = jena2TriaUtil.convertJenaUri2UriRef(m.getMatchPredicate());
+        }
 
-		try {
-			return graph.filter(subject, predicate, object);
-		} catch (IllegalArgumentException e) {
-			//jena serializers are known to query with invalid URIs
-			//see http://tech.groups.yahoo.com/group/jena-dev/message/37221
-			//an invalid Uris hould not be in the graph and thus lead to an
-			//empty result
-			return new HashSet<Triple>().iterator();
-		}
-	}
+        try {
+            return graph.filter(subject, predicate, object);
+        } catch (IllegalArgumentException e) {
+            //jena serializers are known to query with invalid URIs
+            //see http://tech.groups.yahoo.com/group/jena-dev/message/37221
+            //an invalid Uris hould not be in the graph and thus lead to an
+            //empty result
+            return new HashSet<Triple>().iterator();
+        }
+    }
 
-	@Override
-	protected ExtendedIterator graphBaseFind(TripleMatch m) {
-		return new TrackingTripleIterator(convert(filter(m)));
-	}
+    @Override
+    protected ExtendedIterator graphBaseFind(TripleMatch m) {
+        return new TrackingTripleIterator(convert(filter(m)));
+    }
 
-	@Override
-	protected Reifier constructReifier() {
-		return new DirectReifier(this);
-	}
+    @Override
+    protected Reifier constructReifier() {
+        return new DirectReifier(this);
+    }
 }

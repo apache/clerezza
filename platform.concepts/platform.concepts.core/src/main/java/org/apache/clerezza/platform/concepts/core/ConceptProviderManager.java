@@ -27,13 +27,13 @@ import java.util.List;
  */
 public interface ConceptProviderManager {
 
-	/**
-	 * Returns a list of {@link ConceptProvider}s. The list order determines
-	 * the priority of a {@link ConceptProvider}. The meaning of the priority
-	 * is left to the implementation and application.
-	 * 
-	 * @return
-	 *		a list of managed {@link ConceptProvider}s.
-	 */
-	public List<ConceptProvider> getConceptProviders();
+    /**
+     * Returns a list of {@link ConceptProvider}s. The list order determines
+     * the priority of a {@link ConceptProvider}. The meaning of the priority
+     * is left to the implementation and application.
+     * 
+     * @return
+     *        a list of managed {@link ConceptProvider}s.
+     */
+    public List<ConceptProvider> getConceptProviders();
 }

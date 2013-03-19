@@ -23,13 +23,13 @@ package org.apache.clerezza.rdf.core.serializedform;
  * @author reto
  */
 public class UnsupportedParsingFormatException extends UnsupportedFormatException {
-	/**
-	 * Creates an instance for a specified unsupported format.
-	 * 
-	 * @param formatIdentifier the unsupported format
-	 */
-	public UnsupportedParsingFormatException(String formatIdentifier) {
-		super("No parser available for "+formatIdentifier);
-	}
+    /**
+     * Creates an instance for a specified unsupported format.
+     * 
+     * @param formatIdentifier the unsupported format
+     */
+    public UnsupportedParsingFormatException(String formatIdentifier) {
+        super("No parser available for "+formatIdentifier);
+    }
 
 }

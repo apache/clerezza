@@ -22,7 +22,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>clerezza</artifactId>
     <version>0.3-SNAPSHOT</version>
-	<relativePath>../parent</relativePath>
+    <relativePath>../parent</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>

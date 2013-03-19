@@ -34,60 +34,60 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class PathVirtualProperty extends VirtualProperty {
 
-	/**
-	 * The properties representing the path.
-	 */
-	List<UriRef> properties;
+    /**
+     * The properties representing the path.
+     */
+    List<UriRef> properties;
 
-	/**
-	 * Creates a new PathVirtualProperty.
-	 * 
-	 * @param properties An ordered list specifying the path. 
-	 */
-	public PathVirtualProperty(List<UriRef> properties) {
-		this.properties = properties;
-		List<VirtualProperty> list = new ArrayList<VirtualProperty>();
-		for (UriRef p : this.properties) {
-			list.add(new PropertyHolder(p));
-		}
-		this.baseProperties = new HashSet<UriRef>(properties);
-		this.stringKey = "P" + VirtualProperty.listDigest(list);
-	}
+    /**
+     * Creates a new PathVirtualProperty.
+     * 
+     * @param properties An ordered list specifying the path. 
+     */
+    public PathVirtualProperty(List<UriRef> properties) {
+        this.properties = properties;
+        List<VirtualProperty> list = new ArrayList<VirtualProperty>();
+        for (UriRef p : this.properties) {
+            list.add(new PropertyHolder(p));
+        }
+        this.baseProperties = new HashSet<UriRef>(properties);
+        this.stringKey = "P" + VirtualProperty.listDigest(list);
+    }
 
-	@Override
-	protected List<String> value(GraphNode node) {
-		List<String> list = new ArrayList<String>();
-		getPathResults(node, this.properties, list);
-		return list;
-	}
+    @Override
+    protected List<String> value(GraphNode node) {
+        List<String> list = new ArrayList<String>();
+        getPathResults(node, this.properties, list);
+        return list;
+    }
 
-	@Override
-	protected List<UriRef> pathToIndexedResource(UriRef property) {
+    @Override
+    protected List<UriRef> pathToIndexedResource(UriRef property) {
 
-		List<UriRef> list = new ArrayList<UriRef>();
-		for (UriRef prop : this.properties) {
-			if (!prop.equals(property)) {
-				list.add(prop);
-			}
-		}
-		return list;
+        List<UriRef> list = new ArrayList<UriRef>();
+        for (UriRef prop : this.properties) {
+            if (!prop.equals(property)) {
+                list.add(prop);
+            }
+        }
+        return list;
 
-	}
+    }
 
-	private void getPathResults(GraphNode node, List<UriRef> properties, List<String> list) {
-		if (properties.size() == 1) {
-			list.addAll(new PropertyHolder(properties.get(0)).value(node));
-		} else {
-			Lock lock = node.readLock();
-			lock.lock();
-			try {
-				Iterator<GraphNode> iter = node.getObjectNodes(properties.get(0));
-				while (iter.hasNext()) {
-					getPathResults(iter.next(), properties.subList(1, properties.size()), list);
-				}
-			} finally {
-				lock.unlock();
-			}
-		}
-	}
+    private void getPathResults(GraphNode node, List<UriRef> properties, List<String> list) {
+        if (properties.size() == 1) {
+            list.addAll(new PropertyHolder(properties.get(0)).value(node));
+        } else {
+            Lock lock = node.readLock();
+            lock.lock();
+            try {
+                Iterator<GraphNode> iter = node.getObjectNodes(properties.get(0));
+                while (iter.hasNext()) {
+                    getPathResults(iter.next(), properties.subList(1, properties.size()), list);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
 }

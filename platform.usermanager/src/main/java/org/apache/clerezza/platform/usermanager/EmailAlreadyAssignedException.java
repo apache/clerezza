@@ -25,7 +25,7 @@ package org.apache.clerezza.platform.usermanager;
  */
 public class EmailAlreadyAssignedException extends RuntimeException {
 
-	public EmailAlreadyAssignedException(String email, String name) {
-		super("Email address " + email + " is already assigned to " + name);
-	}
+    public EmailAlreadyAssignedException(String email, String name) {
+        super("Email address " + email + " is already assigned to " + name);
+    }
 }

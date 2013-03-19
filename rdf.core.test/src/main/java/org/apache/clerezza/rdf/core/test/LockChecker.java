@@ -25,15 +25,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 class LockChecker {
 
-	public static void checkIfReadLocked(ReentrantReadWriteLock lock) {
-		if (lock.getReadLockCount() == 0 && !lock.isWriteLockedByCurrentThread()) {
-			throw new RuntimeException("Neither read- nor write-locked");
-		}
-	}
+    public static void checkIfReadLocked(ReentrantReadWriteLock lock) {
+        if (lock.getReadLockCount() == 0 && !lock.isWriteLockedByCurrentThread()) {
+            throw new RuntimeException("Neither read- nor write-locked");
+        }
+    }
 
-	public static void checkIfWriteLocked(ReentrantReadWriteLock lock) {
-		if (!lock.isWriteLockedByCurrentThread()) {
-			throw new RuntimeException("Not write-locked");
-		}
-	}
+    public static void checkIfWriteLocked(ReentrantReadWriteLock lock) {
+        if (!lock.isWriteLockedByCurrentThread()) {
+            throw new RuntimeException("Not write-locked");
+        }
+    }
 }

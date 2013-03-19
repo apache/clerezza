@@ -30,41 +30,41 @@ import java.util.List;
  */
 public interface SelectQuery extends QueryWithSolutionModifier {
 
-	/**
-	 * <p>Tests if this query should return distinct results.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modDistinct">
-	 * SPARQL Query Language: 9.3.1 DISTINCT</a>
-	 * @return <code>true</code> if the query should return distinct results.
-	 */
-	public boolean isDistinct();
+    /**
+     * <p>Tests if this query should return distinct results.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modDistinct">
+     * SPARQL Query Language: 9.3.1 DISTINCT</a>
+     * @return <code>true</code> if the query should return distinct results.
+     */
+    public boolean isDistinct();
 
-	/**
-	 * <p>Tests if this query should return reduced results.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modReduced">
-	 * SPARQL Query Language: 9.3.2 REDUCED</a>
-	 * @return <code>true</code> if the query should return reduced results.
-	 */
-	public boolean isReduced();
+    /**
+     * <p>Tests if this query should return reduced results.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modReduced">
+     * SPARQL Query Language: 9.3.2 REDUCED</a>
+     * @return <code>true</code> if the query should return reduced results.
+     */
+    public boolean isReduced();
 
-	/**
-	 * <p>Tests if this query returns all its variables, and not a projected subset.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#solutionModifiers">
-	 * SPARQL Query Language: 9 Solution Sequences and Modifiers</a>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modProjection">
-	 * SPARQL Query Language: 9.2 Projection</a>
-	 * @return <code>true</code> if the query should return all variables.
-	 */
-	public boolean isSelectAll();
+    /**
+     * <p>Tests if this query returns all its variables, and not a projected subset.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#solutionModifiers">
+     * SPARQL Query Language: 9 Solution Sequences and Modifiers</a>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modProjection">
+     * SPARQL Query Language: 9.2 Projection</a>
+     * @return <code>true</code> if the query should return all variables.
+     */
+    public boolean isSelectAll();
 
-	/**
-	 * <p>Gets the list of {@link Variable}s to project the solution to.
-	 * If {@link #isSelectAll()} returns <code>true</code> then
-	 * this list contains all the variables from the query.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#select">
-	 * SPARQL Query Language: 10.1 SELECT</a>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modProjection">
-	 * SPARQL Query Language: 9.2 Projection</a>
-	 * @return A list of {@link Variable}s to return from the query.
-	 */
-	public List<Variable> getSelection();
+    /**
+     * <p>Gets the list of {@link Variable}s to project the solution to.
+     * If {@link #isSelectAll()} returns <code>true</code> then
+     * this list contains all the variables from the query.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#select">
+     * SPARQL Query Language: 10.1 SELECT</a>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modProjection">
+     * SPARQL Query Language: 9.2 Projection</a>
+     * @return A list of {@link Variable}s to return from the query.
+     */
+    public List<Variable> getSelection();
 }

@@ -31,10 +31,10 @@ import javax.ws.rs.core.Response;
  */
 public abstract class MethodResponse extends Response {
 
-	/**
-	 * Return the method generating the response or the entity wrapped therein.
-	 *
-	 * @return the method
-	 */
-	public abstract Method getGeneratingMethod();
+    /**
+     * Return the method generating the response or the entity wrapped therein.
+     *
+     * @return the method
+     */
+    public abstract Method getGeneratingMethod();
 }

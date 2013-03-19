@@ -73,89 +73,89 @@ import java.util.Set;
 @Path("/admin/backup")
 public class Backup implements GlobalMenuItemsProvider {
 
-	final Logger logger = LoggerFactory.getLogger(Backup.class);
-	@Reference
-	private ScalaServerPagesService scalaServerPagesService;
-	private Set<ServiceRegistration> serviceRegistrations = new HashSet<ServiceRegistration>();
+    final Logger logger = LoggerFactory.getLogger(Backup.class);
+    @Reference
+    private ScalaServerPagesService scalaServerPagesService;
+    private Set<ServiceRegistration> serviceRegistrations = new HashSet<ServiceRegistration>();
 
-	/**
-	 * The activate method is called when SCR activates the component configuration.
-	 *
-	 * @param componentContext
-	 */
-	protected void activate(ComponentContext componentContext) {
-		URL templateURL = getClass().getResource("backup-management.ssp");
-		serviceRegistrations.add(scalaServerPagesService.registerScalaServerPage(templateURL, BACKUP.BackupAdminPage, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE));
-	}
+    /**
+     * The activate method is called when SCR activates the component configuration.
+     *
+     * @param componentContext
+     */
+    protected void activate(ComponentContext componentContext) {
+        URL templateURL = getClass().getResource("backup-management.ssp");
+        serviceRegistrations.add(scalaServerPagesService.registerScalaServerPage(templateURL, BACKUP.BackupAdminPage, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE));
+    }
 
-	protected void deactivate(ComponentContext context) {
-		for (ServiceRegistration r : serviceRegistrations) {
-			r.unregister();
-		}
-	}
+    protected void deactivate(ComponentContext context) {
+        for (ServiceRegistration r : serviceRegistrations) {
+            r.unregister();
+        }
+    }
 
-	/**
-	 * Get a zipped file containing all triple collections which the
-	 * user may access. The resource is accessible through the URI path
-	 * "/admin/backup/download".
-	 * The triple collections are serialized in N-Triples format before being
-	 * archived in a single zipped file.
-	 * A mapping of the names of the files in the archive to triple collection
-	 * names is available as well in the archive as a text file named
-	 * triplecollections.nt.
-	 *
-	 * @return a response that will cause the creation of a zipped file
-	 */
-	@GET
-	@Path("download")
-	@Produces("application/zip")
-	public Response download() {
-		AccessController.checkPermission(new BackupPermission());
-		return AccessController.doPrivileged(new PrivilegedAction<Response>() {
+    /**
+     * Get a zipped file containing all triple collections which the
+     * user may access. The resource is accessible through the URI path
+     * "/admin/backup/download".
+     * The triple collections are serialized in N-Triples format before being
+     * archived in a single zipped file.
+     * A mapping of the names of the files in the archive to triple collection
+     * names is available as well in the archive as a text file named
+     * triplecollections.nt.
+     *
+     * @return a response that will cause the creation of a zipped file
+     */
+    @GET
+    @Path("download")
+    @Produces("application/zip")
+    public Response download() {
+        AccessController.checkPermission(new BackupPermission());
+        return AccessController.doPrivileged(new PrivilegedAction<Response>() {
 
-			@Override
-			public Response run() {
-				ResponseBuilder responseBuilder = Response.status(Status.OK).
-						entity(Backup.this);
-				responseBuilder.header("Content-Disposition",
-						"attachment; filename=backup" + getCurrentDate() + ".zip");
-				return responseBuilder.build();
-			}
-		});
+            @Override
+            public Response run() {
+                ResponseBuilder responseBuilder = Response.status(Status.OK).
+                        entity(Backup.this);
+                responseBuilder.header("Content-Disposition",
+                        "attachment; filename=backup" + getCurrentDate() + ".zip");
+                return responseBuilder.build();
+            }
+        });
 
-	}
+    }
 
-	@GET
-	public GraphNode overviewPage() {
-		MGraph resultGraph = new SimpleMGraph();
-		GraphNode result = new GraphNode(new BNode(), resultGraph);
-		result.addProperty(RDF.type, BACKUP.BackupAdminPage);
-		result.addProperty(RDF.type, PLATFORM.HeadedPage);
-		return result;
-	}
+    @GET
+    public GraphNode overviewPage() {
+        MGraph resultGraph = new SimpleMGraph();
+        GraphNode result = new GraphNode(new BNode(), resultGraph);
+        result.addProperty(RDF.type, BACKUP.BackupAdminPage);
+        result.addProperty(RDF.type, PLATFORM.HeadedPage);
+        return result;
+    }
 
-	private String getCurrentDate() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-		Date date = new Date();
-		return dateFormat.format(date);
-	}
+    private String getCurrentDate() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
 
-	@Override
-	public Set<GlobalMenuItem> getMenuItems() {
-		//need backup or restore permission for the menu item to be shown
-		Set<GlobalMenuItem> result = new HashSet<GlobalMenuItem>();
-		try {
-			AccessController.checkPermission(new BackupPermission());
-		} catch (AccessControlException e) {
-			try {
-				AccessController.checkPermission(new RestorePermission());
-			} catch (AccessControlException e1) {
-				return result;
-			}
-		}
-		result.add(new GlobalMenuItem("/admin/backup",
-				"BCK", "Backup and Restore", 5, "Administration"));
-		return result;
-	}
+    @Override
+    public Set<GlobalMenuItem> getMenuItems() {
+        //need backup or restore permission for the menu item to be shown
+        Set<GlobalMenuItem> result = new HashSet<GlobalMenuItem>();
+        try {
+            AccessController.checkPermission(new BackupPermission());
+        } catch (AccessControlException e) {
+            try {
+                AccessController.checkPermission(new RestorePermission());
+            } catch (AccessControlException e1) {
+                return result;
+            }
+        }
+        result.add(new GlobalMenuItem("/admin/backup",
+                "BCK", "Backup and Restore", 5, "Administration"));
+        return result;
+    }
 }

@@ -35,73 +35,73 @@ import java.util.NoSuchElementException;
  */
 class PermutationIterator<T> implements Iterator<List<T>> {
 
-	private Iterator<List<T>> restIterator;
-	private List<T> list;
-	private List<T> next;
-	int posInList = 0; //the position of the last element of next returned list
-	//with list, this is the one excluded from restIterator
+    private Iterator<List<T>> restIterator;
+    private List<T> list;
+    private List<T> next;
+    int posInList = 0; //the position of the last element of next returned list
+    //with list, this is the one excluded from restIterator
 
-	PermutationIterator(List<T> list) {
-		this.list = Collections.unmodifiableList(list);
-		if (list.size() > 1) {
-			createRestList();
-		}
-		prepareNext();
-	}
+    PermutationIterator(List<T> list) {
+        this.list = Collections.unmodifiableList(list);
+        if (list.size() > 1) {
+            createRestList();
+        }
+        prepareNext();
+    }
 
-	@Override
-	public boolean hasNext() {
-		return next != null;
-	}
+    @Override
+    public boolean hasNext() {
+        return next != null;
+    }
 
-	@Override
-	public List<T> next() {
-		List<T> result = next;
-		if (result == null) {
-			throw new NoSuchElementException();
-		}
-		prepareNext();
-		return result;
-	}
+    @Override
+    public List<T> next() {
+        List<T> result = next;
+        if (result == null) {
+            throw new NoSuchElementException();
+        }
+        prepareNext();
+        return result;
+    }
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException("Not supported");
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException("Not supported");
+    }
 
-	private void createRestList() {
-		List<T> restList = new ArrayList<T>(list);
-		restList.remove(posInList);
-		restIterator = new PermutationIterator<T>(restList);
-	}
+    private void createRestList() {
+        List<T> restList = new ArrayList<T>(list);
+        restList.remove(posInList);
+        restIterator = new PermutationIterator<T>(restList);
+    }
 
-	private void prepareNext() {
-		next = getNext();
-		
-	}
-	private List<T> getNext() {
-		if (list.size() == 0) {
-			return null;
-		}
-		if (list.size() == 1) {
-			if (posInList++ == 0) {
-				return new ArrayList<T>(list);
-			} else {
-				return null;
-			}
-		} else {
-			if (!restIterator.hasNext()) {
-				if (posInList < (list.size()-1)) {
-					posInList++;
-					createRestList();
-				} else {
-					return null;
-				}
-			}
-			List<T> result = restIterator.next();
-			result.add(list.get(posInList));
-			return result;
-		}
-	}
+    private void prepareNext() {
+        next = getNext();
+        
+    }
+    private List<T> getNext() {
+        if (list.size() == 0) {
+            return null;
+        }
+        if (list.size() == 1) {
+            if (posInList++ == 0) {
+                return new ArrayList<T>(list);
+            } else {
+                return null;
+            }
+        } else {
+            if (!restIterator.hasNext()) {
+                if (posInList < (list.size()-1)) {
+                    posInList++;
+                    createRestList();
+                } else {
+                    return null;
+                }
+            }
+            List<T> result = restIterator.next();
+            result.add(list.get(posInList));
+            return result;
+        }
+    }
 
 }

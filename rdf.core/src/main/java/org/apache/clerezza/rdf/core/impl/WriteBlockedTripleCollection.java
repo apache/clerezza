@@ -41,91 +41,91 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  * @author tsuy
  */
 public class WriteBlockedTripleCollection extends AbstractCollection<Triple>
-		implements TripleCollection {
+        implements TripleCollection {
 
-	private TripleCollection triples;
+    private TripleCollection triples;
 
-	public WriteBlockedTripleCollection(TripleCollection triples) {
-		this.triples = triples;
-	}
+    public WriteBlockedTripleCollection(TripleCollection triples) {
+        this.triples = triples;
+    }
 
-	@Override
-	public int size() {
-		return triples.size();
-	}
+    @Override
+    public int size() {
+        return triples.size();
+    }
 
-	@Override
-	public Iterator<Triple> filter(final NonLiteral subject, final UriRef predicate, final Resource object) {
-		final Iterator<Triple> baseIter = triples.filter(subject, predicate, object);
-		return new Iterator<Triple>() {
-			
-			@Override
-			public boolean hasNext() {
-				return baseIter.hasNext();
-			}
+    @Override
+    public Iterator<Triple> filter(final NonLiteral subject, final UriRef predicate, final Resource object) {
+        final Iterator<Triple> baseIter = triples.filter(subject, predicate, object);
+        return new Iterator<Triple>() {
+            
+            @Override
+            public boolean hasNext() {
+                return baseIter.hasNext();
+            }
 
-			@Override
-			public Triple next() {
-				return baseIter.next();
-			}
+            @Override
+            public Triple next() {
+                return baseIter.next();
+            }
 
-			@Override
-			public void remove() {
-				throw new ReadOnlyException("remove");
-			}
+            @Override
+            public void remove() {
+                throw new ReadOnlyException("remove");
+            }
 
-			
-		};
-	}
+            
+        };
+    }
 
-	@Override
-	public boolean add(Triple e) {
-		throw new ReadOnlyException("add");
-	}
+    @Override
+    public boolean add(Triple e) {
+        throw new ReadOnlyException("add");
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends Triple> c) {
-		throw new ReadOnlyException("add all");
-	}
+    @Override
+    public boolean addAll(Collection<? extends Triple> c) {
+        throw new ReadOnlyException("add all");
+    }
 
-	@Override
-	public void clear() {
-		throw new ReadOnlyException("clear");
-	}
+    @Override
+    public void clear() {
+        throw new ReadOnlyException("clear");
+    }
 
-	@Override
-	public boolean remove(Object o) {
-		throw new ReadOnlyException("remove");
-	}
+    @Override
+    public boolean remove(Object o) {
+        throw new ReadOnlyException("remove");
+    }
 
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		throw new ReadOnlyException("remove all");
-	}
-	
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		throw new ReadOnlyException("retain all");
-	}
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new ReadOnlyException("remove all");
+    }
+    
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        throw new ReadOnlyException("retain all");
+    }
 
-	@Override
-	public void addGraphListener(GraphListener listener, FilterTriple filter,
-			long delay) {
-		triples.addGraphListener(listener, filter, delay);
-	}
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter,
+            long delay) {
+        triples.addGraphListener(listener, filter, delay);
+    }
 
-	@Override
-	public void addGraphListener(GraphListener listener, FilterTriple filter) {
-		triples.addGraphListener(listener, filter);
-	}
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter) {
+        triples.addGraphListener(listener, filter);
+    }
 
-	@Override
-	public void removeGraphListener(GraphListener listener) {
-		triples.removeGraphListener(listener);
-	}
+    @Override
+    public void removeGraphListener(GraphListener listener) {
+        triples.removeGraphListener(listener);
+    }
 
-	@Override
-	public Iterator iterator() {
-		return filter(null, null, null);
-	}
+    @Override
+    public Iterator iterator() {
+        return filter(null, null, null);
+    }
 }

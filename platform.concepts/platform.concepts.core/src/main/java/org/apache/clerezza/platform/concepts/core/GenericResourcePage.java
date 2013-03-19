@@ -62,50 +62,50 @@ import org.osgi.service.component.ComponentContext;
 @Path("/concepts/generic-resource")
 public class GenericResourcePage extends FileServer {
 
-	@Reference
-	protected ContentGraphProvider cgProvider;
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    protected ContentGraphProvider cgProvider;
+    @Reference
+    private RenderletManager renderletManager;
 
-	private RemoteConceptsDescriptionManager remoteConceptsDescriptionManager = null;
+    private RemoteConceptsDescriptionManager remoteConceptsDescriptionManager = null;
 
-	protected void activate(ComponentContext context)
-			throws URISyntaxException {
-		
-		configure(context.getBundleContext());
-		
-		URL template = getClass().getResource("generic-resource-page.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
-				CONCEPTS.GenericResourcePage, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    protected void activate(ComponentContext context)
+            throws URISyntaxException {
+        
+        configure(context.getBundleContext());
+        
+        URL template = getClass().getResource("generic-resource-page.ssp");
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(template.toURI().toString()),
+                CONCEPTS.GenericResourcePage, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		remoteConceptsDescriptionManager = new RemoteConceptsDescriptionManager();
-	}
+        remoteConceptsDescriptionManager = new RemoteConceptsDescriptionManager();
+    }
 
-	/**
-	 * Retrieves a resource and its associated concepts to be rendered with a template
-	 * registered for CONCEPTS.GenericResourcePage.
-	 * 
-	 * @param uri specifies the uri of a resource
-	 * 
-	 * @return GraphNode
-	 */
-	@GET
-	public GraphNode GenericResourcePage(@QueryParam("uri") UriRef uri,
-			@Context UriInfo uriInfo) {
+    /**
+     * Retrieves a resource and its associated concepts to be rendered with a template
+     * registered for CONCEPTS.GenericResourcePage.
+     * 
+     * @param uri specifies the uri of a resource
+     * 
+     * @return GraphNode
+     */
+    @GET
+    public GraphNode GenericResourcePage(@QueryParam("uri") UriRef uri,
+            @Context UriInfo uriInfo) {
 
-		GraphNode node = new GraphNode(new BNode(), new UnionMGraph(new SimpleMGraph(),
-				cgProvider.getContentGraph(),
-				remoteConceptsDescriptionManager.getRemoteConceptsDescriptionMGraph()));
-		node.addProperty(RDF.type, PLATFORM.HeadedPage);
-		node.addProperty(RDF.type, CONCEPTS.GenericResourcePage);
-		if (uri != null) {
-			node.addProperty(CONCEPTS.resource, uri);
-		} else {
-			throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-					.entity("No resource uri defined.").build());
-		}
-		return node;
-	}
+        GraphNode node = new GraphNode(new BNode(), new UnionMGraph(new SimpleMGraph(),
+                cgProvider.getContentGraph(),
+                remoteConceptsDescriptionManager.getRemoteConceptsDescriptionMGraph()));
+        node.addProperty(RDF.type, PLATFORM.HeadedPage);
+        node.addProperty(RDF.type, CONCEPTS.GenericResourcePage);
+        if (uri != null) {
+            node.addProperty(CONCEPTS.resource, uri);
+        } else {
+            throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+                    .entity("No resource uri defined.").build());
+        }
+        return node;
+    }
 }

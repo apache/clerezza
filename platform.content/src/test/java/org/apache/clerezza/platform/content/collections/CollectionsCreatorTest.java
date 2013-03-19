@@ -33,22 +33,22 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  */
 public class CollectionsCreatorTest{
 
-	private static UriRef root = new UriRef("http://localhost:8282/");
-	private UriRef foo = new UriRef("http://localhost:8282/foo/");
-	private UriRef fooResource = new UriRef("http://localhost:8282/foo/resource");
-	private UriRef fooTest = new UriRef("http://localhost:8282/foo/test/");
-	private UriRef fooTestResource4 = new UriRef("http://localhost:8282/foo/test/resource4");
-		
-	@Test
-	public void listPositionTest() throws Exception {
-		MGraph mGraph = new SimpleMGraph();
-		CollectionCreator collectionCreator = new CollectionCreator(mGraph);
-		collectionCreator.createContainingCollections(fooTestResource4);
-		Assert.assertTrue(mGraph.contains(new TripleImpl(fooTest, RDF.type, HIERARCHY.Collection)));
-		Assert.assertTrue(mGraph.contains(new TripleImpl(fooTestResource4, HIERARCHY.parent, fooTest)));
-		Assert.assertTrue(mGraph.contains(new TripleImpl(foo, HIERARCHY.parent, root)));
-		Assert.assertTrue(mGraph.contains(new TripleImpl(root, RDF.type, HIERARCHY.Collection)));
-		collectionCreator.createContainingCollections(fooResource);
-		Assert.assertTrue(mGraph.contains(new TripleImpl(fooResource, HIERARCHY.parent, foo)));
-	}
+    private static UriRef root = new UriRef("http://localhost:8282/");
+    private UriRef foo = new UriRef("http://localhost:8282/foo/");
+    private UriRef fooResource = new UriRef("http://localhost:8282/foo/resource");
+    private UriRef fooTest = new UriRef("http://localhost:8282/foo/test/");
+    private UriRef fooTestResource4 = new UriRef("http://localhost:8282/foo/test/resource4");
+        
+    @Test
+    public void listPositionTest() throws Exception {
+        MGraph mGraph = new SimpleMGraph();
+        CollectionCreator collectionCreator = new CollectionCreator(mGraph);
+        collectionCreator.createContainingCollections(fooTestResource4);
+        Assert.assertTrue(mGraph.contains(new TripleImpl(fooTest, RDF.type, HIERARCHY.Collection)));
+        Assert.assertTrue(mGraph.contains(new TripleImpl(fooTestResource4, HIERARCHY.parent, fooTest)));
+        Assert.assertTrue(mGraph.contains(new TripleImpl(foo, HIERARCHY.parent, root)));
+        Assert.assertTrue(mGraph.contains(new TripleImpl(root, RDF.type, HIERARCHY.Collection)));
+        collectionCreator.createContainingCollections(fooResource);
+        Assert.assertTrue(mGraph.contains(new TripleImpl(fooResource, HIERARCHY.parent, foo)));
+    }
 }

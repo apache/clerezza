@@ -28,11 +28,11 @@ import org.osgi.framework.FrameworkEvent;
  */
 public interface ShutdownListener {
 
-	/**
-	 * Notify listener of complete Clerezza shut down.
-	 *
-	 * @param event
-	 *		What event caused the shutdown. Note: event may be null.
-	 */
-	public void notify(FrameworkEvent event);
+    /**
+     * Notify listener of complete Clerezza shut down.
+     *
+     * @param event
+     *        What event caused the shutdown. Note: event may be null.
+     */
+    public void notify(FrameworkEvent event);
 }

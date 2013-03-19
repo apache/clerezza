@@ -69,169 +69,169 @@ import org.osgi.service.component.ComponentContext;
  */
 @Component
 @Services({
-	@Service(Object.class), 
-	@Service(CuriePrefixRecommender.class)
+    @Service(Object.class), 
+    @Service(CuriePrefixRecommender.class)
 })
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/curie-prefix/manager")
 public class CuriePrefixManager implements CuriePrefixRecommender {
-	private static final LiteralFactory literalFactory = LiteralFactory.getInstance();
+    private static final LiteralFactory literalFactory = LiteralFactory.getInstance();
 
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private RenderletManager renderletManager;
 
-	@Reference
-	private ContentGraphProvider cgProvider;
+    @Reference
+    private ContentGraphProvider cgProvider;
 
-	public void activate(ComponentContext context) throws URISyntaxException {
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource(
-				"curie-prefix-naked.ssp").toURI().toString()),
-				CURIE.CuriePrefixBinding, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource(
-				"curie-prefix-list-naked.ssp").toURI().toString()),
-				CURIE.CuriePrefixBindingList, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-	}
+    public void activate(ComponentContext context) throws URISyntaxException {
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(getClass().getResource(
+                "curie-prefix-naked.ssp").toURI().toString()),
+                CURIE.CuriePrefixBinding, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(getClass().getResource(
+                "curie-prefix-list-naked.ssp").toURI().toString()),
+                CURIE.CuriePrefixBindingList, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    }
 
-	@GET
-	@Path("new")
-	public GraphNode emptyPrefixBinding() {
-		MGraph resultMGraph = new SimpleMGraph();
-		GraphNode result = new GraphNode(new BNode(), resultMGraph);
-		result.addProperty(RDF.type, CURIE.CuriePrefixBinding);
-		result.addProperty(CURIE.prefix,
-				literalFactory.createTypedLiteral("foaf"));
-		result.addProperty(CURIE.binding,
-				literalFactory.createTypedLiteral("http://xmlns.com/foaf/0.1/"));
-		result.addProperty(RDF.type, PLATFORM.HeadedPage);
-		return result;
-	}
+    @GET
+    @Path("new")
+    public GraphNode emptyPrefixBinding() {
+        MGraph resultMGraph = new SimpleMGraph();
+        GraphNode result = new GraphNode(new BNode(), resultMGraph);
+        result.addProperty(RDF.type, CURIE.CuriePrefixBinding);
+        result.addProperty(CURIE.prefix,
+                literalFactory.createTypedLiteral("foaf"));
+        result.addProperty(CURIE.binding,
+                literalFactory.createTypedLiteral("http://xmlns.com/foaf/0.1/"));
+        result.addProperty(RDF.type, PLATFORM.HeadedPage);
+        return result;
+    }
 
-	/**
-	 * Saves a PrefixBiding, replacing an existing binding to the same value and
-	 * if oldBinding is not null then it is removed
-	 */
-	@POST
-	@Path("save")
-	public Response savePrefixBinding(@Context UriInfo uriInfo,
-			@FormParam("prefix") String prefix,
-			@FormParam("binding") String bindingValue,
-			 @FormParam("oldBinding") String oldBindingValue) {
-		LockableMGraph contentGraph = cgProvider.getContentGraph();
-		Lock l = contentGraph.getLock().writeLock();
-		l.lock();
-		
-		try {
-			NonLiteral binding = getBindingWithValue(bindingValue, contentGraph);
-			if (binding == null) {
-				binding = new BNode();
-			}
-			GraphNode bindingNode;
-			if (oldBindingValue != null) {
-				NonLiteral oldBinding = getBindingWithValue(oldBindingValue, contentGraph);
-				if (oldBinding != null) {
-					GraphNode oldBindingNode = new GraphNode(oldBinding, contentGraph);
-					oldBindingNode.replaceWith(binding);
-				}
-			}
-			bindingNode = new GraphNode(binding, contentGraph);
-			bindingNode.addProperty(RDF.type, CURIE.CuriePrefixBinding);
-			bindingNode.deleteProperties(CURIE.prefix);
-			bindingNode.addProperty(CURIE.prefix, literalFactory.createTypedLiteral(prefix));
-			bindingNode.deleteProperties(CURIE.binding);
-			bindingNode.addProperty(CURIE.binding, literalFactory.createTypedLiteral(bindingValue));
-		} finally {
-			l.unlock();
-		}
-		return RedirectUtil.createSeeOtherResponse("./", uriInfo);
-	}
+    /**
+     * Saves a PrefixBiding, replacing an existing binding to the same value and
+     * if oldBinding is not null then it is removed
+     */
+    @POST
+    @Path("save")
+    public Response savePrefixBinding(@Context UriInfo uriInfo,
+            @FormParam("prefix") String prefix,
+            @FormParam("binding") String bindingValue,
+             @FormParam("oldBinding") String oldBindingValue) {
+        LockableMGraph contentGraph = cgProvider.getContentGraph();
+        Lock l = contentGraph.getLock().writeLock();
+        l.lock();
+        
+        try {
+            NonLiteral binding = getBindingWithValue(bindingValue, contentGraph);
+            if (binding == null) {
+                binding = new BNode();
+            }
+            GraphNode bindingNode;
+            if (oldBindingValue != null) {
+                NonLiteral oldBinding = getBindingWithValue(oldBindingValue, contentGraph);
+                if (oldBinding != null) {
+                    GraphNode oldBindingNode = new GraphNode(oldBinding, contentGraph);
+                    oldBindingNode.replaceWith(binding);
+                }
+            }
+            bindingNode = new GraphNode(binding, contentGraph);
+            bindingNode.addProperty(RDF.type, CURIE.CuriePrefixBinding);
+            bindingNode.deleteProperties(CURIE.prefix);
+            bindingNode.addProperty(CURIE.prefix, literalFactory.createTypedLiteral(prefix));
+            bindingNode.deleteProperties(CURIE.binding);
+            bindingNode.addProperty(CURIE.binding, literalFactory.createTypedLiteral(bindingValue));
+        } finally {
+            l.unlock();
+        }
+        return RedirectUtil.createSeeOtherResponse("./", uriInfo);
+    }
 
-	@POST
-	@Path("delete")
-	public Response delete(@Context UriInfo uriInfo,
-			@FormParam("binding") String bindingValue) {
-		LockableMGraph contentGraph = cgProvider.getContentGraph();
-		Lock l = contentGraph.getLock().writeLock();
-		l.lock();
-		try {
-			NonLiteral binding = getBindingWithValue(bindingValue, contentGraph);
-			GraphNode bindingNode = new GraphNode(binding, contentGraph);
-			bindingNode.deleteProperty(RDF.type, CURIE.CuriePrefixBinding);
-			bindingNode.deleteProperties(CURIE.prefix);
-			bindingNode.deleteProperties(CURIE.binding);
-		} finally {
-			l.unlock();
-		}
-		return RedirectUtil.createSeeOtherResponse("./", uriInfo);
-	}
+    @POST
+    @Path("delete")
+    public Response delete(@Context UriInfo uriInfo,
+            @FormParam("binding") String bindingValue) {
+        LockableMGraph contentGraph = cgProvider.getContentGraph();
+        Lock l = contentGraph.getLock().writeLock();
+        l.lock();
+        try {
+            NonLiteral binding = getBindingWithValue(bindingValue, contentGraph);
+            GraphNode bindingNode = new GraphNode(binding, contentGraph);
+            bindingNode.deleteProperty(RDF.type, CURIE.CuriePrefixBinding);
+            bindingNode.deleteProperties(CURIE.prefix);
+            bindingNode.deleteProperties(CURIE.binding);
+        } finally {
+            l.unlock();
+        }
+        return RedirectUtil.createSeeOtherResponse("./", uriInfo);
+    }
 
-	@GET
-	public GraphNode list(@Context UriInfo uriInfo) {
-		TrailingSlash.enforcePresent(uriInfo);
-		TripleCollection resultGraph = new SimpleMGraph();
-		LockableMGraph contentGraph = cgProvider.getContentGraph();
-		GraphNode result = new GraphNode(new BNode(), new UnionMGraph(resultGraph, contentGraph));
-		RdfList list = new RdfList(result);		
-		Lock l = contentGraph.getLock().readLock();
-		l.lock();
-		try {
-			Iterator<Triple> greetings = contentGraph.filter(null, RDF.type, CURIE.CuriePrefixBinding);
-			while (greetings.hasNext()) {
-				list.add(greetings.next().getSubject());
-			}
-		} finally {
-			l.unlock();
-		}
-		result.addProperty(RDF.type, CURIE.CuriePrefixBindingList);
-		result.addProperty(RDF.type, PLATFORM.HeadedPage);
-		return result;
-	}
+    @GET
+    public GraphNode list(@Context UriInfo uriInfo) {
+        TrailingSlash.enforcePresent(uriInfo);
+        TripleCollection resultGraph = new SimpleMGraph();
+        LockableMGraph contentGraph = cgProvider.getContentGraph();
+        GraphNode result = new GraphNode(new BNode(), new UnionMGraph(resultGraph, contentGraph));
+        RdfList list = new RdfList(result);        
+        Lock l = contentGraph.getLock().readLock();
+        l.lock();
+        try {
+            Iterator<Triple> greetings = contentGraph.filter(null, RDF.type, CURIE.CuriePrefixBinding);
+            while (greetings.hasNext()) {
+                list.add(greetings.next().getSubject());
+            }
+        } finally {
+            l.unlock();
+        }
+        result.addProperty(RDF.type, CURIE.CuriePrefixBindingList);
+        result.addProperty(RDF.type, PLATFORM.HeadedPage);
+        return result;
+    }
 
-	@GET
-	@Path("get")
-	public GraphNode getSingle(@QueryParam("binding") String bindingValue) {
-		TripleCollection resultGraph = new SimpleMGraph();
-		LockableMGraph contentGraph = cgProvider.getContentGraph();
-		MGraph unionMGraph = new UnionMGraph(resultGraph, contentGraph);
-		Lock l = contentGraph.getLock().readLock();
-		l.lock();
-		try {
-			GraphNode result = new GraphNode(getBindingWithValue(bindingValue, contentGraph), unionMGraph);
-			result.addProperty(RDF.type, PLATFORM.HeadedPage);
-			return result;
-		} finally {
-			l.unlock();
-		}
-	}
+    @GET
+    @Path("get")
+    public GraphNode getSingle(@QueryParam("binding") String bindingValue) {
+        TripleCollection resultGraph = new SimpleMGraph();
+        LockableMGraph contentGraph = cgProvider.getContentGraph();
+        MGraph unionMGraph = new UnionMGraph(resultGraph, contentGraph);
+        Lock l = contentGraph.getLock().readLock();
+        l.lock();
+        try {
+            GraphNode result = new GraphNode(getBindingWithValue(bindingValue, contentGraph), unionMGraph);
+            result.addProperty(RDF.type, PLATFORM.HeadedPage);
+            return result;
+        } finally {
+            l.unlock();
+        }
+    }
 
-	private static NonLiteral getBindingWithValue(String bindingValue, LockableMGraph graph) {
-		Iterator<Triple> triples = graph.filter(null, CURIE.binding,
-				literalFactory.createTypedLiteral(bindingValue));
-		if (triples.hasNext()) {
-			return triples.next().getSubject();
-		} else {
-			return null;
-		}
-	}
+    private static NonLiteral getBindingWithValue(String bindingValue, LockableMGraph graph) {
+        Iterator<Triple> triples = graph.filter(null, CURIE.binding,
+                literalFactory.createTypedLiteral(bindingValue));
+        if (triples.hasNext()) {
+            return triples.next().getSubject();
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public String getRecommendedPrefix(String iriPrefix) {
-		LockableMGraph contentGraph = cgProvider.getContentGraph();
-		Lock l = contentGraph.getLock().readLock();
-		l.lock();
-		try {
-			NonLiteral binding = getBindingWithValue(iriPrefix, contentGraph);
-			if (binding == null) {
-				return null;
-			}
-			GraphNode graphNode = new GraphNode(binding, contentGraph);
-			return ((Literal)graphNode.getObjects(CURIE.prefix).next()).getLexicalForm();
-		} finally {
-			l.unlock();
-		}
-	}
+    @Override
+    public String getRecommendedPrefix(String iriPrefix) {
+        LockableMGraph contentGraph = cgProvider.getContentGraph();
+        Lock l = contentGraph.getLock().readLock();
+        l.lock();
+        try {
+            NonLiteral binding = getBindingWithValue(iriPrefix, contentGraph);
+            if (binding == null) {
+                return null;
+            }
+            GraphNode graphNode = new GraphNode(binding, contentGraph);
+            return ((Literal)graphNode.getObjects(CURIE.prefix).next()).getLexicalForm();
+        } finally {
+            l.unlock();
+        }
+    }
 
 }

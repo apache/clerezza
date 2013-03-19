@@ -31,20 +31,20 @@ import org.apache.clerezza.rdf.enrichment.Enricher.ResourceFilter;
  */
 public class OrConnector extends ResourceFilter {
 
-	private ResourceFilter[] baseFilters;
+    private ResourceFilter[] baseFilters;
 
-	public OrConnector(ResourceFilter... baseFilters) {
-		this.baseFilters = baseFilters;
-	}
+    public OrConnector(ResourceFilter... baseFilters) {
+        this.baseFilters = baseFilters;
+    }
 
-	@Override
-	public boolean accept(Resource resource, TripleCollection tc) {
-		for (ResourceFilter resourceFilter : baseFilters) {
-			if (resourceFilter.accept(resource, tc)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean accept(Resource resource, TripleCollection tc) {
+        for (ResourceFilter resourceFilter : baseFilters) {
+            if (resourceFilter.accept(resource, tc)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

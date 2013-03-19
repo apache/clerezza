@@ -39,47 +39,47 @@ import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
  * @author mir, reto
  */
 public class CallbackRendererImpl implements CallbackRenderer {
-	private List<MediaType> mediaTypeList;
-	private final RendererFactory manager;
-	private final GraphNodeProvider graphNodeProvider;
-	private final UriInfo uriInfo;
-	private final HttpHeaders requestHeaders;
-	private final MultivaluedMap<String, Object> responseHeaders;
-	private final Map<String, Object> sharedRenderingValue;
+    private List<MediaType> mediaTypeList;
+    private final RendererFactory manager;
+    private final GraphNodeProvider graphNodeProvider;
+    private final UriInfo uriInfo;
+    private final HttpHeaders requestHeaders;
+    private final MultivaluedMap<String, Object> responseHeaders;
+    private final Map<String, Object> sharedRenderingValue;
 
-	CallbackRendererImpl(RendererFactory manager, GraphNodeProvider graphNodeProvider, UriInfo uriInfo,
-						 HttpHeaders requestHeaders, MultivaluedMap<String, Object> responseHeaders, MediaType mediaType, Map<String, Object> sharedRenderingValue) {
-		this.uriInfo = uriInfo;
-		this.requestHeaders = requestHeaders;
-		this.responseHeaders = responseHeaders;
-		this.mediaTypeList = Collections.singletonList(mediaType);
-		this.manager = manager;
-		this.graphNodeProvider = graphNodeProvider;
-		this.sharedRenderingValue = sharedRenderingValue;
-	}
-	
-	@Override
-	public void render(GraphNode resource, GraphNode context, String mode, 
-			OutputStream os) throws IOException {
-		Renderer renderer = manager.createRenderer(resource, mode, mediaTypeList);
-		if (renderer == null) {
-			throw new RuntimeException("no renderer could be created for "+
-					resource+" (in "+resource.getNodeContext()+"), "+mode+","+mediaTypeList);
-		}
-		renderer.render(resource, context, mode, uriInfo, requestHeaders, responseHeaders,
-				sharedRenderingValue, os);
-	}
+    CallbackRendererImpl(RendererFactory manager, GraphNodeProvider graphNodeProvider, UriInfo uriInfo,
+                         HttpHeaders requestHeaders, MultivaluedMap<String, Object> responseHeaders, MediaType mediaType, Map<String, Object> sharedRenderingValue) {
+        this.uriInfo = uriInfo;
+        this.requestHeaders = requestHeaders;
+        this.responseHeaders = responseHeaders;
+        this.mediaTypeList = Collections.singletonList(mediaType);
+        this.manager = manager;
+        this.graphNodeProvider = graphNodeProvider;
+        this.sharedRenderingValue = sharedRenderingValue;
+    }
+    
+    @Override
+    public void render(GraphNode resource, GraphNode context, String mode, 
+            OutputStream os) throws IOException {
+        Renderer renderer = manager.createRenderer(resource, mode, mediaTypeList);
+        if (renderer == null) {
+            throw new RuntimeException("no renderer could be created for "+
+                    resource+" (in "+resource.getNodeContext()+"), "+mode+","+mediaTypeList);
+        }
+        renderer.render(resource, context, mode, uriInfo, requestHeaders, responseHeaders,
+                sharedRenderingValue, os);
+    }
 
-	@Override
-	public void render(final UriRef resource, GraphNode context, String mode,
-			OutputStream os) throws IOException {
-		final GraphNode resourceNode = AccessController.doPrivileged( new PrivilegedAction<GraphNode>() {
-					@Override
-					public GraphNode run() {
-						return graphNodeProvider.get(resource);
-					}
-				});
-		render(resourceNode, context, mode, os);
-	}
+    @Override
+    public void render(final UriRef resource, GraphNode context, String mode,
+            OutputStream os) throws IOException {
+        final GraphNode resourceNode = AccessController.doPrivileged( new PrivilegedAction<GraphNode>() {
+                    @Override
+                    public GraphNode run() {
+                        return graphNodeProvider.get(resource);
+                    }
+                });
+        render(resourceNode, context, mode, os);
+    }
 
 }

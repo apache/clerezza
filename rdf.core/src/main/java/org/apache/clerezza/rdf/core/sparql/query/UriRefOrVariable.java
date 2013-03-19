@@ -27,17 +27,17 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class UriRefOrVariable extends ResourceOrVariable {
 
-	public UriRefOrVariable(Variable variable) {
-		super(variable);
-	}
+    public UriRefOrVariable(Variable variable) {
+        super(variable);
+    }
 
-	public UriRefOrVariable(UriRef resource) {
-		super(resource);
-	}
+    public UriRefOrVariable(UriRef resource) {
+        super(resource);
+    }
 
-	@Override
-	public UriRef getResource() {
-		return (UriRef)super.getResource();
-	}
+    @Override
+    public UriRef getResource() {
+        return (UriRef)super.getResource();
+    }
 
 }

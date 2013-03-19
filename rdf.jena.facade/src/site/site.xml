@@ -22,9 +22,9 @@
 -->
 
 <project>
-	<body>
-		<menu name="Documentation">
-			<item name="Sparql Howto" href="documentation/sparql-howto.xhtml"/>
-		</menu>
-	</body>
+    <body>
+        <menu name="Documentation">
+            <item name="Sparql Howto" href="documentation/sparql-howto.xhtml"/>
+        </menu>
+    </body>
 </project>

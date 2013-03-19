@@ -27,21 +27,21 @@ package org.apache.clerezza.rdf.core;
  *
  */
 public interface PlainLiteral extends Literal {
-	public Language getLanguage();
-	
-	/** 
-	 * Returns true if <code>obj</code> is an instance of 
-	 * <code>PlainLiteral</code> for which the lexical form and the language 
-	 * are equals to the ones of this instance, false otherwise
-	 * 
-	 * @return true if obj == this
-	 */
-	public boolean equals(Object obj);
-	
-	/**
-	 * Returns the hash code of the lexical form plus the hash code of the language
-	 * 
-	 * @return hash code
-	 */
-	public int hashCode();
+    public Language getLanguage();
+    
+    /** 
+     * Returns true if <code>obj</code> is an instance of 
+     * <code>PlainLiteral</code> for which the lexical form and the language 
+     * are equals to the ones of this instance, false otherwise
+     * 
+     * @return true if obj == this
+     */
+    public boolean equals(Object obj);
+    
+    /**
+     * Returns the hash code of the lexical form plus the hash code of the language
+     * 
+     * @return hash code
+     */
+    public int hashCode();
 }

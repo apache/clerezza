@@ -21,23 +21,23 @@
 -->
 
     <modelVersion>4.0.0</modelVersion>
-	<parent>
+    <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
         <version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+        <relativePath>../parent</relativePath>
     </parent>
     <packaging>bundle</packaging>
     <groupId>org.apache.clerezza.ext</groupId>
     <artifactId>com.hp.hpl.jena</artifactId>
-  	<version>0.7-SNAPSHOT</version>
+      <version>0.7-SNAPSHOT</version>
     <name>Clerezza Ext - Jena OSGi Bundle</name>
     <description>All required dependencies for Jena</description>
     <dependencies>
-		<dependency>
-			<groupId>com.hp.hpl.jena</groupId>
-			<artifactId>arq</artifactId>
-			<exclusions>
+        <dependency>
+            <groupId>com.hp.hpl.jena</groupId>
+            <artifactId>arq</artifactId>
+            <exclusions>
                 <exclusion>
                     <artifactId>xmlParserAPIs</artifactId>
                     <groupId>xerces</groupId>
@@ -47,7 +47,7 @@
                     <groupId>xerces</groupId>
                 </exclusion>
             </exclusions>
-		</dependency>
+        </dependency>
         <dependency>
             <groupId>com.hp.hpl.jena</groupId>
             <artifactId>jena</artifactId>
@@ -62,7 +62,7 @@
                 </exclusion> 
             </exclusions> 
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.9.1</version>
@@ -78,18 +78,18 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Embed-Dependency>*;artifactId=!commons-logging</Embed-Dependency>
+                        <Embed-Dependency>*;artifactId=!commons-logging</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-						<Import-Package>!com.hp.hpl.jena.*.test,
-						!org.apache.xml.resolver.*,!sun.*,
-						!com.sun.msv.*,
-						!com.sun.jdmk.*,
-						!javax.jms.*,
-						!org.relaxng.*,
-						!com.ibm.uvm.tools,
-						!javax.jmdns,
-						*</Import-Package>
-						<Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
+                        <Import-Package>!com.hp.hpl.jena.*.test,
+                        !org.apache.xml.resolver.*,!sun.*,
+                        !com.sun.msv.*,
+                        !com.sun.jdmk.*,
+                        !javax.jms.*,
+                        !org.relaxng.*,
+                        !com.ibm.uvm.tools,
+                        !javax.jmdns,
+                        *</Import-Package>
+                        <Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

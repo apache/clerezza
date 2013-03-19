@@ -35,29 +35,29 @@ import org.apache.clerezza.rdf.core.test.TcProviderTest;
  */
 public class TdbTcProviderTest extends TcProviderTest {
 
-	private File tempFile;
-	private TdbTcProvider lastInstance;
+    private File tempFile;
+    private TdbTcProvider lastInstance;
 
-	@Before
-	public void setupDirectory() throws IOException {
-		tempFile = File.createTempFile("tdbtest", null);
-		tempFile.delete();
-		tempFile.mkdirs();
-	}
+    @Before
+    public void setupDirectory() throws IOException {
+        tempFile = File.createTempFile("tdbtest", null);
+        tempFile.delete();
+        tempFile.mkdirs();
+    }
 
-	@After
-	public void cleanUp() {
-		TdbTcProvider.delete(tempFile);
-	}
+    @After
+    public void cleanUp() {
+        TdbTcProvider.delete(tempFile);
+    }
 
 
-	@Override
-	protected TcProvider getInstance() {
-		if (lastInstance != null) {
-			lastInstance.deactivate(null);
-		}
-		lastInstance =  new TdbTcProvider(tempFile);
-		lastInstance.activate(null);
-		return lastInstance;
-	}
+    @Override
+    protected TcProvider getInstance() {
+        if (lastInstance != null) {
+            lastInstance.deactivate(null);
+        }
+        lastInstance =  new TdbTcProvider(tempFile);
+        lastInstance.activate(null);
+        return lastInstance;
+    }
 }

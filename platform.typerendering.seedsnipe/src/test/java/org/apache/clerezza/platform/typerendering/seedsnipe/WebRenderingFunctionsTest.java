@@ -38,76 +38,76 @@ import org.apache.clerezza.templating.RenderingFunction;
  * 
  */
 public class WebRenderingFunctionsTest {
-	@Test
-	public void dateTest() throws IOException {
+    @Test
+    public void dateTest() throws IOException {
 
-		Date date = new Date();
-		TypedLiteral dateLiteral = LiteralFactory.getInstance()
-				.createTypedLiteral(date);
+        Date date = new Date();
+        TypedLiteral dateLiteral = LiteralFactory.getInstance()
+                .createTypedLiteral(date);
 
-		WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
-				null, null, null, null);
-		RenderingFunction<Object, String> dateFunction = webRenderingFunctions
-				.getNamedFunctions().get("date");
+        WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
+                null, null, null, null);
+        RenderingFunction<Object, String> dateFunction = webRenderingFunctions
+                .getNamedFunctions().get("date");
 
-		final String formatPattern = "EEE MMM dd HH:mm:ss z yyyy";
-		final DateFormat dateFormat = new SimpleDateFormat(formatPattern);
-		Assert.assertEquals(dateFormat.format(date), dateFunction.process(dateLiteral,
-				formatPattern));
+        final String formatPattern = "EEE MMM dd HH:mm:ss z yyyy";
+        final DateFormat dateFormat = new SimpleDateFormat(formatPattern);
+        Assert.assertEquals(dateFormat.format(date), dateFunction.process(dateLiteral,
+                formatPattern));
 
-	}
+    }
 
-	@Test
-	public void substringTest() throws IOException {
+    @Test
+    public void substringTest() throws IOException {
 
-		WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
-				null, null, null, null);
-		RenderingFunction<Object, String> function = webRenderingFunctions
-				.getNamedFunctions().get("substring");
+        WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
+                null, null, null, null);
+        RenderingFunction<Object, String> function = webRenderingFunctions
+                .getNamedFunctions().get("substring");
 
-		//limits
-		Assert.assertEquals("test", function.process("test", 0, 4));
-		Assert.assertEquals("", function.process("test", 0, 0));
-		Assert.assertEquals("", function.process("test", 4, 4));
+        //limits
+        Assert.assertEquals("test", function.process("test", 0, 4));
+        Assert.assertEquals("", function.process("test", 0, 0));
+        Assert.assertEquals("", function.process("test", 4, 4));
 
-		//normal use
-		Assert.assertEquals("te", function.process("test", 0, 2));
-		Assert.assertEquals("st", function.process("test", 2, 4));
-		Assert.assertEquals("es", function.process("test", 1, 3));
+        //normal use
+        Assert.assertEquals("te", function.process("test", 0, 2));
+        Assert.assertEquals("st", function.process("test", 2, 4));
+        Assert.assertEquals("es", function.process("test", 1, 3));
 
-		//wrong indices
-		Assert.assertEquals("test", function.process("test", -2, 4));
-		Assert.assertEquals("test", function.process("test", 0, 6));
-		Assert.assertEquals("test", function.process("test", -2, 6));
+        //wrong indices
+        Assert.assertEquals("test", function.process("test", -2, 4));
+        Assert.assertEquals("test", function.process("test", 0, 6));
+        Assert.assertEquals("test", function.process("test", -2, 6));
 
-		//missing indices
-		Assert.assertEquals("test", function.process("test", 0));
-		Assert.assertEquals("st", function.process("test", 2));
-		Assert.assertEquals("test", function.process("test"));
+        //missing indices
+        Assert.assertEquals("test", function.process("test", 0));
+        Assert.assertEquals("st", function.process("test", 2));
+        Assert.assertEquals("test", function.process("test"));
 
-		//non standard input
-		Assert.assertEquals("50", function.process(5005, "0", "2"));
-	}
-	
-	@Test
-	public void lexicalFormFunctionTest() throws IOException {
-		WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
-				null, null, null, null);
-		RenderingFunction<Literal, String> function = webRenderingFunctions
-				.getNamedFunctions().get("lexicalForm");
-		
-		Assert.assertEquals("test", function.process(
-				LiteralFactory.getInstance().createTypedLiteral("test")));
-	}
-	
-	@Test
-	public void containsTest() throws IOException {
-		WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
-				null, null, null, null);
-		RenderingFunction<Object, Boolean> function = webRenderingFunctions
-				.getNamedFunctions().get("contains");
-		UriRef testObject = new UriRef("http://example.org/bla#fooBar");
-		Assert.assertTrue(function.process(testObject, "bla"));
-		Assert.assertFalse(function.process(testObject, "hello"));
-	}
+        //non standard input
+        Assert.assertEquals("50", function.process(5005, "0", "2"));
+    }
+    
+    @Test
+    public void lexicalFormFunctionTest() throws IOException {
+        WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
+                null, null, null, null);
+        RenderingFunction<Literal, String> function = webRenderingFunctions
+                .getNamedFunctions().get("lexicalForm");
+        
+        Assert.assertEquals("test", function.process(
+                LiteralFactory.getInstance().createTypedLiteral("test")));
+    }
+    
+    @Test
+    public void containsTest() throws IOException {
+        WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
+                null, null, null, null);
+        RenderingFunction<Object, Boolean> function = webRenderingFunctions
+                .getNamedFunctions().get("contains");
+        UriRef testObject = new UriRef("http://example.org/bla#fooBar");
+        Assert.assertTrue(function.process(testObject, "bla"));
+        Assert.assertFalse(function.process(testObject, "hello"));
+    }
 }

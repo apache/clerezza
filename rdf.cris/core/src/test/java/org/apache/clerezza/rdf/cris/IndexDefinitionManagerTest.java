@@ -41,49 +41,49 @@ import org.junit.Test;
 public class IndexDefinitionManagerTest {
 
 
-	private void createDefinition(UriRef rdfType, List<UriRef> properties, MGraph manuallyCreatedGraph) {
-			GraphNode node = new GraphNode(new BNode(), manuallyCreatedGraph);
-			node.addProperty(RDF.type, CRIS.IndexDefinition);
-			node.addProperty(CRIS.indexedType, rdfType);
-			for (UriRef p : properties) {
-				node.addProperty(CRIS.indexedProperty, p);
-			}
-		}
+    private void createDefinition(UriRef rdfType, List<UriRef> properties, MGraph manuallyCreatedGraph) {
+            GraphNode node = new GraphNode(new BNode(), manuallyCreatedGraph);
+            node.addProperty(RDF.type, CRIS.IndexDefinition);
+            node.addProperty(CRIS.indexedType, rdfType);
+            for (UriRef p : properties) {
+                node.addProperty(CRIS.indexedProperty, p);
+            }
+        }
 
-	@Test
-	public void createDefinitionGraph() {
+    @Test
+    public void createDefinitionGraph() {
    
     
 
     MGraph indexManagerGraph = new SimpleMGraph();
     IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(indexManagerGraph);
-	List<UriRef> properties = new java.util.ArrayList<UriRef>();
-	properties.add(FOAF.firstName);
-	properties.add(FOAF.lastName);
+    List<UriRef> properties = new java.util.ArrayList<UriRef>();
+    properties.add(FOAF.firstName);
+    properties.add(FOAF.lastName);
     indexDefinitionManager.addDefinition(FOAF.Person, properties);
-	List<UriRef> list = new ArrayList<UriRef>();
-	list.add(FOAF.firstName);
-	list.add(FOAF.lastName);
+    List<UriRef> list = new ArrayList<UriRef>();
+    list.add(FOAF.firstName);
+    list.add(FOAF.lastName);
 
-	 MGraph manuallyCreatedGraph = new SimpleMGraph();
-	createDefinition(FOAF.Person, list, manuallyCreatedGraph);
-	Assert.assertEquals(manuallyCreatedGraph.getGraph(), indexManagerGraph.getGraph());
-	}
+     MGraph manuallyCreatedGraph = new SimpleMGraph();
+    createDefinition(FOAF.Person, list, manuallyCreatedGraph);
+    Assert.assertEquals(manuallyCreatedGraph.getGraph(), indexManagerGraph.getGraph());
+    }
 
   @Test
-	public void createJoinIndexProperty() {
+    public void createJoinIndexProperty() {
     //import VirtualProperties._
     MGraph indexManagerGraph = new SimpleMGraph();
     IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(indexManagerGraph);
-	List<VirtualProperty> predicates = new java.util.ArrayList<VirtualProperty>();
-	predicates.add(new PropertyHolder(FOAF.firstName));
-	predicates.add(new PropertyHolder(FOAF.lastName));
+    List<VirtualProperty> predicates = new java.util.ArrayList<VirtualProperty>();
+    predicates.add(new PropertyHolder(FOAF.firstName));
+    predicates.add(new PropertyHolder(FOAF.lastName));
 
-	List<VirtualProperty>  properties = new java.util.ArrayList<VirtualProperty>();
-	properties.add(new JoinVirtualProperty(predicates));
+    List<VirtualProperty>  properties = new java.util.ArrayList<VirtualProperty>();
+    properties.add(new JoinVirtualProperty(predicates));
     indexDefinitionManager.addDefinitionVirtual(FOAF.Person, properties);
     Iterator<Triple> typeStmtIter = indexManagerGraph.filter(null, RDF.type, CRIS.JoinVirtualProperty);
     Assert.assertTrue(typeStmtIter.hasNext());
-		//Assert.assertEquals(manuallyCreatedGraph.getGraph, indexManagerGraph.getGraph)
-	}
+        //Assert.assertEquals(manuallyCreatedGraph.getGraph, indexManagerGraph.getGraph)
+    }
 }

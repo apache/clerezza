@@ -28,10 +28,10 @@ package org.apache.clerezza.rdf.core.sparql.query;
  */
 public interface OrderCondition {
 
-	public Expression getExpression();
+    public Expression getExpression();
 
-	/**
-	 * @return <code>true</code> if ascending, <code>false</code> if descending
-	 */
-	public boolean isAscending();
+    /**
+     * @return <code>true</code> if ascending, <code>false</code> if descending
+     */
+    public boolean isAscending();
 }

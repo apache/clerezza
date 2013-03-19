@@ -39,64 +39,64 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class RemoteConceptsDescriptionManager {
 
-	private UriRef REMOTE_CONCEPTS_DESCRIPTION_MGRAPH =
-			new UriRef("urn:x-localinstance:/remote.concepts.description");
+    private UriRef REMOTE_CONCEPTS_DESCRIPTION_MGRAPH =
+            new UriRef("urn:x-localinstance:/remote.concepts.description");
 
-	/**
-	 * Stores SKOS:prefLabel and RDFS.comment of concepts available in the
-	 * specified Graph.
-	 *
-	 * @param graph
-	 *		the Graph which contains concepts and their descriptions.
-	 */
-	void storeConceptsDescription(Graph graph) {
-		MGraph remoteConceptsDescriptionMGraph =
-				getRemoteConceptsDescriptionMGraph();
+    /**
+     * Stores SKOS:prefLabel and RDFS.comment of concepts available in the
+     * specified Graph.
+     *
+     * @param graph
+     *        the Graph which contains concepts and their descriptions.
+     */
+    void storeConceptsDescription(Graph graph) {
+        MGraph remoteConceptsDescriptionMGraph =
+                getRemoteConceptsDescriptionMGraph();
 
-		Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
-		while (concepts.hasNext()) {
-			UriRef concept = (UriRef) concepts.next().getSubject();
-			copyConceptDescription(new GraphNode(concept, graph),
-					new GraphNode(concept, remoteConceptsDescriptionMGraph));
-		}
-	}
+        Iterator<Triple> concepts = graph.filter(null, RDF.type, SKOS.Concept);
+        while (concepts.hasNext()) {
+            UriRef concept = (UriRef) concepts.next().getSubject();
+            copyConceptDescription(new GraphNode(concept, graph),
+                    new GraphNode(concept, remoteConceptsDescriptionMGraph));
+        }
+    }
 
-	/**
-	 * This method creates an {@link MGraph} to store concepts' descriptions
-	 * if this graph does not already exist.
-	 *
-	 * @return
-	 *		an {@link MGraph}
-	 */
-	public MGraph getRemoteConceptsDescriptionMGraph() {
-		MGraph remoteConceptsDescriptionMGraph = null;
-		TcManager tcManager = TcManager.getInstance();
-		try {
-			remoteConceptsDescriptionMGraph =
-					tcManager.getMGraph(REMOTE_CONCEPTS_DESCRIPTION_MGRAPH);
-		} catch (NoSuchEntityException nsee) {
-			remoteConceptsDescriptionMGraph =
-					tcManager.createMGraph(REMOTE_CONCEPTS_DESCRIPTION_MGRAPH);
-		}
-		return remoteConceptsDescriptionMGraph;
-	}
+    /**
+     * This method creates an {@link MGraph} to store concepts' descriptions
+     * if this graph does not already exist.
+     *
+     * @return
+     *        an {@link MGraph}
+     */
+    public MGraph getRemoteConceptsDescriptionMGraph() {
+        MGraph remoteConceptsDescriptionMGraph = null;
+        TcManager tcManager = TcManager.getInstance();
+        try {
+            remoteConceptsDescriptionMGraph =
+                    tcManager.getMGraph(REMOTE_CONCEPTS_DESCRIPTION_MGRAPH);
+        } catch (NoSuchEntityException nsee) {
+            remoteConceptsDescriptionMGraph =
+                    tcManager.createMGraph(REMOTE_CONCEPTS_DESCRIPTION_MGRAPH);
+        }
+        return remoteConceptsDescriptionMGraph;
+    }
 
-	private void copyConceptDescription(GraphNode sourceGraphNode,
-			GraphNode destinationGraphNode) {
+    private void copyConceptDescription(GraphNode sourceGraphNode,
+            GraphNode destinationGraphNode) {
 
-		destinationGraphNode.deleteNodeContext();
+        destinationGraphNode.deleteNodeContext();
 
-		Iterator<Literal> prefLabelStatements =
-				sourceGraphNode.getLiterals(SKOS.prefLabel);
-		if (prefLabelStatements.hasNext()) {
-			destinationGraphNode.addProperty(SKOS.prefLabel,
-					prefLabelStatements.next());
-		}
-		Iterator<Literal> commentStatements =
-				sourceGraphNode.getLiterals(RDFS.comment);
-		while (commentStatements.hasNext()) {
-			destinationGraphNode.addProperty(RDFS.comment,
-					commentStatements.next());
-		}
-	}
+        Iterator<Literal> prefLabelStatements =
+                sourceGraphNode.getLiterals(SKOS.prefLabel);
+        if (prefLabelStatements.hasNext()) {
+            destinationGraphNode.addProperty(SKOS.prefLabel,
+                    prefLabelStatements.next());
+        }
+        Iterator<Literal> commentStatements =
+                sourceGraphNode.getLiterals(RDFS.comment);
+        while (commentStatements.hasNext()) {
+            destinationGraphNode.addProperty(RDFS.comment,
+                    commentStatements.next());
+        }
+    }
 }

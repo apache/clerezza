@@ -34,43 +34,43 @@ import org.slf4j.LoggerFactory;
  */
 class ContentLengthSettingByteChannel implements WritableByteChannel {
 
-	final static private Logger logger = LoggerFactory.getLogger(ContentLengthSettingByteChannel.class);
-	private WrappedResponse wrappedResponse;
-	private WritableByteChannel wrappedByteChannel;
-	private boolean contetLengthIsSet = false;
+    final static private Logger logger = LoggerFactory.getLogger(ContentLengthSettingByteChannel.class);
+    private WrappedResponse wrappedResponse;
+    private WritableByteChannel wrappedByteChannel;
+    private boolean contetLengthIsSet = false;
 
-	ContentLengthSettingByteChannel(WritableByteChannel byteChannel,
-			WrappedResponse wrappedResponse) {
-		this.wrappedByteChannel = byteChannel;
-		this.wrappedResponse = wrappedResponse;
-	}
+    ContentLengthSettingByteChannel(WritableByteChannel byteChannel,
+            WrappedResponse wrappedResponse) {
+        this.wrappedByteChannel = byteChannel;
+        this.wrappedResponse = wrappedResponse;
+    }
 
-	@Override
-	public int write(ByteBuffer bb) throws IOException {
-		if (!contetLengthIsSet && bb.remaining() > 0) {
-			try {
-				wrappedResponse.setContentLengthIfNoConversion();
-				contetLengthIsSet = true;
-			} catch (HandlerException ex) {
-				logger.error("Exception {}", ex.toString(), ex);
-			}
-		}
-		return wrappedByteChannel.write(bb);
-	}
+    @Override
+    public int write(ByteBuffer bb) throws IOException {
+        if (!contetLengthIsSet && bb.remaining() > 0) {
+            try {
+                wrappedResponse.setContentLengthIfNoConversion();
+                contetLengthIsSet = true;
+            } catch (HandlerException ex) {
+                logger.error("Exception {}", ex.toString(), ex);
+            }
+        }
+        return wrappedByteChannel.write(bb);
+    }
 
-	@Override
-	public boolean isOpen() {
-		return wrappedByteChannel.isOpen();
-
-
+    @Override
+    public boolean isOpen() {
+        return wrappedByteChannel.isOpen();
 
 
-	}
-
-	@Override
-	public void close() throws IOException {
-		wrappedByteChannel.close();
 
 
-	}
+    }
+
+    @Override
+    public void close() throws IOException {
+        wrappedByteChannel.close();
+
+
+    }
 }

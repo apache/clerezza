@@ -27,40 +27,40 @@ import org.apache.clerezza.permissiondescriptions.PermissionInfo;
  * @author reto
  */
 @PermissionInfo(value="Concept Provider Manager Access Permission", description="Grants access " +
-	"to the Concept Provider Manager page")
+    "to the Concept Provider Manager page")
 public class ConceptProviderManagerAppPermission extends Permission {
 
-	public ConceptProviderManagerAppPermission() {
-		super("Graph Management permission");
-	}
+    public ConceptProviderManagerAppPermission() {
+        super("Graph Management permission");
+    }
 
-	/**
-	 *
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public ConceptProviderManagerAppPermission(String target, String actions) {
-		super("Graph Management permission");
-	}
+    /**
+     *
+     * @param target ignored
+     * @param action ignored
+     */
+    public ConceptProviderManagerAppPermission(String target, String actions) {
+        super("Graph Management permission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 77985;
-	}
+    @Override
+    public int hashCode() {
+        return 77985;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 
 }

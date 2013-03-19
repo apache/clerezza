@@ -30,19 +30,19 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class FunctionCall implements Expression {
 
-	private final UriRef name;
-	private final List<Expression> arguments;
+    private final UriRef name;
+    private final List<Expression> arguments;
 
-	public FunctionCall(UriRef name, List<Expression> arguments) {
-		this.name = name;
-		this.arguments = arguments;
-	}
+    public FunctionCall(UriRef name, List<Expression> arguments) {
+        this.name = name;
+        this.arguments = arguments;
+    }
 
-	public UriRef getName() {
-		return name;
-	};
+    public UriRef getName() {
+        return name;
+    };
 
-	public List<Expression> getArguements() {
-		return arguments;
-	}
+    public List<Expression> getArguements() {
+        return arguments;
+    }
 }

@@ -25,17 +25,17 @@ package org.apache.clerezza.rdf.core.sparql.query;
  * @author hasan
  */
 public abstract class AbstractOperation implements Expression {
-	private String operator;
+    private String operator;
 
-	public AbstractOperation(String operator) {
-		this.operator = operator;
-	}
+    public AbstractOperation(String operator) {
+        this.operator = operator;
+    }
 
-	/**
-	 * A string representation of the operator
-	 * @return The operator as a string
-	 */
-	public String getOperatorString() {
-		return operator;
-	}
+    /**
+     * A string representation of the operator
+     * @return The operator as a string
+     */
+    public String getOperatorString() {
+        return operator;
+    }
 }

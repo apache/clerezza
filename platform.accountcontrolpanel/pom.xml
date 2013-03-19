@@ -20,22 +20,22 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.clerezza</groupId>
-		<artifactId>clerezza</artifactId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>platform.accountcontrolpanel</artifactId>
-	<packaging>pom</packaging>
-	<version>0.10-SNAPSHOT</version>
-	<name>Clerezza - Platform Account Control Panel</name>
-	<description>A web interface that provides functions to configure the account of a platform user.</description>
-	
-	<modules>
-		<module>platform.accountcontrolpanel.ontologies</module>
-		<module>platform.accountcontrolpanel.core</module>
-	</modules>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>clerezza</artifactId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>platform.accountcontrolpanel</artifactId>
+    <packaging>pom</packaging>
+    <version>0.10-SNAPSHOT</version>
+    <name>Clerezza - Platform Account Control Panel</name>
+    <description>A web interface that provides functions to configure the account of a platform user.</description>
+    
+    <modules>
+        <module>platform.accountcontrolpanel.ontologies</module>
+        <module>platform.accountcontrolpanel.core</module>
+    </modules>
 </project>

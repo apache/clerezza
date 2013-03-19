@@ -28,38 +28,38 @@ import org.apache.clerezza.rdf.core.TripleCollection;
  *
  */
 public interface MetaDataProcessor {
-	
-	/**
-	 * Extract IPTC meta data from a media file.
-	 * 
-	 * @param mediaFile  the media file
-	 * @return  IPTC meta data
-	 */
-	public MetaData<IptcDataSet> extractIPTC(byte[] mediaFile);
-	
-	/**
-	 * Extract EXIF meta data from a media file.
-	 * 
-	 * @param mediaFile  the media file
-	 * @return  EXIF meta data
-	 */
-	public MetaData<ExifTagDataSet> extractEXIF(byte[] mediaFile);
-	
-	/**
-	 * Extract XMP meta data from a media file.
-	 * 
-	 * @param mediaFile  the media file
-	 * @return  XMP meta data
-	 */
-	public TripleCollection extractXMP(byte[] mediaFile);
+    
+    /**
+     * Extract IPTC meta data from a media file.
+     * 
+     * @param mediaFile  the media file
+     * @return  IPTC meta data
+     */
+    public MetaData<IptcDataSet> extractIPTC(byte[] mediaFile);
+    
+    /**
+     * Extract EXIF meta data from a media file.
+     * 
+     * @param mediaFile  the media file
+     * @return  EXIF meta data
+     */
+    public MetaData<ExifTagDataSet> extractEXIF(byte[] mediaFile);
+    
+    /**
+     * Extract XMP meta data from a media file.
+     * 
+     * @param mediaFile  the media file
+     * @return  XMP meta data
+     */
+    public TripleCollection extractXMP(byte[] mediaFile);
 
-	/**
-	 * Write XMP meta data to a media file.
-	 *
-	 * @param mediaFile  the media file
-	 * @param metaData  the XMP triples to store.
-	 * @return  media file with XMP header.
-	 */
-	public byte[] writeXMP(byte[] mediaFile,
-			TripleCollection metaData);
+    /**
+     * Write XMP meta data to a media file.
+     *
+     * @param mediaFile  the media file
+     * @param metaData  the XMP triples to store.
+     * @return  media file with XMP header.
+     */
+    public byte[] writeXMP(byte[] mediaFile,
+            TripleCollection metaData);
 }

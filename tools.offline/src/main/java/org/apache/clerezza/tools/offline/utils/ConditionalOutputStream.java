@@ -31,31 +31,31 @@ import java.io.OutputStream;
  */
 public class ConditionalOutputStream extends OutputStream {
 
-	private OutputStream out;
-	private StreamCondition condition;
-	private ByteArrayOutputStream cachedBytes = new ByteArrayOutputStream();
+    private OutputStream out;
+    private StreamCondition condition;
+    private ByteArrayOutputStream cachedBytes = new ByteArrayOutputStream();
 
-	public ConditionalOutputStream(OutputStream out, StreamCondition condition) {
-		this.out = out;
-		this.condition = condition;
-	}
+    public ConditionalOutputStream(OutputStream out, StreamCondition condition) {
+        this.out = out;
+        this.condition = condition;
+    }
 
-	@Override
-	public void write(int b) throws IOException {		
-		if (condition.feed(b)) {
-			cachedBytes.write(b);
-		} else {
-			if (condition.isSatisfied()) {
-				out.write(condition.getBytes());
-				cachedBytes.reset();
-			} else {
-				if (cachedBytes.size() > 0) {
-					out.write(cachedBytes.toByteArray());
-					cachedBytes.reset();					
-				}
-				out.write(b);
-			}
-		}
-	}
+    @Override
+    public void write(int b) throws IOException {        
+        if (condition.feed(b)) {
+            cachedBytes.write(b);
+        } else {
+            if (condition.isSatisfied()) {
+                out.write(condition.getBytes());
+                cachedBytes.reset();
+            } else {
+                if (cachedBytes.size() > 0) {
+                    out.write(cachedBytes.toByteArray());
+                    cachedBytes.reset();                    
+                }
+                out.write(b);
+            }
+        }
+    }
 
 }

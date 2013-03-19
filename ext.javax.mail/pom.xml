@@ -20,53 +20,53 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza.ext</groupId>
-	<artifactId>javax.mail</artifactId>
-	<version>0.5-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<name>Clerezza Ext - Javax Mail</name>
-	<description>Javax Mail as OSGi bundle</description>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza.ext</groupId>
+    <artifactId>javax.mail</artifactId>
+    <version>0.5-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <name>Clerezza Ext - Javax Mail</name>
+    <description>Javax Mail as OSGi bundle</description>
   
-	<dependencies>
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.4</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<scope>compile</scope>
-			<version>1.1.1</version>
-		</dependency> 
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <scope>compile</scope>
+            <version>1.1.1</version>
+        </dependency> 
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Embed-Dependency>mail,activation</Embed-Dependency>
-						<Embed-Transitive>true</Embed-Transitive>
-						<Export-Package>javax.mail.*;version=1.4.4, com.sun.*;version=1.4.4</Export-Package>
-						<Import-Package>
-	      sun.security.util;resolution:=optional,
-	      *
-						</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Embed-Dependency>mail,activation</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Export-Package>javax.mail.*;version=1.4.4, com.sun.*;version=1.4.4</Export-Package>
+                        <Import-Package>
+          sun.security.util;resolution:=optional,
+          *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -36,48 +36,48 @@ import org.osgi.framework.BundleContext;
  */
 class TypeRenderletRendererImpl implements Renderer {
 
-	private TypeRenderlet renderlet = null;
-	private MediaType mediaType = null;
-	private final RendererFactory rendererFactory;
-	private final BundleContext bundleContext;
-	private final GraphNodeProvider graphNodeProvider;
+    private TypeRenderlet renderlet = null;
+    private MediaType mediaType = null;
+    private final RendererFactory rendererFactory;
+    private final BundleContext bundleContext;
+    private final GraphNodeProvider graphNodeProvider;
 
-	TypeRenderletRendererImpl(TypeRenderlet renderlet, MediaType mediaType,
-			RendererFactory rendererFactory, GraphNodeProvider graphNodeProvider,
-			BundleContext bundleContext) {
-		this.renderlet = renderlet;
-		this.mediaType = mediaType;
-		this.rendererFactory = rendererFactory;
-		this.graphNodeProvider = graphNodeProvider;
-		this.bundleContext = bundleContext;
-	}
-
-
+    TypeRenderletRendererImpl(TypeRenderlet renderlet, MediaType mediaType,
+            RendererFactory rendererFactory, GraphNodeProvider graphNodeProvider,
+            BundleContext bundleContext) {
+        this.renderlet = renderlet;
+        this.mediaType = mediaType;
+        this.rendererFactory = rendererFactory;
+        this.graphNodeProvider = graphNodeProvider;
+        this.bundleContext = bundleContext;
+    }
 
 
-	@Override
-	public MediaType getMediaType() {
-		return mediaType;
-	}
 
 
-	@Override
-	public void render(GraphNode resource, GraphNode context,
-			String mode,
-			UriInfo uriInfo,
-			HttpHeaders requestHeaders,
-			MultivaluedMap<String, Object> responseHeaders,
-			Map<String, Object> sharedRenderingValues,
-			OutputStream entityStream) throws IOException {
-		CallbackRenderer callbackRenderer =
-				new CallbackRendererImpl(rendererFactory, graphNodeProvider,
-						uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
-		TypeRenderlet.RequestProperties requestProperties =
-				new TypeRenderlet.RequestProperties(uriInfo, requestHeaders,
-				responseHeaders, mode, mediaType, bundleContext);
-		renderlet.render(resource, context, sharedRenderingValues,
-				callbackRenderer, requestProperties, entityStream);
-	}
+    @Override
+    public MediaType getMediaType() {
+        return mediaType;
+    }
+
+
+    @Override
+    public void render(GraphNode resource, GraphNode context,
+            String mode,
+            UriInfo uriInfo,
+            HttpHeaders requestHeaders,
+            MultivaluedMap<String, Object> responseHeaders,
+            Map<String, Object> sharedRenderingValues,
+            OutputStream entityStream) throws IOException {
+        CallbackRenderer callbackRenderer =
+                new CallbackRendererImpl(rendererFactory, graphNodeProvider,
+                        uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
+        TypeRenderlet.RequestProperties requestProperties =
+                new TypeRenderlet.RequestProperties(uriInfo, requestHeaders,
+                responseHeaders, mode, mediaType, bundleContext);
+        renderlet.render(resource, context, sharedRenderingValues,
+                callbackRenderer, requestProperties, entityStream);
+    }
 
 
 

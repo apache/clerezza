@@ -40,7 +40,7 @@ package org.apache.clerezza.rdf.core.impl.graphmatching.collections;
 public class IntHashMap<T> {
 
 
-	private IntSet keySet = new IntHashSet();
+    private IntSet keySet = new IntHashSet();
 
     /**
      * The hash table data.
@@ -296,7 +296,7 @@ public class IntHashMap<T> {
      * @see     #get(int)
      */
     public Object put(int key, T value) {
-    		keySet.add(key);
+            keySet.add(key);
         // Makes sure the key is not already in the hashtable.
         Entry<T> tab[] = table;
         int hash = key;
@@ -359,7 +359,7 @@ public class IntHashMap<T> {
      * <p>Clears this hashtable so that it contains no keys.</p>
      */
     public synchronized void clear() {
-    		keySet.clear();
+            keySet.clear();
         Entry tab[] = table;
         for (int index = tab.length; --index >= 0;) {
             tab[index] = null;
@@ -368,7 +368,7 @@ public class IntHashMap<T> {
     }
     
     public IntSet keySet() {
-    		return keySet;
+            return keySet;
     }
     
     

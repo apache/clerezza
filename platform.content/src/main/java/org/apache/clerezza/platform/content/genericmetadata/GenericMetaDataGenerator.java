@@ -37,17 +37,17 @@ import org.apache.clerezza.rdf.ontologies.DCTERMS;
 @Service(MetaDataGenerator.class)
 public class GenericMetaDataGenerator implements MetaDataGenerator {
 
-	@Override
-	public void generate(GraphNode node, byte[] data, MediaType mediaType) {
-		TypedLiteral dateLiteral = LiteralFactory.getInstance()
-					.createTypedLiteral(new Date());
-		if(node.getObjects(DCTERMS.dateSubmitted).hasNext()) {
-			if(node.getObjects(DCTERMS.modified).hasNext()) {
-				node.deleteProperties(DCTERMS.modified);
-			}
-			node.addProperty(DCTERMS.modified, dateLiteral);
-		} else {
-			node.addProperty(DCTERMS.dateSubmitted, dateLiteral);
-		}
-	}
+    @Override
+    public void generate(GraphNode node, byte[] data, MediaType mediaType) {
+        TypedLiteral dateLiteral = LiteralFactory.getInstance()
+                    .createTypedLiteral(new Date());
+        if(node.getObjects(DCTERMS.dateSubmitted).hasNext()) {
+            if(node.getObjects(DCTERMS.modified).hasNext()) {
+                node.deleteProperties(DCTERMS.modified);
+            }
+            node.addProperty(DCTERMS.modified, dateLiteral);
+        } else {
+            node.addProperty(DCTERMS.dateSubmitted, dateLiteral);
+        }
+    }
 }

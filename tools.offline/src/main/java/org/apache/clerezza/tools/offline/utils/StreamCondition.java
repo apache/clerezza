@@ -23,30 +23,30 @@ package org.apache.clerezza.tools.offline.utils;
  */
 public interface StreamCondition {
 
-	/**
-	 * This method is called by the ConditionalOutputStream. The conditional
-	 * output stream feeds the condition with bytes as long as the feed()-method
-	 * returns true. If false is returned, then the condition is either satified
-	 * or unsatisfied. This can be determined by calling isSatisfied() of this
-	 * condition.
-	 * After returning false, the condition can be fed again.
-	 *
-	 * @param b
-	 * @return
-	 */
-	public boolean feed(int b);
+    /**
+     * This method is called by the ConditionalOutputStream. The conditional
+     * output stream feeds the condition with bytes as long as the feed()-method
+     * returns true. If false is returned, then the condition is either satified
+     * or unsatisfied. This can be determined by calling isSatisfied() of this
+     * condition.
+     * After returning false, the condition can be fed again.
+     *
+     * @param b
+     * @return
+     */
+    public boolean feed(int b);
 
-	/**
-	 * Returns true if the condition is satisfied, false otherwise.
-	 * @return
-	 */
-	public boolean isSatisfied();
+    /**
+     * Returns true if the condition is satisfied, false otherwise.
+     * @return
+     */
+    public boolean isSatisfied();
 
-	/**
-	 * The ConditionOutputStream will call this method if the condition is
-	 * satisfied. The returned bytes will be written into its underlying outputstream
-	 * instead of the bytes that were fed to the condition.
-	 * @return
-	 */
-	public byte[] getBytes();
+    /**
+     * The ConditionOutputStream will call this method if the condition is
+     * satisfied. The returned bytes will be written into its underlying outputstream
+     * instead of the bytes that were fed to the condition.
+     * @return
+     */
+    public byte[] getBytes();
 }

@@ -71,115 +71,115 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  */
 @Component(enabled=true, immediate=true)
 @Services({
-	@Service(Object.class),
-	@Service(UserContextProvider.class)
+    @Service(Object.class),
+    @Service(UserContextProvider.class)
 })
 @Property(name = "javax.ws.rs", boolValue = true)
 
 @Path("/language-widget")
 public class LanguageWidget implements UserContextProvider {
 
-	private FileServer fileServer;
+    private FileServer fileServer;
 
-	@Reference
-	private TcManager tcManager;
+    @Reference
+    private TcManager tcManager;
 
-	@Reference
-	private PlatformConfig platformConfig;
+    @Reference
+    private PlatformConfig platformConfig;
 
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private RenderletManager renderletManager;
 
-	@Reference
-	private LanguageService languageService;
-	
-	protected void activate(ComponentContext context) throws IOException, URISyntaxException {
-		Bundle bundle = context.getBundleContext().getBundle();
-		URL resourceDir = getClass().getResource("staticweb");
-		PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
+    @Reference
+    private LanguageService languageService;
+    
+    protected void activate(ComponentContext context) throws IOException, URISyntaxException {
+        Bundle bundle = context.getBundleContext().getBundle();
+        URL resourceDir = getClass().getResource("staticweb");
+        PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
 
-		fileServer = new FileServer(pathNode);
+        fileServer = new FileServer(pathNode);
 
-		URL template = getClass().getResource("language-list.ssp");
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(template.toURI().toString()),
-				LANGUAGE.LanguageList, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        URL template = getClass().getResource("language-list.ssp");
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(template.toURI().toString()),
+                LANGUAGE.LanguageList, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-	}
+    }
 
-	private LockableMGraph getConfigGraph() {
-		return tcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
-	}
+    private LockableMGraph getConfigGraph() {
+        return tcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
+    }
 
-	/**
-	 *
-	 * @param node  The graph of the specified GraphNode will not be locked, neither for reading nor writing.
-	 *		It is the responsibility of the calling function to set the write lock, if necessary.
-	 * @return
-	 */
-	@Override
-	public GraphNode addUserContext(final GraphNode node) {	
-		final NonLiteral platformInstance = AccessController.doPrivileged(
-			new PrivilegedAction<NonLiteral>() {
-				@Override
-				public NonLiteral run() {
-					return (NonLiteral) platformConfig.getPlatformInstance().getNode();
-				}
-			});
-		try {
-			return addLanguages(node, platformInstance, languageService.getLanguages(), false);
-			 
-		} catch (AccessControlException ex) {
-			return AccessController.doPrivileged(
-				new PrivilegedAction<GraphNode>() {
-					@Override
-					public GraphNode run() {
-						return addLanguages(node, platformInstance, languageService.getLanguages(), true);
-					}
-				});
-		}		
-	}
+    /**
+     *
+     * @param node  The graph of the specified GraphNode will not be locked, neither for reading nor writing.
+     *        It is the responsibility of the calling function to set the write lock, if necessary.
+     * @return
+     */
+    @Override
+    public GraphNode addUserContext(final GraphNode node) {    
+        final NonLiteral platformInstance = AccessController.doPrivileged(
+            new PrivilegedAction<NonLiteral>() {
+                @Override
+                public NonLiteral run() {
+                    return (NonLiteral) platformConfig.getPlatformInstance().getNode();
+                }
+            });
+        try {
+            return addLanguages(node, platformInstance, languageService.getLanguages(), false);
+             
+        } catch (AccessControlException ex) {
+            return AccessController.doPrivileged(
+                new PrivilegedAction<GraphNode>() {
+                    @Override
+                    public GraphNode run() {
+                        return addLanguages(node, platformInstance, languageService.getLanguages(), true);
+                    }
+                });
+        }        
+    }
 
-	private GraphNode addLanguages(GraphNode node, NonLiteral platformInstance, List<LanguageDescription> languages,
-			boolean copyToNode) {
-		TripleCollection graph = node.getGraph();
-		BNode listNode = new BNode();		
-		RdfList list = new RdfList(listNode, graph);
-		LockableMGraph configGraph = getConfigGraph();
-		Lock readLock = configGraph.getLock().readLock();
-		for (LanguageDescription languageDescription : languages) {
-			NonLiteral languageUri = (NonLiteral) languageDescription.getResource().getNode();
-			list.add(languageUri);
-			if (copyToNode) {
-				readLock.lock();
-				try {
-					graph.addAll(new GraphNode(languageUri, configGraph).getNodeContext());
-				} finally {
-					readLock.unlock();
-				}
-			}
-		}
-		node.addProperty(PLATFORM.instance, platformInstance);
-		graph.add(new TripleImpl(platformInstance, RDF.type, PLATFORM.Instance));
-		graph.add(new TripleImpl(platformInstance, PLATFORM.languages, listNode));
-		graph.add(new TripleImpl(listNode, RDF.type, LANGUAGE.LanguageList));
-		if (!copyToNode) {
-			node = new GraphNode(node.getNode(), new UnionMGraph(graph, configGraph));
-		}
-		return node;
-	}
+    private GraphNode addLanguages(GraphNode node, NonLiteral platformInstance, List<LanguageDescription> languages,
+            boolean copyToNode) {
+        TripleCollection graph = node.getGraph();
+        BNode listNode = new BNode();        
+        RdfList list = new RdfList(listNode, graph);
+        LockableMGraph configGraph = getConfigGraph();
+        Lock readLock = configGraph.getLock().readLock();
+        for (LanguageDescription languageDescription : languages) {
+            NonLiteral languageUri = (NonLiteral) languageDescription.getResource().getNode();
+            list.add(languageUri);
+            if (copyToNode) {
+                readLock.lock();
+                try {
+                    graph.addAll(new GraphNode(languageUri, configGraph).getNodeContext());
+                } finally {
+                    readLock.unlock();
+                }
+            }
+        }
+        node.addProperty(PLATFORM.instance, platformInstance);
+        graph.add(new TripleImpl(platformInstance, RDF.type, PLATFORM.Instance));
+        graph.add(new TripleImpl(platformInstance, PLATFORM.languages, listNode));
+        graph.add(new TripleImpl(listNode, RDF.type, LANGUAGE.LanguageList));
+        if (!copyToNode) {
+            node = new GraphNode(node.getNode(), new UnionMGraph(graph, configGraph));
+        }
+        return node;
+    }
 
-	/**
-	 * Returns a PathNode of a static file from the staticweb folder.
-	 *
-	 * @param path specifies the path param of a URI
-	 *
-	 * @return {@link PathNode}
-	 */
-	@GET
-	@Path("{path:.+}")
-	public PathNode getStaticFile(@PathParam("path") String path) {
-		return fileServer.getNode(path);
-	}
+    /**
+     * Returns a PathNode of a static file from the staticweb folder.
+     *
+     * @param path specifies the path param of a URI
+     *
+     * @return {@link PathNode}
+     */
+    @GET
+    @Path("{path:.+}")
+    public PathNode getStaticFile(@PathParam("path") String path) {
+        return fileServer.getNode(path);
+    }
 }

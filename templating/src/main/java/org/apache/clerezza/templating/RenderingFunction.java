@@ -27,12 +27,12 @@ import java.io.IOException;
  */
 public interface RenderingFunction<T0, T1> {
 
-	/**
-	 * Applies the function represented by the instance to one or several
-	 * values
-	 *
-	 * @param values the function arguments
-	 * @return f(value1, ...)
-	 */
-	public T1 process(T0... values) throws IOException;
+    /**
+     * Applies the function represented by the instance to one or several
+     * values
+     *
+     * @param values the function arguments
+     * @return f(value1, ...)
+     */
+    public T1 process(T0... values) throws IOException;
 }

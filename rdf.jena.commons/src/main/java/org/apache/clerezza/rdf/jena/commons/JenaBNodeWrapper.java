@@ -28,36 +28,36 @@ import com.hp.hpl.jena.graph.Node;
  */
 class JenaBNodeWrapper extends BNode {
 
-	final Node node;
-	
-	JenaBNodeWrapper(Node node) {
-		if (!node.isBlank()) {
-			throw new IllegalArgumentException("must be blank node");
-		}
-		this.node = node;
-	}
+    final Node node;
+    
+    JenaBNodeWrapper(Node node) {
+        if (!node.isBlank()) {
+            throw new IllegalArgumentException("must be blank node");
+        }
+        this.node = node;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final JenaBNodeWrapper other = (JenaBNodeWrapper) obj;
-		if (this.node != other.node && (this.node == null || !this.node.equals(other.node))) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JenaBNodeWrapper other = (JenaBNodeWrapper) obj;
+        if (this.node != other.node && (this.node == null || !this.node.equals(other.node))) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 71 * hash + (this.node != null ? this.node.hashCode() : 0);
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + (this.node != null ? this.node.hashCode() : 0);
+        return hash;
+    }
 
 
 }

@@ -32,28 +32,28 @@ import org.apache.clerezza.rdf.core.TripleCollection;
  */
 public class GraphEvent {
 
-	private TripleCollection graph;
-	private Triple triple;
+    private TripleCollection graph;
+    private Triple triple;
 
-	protected GraphEvent(TripleCollection graph, Triple triple) {
-		this.graph = graph;
-		this.triple = triple;
-	}
+    protected GraphEvent(TripleCollection graph, Triple triple) {
+        this.graph = graph;
+        this.triple = triple;
+    }
 
-	/**
-	 * Returns the <code>TripleCollection</code> that was modified in the event.
-	 * @return the graph
-	 */
-	public TripleCollection getGraph() {
-		return graph;
-	}
+    /**
+     * Returns the <code>TripleCollection</code> that was modified in the event.
+     * @return the graph
+     */
+    public TripleCollection getGraph() {
+        return graph;
+    }
 
 
-	/**
-	 * Return the <code>Triple</code> that was part of the modification.
-	 * @return the triple
-	 */
-	public Triple getTriple() {
-		return triple;
-	}
+    /**
+     * Return the <code>Triple</code> that was part of the modification.
+     * @return the triple
+     */
+    public Triple getTriple() {
+        return triple;
+    }
 }

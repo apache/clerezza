@@ -31,24 +31,24 @@ import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 public class DocumentationInContentGraph {
 
 
-	/**
-	 * we have this dependency to make sure we get started after the documentatinProvider
-	 *
-	 * @scr.reference
-	 */
-	private DocumentationProvider documentationProvider;
+    /**
+     * we have this dependency to make sure we get started after the documentatinProvider
+     *
+     * @scr.reference
+     */
+    private DocumentationProvider documentationProvider;
 
-	/**
-	 * @scr.reference
-	 */
-	private ContentGraphProvider cgProvider;
+    /**
+     * @scr.reference
+     */
+    private ContentGraphProvider cgProvider;
 
-	protected void activate(final ComponentContext componentContext) {
-		cgProvider.addTemporaryAdditionGraph(DocumentationProvider.DOCUMENTATION_GRAPH_URI);
-	}
+    protected void activate(final ComponentContext componentContext) {
+        cgProvider.addTemporaryAdditionGraph(DocumentationProvider.DOCUMENTATION_GRAPH_URI);
+    }
 
-	protected void deactivate(final ComponentContext componentContext) {
-		cgProvider.removeTemporaryAdditionGraph(DocumentationProvider.DOCUMENTATION_GRAPH_URI);
-	}
-	
+    protected void deactivate(final ComponentContext componentContext) {
+        cgProvider.removeTemporaryAdditionGraph(DocumentationProvider.DOCUMENTATION_GRAPH_URI);
+    }
+    
 }

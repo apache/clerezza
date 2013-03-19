@@ -40,54 +40,54 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  */
 public class MetaDataConversionTest {
-	
-	@Test
-	public void testIptcToXmp() {
-		MetaData<IptcDataSet> metaData = new MetaData<IptcDataSet>();
-		metaData.add(new IptcDataSet(IptcDataSet.KEYWORDS, "keyword1"));
-		metaData.add(new IptcDataSet(IptcDataSet.KEYWORDS, "keyword2"));
-		metaData.add(new IptcDataSet(IptcDataSet.KEYWORDS, "keyword3"));
-		metaData.add(new IptcDataSet(IptcDataSet.CITY, "City"));
-		
-		TripleCollection tc = MetaDataUtils.convertIptcToXmp(metaData);
+    
+    @Test
+    public void testIptcToXmp() {
+        MetaData<IptcDataSet> metaData = new MetaData<IptcDataSet>();
+        metaData.add(new IptcDataSet(IptcDataSet.KEYWORDS, "keyword1"));
+        metaData.add(new IptcDataSet(IptcDataSet.KEYWORDS, "keyword2"));
+        metaData.add(new IptcDataSet(IptcDataSet.KEYWORDS, "keyword3"));
+        metaData.add(new IptcDataSet(IptcDataSet.CITY, "City"));
+        
+        TripleCollection tc = MetaDataUtils.convertIptcToXmp(metaData);
 
-		Iterator<Triple> it = tc.filter(null, new UriRef(DC.subject.getURI()), null);
-		it = tc.filter((NonLiteral) it.next().getObject(), null, null);
-		while(it.hasNext()) {
-			Triple triple = it.next();
-			Assert.assertTrue(
-					triple.getObject().toString().contains("keyword1") ||
-					triple.getObject().toString().contains("keyword2") ||
-					triple.getObject().toString().contains("keyword3") ||
-					triple.getObject().toString().contains(RDF.Bag.getURI()));
-		}
+        Iterator<Triple> it = tc.filter(null, new UriRef(DC.subject.getURI()), null);
+        it = tc.filter((NonLiteral) it.next().getObject(), null, null);
+        while(it.hasNext()) {
+            Triple triple = it.next();
+            Assert.assertTrue(
+                    triple.getObject().toString().contains("keyword1") ||
+                    triple.getObject().toString().contains("keyword2") ||
+                    triple.getObject().toString().contains("keyword3") ||
+                    triple.getObject().toString().contains(RDF.Bag.getURI()));
+        }
 
-		Assert.assertTrue(tc.filter(null,
-				new UriRef("http://ns.adobe.com/photoshop/1.0/City"), 
-				new PlainLiteralImpl("City")).hasNext());
-	}
-	
-	@Test
-	public void testExifToXmp() {
-		
-		MetaData<ExifTagDataSet> metaData2 = new MetaData<ExifTagDataSet>();
-		metaData2.add(new ExifTagDataSet(ExifTagDataSet.UserComment, "Bla Bla Bla"));
-		metaData2.add(new ExifTagDataSet(ExifTagDataSet.Artist, "Hans Wurst"));
-		
-		TripleCollection tc = MetaDataUtils.convertExifToXmp(metaData2);
-		
-		Iterator<Triple> it = tc.filter(null, new UriRef("http://ns.adobe.com/exif/1.0/UserComment"), null);
-		it = tc.filter((NonLiteral) it.next().getObject(), null, null);
-		while(it.hasNext()) {
-			Triple triple = it.next();
-			Assert.assertTrue(
-					triple.getObject().toString().contains("Bla Bla Bla") ||
-					triple.getObject().toString().contains(RDF.Alt.getURI()));
-		}
-		
-		Assert.assertTrue(tc.filter(null,
-				new UriRef("http://ns.adobe.com/tiff/1.0/Artist"), 
-				new PlainLiteralImpl("Hans Wurst")).hasNext());
-		
-	}
+        Assert.assertTrue(tc.filter(null,
+                new UriRef("http://ns.adobe.com/photoshop/1.0/City"), 
+                new PlainLiteralImpl("City")).hasNext());
+    }
+    
+    @Test
+    public void testExifToXmp() {
+        
+        MetaData<ExifTagDataSet> metaData2 = new MetaData<ExifTagDataSet>();
+        metaData2.add(new ExifTagDataSet(ExifTagDataSet.UserComment, "Bla Bla Bla"));
+        metaData2.add(new ExifTagDataSet(ExifTagDataSet.Artist, "Hans Wurst"));
+        
+        TripleCollection tc = MetaDataUtils.convertExifToXmp(metaData2);
+        
+        Iterator<Triple> it = tc.filter(null, new UriRef("http://ns.adobe.com/exif/1.0/UserComment"), null);
+        it = tc.filter((NonLiteral) it.next().getObject(), null, null);
+        while(it.hasNext()) {
+            Triple triple = it.next();
+            Assert.assertTrue(
+                    triple.getObject().toString().contains("Bla Bla Bla") ||
+                    triple.getObject().toString().contains(RDF.Alt.getURI()));
+        }
+        
+        Assert.assertTrue(tc.filter(null,
+                new UriRef("http://ns.adobe.com/tiff/1.0/Artist"), 
+                new PlainLiteralImpl("Hans Wurst")).hasNext());
+        
+    }
 }

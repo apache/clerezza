@@ -38,18 +38,18 @@ import org.apache.clerezza.rdf.utils.RdfList;
 @Path("/list")
 public class RDFListRootResource {
 
-	static final public UriRef testType = new UriRef("http://example.org/foo");
+    static final public UriRef testType = new UriRef("http://example.org/foo");
 
-	
-	@GET
-	public GraphNode sayHello() {
-		TripleCollection resultGraph = new SimpleMGraph();
-		GraphNode result = new GraphNode(new BNode(), resultGraph);
-		result.addProperty(RDF.type, testType);
-		RdfList list = new RdfList(result);
-		for (int i = 0; i < 10 ; i++) {
-			list.add(new PlainLiteralImpl("number "+i));
-		}
-		return result;
-	}
+    
+    @GET
+    public GraphNode sayHello() {
+        TripleCollection resultGraph = new SimpleMGraph();
+        GraphNode result = new GraphNode(new BNode(), resultGraph);
+        result.addProperty(RDF.type, testType);
+        RdfList list = new RdfList(result);
+        for (int i = 0; i < 10 ; i++) {
+            list.add(new PlainLiteralImpl("number "+i));
+        }
+        return result;
+    }
 }

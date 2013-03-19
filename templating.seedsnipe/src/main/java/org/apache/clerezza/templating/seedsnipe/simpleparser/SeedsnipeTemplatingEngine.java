@@ -40,22 +40,22 @@ import org.apache.clerezza.templating.seedsnipe.graphnodeadapter.GraphNodeDataFi
  */
 public class SeedsnipeTemplatingEngine implements TemplatingEngine {
 
-	@Override
-	public void process(GraphNode res, GraphNode user,
-			RenderingFunctions renderingFunctions, URL template,
-			OutputStream os) throws IOException {
+    @Override
+    public void process(GraphNode res, GraphNode user,
+            RenderingFunctions renderingFunctions, URL template,
+            OutputStream os) throws IOException {
 
-		try {
-			InputStreamReader in = new InputStreamReader(template.openStream(), "UTF-8");
-			OutputStreamWriter out = new OutputStreamWriter(os, "UTF-8");
+        try {
+            InputStreamReader in = new InputStreamReader(template.openStream(), "UTF-8");
+            OutputStreamWriter out = new OutputStreamWriter(os, "UTF-8");
 
-			new DefaultParser(in, out).perform(new GraphNodeDataFieldResolver(res,
-					renderingFunctions));
+            new DefaultParser(in, out).perform(new GraphNodeDataFieldResolver(res,
+                    renderingFunctions));
 
-			in.close();
-			out.flush();
-		} catch (UnsupportedEncodingException ex) {
-			ex.printStackTrace();
-		}
-	}
+            in.close();
+            out.flush();
+        } catch (UnsupportedEncodingException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

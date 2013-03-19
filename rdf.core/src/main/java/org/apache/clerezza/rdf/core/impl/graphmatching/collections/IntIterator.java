@@ -26,5 +26,5 @@ import java.util.Iterator;
  * @author reto
  */
 public interface IntIterator extends Iterator<Integer> {
-	public int nextInt();
+    public int nextInt();
 }

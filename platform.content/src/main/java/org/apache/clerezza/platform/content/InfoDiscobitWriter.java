@@ -43,25 +43,25 @@ import javax.ws.rs.ext.Provider;
 @Produces("*/*")
 public class InfoDiscobitWriter implements MessageBodyWriter<InfoDiscobit> {
 
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return InfoDiscobit.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return InfoDiscobit.class.isAssignableFrom(type);
+    }
 
-	@Override
-	public long getSize(InfoDiscobit t, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return t.getData().length;
-	}
+    @Override
+    public long getSize(InfoDiscobit t, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return t.getData().length;
+    }
 
-	@Override
-	public void writeTo(InfoDiscobit t, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders,
-			OutputStream entityStream) throws IOException,
-			WebApplicationException {
-		httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, t.getContentType());
-		entityStream.write(t.getData());
-	}
+    @Override
+    public void writeTo(InfoDiscobit t, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders,
+            OutputStream entityStream) throws IOException,
+            WebApplicationException {
+        httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, t.getContentType());
+        entityStream.write(t.getData());
+    }
 }

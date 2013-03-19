@@ -32,19 +32,19 @@ import org.osgi.service.component.ComponentContext;
 @Service(ClassicStyleConfig.class)
 @WebRenderingService
 public class ClassicStyleConfig {
-	private static final String DEFAULT_JQUERY_URL = "/jquery/jquery-1.3.2.min.js";
+    private static final String DEFAULT_JQUERY_URL = "/jquery/jquery-1.3.2.min.js";
 
-	@Property(value = "/jquery/jquery-1.3.2.min.js",
-		description = "Specifies the URL of the jQuery script")
-	public static final String JQUERY_URL = "jQueryUrl";
+    @Property(value = "/jquery/jquery-1.3.2.min.js",
+        description = "Specifies the URL of the jQuery script")
+    public static final String JQUERY_URL = "jQueryUrl";
 
-	private String jQueryUrl = DEFAULT_JQUERY_URL;
+    private String jQueryUrl = DEFAULT_JQUERY_URL;
 
-	protected void activate(ComponentContext context) {
-		jQueryUrl = (String) context.getProperties().get(JQUERY_URL);
-	}
+    protected void activate(ComponentContext context) {
+        jQueryUrl = (String) context.getProperties().get(JQUERY_URL);
+    }
 
-	public String getJQueryUrl() {
-		return jQueryUrl.isEmpty() ? DEFAULT_JQUERY_URL : jQueryUrl;
-	}
+    public String getJQueryUrl() {
+        return jQueryUrl.isEmpty() ? DEFAULT_JQUERY_URL : jQueryUrl;
+    }
 }

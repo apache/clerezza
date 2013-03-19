@@ -28,106 +28,106 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 
 /**
- *	Graph implementation (read-only version of SesameMGraph). 
+ *    Graph implementation (read-only version of SesameMGraph). 
  *  <br />
- *	This graph implementation just overrides MGraph and throws 
+ *    This graph implementation just overrides MGraph and throws 
  *  UnsupportedOperationException on methods modifying data.
  * 
  * @author msy
  */
 public class SesameGraph extends SesameMGraph implements Graph {
 
-	/**
-	 *	the initial triples of this graph
-	 */
-	private TripleCollection initialTriples = null;
+    /**
+     *    the initial triples of this graph
+     */
+    private TripleCollection initialTriples = null;
 
-	/**
-	 *	Initialize a new sesame graph with a collection.
-	 *  <br />
-	 *	This method has to be called before the read methods on this graph
-	 *  can be executed.
-	 * 
-	 * @param dir directory where the repository is (data directory)
-	 * @param initialTriples or null
-	 * @throws RepositoryException error initializing repository
-	 */
-	public void initialize(File dir, TripleCollection initialTriples)
-			throws RepositoryException {
+    /**
+     *    Initialize a new sesame graph with a collection.
+     *  <br />
+     *    This method has to be called before the read methods on this graph
+     *  can be executed.
+     * 
+     * @param dir directory where the repository is (data directory)
+     * @param initialTriples or null
+     * @throws RepositoryException error initializing repository
+     */
+    public void initialize(File dir, TripleCollection initialTriples)
+            throws RepositoryException {
 
-		super.initialize(dir);
+        super.initialize(dir);
 
-		if (initialTriples != null) {
+        if (initialTriples != null) {
 
-			//add the initial triples to the graph
-			super.addAll(initialTriples);
-			this.initialTriples = initialTriples;
-		}
-	}
+            //add the initial triples to the graph
+            super.addAll(initialTriples);
+            this.initialTriples = initialTriples;
+        }
+    }
 
-	/**
-	 *	Two SesameGraphs are equal if either both are empty or both have 
-	 *  the same triples collection.<br />
-	 * <br />
-	 *  If <code>obj</code>is not a SesameGraph, this implementation returns
-	 *  false.<br />
-	 */
-	@Override
-	public boolean equals(Object obj) {
+    /**
+     *    Two SesameGraphs are equal if either both are empty or both have 
+     *  the same triples collection.<br />
+     * <br />
+     *  If <code>obj</code>is not a SesameGraph, this implementation returns
+     *  false.<br />
+     */
+    @Override
+    public boolean equals(Object obj) {
 
-		if (!(obj instanceof SesameGraph)) {
-			return false;
-		}
-		SesameGraph other = (SesameGraph) obj;
-		
-		if ((initialTriples == null) && (other.getInitialTriples() == null)) {
-			return true;
-		}
+        if (!(obj instanceof SesameGraph)) {
+            return false;
+        }
+        SesameGraph other = (SesameGraph) obj;
+        
+        if ((initialTriples == null) && (other.getInitialTriples() == null)) {
+            return true;
+        }
 
-		if ((initialTriples != null) && (other.getInitialTriples() != null)) {
-			return initialTriples.equals(other.getInitialTriples());
-		}
-		return false;
-	}
+        if ((initialTriples != null) && (other.getInitialTriples() != null)) {
+            return initialTriples.equals(other.getInitialTriples());
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 79 * hash + (initialTriples != null ? initialTriples.hashCode() : 0);
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + (initialTriples != null ? initialTriples.hashCode() : 0);
+        return hash;
+    }
 
-	@Override
-	public synchronized boolean add(Triple e) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public synchronized boolean add(Triple e) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public synchronized boolean addAll(Collection<? extends Triple> c) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public synchronized boolean addAll(Collection<? extends Triple> c) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public synchronized void clear() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public synchronized void clear() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public synchronized boolean remove(Object o) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public synchronized boolean remove(Object o) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public synchronized boolean removeAll(Collection<?> col) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public synchronized boolean removeAll(Collection<?> col) {
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 *	getter for initial triples
-	 * 
-	 * @return initial triples of the graph
-	 */
-	public TripleCollection getInitialTriples() {
-		return initialTriples;
-	}
+    /**
+     *    getter for initial triples
+     * 
+     * @return initial triples of the graph
+     */
+    public TripleCollection getInitialTriples() {
+        return initialTriples;
+    }
 }

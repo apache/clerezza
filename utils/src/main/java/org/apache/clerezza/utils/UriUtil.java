@@ -218,10 +218,10 @@ public class UriUtil {
         return encode(unescaped, empty, charset);
     }
 
-	/**
+    /**
      * Get the all escaped and encoded string with a given charset.
      * If the specified string contains already escaped characters, then
-	 * the '%' will not be escaped.
+     * the '%' will not be escaped.
      *
      * @param partlyEscaped a string that may containg already escaped chararcters
      * @param charset the charset
@@ -231,26 +231,26 @@ public class UriUtil {
      *
      * @see #encode
      */
-	public static String encodePartlyEncodedPath(String partlyEscaped, String charset)
-		throws UriException {
-		StringWriter sw = new StringWriter();
-		for (int i = 0; i < partlyEscaped.length(); i++) {
-			char c = partlyEscaped.charAt(i);
-			if (c == '%') {
-				try {
-					String hexString = partlyEscaped.substring(i + 1, i + 3);
-					Integer.parseInt(hexString, 16);
-					sw.append(c);
-					sw.append(hexString);
-					i += 2;
-					continue;
-				} catch (NumberFormatException ex) { //encode it
-				}
-			}
-			sw.append(UriUtil.encodePath(String.valueOf(c), charset));
-		}
-		return sw.toString();
-	}
+    public static String encodePartlyEncodedPath(String partlyEscaped, String charset)
+        throws UriException {
+        StringWriter sw = new StringWriter();
+        for (int i = 0; i < partlyEscaped.length(); i++) {
+            char c = partlyEscaped.charAt(i);
+            if (c == '%') {
+                try {
+                    String hexString = partlyEscaped.substring(i + 1, i + 3);
+                    Integer.parseInt(hexString, 16);
+                    sw.append(c);
+                    sw.append(hexString);
+                    i += 2;
+                    continue;
+                } catch (NumberFormatException ex) { //encode it
+                }
+            }
+            sw.append(UriUtil.encodePath(String.valueOf(c), charset));
+        }
+        return sw.toString();
+    }
 
 
     /**

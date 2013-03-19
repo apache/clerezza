@@ -26,22 +26,22 @@ import org.apache.clerezza.rdf.core.sparql.query.OrderCondition;
  * @author hasan
  */
 public class SimpleOrderCondition implements OrderCondition {
-	private Expression expression;
-	private boolean ascending;
+    private Expression expression;
+    private boolean ascending;
 
-	public SimpleOrderCondition(Expression expression, boolean ascending) {
-		this.expression = expression;
-		this.ascending = ascending;
-	}
+    public SimpleOrderCondition(Expression expression, boolean ascending) {
+        this.expression = expression;
+        this.ascending = ascending;
+    }
 
-	@Override
-	public Expression getExpression() {
-		return expression;
-	}
+    @Override
+    public Expression getExpression() {
+        return expression;
+    }
 
-	@Override
-	public boolean isAscending() {
-		return ascending;
-	}
+    @Override
+    public boolean isAscending() {
+        return ascending;
+    }
 
 }

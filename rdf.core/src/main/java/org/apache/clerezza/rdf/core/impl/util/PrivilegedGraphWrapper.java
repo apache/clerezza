@@ -28,9 +28,9 @@ import org.apache.clerezza.rdf.core.Graph;
  * @author mir
  */
 public class PrivilegedGraphWrapper extends PrivilegedTripleCollectionWrapper
-		implements Graph {
+        implements Graph {
 
-	public PrivilegedGraphWrapper(Graph graph) {
-		super(graph);
-	}
+    public PrivilegedGraphWrapper(Graph graph) {
+        super(graph);
+    }
 }

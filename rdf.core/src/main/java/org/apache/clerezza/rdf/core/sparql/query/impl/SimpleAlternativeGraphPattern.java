@@ -29,31 +29,31 @@ import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
  */
 public class SimpleAlternativeGraphPattern implements AlternativeGraphPattern {
 
-	private List<GroupGraphPattern> alternativeGraphPatterns;
+    private List<GroupGraphPattern> alternativeGraphPatterns;
 
-	public SimpleAlternativeGraphPattern(
-			List<GroupGraphPattern> alternativeGraphPatterns) {
-		this.alternativeGraphPatterns = (alternativeGraphPatterns == null)
-				? new ArrayList<GroupGraphPattern>()
-				: alternativeGraphPatterns;
+    public SimpleAlternativeGraphPattern(
+            List<GroupGraphPattern> alternativeGraphPatterns) {
+        this.alternativeGraphPatterns = (alternativeGraphPatterns == null)
+                ? new ArrayList<GroupGraphPattern>()
+                : alternativeGraphPatterns;
 
-		this.alternativeGraphPatterns = alternativeGraphPatterns;
-	}
+        this.alternativeGraphPatterns = alternativeGraphPatterns;
+    }
 
-	public SimpleAlternativeGraphPattern(GroupGraphPattern... groupGraphPatterns) {
-		alternativeGraphPatterns = new ArrayList<GroupGraphPattern>();
-		GroupGraphPattern[] g = groupGraphPatterns;
-		for (int i = 0; i < g.length; i++) {
-			alternativeGraphPatterns.add(g[i]);
-		}
-	}
+    public SimpleAlternativeGraphPattern(GroupGraphPattern... groupGraphPatterns) {
+        alternativeGraphPatterns = new ArrayList<GroupGraphPattern>();
+        GroupGraphPattern[] g = groupGraphPatterns;
+        for (int i = 0; i < g.length; i++) {
+            alternativeGraphPatterns.add(g[i]);
+        }
+    }
 
-	@Override
-	public List<GroupGraphPattern> getAlternativeGraphPatterns() {
-		return alternativeGraphPatterns;
-	}
+    @Override
+    public List<GroupGraphPattern> getAlternativeGraphPatterns() {
+        return alternativeGraphPatterns;
+    }
 
-	public void addAlternativeGraphPattern(GroupGraphPattern groupGraphPattern) {
-		alternativeGraphPatterns.add(groupGraphPattern);
-	}
+    public void addAlternativeGraphPattern(GroupGraphPattern groupGraphPattern) {
+        alternativeGraphPatterns.add(groupGraphPattern);
+    }
 }

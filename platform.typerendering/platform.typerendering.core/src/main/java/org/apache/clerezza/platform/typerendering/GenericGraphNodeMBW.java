@@ -83,145 +83,145 @@ policy = ReferencePolicy.DYNAMIC)
 @Produces({"application/xhtml+xml", "*/*"})
 public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
 
-	public static final String MODE = "mode";
-	
-	@Reference
-	RendererFactory rendererFactory;
+    public static final String MODE = "mode";
+    
+    @Reference
+    RendererFactory rendererFactory;
 
-	private static final Logger logger = LoggerFactory.getLogger(GenericGraphNodeMBW.class);
-	private UriInfo uriInfo = null;
-	private HttpHeaders headers = null;
-	private final Set<UserContextProvider> contextProviders =
-			Collections.synchronizedSet(new HashSet<UserContextProvider>());
-	private final DocumentBuilder documentBuilder;
-	private TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    private static final Logger logger = LoggerFactory.getLogger(GenericGraphNodeMBW.class);
+    private UriInfo uriInfo = null;
+    private HttpHeaders headers = null;
+    private final Set<UserContextProvider> contextProviders =
+            Collections.synchronizedSet(new HashSet<UserContextProvider>());
+    private final DocumentBuilder documentBuilder;
+    private TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-	{
-		try {
-			final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-			builderFactory.setValidating(false);
-			builderFactory.setNamespaceAware(true);
-			builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-			documentBuilder = builderFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    {
+        try {
+            final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            builderFactory.setValidating(false);
+            builderFactory.setNamespaceAware(true);
+            builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            documentBuilder = builderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	@Context
-	public void setUriInfo(UriInfo uriInfo) {
-		this.uriInfo = uriInfo;
-	}
+    @Context
+    public void setUriInfo(UriInfo uriInfo) {
+        this.uriInfo = uriInfo;
+    }
 
 
-	@Context
-	public void setHttpHeaders(HttpHeaders headers) {
-		this.headers = headers;
-	}
+    @Context
+    public void setHttpHeaders(HttpHeaders headers) {
+        this.headers = headers;
+    }
 
-	@Override
-	public long getSize(GraphNode node, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return -1;
-	}
+    @Override
+    public long getSize(GraphNode node, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return -1;
+    }
 
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return GraphNode.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return GraphNode.class.isAssignableFrom(type);
+    }
 
-	@Override
-	public void writeTo(GraphNode node, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-			throws IOException, WebApplicationException {
-		String mode = getRenderingMode();
+    @Override
+    public void writeTo(GraphNode node, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+            throws IOException, WebApplicationException {
+        String mode = getRenderingMode();
 
-		Renderer renderer = rendererFactory.createRenderer(node, mode,
-				headers.getAcceptableMediaTypes());
+        Renderer renderer = rendererFactory.createRenderer(node, mode,
+                headers.getAcceptableMediaTypes());
 
-		if (renderer == null) {
-			throw new WebApplicationException(
-					Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No suitable renderer found").build());
-		}
-		final MediaType rendererMediaType = renderer.getMediaType();
-		Map<String, Object> sharedRenderingValues = new HashMap<String, Object>();
-		ResultDocModifier.init();
-		if (!(rendererMediaType.getType().equals("application") && rendererMediaType.getSubtype().equals("xhtml+xml"))) {
-			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, rendererMediaType);
-			renderer.render(node, getUserContext(), mode, uriInfo, headers, httpHeaders, sharedRenderingValues, entityStream);
-		} else {
-			final MediaType mediaTypeWithCharset = MediaType.valueOf(MediaType.APPLICATION_XHTML_XML+";charset=UTF-8");
-			httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, mediaTypeWithCharset);
-			try {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				renderer.render(node, getUserContext(), mode, uriInfo, headers, httpHeaders, sharedRenderingValues, baos);
-				final byte[] bytes = baos.toByteArray();
-				if (!ResultDocModifier.getInstance().isModified()) {
-					entityStream.write(bytes);
-					return;
-				}
-				Document document;
-				try {
-					synchronized(documentBuilder) {
-						document = documentBuilder.parse(new ByteArrayInputStream(bytes));
-					}
-				} catch (SAXException ex) {
-					logger.error("Error parsing XHTML", ex);
-					entityStream.write(bytes);
-					return;
-				}
-				ResultDocModifier.getInstance().addToDocument(document);
-				Transformer transformer;
-				try {
-					transformer = transformerFactory.newTransformer();
-				} catch (TransformerConfigurationException ex) {
-					throw new RuntimeException(ex);
-				}
-				DOMSource source = new DOMSource(document);
-				StreamResult result = new StreamResult(entityStream);
-				try {
-					transformer.setOutputProperty("omit-xml-declaration","yes");
-					transformer.transform(source, result);
-				} catch (TransformerException ex) {
-					throw new RuntimeException(ex);
-				}
-			} finally {
-				ResultDocModifier.dispose();
-			}
-		}
-	}
+        if (renderer == null) {
+            throw new WebApplicationException(
+                    Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No suitable renderer found").build());
+        }
+        final MediaType rendererMediaType = renderer.getMediaType();
+        Map<String, Object> sharedRenderingValues = new HashMap<String, Object>();
+        ResultDocModifier.init();
+        if (!(rendererMediaType.getType().equals("application") && rendererMediaType.getSubtype().equals("xhtml+xml"))) {
+            httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, rendererMediaType);
+            renderer.render(node, getUserContext(), mode, uriInfo, headers, httpHeaders, sharedRenderingValues, entityStream);
+        } else {
+            final MediaType mediaTypeWithCharset = MediaType.valueOf(MediaType.APPLICATION_XHTML_XML+";charset=UTF-8");
+            httpHeaders.putSingle(HttpHeaders.CONTENT_TYPE, mediaTypeWithCharset);
+            try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                renderer.render(node, getUserContext(), mode, uriInfo, headers, httpHeaders, sharedRenderingValues, baos);
+                final byte[] bytes = baos.toByteArray();
+                if (!ResultDocModifier.getInstance().isModified()) {
+                    entityStream.write(bytes);
+                    return;
+                }
+                Document document;
+                try {
+                    synchronized(documentBuilder) {
+                        document = documentBuilder.parse(new ByteArrayInputStream(bytes));
+                    }
+                } catch (SAXException ex) {
+                    logger.error("Error parsing XHTML", ex);
+                    entityStream.write(bytes);
+                    return;
+                }
+                ResultDocModifier.getInstance().addToDocument(document);
+                Transformer transformer;
+                try {
+                    transformer = transformerFactory.newTransformer();
+                } catch (TransformerConfigurationException ex) {
+                    throw new RuntimeException(ex);
+                }
+                DOMSource source = new DOMSource(document);
+                StreamResult result = new StreamResult(entityStream);
+                try {
+                    transformer.setOutputProperty("omit-xml-declaration","yes");
+                    transformer.transform(source, result);
+                } catch (TransformerException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } finally {
+                ResultDocModifier.dispose();
+            }
+        }
+    }
 
-	private String getRenderingMode() {
-		if (uriInfo == null) {
-			return null;
-		}
-		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
-		List<String> modes = queryParams.get(MODE);
-		if ((modes == null) || (modes.size() == 0)) {
-			return null;
-		}
-		return modes.get(0);
-	}
+    private String getRenderingMode() {
+        if (uriInfo == null) {
+            return null;
+        }
+        MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+        List<String> modes = queryParams.get(MODE);
+        if ((modes == null) || (modes.size() == 0)) {
+            return null;
+        }
+        return modes.get(0);
+    }
 
-	protected void bindContextProvider(UserContextProvider provider) {
-		contextProviders.add(provider);
-	}
+    protected void bindContextProvider(UserContextProvider provider) {
+        contextProviders.add(provider);
+    }
 
-	protected void unbindContextProvider(UserContextProvider provider) {
-		contextProviders.remove(provider);
-	}
+    protected void unbindContextProvider(UserContextProvider provider) {
+        contextProviders.remove(provider);
+    }
 
-	private GraphNode getUserContext() {
-		GraphNode contextNode = new GraphNode(new BNode(), new SimpleMGraph());
-		synchronized(contextProviders) {
-			Iterator<UserContextProvider> providersIter = contextProviders.iterator();
-			while (providersIter.hasNext()) {
-				UserContextProvider userContextProvider = providersIter.next();
-				contextNode = userContextProvider.addUserContext(contextNode);
-			}
-		}
-		return contextNode;
-	}
+    private GraphNode getUserContext() {
+        GraphNode contextNode = new GraphNode(new BNode(), new SimpleMGraph());
+        synchronized(contextProviders) {
+            Iterator<UserContextProvider> providersIter = contextProviders.iterator();
+            while (providersIter.hasNext()) {
+                UserContextProvider userContextProvider = providersIter.next();
+                contextNode = userContextProvider.addUserContext(contextNode);
+            }
+        }
+        return contextNode;
+    }
 }

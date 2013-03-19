@@ -28,10 +28,10 @@ package org.apache.clerezza.rdf.core;
  * @author reto
  */
 public interface Literal extends Resource {
-	
-	/**
-	 * 
-	 * @return the text of this literal
-	 */
-	public String getLexicalForm();
+    
+    /**
+     * 
+     * @return the text of this literal
+     */
+    public String getLexicalForm();
 }

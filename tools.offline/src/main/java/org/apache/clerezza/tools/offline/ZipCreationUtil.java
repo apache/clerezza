@@ -33,40 +33,40 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  * @author reto
  */
 class ZipCreationUtil {
-	static byte[] createZip(PathNode rootNode) throws IOException {
-		ByteArrayOutputStream result = new ByteArrayOutputStream();
-			ZipOutputStream compressedTcs = new ZipOutputStream(result);
-			archive(compressedTcs, rootNode);
-			compressedTcs.close();
-		return result.toByteArray();
-	}
+    static byte[] createZip(PathNode rootNode) throws IOException {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+            ZipOutputStream compressedTcs = new ZipOutputStream(result);
+            archive(compressedTcs, rootNode);
+            compressedTcs.close();
+        return result.toByteArray();
+    }
 
-	private static void archive(ZipOutputStream compressedTcs,
-			PathNode pathNode) throws IOException {
-		if (pathNode.isDirectory()) {
-			//multi-path node doesn't prevent duplicate in versions previous to
-			//0.8
-			Set<String> childNames = new HashSet<String>(Arrays.asList(pathNode.list()));
-			for (String childName : childNames) {
-				archive(compressedTcs, pathNode.getSubPath(childName));
-			}
-		} else {
-			compressedTcs.putNextEntry(new ZipEntry(removeLeadingSlash(pathNode.getPath())));
-			final int BUF_SIZE = 2048;
-			byte buffer[] = new byte[BUF_SIZE];
-			InputStream in = pathNode.getInputStream();
-			int count;
-			while ((count = in.read(buffer, 0, BUF_SIZE)) != -1) {
-				compressedTcs.write(buffer, 0, count);
-			}
-		}
-	}
+    private static void archive(ZipOutputStream compressedTcs,
+            PathNode pathNode) throws IOException {
+        if (pathNode.isDirectory()) {
+            //multi-path node doesn't prevent duplicate in versions previous to
+            //0.8
+            Set<String> childNames = new HashSet<String>(Arrays.asList(pathNode.list()));
+            for (String childName : childNames) {
+                archive(compressedTcs, pathNode.getSubPath(childName));
+            }
+        } else {
+            compressedTcs.putNextEntry(new ZipEntry(removeLeadingSlash(pathNode.getPath())));
+            final int BUF_SIZE = 2048;
+            byte buffer[] = new byte[BUF_SIZE];
+            InputStream in = pathNode.getInputStream();
+            int count;
+            while ((count = in.read(buffer, 0, BUF_SIZE)) != -1) {
+                compressedTcs.write(buffer, 0, count);
+            }
+        }
+    }
 
-	private static String removeLeadingSlash(String string) {
-		if (string.length() > 0 && string.charAt(0) == '/') {
-			return string.substring(1);
-		} else {
-			return string;
-		}
-	}
+    private static String removeLeadingSlash(String string) {
+        if (string.length() > 0 && string.charAt(0) == '/') {
+            return string.substring(1);
+        } else {
+            return string;
+        }
+    }
 }

@@ -47,35 +47,35 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 @Path("/scripts")
 public class Scripts {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private FileServer fileServer;
+    private FileServer fileServer;
 
-	/**
-	 * The activate method is called when SCR activates the component
-	 * configuration. 
-	 * 
-	 * @param componentContext
-	 */
-	protected void activate(ComponentContext context) {
-		Bundle bundle = context.getBundleContext().getBundle();
-		URL resourceDir = getClass().getResource("staticweb");
-		PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
-		logger.debug("Initializing file server for {} ({})", resourceDir,
-				resourceDir.getFile());
-		fileServer = new FileServer(pathNode);
-	}
+    /**
+     * The activate method is called when SCR activates the component
+     * configuration. 
+     * 
+     * @param componentContext
+     */
+    protected void activate(ComponentContext context) {
+        Bundle bundle = context.getBundleContext().getBundle();
+        URL resourceDir = getClass().getResource("staticweb");
+        PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
+        logger.debug("Initializing file server for {} ({})", resourceDir,
+                resourceDir.getFile());
+        fileServer = new FileServer(pathNode);
+    }
 
-	/**
-	 * Returns a PathNode of a static file from the staticweb folder.
-	 * 
-	 * @return {@link PathNode}
-	 */
-	@GET
-	@Path("{path:.+}")
-	public PathNode getStaticFile(@PathParam("path") String path) {
-		final PathNode node = fileServer.getNode(path);
-		return node;
-	}
+    /**
+     * Returns a PathNode of a static file from the staticweb folder.
+     * 
+     * @return {@link PathNode}
+     */
+    @GET
+    @Path("{path:.+}")
+    public PathNode getStaticFile(@PathParam("path") String path) {
+        final PathNode node = fileServer.getNode(path);
+        return node;
+    }
 
 }

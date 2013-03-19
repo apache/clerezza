@@ -26,45 +26,45 @@ import org.wymiwyg.commons.util.arguments.CommandLine;
  */
 public interface LauncherArguments {
 
-	@CommandLine(longName = "revert", shortName = {"R"}, required = false,
-	description = "Command to revert platform bundles to default. all|missing|<bundle-uri-pattern>")
-	public String getRevertParam();
+    @CommandLine(longName = "revert", shortName = {"R"}, required = false,
+    description = "Command to revert platform bundles to default. all|missing|<bundle-uri-pattern>")
+    public String getRevertParam();
 
-	@CommandLine(longName = "help", shortName = {"H"}, required = false,
-	isSwitch = true, description = "Show help on command line arguments")
-	public boolean getHelp();
+    @CommandLine(longName = "help", shortName = {"H"}, required = false,
+    isSwitch = true, description = "Show help on command line arguments")
+    public boolean getHelp();
 
-	@CommandLine(longName = "log", shortName = {"L"}, required = false,
-	description = "set the log-level, the value is one of the following: " +
-	"TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or NONE")
-	public String getLogLevel();
+    @CommandLine(longName = "log", shortName = {"L"}, required = false,
+    description = "set the log-level, the value is one of the following: " +
+    "TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or NONE")
+    public String getLogLevel();
 
-	@CommandLine(longName = "port", shortName = {"P"}, required = false,
-	description = "The port on which the default webservice shall listen")
-	public String getPort();
-	
-	@CommandLine(longName = "https_port", shortName = {}, required = false,
-	description = "The port on which the https secure webserver shall listen")
-	public String getSecurePort();
-	
-	@CommandLine(longName = "https_keystore_path", shortName = {}, required = false,
-	description = "The folder with the keystore for https")
-	public String getKeyStorePath();
-	
-	@CommandLine(longName = "https_keystore_password", shortName = {}, required = false,
-	description = "The password for accessing the keystore for https")
-	public String getKeyStorePassword();
-	
-	@CommandLine(longName = "https_keystore_type", shortName = {}, required = false,
-	description = "The type of the key-store")
-	public String getKeyStoreType();
-	
-	@CommandLine(longName = "https_keystore_clientauth", shortName = {}, required = false,
-	description = "Client Auth request, one of \"none\", \"want\" or \"need\"")
-	public String getClientAuth();
+    @CommandLine(longName = "port", shortName = {"P"}, required = false,
+    description = "The port on which the default webservice shall listen")
+    public String getPort();
+    
+    @CommandLine(longName = "https_port", shortName = {}, required = false,
+    description = "The port on which the https secure webserver shall listen")
+    public String getSecurePort();
+    
+    @CommandLine(longName = "https_keystore_path", shortName = {}, required = false,
+    description = "The folder with the keystore for https")
+    public String getKeyStorePath();
+    
+    @CommandLine(longName = "https_keystore_password", shortName = {}, required = false,
+    description = "The password for accessing the keystore for https")
+    public String getKeyStorePassword();
+    
+    @CommandLine(longName = "https_keystore_type", shortName = {}, required = false,
+    description = "The type of the key-store")
+    public String getKeyStoreType();
+    
+    @CommandLine(longName = "https_keystore_clientauth", shortName = {}, required = false,
+    description = "Client Auth request, one of \"none\", \"want\" or \"need\"")
+    public String getClientAuth();
 
-	@CommandLine(longName = "noConsoleShell", shortName = {"NCS"}, required = false,
-	isSwitch = true, description = "Disable the console shell")
-	public boolean getNotConsoleShell();
+    @CommandLine(longName = "noConsoleShell", shortName = {"NCS"}, required = false,
+    isSwitch = true, description = "Disable the console shell")
+    public boolean getNotConsoleShell();
 
 }

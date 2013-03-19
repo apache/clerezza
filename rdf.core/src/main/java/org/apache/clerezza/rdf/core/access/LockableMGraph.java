@@ -29,13 +29,13 @@ import org.apache.clerezza.rdf.core.MGraph;
  */
 public interface  LockableMGraph extends MGraph {
 
-	/**
-	 * The lock provided by this methods allows to create read- and write-locks
-	 * that span individual method calls. Having a read locks prevents other
-	 * threads from writing to this MGraph, having a write-lock prevents other
-	 * threads from reading and writing.
-	 *
-	 * @return the lock of this MGraph
-	 */
-	ReadWriteLock getLock();
+    /**
+     * The lock provided by this methods allows to create read- and write-locks
+     * that span individual method calls. Having a read locks prevents other
+     * threads from writing to this MGraph, having a write-lock prevents other
+     * threads from reading and writing.
+     *
+     * @return the lock of this MGraph
+     */
+    ReadWriteLock getLock();
 }

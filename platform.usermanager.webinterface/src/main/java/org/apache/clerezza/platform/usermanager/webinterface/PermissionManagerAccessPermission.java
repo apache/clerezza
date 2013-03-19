@@ -29,38 +29,38 @@ import org.apache.clerezza.permissiondescriptions.PermissionInfo;
  * @author tio
  */
 @PermissionInfo(value="Permission Manager Access Permission", description="Grants access " +
-	"to the Permission Manager")
+    "to the Permission Manager")
 public class PermissionManagerAccessPermission extends Permission{
 
-	public PermissionManagerAccessPermission() {
-		super("Permission Manager permission");
-	}
-	/**
-	 *
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public PermissionManagerAccessPermission(String target, String actions) {
-		super("Permission Manager permission");
-	}
+    public PermissionManagerAccessPermission() {
+        super("Permission Manager permission");
+    }
+    /**
+     *
+     * @param target ignored
+     * @param action ignored
+     */
+    public PermissionManagerAccessPermission(String target, String actions) {
+        super("Permission Manager permission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 77987 + "Permission Manager permission".hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return 77987 + "Permission Manager permission".hashCode();
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 }

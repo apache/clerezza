@@ -30,8 +30,8 @@ import org.apache.clerezza.rdf.core.TripleCollection;
 public class RemoveEvent extends GraphEvent {
 
 
-	public RemoveEvent(TripleCollection graph,  Triple triple) {
-		super(graph, triple);
-	}
+    public RemoveEvent(TripleCollection graph,  Triple triple) {
+        super(graph, triple);
+    }
 
 }

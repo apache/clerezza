@@ -38,147 +38,147 @@ import org.apache.clerezza.rdf.jena.facade.JenaGraph;
  */
 class TcDatasetGraph implements DatasetGraph {
 
-	private TcManager tcManager;
-	private TripleCollection defaultGraph;
+    private TcManager tcManager;
+    private TripleCollection defaultGraph;
 
-	TcDatasetGraph(TcManager tcManager, TripleCollection defaultGraph) {
-		this.tcManager = tcManager;
-		this.defaultGraph = defaultGraph;
-	
-	}
+    TcDatasetGraph(TcManager tcManager, TripleCollection defaultGraph) {
+        this.tcManager = tcManager;
+        this.defaultGraph = defaultGraph;
+    
+    }
 
-	@Override
-	public Graph getDefaultGraph() {
-		final JenaGraph jenaGraph = new JenaGraph(defaultGraph);
-		return jenaGraph;
-	}
+    @Override
+    public Graph getDefaultGraph() {
+        final JenaGraph jenaGraph = new JenaGraph(defaultGraph);
+        return jenaGraph;
+    }
 
-	@Override
-	public Graph getGraph(Node node) {
-		final JenaGraph jenaGraph = new JenaGraph(
-				tcManager.getTriples(new UriRef(node.getURI())));
-		return jenaGraph;
-	}
+    @Override
+    public Graph getGraph(Node node) {
+        final JenaGraph jenaGraph = new JenaGraph(
+                tcManager.getTriples(new UriRef(node.getURI())));
+        return jenaGraph;
+    }
 
-	@Override
-	public boolean containsGraph(Node node) {
-		try {
-			tcManager.getTriples(new UriRef(node.getURI()));
-			return true;
-		} catch (NoSuchEntityException e) {
-			return false;
-		}
-	}
+    @Override
+    public boolean containsGraph(Node node) {
+        try {
+            tcManager.getTriples(new UriRef(node.getURI()));
+            return true;
+        } catch (NoSuchEntityException e) {
+            return false;
+        }
+    }
 
-	@Override
-	public Iterator<Node> listGraphNodes() {
-		final Iterator<UriRef> graphsIter = tcManager.listTripleCollections().iterator();
-		return new Iterator<Node>() {
+    @Override
+    public Iterator<Node> listGraphNodes() {
+        final Iterator<UriRef> graphsIter = tcManager.listTripleCollections().iterator();
+        return new Iterator<Node>() {
 
-			@Override
-			public boolean hasNext() {
-				return graphsIter.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return graphsIter.hasNext();
+            }
 
-			@Override
-			public Node next() {
-				UriRef uriRef = graphsIter.next();
-				if (uriRef == null) {
-					return null;
-				}
-				return new Node_URI(uriRef.getUnicodeString()) {};
-			}
+            @Override
+            public Node next() {
+                UriRef uriRef = graphsIter.next();
+                if (uriRef == null) {
+                    return null;
+                }
+                return new Node_URI(uriRef.getUnicodeString()) {};
+            }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
 
-		};
-	}
+        };
+    }
 
-	@Override
-	public Lock getLock() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Lock getLock() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public long size() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public long size() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public void close() {
-	}
+    @Override
+    public void close() {
+    }
 
-	@Override
-	public Context getContext() {
-		return null;
-	}
+    @Override
+    public Context getContext() {
+        return null;
+    }
 
-	@Override
-	public boolean isEmpty() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public boolean isEmpty() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public void add(Quad quad) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public void add(Quad quad) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public void addGraph(Node graphName, Graph graph) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public void addGraph(Node graphName, Graph graph) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public boolean contains(Node g, Node s, Node p, Node o) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public boolean contains(Node g, Node s, Node p, Node o) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public boolean contains(Quad quad) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public boolean contains(Quad quad) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public void delete(Quad quad) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public void delete(Quad quad) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public void deleteAny(Node g, Node s, Node p, Node o) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public void deleteAny(Node g, Node s, Node p, Node o) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public Iterator<Quad> find(Quad quad) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Iterator<Quad> find(Quad quad) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public void removeGraph(Node graphName) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public void removeGraph(Node graphName) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public void setDefaultGraph(Graph g) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public void setDefaultGraph(Graph g) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public Iterator<Quad> find() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Iterator<Quad> find() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public Iterator<Quad> findNG(Node node, Node node1, Node node2, Node node3) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Iterator<Quad> findNG(Node node, Node node1, Node node2, Node node3) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

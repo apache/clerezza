@@ -76,41 +76,41 @@ import org.apache.wink.osgi.WinkRequestProcessor;
 @Component(immediate = true, metatype = false)
 @Service(value = javax.servlet.Filter.class)
 @Properties({
-	@Property(name ="pattern", value=".*"),
+    @Property(name ="pattern", value=".*"),
     @Property(name ="service.ranking", intValue=100)
     
 })
 public class TypeHandlerSpace implements Filter {
 
-	@Reference
-	GraphNodeProvider gnp;
-
-	@Reference
-	TypeHandlerDiscovery typeHandlerDiscovery;
-
-	
     @Reference
-	private WinkRequestProcessor winkProvider;
+    GraphNodeProvider gnp;
+
+    @Reference
+    TypeHandlerDiscovery typeHandlerDiscovery;
+
     
-	private final String DESCRIPTION_SUFFIX = "-description";
-	private DescriptionHandler descriptionHandler = new DescriptionHandler();
+    @Reference
+    private WinkRequestProcessor winkProvider;
+    
+    private final String DESCRIPTION_SUFFIX = "-description";
+    private DescriptionHandler descriptionHandler = new DescriptionHandler();
 
     
     public void init(FilterConfig filterConfig) throws ServletException {
-		//no initialization needed
-	}
+        //no initialization needed
+    }
 
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
-		if (request instanceof HttpServletRequest) {
-			doFilter((HttpServletRequest)request, (HttpServletResponse)response, chain);
-		} else {
-			chain.doFilter(request, response);
-		}	
-	}
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
+        if (request instanceof HttpServletRequest) {
+            doFilter((HttpServletRequest)request, (HttpServletResponse)response, chain);
+        } else {
+            chain.doFilter(request, response);
+        }    
+    }
     
     public void doFilter(HttpServletRequest request, HttpServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
+            FilterChain chain) throws IOException, ServletException {
         try {
             Object resource = getTypeHandler(request.getRequestURL().toString());
             if (resource != null) {
@@ -124,33 +124,33 @@ public class TypeHandlerSpace implements Filter {
         
     }
 
-	public void destroy() {
-		//not
-	}
+    public void destroy() {
+        //not
+    }
 
-	/**
-	 * Returns a TypeHandler according the most important rdf-type of the
-	 * requested resource.
-	 * 
-	 * @param uriInfo
-	 * @param request
-	 * @return
-	 * @throws ResourceMethodException
-	 */
-	/*@Path("{path:.*}")
-	public Object getHandler(@Context UriInfo uriInfo,
-			@Context Request request) throws ResourceMethodException  {
-		String absoluteUriPath = uriInfo.getAbsolutePath().toString();
-		if (absoluteUriPath.endsWith(DESCRIPTION_SUFFIX)) {
-			if (request.getMethod().equalsIgnoreCase("GET")) {
-				return descriptionHandler;
-			}
-		}
-		return getTypeHandler(absoluteUriPath);
-	}*/
+    /**
+     * Returns a TypeHandler according the most important rdf-type of the
+     * requested resource.
+     * 
+     * @param uriInfo
+     * @param request
+     * @return
+     * @throws ResourceMethodException
+     */
+    /*@Path("{path:.*}")
+    public Object getHandler(@Context UriInfo uriInfo,
+            @Context Request request) throws ResourceMethodException  {
+        String absoluteUriPath = uriInfo.getAbsolutePath().toString();
+        if (absoluteUriPath.endsWith(DESCRIPTION_SUFFIX)) {
+            if (request.getMethod().equalsIgnoreCase("GET")) {
+                return descriptionHandler;
+            }
+        }
+        return getTypeHandler(absoluteUriPath);
+    }*/
 
-	private Object getTypeHandler(String absoluteUriPath) throws ResourceMethodException {
-		UriRef uri = new UriRef(absoluteUriPath);
+    private Object getTypeHandler(String absoluteUriPath) throws ResourceMethodException {
+        UriRef uri = new UriRef(absoluteUriPath);
         if (gnp.existsLocal(uri)) {
             GraphNode node = gnp.getLocal(uri);
             Lock lock =node.readLock();
@@ -163,11 +163,11 @@ public class TypeHandlerSpace implements Filter {
             }
         }
         
-		return null;
-	}
+        return null;
+    }
 
-	private Set<UriRef> getRdfTypesOfUriRef(GraphNode node) {
-		Set<UriRef> rdfTypes = new HashSet<UriRef>();
+    private Set<UriRef> getRdfTypesOfUriRef(GraphNode node) {
+        Set<UriRef> rdfTypes = new HashSet<UriRef>();
         Iterator<Resource> types = node.getObjects(RDF.type);
         while (types.hasNext()) {
             Resource typeStmtObj = types.next();
@@ -179,20 +179,20 @@ public class TypeHandlerSpace implements Filter {
             UriRef rdfType = (UriRef) typeStmtObj;
             rdfTypes.add(rdfType);
         }
-		
-		return rdfTypes;
-	}
+        
+        return rdfTypes;
+    }
 
-	public class DescriptionHandler {
+    public class DescriptionHandler {
 
-		@GET
-		public Object getDescription(@Context UriInfo uriInfo){
-			String absoluteUriPath = uriInfo.getAbsolutePath().toString();
-			//MGraph contentMGraph = cgp.getContentGraph();
-				UriRef uri = new UriRef(absoluteUriPath.substring(0,
-						absoluteUriPath.length() - DESCRIPTION_SUFFIX.length()));
-				GraphNode graphNode = gnp.getLocal(uri);
-				return graphNode.getNodeContext();
-		}
-	}
+        @GET
+        public Object getDescription(@Context UriInfo uriInfo){
+            String absoluteUriPath = uriInfo.getAbsolutePath().toString();
+            //MGraph contentMGraph = cgp.getContentGraph();
+                UriRef uri = new UriRef(absoluteUriPath.substring(0,
+                        absoluteUriPath.length() - DESCRIPTION_SUFFIX.length()));
+                GraphNode graphNode = gnp.getLocal(uri);
+                return graphNode.getNodeContext();
+        }
+    }
 }

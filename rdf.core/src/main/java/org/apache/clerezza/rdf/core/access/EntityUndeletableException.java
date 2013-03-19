@@ -27,24 +27,24 @@ import org.apache.clerezza.rdf.core.UriRef;
  * @author reto
  */
 public class EntityUndeletableException extends RuntimeException {
-	private UriRef entityName;
+    private UriRef entityName;
 
-	/**
-	 * creates an exception indicating that the entity with the specified name
-	 * cannot be deleted
-	 * 
-	 * @param entityName the name of the entity which is undeletable
-	 */
-	public EntityUndeletableException(UriRef entityName) {
-		super("This entity is undeletable: "+entityName);
-		this.entityName = entityName;
-	}
+    /**
+     * creates an exception indicating that the entity with the specified name
+     * cannot be deleted
+     * 
+     * @param entityName the name of the entity which is undeletable
+     */
+    public EntityUndeletableException(UriRef entityName) {
+        super("This entity is undeletable: "+entityName);
+        this.entityName = entityName;
+    }
 
-	/**
-	 * 
-	 * @return the name of the entity which is undeletable
-	 */
-	public UriRef getEntityName() {
-		return entityName;
-	}
+    /**
+     * 
+     * @return the name of the entity which is undeletable
+     */
+    public UriRef getEntityName() {
+        return entityName;
+    }
 }

@@ -29,7 +29,7 @@ import org.apache.clerezza.rdf.core.access.TcManager;
  */
 public interface QueryEngine {
 
-	public Object execute(TcManager tcManager, TripleCollection dafaultGraph, Query query);
+    public Object execute(TcManager tcManager, TripleCollection dafaultGraph, Query query);
 
 
 }

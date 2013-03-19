@@ -38,17 +38,17 @@ public class WikipediaEntityAnnotation_Type extends ClerezzaBaseAnnotation_Type 
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
       public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (WikipediaEntityAnnotation_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = WikipediaEntityAnnotation_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new WikipediaEntityAnnotation(addr, WikipediaEntityAnnotation_Type.this);
-  			   WikipediaEntityAnnotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
+               if (WikipediaEntityAnnotation_Type.this.useExistingInstance) {
+                 // Return eq fs instance if already created
+               FeatureStructure fs = WikipediaEntityAnnotation_Type.this.jcas.getJfsFromCaddr(addr);
+               if (null == fs) {
+                 fs = new WikipediaEntityAnnotation(addr, WikipediaEntityAnnotation_Type.this);
+                 WikipediaEntityAnnotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
+                 return fs;
+               }
+               return fs;
         } else return new WikipediaEntityAnnotation(addr, WikipediaEntityAnnotation_Type.this);
-  	  }
+        }
     };
   /** @generated */
   public final static int typeIndexID = WikipediaEntityAnnotation.typeIndexID;
@@ -59,7 +59,7 @@ public class WikipediaEntityAnnotation_Type extends ClerezzaBaseAnnotation_Type 
 
 
   /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+    * @generated */
   public WikipediaEntityAnnotation_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());

@@ -31,23 +31,23 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public interface RenderletManager {
 
-	/**
-	 * Registeres a renderlet.
-	 *
-	 * For the same rdfType, mediaType and Mode at motst one built-in and one
-	 * non-built-in renderlet can be registered. An attempt to register a second
-	 * renderlet results in the unregistration of the previously registered one
-	 *
-	 * @param renderingSpecification the argument that is passed to the
-	 * renderlet.
-	 * @param rdfType defines the RDF-type to be rendered with specified renderlet
-	 * and renderingSpecification and mode.
-	 * @param mode defines the mode in which the renderlet and rendering
-	 * specification has to be used.
-	 * mode may be null, that indicates that it is only used when no mode is
-	 * required.
-	 * @param mediaType The media type of the rendered
-	 * @param builtIn ignored
-	 */ void registerRenderlet(String renderletServiceName, final UriRef renderingSpecification, final UriRef rdfType, final String mode, final MediaType mediaType, boolean builtIn);
+    /**
+     * Registeres a renderlet.
+     *
+     * For the same rdfType, mediaType and Mode at motst one built-in and one
+     * non-built-in renderlet can be registered. An attempt to register a second
+     * renderlet results in the unregistration of the previously registered one
+     *
+     * @param renderingSpecification the argument that is passed to the
+     * renderlet.
+     * @param rdfType defines the RDF-type to be rendered with specified renderlet
+     * and renderingSpecification and mode.
+     * @param mode defines the mode in which the renderlet and rendering
+     * specification has to be used.
+     * mode may be null, that indicates that it is only used when no mode is
+     * required.
+     * @param mediaType The media type of the rendered
+     * @param builtIn ignored
+     */ void registerRenderlet(String renderletServiceName, final UriRef renderingSpecification, final UriRef rdfType, final String mode, final MediaType mediaType, boolean builtIn);
 
 }

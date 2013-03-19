@@ -43,114 +43,114 @@ import org.wymiwyg.commons.util.collections.BidiMapImpl;
  */
 public class JenaGraphAdaptor extends AbstractMGraph {
 
-	private final Graph jenaGraph;
-	final BidiMap<BNode, Node> tria2JenaBNodes = new BidiMapImpl<BNode, Node>();
-	final Jena2TriaUtil jena2TriaUtil =
-			new Jena2TriaUtil(tria2JenaBNodes.inverse());
-	final Tria2JenaUtil tria2JenaUtil =
-			new Tria2JenaUtil(tria2JenaBNodes);
+    private final Graph jenaGraph;
+    final BidiMap<BNode, Node> tria2JenaBNodes = new BidiMapImpl<BNode, Node>();
+    final Jena2TriaUtil jena2TriaUtil =
+            new Jena2TriaUtil(tria2JenaBNodes.inverse());
+    final Tria2JenaUtil tria2JenaUtil =
+            new Tria2JenaUtil(tria2JenaBNodes);
 
-	/**
-	 * Constructs an MGraph based on the supplied jena Graph.
-	 *
-	 * @param jenaGraph
-	 */
-	public JenaGraphAdaptor(Graph jenaGraph) {
-		this.jenaGraph = jenaGraph;
-	}
+    /**
+     * Constructs an MGraph based on the supplied jena Graph.
+     *
+     * @param jenaGraph
+     */
+    public JenaGraphAdaptor(Graph jenaGraph) {
+        this.jenaGraph = jenaGraph;
+    }
 
-	@Override
-	public void clear() {
-		super.clear();
-		tria2JenaBNodes.clear();
-	}
+    @Override
+    public void clear() {
+        super.clear();
+        tria2JenaBNodes.clear();
+    }
 
-	@Override
-	public int size() {
-		return jenaGraph.size();
-	}
+    @Override
+    public int size() {
+        return jenaGraph.size();
+    }
 
-	@Override
-	public Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate, Resource object) {
-		Node jenaSubject = null;
-		Node jenaPredicate = null;
-		Node jenaObject = null;
-		if (subject != null) {
-			jenaSubject = tria2JenaUtil.convert2JenaNode(subject);
-			if (jenaSubject == null) {
-				return Collections.EMPTY_SET.iterator();
-			}
-		}
-		if (object != null) {
-			jenaObject = tria2JenaUtil.convert2JenaNode(object);
-			if (jenaObject == null) {
-				return Collections.EMPTY_SET.iterator();
-			}
-		}
-		if (predicate != null) {
-			jenaPredicate = tria2JenaUtil.convert2JenaNode(predicate);
-		}
-		
-		final ExtendedIterator jenaIter = jenaGraph.find(jenaSubject, jenaPredicate,
-				jenaObject);
-		return new Iterator<Triple>() {
+    @Override
+    public Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate, Resource object) {
+        Node jenaSubject = null;
+        Node jenaPredicate = null;
+        Node jenaObject = null;
+        if (subject != null) {
+            jenaSubject = tria2JenaUtil.convert2JenaNode(subject);
+            if (jenaSubject == null) {
+                return Collections.EMPTY_SET.iterator();
+            }
+        }
+        if (object != null) {
+            jenaObject = tria2JenaUtil.convert2JenaNode(object);
+            if (jenaObject == null) {
+                return Collections.EMPTY_SET.iterator();
+            }
+        }
+        if (predicate != null) {
+            jenaPredicate = tria2JenaUtil.convert2JenaNode(predicate);
+        }
+        
+        final ExtendedIterator jenaIter = jenaGraph.find(jenaSubject, jenaPredicate,
+                jenaObject);
+        return new Iterator<Triple>() {
 
-			private Triple lastReturned = null;
-			private Iterator<Triple> precached = null;
+            private Triple lastReturned = null;
+            private Iterator<Triple> precached = null;
 
-			@Override
-			public boolean hasNext() {
-				if (precached != null) {
-					return precached.hasNext();
-				} else {
-					return jenaIter.hasNext();
-				}
-			}
+            @Override
+            public boolean hasNext() {
+                if (precached != null) {
+                    return precached.hasNext();
+                } else {
+                    return jenaIter.hasNext();
+                }
+            }
 
-			@Override
-			public Triple next() {
-				if (precached != null) {
-					lastReturned =  precached.next();
-				} else {
-					lastReturned = jena2TriaUtil.convertTriple(
-							(com.hp.hpl.jena.graph.Triple)jenaIter.next());
-				}
-				return lastReturned;
-			}
+            @Override
+            public Triple next() {
+                if (precached != null) {
+                    lastReturned =  precached.next();
+                } else {
+                    lastReturned = jena2TriaUtil.convertTriple(
+                            (com.hp.hpl.jena.graph.Triple)jenaIter.next());
+                }
+                return lastReturned;
+            }
 
-			@Override
-			public void remove() {
-				final Triple deleting = lastReturned;
-				if (precached == null) {
-					final ArrayList<Triple> data = new ArrayList<Triple>();
-					while (hasNext()) {
-						data.add(next());
-					}
-					precached = data.iterator();
-				}
-				//jenaIter.remove();
-				//JenaGraphAdaptor.this.performRemove(lastReturned);
-				jenaGraph.delete(tria2JenaUtil.convertTriple(deleting));
-			}
-		};
+            @Override
+            public void remove() {
+                final Triple deleting = lastReturned;
+                if (precached == null) {
+                    final ArrayList<Triple> data = new ArrayList<Triple>();
+                    while (hasNext()) {
+                        data.add(next());
+                    }
+                    precached = data.iterator();
+                }
+                //jenaIter.remove();
+                //JenaGraphAdaptor.this.performRemove(lastReturned);
+                jenaGraph.delete(tria2JenaUtil.convertTriple(deleting));
+            }
+        };
 
-	}
+    }
 
-	@Override
-	public boolean performAdd(Triple triple) {
-		if (contains(triple)) {
-			return false;
-		}
-		jenaGraph.add(tria2JenaUtil.convertTriple(triple, true));
-		return true;
-	}
+    @Override
+    public boolean performAdd(Triple triple) {
+        if (contains(triple)) {
+            return false;
+        }
+        jenaGraph.add(tria2JenaUtil.convertTriple(triple, true));
+        return true;
+    }
 
-	@Override
-	public boolean performRemove(Triple triple) {
-		if (!contains(triple)) {
-			return false;
-		}
-		jenaGraph.delete(tria2JenaUtil.convertTriple(triple));
-		return true;
-	}
+    @Override
+    public boolean performRemove(Triple triple) {
+        if (!contains(triple)) {
+            return false;
+        }
+        jenaGraph.delete(tria2JenaUtil.convertTriple(triple));
+        return true;
+    }
 }

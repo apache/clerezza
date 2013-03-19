@@ -39,41 +39,41 @@ import org.xml.sax.XMLReader;
  */
 public abstract class ClerezzaRDFaParser implements ParsingProvider {
 
-	private static Logger log = LoggerFactory.getLogger(ClerezzaRDFaParser.class);
+    private static Logger log = LoggerFactory.getLogger(ClerezzaRDFaParser.class);
 
 
-	@Override
-	public void parse(MGraph target, InputStream in, String formatIdentifier, UriRef baseUri) {
-		try {
-			parse(target, new InputSource(in), baseUri);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public void parse(MGraph target, InputStream in, String formatIdentifier, UriRef baseUri) {
+        try {
+            parse(target, new InputSource(in), baseUri);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	private void parse(MGraph target, InputSource in, UriRef baseURI) throws IOException {
-		Parser parser = new Parser(new ClerezzaStatementSink(target));
-		if (baseURI != null) {
-			parser.setBase(baseURI.getUnicodeString());
-		} else {
-			parser.setBase("urn:x-relative:root");
-		}
-		initParser(parser);
-		try {
-			XMLReader xreader = getReader();
-			xreader.setContentHandler(parser);
-			xreader.parse(in);
-		} catch (SAXException ex) {
-			throw new RuntimeException("SAX Error when parsing", ex);
-		}
-	}
+    private void parse(MGraph target, InputSource in, UriRef baseURI) throws IOException {
+        Parser parser = new Parser(new ClerezzaStatementSink(target));
+        if (baseURI != null) {
+            parser.setBase(baseURI.getUnicodeString());
+        } else {
+            parser.setBase("urn:x-relative:root");
+        }
+        initParser(parser);
+        try {
+            XMLReader xreader = getReader();
+            xreader.setContentHandler(parser);
+            xreader.parse(in);
+        } catch (SAXException ex) {
+            throw new RuntimeException("SAX Error when parsing", ex);
+        }
+    }
 
-	protected abstract XMLReader getReader() throws SAXException;
+    protected abstract XMLReader getReader() throws SAXException;
 
-	/**
-	 * subclasses may override this method to do some specific initialisation of parser
-	 * @param parser
-	 */
-	protected void initParser(Parser parser) {
-	}
+    /**
+     * subclasses may override this method to do some specific initialisation of parser
+     * @param parser
+     */
+    protected void initParser(Parser parser) {
+    }
 }

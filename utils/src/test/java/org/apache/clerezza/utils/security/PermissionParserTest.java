@@ -28,24 +28,24 @@ import org.junit.Test;
  * @author reto
  */
 public class PermissionParserTest {
-	
-	@Test
-	public void parsing() {
-		final FilePermission filePermission = new FilePermission("/", "read");
-		Assert.assertEquals(filePermission,
-				PermissionParser.getPermission(
-				"(java.io.FilePermission \"/\" \"read\")"));
-		Assert.assertEquals(filePermission,
-				PermissionParser.getPermission(
-				filePermission.toString()));
-		Assert.assertEquals(new AllPermission(),
-				PermissionParser.getPermission(
-				"(java.security.AllPermission)"));
-		Assert.assertEquals(new AllPermission(),
-				PermissionParser.getPermission(
-				"(java.security.AllPermission \"\")"));
-		Assert.assertEquals(new AllPermission(),
-				PermissionParser.getPermission(
-				"(java.security.AllPermission \"\" \"\")"));
-	}
+    
+    @Test
+    public void parsing() {
+        final FilePermission filePermission = new FilePermission("/", "read");
+        Assert.assertEquals(filePermission,
+                PermissionParser.getPermission(
+                "(java.io.FilePermission \"/\" \"read\")"));
+        Assert.assertEquals(filePermission,
+                PermissionParser.getPermission(
+                filePermission.toString()));
+        Assert.assertEquals(new AllPermission(),
+                PermissionParser.getPermission(
+                "(java.security.AllPermission)"));
+        Assert.assertEquals(new AllPermission(),
+                PermissionParser.getPermission(
+                "(java.security.AllPermission \"\")"));
+        Assert.assertEquals(new AllPermission(),
+                PermissionParser.getPermission(
+                "(java.security.AllPermission \"\" \"\")"));
+    }
 }

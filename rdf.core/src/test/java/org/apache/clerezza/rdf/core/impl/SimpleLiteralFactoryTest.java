@@ -29,34 +29,34 @@ import org.junit.Test;
  */
 public class SimpleLiteralFactoryTest {
 
-	final private static UriRef xsdInteger = 
-			new UriRef("http://www.w3.org/2001/XMLSchema#integer");
-	final private static UriRef xsdInt =
-			new UriRef("http://www.w3.org/2001/XMLSchema#int");
-	final private static UriRef xsdLong =
-			new UriRef("http://www.w3.org/2001/XMLSchema#long");
+    final private static UriRef xsdInteger = 
+            new UriRef("http://www.w3.org/2001/XMLSchema#integer");
+    final private static UriRef xsdInt =
+            new UriRef("http://www.w3.org/2001/XMLSchema#int");
+    final private static UriRef xsdLong =
+            new UriRef("http://www.w3.org/2001/XMLSchema#long");
 
-	SimpleLiteralFactory simpleLiteralFactory = new SimpleLiteralFactory();
+    SimpleLiteralFactory simpleLiteralFactory = new SimpleLiteralFactory();
 
-	@Test
-	public void longToXsdIntegerAndBackToMany() {
-		long value = 14l;
-		TypedLiteral tl = simpleLiteralFactory.createTypedLiteral(value);
-		Assert.assertEquals(xsdLong, tl.getDataType());
-		long longValue = simpleLiteralFactory.createObject(Long.class, tl);
-		Assert.assertEquals(value, longValue);
-		int intValue = simpleLiteralFactory.createObject(Integer.class, tl);
-		Assert.assertEquals(value, intValue);
-	}
+    @Test
+    public void longToXsdIntegerAndBackToMany() {
+        long value = 14l;
+        TypedLiteral tl = simpleLiteralFactory.createTypedLiteral(value);
+        Assert.assertEquals(xsdLong, tl.getDataType());
+        long longValue = simpleLiteralFactory.createObject(Long.class, tl);
+        Assert.assertEquals(value, longValue);
+        int intValue = simpleLiteralFactory.createObject(Integer.class, tl);
+        Assert.assertEquals(value, intValue);
+    }
 
-	@Test
-	public void intToXsdIntAndBackToMany() {
-		int value = 14;
-		TypedLiteral tl = simpleLiteralFactory.createTypedLiteral(value);
-		Assert.assertEquals(xsdInt, tl.getDataType());
-		long longValue = simpleLiteralFactory.createObject(Long.class, tl);
-		Assert.assertEquals(value, longValue);
-		int intValue = simpleLiteralFactory.createObject(Integer.class, tl);
-		Assert.assertEquals(value, intValue);
-	}
+    @Test
+    public void intToXsdIntAndBackToMany() {
+        int value = 14;
+        TypedLiteral tl = simpleLiteralFactory.createTypedLiteral(value);
+        Assert.assertEquals(xsdInt, tl.getDataType());
+        long longValue = simpleLiteralFactory.createObject(Long.class, tl);
+        Assert.assertEquals(value, longValue);
+        int intValue = simpleLiteralFactory.createObject(Integer.class, tl);
+        Assert.assertEquals(value, intValue);
+    }
 }

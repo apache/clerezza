@@ -31,30 +31,30 @@ import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
  */
 class ResultSetWrapper implements org.apache.clerezza.rdf.core.sparql.ResultSet {
 
-	private final Iterator<QuerySolution> solutionsIter;
+    private final Iterator<QuerySolution> solutionsIter;
 
 
-	public ResultSetWrapper(final ResultSet jenaResultSet) {
-		final List<QuerySolution> solutions = new ArrayList<QuerySolution>();
-		while (jenaResultSet.hasNext()) {
-			solutions.add(jenaResultSet.nextSolution());
-		}
-		solutionsIter = solutions.iterator();
-	}
+    public ResultSetWrapper(final ResultSet jenaResultSet) {
+        final List<QuerySolution> solutions = new ArrayList<QuerySolution>();
+        while (jenaResultSet.hasNext()) {
+            solutions.add(jenaResultSet.nextSolution());
+        }
+        solutionsIter = solutions.iterator();
+    }
 
-	@Override
-	public boolean hasNext() {
-		return solutionsIter.hasNext();
-	}
+    @Override
+    public boolean hasNext() {
+        return solutionsIter.hasNext();
+    }
 
-	@Override
-	public SolutionMapping next() {
-		return new HashMapSolutionMapping(solutionsIter.next());
-	}
+    @Override
+    public SolutionMapping next() {
+        return new HashMapSolutionMapping(solutionsIter.next());
+    }
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

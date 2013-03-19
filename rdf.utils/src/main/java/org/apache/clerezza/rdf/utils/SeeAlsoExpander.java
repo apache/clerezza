@@ -36,78 +36,78 @@ import org.apache.clerezza.rdf.ontologies.RDFS;
  * @author reto
  */
 public class SeeAlsoExpander {
-	/**
-	 * using TcManger instead of TcProvider as this ensures LockableMGraphs
-	 */
-	private final TcManager tcManager;
-	public SeeAlsoExpander(TcManager tcManager) {
-		this.tcManager = tcManager;
+    /**
+     * using TcManger instead of TcProvider as this ensures LockableMGraphs
+     */
+    private final TcManager tcManager;
+    public SeeAlsoExpander(TcManager tcManager) {
+        this.tcManager = tcManager;
 
-	}
+    }
 
-	/**
-	 * expands a node dereferencing its rdfs:seeAlso references using the
-	 * tcManager associated to this instance. If the added TripleCollections
-	 * also associate rdfs:seeAlso properties to node this are expanded till
-	 * the maximum recursion depth specified.
-	 *
-	 * @param node the node to be expanded
-	 * @param recursion the maximum recursion depth
-	 * @return a new GraphNode over the union of the original and all expansion graphs
-	 */
-	public GraphNode expand(GraphNode node, int recursion) {
-		Set<UriRef> alreadyVisited = new HashSet();
-		Set<TripleCollection> resultTripleCollections = new HashSet<TripleCollection>();
-		resultTripleCollections.add(node.getGraph());
-		for (UriRef uriRef : expand(node, alreadyVisited, recursion)) {
-			try {
-				resultTripleCollections.add(tcManager.getTriples(uriRef));
-			} catch (NoSuchEntityException e) {
-				//ignore
-			}
-		}
-		return new GraphNode(node.getNode(),
-				new UnionMGraph(resultTripleCollections.toArray(
-				new TripleCollection[resultTripleCollections.size()])));
+    /**
+     * expands a node dereferencing its rdfs:seeAlso references using the
+     * tcManager associated to this instance. If the added TripleCollections
+     * also associate rdfs:seeAlso properties to node this are expanded till
+     * the maximum recursion depth specified.
+     *
+     * @param node the node to be expanded
+     * @param recursion the maximum recursion depth
+     * @return a new GraphNode over the union of the original and all expansion graphs
+     */
+    public GraphNode expand(GraphNode node, int recursion) {
+        Set<UriRef> alreadyVisited = new HashSet();
+        Set<TripleCollection> resultTripleCollections = new HashSet<TripleCollection>();
+        resultTripleCollections.add(node.getGraph());
+        for (UriRef uriRef : expand(node, alreadyVisited, recursion)) {
+            try {
+                resultTripleCollections.add(tcManager.getTriples(uriRef));
+            } catch (NoSuchEntityException e) {
+                //ignore
+            }
+        }
+        return new GraphNode(node.getNode(),
+                new UnionMGraph(resultTripleCollections.toArray(
+                new TripleCollection[resultTripleCollections.size()])));
 
-	}
+    }
 
-	private Set<UriRef> getSeeAlsoObjectUris(GraphNode node) {
-		Set<UriRef> result = new HashSet<UriRef>();
-		Lock l = node.readLock();
-		l.lock();
-		try {
-			Iterator<Resource> objects = node.getObjects(RDFS.seeAlso);
-			while (objects.hasNext()) {
-				Resource next = objects.next();
-				if (next instanceof UriRef) {
-					result.add((UriRef)next);
-				}
-			}
-		} finally {
-			l.unlock();
-		}
-		return result;
-	}
+    private Set<UriRef> getSeeAlsoObjectUris(GraphNode node) {
+        Set<UriRef> result = new HashSet<UriRef>();
+        Lock l = node.readLock();
+        l.lock();
+        try {
+            Iterator<Resource> objects = node.getObjects(RDFS.seeAlso);
+            while (objects.hasNext()) {
+                Resource next = objects.next();
+                if (next instanceof UriRef) {
+                    result.add((UriRef)next);
+                }
+            }
+        } finally {
+            l.unlock();
+        }
+        return result;
+    }
 
-	private Set<UriRef> expand(GraphNode node, Set<UriRef> alreadyVisited, int recursion) {
-		Set<UriRef> rdfSeeAlsoTargets = getSeeAlsoObjectUris(node);
-		Set<UriRef> result = new HashSet<UriRef>();
-		result.addAll(rdfSeeAlsoTargets);
-		recursion++;
-		if (recursion > 0) {
-			rdfSeeAlsoTargets.removeAll(alreadyVisited);
-			alreadyVisited.addAll(rdfSeeAlsoTargets);
-			for (UriRef target : rdfSeeAlsoTargets) {
-				try {
-					result.addAll(expand(new GraphNode(node.getNode(),
-						tcManager.getTriples(target)), alreadyVisited, recursion));
-				} catch (NoSuchEntityException e) {
-					//ignore
-				}
-			}
-		}
-		return result;
-	}
+    private Set<UriRef> expand(GraphNode node, Set<UriRef> alreadyVisited, int recursion) {
+        Set<UriRef> rdfSeeAlsoTargets = getSeeAlsoObjectUris(node);
+        Set<UriRef> result = new HashSet<UriRef>();
+        result.addAll(rdfSeeAlsoTargets);
+        recursion++;
+        if (recursion > 0) {
+            rdfSeeAlsoTargets.removeAll(alreadyVisited);
+            alreadyVisited.addAll(rdfSeeAlsoTargets);
+            for (UriRef target : rdfSeeAlsoTargets) {
+                try {
+                    result.addAll(expand(new GraphNode(node.getNode(),
+                        tcManager.getTriples(target)), alreadyVisited, recursion));
+                } catch (NoSuchEntityException e) {
+                    //ignore
+                }
+            }
+        }
+        return result;
+    }
 
 }

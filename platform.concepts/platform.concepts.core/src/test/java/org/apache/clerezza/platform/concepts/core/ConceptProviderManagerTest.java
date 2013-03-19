@@ -41,64 +41,64 @@ import org.junit.Test;
  */
 public class ConceptProviderManagerTest {
 
-	private class TestConceptProvider implements ConceptProvider {
-		@Override
-		public Graph retrieveConcepts(String searchTerm) {
-			return null;
-		}
-	}
+    private class TestConceptProvider implements ConceptProvider {
+        @Override
+        public Graph retrieveConcepts(String searchTerm) {
+            return null;
+        }
+    }
 
-	private class TestedConceptProviderManager extends SimpleConceptProviderManager {
-		public void fillConceptProviderList() {
-			ConceptProvider CP1 = new TestConceptProvider();
-			ConceptProvider CP2 = new TestConceptProvider();
-			getConceptProviders().add(CP1);
-			getConceptProviders().add(CP2);
-		}
-	}
+    private class TestedConceptProviderManager extends SimpleConceptProviderManager {
+        public void fillConceptProviderList() {
+            ConceptProvider CP1 = new TestConceptProvider();
+            ConceptProvider CP2 = new TestConceptProvider();
+            getConceptProviders().add(CP1);
+            getConceptProviders().add(CP2);
+        }
+    }
 
-	private static LockableMGraph mGraph = new LockableMGraphWrapper(new SimpleMGraph());
+    private static LockableMGraph mGraph = new LockableMGraphWrapper(new SimpleMGraph());
 
-	private TestedConceptProviderManager testedConceptProviderManager;
+    private TestedConceptProviderManager testedConceptProviderManager;
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
-		testedConceptProviderManager = new TestedConceptProviderManager();
-		testedConceptProviderManager.cgProvider = new ContentGraphProvider() {
+        testedConceptProviderManager = new TestedConceptProviderManager();
+        testedConceptProviderManager.cgProvider = new ContentGraphProvider() {
 
-			@Override
-			public LockableMGraph getContentGraph() {
-				return mGraph;
-			}
-		};
-	}
+            @Override
+            public LockableMGraph getContentGraph() {
+                return mGraph;
+            }
+        };
+    }
 
-	@Test
-	public void testUpdateConceptProviders() {
-		testedConceptProviderManager.fillConceptProviderList();
-		List<ConceptProvider> cpl = testedConceptProviderManager
-				.getConceptProviders();
-		Assert.assertTrue(cpl.get(0) instanceof TestConceptProvider);
-		Assert.assertTrue(cpl.get(1) instanceof TestConceptProvider);
-		Assert.assertTrue(cpl.size()==2);
-		List<String> types = Arrays.asList(
-				CONCEPTS.LocalConceptProvider.getUnicodeString(),
-				CONCEPTS.RemoteConceptProvider.getUnicodeString());
-		List<String> sparqlEndPoint = Arrays.asList(
-				"", "http://example.org/sparql");
-		List<String> defaultGraphs = Arrays.asList(
-				"", "http://example.org/graph");
-		List<String> queryTemplates = Arrays.asList(
-				"", "CONSTRUCT {?a ?b ?c .} WHERE {?a ?b ?c .}");
-		List<String> conceptSchemes = Arrays.asList(
-				"http://localhost:8080/default", "");
-		Response response = testedConceptProviderManager.updateConceptProviders(
-				types, sparqlEndPoint, defaultGraphs, queryTemplates,
-				conceptSchemes);
-		cpl = testedConceptProviderManager.getConceptProviders();
-		Assert.assertTrue(cpl.get(0) instanceof LocalConceptProvider);
-		Assert.assertTrue(cpl.get(1) instanceof RemoteConceptProvider);
-		Assert.assertTrue(cpl.size()==2);
-	}
+    @Test
+    public void testUpdateConceptProviders() {
+        testedConceptProviderManager.fillConceptProviderList();
+        List<ConceptProvider> cpl = testedConceptProviderManager
+                .getConceptProviders();
+        Assert.assertTrue(cpl.get(0) instanceof TestConceptProvider);
+        Assert.assertTrue(cpl.get(1) instanceof TestConceptProvider);
+        Assert.assertTrue(cpl.size()==2);
+        List<String> types = Arrays.asList(
+                CONCEPTS.LocalConceptProvider.getUnicodeString(),
+                CONCEPTS.RemoteConceptProvider.getUnicodeString());
+        List<String> sparqlEndPoint = Arrays.asList(
+                "", "http://example.org/sparql");
+        List<String> defaultGraphs = Arrays.asList(
+                "", "http://example.org/graph");
+        List<String> queryTemplates = Arrays.asList(
+                "", "CONSTRUCT {?a ?b ?c .} WHERE {?a ?b ?c .}");
+        List<String> conceptSchemes = Arrays.asList(
+                "http://localhost:8080/default", "");
+        Response response = testedConceptProviderManager.updateConceptProviders(
+                types, sparqlEndPoint, defaultGraphs, queryTemplates,
+                conceptSchemes);
+        cpl = testedConceptProviderManager.getConceptProviders();
+        Assert.assertTrue(cpl.get(0) instanceof LocalConceptProvider);
+        Assert.assertTrue(cpl.get(1) instanceof RemoteConceptProvider);
+        Assert.assertTrue(cpl.size()==2);
+    }
 }

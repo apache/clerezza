@@ -27,10 +27,10 @@ package org.apache.clerezza.platform.curieprefixmanager;
  */
 public interface CuriePrefixRecommender {
 
-	/**
-	 * 
-	 * @param iriPrefix that part of the iri that will be replaced by the return value n the CURIE
-	 * @return the suggested prefix or null if no suggestion is available
-	 */
-	public String getRecommendedPrefix(String iriPrefix);
+    /**
+     * 
+     * @param iriPrefix that part of the iri that will be replaced by the return value n the CURIE
+     * @return the suggested prefix or null if no suggestion is available
+     */
+    public String getRecommendedPrefix(String iriPrefix);
 }

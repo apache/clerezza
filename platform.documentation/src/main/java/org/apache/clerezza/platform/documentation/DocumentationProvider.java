@@ -68,203 +68,203 @@ import org.apache.clerezza.rdf.utils.UnionMGraph;
  */
 @Component
 @Services({
-	@Service(WeightedTcProvider.class),
-	@Service(DocumentationProvider.class)})
+    @Service(WeightedTcProvider.class),
+    @Service(DocumentationProvider.class)})
 @Property(name="weight", intValue=30)
 
 public class DocumentationProvider implements WeightedTcProvider, BundleListener {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	/**
-	 * File path to the file containing the documentation of the bundle
-	 */
-	private static final String DOCUMENTATION_FILE = "/META-INF/documentation.nt";
+    /**
+     * File path to the file containing the documentation of the bundle
+     */
+    private static final String DOCUMENTATION_FILE = "/META-INF/documentation.nt";
 
-	@Reference
-	private PlatformConfig config;
-	
-	@Reference
-	private Parser parser;
+    @Reference
+    private PlatformConfig config;
+    
+    @Reference
+    private Parser parser;
 
-	/**
-	 * Contains the map between bundles and their documentation-graph
-	 */
-	private Map<Bundle, MGraph> bundle2DocGraphMap = new HashMap<Bundle, MGraph>();
+    /**
+     * Contains the map between bundles and their documentation-graph
+     */
+    private Map<Bundle, MGraph> bundle2DocGraphMap = new HashMap<Bundle, MGraph>();
 
-	/**
-	 * UnionGraph which contains all documenation-graphs of the registered
-	 * bundles
-	 */
-	private Graph unitedDocumentations;
+    /**
+     * UnionGraph which contains all documenation-graphs of the registered
+     * bundles
+     */
+    private Graph unitedDocumentations;
 
-	/**
-	 * The URI of the graph containing the documentations
-	 */
-	public static final UriRef DOCUMENTATION_GRAPH_URI =
-			new UriRef("urn:x-localinstance:/documentation.graph");
+    /**
+     * The URI of the graph containing the documentations
+     */
+    public static final UriRef DOCUMENTATION_GRAPH_URI =
+            new UriRef("urn:x-localinstance:/documentation.graph");
 
-	private int weight = 30;	
+    private int weight = 30;    
 
-	@Override
-	public int getWeight() {
-		return weight;
-	}
+    @Override
+    public int getWeight() {
+        return weight;
+    }
 
-	@Override
-	public Graph getGraph(UriRef name) throws NoSuchEntityException {
-		if (name.equals(DOCUMENTATION_GRAPH_URI)) {
-			return unitedDocumentations;
-		}
-		throw new NoSuchEntityException(name);
-	}
+    @Override
+    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+        if (name.equals(DOCUMENTATION_GRAPH_URI)) {
+            return unitedDocumentations;
+        }
+        throw new NoSuchEntityException(name);
+    }
 
-	@Override
-	public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
-		throw new NoSuchEntityException(name);
-	}
+    @Override
+    public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+        throw new NoSuchEntityException(name);
+    }
 
-	@Override
-	public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
-		return getGraph(name);
-	}
+    @Override
+    public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
+        return getGraph(name);
+    }
 
-	@Override
-	public Set<UriRef> listGraphs() {
-		return Collections.singleton(DOCUMENTATION_GRAPH_URI);
-	}
+    @Override
+    public Set<UriRef> listGraphs() {
+        return Collections.singleton(DOCUMENTATION_GRAPH_URI);
+    }
 
-	@Override
-	public Set<UriRef> listMGraphs() {
-		return new HashSet<UriRef>();
-	}
+    @Override
+    public Set<UriRef> listMGraphs() {
+        return new HashSet<UriRef>();
+    }
 
-	@Override
-	public Set<UriRef> listTripleCollections() {
-		return Collections.singleton(DOCUMENTATION_GRAPH_URI);
-	}
+    @Override
+    public Set<UriRef> listTripleCollections() {
+        return Collections.singleton(DOCUMENTATION_GRAPH_URI);
+    }
 
-	@Override
-	public MGraph createMGraph(UriRef name)
-			throws UnsupportedOperationException, EntityAlreadyExistsException {
-		throw new UnsupportedOperationException("Not supported.");
-	}
+    @Override
+    public MGraph createMGraph(UriRef name)
+            throws UnsupportedOperationException, EntityAlreadyExistsException {
+        throw new UnsupportedOperationException("Not supported.");
+    }
 
-	@Override
-	public Graph createGraph(UriRef name, TripleCollection triples)
-			throws UnsupportedOperationException, EntityAlreadyExistsException {
-		throw new UnsupportedOperationException("Not supported.");
-	}
+    @Override
+    public Graph createGraph(UriRef name, TripleCollection triples)
+            throws UnsupportedOperationException, EntityAlreadyExistsException {
+        throw new UnsupportedOperationException("Not supported.");
+    }
 
-	@Override
-	public void deleteTripleCollection(UriRef name)
-			throws UnsupportedOperationException, NoSuchEntityException,
-			EntityUndeletableException {
-		throw new UnsupportedOperationException("Not supported.");
-	}
+    @Override
+    public void deleteTripleCollection(UriRef name)
+            throws UnsupportedOperationException, NoSuchEntityException,
+            EntityUndeletableException {
+        throw new UnsupportedOperationException("Not supported.");
+    }
 
-	@Override
-	public Set<UriRef> getNames(Graph graph) {
-		final HashSet<UriRef> result = new HashSet<UriRef>();
-		if (unitedDocumentations.equals(graph)) {
-			result.add(DOCUMENTATION_GRAPH_URI);
-		}
-		return result;
-	}
+    @Override
+    public Set<UriRef> getNames(Graph graph) {
+        final HashSet<UriRef> result = new HashSet<UriRef>();
+        if (unitedDocumentations.equals(graph)) {
+            result.add(DOCUMENTATION_GRAPH_URI);
+        }
+        return result;
+    }
 
-	@Override
-	public void bundleChanged(BundleEvent event) {
-		Bundle bundle = event.getBundle();
-		switch (event.getType()) {
-			case BundleEvent.STARTED:
-				registerDocumentation(bundle);
-				break;
-			case BundleEvent.STOPPED:
-				unregisterDocumentation(bundle);
-				break;
-		}
-		createUnionGraph();
-	}
+    @Override
+    public void bundleChanged(BundleEvent event) {
+        Bundle bundle = event.getBundle();
+        switch (event.getType()) {
+            case BundleEvent.STARTED:
+                registerDocumentation(bundle);
+                break;
+            case BundleEvent.STOPPED:
+                unregisterDocumentation(bundle);
+                break;
+        }
+        createUnionGraph();
+    }
 
-	protected void activate(final ComponentContext componentContext) {
-		componentContext.getBundleContext().addBundleListener(this);
-		weight = (Integer) componentContext.getProperties().get("weight");
-		registerExistingDocumentations(componentContext);
-		createUnionGraph();
-	}
+    protected void activate(final ComponentContext componentContext) {
+        componentContext.getBundleContext().addBundleListener(this);
+        weight = (Integer) componentContext.getProperties().get("weight");
+        registerExistingDocumentations(componentContext);
+        createUnionGraph();
+    }
 
-	protected void deactivate(final ComponentContext componentContext) {
-		componentContext.getBundleContext().removeBundleListener(this);
-	}	
+    protected void deactivate(final ComponentContext componentContext) {
+        componentContext.getBundleContext().removeBundleListener(this);
+    }    
 
-	private void registerExistingDocumentations(ComponentContext componentContext) {
-		Bundle[] bundles = componentContext.getBundleContext().getBundles();
-		for (Bundle bundle : bundles) {
-			if (bundle.getState() == Bundle.ACTIVE) {
-				registerDocumentation(bundle);
-			}
-		}
-	}
+    private void registerExistingDocumentations(ComponentContext componentContext) {
+        Bundle[] bundles = componentContext.getBundleContext().getBundles();
+        for (Bundle bundle : bundles) {
+            if (bundle.getState() == Bundle.ACTIVE) {
+                registerDocumentation(bundle);
+            }
+        }
+    }
 
-	private void registerDocumentation(Bundle bundle) {
-		URL entry = bundle.getEntry(DOCUMENTATION_FILE);
-		if (entry == null) {
-			return;
-		}
-		MGraph docMGraph = getDocumentationMGraph(entry, bundle.getSymbolicName());
-		addAdditionalTriples(bundle, docMGraph);
-		bundle2DocGraphMap.put(bundle, docMGraph);
-		logger.info("Registered documentation of bundle: {}",
-				bundle.getSymbolicName());
-	}
+    private void registerDocumentation(Bundle bundle) {
+        URL entry = bundle.getEntry(DOCUMENTATION_FILE);
+        if (entry == null) {
+            return;
+        }
+        MGraph docMGraph = getDocumentationMGraph(entry, bundle.getSymbolicName());
+        addAdditionalTriples(bundle, docMGraph);
+        bundle2DocGraphMap.put(bundle, docMGraph);
+        logger.info("Registered documentation of bundle: {}",
+                bundle.getSymbolicName());
+    }
 
-	private MGraph getDocumentationMGraph(URL docUrl, String symbolicName) {
-		try {
-			Graph parsedGraph = parser.parse(docUrl.openStream(),
-					SupportedFormat.N_TRIPLE);
-			UriRef baseUri = config.getDefaultBaseUri();
-			return new SimpleMGraph(new UriMutatorIterator(
-					parsedGraph.iterator(), baseUri.getUnicodeString(), symbolicName));
-		} catch (IOException ex) {
-			logger.warn("Cannot parse documentation at URL: {}", docUrl);
-			throw new RuntimeException(ex);
-		}
-	}
+    private MGraph getDocumentationMGraph(URL docUrl, String symbolicName) {
+        try {
+            Graph parsedGraph = parser.parse(docUrl.openStream(),
+                    SupportedFormat.N_TRIPLE);
+            UriRef baseUri = config.getDefaultBaseUri();
+            return new SimpleMGraph(new UriMutatorIterator(
+                    parsedGraph.iterator(), baseUri.getUnicodeString(), symbolicName));
+        } catch (IOException ex) {
+            logger.warn("Cannot parse documentation at URL: {}", docUrl);
+            throw new RuntimeException(ex);
+        }
+    }
 
-	/**
-	 * Adds triples that point from the bundle resource to its documentations.
-	 *
-	 * @param bundle
-	 * @param docMGraph
-	 */
-	private void addAdditionalTriples(Bundle bundle, MGraph docMGraph) {
-		UriRef bundleUri = new UriRef(bundle.getLocation());
-		Triple triple = new TripleImpl(bundleUri, RDF.type, OSGI.Bundle);
-		docMGraph.add(triple);
-		Iterator<Triple> titledContents = docMGraph.filter(null, RDF.type,
-				DISCOBITS.TitledContent);
-		Set<Triple> newTriples = new HashSet<Triple>();
-		for (Iterator<Triple> it = titledContents; it.hasNext();) {
-			NonLiteral titledContent = it.next().getSubject();
-			if (docMGraph.filter(null, DISCOBITS.holds, titledContent).hasNext()) {
-				continue;
-			}
-			triple = new TripleImpl(bundleUri, DOCUMENTATION.documentation,
-					titledContent);
-			newTriples.add(triple);
-		}
-		docMGraph.addAll(newTriples);
-	}
+    /**
+     * Adds triples that point from the bundle resource to its documentations.
+     *
+     * @param bundle
+     * @param docMGraph
+     */
+    private void addAdditionalTriples(Bundle bundle, MGraph docMGraph) {
+        UriRef bundleUri = new UriRef(bundle.getLocation());
+        Triple triple = new TripleImpl(bundleUri, RDF.type, OSGI.Bundle);
+        docMGraph.add(triple);
+        Iterator<Triple> titledContents = docMGraph.filter(null, RDF.type,
+                DISCOBITS.TitledContent);
+        Set<Triple> newTriples = new HashSet<Triple>();
+        for (Iterator<Triple> it = titledContents; it.hasNext();) {
+            NonLiteral titledContent = it.next().getSubject();
+            if (docMGraph.filter(null, DISCOBITS.holds, titledContent).hasNext()) {
+                continue;
+            }
+            triple = new TripleImpl(bundleUri, DOCUMENTATION.documentation,
+                    titledContent);
+            newTriples.add(triple);
+        }
+        docMGraph.addAll(newTriples);
+    }
 
-	private void unregisterDocumentation(Bundle bundle) {
-		bundle2DocGraphMap.remove(bundle);
-		logger.info("Unregistered documentation of bundle: {}",
-				bundle.getSymbolicName());
-	}
+    private void unregisterDocumentation(Bundle bundle) {
+        bundle2DocGraphMap.remove(bundle);
+        logger.info("Unregistered documentation of bundle: {}",
+                bundle.getSymbolicName());
+    }
 
-	private void createUnionGraph() {
-		MGraph[] docGraphs = bundle2DocGraphMap.values().
-				toArray(new MGraph[bundle2DocGraphMap.size()]);
-		unitedDocumentations = new SimpleGraph(new UnionMGraph(docGraphs), true);
-	}
+    private void createUnionGraph() {
+        MGraph[] docGraphs = bundle2DocGraphMap.values().
+                toArray(new MGraph[bundle2DocGraphMap.size()]);
+        unitedDocumentations = new SimpleGraph(new UnionMGraph(docGraphs), true);
+    }
 }

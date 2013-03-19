@@ -29,13 +29,13 @@ import java.lang.reflect.Type;
  */
 public class NoConvertorException extends RuntimeException {
 
-	/**
-	 * Create an instance of <code>NoConvertorException</code>
-	 * indicating that no convertor is available for the type.
-	 *
-	 * @param type the type for which no convertor is available
-	 */
-	public NoConvertorException(Type type) {
-		super("No convertor available for type "+type);
-	}
+    /**
+     * Create an instance of <code>NoConvertorException</code>
+     * indicating that no convertor is available for the type.
+     *
+     * @param type the type for which no convertor is available
+     */
+    public NoConvertorException(Type type) {
+        super("No convertor available for type "+type);
+    }
 }

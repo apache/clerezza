@@ -59,53 +59,53 @@ import org.osgi.service.component.ComponentContext;
 @Path("/greeting/manager")
 public class GreetingManager extends FileServer {
 
-	@Reference
-	private RenderletManager renderletManager;
+    @Reference
+    private RenderletManager renderletManager;
 
-	@Reference
-	private ContentGraphProvider cgProvider;
+    @Reference
+    private ContentGraphProvider cgProvider;
 
-	public void activate(ComponentContext context) throws URISyntaxException {
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource(
-				"greeting-naked.ssp").toURI().toString()),
-				GREETINGS.Greeting, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-		configure(context.getBundleContext());
-	}
+    public void activate(ComponentContext context) throws URISyntaxException {
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(getClass().getResource(
+                "greeting-naked.ssp").toURI().toString()),
+                GREETINGS.Greeting, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
+        configure(context.getBundleContext());
+    }
 
-	@GET
-	public Response entry(@Context UriInfo uriInfo) {
-		TrailingSlash.enforceNotPresent(uriInfo);
-		return RedirectUtil.createSeeOtherResponse("manager/new-greeting.xhtml", uriInfo);
-	}
+    @GET
+    public Response entry(@Context UriInfo uriInfo) {
+        TrailingSlash.enforceNotPresent(uriInfo);
+        return RedirectUtil.createSeeOtherResponse("manager/new-greeting.xhtml", uriInfo);
+    }
 
-	@GET
-	@Path("test")
-	public GraphNode testGreeting() {
-		MGraph resultMGraph = new SimpleMGraph();
-		GraphNode result = new GraphNode(new BNode(), resultMGraph);
-		result.addProperty(RDF.type, GREETINGS.Greeting);
-		result.addProperty(GREETINGS.words, 
-				new PlainLiteralImpl("Merhaba!"));
-		return result;
-	}
+    @GET
+    @Path("test")
+    public GraphNode testGreeting() {
+        MGraph resultMGraph = new SimpleMGraph();
+        GraphNode result = new GraphNode(new BNode(), resultMGraph);
+        result.addProperty(RDF.type, GREETINGS.Greeting);
+        result.addProperty(GREETINGS.words, 
+                new PlainLiteralImpl("Merhaba!"));
+        return result;
+    }
 
-	@POST
-	@Path("new-greeting")
-	public String createNewGreeting(@FormParam("uri") UriRef uri,
-			@FormParam("words") String words) {
-		LockableMGraph contentGraph = cgProvider.getContentGraph();
-		Lock l = contentGraph.getLock().writeLock();
-		l.lock();
-		try {
-			contentGraph.add(new TripleImpl(uri, RDF.type, GREETINGS.Greeting));
-			contentGraph.add(new TripleImpl(uri, GREETINGS.words,
-					new PlainLiteralImpl(words)));
-		} finally {
-			l.unlock();
-		}
-		return "created";
-	}
+    @POST
+    @Path("new-greeting")
+    public String createNewGreeting(@FormParam("uri") UriRef uri,
+            @FormParam("words") String words) {
+        LockableMGraph contentGraph = cgProvider.getContentGraph();
+        Lock l = contentGraph.getLock().writeLock();
+        l.lock();
+        try {
+            contentGraph.add(new TripleImpl(uri, RDF.type, GREETINGS.Greeting));
+            contentGraph.add(new TripleImpl(uri, GREETINGS.words,
+                    new PlainLiteralImpl(words)));
+        } finally {
+            l.unlock();
+        }
+        return "created";
+    }
 
 }

@@ -31,56 +31,56 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class FilterTriple {
 
-	private NonLiteral subject;
-	private UriRef predicate;
-	private Resource object;
-	
-	/**
-	 * Creates a new <code>FilterTriple</code>. The specified subject,
-	 * predicate and object are used to test a given <code>Triple</code>. Any
-	 * of these values can be null, which acts as wildcard in the test.
-	 *
-	 * @param subject  the subject.
-	 * @param predicate  the predicate.
-	 * @param object  the object.
-	 */
-	public FilterTriple (NonLiteral subject, UriRef predicate, Resource object) {
-		this.subject = subject;
-		this.predicate = predicate;
-		this.object = object;
-	}
+    private NonLiteral subject;
+    private UriRef predicate;
+    private Resource object;
+    
+    /**
+     * Creates a new <code>FilterTriple</code>. The specified subject,
+     * predicate and object are used to test a given <code>Triple</code>. Any
+     * of these values can be null, which acts as wildcard in the test.
+     *
+     * @param subject  the subject.
+     * @param predicate  the predicate.
+     * @param object  the object.
+     */
+    public FilterTriple (NonLiteral subject, UriRef predicate, Resource object) {
+        this.subject = subject;
+        this.predicate = predicate;
+        this.object = object;
+    }
 
-	/**
-	 * Returns true if the subject, predicate and object of the specified
-	 * <code>Triple</code> match the subject, predicate and object of this
-	 * <code>FilterTriple</code>. Null values in the <code>FilterTriple</code>
-	 * act as wildcards.
-	 * @param triple
-	 * @return
-	 */
-	public boolean match(Triple triple) {
-		boolean subjectMatch, predicateMatch, objectMatch;
-		if (this.subject == null) {
-			subjectMatch = true;			
-		} else {
-			subjectMatch = this.subject.equals(triple.getSubject());
-		}
-		if (this.predicate == null) {
-			predicateMatch = true;
-		} else {
-			predicateMatch = this.predicate.equals(triple.getPredicate());
-		}
-		if (this.object == null) {
-			objectMatch = true;
-		} else {
-			objectMatch = this.object.equals(triple.getObject());
-		}
-		return subjectMatch && predicateMatch && objectMatch;
-	}
+    /**
+     * Returns true if the subject, predicate and object of the specified
+     * <code>Triple</code> match the subject, predicate and object of this
+     * <code>FilterTriple</code>. Null values in the <code>FilterTriple</code>
+     * act as wildcards.
+     * @param triple
+     * @return
+     */
+    public boolean match(Triple triple) {
+        boolean subjectMatch, predicateMatch, objectMatch;
+        if (this.subject == null) {
+            subjectMatch = true;            
+        } else {
+            subjectMatch = this.subject.equals(triple.getSubject());
+        }
+        if (this.predicate == null) {
+            predicateMatch = true;
+        } else {
+            predicateMatch = this.predicate.equals(triple.getPredicate());
+        }
+        if (this.object == null) {
+            objectMatch = true;
+        } else {
+            objectMatch = this.object.equals(triple.getObject());
+        }
+        return subjectMatch && predicateMatch && objectMatch;
+    }
 
-	@Override
-	public String toString() {
-		return "FilterTriples: "+subject+" "+predicate+" "+object;
-	}
+    @Override
+    public String toString() {
+        return "FilterTriples: "+subject+" "+predicate+" "+object;
+    }
 
 }

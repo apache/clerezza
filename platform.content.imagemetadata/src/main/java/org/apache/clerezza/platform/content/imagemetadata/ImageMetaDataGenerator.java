@@ -40,25 +40,25 @@ import org.apache.felix.scr.annotations.Service;
 @Service(MetaDataGenerator.class)
 public class ImageMetaDataGenerator implements MetaDataGenerator {
 
-	@Reference
-	private ImageReaderService imageReaderService;
+    @Reference
+    private ImageReaderService imageReaderService;
         
-	@Override
-	public void generate(GraphNode node, byte[] data, MediaType mediaType) {
+    @Override
+    public void generate(GraphNode node, byte[] data, MediaType mediaType) {
 
-		if (mediaType.getType().startsWith("image")) {
-			try {
-				BufferedImage buffImage = imageReaderService.getBufferedImage(
+        if (mediaType.getType().startsWith("image")) {
+            try {
+                BufferedImage buffImage = imageReaderService.getBufferedImage(
                                         new ByteArrayInputStream(data));
-				node.deleteProperties(EXIF.width);
-				node.deleteProperties(EXIF.height);
-				node.addProperty(EXIF.width, LiteralFactory.getInstance().
-						createTypedLiteral(Integer.valueOf(buffImage.getWidth())));
-				node.addProperty(EXIF.height, LiteralFactory.getInstance().
-						createTypedLiteral(Integer.valueOf(buffImage.getHeight())));
-			} catch (IOException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-	}
+                node.deleteProperties(EXIF.width);
+                node.deleteProperties(EXIF.height);
+                node.addProperty(EXIF.width, LiteralFactory.getInstance().
+                        createTypedLiteral(Integer.valueOf(buffImage.getWidth())));
+                node.addProperty(EXIF.height, LiteralFactory.getInstance().
+                        createTypedLiteral(Integer.valueOf(buffImage.getHeight())));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 }

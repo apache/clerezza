@@ -30,40 +30,40 @@ import java.security.Permission;
  * @author reto
  */
 @PermissionInfo(value="Restore Permission", description="Permission " +
-	"to replace all triple collections with the contents of backup file")
+    "to replace all triple collections with the contents of backup file")
 public class RestorePermission extends Permission {
 
 
-	public RestorePermission() {
-		super("Restore permission");
-	}
-	/**
-	 *
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public RestorePermission(String target, String actions) {
-		super("Restore permission");
-	}
+    public RestorePermission() {
+        super("Restore permission");
+    }
+    /**
+     *
+     * @param target ignored
+     * @param action ignored
+     */
+    public RestorePermission(String target, String actions) {
+        super("Restore permission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 77965;
-	}
+    @Override
+    public int hashCode() {
+        return 77965;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 
 }

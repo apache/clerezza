@@ -24,8 +24,8 @@ package org.apache.clerezza.platform.usermanager;
  */
 class UserNotExistsException extends RuntimeException {
 
-	public UserNotExistsException(String name) {
-		super("User " + name + "does not exist");
-	}
+    public UserNotExistsException(String name) {
+        super("User " + name + "does not exist");
+    }
 
 }

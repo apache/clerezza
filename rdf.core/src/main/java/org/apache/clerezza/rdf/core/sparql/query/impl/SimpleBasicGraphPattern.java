@@ -29,20 +29,20 @@ import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
  */
 public class SimpleBasicGraphPattern implements BasicGraphPattern {
 
-	private Set<TriplePattern> triplePatterns;
+    private Set<TriplePattern> triplePatterns;
 
-	public SimpleBasicGraphPattern(Set<TriplePattern> triplePatterns) {
-		this.triplePatterns = (triplePatterns == null)
-				? new LinkedHashSet<TriplePattern>()
-				: triplePatterns;
-	}
+    public SimpleBasicGraphPattern(Set<TriplePattern> triplePatterns) {
+        this.triplePatterns = (triplePatterns == null)
+                ? new LinkedHashSet<TriplePattern>()
+                : triplePatterns;
+    }
 
-	@Override
-	public Set<TriplePattern> getTriplePatterns() {
-		return triplePatterns;
-	}
+    @Override
+    public Set<TriplePattern> getTriplePatterns() {
+        return triplePatterns;
+    }
 
-	public void addTriplePatterns(Set<TriplePattern> triplePatterns) {
-		this.triplePatterns.addAll(triplePatterns);
-	}
+    public void addTriplePatterns(Set<TriplePattern> triplePatterns) {
+        this.triplePatterns.addAll(triplePatterns);
+    }
 }

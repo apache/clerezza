@@ -41,17 +41,17 @@ public class ClerezzaBaseAnnotation_Type extends Annotation_Type {
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
       public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (ClerezzaBaseAnnotation_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = ClerezzaBaseAnnotation_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new ClerezzaBaseAnnotation(addr, ClerezzaBaseAnnotation_Type.this);
-  			   ClerezzaBaseAnnotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
+               if (ClerezzaBaseAnnotation_Type.this.useExistingInstance) {
+                 // Return eq fs instance if already created
+               FeatureStructure fs = ClerezzaBaseAnnotation_Type.this.jcas.getJfsFromCaddr(addr);
+               if (null == fs) {
+                 fs = new ClerezzaBaseAnnotation(addr, ClerezzaBaseAnnotation_Type.this);
+                 ClerezzaBaseAnnotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
+                 return fs;
+               }
+               return fs;
         } else return new ClerezzaBaseAnnotation(addr, ClerezzaBaseAnnotation_Type.this);
-  	  }
+        }
     };
 
   /** @generated */

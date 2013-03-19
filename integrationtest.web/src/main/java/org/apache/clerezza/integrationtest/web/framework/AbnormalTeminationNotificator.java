@@ -30,17 +30,17 @@ import java.util.List;
  */
 public interface AbnormalTeminationNotificator {
 
-	/**
-	 * Send a notification about an abnormal termination.
-	 * 
-	 * @param exeptionDescriptionList
-	 *            Holds all the <code>RuntimeExceptions</code>, 
-	 *            the threads in which they occurred 
-	 *            and the time after which they occurred. 
-	 *            The first element is the exception that occurred first 
-	 *            and caused the shutdown of the test framework.
-	 */
-	public void notifyAbnormalTermination(
-			List<ExceptionDescription> exeptionDescriptionList);
+    /**
+     * Send a notification about an abnormal termination.
+     * 
+     * @param exeptionDescriptionList
+     *            Holds all the <code>RuntimeExceptions</code>, 
+     *            the threads in which they occurred 
+     *            and the time after which they occurred. 
+     *            The first element is the exception that occurred first 
+     *            and caused the shutdown of the test framework.
+     */
+    public void notifyAbnormalTermination(
+            List<ExceptionDescription> exeptionDescriptionList);
 
 }

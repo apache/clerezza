@@ -28,52 +28,52 @@ import org.apache.clerezza.rdf.core.sparql.query.Variable;
  * @author hasan
  */
 public class SimpleSelectQuery extends SimpleQueryWithSolutionModifier
-		implements SelectQuery {
+        implements SelectQuery {
 
-	private boolean distinct;
-	private boolean reduced;
-	private boolean selectAll;
-	private List<Variable> variables = new ArrayList<Variable>();
+    private boolean distinct;
+    private boolean reduced;
+    private boolean selectAll;
+    private List<Variable> variables = new ArrayList<Variable>();
 
-	@Override
-	public boolean isDistinct() {
-		return distinct;
-	}
+    @Override
+    public boolean isDistinct() {
+        return distinct;
+    }
 
-	@Override
-	public boolean isReduced() {
-		return reduced;
-	}
+    @Override
+    public boolean isReduced() {
+        return reduced;
+    }
 
-	@Override
-	public boolean isSelectAll() {
-		return selectAll;
-	}
+    @Override
+    public boolean isSelectAll() {
+        return selectAll;
+    }
 
-	@Override
-	public List<Variable> getSelection() {
-		return variables;
-	}
+    @Override
+    public List<Variable> getSelection() {
+        return variables;
+    }
 
-	public void setDistinct() {
-		distinct = true;
-	}
+    public void setDistinct() {
+        distinct = true;
+    }
 
-	public void setReduced() {
-		reduced = true;
-	}
+    public void setReduced() {
+        reduced = true;
+    }
 
-	public void setSelectAll() {
-		assert variables.isEmpty();
-		selectAll = true;
-	}
+    public void setSelectAll() {
+        assert variables.isEmpty();
+        selectAll = true;
+    }
 
-	public void addSelection(Variable var) {
-		variables.add(var);
-	}
+    public void addSelection(Variable var) {
+        variables.add(var);
+    }
 
-	@Override
-	public String toString() {
-		return (new SimpleStringQuerySerializer()).serialize(this);
-	}
+    @Override
+    public String toString() {
+        return (new SimpleStringQuerySerializer()).serialize(this);
+    }
 }

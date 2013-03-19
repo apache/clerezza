@@ -62,102 +62,102 @@ import org.osgi.service.component.ComponentContext;
 
 @Component
 @Services({
-	@Service(value = Object.class),
-	@Service(value = GlobalMenuItemsProvider.class)
+    @Service(value = Object.class),
+    @Service(value = GlobalMenuItemsProvider.class)
 })
 @Property(name = "javax.ws.rs", boolValue = true)
 @Path("admin/logging")
 public class LoggingManager implements GlobalMenuItemsProvider {
 
-	@Reference
-	private RenderletManager renderletManager;
-	@Reference
-	private ConfigurationAdmin configurationAdmin;
-	private String paxLoggingLocation = null;
+    @Reference
+    private RenderletManager renderletManager;
+    @Reference
+    private ConfigurationAdmin configurationAdmin;
+    private String paxLoggingLocation = null;
 
-	public void activate(ComponentContext context)
-			throws URISyntaxException, IOException {
-		renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-				new UriRef(getClass().getResource(
-				"config-page-naked.ssp").toURI().toString()),
-				LOGGING.LoggingConfigPage, "naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    public void activate(ComponentContext context)
+            throws URISyntaxException, IOException {
+        renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
+                new UriRef(getClass().getResource(
+                "config-page-naked.ssp").toURI().toString()),
+                LOGGING.LoggingConfigPage, "naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		for (Bundle bundle : context.getBundleContext().getBundles()) {
-			if (bundle.getSymbolicName().equals("org.ops4j.pax.logging.pax-logging-service")) {
-				paxLoggingLocation = bundle.getLocation();
-				break;
-			}
-		}
+        for (Bundle bundle : context.getBundleContext().getBundles()) {
+            if (bundle.getSymbolicName().equals("org.ops4j.pax.logging.pax-logging-service")) {
+                paxLoggingLocation = bundle.getLocation();
+                break;
+            }
+        }
 
-	}
+    }
 
-	private void setProperties(Dictionary props)
-			throws IOException {
-		Configuration config = getServiceConfig();
-		config.update(props);
-	}
+    private void setProperties(Dictionary props)
+            throws IOException {
+        Configuration config = getServiceConfig();
+        config.update(props);
+    }
 
-	/*private void setProperties(Hashtable properties) {
-	setProperties
-	}*/
-	private Configuration getServiceConfig()
-			throws IOException {
-		Configuration config = configurationAdmin.getConfiguration("org.ops4j.pax.logging", paxLoggingLocation);
-		return config;
-	}
+    /*private void setProperties(Hashtable properties) {
+    setProperties
+    }*/
+    private Configuration getServiceConfig()
+            throws IOException {
+        Configuration config = configurationAdmin.getConfiguration("org.ops4j.pax.logging", paxLoggingLocation);
+        return config;
+    }
 
-	@GET
-	public GraphNode entry(@Context UriInfo uriInfo)
-			throws IOException {
-		AccessController.checkPermission(new LoggingManagerAccessPermission());
-		TrailingSlash.enforcePresent(uriInfo);
-		SimpleMGraph resultMGraph = new SimpleMGraph();
-		GraphNode result = new GraphNode(new BNode(), resultMGraph);
-		result.addPropertyValue(LOGGING.loggingConfig, getPropertiesAsString());
-		result.addProperty(RDF.type, PLATFORM.HeadedPage);
-		result.addProperty(RDF.type, LOGGING.LoggingConfigPage);
-		return result;
-	}
+    @GET
+    public GraphNode entry(@Context UriInfo uriInfo)
+            throws IOException {
+        AccessController.checkPermission(new LoggingManagerAccessPermission());
+        TrailingSlash.enforcePresent(uriInfo);
+        SimpleMGraph resultMGraph = new SimpleMGraph();
+        GraphNode result = new GraphNode(new BNode(), resultMGraph);
+        result.addPropertyValue(LOGGING.loggingConfig, getPropertiesAsString());
+        result.addProperty(RDF.type, PLATFORM.HeadedPage);
+        result.addProperty(RDF.type, LOGGING.LoggingConfigPage);
+        return result;
+    }
 
-	private String getPropertiesAsString()
-			throws IOException {
-		Configuration config = getServiceConfig();
-		Properties properties = new Properties();
-		Dictionary propertyDictionary = config.getProperties();
-		Enumeration<String> keys = propertyDictionary.keys();
-		while (keys.hasMoreElements()) {
-			String key = keys.nextElement();
-			properties.put(key, propertyDictionary.get(key));
-		}
-		StringWriter stringWriter = new StringWriter();
-		properties.store(stringWriter, "properties of the pax-logging service");
-		return stringWriter.toString();
-	}
+    private String getPropertiesAsString()
+            throws IOException {
+        Configuration config = getServiceConfig();
+        Properties properties = new Properties();
+        Dictionary propertyDictionary = config.getProperties();
+        Enumeration<String> keys = propertyDictionary.keys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            properties.put(key, propertyDictionary.get(key));
+        }
+        StringWriter stringWriter = new StringWriter();
+        properties.store(stringWriter, "properties of the pax-logging service");
+        return stringWriter.toString();
+    }
 
-	@POST
-	@Path("setConfiguration")
-	public Response setConfiguration(@Context UriInfo uriInfo,
-			@FormParam("configuration") String configuration)
-			throws IOException {
-		AccessController.checkPermission(new LoggingManagerAccessPermission());
-		Properties properties = new Properties();
-		properties.load(new StringReader(configuration));
-		setProperties(properties);
-		return RedirectUtil.createSeeOtherResponse("./", uriInfo);
-	}
+    @POST
+    @Path("setConfiguration")
+    public Response setConfiguration(@Context UriInfo uriInfo,
+            @FormParam("configuration") String configuration)
+            throws IOException {
+        AccessController.checkPermission(new LoggingManagerAccessPermission());
+        Properties properties = new Properties();
+        properties.load(new StringReader(configuration));
+        setProperties(properties);
+        return RedirectUtil.createSeeOtherResponse("./", uriInfo);
+    }
 
-	@Override
-	public Set<GlobalMenuItem> getMenuItems() {
-		Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
-		try {
-			AccessController.checkPermission(new LoggingManagerAccessPermission());
-		} catch (AccessControlException e) {
-			return items;
-		}
-		items.add(new GlobalMenuItem("/admin/logging", "Logging", "Logging", 3,
-				"Administration"));
-		return items;
+    @Override
+    public Set<GlobalMenuItem> getMenuItems() {
+        Set<GlobalMenuItem> items = new HashSet<GlobalMenuItem>();
+        try {
+            AccessController.checkPermission(new LoggingManagerAccessPermission());
+        } catch (AccessControlException e) {
+            return items;
+        }
+        items.add(new GlobalMenuItem("/admin/logging", "Logging", "Logging", 3,
+                "Administration"));
+        return items;
 
-	}
+    }
 }

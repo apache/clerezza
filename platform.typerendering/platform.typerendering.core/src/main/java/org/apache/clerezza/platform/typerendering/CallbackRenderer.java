@@ -34,31 +34,31 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public interface CallbackRenderer {
 
-	/**
-	 * Renders the specified resource and context in the specified mode to an outputstream
-	 *
-	 * @param resource
-	 * @param context
-	 * @param mode
-	 * @param os
-	 * @throws IOException
-	 */
-	public void render(GraphNode resource, GraphNode context, String mode, 
-			OutputStream os) throws IOException;
+    /**
+     * Renders the specified resource and context in the specified mode to an outputstream
+     *
+     * @param resource
+     * @param context
+     * @param mode
+     * @param os
+     * @throws IOException
+     */
+    public void render(GraphNode resource, GraphNode context, String mode, 
+            OutputStream os) throws IOException;
 
-	/**
-	 * Renders a specified named resource using the GraphNode returned by
-	 * <code>org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider#get(org.apache.clerezza.rdf.core.UriRef)</code>.
-	 *
-	 * Otherwise same as render(GraphNode, .GraphNode, String, OutputStream)
-	 *
-	 * @param resource
-	 * @param context
-	 * @param mode
-	 * @param os
-	 * @throws IOException
-	 */
-	public void render(UriRef resource, GraphNode context, String mode,
-			OutputStream os) throws IOException;
+    /**
+     * Renders a specified named resource using the GraphNode returned by
+     * <code>org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider#get(org.apache.clerezza.rdf.core.UriRef)</code>.
+     *
+     * Otherwise same as render(GraphNode, .GraphNode, String, OutputStream)
+     *
+     * @param resource
+     * @param context
+     * @param mode
+     * @param os
+     * @throws IOException
+     */
+    public void render(UriRef resource, GraphNode context, String mode,
+            OutputStream os) throws IOException;
 
 }

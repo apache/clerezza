@@ -41,92 +41,92 @@ import static org.junit.Assert.*;
  */
 public class FileMGraphTest {
 
-	private static String tempDir = System.getProperty("java.io.tmpdir");
-	private static final String FILE_PROTOCOL = "file://";
+    private static String tempDir = System.getProperty("java.io.tmpdir");
+    private static final String FILE_PROTOCOL = "file://";
 
-	protected static final String NT_FILE_NAME = "test-04.nt";
-	protected static final String RDF_FILE_NAME = "test-04.rdf";
-	protected static final String TURTLE_FILE_NAME = "test-04.ttl";
+    protected static final String NT_FILE_NAME = "test-04.nt";
+    protected static final String RDF_FILE_NAME = "test-04.rdf";
+    protected static final String TURTLE_FILE_NAME = "test-04.ttl";
 
-	private static final UriRef uriA = new UriRef("http://example.com/a");
-	private static final UriRef uriB = new UriRef("http://example.com/b");
-	private static final UriRef uriC = new UriRef("http://example.com/c");
+    private static final UriRef uriA = new UriRef("http://example.com/a");
+    private static final UriRef uriB = new UriRef("http://example.com/b");
+    private static final UriRef uriC = new UriRef("http://example.com/c");
 
 
-	@BeforeClass
-	public static void setup() throws Exception {
-		createTempFileFromResource(NT_FILE_NAME);
-		createTempFileFromResource(RDF_FILE_NAME);
-		createTempFileFromResource(TURTLE_FILE_NAME);
-	}
+    @BeforeClass
+    public static void setup() throws Exception {
+        createTempFileFromResource(NT_FILE_NAME);
+        createTempFileFromResource(RDF_FILE_NAME);
+        createTempFileFromResource(TURTLE_FILE_NAME);
+    }
 
-	@AfterClass
-	public static void cleanUp() throws Exception {
-		deleteTempFile(NT_FILE_NAME);
-		deleteTempFile(RDF_FILE_NAME);
-		deleteTempFile(TURTLE_FILE_NAME);
-	}
+    @AfterClass
+    public static void cleanUp() throws Exception {
+        deleteTempFile(NT_FILE_NAME);
+        deleteTempFile(RDF_FILE_NAME);
+        deleteTempFile(TURTLE_FILE_NAME);
+    }
 
-	private static void createTempFileFromResource(String resourceName) 
-			throws FileNotFoundException, IOException {
-		InputStream in = FileTcProviderTest.class.getResourceAsStream(resourceName);
-		File file = new File(URI.create(getTempFileUri(resourceName)));
-		FileOutputStream fout = new FileOutputStream(file);
-		int inByte;
-		while ((inByte = in.read()) != -1) {
-			fout.write(inByte);
-		}
-	}
-	
-	protected static String getTempFileUri(String name) {
+    private static void createTempFileFromResource(String resourceName) 
+            throws FileNotFoundException, IOException {
+        InputStream in = FileTcProviderTest.class.getResourceAsStream(resourceName);
+        File file = new File(URI.create(getTempFileUri(resourceName)));
+        FileOutputStream fout = new FileOutputStream(file);
+        int inByte;
+        while ((inByte = in.read()) != -1) {
+            fout.write(inByte);
+        }
+    }
+    
+    protected static String getTempFileUri(String name) {
                 String prefix = tempDir.startsWith("/") ? FILE_PROTOCOL : FILE_PROTOCOL +"/";
-		return prefix + tempDir.replace(File.separatorChar, '/') + "/" + name;
-	}
+        return prefix + tempDir.replace(File.separatorChar, '/') + "/" + name;
+    }
 
-	private static void deleteTempFile(String name)
-			throws FileNotFoundException, IOException {
-		File file = new File(tempDir + "/" + name);
-		file.delete();
-	}
-	
-	@Test
-	public void testReadingFromFile() {
-		FileMGraph mGraph = new FileMGraph(new UriRef(getTempFileUri(RDF_FILE_NAME)),
-				Parser.getInstance(), Serializer.getInstance());
-		assertEquals(2, mGraph.size());
+    private static void deleteTempFile(String name)
+            throws FileNotFoundException, IOException {
+        File file = new File(tempDir + "/" + name);
+        file.delete();
+    }
+    
+    @Test
+    public void testReadingFromFile() {
+        FileMGraph mGraph = new FileMGraph(new UriRef(getTempFileUri(RDF_FILE_NAME)),
+                Parser.getInstance(), Serializer.getInstance());
+        assertEquals(2, mGraph.size());
 
-		mGraph = new FileMGraph(new UriRef(getTempFileUri(TURTLE_FILE_NAME)),
-				Parser.getInstance(), Serializer.getInstance());
-		assertEquals(2, mGraph.size());
+        mGraph = new FileMGraph(new UriRef(getTempFileUri(TURTLE_FILE_NAME)),
+                Parser.getInstance(), Serializer.getInstance());
+        assertEquals(2, mGraph.size());
 
-		mGraph = new FileMGraph(new UriRef(getTempFileUri(NT_FILE_NAME)),
-				Parser.getInstance(), Serializer.getInstance());
-		assertEquals(2, mGraph.size());
-	}
-	
-	@Test
-	public void testFilter() throws IOException {
-		String fileName = "filter.rdf";
-		FileMGraph mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
-				Parser.getInstance(), Serializer.getInstance());
+        mGraph = new FileMGraph(new UriRef(getTempFileUri(NT_FILE_NAME)),
+                Parser.getInstance(), Serializer.getInstance());
+        assertEquals(2, mGraph.size());
+    }
+    
+    @Test
+    public void testFilter() throws IOException {
+        String fileName = "filter.rdf";
+        FileMGraph mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
+                Parser.getInstance(), Serializer.getInstance());
 
-		mGraph.add(new TripleImpl(uriA, uriB, uriC));
-		mGraph.add(new TripleImpl(uriC, uriB, uriA));
+        mGraph.add(new TripleImpl(uriA, uriB, uriC));
+        mGraph.add(new TripleImpl(uriC, uriB, uriA));
 
-		mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
-				Parser.getInstance(), Serializer.getInstance());
-		
-		
-		assertEquals(2, mGraph.size());
-		Iterator<Triple> iterator = mGraph.filter(null, null, null);
+        mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
+                Parser.getInstance(), Serializer.getInstance());
+        
+        
+        assertEquals(2, mGraph.size());
+        Iterator<Triple> iterator = mGraph.filter(null, null, null);
 
-		iterator.next();
-		iterator.remove();
-		assertEquals(1, mGraph.size());
+        iterator.next();
+        iterator.remove();
+        assertEquals(1, mGraph.size());
 
-		mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
-				Parser.getInstance(), Serializer.getInstance());
-		assertEquals(1, mGraph.size());
-		deleteTempFile(fileName);
-	}
+        mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
+                Parser.getInstance(), Serializer.getInstance());
+        assertEquals(1, mGraph.size());
+        deleteTempFile(fileName);
+    }
 }

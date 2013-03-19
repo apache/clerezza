@@ -20,29 +20,29 @@
 
 -->
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza</groupId>
-	<artifactId>rdf.metadata</artifactId>
-	<packaging>bundle</packaging>
-	<version>0.2-SNAPSHOT</version>
-	<name>Clerezza - SCB Metadata</name>
-	<description>An interface that specifies how to create meta data about data
-	depending on its media type.</description>
-	<dependencies>
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>rdf.utils</artifactId>
-			<version>0.14-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza</groupId>
+    <artifactId>rdf.metadata</artifactId>
+    <packaging>bundle</packaging>
+    <version>0.2-SNAPSHOT</version>
+    <name>Clerezza - SCB Metadata</name>
+    <description>An interface that specifies how to create meta data about data
+    depending on its media type.</description>
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.utils</artifactId>
+            <version>0.14-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

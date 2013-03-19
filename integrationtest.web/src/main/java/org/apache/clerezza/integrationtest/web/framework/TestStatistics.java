@@ -32,40 +32,40 @@ package org.apache.clerezza.integrationtest.web.framework;
 
 class TestStatistics {
 
-	private long min;
-	private long max;
-	private long sum = 0;
-	private long size = 0;
+    private long min;
+    private long max;
+    private long sum = 0;
+    private long size = 0;
 
-	long getMax() {
-		return max;
-	}
+    long getMax() {
+        return max;
+    }
 
-	long getMin() {
-		return min;
-	}
+    long getMin() {
+        return min;
+    }
 
-	long getSize() {
-		return size;
-	}
+    long getSize() {
+        return size;
+    }
 
-	long getSum() {
-		return sum;
-	}
+    long getSum() {
+        return sum;
+    }
 
-	void newTestValue(long value) {
-		if (size == 0) {
-			min = value;
-			max = value;
-		} else {
-			if (max < value) {
-				max = value;
-			}
-			if (min > value) {
-				min = value;
-			}
-		}
-		sum += value;
-		size++;
-	}
+    void newTestValue(long value) {
+        if (size == 0) {
+            min = value;
+            max = value;
+        } else {
+            if (max < value) {
+                max = value;
+            }
+            if (min > value) {
+                min = value;
+            }
+        }
+        sum += value;
+        size++;
+    }
 }

@@ -32,27 +32,27 @@ import org.junit.Test;
  */
 public class ThumbnailConditionTest {
 
-	private UriRef uri = new UriRef ("http://localhost:8080/html_export/digital-assets/2010/08/30/770a7f14-74a7-4036-8341-f9e50e944e06");
+    private UriRef uri = new UriRef ("http://localhost:8080/html_export/digital-assets/2010/08/30/770a7f14-74a7-4036-8341-f9e50e944e06");
 
-	private static final byte[] input = "<img href=\"/thumbnail-service?uri=http://localhost:8080/html_export/digital-assets/2010/08/30/770a7f14-74a7-4036-8341-f9e50e944e06&amp;width=700&height=300&exact=true\" />".getBytes();
-	
-	@Test
-	public void thumbnailConditionTest() throws IOException {
-		ByteArrayOutputStream bous = new ByteArrayOutputStream();
-		OutputStream out = new ConditionalOutputStream(bous,
-				new ThumbnailCondition(new ThumbnailService() {
+    private static final byte[] input = "<img href=\"/thumbnail-service?uri=http://localhost:8080/html_export/digital-assets/2010/08/30/770a7f14-74a7-4036-8341-f9e50e944e06&amp;width=700&height=300&exact=true\" />".getBytes();
+    
+    @Test
+    public void thumbnailConditionTest() throws IOException {
+        ByteArrayOutputStream bous = new ByteArrayOutputStream();
+        OutputStream out = new ConditionalOutputStream(bous,
+                new ThumbnailCondition(new ThumbnailService() {
 
-			@Override
-			public UriRef getThumbnailUri(UriRef infoBitUri, Integer width, Integer height, boolean exact) {
-				Assert.assertEquals(uri, infoBitUri);
-				Assert.assertEquals(Integer.valueOf(700), width);
-				Assert.assertEquals(Integer.valueOf(300), height);
-				Assert.assertEquals(true, exact);
-				return new UriRef("http://example.com/test");
-			}				
-		}));
-		
-		out.write(input);
-		Assert.assertEquals("<img href=\"http://example.com/test\" />", bous.toString());
-	}
+            @Override
+            public UriRef getThumbnailUri(UriRef infoBitUri, Integer width, Integer height, boolean exact) {
+                Assert.assertEquals(uri, infoBitUri);
+                Assert.assertEquals(Integer.valueOf(700), width);
+                Assert.assertEquals(Integer.valueOf(300), height);
+                Assert.assertEquals(true, exact);
+                return new UriRef("http://example.com/test");
+            }                
+        }));
+        
+        out.write(input);
+        Assert.assertEquals("<img href=\"http://example.com/test\" />", bous.toString());
+    }
 }

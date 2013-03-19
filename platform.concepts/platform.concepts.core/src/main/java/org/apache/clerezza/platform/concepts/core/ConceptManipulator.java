@@ -52,71 +52,71 @@ import org.apache.felix.scr.annotations.Service;
 @Path("/concepts/manipulator")
 public class ConceptManipulator {
 
-	public static String FREE_CONCEPT_SCHEME = "concept-scheme/free-concepts";
+    public static String FREE_CONCEPT_SCHEME = "concept-scheme/free-concepts";
 
-	@Reference
-	protected ContentGraphProvider cgProvider;
+    @Reference
+    protected ContentGraphProvider cgProvider;
 
-	@Reference
-	private PlatformConfig platformConfig;
+    @Reference
+    private PlatformConfig platformConfig;
 
-	/**
-	 * Creates and stores a concept with the specified prefLabel and comment
-	 * into the content graph if a concept with this prefLabel does not already
-	 * exist in the graph.
-	 *
-	 * @param prefLabel
-	 *		if it is an empty string no concept is generated
-	 * @param lang
-	 *		the language of the prefLabel
-	 * @param comment
-	 *		is a human-readable description of the concept
-	 * @return
-	 *		- BAD REQUEST response if prefLabel is undefined or empty
-	 *		- CONFLICT response if a concept with the same prefLabel and lang exists
-	 *		- CREATED if everything is ok
-	 */
-	@POST
-	@Path("add-concept")
-	public Response addConcept(@FormParam("pref-label") String prefLabel,
-			@FormParam("lang") String lang,
-			@FormParam("comment") String comment) {
+    /**
+     * Creates and stores a concept with the specified prefLabel and comment
+     * into the content graph if a concept with this prefLabel does not already
+     * exist in the graph.
+     *
+     * @param prefLabel
+     *        if it is an empty string no concept is generated
+     * @param lang
+     *        the language of the prefLabel
+     * @param comment
+     *        is a human-readable description of the concept
+     * @return
+     *        - BAD REQUEST response if prefLabel is undefined or empty
+     *        - CONFLICT response if a concept with the same prefLabel and lang exists
+     *        - CREATED if everything is ok
+     */
+    @POST
+    @Path("add-concept")
+    public Response addConcept(@FormParam("pref-label") String prefLabel,
+            @FormParam("lang") String lang,
+            @FormParam("comment") String comment) {
 
-		if ((prefLabel == null) || (prefLabel.isEmpty())) {
-			return Response.status(Status.BAD_REQUEST)
-					.entity("A concept must have a label!")
-					.build();
-		}
-		MGraph contentGraph = cgProvider.getContentGraph();
-		PlainLiteral preferredLabel = new PlainLiteralImpl(prefLabel,
-				new Language(lang));
+        if ((prefLabel == null) || (prefLabel.isEmpty())) {
+            return Response.status(Status.BAD_REQUEST)
+                    .entity("A concept must have a label!")
+                    .build();
+        }
+        MGraph contentGraph = cgProvider.getContentGraph();
+        PlainLiteral preferredLabel = new PlainLiteralImpl(prefLabel,
+                new Language(lang));
 
-		if (contentGraph.filter(null, SKOS.prefLabel, preferredLabel).hasNext()) {
-			return Response.status(Status.CONFLICT)
-					.entity("A concept with the same label and language already exists!")
-					.build();
-		}
-		
-		UriRef concept = getConceptUriRef(platformConfig, prefLabel);
-		contentGraph.add(new TripleImpl(concept, RDF.type,
-				SKOS.Concept));
-		String baseUri = platformConfig.getDefaultBaseUri().getUnicodeString();
-		contentGraph.add(new TripleImpl(concept, SKOS.inScheme,
-				new UriRef(baseUri + FREE_CONCEPT_SCHEME)));
-		contentGraph.add(new TripleImpl(concept, SKOS.prefLabel, preferredLabel));
-		if (!comment.isEmpty()) {
-			contentGraph.add(new TripleImpl(concept, RDFS.comment,
-					new PlainLiteralImpl(comment, new Language(lang))));
-		}
-		return Response.status(Status.CREATED).entity(concept.getUnicodeString())
-				.build();
-	}
+        if (contentGraph.filter(null, SKOS.prefLabel, preferredLabel).hasNext()) {
+            return Response.status(Status.CONFLICT)
+                    .entity("A concept with the same label and language already exists!")
+                    .build();
+        }
+        
+        UriRef concept = getConceptUriRef(platformConfig, prefLabel);
+        contentGraph.add(new TripleImpl(concept, RDF.type,
+                SKOS.Concept));
+        String baseUri = platformConfig.getDefaultBaseUri().getUnicodeString();
+        contentGraph.add(new TripleImpl(concept, SKOS.inScheme,
+                new UriRef(baseUri + FREE_CONCEPT_SCHEME)));
+        contentGraph.add(new TripleImpl(concept, SKOS.prefLabel, preferredLabel));
+        if (!comment.isEmpty()) {
+            contentGraph.add(new TripleImpl(concept, RDFS.comment,
+                    new PlainLiteralImpl(comment, new Language(lang))));
+        }
+        return Response.status(Status.CREATED).entity(concept.getUnicodeString())
+                .build();
+    }
 
-	static UriRef getConceptUriRef(PlatformConfig platformConfig, String prefLabel) {
-		String baseUri = platformConfig.getDefaultBaseUri().getUnicodeString();
-		return new UriRef(baseUri + "concept/" +
-				UriRefUtil.stripNonUriRefChars(prefLabel));
-	}
+    static UriRef getConceptUriRef(PlatformConfig platformConfig, String prefLabel) {
+        String baseUri = platformConfig.getDefaultBaseUri().getUnicodeString();
+        return new UriRef(baseUri + "concept/" +
+                UriRefUtil.stripNonUriRefChars(prefLabel));
+    }
 }
 
 

@@ -59,73 +59,73 @@ import org.apache.clerezza.rdf.core.serializedform.Parser;
 
 @Path("/foaf")
 public class TutorialApp {
-	
-	/**
-	 * @scr.reference
-	 */
-	TcManager tcManager;
-	
-	/**
-	 * @scr.reference
-	 */
-	private RenderletManager renderletManager;
-	
-	private UriRef graphName = new UriRef("http://localhost.mygraph");
+    
+    /**
+     * @scr.reference
+     */
+    TcManager tcManager;
+    
+    /**
+     * @scr.reference
+     */
+    private RenderletManager renderletManager;
+    
+    private UriRef graphName = new UriRef("http://localhost.mygraph");
 
-	@GET
-	@Path("find")
-	@Produces("application/rdf+xml")
-	public Graph getPersonRdf(@QueryParam("mbox") String mboxString) {
-		MGraph mGraph = tcManager.getMGraph(graphName);
-		NonLiteral person = getPersonByMbox(mboxString, mGraph);
-		return new GraphNode(person, mGraph).getNodeContext();
-	}
+    @GET
+    @Path("find")
+    @Produces("application/rdf+xml")
+    public Graph getPersonRdf(@QueryParam("mbox") String mboxString) {
+        MGraph mGraph = tcManager.getMGraph(graphName);
+        NonLiteral person = getPersonByMbox(mboxString, mGraph);
+        return new GraphNode(person, mGraph).getNodeContext();
+    }
 
-	@GET
-	@Path("find")
-	@Produces("application/xhtml+xml")
-	public GraphNode getPersonHtml(@QueryParam("mbox") String mboxString) {
-		MGraph mGraph = tcManager.getMGraph(graphName);
-		NonLiteral person = getPersonByMbox(mboxString, mGraph);
-		return new GraphNode(person, mGraph);
-	}
+    @GET
+    @Path("find")
+    @Produces("application/xhtml+xml")
+    public GraphNode getPersonHtml(@QueryParam("mbox") String mboxString) {
+        MGraph mGraph = tcManager.getMGraph(graphName);
+        NonLiteral person = getPersonByMbox(mboxString, mGraph);
+        return new GraphNode(person, mGraph);
+    }
 
-	private NonLiteral getPersonByMbox(String mboxString, MGraph mGraph) {
-		Iterator<Triple> iter = mGraph.filter(null, FOAF.mbox, new UriRef(mboxString));
-		NonLiteral person = null;
-		while(iter.hasNext()) {
-			person = iter.next().getSubject();
-		}
-		return person;
-	}
-	
-	/**
-	 * The activate method is called when SCR activates the component configuration.
-	 * This method gets the system graph or create a new one if it doesn't exist.
-	 * 
-	 * @param componentContext
-	 */
-	protected void activate(ComponentContext componentContext) {
-		
-		URL templateURL = getClass().getResource("tutorial.xhtml");	
-		try {
-			renderletManager.registerRenderlet(SeedsnipeRenderlet.class
-					.getName(), new UriRef(templateURL.toURI().toString()),
-					FOAF.Person, null, MediaType.APPLICATION_XHTML_XML_TYPE,
-					true);
-		} catch (URISyntaxException ex) {
-			throw new WebApplicationException(ex);
-		}
-		TripleCollection tc;
-		try {
-			tcManager.getMGraph(graphName);
-		} catch (NoSuchEntityException nsee) {
-			tc = tcManager.createMGraph(graphName);
-			InputStream fin = null;
-			fin = getClass().getResourceAsStream("data.turtle");
-			Parser parser = Parser.getInstance();
-			tc.addAll(parser.parse(fin, "text/turtle"));
-		}
-	}
+    private NonLiteral getPersonByMbox(String mboxString, MGraph mGraph) {
+        Iterator<Triple> iter = mGraph.filter(null, FOAF.mbox, new UriRef(mboxString));
+        NonLiteral person = null;
+        while(iter.hasNext()) {
+            person = iter.next().getSubject();
+        }
+        return person;
+    }
+    
+    /**
+     * The activate method is called when SCR activates the component configuration.
+     * This method gets the system graph or create a new one if it doesn't exist.
+     * 
+     * @param componentContext
+     */
+    protected void activate(ComponentContext componentContext) {
+        
+        URL templateURL = getClass().getResource("tutorial.xhtml");    
+        try {
+            renderletManager.registerRenderlet(SeedsnipeRenderlet.class
+                    .getName(), new UriRef(templateURL.toURI().toString()),
+                    FOAF.Person, null, MediaType.APPLICATION_XHTML_XML_TYPE,
+                    true);
+        } catch (URISyntaxException ex) {
+            throw new WebApplicationException(ex);
+        }
+        TripleCollection tc;
+        try {
+            tcManager.getMGraph(graphName);
+        } catch (NoSuchEntityException nsee) {
+            tc = tcManager.createMGraph(graphName);
+            InputStream fin = null;
+            fin = getClass().getResourceAsStream("data.turtle");
+            Parser parser = Parser.getInstance();
+            tc.addAll(parser.parse(fin, "text/turtle"));
+        }
+    }
 }
 

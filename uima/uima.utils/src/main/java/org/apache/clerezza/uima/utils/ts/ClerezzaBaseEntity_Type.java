@@ -41,17 +41,17 @@ public class ClerezzaBaseEntity_Type extends TOP_Type {
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
       public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (ClerezzaBaseEntity_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = ClerezzaBaseEntity_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new ClerezzaBaseEntity(addr, ClerezzaBaseEntity_Type.this);
-  			   ClerezzaBaseEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
+               if (ClerezzaBaseEntity_Type.this.useExistingInstance) {
+                 // Return eq fs instance if already created
+               FeatureStructure fs = ClerezzaBaseEntity_Type.this.jcas.getJfsFromCaddr(addr);
+               if (null == fs) {
+                 fs = new ClerezzaBaseEntity(addr, ClerezzaBaseEntity_Type.this);
+                 ClerezzaBaseEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
+                 return fs;
+               }
+               return fs;
         } else return new ClerezzaBaseEntity(addr, ClerezzaBaseEntity_Type.this);
-  	  }
+        }
     };
 
   /** @generated */

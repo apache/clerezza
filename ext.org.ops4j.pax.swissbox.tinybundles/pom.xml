@@ -18,46 +18,46 @@
  under the License.
 
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<groupId>org.apache.clerezza.ext</groupId>
-	<artifactId>org.ops4j.pax.swissbox.tinybundles</artifactId>
-	<name>Clerezza Ext - SwissBox TinyBundles OSGi Bundle</name>
-	<version>0.2-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<description>json.simple parses and serializes json</description>
-	<dependencies>
-		<dependency>
-			<groupId>org.ops4j.pax.swissbox</groupId>
-			<artifactId>pax-swissbox-tinybundles</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>org.slf4j</artifactId>
-					<groupId>slf4j-api</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Embed-Transitive>true</Embed-Transitive>
-						<Export-Package>org.ops4j.pax.swissbox.tinybundles.core;version="1.3.0"</Export-Package>
-						<!-- <Private-Package>*</Private-Package> -->
-						<Embed-Dependency>*;artifactId=!slf4j-api;scope=compile;inline=true</Embed-Dependency>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <groupId>org.apache.clerezza.ext</groupId>
+    <artifactId>org.ops4j.pax.swissbox.tinybundles</artifactId>
+    <name>Clerezza Ext - SwissBox TinyBundles OSGi Bundle</name>
+    <version>0.2-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <description>json.simple parses and serializes json</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-tinybundles</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.slf4j</artifactId>
+                    <groupId>slf4j-api</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Export-Package>org.ops4j.pax.swissbox.tinybundles.core;version="1.3.0"</Export-Package>
+                        <!-- <Private-Package>*</Private-Package> -->
+                        <Embed-Dependency>*;artifactId=!slf4j-api;scope=compile;inline=true</Embed-Dependency>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -18,11 +18,11 @@
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-  	<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.3-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-  	</parent>  
+      <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+      </parent>  
   <artifactId>clerezza-jar-resource-bundle</artifactId>
   <version>2-SNAPSHOT</version>
   <name>Clerezza Jar shared resources</name>
@@ -30,7 +30,7 @@
     the necessary license files and notices for all Apache releases.
     Include via remote-resources plugin, to have the LICENSE,
     NOTICE and DEPENDENCIES files added to the META-INF. This is a modified 
-	version of uima-jar-resource-bundle</description>
+    version of uima-jar-resource-bundle</description>
   
   
   <!-- <properties>

@@ -44,208 +44,208 @@ import org.apache.clerezza.rdf.core.event.RemoveEvent;
  * @author reto
  */
 public abstract class AbstractTripleCollection extends AbstractCollection<Triple>
-		implements TripleCollection {
+        implements TripleCollection {
 
-	//all listeners
-	private final Set<ListenerConfiguration> listenerConfigs = Collections.synchronizedSet(
-			new HashSet<ListenerConfiguration>());
-	private DelayedNotificator delayedNotificator = new DelayedNotificator();
+    //all listeners
+    private final Set<ListenerConfiguration> listenerConfigs = Collections.synchronizedSet(
+            new HashSet<ListenerConfiguration>());
+    private DelayedNotificator delayedNotificator = new DelayedNotificator();
 
-	@Override
-	public Iterator<Triple> iterator() {
-		return filter(null, null, null);
-	}
+    @Override
+    public Iterator<Triple> iterator() {
+        return filter(null, null, null);
+    }
 
-	@Override
-	public boolean contains(Object o) {
-		if (!(o instanceof Triple)) {
-			return false;
-		}
-		Triple t = (Triple) o;
-		return filter(t.getSubject(), t.getPredicate(), t.getObject()).hasNext();
-	}
+    @Override
+    public boolean contains(Object o) {
+        if (!(o instanceof Triple)) {
+            return false;
+        }
+        Triple t = (Triple) o;
+        return filter(t.getSubject(), t.getPredicate(), t.getObject()).hasNext();
+    }
 
-	@Override
-	public Iterator<Triple> filter(NonLiteral subject, UriRef predicate,
-			Resource object) {
-		final Iterator<Triple> baseIter = performFilter(subject, predicate, object);
-		return new Iterator<Triple>() {
+    @Override
+    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate,
+            Resource object) {
+        final Iterator<Triple> baseIter = performFilter(subject, predicate, object);
+        return new Iterator<Triple>() {
 
-			Triple currentTriple = null;
+            Triple currentTriple = null;
 
-			@Override
-			public boolean hasNext() {
-				return baseIter.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return baseIter.hasNext();
+            }
 
-			@Override
-			public Triple next() {
-				currentTriple = baseIter.next();
-				return currentTriple;
-			}
+            @Override
+            public Triple next() {
+                currentTriple = baseIter.next();
+                return currentTriple;
+            }
 
-			@Override
-			public void remove() {
-				baseIter.remove();
-				dispatchEvent(new RemoveEvent(AbstractTripleCollection.this, currentTriple));
-			}
-		};
-	}
+            @Override
+            public void remove() {
+                baseIter.remove();
+                dispatchEvent(new RemoveEvent(AbstractTripleCollection.this, currentTriple));
+            }
+        };
+    }
 
-	/**
-	 * A subclass of <code>AbstractTripleCollection</code> should override 
-	 * this method instead of <code>filter</code> for graph event support to be
-	 * added. The Iterator returned by <code>filter</code> will dispatch a
-	 * GraphEvent after invoking the remove method of the iterator returned by
-	 * this method.
-	 * 
-	 * @param subject
-	 * @param predicate
-	 * @param object
-	 * @return
-	 */
-	protected abstract Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate,
-			Resource object);
+    /**
+     * A subclass of <code>AbstractTripleCollection</code> should override 
+     * this method instead of <code>filter</code> for graph event support to be
+     * added. The Iterator returned by <code>filter</code> will dispatch a
+     * GraphEvent after invoking the remove method of the iterator returned by
+     * this method.
+     * 
+     * @param subject
+     * @param predicate
+     * @param object
+     * @return
+     */
+    protected abstract Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate,
+            Resource object);
 
-	@Override
-	public boolean add(Triple triple) {
-		boolean success = performAdd(triple);
-		if (success) {
-			dispatchEvent(new AddEvent(this, triple));
-		}
-		return success;
-	}
+    @Override
+    public boolean add(Triple triple) {
+        boolean success = performAdd(triple);
+        if (success) {
+            dispatchEvent(new AddEvent(this, triple));
+        }
+        return success;
+    }
 
-	/**
-	 * A subclass of <code>AbstractTripleCollection</code> should override 
-	 * this method instead of <code>add</code> for graph event support to be
-	 * added.
-	 * 
-	 * @param e The triple to be added to the triple collection
-	 * @return
-	 */
-	protected boolean performAdd(Triple e) {
-		return super.add(e);
-	}
+    /**
+     * A subclass of <code>AbstractTripleCollection</code> should override 
+     * this method instead of <code>add</code> for graph event support to be
+     * added.
+     * 
+     * @param e The triple to be added to the triple collection
+     * @return
+     */
+    protected boolean performAdd(Triple e) {
+        return super.add(e);
+    }
 
-	@Override
-	public boolean remove(Object o) {
-		Triple triple = (Triple) o;
-		boolean success = performRemove(triple);
-		if (success) {
-			dispatchEvent(new RemoveEvent(this, triple));
-		}
-		return success;
-	}
+    @Override
+    public boolean remove(Object o) {
+        Triple triple = (Triple) o;
+        boolean success = performRemove(triple);
+        if (success) {
+            dispatchEvent(new RemoveEvent(this, triple));
+        }
+        return success;
+    }
 
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		boolean modified = false;
-		for (Iterator<? extends Object> it = c.iterator(); it.hasNext();) {
-			Object object = it.next();
-			if (remove(object)) {
-				modified = true;
-			}
-		}
-		return modified;
-	}
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        boolean modified = false;
+        for (Iterator<? extends Object> it = c.iterator(); it.hasNext();) {
+            Object object = it.next();
+            if (remove(object)) {
+                modified = true;
+            }
+        }
+        return modified;
+    }
 
-	/**
-	 * A subclass of <code>AbstractTripleCollection</code> should override 
-	 * this method instead of <code>remove</code> for graph event support to be
-	 * added.
-	 * 
-	 * @param o The triple to be removed from the triple collection
-	 * @return
-	 */
-	protected boolean performRemove(Triple triple) {
-		Iterator<Triple> e = performFilter(null, null, null);
-		while (e.hasNext()) {
-			if (triple.equals(e.next())) {
-				e.remove();
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * A subclass of <code>AbstractTripleCollection</code> should override 
+     * this method instead of <code>remove</code> for graph event support to be
+     * added.
+     * 
+     * @param o The triple to be removed from the triple collection
+     * @return
+     */
+    protected boolean performRemove(Triple triple) {
+        Iterator<Triple> e = performFilter(null, null, null);
+        while (e.hasNext()) {
+            if (triple.equals(e.next())) {
+                e.remove();
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Dispatches a <code>GraphEvent</code> to all registered listeners for which
-	 * the specified <code>Triple</code> matches the <code>FilterTriple</code>s
-	 * of the listeners.
-	 * 
-	 * @param triple The Triple that was modified
-	 * @param type The type of modification
-	 */
-	protected void dispatchEvent(GraphEvent event) {
-		synchronized(listenerConfigs) {
-			Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
-			while (iter.hasNext()) {
-				ListenerConfiguration config = iter.next();
-				GraphListener registeredListener = config.getListener();
-				if (registeredListener == null) {
-					iter.remove();
-					continue;
-				}
-				if (config.getFilter().match(event.getTriple())) {
-					delayedNotificator.sendEventToListener(registeredListener, event);
-				}
-			}
-		}
-	}
+    /**
+     * Dispatches a <code>GraphEvent</code> to all registered listeners for which
+     * the specified <code>Triple</code> matches the <code>FilterTriple</code>s
+     * of the listeners.
+     * 
+     * @param triple The Triple that was modified
+     * @param type The type of modification
+     */
+    protected void dispatchEvent(GraphEvent event) {
+        synchronized(listenerConfigs) {
+            Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
+            while (iter.hasNext()) {
+                ListenerConfiguration config = iter.next();
+                GraphListener registeredListener = config.getListener();
+                if (registeredListener == null) {
+                    iter.remove();
+                    continue;
+                }
+                if (config.getFilter().match(event.getTriple())) {
+                    delayedNotificator.sendEventToListener(registeredListener, event);
+                }
+            }
+        }
+    }
 
-	@Override
-	public void addGraphListener(GraphListener listener, FilterTriple filter) {
-		addGraphListener(listener, filter, 0);
-	}
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter) {
+        addGraphListener(listener, filter, 0);
+    }
 
-	@Override
-	public void addGraphListener(GraphListener listener, FilterTriple filter,
-			long delay) {
-		listenerConfigs.add(new ListenerConfiguration(listener, filter));
-		if (delay > 0) {
-			delayedNotificator.addDelayedListener(listener, delay);
-		}
-	}
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter,
+            long delay) {
+        listenerConfigs.add(new ListenerConfiguration(listener, filter));
+        if (delay > 0) {
+            delayedNotificator.addDelayedListener(listener, delay);
+        }
+    }
 
-	@Override
-	public void removeGraphListener(GraphListener listener) {
-		synchronized(listenerConfigs) {
-			Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
-			while (iter.hasNext()) {
-				ListenerConfiguration listenerConfig = iter.next();
-				GraphListener registeredListener = listenerConfig.getListener();
-				if ((registeredListener == null) || (registeredListener.equals(listener))) {
-					iter.remove();
-				}
-			}
-		}
-		delayedNotificator.removeDelayedListener(listener);
-	}
+    @Override
+    public void removeGraphListener(GraphListener listener) {
+        synchronized(listenerConfigs) {
+            Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
+            while (iter.hasNext()) {
+                ListenerConfiguration listenerConfig = iter.next();
+                GraphListener registeredListener = listenerConfig.getListener();
+                if ((registeredListener == null) || (registeredListener.equals(listener))) {
+                    iter.remove();
+                }
+            }
+        }
+        delayedNotificator.removeDelayedListener(listener);
+    }
 
-	private static class ListenerConfiguration {
+    private static class ListenerConfiguration {
 
-		private WeakReference<GraphListener> listenerRef;
-		private FilterTriple filter;
+        private WeakReference<GraphListener> listenerRef;
+        private FilterTriple filter;
 
-		private ListenerConfiguration(GraphListener listener, FilterTriple filter) {
-			this.listenerRef = new WeakReference<GraphListener>(listener);
-			this.filter = filter;
-		}
+        private ListenerConfiguration(GraphListener listener, FilterTriple filter) {
+            this.listenerRef = new WeakReference<GraphListener>(listener);
+            this.filter = filter;
+        }
 
-		/**
-		 * @return the listener
-		 */
-		GraphListener getListener() {
-			GraphListener listener = listenerRef.get();
-			return listener;
-		}
+        /**
+         * @return the listener
+         */
+        GraphListener getListener() {
+            GraphListener listener = listenerRef.get();
+            return listener;
+        }
 
-		/**
-		 * @return the filter
-		 */
-		FilterTriple getFilter() {
-			return filter;
-		}
-	}
+        /**
+         * @return the filter
+         */
+        FilterTriple getFilter() {
+            return filter;
+        }
+    }
 }

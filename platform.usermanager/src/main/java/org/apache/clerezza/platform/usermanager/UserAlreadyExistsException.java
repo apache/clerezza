@@ -24,7 +24,7 @@ package org.apache.clerezza.platform.usermanager;
  */
 class UserAlreadyExistsException extends RuntimeException {
 
-	public UserAlreadyExistsException(String name) {
-		super("User " + name + " already exists");
-	}
+    public UserAlreadyExistsException(String name) {
+        super("User " + name + " already exists");
+    }
 }

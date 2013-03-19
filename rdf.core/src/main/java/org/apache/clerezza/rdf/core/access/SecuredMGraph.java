@@ -35,42 +35,42 @@ import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
  */
 public class SecuredMGraph extends SecuredTripleCollection implements LockableMGraph {
 
-	private LockableMGraph wrapped;
+    private LockableMGraph wrapped;
 
-	public SecuredMGraph(LockableMGraph wrapped, UriRef name,
-			TcAccessController tcAccessController) {
-		super(wrapped, name,  tcAccessController);
-		this.wrapped = wrapped;
-	}
+    public SecuredMGraph(LockableMGraph wrapped, UriRef name,
+            TcAccessController tcAccessController) {
+        super(wrapped, name,  tcAccessController);
+        this.wrapped = wrapped;
+    }
 
-	@Override
-	public Graph getGraph() {
-		return new SimpleGraph(this);
-	}
+    @Override
+    public Graph getGraph() {
+        return new SimpleGraph(this);
+    }
 
-	@Override
-	public ReadWriteLock getLock() {
-		return wrapped.getLock();
-	}
+    @Override
+    public ReadWriteLock getLock() {
+        return wrapped.getLock();
+    }
 
-	/**
-	 * Returns the wrapped LockableMGraph if the caller has all access rights.
-	 * If the caller has only the read access right, then a write-blocked
-	 * LockableMGraph is returned. If the caller has neither the read nor the write
-	 * access right then an AccessControlException is thrown.
-	 *
-	 * @return the wrapped LockableMGraph or a write-block LockableMGraph depending
-	 *		on the access rights of the caller.
-	 */
-	public LockableMGraph getUnsecuredMGraph() {
-		try {
-			checkWrite();
-			return wrapped;
-		} catch (AccessControlException ex) {
-			checkRead();
-			return new WriteBlockedMGraph(wrapped);
-		}
-		
-	}
+    /**
+     * Returns the wrapped LockableMGraph if the caller has all access rights.
+     * If the caller has only the read access right, then a write-blocked
+     * LockableMGraph is returned. If the caller has neither the read nor the write
+     * access right then an AccessControlException is thrown.
+     *
+     * @return the wrapped LockableMGraph or a write-block LockableMGraph depending
+     *        on the access rights of the caller.
+     */
+    public LockableMGraph getUnsecuredMGraph() {
+        try {
+            checkWrite();
+            return wrapped;
+        } catch (AccessControlException ex) {
+            checkRead();
+            return new WriteBlockedMGraph(wrapped);
+        }
+        
+    }
 
 }

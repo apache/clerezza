@@ -28,8 +28,8 @@ import org.osgi.framework.Bundle;
 @Deprecated
 public class BundlePathNode extends org.apache.clerezza.utils.osgi.BundlePathNode {
 
-	public BundlePathNode(Bundle bundle, String path) {
-		super(bundle, path);
-	}
+    public BundlePathNode(Bundle bundle, String path) {
+        super(bundle, path);
+    }
 
 }

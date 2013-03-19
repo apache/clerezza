@@ -29,36 +29,36 @@ import org.apache.clerezza.rdf.core.test.TcProviderTest;
  */
 public class GenericTcProviderTest extends TcProviderTest{
 
-	private final static String DATA_DIR = "target/tmp/data/";
+    private final static String DATA_DIR = "target/tmp/data/";
 
-	SesameNativeWeightedProvider provider = null;
+    SesameNativeWeightedProvider provider = null;
 
-	@After
+    @After
     public void tearDown() throws Exception {
        deleteDirectory(new File(DATA_DIR));
     }
-	
-	@Override
-	protected TcProvider getInstance() {
-		if (provider != null) {
-			provider.deactivate(null);
-		}
-		provider = new SesameNativeWeightedProvider();
-		provider.setDataDirectory(DATA_DIR);
-		return provider;
-	}
+    
+    @Override
+    protected TcProvider getInstance() {
+        if (provider != null) {
+            provider.deactivate(null);
+        }
+        provider = new SesameNativeWeightedProvider();
+        provider.setDataDirectory(DATA_DIR);
+        return provider;
+    }
 
-	private boolean deleteDirectory(File path) {
-		if (path.exists()) {
-			File[] files = path.listFiles();
-			for (File f : files) {
-				if (f.isDirectory()) {
-					deleteDirectory(f);
-				} else {
-					f.delete();
-				}
-			}
-		}
-		return (path.delete());
-	}
+    private boolean deleteDirectory(File path) {
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    deleteDirectory(f);
+                } else {
+                    f.delete();
+                }
+            }
+        }
+        return (path.delete());
+    }
 }

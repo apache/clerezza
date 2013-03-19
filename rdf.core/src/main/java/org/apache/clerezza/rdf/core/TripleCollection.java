@@ -33,73 +33,73 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  * @author reto
  */
 public interface TripleCollection extends Collection<Triple> {
-	
-	/**
-	 * Filters triples given a pattern. 
-	 * filter(null, null, null) returns the same as iterator()
-	 * 
-	 * @param subject
-	 * @param predicate
-	 * @param object
-	 * @return <code>Iterator</code>
-	 */
-	public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, 
-			Resource object);
+    
+    /**
+     * Filters triples given a pattern. 
+     * filter(null, null, null) returns the same as iterator()
+     * 
+     * @param subject
+     * @param predicate
+     * @param object
+     * @return <code>Iterator</code>
+     */
+    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, 
+            Resource object);
 
-	/**
-	 * Adds the specified <code>GraphListener</code> to the graph. This listener
-	 * will be notified, when the graph is modified and the <code>Triple</code>
-	 * that was part of the modifiaction matched the specified
-	 * <code>FilterTriple</code>. The notification will be passed to the
-	 * listener after the specified delay time (in milli-seconds) has passed.
-	 * If more matching events occur during the delay period, then they are
-	 * passed all together at the end of the delay period. If the the listener
-	 * unregisters or the platform is stopped within the period then the already
-	 * occurred events may not be delivered.
-	 *
-	 * All implementations support this method, immutable implementations will
-	 * typically provide an empty implementation, they shall not throw an
-	 * exception.
-	 *
-	 * Implementation of which the triples change over time without add- and
-	 * remove-methods being called (e.g. implementation dynamically generating
-	 * their triples on invocation of the filer-method) may choose not to, or
-	 * only partially propagate their changes to the listener. They should
-	 * describe the behavior in the documentation of the class.
-	 *
-	 * Implementations should keep weak references the listeners, so that the
-	 * listener can be garbage collected if its no longer referenced by another
-	 * object.
-	 *
-	 * If delay is 0 notification will happen synchroneously.
-	 *
-	 * @param listener The listener that will be notified
-	 * @param filter The triple filter with which triples are tested,
-	 *		that were part of the modification.
-	 * @param delay The time period afer which the listener will be notified in milliseconds.
-	 */
-	public void addGraphListener(GraphListener listener, FilterTriple filter,
-			long delay);
+    /**
+     * Adds the specified <code>GraphListener</code> to the graph. This listener
+     * will be notified, when the graph is modified and the <code>Triple</code>
+     * that was part of the modifiaction matched the specified
+     * <code>FilterTriple</code>. The notification will be passed to the
+     * listener after the specified delay time (in milli-seconds) has passed.
+     * If more matching events occur during the delay period, then they are
+     * passed all together at the end of the delay period. If the the listener
+     * unregisters or the platform is stopped within the period then the already
+     * occurred events may not be delivered.
+     *
+     * All implementations support this method, immutable implementations will
+     * typically provide an empty implementation, they shall not throw an
+     * exception.
+     *
+     * Implementation of which the triples change over time without add- and
+     * remove-methods being called (e.g. implementation dynamically generating
+     * their triples on invocation of the filer-method) may choose not to, or
+     * only partially propagate their changes to the listener. They should
+     * describe the behavior in the documentation of the class.
+     *
+     * Implementations should keep weak references the listeners, so that the
+     * listener can be garbage collected if its no longer referenced by another
+     * object.
+     *
+     * If delay is 0 notification will happen synchroneously.
+     *
+     * @param listener The listener that will be notified
+     * @param filter The triple filter with which triples are tested,
+     *        that were part of the modification.
+     * @param delay The time period afer which the listener will be notified in milliseconds.
+     */
+    public void addGraphListener(GraphListener listener, FilterTriple filter,
+            long delay);
 
-	/**
-	 * Adds the specified <code>GraphListener</code> to the graph. This listener
-	 * will be notified, when the graph is modified and the <code>Triple</code>
-	 * that was part of the modifiaction matched the specified
-	 * <code>FilterTriple</code>. The notification will be passed without delay.
-	 *
-	 * Same as <code>addGraphListener(listener, filter, 0).
-	 *
-	 * @param listener The listener that will be notified
-	 * @param filter The triple filter with which triples are tested,
-	 *		that were part of the modification.
-	 */
-	public void addGraphListener(GraphListener listener, FilterTriple filter);
+    /**
+     * Adds the specified <code>GraphListener</code> to the graph. This listener
+     * will be notified, when the graph is modified and the <code>Triple</code>
+     * that was part of the modifiaction matched the specified
+     * <code>FilterTriple</code>. The notification will be passed without delay.
+     *
+     * Same as <code>addGraphListener(listener, filter, 0).
+     *
+     * @param listener The listener that will be notified
+     * @param filter The triple filter with which triples are tested,
+     *        that were part of the modification.
+     */
+    public void addGraphListener(GraphListener listener, FilterTriple filter);
 
-	/**
-	 * Removes the specified <code>GraphListener</code> from the graph. This
-	 * listener will no longer be notified, when the graph is modified.
-	 *
-	 * @param listener The listener to be removed.
-	 */
-	public void removeGraphListener(GraphListener listener);
+    /**
+     * Removes the specified <code>GraphListener</code> from the graph. This
+     * listener will no longer be notified, when the graph is modified.
+     *
+     * @param listener The listener to be removed.
+     */
+    public void removeGraphListener(GraphListener listener);
 }

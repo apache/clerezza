@@ -29,17 +29,17 @@ import org.junit.Test;
  */
 public class ReplacingOutputStreamTest {
 
-	final static Charset UTF8 = Charset.forName("UTF-8");
+    final static Charset UTF8 = Charset.forName("UTF-8");
 
-	@Test
-	public void simple() throws Exception {
-		final String orig = "hello testing world";
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final ReplacingOutputStream raos = new ReplacingOutputStream(baos,
-				"testing".getBytes(UTF8), "tested".getBytes(UTF8));
-		raos.write(orig.getBytes(UTF8));
-		raos.flush();
-		final String result = new String(baos.toByteArray(), UTF8);
-		Assert.assertEquals("hello tested world", result);
-	}
+    @Test
+    public void simple() throws Exception {
+        final String orig = "hello testing world";
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ReplacingOutputStream raos = new ReplacingOutputStream(baos,
+                "testing".getBytes(UTF8), "tested".getBytes(UTF8));
+        raos.write(orig.getBytes(UTF8));
+        raos.flush();
+        final String result = new String(baos.toByteArray(), UTF8);
+        Assert.assertEquals("hello tested world", result);
+    }
 }

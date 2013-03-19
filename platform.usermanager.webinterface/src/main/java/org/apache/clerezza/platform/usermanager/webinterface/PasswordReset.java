@@ -75,106 +75,106 @@ import org.wymiwyg.commons.util.Util;
 @Path("/reset")
 public class PasswordReset {
 
-	private final Logger logger = LoggerFactory.getLogger(PasswordReset.class);
-	
-	@Reference
-	private RenderletManager renderletManager;
-	
-	@Reference
-	private UserManager userManager;
-	
-	@Reference
-	private MailMan mailMan;
+    private final Logger logger = LoggerFactory.getLogger(PasswordReset.class);
+    
+    @Reference
+    private RenderletManager renderletManager;
+    
+    @Reference
+    private UserManager userManager;
+    
+    @Reference
+    private MailMan mailMan;
 
-	@Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
-	private LockableMGraph systemGraph;
+    @Reference(target=SystemConfig.SYSTEM_GRAPH_FILTER)
+    private LockableMGraph systemGraph;
 
-	/**
-	 * Service property
-	 */
-	@Property(value="admin",
-		description="Platform user that is responsible for password management")
-	public static final String PASSWORD_USER = "passwordUser";
-	
-	private String passwordUser;	
+    /**
+     * Service property
+     */
+    @Property(value="admin",
+        description="Platform user that is responsible for password management")
+    public static final String PASSWORD_USER = "passwordUser";
+    
+    private String passwordUser;    
 
-	/**
-	 * The activate method is called when SCR activates the component configuration.
-	 *
-	 * @param componentContext
-	 */
-	protected void activate(ComponentContext componentContext) {
-		URL templateURL = getClass().getResource("reset.xhtml");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), USERMANAGER.PasswordResetPage,
-				null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    /**
+     * The activate method is called when SCR activates the component configuration.
+     *
+     * @param componentContext
+     */
+    protected void activate(ComponentContext componentContext) {
+        URL templateURL = getClass().getResource("reset.xhtml");
+        renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+                new UriRef(templateURL.toString()), USERMANAGER.PasswordResetPage,
+                null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
-		templateURL = getClass().getResource("reset_mail.txt");
-		renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
-				new UriRef(templateURL.toString()), USERMANAGER.PasswordResetMail,
-				null, MediaType.TEXT_PLAIN_TYPE, true);
-		passwordUser = (String)componentContext.getProperties().get(PASSWORD_USER);
-		logger.info("Password Reset activated.");
-	}
+        templateURL = getClass().getResource("reset_mail.txt");
+        renderletManager.registerRenderlet(SeedsnipeRenderlet.class.getName(),
+                new UriRef(templateURL.toString()), USERMANAGER.PasswordResetMail,
+                null, MediaType.TEXT_PLAIN_TYPE, true);
+        passwordUser = (String)componentContext.getProperties().get(PASSWORD_USER);
+        logger.info("Password Reset activated.");
+    }
 
-	@GET
-	public GraphNode resetPage(@Context UriInfo uriInfo) {
-		TrailingSlash.enforcePresent(uriInfo);
-		GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
-		result.addProperty(RDF.type, USERMANAGER.PasswordResetPage);
-		return result;
-	}
+    @GET
+    public GraphNode resetPage(@Context UriInfo uriInfo) {
+        TrailingSlash.enforcePresent(uriInfo);
+        GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
+        result.addProperty(RDF.type, USERMANAGER.PasswordResetPage);
+        return result;
+    }
 
-	@POST
-	public Response reset(@FormParam("user") final String userName,
-			@FormParam("email") final String email,
-			@Context final UriInfo uriInfo) {
-		return AccessController.doPrivileged(new PrivilegedAction<Response>() {
+    @POST
+    public Response reset(@FormParam("user") final String userName,
+            @FormParam("email") final String email,
+            @Context final UriInfo uriInfo) {
+        return AccessController.doPrivileged(new PrivilegedAction<Response>() {
 
-			@Override
-			public Response run() {
-				String storedName = userManager.getNameByEmail(email);
-				String newPassword = null;
-				if (userName.equals(storedName)) {
-					newPassword = Util.createRandomString(7);
-					userManager.updateUser(userName, null, newPassword,
-							Collections.EMPTY_LIST, null);
-				} else {
-					return createResponse("Username and e-mail address don't match.");
-				}
-				try {
-					NonLiteral agent;
-					Lock readLock = systemGraph.getLock().readLock();
-					readLock.lock();
-					try {
-						Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName,
-								new PlainLiteralImpl(userName));
-						agent = agents.next().getSubject();
-					} finally {
-						readLock.unlock();
-					}
-					MGraph temporary = new SimpleMGraph();
-					temporary.add(new TripleImpl(agent, PERMISSION.password,
-							new PlainLiteralImpl(newPassword)));
-					MGraph result = new UnionMGraph(temporary, systemGraph);
-					GraphNode mailGraph = new GraphNode(new BNode(), result);
-					mailGraph.addProperty(RDF.type, USERMANAGER.PasswordResetMail);
-					mailGraph.addProperty(USERMANAGER.recipient, agent);
-					List<MediaType> acceptableMediaTypes =
-					Collections.singletonList(MediaType.TEXT_PLAIN_TYPE);
-					mailMan.sendEmailToUser(passwordUser, userName, "New Password",
-					mailGraph, acceptableMediaTypes, null);
-				} catch (MessagingException ex) {
-					throw new RuntimeException(ex);
-				}
-				return createResponse("Successfully password reseted. Check your e-mail box. " +
-						"An automatically generated password was sent to your e-mail address.");
-			}
-		});
-	}
+            @Override
+            public Response run() {
+                String storedName = userManager.getNameByEmail(email);
+                String newPassword = null;
+                if (userName.equals(storedName)) {
+                    newPassword = Util.createRandomString(7);
+                    userManager.updateUser(userName, null, newPassword,
+                            Collections.EMPTY_LIST, null);
+                } else {
+                    return createResponse("Username and e-mail address don't match.");
+                }
+                try {
+                    NonLiteral agent;
+                    Lock readLock = systemGraph.getLock().readLock();
+                    readLock.lock();
+                    try {
+                        Iterator<Triple> agents = systemGraph.filter(null, PLATFORM.userName,
+                                new PlainLiteralImpl(userName));
+                        agent = agents.next().getSubject();
+                    } finally {
+                        readLock.unlock();
+                    }
+                    MGraph temporary = new SimpleMGraph();
+                    temporary.add(new TripleImpl(agent, PERMISSION.password,
+                            new PlainLiteralImpl(newPassword)));
+                    MGraph result = new UnionMGraph(temporary, systemGraph);
+                    GraphNode mailGraph = new GraphNode(new BNode(), result);
+                    mailGraph.addProperty(RDF.type, USERMANAGER.PasswordResetMail);
+                    mailGraph.addProperty(USERMANAGER.recipient, agent);
+                    List<MediaType> acceptableMediaTypes =
+                    Collections.singletonList(MediaType.TEXT_PLAIN_TYPE);
+                    mailMan.sendEmailToUser(passwordUser, userName, "New Password",
+                    mailGraph, acceptableMediaTypes, null);
+                } catch (MessagingException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return createResponse("Successfully password reseted. Check your e-mail box. " +
+                        "An automatically generated password was sent to your e-mail address.");
+            }
+        });
+    }
 
-	private Response createResponse(String message) {
-		Response.ResponseBuilder responseBuilder = Response.ok(message);
-		return responseBuilder.build();
-	}
+    private Response createResponse(String message) {
+        Response.ResponseBuilder responseBuilder = Response.ok(message);
+        return responseBuilder.build();
+    }
 }

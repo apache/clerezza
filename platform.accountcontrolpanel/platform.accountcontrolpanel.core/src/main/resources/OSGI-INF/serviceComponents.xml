@@ -37,7 +37,7 @@
         <property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.MenuItemProvider"/>
     </scr:component>
 
-	<scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.SettingsPanel">
+    <scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.SettingsPanel">
         <implementation class="org.apache.clerezza.platform.accountcontrolpanel.SettingsPanel"/>
         <service servicefactory="false">
             <provide interface="java.lang.Object"/>
@@ -50,7 +50,7 @@
     </scr:component>
     <scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.html.SettingsPanel">
         <implementation class="org.apache.clerezza.platform.accountcontrolpanel.html.SettingsPanel"/>
-		<service servicefactory="false">
+        <service servicefactory="false">
             <provide interface="org.apache.clerezza.platform.typerendering.TypeRenderlet"/>
         </service>
         <property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.html.SettingsPanel"/>
@@ -65,15 +65,15 @@
         <property name="javax.ws.rs" type="Boolean" value="true"/>
         <property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.ProfilePanel"/>
         <reference name="userManager" interface="org.apache.clerezza.platform.usermanager.UserManager"
-				   cardinality="1..1" policy="static" bind="bindUserManager" unbind="unbindUserManager"/>
-		<reference name="graphNodeProvider" interface="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider"
-				   cardinality="1..1" policy="static" bind="bindGraphNodeProvider" unbind="unbindGraphNodeProvider"/>
+                   cardinality="1..1" policy="static" bind="bindUserManager" unbind="unbindUserManager"/>
+        <reference name="graphNodeProvider" interface="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider"
+                   cardinality="1..1" policy="static" bind="bindGraphNodeProvider" unbind="unbindGraphNodeProvider"/>
         <reference name="keygenSrvc" interface="org.apache.clerezza.ssl.keygen.KeygenService"
-				   cardinality="1..1" policy="static" bind="bindKeygenSrvc" unbind="unbindKeygenSrvc"/>
+                   cardinality="1..1" policy="static" bind="bindKeygenSrvc" unbind="unbindKeygenSrvc"/>
         <reference name="webIdGraphsService" interface="org.apache.clerezza.platform.users.WebIdGraphsService"
-				   cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
+                   cardinality="1..1" policy="static" bind="bindWebIdGraphsService" unbind="unbindWebIdGraphsService"/>
         <reference name="platformConfig" interface="org.apache.clerezza.platform.config.PlatformConfig"
-				   cardinality="1..1" policy="static" bind="bindPlatformConfig" unbind="unbindPlatformConfig"/>
+                   cardinality="1..1" policy="static" bind="bindPlatformConfig" unbind="unbindPlatformConfig"/>
         <reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
                    cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>
     </scr:component>
@@ -84,18 +84,18 @@
         </service>
         <property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.html.ProfilePanel"/>
     </scr:component>
-	<scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.html.ContactConfirmRenderlet">
-		<implementation class="org.apache.clerezza.platform.accountcontrolpanel.html.ContactConfirmRenderlet"/>
-		<service servicefactory="false">
-			<provide interface="org.apache.clerezza.platform.typerendering.TypeRenderlet"/>
-		</service>
-		<property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.html.ContactConfirmRenderlet"/>
-	</scr:component>
-	<scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.html.PersonBox">
-		<implementation class="org.apache.clerezza.platform.accountcontrolpanel.html.PersonBox"/>
-		<service servicefactory="false">
-			<provide interface="org.apache.clerezza.platform.typerendering.TypeRenderlet"/>
-		</service>
-		<property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.html.PersonBox"/>
-	</scr:component>
+    <scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.html.ContactConfirmRenderlet">
+        <implementation class="org.apache.clerezza.platform.accountcontrolpanel.html.ContactConfirmRenderlet"/>
+        <service servicefactory="false">
+            <provide interface="org.apache.clerezza.platform.typerendering.TypeRenderlet"/>
+        </service>
+        <property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.html.ContactConfirmRenderlet"/>
+    </scr:component>
+    <scr:component enabled="true" name="org.apache.clerezza.platform.accountcontrolpanel.html.PersonBox">
+        <implementation class="org.apache.clerezza.platform.accountcontrolpanel.html.PersonBox"/>
+        <service servicefactory="false">
+            <provide interface="org.apache.clerezza.platform.typerendering.TypeRenderlet"/>
+        </service>
+        <property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.html.PersonBox"/>
+    </scr:component>
 </components>

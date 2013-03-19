@@ -42,138 +42,138 @@ import org.apache.clerezza.integrationtest.web.framework.WebTestCase;
  */
 public class GetBinaryContent implements WebTestCase {
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property type="Integer" value="10" description=
-	 *               "Specifies the number of threads to execute the run method."
-	 */
-	public static final String THREAD_COUNT = "threadCount";
+    /**
+     * Service property
+     * 
+     * @scr.property type="Integer" value="10" description=
+     *               "Specifies the number of threads to execute the run method."
+     */
+    public static final String THREAD_COUNT = "threadCount";
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="admin" description=
-	 *               "Specifies the user name used in the authorization header."
-	 */
-	public static final String USER_NAME = "user";
-	private String username;
+    /**
+     * Service property
+     * 
+     * @scr.property value="admin" description=
+     *               "Specifies the user name used in the authorization header."
+     */
+    public static final String USER_NAME = "user";
+    private String username;
 
-	/**
-	 * Service property
-	 * 
-	 * @scr.property value="admin" description=
-	 *               "Specifies the user password used in the authorization header."
-	 */
-	public static final String USER_PASSWORD = "password";
-	private String password;
+    /**
+     * Service property
+     * 
+     * @scr.property value="admin" description=
+     *               "Specifies the user password used in the authorization header."
+     */
+    public static final String USER_PASSWORD = "password";
+    private String password;
 
-	private static final int CONTENT_LENGTH = 1024;
-	private static final byte[] content = new byte[CONTENT_LENGTH];
-	private static final String CONTENT_TYPE = "application/x-clerezza-test";
-	private String requestUri;
+    private static final int CONTENT_LENGTH = 1024;
+    private static final byte[] content = new byte[CONTENT_LENGTH];
+    private static final String CONTENT_TYPE = "application/x-clerezza-test";
+    private String requestUri;
 
-	final Logger logger = LoggerFactory.getLogger(GetBinaryContent.class);
+    final Logger logger = LoggerFactory.getLogger(GetBinaryContent.class);
 
-	protected void activate(ComponentContext componentContext) {
-		username = (String) componentContext.getProperties().get(USER_NAME);
-		password = (String) componentContext.getProperties().get(USER_PASSWORD);
-	}
+    protected void activate(ComponentContext componentContext) {
+        username = (String) componentContext.getProperties().get(USER_NAME);
+        password = (String) componentContext.getProperties().get(USER_PASSWORD);
+    }
 
-	@Override
-	public void init(String testSubjectUriPrefix) {
+    @Override
+    public void init(String testSubjectUriPrefix) {
 
-		logger.info("Init GetBinaryContent");
+        logger.info("Init GetBinaryContent");
 
-		for (int i = 0; i < CONTENT_LENGTH; ++i) {
-			content[i] = 1;
-		}
+        for (int i = 0; i < CONTENT_LENGTH; ++i) {
+            content[i] = 1;
+        }
 
-		requestUri = testSubjectUriPrefix + "/foo";
+        requestUri = testSubjectUriPrefix + "/foo";
 
-		put(requestUri, content);
-	}
+        put(requestUri, content);
+    }
 
-	private void put(String requestUri, byte[] content) {
-		try {
-			URL url = new URL(requestUri);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("PUT");
-			con.setRequestProperty("Accept", "*/*");
-			con.setRequestProperty("Content-Type", CONTENT_TYPE);
-			con.setRequestProperty("Authorization", "Basic "
-					+ new String(Base64
-							.encodeBase64((username + ":" + password)
-									.getBytes())));
-			con.setDoOutput(true);
+    private void put(String requestUri, byte[] content) {
+        try {
+            URL url = new URL(requestUri);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("PUT");
+            con.setRequestProperty("Accept", "*/*");
+            con.setRequestProperty("Content-Type", CONTENT_TYPE);
+            con.setRequestProperty("Authorization", "Basic "
+                    + new String(Base64
+                            .encodeBase64((username + ":" + password)
+                                    .getBytes())));
+            con.setDoOutput(true);
 
-			OutputStream os = con.getOutputStream();
-			os.write(content);
-			os.flush();
+            OutputStream os = con.getOutputStream();
+            os.write(content);
+            os.flush();
 
-			int responseCode = con.getResponseCode();
-			if (responseCode != 201 && responseCode != 202) {
-				throw new RuntimeException("PutBinaryContent: unexpected "
-						+ "response code: " + responseCode);
-			}
-		} catch (MalformedURLException me) {
-			throw new RuntimeException(me);
-		} catch (IOException ioe) {
-			throw new RuntimeException(ioe);
-		}
-	}
+            int responseCode = con.getResponseCode();
+            if (responseCode != 201 && responseCode != 202) {
+                throw new RuntimeException("PutBinaryContent: unexpected "
+                        + "response code: " + responseCode);
+            }
+        } catch (MalformedURLException me) {
+            throw new RuntimeException(me);
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+    }
 
-	@Override
-	public void run() {
-		try {
-			URL url = new URL(requestUri);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			try {
-				con.setRequestMethod("GET");
-				con.setRequestProperty("Accept", "*/*");
-				con.setRequestProperty("Content-Type", CONTENT_TYPE);
-				con.setRequestProperty("Authorization", "Basic "
-						+ new String(Base64
-								.encodeBase64((username + ":" + password)
-										.getBytes())));
-				con.setDoInput(true);
+    @Override
+    public void run() {
+        try {
+            URL url = new URL(requestUri);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            try {
+                con.setRequestMethod("GET");
+                con.setRequestProperty("Accept", "*/*");
+                con.setRequestProperty("Content-Type", CONTENT_TYPE);
+                con.setRequestProperty("Authorization", "Basic "
+                        + new String(Base64
+                                .encodeBase64((username + ":" + password)
+                                        .getBytes())));
+                con.setDoInput(true);
 
-				int responseCode = con.getResponseCode();
-				if (responseCode != 200) {
-					throw new RuntimeException("GetBinaryContent: unexpected "
-							+ "response code: " + responseCode);
-				}
+                int responseCode = con.getResponseCode();
+                if (responseCode != 200) {
+                    throw new RuntimeException("GetBinaryContent: unexpected "
+                            + "response code: " + responseCode);
+                }
 
-				InputStream inputStream = con.getInputStream();
-				try {
-					int byteData;
-					int ctr = 0;
-					while ((byteData = inputStream.read()) != -1) {
-						if (byteData != 1) {
-							throw new RuntimeException(
-									"GetBinaryContent: Read data does not match input data.");
-						}
-						++ctr;
-					}
-					if (ctr != CONTENT_LENGTH) {
-						throw new RuntimeException(
-								"GetBinaryContent: Content length does not match.");
-					}
-				} finally {
-					inputStream.close();
-				}
-			} finally {
-				con.disconnect();
-			}
-		} catch (MalformedURLException me) {
-			me.printStackTrace();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-	}
+                InputStream inputStream = con.getInputStream();
+                try {
+                    int byteData;
+                    int ctr = 0;
+                    while ((byteData = inputStream.read()) != -1) {
+                        if (byteData != 1) {
+                            throw new RuntimeException(
+                                    "GetBinaryContent: Read data does not match input data.");
+                        }
+                        ++ctr;
+                    }
+                    if (ctr != CONTENT_LENGTH) {
+                        throw new RuntimeException(
+                                "GetBinaryContent: Content length does not match.");
+                    }
+                } finally {
+                    inputStream.close();
+                }
+            } finally {
+                con.disconnect();
+            }
+        } catch (MalformedURLException me) {
+            me.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
 
-	@Override
-	public boolean multiThreadingCapable() {
-		return true;
-	}
+    @Override
+    public boolean multiThreadingCapable() {
+        return true;
+    }
 }

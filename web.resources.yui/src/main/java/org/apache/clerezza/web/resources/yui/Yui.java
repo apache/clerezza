@@ -48,51 +48,51 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
 @Path("/yui")
 public class Yui {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private FileServer fileServer;
+    private FileServer fileServer;
 
-	/**
-	 * The activate method is called when SCR activates the component
-	 * configuration. 
-	 * 
-	 * @param componentContext
-	 */
-	protected void activate(ComponentContext context) {
-		Bundle bundle = context.getBundleContext().getBundle();
-		URL resourceDir = getClass().getResource("staticweb");
-		PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
-		logger.debug("Initializing file server for {} ({})", resourceDir,
-				resourceDir.getFile());
-		fileServer = new FileServer(pathNode);
-	}
+    /**
+     * The activate method is called when SCR activates the component
+     * configuration. 
+     * 
+     * @param componentContext
+     */
+    protected void activate(ComponentContext context) {
+        Bundle bundle = context.getBundleContext().getBundle();
+        URL resourceDir = getClass().getResource("staticweb");
+        PathNode pathNode = new BundlePathNode(bundle, resourceDir.getPath());
+        logger.debug("Initializing file server for {} ({})", resourceDir,
+                resourceDir.getFile());
+        fileServer = new FileServer(pathNode);
+    }
 
-	/**
-	 * Returns a PathNode of a static file from the staticweb folder.
-	 * 
-	 * @return {@link PathNode}
-	 */
-	@GET
-	@Path("{path:.+}")
-	public PathNode getStaticFile(@PathParam("path") String path) {
-		logger.warn("Accessing deprecated path for yui2, use 2/{} instead.", path);
-		return getYui2File(path);
-	}
+    /**
+     * Returns a PathNode of a static file from the staticweb folder.
+     * 
+     * @return {@link PathNode}
+     */
+    @GET
+    @Path("{path:.+}")
+    public PathNode getStaticFile(@PathParam("path") String path) {
+        logger.warn("Accessing deprecated path for yui2, use 2/{} instead.", path);
+        return getYui2File(path);
+    }
 
-	@GET
-	@Path("2/{path:.+}")
-	public PathNode getYui2File(@PathParam("path") String path) {
-		final PathNode node = fileServer.getNode("2/"+path);
-		logger.debug("Serving static {}", node);
-		return node;
-	}
-	
-	@GET
-	@Path("3/{path:.+}")
-	public PathNode getYui3File(@PathParam("path") String path) {
-		final PathNode node = fileServer.getNode("3/"+path);
-		logger.debug("Serving static {}", node);
-		return node;
-	}
+    @GET
+    @Path("2/{path:.+}")
+    public PathNode getYui2File(@PathParam("path") String path) {
+        final PathNode node = fileServer.getNode("2/"+path);
+        logger.debug("Serving static {}", node);
+        return node;
+    }
+    
+    @GET
+    @Path("3/{path:.+}")
+    public PathNode getYui3File(@PathParam("path") String path) {
+        final PathNode node = fileServer.getNode("3/"+path);
+        logger.debug("Serving static {}", node);
+        return node;
+    }
 
 }

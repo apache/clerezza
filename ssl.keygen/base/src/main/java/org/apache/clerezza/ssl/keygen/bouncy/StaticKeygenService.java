@@ -70,43 +70,43 @@ import java.util.logging.Logger;
  * @author Henry Story
  */
 public class StaticKeygenService implements KeygenService {
-	static transient final Logger log = Logger.getLogger(StaticKeygenService.class.getName());
-	static BouncyKeygenService keygenService;
+    static transient final Logger log = Logger.getLogger(StaticKeygenService.class.getName());
+    static BouncyKeygenService keygenService;
 
-	static {
-		keygenService = new BouncyKeygenService();
-		try {
-			keygenService.initialize();
-		} catch (Exception e) {
-			log.log(Level.SEVERE, "Could not start static keygen service ", e);
-		}
-	}
+    static {
+        keygenService = new BouncyKeygenService();
+        try {
+            keygenService.initialize();
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Could not start static keygen service ", e);
+        }
+    }
 
-	/**
-	 * Create certificates from PEM requests, coming from Internet Explorer usually
-	 *
-	 * @param pemCsr
-	 * @return A yet incomplete certificate
-	 */
-	@Override
-	public  Certificate createFromPEM(String pemCsr) {
-		return keygenService.createFromPEM(pemCsr);
-	}
+    /**
+     * Create certificates from PEM requests, coming from Internet Explorer usually
+     *
+     * @param pemCsr
+     * @return A yet incomplete certificate
+     */
+    @Override
+    public  Certificate createFromPEM(String pemCsr) {
+        return keygenService.createFromPEM(pemCsr);
+    }
 
 
-	/**
-	 * Create Certificates from SPKAC requests coming from the other browsers
-	 *
-	 * @param spkac
-	 * @return an as yet incomplete Certificate
-	 * @throws InvalidParameterException
-	 */
-	@Override
-	public  Certificate createFromSpkac(String spkac)  {
-		return keygenService.createFromSpkac(spkac);
-	}
+    /**
+     * Create Certificates from SPKAC requests coming from the other browsers
+     *
+     * @param spkac
+     * @return an as yet incomplete Certificate
+     * @throws InvalidParameterException
+     */
+    @Override
+    public  Certificate createFromSpkac(String spkac)  {
+        return keygenService.createFromSpkac(spkac);
+    }
 
-	@Override
+    @Override
     public  Certificate createFromCRMF(String crmfReq) {
         return keygenService.createFromCRMF(crmfReq);
     }

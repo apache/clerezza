@@ -43,40 +43,40 @@ import org.osgi.service.component.ComponentContext;
 @Component(immediate=true)
 public class Style {
 
-	@Reference
-	private ScalaServerPagesService sspService;
+    @Reference
+    private ScalaServerPagesService sspService;
 
-	private Set<ServiceRegistration> serviceRegistrations = new HashSet<ServiceRegistration>();
+    private Set<ServiceRegistration> serviceRegistrations = new HashSet<ServiceRegistration>();
 
-	/**
-	 * configuration.
-	 *
-	 * @param context
-	 */
-	protected void activate(ComponentContext context) {
-		BundleContext bundleContext = context.getBundleContext();
+    /**
+     * configuration.
+     *
+     * @param context
+     */
+    protected void activate(ComponentContext context) {
+        BundleContext bundleContext = context.getBundleContext();
 
-		URL templateURL = getClass().getResource("globalmenu-naked.ssp");
-		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, RDFS.Resource, "menu",
-				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
+        URL templateURL = getClass().getResource("globalmenu-naked.ssp");
+        serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, RDFS.Resource, "menu",
+                MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
 
-		templateURL = getClass().getResource("rdf-list-template.ssp");
-		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, RDF.List, ".*naked",
-				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
+        templateURL = getClass().getResource("rdf-list-template.ssp");
+        serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, RDF.List, ".*naked",
+                MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
 
-		templateURL = getClass().getResource("headed-page-template.ssp");
-		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, PLATFORM.HeadedPage, "(?!.*naked).*",
-				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
+        templateURL = getClass().getResource("headed-page-template.ssp");
+        serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, PLATFORM.HeadedPage, "(?!.*naked).*",
+                MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
 
-		templateURL = getClass().getResource("headed-page-template.ssp");
-		serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, HIERARCHY.Collection, "(?!.*naked).*",
-				MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
-	}
+        templateURL = getClass().getResource("headed-page-template.ssp");
+        serviceRegistrations.add(sspService.registerScalaServerPage(templateURL, HIERARCHY.Collection, "(?!.*naked).*",
+                MediaType.APPLICATION_XHTML_XML_TYPE, bundleContext));
+    }
 
-	protected void deactivate(ComponentContext context) {
-		for (ServiceRegistration serviceRegistration : serviceRegistrations) {
-			serviceRegistration.unregister();
-		}
-	}
+    protected void deactivate(ComponentContext context) {
+        for (ServiceRegistration serviceRegistration : serviceRegistrations) {
+            serviceRegistration.unregister();
+        }
+    }
 
 }

@@ -29,19 +29,19 @@ import org.wymiwyg.wrhapi.util.MessageBody2Write;
  */
 class Xhtml2HtmlConvertingBody extends MessageBody2Write {
 
-	private WrappedResponse wrappedResponse;
-	private MessageBody body;
+    private WrappedResponse wrappedResponse;
+    private MessageBody body;
 
-	public Xhtml2HtmlConvertingBody(MessageBody body, WrappedResponse wrappedResponse) {
-		this.wrappedResponse = wrappedResponse;
-		this.body = body;
-	}
+    public Xhtml2HtmlConvertingBody(MessageBody body, WrappedResponse wrappedResponse) {
+        this.wrappedResponse = wrappedResponse;
+        this.body = body;
+    }
 
-	@Override
-	public void writeTo(WritableByteChannel byteChannel)
-			throws IOException {
-		body.writeTo(new ContentLengthSettingByteChannel(new DocTypeFilteringByteChannel(
-				new SelfClosing2ClosingTagsByteChannel(
-				byteChannel, wrappedResponse), wrappedResponse), wrappedResponse));
-	}
+    @Override
+    public void writeTo(WritableByteChannel byteChannel)
+            throws IOException {
+        body.writeTo(new ContentLengthSettingByteChannel(new DocTypeFilteringByteChannel(
+                new SelfClosing2ClosingTagsByteChannel(
+                byteChannel, wrappedResponse), wrappedResponse), wrappedResponse));
+    }
 }

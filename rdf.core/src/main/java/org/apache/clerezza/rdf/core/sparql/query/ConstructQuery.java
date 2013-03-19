@@ -30,12 +30,12 @@ import java.util.Set;
  */
 public interface ConstructQuery extends QueryWithSolutionModifier {
 
-	/**
-	 * <p>Gets the template for constructing triples in a CONSTRUCT query.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#construct">
-	 * SPARQL Query Language: 10.2 CONSTRUCT</a>
-	 * @return a template as a set of triple patterns for constructing
-	 *         new triples.
-	 */
-	public Set<TriplePattern> getConstructTemplate();
+    /**
+     * <p>Gets the template for constructing triples in a CONSTRUCT query.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#construct">
+     * SPARQL Query Language: 10.2 CONSTRUCT</a>
+     * @return a template as a set of triple patterns for constructing
+     *         new triples.
+     */
+    public Set<TriplePattern> getConstructTemplate();
 }

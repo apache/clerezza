@@ -40,26 +40,26 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 public interface Renderer  {
 
 
-	/**
-	 * Returns a <code>MediaType</code> Object representing the media type
-	 * that will be produced <code>GraphNode</code>.
-	 * @return
-	 */
-	public MediaType getMediaType();
+    /**
+     * Returns a <code>MediaType</code> Object representing the media type
+     * that will be produced <code>GraphNode</code>.
+     * @return
+     */
+    public MediaType getMediaType();
 
-	/**
-	 * Renders the data from <code>resource</code> with the renderlet and
-	 * rendering specification.
-	 *
-	 * @param res  RDF resource to be rendered with the template.
-	 * @param context RDF resource providing a rendering context.
-	 * @param uriInfo the uriInfo of the request, the renderlet may use
-	 * @param httpHeaders the http-headers of the request
-	 * @param os  where the output will be written to.
-	 */
-	public void render(GraphNode node, GraphNode userContext, String mode, UriInfo uriInfo,
-			HttpHeaders requestHeaders,
-			MultivaluedMap<String, Object> responseHeaders,
-			Map<String, Object> sharedRenderingValues, OutputStream entityStream)
-			throws IOException;
+    /**
+     * Renders the data from <code>resource</code> with the renderlet and
+     * rendering specification.
+     *
+     * @param res  RDF resource to be rendered with the template.
+     * @param context RDF resource providing a rendering context.
+     * @param uriInfo the uriInfo of the request, the renderlet may use
+     * @param httpHeaders the http-headers of the request
+     * @param os  where the output will be written to.
+     */
+    public void render(GraphNode node, GraphNode userContext, String mode, UriInfo uriInfo,
+            HttpHeaders requestHeaders,
+            MultivaluedMap<String, Object> responseHeaders,
+            Map<String, Object> sharedRenderingValues, OutputStream entityStream)
+            throws IOException;
 }

@@ -46,106 +46,106 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractDiscobitsHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDiscobitsHandler.class);
 
-	/**
-	 *
-	 * @return the MGraph to be used to retrieve and create discobits
-	 */
-	protected abstract MGraph getMGraph();
+    /**
+     *
+     * @return the MGraph to be used to retrieve and create discobits
+     */
+    protected abstract MGraph getMGraph();
 
-	/**
-	 * A <code>Set</code> containing <code>MetaDataGenerator</code>s to be used
-	 * to add meta data to data putted by the handler.
-	 *
-	 * @return a Set containing meta data generators
-	 */
-	protected abstract Set<MetaDataGenerator> getMetaDataGenerators();
+    /**
+     * A <code>Set</code> containing <code>MetaDataGenerator</code>s to be used
+     * to add meta data to data putted by the handler.
+     *
+     * @return a Set containing meta data generators
+     */
+    protected abstract Set<MetaDataGenerator> getMetaDataGenerators();
 
-	
-	@Override
-	public void put(UriRef infoDiscoBitUri, MediaType mediaType,
-			byte[] data) {
+    
+    @Override
+    public void put(UriRef infoDiscoBitUri, MediaType mediaType,
+            byte[] data) {
 
-		GraphNode infoDiscoBitNode;
-		final LockableMGraph mGraph = (LockableMGraph) getMGraph();
-		infoDiscoBitNode = new GraphNode(infoDiscoBitUri, mGraph);
-		CollectionCreator collectionCreator = new CollectionCreator(mGraph);
-		collectionCreator.createContainingCollections(infoDiscoBitUri);
-		Lock writeLock = mGraph.getLock().writeLock();
-		writeLock.lock();
-		try {
-			infoDiscoBitNode.addProperty(RDF.type, DISCOBITS.InfoDiscoBit);
-			TypedLiteral dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
-			infoDiscoBitNode.deleteProperties(DISCOBITS.infoBit);
-			infoDiscoBitNode.addProperty(DISCOBITS.infoBit, dataLiteral);
-			TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
-			infoDiscoBitNode.deleteProperties(DISCOBITS.mediaType);
-			infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
-		} finally {
-			writeLock.unlock();
-		}
-		Set<MetaDataGenerator> metaDataGenerators = getMetaDataGenerators();
-		synchronized(metaDataGenerators) {
-			for(MetaDataGenerator generator : metaDataGenerators) {
-				try {
-					generator.generate(infoDiscoBitNode, data, mediaType);
-				} catch (RuntimeException ex) {
-					logger.error("Exception in MetaDataGenerator ", ex);
-				}
-			}
-		}
-	}
+        GraphNode infoDiscoBitNode;
+        final LockableMGraph mGraph = (LockableMGraph) getMGraph();
+        infoDiscoBitNode = new GraphNode(infoDiscoBitUri, mGraph);
+        CollectionCreator collectionCreator = new CollectionCreator(mGraph);
+        collectionCreator.createContainingCollections(infoDiscoBitUri);
+        Lock writeLock = mGraph.getLock().writeLock();
+        writeLock.lock();
+        try {
+            infoDiscoBitNode.addProperty(RDF.type, DISCOBITS.InfoDiscoBit);
+            TypedLiteral dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
+            infoDiscoBitNode.deleteProperties(DISCOBITS.infoBit);
+            infoDiscoBitNode.addProperty(DISCOBITS.infoBit, dataLiteral);
+            TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
+            infoDiscoBitNode.deleteProperties(DISCOBITS.mediaType);
+            infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
+        } finally {
+            writeLock.unlock();
+        }
+        Set<MetaDataGenerator> metaDataGenerators = getMetaDataGenerators();
+        synchronized(metaDataGenerators) {
+            for(MetaDataGenerator generator : metaDataGenerators) {
+                try {
+                    generator.generate(infoDiscoBitNode, data, mediaType);
+                } catch (RuntimeException ex) {
+                    logger.error("Exception in MetaDataGenerator ", ex);
+                }
+            }
+        }
+    }
 
-	@Override
-	public  void remove(NonLiteral node) {
-		MGraph mGraph = getMGraph();		
-		Iterator<Triple> properties = mGraph.filter(node, null, null);
-		//copying properties to set, as we're modifying underlying graph
-		Set<Triple> propertiesSet = new HashSet<Triple>();
-		while (properties.hasNext()) {
-			propertiesSet.add(properties.next());
-		}
-		properties = propertiesSet.iterator();
-		while (properties.hasNext()) {
-			Triple triple = properties.next();
-			UriRef predicate = triple.getPredicate();
-			if (predicate.equals(DISCOBITS.contains)) {
-				try {
-					GraphNode containedNode = new GraphNode((NonLiteral)triple.getObject(), mGraph);
-					//The following includes triple
-					containedNode.deleteNodeContext();
-				} catch (ClassCastException e) {
-					throw new RuntimeException("The value of "+predicate+" is expected not to be a literal");
-				}
-				//as some other properties of node could have been in the context of the object
-				remove(node);
-				return;
-			}			
-		}
-		GraphNode graphNode = new GraphNode(node, mGraph);
-		graphNode.deleteNodeContext();
-	}
+    @Override
+    public  void remove(NonLiteral node) {
+        MGraph mGraph = getMGraph();        
+        Iterator<Triple> properties = mGraph.filter(node, null, null);
+        //copying properties to set, as we're modifying underlying graph
+        Set<Triple> propertiesSet = new HashSet<Triple>();
+        while (properties.hasNext()) {
+            propertiesSet.add(properties.next());
+        }
+        properties = propertiesSet.iterator();
+        while (properties.hasNext()) {
+            Triple triple = properties.next();
+            UriRef predicate = triple.getPredicate();
+            if (predicate.equals(DISCOBITS.contains)) {
+                try {
+                    GraphNode containedNode = new GraphNode((NonLiteral)triple.getObject(), mGraph);
+                    //The following includes triple
+                    containedNode.deleteNodeContext();
+                } catch (ClassCastException e) {
+                    throw new RuntimeException("The value of "+predicate+" is expected not to be a literal");
+                }
+                //as some other properties of node could have been in the context of the object
+                remove(node);
+                return;
+            }            
+        }
+        GraphNode graphNode = new GraphNode(node, mGraph);
+        graphNode.deleteNodeContext();
+    }
 
-	@Override
-	public byte[] getData(UriRef uriRef) {
-		MGraph mGraph = getMGraph();
-		GraphNode node = new GraphNode(uriRef, mGraph);
-		final InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(node);
-		if (infoDiscobit == null) {
-			return null;
-		}
-		return infoDiscobit.getData();
-	}
+    @Override
+    public byte[] getData(UriRef uriRef) {
+        MGraph mGraph = getMGraph();
+        GraphNode node = new GraphNode(uriRef, mGraph);
+        final InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(node);
+        if (infoDiscobit == null) {
+            return null;
+        }
+        return infoDiscobit.getData();
+    }
 
-	@Override
-	public MediaType getMediaType(UriRef uriRef) {
-		MGraph mGraph = getMGraph();
-		GraphNode node = new GraphNode(uriRef, mGraph);
-		final InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(node);
-		if (infoDiscobit == null) {
-			return null;
-		}
-		return MediaType.valueOf(infoDiscobit.getContentType());
-	}
+    @Override
+    public MediaType getMediaType(UriRef uriRef) {
+        MGraph mGraph = getMGraph();
+        GraphNode node = new GraphNode(uriRef, mGraph);
+        final InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(node);
+        if (infoDiscobit == null) {
+            return null;
+        }
+        return MediaType.valueOf(infoDiscobit.getContentType());
+    }
 }

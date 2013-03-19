@@ -40,87 +40,87 @@ import org.apache.clerezza.templating.seedsnipe.datastructure.InvalidElementExce
  * @author reto, daniel
  */
 class IfKeywordResolver implements KeywordResolver {
-	
-	DefaultParser parser = null;
-	
-	@Override
-	public void resolve(DefaultParser parser, String parameters, Reader in,
-			Writer out, DataFieldResolver dataFieldResolver,
-			int[] arrayPositioner) throws IOException {
-		this.parser = parser;
-		String[] endMarkers = { "/if", "else" };
+    
+    DefaultParser parser = null;
+    
+    @Override
+    public void resolve(DefaultParser parser, String parameters, Reader in,
+            Writer out, DataFieldResolver dataFieldResolver,
+            int[] arrayPositioner) throws IOException {
+        this.parser = parser;
+        String[] endMarkers = { "/if", "else" };
 
-		StringWriter outBuffer;
-		if (out != null) {
-			outBuffer = new StringWriter();
-		} else {
-			outBuffer = null;
-		}
-		
-		//unefficiently this code parses both the if and else part!
+        StringWriter outBuffer;
+        if (out != null) {
+            outBuffer = new StringWriter();
+        } else {
+            outBuffer = null;
+        }
+        
+        //unefficiently this code parses both the if and else part!
 
-		boolean evaluation = ((out == null) || isIfTrue(parameters,
-				dataFieldResolver, arrayPositioner));
-		final String reachedEndMarker;
-		if (evaluation == true) {
-			//if the condition is true parse the content within the if tags.
-			reachedEndMarker = parser.perform(outBuffer, endMarkers, arrayPositioner, dataFieldResolver);
-			if (out != null) {
-				out.write(outBuffer.toString());
-			}
-		} else {
-			//parse for the if end-tag, skipping everything in-between.
-			reachedEndMarker = parser.perform(null, endMarkers, arrayPositioner, dataFieldResolver);
-		}
+        boolean evaluation = ((out == null) || isIfTrue(parameters,
+                dataFieldResolver, arrayPositioner));
+        final String reachedEndMarker;
+        if (evaluation == true) {
+            //if the condition is true parse the content within the if tags.
+            reachedEndMarker = parser.perform(outBuffer, endMarkers, arrayPositioner, dataFieldResolver);
+            if (out != null) {
+                out.write(outBuffer.toString());
+            }
+        } else {
+            //parse for the if end-tag, skipping everything in-between.
+            reachedEndMarker = parser.perform(null, endMarkers, arrayPositioner, dataFieldResolver);
+        }
 
-		if (reachedEndMarker == null) { //no end marker found
-			PrintWriter printOut = new PrintWriter(out);
-			printOut.println("SYNTAX ERROR: if not terminated with /if");
-			return;
-		}
-		
-		if (reachedEndMarker.equals("else")) {
-			String[] endMarkers2 = { "/if" };
-			outBuffer = new StringWriter();
-			if (!evaluation) {
-				//parse then content within the else tag.
-				parser.perform(outBuffer, endMarkers2, arrayPositioner, dataFieldResolver);
-				if (out != null) {
-					out.write(outBuffer.toString());
-				}
-			} else {
-				//parse for the if end-tag, skipping everything in-between.
-				parser.perform(null, endMarkers2, arrayPositioner, dataFieldResolver);
-			}
-		}
-		
-		
-		return;
-	}
+        if (reachedEndMarker == null) { //no end marker found
+            PrintWriter printOut = new PrintWriter(out);
+            printOut.println("SYNTAX ERROR: if not terminated with /if");
+            return;
+        }
+        
+        if (reachedEndMarker.equals("else")) {
+            String[] endMarkers2 = { "/if" };
+            outBuffer = new StringWriter();
+            if (!evaluation) {
+                //parse then content within the else tag.
+                parser.perform(outBuffer, endMarkers2, arrayPositioner, dataFieldResolver);
+                if (out != null) {
+                    out.write(outBuffer.toString());
+                }
+            } else {
+                //parse for the if end-tag, skipping everything in-between.
+                parser.perform(null, endMarkers2, arrayPositioner, dataFieldResolver);
+            }
+        }
+        
+        
+        return;
+    }
 
-	/**
-	 * Evaluates if the condition is true.
-	 * 
-	 * @param parameters  the condition (e.g. <code>number == "5"</code>).
-	 * @param dataFieldResolver  the resolver for the type of data fields used.
-	 * @param arrayPositioner  the current indices for the data fields.
-	 * 
-	 * @return  <code>true</code> if the condition is fulfilled, 
-	 * 			<code>false</code> otherwise.
-	 * 
-	 * @throws IOException When the parameters cannot be read.
-	 */
-	private boolean isIfTrue(String parameters,
-			DataFieldResolver dataFieldResolver, int[] arrayPositioner)
-			throws IOException {
-		try {
-			return new Expression(parameters).evaluate(dataFieldResolver, arrayPositioner);
-		} catch (FieldDoesNotHaveDimensionException ex) {
-			return false;
-		} catch (FieldIndexOutOfBoundsException ex) {
-			return false;
-		} catch (InvalidElementException ex) {
-			return false;
-		}
-	}
+    /**
+     * Evaluates if the condition is true.
+     * 
+     * @param parameters  the condition (e.g. <code>number == "5"</code>).
+     * @param dataFieldResolver  the resolver for the type of data fields used.
+     * @param arrayPositioner  the current indices for the data fields.
+     * 
+     * @return  <code>true</code> if the condition is fulfilled, 
+     *             <code>false</code> otherwise.
+     * 
+     * @throws IOException When the parameters cannot be read.
+     */
+    private boolean isIfTrue(String parameters,
+            DataFieldResolver dataFieldResolver, int[] arrayPositioner)
+            throws IOException {
+        try {
+            return new Expression(parameters).evaluate(dataFieldResolver, arrayPositioner);
+        } catch (FieldDoesNotHaveDimensionException ex) {
+            return false;
+        } catch (FieldIndexOutOfBoundsException ex) {
+            return false;
+        } catch (InvalidElementException ex) {
+            return false;
+        }
+    }
 }

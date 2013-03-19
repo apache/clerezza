@@ -29,56 +29,56 @@ import org.junit.Test;
 
 public class SelfClosing2ClosingTagsByteChannelTest  {
 
-	final Charset UTF8 = Charset.forName("UTF-8");
-	@Test
-	public void simpleTest() throws Exception {
-		final String someHtml = "<html>\n" +
-				"<script/>\n" +
-				"<test />\n" +
-				"<foo id=\"bla\" />\n" +
-				"<area/>\n" +
-				"<base/>\n" +
-				"<basefont/>\n" +
-				"<br/>\n" +
-				"<hr/>\n" +
-				"<input/>\n" +
-				"<img/>\n" +
-				"<link/>\n" +
-				"<meta/>\n" +
-				"<body>\n" +
-				"hello" +
-				"</body>\n" +
-				"</html>";
-		final String expectedHtml = "<html>\n" +
-				"<script></script>\n" +
-				"<test ></test>\n" +
-				"<foo id=\"bla\" ></foo>\n" +
-				"<area/>\n" +
-				"<base/>\n" +
-				"<basefont/>\n" +
-				"<br/>\n" +
-				"<hr/>\n" +
-				"<input/>\n" +
-				"<img/>\n" +
-				"<link/>\n" +
-				"<meta/>\n" +
-				"<body>\n" +
-				"hello" +
-				"</body>\n" +
-				"</html>";
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final WritableByteChannel channel = new SelfClosing2ClosingTagsByteChannel(Channels.newChannel(baos),
-				new ResponseStatusInfo() {
+    final Charset UTF8 = Charset.forName("UTF-8");
+    @Test
+    public void simpleTest() throws Exception {
+        final String someHtml = "<html>\n" +
+                "<script/>\n" +
+                "<test />\n" +
+                "<foo id=\"bla\" />\n" +
+                "<area/>\n" +
+                "<base/>\n" +
+                "<basefont/>\n" +
+                "<br/>\n" +
+                "<hr/>\n" +
+                "<input/>\n" +
+                "<img/>\n" +
+                "<link/>\n" +
+                "<meta/>\n" +
+                "<body>\n" +
+                "hello" +
+                "</body>\n" +
+                "</html>";
+        final String expectedHtml = "<html>\n" +
+                "<script></script>\n" +
+                "<test ></test>\n" +
+                "<foo id=\"bla\" ></foo>\n" +
+                "<area/>\n" +
+                "<base/>\n" +
+                "<basefont/>\n" +
+                "<br/>\n" +
+                "<hr/>\n" +
+                "<input/>\n" +
+                "<img/>\n" +
+                "<link/>\n" +
+                "<meta/>\n" +
+                "<body>\n" +
+                "hello" +
+                "</body>\n" +
+                "</html>";
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final WritableByteChannel channel = new SelfClosing2ClosingTagsByteChannel(Channels.newChannel(baos),
+                new ResponseStatusInfo() {
 
-			@Override
-			public boolean convertXhtml2Html() {
-				return true;
-			}
+            @Override
+            public boolean convertXhtml2Html() {
+                return true;
+            }
 
-		});
-		int bytesWritten = channel.write(ByteBuffer.wrap(someHtml.getBytes(UTF8)));
-		Assert.assertEquals(someHtml.length(), bytesWritten);
-		final String resultString = new String(baos.toByteArray(), UTF8);
-		Assert.assertEquals(expectedHtml, resultString);
-	}
+        });
+        int bytesWritten = channel.write(ByteBuffer.wrap(someHtml.getBytes(UTF8)));
+        Assert.assertEquals(someHtml.length(), bytesWritten);
+        final String resultString = new String(baos.toByteArray(), UTF8);
+        Assert.assertEquals(expectedHtml, resultString);
+    }
 }

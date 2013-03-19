@@ -31,31 +31,31 @@ import java.util.List;
  */
 public interface QueryWithSolutionModifier extends Query {
 
-	/**
-	 * <p>Gets the list of required ordering conditions in decreasing ordering
-	 * priority.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modOrderBy">
-	 * SPARQL Query Language: 9.1 ORDER BY</a>
-	 * @return A list of {@link OrderCondition}s, in order of priority.
-	 */
-	public List<OrderCondition> getOrderConditions();
+    /**
+     * <p>Gets the list of required ordering conditions in decreasing ordering
+     * priority.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modOrderBy">
+     * SPARQL Query Language: 9.1 ORDER BY</a>
+     * @return A list of {@link OrderCondition}s, in order of priority.
+     */
+    public List<OrderCondition> getOrderConditions();
 
-	/**
-	 * <p>Gets the numeric offset of the first row to be returned by the query. 
-	 * The default offset is 0, meaning to start at the beginning.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modOffset">
-	 * SPARQL Query Language: 9.4 OFFSET</a>
-	 * @return The number of rows to skip in the result.
-	 */
-	public int getOffset();
+    /**
+     * <p>Gets the numeric offset of the first row to be returned by the query. 
+     * The default offset is 0, meaning to start at the beginning.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modOffset">
+     * SPARQL Query Language: 9.4 OFFSET</a>
+     * @return The number of rows to skip in the result.
+     */
+    public int getOffset();
 
-	/**
-	 * <p>Gets the maximum number of results to be returned by the query. 
-	 * A limit of -1 means no limit (return all results).
-	 * A limit of 0 means that no results should be returned.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modResultLimit">
-	 * SPARQL Query Language: 9.5 LIMIT</a>
-	 * @return The maximum number of rows to returned by the query.
-	 */
-	public int getLimit();
+    /**
+     * <p>Gets the maximum number of results to be returned by the query. 
+     * A limit of -1 means no limit (return all results).
+     * A limit of 0 means that no results should be returned.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#modResultLimit">
+     * SPARQL Query Language: 9.5 LIMIT</a>
+     * @return The maximum number of rows to returned by the query.
+     */
+    public int getLimit();
 }

@@ -30,16 +30,16 @@ import java.util.Set;
  */
 public interface GroupGraphPattern extends GraphPattern {
 
-	/**
-	 *
-	 * @return a set of all patterns, ANDed together.
-	 */
-	public Set<GraphPattern> getGraphPatterns();
+    /**
+     *
+     * @return a set of all patterns, ANDed together.
+     */
+    public Set<GraphPattern> getGraphPatterns();
 
-	/**
-	 * @return 
-	 *		a list of filter expressions for all patterns in the group if any,
-	 *		otherwise an empty list is returned.
-	 */
-	public List<Expression> getFilter();
+    /**
+     * @return 
+     *        a list of filter expressions for all patterns in the group if any,
+     *        otherwise an empty list is returned.
+     */
+    public List<Expression> getFilter();
 }

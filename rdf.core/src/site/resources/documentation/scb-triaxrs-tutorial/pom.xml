@@ -18,42 +18,42 @@
  under the License.
 
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.example.clerezza</groupId>
-	<artifactId>combined.tutorial</artifactId>
-	<packaging>bundle</packaging>
-	<version>1.0-SNAPSHOT</version>
-	<name>SCB Jaxrs Tutorial</name>	
-	<parent>
-		<artifactId>clerezza</artifactId>
-		<groupId>org.apache.clerezza</groupId>
-		<version>0.11-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
-	<repositories>
-		<repository>
-			<id>clerezza-release</id>
-			<name>clerezza.org distribution repository</name>
-			<url>http://repo.trialox.org/release</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>clerezza-snapshot</id>
-			<name>clerezza.org snapshot repository</name>
-			<url>http://repo.trialox.org/snapshot</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>	
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>jaxrs.rdf.providers</artifactId>
-			<version>0.14-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.clerezza</groupId>
-			<artifactId>platform.typerendering.seedsnipe</artifactId>
-			<version>0.7-SNAPSHOT</version>
-		</dependency>
-	</dependencies>	
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.example.clerezza</groupId>
+    <artifactId>combined.tutorial</artifactId>
+    <packaging>bundle</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>SCB Jaxrs Tutorial</name>    
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.11-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+    <repositories>
+        <repository>
+            <id>clerezza-release</id>
+            <name>clerezza.org distribution repository</name>
+            <url>http://repo.trialox.org/release</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>clerezza-snapshot</id>
+            <name>clerezza.org snapshot repository</name>
+            <url>http://repo.trialox.org/snapshot</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>    
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>jaxrs.rdf.providers</artifactId>
+            <version>0.14-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.typerendering.seedsnipe</artifactId>
+            <version>0.7-SNAPSHOT</version>
+        </dependency>
+    </dependencies>    
 </project>

@@ -33,27 +33,27 @@ import org.apache.clerezza.rdf.core.impl.SimpleGraph;
  * @author mir
  */
 public class GraphServiceFactory implements ServiceFactory {
-	
-	private final TcManager tcManager;
-	private final UriRef name;
-	private final TcAccessController tcAccessController;
+    
+    private final TcManager tcManager;
+    private final UriRef name;
+    private final TcAccessController tcAccessController;
 
-	GraphServiceFactory(TcManager tcManager, UriRef name,
-			TcAccessController tcAccessController) {
-		this.tcManager = tcManager;
-		this.name = name;
-		this.tcAccessController = tcAccessController;
-	}
+    GraphServiceFactory(TcManager tcManager, UriRef name,
+            TcAccessController tcAccessController) {
+        this.tcManager = tcManager;
+        this.name = name;
+        this.tcAccessController = tcAccessController;
+    }
 
-	@Override
-	public Object getService(Bundle arg0, ServiceRegistration arg1) {
-		TripleCollection tc = 
-				new SecuredTripleCollection(tcManager.getGraph(name), name,
-				tcAccessController);
-		return new SimpleGraph(tc);
-	}
+    @Override
+    public Object getService(Bundle arg0, ServiceRegistration arg1) {
+        TripleCollection tc = 
+                new SecuredTripleCollection(tcManager.getGraph(name), name,
+                tcAccessController);
+        return new SimpleGraph(tc);
+    }
 
-	@Override
-	public void ungetService(Bundle arg0, ServiceRegistration arg1, Object arg2) {
-	}
+    @Override
+    public void ungetService(Bundle arg0, ServiceRegistration arg1, Object arg2) {
+    }
 }

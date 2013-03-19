@@ -26,39 +26,39 @@ package org.apache.clerezza.integrationtest.web.framework;
  */
 class TestThread extends Thread {
 
-	/**
-	 * the WebTestCase whose run method is to be executed by this thread
-	 */
-	private WebTestCase wtc;
-	/**
-	 * the time required (in nanoseconds) to execute the run method of 
-	 * a WebTestCase
-	 */
-	private long elapsedTime;
-	private ResultsLogger resultsLogger;
-	private boolean stopRequested = false;
-	private long loopSleepTime; // ms
-	private WebIntegrationTestFramework webIntegrationTestFramework;
-	
-	TestThread(String threadName, WebTestCase wtc, WebIntegrationTestFramework webIntegrationTestFramework, ResultsLogger resultsLogger,
-			long loopSleepTime) {
-		super(threadName);
-		this.wtc = wtc;
-		this.webIntegrationTestFramework = webIntegrationTestFramework;
-		this.resultsLogger = resultsLogger;
-		this.loopSleepTime = loopSleepTime;
-	}
+    /**
+     * the WebTestCase whose run method is to be executed by this thread
+     */
+    private WebTestCase wtc;
+    /**
+     * the time required (in nanoseconds) to execute the run method of 
+     * a WebTestCase
+     */
+    private long elapsedTime;
+    private ResultsLogger resultsLogger;
+    private boolean stopRequested = false;
+    private long loopSleepTime; // ms
+    private WebIntegrationTestFramework webIntegrationTestFramework;
+    
+    TestThread(String threadName, WebTestCase wtc, WebIntegrationTestFramework webIntegrationTestFramework, ResultsLogger resultsLogger,
+            long loopSleepTime) {
+        super(threadName);
+        this.wtc = wtc;
+        this.webIntegrationTestFramework = webIntegrationTestFramework;
+        this.resultsLogger = resultsLogger;
+        this.loopSleepTime = loopSleepTime;
+    }
 
-	/**
-	 * this method repeatedly executes the run method of the registered 
-	 * WebTestCase and measures the elapsed time.
-	 * repetition is done until stop is requested.
-	 * 
-	 * @see WebTestCase#run()
-	 * @see #requestStop()
-	 */
-	@Override
-	public void run() {
+    /**
+     * this method repeatedly executes the run method of the registered 
+     * WebTestCase and measures the elapsed time.
+     * repetition is done until stop is requested.
+     * 
+     * @see WebTestCase#run()
+     * @see #requestStop()
+     */
+    @Override
+    public void run() {
         try {
             while (!stopRequested) {
                 long startTime = System.nanoTime();
@@ -83,14 +83,14 @@ class TestThread extends Thread {
         } finally {
             webIntegrationTestFramework.notifyThreadFinishing(this);
         }
-	}
+    }
 
-	/**
-	 * this method is used to stop this thread
-	 * 
-	 * @see #run() 
-	 */
-	void requestStop() {
-		stopRequested = true;
-	}
+    /**
+     * this method is used to stop this thread
+     * 
+     * @see #run() 
+     */
+    void requestStop() {
+        stopRequested = true;
+    }
 }

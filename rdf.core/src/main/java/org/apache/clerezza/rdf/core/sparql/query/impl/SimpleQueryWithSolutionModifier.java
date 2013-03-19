@@ -28,44 +28,44 @@ import org.apache.clerezza.rdf.core.sparql.query.QueryWithSolutionModifier;
  * @author hasan
  */
 public abstract class SimpleQueryWithSolutionModifier extends SimpleQuery
-		implements QueryWithSolutionModifier {
+        implements QueryWithSolutionModifier {
 
-	private List<OrderCondition> orderConditions = new ArrayList<OrderCondition>();
+    private List<OrderCondition> orderConditions = new ArrayList<OrderCondition>();
 
-	/**
-	 * Result offset. 0 means no offset.
-	 */
-	private int offset = 0;
+    /**
+     * Result offset. 0 means no offset.
+     */
+    private int offset = 0;
 
-	/**
-	 * Result limit. -1 means no limit.
-	 */
-	private int limit = -1;
+    /**
+     * Result limit. -1 means no limit.
+     */
+    private int limit = -1;
 
-	@Override
-	public List<OrderCondition> getOrderConditions() {
-		return orderConditions;
-	}
+    @Override
+    public List<OrderCondition> getOrderConditions() {
+        return orderConditions;
+    }
 
-	@Override
-	public int getOffset() {
-		return offset;
-	}
+    @Override
+    public int getOffset() {
+        return offset;
+    }
 
-	@Override
-	public int getLimit() {
-		return limit;
-	}
+    @Override
+    public int getLimit() {
+        return limit;
+    }
 
-	public void addOrderCondition(OrderCondition orderCondition) {
-		orderConditions.add(orderCondition);
-	}
+    public void addOrderCondition(OrderCondition orderCondition) {
+        orderConditions.add(orderCondition);
+    }
 
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 
-	public void setLimit(int limit) {
-		this.limit = limit;
-	}
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
 }

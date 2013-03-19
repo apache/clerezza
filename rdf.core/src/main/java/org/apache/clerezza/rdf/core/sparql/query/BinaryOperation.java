@@ -26,21 +26,21 @@ package org.apache.clerezza.rdf.core.sparql.query;
  */
 public class BinaryOperation extends AbstractOperation {
 
-	private Expression lhsOperand;
-	private Expression rhsOperand;
+    private Expression lhsOperand;
+    private Expression rhsOperand;
 
-	public BinaryOperation(String operator,
-			Expression lhsOperand, Expression rhsOperand) {
-		super(operator);
-		this.lhsOperand = lhsOperand;
-		this.rhsOperand = rhsOperand;
-	}
+    public BinaryOperation(String operator,
+            Expression lhsOperand, Expression rhsOperand) {
+        super(operator);
+        this.lhsOperand = lhsOperand;
+        this.rhsOperand = rhsOperand;
+    }
 
-	public Expression getLhsOperand() {
-		return lhsOperand;
-	}
+    public Expression getLhsOperand() {
+        return lhsOperand;
+    }
 
-	public Expression getRhsOperand() {
-		return rhsOperand;
-	}
+    public Expression getRhsOperand() {
+        return rhsOperand;
+    }
 }

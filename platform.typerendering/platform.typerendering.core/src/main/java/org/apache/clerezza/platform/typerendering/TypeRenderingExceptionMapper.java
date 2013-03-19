@@ -50,39 +50,39 @@ import org.slf4j.LoggerFactory;
 public class TypeRenderingExceptionMapper implements ExceptionMapper<TypeRenderingException> {
 
 
-	private Logger logger = LoggerFactory.getLogger(
-			TypeRenderingExceptionMapper.class);
+    private Logger logger = LoggerFactory.getLogger(
+            TypeRenderingExceptionMapper.class);
 
-	@Reference
-	RenderletManager renderletManager;
+    @Reference
+    RenderletManager renderletManager;
 
-	@Override
-	public Response toResponse(TypeRenderingException exception) {
-		ResponseBuilder rb = Response.serverError();
-		logger.info(exception.getMessage());
-		if (exception.getRenderNode().hasProperty(RDF.type, TYPERENDERING.Exception)) {
-			logger.error("Exception in template used for rendering exceptions ", exception);
-			rb.entity("There is an error in the template used for rendering" +
-					" exceptions. Please check the console output for further" +
-					" information. Thanks!").type(MediaType.TEXT_PLAIN_TYPE);
-		} else {
-			rb.entity(exception.getExceptionGraphNode());
-		}
-		return rb.build();
-	}
+    @Override
+    public Response toResponse(TypeRenderingException exception) {
+        ResponseBuilder rb = Response.serverError();
+        logger.info(exception.getMessage());
+        if (exception.getRenderNode().hasProperty(RDF.type, TYPERENDERING.Exception)) {
+            logger.error("Exception in template used for rendering exceptions ", exception);
+            rb.entity("There is an error in the template used for rendering" +
+                    " exceptions. Please check the console output for further" +
+                    " information. Thanks!").type(MediaType.TEXT_PLAIN_TYPE);
+        } else {
+            rb.entity(exception.getExceptionGraphNode());
+        }
+        return rb.build();
+    }
 
-	/**
-	 * The activate method is called when SCR activates the component
-	 * configuration
-	 *
-	 * @param componentContext
-	 */
-	protected void activate(ComponentContext componentContext) throws Exception {
-		URL template = getClass().getResource("exception-template.ssp");
-		renderletManager.registerRenderlet(
-				"org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet",
-				new UriRef(template.toURI().toString()),
-				TYPERENDERING.Exception, ".*",
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-	}
+    /**
+     * The activate method is called when SCR activates the component
+     * configuration
+     *
+     * @param componentContext
+     */
+    protected void activate(ComponentContext componentContext) throws Exception {
+        URL template = getClass().getResource("exception-template.ssp");
+        renderletManager.registerRenderlet(
+                "org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet",
+                new UriRef(template.toURI().toString()),
+                TYPERENDERING.Exception, ".*",
+                MediaType.APPLICATION_XHTML_XML_TYPE, true);
+    }
 }

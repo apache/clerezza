@@ -30,44 +30,44 @@ import org.apache.clerezza.rdf.core.Triple;
  */
 class LockingIterator implements Iterator<Triple> {
 
-	private Iterator<Triple> base;
-	private Lock readLock;
-	private Lock writeLock;
+    private Iterator<Triple> base;
+    private Lock readLock;
+    private Lock writeLock;
 
-	public LockingIterator(Iterator<Triple> iterator, ReadWriteLock lock) {
-		base = iterator;
-		readLock = lock.readLock();
-		writeLock = lock.writeLock();
-	}
+    public LockingIterator(Iterator<Triple> iterator, ReadWriteLock lock) {
+        base = iterator;
+        readLock = lock.readLock();
+        writeLock = lock.writeLock();
+    }
 
-	@Override
-	public boolean hasNext() {
-		readLock.lock();
-		try {
-			return base.hasNext();
-		} finally {
-			readLock.unlock();
-		}
-	}
+    @Override
+    public boolean hasNext() {
+        readLock.lock();
+        try {
+            return base.hasNext();
+        } finally {
+            readLock.unlock();
+        }
+    }
 
-	@Override
-	public Triple next() {
-		readLock.lock();
-		try {
-			return base.next();
-		} finally {
-			readLock.unlock();
-		}
-	}
+    @Override
+    public Triple next() {
+        readLock.lock();
+        try {
+            return base.next();
+        } finally {
+            readLock.unlock();
+        }
+    }
 
-	@Override
-	public void remove() {
-		writeLock.lock();
-		try {
-			base.remove();
-		} finally {
-			writeLock.unlock();
-		}
-	}
+    @Override
+    public void remove() {
+        writeLock.lock();
+        try {
+            base.remove();
+        } finally {
+            writeLock.unlock();
+        }
+    }
 
 }

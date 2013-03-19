@@ -72,33 +72,33 @@ import java.util.logging.Logger;
  * @since Mar 12, 2010
  */
 public class PEMSerialisation extends DefaultCertSerialisation {
-	byte[] ser = null;
-	final transient Logger log = Logger.getLogger(DERSerialisation.class.getName());
+    byte[] ser = null;
+    final transient Logger log = Logger.getLogger(DERSerialisation.class.getName());
 
-	PEMSerialisation(Certificate cer) {
-		super(cer);
-	}
+    PEMSerialisation(Certificate cer) {
+        super(cer);
+    }
 
-	@Override
-	public byte[] getContent() {
-		if (ser == null) {
-			try {
-				StringWriter sw = new StringWriter();
-				PEMWriter pemWriter = new PEMWriter(sw);
-				pemWriter.writeObject(cer.getCertificate());
-				pemWriter.close();
-				ser = sw.toString().getBytes("UTF-8");
-			} catch (IOException e) {
-				log.log(Level.SEVERE, "could not write PEM Serialisation");
-			}
-		}
-		return ser;
-	}
+    @Override
+    public byte[] getContent() {
+        if (ser == null) {
+            try {
+                StringWriter sw = new StringWriter();
+                PEMWriter pemWriter = new PEMWriter(sw);
+                pemWriter.writeObject(cer.getCertificate());
+                pemWriter.close();
+                ser = sw.toString().getBytes("UTF-8");
+            } catch (IOException e) {
+                log.log(Level.SEVERE, "could not write PEM Serialisation");
+            }
+        }
+        return ser;
+    }
 
 
-	@Override
-	public String getMimeType() {
-		return "application/x-pem-file";
-	}
+    @Override
+    public String getMimeType() {
+        return "application/x-pem-file";
+    }
 
 }

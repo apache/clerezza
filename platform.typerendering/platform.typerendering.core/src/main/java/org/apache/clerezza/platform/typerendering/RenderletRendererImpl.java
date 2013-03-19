@@ -41,58 +41,58 @@ import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
 @Deprecated
 class RenderletRendererImpl implements Renderer {
 
-	private URI renderSpecUri = null;
-	private Renderlet renderlet = null;
-	private MediaType mediaType = null;
-	//private int prio;
-	//private CallbackRenderer callbackRenderer;
-	private boolean builtIn;
-	private final RendererFactory rendererFactory;
-	private final BundleContext bundleContext;
-	private GraphNodeProvider graphNodeProvider;
+    private URI renderSpecUri = null;
+    private Renderlet renderlet = null;
+    private MediaType mediaType = null;
+    //private int prio;
+    //private CallbackRenderer callbackRenderer;
+    private boolean builtIn;
+    private final RendererFactory rendererFactory;
+    private final BundleContext bundleContext;
+    private GraphNodeProvider graphNodeProvider;
 
 
-	RenderletRendererImpl(UriRef renderingSpecification, org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider graphNodeProvider,
-			Renderlet renderlet, MediaType mediaType, 
-			RendererFactory rendererFactory,
-			BundleContext bundleContext) {
-		this.graphNodeProvider = graphNodeProvider;
-		this.renderlet = renderlet;
-		this.mediaType = mediaType;
-		this.rendererFactory = rendererFactory;
-		if (renderingSpecification != null) {
-			try {
-				renderSpecUri = new URI(renderingSpecification.getUnicodeString());
-			} catch (URISyntaxException ex) {
-				throw new WebApplicationException(ex);
-			}
-		}
-		this.bundleContext = bundleContext;
-	}
+    RenderletRendererImpl(UriRef renderingSpecification, org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider graphNodeProvider,
+            Renderlet renderlet, MediaType mediaType, 
+            RendererFactory rendererFactory,
+            BundleContext bundleContext) {
+        this.graphNodeProvider = graphNodeProvider;
+        this.renderlet = renderlet;
+        this.mediaType = mediaType;
+        this.rendererFactory = rendererFactory;
+        if (renderingSpecification != null) {
+            try {
+                renderSpecUri = new URI(renderingSpecification.getUnicodeString());
+            } catch (URISyntaxException ex) {
+                throw new WebApplicationException(ex);
+            }
+        }
+        this.bundleContext = bundleContext;
+    }
 
-	@Override
-	public MediaType getMediaType() {
-		return mediaType;
-	}
+    @Override
+    public MediaType getMediaType() {
+        return mediaType;
+    }
 
 
-	@Override
-	public void render(GraphNode resource, GraphNode context,
-			String mode,
-			UriInfo uriInfo,
-			HttpHeaders requestHeaders,
-			MultivaluedMap<String, Object> responseHeaders,
-			Map<String, Object> sharedRenderingValues,
-			OutputStream entityStream) throws IOException {
-		CallbackRenderer callbackRenderer =
-				new CallbackRendererImpl(rendererFactory, graphNodeProvider,
-						uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
-		renderlet.render(resource, context, sharedRenderingValues, callbackRenderer,
-			renderSpecUri, mode, mediaType,
-			new Renderlet.RequestProperties(uriInfo, requestHeaders,
-					responseHeaders, bundleContext),
-			entityStream);
-	}
+    @Override
+    public void render(GraphNode resource, GraphNode context,
+            String mode,
+            UriInfo uriInfo,
+            HttpHeaders requestHeaders,
+            MultivaluedMap<String, Object> responseHeaders,
+            Map<String, Object> sharedRenderingValues,
+            OutputStream entityStream) throws IOException {
+        CallbackRenderer callbackRenderer =
+                new CallbackRendererImpl(rendererFactory, graphNodeProvider,
+                        uriInfo, requestHeaders, responseHeaders, mediaType, sharedRenderingValues);
+        renderlet.render(resource, context, sharedRenderingValues, callbackRenderer,
+            renderSpecUri, mode, mediaType,
+            new Renderlet.RequestProperties(uriInfo, requestHeaders,
+                    responseHeaders, bundleContext),
+            entityStream);
+    }
 
 
 

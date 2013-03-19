@@ -37,129 +37,129 @@ import org.osgi.framework.ServiceReference;
  */
 public interface TypeRenderlet {
 
-	/**
-	 * A class repressing properties of the rendering request within which the
-	 * TypeRenderlet is used. It also allows access to contextual rendering services.
-	 */
-	static class RequestProperties {
+    /**
+     * A class repressing properties of the rendering request within which the
+     * TypeRenderlet is used. It also allows access to contextual rendering services.
+     */
+    static class RequestProperties {
 
-		private UriInfo uriInfo;
-		private MultivaluedMap<String, Object> responseHeaders;
-		private HttpHeaders requestHeaders;
-		private final BundleContext bundleContext;
-		private final String mode;
-		private final MediaType mediaType;
+        private UriInfo uriInfo;
+        private MultivaluedMap<String, Object> responseHeaders;
+        private HttpHeaders requestHeaders;
+        private final BundleContext bundleContext;
+        private final String mode;
+        private final MediaType mediaType;
 
-		public RequestProperties(UriInfo uriInfo,
-				HttpHeaders requestHeaders,
-				MultivaluedMap<String, Object> responseHeaders,
-				String mode,
-				MediaType mediaType,
-				BundleContext bundleContext) {
-			this.uriInfo = uriInfo;
-			this.requestHeaders = requestHeaders;
-			this.responseHeaders = responseHeaders;
-			this.mode = mode;
-			this.mediaType = mediaType;
-			this.bundleContext = bundleContext;
-		}
+        public RequestProperties(UriInfo uriInfo,
+                HttpHeaders requestHeaders,
+                MultivaluedMap<String, Object> responseHeaders,
+                String mode,
+                MediaType mediaType,
+                BundleContext bundleContext) {
+            this.uriInfo = uriInfo;
+            this.requestHeaders = requestHeaders;
+            this.responseHeaders = responseHeaders;
+            this.mode = mode;
+            this.mediaType = mediaType;
+            this.bundleContext = bundleContext;
+        }
 
-		public HttpHeaders getRequestHeaders() {
-			return requestHeaders;
-		}
+        public HttpHeaders getRequestHeaders() {
+            return requestHeaders;
+        }
 
-		public MultivaluedMap<String, Object> getResponseHeaders() {
-			return responseHeaders;
-		}
+        public MultivaluedMap<String, Object> getResponseHeaders() {
+            return responseHeaders;
+        }
 
-		public UriInfo getUriInfo() {
-			return uriInfo;
-		}
+        public UriInfo getUriInfo() {
+            return uriInfo;
+        }
 
-		/**
-		 * the media type of the representation to be produced.
-		 *
-		 * @return the concrete MediaType
-		 */
-		public MediaType getMediaType() {
-			return mediaType;
-		}
+        /**
+         * the media type of the representation to be produced.
+         *
+         * @return the concrete MediaType
+         */
+        public MediaType getMediaType() {
+            return mediaType;
+        }
 
-		/**
-		 * the mode the TypeRenderlet is invoked with, this is mainly used
-		 * so that the callbackRenderer can be called inheriting the mode.
-		 *
-		 * @return
-		 */
-		public String getMode() {
-			return mode;
-		}
+        /**
+         * the mode the TypeRenderlet is invoked with, this is mainly used
+         * so that the callbackRenderer can be called inheriting the mode.
+         *
+         * @return
+         */
+        public String getMode() {
+            return mode;
+        }
 
-		/**
-		 * Rendering services
-		 *
-		 * @param type
-		 * @return a instance of the requested rendering services
-		 */
-		public <T> T getRenderingService(final Class<T> type) {
-			return AccessController.doPrivileged(
-					new PrivilegedAction<T>() {
+        /**
+         * Rendering services
+         *
+         * @param type
+         * @return a instance of the requested rendering services
+         */
+        public <T> T getRenderingService(final Class<T> type) {
+            return AccessController.doPrivileged(
+                    new PrivilegedAction<T>() {
 
-						@Override
-						public T run() {
-							ServiceReference serviceReference = RequestProperties.this.bundleContext.getServiceReference(type.getName());
-							if (serviceReference != null) {
-								T resultCandidate = (T) bundleContext.getService(serviceReference);
-								if (resultCandidate.getClass().getAnnotation(WebRenderingService.class) != null) {
-									return resultCandidate;
-								} else {
-									return null;
-								}
-							} else {
-								return null;
-							}
-						}
-					});
-		}
-	}
+                        @Override
+                        public T run() {
+                            ServiceReference serviceReference = RequestProperties.this.bundleContext.getServiceReference(type.getName());
+                            if (serviceReference != null) {
+                                T resultCandidate = (T) bundleContext.getService(serviceReference);
+                                if (resultCandidate.getClass().getAnnotation(WebRenderingService.class) != null) {
+                                    return resultCandidate;
+                                } else {
+                                    return null;
+                                }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+        }
+    }
 
-	/**
-	 * @return the rdf type rendered by this renderlet
-	 */
-	UriRef getRdfType();
+    /**
+     * @return the rdf type rendered by this renderlet
+     */
+    UriRef getRdfType();
 
-	/**
-	 * The renderer may render resources in different modes. Such a mode is
-	 * typically set when a renderlet calls back the renderer to delegate a
-	 * referenced resource.
-	 *
-	 * @return a regex the mode must match
-	 */
-	String getModePattern();
+    /**
+     * The renderer may render resources in different modes. Such a mode is
+     * typically set when a renderlet calls back the renderer to delegate a
+     * referenced resource.
+     *
+     * @return a regex the mode must match
+     */
+    String getModePattern();
 
-	/**
-	 *
-	 * @return the Media Type pattern this TypeRenderlet supports
-	 */
-	MediaType getMediaType();
+    /**
+     *
+     * @return the Media Type pattern this TypeRenderlet supports
+     */
+    MediaType getMediaType();
 
-	/**
-	 * Renders a node, possibly considering the context of the rendering request
-	 * (e.g. for which user the resource is rendered for) to a stream.
-	 *
-	 * @param node  RDF resource to be rendered with the template.
-	 * @param context  RDF resource providing a rendering context, typically this
-	 *		  contains a description of the user for which the resource is to be rendered
-	 * @param sharedRenderingValues	a map that can be used for sharing values
-	 * across the different Renderlets involved in a rendering process
-	 * @param callbackRenderer  renderer for call backs.
-	 * @param requestProperties properties of this rendering request
-	 * @param os  where the output will be written to.
-	 */
-	public void render(GraphNode node,
-			GraphNode context,
-			Map<String, Object> sharedRenderingValues,
-			CallbackRenderer callbackRenderer,
-			RequestProperties requestProperties,
-			OutputStream os) throws IOException;
+    /**
+     * Renders a node, possibly considering the context of the rendering request
+     * (e.g. for which user the resource is rendered for) to a stream.
+     *
+     * @param node  RDF resource to be rendered with the template.
+     * @param context  RDF resource providing a rendering context, typically this
+     *          contains a description of the user for which the resource is to be rendered
+     * @param sharedRenderingValues    a map that can be used for sharing values
+     * across the different Renderlets involved in a rendering process
+     * @param callbackRenderer  renderer for call backs.
+     * @param requestProperties properties of this rendering request
+     * @param os  where the output will be written to.
+     */
+    public void render(GraphNode node,
+            GraphNode context,
+            Map<String, Object> sharedRenderingValues,
+            CallbackRenderer callbackRenderer,
+            RequestProperties requestProperties,
+            OutputStream os) throws IOException;
 }

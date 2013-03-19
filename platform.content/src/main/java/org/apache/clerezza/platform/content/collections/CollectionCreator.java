@@ -34,41 +34,41 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  */
 public class CollectionCreator {
 
-	private MGraph mGraph;
+    private MGraph mGraph;
 
-	public CollectionCreator(MGraph mGraph) {
-		this.mGraph = mGraph;
-	}
+    public CollectionCreator(MGraph mGraph) {
+        this.mGraph = mGraph;
+    }
 
-	public void createContainingCollections(UriRef uriRef) {
-		try {
-			URI uri = new URI(uriRef.getUnicodeString());
-			if (uri.getHost() == null) {
-				throw new IllegalArgumentException("Host name missing in " + uriRef);
-			}
-			String[] pathSections = uri.getRawPath().split("/");
-			for (int i = pathSections.length - 1; i >= 0 ; i--) {
-				String section = pathSections[i];
-				if (section.length() == 0) {
-					if (i == 0) {
-						return;
-					} else {
-						throw new IllegalArgumentException(
-								uriRef+" contains consequtive slashes in path section");
-					}
-				}
-				final String unicodeString = uriRef.getUnicodeString();
-				int lastIndexOf = unicodeString.lastIndexOf(section);
-				UriRef parentUriRef = new UriRef(unicodeString.substring(0, lastIndexOf));
-				mGraph.add(new TripleImpl(uriRef, HIERARCHY.parent, parentUriRef));
-				mGraph.add(new TripleImpl(parentUriRef, RDF.type, HIERARCHY.Collection));
-				uriRef = parentUriRef;
+    public void createContainingCollections(UriRef uriRef) {
+        try {
+            URI uri = new URI(uriRef.getUnicodeString());
+            if (uri.getHost() == null) {
+                throw new IllegalArgumentException("Host name missing in " + uriRef);
+            }
+            String[] pathSections = uri.getRawPath().split("/");
+            for (int i = pathSections.length - 1; i >= 0 ; i--) {
+                String section = pathSections[i];
+                if (section.length() == 0) {
+                    if (i == 0) {
+                        return;
+                    } else {
+                        throw new IllegalArgumentException(
+                                uriRef+" contains consequtive slashes in path section");
+                    }
+                }
+                final String unicodeString = uriRef.getUnicodeString();
+                int lastIndexOf = unicodeString.lastIndexOf(section);
+                UriRef parentUriRef = new UriRef(unicodeString.substring(0, lastIndexOf));
+                mGraph.add(new TripleImpl(uriRef, HIERARCHY.parent, parentUriRef));
+                mGraph.add(new TripleImpl(parentUriRef, RDF.type, HIERARCHY.Collection));
+                uriRef = parentUriRef;
 
-			}
-		} catch (URISyntaxException ex) {
-			throw new IllegalArgumentException(ex);
-		}
-	}
+            }
+        } catch (URISyntaxException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+    }
 
 
 }

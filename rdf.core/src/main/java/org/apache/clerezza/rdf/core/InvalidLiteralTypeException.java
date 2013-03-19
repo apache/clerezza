@@ -24,15 +24,15 @@ package org.apache.clerezza.rdf.core;
  * @author reto
  */
 public class InvalidLiteralTypeException extends RuntimeException {
-	
-	/**
-	 * Constructs the exception to be thrown when a literal cannot be 
-	 * converted to an instance of the specified class
-	 *
-	 * @param javaType the <code>Class</code> to convert to
-	 * @param literalType the literalType which can't be converted
-	 */
-	public InvalidLiteralTypeException(Class<?> javaType, UriRef literalType) {
-		super("Cannot create a "+javaType+" from a literal of type "+literalType);
-	}
+    
+    /**
+     * Constructs the exception to be thrown when a literal cannot be 
+     * converted to an instance of the specified class
+     *
+     * @param javaType the <code>Class</code> to convert to
+     * @param literalType the literalType which can't be converted
+     */
+    public InvalidLiteralTypeException(Class<?> javaType, UriRef literalType) {
+        super("Cannot create a "+javaType+" from a literal of type "+literalType);
+    }
 }

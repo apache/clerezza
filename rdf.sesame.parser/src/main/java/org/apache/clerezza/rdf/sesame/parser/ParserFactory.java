@@ -35,25 +35,25 @@ import org.openrdf.rio.turtle.TurtleParserFactory;
  * @author hasan
  */
 public class ParserFactory {
-	private static final Map<String, RDFParserFactory> factories = new HashMap<String, RDFParserFactory>();
-	static {
-		factories.put(SupportedFormat.RDF_XML, new RDFXMLParserFactory());
-		factories.put(SupportedFormat.N_TRIPLE, new NTriplesParserFactory());
-		factories.put(SupportedFormat.X_TURTLE, new TurtleParserFactory());
-		factories.put(SupportedFormat.TURTLE, new TurtleParserFactory());
-		factories.put(SupportedFormat.N3, new N3ParserFactory());
-		// other parser factories can be added in future if needed:
-		// TriXParserFactory, TriGParserFactory, and RDFaHtmlParserFactory
-	}
+    private static final Map<String, RDFParserFactory> factories = new HashMap<String, RDFParserFactory>();
+    static {
+        factories.put(SupportedFormat.RDF_XML, new RDFXMLParserFactory());
+        factories.put(SupportedFormat.N_TRIPLE, new NTriplesParserFactory());
+        factories.put(SupportedFormat.X_TURTLE, new TurtleParserFactory());
+        factories.put(SupportedFormat.TURTLE, new TurtleParserFactory());
+        factories.put(SupportedFormat.N3, new N3ParserFactory());
+        // other parser factories can be added in future if needed:
+        // TriXParserFactory, TriGParserFactory, and RDFaHtmlParserFactory
+    }
 
-	private ParserFactory() {
-	}
+    private ParserFactory() {
+    }
 
-	public static RDFParser createRdfParser(String format) {
-		RDFParserFactory factory = factories.get(format);
-		if (factory == null) {
-			return null;
-		}
-		return factory.getParser();
-	}
+    public static RDFParser createRdfParser(String format) {
+        RDFParserFactory factory = factories.get(format);
+        if (factory == null) {
+            return null;
+        }
+        return factory.getParser();
+    }
 }

@@ -26,11 +26,11 @@ package org.apache.clerezza.rdf.core.access;
  */
 public interface WeightedTcProvider extends TcProvider {
 
-	/**
-	 * Get the weight of this provider. {@link TcManager} will prioritize
-	 * <code>TcProvider</code>s with greater weight.
-	 * 
-	 * @return a positive number indicating the weight of the provider
-	 */
-	int getWeight();
+    /**
+     * Get the weight of this provider. {@link TcManager} will prioritize
+     * <code>TcProvider</code>s with greater weight.
+     * 
+     * @return a positive number indicating the weight of the provider
+     */
+    int getWeight();
 }

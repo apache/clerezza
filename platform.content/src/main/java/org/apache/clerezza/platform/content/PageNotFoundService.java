@@ -28,13 +28,13 @@ import javax.ws.rs.core.UriInfo;
  */
 public interface PageNotFoundService {
 
-	/**
-	 * Creates a response when a resource could not be found in the Content 
-	 * Graph, this is a 404 response.
-	 * 
-	 * @param uriInfo
-	 * @return
-	 */
-	public Response createResponse(UriInfo uriInfo);
+    /**
+     * Creates a response when a resource could not be found in the Content 
+     * Graph, this is a 404 response.
+     * 
+     * @param uriInfo
+     * @return
+     */
+    public Response createResponse(UriInfo uriInfo);
 
 }

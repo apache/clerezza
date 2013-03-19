@@ -25,11 +25,11 @@ import java.util.Set;
  * @author reto
  */
 public interface IntSet extends Set<Integer> {
-	/**
-	 *
-	 * @return an iterator over the primitive int
-	 */
-	public IntIterator intIterator();
-	
-	public void add(int i);
+    /**
+     *
+     * @return an iterator over the primitive int
+     */
+    public IntIterator intIterator();
+    
+    public void add(int i);
 }

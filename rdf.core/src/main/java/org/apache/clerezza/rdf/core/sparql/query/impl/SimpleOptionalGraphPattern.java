@@ -29,40 +29,40 @@ import org.apache.clerezza.rdf.core.sparql.query.OptionalGraphPattern;
  */
 public class SimpleOptionalGraphPattern implements OptionalGraphPattern {
 
-	private GraphPattern mainGraphPattern;
-	private GroupGraphPattern optionalGraphPattern;
+    private GraphPattern mainGraphPattern;
+    private GroupGraphPattern optionalGraphPattern;
 
-	/**
-	 * Constructs an {@link OptionalGraphPattern} out of a {@link GraphPattern}
-	 * as the main graph pattern and a {@link GroupGraphPattern} as the 
-	 * optional pattern.
-	 * 
-	 * @param mainGraphPattern
-	 *		a {@link GraphPattern} specifying the main pattern.
-	 * @param optionalGraphPattern
-	 *		a {@link GroupGraphPattern} specifying the optional pattern.
-	 */
-	public SimpleOptionalGraphPattern(GraphPattern mainGraphPattern,
-			GroupGraphPattern optionalGraphPattern) {
-		if (optionalGraphPattern == null) {
-			throw new IllegalArgumentException("Optional graph pattern may not be null");
-		}
-		if (mainGraphPattern == null) {
-			this.mainGraphPattern = new SimpleGroupGraphPattern();
-		} else {
-			this.mainGraphPattern = mainGraphPattern;
-		}
-		this.optionalGraphPattern = optionalGraphPattern;
-	}
+    /**
+     * Constructs an {@link OptionalGraphPattern} out of a {@link GraphPattern}
+     * as the main graph pattern and a {@link GroupGraphPattern} as the 
+     * optional pattern.
+     * 
+     * @param mainGraphPattern
+     *        a {@link GraphPattern} specifying the main pattern.
+     * @param optionalGraphPattern
+     *        a {@link GroupGraphPattern} specifying the optional pattern.
+     */
+    public SimpleOptionalGraphPattern(GraphPattern mainGraphPattern,
+            GroupGraphPattern optionalGraphPattern) {
+        if (optionalGraphPattern == null) {
+            throw new IllegalArgumentException("Optional graph pattern may not be null");
+        }
+        if (mainGraphPattern == null) {
+            this.mainGraphPattern = new SimpleGroupGraphPattern();
+        } else {
+            this.mainGraphPattern = mainGraphPattern;
+        }
+        this.optionalGraphPattern = optionalGraphPattern;
+    }
 
-	@Override
-	public GraphPattern getMainGraphPattern() {
-		return mainGraphPattern;
-	}
+    @Override
+    public GraphPattern getMainGraphPattern() {
+        return mainGraphPattern;
+    }
 
-	@Override
-	public GroupGraphPattern getOptionalGraphPattern() {
-		return optionalGraphPattern;
-	}
+    @Override
+    public GroupGraphPattern getOptionalGraphPattern() {
+        return optionalGraphPattern;
+    }
 
 }

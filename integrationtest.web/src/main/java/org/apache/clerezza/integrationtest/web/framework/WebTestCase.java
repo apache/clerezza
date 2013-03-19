@@ -26,26 +26,26 @@ package org.apache.clerezza.integrationtest.web.framework;
  */
 public interface WebTestCase {
 
-	/**
-	 * This method is called to allow a WebTestCase to do some initialization
-	 * tasks prior to the run method being called
-	 * 
-	 * @param testSubjectUriPrefix the URI prefix of the subject under test.
-	 */
-	public void init(String testSubjectUriPrefix);
+    /**
+     * This method is called to allow a WebTestCase to do some initialization
+     * tasks prior to the run method being called
+     * 
+     * @param testSubjectUriPrefix the URI prefix of the subject under test.
+     */
+    public void init(String testSubjectUriPrefix);
 
-	/**
-	 * This method performs the actual test and can throw a RuntimeException.
-	 * 
-	 */
-	public void run();
+    /**
+     * This method performs the actual test and can throw a RuntimeException.
+     * 
+     */
+    public void run();
 
-	/**
-	 * This method determines whether it is allowed to have several threads 
-	 * running in parallel executing the run method of this WebTestCase.
-	 * 
-	 * If an implementation returns true, it MUST provide a configurable
-	 * <code>@scr.property</code> named "threadCount" and of type Integer.
-	 */
-	public boolean multiThreadingCapable();
+    /**
+     * This method determines whether it is allowed to have several threads 
+     * running in parallel executing the run method of this WebTestCase.
+     * 
+     * If an implementation returns true, it MUST provide a configurable
+     * <code>@scr.property</code> named "threadCount" and of type Integer.
+     */
+    public boolean multiThreadingCapable();
 }

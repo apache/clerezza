@@ -28,13 +28,13 @@ import org.apache.clerezza.rdf.core.MGraph;
  */
 class MGraphWrapper extends TripleCollectionWrapper implements MGraph{
 
-	public MGraphWrapper(MGraph mGraph) {
-		super(mGraph);
-	}
+    public MGraphWrapper(MGraph mGraph) {
+        super(mGraph);
+    }
 
-	@Override
-	public Graph getGraph() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public Graph getGraph() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

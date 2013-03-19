@@ -27,13 +27,13 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class UriRefExpression implements Expression {
 
-	private final UriRef uriRef;
+    private final UriRef uriRef;
 
-	public UriRefExpression(UriRef uriRef) {
-		this.uriRef = uriRef;
-	}
+    public UriRefExpression(UriRef uriRef) {
+        this.uriRef = uriRef;
+    }
 
-	public UriRef getUriRef() {
-		return uriRef;
-	}
+    public UriRef getUriRef() {
+        return uriRef;
+    }
 }

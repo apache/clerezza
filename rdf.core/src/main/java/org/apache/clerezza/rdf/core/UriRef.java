@@ -44,13 +44,13 @@ public class UriRef implements NonLiteral {
         return unicodeString;
     }
 
-	/**
-	 * Returns true iff <code>obj</code> == <code>UriRef</code>
-	 * 
-	 * @param obj
-	 * @return true if obj is an instanceof UriRef with 
-	 * the same unicode-string, false otherwise
-	 */
+    /**
+     * Returns true iff <code>obj</code> == <code>UriRef</code>
+     * 
+     * @param obj
+     * @return true if obj is an instanceof UriRef with 
+     * the same unicode-string, false otherwise
+     */
     @Override
     public boolean equals(Object obj) {
 

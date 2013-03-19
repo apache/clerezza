@@ -28,40 +28,40 @@ import java.security.Permission;
  * @author reto
  */
 @PermissionInfo(value="Backup Permission", description="Permission " +
-	"to retrieve a backup of all Triple Collections")
+    "to retrieve a backup of all Triple Collections")
 public class BackupPermission extends Permission {
 
 
-	public BackupPermission() {
-		super("Graph Management permission");
-	}
-	/**
-	 *
-	 * @param target ignored
-	 * @param action ignored
-	 */
-	public BackupPermission(String target, String actions) {
-		super("Graph Management permission");
-	}
+    public BackupPermission() {
+        super("Graph Management permission");
+    }
+    /**
+     *
+     * @param target ignored
+     * @param action ignored
+     */
+    public BackupPermission(String target, String actions) {
+        super("Graph Management permission");
+    }
 
-	@Override
-	public boolean implies(Permission permission) {
-		return equals(permission);
-	}
+    @Override
+    public boolean implies(Permission permission) {
+        return equals(permission);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return getClass().equals(obj.getClass());
+    }
 
-	@Override
-	public int hashCode() {
-		return 77988;
-	}
+    @Override
+    public int hashCode() {
+        return 77988;
+    }
 
-	@Override
-	public String getActions() {
-		return "";
-	}
+    @Override
+    public String getActions() {
+        return "";
+    }
 
 }

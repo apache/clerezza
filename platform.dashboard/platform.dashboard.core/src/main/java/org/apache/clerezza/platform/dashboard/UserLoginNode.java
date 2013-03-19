@@ -53,46 +53,46 @@ import java.util.Iterator;
 
 public class UserLoginNode implements UserContextProvider {
 
-	@Reference
-	protected UserManager userManager;
+    @Reference
+    protected UserManager userManager;
 
-	@Reference
-	private WebIdGraphsService webIdGraphsService;
+    @Reference
+    private WebIdGraphsService webIdGraphsService;
 
-	@Override
-	public GraphNode addUserContext(GraphNode node) {
+    @Override
+    public GraphNode addUserContext(GraphNode node) {
 
-		final AccessControlContext context = AccessController.getContext();
-		GraphNode agent = AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
-			@Override
-			public GraphNode run() {
-				final String userName = UserUtil.getUserName(context);
-				if (userName == null) {
-					return null;
-				}
-				return userManager.getUserGraphNode(userName);
-			}
-		});
-		if (agent != null) {
-			if (agent.getNode() instanceof UriRef) {
-				WebIdInfo webIdInfo = webIdGraphsService.getWebIdInfo((UriRef)agent.getNode());
-				MGraph userGraph = webIdInfo.localPublicUserData();
-				agent = new GraphNode(agent.getNode(), new UnionMGraph(agent.getGraph(), userGraph));
-			}
-			node.addProperty(PLATFORM.user, agent.getNode());
-			MGraph userContext = new SimpleMGraph(agent.getNodeContext());
-			removeTripleWithProperty(userContext, PERMISSION.password);
-			removeTripleWithProperty(userContext, PERMISSION.passwordSha1);
-			node.getGraph().addAll(userContext);			
-		}
-		return node;
-	}
+        final AccessControlContext context = AccessController.getContext();
+        GraphNode agent = AccessController.doPrivileged(new PrivilegedAction<GraphNode>() {
+            @Override
+            public GraphNode run() {
+                final String userName = UserUtil.getUserName(context);
+                if (userName == null) {
+                    return null;
+                }
+                return userManager.getUserGraphNode(userName);
+            }
+        });
+        if (agent != null) {
+            if (agent.getNode() instanceof UriRef) {
+                WebIdInfo webIdInfo = webIdGraphsService.getWebIdInfo((UriRef)agent.getNode());
+                MGraph userGraph = webIdInfo.localPublicUserData();
+                agent = new GraphNode(agent.getNode(), new UnionMGraph(agent.getGraph(), userGraph));
+            }
+            node.addProperty(PLATFORM.user, agent.getNode());
+            MGraph userContext = new SimpleMGraph(agent.getNodeContext());
+            removeTripleWithProperty(userContext, PERMISSION.password);
+            removeTripleWithProperty(userContext, PERMISSION.passwordSha1);
+            node.getGraph().addAll(userContext);            
+        }
+        return node;
+    }
 
-	private void removeTripleWithProperty(MGraph userContext, UriRef property) {
-		Iterator<Triple> propertyTriples = userContext.filter(null, property, null);
-		while (propertyTriples.hasNext()) {
-			propertyTriples.next();
-			propertyTriples.remove();
-		}
-	}
+    private void removeTripleWithProperty(MGraph userContext, UriRef property) {
+        Iterator<Triple> propertyTriples = userContext.filter(null, property, null);
+        while (propertyTriples.hasNext()) {
+            propertyTriples.next();
+            propertyTriples.remove();
+        }
+    }
 }

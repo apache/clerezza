@@ -26,6 +26,6 @@ import java.io.File;
  */
 
 public interface GeneratorService {
-	public void process(File ntFile, File outputDir);
+    public void process(File ntFile, File outputDir);
 
 }

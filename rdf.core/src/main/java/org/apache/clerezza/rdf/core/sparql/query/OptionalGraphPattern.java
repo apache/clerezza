@@ -29,17 +29,17 @@ package org.apache.clerezza.rdf.core.sparql.query;
  */
 public interface OptionalGraphPattern extends GraphPattern {
 
-	/**
-	 *
-	 * @return
-	 *		the main graph pattern to match
-	 */
-	public GraphPattern getMainGraphPattern();
+    /**
+     *
+     * @return
+     *        the main graph pattern to match
+     */
+    public GraphPattern getMainGraphPattern();
 
-	/**
-	 *
-	 * @return
-	 *		the optional graph pattern to match
-	 */
-	public GroupGraphPattern getOptionalGraphPattern();
+    /**
+     *
+     * @return
+     *        the optional graph pattern to match
+     */
+    public GroupGraphPattern getOptionalGraphPattern();
 }

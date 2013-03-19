@@ -30,21 +30,21 @@ import java.util.List;
  */
 public interface DescribeQuery extends QueryWithSolutionModifier {
 
-	/**
-	 * <p>Tests if all variables in the query should be described.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#describe">
-	 * SPARQL Query Language: 10.4 DESCRIBE (Informative)</a>
-	 * @return <code>true</code> if the query should return all variables.
-	 */
-	public boolean isDescribeAll();
+    /**
+     * <p>Tests if all variables in the query should be described.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#describe">
+     * SPARQL Query Language: 10.4 DESCRIBE (Informative)</a>
+     * @return <code>true</code> if the query should return all variables.
+     */
+    public boolean isDescribeAll();
 
-	/**
-	 * <p>Gets the list of {@link ResourceOrVariable}s to describe.
-	 * If {@link #isDescribeAll()} returns <code>true</code> then
-	 * this list contains all the variables from the query.</p>
-	 * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#describe">
-	 * SPARQL Query Language: 10.4 DESCRIBE (Informative)</a>
-	 * @return A list of {@link ResourceOrVariable}s to describe.
-	 */
-	public List<ResourceOrVariable> getResourcesToDescribe();
+    /**
+     * <p>Gets the list of {@link ResourceOrVariable}s to describe.
+     * If {@link #isDescribeAll()} returns <code>true</code> then
+     * this list contains all the variables from the query.</p>
+     * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#describe">
+     * SPARQL Query Language: 10.4 DESCRIBE (Informative)</a>
+     * @return A list of {@link ResourceOrVariable}s to describe.
+     */
+    public List<ResourceOrVariable> getResourcesToDescribe();
 }

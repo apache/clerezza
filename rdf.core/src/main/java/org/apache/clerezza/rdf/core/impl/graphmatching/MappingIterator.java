@@ -38,38 +38,38 @@ import java.util.Set;
  */
 class MappingIterator<T,U> implements Iterator<Map<T, U>> {
 
-	private List<T> list1;
-	private Iterator<List<U>> permutationList2Iterator;
+    private List<T> list1;
+    private Iterator<List<U>> permutationList2Iterator;
 
 
-	public MappingIterator(Set<T> set1, Set<U> set2) {
-		if (set1.size() != set2.size()) {
-			throw new IllegalArgumentException();
-		}
-		this.list1 = new ArrayList<T>(set1);
-		permutationList2Iterator = new PermutationIterator<U>(
-				new ArrayList<U>(set2));
-	}
+    public MappingIterator(Set<T> set1, Set<U> set2) {
+        if (set1.size() != set2.size()) {
+            throw new IllegalArgumentException();
+        }
+        this.list1 = new ArrayList<T>(set1);
+        permutationList2Iterator = new PermutationIterator<U>(
+                new ArrayList<U>(set2));
+    }
 
-	@Override
-	public boolean hasNext() {
-		return permutationList2Iterator.hasNext();
-	}
+    @Override
+    public boolean hasNext() {
+        return permutationList2Iterator.hasNext();
+    }
 
-	@Override
-	public Map<T, U> next() {
-		List<U> list2 = permutationList2Iterator.next();
-		Map<T, U> result = new HashMap<T, U>(list1.size());
-		for (int i = 0; i < list1.size(); i++) {
-			result.put(list1.get(i), list2.get(i));
-		}
-		return result;
-	}
+    @Override
+    public Map<T, U> next() {
+        List<U> list2 = permutationList2Iterator.next();
+        Map<T, U> result = new HashMap<T, U>(list1.size());
+        for (int i = 0; i < list1.size(); i++) {
+            result.put(list1.get(i), list2.get(i));
+        }
+        return result;
+    }
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException("Not supported.");
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException("Not supported.");
+    }
 
 
 
