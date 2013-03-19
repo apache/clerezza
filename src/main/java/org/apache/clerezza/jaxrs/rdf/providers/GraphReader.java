@@ -41,26 +41,26 @@ import org.apache.clerezza.rdf.core.Graph;
  */
 @Provider
 @Consumes({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
-	SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
-	SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
+    SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
+    SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class GraphReader implements MessageBodyReader<Graph> {
 
-	/**
-	 * @scr.reference
-	 */
-	private Parser parser;
-	@Override
-	public boolean isReadable(Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return type.isAssignableFrom(Graph.class);
-	}
+    /**
+     * @scr.reference
+     */
+    private Parser parser;
+    @Override
+    public boolean isReadable(Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return type.isAssignableFrom(Graph.class);
+    }
 
-	@Override
-	public Graph readFrom(Class<Graph> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, String> httpHeaders,
-			InputStream entityStream)
-			throws IOException, WebApplicationException {
-		return parser.parse(entityStream, mediaType.toString());
-	}
+    @Override
+    public Graph readFrom(Class<Graph> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, String> httpHeaders,
+            InputStream entityStream)
+            throws IOException, WebApplicationException {
+        return parser.parse(entityStream, mediaType.toString());
+    }
 }

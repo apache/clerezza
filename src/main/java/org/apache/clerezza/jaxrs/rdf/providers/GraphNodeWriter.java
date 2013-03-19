@@ -61,103 +61,103 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 @Provider
 @Produces({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
-	SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
-	SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
+    SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
+    SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
 
-	public static final String OBJ_EXP_PARAM = "xPropObj";
-	public static final String SUBJ_EXP_PARAM = "xPropSubj";
-	/**
-	 * @scr.reference
-	 */
-	private Serializer serializer;
-	private UriInfo uriInfo;
+    public static final String OBJ_EXP_PARAM = "xPropObj";
+    public static final String SUBJ_EXP_PARAM = "xPropSubj";
+    /**
+     * @scr.reference
+     */
+    private Serializer serializer;
+    private UriInfo uriInfo;
 
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return GraphNode.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return GraphNode.class.isAssignableFrom(type);
+    }
 
-	@Override
-	public long getSize(GraphNode n, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType) {
-		return -1;
-	}
+    @Override
+    public long getSize(GraphNode n, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType) {
+        return -1;
+    }
 
-	@Override
-	public void writeTo(GraphNode node, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders,
-			OutputStream entityStream) throws IOException, WebApplicationException {
-		serializer.serialize(entityStream, getExpandedContext(node), mediaType.toString());
-	}
+    @Override
+    public void writeTo(GraphNode node, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders,
+            OutputStream entityStream) throws IOException, WebApplicationException {
+        serializer.serialize(entityStream, getExpandedContext(node), mediaType.toString());
+    }
 
-	@Context
-	public void setUriInfo(UriInfo uriInfo) {
-		this.uriInfo = uriInfo;
-	}
+    @Context
+    public void setUriInfo(UriInfo uriInfo) {
+        this.uriInfo = uriInfo;
+    }
 
-	private TripleCollection getExpandedContext(GraphNode node) {
-		final TripleCollection result = new SimpleMGraph(node.getNodeContext());
-		final Set<Resource> expandedResources = new HashSet<Resource>();
-		expandedResources.add(node.getNode());
-		while (true) {
-			Set<Resource> additionalExpansionRes = getAdditionalExpansionResources(result);
-			additionalExpansionRes.removeAll(expandedResources);
-			if (additionalExpansionRes.size() == 0) {
-				return result;
-			}
-			for (Resource resource : additionalExpansionRes) {
-				final GraphNode additionalNode = new GraphNode(resource, node.getGraph());
-				result.addAll(additionalNode.getNodeContext());
-				expandedResources.add(resource);
-			}
-		}
-	}
+    private TripleCollection getExpandedContext(GraphNode node) {
+        final TripleCollection result = new SimpleMGraph(node.getNodeContext());
+        final Set<Resource> expandedResources = new HashSet<Resource>();
+        expandedResources.add(node.getNode());
+        while (true) {
+            Set<Resource> additionalExpansionRes = getAdditionalExpansionResources(result);
+            additionalExpansionRes.removeAll(expandedResources);
+            if (additionalExpansionRes.size() == 0) {
+                return result;
+            }
+            for (Resource resource : additionalExpansionRes) {
+                final GraphNode additionalNode = new GraphNode(resource, node.getGraph());
+                result.addAll(additionalNode.getNodeContext());
+                expandedResources.add(resource);
+            }
+        }
+    }
 
-	private Set<Resource> getAdditionalExpansionResources(TripleCollection tc) {
-		final Set<UriRef> subjectExpansionProperties = getSubjectExpansionProperties();
-		final Set<UriRef> objectExpansionProperties = getObjectExpansionProperties();
-		final Set<Resource> result = new HashSet<Resource>();
-		if ((subjectExpansionProperties.size() > 0)
-				|| (objectExpansionProperties.size() > 0)) {
-			for (Triple triple : tc) {
-				final UriRef predicate = triple.getPredicate();
-				if (subjectExpansionProperties.contains(predicate)) {
-					result.add(triple.getSubject());
-				}
-				if (objectExpansionProperties.contains(predicate)) {
-					result.add(triple.getObject());
-				}
-			}
-		}
-		return result;
-	}
+    private Set<Resource> getAdditionalExpansionResources(TripleCollection tc) {
+        final Set<UriRef> subjectExpansionProperties = getSubjectExpansionProperties();
+        final Set<UriRef> objectExpansionProperties = getObjectExpansionProperties();
+        final Set<Resource> result = new HashSet<Resource>();
+        if ((subjectExpansionProperties.size() > 0)
+                || (objectExpansionProperties.size() > 0)) {
+            for (Triple triple : tc) {
+                final UriRef predicate = triple.getPredicate();
+                if (subjectExpansionProperties.contains(predicate)) {
+                    result.add(triple.getSubject());
+                }
+                if (objectExpansionProperties.contains(predicate)) {
+                    result.add(triple.getObject());
+                }
+            }
+        }
+        return result;
+    }
 
-	private Set<UriRef> getSubjectExpansionProperties() {
-		final MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
-		final List<String> paramValues = queryParams.get(SUBJ_EXP_PARAM);
-		if (paramValues == null) {
-			return new HashSet<UriRef>(0);
-		}
-		final Set<UriRef> result = new HashSet<UriRef>(paramValues.size());
-		for (String uriString : paramValues) {
-			result.add(new UriRef(uriString));
-		}
-		return result;
-	}
+    private Set<UriRef> getSubjectExpansionProperties() {
+        final MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+        final List<String> paramValues = queryParams.get(SUBJ_EXP_PARAM);
+        if (paramValues == null) {
+            return new HashSet<UriRef>(0);
+        }
+        final Set<UriRef> result = new HashSet<UriRef>(paramValues.size());
+        for (String uriString : paramValues) {
+            result.add(new UriRef(uriString));
+        }
+        return result;
+    }
 
-	private Set<UriRef> getObjectExpansionProperties() {
-		final MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
-		final List<String> paramValues = queryParams.get(OBJ_EXP_PARAM);
-		if (paramValues == null) {
-			return new HashSet<UriRef>(0);
-		}
-		final Set<UriRef> result = new HashSet<UriRef>(paramValues.size());
-		for (String uriString : paramValues) {
-			result.add(new UriRef(uriString));
-		}
-		return result;
-	}
+    private Set<UriRef> getObjectExpansionProperties() {
+        final MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+        final List<String> paramValues = queryParams.get(OBJ_EXP_PARAM);
+        if (paramValues == null) {
+            return new HashSet<UriRef>(0);
+        }
+        final Set<UriRef> result = new HashSet<UriRef>(paramValues.size());
+        for (String uriString : paramValues) {
+            result.add(new UriRef(uriString));
+        }
+        return result;
+    }
 }

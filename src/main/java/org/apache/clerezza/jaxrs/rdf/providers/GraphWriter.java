@@ -44,32 +44,32 @@ import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
  */
 @Provider
 @Produces({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
-	SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
-	SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
+    SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
+    SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class GraphWriter implements MessageBodyWriter<TripleCollection> {
 
-	/**
-	 * @scr.reference
-	 */
-	private Serializer serializer;
-	
-	@Override
-	public boolean isWriteable(Class<?> type, Type genericType, 
-			Annotation[] annotations, MediaType mediaType) {
-		return TripleCollection.class.isAssignableFrom(type);
-	}
+    /**
+     * @scr.reference
+     */
+    private Serializer serializer;
+    
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType, 
+            Annotation[] annotations, MediaType mediaType) {
+        return TripleCollection.class.isAssignableFrom(type);
+    }
 
-	@Override
-	public long getSize(TripleCollection t, Class<?> type, Type genericType, 
-			Annotation[] annotations, MediaType mediaType) {
-		return -1;
-	}
+    @Override
+    public long getSize(TripleCollection t, Class<?> type, Type genericType, 
+            Annotation[] annotations, MediaType mediaType) {
+        return -1;
+    }
 
-	@Override
-	public void writeTo(TripleCollection t, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders,
-			OutputStream entityStream) throws IOException, WebApplicationException {
-		serializer.serialize(entityStream, t, mediaType.toString());
-	}
+    @Override
+    public void writeTo(TripleCollection t, Class<?> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders,
+            OutputStream entityStream) throws IOException, WebApplicationException {
+        serializer.serialize(entityStream, t, mediaType.toString());
+    }
 }
