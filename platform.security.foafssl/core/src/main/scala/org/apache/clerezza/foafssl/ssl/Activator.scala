@@ -55,9 +55,9 @@ class Activator() {
             sslContextFactory
                     .setTrustManagerWrapper(x509TrustManagerWrapperService);
   
-
+        val properties = new Hashtable[String, Any]();
         bundleContext.registerService(classOf[SSLContext].getName,
-                        sslContextFactory.buildSSLContext("TLS"), new Properties())
+                        sslContextFactory.buildSSLContext("TLS"), properties)
         println("Registered SSLContext+")
       }
     }

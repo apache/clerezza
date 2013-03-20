@@ -115,8 +115,7 @@
                 <module>platform.mail</module>
                 <module>platform.scripting</module>
                 <module>platform.scripting.scriptmanager</module>
-                <!-- <module>platform.security.foafssl</module> -->
-                <module>platform.security.foafssl/ontologies</module>
+                <module>platform.security.foafssl</module>
                 <module>platform.security.conditions</module>
                 <module>platform.shellcustomizer</module>
                 <module>platform.typehandlerspace</module>

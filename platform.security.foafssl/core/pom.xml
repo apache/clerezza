@@ -44,30 +44,37 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
+            <version>0.13-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform</artifactId>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.core</artifactId>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scalaserverpages</artifactId>
+            <version>0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.scala.utils</artifactId>
+            <version>0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.security</artifactId>
+            <version>0.8-incubating</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.users.core</artifactId>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
@@ -84,6 +91,7 @@
         <dependency>
             <groupId>org.wymiwyg</groupId>
             <artifactId>jetty-osgi-httpservice</artifactId>
+            <version>0.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
