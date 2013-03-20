@@ -18,7 +18,7 @@ class Activator extends BundleActivator {
 
 	var renderletRegistration, 
 	titledContentRenderletRegistration,
-	globalMenuRenderletRegistration: ServiceRegistration = null
+	globalMenuRenderletRegistration: ServiceRegistration[TypeRenderlet] = null
 	var graphListenerOption: Option[GraphListener] = null
 
 	/**
@@ -29,11 +29,11 @@ class Activator extends BundleActivator {
 		import servicesDsl._
 
 		val renderlet = new HeadedPageRenderlet
-		renderletRegistration = context.registerService(classOf[TypeRenderlet].getName,
+		renderletRegistration = context.registerService(classOf[TypeRenderlet],
 												  renderlet, null)
-		titledContentRenderletRegistration = context.registerService(classOf[TypeRenderlet].getName,
+		titledContentRenderletRegistration = context.registerService(classOf[TypeRenderlet],
 												  new TitledContentRenderlet, null)
-		globalMenuRenderletRegistration = context.registerService(classOf[TypeRenderlet].getName,
+		globalMenuRenderletRegistration = context.registerService(classOf[TypeRenderlet],
 												  new GlobalMenuRenderlet, null)
 		context.installBundle("mvn:org.apache.clerezza/rdf.stable.serializer").start();
 		context.installBundle("mvn:org.apache.clerezza/tools.offline").start();
