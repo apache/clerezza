@@ -70,7 +70,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Embed-Dependency>*;inline=false</Embed-Dependency>
+                        <Embed-Dependency>*;inline=false;artifactId=!org.apache.felix.scr.annotations</Embed-Dependency>
                         <Export-Package>org.apache.lucene.*</Export-Package>
                     </instructions>
                 </configuration>

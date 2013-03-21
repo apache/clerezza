@@ -81,7 +81,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Embed-Dependency>*;scope=compile;artifactId=!slf4j-api</Embed-Dependency>
+                        <Embed-Dependency>*;scope=compile;artifactId=!slf4j-api|org.apache.felix.scr.annotations</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Import-Package>!com.hp.hpl.jena.*.test,
                         !org.apache.xml.resolver.*,!sun.*,

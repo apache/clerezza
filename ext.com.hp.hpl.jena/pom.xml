@@ -78,7 +78,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Embed-Dependency>*;artifactId=!commons-logging</Embed-Dependency>
+                        <Embed-Dependency>*;artifactId=!slf4j-*|org.apache.felix.scr.annotations</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Import-Package>!com.hp.hpl.jena.*.test,
                         !org.apache.xml.resolver.*,!sun.*,

@@ -49,6 +49,16 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-scr-plugin</artifactId>
+        <executions>
+           <execution>
+              <id>generate-scr-scrdescriptor</id>
+              <phase>none</phase>
+           </execution>
+        </executions>
+     </plugin>
     </plugins>
   </build>
 </project>

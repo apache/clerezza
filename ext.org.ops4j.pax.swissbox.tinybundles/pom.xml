@@ -54,7 +54,7 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Export-Package>org.ops4j.pax.swissbox.tinybundles.core;version="1.3.0"</Export-Package>
                         <!-- <Private-Package>*</Private-Package> -->
-                        <Embed-Dependency>*;artifactId=!slf4j-api;scope=compile;inline=true</Embed-Dependency>
+                        <Embed-Dependency>*;artifactId=!slf4j-*|org.apache.felix.scr.annotations;scope=compile;inline=true</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>

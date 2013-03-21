@@ -110,7 +110,7 @@
           <instructions>
             <Export-Package>org.apache.clerezza.uima.utils.*;version=0.1.0,org.apache.uima.*;version=2.3.0
             </Export-Package>
-            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+            <Embed-Dependency>*;scope=compile|runtime;artifactId=!slf4j-*|org.apache.felix.scr.annotations</Embed-Dependency>
             <Bundle-Activator>org.apache.clerezza.uima.utils.UIMAUtilsBundleActivator</Bundle-Activator>
           </instructions>
         </configuration>
