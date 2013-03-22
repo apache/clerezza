@@ -90,8 +90,9 @@
                         !javax.jms.*,
                         !com.ibm.uvm.tools,
                         !javax.jmdns,
+                        !org.apache.xerces.util,
                         *</Import-Package>
-                        <Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
+                        <Export-Package>com.hp.hpl.jena.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
