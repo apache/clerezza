@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -17,7 +18,8 @@
  specific language governing permissions and limitations
  under the License.
 
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>clerezza</artifactId>
@@ -30,14 +32,14 @@
     <packaging>bundle</packaging>
     <version>0.6-SNAPSHOT</version>
     <name>Clerezza - Filter for browsers that do not support XHTML</name>
-    <description>Provides a wrhapi filter that changes the content-type of the
+    <description>Provides a servlet filter that changes the content-type of the
     response from application/xhtml+xml to text/html
     </description>
     <dependencies>
         <dependency>
-            <groupId>org.wymiwyg</groupId>
-            <artifactId>wrhapi</artifactId>
-            <version>0.9</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>

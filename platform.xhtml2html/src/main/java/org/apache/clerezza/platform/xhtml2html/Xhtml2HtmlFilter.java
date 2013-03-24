@@ -18,45 +18,46 @@
  */
 package org.apache.clerezza.platform.xhtml2html;
 
-import java.util.Iterator;
+import java.io.IOException;
+import java.util.Enumeration;
 import java.util.regex.Pattern;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
-import org.wymiwyg.wrhapi.Handler;
-import org.wymiwyg.wrhapi.HandlerException;
-import org.wymiwyg.wrhapi.HeaderName;
-import org.wymiwyg.wrhapi.Request;
-import org.wymiwyg.wrhapi.Response;
-import org.wymiwyg.wrhapi.filter.Filter;
-import org.wymiwyg.wrhapi.util.AcceptHeaderEntry;
-import org.wymiwyg.wrhapi.util.EnhancedRequest;
 
 /**
- * This Filter acts on client agents matching a pattern defined by the 
- * service property <code>pattern</code>, it changes the returhned content type 
- * from application/xhtml+xml to application/html and adds application/xhtml+xml
- * to the accept header.
+ * This Filter acts on client agents matching a pattern defined by the service
+ * property
+ * <code>pattern</code>, it changes the returhned content type from
+ * application/xhtml+xml to application/html and adds application/xhtml+xml to
+ * the accept header.
  *
- *
- * @scr.component
- * @scr.service interface="org.wymiwyg.wrhapi.filter.Filter"
- * @scr.property name="pattern"
- *               values.name=".*MSIE.*"
- *
- * @author rbn
  */
-@Component
+@Component(immediate=true)
 @Service(Filter.class)
-@Property(name="pattern", value={".*MSIE.*", ""})
+@Properties(value = {
+    @Property(name="pattern",value=".*"),
+    @Property(name = "service.ranking", intValue = Integer.MAX_VALUE),
+    @Property(name = "agent-pattern", value = {".*MSIE.*", ""})
+})
 public class Xhtml2HtmlFilter implements Filter {
 
     private Pattern[] patterns;
     final MimeType xhtmlMimeType;
     final MimeType htmlMimeType;
+
     {
         try {
             xhtmlMimeType = new MimeType("application", "xhtml+xml");
@@ -66,22 +67,13 @@ public class Xhtml2HtmlFilter implements Filter {
         }
     }
 
-    @Override
-    public void handle(Request request, Response response, Handler handler)
-            throws HandlerException {
-        if (!isApplicable(request)) {
-            handler.handle(request, response);
-        } else {
-            handler.handle(new WrappedRequest(request), new WrappedResponse(response));
-        }
-    }
-
-    private boolean isApplicable(final Request request) throws HandlerException {
+    private boolean isApplicable(final HttpServletRequest request) {
         if (htmlPreferredInAccept(request)) {
             return true;
         }
-        final String[] userAgentStrings = request.getHeaderValues(HeaderName.USER_AGENT);
-        for (final String userAgentString : userAgentStrings) {
+        final Enumeration<String> userAgentStrings = request.getHeaders("User-Agent");
+        while (userAgentStrings.hasMoreElements()) {
+            final String userAgentString = userAgentStrings.nextElement();
             for (final Pattern pattern : patterns) {
                 if (pattern.matcher(userAgentString).matches()) {
                     return true;
@@ -91,15 +83,15 @@ public class Xhtml2HtmlFilter implements Filter {
         return false;
     }
 
-    private boolean htmlPreferredInAccept(Request request) throws HandlerException {
-        EnhancedRequest ehRequest = new EnhancedRequest(request);
-        Iterator<AcceptHeaderEntry> iter = ehRequest.getAccept();
-        while (iter.hasNext()) {
-            AcceptHeaderEntry entry = iter.next();
-            if (entry.getRange().match(xhtmlMimeType)) {
+    private boolean htmlPreferredInAccept(HttpServletRequest request) {
+        Enumeration<String> accepts = request.getHeaders("Accept");
+        //TODO parse geader
+        while (accepts.hasMoreElements()) {
+            final String accept = accepts.nextElement();
+            if (accept.startsWith("application/xhtml+xml")) {
                 return false;
             }
-            if (entry.getRange().match(htmlMimeType)) {
+            if (accept.startsWith("text/html")) {
                 return true;
             }
         }
@@ -108,13 +100,29 @@ public class Xhtml2HtmlFilter implements Filter {
 
     protected void activate(ComponentContext context) throws Exception {
         final String[] patternStrings = (String[]) context.getProperties().
-                get("pattern");
+                get("agent-pattern");
         patterns = new Pattern[patternStrings.length];
-        for(int i = 0; i < patternStrings.length; i++) {
+        for (int i = 0; i < patternStrings.length; i++) {
             patterns[i] = Pattern.compile(patternStrings[i]);
         }
     }
 
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
 
+    @Override
+    public void doFilter(ServletRequest request,
+            ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (!isApplicable((HttpServletRequest)request)) {
+            chain.doFilter(request, response);
+        } else {
+            chain.doFilter(new WrappedRequest((HttpServletRequest)request), 
+                    new WrappedResponse((HttpServletResponse)response));
+        }
+    }
 
+    @Override
+    public void destroy() {
+    }
 }

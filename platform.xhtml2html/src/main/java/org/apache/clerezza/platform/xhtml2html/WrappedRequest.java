@@ -19,36 +19,43 @@
 package org.apache.clerezza.platform.xhtml2html;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
-import org.wymiwyg.wrhapi.HandlerException;
-import org.wymiwyg.wrhapi.HeaderName;
-import org.wymiwyg.wrhapi.Request;
-import org.wymiwyg.wrhapi.util.RequestWrapper;
+import java.util.Vector;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * Sets the accept-header to text/html, application/xhtml+xml;q=.9,*\/*;q=.1
  *
  * @author rbn
  */
-class WrappedRequest extends RequestWrapper {
+class WrappedRequest extends HttpServletRequestWrapper {
+    public static final String NEW_ACCCEPT = "text/html, application/xhtml+xml;q=.9, */*;q=.1";
 
-    public WrappedRequest(Request request) {
+    public WrappedRequest(HttpServletRequest request) {
         super(request);
     }
 
     @Override
-    public String[] getHeaderValues(HeaderName headerName) throws HandlerException {
-        if (headerName.equals(HeaderName.ACCEPT)) {
-            List<String> newList = new ArrayList();
-            newList.add("text/html");
-            newList.add("application/xhtml+xml;q=.9");
-            newList.add("*/*;q=.1");
-            return newList.toArray(new String[newList.size()]);
+    public Enumeration<String> getHeaders(String headerName) {
+        if ("Accept".equalsIgnoreCase(headerName)) {
+            Vector<String> newList = new Vector<String>();
+            newList.add(NEW_ACCCEPT);
+            return newList.elements();
         } else {
-            return super.getHeaderValues(headerName);
+            return super.getHeaders(headerName);
         }
     }
-
+    @Override
+    public String getHeader(String headerName) {
+        if ("Accept".equalsIgnoreCase(headerName)) {
+            List<String> newList = new ArrayList();
+            return NEW_ACCCEPT;
+        } else {
+            return super.getHeader(headerName);
+        }
+    }
 
 
 }

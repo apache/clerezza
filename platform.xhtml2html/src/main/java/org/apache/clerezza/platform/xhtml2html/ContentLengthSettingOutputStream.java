@@ -19,58 +19,68 @@
 package org.apache.clerezza.platform.xhtml2html;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import org.wymiwyg.wrhapi.HandlerException;
+import java.io.OutputStream;
+import javax.servlet.ServletOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Triggers the CONTENT-LENGTH header to be set in the wrapped response when the
- * first bytes are written to the <code>WritableByteChannel</code> and the content
- * (to be written to the channel) will not to be converted from xhtml to html.
- * 
+ * first bytes are written to the
+ * <code>WritableByteChannel</code> and the content (to be written to the
+ * channel) will not to be converted from xhtml to html.
+ *
  * @author mir
  */
-class ContentLengthSettingByteChannel implements WritableByteChannel {
+class ContentLengthSettingOutputStream extends ServletOutputStream {
 
-    final static private Logger logger = LoggerFactory.getLogger(ContentLengthSettingByteChannel.class);
+    final static private Logger logger = LoggerFactory.getLogger(ContentLengthSettingOutputStream.class);
     private WrappedResponse wrappedResponse;
-    private WritableByteChannel wrappedByteChannel;
+    private OutputStream base;
     private boolean contetLengthIsSet = false;
+    int charCount = 0;
 
-    ContentLengthSettingByteChannel(WritableByteChannel byteChannel,
+    ContentLengthSettingOutputStream(OutputStream base,
             WrappedResponse wrappedResponse) {
-        this.wrappedByteChannel = byteChannel;
+        this.base = base;
         this.wrappedResponse = wrappedResponse;
     }
 
     @Override
-    public int write(ByteBuffer bb) throws IOException {
-        if (!contetLengthIsSet && bb.remaining() > 0) {
-            try {
-                wrappedResponse.setContentLengthIfNoConversion();
-                contetLengthIsSet = true;
-            } catch (HandlerException ex) {
-                logger.error("Exception {}", ex.toString(), ex);
-            }
+    public void write(int b) throws IOException {
+        if (!contetLengthIsSet) {
+            wrappedResponse.setContentLengthIfNoConversion();
+            contetLengthIsSet = true;
         }
-        return wrappedByteChannel.write(bb);
+        base.write(b);
+    }
+    /**
+     * This does was the abstract superclass would be expected to do
+     */
+    @Override
+    public void write(byte b[]) throws IOException {
+        write(b, 0, b.length);
+    }
+
+    /**
+     * This does was the abstract superclass would be expected to do
+     */
+    @Override
+    public void write(byte b[], int off, int len) throws IOException {
+        for (int i = off; i < (off + len); i++) {
+            write(b[i]);
+        }
     }
 
     @Override
-    public boolean isOpen() {
-        return wrappedByteChannel.isOpen();
-
-
-
-
+    public void flush() throws IOException {
+        super.flush();
     }
 
     @Override
     public void close() throws IOException {
-        wrappedByteChannel.close();
-
-
+        super.close();
     }
+    
+    
 }

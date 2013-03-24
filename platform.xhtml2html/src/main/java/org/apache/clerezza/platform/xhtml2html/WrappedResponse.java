@@ -18,80 +18,143 @@
  */
 package org.apache.clerezza.platform.xhtml2html;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.wymiwyg.wrhapi.HandlerException;
-import org.wymiwyg.wrhapi.HeaderName;
-import org.wymiwyg.wrhapi.MessageBody;
-import org.wymiwyg.wrhapi.Response;
-import org.wymiwyg.wrhapi.util.ResponseWrapper;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author rbn
  */
-class WrappedResponse extends ResponseWrapper implements ResponseStatusInfo {
+class WrappedResponse extends HttpServletResponseWrapper implements ResponseStatusInfo {
+
     private String XHTML_TYPE = "application/xhtml+xml";
     private String HTML_TYPE = "text/html";
     private boolean convertXhtml2Html = false;
-    private List<Object> contentLengths = new ArrayList<Object>();
+    private String contentLength = null;
+    private final Logger log = LoggerFactory.getLogger(WrappedResponse.class);
 
-    public WrappedResponse(Response response) {
+    public WrappedResponse(HttpServletResponse response) {
         super(response);
     }
 
+    //stupid servlet redundanny
     @Override
-    public void addHeader(HeaderName headerName, Object value) throws HandlerException {
-        if (headerName.equals(HeaderName.CONTENT_LENGTH)) {
+    public void setContentLength(int value) {
+        if (convertXhtml2Html) {
+                // do nothing
+        } else {
+            contentLength = Integer.toString(value);
+        }
+    }
+
+    @Override
+    public void setContentType(String type) {
+        if (type.startsWith(XHTML_TYPE)) {
+            super.setHeader("Content-Type", HTML_TYPE + type.substring(XHTML_TYPE.length()));
+            convertXhtml2Html = true;
+        } else {
+            log.info("The original media type is "+type+" and is not being changed");
+            super.setContentType(type);
+        }
+        
+    }
+
+    @Override
+    public void setHeader(String headerName, String value) {
+        if ("Content-Length".equalsIgnoreCase(headerName)) {
             if (convertXhtml2Html) {
                 // do nothing
             } else {
-                contentLengths.add(value);
+                contentLength = value;
             }
             return;
         }
-        String stringValue = value.toString();
-        if (headerName.equals(HeaderName.CONTENT_TYPE) && value.toString().startsWith(XHTML_TYPE)) {
-            super.addHeader(headerName, HTML_TYPE+stringValue.substring(XHTML_TYPE.length()));
-            convertXhtml2Html = true;
+
+        if ("Content-Type".equalsIgnoreCase(headerName)) {
+            setContentType(value);
+            return;
+        }
+        super.setHeader(headerName, value);
+    }
+
+    @Override
+    public void addHeader(String headerName, String value) {
+        if ("Content-Length".equalsIgnoreCase(headerName)) {
+            if (convertXhtml2Html) {
+                // do nothing
+            } else {
+                contentLength = value;
+            }
+            return;
+        }
+        if ("Content-Type".equalsIgnoreCase(headerName) && value.startsWith(XHTML_TYPE)) {
+            //more than one conten-type hearders make no sense
+            setContentType(value);
         } else {
             super.addHeader(headerName, value);
         }
     }
 
     @Override
-    public void setHeader(HeaderName headerName, Object value) throws HandlerException {
-        if (headerName.equals(HeaderName.CONTENT_LENGTH)) {
-            if (convertXhtml2Html) {
-                // do nothing
-            } else {
-                contentLengths.clear();
-                contentLengths.add(value);
-            }
-            return;
-        }
-        String stringValue = value.toString();
-        if (headerName.equals(HeaderName.CONTENT_TYPE) && stringValue.startsWith(XHTML_TYPE)) {
-            super.setHeader(headerName, HTML_TYPE+stringValue.substring(XHTML_TYPE.length()));
-            convertXhtml2Html = true;
-        } else {
-            super.setHeader(headerName, value);
-        }
+    public ServletOutputStream getOutputStream() throws IOException {
+        //return new ContentLengthSettingByteChannel(super.getOutputStream(), this);
+        return new ContentLengthSettingOutputStream(new DocTypeFilteringOutputStream(
+                new SelfClosing2ClosingTagsOutputStream(
+                super.getOutputStream(), this), this), this);
     }
 
     @Override
-    public void setBody(MessageBody body) throws HandlerException {
-        super.setBody(new Xhtml2HtmlConvertingBody(body, this));
+    public PrintWriter getWriter() throws IOException {
+        //this doesn't work, data is truncated
+        //return new PrintWriter(new OutputStreamWriter(getOutputStream(), "utf-8"), true);
+        final OutputStream stream = getOutputStream();
+        return new PrintWriter(new Writer() {
+
+            @Override
+            public void write(char[] cbuf, int off, int len) throws IOException {
+                
+                for (int i = 0; i < len; i++) {
+                    char ch = cbuf[off+i];
+                    if (ch > 127) {
+                        byte[] bytes = (""+ch).getBytes("utf-8");
+                        for (byte b : bytes) {
+                            stream.write(b);
+                        }
+                    } else {
+                        stream.write(ch);
+                    }
+                }                
+            }
+
+            @Override
+            public void flush() throws IOException {
+                stream.flush();
+            }
+
+            @Override
+            public void close() throws IOException {
+                stream.close();;
+            }
+        }, true);
+        
     }
+
 
     @Override
     public boolean convertXhtml2Html() {
         return convertXhtml2Html;
     }
 
-    void setContentLengthIfNoConversion() throws HandlerException {
-        if (contentLengths.size() > 0 && !convertXhtml2Html) {
-            super.setHeader(HeaderName.CONTENT_LENGTH, contentLengths.toArray());
+    void setContentLengthIfNoConversion() {
+        if ((contentLength != null)  && !convertXhtml2Html) {
+            super.setHeader("Content-Length", contentLength);
         }
     }
 }

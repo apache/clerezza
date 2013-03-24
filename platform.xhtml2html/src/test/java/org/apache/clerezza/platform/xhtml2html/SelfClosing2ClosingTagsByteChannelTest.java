@@ -20,9 +20,7 @@
 package org.apache.clerezza.platform.xhtml2html;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.WritableByteChannel;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import org.junit.Assert;
 import org.junit.Test;
@@ -67,7 +65,7 @@ public class SelfClosing2ClosingTagsByteChannelTest  {
                 "</body>\n" +
                 "</html>";
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final WritableByteChannel channel = new SelfClosing2ClosingTagsByteChannel(Channels.newChannel(baos),
+        final OutputStream channel = new SelfClosing2ClosingTagsOutputStream(baos,
                 new ResponseStatusInfo() {
 
             @Override
@@ -76,8 +74,8 @@ public class SelfClosing2ClosingTagsByteChannelTest  {
             }
 
         });
-        int bytesWritten = channel.write(ByteBuffer.wrap(someHtml.getBytes(UTF8)));
-        Assert.assertEquals(someHtml.length(), bytesWritten);
+        channel.write(someHtml.getBytes(UTF8));
+       // Assert.assertEquals(someHtml.length(), bytesWritten);
         final String resultString = new String(baos.toByteArray(), UTF8);
         Assert.assertEquals(expectedHtml, resultString);
     }
