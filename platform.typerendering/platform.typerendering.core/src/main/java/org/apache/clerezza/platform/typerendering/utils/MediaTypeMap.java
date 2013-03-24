@@ -94,8 +94,9 @@ public class MediaTypeMap<T> {
             final String primaryType = mediaType.getType();
             if (!mediaType.isWildcardSubtype()) {
                 //exact media types
-                if (exactTypeEntries.containsKey(mediaType)) {
-                    resultList.addAll(exactTypeEntries.get(mediaType));
+                MediaType paramFreedMediaType = new MediaType(primaryType, mediaType.getSubtype());
+                if (exactTypeEntries.containsKey(paramFreedMediaType)) {
+                    resultList.addAll(exactTypeEntries.get(paramFreedMediaType));
                 }
             } else {
                 //primary  type and wildcard subtype
