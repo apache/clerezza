@@ -33,4 +33,15 @@
             <profiler.action>profile</profiler.action>
         </properties>
     </action>
+    <action>
+        <actionName>CUSTOM-resume-debug</actionName>
+        <displayName>Resume Debug</displayName>
+        <goals>
+            <goal>antrun:run</goal>
+        </goals>
+        <properties>
+            <vm.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</vm.args>
+            <jpda.listen>true</jpda.listen>
+        </properties>
+    </action>
 </actions>
