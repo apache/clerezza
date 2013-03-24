@@ -21,8 +21,6 @@ package org.apache.clerezza.platform.xhtml2html;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -55,17 +53,7 @@ import org.osgi.service.component.ComponentContext;
 public class Xhtml2HtmlFilter implements Filter {
 
     private Pattern[] patterns;
-    final MimeType xhtmlMimeType;
-    final MimeType htmlMimeType;
 
-    {
-        try {
-            xhtmlMimeType = new MimeType("application", "xhtml+xml");
-            htmlMimeType = new MimeType("text", "html");
-        } catch (MimeTypeParseException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 
     private boolean isApplicable(final HttpServletRequest request) {
         if (htmlPreferredInAccept(request)) {
@@ -85,13 +73,12 @@ public class Xhtml2HtmlFilter implements Filter {
 
     private boolean htmlPreferredInAccept(HttpServletRequest request) {
         Enumeration<String> accepts = request.getHeaders("Accept");
-        //TODO parse geader
-        while (accepts.hasMoreElements()) {
-            final String accept = accepts.nextElement();
-            if (accept.startsWith("application/xhtml+xml")) {
+        AcceptHeader acceptHeader = new AcceptHeader(accepts);
+        for (MediaType accept : acceptHeader.getEntries()) {
+            if (accept.isCompatible(MediaType.APPLICATION_XHTML_XML_TYPE)) {
                 return false;
             }
-            if (accept.startsWith("text/html")) {
+            if (accept.isCompatible(MediaType.TEXT_HTML_TYPE)) {
                 return true;
             }
         }
