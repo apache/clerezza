@@ -30,16 +30,32 @@ import java.util.Set;
  */
 public interface GroupGraphPattern extends GraphPattern {
 
-    /**
-     *
-     * @return a set of all patterns, ANDed together.
-     */
-    public Set<GraphPattern> getGraphPatterns();
+	/**
+	 *
+	 * @return 
+     *      true if it wraps a {@link SelectQuery}, false otherwise.
+	 */
+	public boolean isSubSelect();
 
-    /**
-     * @return 
-     *        a list of filter expressions for all patterns in the group if any,
-     *        otherwise an empty list is returned.
-     */
-    public List<Expression> getFilter();
+	/**
+	 *
+	 * @return 
+     *      the wrapped subselect if it wraps a {@link SelectQuery}, null otherwise.
+	 */
+	public SelectQuery getSubSelect();
+
+	/**
+	 *
+	 * @return
+     *      null if it wraps a {@link SelectQuery}, otherwise
+     *      a set of all patterns, ANDed together.
+	 */
+	public Set<GraphPattern> getGraphPatterns();
+
+	/**
+	 * @return 
+     *      null if it wraps a {@link SelectQuery}, otherwise
+	 *		a list of filter expressions for all patterns in the group if any.
+	 */
+	public List<Expression> getFilter();
 }

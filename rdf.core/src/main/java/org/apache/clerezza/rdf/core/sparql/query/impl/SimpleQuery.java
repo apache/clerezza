@@ -21,6 +21,7 @@ package org.apache.clerezza.rdf.core.sparql.query.impl;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.sparql.query.DataSet;
 import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.InlineData;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 
 /**
@@ -28,37 +29,47 @@ import org.apache.clerezza.rdf.core.sparql.query.Query;
  * @author hasan
  */
 public abstract class SimpleQuery implements Query {
-    private SimpleDataSet dataSet = null;
-    private GroupGraphPattern queryPattern = null;
+	private SimpleDataSet dataSet = null;
+	private GroupGraphPattern queryPattern = null;
+    private InlineData inlineData = null;
 
-    @Override
-    public DataSet getDataSet() {
-        return dataSet;
+	@Override
+	public DataSet getDataSet() {
+		return dataSet;
+	}
+
+	@Override
+	public GroupGraphPattern getQueryPattern() {
+		return queryPattern;
     }
 
     @Override
-    public GroupGraphPattern getQueryPattern() {
-        return queryPattern;
+    public InlineData getInlineData() {
+        return inlineData;
     }
 
     public void addDefaultGraph(UriRef defaultGraph) {
-        if (dataSet == null) {
-            dataSet = new SimpleDataSet();
-        }
-        dataSet.addDefaultGraph(defaultGraph);
-    }
+		if (dataSet == null) {
+			dataSet = new SimpleDataSet();
+		}
+		dataSet.addDefaultGraph(defaultGraph);
+	}
 
-    public void addNamedGraph(UriRef namedGraph) {
-        if (dataSet == null) {
-            dataSet = new SimpleDataSet();
-        }
-        dataSet.addNamedGraph(namedGraph);
-    }
+	public void addNamedGraph(UriRef namedGraph) {
+		if (dataSet == null) {
+			dataSet = new SimpleDataSet();
+		}
+		dataSet.addNamedGraph(namedGraph);
+	}
 
-    public void setQueryPattern(GroupGraphPattern queryPattern) {
-        this.queryPattern = queryPattern;
+	public void setQueryPattern(GroupGraphPattern queryPattern) {
+		this.queryPattern = queryPattern;
+	}
+
+    public void setInlineData(InlineData inlineData) {
+        this.inlineData = inlineData;
     }
 
     @Override
-    public abstract String toString();
+	public abstract String toString();
 }

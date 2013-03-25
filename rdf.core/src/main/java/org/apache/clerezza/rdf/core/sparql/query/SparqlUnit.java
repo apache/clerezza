@@ -16,18 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.sparql.query.impl;
+package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
+import org.apache.clerezza.rdf.core.sparql.update.Update;
 
 /**
+ * <p>This interface represents a SPARQL Query or Update.</p>
  *
  * @author hasan
  */
-public class SimpleAskQuery extends SimpleQueryWithSolutionModifier implements AskQuery {
+public interface SparqlUnit {
 
-    @Override
-    public String toString() {
-        return (new SimpleStringQuerySerializer()).serialize(this);
-    }
+    /**
+     * 
+	 * @return
+	 *		true if it is a {@link Query}, false if it is an {@link Update}
+     */
+    public boolean isQuery();
+
+    /**
+     * 
+	 * @return
+	 *		the wrapped Query if it is a {@link Query}, null otherwise
+     */
+	public Query getQuery();
+
+    /**
+     * 
+	 * @return
+	 *		the wrapped Update if it is an {@link Update}, null otherwise
+     */
+	public Update getUpdate();
+
 }

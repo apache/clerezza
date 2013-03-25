@@ -19,9 +19,9 @@
 package org.apache.clerezza.rdf.core.sparql;
 
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
-import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
+import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
 
 /**

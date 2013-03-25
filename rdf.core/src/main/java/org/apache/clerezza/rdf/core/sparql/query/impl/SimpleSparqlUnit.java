@@ -18,16 +18,48 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
+import org.apache.clerezza.rdf.core.sparql.query.Query;
+import org.apache.clerezza.rdf.core.sparql.query.SparqlUnit;
+import org.apache.clerezza.rdf.core.sparql.update.Update;
 
 /**
  *
  * @author hasan
  */
-public class SimpleAskQuery extends SimpleQueryWithSolutionModifier implements AskQuery {
+public class SimpleSparqlUnit implements SparqlUnit {
+
+    private final Query query;
+	private final Update update;
+
+	public SimpleSparqlUnit(Query query) {
+		if (query == null) {
+			throw new IllegalArgumentException("Invalid query: null");
+		}
+		this.query = query;
+		update = null;
+	}
+
+	public SimpleSparqlUnit(Update update) {
+		if (update == null) {
+			throw new IllegalArgumentException("Invalid update: null");
+		}
+		this.update = update;
+		query = null;
+	}
+
 
     @Override
-    public String toString() {
-        return (new SimpleStringQuerySerializer()).serialize(this);
+    public boolean isQuery() {
+        return update == null;
+    }
+
+    @Override
+    public Query getQuery() {
+        return query;
+    }
+
+    @Override
+    public Update getUpdate() {
+        return update;
     }
 }

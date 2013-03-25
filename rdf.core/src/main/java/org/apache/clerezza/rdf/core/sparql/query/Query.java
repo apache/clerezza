@@ -47,6 +47,8 @@ public interface Query {
      *        If the WHERE clause is not specified, null is returned.
      */
     public GroupGraphPattern getQueryPattern();
+    
+    public InlineData getInlineData();
 
     /**
      * 

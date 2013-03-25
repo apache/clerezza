@@ -16,18 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.sparql.query.impl;
+package org.apache.clerezza.rdf.core.sparql.update;
 
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
+import java.util.Set;
+import org.apache.clerezza.rdf.core.UriRef;
 
 /**
+ * <p>This interface represents a SPARQL Update.</p>
  *
  * @author hasan
  */
-public class SimpleAskQuery extends SimpleQueryWithSolutionModifier implements AskQuery {
+public interface Update {
 
-    @Override
-    public String toString() {
-        return (new SimpleStringQuerySerializer()).serialize(this);
-    }
+	/**
+	 * 
+	 * @return
+	 *		a set of graphs referred in the {@link Update}
+	 */
+	public Set<UriRef> getReferredGraphs();
+
+    /**
+	 * 
+	 * @return A valid String representation of the {@link Update}.
+	 */
+	@Override
+	public abstract String toString();
 }

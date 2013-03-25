@@ -18,16 +18,36 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.clerezza.rdf.core.Resource;
+import org.apache.clerezza.rdf.core.sparql.query.InlineData;
+import org.apache.clerezza.rdf.core.sparql.query.Variable;
 
 /**
  *
  * @author hasan
  */
-public class SimpleAskQuery extends SimpleQueryWithSolutionModifier implements AskQuery {
+public class SimpleInlineData implements InlineData {
+
+    private List<Variable> variables = new ArrayList<Variable>();
+    private List<List<Resource>> values = new ArrayList<List<Resource>>();
 
     @Override
-    public String toString() {
-        return (new SimpleStringQuerySerializer()).serialize(this);
+    public List<Variable> getVariables() {
+        return variables;
+    }
+
+    @Override
+    public List<List<Resource>> getValues() {
+        return values;
+    }
+
+    public void addVariable(Variable variable) {
+        variables.add(variable);
+    }
+
+    public void addValues(List<Resource> values) {
+        this.values.add(values);
     }
 }

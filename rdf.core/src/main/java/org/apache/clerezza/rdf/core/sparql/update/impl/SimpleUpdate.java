@@ -16,18 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.sparql.query.impl;
+package org.apache.clerezza.rdf.core.sparql.update.impl;
 
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
+import java.util.HashSet;
+import java.util.Set;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.sparql.update.Update;
 
 /**
  *
  * @author hasan
  */
-public class SimpleAskQuery extends SimpleQueryWithSolutionModifier implements AskQuery {
+public abstract class SimpleUpdate implements Update {
+	private Set<UriRef> referredGraphs = new HashSet<UriRef>();
 
-    @Override
-    public String toString() {
-        return (new SimpleStringQuerySerializer()).serialize(this);
-    }
+    void addReferredGraph(UriRef referredGraph) {
+		referredGraphs.add(referredGraph);
+	}
+
 }

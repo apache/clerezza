@@ -16,18 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.sparql.query.impl;
-
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
+package org.apache.clerezza.rdf.core.sparql.update;
 
 /**
+ * SPARQL Graph Management Operation
  *
  * @author hasan
  */
-public class SimpleAskQuery extends SimpleQueryWithSolutionModifier implements AskQuery {
-
-    @Override
-    public String toString() {
-        return (new SimpleStringQuerySerializer()).serialize(this);
-    }
+public interface GraphManagementOperation extends UpdateOperation {
 }

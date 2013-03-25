@@ -16,18 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.sparql.query.impl;
+package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
+import java.util.List;
+import org.apache.clerezza.rdf.core.Resource;
 
 /**
  *
  * @author hasan
  */
-public class SimpleAskQuery extends SimpleQueryWithSolutionModifier implements AskQuery {
-
-    @Override
-    public String toString() {
-        return (new SimpleStringQuerySerializer()).serialize(this);
-    }
+public interface InlineData extends GraphPattern {
+    public List<Variable> getVariables();
+    public List<List<Resource>> getValues();
 }

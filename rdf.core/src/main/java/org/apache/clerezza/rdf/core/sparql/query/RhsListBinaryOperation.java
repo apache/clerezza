@@ -16,18 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.sparql.query.impl;
+package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
+import java.util.List;
 
 /**
+ * Defines an operation with two operands: a left hand side and a right hand side operand
+ * where the right hand side operand is a list.
  *
  * @author hasan
  */
-public class SimpleAskQuery extends SimpleQueryWithSolutionModifier implements AskQuery {
+public class RhsListBinaryOperation extends AbstractOperation {
 
-    @Override
-    public String toString() {
-        return (new SimpleStringQuerySerializer()).serialize(this);
-    }
+	private Expression lhsOperand;
+    private List<Expression> rhsOperand;
+
+	public RhsListBinaryOperation(String operator, Expression lhsOperand, List<Expression> rhsOperand) {
+		super(operator);
+		this.lhsOperand = lhsOperand;
+		this.rhsOperand = rhsOperand;
+	}
+
+	public Expression getLhsOperand() {
+		return lhsOperand;
+	}
+
+	public List<Expression> getRhsOperand() {
+		return rhsOperand;
+	}
 }
