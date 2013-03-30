@@ -1,1 +1,1 @@
-org.apache.clerezza.rdf.rdfjson.parser.RdfJsonParserProvider
+org.apache.clerezza.rdf.rdfjson.parser.RdfJsonParsingProvider
