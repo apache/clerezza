@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
     <name>Clerezza - Parent for all (root)</name>
     <url>http://incubator.apache.org/clerezza/mvn-site/</url>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <description>The direct or indirect parent of all Clerezza Artifacts</description>
     <properties>
         <sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
@@ -241,7 +241,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -585,9 +585,9 @@
 
 
     <scm>
-        <url>http://svn.apache.org/viewvc/clerezza</url>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/trunk/parent/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/trunk/parent/</developerConnection>
+        <url>http://svn.apache.org/viewvc/clerezza/tags/clerezza-0.3</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/tags/clerezza-0.3</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/tags/clerezza-0.3</developerConnection>
     </scm>
 
     <!-- lets generate reports -->
