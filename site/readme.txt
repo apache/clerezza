@@ -1,13 +1,3 @@
-*****************************
-WARNING
-
-This is an unfinished version designed to work with the trunk version of clerezza for the current version of the site use
-
-https://svn.apache.org/repos/asf/clerezza/site/trunk/
-
-******************************
-
-
 Editing and deploying the clerezza website
 
 - start clerezza on localhost:8080
@@ -18,6 +8,6 @@ Editing and deploying the clerezza website
 
 - change the site as needed, do not create pages ending with /, create a page ending with /index instead, the entry page is http://localhost:8080/index (you may open http://localhost:8080/tools/editor with firefox to edit it)
 
-- commit the changed graph.nt to subversion
+- commit the changed graph.nt to version control
 
-- execute the deploy.sh script
+- execute the deploy.sh script (this requires a unix style system and will typically take several minutes)
