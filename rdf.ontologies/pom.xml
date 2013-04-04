@@ -25,7 +25,7 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.4-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>    
     <groupId>org.apache.clerezza</groupId>
