@@ -15,6 +15,7 @@
  */
 package org.apache.clerezza.platform.xhtml2html;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public class MediaType {
     }
 
     Map<String,String> getParameters() {
-        return parameters;
+        return parameters == null? Collections.EMPTY_MAP : parameters;
     }
 
     String getType() {
