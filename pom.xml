@@ -18,19 +18,19 @@
  specific language governing permissions and limitations
  under the License.
 
--->
+    -->
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.3</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>jaxrs.utils</artifactId>
     <packaging>bundle</packaging>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.7</version>
     <name>Clerezza - JAX-RS Utilities</name>
     <description>Utility classes for JAX-RS (see the Javadoc)</description>
     <dependencies>
@@ -48,7 +48,7 @@
             <artifactId>org.apache.felix.scr.annotations</artifactId>
         </dependency>
         <!-- testing with last released version, testutils is doscontinued as
-       triaxrs is -->
+        triaxrs is -->
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.testutils</artifactId>
@@ -60,4 +60,26 @@
             <artifactId>json-simple</artifactId>
         </dependency>
     </dependencies>
+    <scm>
+        <url>http://svn.apache.org/viewvc/clerezza/tags/jaxrs.utils-0.7</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/tags/jaxrs.utils-0.7</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/tags/jaxrs.utils-0.7</developerConnection>
+    </scm>
+    <!-- here for release under old parent without having package version in export -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>2.3.7</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <_nodefaultversion />
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
