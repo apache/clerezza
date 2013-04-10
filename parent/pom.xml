@@ -76,6 +76,7 @@
                     <configuration>
                         <instructions>
                             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                            <_nodefaultversion />
                         </instructions>
                     </configuration>
                 </plugin>
