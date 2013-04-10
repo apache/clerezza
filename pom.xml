@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>jaxrs.utils</artifactId>
     <packaging>bundle</packaging>
-    <version>0.7</version>
+    <version>0.8-SNAPSHOT</version>
     <name>Clerezza - JAX-RS Utilities</name>
     <description>Utility classes for JAX-RS (see the Javadoc)</description>
     <dependencies>
@@ -61,9 +61,9 @@
         </dependency>
     </dependencies>
     <scm>
-        <url>http://svn.apache.org/viewvc/clerezza/tags/jaxrs.utils-0.7</url>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/tags/jaxrs.utils-0.7</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/tags/jaxrs.utils-0.7</developerConnection>
+        <url>http://svn.apache.org/viewvc/clerezza</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/trunk/jaxrs.utils</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/trunk/jaxrs.utils/</developerConnection>
     </scm>
     <!-- here for release under old parent without having package version in export -->
     <build>
