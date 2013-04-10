@@ -62,8 +62,8 @@
     </dependencies>
     <scm>
         <url>http://svn.apache.org/viewvc/clerezza</url>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/trunk/jaxrs.utils</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/trunk/jaxrs.utils/</developerConnection>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/branches/jaxrs.utils-0.7/</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/branches/jaxrs.utils-0.7/</developerConnection>
     </scm>
     <!-- here for release under old parent without having package version in export -->
     <build>
