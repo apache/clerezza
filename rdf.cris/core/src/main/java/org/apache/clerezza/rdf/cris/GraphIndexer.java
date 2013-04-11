@@ -50,7 +50,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -321,7 +321,7 @@ public class GraphIndexer extends ResourceFinder {
         this.definitionGraph = definitionGraph;
         this.baseGraph = baseGraph;
         this.maxHits = maxHits;
-        analyzer = new StandardAnalyzer(Version.LUCENE_30);
+        analyzer = new StandardAnalyzer(Version.LUCENE_41);
 
         luceneTools = new LuceneTools(indexDirectory, analyzer);
         processDefinitions();
@@ -656,7 +656,7 @@ public class GraphIndexer extends ResourceFinder {
                     sort = new Sort(sortSpecification.getSortFields());
                     sortCache.put(fieldKey, sort);
                 }
-                searcher.setDefaultFieldSortScoring(true, true);
+                //searcher.setDefaultFieldSortScoring(true, true);
                 TopFieldDocs topFieldDocs = searcher.search(booleanQuery, null, to, sort);
                 hits = topFieldDocs.scoreDocs;
             } else {

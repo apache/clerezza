@@ -33,7 +33,7 @@ import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.*;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.junit.*;
 import org.wymiwyg.commons.util.Util;
 
@@ -517,7 +517,7 @@ public class GraphIndexerTest {
         service.reCreateIndex();
         
         SortSpecification sortSpecification = new SortSpecification();
-        sortSpecification.add(firstName, SortSpecification.STRING_COMPARETO);
+        sortSpecification.add(firstName, SortSpecification.Type.STRING_VAL);
         sortSpecification.add(SortSpecification.INDEX_ORDER);
         
         Thread.sleep(1000);
@@ -562,7 +562,7 @@ public class GraphIndexerTest {
         service.reCreateIndex();
         
         SortSpecification sortSpecification = new SortSpecification();
-        sortSpecification.add(firstName, SortSpecification.STRING_COMPARETO);
+        sortSpecification.add(firstName, SortSpecification.Type.STRING_VAL);
         sortSpecification.add(SortSpecification.INDEX_ORDER);
         
         Thread.sleep(1000);

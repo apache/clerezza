@@ -22,6 +22,7 @@ package org.apache.clerezza.rdf.cris;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.util.BytesRef;
 
 /**
  * Allows searches for rangers of terms.
@@ -87,6 +88,6 @@ public class TermRangeCondition extends Condition {
     
     @Override
     public Query query() {
-        return new TermRangeQuery(property.stringKey, lowerTerm, upperTerm, includeUpper, includeLower);
+        return new TermRangeQuery(property.stringKey, new BytesRef(lowerTerm), new BytesRef(upperTerm), includeUpper, includeLower);
     }
 }

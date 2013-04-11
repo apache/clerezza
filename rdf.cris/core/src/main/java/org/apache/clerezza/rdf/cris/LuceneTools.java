@@ -23,15 +23,19 @@ import java.io.File;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.logging.Level;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.AlreadyClosedException;
+import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +49,7 @@ public class LuceneTools {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private IndexSearcher indexSearcher = null;
+    private DirectoryReader indexReader = null;
     private Directory indexDirectory = null;
     private IndexWriter indexWriter = null;
     private Analyzer analyzer = null;
@@ -57,11 +62,10 @@ public class LuceneTools {
     class IndexWriterWrapper extends IndexWriter {
 
         private boolean invokeClose;
-        public IndexWriterWrapper(Directory directory, Analyzer analyzer, 
-                boolean createDir, IndexWriter.MaxFieldLength mfl) 
+        public IndexWriterWrapper(Directory directory, IndexWriterConfig conf) 
                 throws CorruptIndexException, LockObtainFailedException, IOException   {
             
-            super(directory, analyzer, createDir, mfl);
+            super(directory, conf);
             invokeClose = true;
         }
 
@@ -96,7 +100,7 @@ public class LuceneTools {
         logger.info("Activating Lucene tools");
         indexDirectory = indexDir;
         if(indexDirectory instanceof FSDirectory) {
-            luceneIndexDir = ((FSDirectory) indexDirectory).getFile();
+            luceneIndexDir = ((FSDirectory) indexDirectory).getDirectory();
         }
         this.analyzer = analyzer;
     }
@@ -121,9 +125,9 @@ public class LuceneTools {
             if(luceneIndexDir != null) {
                 indexDirectory = FSDirectory.open(luceneIndexDir);
             }
-            indexWriter = new IndexWriterWrapper(indexDirectory, getAnalyzer(),
-                    createDir, IndexWriter.MaxFieldLength.UNLIMITED);
-            indexWriter.setMergeFactor(1000);
+            IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_41, getAnalyzer());
+            indexWriter = new IndexWriterWrapper(indexDirectory, config);
+            //indexWriter.setMergeFactor(1000);
             return indexWriter;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
@@ -155,24 +159,46 @@ public class LuceneTools {
      *
      */
     public IndexSearcher getIndexSearcher() throws RuntimeException {
-        try {
-            if(indexSearcher != null) {
-                if (indexSearcher.getIndexReader().isCurrent() || optimizeInProgress) {
-                    return indexSearcher;
-                } else {
-                    indexSearcher.close();
+        //TODO make sure a current version is returned
+        if (indexReader == null) {
+            try {
+                indexReader = DirectoryReader.open(indexDirectory);
+                indexSearcher = new IndexSearcher(indexReader);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            
+        } else {
+            try {
+                DirectoryReader newReader = DirectoryReader.openIfChanged(indexReader);
+                if (newReader != null) {
+                    final IndexReader oldReader = indexReader;
+                    indexReader = newReader;
+                    //would be better to use ScheduledThreadPoolExecutor
+                    new Thread() {
+
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                                Thread.currentThread().interrupt();
+                            }
+                            try {
+                                oldReader.close();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                        
+                    };
                 }
+                indexSearcher = new IndexSearcher(indexReader);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-            if (IndexReader.indexExists(indexDirectory)) {
-                indexSearcher = new IndexSearcher(indexDirectory, true);
-                return indexSearcher;
-            }
-        } catch (CorruptIndexException ex) {
-            logger.error(ex.getMessage());
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        } 
-        throw new RuntimeException("Could not initialize IndexSearcher");
+        }
+        return indexSearcher;
     }
 
     /**
@@ -181,7 +207,7 @@ public class LuceneTools {
     public void closeIndexSearcher() {
         try {
             if(indexSearcher != null) {
-                indexSearcher.close();
+                //indexSearcher.close();
             }
             if(indexDirectory != null) {
                 indexDirectory.close();
@@ -207,9 +233,10 @@ public class LuceneTools {
      * Starts index optimization. Optimization is started in a separate thread.
      * This method does not wait for optimization to finish but returns immediately 
      * after starting the optimize thread.
+     * //no more, see: http://www.searchworkings.org/blog/-/blogs/simon-says%3A-optimize-is-bad-for-you
      */
     synchronized public void optimizeIndex() {
-        if(optimizeInProgress) {
+      /*  if(optimizeInProgress) {
             return;
         }
         new Thread(new Runnable() {
@@ -240,7 +267,7 @@ public class LuceneTools {
                     }
                 });
             }
-        }).start();
+        }).start();*/
     }
     
     @Override
