@@ -83,6 +83,8 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Import-Package>org.osgi.framework; version="[1,2)", 
+                            org.osgi.service.component; version="[1,2)",*</Import-Package>
                         <Export-Package>org.apache.clerezza.platform.cris.*</Export-Package>
                     </instructions>
                 </configuration>
