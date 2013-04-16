@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.platform.typehandlerspace;
+package org.apache.clerezza.platform.typehandlerspace.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -24,25 +24,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
-import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.platform.config.SystemConfig;
+import org.apache.clerezza.platform.typehandlerspace.SupportedTypes;
+import org.apache.clerezza.platform.typehandlerspace.TypeHandlerDiscovery;
 import org.apache.clerezza.platform.typepriority.TypePrioritizer;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.ontologies.RDFS;
-import org.apache.clerezza.rdf.utils.RdfList;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 
 /**

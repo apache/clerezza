@@ -22,11 +22,12 @@ import javax.ws.rs.HttpMethod;
 
 /**
  * @author mir
- *
+ * @deprecated As the is {@link javax.ws.rs.OPTIONS)
  */
 @java.lang.annotation.Target(value={java.lang.annotation.ElementType.METHOD})
 @java.lang.annotation.Retention(value=java.lang.annotation.RetentionPolicy.RUNTIME)
 @HttpMethod(value="OPTIONS")
+@Deprecated
 public abstract @interface OPTIONS {
 
 }
