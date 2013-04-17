@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<title>TypeHandlerSpace Documentation</title>
+<link rel="stylesheet" type="text/css" href="style/documentation.css"/>
+</head>
+<body>
+<h1>TypeHandlerSpace Documentation</h1>
+<p>TypeHandlerSpace provides a JAX-RS Root Resource Class that
+delegates requests in its URI space (i.e. URIs starting with the prefix
+the bundle is installed with) to a TypeHandler for the RDF-Type(s) of
+the resource named by the requested URI. TypeHandlerSpace works on the
+clerezza.org platform it interacts with Triaxrs and with SCB and expects
+content and system graph to be located as per the platform conventions.</p>
+<h2>Processing of requests</h2>
+<p>While JAX-RS allows to bind Root Resources Classes to a specific
+URI-Path TypeHandlerSpace allows to bind such resources to an <code>rdf:type</code>.
+Root Resources are POJO providing methods handling different types of
+requests, with TypeHandlerSpace such POJOs can be bound to an RDF type
+in this function the class is called <code>TypeHandler</code>. When a
+request is processed by TypeHandlerSpace the <code>rdf:type</code>s of
+the requested resource are determined from the content graph.</p>
+<p>TypeHandlerSpace provides a root resource <code>org.apache.clerezza.platform.typehandlerspace.TypeHandlerSpace</code>
+which determines the type(s) of requested resource and calls a service
+of <code>org.apache.clerezza.platform.typehandlerspace.TypeHandlerDiscovery</code>
+to get a <code>Typehandler</code>, the request is the forwarded to this
+<code>TypeHandler</code></p>
+<p>The provided implementation of <code>TypeHandlerDiscovery</code>
+returns the available <code>TypeHandler</code> for the <code>rdf:type</code>
+with the highest priority. The Priority of <code>rdf:type</code>s is
+determined by an <code>rdf:List</code> named
+&lt;urn:x-localinstance:/typePriorityList> in the system graph. The
+actual <code>TypeHandler</code>s are OSGi services exposing <code>java.lang.Object</code>
+as service interface and with the property <code>org.apache.clerezza.platform.typehandler=true</code>.
+<code>TypeHandler</code>s are annotated with the <code>org.apache.clerezza.platform.typehandlerspace.SupportedTypes</code>
+annotation defining the <code>rdf:type</code>s supported by the class.</p>
+<h2>Example</h2>
+<p>The following defines a class that is both a regular JAX-RS Root
+Resource Class as well as a <code>TypeHandler</code> for
+&lt;http://example.org/ontology#MyType>.</p>
+<div class="blockcode">
+/**
+ * @scr.component
+ * @scr.service interface="java.lang.Object"
+ * @scr.property name="javax.ws.rs" type="Boolean" value="true"
+ * @scr.property name="org.apache.clerezza.platform.typehandler" type="Boolean" value="true"
+ * 
+ */
+@SupportedTypes(types = { "http://example.org/ontology#MyType" }, prioritize = false)
+@Path("/example")
+public class Handler {
+...
+}
+</div>
+<h2>Sub Resource Methods</h2>
+<p>Sub-resource methods in <code>TypeHandler</code>s are never invoked by TypeHandlerSpace, so they are only
+useful if a typeHandler is also used as regular JAX-RS Root Resource.</p>
+</body>
+</html>
