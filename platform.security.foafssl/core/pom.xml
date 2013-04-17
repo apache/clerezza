@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.security</artifactId>
-            <version>0.9-incubating-SNAPSHOT</version>
+            <version>0.8-incubating</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
