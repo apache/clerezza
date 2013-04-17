@@ -175,7 +175,7 @@ class WebFragmentRunner extends javax.servlet.Filter with GlobalMenuItemsProvide
     {
       import scala.collection.JavaConverters._
       for (nl <- f.getNavigationLinks.asScala) {
-        menuItems.add(new GlobalMenuItem("/"+nl.path, nl.label, nl.label, nl.order, "Stanbol"))
+        menuItems.add(new GlobalMenuItem("/"+nl.getPath, nl.getLabel, nl.getLabel, nl.getOrder, "Stanbol"))
       }
     };
     synchronized {
@@ -195,7 +195,7 @@ class WebFragmentRunner extends javax.servlet.Filter with GlobalMenuItemsProvide
     {
       import scala.collection.JavaConverters._
       for (nl <- f.getNavigationLinks.asScala) {
-        menuItems.remove(new GlobalMenuItem("/"+nl.path, nl.label, nl.label, nl.order, "Stanbol"))
+        menuItems.remove(new GlobalMenuItem("/"+nl.getPath, nl.getLabel, nl.getLabel, nl.getOrder, "Stanbol"))
       }
     };
     synchronized {
