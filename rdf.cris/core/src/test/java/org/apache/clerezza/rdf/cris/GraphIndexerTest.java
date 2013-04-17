@@ -320,6 +320,12 @@ public class GraphIndexerTest {
             properties.add(new PropertyHolder(FOAF.firstName));
             properties.add(new PropertyHolder(FOAF.lastName));
             properties.add(pathProperty);
+            List<VirtualProperty> joinProperties = new ArrayList<VirtualProperty>();
+            joinProperties.add(pathProperty);
+            joinProperties.add(new PropertyHolder(ownsPetProperty));
+            JoinVirtualProperty joinVirtualProperty = new JoinVirtualProperty(joinProperties);
+            properties.add(joinVirtualProperty);
+            properties.add(new PropertyHolder(ownsPetProperty));
             indexDefinitionManager.addDefinitionVirtual(FOAF.Person, properties);
             service.reCreateIndex();
             Thread.sleep(1000);
@@ -329,7 +335,8 @@ public class GraphIndexerTest {
             }
             //and a late addtition, lets give Frank a pet
             GraphNode frank = new GraphNode(service.findResources(FOAF.firstName, "Frank").get(0), dataGraph);
-            GraphNode pet = new GraphNode(new BNode(), dataGraph);
+            GraphNode pet = new GraphNode(new UriRef("http://example.org/pet"), dataGraph);
+            //GraphNode pet = new GraphNode(new BNode(), dataGraph);
             frank.addProperty(ownsPetProperty, pet.getNode());
             //Silvio has become a quite popular pet-name
             pet.addPropertyValue(FOAF.name, "Silvio");
@@ -344,6 +351,37 @@ public class GraphIndexerTest {
             {
                 List<NonLiteral> results = service.findResources(pathProperty, "Fifi");
                 Assert.assertEquals(1, results.size());
+            }
+            //count occurence of distinct firstnames
+            CountFacetCollector facetCollector = new CountFacetCollector();
+            facetCollector.addFacetProperty(new PropertyHolder(ownsPetProperty));
+
+            Thread.sleep(1000);
+            {
+                List<Condition> conditions = new ArrayList<Condition>();
+                conditions.add(new WildcardCondition(pathProperty, "*i*"));
+                //conditions.add(new WildcardCondition(ownsPetProperty, "*"));
+                List<NonLiteral> results = service.findResources(conditions, facetCollector);
+                Assert.assertTrue(results.size() > 0);
+                final Set<Entry<String, Integer>> facets = facetCollector.getFacets(new PropertyHolder(ownsPetProperty));
+
+                //there are 7 distinct first names
+                
+                Assert.assertEquals(1, facets.size());
+                /*//the firstname "Frank" appears once
+                Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Frank"));
+                //the firstname "frank" never appears
+                Assert.assertNull(facetCollector.getFacetValue(firstName, "frank"));
+                //the firstname "Jane" appears twice
+                Assert.assertEquals(new Integer(2), facetCollector.getFacetValue(firstName, "Jane"));
+                //the firstname "Harry" appears once
+                Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Harry"));
+                //the firstname "Harry Joe" appears once
+                Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Harry Joe"));
+                //the firstname "William" appears once
+                Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "William"));
+                //the firstname "John" appears twice
+                Assert.assertEquals(new Integer(2), facetCollector.getFacetValue(firstName, "John")); */
             }
         } catch (ParseException ex) {
         } catch (InterruptedException ex) {

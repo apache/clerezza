@@ -564,6 +564,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.typehandlerspace.impl</artifactId>
+            <scope>runtime</scope>
+            <version>0.9-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typepriority</artifactId>
             <scope>runtime</scope>
             <version>0.2-SNAPSHOT</version>
