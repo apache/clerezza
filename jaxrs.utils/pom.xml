@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>jaxrs.utils</artifactId>
     <packaging>bundle</packaging>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.8-SNAPSHOT</version>
     <name>Clerezza - JAX-RS Utilities</name>
     <description>Utility classes for JAX-RS (see the Javadoc)</description>
     <dependencies>
@@ -53,7 +53,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.testutils</artifactId>
             <scope>test</scope>
-            <version>0.9-incubating</version>
+            <version>0.10-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>

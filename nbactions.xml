@@ -19,4 +19,16 @@
                 <Env.MAVEN_OPTS>-Xmx1024M -XX:MaxPermSize=128M</Env.MAVEN_OPTS>            
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-update zz-version</actionName>
+            <displayName>update zz-version</displayName>
+            <goals>
+                <goal>versions:use-next-snapshots</goal>
+            </goals>
+            <properties>
+                <includesList>"org.apache.clerezza.*"</includesList>
+                <excludeReactor>false</excludeReactor>
+                <generateBackupPoms>false</generateBackupPoms>
+            </properties>
+        </action>
     </actions>
