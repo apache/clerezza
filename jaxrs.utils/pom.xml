@@ -53,7 +53,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.testutils</artifactId>
             <scope>test</scope>
-            <version>0.10-incubating-SNAPSHOT</version>
+            <version>0.9-incubating</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
