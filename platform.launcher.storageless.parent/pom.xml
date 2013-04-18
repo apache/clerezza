@@ -596,7 +596,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.utils</artifactId>
             <scope>runtime</scope>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.8-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
