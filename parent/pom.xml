@@ -28,7 +28,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>clerezza</artifactId>
     <packaging>pom</packaging>
-    <name>Clerezza - Parent for all (root)</name>
+    <name>Clerezza - Parent for all</name>
     <url>http://incubator.apache.org/clerezza/mvn-site/</url>
     <version>0.4-SNAPSHOT</version>
     <description>The direct or indirect parent of all Clerezza Artifacts</description>
@@ -75,6 +75,7 @@
                     <version>2.3.7</version>
                     <configuration>
                         <instructions>
+                            <Import-Package>org.osgi.*; version="[1,2)",*</Import-Package>
                             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                             <_nodefaultversion />
                         </instructions>
