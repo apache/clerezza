@@ -225,7 +225,7 @@
         <dependency>
             <groupId>org.apache.wink</groupId>
             <artifactId>wink-osgi</artifactId>
-            <version>1.3.0-SNAPSHOT</version>
+            <version>1.3.0</version>
             <!-- this has to start early, because of the MediaType requiring RuntimeImpl in 
             static initializer -->
             <scope>provided</scope>
