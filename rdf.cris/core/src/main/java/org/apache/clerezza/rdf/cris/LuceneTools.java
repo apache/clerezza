@@ -130,9 +130,8 @@ public class LuceneTools {
             //indexWriter.setMergeFactor(1000);
             return indexWriter;
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
+            throw new RuntimeException("Could not initialize IndexWriter", ex);
         } 
-        throw new RuntimeException("Could not initialize IndexWriter");
     }
 
     /**
