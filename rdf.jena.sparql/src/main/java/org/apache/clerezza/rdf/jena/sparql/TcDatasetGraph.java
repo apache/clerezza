@@ -180,5 +180,14 @@ class TcDatasetGraph implements DatasetGraph {
     public Iterator<Quad> findNG(Node node, Node node1, Node node2, Node node3) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+	
+	@Override
+	public void add( Node g, Node s, Node p, Node o ) {
+        throw new UnsupportedOperationException("Not supported yet.");
+	}
+	
+	@Override
+	public void delete( Node g, Node s, Node p, Node o ) {
+        throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

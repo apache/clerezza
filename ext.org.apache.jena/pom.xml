@@ -29,14 +29,14 @@
     </parent>
     <packaging>bundle</packaging>
     <groupId>org.apache.clerezza.ext</groupId>
-    <artifactId>com.hp.hpl.jena</artifactId>
+    <artifactId>org.apache.jena</artifactId>
       <version>0.7-SNAPSHOT</version>
     <name>Clerezza Ext - Jena OSGi Bundle</name>
     <description>All required dependencies for Jena</description>
     <dependencies>
         <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>arq</artifactId>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-arq</artifactId>
             <exclusions>
                 <exclusion>
                     <artifactId>xmlParserAPIs</artifactId>
@@ -49,8 +49,8 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>jena</artifactId>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
             <exclusions>
                 <exclusion>
                     <artifactId>xmlParserAPIs</artifactId>
@@ -80,7 +80,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>*;artifactId=!slf4j-*|org.apache.felix.scr.annotations</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Package>!com.hp.hpl.jena.*.test,
+                        <Import-Package>!org.apache.jena.*.test,
                         !org.apache.xml.resolver.*,!sun.*,
                         !com.sun.msv.*,
                         !com.sun.jdmk.*,
@@ -89,7 +89,7 @@
                         !com.ibm.uvm.tools,
                         !javax.jmdns,
                         *</Import-Package>
-                        <Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
+                        <Export-Package>org.apache.jena.*, org.apache.xerces.util</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

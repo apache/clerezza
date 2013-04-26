@@ -18,13 +18,15 @@
  */
 package org.apache.clerezza.rdf.jena.sparql;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.LabelExistsException;
+import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.util.Context;
+
 import java.util.Iterator;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -107,5 +109,60 @@ public class TcDataset implements Dataset {
 
     @Override
     public void close() {
+    }
+
+    @Override
+    public void setDefaultModel( Model model ) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void addNamedModel( String uri, Model model ) throws LabelExistsException {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void removeNamedModel( String uri ) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void replaceNamedModel( String uri, Model model ) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public Context getContext() {
+      return null;
+    }
+  
+    @Override
+    public boolean supportsTransactions() {
+      return false;
+    }
+  
+    @Override
+    public void begin( ReadWrite readWrite ) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void commit() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void abort() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public boolean isInTransaction() {
+      return false;
+    }
+  
+    @Override
+    public void end() {
+      throw new UnsupportedOperationException("Not supported yet.");
     }
 }

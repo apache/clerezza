@@ -20,7 +20,6 @@ package org.apache.clerezza.rdf.jena.facade;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Reifier;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
@@ -149,10 +148,5 @@ public class JenaGraph extends GraphBase implements Graph {
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m) {
         return new TrackingTripleIterator(convert(filter(m)));
-    }
-
-    @Override
-    protected Reifier constructReifier() {
-        return new DirectReifier(this);
     }
 }

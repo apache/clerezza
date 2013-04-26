@@ -29,14 +29,14 @@
     </parent>
     <packaging>bundle</packaging>
     <groupId>org.apache.clerezza.ext</groupId>
-    <artifactId>com.hp.hpl.jena.tdb</artifactId>
+    <artifactId>org.apache.jena.tdb</artifactId>
     <version>0.4-SNAPSHOT</version>
     <name>Clerezza Ext - Jena TDB OSGi Bundle</name>
     <description>All required dependencies for Jena TDB</description>
     <dependencies>
         <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>tdb</artifactId>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-tdb</artifactId>
             <exclusions>
                 <exclusion>
                     <artifactId>xmlParserAPIs</artifactId>
@@ -52,7 +52,7 @@
                 </exclusion>
                 <exclusion>
                     <artifactId>jenatest</artifactId>
-                    <groupId>com.hp.hpl.jena</groupId>
+                    <groupId>org.apache.jena</groupId>
                 </exclusion>
                 <exclusion>
                     <artifactId>junit</artifactId>
@@ -83,7 +83,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>*;scope=compile;artifactId=!slf4j-api|org.apache.felix.scr.annotations</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Package>!com.hp.hpl.jena.*.test,
+                        <Import-Package>!org.apache.jena.*.test,
                         !org.apache.xml.resolver.*,!sun.*,
                         !com.sun.msv.*,
                         !com.sun.jdmk.*,
@@ -92,7 +92,7 @@
                         !javax.jmdns,
                         !org.apache.xerces.util,
                         *</Import-Package>
-                        <Export-Package>com.hp.hpl.jena.*</Export-Package>
+                        <Export-Package>org.apache.jena.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
-            <artifactId>com.hp.hpl.jena</artifactId>
+            <artifactId>org.apache.jena</artifactId>
         </dependency>
         <!-- <dependency>
             <groupId>org.apache.felix</groupId>

@@ -70,7 +70,7 @@
                             <outputDirectory>target/extracted</outputDirectory>
                             <includes>**</includes>
                             <excludes>
-                                META-INF/**,**/com.hp.hpl.jena*
+                                META-INF/**,**/org.apache.jena*
                             </excludes>
                         </configuration>
                     </execution>
@@ -186,7 +186,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
-            <artifactId>com.hp.hpl.jena.tdb</artifactId>
+            <artifactId>org.apache.jena.tdb</artifactId>
             <scope>runtime</scope>
             <version>0.4-SNAPSHOT</version>
         </dependency>

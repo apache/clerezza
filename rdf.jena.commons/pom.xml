@@ -40,8 +40,8 @@
             <version>0.13-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>jena</artifactId>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
