@@ -3,13 +3,11 @@ package org.apache.clerezza.rdf.jena.tdb.storage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.test.MGraphTest;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.osgi.service.cm.ConfigurationException;

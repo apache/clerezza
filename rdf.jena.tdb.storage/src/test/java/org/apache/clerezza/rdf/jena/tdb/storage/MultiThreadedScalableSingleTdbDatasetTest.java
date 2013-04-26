@@ -52,11 +52,12 @@ import org.slf4j.LoggerFactory;
 import org.wymiwyg.commons.util.Util;
 
 
-public class MultiThreadedSingleTdbDatasetTest {
+public class MultiThreadedScalableSingleTdbDatasetTest {
     
-    private Logger log = LoggerFactory.getLogger(MultiThreadedSingleTdbDatasetTest.class);
+    private Logger log = LoggerFactory.getLogger(MultiThreadedScalableSingleTdbDatasetTest.class);
     
     private static final String TEST_GRAPH_URI_PREFIX = "http://www.example.org/multiThreadTest";
+    private static final UriRef UNION_GRAPH_NAME = new UriRef("http://www.example.org/unionGraph");
     private int[] graphNum = new int[]{0};
     /** 
      * how many threads to start
@@ -190,15 +191,16 @@ public class MultiThreadedSingleTdbDatasetTest {
     
     private static File tempFile;
     private static Dictionary<String,Object> config;
-    private static SingleTdbDatasetTcProvider provider;
+    private static ScalableSingleTdbDatasetTcProvider provider;
     @BeforeClass
     public static void setup() throws IOException, ConfigurationException {
         tempFile = File.createTempFile("tdbdatasettest", null);
         tempFile.delete();
         tempFile.mkdirs();
         config = new Hashtable<String,Object>();
-        config.put(SingleTdbDatasetTcProvider.TDB_DIR, tempFile.getAbsolutePath());
-        provider = new SingleTdbDatasetTcProvider(config);
+        config.put(ScalableSingleTdbDatasetTcProvider.TDB_DIR, tempFile.getAbsolutePath());
+        config.put(ScalableSingleTdbDatasetTcProvider.DEFAULT_GRAPH_NAME, UNION_GRAPH_NAME.getUnicodeString());
+        provider = new ScalableSingleTdbDatasetTcProvider(config);
     }
     @Before
     public void createGraphs(){

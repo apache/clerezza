@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,24 +23,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphListener;
-import org.apache.clerezza.rdf.core.impl.SimpleGraph;
-import org.apache.clerezza.rdf.core.impl.util.PrivilegedGraphWrapper;
-import org.apache.clerezza.rdf.core.impl.util.PrivilegedMGraphWrapper;
-import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
+import org.apache.clerezza.rdf.jena.tdb.internals.ModelGraph;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ConfigurationPolicy;
@@ -59,8 +48,6 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 /**
@@ -131,137 +118,6 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
     private Set<UriRef> graphNames;
     private Set<UriRef> mGraphNames;
     private UriRef defaultGraphName;
-    /**
-     * Represents the Jena {@link Model} and the Clerezza {@link Graph} or
-     * {@link MGraph}. It also provide access to the {@link JenaGraphAdaptor}
-     * so that this component can add parsed data to {@link Graph}s created
-     * by calls to {@link SingleTdbDatasetTcProvider#createGraph(UriRef, TripleCollection)}.
-     * @author Rupert Westenthaler
-     *
-     */
-    private class ModelGraph {
-        /**
-         * The Jena Model
-         */
-        private final Model model;
-        /**
-         * The JenaGraphAdapter. Note that in case of read-only in anonymous
-         * subclass is used that prevents the creation of an in-memory copy
-         * of the data when calling {@link JenaGraphAdaptor#getGraph()}.
-         */
-        private JenaGraphAdaptor jenaAdapter;
-        /**
-         * The {@link Graph}(in case of read-only) or {@link MGraph} (if read/write)
-         * that can be shared with other components. The instance stored by this
-         * variable will use all the required Wrappers such as such as 
-         * {@link LockableMGraphWrapper lockable} and {@link PrivilegedMGraphWrapper
-         * privileged}.
-         */
-        private TripleCollection graph;
-        /**
-         * keeps the state if this represents an {@link Graph} (read-only) or
-         * {@link MGraph}(read/write) ModelGraph.
-         */
-        private final boolean readWrite;
-        
-        /**
-         * Constructs and initializes the ModelGraph
-         * @param model the Jena Model
-         * @param readWrite if the Clerezza counterpart should be read- and 
-         * write-able or read-only.
-         */
-        protected ModelGraph(Model model, boolean readWrite){
-            if(model == null){
-                throw new IllegalArgumentException("The parsed Model MUST NOT be NULL");
-            }
-            this.model = model;
-            this.readWrite = readWrite;
-            if(!readWrite){ //construct an graph
-                jenaAdapter = new JenaGraphAdaptor(model.getGraph()){
-                    /**
-                     * Ensure that no in-memory copies are created for read only
-                     * Jena Graphs
-                     * @return
-                     */
-                    @Override
-                    public Graph getGraph() {
-                        return new SimpleGraph(this,true);
-                    }
-                };
-                graph = new PrivilegedGraphWrapper(jenaAdapter.getGraph());
-            } else { //construct an MGraph
-                jenaAdapter = new JenaGraphAdaptor(model.getGraph());
-                this.graph =  new DatasetLockedMGraph(
-                    new PrivilegedMGraphWrapper(jenaAdapter));
-            }
-        }
-        /**
-         * The {@link JenaGraphAdaptor}. For internal use only! Do not pass
-         * this instance to other components. Use {@link #getGraph()} and
-         * {@link #getMGraph()} instead!
-         * @return the plain {@link JenaGraphAdaptor}
-         */
-        protected JenaGraphAdaptor getJenaAdapter(){
-            return jenaAdapter;
-        }
-//        public boolean isReadonly(){
-//            return !readWrite;
-//        }
-        public boolean isReadWrite(){
-            return readWrite;
-        }
-        /**
-         * Getter for the {@link MGraph}
-         * @return the {@link MGraph}
-         * @throws IllegalStateException if this {@link ModelGraph} is NOT
-         * {@link #readWrite}
-         */
-        public MGraph getMGraph(){
-            if(!readWrite){
-                throw new IllegalStateException("Unable to return MGraph for read-only models");
-            }
-            return (MGraph)graph;
-        }
-        /**
-         * Getter for the {@link Graph}
-         * @return the {@link Graph}
-         * @throws IllegalStateException if this {@link ModelGraph} is 
-         * {@link #readWrite}
-         */
-        public Graph getGraph() {
-            if(readWrite){
-                throw new IllegalStateException("Unable to return Graph for read/write models.");
-            }
-            return (Graph)graph;
-        }
-        /**
-         * closes this ModelGraph and frees up all Jena TDB related resources.
-         */
-        public void close(){
-            this.graph = null;
-            this.jenaAdapter = null;
-            sync();
-            this.model.close();
-        }
-        /**
-         * Synchronize the Jena Model with the field system by calling
-         * {@link TDB#sync(Model)}
-         */
-        public void sync(){
-            TDB.sync(model);
-        }
-        /**
-         * Removes all triples from the Jena Model and than calls {@link #close()}
-         * to free remaining resources. Note that in Jena TDB a named model is 
-         * deleted if no more triples with the given context are present within
-         * the {@link Quad} store of the Jena TDB {@link DatasetGraph}.
-         */
-        public void delete(){
-            this.model.removeAll();
-            close();
-        }
-        
-    }
     /**
      * This background thread ensures that changes to {@link Model}s are
      * synchronized with the file system. Only {@link ModelGraph}s where
@@ -358,7 +214,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
      * directory.
      */
     private void activate(BundleContext bc,Dictionary<String,Object> config) throws ConfigurationException, IOException {
-        log.info("Activating singe Dataset TDB provider");
+        log.info("Activating single Dataset TDB provider");
         Object value = config.get(WEIGHT);
         if(value instanceof Number){
             weight = ((Number)value).intValue();
@@ -432,7 +288,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         //init the graph config (stores the graph and mgraph names in a config file)
         initGraphConfigs(dataDir,config);
         
-        //finally ensure the the defualtGraphName is not also used as a graph/mgraph name
+        //finally ensure the the defaultGraphName is not also used as a graph/mgraph name
         if(graphNames.contains(defaultGraphName)){
             throw new ConfigurationException(DEFAULT_GRAPH_NAME, "The configured default graph name '"
                 +defaultGraphName+"' is also used as a Graph name!");
@@ -517,7 +373,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                 throw new EntityAlreadyExistsException(name);
             } else if(modelGraph == null){
                 String modelName = name.getUnicodeString();
-                modelGraph = new ModelGraph(name.equals(defaultGraphName) ? 
+                modelGraph = new ModelGraph(datasetLock, name.equals(defaultGraphName) ? 
                         dataset.getNamedModel("urn:x-arq:UnionGraph") : 
                             dataset.getNamedModel(modelName),readWrite);
                 this.initModels.put(name, modelGraph);
@@ -689,7 +545,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             //add the parsed data!
             if(triples != null) { //load the initial and final set of triples
                 mg.getJenaAdapter().addAll(triples);
-                    mg.sync();
+                mg.sync();
             }
         } finally {
             datasetLock.writeLock().unlock();
@@ -958,206 +814,4 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             return false;
         }
     }
-    /**
-     * {@link LockableMGraph} wrapper that uses a single {@link ReadWriteLock} for
-     * the Jena TDB {@link SingleTdbDatasetTcProvider#dataset}
-     * @author Rupert Westenthaler
-     *
-     */
-    private class DatasetLockedMGraph implements LockableMGraph {
-
-        private final MGraph wrapped;
-
-        /**
-         * Constructs a LocalbleMGraph for an MGraph.
-         *
-         * @param providedMGraph a non-lockable mgraph
-         */
-        public DatasetLockedMGraph(final MGraph providedMGraph) {
-            this.wrapped = providedMGraph;
-        }
-
-        @Override
-        public ReadWriteLock getLock() {
-            return datasetLock;
-        }
-
-        @Override
-        public Graph getGraph() {
-            datasetLock.readLock().lock();
-            try {
-                return wrapped.getGraph();
-            } finally {
-                datasetLock.readLock().unlock();
-            }
-        }
-
-        @Override
-        public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
-            //users will need to aquire a readlock while iterating
-            return wrapped.filter(subject, predicate, object);
-        }
-
-        @Override
-        public int size() {
-            datasetLock.readLock().lock();
-            try {
-                return wrapped.size();
-            } finally {
-                datasetLock.readLock().unlock();
-            }
-        }
-
-        @Override
-        public boolean isEmpty() {
-            datasetLock.readLock().lock();
-            try {
-                return wrapped.isEmpty();
-            } finally {
-                datasetLock.readLock().unlock();
-            }
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            datasetLock.readLock().lock();
-            try {
-                return wrapped.contains(o);
-            } finally {
-                datasetLock.readLock().unlock();
-            }
-        }
-
-        @Override
-        public Iterator<Triple> iterator() {
-            //users will need it acquire a read lock while iterating!
-            return wrapped.iterator();
-        }
-
-        @Override
-        public Object[] toArray() {
-            datasetLock.readLock().lock();
-            try {
-                return wrapped.toArray();
-            } finally {
-                datasetLock.readLock().unlock();
-            }
-        }
-
-        @Override
-        public <T> T[] toArray(T[] a) {
-            datasetLock.readLock().lock();
-            try {
-                return wrapped.toArray(a);
-            } finally {
-                datasetLock.readLock().unlock();
-            }
-        }
-
-        @Override
-        public boolean containsAll(Collection<?> c) {
-            datasetLock.readLock().lock();
-            try {
-                return wrapped.containsAll(c);
-            } finally {
-                datasetLock.readLock().unlock();
-            }
-        }
-
-        @Override
-        public boolean add(Triple e) {
-            datasetLock.writeLock().lock();
-            try {
-                return wrapped.add(e);
-            } finally {
-                datasetLock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            datasetLock.writeLock().lock();
-            try {
-                return wrapped.remove(o);
-            } finally {
-                datasetLock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public boolean addAll(Collection<? extends Triple> c) {
-            datasetLock.writeLock().lock();
-            try {
-                return wrapped.addAll(c);
-            } finally {
-                datasetLock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public boolean removeAll(Collection<?> c) {
-            datasetLock.writeLock().lock();
-            try {
-                return wrapped.removeAll(c);
-            } finally {
-                datasetLock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public boolean retainAll(Collection<?> c) {
-            datasetLock.writeLock().lock();
-            try {
-                return wrapped.retainAll(c);
-            } finally {
-                datasetLock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public void clear() {
-            datasetLock.writeLock().lock();
-            try {
-                wrapped.clear();
-            } finally {
-                datasetLock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
-            wrapped.addGraphListener(listener, filter, delay);
-        }
-
-        @Override
-        public void addGraphListener(GraphListener listener, FilterTriple filter) {
-            wrapped.addGraphListener(listener, filter);
-        }
-
-        @Override
-        public void removeGraphListener(GraphListener listener) {
-            wrapped.removeGraphListener(listener);
-        }
-
-        @Override
-        public int hashCode() {
-            return wrapped.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if(obj instanceof DatasetLockedMGraph){
-                DatasetLockedMGraph other = (DatasetLockedMGraph) obj;
-                return wrapped.equals(other.wrapped);
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public String toString() {
-            return wrapped.toString();
-        }        
-    }
-
 }
