@@ -235,7 +235,7 @@ public class LuceneTools {
      * //no more, see: http://www.searchworkings.org/blog/-/blogs/simon-says%3A-optimize-is-bad-for-you
      */
     synchronized public void optimizeIndex() {
-      /*  if(optimizeInProgress) {
+        if(optimizeInProgress) {
             return;
         }
         new Thread(new Runnable() {
@@ -250,7 +250,7 @@ public class LuceneTools {
                     @Override
                     public Void run() {
                         try {
-                            getIndexWriter().optimize(true);
+                            getIndexWriter().forceMerge(1, true);
                             commit();
                             logger.info("Index optimized.");
                         } catch(IOException ex) {
@@ -266,7 +266,7 @@ public class LuceneTools {
                     }
                 });
             }
-        }).start();*/
+        }).start();  
     }
     
     @Override
