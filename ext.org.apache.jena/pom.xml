@@ -80,7 +80,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>*;artifactId=!slf4j-*|org.apache.felix.scr.annotations</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Package>!org.apache.jena.*.test,
+                        <Import-Package>!com.hp.hpl.jena.*.test,
                         !org.apache.xml.resolver.*,!sun.*,
                         !com.sun.msv.*,
                         !com.sun.jdmk.*,
@@ -89,7 +89,7 @@
                         !com.ibm.uvm.tools,
                         !javax.jmdns,
                         *</Import-Package>
-                        <Export-Package>org.apache.jena.*, org.apache.xerces.util</Export-Package>
+                        <Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
