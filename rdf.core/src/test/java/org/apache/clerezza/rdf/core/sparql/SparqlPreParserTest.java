@@ -44,7 +44,7 @@ public class SparqlPreParserTest {
         UriRef defaultGraph = new UriRef("http://example.org/default");
         SparqlPreParser parser = new SparqlPreParser();
         Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), defaultGraph);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(defaultGraph));
+        Assert.assertTrue(referredGraphs == null);
     }
 
     @Test

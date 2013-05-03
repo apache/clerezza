@@ -58,7 +58,8 @@ public class SparqlPreParser {
             referredGraphs = u.getReferredGraphs();
         }
         if (referredGraphs.isEmpty()) {
-            referredGraphs.add(defaultGraph);
+            return null;
+//            referredGraphs.add(defaultGraph);
         }
         return referredGraphs;
     }
