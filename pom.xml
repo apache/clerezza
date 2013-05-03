@@ -49,8 +49,8 @@
                 <module>parent</module>
                 <module>clerezza-jar-resource-bundle</module>
                 <module>platform.style.classic.webguiexamples</module>
-                <module>ext.com.hp.hpl.jena</module>
-                <module>ext.com.hp.hpl.jena.tdb</module>
+                <module>ext.org.apache.jena</module>
+                <module>ext.org.apache.jena.tdb</module>
                 <module>ext.com.ibm.icu</module>
                 <module>ext.javax.mail</module>
                 <module>ext.org.json.simple</module>

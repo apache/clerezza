@@ -61,8 +61,8 @@
             <artifactId>org.osgi.compendium</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>tdb</artifactId>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-tdb</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.jmx</groupId>

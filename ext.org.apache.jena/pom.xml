@@ -29,47 +29,44 @@
     </parent>
     <packaging>bundle</packaging>
     <groupId>org.apache.clerezza.ext</groupId>
-    <artifactId>com.hp.hpl.jena.tdb</artifactId>
-    <version>0.4-SNAPSHOT</version>
-    <name>Clerezza Ext - Jena TDB OSGi Bundle</name>
-    <description>All required dependencies for Jena TDB</description>
+    <artifactId>org.apache.jena</artifactId>
+      <version>0.7-SNAPSHOT</version>
+    <name>Clerezza Ext - Jena OSGi Bundle</name>
+    <description>All required dependencies for Jena</description>
     <dependencies>
         <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>tdb</artifactId>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-arq</artifactId>
             <exclusions>
                 <exclusion>
                     <artifactId>xmlParserAPIs</artifactId>
                     <groupId>xerces</groupId>
                 </exclusion>
-                <exclusion>
+               <exclusion>
                     <artifactId>xercesImpl</artifactId>
                     <groupId>xerces</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jenatest</artifactId>
-                    <groupId>com.hp.hpl.jena</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>junit</artifactId>
-                    <groupId>junit</groupId>
-                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>xmlParserAPIs</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion>
+               <exclusion>
+                    <artifactId>xercesImpl</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion> 
+            </exclusions> 
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml</groupId>
-            <artifactId>relaxngDatatype</artifactId>
-            <version>1.0</version>
-        </dependency>
+        </dependency> 
     </dependencies>
 
     <build>
@@ -81,18 +78,18 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Embed-Dependency>*;scope=compile;artifactId=!slf4j-api|org.apache.felix.scr.annotations</Embed-Dependency>
+                        <Embed-Dependency>*;artifactId=!slf4j-*|org.apache.felix.scr.annotations</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Import-Package>!com.hp.hpl.jena.*.test,
                         !org.apache.xml.resolver.*,!sun.*,
                         !com.sun.msv.*,
                         !com.sun.jdmk.*,
                         !javax.jms.*,
+                        !org.relaxng.*,
                         !com.ibm.uvm.tools,
                         !javax.jmdns,
-                        !org.apache.xerces.util,
                         *</Import-Package>
-                        <Export-Package>com.hp.hpl.jena.*</Export-Package>
+                        <Export-Package>com.hp.hpl.jena.*, org.apache.xerces.util</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
