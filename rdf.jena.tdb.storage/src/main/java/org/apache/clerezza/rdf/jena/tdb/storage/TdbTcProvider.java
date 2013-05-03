@@ -69,7 +69,7 @@ import org.apache.felix.scr.annotations.Service;
 @Component(metatype=true, immediate=true)
 @Service(WeightedTcProvider.class)
 @Property(name="weight", intValue=105)
-public class TdbTcProvider implements WeightedTcProvider {
+public class TdbTcProvider extends BaseTdbTcProvider implements WeightedTcProvider {
 
     static {
         //not sure what the perfomance implication of this is
@@ -94,7 +94,7 @@ public class TdbTcProvider implements WeightedTcProvider {
     private final Map<File, Dataset> dir2Dataset = new HashMap<File, Dataset>();
     private static final Logger log = LoggerFactory.getLogger(TdbTcProvider.class);
     private int weight = 105;
-
+    
     class SyncThread extends Thread {
         private boolean stopRequested = false;
 

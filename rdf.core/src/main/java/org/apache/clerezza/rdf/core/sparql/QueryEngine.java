@@ -18,18 +18,46 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
-import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.sparql.query.Query;
 
 /**
  * A QueryEngine can process SPARQL queries against an arbitrary set of graphs.
- *
+ * 
  * @author rbn
  */
 public interface QueryEngine {
 
-    public Object execute(TcManager tcManager, TripleCollection dafaultGraph, Query query);
+	/**
+	 * Executes any sparql query. The type of the result object will vary
+	 * depending on the type of the query.
+	 * 
+	 * @param tcManager
+	 *            where the query originates.
+	 * @param defaultGraph
+	 *            the default graph against which to execute the query if no
+	 *            FROM clause is present
+	 * @param query
+	 *            Query object to be executed
+	 * @return the resulting ResultSet, Graph or Boolean value
+	 */
+	public Object execute(TcManager tcManager, TripleCollection defaultGraph,
+			Query query);
 
-
+	/**
+	 * Executes any sparql query. The type of the result object will vary
+	 * depending on the type of the query.
+	 * 
+	 * @param tcManager
+	 *            where the query originates.
+	 * @param defaultGraph
+	 *            the default graph against which to execute the query if no
+	 *            FROM clause is present
+	 * @param query
+	 *            string to be executed.
+	 * @return the resulting ResultSet, Graph or Boolean value
+	 */
+	public Object execute(TcManager tcManager, TripleCollection defaultGraph,
+			String query);
 }

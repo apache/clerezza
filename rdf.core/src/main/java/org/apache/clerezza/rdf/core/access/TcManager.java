@@ -18,9 +18,6 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
-import org.apache.clerezza.rdf.core.impl.WriteBlockedTripleCollection;
-
 import java.security.AccessControlException;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,28 +30,30 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
+import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
+import org.apache.clerezza.rdf.core.impl.WriteBlockedTripleCollection;
+import org.apache.clerezza.rdf.core.sparql.NoQueryEngineException;
+import org.apache.clerezza.rdf.core.sparql.QueryEngine;
+import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
 import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
-import org.apache.clerezza.rdf.core.sparql.NoQueryEngineException;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
-import org.apache.clerezza.rdf.core.sparql.QueryEngine;
-import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
+import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleStringQuerySerializer;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * This class implements <code>TcManager</code>, delegating the actual
@@ -277,6 +276,26 @@ public class TcManager extends TcProviderMultiplexer {
      *            FROM clause is present
      * @return the resulting ResultSet, Graph or Boolean value
      */
+    public Object executeSparqlQuery(String query, TripleCollection defaultGraph) {
+        final QueryEngine queryEngine = this.queryEngine;
+        if (queryEngine != null) {
+            return queryEngine.execute(this, defaultGraph, query);
+        } else {
+            throw new NoQueryEngineException();
+        }
+    }
+
+    /**
+     * Executes any sparql query. The type of the result object will vary
+     * depending on the type of the query.
+     * 
+     * @param query
+     *            the sparql query to execute
+     * @param defaultGraph
+     *            the default graph against which to execute the query if not
+     *            FROM clause is present
+     * @return the resulting ResultSet, Graph or Boolean value
+     */
     public Object executeSparqlQuery(Query query, TripleCollection defaultGraph) {
         final QueryEngine queryEngine = this.queryEngine;
         if (queryEngine != null) {
@@ -298,12 +317,7 @@ public class TcManager extends TcProviderMultiplexer {
      */
     public ResultSet executeSparqlQuery(SelectQuery query,
             TripleCollection defaultGraph) {
-        final QueryEngine queryEngine = this.queryEngine;
-        if (queryEngine != null) {
-            return (ResultSet) queryEngine.execute(this, defaultGraph, query);
-        } else {
-            throw new NoQueryEngineException();
-        }
+        return (ResultSet) executeSparqlQuery((Query)query, defaultGraph);
     }
 
     /**
@@ -318,12 +332,7 @@ public class TcManager extends TcProviderMultiplexer {
      */
     public boolean executeSparqlQuery(AskQuery query,
             TripleCollection defaultGraph) {
-        final QueryEngine queryEngine = this.queryEngine;
-        if (queryEngine != null) {
-            return (Boolean) queryEngine.execute(this, defaultGraph, query);
-        } else {
-            throw new NoQueryEngineException();
-        }
+        return (Boolean) executeSparqlQuery((Query)query, defaultGraph);
     }
 
     /**
@@ -338,12 +347,7 @@ public class TcManager extends TcProviderMultiplexer {
      */
     public Graph executeSparqlQuery(DescribeQuery query,
             TripleCollection defaultGraph) {
-        final QueryEngine queryEngine = this.queryEngine;
-        if (queryEngine != null) {
-            return (Graph) queryEngine.execute(this, defaultGraph, query);
-        } else {
-            throw new NoQueryEngineException();
-        }
+        return (Graph) executeSparqlQuery((Query)query, defaultGraph);
     }
 
     /**
@@ -358,12 +362,7 @@ public class TcManager extends TcProviderMultiplexer {
      */
     public Graph executeSparqlQuery(ConstructQuery query,
             TripleCollection defaultGraph) {
-        final QueryEngine queryEngine = this.queryEngine;
-        if (queryEngine != null) {
-            return (Graph) queryEngine.execute(this, defaultGraph, query);
-        } else {
-            throw new NoQueryEngineException();
-        }
+        return (Graph) executeSparqlQuery((Query)query, defaultGraph);
     }
 
     /**

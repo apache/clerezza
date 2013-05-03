@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.core.access;
 
 import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.clerezza.rdf.core.sparql.query.Query;
 
 /**
  * Extends the TcProvider interface for providers that support sparql queries.
@@ -37,4 +38,17 @@ public interface QueryableTcProvider extends TcProvider {
      * @return the resulting ResultSet, Graph or Boolean value
      */
     public Object executeSparqlQuery(String query, TripleCollection defaultGraph);
+
+    /**
+     * Executes any sparql query. The type of the result object will vary
+     * depending on the type of the query.
+     * 
+     * @param query
+     *            the sparql query to execute
+     * @param defaultGraph
+     *            the default graph against which to execute the query if not
+     *            FROM clause is present
+     * @return the resulting ResultSet, Graph or Boolean value
+     */
+    public Object executeSparqlQuery(Query query, TripleCollection defaultGraph);
 }

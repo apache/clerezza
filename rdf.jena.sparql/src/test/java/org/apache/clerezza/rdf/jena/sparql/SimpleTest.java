@@ -39,6 +39,22 @@ import org.apache.clerezza.rdf.ontologies.DC;
 public class SimpleTest {
 
     @Test
+    public void simpleStringQuery() throws ParseException {
+        SimpleMGraph data = new SimpleMGraph();
+        final String titleValue = "SPARQL Tutorial";
+        data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+                DC.title, new PlainLiteralImpl(titleValue)));
+        String query = "SELECT ?title WHERE" +
+                "{" +
+                "    <http://example.org/book/book1> <"+DC.title.getUnicodeString()+"> ?title ." +
+                "}";
+        ResultSet resultSet = (ResultSet) TcManager.getInstance().executeSparqlQuery(
+                query, data);
+        Assert.assertEquals(titleValue, 
+                ((Literal)resultSet.next().get("title")).getLexicalForm());
+    }
+
+    @Test
     public void simpleSelectQuery() throws ParseException {
         SimpleMGraph data = new SimpleMGraph();
         final String titleValue = "SPARQL Tutorial";
