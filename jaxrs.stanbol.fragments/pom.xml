@@ -50,15 +50,7 @@
         <dependency>
             <groupId>org.apache.wink</groupId>
             <artifactId>wink-osgi</artifactId>
-            <version>1.3.0-SNAPSHOT</version>
-        </dependency>
-        <!-- testing with last released version, testutils is doscontinued as
-       triaxrs is -->
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>jaxrs.testutils</artifactId>
-            <scope>test</scope>
-            <version>0.10-incubating-SNAPSHOT</version>
+            <version>1.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
