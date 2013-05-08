@@ -88,7 +88,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
     @Property(name=SingleTdbDatasetTcProvider.SYNC_INTERVAL, intValue=SingleTdbDatasetTcProvider.DEFAULT_SYNC_INTERVAL),
     @Property(name=SingleTdbDatasetTcProvider.WEIGHT, intValue=106)
 })
-public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
+public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements WeightedTcProvider {
 
     public static final String TDB_DIR = "tdb-dir";
     public static final String DEFAULT_GRAPH_NAME = "default-graph-name";
@@ -105,7 +105,6 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
     private int syncInterval = DEFAULT_SYNC_INTERVAL;
     private SyncThread syncThread;
 
-    private Dataset dataset;
     private final ReadWriteLock datasetLock = new ReentrantReadWriteLock();;
     
     private File graphConfigFile;
@@ -282,7 +281,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                     + dataDir+"' already exists, but is not a Directory!");
         } //else exists and is a directory ... nothing to do
         TDB.getContext().set(TDB.symUnionDefaultGraph, true);
-        dataset = TDBFactory.createDataset(dataDir.getAbsolutePath());
+        setDataset(TDBFactory.createDataset(dataDir.getAbsolutePath()));
         //init the read/write lock
         
         //init the graph config (stores the graph and mgraph names in a config file)
@@ -326,6 +325,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
      */
     @Deactivate
     protected void deactivate(ComponentContext ctx) {
+    	Dataset dataset = getDataset();
         if(dataset != null){ //avoid NPE on multiple calls
             datasetLock.writeLock().lock();
             try {
@@ -334,7 +334,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
                 }
                 TDB.sync(dataset);
                 dataset.close();
-                dataset = null;
+                setDataset(null);
             } finally {
                 datasetLock.writeLock().unlock();
             }
@@ -374,8 +374,8 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
             } else if(modelGraph == null){
                 String modelName = name.getUnicodeString();
                 modelGraph = new ModelGraph(datasetLock, name.equals(defaultGraphName) ? 
-                        dataset.getNamedModel("urn:x-arq:UnionGraph") : 
-                            dataset.getNamedModel(modelName),readWrite);
+                        getDataset().getNamedModel("urn:x-arq:UnionGraph") : 
+                            getDataset().getNamedModel(modelName),readWrite);
                 this.initModels.put(name, modelGraph);
             }
         } finally {
@@ -479,7 +479,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         Set<UriRef> graphNames = new HashSet<UriRef>();
         datasetLock.readLock().lock();
         try {
-            for(Iterator<String> names = dataset.listNames(); 
+            for(Iterator<String> names = getDataset().listNames(); 
                 names.hasNext();
                     graphNames.add(new UriRef(names.next())));
         } finally {
@@ -717,7 +717,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         log.info("Present named Models");
         datasetLock.readLock().lock();
         try {
-            for(Iterator<String> it = dataset.listNames();it.hasNext();){
+            for(Iterator<String> it = getDataset().listNames();it.hasNext();){
                 log.info(" > {}",it.next());
             }
         } finally {
@@ -780,7 +780,7 @@ public class SingleTdbDatasetTcProvider implements WeightedTcProvider {
         } else { //read pre-existing models in the dataset
             datasetLock.readLock().lock();
             try {
-                for(Iterator<String> it = dataset.listNames();it.hasNext();){
+                for(Iterator<String> it = getDataset().listNames();it.hasNext();){
                     mGraphNames.add(new UriRef(it.next()));
                 }
                 writeMGraphConfig();

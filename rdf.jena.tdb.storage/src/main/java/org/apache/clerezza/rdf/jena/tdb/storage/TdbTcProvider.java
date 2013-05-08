@@ -69,7 +69,7 @@ import org.apache.felix.scr.annotations.Service;
 @Component(metatype=true, immediate=true)
 @Service(WeightedTcProvider.class)
 @Property(name="weight", intValue=105)
-public class TdbTcProvider extends BaseTdbTcProvider implements WeightedTcProvider {
+public class TdbTcProvider implements WeightedTcProvider {
 
     static {
         //not sure what the perfomance implication of this is

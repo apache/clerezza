@@ -87,7 +87,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
     @Property(name=ScalableSingleTdbDatasetTcProvider.SYNC_INTERVAL, intValue=ScalableSingleTdbDatasetTcProvider.DEFAULT_SYNC_INTERVAL),
     @Property(name=ScalableSingleTdbDatasetTcProvider.WEIGHT, intValue=107)
 })
-public class ScalableSingleTdbDatasetTcProvider implements WeightedTcProvider {
+public class ScalableSingleTdbDatasetTcProvider extends BaseTdbTcProvider implements WeightedTcProvider {
 
     public static final String TDB_DIR = "tdb-dir";
     public static final String DEFAULT_GRAPH_NAME = "default-graph-name";
@@ -105,7 +105,6 @@ public class ScalableSingleTdbDatasetTcProvider implements WeightedTcProvider {
     private int syncInterval = DEFAULT_SYNC_INTERVAL;
     private SyncThread syncThread;
 
-    private Dataset dataset;
     private final ReadWriteLock datasetLock = new ReentrantReadWriteLock();;
     private UriRef defaultGraphName;
 
@@ -278,8 +277,8 @@ public class ScalableSingleTdbDatasetTcProvider implements WeightedTcProvider {
                     + dataDir+"' already exists, but is not a Directory!");
         } //else exists and is a directory ... nothing to do
         TDB.getContext().set(TDB.symUnionDefaultGraph, true);
-        dataset = TDBFactory.createDataset(dataDir.getAbsolutePath());
-        graphNameIndex = new ModelGraph(datasetLock, dataset.getDefaultModel(),true);
+        setDataset( TDBFactory.createDataset(dataDir.getAbsolutePath()) );
+        graphNameIndex = new ModelGraph(datasetLock, getDataset().getDefaultModel(),true);
 
         // Remove existing default graph names from the index (if might have changed
         // in the mean time).
@@ -331,6 +330,7 @@ public class ScalableSingleTdbDatasetTcProvider implements WeightedTcProvider {
             syncThread.requestStop();
             syncThread = null;
         }
+    	Dataset dataset = getDataset();
         if(dataset != null){ //avoid NPE on multiple calls
             datasetLock.writeLock().lock();
             try {
@@ -344,7 +344,7 @@ public class ScalableSingleTdbDatasetTcProvider implements WeightedTcProvider {
 
                 TDB.sync(dataset);
                 dataset.close();
-                dataset = null;
+                setDataset(null);
             } finally {
                 datasetLock.writeLock().unlock();
             }
@@ -378,8 +378,8 @@ public class ScalableSingleTdbDatasetTcProvider implements WeightedTcProvider {
             } else if(modelGraph == null){
                 String modelName = name.getUnicodeString();
                 modelGraph = new ModelGraph(datasetLock, name.equals(defaultGraphName) ? 
-                        dataset.getNamedModel("urn:x-arq:UnionGraph") : 
-                            dataset.getNamedModel(modelName),readWrite);
+                		getDataset().getNamedModel("urn:x-arq:UnionGraph") : 
+                			getDataset().getNamedModel(modelName),readWrite);
                 if(readWrite) {
                     // Keep track of readwrite model to be able to sync them.
                     this.syncModels.put(name, modelGraph);

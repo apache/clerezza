@@ -29,7 +29,7 @@ import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
  *
  * @author rbn
  */
-class ResultSetWrapper implements org.apache.clerezza.rdf.core.sparql.ResultSet {
+public class ResultSetWrapper implements org.apache.clerezza.rdf.core.sparql.ResultSet {
 
     private final Iterator<QuerySolution> solutionsIter;
 
