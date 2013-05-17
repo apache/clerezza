@@ -133,6 +133,7 @@
             <artifactId>commons-codec</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- these are now embeded as most recent version is not OSGi bundle
         <dependency>
             <groupId>net.rootdev</groupId>
             <artifactId>java-rdfa</artifactId>
@@ -140,7 +141,7 @@
         <dependency>
             <groupId>net.rootdev</groupId>
             <artifactId>java-rdfa-htmlparser</artifactId>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.apache.mina</groupId>
             <artifactId>mina-core</artifactId>

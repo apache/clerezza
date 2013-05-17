@@ -92,7 +92,7 @@
                         !javax.jmdns,
                         !org.apache.xerces.util,
                         *</Import-Package>
-                        <Export-Package>com.hp.hpl.jena.*</Export-Package>
+                        <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
