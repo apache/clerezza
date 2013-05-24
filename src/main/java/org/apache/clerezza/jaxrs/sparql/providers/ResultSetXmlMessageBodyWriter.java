@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Produces;
@@ -119,15 +120,12 @@ public class ResultSetXmlMessageBodyWriter implements MessageBodyWriter<ResultSe
 			root.setAttribute("xmlns", "http://www.w3.org/2005/sparql-results#");
 			doc.appendChild(root);
 			Element head = doc.createElement("head");
+			createVariables(queryResult.getResultVars(), head, doc);
 			root.appendChild(head);
+
 			Element results = doc.createElement("results");
-			SolutionMapping solutionMapping = null;
 			while (queryResult.hasNext()) {
-				solutionMapping = queryResult.next();				
-				createResultElement(solutionMapping, results, doc);				
-			}
-			if (solutionMapping != null) {
-				createVariable(solutionMapping, head, doc);
+				createResultElement(queryResult.next(), results, doc);				
 			}
 			root.appendChild(results);
 
@@ -198,11 +196,10 @@ public class ResultSetXmlMessageBodyWriter implements MessageBodyWriter<ResultSe
 		}
 	}
 
-	private void createVariable(SolutionMapping solutionMap, Element head, Document doc) {
-		Set<Variable> keys = solutionMap.keySet();
-		for (Variable key : keys) {
+	private void createVariables(List<String> variables, Element head, Document doc) {
+		for (String variable : variables) {
 			Element varElement = doc.createElement("variable");
-			varElement.setAttribute("name", key.getName());
+			varElement.setAttribute("name", variable);
 			head.appendChild(varElement);
 		}
 	}

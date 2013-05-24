@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Produces;
@@ -96,22 +97,18 @@ public class ResultSetJsonMessageBodyWriter implements MessageBodyWriter<ResultS
 		JSONObject root = new JSONObject();
 		JSONObject head = new JSONObject();
 		root.put("head", head);
+		createVariables(queryResult.getResultVars(), head);
 		
 		JSONObject results = new JSONObject();
 		root.put("results", results);
 		
 		JSONArray bindings = null;
-		SolutionMapping solutionMapping = null;
 		while (queryResult.hasNext()) {
 			if (bindings == null) {
 				bindings = new JSONArray();
 				results.put("bindings", bindings);
 			}
-			solutionMapping = queryResult.next();				
-			bindings.add(createResult(solutionMapping));				
-		}
-		if (solutionMapping != null) {
-			createVariable(solutionMapping, head);
+			bindings.add(createResult(queryResult.next()));				
 		}
 
 		return root;
@@ -160,15 +157,14 @@ public class ResultSetJsonMessageBodyWriter implements MessageBodyWriter<ResultS
 		return result;
 	}
 
-	private void createVariable(SolutionMapping solutionMap, JSONObject head) {
-		Set<Variable> keys = solutionMap.keySet();
+	private void createVariables(List<String> variables, JSONObject head) {
 		JSONArray vars = null;
-		for (Variable key : keys) {
+		for (String variable : variables) {
 			if (vars == null) {
 				vars = new JSONArray();
 				head.put("vars", vars);
 			}
-			vars.add(key.getName());
+			vars.add(variable);
 		}
 	}
 }
