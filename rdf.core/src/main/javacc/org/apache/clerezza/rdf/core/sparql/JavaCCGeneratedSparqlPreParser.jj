@@ -78,6 +78,11 @@ import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleSelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleSparqlUnit;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleTriplePattern;
 import org.apache.clerezza.rdf.core.sparql.update.Update;
+import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
+import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation.GraphSpec;
+import org.apache.clerezza.rdf.core.sparql.update.impl.ClearOperation;
+import org.apache.clerezza.rdf.core.sparql.update.impl.LoadOperation;
+import org.apache.clerezza.rdf.core.sparql.update.impl.SimpleUpdate;
 
 /**
  *
@@ -103,6 +108,23 @@ class JavaCCGeneratedSparqlPreParser {
     private Map<String, String> prefixes;
     private Map<String, ResourceOrVariable> bNodes;
     private int count;
+
+    private class GraphRefAllSpec {
+        GraphSpec graphSpec;
+        UriRef graph;
+        public void setGraphSpec(GraphSpec graphSpec) {
+            this.graphSpec = graphSpec;
+        }
+        public GraphSpec getGraphSpec() {
+            return this.graphSpec;
+        }
+        public void setGraph(UriRef graph){
+            this.graph = graph;
+        }
+        public UriRef getGraph() {
+            return this.graph;
+        }
+    }
 
     void initialize() {
         base = null;
@@ -320,12 +342,11 @@ TOKEN [IGNORE_CASE] :
 private SparqlUnit SparqlUnit() : {
     Query query;
     Update update; } {
-    Prologue()
     (
-        query=Query() {
+        query=QueryUnit() {
         return new SimpleSparqlUnit(query); }
     |
-        update=Update() {
+        update=UpdateUnit() {
         return new SimpleSparqlUnit(update); }
     )
 }
@@ -357,11 +378,9 @@ private Query Query() : {
 }
 
 /* [3]    UpdateUnit ::= Update */
-/* [3]    UpdateUnit ::= Prologue Update */
 private Update UpdateUnit() : {
-    Update update; } {
-    Prologue()
-    update=Update() {
+    Update update = new SimpleUpdate(); } {
+    Update(update) {
     return update; }
 }
 
@@ -524,16 +543,73 @@ private UriRef SourceSelector() : {
 */
 
 /* [29]    Update ::= Prologue ( Update1 ( ';' Update )? )? */
-/* [29]    Update ::= ( Update1 ( ';' UpdateUnit )? )? */
-private Update Update() : {
-    Update update; } {
-    <LOAD> {
-    return null; }
+private void Update(Update update) : {} {
+    Prologue()
+    (
+        Update1(update)
+        (
+            ";"
+            Update(update)
+        )?
+    )?
 }
 
 /* [30]    Update1 ::= Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify */
+private void Update1(Update update) : {
+    UpdateOperation updateOperation = null; } {
+
+    (
+        updateOperation = Load()
+    |
+        updateOperation = Clear()
+    ) {
+    if (updateOperation != null) {
+        update.addOperation(updateOperation);
+    }
+    }
+}
+
 /* [31]    Load ::= 'LOAD' 'SILENT'? iri ( 'INTO' GraphRef )? */
+private UpdateOperation Load() : {
+    UriRef uriRef;
+    LoadOperation operation; } {
+    <LOAD> {
+    operation = new LoadOperation(); }
+    (
+        <SILENT> {
+        operation.setSilent(true); }
+    )?
+    uriRef = Iri() {
+        operation.setSource(uriRef);
+    }
+    (
+        <INTO>
+        uriRef = GraphRef() {
+        operation.setDestinationGraph(uriRef); }
+    )? {
+    return operation; }
+}
+
 /* [32]    Clear ::= 'CLEAR' 'SILENT'? GraphRefAll */
+private UpdateOperation Clear() : {
+    GraphRefAllSpec graphRefAllSpec;
+    GraphSpec graphSpec;
+    ClearOperation operation; } {
+    <CLEAR> {
+    operation = new ClearOperation(); }
+    (
+        <SILENT> {
+        operation.setSilent(true); }
+    )?
+    graphRefAllSpec = GraphRefAll() {
+    graphSpec = graphRefAllSpec.getGraphSpec();
+    operation.setDestinationGraphSpec(graphSpec);
+    if (graphSpec == GraphSpec.GRAPH) {
+        operation.setDestinationGraph(graphRefAllSpec.getGraph());
+    }
+    return operation; }
+}
+
 /* [33]    Drop ::= 'DROP' 'SILENT'? GraphRefAll */
 /* [34]    Create ::= 'CREATE' 'SILENT'? GraphRef */
 /* [35]    Add ::= 'ADD' 'SILENT'? GraphOrDefault 'TO' GraphOrDefault */
@@ -547,8 +623,36 @@ private Update Update() : {
 /* [43]    InsertClause ::= 'INSERT' QuadPattern */
 /* [44]    UsingClause ::= 'USING' ( iri | 'NAMED' iri ) */
 /* [45]    GraphOrDefault ::= 'DEFAULT_T' | 'GRAPH'? iri */
+
 /* [46]    GraphRef ::= 'GRAPH' iri */
+private UriRef GraphRef() : {
+    UriRef uriRef; } {
+    <GRAPH>
+    uriRef = Iri() {
+    return uriRef; }
+}
+
 /* [47]    GraphRefAll ::= GraphRef | 'DEFAULT_T' | 'NAMED' | 'ALL' */
+private GraphRefAllSpec GraphRefAll() : {
+    UriRef uriRef;
+    GraphRefAllSpec graphRefAllSpec = new GraphRefAllSpec(); } {
+    (
+        uriRef = GraphRef() {
+        graphRefAllSpec.setGraph(uriRef);
+        graphRefAllSpec.setGraphSpec(GraphSpec.GRAPH); }
+    |
+        <DEFAULT_T> {
+        graphRefAllSpec.setGraphSpec(GraphSpec.DEFAULT); }
+    |
+        <NAMED> {
+        graphRefAllSpec.setGraphSpec(GraphSpec.NAMED); }
+    |
+        <ALL> {
+        graphRefAllSpec.setGraphSpec(GraphSpec.ALL); }
+    ) {
+    return graphRefAllSpec; }
+}
+
 /* [48]    QuadPattern ::= '{' Quads '}' */
 /* [49]    QuadData ::= '{' Quads '}' */
 /* [50]    Quads ::= TriplesTemplate? ( QuadsNotTriples '.'? TriplesTemplate? )* */

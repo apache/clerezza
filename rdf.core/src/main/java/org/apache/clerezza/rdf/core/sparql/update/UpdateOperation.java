@@ -18,10 +18,39 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update;
 
+import java.util.Set;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.TcProvider;
+
 /**
  * SPARQL Update Operation
  *
  * @author hasan
  */
 public interface UpdateOperation {
+    public enum GraphSpec {
+        GRAPH, DEFAULT, NAMED, ALL
+    }
+
+    /**
+     * 
+     * @param defaultGraph
+     *      if default graph is referred either implicitly or explicitly as an input graph in this operation
+     *      the specified defaultGraph should be returned in the resulting set.
+     * @param tcProvider
+     *      the specified tcProvider is used to get the named graphs referred as input graphs in this operation.
+     * @return a set of graphs referred as input graphs in this operation.
+     */
+    public Set<UriRef> getInputGraphs(UriRef defaultGraph, TcProvider tcProvider);
+
+    /**
+     * 
+     * @param defaultGraph
+     *      if default graph is referred either implicitly or explicitly as a destination graph in this operation
+     *      the specified defaultGraph should be returned in the resulting set.
+     * @param tcProvider
+     *      the specified tcProvider is used to get the named graphs referred as destination graphs in this operation.
+     * @return a set of graphs referred as destination graphs in this operation.
+     */
+    public Set<UriRef> getDestinationGraphs(UriRef defaultGraph, TcProvider tcProvider);
 }

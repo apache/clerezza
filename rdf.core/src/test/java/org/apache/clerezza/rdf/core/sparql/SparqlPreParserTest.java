@@ -18,9 +18,10 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
+import java.util.HashSet;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.sparql.update.Update;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,20 +31,33 @@ import org.junit.Test;
  */
 public class SparqlPreParserTest {
 
+    private final static UriRef DEFAULT_GRAPH = new UriRef("http://example.org/default.graph"); 
+    private final static UriRef NAMED_GRAPH = new UriRef("http://example.org/dummy.graph"); 
+    private final static UriRef TEST_GRAPH = new UriRef("http://example.org/test.graph"); 
+
+    class MyTcManager extends TcManager {
+        @Override
+        public Set<UriRef> listTripleCollections() {
+            Set<UriRef> result = new HashSet<UriRef>();
+            result.add(NAMED_GRAPH);
+            return result;
+        }
+    }
+
     @Test
     public void testDefaultGraphInSelectQuery() throws ParseException {
 
         StringBuilder queryStrBuilder = new StringBuilder();
         queryStrBuilder.append(
-                "PREFIX : <http://example/>\n" +
+                "PREFIX : <http://example.org/>\n" +
                 "SELECT ?x \n" +
                 "{\n" +
                 ":order :item/:price ?x\n" +
                 "}\n");
 
-        UriRef defaultGraph = new UriRef("http://example.org/default");
-        SparqlPreParser parser = new SparqlPreParser();
-        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), defaultGraph);
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), DEFAULT_GRAPH);
         Assert.assertTrue(referredGraphs == null);
     }
 
@@ -52,16 +66,71 @@ public class SparqlPreParserTest {
 
         StringBuilder queryStrBuilder = new StringBuilder();
         queryStrBuilder.append(
-                "PREFIX : <http://example/>\n" +
+                "PREFIX : <http://example.org/>\n" +
                 "SELECT ?x (foo(2*3, ?x < ?y) AS ?f) (GROUP_CONCAT(?x ; separator=\"|\") AS ?gc) (sum(distinct *) AS ?total)\n" +
-                "FROM <http://example.org/test>\n" +
+                "FROM " + TEST_GRAPH.toString() + "\n" +
                 "{\n" +
                 ":order :item/:price ?x\n" +
                 "}\n");
 
-        UriRef defaultGraph = new UriRef("http://example.org/default");
-        SparqlPreParser parser = new SparqlPreParser();
-        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), defaultGraph);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(new UriRef("http://example.org/test")));
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+    }
+
+    @Test
+    public void testLoadingToDefaultGraph() throws ParseException {
+
+        String queryStr = "LOAD SILENT <http://example.org/mydata>";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testLoadingToGraph() throws ParseException {
+
+        String queryStr = "LOAD SILENT <http://example.org/mydata> INTO GRAPH " + TEST_GRAPH.toString();
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+    }
+
+    @Test
+    public void testClearingDefaultGraph() throws ParseException {
+
+        String queryStr = "CLEAR SILENT DEFAULT";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testClearingNamedGraph() throws ParseException {
+
+        String queryStr = "CLEAR SILENT NAMED";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(new MyTcManager());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(NAMED_GRAPH));
+    }
+
+    @Test
+    public void testClearingGraph() throws ParseException {
+
+        String queryStr = "CLEAR SILENT GRAPH " + TEST_GRAPH.toString();
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
     }
 }

@@ -20,6 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.update;
 
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.TcProvider;
 
 /**
  * <p>This interface represents a SPARQL Update.</p>
@@ -28,17 +29,23 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public interface Update {
 
-	/**
-	 * 
-	 * @return
-	 *		a set of graphs referred in the {@link Update}
-	 */
-	public Set<UriRef> getReferredGraphs();
+    /**
+     * 
+     * @param defaultGraph
+     *      if default graph is referred either implicitly or explicitly in a SPARQL {@link Update}
+     *      the specified defaultGraph should be returned in the resulting set.
+     * @param tcProvider
+     *      the specified tcProvider is used to get the named graphs referred in the SPARQL {@link Update}.
+     * @return a set of graphs referred in the {@link Update}.
+     */
+    public Set<UriRef> getReferredGraphs(UriRef defaultGraph, TcProvider tcProvider);
+
+    public void addOperation(UpdateOperation updateOperation);
 
     /**
-	 * 
-	 * @return A valid String representation of the {@link Update}.
-	 */
-	@Override
-	public abstract String toString();
+     *
+     * @return A valid String representation of the {@link Update}.
+     */
+    @Override
+    public abstract String toString();
 }

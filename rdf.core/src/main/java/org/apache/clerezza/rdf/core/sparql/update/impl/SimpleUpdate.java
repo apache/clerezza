@@ -18,20 +18,34 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.update.Update;
+import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
 /**
  *
  * @author hasan
  */
-public abstract class SimpleUpdate implements Update {
-	private Set<UriRef> referredGraphs = new HashSet<UriRef>();
+public class SimpleUpdate implements Update {
+    protected List<UpdateOperation> operations = new ArrayList<UpdateOperation>();
 
-    void addReferredGraph(UriRef referredGraph) {
-		referredGraphs.add(referredGraph);
-	}
+    @Override
+    public Set<UriRef> getReferredGraphs(UriRef defaultGraph, TcProvider tcProvider) {
+        Set<UriRef> referredGraphs = new HashSet<UriRef>();
+        for (UpdateOperation operation : operations) {
+            referredGraphs.addAll(operation.getInputGraphs(defaultGraph, tcProvider));
+            referredGraphs.addAll(operation.getDestinationGraphs(defaultGraph, tcProvider));
+        }
+        return referredGraphs;
+    }
 
+    @Override
+    public void addOperation(UpdateOperation updateOperation) {
+        operations.add(updateOperation);
+    }
 }

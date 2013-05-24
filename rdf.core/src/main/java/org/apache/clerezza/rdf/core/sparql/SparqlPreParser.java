@@ -22,11 +22,13 @@ import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.sparql.query.DataSet;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.SparqlUnit;
 import org.apache.clerezza.rdf.core.sparql.update.Update;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 
 /**
@@ -39,8 +41,18 @@ import org.apache.felix.scr.annotations.Service;
 @Service(SparqlPreParser.class)
 public class SparqlPreParser {
 
+    @Reference
+    TcManager tcManager;
+
+    public SparqlPreParser() {
+    }
+
+    public SparqlPreParser(TcManager tcManager) {
+        this.tcManager = tcManager;
+    }
+
     public Set<UriRef> getReferredGraphs(String queryString, UriRef defaultGraph) throws ParseException {
-        Set<UriRef> referredGraphs = null;
+        Set<UriRef> referredGraphs;
         JavaCCGeneratedSparqlPreParser parser = new JavaCCGeneratedSparqlPreParser(new StringReader(queryString));
         SparqlUnit sparqlUnit;
         sparqlUnit = parser.parse();
@@ -55,7 +67,7 @@ public class SparqlPreParser {
             }
         } else {
             Update u = sparqlUnit.getUpdate();
-            referredGraphs = u.getReferredGraphs();
+            referredGraphs = u.getReferredGraphs(defaultGraph, tcManager);
         }
         if (referredGraphs.isEmpty()) {
             return null;

@@ -18,20 +18,42 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
-import java.util.HashSet;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.sparql.update.GraphUpdateOperation;
+import org.apache.clerezza.rdf.core.access.TcProvider;
 
 /**
  *
  * @author hasan
  */
-public abstract class SimpleGraphUpdateOperation implements GraphUpdateOperation {
-	private Set<UriRef> graphs = new HashSet<UriRef>();
+public class ClearOperation extends SimpleUpdateOperation {
+    private boolean silent;
 
-    @Override
-    public Set<UriRef> getGraphs() {
-        return graphs;
+    public ClearOperation() {
+        this.silent = false;
+        destinationGraphSpec = GraphSpec.DEFAULT;
+    }
+
+    public void setSilent(boolean silent) {
+        this.silent = silent;
+    }
+
+    public boolean isSilent() {
+        return silent;
+    }
+
+    public void setDestinationGraph(UriRef destination) {
+        destinationGraphSpec = GraphSpec.GRAPH;
+        destinationGraphs.clear();
+        destinationGraphs.add(destination);
+    }
+
+    public UriRef getDestinationGraph(UriRef defaultGraph, TcProvider tcProvider) {
+        Set<UriRef> result = getDestinationGraphs(defaultGraph, tcProvider);
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.iterator().next();
+        }
     }
 }
