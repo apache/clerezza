@@ -32,6 +32,7 @@ import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 public class ResultSetWrapper implements org.apache.clerezza.rdf.core.sparql.ResultSet {
 
     private final Iterator<QuerySolution> solutionsIter;
+    private final List<String> resultVars;
 
 
     public ResultSetWrapper(final ResultSet jenaResultSet) {
@@ -40,6 +41,7 @@ public class ResultSetWrapper implements org.apache.clerezza.rdf.core.sparql.Res
             solutions.add(jenaResultSet.nextSolution());
         }
         solutionsIter = solutions.iterator();
+        resultVars = jenaResultSet.getResultVars();
     }
 
     @Override
@@ -57,4 +59,8 @@ public class ResultSetWrapper implements org.apache.clerezza.rdf.core.sparql.Res
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public List<String> getResultVars() {
+    	return resultVars;
+    }
 }

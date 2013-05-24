@@ -553,6 +553,11 @@
                 <artifactId>bcprov-jdk16</artifactId>
                 <version>1.46</version>
             </dependency>
+            <dependency>
+            	<groupId>org.apache.clerezza</groupId>
+            	<artifactId>rdf.jena.storage</artifactId>
+            	<version>0.6-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <distributionManagement>

@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * The reult of a sparql SELECT-query. This corresponds to a Solution Sequence
@@ -31,4 +32,8 @@ import java.util.Iterator;
  */
 public interface ResultSet extends Iterator<SolutionMapping> {
 
+    /** Iterate over the variable names (strings) in this QuerySolution.
+     * @return Iterator of strings
+     */ 
+    public List<String> getResultVars() ;
 }

@@ -16,7 +16,10 @@
  */
 package org.apache.clerezza.rdf.web.core.utils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
@@ -30,10 +33,17 @@ public class ResultSetsWrapper implements ResultSet {
 
     private Iterator<ResultSet> resultSetsIter;
     private ResultSet currentResultSet;
+    private List<String> varNames;
 
     public ResultSetsWrapper(Set<ResultSet> resultSets) {
         this.resultSetsIter = resultSets.iterator();
-        currentResultSet = resultSetsIter.next();
+        this.currentResultSet = resultSetsIter.next();
+
+        Set<String> uniqueVarNames = new HashSet<String>();
+        for (ResultSet resultSet : resultSets) {
+			uniqueVarNames.addAll(resultSet.getResultVars());
+		}
+    	this.varNames = new ArrayList<String>(uniqueVarNames);
     }
 
     @Override
@@ -58,5 +68,10 @@ public class ResultSetsWrapper implements ResultSet {
     @Override
     public void remove() {
         currentResultSet.remove();
+    }
+    
+    @Override
+    public List<String> getResultVars() {
+    	return varNames;
     }
 }
