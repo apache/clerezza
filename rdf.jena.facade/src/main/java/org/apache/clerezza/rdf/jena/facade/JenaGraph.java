@@ -119,6 +119,9 @@ public class JenaGraph extends GraphBase implements Graph {
         UriRef predicate = null;
         Resource object = null;
         if (m.getMatchSubject() != null) {
+            if (m.getMatchSubject().isLiteral()) {
+                return Collections.EMPTY_SET.iterator();
+            }
             subject = jena2TriaUtil.convertNonLiteral(m.getMatchSubject());
             if (subject == null) {
                 return Collections.EMPTY_SET.iterator();
@@ -131,6 +134,9 @@ public class JenaGraph extends GraphBase implements Graph {
             }
         }        
         if (m.getMatchPredicate() != null) {
+            if (!m.getMatchPredicate().isURI()) {
+                return Collections.EMPTY_SET.iterator();
+            }
             predicate = jena2TriaUtil.convertJenaUri2UriRef(m.getMatchPredicate());
         }
 
