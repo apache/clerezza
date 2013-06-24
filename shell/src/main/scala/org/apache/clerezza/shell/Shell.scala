@@ -64,6 +64,7 @@ import scala.tools.jline.console.completer.CompletionHandler
 import scala.tools.jline.console.ConsoleReader
 import scala.tools.jline.console.completer.CandidateListCompletionHandler
 import java.lang.CharSequence
+import scala.tools.jline.TerminalFactory
 import scala.tools.jline.UnixTerminal
 import scala.tools.jline.console.history.History
 
@@ -78,7 +79,7 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 
   val terminal = terminalOption match {
     case Some(x) => x
-    case None => new UnixTerminal
+    case None => TerminalFactory.create
   }
 
   val interpreterLoop = new ILoop(new BufferedReader(new InputStreamReader(inStream)), new PrintWriter(outStream, true)) {
