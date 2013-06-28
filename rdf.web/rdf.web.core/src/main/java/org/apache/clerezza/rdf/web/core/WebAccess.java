@@ -157,7 +157,7 @@ public class WebAccess {
      *            {@link MGraph} is created.
      */
     @POST
-    @Consumes("multipart/form")
+    @Consumes("multipart/form-data")
     public Response postTriples(MultiPartBody form, @Context UriInfo uriInfo) {
 
         AccessController.checkPermission(new WebAccessPermission());

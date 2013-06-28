@@ -380,7 +380,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
      *
      */
     @POST
-    @Consumes("multipart/form")
+    @Consumes("multipart/form-data")
     @Path("install-script")
     public Response installScript(MultiPartBody form,
             @Context UriInfo uriInfo) {
@@ -470,7 +470,7 @@ public class ScriptManager implements GlobalMenuItemsProvider{
      *
      */
     @POST
-    @Consumes("multipart/form")
+    @Consumes("multipart/form-data")
     @Path("update-script")
     public Response updateScript(MultiPartBody form, @Context UriInfo uriInfo) {
         AccessController.checkPermission(new ScriptManagerAppPermission());

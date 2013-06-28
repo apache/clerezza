@@ -59,7 +59,7 @@ public class ContentPostSupport {
     /**
      * Creates an InfoDiscoBt (aka Binary Content) in the content graph.<br/>
      * This JAX-RS method is available under the path "content". It requires
-     * a multipart/form with two fields: "content", which is the content of the
+     * a multipart/form-data with two fields: "content", which is the content of the
      * InfoDiscobit to be created and "uri" which is the uri of the new
      * InfoDiscoBit.
      *
@@ -70,7 +70,7 @@ public class ContentPostSupport {
      * resource already exists.
      */
     @POST
-    @Consumes("multipart/form")
+    @Consumes("multipart/form-data")
     public Response postContent(MultiPartBody form) {
         FormFile formFile = form.getFormFileParameterValues("content")[0];
         String uri = form.getTextParameterValues("uri")[0];
