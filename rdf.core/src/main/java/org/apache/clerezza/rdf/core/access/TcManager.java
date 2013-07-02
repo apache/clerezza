@@ -295,7 +295,10 @@ public class TcManager extends TcProviderMultiplexer {
      *            the default graph against which to execute the query if not
      *            FROM clause is present
      * @return the resulting ResultSet, Graph or Boolean value
+     * 
+     * @deprecated Query is discontinued
      */
+    @Deprecated
     public Object executeSparqlQuery(Query query, TripleCollection defaultGraph) {
         final QueryEngine queryEngine = this.queryEngine;
         if (queryEngine != null) {
@@ -314,7 +317,9 @@ public class TcManager extends TcProviderMultiplexer {
      *            the default graph against which to execute the query if not
      *            FROM clause is present
      * @return the resulting ResultSet
+     * @deprecated Query is discontinued
      */
+    @Deprecated
     public ResultSet executeSparqlQuery(SelectQuery query,
             TripleCollection defaultGraph) {
         return (ResultSet) executeSparqlQuery((Query)query, defaultGraph);
@@ -329,7 +334,9 @@ public class TcManager extends TcProviderMultiplexer {
      *            the default graph against which to execute the query if not
      *            FROM clause is present
      * @return the boolean value this query evaluates to
+     * @deprecated Query is discontinued
      */
+    @Deprecated
     public boolean executeSparqlQuery(AskQuery query,
             TripleCollection defaultGraph) {
         return (Boolean) executeSparqlQuery((Query)query, defaultGraph);
@@ -344,7 +351,9 @@ public class TcManager extends TcProviderMultiplexer {
      *            the default graph against which to execute the query if not
      *            FROM clause is present
      * @return the resulting Graph
+     * @deprecated Query is discontinued
      */
+    @Deprecated
     public Graph executeSparqlQuery(DescribeQuery query,
             TripleCollection defaultGraph) {
         return (Graph) executeSparqlQuery((Query)query, defaultGraph);
@@ -359,7 +368,9 @@ public class TcManager extends TcProviderMultiplexer {
      *            the default graph against which to execute the query if not
      *            FROM clause is present
      * @return the resulting Graph
+     * @deprecated Query is discontinued
      */
+    @Deprecated
     public Graph executeSparqlQuery(ConstructQuery query,
             TripleCollection defaultGraph) {
         return (Graph) executeSparqlQuery((Query)query, defaultGraph);
