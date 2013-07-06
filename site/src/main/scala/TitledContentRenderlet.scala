@@ -43,7 +43,7 @@ class TitledContentRenderlet extends SRenderlet {
 
 							<div class="bar"></div>
 							<div class="logo">
-								<a href="http://incubator.apache.org/clerezza/" style=""><img src="/images/logo.png" alt="logo" /></a>
+								<a href="http://clerezza.apache.org/" style=""><img src="/images/logo.png" alt="logo" /></a>
 							</div>
 						</div>
 						<div class="column nav">
@@ -53,7 +53,7 @@ class TitledContentRenderlet extends SRenderlet {
 									<ul class="nav-entries">
 										<li>{menuLink("/getting-started/","Getting Started")}</li>
 										<li>{menuLink("/architecture/","The Apache Clerezza Stack")}</li>
-										<li><a href="http://incubator.apache.org/clerezza/mvn-site" target="_blank">API docs</a></li>
+										<li><a href="http://clerezza.apache.org/apidoc" target="_blank">API docs</a></li>
 										<li>{menuLink("/faq/","FAQ")}</li>
 									</ul>
 								</li>
@@ -66,7 +66,7 @@ class TitledContentRenderlet extends SRenderlet {
 										<li>{menuLink("/mailinglists/","Mailing lists")}</li>
 										<li><a href="http://issues.apache.org/jira/browse/CLEREZZA" target="_blank">Issue Tracker</a></li>
 
-										<li><a href="http://svn.apache.org/viewvc/incubator/clerezza/trunk/" target="_blank">Source Repository</a></li>
+										<li><a href="http://svn.apache.org/viewvc/clerezza/trunk/" target="_blank">Source Repository</a></li>
 									</ul>
 								</li>
 								<li class="top-nav-entry"><div class="title">Sponsorship</div>
@@ -96,7 +96,7 @@ class TitledContentRenderlet extends SRenderlet {
 
 												<li><a href="/getting-started/">Getting Started</a></li>
 												<li><a href="/architecture/">The Apache Clerezza Stack</a></li>
-												<li><a href="http://incubator.apache.org/clerezza/mvn-site" target="_blank">API docs</a></li>
+												<li><a href="http://clerezza,apache.org/apidoc" target="_blank">API docs</a></li>
 												<li><a href="/faq/">FAQ</a></li>
 											</ul>
 
@@ -111,7 +111,7 @@ class TitledContentRenderlet extends SRenderlet {
 												<li><a href="mailinglists/">Mailing lists</a></li>
 												<li><a href="http://issues.apache.org/jira/browse/CLEREZZA" target="_blank">Issue Tracker</a></li>
 
-												<li><a href="http://svn.apache.org/viewvc/incubator/clerezza/trunk/" target="_blank">Source Repository</a></li>
+												<li><a href="http://svn.apache.org/viewvc/clerezza/trunk/" target="_blank">Source Repository</a></li>
 											</ul>
 										</div>
 										<div class="sitemap-column">

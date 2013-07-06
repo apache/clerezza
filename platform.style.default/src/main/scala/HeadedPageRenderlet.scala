@@ -73,7 +73,7 @@ resultDocModifier.addScriptReference("/scripts/status-message.js");
 		<div class="zz-header">
 			<div class="bar"></div>
 			<div class="logo">
-				<a href="http://incubator.apache.org/clerezza/" style=""><img src="/images/logo.png" alt="logo" /></a>
+				<a href="http://clerezza.apache.org/" style=""><img src="/images/logo.png" alt="logo" /></a>
 			</div>
 			<div class="module-info">
 				<span id="tx-module">
