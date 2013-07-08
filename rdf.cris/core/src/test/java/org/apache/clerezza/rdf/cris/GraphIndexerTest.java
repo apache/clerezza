@@ -219,6 +219,25 @@ public class GraphIndexerTest {
         } catch (InterruptedException ex) {
         }
     }
+    
+    @Test
+    public void clearGraph() {
+        try {
+            GraphNode node = new GraphNode(new UriRef(Util.createURN5()), dataGraph);
+            node.addPropertyValue(FOAF.firstName, "Another Jane");
+            node.addPropertyValue(FOAF.lastName, "Samsing");
+            node.addProperty(RDF.type, FOAF.Person);
+            Thread.sleep(1000);
+            List<NonLiteral> results = service.findResources(FOAF.firstName, "*Jane*");
+            Assert.assertEquals(3, results.size());
+            dataGraph.clear();
+            Thread.sleep(1000);
+            List<NonLiteral> results2 = service.findResources(FOAF.firstName, "*Jane*");
+            Assert.assertEquals(0, results2.size());
+        } catch (ParseException ex) {
+        } catch (InterruptedException ex) {
+        }
+    }
 
     @Test
     public void reIndexWithoutActualChange() throws InterruptedException {
