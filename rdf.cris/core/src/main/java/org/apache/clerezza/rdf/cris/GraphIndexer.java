@@ -32,6 +32,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
@@ -587,6 +588,11 @@ public class GraphIndexer extends ResourceFinder {
         }
         logger.debug("instances " + instances.size());
         IndexWriter writer = luceneTools.getIndexWriter(true);
+        try {
+            writer.deleteAll();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
         for (NonLiteral instance : instances) {
             indexResource(instance, writer);
         }
