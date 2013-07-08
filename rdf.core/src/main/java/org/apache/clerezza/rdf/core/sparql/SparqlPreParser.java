@@ -51,6 +51,19 @@ public class SparqlPreParser {
         this.tcManager = tcManager;
     }
 
+    /**
+     * This returns the graphs targeted by the queryString. This are the the 
+     * triple collections explicitely refreded in FROM and FROM NAMED clauses, 
+     * and if the queryString contains no FROM clause the defaultGraph.
+     * 
+     * For queries that are not limited to specified set of graphs null is returned.
+     * 
+     * 
+     * @param queryString
+     * @param defaultGraph
+     * @return 
+     * @throws ParseException 
+     */
     public Set<UriRef> getReferredGraphs(String queryString, UriRef defaultGraph) throws ParseException {
         Set<UriRef> referredGraphs;
         JavaCCGeneratedSparqlPreParser parser = new JavaCCGeneratedSparqlPreParser(new StringReader(queryString));

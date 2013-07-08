@@ -38,8 +38,10 @@ import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedTripleCollection;
 import org.apache.clerezza.rdf.core.sparql.NoQueryEngineException;
+import org.apache.clerezza.rdf.core.sparql.ParseException;
 import org.apache.clerezza.rdf.core.sparql.QueryEngine;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
+import org.apache.clerezza.rdf.core.sparql.SparqlPreParser;
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
 import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
@@ -56,67 +58,71 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
 /**
- * This class implements <code>TcManager</code>, delegating the actual
- * provision and creation of Graphs or MGraphs to registered <code>TcProvider</code>s. The class
- * attempts to satisfy the request using the register <code>WeightedTcProvider</code>
- * in decreasing order of weight. If multiple providers have the same weight the
- * lexicographical order of the fully qualified class name determines which one
- * is used, namely the one that occurs earlier. If a call to a registered provider
- * causes an <code>IllegalArgumentException</code>, <code>NoSuchEntityException</code>
- * or <code>UnsupportedOperationException</code> then the call is delegated to the
+ * This class implements
+ * <code>TcManager</code>, delegating the actual provision and creation of
+ * Graphs or MGraphs to registered
+ * <code>TcProvider</code>s. The class attempts to satisfy the request using the
+ * register
+ * <code>WeightedTcProvider</code> in decreasing order of weight. If multiple
+ * providers have the same weight the lexicographical order of the fully
+ * qualified class name determines which one is used, namely the one that occurs
+ * earlier. If a call to a registered provider causes an
+ * <code>IllegalArgumentException</code>,
+ * <code>NoSuchEntityException</code> or
+ * <code>UnsupportedOperationException</code> then the call is delegated to the
  * next provider.
  *
  * Only one instance of this class should exist in a system, the public no
- * argument constructor is meant for initialization by dependency injection systems
- * such as OSGi-DS. Applications should use the static <code>getInstance()</code>
- * method if they aren't using a framework that injects them the instance.
+ * argument constructor is meant for initialization by dependency injection
+ * systems such as OSGi-DS. Applications should use the static
+ * <code>getInstance()</code> method if they aren't using a framework that
+ * injects them the instance.
  *
- * This class returns <code>LockableMGraph</code>s a subtype of <code>MGraph</code>
- * that allows read/write locks.
- * 
- * This class also registers all TripleCollections as services with the property 
+ * This class returns
+ * <code>LockableMGraph</code>s a subtype of
+ * <code>MGraph</code> that allows read/write locks.
+ *
+ * This class also registers all TripleCollections as services with the property
  * 'name' indicating there name.
- * 
- * Security checks are done when a TripleCollection is retrieved. The returned 
- * TripleCollection will do no further security checks. Because of this it should 
- * not be passed to a context where different access control applies. If an MGraph
- * is retrieved without having write permission the returned mGraph will be read-only.
- * 
- * If a TripleCollections needs to passed around across different security contexts
- * the one retrieved from the OSGi service whiteboard should be used as this 
- * performs access control on every access.
+ *
+ * Security checks are done when a TripleCollection is retrieved. The returned
+ * TripleCollection will do no further security checks. Because of this it
+ * should not be passed to a context where different access control applies. If
+ * an MGraph is retrieved without having write permission the returned mGraph
+ * will be read-only.
+ *
+ * If a TripleCollections needs to passed around across different security
+ * contexts the one retrieved from the OSGi service whiteboard should be used as
+ * this performs access control on every access.
  *
  * @author reto, mir, hasan
- * 
+ *
  */
 @Component
 @Service(TcManager.class)
-@Reference(name="weightedTcProvider", policy=ReferencePolicy.DYNAMIC,
-        referenceInterface=WeightedTcProvider.class,
-        cardinality=ReferenceCardinality.MANDATORY_MULTIPLE)
+@Reference(name = "weightedTcProvider", policy = ReferencePolicy.DYNAMIC,
+        referenceInterface = WeightedTcProvider.class,
+        cardinality = ReferenceCardinality.MANDATORY_MULTIPLE)
 public class TcManager extends TcProviderMultiplexer {
 
     private static volatile TcManager instance;
-
     private TcAccessController tcAccessController = new TcAccessController(this);
-
     private Map<UriRef, ServiceRegistration> serviceRegistrations = Collections
             .synchronizedMap(new HashMap<UriRef, ServiceRegistration>());
-
-
-    @Reference(policy=ReferencePolicy.DYNAMIC,
-            cardinality=ReferenceCardinality.MANDATORY_UNARY)
+    @Reference(policy = ReferencePolicy.DYNAMIC,
+            cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected QueryEngine queryEngine;
-
+    @Reference
+    protected SparqlPreParser sparqlPreParser;
     private ComponentContext componentContext;
     private Collection<UriRef> mGraphsToRegisterOnActivation = new HashSet<UriRef>();
     private Collection<UriRef> graphsToRegisterOnActivation = new HashSet<UriRef>();
 
-
     /**
      * the constructor sets the singleton instance to allow instantiation by
      * OSGi-DS. This constructor should not be called except by OSGi-DS,
-     * otherwise the static <code>getInstance</code> method should be used.
+     * otherwise the static
+     * <code>getInstance</code> method should be used.
      */
     public TcManager() {
         TcManager.instance = this;
@@ -127,14 +133,14 @@ public class TcManager extends TcProviderMultiplexer {
      * created (e.g. by OSGi declarative services) this instance is returned,
      * otherwise a new instance is created and providers are injected using the
      * service provider interface (META-INF/services/)
-     * 
+     *
      * @return the singleton instance
      */
     public static TcManager getInstance() {
         if (instance == null) {
             synchronized (TcManager.class) {
                 if (instance == null) {
-                    new TcManager();
+                    instance = new TcManager();
                     Iterator<WeightedTcProvider> weightedProviders = ServiceLoader
                             .load(WeightedTcProvider.class).iterator();
                     while (weightedProviders.hasNext()) {
@@ -151,6 +157,7 @@ public class TcManager extends TcProviderMultiplexer {
                         System.out.println("QE: "
                                 + instance.queryEngine.getClass());
                     }
+                    instance.sparqlPreParser = new SparqlPreParser(instance);
                 }
             }
         }
@@ -203,8 +210,6 @@ public class TcManager extends TcProviderMultiplexer {
         }
         return super.getTriples(name);
     }
-
-    
 
     @Override
     public LockableMGraph createMGraph(UriRef name)
@@ -267,19 +272,44 @@ public class TcManager extends TcProviderMultiplexer {
 
     /**
      * Executes any sparql query. The type of the result object will vary
-     * depending on the type of the query.
-     * 
-     * @param query
-     *            the sparql query to execute
-     * @param defaultGraph
-     *            the default graph against which to execute the query if not
-     *            FROM clause is present
+     * depending on the type of the query. If the defaultGraph is available
+     * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
+     *
+     * @param query the sparql query to execute
+     * @param defaultGraph the default graph against which to execute the query
+     * if no FROM clause is present
      * @return the resulting ResultSet, Graph or Boolean value
      */
-    public Object executeSparqlQuery(String query, TripleCollection defaultGraph) {
+    public Object executeSparqlQuery(String query, TripleCollection defaultGraph) throws ParseException {
+        final UriRef defaultGraphName = new UriRef("urn:x-temp:/kjsfadfhfasdffds");
+        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+        TcProvider singleTargetTcProvider = null;
+        if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
+            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
+        }
+        if ((singleTargetTcProvider != null) && (singleTargetTcProvider instanceof QueryableTcProvider)) {
+            return ((QueryableTcProvider)singleTargetTcProvider).executeSparqlQuery(query, null);
+        }
         final QueryEngine queryEngine = this.queryEngine;
         if (queryEngine != null) {
             return queryEngine.execute(this, defaultGraph, query);
+        } else {
+            throw new NoQueryEngineException();
+        }
+    }
+    
+    public Object executeSparqlQuery(String query, UriRef defaultGraphName) throws ParseException {
+        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+        TcProvider singleTargetTcProvider = null;
+        if ((referencedGraphs != null)) {
+            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
+        }
+        if ((singleTargetTcProvider != null) && (singleTargetTcProvider instanceof QueryableTcProvider)) {
+            return ((QueryableTcProvider)singleTargetTcProvider).executeSparqlQuery(query, defaultGraphName);
+        }
+        final QueryEngine queryEngine = this.queryEngine;
+        if (queryEngine != null) {
+            return queryEngine.execute(this, this.getTriples(defaultGraphName), query);
         } else {
             throw new NoQueryEngineException();
         }
@@ -288,14 +318,12 @@ public class TcManager extends TcProviderMultiplexer {
     /**
      * Executes any sparql query. The type of the result object will vary
      * depending on the type of the query.
-     * 
-     * @param query
-     *            the sparql query to execute
-     * @param defaultGraph
-     *            the default graph against which to execute the query if not
-     *            FROM clause is present
+     *
+     * @param query the sparql query to execute
+     * @param defaultGraph the default graph against which to execute the query
+     * if no FROM clause is present
      * @return the resulting ResultSet, Graph or Boolean value
-     * 
+     *
      * @deprecated Query is discontinued
      */
     @Deprecated
@@ -310,70 +338,62 @@ public class TcManager extends TcProviderMultiplexer {
 
     /**
      * Executes a sparql SELECT query.
-     * 
-     * @param query
-     *            the sparql SELECT query to execute
-     * @param defaultGraph
-     *            the default graph against which to execute the query if not
-     *            FROM clause is present
+     *
+     * @param query the sparql SELECT query to execute
+     * @param defaultGraph the default graph against which to execute the query
+     * if not FROM clause is present
      * @return the resulting ResultSet
      * @deprecated Query is discontinued
      */
     @Deprecated
     public ResultSet executeSparqlQuery(SelectQuery query,
             TripleCollection defaultGraph) {
-        return (ResultSet) executeSparqlQuery((Query)query, defaultGraph);
+        return (ResultSet) executeSparqlQuery((Query) query, defaultGraph);
     }
 
     /**
      * Executes a sparql ASK query.
-     * 
-     * @param query
-     *            the sparql ASK query to execute
-     * @param defaultGraph
-     *            the default graph against which to execute the query if not
-     *            FROM clause is present
+     *
+     * @param query the sparql ASK query to execute
+     * @param defaultGraph the default graph against which to execute the query
+     * if not FROM clause is present
      * @return the boolean value this query evaluates to
      * @deprecated Query is discontinued
      */
     @Deprecated
     public boolean executeSparqlQuery(AskQuery query,
             TripleCollection defaultGraph) {
-        return (Boolean) executeSparqlQuery((Query)query, defaultGraph);
+        return (Boolean) executeSparqlQuery((Query) query, defaultGraph);
     }
 
     /**
      * Executes a sparql DESCRIBE query.
-     * 
-     * @param query
-     *            the sparql DESCRIBE query to execute
-     * @param defaultGraph
-     *            the default graph against which to execute the query if not
-     *            FROM clause is present
+     *
+     * @param query the sparql DESCRIBE query to execute
+     * @param defaultGraph the default graph against which to execute the query
+     * if not FROM clause is present
      * @return the resulting Graph
      * @deprecated Query is discontinued
      */
     @Deprecated
     public Graph executeSparqlQuery(DescribeQuery query,
             TripleCollection defaultGraph) {
-        return (Graph) executeSparqlQuery((Query)query, defaultGraph);
+        return (Graph) executeSparqlQuery((Query) query, defaultGraph);
     }
 
     /**
      * Executes a sparql CONSTRUCT query.
-     * 
-     * @param query
-     *            the sparql CONSTRUCT query to execute
-     * @param defaultGraph
-     *            the default graph against which to execute the query if not
-     *            FROM clause is present
+     *
+     * @param query the sparql CONSTRUCT query to execute
+     * @param defaultGraph the default graph against which to execute the query
+     * if not FROM clause is present
      * @return the resulting Graph
      * @deprecated Query is discontinued
      */
     @Deprecated
     public Graph executeSparqlQuery(ConstructQuery query,
             TripleCollection defaultGraph) {
-        return (Graph) executeSparqlQuery((Query)query, defaultGraph);
+        return (Graph) executeSparqlQuery((Query) query, defaultGraph);
     }
 
     /**
@@ -387,8 +407,7 @@ public class TcManager extends TcProviderMultiplexer {
     /**
      * Registers a provider
      *
-     * @param provider
-     *            the provider to be registered
+     * @param provider the provider to be registered
      */
     protected void bindWeightedTcProvider(WeightedTcProvider provider) {
         addWeightedTcProvider(provider);
@@ -397,8 +416,7 @@ public class TcManager extends TcProviderMultiplexer {
     /**
      * Unregister a provider
      *
-     * @param provider
-     *            the provider to be deregistered
+     * @param provider the provider to be deregistered
      */
     protected void unbindWeightedTcProvider(
             WeightedTcProvider provider) {
@@ -429,13 +447,13 @@ public class TcManager extends TcProviderMultiplexer {
         String[] interfaceNames;
         Object service;
         if (isMGraph) {
-            interfaceNames = new String[] {
+            interfaceNames = new String[]{
                 MGraph.class.getName(),
                 LockableMGraph.class.getName()
             };
             service = new MGraphServiceFactory(this, name, tcAccessController);
         } else {
-            interfaceNames = new String[] {Graph.class.getName()};
+            interfaceNames = new String[]{Graph.class.getName()};
             service = new GraphServiceFactory(this, name, tcAccessController);
         }
         final int bundleState = componentContext.getBundleContext().getBundle().getState();
@@ -455,5 +473,22 @@ public class TcManager extends TcProviderMultiplexer {
             reg.unregister();
             serviceRegistrations.remove(name);
         }
+    }
+
+    private TcProvider getSingleTargetTcProvider(final Set<UriRef> referencedGraphs) {
+        TcProvider singleTargetTcProvider = null;
+        for (WeightedTcProvider provider : providerList) {
+            final Set<UriRef> providerTripleCollections = provider.listTripleCollections();
+            if (providerTripleCollections.containsAll(referencedGraphs)) {
+               singleTargetTcProvider = provider;
+               break; //success
+            }
+            for (UriRef graphName : referencedGraphs) {
+                if (providerTripleCollections.contains(graphName)) {
+                    break; //failure
+                }
+            }      
+        }
+        return singleTargetTcProvider;
     }
 }

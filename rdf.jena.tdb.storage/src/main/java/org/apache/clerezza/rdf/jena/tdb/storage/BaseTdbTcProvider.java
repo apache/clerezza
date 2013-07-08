@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import org.apache.clerezza.rdf.core.UriRef;
 
 abstract class BaseTdbTcProvider implements QueryableTcProvider{
 
@@ -28,13 +29,14 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
 	// ------------------------------------------------------------------------
 
     @Override
-    public Object executeSparqlQuery(final String query, TripleCollection defaultGraph) {
+    public Object executeSparqlQuery(final String query, UriRef defaultGraph) {
 		// Missing permission (java.lang.RuntimePermission getClassLoader)
 		// when calling QueryFactory.create causes ExceptionInInitializerError
 		// to be thrown.
 		// QueryExecutionFactory.create requires
 		// (java.io.FilePermission [etc/]location-mapping.* read)
 		// Thus, they are placed within doPrivileged
+        getDataset().setDefaultModel(null);
 		QueryExecution qexec = AccessController
 				.doPrivileged(new PrivilegedAction<QueryExecution>() {
 
@@ -67,10 +69,6 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
 		}
     }
     
-    @Override
-    public Object executeSparqlQuery(Query query, TripleCollection defaultGraph) {
-    	return executeSparqlQuery(query.toString(), defaultGraph);
-    }
 
 	// ------------------------------------------------------------------------
 	// Getters / Setters

@@ -44,7 +44,7 @@ import org.apache.clerezza.rdf.core.sparql.QueryEngine;
  */
 public class TcProviderMultiplexer implements TcProvider {
 
-    private SortedSet<WeightedTcProvider> providerList = new TreeSet<WeightedTcProvider>(
+    protected SortedSet<WeightedTcProvider> providerList = new TreeSet<WeightedTcProvider>(
             new WeightedProviderComparator());
     /**
      * Mapping to LockableMGraph's and ServiceRegistration using their URI's as key.
