@@ -29,7 +29,7 @@
     <packaging>pom</packaging>
     <name>Clerezza - Reelase 20130710 Reactor build (root)</name>
     <url>http://incubator.apache.org/clerezza/mvn-site/</url>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
     <description>A recator to build all of clerezza</description>
     <licenses>
         <license>
@@ -61,7 +61,6 @@
 <module>rdf.web</module>
 <module>scala-scripting</module>
 <module>shell</module>
-<module>rdf.core.test</module>
 
             </modules>
         </profile>

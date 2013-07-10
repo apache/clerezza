@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
     <name>Clerezza - Parent for all</name>
     <url>http://clerezza.apache.org/mvn-site/</url>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
     <description>The direct or indirect parent of all Clerezza Artifacts</description>
     <properties>
         <sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>

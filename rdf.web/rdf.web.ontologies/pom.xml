@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>rdf.web</artifactId>
-        <version>0.10-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.web.ontologies</artifactId>
     <packaging>bundle</packaging>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
     <name>Clerezza - SCB Web Access Ontologies</name>
     <description>Ontologies defined for local use in SCB Web Access</description>
     <dependencies>

@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.clerezza.scala</groupId>
         <artifactId>scala</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza.scala</groupId>
     <artifactId>tests</artifactId>
@@ -108,7 +108,7 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase />
+                        <phase/>
                     </execution>
                 </executions>
             </plugin>
@@ -161,7 +161,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
