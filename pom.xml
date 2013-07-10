@@ -168,8 +168,8 @@
 
     <scm>
         <url>http://svn.apache.org/viewvc/clerezza</url>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/trunk/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/trunk/</developerConnection>
+        <connection>scm:svn:https://svn.apache.org/repos/asf/clerezza/branches/20130710-release/</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/branches/20130710-release/</developerConnection>
     </scm>
 
 </project>
