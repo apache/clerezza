@@ -50,6 +50,7 @@
                 <module>jaxrs.rdf.providers</module>
 <module>jaxrs.utils</module>
 <module>rdf.core</module>
+<module>rdf.core.test</module>
 <module>rdf.cris</module>
 <module>rdf.jena.commons</module>
 <module>rdf.jena.facade</module>
