@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+	<head>
+		<title>Tutorial 1: Exploring and aggregating RDF data with SCB</title>
+		<link rel="stylesheet" type="text/css" href="style/documentation.css"/>
+	</head>
+	<body>
+		<h1>Tutorial 1: Exploring and aggregating RDF data with SCB</h1>
+		<p>Author: Reto Bachmann-Gmür - clerezza.org</p>
+		<p>Contributor: Hasan - clerezza.org</p>
+		<p>Update : Florent - apache.org</p>
+		<p>Date: 2010-06-14</p>
+		<h2>Table of Contents</h2>
+		<p>
+			<a href="#objective">1. Objective</a>
+		</p>
+		<p>
+			<a href="#maven">2. Initializing a Maven Project</a>
+		</p>
+		<p>
+			<a href="#functionality">3. Creating a Graph and loading Data</a>
+		</p>
+		<p>
+			<a href="#accessing">4. Accessing the Triples</a>
+		</p>
+		<p>
+			<a href="#context">5. Resource context</a>
+		</p>
+		<p>
+			<a href="#example">6. Putting it all together: the example app</a>
+		</p>
+		<p>
+			<a href="#further">7. Taking it further</a>
+		</p>
+		<p>
+			<a href="#references">8. References</a>
+		</p>
+		<h2 id="objective">1. Objective</h2>
+		<p>
+			In this tutorial you will learn how to use SCB to manage data modeled
+			as a graph based on the RDF [<a href="#ref1">1</a>] standard
+			maintained by W3C.
+		</p>
+		<p>
+			You'll learn how to get Graph objects from serialized RDF data on
+			the web and how to access such a graph using the core SCB package
+			and the SCB utilities package.
+		</p>
+		<p>
+			Key advantages of SCB include the support of OSGi [<a href="#ref2">2</a>]
+			to allow for a better modularization of application and the support of
+			other triple store APIs through technology specific façades (adapters).
+			However, you will learn to know these key advantages in next tutorials. This
+			tutorial provides for a good foundation to work with and understand
+			the basic concept of SCB graph data model.
+		</p>
+		<p>
+			Our example will download data about BBC television sitcoms from
+			dbpedia into a local graph, display the context of a given resource
+			and download additional data from the web when the user requests it.
+			The	time it takes to go through this tutorial is approximately an hour. This
+			tutorial is intended for java developers, some familiarity with the
+			build tool maven [<a href="#ref3">3</a>] is an advantage.
+		</p>
+		<h2 id="maven">2. Setting up the Maven project</h2>
+		<p>
+			We use maven to build our project and to keep track of dependencies
+			in an IDE independent way. Maven will take care of downloading the
+			required dependencies from their respective repositories.
+		</p>
+		<h3 id="initialization">2.1. Initializing</h3>
+		<p>
+			First, a maven project with the groupId org.example.clerezza.scb
+			and the artifactId tutorial1 will be created by executing the
+			following command in a shell:
+		</p>
+		<!-- blockcode not yet supported in XHTML 1.1, squatting from XHTML 2.0 -->
+		<blockcode>
+$ mvn archetype:generate --batch-mode \
+-DarchetypeGroupId=org.apache.maven.archetypes \
+-DarchetypeArtifactId=maven-archetype-quickstart \
+-DgroupId=org.example.clerezza.scb \
+-DartifactId=tutorial1 \
+-Dversion=1.0-SNAPSHOT \
+-Dpackage=org.example.clerezza.scb.tutorial1
+		</blockcode>
+		<p>
+			If all goes well the output output of the command contains the
+			following:
+		</p>
+		<blockcode>
+------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO]
+------------------------------------------------------------------------
+		</blockcode>
+
+		<p>
+			A new directory called tutorial1 is created containing a source
+			directory src and a file called pom.xml used by maven to build the
+			project. A program file called App.java is created and placed under
+			the directory src/main/java/org/example/clerezza/scb/tutorial1/, we
+			will modify this Class to build our demo application, but before we
+			add the required dependencies to our pom.xml.
+		</p>
+
+		<h3 id="dependencies">2.2. Adding dependencies</h3>
+		<p>
+			As the required Clerezza artifacts are not yet in the maven default
+			repositories we need to add the respective repository locations to
+			our pom.xml (alternatively we could add them globally
+			to the maven settings.xml). Add the following as a child element of
+			<code>project</code> in your pom.xml:
+		</p>
+		<blockcode>
+
+  &lt;repositories>
+    &lt;repository>
+      &lt;id>apache&lt;/id>
+      &lt;name>apache repository&lt;/name>
+      &lt;snapshots>
+	&lt;updatePolicy>always&lt;/updatePolicy>
+	&lt;checksumPolicy>warn&lt;/checksumPolicy>
+      &lt;/snapshots>
+      &lt;url>http://repository.apache.org/content/groups/snapshots-group&lt;/url>
+      &lt;layout>default&lt;/layout>
+    &lt;/repository>
+  &lt;/repositories>
+		</blockcode>
+
+		<p>
+			Now we can add the dependencies to the <code>dependencies</code>
+			section that maven will download from the clerezza repositories.
+		</p>
+		<p>
+			The following are the compile-time dependencies (the default scope
+			for dependencies is <code>compile</code>). Beside
+			<code>org.clerezza.rdf.core</code> which provides the core scb bundles
+			we add <code>org.clerezza.rdf.utils</code> that contains handy utility
+			classes and <code>org.clerezza.rdf.ontologies</code> which contains
+			classes containing constants for the terms of popular ontologies.
+		</p>
+		<blockcode>
+&lt;dependency&gt;
+	&lt;groupId&gt;org.apache.clerezza&lt;/groupId&gt;
+	&lt;artifactId&gt;org.apache.clerezza.rdf.core&lt;/artifactId&gt;
+	&lt;version&gt;0.12-incubating-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.apache.clerezza&lt;/groupId&gt;
+	&lt;artifactId&gt;org.apache.clerezza.rdf.utils&lt;/artifactId&gt;
+	&lt;version&gt;0.13-incubating-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.apache.clerezza&lt;/groupId&gt;
+	&lt;artifactId&gt;org.apache.clerezza.rdf.ontologies&lt;/artifactId&gt;
+	&lt;version&gt;0.11-incubating-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+		</blockcode>
+
+		<p class="note">
+			The set version numbers were the latest at time of writing to
+			find the latest release or snapshot version check
+			https://repository.apache.org/content/repositories/releases/
+			respectively https://repository.apache.org/content/repositories/snapshots/.
+		</p>
+
+		<p>
+			The above dependencies will be sufficient to compile our application,
+			to run the application. However as SCB provides mainly interfaces
+			to exchangeable implementations we should add some runtime dependencies:
+		</p>
+		<!-- NOTE : think this comment is not still valid
+		     <div class="note">
+			At the time of writing this a bug in the maven exec-plugin prevents us
+			from declaring these dependencies as what they actually are, so
+			the runtime scope is commented out.
+		</div>-->
+		<blockcode>
+&lt;dependency>
+	&lt;groupId>org.apache.clerezza&lt;/groupId>
+	&lt;artifactId>org.apache.clerezza.rdf.jena.parser&lt;/artifactId>
+	&lt;version>0.10-incubating-SNAPSHOT&lt;/version>
+	&lt;scope>runtime&lt;/scope>
+&lt;/dependency>
+&lt;dependency>
+	&lt;groupId>org.apache.clerezza&lt;/groupId>
+	&lt;artifactId>org.apache.clerezza.rdf.jena.serializer&lt;/artifactId>
+	&lt;version>0.9-incubating-SNAPSHOT&lt;/version>
+	&lt;scope>runtime&lt;/scope>
+&lt;/dependency>
+&lt;dependency>
+	&lt;groupId>org.slf4j&lt;/groupId>
+	&lt;artifactId>slf4j-simple&lt;/artifactId>
+	&lt;version>1.5.5&lt;/version>
+	&lt;scope>runtime&lt;/scope>
+&lt;/dependency>
+&lt;dependency>
+	&lt;groupId>org.apache.clerezza&lt;/groupId>
+	&lt;artifactId>org.apache.clerezza.rdf.simple.storage&lt;/artifactId>
+	&lt;version>0.7-incubating-SNAPSHOT&lt;/version>
+	&lt;scope>runtime&lt;/scope>
+&lt;/dependency>
+		</blockcode>
+
+		<p>
+			The two dependencies are implementations of rdf parsers and
+			serializers for various formats. They are based on the Jena Framework
+			[<a href="#ref4">4</a>] but you don't have to care about this.
+		</p>
+
+		<p>
+			Almost forgot, maven defaults to some rather old java version, to fix
+			this we should add the following to configure the
+			<code>maven-compiler-plugin</code> to use java 6, the
+			<code>build</code> element is a child of <code>project</code>.
+		</p>
+		<blockcode>
+&lt;build>
+   &lt;pluginManagement>
+	&lt;plugins>
+		&lt;plugin>
+			&lt;groupId>org.apache.maven.plugins&lt;/groupId>
+			&lt;artifactId>maven-compiler-plugin&lt;/artifactId>
+                        &lt;version>2.0.2&lt;/version>
+			&lt;configuration>
+				&lt;source>1.6&lt;/source>
+				&lt;target>1.6&lt;/target>
+                                &lt;encoding>utf-8&lt;/encoding>
+			&lt;/configuration>
+		&lt;/plugin>
+	&lt;/plugins>
+  &lt;/pluginManagement>
+&lt;/build>
+		</blockcode>
+
+		<p>
+		  Try an "$mvn compile" command, build successful will apear.
+		</p> 
+
+		<p>
+		  Enough configuration, lets get our hands dirty and write some code.
+		</p>
+
+		<h2 id="functionality">3. Creating a Graph and loading Data</h2>
+		<p>
+			In RDF, Graphs are collections of triples. Strictly speaking graphs
+			are immutable : if you add or remove a triple its a new graph. For
+			that SCB distinguishes between two types of
+			<code>TripleCollection</code>s: <code>Graph</code> and
+			<code>MGraph</code> where 'M' stands for "mutable". The MGraph
+			and Graph interfaces both extend <code>TripleCollection</code> which
+			apart from extending <code>java.util.Collection&lt;Triple&gt;</code>
+			provide a method <code>filter</code>
+			to query RDF triples according to filter parameters
+			specified: subject, predicate, and object.
+		</p>
+		<p>
+			The factory we need for getting <code>TripleCollection</code>s
+			is <code>
+				<a href="http://clerezza.org/projects/org.clerezza.rdf.core/apidocs/org/clerezza/rdf/core/access/TcManager.html">
+					TcManager
+				</a></code>, depending on the available
+			storage providers the returned instances may be backed on an efficient
+			triple store like Sesame, or if no provider is available a simple and
+			terribly inefficient HashSet based implementation is returned.
+		</p>
+		<p>
+			To store our accumulated knowledge around BBC television sitcoms
+			we create an <code>MGraph</code> with the following code:
+		</p>
+		<blockcode>
+import org.apache.clerezza.rdf.core.*;
+import org.apache.clerezza.rdf.core.access.TcManager;
+
+...
+
+//get the singleton instance of TcManager
+final TcManager tcManager = TcManager.getInstance();
+//the arbitrary name we use for our mutable graph
+final UriRef mGraphName = new UriRef("http://tutorial.example.org/");
+//the m-graph into which we'll put the triples we collect
+final MGraph mGraph = tcManager.createMGraph(mGraphName);
+		</blockcode>
+		<div class="note">
+			We don't repeat the skeleton code generated by the maven archetype
+			but trust the reader can add the statements above at a sensible
+			place in App.java.
+		</div>
+		<p>
+			The code creates an empty MGraph with the name
+			&lt;http://tutorial.example.org/>. To verify that all went well
+			we can output the size of <code>mGraph</code> with the following:
+		</p>
+		<blockcode>
+System.out.println("Size of mGraph: "+mGraph.size());
+		</blockcode>
+		<p>
+			To compile and run the application using maven issue the following
+			command in the directory where the pom.xml is:
+		</p>
+		<blockcode>
+$ mvn compile exec:java -Dexec.mainClass=org.example.clerezza.scb.tutorial1.App
+		</blockcode>
+		<p>
+			The actual program output will be armored by the maven logging, you
+			may pass the -q argument, and you'll only see the actual output of our
+			program:
+		</p>
+		<blockcode>
+Size of mGraph: 0
+		</blockcode>
+		<p>
+			Boring emptiness, lets add the triples dbpedia has about
+			&lt;http://dbpedia.org/resource/Category:BBC_television_sitcoms>. First
+			use standard classes from the java.net package to dereference this
+			URI.
+		</p>
+		<blockcode>
+final URL url = new URL("http://dbpedia.org/resource/Category:BBC_television_sitcoms");
+final URLConnection con = url.openConnection();
+con.addRequestProperty("Accept", "application/rdf+xml");
+final InputStream inputStream = con.getInputStream();
+		</blockcode>
+		<div class="note">
+			The above code sets the "Accept"-Header of the HTTP-Request to
+			"application/rdf+xml" this tells the server that we can handle
+			responses in that format, for comparison the value of the
+			Accept-Header in the request of a browser might look like
+			"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8".<br/>
+			The URI &lt;http://dbpedia.org/resource/Category:BBC_television_sitcoms>
+			represents the abstract notion (the category) of BBC television sitcoms
+			which is not something that can actually be passed over the wire,
+			the server will answer with "303 See Other" response pointing to a
+			document describing the category we originally requested, in our case
+			this is &lt;http://dbpedia.org/data/Category:BBC_television_sitcoms.rdf>
+			for a normal browser it would be
+			&lt;http://dbpedia.org/page/Category:BBC_television_sitcoms>. URLConnection
+			transparently handles this redirection so we don't have to care
+			about sending the second request to the server.
+		</div>
+		<p>
+			Now that we have an InputStream from which rdf/xml can be read we
+			use <code>org.apache.clerezza.rdf.core.serializedform.Parser</code> to
+			convert it to a graph:
+		</p>
+		<blockcode>
+//get the singleton instance of Parser
+final Parser parser = Parser.getInstance();
+Graph deserializedGraph = parser.parse(inputStream, "application/rdf+xml");
+		</blockcode>
+		<p>
+			Using the <code>addAll</code> which MGraph inherits from
+			<code>Collection&lt;triple></code> we can add the triples of the
+			retrieved Graph to mGraph:
+		</p>
+		<blockcode>
+mGraph.addAll(deserializedGraph);
+		</blockcode>
+		<p>
+			Outputting the size of the graph now returns something else (the
+			number of triples will vary as dbpedia evolves):
+		</p>
+		<blockcode>
+Size of mGraph: 251
+		</blockcode>
+		<h2 id="accessing">4. Accessing the Triples</h2>
+		<p>
+			It's good to know that by loading data into our <code>MGraph</code>
+			its size has increased, but actually we would like to get data
+			out of <code>mGraph</code>.  The easiest would be to just use
+			the Serializer to write the Graph to standard output:
+		</p>
+		<blockcode>
+final Serializer serializer = Serializer.getInstance();
+serializer.serialize(System.out, mGraph, "text/turtle");
+		</blockcode>
+		<p>The above code serialized <code>mGraph</code> in the turtle format
+		to the standard output.  You may want to try "text/rdf+nt" and
+		"application/rdf+xml" to see the triples serialized in different ways.
+		</p>
+		<p>The typical way to get specific triples is to use the <code>filter</code>
+		method which <code>Graph</code> and <code>MGraph</code> inherit from
+		<code>TripleCollection</code>. The following outputs the
+		<code>RDF:type</code> of the resource
+		&lt;http://dbpedia.org/resource/Category:BBC_television_sitcoms>:</p>
+		<blockcode>
+Iterator&lt;Triple> typeTriples = mGraph.filter(new UriRef("http://dbpedia.org/resource/Category:BBC_television_sitcoms"), RDF.type, null);
+while (typeTriples.hasNext()) {
+	System.out.println(typeTriples.next());
+}
+		</blockcode>
+		<p>Note the use of <code>RDF.type</code> a constant from the
+		org.clerezza.rdf.ontologies package and maven artifact, <code>null</code>
+		is used as a wild card, here in the object position</p>
+		<h2 id="context">5. Resource context</h2>
+		<p>Often we want to get a concise description of a resource, the context
+		of a resource. In terms of RDF this can be formalized "context" as the set of
+		statements in which the resource is either subject or object. If such a
+		statement contains a blank node its context is included as well
+		[<a href="#ref5">5</a>].</p>
+		<p>The context can easily be accessed by using the <code>GraphNode</code>
+		class in the org.apache.clerezza.rdf.utils package.</p>
+		<blockcode>
+public Graph getCurrentContext() {
+	return new GraphNode(new UriRef(selectedUri), mGraph).getNodeContext();
+}
+		</blockcode>
+		<p>The method above returns the context of the resource of which
+		<code>selectedUri</code> contains the name.</p>
+		<h2 id="example">6. Putting it all together: the example app</h2>
+		<p>Putting what we learned together and adding a swing front-end:</p>
+		<p>The <a href="http://clerezza.org/projects/org.clerezza.rdf.core/documentation/tutorial1/pom.xml">pom.xml</a> should be equivalent to
+		what you already have if you followed this tutorial, the
+		<a href="http://clerezza.org/projects/org.clerezza.rdf.core/documentation/tutorial1/src/main/java/org/example/clerezza/scb/tutorial1/Tutorial1App.java">
+		java code</a> creates a swing frame with a table containing the context
+		of a selected resource. By default, when clicking on a named resource that
+		is the subject or object of a statement, the context of this resource is
+		shown. By clicking on the button "Load Context from Web" the resource
+		is dereferenced and the triples are added to the local store.</p>
+		<h2 id="further">7. Taking it further</h2>
+		<p>A trivially achievable improvement of the example application would
+		be to add persistent storage.</p>
+		<p>By adding the sesame persitent storage provider to the runtime classpath
+		of the application our <code>MGraph</code> is stored in a sesame store
+		[<a href="#ref8">8</a>] (this obsolotes the dependency on
+		<code>org.apache.clerezza.rdf.sesame.storage</code>).
+		</p>
+		<blockcode>
+&lt;dependency>
+	&lt;groupId>org.apache.clerezza&lt;/groupId>
+	&lt;artifactId>org.apache.clerezza.rdf.sesame.storage&lt;/artifactId>
+	&lt;version>0.13-incubating-SNAPSHOT&lt;/version>
+	&lt;!-- &lt;scope>runtime&lt;/scope> -->
+&lt;/dependency>
+		</blockcode>
+		<p>After adding this dependency on the second launch of the application
+		we should get an exception complaining that the graph already exists, the
+		reason for this is that <code>TcManager</code> contains separate methods
+		to access an existing <code>MGraph</code> and for creating a new one. The
+		following would solve the issue:</p>
+		<blockcode>
+try {
+	mGraph = tcManager.getMGraph(mGraphName);
+} catch (NoSuchEntityException e) {
+	mGraph = tcManager.createMGraph(mGraphName);
+}
+		</blockcode>
+		<p>If anything is unclear or you'd like to take it even further, ask
+		about it on our mailing list <a href="http://mail-archives.apache.org/mod_mbox/incubator-clerezza-dev/">
+		http://mail-archives.apache.org/mod_mbox/incubator-clerezza-dev/</a></p>
+		<h2 id="references">8. References</h2>
+		<p id="ref1">[1] W3C: Resource Description Framework (RDF): Concepts and Abstract Syntax; 2004,
+			<a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/">http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/</a>
+		</p>
+		<p id="ref2">[2] OSGi, <a href="http://www.osgi.org/Main/HomePage">http://www.osgi.org/Main/HomePage</a></p>
+		<p id="ref3">[3] Maven, <a href="http://maven.apache.org/">http://maven.apache.org/</a></p>
+		<p id="ref4">[4] Jena Framework, <a href="http://jena.sourceforge.net/">http://jena.sourceforge.net/</a></p>
+		<p id="ref5">[5] The introduced concept of "context" is close to the
+		one of "RDF Molecules" [6] and Minimum Self contained Graphs [7]</p>
+		<p id="ref6">[6] Ding L.; Finin, T; Peng, Y; Pinheiro da
+		Silva, P; , McGuinness, D , "Tracking RDF Graph Provenance using RDF
+		Molecules" , 2005, Proceedings of the Fourth International Semantic Web
+		Conference, November 2005</p>
+		<p id="ref7">[7] Tummarello G.,;Morbidoni C.; Puliti P; Piazza F.
+		"Signing individual fragments of an RDF graph" , 2005, World Wide Web
+		Conference 2005 Poster Track</p>
+		<p id="ref8">[8] Sesame, <a href="http://openrdf.com/">http://openrdf.com/</a></p>
+	</body>
+</html>

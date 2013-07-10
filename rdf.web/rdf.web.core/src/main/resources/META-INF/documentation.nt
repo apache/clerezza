@@ -1,0 +1,52 @@
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e99 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e99 <http://discobits.org/ontology#pos> "1" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e99 <http://discobits.org/ontology#holds> <bundle:///scb-web-content> .
+<bundle:///scb-web-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///scb-web-title> <http://discobits.org/ontology#infoBit> "SCB Web"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///scb-web-content> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e98 .
+<bundle:///scb-web-content> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e97 .
+<bundle:///scb-web-content> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e96 .
+<bundle:///scb-web-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#OrderedContent> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e98 <http://discobits.org/ontology#pos> "2" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e98 <http://discobits.org/ontology#holds> <bundle:///scb-web-content-el/2> .
+<bundle:///scb-web-content-el/0-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///scb-web-content-el/0-title> <http://discobits.org/ontology#infoBit> "Upload Triples with a POST Request"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e98 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+<bundle:///scb-web-content-el/2> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e95 .
+<bundle:///scb-web-content-el/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///scb-web-content-el/2> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e94 .
+<bundle:///scb-web-content-el/1> <http://discobits.org/ontology#infoBit> "The bundle SCB Web allows access to SCB graphs over HTTP with JAX-RS."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///scb-web-content-el/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///scb-web-content-el/0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+<bundle:///scb-web-content-el/0> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e93 .
+<bundle:///scb-web-content-el/0> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e92 .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e94 <http://discobits.org/ontology#holds> <bundle:///scb-web-content-el/2-content> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e94 <http://discobits.org/ontology#pos> "1" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e94 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+<bundle:///scb-web-content-el/0-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///scb-web-content-el/0-content> <http://discobits.org/ontology#infoBit> "To upload triples with a POST request, a client can use the URI path \"/graph\" and place the triples and other required information into the body as multipart/form-data which consists of\n<ul xmlns=\"http://www.w3.org/1999/xhtml\">\n<li>a file labeled \"graph\" containing the triples and specifying the mime-type.</li>\n<li>a text field labeled \"name\" specifying the name of the MGraph. If an MGraph with this name does not already exist, a new one will be created.</li>\n<li>an optional text field labeled \"mode\" specifying the mode. If the mode is \"replace\", existing triples of the MGraph will be deleted before new triples are added. If the mode is not specified or is \"append\", posted triples will be added to the MGraph.</li>\n<li>an optional text field labeled \"redirection\" specifying an URI which the client should be redirected to in case of success.</li>\n</ul>\nA response with the status code BAD REQUEST (400) is returned if the required data are missing. If the request can be satisfied, one of the following responses is returned:\n<ul xmlns=\"http://www.w3.org/1999/xhtml\">\n<li>SEE OTHER (303), if redirection is specified.</li>\n<li>CREATED (201), if redirection is not specified and a new MGraph is created.</li>\n<li>NO CONTENT (204), if redirection is not specified and no new MGraph is created.</li>\n</ul>\n<p xmlns=\"http://www.w3.org/1999/xhtml\">\nFor your convenience you may access a web-form at the Uri-Path <code>/graph/upload-form</code>.</p>\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///scb-web-content-el/2-title> <http://discobits.org/ontology#infoBit> "Backup of Triple Collections"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<bundle:///scb-web-content-el/2-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///scb-web-content-el/2-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
+<bundle:///scb-web-content-el/2-content> <http://discobits.org/ontology#infoBit> "The platform allows the current user to download all triple collections that he has access to through the URI path \"/admin/backup/download\". The resulted file is a compressed archive in zip format. All triple collections in this file are serialized in N-Triples format. Furthermore, a file called \"triplecollections.nt\" is contained in backup.zip, which describes the mapping of file names to triple collection names.\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e97 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e97 <http://discobits.org/ontology#pos> "1" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e97 <http://discobits.org/ontology#holds> <bundle:///scb-web-content-el/0> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e95 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e95 <http://discobits.org/ontology#pos> "0" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e95 <http://discobits.org/ontology#holds> <bundle:///scb-web-content-el/2-title> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e93 <http://discobits.org/ontology#holds> <bundle:///scb-web-content-el/0-title> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e93 <http://discobits.org/ontology#pos> "0" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e93 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e92 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e92 <http://discobits.org/ontology#pos> "1" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e92 <http://discobits.org/ontology#holds> <bundle:///scb-web-content-el/0-content> .
+<bundle:///scb-web> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e99 .
+<bundle:///scb-web> <http://discobits.org/ontology#contains> _:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e91 .
+<bundle:///scb-web> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e96 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e96 <http://discobits.org/ontology#pos> "0" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e96 <http://discobits.org/ontology#holds> <bundle:///scb-web-content-el/1> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e91 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e91 <http://discobits.org/ontology#pos> "0" .
+_:AX2dX5ddb458X3aX126d34f9135X3aXX2dX7e91 <http://discobits.org/ontology#holds> <bundle:///scb-web-title> .

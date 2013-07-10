@@ -1,0 +1,168 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.clerezza.rdf.jena.sparql;
+
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.LabelExistsException;
+import com.hp.hpl.jena.query.ReadWrite;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.util.Context;
+
+import java.util.Iterator;
+import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
+import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.jena.facade.JenaGraph;
+
+/**
+ *
+ * @author rbn
+ */
+public class TcDataset implements Dataset {
+
+    private TcManager tcManager;
+    private TripleCollection defaultGraph;
+
+    TcDataset(TcManager tcManager, TripleCollection defaultGraph) {
+        this.tcManager = tcManager;
+        this.defaultGraph = defaultGraph;
+    }
+
+    @Override
+    public Model getDefaultModel() {
+        final JenaGraph jenaGraph = new JenaGraph(defaultGraph);
+        final Model model = ModelFactory.createModelForGraph(jenaGraph);
+        return model;
+    }
+
+    @Override
+    public Model getNamedModel(String name) {
+        final JenaGraph jenaGraph = new JenaGraph(
+                tcManager.getTriples(new UriRef(name)));
+        final Model model = ModelFactory.createModelForGraph(jenaGraph);
+        return model;
+    }
+
+    @Override
+    public boolean containsNamedModel(String name) {
+        try {
+            tcManager.getTriples(new UriRef(name));
+            return true;
+        } catch (NoSuchEntityException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public Iterator<String> listNames() {
+        final Iterator<UriRef> tcs = tcManager.listTripleCollections().iterator();
+        return new Iterator<String>() {
+
+            @Override
+            public boolean hasNext() {
+                return tcs.hasNext();
+            }
+
+            @Override
+            public String next() {
+                UriRef next = tcs.next();
+                return next != null ? next.getUnicodeString() : null;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+
+    }
+
+    @Override
+    public Lock getLock() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public DatasetGraph asDatasetGraph() {
+        return new TcDatasetGraph(tcManager, defaultGraph);
+    }
+
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public void setDefaultModel( Model model ) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void addNamedModel( String uri, Model model ) throws LabelExistsException {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void removeNamedModel( String uri ) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void replaceNamedModel( String uri, Model model ) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public Context getContext() {
+      return null;
+    }
+  
+    @Override
+    public boolean supportsTransactions() {
+      return false;
+    }
+  
+    @Override
+    public void begin( ReadWrite readWrite ) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void commit() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public void abort() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  
+    @Override
+    public boolean isInTransaction() {
+      return false;
+    }
+  
+    @Override
+    public void end() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+}

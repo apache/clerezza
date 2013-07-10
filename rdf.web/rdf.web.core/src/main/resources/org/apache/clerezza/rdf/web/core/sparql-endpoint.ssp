@@ -1,0 +1,79 @@
+/*
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+*/
+
+def se(s: Any) = new UriRef("http://clerezza.org/2009/11/sparql-endpoint#"+s)
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+		<title>SPARQL Endpoint</title>
+		<script type="text/javascript">
+			function toggle(checkbox){{
+				var uri = document.getElementById('stylesheeturi');
+				var urilable = document.getElementById('urilable');
+				var server = document.getElementById('server');
+				var serverlabel = document.getElementById('serverlabel');
+				if (checkbox.checked){{
+					uri.style.visibility = 'visible';
+					urilable.style.visibility = 'visible';
+					server.style.visibility = 'visible';
+					serverlabel.style.visibility = 'visible';
+				}} else {{
+					uri.style.visibility = 'hidden';
+					urilable.style.visibility = 'hidden';
+					server.style.visibility = 'hidden';
+					serverlabel.style.visibility = 'hidden';
+				}}
+			}}
+		</script>
+	</head>
+	<body>
+		<h1>SPARQL Endpoint</h1>
+		<hr />
+		<h4>SPARQL Query</h4>
+		<form method="post" action="../sparql">
+			<lable for="query">Type in your query:</lable>
+			<br />
+			<textarea cols="70" rows="10" name="query" >
+PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX disco: &lt;http://discobits.org/ontology#>
+SELECT ?c where {{?c rdf:type disco:TitledContent}}
+			</textarea>
+			<br />
+			<br />
+			<label for="default-graph-uri">Select a graph URI:</label>
+			<select	name="default-graph-uri">
+				{for (tc <- (res/se("tripleCollection"))) yield
+					<option>{tc*}</option>
+				}
+			</select>
+			<br />
+			<lable for="apply-style-sheet">Add XSLT style sheet on the result: </lable>
+			<input type="checkbox" name="apply-style-sheet" id="checkbox" onclick="toggle(this)" />
+			<br />
+			<label for="style-sheet-uri" id="urilable" style="visibility:hidden">URI of XSLT style sheet</label>
+			<input type="text" name="style-sheet-uri" id="stylesheeturi" style="width:350px;visibility:hidden" value="http://www.w3.org/TR/rdf-sparql-XMLres/result-to-html.xsl" />
+			<label id="serverlabel" style="visibility:hidden">Add stylesheet on server side</label>
+			<input type="checkbox" name="server-side" id="server" checked="checked" style="visibility:hidden"/>
+			<br />
+			<br />
+			<input type="submit" value="Submit Query" />
+		</form>
+	</body>
+</html>

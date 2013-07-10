@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+
+-->
+
+<rdf:RDF xmlns="http://clerezza.org/2009/11/backup#"
+	xml:base="http://clerezza.org/2009/11/backup"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:skos="http://www.w3.org/2008/05/skos#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+>
+
+<!-- Ontology -->
+
+<owl:Ontology rdf:about="http://clerezza.org/2009/11/backup#">
+	<owl:versionInfo>Revision: 0.1</owl:versionInfo>
+	<dc:title xml:lang="en">
+		Clerezza Backup
+	</dc:title>
+</owl:Ontology>
+
+<!-- Classes -->
+<rdfs:Class rdf:about="#Graph">
+	<rdf:type rdf:resource="owl:Class"/>
+	<rdfs:label xml:lang="en">Graph</rdfs:label>
+	<skos:definition xml:lang="en">An RDF graph.</skos:definition>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#MGraph">
+	<rdf:type rdf:resource="owl:Class"/>
+	<rdfs:label xml:lang="en">MGraph</rdfs:label>
+	<skos:definition xml:lang="en">A mutable RDF graph.</skos:definition>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="#BackupAdminPage">
+	<rdf:type rdf:resource="owl:Class"/>
+	<rdfs:label xml:lang="en">BackupAdminPage</rdfs:label>
+	<skos:definition xml:lang="en">The administrative page to get backups and restore from backups.</skos:definition>
+</rdfs:Class>
+
+
+<!-- Properties -->
+
+<rdf:Property rdf:about="#file">
+	<rdf:type rdf:resource="owl:DatatypeProperty" />
+	<rdfs:label xml:lang="en">file</rdfs:label>
+	<skos:definition xml:lang="en">Points to the backup filename of the subject.
+	</skos:definition>
+	<rdfs:domain rdf:resource="#Graph"/>
+	<rdfs:range rdf:resource="xsd:string"/>
+</rdf:Property>
+
+</rdf:RDF>

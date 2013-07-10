@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+	<head>
+		<title>Tutorial 2: Developing RDF backed RESTful applicationts</title>
+		<link rel="stylesheet" type="text/css" href="style/documentation.css"/>
+	</head>
+	<body>
+		<h1>Tutorial 2: Developing RDF backed RESTful applications</h1>
+		<p>Author: Reto Bachmann-Gmür and Tsuyoshi Ito - clerezza.org</p>
+		<p>Contributor: Hasan - clerezza.org</p>
+		<h2>Table of Contents</h2>
+		<p>
+			<a href="#introduction">1. Introduction</a>
+		</p>
+		<p>
+			<a href="#setting">2. Setting up the project</a>
+		</p>
+		<p>
+			<a href="#accessible">3. Creating an accessible service</a>
+		</p>
+		<p>
+			<a href="#build">4. Build</a>
+		</p>
+		<p>
+			<a href="#install">5. Installing the bundle</a>
+		</p>
+		<p>
+			<a href="#test">5. Test your bundle</a>
+		</p>
+		<p>
+			<a href="#references">6. References</a>
+		</p>
+		<h2 id="introduction">1. Introduction</h2>
+		<p>
+			REST [<a href="#ref1">1</a>] is a software architecture style
+			applicable to the World Wide Web. With the advent of the Semantic Web
+			this resource oriented design shows its strength. The web of documents
+			evolves seamlessly to a web of data and knowledge.
+		</p>
+		<p>
+			RESTful Web applications are designed based on a set of REST
+			principles. In this introductory tutorial you'll learn how to develop
+			a RESTful application that delivers human readable semantic content
+			which is stored in a triple store.
+		</p>
+		<p>
+			Therefore, you will learn about SCB [<a href="#ref2">2</a>] and Triaxrs
+			[<a href="#ref3">3</a>] and how to use them to develop an RDF-backed
+			RESTful Web application. The time it takes to go through this tutorial
+			is around 30 minutes.
+		</p>
+		<h2 id="setting">2. Setting up the project</h2>
+		<p>
+			Create a maven project with the following parent and dependencies
+			(see the Triaxrs Tutorial 1 (Developing a RESTful Web Application
+			for OSGi Runtime Environment) for more detail [<a href="#ref4">4</a>]):
+		</p>
+
+        <p>First configure the repositories as follows:</p>
+		<blockcode>
+&lt;repositories&gt;
+	 &lt;repository&gt;
+		 &lt;id&gt;clerezza-release&lt;/id&gt;
+		 &lt;name&gt;clerezza.org distribution repository&lt;/name&gt;
+		 &lt;url&gt;http://repo.trialox.org/release&lt;/url&gt;
+		 &lt;layout&gt;default&lt;/layout&gt;
+	 &lt;/repository&gt;
+	 &lt;repository&gt;
+		 &lt;id&gt;clerezza-snapshot&lt;/id&gt;
+		 &lt;name&gt;clerezza.org snapshot repository&lt;/name&gt;
+		 &lt;url&gt;http://repo.trialox.org/snapshot&lt;/url&gt;
+		 &lt;layout&gt;default&lt;/layout&gt;
+	 &lt;/repository&gt;
+&lt;/repositories&gt;
+		</blockcode>
+		<blockcode>
+&lt;parent&gt;
+	 &lt;artifactId&gt;org.clerezza.parent&lt;/artifactId&gt;
+	 &lt;groupId&gt;org.clerezza&lt;/groupId&gt;
+	 &lt;version&gt;0.1-SNAPSHOT&lt;/version&gt; //check <a href="http://repo.trialox.org/release/org/clerezza/org.clerezza.parent/">here</a> for the newest release version or
+    <a href="http://repo.trialox.org/snapshot/org/clerezza/org.clerezza.parent/">here</a> for newest snapshot version&lt;/parent&gt; 		</blockcode>
+    <p>It in not necessary to define the <code>version</code> parameter of each dependency because they are specified in the parents pom file.</p>
+		<blockcode>
+&lt;dependency&gt;
+ 	 &lt;groupId&gt;org.clerezza&lt;/groupId&gt;
+ 	 &lt;artifactId&gt;org.clerezza.jaxrs.rdf.providers&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	 &lt;groupId&gt;org.clerezza&lt;/groupId&gt;
+	 &lt;artifactId&gt;org.clerezza.platform.typerendering.seedsnipe&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	 &lt;groupId&gt;org.clerezza&lt;/groupId&gt;
+	 &lt;artifactId&gt;org.clerezza.triaxrs&lt;/artifactId&gt;
+&lt;/dependency&gt;
+		</blockcode>
+		<p>Also set packaging to <code>bundle</code></p>
+		<p class="note">
+			By default the <code>maven-bundle-plugin</code> will export the
+			package named &lt;groupId>.&lt;artifactId> and its subpackages,
+			so the exposed components must be defined in a package named that way.
+			In our example we use <code>org.example.clerezza</code> as
+			groupId and <code>combined.tutorial</code> as artifactId.
+		</p>
+
+		<h2 id="accessible">3. Creating an accessible service</h2>
+		<p>
+			Like in the Triaxrs Tutorial 1 [<a href="#ref4">4</a>] we create a
+			JAX-RS class to get information about persons. To have some data to
+			play with, we will add an RDF file encoded in the Turtle format into
+			the resource tree of our project. Thus, we create the file
+			src/main/resources/org/example/clerezza/combined/tutorial/data.turtle
+			with the following content:</p>
+	<blockcode>
+@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt;.
+
+[	a foaf:Person;
+    foaf:title "Mr";
+    foaf:name "John Doe";
+    foaf:mbox &lt;mailto:john@example.org&gt;;
+    foaf:topic_interest &lt;http://dbpedia.org/resource/Category:BBC_television_sitcoms&gt;;
+    foaf:nick "jo" ] .
+
+[	a foaf:Person;
+    foaf:title "Mrs";
+    foaf:name "Jane Bloggs";
+    foaf:mbox &lt;mailto:jane@example.org&gt;;
+    foaf:openid &lt;http://openid.example.org/jbloggs&gt; ] .
+		</blockcode>
+
+		<p>
+			The JAX-RS resource class mentioned above is called in this tutorial
+			<code>TutorialApp</code> and looks as follows:
+		</p>
+		<blockcode>
+package org.example.clerezza.combined.tutorial;
+
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Iterator;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+
+import org.osgi.service.component.ComponentContext;
+
+import org.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
+import org.clerezza.platform.typerendering.RenderletManager;
+import org.clerezza.rdf.ontologies.FOAF;
+import org.clerezza.rdf.utils.GraphNode;
+import org.clerezza.rdf.core.Graph;
+import org.clerezza.rdf.core.MGraph;
+import org.clerezza.rdf.core.NonLiteral;
+import org.clerezza.rdf.core.Triple;
+import org.clerezza.rdf.core.TripleCollection;
+import org.clerezza.rdf.core.UriRef;
+import org.clerezza.rdf.core.access.NoSuchEntityException;
+import org.clerezza.rdf.core.access.TcManager;
+import org.clerezza.rdf.core.serializedform.Parser;
+
+/**
+ * Get Persons by their email
+ *
+ * @scr.component
+ * @scr.service interface="java.lang.Object"
+ * @scr.property name="javax.ws.rs" type="Boolean" value="true"
+ */
+
+@Path("/foaf")
+public class TutorialApp {
+
+	/**
+	 * @scr.reference
+	 */
+	TcManager tcManager;
+
+	/**
+	 * @scr.reference
+	 */
+	private RenderletManager renderletManager;
+
+	private UriRef graphName = new UriRef("http://localhost.mygraph");
+
+	@GET
+	@Path("find")
+	@Produces("application/rdf+xml")
+	public Graph getPersonRdf(@QueryParam("mbox") String mboxString) {
+		MGraph mGraph = tcManager.getMGraph(graphName);
+		NonLiteral person = getPersonByMbox(mboxString, mGraph);
+		return new GraphNode(person, mGraph).getNodeContext();
+	}
+
+	@GET
+	@Path("find")
+	@Produces("application/xhtml+xml")
+	public GraphNode getPersonHtml(@QueryParam("mbox") String mboxString) {
+		MGraph mGraph = tcManager.getMGraph(graphName);
+		NonLiteral person = getPersonByMbox(mboxString, mGraph);
+		return new GraphNode(person, mGraph);
+	}
+
+	private NonLiteral getPersonByMbox(String mboxString, MGraph mGraph) {
+		Iterator&lt;Triple&gt; iter = mGraph.filter(null, FOAF.mbox, new UriRef(mboxString));
+		NonLiteral person = null;
+		while(iter.hasNext()) {
+			person = iter.next().getSubject();
+		}
+		return person;
+	}
+
+	/**
+	 * The activate method is called when SCR activates the component configuration.
+	 * This method gets the system graph or create a new one if it doesn't exist.
+	 *
+	 * @param componentContext
+	 */
+	protected void activate(ComponentContext componentContext) {
+
+		URL templateURL = getClass().getResource("tutorial.xhtml");
+		try {
+			renderletManager.registerRenderlet(SeedsnipeRenderlet.class
+					.getName(), new UriRef(templateURL.toURI().toString()),
+					FOAF.Person, null, MediaType.APPLICATION_XHTML_XML_TYPE,
+					true);
+		} catch (URISyntaxException ex) {
+			throw new WebApplicationException(ex);
+		}
+		TripleCollection tc;
+		try {
+			tcManager.getMGraph(graphName);
+		} catch (NoSuchEntityException nsee) {
+			tc = tcManager.createMGraph(graphName);
+			InputStream fin = null;
+			fin = getClass().getResourceAsStream("data.turtle");
+			Parser parser = Parser.getInstance();
+			tc.addAll(parser.parse(fin, "text/turtle"));
+		}
+	}
+}
+
+		</blockcode>
+		<p>
+			The resource class above provides two resource methods to process
+			GET requests specifying the path /foaf/find. The JAX-RS annotation
+			@Path on TutorialApp sets the path of the resource to “/foaf”,
+			while the JAX-RS annotation @Path on the resource methods
+			<code>getPersonRdf</code> and <code>getPersonHtml</code> defines
+			the subpath "find". Furthermore, the JAX-RS annotation @Produces
+			defines the list of media types that a Java type or a method
+			can produce. A media type corresponds with the representation of a
+			resource. In this tutorial <code>getPersonRdf</code> should produce
+			"application/rdf+xml", whereas <code>getPersonHtml</code> should
+			produce "application/xhtml+xml". Both methods accept a parameter,
+			whose value is obtained from the GET request parameter called mbox.
+			This is defined through the JAX-RS annotation @QueryParam.
+		</p>
+		<p>
+			A resource can have multiple representations. For example, a web page
+			can be represented as html, pdf, plain text, or other representations.
+			The HTTP defines a mechanism known as content negotiation to allow a
+			client (e.g., a web browser) to specify which representation it would
+			like to get from the server. Using JAX-RS we can define a
+			<code>MessageBodyWriter</code> which maps a Java type to a
+			representation. In this tutorial <code>getPersonRdf</code> returns
+			a Graph, whereas <code>getPersonHtml</code> returns a GraphNode,
+			which represents a node in the context of a graph. The clerezza
+			platform provides for either resources Graph and GraphNode a
+			corresponding <code>MessageBodyWriter</code>.
+		</p>
+		<p>
+			The clerezza platform's <code>TemplatingMessageBodyWriter</code>
+			produces a representation of the format "application/xhtml+xml"
+			from a <code>GraphNode</code>, whereas the <code>GraphWriter</code>
+			produces "application/rdf+xml" from a <code>Graph</code>.
+			<code>GraphWriter</code> is implemented in the maven project
+			org.clerezza.jaxrs.rdf.providers.
+			The <code>TemplatingMessageBodyWriter</code> uses a templating engine
+			to render a <code>GraphNode</code> based on a predefined template file.
+			In order to allow a different <code>GraphNode</code> to be rendered
+			using a different template, each <code>GraphNode</code> and template
+			is bound to a specific RDF type.
+		</p>
+		<p>
+			For the purpose of registering a template, a
+			<code>RenderletManager</code> service is made available. In this tutorial,
+			a template (obtained from the file "tutorial.xhtml") is registered
+			for the RDF type FOAF.Person (http://xmlns.com/foaf/0.1/Person).
+			This is done in the <code>activate</code> method using the
+			<code>RenderletManager</code> service.
+		</p>
+		<p>
+			In the <code>activate</code> method we also use the <code>TcManager</code> to get
+			the <code>MGraph</code> called "http://localhost.mygraph". If this
+			graph doesn't exist, a <code>NoSuchEntityException</code> is thrown.
+			In this latter case, we catch this exception and create an
+			<code>MGraph</code>. Afterwards we add the triples from the file
+			mentioned above into the graph.
+		</p>
+
+		<p>
+			The following template renders a FOAF.Person. For easier readability
+			namespaces can be defined. Statements which should be interpreted by
+			the templating engine starts with the character <code>$</code>.
+			The templating language allows loops and conditions. More examples
+			are available on the project website of the templating engine
+			(<a href="http://clerezza.org/projects/org.clerezza.templating.seedsnipe/documentation/overview.xhtml" target="_blank" >http://clerezza.org/projects/org.clerezza.templating.seedsnipe/documentation/overview.xhtml</a>
+		</p>
+		<blockcode>
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+	${ns:foaf=http://xmlns.com/foaf/0.1/}
+	&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/&gt;
+	&lt;title&gt;clerezza - Combined Tutorial&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;h1&gt;clerezza - Combined Tutorial&lt;/h1&gt;
+	&lt;h2&gt;FOAF Person:&lt;/h2&gt;
+	&lt;div&gt;
+		&lt;p&gt;Name: ${foaf:title} ${foaf:name}&lt;/p&gt;
+		&lt;p&gt;Email: ${foaf:mbox}&lt;/p&gt;
+		${if foaf:nick}
+		&lt;p&gt;Nickname: ${foaf:nick}&lt;/p&gt;
+		${/if}
+		&lt;p&gt;Topic interests: &lt;br /&gt;
+		${loop}
+			${foaf:topic_interest}&lt;br /&gt;
+		${/loop}
+		&lt;/p&gt;
+	&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+		</blockcode>
+		<h2 id="build">4. Build</h2>
+		<p>To build the package, execute the command:
+		</p>
+		<blockcode>
+		$ mvn package
+		</blockcode>
+
+		<h2 id="install">5. Installing the bundle in the Clerezza Platform</h2>
+		<p>
+			Download the latest clerezza platform launcher from
+			<a href="http://repo.trialox.org/snapshot/org/clerezza/org.clerezza.platform.launcher.sesame/" target="_blank" >
+			http://repo.trialox.org/snapshot/org/clerezza/org.clerezza.platform.launcher.sesame/</a> and start it.
+			Go to <a href="http://localhost:8080/user/admin/control-panel" target="_blank" >http://localhost:8080/user/admin/control-panel</a> (enter username: admin, password; admin) and upload your bundle.
+		</p>
+		<h2 id="test">Test your bundle</h2>
+		<p>Open the URL <a href="http://localhost:8080/foaf/find">http://localhost:8080/foaf/find</a> and add the URL parameter <code>mbox=mailto:john@example.org</code> to receive information about john</p>
+		<h2 id="references">References</h2>
+		<p id="ref1">[1] R.T. Fielding: Architectural Styles and the Design of Network-based Software Architectures; CHAPTER 5 Representational State Transfer (REST), 2000, <a href="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm</a></p>
+		<p id="ref2">[2] Clerezza Smart Content Binding SCB <a href="http://clerezza.org/projects/org.clerezza.rdf.core/">http://clerezza.org/projects/org.clerezza.rdf.core/</a></p>
+		<p id="ref3">[3] Clerezza Triaxrs<a href="http://clerezza.org/projects/org.clerezza.triaxrs/">http://clerezza.org/projects/org.clerezza.triaxrs/</a></p>
+		<p id="ref4">[4] Clerezza Triaxrs Tutorial 1<a href="http://clerezza.org/projects/org.clerezza.triaxrs/documentation/tutorial_1.xhtml">http://clerezza.org/projects/org.clerezza.triaxrs/documentation/tutorial_1.xhtml</a></p>
+		<p><i>That's all folks for this time! <br/><!--You can send your feedback to: --></i></p>
+	</body>
+</html>
