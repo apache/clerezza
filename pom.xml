@@ -46,6 +46,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>parent</module>
                 <module>jaxrs.rdf.providers</module>
 <module>jaxrs.utils</module>
 <module>rdf.core</module>
