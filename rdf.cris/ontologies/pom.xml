@@ -24,11 +24,11 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>rdf.cris</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.3-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.cris.ontologies</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - RDF Composite Resource Index Service Ontologies</name>
     <description>

@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>rdf.web</artifactId>
-        <version>0.9-SNAPSHOT</version>
+        <version>0.10-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.web.core</artifactId>
     <packaging>bundle</packaging>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
     <name>Clerezza - SCB Web Access Core</name>
     <description>The core part of SCB Web Access</description>
     <dependencies>
