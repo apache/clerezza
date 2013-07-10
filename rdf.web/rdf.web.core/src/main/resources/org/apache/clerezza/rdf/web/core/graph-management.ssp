@@ -1,0 +1,58 @@
+/*
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+*/
+
+def gm(s: Any) = new UriRef("http://clerezza.org/2010/03/graph-management#"+s)
+def rdf(s: Any) = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"+s)
+def tcp(s: Any) = new UriRef("http://clerezza.org/2009/06/tcprovider#"+s)
+
+resultDocModifier.setTitle("Manage Triple Collections");
+resultDocModifier.addNodes2Elem("tx-module", <h1>Manage Triple Collections</h1>);
+
+import org.apache.clerezza.rdf.scala.utils.RichGraphNode
+
+<div id="tx-content">
+<table>
+	<tr><th>Name</th><th>Size</th><th>type</th><th colspan="2">Actions</th></tr>
+				{for (tc <- (res/gm("tripleCollection"))) yield
+					<tr>
+						<td>{tc*}</td>
+						<td>{tc/gm("size")*}</td>
+						<td>{if ((tc/rdf("type")).indexOf(new RichGraphNode(
+						new GraphNode(tcp("MGraph"), res.getGraph))) != -1) {
+						<span>MGraph</span> } else {
+						<span>Graph</span>
+						}
+						}
+						</td>
+						<td>{ifx ((tc/rdf("type")).indexOf(new RichGraphNode(
+						new GraphNode(tcp("MGraph"), res.getGraph))) != -1) {<form action="smush" method="post"><div>
+							<input type="hidden" name="graphName" value={tc*} />
+						<input type="submit" value="smush" /></div></form>}
+						}</td>
+						<td><form action="/graph" method="get"><div>
+							<input type="hidden" name="name" value={tc*} />
+						<input type="submit" value="get" /></div></form>
+						</td>
+					</tr>
+				}
+</table>
+<p><a href="/graph/upload-form">UploadGraph</a></p>
+</div>

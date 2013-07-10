@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+	<head>
+		<title>Running Sparql queries against SCB Graph</title>
+	</head>
+	<body>
+		<h1>Running Sparql queries against SCB Graph</h1>
+		<p>
+			The following example executes a Sparql querry against an SCB Graph
+			using the Jena Façade.
+		</p>
+		<p>
+			Comment: Be sure that the Graph "http://localhost/" exists and contains the appropriate triples for the query. 
+			If you need information how to store or retrieve triples using the Smart Content Binding read the tutorial
+			<a href="http://clerezza.org/projects/org.apache.clerezza.rdf.core/documentation/tutorial_1.xhtml">exploring and aggregating RDF data with SCB</a>.
+		</p>
+		<pre>
+import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.jena.facade.JenaGraph;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+
+
+public class SparqlDemo {
+
+	public static void main(String... args) throws Exception {
+
+		TcManager tcManager = TcManager.getInstance();
+		UriRef mGraphName = new UriRef("http://localhost/");
+		String itemUri = "http://dannyayers.com/2004/05/15/rasqal-rdf-query-library/";
+		MGraph mGraph = tcManager.getMGraph(mGraphName);
+		JenaGraph jenaGraph = new JenaGraph(mGraph);
+		Model model = ModelFactory.createModelForGraph(jenaGraph);
+
+		String queryString = "PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+				+ "PREFIX rss: &lt;http://purl.org/rss/1.0/> "
+				+ "PREFIX dc: &lt;http://purl.org/dc/elements/1.1/> "
+				+ "SELECT  ?p ?o WHERE {"
+				+ " &lt;" + itemUri + "> ?p ?o " + " }";
+		Query query = QueryFactory.create(queryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		int i = 1;
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				RDFNode p = soln.get("p");
+				RDFNode o = soln.get("o"); // Get a result variable by name.
+				System.out.println(i++ + "." + p + ", " + o);
+			}
+		} finally {
+			qexec.close();
+		}
+
+	}
+}
+
+		</pre>
+	</body>
+</html>
+
