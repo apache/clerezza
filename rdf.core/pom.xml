@@ -22,13 +22,13 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.core</artifactId>
     <packaging>bundle</packaging>
-    <version>0.13-SNAPSHOT</version>
+    <version>0.13</version>
     <name>Clerezza - SCB Core</name>
     <description>Interfaces and utilities to access RDF Graphs</description>
     <dependencies>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>utils</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.1-incubating</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

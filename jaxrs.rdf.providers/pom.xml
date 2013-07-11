@@ -24,24 +24,24 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>jaxrs.rdf.providers</artifactId>
     <packaging>bundle</packaging>
-    <version>0.14-SNAPSHOT</version>
+    <version>0.14</version>
     <name>Clerezza - JAX-RS MessageBodyProviders for RDF</name>
     <dependencies>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.13-SNAPSHOT</version>
+            <version>0.13</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.13-incubating</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>

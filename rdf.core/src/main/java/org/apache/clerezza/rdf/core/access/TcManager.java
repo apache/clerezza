@@ -112,8 +112,7 @@ public class TcManager extends TcProviderMultiplexer {
     @Reference(policy = ReferencePolicy.DYNAMIC,
             cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected QueryEngine queryEngine;
-    @Reference
-    protected SparqlPreParser sparqlPreParser;
+
     private ComponentContext componentContext;
     private Collection<UriRef> mGraphsToRegisterOnActivation = new HashSet<UriRef>();
     private Collection<UriRef> graphsToRegisterOnActivation = new HashSet<UriRef>();
@@ -157,7 +156,6 @@ public class TcManager extends TcProviderMultiplexer {
                         System.out.println("QE: "
                                 + instance.queryEngine.getClass());
                     }
-                    instance.sparqlPreParser = new SparqlPreParser(instance);
                 }
             }
         }
@@ -282,6 +280,7 @@ public class TcManager extends TcProviderMultiplexer {
      */
     public Object executeSparqlQuery(String query, TripleCollection defaultGraph) throws ParseException {
         final UriRef defaultGraphName = new UriRef("urn:x-temp:/kjsfadfhfasdffds");
+        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
         final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
         TcProvider singleTargetTcProvider = null;
         if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
@@ -299,6 +298,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
     
     public Object executeSparqlQuery(String query, UriRef defaultGraphName) throws ParseException {
+        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
         final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
         TcProvider singleTargetTcProvider = null;
         if ((referencedGraphs != null)) {

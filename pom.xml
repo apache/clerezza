@@ -25,11 +25,11 @@
         <version>13</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
-    <artifactId>reactor</artifactId>
+    <artifactId>release20130710-reactor</artifactId>
     <packaging>pom</packaging>
-    <name>Clerezza - Reactor build (root)</name>
+    <name>Clerezza - Reelase 20130710 Reactor build (root)</name>
     <url>http://incubator.apache.org/clerezza/mvn-site/</url>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <description>A recator to build all of clerezza</description>
     <licenses>
         <license>
@@ -47,111 +47,23 @@
             </activation>
             <modules>
                 <module>parent</module>
-                <module>clerezza-jar-resource-bundle</module>
-                <module>platform.style.classic.webguiexamples</module>
-                <module>ext.org.apache.jena</module>
-                <module>ext.org.apache.jena.tdb</module>
-                <module>ext.com.ibm.icu</module>
-                <module>ext.javax.mail</module>
-                <module>ext.org.json.simple</module>
-                <module>ext.org.ops4j.pax.swissbox.tinybundles</module>
-                <module>ext.org.apache.lucene</module>
-                <module>slf4j-scala-api</module>
-                <module>internal.archetype</module>
-                <module>scala-scripting</module>
-                <module>jaxrs.extensions</module>
                 <module>jaxrs.rdf.providers</module>
-                <module>jaxrs.stanbol.fragments</module>
-                <module>jaxrs.utils</module>
-                <module>maven-jaxrs-report-plugin</module>
-                <module>maven-ontologies-plugin</module>
-                <module>maven-pladoc-plugin</module>
-                <module>permissiondescriptions</module>
-                <module>ssl.keygen</module>
-                <module>platform</module>
-                <module>platform.accountcontrolpanel</module>
-                <module>platform.concepts</module>
-                <module>platform.config</module>
-                <module>platform.config.gui</module>
-                <module>platform.content.imagemetadata</module>
-                <module>platform.content</module>
-                <module>platform.content.default404</module>
-                <module>platform.content.fsadaptor</module>
-                <module>platform.content.representations</module>
-                <module>platform.cris</module>
-                <module>platform.curieprefixmanager</module>
-                <module>platform.dashboard</module>
-                <module>platform.dashboard.webinterface</module>
-                <module>platform.documentation</module>
-                <module>platform.documentation.viewer</module>
-                <module>platform.enrichment</module>
-                <module>platform.graphnodeprovider</module>
-                <module>platform.graphprovider.content</module>
-                <module>platform.language</module>
-                <module>platform.launcher.storageless.parent</module>
-                <module>platform.launcher.tdb</module>
-                <module>platform.logging</module>
-                <module>platform.mail</module>
-                <module>platform.scripting</module>
-                <module>platform.scripting.scriptmanager</module>
-                <module>platform.security.foafssl</module>
-                <module>platform.security.conditions</module>
-                <module>platform.shellcustomizer</module>
-                <module>platform.typehandlerspace</module>
-                <module>platform.typehandlerspace.impl</module>
-                <module>platform.typerendering</module>
-                <module>platform.typerendering.gui</module>
-                <module>platform.typerendering.scala</module>
-                <module>platform.typerendering.scalaserverpages</module>
-                <module>platform.typerendering.seedsnipe</module>
-                <module>platform.typepriority</module>
-                <module>platform.usermanager</module>
-                <module>platform.usermanager.webinterface</module>
-                <module>platform.users</module>
-                <module>platform.xhtml2html</module>
-                <module>osgi.services</module>
-                <module>rdf.core</module>
-                <module>rdf.core.test</module>
-                <module>rdf.cris</module>
-                <module>rdf.enrichment</module>
-                <module>rdf.file.storage</module>
-                <module>rdf.jena.commons</module>
-                <module>rdf.jena.facade</module>
-                <module>rdf.jena.parser</module>
-                <module>rdf.jena.serializer</module>
-                <module>rdf.jena.sparql</module>
-                <module>rdf.jena.storage</module>
-                <module>rdf.jena.tdb.storage</module>
-                <module>rdf.locking</module>
-                <module>rdf.ontologies</module>
-                <module>rdf.metadata</module>
-                <module>rdf.rdfa</module>
-                <module>rdf.rdfjson</module>
-                <module>rdf.scala.utils</module>
-                <module>rdf.schemagen</module>
-                <module>rdf.simple.storage</module>
-                <module>rdf.stable.serializer</module>
-                <module>rdf.utils</module>
-                <module>rdf.web</module>
-                <module>shell</module>
-                <module>shell.felixshellcommand</module>
-                <module>bundledevtool</module>
-                <module>sshshell</module>
-                <module>templating</module>
-                <module>templating.seedsnipe</module>
-                <module>tools.offline</module>
-                <module>uima</module>
-                <module>utils.customproperty</module>
-                <module>utils.imageprocessing</module>
-                <module>utils</module>
-                <module>web.fileserver</module>
-                <module>web.resources.jquery</module>
-                <module>web.resources.scripts</module>
-                <module>platform.style.default</module>
-                <module>platform.style.classic</module>
-                <module>web.resources.yui</module>
-                <module>rdf.storage.externalizer</module>
-                <module>rdf.storage.web</module>
+<module>jaxrs.utils</module>
+<module>rdf.core</module>
+<module>rdf.core.test</module>
+<module>rdf.cris</module>
+<module>rdf.jena.commons</module>
+<module>rdf.jena.facade</module>
+<module>rdf.jena.parser</module>
+<module>rdf.jena.serializer</module>
+<module>rdf.jena.sparql</module>
+<module>rdf.jena.storage</module>
+<module>rdf.jena.tdb.storage</module>
+<module>rdf.web</module>
+<module>scala-scripting</module>
+<module>shell</module>
+<module>slf4j-scala-api</module>
+
             </modules>
         </profile>
         <profile>
@@ -223,122 +135,7 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>it</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <modules>
-                <module>integrationtest.web</module>
-                <module>integrationtest.web.performance</module>
-                <module>platform.testing</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>additions</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <modules>
-                <!-- tests depends on availability of right version of imagemagick, see CLEREZZA-326-->
-                <module>utils.imagemagick</module>
-                <!-- have dependencies that are not in maven central -->
-                <module>ext.org.jruby</module>
-                <module>ext.org.openrdf.sesame</module>
-                <module>platform.launcher.sesame</module>
-                <module>rdf.sesame.storage</module>
-                <module>rdf.sesame.parser</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>site-build</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-                        <pluginRepositories>
-                            <pluginRepository>
-                                <id>apache.snapshots</id>
-                                <url>http://repository.apache.org/snapshots/</url>
-                            </pluginRepository>
-                        </pluginRepositories>
-        </profile>
     </profiles>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-scr-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.xsite</groupId>
-                <artifactId>xsite-maven-plugin</artifactId>
-            </plugin>
-            <!-- having this here has the effect that the resources copied by the resources plugin (below) have
-            priority over the remote resources -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <configuration>        
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <resources>
-            <resource>
-                <targetPath>META-INF</targetPath>
-                <filtering>false</filtering>
-                <directory>${basedir}</directory>
-                <includes>
-                    <include>NOTICE</include>
-                    <include>LICENSE.*</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-    </build>
     <distributionManagement>
         <!-- where to deploy the web site -->
         <site>
@@ -371,53 +168,9 @@
 
 
     <scm>
-        <url>http://svn.apache.org/viewvc/incubator/clerezza</url>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/clerezza/trunk/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/clerezza/trunk/</developerConnection>
+        <url>http://svn.apache.org/viewvc/clerezza/tags/release20130710-reactor-0.3</url>
+        <connection>scm:svn:https://svn.apache.org/repos/asf/clerezza/tags/release20130710-reactor-0.3</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/tags/release20130710-reactor-0.3</developerConnection>
     </scm>
 
-    <!-- lets generate reports -->
-    <reporting>
-        <plugins>
-            <!-- javadoc -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <!-- Version 2.6  passes invalid arguments to the wadl doclet -->
-                <version>2.4</version>
-            </plugin>
-
-            <!-- test results -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.4.2</version>
-            </plugin>
-
-            <!-- pmd reports (potential bugs, suboptimal code, duplicate code) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <targetJdk>1.6</targetJdk>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.clerezza</groupId>
-                <artifactId>maven-jaxrs-report-plugin</artifactId>
-                <version>0.2-SNAPSHOT</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>2.5.1</version>
-            </plugin>
-<!--            <plugin>
-                <groupId>org.apache.clerezza</groupId>
-                <artifactId>maven-pladoc-plugin.core</artifactId>
-                <version>0.1</version>
-            </plugin> -->
-        </plugins>
-    </reporting>
 </project>

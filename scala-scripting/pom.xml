@@ -26,7 +26,7 @@
     </parent>
     <groupId>org.apache.clerezza.scala</groupId>
     <artifactId>scala</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>pom</packaging>
     <name>Scala OSGi Services</name>
     <description>Provides bundles and services to allow compiling and executing scala code
@@ -75,7 +75,7 @@
             <dependency>
                 <groupId>org.apache.clerezza.scala</groupId>
                 <artifactId>script-engine</artifactId>
-                <version>0.2-SNAPSHOT</version>
+                <version>0.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -179,4 +179,10 @@
             </plugin>
         </plugins>
     </build>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/pom/tags/release20130710-reactor-0.3/scala</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/pom/tags/release20130710-reactor-0.3/scala</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/pom/tags/release20130710-reactor-0.3/scala</url>
+  </scm>
 </project>
