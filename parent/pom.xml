@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
     <name>Clerezza - Parent for all</name>
     <url>http://clerezza.apache.org/mvn-site/</url>
-    <version>0.4</version>
+    <version>0.5-SNAPSHOT</version>
     <description>The direct or indirect parent of all Clerezza Artifacts</description>
     <properties>
         <sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
@@ -556,7 +556,7 @@
             <dependency>
             	<groupId>org.apache.clerezza</groupId>
             	<artifactId>rdf.jena.storage</artifactId>
-            	<version>0.6</version>
+            	<version>0.7-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -592,9 +592,9 @@
 
 
     <scm>
-        <url>http://svn.apache.org/viewvc/clerezza/tags/release20130710-reactor-0.3/clerezza</url>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/tags/release20130710-reactor-0.3/parent</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/tags/release20130710-reactor-0.3/parent</developerConnection>
+        <url>http://svn.apache.org/viewvc/clerezza</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/trunk/parent/</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/trunk/parent/</developerConnection>
     </scm>
 
     <!-- lets generate reports -->

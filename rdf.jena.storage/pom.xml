@@ -24,20 +24,20 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.4</version>
+        <version>0.5-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.jena.storage</artifactId>
     <packaging>bundle</packaging>
-    <version>0.6</version>
+    <version>0.7-SNAPSHOT</version>
     <name>Clerezza - SCB Jena Storage Provider</name>
     <description>Allows converting Jena graphs to SCB graphs. (Currently no TcProvider comprised)</description>
     <dependencies>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.commons</artifactId>
-            <version>0.6</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wymiwyg</groupId>
@@ -64,7 +64,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.facade</artifactId>
             <scope>test</scope>
-            <version>0.13</version>
+            <version>0.14-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

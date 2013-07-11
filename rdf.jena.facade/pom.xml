@@ -24,13 +24,13 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.4</version>
+        <version>0.5-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.jena.facade</artifactId>
     <packaging>bundle</packaging>
-    <version>0.13</version>
+    <version>0.14-SNAPSHOT</version>
     <name>Clerezza - Jena API on SCB</name>
     <description>An implementation of the Jena API based on triamodel, allows to
     run code written against the Jena API on a Triamodel store.</description>
@@ -38,12 +38,12 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.13</version>
+            <version>0.14-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.commons</artifactId>
-            <version>0.6</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wymiwyg</groupId>
