@@ -22,14 +22,11 @@ import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.query.DataSet;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.SparqlUnit;
 import org.apache.clerezza.rdf.core.sparql.update.Update;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
 
 /**
  * This class implements an OSGi service to provide a method to obtain referred Graphs in a SPARQL Query or Update.
@@ -37,18 +34,16 @@ import org.apache.felix.scr.annotations.Service;
  * @author hasan
  */
 
-@Component
-@Service(SparqlPreParser.class)
+
 public class SparqlPreParser {
 
-    @Reference
-    TcManager tcManager;
+    TcProvider tcProvider;
 
     public SparqlPreParser() {
     }
 
-    public SparqlPreParser(TcManager tcManager) {
-        this.tcManager = tcManager;
+    public SparqlPreParser(TcProvider tcProvider) {
+        this.tcProvider = tcProvider;
     }
 
     /**
@@ -80,7 +75,7 @@ public class SparqlPreParser {
             }
         } else {
             Update u = sparqlUnit.getUpdate();
-            referredGraphs = u.getReferredGraphs(defaultGraph, tcManager);
+            referredGraphs = u.getReferredGraphs(defaultGraph, tcProvider);
         }
         if (referredGraphs.isEmpty()) {
             return null;
