@@ -24,11 +24,11 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>rdf.cris</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.cris.core</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>bundle</packaging>
     <name>Clerezza - RDF Composite Resource Index Service Core</name>
     <properties>
@@ -38,17 +38,17 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.cris.ontologies</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.13-SNAPSHOT</version>
+            <version>0.13</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.13-incubating</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>

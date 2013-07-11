@@ -29,7 +29,7 @@
     <packaging>pom</packaging>
     <name>Clerezza - Reelase 20130710 Reactor build (root)</name>
     <url>http://incubator.apache.org/clerezza/mvn-site/</url>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <description>A recator to build all of clerezza</description>
     <licenses>
         <license>
@@ -62,6 +62,7 @@
 <module>rdf.web</module>
 <module>scala-scripting</module>
 <module>shell</module>
+<module>slf4j-scala-api</module>
 
             </modules>
         </profile>
@@ -167,9 +168,9 @@
 
 
     <scm>
-        <url>http://svn.apache.org/viewvc/clerezza</url>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/clerezza/branches/20130710-release/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/branches/20130710-release/</developerConnection>
+        <url>http://svn.apache.org/viewvc/clerezza/tags/release20130710-reactor-0.3</url>
+        <connection>scm:svn:https://svn.apache.org/repos/asf/clerezza/tags/release20130710-reactor-0.3</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/tags/release20130710-reactor-0.3</developerConnection>
     </scm>
 
 </project>

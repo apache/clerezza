@@ -24,13 +24,13 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.core.test</artifactId>
     <packaging>jar</packaging>
-    <version>0.14-SNAPSHOT</version>
+    <version>0.14</version>
     <name>Clerezza - SCB Testutils</name>
     <description>Utilities to test SCB implementations</description>
     <dependencies>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.13-SNAPSHOT</version>
+            <version>0.13</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
