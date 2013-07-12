@@ -36,7 +36,6 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
 		// QueryExecutionFactory.create requires
 		// (java.io.FilePermission [etc/]location-mapping.* read)
 		// Thus, they are placed within doPrivileged
-        getDataset().setDefaultModel(null);
 		QueryExecution qexec = AccessController
 				.doPrivileged(new PrivilegedAction<QueryExecution>() {
 

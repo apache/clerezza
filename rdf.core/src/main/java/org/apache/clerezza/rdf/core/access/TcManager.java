@@ -279,13 +279,33 @@ public class TcManager extends TcProviderMultiplexer {
      * @return the resulting ResultSet, Graph or Boolean value
      */
     public Object executeSparqlQuery(String query, TripleCollection defaultGraph) throws ParseException {
-        final UriRef defaultGraphName = new UriRef("urn:x-temp:/kjsfadfhfasdffds");
-        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
-        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+      return executeSparqlQuery(query, defaultGraph, false);
+    }
+
+    /**
+     * Executes any sparql query. The type of the result object will vary
+     * depending on the type of the query. If the defaultGraph is available
+     * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
+     *
+     * @param query the sparql query to execute
+     * @param defaultGraph the default graph against which to execute the query
+     * if no FROM clause is present
+     * @param forceFastlane indicate whether to force fastlane usage.
+     * @return the resulting ResultSet, Graph or Boolean value
+     */
+    public Object executeSparqlQuery(String query, TripleCollection defaultGraph, boolean forceFastlane) throws ParseException {
         TcProvider singleTargetTcProvider = null;
-        if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
-            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
-        }
+    	if (forceFastlane) {
+            singleTargetTcProvider = getSingleTargetTcProvider();
+    	} else {    	
+	        final UriRef defaultGraphName = new UriRef("urn:x-temp:/kjsfadfhfasdffds");
+	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
+	        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+	        if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
+	            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
+	        }
+    	}
+    	
         if ((singleTargetTcProvider != null) && (singleTargetTcProvider instanceof QueryableTcProvider)) {
             return ((QueryableTcProvider)singleTargetTcProvider).executeSparqlQuery(query, null);
         }
@@ -298,12 +318,20 @@ public class TcManager extends TcProviderMultiplexer {
     }
     
     public Object executeSparqlQuery(String query, UriRef defaultGraphName) throws ParseException {
-        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
-        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+      return executeSparqlQuery(query, defaultGraphName, false);
+    }
+
+    public Object executeSparqlQuery(String query, UriRef defaultGraphName, boolean forceFastlane) throws ParseException {
         TcProvider singleTargetTcProvider = null;
-        if ((referencedGraphs != null)) {
-            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
-        }
+    	if (forceFastlane) {
+            singleTargetTcProvider = getSingleTargetTcProvider();
+    	} else {    	
+	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
+	        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+	        if ((referencedGraphs != null)) {
+	            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
+	        }
+    	}
         if ((singleTargetTcProvider != null) && (singleTargetTcProvider instanceof QueryableTcProvider)) {
             return ((QueryableTcProvider)singleTargetTcProvider).executeSparqlQuery(query, defaultGraphName);
         }
@@ -490,5 +518,9 @@ public class TcManager extends TcProviderMultiplexer {
             }      
         }
         return singleTargetTcProvider;
+    }
+
+    private TcProvider getSingleTargetTcProvider() {
+        return providerList.first();
     }
 }
