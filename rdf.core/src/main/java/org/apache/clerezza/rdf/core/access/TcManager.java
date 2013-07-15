@@ -35,6 +35,7 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedTripleCollection;
 import org.apache.clerezza.rdf.core.sparql.NoQueryEngineException;
@@ -47,7 +48,6 @@ import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
-import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleStringQuerySerializer;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
@@ -279,24 +279,38 @@ public class TcManager extends TcProviderMultiplexer {
      * @return the resulting ResultSet, Graph or Boolean value
      */
     public Object executeSparqlQuery(String query, TripleCollection defaultGraph) throws ParseException {
-      return executeSparqlQuery(query, defaultGraph, false);
+        TcProvider singleTargetTcProvider = null;
+
+        final UriRef defaultGraphName = new UriRef("urn:x-temp:/kjsfadfhfasdffds");
+        final SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
+        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+        if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
+            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
+        }
+        if ((singleTargetTcProvider != null) && (singleTargetTcProvider instanceof QueryableTcProvider)) {
+            return ((QueryableTcProvider) singleTargetTcProvider).executeSparqlQuery(query, null);
+        }
+        final QueryEngine queryEngine = this.queryEngine;
+        if (queryEngine != null) {
+            return queryEngine.execute(this, defaultGraph, query);
+        } else {
+            throw new NoQueryEngineException();
+        }
     }
 
     /**
      * Executes any sparql query. The type of the result object will vary
-     * depending on the type of the query. If the defaultGraph is available
-     * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
+     * depending on the type of the query. Note that this method only works for
+     * queries that do not need a default graph.
      *
      * @param query the sparql query to execute
-     * @param defaultGraph the default graph against which to execute the query
-     * if no FROM clause is present
      * @param forceFastlane indicate whether to force fastlane usage.
      * @return the resulting ResultSet, Graph or Boolean value
      */
-    public Object executeSparqlQuery(String query, TripleCollection defaultGraph, boolean forceFastlane) throws ParseException {
+    public Object executeSparqlQuery(String query, boolean forceFastlane) throws ParseException {
         TcProvider singleTargetTcProvider = null;
     	if (forceFastlane) {
-            singleTargetTcProvider = getSingleTargetTcProvider();
+            singleTargetTcProvider = getSingleTargetTcProvider(Collections.EMPTY_SET);
     	} else {    	
 	        final UriRef defaultGraphName = new UriRef("urn:x-temp:/kjsfadfhfasdffds");
 	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
@@ -311,20 +325,39 @@ public class TcManager extends TcProviderMultiplexer {
         }
         final QueryEngine queryEngine = this.queryEngine;
         if (queryEngine != null) {
-            return queryEngine.execute(this, defaultGraph, query);
+            return queryEngine.execute(this, new SimpleMGraph(), query);
         } else {
             throw new NoQueryEngineException();
         }
     }
     
+    /**
+     * Executes any sparql query. The type of the result object will vary
+     * depending on the type of the query. If the defaultGraph is available
+     * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
+     *
+     * @param query the sparql query to execute
+     * @param defaultGraphName the graph to be used as default graph in the Sparql Graph Store
+     * @return the resulting ResultSet, Graph or Boolean value
+     */
     public Object executeSparqlQuery(String query, UriRef defaultGraphName) throws ParseException {
       return executeSparqlQuery(query, defaultGraphName, false);
     }
 
+    /**
+     * Executes any sparql query. The type of the result object will vary
+     * depending on the type of the query. If the defaultGraph is available
+     * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
+     *
+     * @param query the sparql query to execute
+     * @param defaultGraph the graph to be used as default graph in the Sparql Graph Store
+     * @param forceFastlane indicate whether to force fastlane usage.
+     * @return the resulting ResultSet, Graph or Boolean value
+     */
     public Object executeSparqlQuery(String query, UriRef defaultGraphName, boolean forceFastlane) throws ParseException {
         TcProvider singleTargetTcProvider = null;
     	if (forceFastlane) {
-            singleTargetTcProvider = getSingleTargetTcProvider();
+            singleTargetTcProvider = getSingleTargetTcProvider(Collections.singleton(defaultGraphName));
     	} else {    	
 	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
 	        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
@@ -520,7 +553,4 @@ public class TcManager extends TcProviderMultiplexer {
         return singleTargetTcProvider;
     }
 
-    private TcProvider getSingleTargetTcProvider() {
-        return providerList.first();
-    }
 }
