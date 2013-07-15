@@ -42,6 +42,7 @@ public interface QueryEngine {
 	 *            Query object to be executed
 	 * @return the resulting ResultSet, Graph or Boolean value
 	 */
+    @Deprecated
 	public Object execute(TcManager tcManager, TripleCollection defaultGraph,
 			Query query);
 
