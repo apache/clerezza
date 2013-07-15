@@ -118,4 +118,30 @@ public class SimpleTest {
 				((Graph) TcManager.getInstance().executeSparqlQuery(
 						QueryParser.getInstance().parse(query), data)).size());
 	}
+    
+    /* Currently fails because of Preparser not yet supporting this type of queries
+    @Test
+	public void simpleInsert() throws ParseException {
+		SimpleMGraph data = new SimpleMGraph();
+		final String titleValue = "SPARQL Tutorial";
+		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+				DC.title, new PlainLiteralImpl(titleValue)));
+        
+		String query = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/> "
+				+ "INSERT DATA { <http://foo/bar> foaf:name 'Fred'}";
+        TcManager.getInstance().executeSparqlQuery(query, data);
+		Assert.assertEquals("Not having the right number of triples after insert",2,data.size());
+	}*/
+    
+    @Test
+	public void simpleDrop() throws ParseException {
+		SimpleMGraph data = new SimpleMGraph();
+		final String titleValue = "SPARQL Tutorial";
+		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+				DC.title, new PlainLiteralImpl(titleValue)));
+        
+		String query = "DROP ALL";
+        TcManager.getInstance().executeSparqlQuery(query, data);
+		Assert.assertEquals("GRAPH not empty after DROP ALL",0,data.size());
+	}
 }

@@ -31,10 +31,17 @@ import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
 
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.sparql.resultset.SPARQLResult;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateAction;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
  * 
@@ -52,40 +59,7 @@ public class JenaSparqlEngine implements QueryEngine {
 	@Override
 	public Object execute(TcManager tcManager, TripleCollection defaultGraph,
 			final Query query) {
-		final Dataset dataset = new TcDataset(tcManager, defaultGraph);
-
-		// Missing permission (java.lang.RuntimePermission getClassLoader)
-		// when calling QueryFactory.create causes ExceptionInInitializerError
-		// to be thrown.
-		// QueryExecutionFactory.create requires
-		// (java.io.FilePermission [etc/]location-mapping.* read)
-		// Thus, they are placed within doPrivileged
-		QueryExecution qexec = AccessController
-				.doPrivileged(new PrivilegedAction<QueryExecution>() {
-
-					@Override
-					public QueryExecution run() {
-						com.hp.hpl.jena.query.Query jenaQuery = QueryFactory
-								.create(query.toString());
-						return QueryExecutionFactory.create(jenaQuery, dataset);
-					}
-				});
-
-		try {
-			if (query instanceof AskQuery) {
-				return Boolean.valueOf(qexec.execAsk());
-			} else if (query instanceof DescribeQuery) {
-				return new JenaGraphAdaptor(qexec.execDescribe().getGraph())
-						.getGraph();
-			} else if (query instanceof ConstructQuery) {
-				return new JenaGraphAdaptor(qexec.execConstruct().getGraph())
-						.getGraph();
-			} else {
-				return new ResultSetWrapper(qexec.execSelect());
-			}
-		} finally {
-			qexec.close();
-		}
+		return execute(tcManager, defaultGraph, query.toString());
 	}
 
 	@Override
@@ -104,12 +78,23 @@ public class JenaSparqlEngine implements QueryEngine {
 
 					@Override
 					public QueryExecution run() {
-						com.hp.hpl.jena.query.Query jenaQuery = QueryFactory
-								.create(query);
-						return QueryExecutionFactory.create(jenaQuery, dataset);
+                        try {
+                            com.hp.hpl.jena.query.Query jenaQuery = QueryFactory
+                                	.create(query);
+                            if (jenaQuery.isUnknownType()) {
+                                return null;
+                            }
+                            return QueryExecutionFactory.create(jenaQuery, dataset);
+                        } catch (QueryException ex) {
+                            return null;
+                        }
+                        
 					}
 				});
-
+        if (qexec == null) {
+            return executeUpdate(dataset, query);
+        }
+        //TODO check with rather than trial and error: if (qexec.getQuery().isSelectType()) {
 		try {
 			try {
 				return new ResultSetWrapper(qexec.execSelect());
@@ -130,4 +115,10 @@ public class JenaSparqlEngine implements QueryEngine {
 			qexec.close();
 		}
 	}
+
+    private Object executeUpdate(Dataset dataset, String query) {
+        GraphStore graphStore = GraphStoreFactory.create(dataset) ;
+        UpdateAction.parseExecute(query, graphStore) ;
+        return true;
+    }
 }
