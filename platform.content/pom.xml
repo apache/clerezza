@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.13-SNAPSHOT</version>
+            <version>0.14-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.utils</artifactId>
-            <version>0.8-SNAPSHOT</version>
+            <version>0.9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -130,7 +130,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core.test</artifactId>
             <scope>test</scope>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.15-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -140,7 +140,7 @@
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>slf4j-scala-api</artifactId>
-            <version>1.6.2-SNAPSHOT</version>
+            <version>1.6.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>

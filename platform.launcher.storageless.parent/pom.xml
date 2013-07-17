@@ -101,7 +101,7 @@
             <groupId>org.apache.clerezza.scala</groupId>
             <artifactId>script-engine</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <!-- <dependency>
             <groupId>com.sun.script.jruby</groupId>
@@ -245,7 +245,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
             <scope>runtime</scope>
-            <version>0.13-SNAPSHOT</version>
+            <version>0.14-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -257,37 +257,37 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.facade</artifactId>
             <scope>runtime</scope>
-            <version>0.13-SNAPSHOT</version>
+            <version>0.14-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.commons</artifactId>
             <scope>runtime</scope>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.storage</artifactId>
             <scope>runtime</scope>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.sparql</artifactId>
             <scope>runtime</scope>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
             <scope>runtime</scope>
-            <version>0.11-SNAPSHOT</version>
+            <version>0.12-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.serializer</artifactId>
             <scope>runtime</scope>
-            <version>0.10-SNAPSHOT</version>
+            <version>0.11-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -381,7 +381,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>shell</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -411,7 +411,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.rdf.providers</artifactId>
             <scope>runtime</scope>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.15-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -423,13 +423,13 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.web.core</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.web.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.4-SNAPSHOT</version>
         </dependency>
         <!--<dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -597,7 +597,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.utils</artifactId>
             <scope>runtime</scope>
-            <version>0.8-SNAPSHOT</version>
+            <version>0.9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
