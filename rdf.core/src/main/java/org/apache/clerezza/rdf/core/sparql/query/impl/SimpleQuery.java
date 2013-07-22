@@ -29,18 +29,19 @@ import org.apache.clerezza.rdf.core.sparql.query.Query;
  * @author hasan
  */
 public abstract class SimpleQuery implements Query {
-	private SimpleDataSet dataSet = null;
-	private GroupGraphPattern queryPattern = null;
+
+    private SimpleDataSet dataSet = null;
+    private GroupGraphPattern queryPattern = null;
     private InlineData inlineData = null;
 
-	@Override
-	public DataSet getDataSet() {
-		return dataSet;
-	}
+    @Override
+    public DataSet getDataSet() {
+        return dataSet;
+    }
 
-	@Override
-	public GroupGraphPattern getQueryPattern() {
-		return queryPattern;
+    @Override
+    public GroupGraphPattern getQueryPattern() {
+        return queryPattern;
     }
 
     @Override
@@ -49,27 +50,27 @@ public abstract class SimpleQuery implements Query {
     }
 
     public void addDefaultGraph(UriRef defaultGraph) {
-		if (dataSet == null) {
-			dataSet = new SimpleDataSet();
-		}
-		dataSet.addDefaultGraph(defaultGraph);
-	}
+        if (dataSet == null) {
+            dataSet = new SimpleDataSet();
+        }
+        dataSet.addDefaultGraph(defaultGraph);
+    }
 
-	public void addNamedGraph(UriRef namedGraph) {
-		if (dataSet == null) {
-			dataSet = new SimpleDataSet();
-		}
-		dataSet.addNamedGraph(namedGraph);
-	}
+    public void addNamedGraph(UriRef namedGraph) {
+        if (dataSet == null) {
+            dataSet = new SimpleDataSet();
+        }
+        dataSet.addNamedGraph(namedGraph);
+    }
 
-	public void setQueryPattern(GroupGraphPattern queryPattern) {
-		this.queryPattern = queryPattern;
-	}
+    public void setQueryPattern(GroupGraphPattern queryPattern) {
+        this.queryPattern = queryPattern;
+    }
 
     public void setInlineData(InlineData inlineData) {
         this.inlineData = inlineData;
     }
 
     @Override
-	public abstract String toString();
+    public abstract String toString();
 }
