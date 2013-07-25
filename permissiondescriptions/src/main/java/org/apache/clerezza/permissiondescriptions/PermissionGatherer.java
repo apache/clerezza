@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.clerezza.permissiondescriptions;
 
 import java.net.URL;
@@ -44,38 +43,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This binds all implementations of <code>PermissionDescriptionsProvider</code>,
- * and gathers their <code>PermissionDescription</code>s. Furthermore the gatherer
- * scans all activaded bundles for <code>Permission</code>s which are annonated with the 
- * <code>PermissionInfo</code> annotation and generates <code>PermissionDescription</code>s
- * for them. This service provides methods to retrieve the gathered
- * <code>PermissionDescription</code>s and also methods to retrieve all unannotated
+ * This binds all implementations of
+ * <code>PermissionDescriptionsProvider</code>, and gathers their
+ * <code>PermissionDescription</code>s. Furthermore the gatherer scans all
+ * activaded bundles for
+ * <code>Permission</code>s which are annonated with the
+ * <code>PermissionInfo</code> annotation and generates
+ * <code>PermissionDescription</code>s for them. This service provides methods
+ * to retrieve the gathered
+ * <code>PermissionDescription</code>s and also methods to retrieve all
+ * unannotated
  * <code>Permission</code> found in the activated bundles. If new bundles are
  * started then they are also scanned.
  *
  * @author mir
  */
-@Component(immediate=true)
+@Component(immediate = true)
 @Service(PermissionGatherer.class)
-@Reference(name="permissionProvider", policy=ReferencePolicy.DYNAMIC,
-    referenceInterface=PermissionDescriptionsProvider.class, cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE)
+@Reference(name = "permissionProvider", policy = ReferencePolicy.DYNAMIC,
+        referenceInterface = PermissionDescriptionsProvider.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE)
 public class PermissionGatherer implements BundleListener {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private Map<Bundle, Collection<Class<? extends Permission>>> bundle2PermissionClassesMap =
             Collections.synchronizedMap(new HashMap<Bundle, Collection<Class<? extends Permission>>>());
     private Map<Bundle, Collection<PermissionDescripton>> bundle2PermissionDescriptorsMap =
             Collections.synchronizedMap(new HashMap<Bundle, Collection<PermissionDescripton>>());
-    
     private ComponentContext componentContext;
-    
     /**
-     * stores all <code>ServiceReference</code>s of <code>PermissionDescriptionsProvider</code>s
-     * that were bound before the PermissionGatherer was activated.
+     * stores all
+     * <code>ServiceReference</code>s of
+     * <code>PermissionDescriptionsProvider</code>s that were bound before the
+     * PermissionGatherer was activated.
      */
     private Set<ServiceReference> serviceReferenceStore = new HashSet<ServiceReference>();
-
 
     public Map<Bundle, Collection<PermissionDescripton>> getPermissionDescriptorsPerBundles() {
         return Collections.unmodifiableMap(bundle2PermissionDescriptorsMap);
@@ -125,8 +126,7 @@ public class PermissionGatherer implements BundleListener {
     synchronized protected void unbindPermissionProvider(ServiceReference serviceReference) {
 
         if (!serviceReferenceStore.remove(serviceReference)) {
-            PermissionDescriptionsProvider permissionProvider = (PermissionDescriptionsProvider)
-                componentContext.locateService("permissionProvider", serviceReference);
+            PermissionDescriptionsProvider permissionProvider = (PermissionDescriptionsProvider) componentContext.locateService("permissionProvider", serviceReference);
             Bundle bundle = serviceReference.getBundle();
 
             Collection<PermissionDescripton> permissionDescriptiors =
@@ -142,8 +142,7 @@ public class PermissionGatherer implements BundleListener {
     }
 
     private void registerPermissionDescriptorsProvider(ServiceReference serviceReference) {
-        PermissionDescriptionsProvider permissionProvider = (PermissionDescriptionsProvider)
-                componentContext.locateService("permissionProvider", serviceReference);
+        PermissionDescriptionsProvider permissionProvider = (PermissionDescriptionsProvider) componentContext.locateService("permissionProvider", serviceReference);
         if (permissionProvider == null) {
             return;
         }
@@ -195,26 +194,29 @@ public class PermissionGatherer implements BundleListener {
         Set<PermissionDescripton> newPermissionDescriptors =
                 new HashSet<PermissionDescripton>();
         while (classUrls.hasMoreElements()) {
-            URL url = classUrls.nextElement();            
+            URL url = classUrls.nextElement();
+
+            String className = url.getPath();
+            int indexOfLastDot = className.lastIndexOf(".");
+            className = className.replaceAll("/", ".").substring(1, indexOfLastDot);
+            Class<?> clazz;
             try {
-                String className = url.getPath();
-                int indexOfLastDot = className.lastIndexOf(".");
-                className = className.replaceAll("/", ".").substring(1, indexOfLastDot);
-                Class<?> clazz = bundle.loadClass(className);
-                if (Permission.class.isAssignableFrom(clazz)) {
-                    PermissionInfo permissionInfo = clazz.getAnnotation(PermissionInfo.class);
-                    if (permissionInfo != null) {
-                        newPermissionDescriptors.add(new PermissionDescripton(permissionInfo.value(),
-                                permissionInfo.description(), clazz.getResource(permissionInfo.icon()),
-                                (Class<? extends Permission>) clazz,
-                                getJavaPermissionString(clazz)));
-                    } else {
-                        permissionClassesSet.add((Class<? extends Permission>) clazz);
-                    }
+                clazz = bundle.loadClass(className);
+            } catch (Throwable t) {
+                //we just ignore classes we coudln't read
+                continue;
+            }
+            if (Permission.class.isAssignableFrom(clazz)) {
+                PermissionInfo permissionInfo = clazz.getAnnotation(PermissionInfo.class);
+                if (permissionInfo != null) {
+                    newPermissionDescriptors.add(new PermissionDescripton(permissionInfo.value(),
+                            permissionInfo.description(), clazz.getResource(permissionInfo.icon()),
+                            (Class<? extends Permission>) clazz,
+                            getJavaPermissionString(clazz)));
+                } else {
+                    permissionClassesSet.add((Class<? extends Permission>) clazz);
                 }
-            } catch (Exception ex) {
-            } catch (NoClassDefFoundError err) {}
-            
+            }
         }
         if (!permissionClassesSet.isEmpty()) {
             bundle2PermissionClassesMap.put(bundle, permissionClassesSet);
