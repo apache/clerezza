@@ -1,28 +1,21 @@
 package org.apache.clerezza.rdf.jena.tdb.storage;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
@@ -30,7 +23,11 @@ import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
+import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.jena.tdb.internals.ModelGraph;
+import org.apache.clerezza.rdf.jena.tdb.internals.Symbols;
+import org.apache.clerezza.rdf.jena.tdb.internals.UriRefSet;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ConfigurationPolicy;
@@ -46,10 +43,12 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.MapMaker;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
+
 /**
  * {@link WeightedTcProvider} implementation for Jena TDB that uses a single
  * {@link TDBFactory#createDataset(String) Dataset} to store all created
@@ -76,7 +75,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  * be used for filtering. Such additional keys will be savely ignored by
  * this implementation.<p>
  * 
- * @author Rupert Westenthaler
+ * @author Rupert Westenthaler, MInto van der Sluis
  *
  */
 @Component(metatype=true, immediate=true,
@@ -86,7 +85,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
     @Property(name=SingleTdbDatasetTcProvider.TDB_DIR),
     @Property(name=SingleTdbDatasetTcProvider.DEFAULT_GRAPH_NAME),
     @Property(name=SingleTdbDatasetTcProvider.SYNC_INTERVAL, intValue=SingleTdbDatasetTcProvider.DEFAULT_SYNC_INTERVAL),
-    @Property(name=SingleTdbDatasetTcProvider.WEIGHT, intValue=106)
+    @Property(name=SingleTdbDatasetTcProvider.WEIGHT, intValue=107)
 })
 public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements WeightedTcProvider {
 
@@ -100,32 +99,27 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     public static final int MIN_SYNC_INTERVAL = 3;
     
     private final Logger log = LoggerFactory.getLogger(SingleTdbDatasetTcProvider.class);
-    
+
     private int weight;
+    private ModelGraph graphNameIndex;
     private int syncInterval = DEFAULT_SYNC_INTERVAL;
     private SyncThread syncThread;
 
     private final ReadWriteLock datasetLock = new ReentrantReadWriteLock();;
-    
-    private File graphConfigFile;
-    private File mGraphConfigFile;
-    
-    private HashMap<UriRef,ModelGraph> initModels = new HashMap<UriRef,ModelGraph>();
-    /**
-     * the {@link UriRef}s of the graphs (read-only)
-     */
-    private Set<UriRef> graphNames;
-    private Set<UriRef> mGraphNames;
     private UriRef defaultGraphName;
+
+    // Ensure that models not yet garbage collected get properly synced.
+    private final ConcurrentMap<UriRef, ModelGraph> syncModels = new MapMaker().weakValues().makeMap();
+    
     /**
      * This background thread ensures that changes to {@link Model}s are
      * synchronized with the file system. Only {@link ModelGraph}s where
      * <code>{@link ModelGraph#isReadWrite()} == true</code> are synced.<p>
      * This is similar to the synchronize thread used by the {@link TdbTcProvider}.
      * This thread is started during the 
-     * {@link SingleTdbDatasetTcProvider#activate(ComponentContext) activation}
+     * {@link ScalableSingleTdbDatasetTcProvider#activate(ComponentContext) activation}
      * ad the shutdown is requested during 
-     * {@link SingleTdbDatasetTcProvider#deactivate(ComponentContext) deactivation}
+     * {@link ScalableSingleTdbDatasetTcProvider#deactivate(ComponentContext) deactivation}
      */
     class SyncThread extends Thread {
         private boolean stopRequested = false;
@@ -141,7 +135,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
                 if (!stopRequested) {
                     datasetLock.writeLock().lock();
                     try {
-                        for(ModelGraph mg : initModels.values()){
+                        for(ModelGraph mg : syncModels.values()){
                             if(mg.isReadWrite()){
                                 mg.sync();
                             } //else we do not need to sync read-only models
@@ -157,6 +151,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
             stopRequested = true;
         }
     }
+
     /**
      * Default constructor used by OSGI
      */
@@ -199,9 +194,10 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     protected void activate(ComponentContext ctx) throws ConfigurationException, IOException {
         activate(ctx.getBundleContext(),ctx.getProperties());
     }
+
     /**
      * Internally used for activation to support  the instantiation via
-     * {@link #SingleTdbDatasetTcProvider(Dictionary)} - to be used outside
+     * {@link #ScalableSingleTdbDatasetTcProvider(Dictionary)} - to be used outside
      * an OSGI container.
      * @param bc the BundleContext or <code>null</code> if activating outside
      * an OSGI container. The BundleContext is just used to lookup properties
@@ -213,7 +209,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * directory.
      */
     private void activate(BundleContext bc,Dictionary<String,Object> config) throws ConfigurationException, IOException {
-        log.info("Activating single Dataset TDB provider");
+        log.info("Activating scalable single Dataset TDB provider");
         Object value = config.get(WEIGHT);
         if(value instanceof Number){
             weight = ((Number)value).intValue();
@@ -235,7 +231,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
             } catch (RuntimeException e) {
                 throw new ConfigurationException(SYNC_INTERVAL, "Unable to parse integer weight!", e);
             }
-        } else { //weight not defined
+        } else { //sync interval not defined
             syncInterval = DEFAULT_SYNC_INTERVAL;
         }
         value = config.get(TDB_DIR);
@@ -262,7 +258,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
             } catch (URISyntaxException e) {
                 throw new ConfigurationException(DEFAULT_GRAPH_NAME, "The parsed name '"
                         + value + "'for the default graph (union over all "
-                        + "named graphs managed by this Jena TDB dataset) MUST BE "
+                		+ "named graphs managed by this Jena TDB dataset) MUST BE "
                         + "an valid URI or NULL do deactivate this feature!",e);
             }
         } else {
@@ -281,27 +277,30 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
                     + dataDir+"' already exists, but is not a Directory!");
         } //else exists and is a directory ... nothing to do
         TDB.getContext().set(TDB.symUnionDefaultGraph, true);
-        setDataset(TDBFactory.createDataset(dataDir.getAbsolutePath()));
-        //init the read/write lock
-        
-        //init the graph config (stores the graph and mgraph names in a config file)
-        initGraphConfigs(dataDir,config);
-        
+        setDataset( TDBFactory.createDataset(dataDir.getAbsolutePath()) );
+        graphNameIndex = new ModelGraph(datasetLock, getDataset().getDefaultModel(),true);
+
+        // Remove existing default graph names from the index (if might have changed
+        // in the mean time).
+        removeDefaultGraphFromIndex();
+
         //finally ensure the the defaultGraphName is not also used as a graph/mgraph name
-        if(graphNames.contains(defaultGraphName)){
+        if (defaultGraphName != null) {
+          if (isExistingGraphName(defaultGraphName)) {
             throw new ConfigurationException(DEFAULT_GRAPH_NAME, "The configured default graph name '"
-                +defaultGraphName+"' is also used as a Graph name!");
+                +defaultGraphName+"' is already used as a Graph or MGraph name!");
+          } else {
+            addToIndex( defaultGraphName, Symbols.Default );
+            addToIndex( defaultGraphName, Symbols.Graph );
+          }
         }
-        if(mGraphNames.contains(defaultGraphName)){
-            throw new ConfigurationException(DEFAULT_GRAPH_NAME, "The configured default graph name '"
-                +defaultGraphName+"' is also used as a MGraph name!");
-        }
-        
+
         syncThread = new SyncThread();
         syncThread.setDaemon(true);
         syncThread.setName("SyncDaemon for Jena TDB "+dataDir.getAbsolutePath());
         syncThread.start();
     }
+    
     /**
      * call close in finalisation
      */
@@ -310,6 +309,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         close();
         super.finalize();
     }
+
     /**
      * Closes this {@link TcProvider} instance and frees up all system resources.
      * This method needs only to be called when using this TcProvider outside
@@ -318,6 +318,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     public void close(){
         deactivate(null);
     }
+
     /**
      * Deactivates this component. Called by the OSGI environment if this
      * component gets deactivated.
@@ -325,13 +326,22 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      */
     @Deactivate
     protected void deactivate(ComponentContext ctx) {
+        if(syncThread != null){
+            syncThread.requestStop();
+            syncThread = null;
+        }
     	Dataset dataset = getDataset();
         if(dataset != null){ //avoid NPE on multiple calls
             datasetLock.writeLock().lock();
             try {
-                for(ModelGraph mg : initModels.values()){
+                for(ModelGraph mg : syncModels.values()){
                     mg.close(); //close also syncs!
                 }
+                syncModels.clear();
+
+                graphNameIndex.close();
+                graphNameIndex = null;
+
                 TDB.sync(dataset);
                 dataset.close();
                 setDataset(null);
@@ -339,20 +349,11 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
                 datasetLock.writeLock().unlock();
             }
         }
-        if(syncThread != null){
-            syncThread.requestStop();
-            syncThread = null;
-        }
-        initModels = null;
-        graphConfigFile = null;
-        graphNames = null;
-        mGraphConfigFile = null;
-        mGraphNames = null;
     }
     
     /**
      * Internal method used to retrieve an existing Jena {@link ModelGraph} 
-     * instance from {@link #initModels} or initializes a new Jena TDB {@link Model}
+     * instance from {@link #syncModels} or initializes a new Jena TDB {@link Model}
      * and Clerezza {@link Graph}s/{@link MGraph}s.
      * @param name the name of the Graph to initialize/create
      * @param readWrite if <code>true</code> a {@link MGraph} is initialized.
@@ -360,29 +361,36 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @param create if this method is allowed to create an new {@link Model} or
      * if an already existing model is initialized.
      * @return the initialized {@link Model} and @link Graph} or {@link MGraph}.
-     * The returned instance will be also cached in {@link #initModels}. 
+     * The returned instance will be also cached in {@link #syncModels}. 
      * @throws NoSuchEntityException If <code>create == false</code> and no
      * {@link Model} for the parsed <code>name</code> exists.
      */
     private ModelGraph getModelGraph(UriRef name, boolean readWrite,boolean create) throws NoSuchEntityException {
-        ModelGraph modelGraph;
+        ModelGraph modelGraph = null;
         datasetLock.readLock().lock();
         try {
-            modelGraph = initModels.get(name);
-            if(modelGraph != null && create){
+            if(readWrite) {
+                // Reuse existing model if not yet garbage collected.
+                modelGraph = syncModels.get(name);
+            }
+            if((modelGraph != null || isExistingGraphName(name)) && create){
                 throw new EntityAlreadyExistsException(name);
             } else if(modelGraph == null){
                 String modelName = name.getUnicodeString();
                 modelGraph = new ModelGraph(datasetLock, name.equals(defaultGraphName) ? 
-                        getDataset().getNamedModel("urn:x-arq:UnionGraph") : 
-                            getDataset().getNamedModel(modelName),readWrite);
-                this.initModels.put(name, modelGraph);
+                		getDataset().getNamedModel("urn:x-arq:UnionGraph") : 
+                			getDataset().getNamedModel(modelName),readWrite);
+                if(readWrite) {
+                    // Keep track of readwrite model to be able to sync them.
+                    this.syncModels.put(name, modelGraph);
+                }
             }
         } finally {
             datasetLock.readLock().unlock();
         }
         return modelGraph;
     }
+    
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.clerezza.rdf.core.UriRef)
@@ -394,7 +402,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         }
         datasetLock.readLock().lock();
         try {
-            if(graphNames.contains(name) || name.equals(defaultGraphName)){
+            if (isExistingGraphName(name, Symbols.Graph) || name.equals(defaultGraphName)){
                 return getModelGraph(name,false,false).getGraph();
             } else {
                 throw new NoSuchEntityException(name);
@@ -403,6 +411,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
             datasetLock.readLock().unlock();
         }
     }
+    
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#getMGraph(org.apache.clerezza.rdf.core.UriRef)
@@ -414,7 +423,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         }
         datasetLock.readLock().lock();
         try {
-            if(mGraphNames.contains(name)){
+            if(isExistingGraphName(name, Symbols.MGraph)){
                 return getModelGraph(name,true,false).getMGraph();
             } else {
                 throw new NoSuchEntityException(name);
@@ -423,6 +432,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
             datasetLock.readLock().unlock();
         }
     }
+    
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#getTriples(org.apache.clerezza.rdf.core.UriRef)
@@ -434,9 +444,9 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         }
         datasetLock.readLock().lock();
         try {
-            if(graphNames.contains(name) || name.equals(defaultGraphName)){
+            if(isExistingGraphName(name, Symbols.Graph) || name.equals(defaultGraphName)){
                 return getGraph(name);
-            } else if(mGraphNames.contains(name)){
+            } else if(isExistingGraphName(name, Symbols.MGraph)){
                 return getMGraph(name);
             } else {
                 throw new NoSuchEntityException(name);
@@ -445,51 +455,34 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
             datasetLock.readLock().unlock();
         }
     }
+    
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#listGraphs()
      */
     @Override
     public Set<UriRef> listGraphs() {
-        HashSet<UriRef> names = new HashSet<UriRef>(graphNames);
-        if(defaultGraphName != null){
-            names.add(defaultGraphName);
-        }
-        return names;
+        return new UriRefSet( graphNameIndex, Symbols.Graph );
     }
+
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#listMGraphs()
      */
     @Override
     public Set<UriRef> listMGraphs() {
-        Set<UriRef> tcNames = listTripleCollections();
-        tcNames.removeAll(graphNames);
-        if(defaultGraphName != null){
-            tcNames.remove(defaultGraphName);
-        }
-        return tcNames;
+        return new UriRefSet( graphNameIndex, Symbols.MGraph );
     }
+
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#listTripleCollections()
      */
     @Override
     public Set<UriRef> listTripleCollections() {
-        Set<UriRef> graphNames = new HashSet<UriRef>();
-        datasetLock.readLock().lock();
-        try {
-            for(Iterator<String> names = getDataset().listNames(); 
-                names.hasNext();
-                    graphNames.add(new UriRef(names.next())));
-        } finally {
-            datasetLock.readLock().unlock();
-        }
-        if(defaultGraphName != null){
-            graphNames.add(defaultGraphName);
-        }
-        return graphNames;
+        return new UriRefSet( graphNameIndex, null );
     }
+
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#createMGraph(org.apache.clerezza.rdf.core.UriRef)
@@ -502,22 +495,17 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         }
         datasetLock.writeLock().lock();
         try {
-            if(graphNames.contains(name) || mGraphNames.contains(name) || name.equals(defaultGraphName)){
+            if(isExistingGraphName(name)){
                 throw new EntityAlreadyExistsException(name);
             }
             MGraph graph = getModelGraph(name,true,true).getMGraph();
-            mGraphNames.add(name);
-            try {
-                writeMGraphConfig();
-            } catch (IOException e) {
-                throw new IllegalStateException("Unable to wirte MGraphName config file '"
-                        + mGraphConfigFile+"'!",e);
-            }
+            addToIndex( name, Symbols.MGraph);
             return graph;
         } finally {
             datasetLock.writeLock().unlock();
         }
     }
+    
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.clerezza.rdf.core.UriRef, org.apache.clerezza.rdf.core.TripleCollection)
@@ -531,17 +519,12 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         ModelGraph mg;
         datasetLock.writeLock().lock();
         try {
-            if(graphNames.contains(name) || mGraphNames.contains(name) || name.equals(defaultGraphName)){
+            if(isExistingGraphName(name)){
                 throw new EntityAlreadyExistsException(name);
             }
             mg = getModelGraph(name,false,true);
-            graphNames.add(name);
-            try {
-                writeGraphConfig();
-            } catch (IOException e) {
-                throw new IllegalStateException("Unable to wirte GraphName config file '"
-                        + graphConfigFile+"'!",e);
-            }
+            addToIndex( name, Symbols.Graph);
+            
             //add the parsed data!
             if(triples != null) { //load the initial and final set of triples
                 mg.getJenaAdapter().addAll(triples);
@@ -552,6 +535,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         }
         return mg.getGraph();
     }
+    
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#deleteTripleCollection(org.apache.clerezza.rdf.core.UriRef)
@@ -565,35 +549,24 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         }
         datasetLock.writeLock().lock();
         try {
-            if(mGraphNames.remove(name)){
-                try {
-                    writeMGraphConfig();
-                } catch (IOException e){
-                    mGraphNames.add(name);//make it consistent with the file
-                    throw new IllegalStateException("Unable to wirte MGraphName config file '"
-                            + graphConfigFile+"'!",e);
-                }
+            if(isExistingGraphName(name,Symbols.MGraph)){
                 ModelGraph mg = getModelGraph(name, true, false);
                 mg.delete();
-            } else if(graphNames.remove(name)){
-                try {
-                    writeGraphConfig();
-                } catch (IOException e){
-                    graphNames.add(name); //make it consistent with the file
-                    throw new IllegalStateException("Unable to wirte GraphName config file '"
-                            + graphConfigFile+"'!",e);
-                }
+                removeFromIndex( name, Symbols.MGraph );
+            } else if(isExistingGraphName(name,Symbols.Graph)){
                 ModelGraph mg = getModelGraph(name, false, false);
                 mg.delete();
+                removeFromIndex( name, Symbols.Graph );
             } else if (name.equals(defaultGraphName)){
                 throw new EntityUndeletableException(defaultGraphName);
             }
             //delete the graph from the initModels list
-            initModels.remove(name);
+            syncModels.remove(name);
         } finally {
             datasetLock.writeLock().unlock();
         }
     }
+    
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.TcProvider#getNames(org.apache.clerezza.rdf.core.Graph)
@@ -603,14 +576,17 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         //TODO: this method would require to compare the triples within the graph
         //      because an equals check will not work with BNodes. 
         Set<UriRef> graphNames = new HashSet<UriRef>();
-        for(Entry<UriRef,ModelGraph> entry : initModels.entrySet()){
-            if(graphNames.contains(entry.getKey()) && //avoid lazy initialisation of grpahs for MGraphs
-                    graph.equals(entry.getValue().getGraph())){
-                graphNames.add(entry.getKey());
+        for( Iterator<Triple> iterator = graphNameIndex.getMGraph().iterator(); iterator.hasNext(); ) {
+            Triple triple = iterator.next();
+            UriRef graphName = new UriRef(triple.getSubject().toString());
+            Graph currentGraph = getModelGraph(graphName, false, false).getGraph();
+            if(graph.equals(currentGraph)){
+                graphNames.add(graphName);
             }
         }
         return graphNames;
     }
+    
     /*
      * (non-Javadoc)
      * @see org.apache.clerezza.rdf.core.access.WeightedTcProvider#getWeight()
@@ -619,7 +595,6 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     public int getWeight() {
         return weight;
     }
-
     
     /**
      * Substitutes ${property.name} with the values retrieved via <ul>
@@ -666,152 +641,59 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         substitution.append(value.substring(prevAt, value.length()));
         return substitution.toString();
     }
-    private static final Charset UTF8 = Charset.forName("UTF-8");
-    private static final byte[] lineSep = "\n".getBytes(UTF8);
-    /**
-     * Writes the configuration file storing the initialized {@link Graph} names
-     * @throws IOException
-     */
-    private void writeGraphConfig() throws IOException {
-        writeConfig(graphConfigFile,graphNames);
-    }
-    /**
-     * Writes the configuration file storing the initialized {@link MGraph} names
-     * @throws IOException
-     */
-    private void writeMGraphConfig() throws IOException {
-        writeConfig(mGraphConfigFile,mGraphNames);
-    }
-    /**
-     * Writes the parsed names to the parsed file. One name in each line.
-     * TODO: This might not scale to millions of graphs. If this would be
-     * necessary one should store {@link MGraph} and {@link Graph} names in the
-     * {@link Dataset#getDefaultModel() default model} of the TDB 
-     * {@link Dataset}.<br>
-     * However for now I have decided against that, because this way makes it
-     * more easy to manually play around with the configuration (such as
-     * manually adding the name of an Graph/MGraph that already exists in
-     * an pre-existing Dataset.
-     * @throws IOException
-     * @throws FileNotFoundException
-     */
-    private static void writeConfig(File file,Set<UriRef> names) throws IOException, FileNotFoundException {
-        if(file.exists()){
-            if(!file.delete()){
-                throw new IOException("Unable to delete GraphConfigFile '"
-                        + file.getAbsolutePath()+"'!");
-            }
-        }
-        OutputStream out = new FileOutputStream(file);
-        for (UriRef name : names) {
-            out.write(name.getUnicodeString().getBytes(UTF8));
-            out.write(lineSep);
-        }
-        out.close();
-    }
-    private void initGraphConfigs(File tdbDir,Dictionary<String,Object> config) throws IOException {
-        
-        graphConfigFile = new File(tdbDir,"tcprovider.graphnames");
-        graphNames = new HashSet<UriRef>();
-        boolean configPresent = readGraphConfig(graphConfigFile, graphNames);
-        log.info("Present named Models");
-        datasetLock.readLock().lock();
-        try {
-            for(Iterator<String> it = getDataset().listNames();it.hasNext();){
-                log.info(" > {}",it.next());
-            }
-        } finally {
-            datasetLock.readLock().unlock();
-        }
-        if(configPresent) {
-            //validate that all Graphs and MGraphs in the configFile also are 
-            //also present in the Jena TDB dataset
 
-            //NOTE: validation of graph model MUST BE deactivated, because
-            //      Clerezza TcProvider needs to support the preservation of
-            //      empty graphs!
-//            synchronized (dataset) {
-//                boolean modified = false;
-//                Iterator<UriRef> it = graphNames.iterator();
-//                while(it.hasNext()){
-//                    String name = it.next().getUnicodeString();
-//                    if(!(dataset.containsNamedModel(name) ||
-//                            dataset.containsNamedModel(name+GRAPH_NAME_SUFFIX))){
-//                        log.info("Remove GraphName {} form GrpahNameConfig because " +
-//                                "it is not part of the TDB dataset",name);
-//                        it.remove();
-//                        modified = true;
-//                    }
-//                }
-//                if(modified){
-//                    writeGraphConfig();
-//                }
-//            }
-        } else {
-            writeGraphConfig();
-        }
-        mGraphConfigFile = new File(tdbDir,"tcprovider.mgraphnames");
-        mGraphNames = new HashSet<UriRef>();
-        configPresent = readGraphConfig(mGraphConfigFile, mGraphNames);
-        if(configPresent) {
-            //validate that all Graphs and MGraphs in the configFile also are 
-            //also present in the Jena TDB dataset
-
-            //NOTE: validation of graph model MUST BE deactivated, because
-            //      Clerezza TcProvider needs to support the preservation of
-            //      empty graphs!
-//            synchronized (dataset) {
-//                boolean modified = false;
-//                Iterator<UriRef> it = mGraphNames.iterator();
-//                while(it.hasNext()){
-//                    String name = it.next().getUnicodeString();
-//                    if(!(dataset.containsNamedModel(name) ||
-//                            dataset.containsNamedModel(name+MGRAPH_NAME_SUFFIX))){
-//                        log.info("Remove MGraphName {} form GrpahNameConfig because " +
-//                                "it is not part of the TDB dataset",name);
-//                        it.remove();
-//                        modified = true;
-//                    }
-//                }
-//                if(modified){
-//                    writeMGraphConfig();
-//                }
-//            }
-        } else { //read pre-existing models in the dataset
-            datasetLock.readLock().lock();
-            try {
-                for(Iterator<String> it = getDataset().listNames();it.hasNext();){
-                    mGraphNames.add(new UriRef(it.next()));
-                }
-                writeMGraphConfig();
-            } finally {
-                datasetLock.readLock().unlock();
-            }
-        }
-    }
     /**
-     * Read a graph configuration file.
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @see #writeGraphConfig()
+     * Checks whether the given graph name already exists as the specified resource (either graph or mgraph).
+     * @param graphName the graph name
+     * @param graphType the resource type
+     * @return true if a resource with the given name and type already exists, false otherwise.
      */
-    private static boolean readGraphConfig(File file,Set<UriRef> names) throws FileNotFoundException, IOException {
-        if(file.exists()){ //read existing
-            if(!file.isFile()){
-                throw new IllegalStateException("Graph name configuration file '"
-                    + file.getAbsolutePath()+"' exsits but is not of type File!");
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(file),UTF8));
-            String line = reader.readLine();
-            while (line != null) {
-                names.add(new UriRef(line));
-                line = reader.readLine();
-            }
-            reader.close();
-            return true;
-        } else {// no config file indicates first initialisation
-            return false;
-        }
+    private boolean isExistingGraphName(UriRef graphName, UriRef graphType) {
+        return graphNameIndex.getMGraph().filter(graphName, RDF.type, graphType).hasNext();
     }
-}
+
+    /**
+     * Checks whether the given graph name already exists as either a graph or mgraph.
+     * @param graphName the graph name
+     * @return true if a graph or mgraph with the given name already exists, false otherwise.
+     */
+    private boolean isExistingGraphName(UriRef graphName) {
+        return isExistingGraphName(graphName, null);
+    }
+    
+    /**
+     * Adds a new graphname to the index of graphnames  
+     * @param graphName name of the graph
+     * @param graphType resourcetype for the graph to add.
+     */
+    private void addToIndex(UriRef graphName, UriRef graphType) {
+        graphNameIndex.getMGraph().add(new TripleImpl(graphName, RDF.type, graphType));
+        graphNameIndex.sync();
+    }
+    
+    /**
+     * Removes a graphanem from the index of graphnames
+     * @param graphName name of the graph to remove
+     * @param graphType resource type of the graph to remove.
+     */
+    private void removeFromIndex(UriRef graphName, UriRef graphType) {
+        MGraph index = graphNameIndex.getMGraph();
+        Iterator<Triple> triplesToRemove = index.filter(graphName, RDF.type, graphType);
+        for( ; triplesToRemove.hasNext(); ) {
+            triplesToRemove.next();
+            triplesToRemove.remove();
+        }
+        graphNameIndex.sync();
+    }
+    
+    private void removeDefaultGraphFromIndex() {
+      MGraph index = graphNameIndex.getMGraph();
+      Iterator<Triple> triplesToRemove = index.filter(null, RDF.type, Symbols.Default);
+      for( ; triplesToRemove.hasNext(); ) {
+          Triple triple = triplesToRemove.next();
+          triplesToRemove.remove();
+          removeFromIndex( UriRef.class.cast(triple.getSubject()), Symbols.Graph );
+      }
+      graphNameIndex.sync();
+    }
+} 

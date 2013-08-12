@@ -21,9 +21,8 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.test.TcProviderTest;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.cm.ConfigurationException;
 
@@ -33,8 +32,9 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
     private static Dictionary<String,Object> config;
     private static SingleTdbDatasetTcProvider provider;
     private static UriRef UNION_GRAPH_NAME = new UriRef("http://www.example.org/unionGraph");
-    @BeforeClass
-    public static void setup() throws IOException, ConfigurationException {
+    
+    @Before
+    public void setup() throws IOException, ConfigurationException {
         tempFile = File.createTempFile("tdbdatasettest", null);
         tempFile.delete();
         tempFile.mkdirs();
@@ -43,16 +43,13 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
         config.put(SingleTdbDatasetTcProvider.DEFAULT_GRAPH_NAME, UNION_GRAPH_NAME.getUnicodeString());
         //config.put(SingleTdbDatasetTcProvider.USE_GRAPH_NAME_SUFFIXES, true);
     }
-    @AfterClass
-    public static void cleanUpDirectory() {
-        //nothin todo because cleanData does the job already
-    }
+    
     @Override
     protected TcProvider getInstance() {
         //tests want us to deactivate/activate the TcProvider on multiple calls
         //to getInstance within the same test
         if(provider !=null){
-            provider.deactivate(null);
+            provider.close();
             provider = null;
         }
         try {
@@ -62,6 +59,7 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
         }
         return provider;
     }
+
     @After
     public void cleanData() throws IOException{
         //We need to remove all remaining data after a test
@@ -71,6 +69,7 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
             provider = null;
         }
     }
+    
     /**
      * The union graph is read only!
      */
@@ -79,14 +78,15 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
         TcProvider provider = getInstance();
         provider.getMGraph(UNION_GRAPH_NAME);
     }
+    
     /**
      * Assert union graph on an empty dataset
      */
     @Test
     public void testEmptyUnionGraph(){
         TcProvider provider = getInstance();
-        Graph grpah = provider.getGraph(UNION_GRAPH_NAME);
-        Assert.assertNotNull(grpah);
+        Graph graph = provider.getGraph(UNION_GRAPH_NAME);
+        Assert.assertNotNull(graph);
     }
     
     @Test
@@ -145,14 +145,13 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
             Assert.assertTrue("Unexpected "+subject, expected.remove(subject));
         }
         Assert.assertTrue("Missing "+expected, expected.isEmpty());
-        
     }
     
     @Test
     public void testListGraph(){
-        TcProvider provider = getInstance();
-        //No union graph in listMGraphs
-        Set<UriRef> mgl = provider.listMGraphs();
+    	TcProvider provider = getInstance();
+    	//No union graph in listMGraphs
+    	Set<UriRef> mgl = provider.listMGraphs();
         Assert.assertFalse("Mgraph list don't contain the read-only union-graph", mgl.contains(UNION_GRAPH_NAME));
         //Union graph in listGraphs
         Set<UriRef> gl = provider.listGraphs();

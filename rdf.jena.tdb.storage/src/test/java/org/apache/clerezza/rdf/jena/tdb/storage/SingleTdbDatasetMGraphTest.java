@@ -15,11 +15,13 @@ import org.osgi.service.cm.ConfigurationException;
 public class SingleTdbDatasetMGraphTest extends MGraphTest {
 
     private static final String MGRAPHNAME_PREFIX = "http://text.example.org/testGraph";
+    private static UriRef UNION_GRAPH_NAME = new UriRef("http://www.example.org/unionGraph");
     private static int testGraphCounter = 0;
 
     private static File tempFile;
     private static Dictionary<String,Object> config;
     private static SingleTdbDatasetTcProvider provider;
+
     @BeforeClass
     public static void setup() throws IOException, ConfigurationException {
         tempFile = File.createTempFile("tdbdatasettest", null);
@@ -27,9 +29,10 @@ public class SingleTdbDatasetMGraphTest extends MGraphTest {
         tempFile.mkdirs();
         config = new Hashtable<String,Object>();
         config.put(SingleTdbDatasetTcProvider.TDB_DIR, tempFile.getAbsolutePath());
-        config.put(SingleTdbDatasetTcProvider.DEFAULT_GRAPH_NAME, "http://www.example.org/defaultGraph");
+        config.put(SingleTdbDatasetTcProvider.DEFAULT_GRAPH_NAME, UNION_GRAPH_NAME.getUnicodeString());
         provider = new SingleTdbDatasetTcProvider(config);
     }
+    
     @AfterClass
     public static void cleanUpDirectory() throws IOException {
         for(int i = 0; i < testGraphCounter;i++){
@@ -38,6 +41,7 @@ public class SingleTdbDatasetMGraphTest extends MGraphTest {
         provider.deactivate(null);
         TdbTcProvider.delete(tempFile);
     }
+
     @Override
     protected MGraph getEmptyMGraph() {
         MGraph graph = provider.createMGraph(new UriRef(MGRAPHNAME_PREFIX+testGraphCounter));
