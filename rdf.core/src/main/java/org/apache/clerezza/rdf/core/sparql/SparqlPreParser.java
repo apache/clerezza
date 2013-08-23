@@ -20,10 +20,17 @@ package org.apache.clerezza.rdf.core.sparql;
 
 import java.io.StringReader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcProvider;
+import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.DataSet;
+import org.apache.clerezza.rdf.core.sparql.query.GraphGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.GraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.MinusGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.OptionalGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.SparqlUnit;
 import org.apache.clerezza.rdf.core.sparql.update.Update;
@@ -64,6 +71,7 @@ public class SparqlPreParser {
         JavaCCGeneratedSparqlPreParser parser = new JavaCCGeneratedSparqlPreParser(new StringReader(queryString));
         SparqlUnit sparqlUnit;
         sparqlUnit = parser.parse();
+        boolean referringVariableNamedGraph = false;
         if (sparqlUnit.isQuery()) {
             Query q = sparqlUnit.getQuery();
             DataSet dataSet = q.getDataSet();
@@ -73,14 +81,84 @@ public class SparqlPreParser {
             } else {
                 referredGraphs = new HashSet<UriRef>();
             }
+            GroupGraphPattern queryPattern = q.getQueryPattern();
+            Set<GraphPattern> graphPatterns = queryPattern.getGraphPatterns();
+            for (GraphPattern graphPattern : graphPatterns) {
+            }
+//            referringVariableNamedGraph = q.referringVariableNamedGraph();
+            referringVariableNamedGraph = referringVariableNamedGraph(q);
         } else {
             Update u = sparqlUnit.getUpdate();
             referredGraphs = u.getReferredGraphs(defaultGraph, tcProvider);
         }
         if (referredGraphs.isEmpty()) {
-            return null;
-//            referredGraphs.add(defaultGraph);
+            if (referringVariableNamedGraph) {
+                return null;
+            }
+            referredGraphs.add(defaultGraph);
         }
         return referredGraphs;
+    }
+
+    private boolean referringVariableNamedGraph(Query query) {
+        GroupGraphPattern queryPattern = query.getQueryPattern();
+        Set<GraphPattern> graphPatterns = queryPattern.getGraphPatterns();
+        return referringVariableNamedGraph(graphPatterns);
+    }
+
+    private boolean referringVariableNamedGraph(Set<GraphPattern> graphPatterns) {
+        boolean referringVariableNamedGraph = false;
+        for (GraphPattern graphPattern : graphPatterns) {
+            if (referringVariableNamedGraph(graphPattern)) {
+                referringVariableNamedGraph = true;
+                break;
+            }
+        }
+        return referringVariableNamedGraph;
+    }
+
+    private boolean referringVariableNamedGraph(GraphPattern graphPattern) {
+        if (graphPattern instanceof GraphGraphPattern) {
+            return ((GraphGraphPattern) graphPattern).getGraph().isVariable();
+        }
+        if (graphPattern instanceof AlternativeGraphPattern) {
+            List<GroupGraphPattern> alternativeGraphPatterns =
+                    ((AlternativeGraphPattern) graphPattern).getAlternativeGraphPatterns();
+            boolean referringVariableNamedGraph = false;
+            for (GroupGraphPattern groupGraphPattern : alternativeGraphPatterns) {
+                if (referringVariableNamedGraph(groupGraphPattern)) {
+                    referringVariableNamedGraph = true;
+                    break;
+                }
+            }
+            return referringVariableNamedGraph;
+        }
+        if (graphPattern instanceof OptionalGraphPattern) {
+            GraphPattern mainGraphPattern = ((OptionalGraphPattern) graphPattern).getMainGraphPattern();
+            if (referringVariableNamedGraph(mainGraphPattern)) {
+                return true;
+            }
+            GroupGraphPattern optionalGraphPattern = ((OptionalGraphPattern) graphPattern).getOptionalGraphPattern();
+            return referringVariableNamedGraph(optionalGraphPattern);
+        }
+        if (graphPattern instanceof MinusGraphPattern) {
+            GraphPattern minuendGraphPattern = ((MinusGraphPattern) graphPattern).getMinuendGraphPattern();
+            if (referringVariableNamedGraph(minuendGraphPattern)) {
+                return true;
+            }
+            GroupGraphPattern subtrahendGraphPattern = ((MinusGraphPattern) graphPattern).getSubtrahendGraphPattern();
+            return referringVariableNamedGraph(subtrahendGraphPattern);
+        }
+        if (graphPattern instanceof GroupGraphPattern) {
+            GroupGraphPattern groupGraphPattern = (GroupGraphPattern) graphPattern;
+            if (groupGraphPattern.isSubSelect()) {
+                Query query = ((GroupGraphPattern) graphPattern).getSubSelect();
+                return referringVariableNamedGraph(query);
+            } else {
+                Set<GraphPattern> graphPatterns = ((GroupGraphPattern) graphPattern).getGraphPatterns();
+                return referringVariableNamedGraph(graphPatterns);
+            }
+        }
+        return false;
     }
 }

@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.clerezza.rdf.core.sparql.query.BasicGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.Expression;
 import org.apache.clerezza.rdf.core.sparql.query.GraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
-import org.apache.clerezza.rdf.core.sparql.query.OptionalGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.PathSupportedBasicGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.PropertyPathPattern;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 
@@ -39,6 +41,7 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 	private List<Expression> constraints = new ArrayList<Expression>();
 	private List<GraphPattern> graphPatterns = new ArrayList<GraphPattern>();
     private SelectQuery subSelect = null;
+    private boolean lastBasicGraphPatternIsComplete = true;
 
     @Override
     public boolean isSubSelect() {
@@ -72,7 +75,9 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 	 */
 	public void addGraphPattern(GraphPattern graphPattern) {
         subSelect = null;
-		graphPatterns.add(graphPattern);
+        graphPatterns.add(graphPattern);
+        lastBasicGraphPatternIsComplete =
+                !(graphPattern instanceof BasicGraphPattern || graphPattern instanceof PathSupportedBasicGraphPattern);
 	}
 
 	/**
@@ -84,6 +89,36 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 	public void addConstraint(Expression constraint) {
         subSelect = null;
 		constraints.add(constraint);
+	}
+
+    public void endLastBasicGraphPattern() {
+        lastBasicGraphPatternIsComplete = true;
+    }
+
+    /**
+	 * If the last {@link GraphPattern} added to the group is not a 
+	 * {@link SimplePathSupportedBasicGraphPattern}, then creates one containing the 
+	 * specified {@link PropertyPathPattern}s and adds it to the group.
+	 * Otherwise, adds the specified {@link PropertyPathPattern}s to the last
+	 * added {@link SimplePathSupportedBasicGraphPattern} in the group.
+	 * 
+	 * @param propertyPathPatterns
+	 *		a set of {@link PropertyPathPattern}s to be added into a 
+	 *		{@link SimplePathSupportedBasicGraphPattern} of the group.
+	 */
+	public void addPropertyPathPatterns(Set<PropertyPathPattern> propertyPathPatterns) {
+        subSelect = null;
+        if (lastBasicGraphPatternIsComplete) {
+            graphPatterns.add(new SimplePathSupportedBasicGraphPattern(propertyPathPatterns));
+            lastBasicGraphPatternIsComplete = false;
+        } else {
+            GraphPattern prevGraphPattern;
+        	int size = graphPatterns.size();
+			prevGraphPattern = graphPatterns.get(size-1);
+            if (prevGraphPattern instanceof SimplePathSupportedBasicGraphPattern) {
+                ((SimplePathSupportedBasicGraphPattern) prevGraphPattern).addPropertyPathPatterns(propertyPathPatterns);
+            }
+        }
 	}
 
 	/**
@@ -101,7 +136,7 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
         subSelect = null;
         GraphPattern prevGraphPattern;
 		int size = graphPatterns.size();
-		if (size > 0) {
+		if (!lastBasicGraphPatternIsComplete && (size > 0)) {
 			prevGraphPattern = graphPatterns.get(size-1);
 			if (prevGraphPattern instanceof SimpleBasicGraphPattern) {
 				((SimpleBasicGraphPattern) prevGraphPattern)
@@ -110,6 +145,7 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 			}
 		}
 		graphPatterns.add(new SimpleBasicGraphPattern(triplePatterns));
+        lastBasicGraphPatternIsComplete = false;
 	}
 
 	/**
@@ -131,5 +167,17 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 			prevGraphPattern = graphPatterns.remove(size-1);
 		}
 		graphPatterns.add(new SimpleOptionalGraphPattern(prevGraphPattern, optional));
+        lastBasicGraphPatternIsComplete = true;
+	}
+
+    public void addMinusGraphPattern(GroupGraphPattern subtrahend) {
+        subSelect = null;
+		GraphPattern prevGraphPattern = null;
+		int size = graphPatterns.size();
+		if (size > 0) {
+			prevGraphPattern = graphPatterns.remove(size-1);
+		}
+		graphPatterns.add(new SimpleMinusGraphPattern(prevGraphPattern, subtrahend));
+        lastBasicGraphPatternIsComplete = true;
 	}
 }

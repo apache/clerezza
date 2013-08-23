@@ -19,12 +19,23 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * This is the generic interface for all types of graph patterns:
- * {@link BasicGraphPattern}, {@link PathSupportedBasicGraphPattern}, {@link GroupGraphPattern},
- * {@link GraphGraphPattern}, {@link AlternativeGraphPattern}, and
- * {@link OptionalGraphPattern}
+ * Defines a service graph pattern.
+ * @see <a href="http://www.w3.org/TR/sparql11-federated-query/">
+ * SPARQL 1.1 Federated Query</a>
  *
  * @author hasan
  */
-public interface GraphPattern {
+public interface ServiceGraphPattern extends GraphPattern {
+
+    /**
+     *
+     * @return a {@link UriRefOrVariable} which specifies the service endpoint.
+     */
+    public UriRefOrVariable getService();
+
+    /**
+     * 
+     * @return the pattern to match.
+     */
+    public GroupGraphPattern getGroupGraphPattern();
 }

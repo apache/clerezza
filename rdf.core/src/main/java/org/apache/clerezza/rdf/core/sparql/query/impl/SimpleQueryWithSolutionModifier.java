@@ -20,6 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.clerezza.rdf.core.sparql.query.Expression;
 import org.apache.clerezza.rdf.core.sparql.query.OrderCondition;
 import org.apache.clerezza.rdf.core.sparql.query.QueryWithSolutionModifier;
 
@@ -30,6 +31,8 @@ import org.apache.clerezza.rdf.core.sparql.query.QueryWithSolutionModifier;
 public abstract class SimpleQueryWithSolutionModifier extends SimpleQuery
         implements QueryWithSolutionModifier {
 
+    private List<Expression> groupConditions = new ArrayList<Expression>();
+    private List<Expression> havingConditions = new ArrayList<Expression>();
     private List<OrderCondition> orderConditions = new ArrayList<OrderCondition>();
 
     /**
@@ -41,6 +44,16 @@ public abstract class SimpleQueryWithSolutionModifier extends SimpleQuery
      * Result limit. -1 means no limit.
      */
     private int limit = -1;
+
+    @Override
+    public List<Expression> getGroupConditions() {
+        return groupConditions;
+    }
+
+    @Override
+    public List<Expression> getHavingConditions() {
+        return havingConditions;
+    }
 
     @Override
     public List<OrderCondition> getOrderConditions() {
@@ -55,6 +68,14 @@ public abstract class SimpleQueryWithSolutionModifier extends SimpleQuery
     @Override
     public int getLimit() {
         return limit;
+    }
+
+    public void addGroupCondition(Expression groupCondition) {
+        groupConditions.add(groupCondition);
+    }
+
+    public void addHavingCondition(Expression havingCondition) {
+        havingConditions.add(havingCondition);
     }
 
     public void addOrderCondition(OrderCondition orderCondition) {

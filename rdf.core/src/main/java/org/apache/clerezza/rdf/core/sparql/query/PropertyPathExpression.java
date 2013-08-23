@@ -19,12 +19,11 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * This is the generic interface for all types of graph patterns:
- * {@link BasicGraphPattern}, {@link PathSupportedBasicGraphPattern}, {@link GroupGraphPattern},
- * {@link GraphGraphPattern}, {@link AlternativeGraphPattern}, and
- * {@link OptionalGraphPattern}
- *
+ * This interface models property path expressions.
+ * @see <a href="http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#propertypaths">
+ * SPARQL 1.1 Query Language: 9 Property Paths</a>
+ * 
  * @author hasan
  */
-public interface GraphPattern {
+public interface PropertyPathExpression {
 }

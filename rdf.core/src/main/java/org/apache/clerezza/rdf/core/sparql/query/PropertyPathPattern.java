@@ -19,12 +19,28 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * This is the generic interface for all types of graph patterns:
- * {@link BasicGraphPattern}, {@link PathSupportedBasicGraphPattern}, {@link GroupGraphPattern},
- * {@link GraphGraphPattern}, {@link AlternativeGraphPattern}, and
- * {@link OptionalGraphPattern}
+ * Defines a property path pattern consisting of a subject, a property path expression, and an object.
+ * The subject and object are of type {@link ResourceOrVariable}, whereas
+ * the predicate is of type {@link PropertyPathExpressionOrVariable}.
+ * @see <a href="http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#sparqlPropertyPaths">
+ * SPARQL 1.1 Query Language: 18.1.7 Property Path Patterns</a>
  *
  * @author hasan
  */
-public interface GraphPattern {
+public interface PropertyPathPattern {
+
+    /**
+     * @return the subject
+     */
+    public ResourceOrVariable getSubject();
+
+    /**
+     * @return the property path expression
+     */
+    public PropertyPathExpressionOrVariable getPropertyPathExpression();
+
+    /**
+     * @return the object
+     */
+    public ResourceOrVariable getObject();
 }

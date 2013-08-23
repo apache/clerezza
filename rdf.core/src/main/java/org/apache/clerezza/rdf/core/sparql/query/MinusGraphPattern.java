@@ -19,12 +19,22 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * This is the generic interface for all types of graph patterns:
- * {@link BasicGraphPattern}, {@link PathSupportedBasicGraphPattern}, {@link GroupGraphPattern},
- * {@link GraphGraphPattern}, {@link AlternativeGraphPattern}, and
- * {@link OptionalGraphPattern}
- *
+ * 
  * @author hasan
  */
-public interface GraphPattern {
+public interface MinusGraphPattern extends GraphPattern {
+
+    /**
+     *
+     * @return
+     *        the minuend graph pattern to match
+     */
+    public GraphPattern getMinuendGraphPattern();
+
+    /**
+     *
+     * @return
+     *        the subtrahend graph pattern to match
+     */
+    public GroupGraphPattern getSubtrahendGraphPattern();
 }

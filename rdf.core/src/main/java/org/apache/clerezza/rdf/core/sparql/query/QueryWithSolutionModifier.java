@@ -22,14 +22,21 @@ import java.util.List;
 
 /**
  * <p>This interface represents a SPARQL query which contains a specification
- * of solution modifiers: ORDER BY, OFFSET, and LIMIT.</p>
+ * of solution modifiers: GROUP BY, HAVING, ORDER BY, OFFSET, and LIMIT.</p>
  *
- * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#solutionModifiers">
- * SPARQL Query Language: 9 Solution Sequences and Modifiers</a>
+ * @see <a href="http://www.w3.org/TR/sparql11-query/#aggregates">
+ * SPARQL 1.1 Query Language: 11 Aggregates</a>
+ * and
+ * @see <a href="http://www.w3.org/TR/sparql11-query/#solutionModifiers">
+ * SPARQL 1.1 Query Language: 15 Solution Sequences and Modifiers</a>
  *
  * @author hasan
  */
 public interface QueryWithSolutionModifier extends Query {
+
+    public List<Expression> getGroupConditions();
+
+    public List<Expression> getHavingConditions();
 
     /**
      * <p>Gets the list of required ordering conditions in decreasing ordering

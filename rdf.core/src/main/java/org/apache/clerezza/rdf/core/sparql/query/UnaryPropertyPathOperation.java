@@ -19,12 +19,19 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * This is the generic interface for all types of graph patterns:
- * {@link BasicGraphPattern}, {@link PathSupportedBasicGraphPattern}, {@link GroupGraphPattern},
- * {@link GraphGraphPattern}, {@link AlternativeGraphPattern}, and
- * {@link OptionalGraphPattern}
  *
  * @author hasan
  */
-public interface GraphPattern {
+public class UnaryPropertyPathOperation implements PropertyPathExpression {
+    private String operator;
+    private PropertyPathExpression operand;
+
+    public UnaryPropertyPathOperation(String operator, PropertyPathExpression operand) {
+        this.operator = operator;
+        this.operand = operand;
+    }
+
+    public PropertyPathExpression getOperand() {
+        return operand;
+    }
 }

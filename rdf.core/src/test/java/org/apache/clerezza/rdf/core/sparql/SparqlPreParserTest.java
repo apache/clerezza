@@ -58,6 +58,18 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testAllGraphReferenceInSelectQuery() throws ParseException {
+
+        StringBuilder queryStrBuilder = new StringBuilder();
+        queryStrBuilder.append("SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o } }\n");
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), DEFAULT_GRAPH);
         Assert.assertTrue(referredGraphs == null);
     }
 

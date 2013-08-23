@@ -18,13 +18,27 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * This is the generic interface for all types of graph patterns:
- * {@link BasicGraphPattern}, {@link PathSupportedBasicGraphPattern}, {@link GroupGraphPattern},
- * {@link GraphGraphPattern}, {@link AlternativeGraphPattern}, and
- * {@link OptionalGraphPattern}
+ * A property set is intended to store only predicate paths and inverse predicate paths.
  *
  * @author hasan
  */
-public interface GraphPattern {
+public class PropertySet implements PropertyPathExpression {
+    private Set<PropertyPathExpression> propertySet = new HashSet<PropertyPathExpression>();
+
+    /**
+     * 
+     * @param propertyPathExpression expected value is a predicate path or an inverse predicate path
+     */
+    public void addElement(PropertyPathExpression propertyPathExpression) {
+        this.propertySet.add(propertyPathExpression);
+    }
+
+    public Set<PropertyPathExpression> getPropertySet() {
+        return propertySet;
+    }
+
 }

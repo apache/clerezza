@@ -18,13 +18,21 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
+import org.apache.clerezza.rdf.core.UriRef;
+
 /**
- * This is the generic interface for all types of graph patterns:
- * {@link BasicGraphPattern}, {@link PathSupportedBasicGraphPattern}, {@link GroupGraphPattern},
- * {@link GraphGraphPattern}, {@link AlternativeGraphPattern}, and
- * {@link OptionalGraphPattern}
  *
  * @author hasan
  */
-public interface GraphPattern {
+public class PredicatePath implements PropertyPathExpression {
+    private UriRef predicatePath;
+
+    public PredicatePath(UriRef predicatePath) {
+        this.predicatePath = predicatePath;
+    }
+
+    public UriRef getPredicatePath() {
+        return predicatePath;
+    }
+
 }

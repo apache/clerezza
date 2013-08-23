@@ -49,18 +49,26 @@ import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
 import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.BinaryOperation;
+import org.apache.clerezza.rdf.core.sparql.query.BinaryPropertyPathOperation;
 import org.apache.clerezza.rdf.core.sparql.query.BuiltInCall;
 import org.apache.clerezza.rdf.core.sparql.query.Expression;
 import org.apache.clerezza.rdf.core.sparql.query.FunctionCall;
 import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.InlineData;
 import org.apache.clerezza.rdf.core.sparql.query.LiteralExpression;
+import org.apache.clerezza.rdf.core.sparql.query.PredicatePath;
+import org.apache.clerezza.rdf.core.sparql.query.PropertyPathExpressionOrVariable;
+import org.apache.clerezza.rdf.core.sparql.query.PropertyPathExpression;
+import org.apache.clerezza.rdf.core.sparql.query.PropertyPathPattern;
+import org.apache.clerezza.rdf.core.sparql.query.PropertySet;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.ResourceOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.RhsListBinaryOperation;
+import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.SparqlUnit;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 import org.apache.clerezza.rdf.core.sparql.query.UnaryOperation;
+import org.apache.clerezza.rdf.core.sparql.query.UnaryPropertyPathOperation;
 import org.apache.clerezza.rdf.core.sparql.query.UriRefExpression;
 import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
@@ -72,9 +80,11 @@ import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleGraphGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleGroupGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleInlineData;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleOrderCondition;
+import org.apache.clerezza.rdf.core.sparql.query.impl.SimplePropertyPathPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleQueryWithSolutionModifier;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleSelectQuery;
+import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleServiceGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleSparqlUnit;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleTriplePattern;
 import org.apache.clerezza.rdf.core.sparql.update.Update;
@@ -166,6 +176,46 @@ class JavaCCGeneratedSparqlPreParser {
         name = name.substring(1);
         Variable v = new Variable(name);
         return v;
+    }
+
+    private void addPropertyPathPatterns(Set<PropertyPathPattern> propertyPathPatterns,
+            ResourceOrVariable subject,
+            PropertyPathExpressionOrVariable propertyPathExpression,
+            Set<ResourceOrVariable> objects) {
+
+        for (ResourceOrVariable object : objects) {
+            propertyPathPatterns.add(
+                new SimplePropertyPathPattern(subject, propertyPathExpression, object));
+        }
+    }
+
+    // nodes contain at least one element
+    private ResourceOrVariable addPropertyPathPatterns(Set<PropertyPathPattern> propertyPathPatterns,
+            List<ResourceOrVariable> nodes) {
+
+        ResourceOrVariable head = null;
+        PropertyPathExpressionOrVariable rdfFirst = new PropertyPathExpressionOrVariable(new PredicatePath(RDF_FIRST));
+        PropertyPathExpressionOrVariable rdfRest = new PropertyPathExpressionOrVariable(new PredicatePath(RDF_REST));
+        UriRefOrVariable rdfNil = new UriRefOrVariable(RDF_NIL);
+
+        ResourceOrVariable prevSubject = null;
+        for (ResourceOrVariable node : nodes) {
+            ResourceOrVariable currentSubject = getNewBNode();
+            if (prevSubject != null) {
+                propertyPathPatterns.add(
+                    new SimplePropertyPathPattern(prevSubject, rdfRest, currentSubject));
+            } else {
+                head = currentSubject;
+            }
+            propertyPathPatterns.add(
+                new SimplePropertyPathPattern(currentSubject, rdfFirst, node));
+            prevSubject = currentSubject;
+        }
+        if (prevSubject != null) {
+            propertyPathPatterns.add(
+                new SimplePropertyPathPattern(prevSubject, rdfRest, rdfNil));
+        }
+        return head;
     }
 
     private void addTriplePatterns(Set<TriplePattern> triplePatterns,
@@ -305,6 +355,9 @@ TOKEN [IGNORE_CASE] :
 |   < VALUES : "VALUES" >
 |   < UNDEF : "UNDEF" >
 |   < AS : "AS" >
+|   < BIND : "BIND" >
+|   < MINUS : "MINUS" >
+|   < SERVICE : "SERVICE" >
 |   < GROUP : "GROUP" >
 |   < HAVING : "HAVING" >
 |   < LOAD : "LOAD" >
@@ -409,11 +462,21 @@ private void PrefixDecl() : {
 private Query SelectQuery() : {
     Query query; } {
     query = SelectClause()
-    ( DatasetClause(query) )* {
+    ( DatasetClause(query) )*
+    WhereClause(query)
+    SolutionModifier(query) {
     return query; }
 }
 
 /* [8]    SubSelect ::= SelectClause WhereClause SolutionModifier ValuesClause */
+private Query SubSelect() : {
+    Query query; } {
+    query = SelectClause()
+    WhereClause(query)
+    SolutionModifier(query)
+    ValuesClause(query) {
+    return query; }
+}
 
 /* [9]    SelectClause ::= 'SELECT' ( 'DISTINCT' | 'REDUCED' )? ( ( Var | ( '(' Expression 'AS' Var ')' ) )+ | '*' ) */
 private Query SelectClause() : {
@@ -455,18 +518,30 @@ private Query SelectClause() : {
 /* [10]    ConstructQuery ::= 'CONSTRUCT' ( ConstructTemplate DatasetClause* WhereClause SolutionModifier | DatasetClause* 'WHERE' '{' TriplesTemplate? '}' SolutionModifier ) */
 private Query ConstructQuery() : {
     Query query;
-    Set<TriplePattern> triplePatterns = null; } {
+    Set<TriplePattern> triplePatterns = null;
+    GroupGraphPattern queryPattern; } {
 
     <CONSTRUCT>
     (
         triplePatterns=ConstructTemplate() {
         query = new SimpleConstructQuery(triplePatterns); }
         ( DatasetClause(query) )*
+        WhereClause(query)
     |
         {
         query = new SimpleConstructQuery(triplePatterns); }
         ( DatasetClause(query) )*
-    ) {
+        <WHERE>
+        "{" {
+        queryPattern = new SimpleGroupGraphPattern(); }
+        (
+            triplePatterns=TriplesTemplate()
+        )? {
+        ((SimpleGroupGraphPattern) queryPattern).addTriplePatterns(triplePatterns); }
+        "}" {
+        ((SimpleQuery) query).setQueryPattern(queryPattern); }
+    )
+    SolutionModifier(query) {
     return query; }
 }
 
@@ -484,7 +559,9 @@ private Query DescribeQuery() : {
         "*" {
             ((SimpleDescribeQuery) query).setDescribeAll(); }
     )
-    ( DatasetClause(query) )* {
+    ( DatasetClause(query) )*
+    ( WhereClause(query) )?
+    SolutionModifier(query) {
     return query; }
 }
 
@@ -494,7 +571,9 @@ private Query AskQuery() : {
 
     <ASK> {
     query = new SimpleAskQuery(); }
-    ( DatasetClause(query) )* {
+    ( DatasetClause(query) )*
+    WhereClause(query)
+    SolutionModifier(query) {
     return query; }
 }
 
@@ -527,20 +606,117 @@ private UriRef SourceSelector() : {
     return graph; }
 }
 
-/*
-[17] WhereClause ::= 'WHERE'? GroupGraphPattern
-[18] SolutionModifier ::= GroupClause? HavingClause? OrderClause? LimitOffsetClauses?
-[19] GroupClause ::= 'GROUP' 'BY' GroupCondition+
-[20] GroupCondition ::= BuiltInCall | FunctionCall | '(' Expression ( 'AS' Var )? ')' | Var
-[21] HavingClause ::= 'HAVING' HavingCondition+
-[22] HavingCondition ::= Constraint
-[23] OrderClause ::= 'ORDER' 'BY' OrderCondition+
-[24] OrderCondition ::= ( ( 'ASC' | 'DESC' ) BrackettedExpression ) | ( Constraint | Var )
-[25] LimitOffsetClauses ::= LimitClause OffsetClause? | OffsetClause LimitClause?
-[26] LimitClause ::= 'LIMIT' INTEGER
-[27] OffsetClause ::= 'OFFSET' INTEGER
-[28] ValuesClause ::= ( 'VALUES' DataBlock )?
-*/
+/* [17]    WhereClause ::= 'WHERE'? GroupGraphPattern */
+private void WhereClause(Query query) : {
+    GroupGraphPattern queryPattern; } {
+
+    (<WHERE>)?
+    queryPattern=GroupGraphPattern() {
+    ((SimpleQuery) query).setQueryPattern(queryPattern); }
+}
+
+/* [18] SolutionModifier ::= GroupClause? HavingClause? OrderClause? LimitOffsetClauses? */
+private void SolutionModifier(Query query) : {} {
+    ( GroupClause(query) )?
+    ( HavingClause(query) )?
+    ( OrderClause(query) )?
+    ( LimitOffsetClauses(query) )?
+}
+
+/* [19] GroupClause ::= 'GROUP' 'BY' GroupCondition+ */
+private void GroupClause(Query query) : {} {
+    <GROUP> <BY> ( GroupCondition(query) )+
+}
+
+/* [20] GroupCondition ::= BuiltInCall | FunctionCall | '(' Expression ( 'AS' Var )? ')' | Var */
+private void GroupCondition(Query query) : {
+    Expression e;
+    Variable v; } {
+    (
+        e=BuiltInCall()
+    |
+        e=FunctionCall()
+    |
+        (
+            "("
+            e=Expression()
+            (
+                <AS>
+                v=Var() {
+                v.setBoundExpression(e);
+                e = v; }
+            )?
+            ")"
+        )
+    |
+        e=Var()
+    ) {
+    ((SimpleQueryWithSolutionModifier) query).addGroupCondition(e); }
+}
+
+/* [21] HavingClause ::= 'HAVING' HavingCondition+ */
+private void HavingClause(Query query) : {} {
+    <HAVING> ( HavingCondition(query) )+
+}
+
+/* [22] HavingCondition ::= Constraint */
+private void HavingCondition(Query query) : {
+    Expression c; } {
+
+    c=Constraint() {
+    ((SimpleQueryWithSolutionModifier) query).addHavingCondition(c); }
+}
+
+/* [23] OrderClause ::= 'ORDER' 'BY' OrderCondition+ */
+private void OrderClause(Query query) : {} {
+    <ORDER> <BY> ( OrderCondition(query) )+
+}
+
+/* [24] OrderCondition ::= ( ( 'ASC' | 'DESC' ) BrackettedExpression ) | ( Constraint | Var ) */
+private void OrderCondition(Query query) : {
+    boolean asc = true;
+    Expression e; } {
+
+    (
+        ( ( "ASC" | "DESC" { asc = false; } ) e=BrackettedExpression() )
+    |
+        ( e=Constraint() | e=Var() )
+    ) {
+    ((SimpleQueryWithSolutionModifier) query).addOrderCondition(new SimpleOrderCondition(e, asc)); }
+}
+
+/* [25] LimitOffsetClauses ::= LimitClause OffsetClause? | OffsetClause LimitClause? */
+private void LimitOffsetClauses(Query query) : {} {
+    ( LimitClause(query) (OffsetClause(query))? )
+    |
+    ( OffsetClause(query) (LimitClause(query))? )
+}
+
+/* [26] LimitClause ::= 'LIMIT' INTEGER */
+private void LimitClause(Query query) : {
+    Token t; } {
+
+    <LIMIT> t=<INTEGER> {
+    ((SimpleQueryWithSolutionModifier) query).setLimit(Integer.parseInt(t.image)); }
+}
+
+/* [27] OffsetClause ::= 'OFFSET' INTEGER */
+private void OffsetClause(Query query) : {
+    Token t; } {
+
+    <OFFSET> t=<INTEGER> {
+    ((SimpleQueryWithSolutionModifier) query).setOffset(Integer.parseInt(t.image)); }
+}
+
+/* [28] ValuesClause ::= ( 'VALUES' DataBlock )? */
+private void ValuesClause(Query query) : {
+    InlineData data; } {
+    (
+        <VALUES>
+        data=DataBlock() {
+        ((SimpleQuery) query).setInlineData(data); }
+    )?
+}
 
 /* [29]    Update ::= Prologue ( Update1 ( ';' Update )? )? */
 private void Update(Update update) : {} {
@@ -565,8 +741,7 @@ private void Update1(Update update) : {
     ) {
     if (updateOperation != null) {
         update.addOperation(updateOperation);
-    }
-    }
+    } }
 }
 
 /* [31]    Load ::= 'LOAD' 'SILENT'? iri ( 'INTO' GraphRef )? */
@@ -580,8 +755,7 @@ private UpdateOperation Load() : {
         operation.setSilent(true); }
     )?
     uriRef = Iri() {
-        operation.setSource(uriRef);
-    }
+    operation.setSource(uriRef); }
     (
         <INTO>
         uriRef = GraphRef() {
@@ -657,26 +831,282 @@ private GraphRefAllSpec GraphRefAll() : {
 /* [49]    QuadData ::= '{' Quads '}' */
 /* [50]    Quads ::= TriplesTemplate? ( QuadsNotTriples '.'? TriplesTemplate? )* */
 /* [51]    QuadsNotTriples ::= 'GRAPH' VarOrIri '{' TriplesTemplate? '}' */
+
 /* [52]    TriplesTemplate ::= TriplesSameSubject ( '.' TriplesTemplate? )? */
+private Set<TriplePattern> TriplesTemplate() : {
+    Set<TriplePattern> triplePatterns, t; } {
+
+    triplePatterns=TriplesSameSubject()
+    (
+        "."
+        (
+            t=TriplesTemplate() {
+            triplePatterns.addAll(t); }
+        )?
+    )? {
+    return triplePatterns; }
+}
 
 /* [53]    GroupGraphPattern ::= '{' ( SubSelect | GroupGraphPatternSub ) '}' */
+private GroupGraphPattern GroupGraphPattern() : {
+    Query query;
+    GroupGraphPattern groupGraphPattern = new SimpleGroupGraphPattern(); } {
+    "{"
+    (
+        query = SubSelect() {
+        groupGraphPattern.setSubSelect((SelectQuery) query); }
+    |
+        GroupGraphPatternSub(groupGraphPattern)
+    )
+    "}" {
+    return groupGraphPattern; }
+}
+
 /* [54]    GroupGraphPatternSub ::= TriplesBlock? ( GraphPatternNotTriples '.'? TriplesBlock? )* */
+private void GroupGraphPatternSub(GroupGraphPattern groupGraphPattern) : {} {
+    ( TriplesBlock(groupGraphPattern) )?
+    (
+        GraphPatternNotTriples(groupGraphPattern)
+        (".")?
+        ( TriplesBlock(groupGraphPattern) )?
+    )*
+}
+
 /* [55]    TriplesBlock ::= TriplesSameSubjectPath ( '.' TriplesBlock? )? */
+private void TriplesBlock(GroupGraphPattern groupGraphPattern) : {
+    Set<PropertyPathPattern> propertyPathPatterns; } {
+
+    propertyPathPatterns=TriplesSameSubjectPath() {
+    ((SimpleGroupGraphPattern) groupGraphPattern).addPropertyPathPatterns(propertyPathPatterns); }
+    (
+        "." ( TriplesBlock(groupGraphPattern) )?
+    )?
+}
+
 /* [56]    GraphPatternNotTriples ::= GroupOrUnionGraphPattern | OptionalGraphPattern | MinusGraphPattern | GraphGraphPattern | ServiceGraphPattern | Filter | Bind | InlineData */
+private void GraphPatternNotTriples(GroupGraphPattern groupGraphPattern) : {
+    Expression constraint;
+    Variable v; } {
+    (
+        GroupOrUnionGraphPattern(groupGraphPattern)
+    |
+        OptionalGraphPattern(groupGraphPattern)
+    |
+        MinusGraphPattern(groupGraphPattern)
+    |
+        GraphGraphPattern(groupGraphPattern)
+    |
+        ServiceGraphPattern(groupGraphPattern)
+    |
+        constraint=Filter() {
+        ((SimpleGroupGraphPattern) groupGraphPattern).addConstraint(constraint); }
+    |
+        v=Bind() {
+        // We should either store this binding in the respective variable in SelectQuery
+        // or we extend the BasicGraphPattern to store such binding.
+        // If we store the binding in the respective variable in SelectQuery, a serializer
+        // won't be able to determine whether a binding is defined by the BIND keyword or
+        // by an expression in the SELECT clause.
+        // The pre parser needs only to consume tokens, thus may ignore this binding.
+
+        // The use of BIND ends the preceding basic graph pattern, thus ...
+        ((SimpleGroupGraphPattern) groupGraphPattern).endLastBasicGraphPattern(); }
+    |
+        InlineData(groupGraphPattern)
+    )
+}
+
 /* [57]    OptionalGraphPattern ::= 'OPTIONAL' GroupGraphPattern */
+private void OptionalGraphPattern(GroupGraphPattern groupGraphPattern) : {
+    GroupGraphPattern optional; } {
+
+    <OPTIONAL>
+    optional=GroupGraphPattern() {
+    ((SimpleGroupGraphPattern) groupGraphPattern).addOptionalGraphPattern(optional); }
+}
+
 /* [58]    GraphGraphPattern ::= 'GRAPH' VarOrIri GroupGraphPattern */
+private void GraphGraphPattern(GroupGraphPattern groupGraphPattern) : {
+    UriRefOrVariable graph;
+    GroupGraphPattern g; } {
+
+    <GRAPH>
+    graph=VarOrIri()
+    g=GroupGraphPattern() {
+    ((SimpleGroupGraphPattern) groupGraphPattern).addGraphPattern(new SimpleGraphGraphPattern(graph, g)); }
+}
+
 /* [59]    ServiceGraphPattern ::= 'SERVICE' 'SILENT'? VarOrIri GroupGraphPattern */
+private void ServiceGraphPattern(GroupGraphPattern groupGraphPattern) : {
+    UriRefOrVariable service;
+    GroupGraphPattern g;
+    boolean silent = false; } {
+
+    <SERVICE>
+    (
+        <SILENT> {
+        silent = true; }
+    )?
+    service=VarOrIri()
+    g=GroupGraphPattern() {
+    SimpleServiceGraphPattern simpleServiceGraphPattern;
+    simpleServiceGraphPattern = new SimpleServiceGraphPattern(service, g);
+    ((SimpleGroupGraphPattern) groupGraphPattern).addGraphPattern(simpleServiceGraphPattern);
+    if (silent) {
+        simpleServiceGraphPattern.setSilent(true);
+    } }
+}
+
 /* [60]    Bind ::= 'BIND' '(' Expression 'AS' Var ')' */
+private Variable Bind() : {
+    Variable v;
+    Expression e; } {
+
+    <BIND>
+    "("
+    e=Expression()
+    <AS>
+    v=Var() {
+    v.setBoundExpression(e); }
+    ")" {
+    return v; }
+}
+
 /* [61]    InlineData ::= 'VALUES' DataBlock */
+private void InlineData(GroupGraphPattern groupGraphPattern) : {
+    InlineData data; } {
+
+    <VALUES>
+    data=DataBlock() {
+    ((SimpleGroupGraphPattern) groupGraphPattern).addGraphPattern(data); }
+}
+
 /* [62]    DataBlock ::= InlineDataOneVar | InlineDataFull */
+private InlineData DataBlock() : {
+    InlineData inlineData = new SimpleInlineData(); } {
+
+    (
+        InlineDataOneVar(inlineData)
+    |
+        InlineDataFull(inlineData)
+    ) {
+    return inlineData; }
+}
+
 /* [63]    InlineDataOneVar ::= Var '{' DataBlockValue* '}' */
+private void InlineDataOneVar(InlineData inlineData) : {
+    Variable var;
+    Resource val; } {
+
+    var=Var() {
+    ((SimpleInlineData) inlineData).addVariable(var); }
+    "{"
+    (
+        val=DataBlockValue() {
+        List<Resource> values = new ArrayList<Resource>();
+        values.add(val);
+        ((SimpleInlineData) inlineData).addValues(values); }
+    )*
+    "}"
+}
+
 /* [64]    InlineDataFull ::= ( NIL | '(' Var* ')' ) '{' ( '(' DataBlockValue* ')' | NIL )* '}' */
-/* [65]    DataBlockValue ::= iri |    RDFLiteral |    NumericLiteral |    BooleanLiteral |    'UNDEF' */
+private void InlineDataFull(InlineData inlineData) : {
+    Variable var;
+    Resource val; } {
+    (
+        <NIL>
+    |
+        "("
+        (
+            var=Var() {
+            ((SimpleInlineData) inlineData).addVariable(var); }
+        )*
+        
+        ")"
+    )
+    "{"
+    (
+        (
+            "(" {
+            List<Resource> values = new ArrayList<Resource>(); }
+            (
+                val=DataBlockValue() {
+                values.add(val); }
+            )*
+            ")" {
+            ((SimpleInlineData) inlineData).addValues(values); }
+        )
+    |
+        <NIL> {
+        ((SimpleInlineData) inlineData).addValues(new ArrayList<Resource>()); }
+    )*
+    "}"
+}
+
+/* [65]    DataBlockValue ::= iri | RDFLiteral | NumericLiteral | BooleanLiteral | 'UNDEF' */
+private Resource DataBlockValue() : {
+    Resource r = null; } {
+    (r=Iri() | r=RDFLiteral() | r=NumericLiteral() | r=BooleanLiteral() | <UNDEF> ) {
+    return r; }
+}
+
 /* [66]    MinusGraphPattern ::= 'MINUS' GroupGraphPattern */
+private void MinusGraphPattern(GroupGraphPattern groupGraphPattern) : {
+    GroupGraphPattern subtrahend; } {
+
+    <MINUS>
+    subtrahend=GroupGraphPattern() {
+    ((SimpleGroupGraphPattern) groupGraphPattern).addMinusGraphPattern(subtrahend); }
+}
+
 /* [67]    GroupOrUnionGraphPattern ::= GroupGraphPattern ( 'UNION' GroupGraphPattern )* */
+private void GroupOrUnionGraphPattern(GroupGraphPattern groupGraphPattern) : {
+    GroupGraphPattern g;
+    AlternativeGraphPattern unionGraphPattern = null; } {
+
+    g=GroupGraphPattern()
+    (
+        <UNION> {
+        if (unionGraphPattern == null) {
+            unionGraphPattern = new SimpleAlternativeGraphPattern(g);
+        } }
+        g=GroupGraphPattern() {
+        ((SimpleAlternativeGraphPattern) unionGraphPattern).addAlternativeGraphPattern(g); }
+    )* {
+    if (unionGraphPattern != null) {
+        ((SimpleGroupGraphPattern) groupGraphPattern).addGraphPattern(unionGraphPattern);
+    } else {
+        ((SimpleGroupGraphPattern) groupGraphPattern).addGraphPattern(g);
+    } }
+}
+
 /* [68]    Filter ::= 'FILTER' Constraint */
+private Expression Filter() : {
+    Expression c; } {
+
+    <FILTER>
+    c=Constraint() {
+    return c; }
+}
+
 /* [69]    Constraint ::= BrackettedExpression | BuiltInCall | FunctionCall */
+private Expression Constraint() : {
+    Expression c; } {
+
+    ( c=BrackettedExpression() | c=BuiltInCall() | c=FunctionCall() ) {
+    return c; }
+}
+
 /* [70]    FunctionCall ::= iri ArgList */
+private FunctionCall FunctionCall() : {
+    UriRef name;
+    List<Expression> arguments; } {
+
+    name=Iri()
+    arguments=ArgList() {
+    return new FunctionCall(name, arguments); }
+}
 
 /* [71]    ArgList ::= NIL | '(' 'DISTINCT'? Expression ( ',' Expression )* ')' */
 private List<Expression> ArgList() : {
@@ -731,9 +1161,11 @@ private List<Expression> ExpressionList() : {
 private Set<TriplePattern> ConstructTemplate() : {
     Set<TriplePattern> triplePatterns = null; } {
 
-    "{" (
-    triplePatterns=ConstructTriples()
-    )? "}" {
+    "{"
+    (
+        triplePatterns=ConstructTriples()
+    )?
+    "}" {
     return triplePatterns; }
 }
 
@@ -742,10 +1174,11 @@ private Set<TriplePattern> ConstructTriples() : {
     Set<TriplePattern> triplePatterns, t; } {
 
     triplePatterns=TriplesSameSubject()
-    ( "."
+    (
+        "."
         (
-        t=ConstructTriples() {
-        triplePatterns.addAll(t); }
+            t=ConstructTriples() {
+            triplePatterns.addAll(t); }
         )?
     )? {
     return triplePatterns; }
@@ -820,25 +1253,246 @@ private ResourceOrVariable Object(Set<TriplePattern> triplePatterns) : {
     return object; }
 }
 
-/*
-[81]    TriplesSameSubjectPath ::= VarOrTerm PropertyListPathNotEmpty |    TriplesNodePath PropertyListPath
-[82]    PropertyListPath ::= PropertyListPathNotEmpty?
-[83]    PropertyListPathNotEmpty ::= ( VerbPath | VerbSimple ) ObjectListPath ( ';' ( ( VerbPath | VerbSimple ) ObjectList )? )*
-[84]    VerbPath ::= Path
-[85]    VerbSimple ::= Var
-[86]    ObjectListPath ::= ObjectPath ( ',' ObjectPath )*
-[87]    ObjectPath ::= GraphNodePath
-[88]    Path ::= PathAlternative
-[89]    PathAlternative ::= PathSequence ( '|' PathSequence )*
-[90]    PathSequence ::= PathEltOrInverse ( '/' PathEltOrInverse )*
-[91]    PathElt ::= PathPrimary PathMod?
-[92]    PathEltOrInverse ::= PathElt | '^' PathElt
-[93]    PathMod ::= '?' | '*' | '+'
-[94]    PathPrimary ::= iri | 'a' | '!' PathNegatedPropertySet | '(' Path ')'
-[95]    PathNegatedPropertySet ::= PathOneInPropertySet | '(' ( PathOneInPropertySet ( '|' PathOneInPropertySet )* )? ')'
-[96]    PathOneInPropertySet ::= iri | 'a' | '^' ( iri | 'a' )
-[97]    Integer ::= INTEGER
-*/
+/* [81]    TriplesSameSubjectPath ::= VarOrTerm PropertyListPathNotEmpty | TriplesNodePath PropertyListPath */
+private Set<PropertyPathPattern> TriplesSameSubjectPath() : {
+    Set<PropertyPathPattern> propertyPathPatterns = new LinkedHashSet<PropertyPathPattern>();
+    ResourceOrVariable subject; } {
+
+    (
+        subject=VarOrTerm()
+        PropertyListPathNotEmpty(subject, propertyPathPatterns) {
+        return propertyPathPatterns; }
+    )
+    |
+    (
+        subject=TriplesNodePath(propertyPathPatterns)
+        PropertyListPath(subject, propertyPathPatterns) {
+        return propertyPathPatterns; }
+    )
+}
+
+/* [82]    PropertyListPath ::= PropertyListPathNotEmpty? */
+private void PropertyListPath(ResourceOrVariable subject, Set<PropertyPathPattern> propertyPathPatterns) : { } {
+    (
+        PropertyListPathNotEmpty(subject, propertyPathPatterns)
+    )?
+}
+
+/* [83]    PropertyListPathNotEmpty ::= ( VerbPath | VerbSimple ) ObjectListPath ( ';' ( ( VerbPath | VerbSimple ) ObjectList )? )* */
+private void PropertyListPathNotEmpty(ResourceOrVariable subject, Set<PropertyPathPattern> propertyPathPatterns) : {
+    PropertyPathExpressionOrVariable propertyPathExpressionOrVariable;
+    PropertyPathExpression propertyPathExpression;
+    Variable v;
+    Set<ResourceOrVariable> objects; } {
+    (
+        propertyPathExpression=VerbPath() {
+        propertyPathExpressionOrVariable = new PropertyPathExpressionOrVariable(propertyPathExpression); }
+    |
+        v=VerbSimple() {
+        propertyPathExpressionOrVariable = new PropertyPathExpressionOrVariable(v); }
+    )
+    objects=ObjectListPath(propertyPathPatterns) {
+    addPropertyPathPatterns(propertyPathPatterns, subject, propertyPathExpressionOrVariable, objects); }
+    (
+        ";"
+        (
+            (
+                propertyPathExpression=VerbPath() {
+                propertyPathExpressionOrVariable = new PropertyPathExpressionOrVariable(propertyPathExpression); }
+
+            |
+                v=VerbSimple() {
+                propertyPathExpressionOrVariable = new PropertyPathExpressionOrVariable(v); }
+            )
+            objects=ObjectListPath(propertyPathPatterns) {
+            addPropertyPathPatterns(propertyPathPatterns, subject, propertyPathExpressionOrVariable, objects); }
+        )?
+    )*
+}
+
+/* [84]    VerbPath ::= Path */
+private PropertyPathExpression VerbPath() : {
+    PropertyPathExpression propertyPathExpression; } {
+    propertyPathExpression=Path() {
+    return propertyPathExpression; }
+}
+
+/* [85]    VerbSimple ::= Var */
+private Variable VerbSimple() : {
+    Variable v; } {
+    v=Var() {
+    return v; }
+}
+
+/* [86]    ObjectListPath ::= ObjectPath ( ',' ObjectPath )* */
+private Set<ResourceOrVariable> ObjectListPath(Set<PropertyPathPattern> propertyPathPatterns) : {
+    ResourceOrVariable object; } {
+    {
+    Set<ResourceOrVariable> objects = new LinkedHashSet<ResourceOrVariable>();
+    }
+    object=ObjectPath(propertyPathPatterns) {
+    objects.add(object); }
+
+    (
+        ","
+        object=ObjectPath(propertyPathPatterns) {
+        objects.add(object); }
+    )* {
+    return objects; }
+}
+
+/* [87]    ObjectPath ::= GraphNodePath */
+private ResourceOrVariable ObjectPath(Set<PropertyPathPattern> propertyPathPatterns) : {
+    ResourceOrVariable object; } {
+
+    object=GraphNodePath(propertyPathPatterns) {
+    return object; }
+}
+
+/* [88]    Path ::= PathAlternative */
+private PropertyPathExpression Path() : {
+    PropertyPathExpression propertyPathExpression; } {
+    propertyPathExpression=PathAlternative() {
+    return propertyPathExpression; }
+}
+
+/* [89]    PathAlternative ::= PathSequence ( '|' PathSequence )* */
+private PropertyPathExpression PathAlternative() : {
+    PropertyPathExpression ppe, pathSequence; } {
+
+    ppe=PathSequence()
+    (
+        "|"
+        pathSequence=PathSequence() {
+        ppe = new BinaryPropertyPathOperation("|", ppe, pathSequence); }
+    )* {
+    return ppe; }
+}
+
+/* [90]    PathSequence ::= PathEltOrInverse ( '/' PathEltOrInverse )* */
+private PropertyPathExpression PathSequence() : {
+    PropertyPathExpression ppe, pathEltOrInverse; } {
+
+    ppe=PathEltOrInverse()
+    (
+        "/"
+        pathEltOrInverse=PathEltOrInverse() {
+        ppe = new BinaryPropertyPathOperation("/", ppe, pathEltOrInverse); }
+    )* {
+    return ppe; }
+}
+
+/* [91]    PathElt ::= PathPrimary PathMod? */
+private PropertyPathExpression PathElt() : {
+    PropertyPathExpression ppe;
+    String pathMode; } {
+
+    ppe=PathPrimary()
+    (
+        pathMode=PathMod() {
+        ppe = new UnaryPropertyPathOperation(pathMode, ppe); }
+    )? {
+    return ppe; }
+}
+
+/* [92]    PathEltOrInverse ::= PathElt | '^' PathElt */
+private PropertyPathExpression PathEltOrInverse() : {
+    PropertyPathExpression ppe; } {
+
+    (
+        ppe=PathElt() {
+        return ppe; }
+    |
+        "^"
+        ppe=PathElt() {
+        return new UnaryPropertyPathOperation("^", ppe); }
+    )
+}
+
+/* [93]    PathMod ::= '?' | '*' | '+' */
+private String PathMod() : {} {
+    (
+        "?" {
+        return "?"; }
+    |
+        "*" {
+        return "*"; }
+    |
+        "+" {
+        return "+"; }
+    )
+}
+
+/* [94]    PathPrimary ::= iri | 'a' | '!' PathNegatedPropertySet | '(' Path ')' */
+private PropertyPathExpression PathPrimary() : {
+    PropertyPathExpression ppe;
+    UriRef uriRef; } {
+
+    (
+        uriRef=Iri() {
+        return new PredicatePath(uriRef); }
+    |
+        "a" {
+        return new PredicatePath(RDF_TYPE); }
+    |
+        "!"
+        ppe=PathNegatedPropertySet() {
+        return new UnaryPropertyPathOperation("!", ppe); }
+    |
+        "("
+        ppe=Path() {
+        return ppe; }
+        ")"
+    )
+}
+
+/* [95]    PathNegatedPropertySet ::= PathOneInPropertySet | '(' ( PathOneInPropertySet ( '|' PathOneInPropertySet )* )? ')' */
+private PropertyPathExpression PathNegatedPropertySet() : {
+    PropertyPathExpression pathOneInPropertySet;
+    PropertySet propertySet = new PropertySet(); } {
+
+    (
+        pathOneInPropertySet=PathOneInPropertySet() {
+        return pathOneInPropertySet; }
+    |
+        "("
+        (
+            pathOneInPropertySet=PathOneInPropertySet() {
+            propertySet.addElement(pathOneInPropertySet); }
+            (
+                "|"
+                pathOneInPropertySet=PathOneInPropertySet() {
+                propertySet.addElement(pathOneInPropertySet); }
+            )*
+        )?
+        ")" {
+        return propertySet; }
+    )
+}
+
+/* [96]    PathOneInPropertySet ::= iri | 'a' | '^' ( iri | 'a' ) */
+private PropertyPathExpression PathOneInPropertySet() : {
+    UriRef uriRef; } {
+
+    (
+        uriRef=Iri() {
+        return new PredicatePath(uriRef); }
+    |
+        "a" {
+        return new PredicatePath(RDF_TYPE); }
+    |
+        "^"
+        (
+            uriRef=Iri() {
+            return new UnaryPropertyPathOperation("^", new PredicatePath(uriRef)); }
+        |
+            "a" {
+            return new UnaryPropertyPathOperation("^", new PredicatePath(RDF_TYPE)); }
+        )
+    )
+}
+
+/* [97]    Integer ::= INTEGER */
 
 // Fill in the specified set of TriplePattern and returns the subject node
 /* [98]    TriplesNode ::= Collection |  BlankNodePropertyList */
@@ -857,14 +1511,34 @@ private ResourceOrVariable BlankNodePropertyList(Set<TriplePattern> triplePatter
     {
     ResourceOrVariable subject = getNewBNode();
     }
-    "[" PropertyListNotEmpty(subject, triplePatterns) "]" {
+    "["
+    PropertyListNotEmpty(subject, triplePatterns)
+    "]" {
     return subject; }
 }
 
-/*
-[100] TriplesNodePath ::= CollectionPath |    BlankNodePropertyListPath
-[101] BlankNodePropertyListPath ::= '[' PropertyListPathNotEmpty ']'
-*/
+/* [100] TriplesNodePath ::= CollectionPath | BlankNodePropertyListPath */
+private ResourceOrVariable TriplesNodePath(Set<PropertyPathPattern> propertyPathPatterns) : {
+    ResourceOrVariable subject; } {
+    (
+        subject=CollectionPath(propertyPathPatterns)
+    |
+        subject=BlankNodePropertyListPath(propertyPathPatterns)
+    ) {
+    return subject; }
+}
+
+
+/* [101] BlankNodePropertyListPath ::= '[' PropertyListPathNotEmpty ']' */
+private ResourceOrVariable BlankNodePropertyListPath(Set<PropertyPathPattern> propertyPathPatterns) : {} {
+    {
+    ResourceOrVariable subject = getNewBNode();
+    }
+    "["
+    PropertyListPathNotEmpty(subject, propertyPathPatterns)
+    "]" {
+    return subject; }
+}
 
 /* [102]    Collection ::= '(' GraphNode+ ')' */
 private ResourceOrVariable Collection(Set<TriplePattern> triplePatterns) : {
@@ -872,30 +1546,49 @@ private ResourceOrVariable Collection(Set<TriplePattern> triplePatterns) : {
     List<ResourceOrVariable> nodes = new ArrayList<ResourceOrVariable>(); } {
 
     "("
-        (
+    (
         node=GraphNode(triplePatterns) {
         nodes.add(node); }
-        )+
+    )+
     ")" {
     return addTriplePatterns(triplePatterns, nodes); }
 }
 
 /* [103]    CollectionPath ::= '(' GraphNodePath+ ')' */
+private ResourceOrVariable CollectionPath(Set<PropertyPathPattern> propertyPathPatterns) : {
+    ResourceOrVariable node;
+    List<ResourceOrVariable> nodes = new ArrayList<ResourceOrVariable>(); } {
 
+    "("
+    (
+        node=GraphNodePath(propertyPathPatterns) {
+        nodes.add(node); }
+    )+
+    ")" {
+    return addTriplePatterns(triplePatterns, nodes); }
+}
 
-/* [104]    GraphNode ::= VarOrTerm |  TriplesNode */
+/* [104]    GraphNode ::= VarOrTerm | TriplesNode */
 private ResourceOrVariable GraphNode(Set<TriplePattern> triplePatterns) : {
     ResourceOrVariable node; } {
-
     (
-    node=VarOrTerm()
+        node=VarOrTerm()
     |
-    node=TriplesNode(triplePatterns)
+        node=TriplesNode(triplePatterns)
     ) {
     return node; }
 }
 
-/* [105]    GraphNodePath ::= VarOrTerm |    TriplesNodePath */
+/* [105]    GraphNodePath ::= VarOrTerm | TriplesNodePath */
+private ResourceOrVariable GraphNodePath(Set<PropertyPathPattern> propertyPathPatterns) : {
+    ResourceOrVariable node; } {
+    (
+        node=VarOrTerm()
+    |
+        node=TriplesNodePath(propertyPathPatterns)
+    ) {
+    return node; }
+}
 
 /* [106]    VarOrTerm ::= Var | GraphTerm */
 private ResourceOrVariable VarOrTerm() : {
@@ -903,11 +1596,11 @@ private ResourceOrVariable VarOrTerm() : {
     Variable v; } {
 
     (
-    v=Var() {
-    return new ResourceOrVariable(v); }
+        v=Var() {
+        return new ResourceOrVariable(v); }
     |
-    r=GraphTerm() {
-    return r; }
+        r=GraphTerm() {
+        return r; }
     )
 }
 
@@ -931,13 +1624,6 @@ private Variable Var() : {
 
     (t=<VAR1> | t=<VAR2>) {
     return createVariable(t.image); }
-}
-
-private String BuiltInCallName() : {
-    Token t;} {
-
-    t=<BUILT_IN_CALL_NAME> {
-    return t.image; }
 }
 
 /* [109]    GraphTerm ::= Iri | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode | NIL */
@@ -1303,6 +1989,13 @@ private BuiltInCall BuiltInCall() : {
         ")"
     ) {
     return new BuiltInCall(name, args); }
+}
+
+private String BuiltInCallName() : {
+    Token t;} {
+
+    t=<BUILT_IN_CALL_NAME> {
+    return t.image; }
 }
 
 /*
