@@ -854,7 +854,7 @@ private GroupGraphPattern GroupGraphPattern() : {
     "{"
     (
         query = SubSelect() {
-        groupGraphPattern.setSubSelect((SelectQuery) query); }
+        ((SimpleGroupGraphPattern) groupGraphPattern).setSubSelect((SelectQuery) query); }
     |
         GroupGraphPatternSub(groupGraphPattern)
     )
@@ -1565,7 +1565,7 @@ private ResourceOrVariable CollectionPath(Set<PropertyPathPattern> propertyPathP
         nodes.add(node); }
     )+
     ")" {
-    return addTriplePatterns(triplePatterns, nodes); }
+    return addPropertyPathPatterns(propertyPathPatterns, nodes); }
 }
 
 /* [104]    GraphNode ::= VarOrTerm | TriplesNode */
