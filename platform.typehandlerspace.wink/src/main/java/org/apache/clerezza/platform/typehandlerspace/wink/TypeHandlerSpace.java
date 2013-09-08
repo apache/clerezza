@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.platform.typehandlerspace.impl;
+package org.apache.clerezza.platform.typehandlerspace.wink;
 
 import java.io.IOException;
 import java.util.HashSet;

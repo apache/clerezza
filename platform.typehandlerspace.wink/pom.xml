@@ -30,7 +30,7 @@
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
-    <artifactId>platform.typehandlerspace.impl</artifactId>
+    <artifactId>platform.typehandlerspace.wink</artifactId>
     <version>0.9-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Type Handler Space Wink Based Implementation</name>
@@ -38,31 +38,6 @@
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.core</artifactId>
-            <version>0.14-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.utils</artifactId>
-            <version>0.14-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.ontologies</artifactId>
-            <version>0.12-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>jaxrs.extensions</artifactId>
-            <version>0.6-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typepriority</artifactId>
-            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
