@@ -98,7 +98,8 @@
                 <module>platform.security.conditions</module>
                 <module>platform.shellcustomizer</module>
                 <module>platform.typehandlerspace</module>
-                <module>platform.typehandlerspace.impl</module>
+                <module>platform.typehandlerspace.wink</module>
+                <module>platform.typehandlerspace.jaxrs2</module>
                 <module>platform.typerendering</module>
                 <module>platform.typerendering.gui</module>
                 <module>platform.typerendering.scala</module>
