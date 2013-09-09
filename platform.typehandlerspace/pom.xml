@@ -54,11 +54,12 @@
             <artifactId>rdf.ontologies</artifactId>
             <version>0.12-SNAPSHOT</version>
         </dependency>
-        <!-- s        <dependency>
+        <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typepriority</artifactId>
             <version>0.2-SNAPSHOT</version>
-        </dependency> 
+        </dependency>
+        <!--  
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.graphnodeprovider</artifactId>

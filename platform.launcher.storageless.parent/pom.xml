@@ -565,7 +565,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typehandlerspace.impl</artifactId>
+            <artifactId>platform.typehandlerspace.wink</artifactId>
             <scope>runtime</scope>
             <version>0.9-SNAPSHOT</version>
         </dependency>
