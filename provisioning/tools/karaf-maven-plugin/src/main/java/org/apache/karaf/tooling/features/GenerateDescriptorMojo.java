@@ -300,7 +300,6 @@ public class GenerateDescriptorMojo extends AbstractLogEnabled implements Mojo {
                     // now lets attach it
                     projectHelper.attachArtifact(project, attachmentArtifactType, attachmentArtifactClassifier, outputFile);
                 }
-                getLogger().info("createSlingPartialBundleList "+createSlingPartialBundleList);
                 if (createSlingPartialBundleList) {
                     PrintStream out = new PrintStream(new FileOutputStream(partialBundleListOutputFile));
                     try {
