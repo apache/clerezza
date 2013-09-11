@@ -280,6 +280,8 @@ public class GenerateDescriptorMojo extends AbstractLogEnabled implements Mojo {
 
     //maven log
     private Log log;
+    
+    //map to access bundle descritors for an artifact after feature was generated
     private Map<Artifact, Bundle> artifact2Bundle = new HashMap<Artifact, Bundle>();;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -340,7 +342,6 @@ public class GenerateDescriptorMojo extends AbstractLogEnabled implements Mojo {
             out.println("      <version>"+artifact.getVersion()+"</version>");
             out.println("      <classifier></classifier>");
             out.println("    </bundle>");
-            //out.println(artifact.getArtifactId());
             out.println("  </startLevel>");
         }
         out.println("</bundles>");
