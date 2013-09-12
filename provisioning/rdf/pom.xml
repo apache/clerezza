@@ -29,10 +29,16 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>RDF feature</name>
-    <description>The Java RDF libraries and jena based implementations</description>
+    <name>Clerezza - Provisioning: RDF feature</name>
+    <description>A Karaf feature and partialbundlelist with the Java RDF 
+        libraries and jena based implementations</description>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>utils</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
@@ -40,13 +46,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.utils</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <artifactId>rdf.ontologies</artifactId>
+            <version>0.12-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.ontologies</artifactId>
-            <version>0.12-SNAPSHOT</version>
+            <artifactId>rdf.utils</artifactId>
+            <version>0.14-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -62,11 +68,6 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
             <version>0.12-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>utils</artifactId>
-            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
