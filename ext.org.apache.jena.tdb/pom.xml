@@ -83,16 +83,16 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>*;scope=compile;artifactId=!slf4j-api|org.apache.felix.scr.annotations</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Package>!com.hp.hpl.jena.*.test,
+                        <Import-Package>
                         !org.apache.xml.resolver.*,!sun.*,
-                        !com.sun.msv.*,
                         !com.sun.jdmk.*,
                         !javax.jms.*,
                         !com.ibm.uvm.tools,
                         !javax.jmdns,
-                        !org.apache.xerces.util,
                         !javax.mail,
                         !javax.mail.internet,
+                        !org.slf4j.helpers,
+                        !org.slf4j.spi,
                         *</Import-Package>
                         <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
                     </instructions>
