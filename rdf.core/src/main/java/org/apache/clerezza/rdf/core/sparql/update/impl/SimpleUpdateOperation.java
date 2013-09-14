@@ -18,68 +18,59 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
-import java.util.HashSet;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
 /**
  *
  * @author hasan
  */
-public abstract class SimpleUpdateOperation implements UpdateOperation {
+public class SimpleUpdateOperation extends BaseUpdateOperation {
 
-    protected Set<UriRef> inputGraphs = new HashSet<UriRef>();
-    protected Set<UriRef> destinationGraphs = new HashSet<UriRef>();
-    protected GraphSpec inputGraphSpec = GraphSpec.GRAPH;
-    protected GraphSpec destinationGraphSpec = GraphSpec.GRAPH;
+    private boolean silent;
 
-    public void setInputGraphSpec(GraphSpec inputGraphSpec) {
-        this.inputGraphSpec = inputGraphSpec;
+    public SimpleUpdateOperation() {
+        this.silent = false;
+        inputGraphSpec = UpdateOperation.GraphSpec.DEFAULT;
+        destinationGraphSpec = UpdateOperation.GraphSpec.DEFAULT;
     }
 
-    public GraphSpec getInputGraphSpec() {
-        return inputGraphSpec;
+    public void setSilent(boolean silent) {
+        this.silent = silent;
     }
 
-    public void setDestinationGraphSpec(GraphSpec destinationGraphSpec) {
-        this.destinationGraphSpec = destinationGraphSpec;
+    public boolean isSilent() {
+        return silent;
     }
 
-    public GraphSpec getDestinationGraphSpec() {
-        return destinationGraphSpec;
+    public void setInputGraph(UriRef source) {
+        inputGraphSpec = UpdateOperation.GraphSpec.GRAPH;
+        inputGraphs.clear();
+        inputGraphs.add(source);
     }
 
-    @Override
-    public Set<UriRef> getInputGraphs(UriRef defaultGraph, TcProvider tcProvider) {
-        return getGraphs(defaultGraph, tcProvider, inputGraphSpec, inputGraphs);
-    }
-
-    private Set<UriRef> getGraphs(UriRef defaultGraph, TcProvider tcProvider, GraphSpec graphSpec, Set<UriRef> graphs) {
-        switch (graphSpec) {
-            case DEFAULT:
-                Set<UriRef> result = new HashSet<UriRef>();
-                result.add(defaultGraph);
-                return result;
-            case NAMED:
-            case ALL:
-                return tcProvider.listTripleCollections();
-            default:
-                return graphs;
+    public UriRef getInputGraph(UriRef defaultGraph) {
+        Set<UriRef> result = getInputGraphs(defaultGraph, null);
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.iterator().next();
         }
     }
 
-    @Override
-    public Set<UriRef> getDestinationGraphs(UriRef defaultGraph, TcProvider tcProvider) {
-        return getGraphs(defaultGraph, tcProvider, destinationGraphSpec, destinationGraphs);
+    public void setDestinationGraph(UriRef destination) {
+        destinationGraphSpec = UpdateOperation.GraphSpec.GRAPH;
+        destinationGraphs.clear();
+        destinationGraphs.add(destination);
     }
 
-    public void addInputGraph(UriRef graph) {
-        inputGraphs.add(graph);
-    }
-
-    public void addDestinationGraph(UriRef graph) {
-        destinationGraphs.add(graph);
+    public UriRef getDestinationGraph(UriRef defaultGraph) {
+        Set<UriRef> result = getDestinationGraphs(defaultGraph, null);
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.iterator().next();
+        }
     }
 }

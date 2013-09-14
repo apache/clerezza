@@ -22,5 +22,5 @@ package org.apache.clerezza.rdf.core.sparql.update.impl;
  *
  * @author hasan
  */
-public class ClearOperation extends ClearOrDropOperation {
+public class CopyOperation extends SimpleUpdateOperation {
 }

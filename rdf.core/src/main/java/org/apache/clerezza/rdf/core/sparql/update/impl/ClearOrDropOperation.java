@@ -20,22 +20,41 @@ package org.apache.clerezza.rdf.core.sparql.update.impl;
 
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
 /**
- * The LOAD operation reads an RDF document from a IRI and inserts its triples into the specified graph in the Graph Store. 
- * If the destination graph already exists, then no data in that graph will be removed.
- * If no destination graph IRI is provided to load the triples into, then the data will be loaded into the default graph.
- * @see <a href="http://www.w3.org/TR/2013/REC-sparql11-update-20130321/#load">SPARQL 1.1 Update: 3.1.4 LOAD</a>
+ *
  * @author hasan
  */
-public class LoadOperation extends SimpleUpdateOperation {
+public class ClearOrDropOperation extends BaseUpdateOperation {
+    private boolean silent;
 
-    public void setSource(UriRef source) {
-        setInputGraph(source);
+    public ClearOrDropOperation() {
+        this.silent = false;
+        destinationGraphSpec = UpdateOperation.GraphSpec.DEFAULT;
     }
 
-    public UriRef getSource() {
-        return getInputGraph(null);
+    public void setSilent(boolean silent) {
+        this.silent = silent;
+    }
+
+    public boolean isSilent() {
+        return silent;
+    }
+
+    public void setDestinationGraph(UriRef destination) {
+        destinationGraphSpec = UpdateOperation.GraphSpec.GRAPH;
+        destinationGraphs.clear();
+        destinationGraphs.add(destination);
+    }
+
+    public UriRef getDestinationGraph(UriRef defaultGraph, TcProvider tcProvider) {
+        Set<UriRef> result = getDestinationGraphs(defaultGraph, tcProvider);
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.iterator().next();
+        }
     }
 }

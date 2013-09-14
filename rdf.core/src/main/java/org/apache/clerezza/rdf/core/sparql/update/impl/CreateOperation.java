@@ -18,9 +18,38 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
+import org.apache.clerezza.rdf.core.UriRef;
+
 /**
  *
  * @author hasan
  */
-public class ClearOperation extends ClearOrDropOperation {
+public class CreateOperation extends BaseUpdateOperation {
+
+    private boolean silent;
+
+    public CreateOperation() {
+        this.silent = false;
+    }
+
+    public void setSilent(boolean silent) {
+        this.silent = silent;
+    }
+
+    public boolean isSilent() {
+        return silent;
+    }
+
+    public void setDestinationGraph(UriRef destination) {
+        destinationGraphs.clear();
+        destinationGraphs.add(destination);
+    }
+
+    public UriRef getDestinationGraph() {
+        if (destinationGraphs.isEmpty()) {
+            return null;
+        } else {
+            return destinationGraphs.iterator().next();
+        }
+    }
 }

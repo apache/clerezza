@@ -145,4 +145,132 @@ public class SparqlPreParserTest {
         Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
         Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
     }
+
+    @Test
+    public void testDroppingDefaultGraph() throws ParseException {
+
+        String queryStr = "DROP SILENT DEFAULT";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testDroppingNamedGraph() throws ParseException {
+
+        String queryStr = "DROP SILENT NAMED";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(new MyTcManager());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(NAMED_GRAPH));
+    }
+
+    @Test
+    public void testDroppingGraph() throws ParseException {
+
+        String queryStr = "DROP SILENT GRAPH " + TEST_GRAPH.toString();
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+    }
+
+    @Test
+    public void testCreatingGraph() throws ParseException {
+
+        String queryStr = "CREATE SILENT GRAPH " + TEST_GRAPH.toString();
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+    }
+
+    @Test
+    public void testAddingTriplesFromDefaultGraphToNamedGraph() throws ParseException {
+
+        String queryStr = "ADD SILENT DEFAULT TO GRAPH " + TEST_GRAPH.toString();
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(DEFAULT_GRAPH);
+        expected.add(TEST_GRAPH);
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
+
+    @Test
+    public void testAddingTriplesFromNamedGraphToDefaultGraph() throws ParseException {
+
+        String queryStr = "ADD SILENT GRAPH " + TEST_GRAPH.toString() + " TO DEFAULT";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(DEFAULT_GRAPH);
+        expected.add(TEST_GRAPH);
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
+
+    @Test
+    public void testMovingTriplesFromDefaultGraphToNamedGraph() throws ParseException {
+
+        String queryStr = "MOVE SILENT DEFAULT TO GRAPH " + TEST_GRAPH.toString();
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(DEFAULT_GRAPH);
+        expected.add(TEST_GRAPH);
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
+
+    @Test
+    public void testMovingTriplesFromNamedGraphToDefaultGraph() throws ParseException {
+
+        String queryStr = "MOVE SILENT GRAPH " + TEST_GRAPH.toString() + " TO DEFAULT";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(DEFAULT_GRAPH);
+        expected.add(TEST_GRAPH);
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
+
+    @Test
+    public void testCopyingTriplesFromDefaultGraphToNamedGraph() throws ParseException {
+
+        String queryStr = "COPY SILENT DEFAULT TO GRAPH " + TEST_GRAPH.toString();
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(DEFAULT_GRAPH);
+        expected.add(TEST_GRAPH);
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
+
+    @Test
+    public void testCopyingTriplesFromNamedGraphToDefaultGraph() throws ParseException {
+
+        String queryStr = "COPY SILENT GRAPH " + TEST_GRAPH.toString() + " TO DEFAULT";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(DEFAULT_GRAPH);
+        expected.add(TEST_GRAPH);
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
 }
