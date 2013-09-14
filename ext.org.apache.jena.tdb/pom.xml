@@ -91,6 +91,8 @@
                         !com.ibm.uvm.tools,
                         !javax.jmdns,
                         !org.apache.xerces.util,
+                        !javax.mail,
+                        !javax.mail.internet,
                         *</Import-Package>
                         <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
                     </instructions>
