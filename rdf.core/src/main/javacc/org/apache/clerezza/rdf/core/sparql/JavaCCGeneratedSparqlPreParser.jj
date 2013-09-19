@@ -95,11 +95,14 @@ import org.apache.clerezza.rdf.core.sparql.update.impl.ClearOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.ClearOrDropOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.CopyOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.CreateOperation;
+import org.apache.clerezza.rdf.core.sparql.update.impl.DeleteDataOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.DropOperation;
+import org.apache.clerezza.rdf.core.sparql.update.impl.InsertDataOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.LoadOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.MoveOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.SimpleUpdate;
 import org.apache.clerezza.rdf.core.sparql.update.impl.SimpleUpdateOperation;
+import org.apache.clerezza.rdf.core.sparql.update.impl.UpdateOperationWithQuads;
 
 /**
  *
@@ -377,12 +380,10 @@ TOKEN [IGNORE_CASE] :
 |   < TO : "TO" >
 |   < MOVE : "MOVE" >
 |   < COPY : "COPY" >
-|   < INSERT_DATA : "INSERT DATA" >
-|   < DELETE_DATA : "DELETE DATA" >
-|   < DELETE_WHERE : "DELETE WHERE" >
-|   < WITH : "WITH" >
-|   < DELETE : "DELETE" >
 |   < INSERT : "INSERT" >
+|   < DELETE : "DELETE" >
+|   < DATA : "DATA" >
+|   < WITH : "WITH" >
 |   < USING : "USING" >
 |   < DEFAULT_T : "DEFAULT" >
 |   < ALL : "ALL" >
@@ -402,6 +403,8 @@ TOKEN [IGNORE_CASE] :
 private SparqlUnit SparqlUnit() : {
     Query query;
     Update update; } {
+
+    Prologue()
     (
         query=QueryUnit() {
         return new SimpleSparqlUnit(query); }
@@ -412,10 +415,9 @@ private SparqlUnit SparqlUnit() : {
 }
 
 /* [1]    QueryUnit ::= Query */
-/* [1]    QueryUnit ::= Prologue Query */
 private Query QueryUnit() : {
     Query query; } {
-    Prologue()
+
     query=Query() {
     return query; }
 }
@@ -755,6 +757,10 @@ private void Update1(Update update) : {
         updateOperation = Copy()
     |
         updateOperation = Create()
+    |
+        updateOperation = InsertData()
+    |
+        updateOperation = DeleteData()
     ) {
     if (updateOperation != null) {
         update.addOperation(updateOperation);
@@ -881,7 +887,23 @@ private UpdateOperation Copy() : {
 }
 
 /* [38]    InsertData ::= 'INSERT DATA' QuadData */
+private UpdateOperation InsertData() : {
+    InsertDataOperation operation; } {
+    <INSERT> <DATA> {
+    operation = new InsertDataOperation(); }
+    QuadData(operation) {
+    return operation; }
+}
+
 /* [39]    DeleteData ::= 'DELETE DATA' QuadData */
+private UpdateOperation DeleteData() : {
+    DeleteDataOperation operation; } {
+    <DELETE> <DATA> {
+    operation = new DeleteDataOperation(); }
+    QuadData(operation) {
+    return operation; }
+}
+
 /* [40]    DeleteWhere ::= 'DELETE WHERE' QuadPattern */
 /* [41]    Modify ::= ( 'WITH' iri )? ( DeleteClause InsertClause? | InsertClause ) UsingClause* 'WHERE' GroupGraphPattern */
 /* [42]    DeleteClause ::= 'DELETE' QuadPattern */
@@ -937,8 +959,44 @@ private GraphRefAllSpec GraphRefAll() : {
 
 /* [48]    QuadPattern ::= '{' Quads '}' */
 /* [49]    QuadData ::= '{' Quads '}' */
+private void QuadData(UpdateOperationWithQuads operation) : {} {
+    "{"
+    Quads(operation)
+    "}"
+}
+
 /* [50]    Quads ::= TriplesTemplate? ( QuadsNotTriples '.'? TriplesTemplate? )* */
+private void Quads(UpdateOperationWithQuads operation) : {
+    Set<TriplePattern> triplePatterns; } {
+    (
+        triplePatterns=TriplesTemplate() {
+        operation.addTriplePatterns(triplePatterns); }
+    )?
+    (
+        QuadsNotTriples(operation)
+        ( "." )?
+        (
+            triplePatterns=TriplesTemplate() {
+            operation.addTriplePatterns(triplePatterns); }
+        )?
+    )*
+}
+
 /* [51]    QuadsNotTriples ::= 'GRAPH' VarOrIri '{' TriplesTemplate? '}' */
+private void QuadsNotTriples(UpdateOperationWithQuads operation) : {
+    UriRefOrVariable graph;
+    Set<TriplePattern> triplePatterns; } {
+
+    <GRAPH>
+    graph=VarOrIri() {
+    operation.setDestinationGraph(graph); }
+    "{"
+    (
+        triplePatterns=TriplesTemplate() {
+        operation.addTriplePatterns(triplePatterns); }
+    )?
+    "}"
+}
 
 /* [52]    TriplesTemplate ::= TriplesSameSubject ( '.' TriplesTemplate? )? */
 private Set<TriplePattern> TriplesTemplate() : {

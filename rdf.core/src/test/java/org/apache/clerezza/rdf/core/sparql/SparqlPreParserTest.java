@@ -273,4 +273,66 @@ public class SparqlPreParserTest {
         expected.add(TEST_GRAPH);
         Assert.assertTrue(referredGraphs.containsAll(expected));
     }
+
+    @Test
+    public void testInsertDataToDefaultGraph() throws ParseException {
+
+        String queryStr = "PREFIX dc: <http://purl.org/dc/elements/1.1/> INSERT DATA { \n" +
+                "<http://example/book1> dc:title \"A new book\" ; dc:creator \"A.N.Other\" . }";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testInsertDataToNamedGraph() throws ParseException {
+
+        String queryStr = "PREFIX ns: <http://example.org/ns#>\n" +
+                "INSERT DATA { GRAPH " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+    }
+
+    @Test
+    public void testDeleteDataInDefaultGraph() throws ParseException {
+
+        String queryStr = "PREFIX dc: <http://purl.org/dc/elements/1.1/> DELETE DATA { \n" +
+                "<http://example/book1> dc:title \"A new book\" ; dc:creator \"A.N.Other\" . }";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testDeleteDataInNamedGraph() throws ParseException {
+
+        String queryStr = "PREFIX ns: <http://example.org/ns#>\n" +
+                "DELETE DATA { GRAPH " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+    }
+
+    @Test
+    public void testInsertAndDeleteData() throws ParseException {
+
+        String queryStr = "PREFIX ns: <http://example.org/ns#> " +
+                "INSERT DATA { <http://example/book1>  ns:price  42 }; " +
+                "DELETE DATA { GRAPH " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(DEFAULT_GRAPH);
+        expected.add(TEST_GRAPH);
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
 }
