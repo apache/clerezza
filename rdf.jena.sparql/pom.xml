@@ -36,6 +36,11 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.jena.storage</artifactId>
+            <version>0.7-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.facade</artifactId>
             <version>0.14-SNAPSHOT</version>
         </dependency>
