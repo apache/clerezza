@@ -21,11 +21,18 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>clerezza</artifactId>
+        <version>0.5-SNAPSHOT</version>
+        <relativePath>../../parent</relativePath>
+    </parent>
+
     <groupId>org.apache.clerezza.ext</groupId>
     <artifactId>bundles-pom</artifactId>
     <packaging>pom</packaging>
     <version>1</version>
-    <name>Apache clerezza :: Ext Bundles</name>
+    <name>Apache clerezza :: Ext Bundles :: Parent</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

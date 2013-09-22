@@ -29,9 +29,9 @@
     </parent>
 
     <groupId>org.apache.clerezza.ext</groupId>
-    <artifactId>org.apache.clerezza.ext.jena-tdb</artifactId>
+    <artifactId>org.apache.jena.jena-tdb</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0_1-SNAPSHOT</version>
     <name>Apache Clerezza :: Ext Bundles :: ${pkgArtifactId}</name>
     <description>This OSGi bundle wraps ${pkgArtifactId} ${pkgVersion} jar file.</description>
 

@@ -186,9 +186,39 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
-            <artifactId>org.apache.jena.tdb</artifactId>
+            <artifactId>org.apache.jena.jena-iri</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>1.0.0_1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
+            <scope>runtime</scope>
+            <version>2.11.0_1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.xmlresolver</artifactId>
+            <scope>runtime</scope>
+            <version>1.2_5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.ext</groupId>
+            <artifactId>org.apache.jena.jena-core</artifactId>
+            <scope>runtime</scope>
+            <version>2.11.0_1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.ext</groupId>
+            <artifactId>org.apache.jena.jena-arq</artifactId>
+            <scope>runtime</scope>
+            <version>2.11.0_1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.ext</groupId>
+            <artifactId>org.apache.jena.jena-tdb</artifactId>
+            <scope>runtime</scope>
+            <version>1.0.0_1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

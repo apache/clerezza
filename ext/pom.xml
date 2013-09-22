@@ -33,9 +33,10 @@
     <artifactId>org.apache.clerezza.ext.reactor</artifactId>
     <version>1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Apache Clerezza :: Ext Bundles</name>
+    <name>Apache Clerezza :: Ext Bundles :: Reactor</name>
 
     <modules>
+        <module>bundles-pom</module>
         <module>src-assembly</module>
         <module>jena-iri</module>
         <module>jena-core</module>
