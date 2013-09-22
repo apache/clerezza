@@ -361,7 +361,7 @@ public class MultiPartBodyImpl extends AbstractParameterCollection implements
             allFieldNames.add(disposition.name);
             if (disposition.getFileName() != null) {
                 addFileField(disposition, (String) partHeaders
-                        .get(HttpHeaders.CONTENT_TYPE.toLowerCase(Locale.ENGLISH)), data);
+                        .get(HttpHeaders.CONTENT_TYPE.toLowerCase(Locale.ENGLISH)).trim(), data);
             } else {
                 addTextField(disposition, data);
             }
