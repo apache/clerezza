@@ -22,5 +22,5 @@ package org.apache.clerezza.rdf.core.sparql.update.impl;
  *
  * @author hasan
  */
-public class InsertDataOperation extends UpdateOperationWithQuads {
+public class DeleteWhereOperation extends UpdateOperationWithQuads {
 }

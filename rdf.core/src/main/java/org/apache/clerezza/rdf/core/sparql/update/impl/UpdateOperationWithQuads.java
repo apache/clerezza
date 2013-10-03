@@ -18,29 +18,42 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;
-import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleBasicGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
 /**
  *
  * @author hasan
  */
-public class UpdateOperationWithQuads extends SimpleBasicGraphPattern implements UpdateOperation {
+public class UpdateOperationWithQuads implements UpdateOperation {
 
-    private UriRefOrVariable destinationGraph = null;
+    private Quad defaultQuad = null;
+    private List<Quad> quads = new ArrayList<Quad>();
 
-    public UpdateOperationWithQuads(Set<TriplePattern> triplePatterns) {
-        super(triplePatterns);
+    public UpdateOperationWithQuads() {
     }
 
-    public void setDestinationGraph(UriRefOrVariable destinationGraph) {
-        this.destinationGraph = destinationGraph;
+    public void addQuad(Set<TriplePattern> triplePatterns) {
+        if (defaultQuad == null) {
+            defaultQuad = new Quad(null, triplePatterns);
+        } else {
+            defaultQuad.addTriplePatterns(triplePatterns);
+        }
+    }
+
+    public void addQuad(UriRefOrVariable graph, Set<TriplePattern> triplePatterns) {
+        if (graph == null) {
+            addQuad(triplePatterns);
+        } else {
+            quads.add(new Quad(graph, triplePatterns));
+        }
     }
 
     @Override
@@ -51,10 +64,14 @@ public class UpdateOperationWithQuads extends SimpleBasicGraphPattern implements
     @Override
     public Set<UriRef> getDestinationGraphs(UriRef defaultGraph, TcProvider tcProvider) {
         Set<UriRef> graphs = new HashSet<UriRef>();
-        if (destinationGraph == null) {
+        if (defaultQuad != null) {
             graphs.add(defaultGraph);
-        } else if (!destinationGraph.isVariable()) {
-            graphs.add(destinationGraph.getResource());
+        }
+        for (Quad quad : quads) {
+            UriRefOrVariable graph = quad.getGraph();
+            if (!graph.isVariable()) {
+                graphs.add(graph.getResource());
+            }
         }
         return graphs;
     }

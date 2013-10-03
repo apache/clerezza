@@ -18,20 +18,9 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
-import java.util.Set;
-import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
-
 /**
  *
  * @author hasan
  */
 public class DeleteDataOperation extends UpdateOperationWithQuads {
-
-    public DeleteDataOperation() {
-        super(null);
-    }
-
-    public DeleteDataOperation(Set<TriplePattern> triplePatterns) {
-        super(triplePatterns);
-    }
 }

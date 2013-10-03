@@ -335,4 +335,34 @@ public class SparqlPreParserTest {
         expected.add(TEST_GRAPH);
         Assert.assertTrue(referredGraphs.containsAll(expected));
     }
+
+    @Test
+    public void testDeleteWhereInDefaultGraph() throws ParseException {
+
+        String queryStr = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> " +
+                "DELETE WHERE { ?person foaf:givenName 'Fred'; ?property ?value }";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testDeleteWhereInNamedGraphs() throws ParseException {
+
+        String queryStr = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> DELETE WHERE " +
+                "{ GRAPH <http://example.com/names> { ?person foaf:givenName 'Fred' ; ?property1 ?value1 } " +
+                "  GRAPH <http://example.com/addresses> { ?person ?property2 ?value2 } }";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(new UriRef("http://example.com/names"));
+        expected.add(new UriRef("http://example.com/addresses"));
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
 }

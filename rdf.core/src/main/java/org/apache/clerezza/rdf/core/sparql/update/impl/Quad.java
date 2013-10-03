@@ -18,9 +18,25 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
+import java.util.Set;
+import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
+import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;
+import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleBasicGraphPattern;
+
 /**
  *
  * @author hasan
  */
-public class InsertDataOperation extends UpdateOperationWithQuads {
+public class Quad extends SimpleBasicGraphPattern {
+
+    private UriRefOrVariable graph = null;
+
+    public Quad(UriRefOrVariable graph, Set<TriplePattern> triplePatterns) {
+        super(triplePatterns);
+        this.graph = graph;
+    }
+
+    public UriRefOrVariable getGraph() {
+        return this.graph;
+    }
 }

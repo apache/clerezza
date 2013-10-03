@@ -96,6 +96,7 @@ import org.apache.clerezza.rdf.core.sparql.update.impl.ClearOrDropOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.CopyOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.CreateOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.DeleteDataOperation;
+import org.apache.clerezza.rdf.core.sparql.update.impl.DeleteWhereOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.DropOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.InsertDataOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.LoadOperation;
@@ -728,12 +729,13 @@ private void ValuesClause(Query query) : {
 }
 
 /* [29]    Update ::= Prologue ( Update1 ( ';' Update )? )? */
+/* [29]    Update ::= ( Update1 ( ';' Prologue Update )? )? */
 private void Update(Update update) : {} {
-    Prologue()
     (
         Update1(update)
         (
             ";"
+            Prologue()
             Update(update)
         )?
     )?
@@ -760,7 +762,10 @@ private void Update1(Update update) : {
     |
         updateOperation = InsertData()
     |
+        LOOKAHEAD(2)
         updateOperation = DeleteData()
+    |
+        updateOperation = DeleteWhere()
     ) {
     if (updateOperation != null) {
         update.addOperation(updateOperation);
@@ -905,6 +910,14 @@ private UpdateOperation DeleteData() : {
 }
 
 /* [40]    DeleteWhere ::= 'DELETE WHERE' QuadPattern */
+private UpdateOperation DeleteWhere() : {
+    DeleteWhereOperation operation; } {
+    <DELETE> <WHERE> {
+    operation = new DeleteWhereOperation(); }
+    QuadPattern(operation) {
+    return operation; }
+}
+
 /* [41]    Modify ::= ( 'WITH' iri )? ( DeleteClause InsertClause? | InsertClause ) UsingClause* 'WHERE' GroupGraphPattern */
 /* [42]    DeleteClause ::= 'DELETE' QuadPattern */
 /* [43]    InsertClause ::= 'INSERT' QuadPattern */
@@ -958,6 +971,12 @@ private GraphRefAllSpec GraphRefAll() : {
 }
 
 /* [48]    QuadPattern ::= '{' Quads '}' */
+private void QuadPattern(UpdateOperationWithQuads operation) : {} {
+    "{"
+    Quads(operation)
+    "}"
+}
+
 /* [49]    QuadData ::= '{' Quads '}' */
 private void QuadData(UpdateOperationWithQuads operation) : {} {
     "{"
@@ -970,14 +989,14 @@ private void Quads(UpdateOperationWithQuads operation) : {
     Set<TriplePattern> triplePatterns; } {
     (
         triplePatterns=TriplesTemplate() {
-        operation.addTriplePatterns(triplePatterns); }
+        operation.addQuad(triplePatterns); }
     )?
     (
         QuadsNotTriples(operation)
         ( "." )?
         (
             triplePatterns=TriplesTemplate() {
-            operation.addTriplePatterns(triplePatterns); }
+            operation.addQuad(triplePatterns); }
         )?
     )*
 }
@@ -985,17 +1004,16 @@ private void Quads(UpdateOperationWithQuads operation) : {
 /* [51]    QuadsNotTriples ::= 'GRAPH' VarOrIri '{' TriplesTemplate? '}' */
 private void QuadsNotTriples(UpdateOperationWithQuads operation) : {
     UriRefOrVariable graph;
-    Set<TriplePattern> triplePatterns; } {
+    Set<TriplePattern> triplePatterns = null; } {
 
     <GRAPH>
-    graph=VarOrIri() {
-    operation.setDestinationGraph(graph); }
+    graph=VarOrIri()
     "{"
     (
-        triplePatterns=TriplesTemplate() {
-        operation.addTriplePatterns(triplePatterns); }
+        triplePatterns=TriplesTemplate()
     )?
-    "}"
+    "}" {
+    operation.addQuad(graph, triplePatterns); }
 }
 
 /* [52]    TriplesTemplate ::= TriplesSameSubject ( '.' TriplesTemplate? )? */
