@@ -144,7 +144,8 @@ import org.apache.lucene.queryparser.classic.QueryParser;
         if(escapePattern) {
             pattern = QueryParser.escape(pattern);
         }
-        list.add(new WildcardCondition(new PropertyHolder(property), pattern));
+        //on the search side of thing it is  irrelevant how the facetProperty flag is set
+        list.add(new WildcardCondition(new PropertyHolder(property, false), pattern));
         return findResources(list, facetCollectors);
     }
     
@@ -169,7 +170,8 @@ import org.apache.lucene.queryparser.classic.QueryParser;
         if(escapePattern) {
             pattern = QueryParser.escape(pattern);
         }
-        list.add(new WildcardCondition(new PropertyHolder(property), pattern));
+        //on the search side of thing it is  irrelevant how the facetProperty flag is set
+        list.add(new WildcardCondition(new PropertyHolder(property, false), pattern));
         return findResources(list, sortSpecification, facetCollectors);
     }
     

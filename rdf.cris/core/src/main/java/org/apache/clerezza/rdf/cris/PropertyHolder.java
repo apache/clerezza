@@ -42,11 +42,22 @@ public class PropertyHolder extends VirtualProperty {
     UriRef property;
     
     /**
-     * Creates a new PropertyHolder that wraps an RDF property.
+     * Creates a new PropertyHolder that wraps an RDF property with facet 
+     * search enabled.
      * 
      * @param property    the property to wrap. 
      */
     public PropertyHolder(UriRef property) {
+        this(property, true);
+    }
+    
+    /**
+     * Creates a new PropertyHolder that wraps an RDF property.
+     * 
+     * @param property    the property to wrap. 
+     */
+    public PropertyHolder(UriRef property, boolean facetProperty) {
+        super(facetProperty);
         this.property = property;
         stringKey = property.getUnicodeString();
         baseProperties = new HashSet();

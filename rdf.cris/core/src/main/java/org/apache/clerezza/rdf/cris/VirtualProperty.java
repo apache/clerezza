@@ -39,6 +39,18 @@ import org.wymiwyg.commons.util.Util;
  * @see PropertyHolder
  */
 public abstract class VirtualProperty {
+    
+    
+    protected VirtualProperty(boolean facetProperty) {
+        this.facetProperty = facetProperty;
+    }
+    
+    
+    /**
+     * true if this is a facet property, false otherwise
+     */
+    private final boolean facetProperty;
+    
     /**
      * As opposed to toString this doesn't need to be human readable but unique (as with
      * a strong hash.
@@ -50,6 +62,13 @@ public abstract class VirtualProperty {
      */
     Set<UriRef> baseProperties;
 
+    /**
+     * @return true if this is a facet property, false otherwise
+     */
+    public boolean isFacetProperty() {
+        return facetProperty;
+    }
+    
     /**
      * Returns the key of this property.
      * 

@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -51,17 +52,29 @@ public class IndexDefinitionManager {
     }
 
     /**
-     * Defines an index for the specified types and properties, removing
-     * previous index definitions for that type (java friendly version)
+     * Defines an index for the specified type and properties, removing
+     * previous index definitions for that type (java friendly version) with
+     * facet search enabled on all properties
      * 
      * @param rdfType The RDF type for which to build an index.
      * @param properties A list of RDF properties to index.
      */
     public void addDefinition(UriRef rdfType, List<UriRef> properties) {
+        addDefinition(rdfType, properties, true);
+    }
+    /**
+     * Defines an index for the specified type and properties, removing
+     * previous index definitions for that type (java friendly version)
+     * 
+     * @param rdfType The RDF type for which to build an index.
+     * @param properties A list of RDF properties to index.
+     * @param facetSearch true if all properties shall be facet properties false if none
+     */
+    public void addDefinition(UriRef rdfType, List<UriRef> properties, boolean facetSearch) {
 
         List<VirtualProperty> list = new ArrayList<VirtualProperty>();
         for (UriRef uri : properties) {
-            list.add(new PropertyHolder(uri));
+            list.add(new PropertyHolder(uri, facetSearch));
         }
         addDefinitionVirtual(rdfType, list);
     }
@@ -98,7 +111,13 @@ public class IndexDefinitionManager {
     }
 
     private Resource asResource(VirtualProperty vp) {
-
+        final NonLiteral vpResource = asResourceTypeSpecific(vp);
+        if (vp.isFacetProperty()) {
+            definitionGraph.add(new TripleImpl(vpResource, RDF.type, CRIS.FacetProperty));
+        }
+        return vpResource;
+    }
+    private NonLiteral asResourceTypeSpecific(VirtualProperty vp) {
         if (vp instanceof PropertyHolder) {
             return ((PropertyHolder) vp).property;
         } else if (vp instanceof JoinVirtualProperty) {

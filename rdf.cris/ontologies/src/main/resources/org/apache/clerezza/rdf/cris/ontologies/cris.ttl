@@ -28,6 +28,11 @@
 :IndexDefinition a rdfs:Class;
 	skos:definition "The description of an index that is to be maintained by CRIS."@en.
 
+:FacetProperty a rdfs:Class;
+	rdfs:subClassOf rdf:Property;
+	skos:definition """A facet property is a property that can be used for 
+                faceted search."""@en.
+
 :VirtualProperty a rdfs:Class;
 	rdfs:subClassOf rdf:Property;
 	skos:definition """A virtual property is a property whose value can be

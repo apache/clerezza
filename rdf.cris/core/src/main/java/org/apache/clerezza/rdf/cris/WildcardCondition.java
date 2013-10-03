@@ -61,7 +61,8 @@ public class WildcardCondition extends Condition{
      * @param pattern    the search query
      */
     public WildcardCondition(UriRef uriRefProperty,String pattern) {
-        this(new PropertyHolder(uriRefProperty), pattern);
+        //on the search side of thing it is  irrelevant how the facetProperty flag is set
+        this(new PropertyHolder(uriRefProperty, false), pattern);
 
     }
     

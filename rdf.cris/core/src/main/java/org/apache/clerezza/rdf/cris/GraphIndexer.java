@@ -810,13 +810,16 @@ public class GraphIndexer extends ResourceFinder {
             if (vPropertyList == null) {
                 vPropertyList = new ArrayList<VirtualProperty>();
             }
-            return new JoinVirtualProperty(getVirtualPropertyList(r, vPropertyList));
+            return new JoinVirtualProperty(getVirtualPropertyList(r, vPropertyList),
+                    r.hasProperty(RDF.type, CRIS.FacetProperty));
         } else {
             if (r.hasProperty(RDF.type, CRIS.PathVirtualProperty)) {
-                return new PathVirtualProperty(getUriPropertyList(r));
+                return new PathVirtualProperty(getUriPropertyList(r), 
+                        r.hasProperty(RDF.type, CRIS.FacetProperty));
             } else {
                 if ((r.getNode()) instanceof UriRef) {
-                    return new PropertyHolder((UriRef) r.getNode());
+                    return new PropertyHolder((UriRef) r.getNode(),
+                        r.hasProperty(RDF.type, CRIS.FacetProperty));
                 } else {
                     throw new RuntimeException(r + " is not of a knows VirtualProperty type and its not a UriRef  (it's a " + (r.getNode()).getClass() + ")");
                 }

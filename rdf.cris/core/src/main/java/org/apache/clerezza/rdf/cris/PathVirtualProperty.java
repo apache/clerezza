@@ -40,15 +40,25 @@ public class PathVirtualProperty extends VirtualProperty {
     List<UriRef> properties;
 
     /**
+     * Creates a new PathVirtualProperty with face search enabled
+     * 
+     * @param properties 
+     */
+    public PathVirtualProperty(List<UriRef> properties) {
+        this(properties, true);
+    }
+    /**
      * Creates a new PathVirtualProperty.
      * 
      * @param properties An ordered list specifying the path. 
      */
-    public PathVirtualProperty(List<UriRef> properties) {
+    public PathVirtualProperty(List<UriRef> properties, boolean facetProperty) {
+        super(facetProperty);
         this.properties = properties;
         List<VirtualProperty> list = new ArrayList<VirtualProperty>();
         for (UriRef p : this.properties) {
-            list.add(new PropertyHolder(p));
+            //facetProperty is not digest relevant
+            list.add(new PropertyHolder(p,false));
         }
         this.baseProperties = new HashSet<UriRef>(properties);
         this.stringKey = "P" + VirtualProperty.listDigest(list);
@@ -76,7 +86,8 @@ public class PathVirtualProperty extends VirtualProperty {
 
     private void getPathResults(GraphNode node, List<UriRef> properties, List<String> list) {
         if (properties.size() == 1) {
-            list.addAll(new PropertyHolder(properties.get(0)).value(node));
+            //being a facet property or not is irrelevant for the result
+            list.addAll(new PropertyHolder(properties.get(0), false).value(node));
         } else {
             Lock lock = node.readLock();
             lock.lock();

@@ -38,11 +38,23 @@ public class JoinVirtualProperty extends VirtualProperty {
     List<VirtualProperty> properties;
 
     /**
-     * Creates a JoinVirtualPorperty from the supplied properties.
+     * Creates a JoinVirtualPorperty from the supplied properties 
+     * with facet search enabled.
      * 
      * @param properties the properties.
      */
     public JoinVirtualProperty(List<VirtualProperty> properties) {
+        this(properties, true);
+    }
+    
+    /**
+     * Creates a JoinVirtualPorperty from the supplied properties.
+     * 
+     * @param properties the properties.
+     */
+    public JoinVirtualProperty(List<VirtualProperty> properties,
+            boolean facetProperty) {
+        super(facetProperty);
         this.stringKey = "J" + VirtualProperty.listDigest(properties);
         this.properties = properties;
 

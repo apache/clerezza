@@ -58,6 +58,7 @@ public class GraphIndexerTest {
     private void createDefinition(UriRef rdfType, List<UriRef> properties) {
         GraphNode node = new GraphNode(new BNode(), definitions);
         node.addProperty(RDF.type, CRIS.IndexDefinition);
+        node.addProperty(RDF.type, CRIS.FacetProperty);
         node.addProperty(CRIS.indexedType, rdfType);
         for (UriRef p : properties) {
             node.addProperty(CRIS.indexedProperty, p);
@@ -260,7 +261,7 @@ public class GraphIndexerTest {
         predicates.add(FOAF.firstName);
         predicates.add(FOAF.lastName);
         predicates.add(RDFS.comment);
-        indexDefinitionManager.addDefinition(FOAF.Person, predicates);
+        indexDefinitionManager.addDefinition(FOAF.Person, predicates, true);
         service.reCreateIndex();
         Thread.sleep(1000);
         {

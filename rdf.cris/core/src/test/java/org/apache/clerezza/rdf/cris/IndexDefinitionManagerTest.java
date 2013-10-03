@@ -29,6 +29,7 @@ import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.cris.ontologies.CRIS;
@@ -41,35 +42,45 @@ import org.junit.Test;
 public class IndexDefinitionManagerTest {
 
 
-    private void createDefinition(UriRef rdfType, List<UriRef> properties, MGraph manuallyCreatedGraph) {
+    private void createDefinition(UriRef rdfType, List<UriRef> properties, 
+            MGraph manuallyCreatedGraph, boolean facetProperty) {
             GraphNode node = new GraphNode(new BNode(), manuallyCreatedGraph);
             node.addProperty(RDF.type, CRIS.IndexDefinition);
             node.addProperty(CRIS.indexedType, rdfType);
             for (UriRef p : properties) {
                 node.addProperty(CRIS.indexedProperty, p);
+                if (facetProperty) {
+                    manuallyCreatedGraph.add(new TripleImpl(p, RDF.type, CRIS.FacetProperty));
+                }
             }
         }
 
     @Test
-    public void createDefinitionGraph() {
-   
+    public void createDefinitionGraphWithoutFacetProperties() {
+        createDefinitionGraph(false);
+    }
     
-
+    @Test
+    public void createDefinitionGraphWithFacetProperties() {
+        createDefinitionGraph(true);
+    }
+    
+    public void createDefinitionGraph(boolean withFacetProperties) {
     MGraph indexManagerGraph = new SimpleMGraph();
     IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(indexManagerGraph);
     List<UriRef> properties = new java.util.ArrayList<UriRef>();
     properties.add(FOAF.firstName);
     properties.add(FOAF.lastName);
-    indexDefinitionManager.addDefinition(FOAF.Person, properties);
+    indexDefinitionManager.addDefinition(FOAF.Person, properties, withFacetProperties);
     List<UriRef> list = new ArrayList<UriRef>();
     list.add(FOAF.firstName);
     list.add(FOAF.lastName);
 
      MGraph manuallyCreatedGraph = new SimpleMGraph();
-    createDefinition(FOAF.Person, list, manuallyCreatedGraph);
+    createDefinition(FOAF.Person, list, manuallyCreatedGraph, withFacetProperties);
     Assert.assertEquals(manuallyCreatedGraph.getGraph(), indexManagerGraph.getGraph());
     }
-
+    
   @Test
     public void createJoinIndexProperty() {
     //import VirtualProperties._

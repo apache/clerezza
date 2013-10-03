@@ -83,7 +83,8 @@ public class TermRangeCondition extends Condition {
      */
     public TermRangeCondition(UriRef uriRefProperty, String lowerTerm,String upperTerm,
                                boolean includeUpper, boolean includeLower) {
-        this(new PropertyHolder(uriRefProperty), lowerTerm, upperTerm, includeUpper, includeLower);
+        //on the search side of thing it is  irrelevant how the facetProperty flag is set
+        this(new PropertyHolder(uriRefProperty, false), lowerTerm, upperTerm, includeUpper, includeLower);
     }
     
     @Override
