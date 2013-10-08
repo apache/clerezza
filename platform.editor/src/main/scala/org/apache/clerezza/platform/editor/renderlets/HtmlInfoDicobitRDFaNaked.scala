@@ -13,13 +13,13 @@ import org.apache.felix.scr.annotations.Service;import scala.xml.Unparsed
 
 @Component
 @Service(Array(classOf[TypeRenderlet]))
-class HtmlInfoDicobitCreateNaked extends SRenderlet {
+class HtmlInfoDicobitRDFaNaked extends SRenderlet {
 
 	val getRdfType = DISCOBITS.XHTMLInfoDiscoBit 
     
   override val getMediaType = MediaType.TEXT_HTML_TYPE
 
-	override def getModePattern = "create-naked"
+	override def getModePattern = "rdfa-naked"
 
 	override def renderedPage(arguments: XmlResult.Arguments) = {
 		new XmlResult(arguments) {

@@ -12,13 +12,13 @@ import org.apache.felix.scr.annotations.Service;
 
 @Component
 @Service(Array(classOf[TypeRenderlet]))
-class OrderedContentCreateNaked extends SRenderlet {
+class OrderedContentRDFaNaked extends SRenderlet {
 
 	val getRdfType = DISCOBITS.OrderedContent
     
   override val getMediaType = MediaType.TEXT_HTML_TYPE
 
-	override def getModePattern = "create-naked"
+	override def getModePattern = "rdfa-naked"
 
 	override def renderedPage(arguments: XmlResult.Arguments) = {
 		new XmlResult(arguments) {
@@ -27,7 +27,7 @@ class OrderedContentCreateNaked extends SRenderlet {
                 {for (part <- (res/DISCOBITS.contains).sortBy(part => (part/DISCOBITS.pos*).toInt)) 
                   yield <div property="disco:contains" typeof="disco:Entry">
                        <div property="disco:pos" style="display: none">{part/DISCOBITS.pos*}</div>
-                       <div property="disco:holds" resource={part/DISCOBITS.holds*}>{render(part/DISCOBITS.holds, "create-naked")}</div>
+                       <div property="disco:holds" resource={part/DISCOBITS.holds*}>{render(part/DISCOBITS.holds, "rdfa-naked")}</div>
                     </div>
                 }
               </div>

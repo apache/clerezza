@@ -19,16 +19,16 @@ import org.apache.felix.scr.annotations.Service;import scala.xml.Unparsed
 @Service(Array(classOf[TypeRenderlet]))
 class TitledContentCreate extends SRenderlet {
 
-	val getRdfType = DISCOBITS.TitledContent 
+  val getRdfType = DISCOBITS.TitledContent 
     
   override val getMediaType = MediaType.TEXT_HTML_TYPE
 
-	override def getModePattern = "create"
+  override def getModePattern = "create"
 
-	override def renderedPage(arguments: XmlResult.Arguments) = {
-		new XmlResult(arguments) {
-			override def content = {
-              val initScript = """
+  override def renderedPage(arguments: XmlResult.Arguments) = {
+    new XmlResult(arguments) {
+      override def content = {
+        val initScript = """
                         var id_counter = 1;
                         
                         jQuery(document).ready(function() {
@@ -57,42 +57,42 @@ class TitledContentCreate extends SRenderlet {
                           saveRemote: {"contentType": "application/ld+json"}
                         });*/
                       });"""
-              <html xmlns:disco="http://discobits.org/ontology#"> 
-{for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "0")) yield
-                <head>
-                    <link type="text/css" href="/style/style.css" rel="stylesheet" />
-                    <title>Editing: {part/DISCOBITS.holds/DISCOBITS.infoBit*}</title>
+        <html xmlns:disco="http://discobits.org/ontology#"> 
+          {for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "0")) yield
+            <head>
+                <link type="text/css" href="/style/style.css" rel="stylesheet" />
+                <title>Editing: {part/DISCOBITS.holds/DISCOBITS.infoBit*}</title>
 
-                    <link rel="stylesheet" href="/tools/create/font-awesome/css/font-awesome.css" />
+                <link rel="stylesheet" href="/tools/create/font-awesome/css/font-awesome.css" />
 
-                    <link rel="stylesheet" href="/tools/create/themes/create-ui/css/create-ui.css" />
+                <link rel="stylesheet" href="/tools/create/themes/create-ui/css/create-ui.css" />
 
-                    <link rel="stylesheet" href="/tools/create/themes/midgard-notifications/midgardnotif.css" />
+                <link rel="stylesheet" href="/tools/create/themes/midgard-notifications/midgardnotif.css" />
 
-                    <style>
-                       body {{
-                          padding-left: 20%;
-                          padding-right: 20%;
-                          padding-top: 90px;
-                          background-color: #eeeeec;
-                      }}
-                    </style>
-                    <script src="/tools/create/almond-0.0.2-alpha-1.js" > </script>
-                    <script src="/tools/create/jquery-amd-1.7.1-alpha-1.js" > </script>
-                    <script src="/tools/create/jquery-ui-amd-1.8.16-alpha-1.js" > </script>
-                    <!-- maybe less broken -->
-                    <script src="https://rdfquery.googlecode.com/files/jquery.rdfquery.rules.min-1.0.js"></script>
-                    <script src="/tools/create/createjs-1.0.0alpha1.js" > </script>
-                    <script>{Unparsed(initScript)}
-                    </script>
-                  </head>
-		}
-	<body>
-		{render(res, "create-naked")}
-	</body>
-</html>
-			}
-		}
-	}
+                <style>
+                  body {{
+                  padding-left: 20%;
+                  padding-right: 20%;
+                  padding-top: 90px;
+                  background-color: #eeeeec;
+                  }}
+                </style>
+                <script src="/tools/create/almond-0.0.2-alpha-1.js" > </script>
+                <script src="/tools/create/jquery-amd-1.7.1-alpha-1.js" > </script>
+                <script src="/tools/create/jquery-ui-amd-1.8.16-alpha-1.js" > </script>
+                <!-- maybe less broken -->
+                <script src="https://rdfquery.googlecode.com/files/jquery.rdfquery.rules.min-1.0.js"></script>
+                <script src="/tools/create/createjs-1.0.0alpha1.js" > </script>
+                <script>{Unparsed(initScript)}
+                </script>
+            </head>
+          }
+          <body>
+            {render(res, "rdfa-naked")}
+          </body>
+        </html>
+      }
+    }
+  }
 
 }

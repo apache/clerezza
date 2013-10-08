@@ -181,7 +181,7 @@
                         <configuration>
                             <includeTypes>js</includeTypes>
                             <outputDirectory>
-                                ${project.build.directory}/generated-resources/CLEREZZA-INF/web-resources/tools/create
+                                ${project.build.directory}/generated-resources/META-INF/resources/tools/create
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -194,7 +194,7 @@
                         <configuration>
                             <includeArtifactIds>createjs-theme</includeArtifactIds>
                             <outputDirectory>
-                                ${project.build.directory}/generated-resources/CLEREZZA-INF/web-resources/tools/create
+                                ${project.build.directory}/generated-resources/META-INF/resources/tools/create
                             </outputDirectory>
                         </configuration>
                     </execution>

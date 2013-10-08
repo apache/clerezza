@@ -12,13 +12,13 @@ import org.apache.felix.scr.annotations.Service;
 
 @Component
 @Service(Array(classOf[TypeRenderlet]))
-class TitledContentCreateNaked extends SRenderlet {
+class TitledContentRDFaNaked extends SRenderlet {
 
 	val getRdfType = DISCOBITS.TitledContent 
     
   override val getMediaType = MediaType.TEXT_HTML_TYPE
 
-	override def getModePattern = "create-naked"
+	override def getModePattern = "rdfa-naked"
 
 	override def renderedPage(arguments: XmlResult.Arguments) = {
 		new XmlResult(arguments) {
@@ -27,12 +27,12 @@ class TitledContentCreateNaked extends SRenderlet {
               {for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "0")) 
                 yield <span property="disco:holds" typeof="disco:Entry">
                    <span property="disco:pos" style="display: none">0</span>
-                   <h1 resource={part/DISCOBITS.holds*} property="disco:holds">{render(part/DISCOBITS.holds, "create-naked")}</h1>
+                   <h1 resource={part/DISCOBITS.holds*} property="disco:holds">{render(part/DISCOBITS.holds, "rdfa-naked")}</h1>
                   </span>}
               {for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "1")) 
                 yield <div property="disco:contains" typeof="disco:Entry">
                        <div property="disco:pos" style="display: none">{part/DISCOBITS.pos*}</div>
-                       <div property="disco:holds" resource={part/DISCOBITS.holds*}>{render(part/DISCOBITS.holds, "create-naked")}</div>
+                       <div property="disco:holds" resource={part/DISCOBITS.holds*}>{render(part/DISCOBITS.holds, "rdfa-naked")}</div>
                     </div>}
               </div>
 			}
