@@ -36,6 +36,8 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility to equate duplicate nodes in an Mgarph, currently only nodes with 
@@ -44,6 +46,8 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  * @author reto
  */
 public class Smusher {
+    
+    static final Logger log = LoggerFactory.getLogger(Smusher.class);
 
     /**
      * smush mGaph given the ontological facts. Currently it does only
@@ -73,6 +77,51 @@ public class Smusher {
             equivalentNodes.add(triple.getSubject());
         }
         Set<Set<NonLiteral>> unitedEquivalenceSets = uniteSetsWithCommonElement(ifp2nodesMap.values());
+        smush(mGraph, unitedEquivalenceSets);
+    }
+    
+    public static void sameAsSmush(MGraph mGraph, TripleCollection owlSameStatements) {
+    	
+    	log.info("Starting smushing");
+        
+    	// This hashmap contains a uri (key) and the set of equivalent uris (value)
+    	final Map<NonLiteral, Set<NonLiteral>> node2EquivalenceSet = new HashMap<NonLiteral, Set<NonLiteral>>();
+    	
+    	log.info("Creating the sets of equivalent uris of each subject or object in the owl:sameAs statements");
+    	// Determines for each subject and object in all the owl:sameAs statements the set of ewquivalent uris 
+    	for (Iterator<Triple> it = owlSameStatements.iterator(); it.hasNext();) {            
+    		final Triple triple = it.next();
+            final UriRef predicate = triple.getPredicate();
+            if (!predicate.equals(OWL.sameAs)) {
+                throw new RuntimeException("Statements must use only <http://www.w3.org/2002/07/owl#sameAs> predicate.");
+            }
+            final NonLiteral subject = triple.getSubject();
+            final NonLiteral object = (NonLiteral)triple.getObject();
+            
+            Set<NonLiteral> equivalentNodes = node2EquivalenceSet.get(subject);
+            
+            // if there is not a set of equivalent uris then create a new set
+            if (equivalentNodes == null) {
+            	equivalentNodes = node2EquivalenceSet.get(object);
+            	if (equivalentNodes == null) {
+                    equivalentNodes = new HashSet<NonLiteral>();
+                }
+            }
+            
+            // add both subject and object of the owl:sameAs statement to the set of equivalent uris
+            equivalentNodes.add(subject);
+            equivalentNodes.add(object);
+            
+            // use both uris in the owl:sameAs statement as keys for the set of equivalent uris
+            node2EquivalenceSet.put(subject, equivalentNodes);
+            node2EquivalenceSet.put(object, equivalentNodes);
+            
+            log.info("Sets of equivalent uris created.");
+        
+    	}
+    	
+    	// This set contains the sets of equivalent uris
+    	Set<Set<NonLiteral>> unitedEquivalenceSets = new HashSet<Set<NonLiteral>>(node2EquivalenceSet.values());
         smush(mGraph, unitedEquivalenceSets);
     }
     
