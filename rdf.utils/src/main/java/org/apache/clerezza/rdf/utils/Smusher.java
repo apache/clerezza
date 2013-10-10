@@ -73,6 +73,10 @@ public class Smusher {
             equivalentNodes.add(triple.getSubject());
         }
         Set<Set<NonLiteral>> unitedEquivalenceSets = uniteSetsWithCommonElement(ifp2nodesMap.values());
+        smush(mGraph, unitedEquivalenceSets);
+    }
+    
+    public static void smush(MGraph mGraph, Set<Set<NonLiteral>> unitedEquivalenceSets) {
         Map<NonLiteral, NonLiteral> current2ReplacementMap = new HashMap<NonLiteral, NonLiteral>();
         final MGraph owlSameAsGraph = new SimpleMGraph();
         for (Set<NonLiteral> equivalenceSet : unitedEquivalenceSets) {
