@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.Assert;
 
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Literal;
@@ -38,6 +37,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.felix.scr.annotations.Activate;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.wymiwyg.commons.util.Util;
@@ -50,7 +50,7 @@ public class MultiThreadedTest {
     /** 
      * how many threads to start
      */
-    private static final int THREAD_COUNT = 100;
+    private static final int THREAD_COUNT = 200;
     /**
      * how many seconds to let them run
      */
@@ -65,6 +65,7 @@ public class MultiThreadedTest {
         private final int id;
         private boolean stopRequested;
         private int addedTripleCount = 0;
+        private Object exception;
 
         public TestThread(final int id) {
             this.id = id;
@@ -78,12 +79,16 @@ public class MultiThreadedTest {
         @Override
         public void run() {
             while (!stopRequested) {
-                Literal randomLiteral = new PlainLiteralImpl(Util.createRandomString(22));
-                Triple triple = new TripleImpl(new BNode(), new UriRef("http://example.com/property"), randomLiteral);
-                mGraph.add(triple);
-                addedTripleCount++;
-                if ((addedTripleCount % 100) == 0) {
-                    testTriples.add(triple);
+                try {
+                    Literal randomLiteral = new PlainLiteralImpl(Util.createRandomString(22));
+                    Triple triple = new TripleImpl(new BNode(), new UriRef("http://example.com/property"), randomLiteral);
+                    mGraph.add(triple);
+                    addedTripleCount++;
+                    if ((addedTripleCount % 100) == 0) {
+                        testTriples.add(triple);
+                    }
+                } catch (Exception e) {
+                    exception = e;
                 }
             }
         }
@@ -129,6 +134,9 @@ public class MultiThreadedTest {
         Assert.assertEquals(addedTriples, mGraph.size());
         for (Triple testTriple : testTriples) {
             Assert.assertTrue(mGraph.contains(testTriple));
+        }
+        for (TestThread testThread : threads) {
+            Assert.assertNull(testThread.exception);
         }
     }
 
