@@ -229,7 +229,7 @@ public class TdbTcProvider implements WeightedTcProvider {
         MGraph mGraph = getMGraph(tcDir);
         mGraph.addAll(triples);
         Graph result = mGraph.getGraph();
-        
+        TDB.sync(dir2Dataset.get(tcDir));
         graphMap.put(name, result);
         return result;
     }
@@ -405,6 +405,7 @@ public class TdbTcProvider implements WeightedTcProvider {
         synchronized(dir2Dataset) {
             for (Map.Entry<File,Dataset> entry : dir2Dataset.entrySet()) {
                 Lock l = dir2Lock.get(entry.getKey());
+                if (l == null) return;
                 l.lock();
                 try {
                     TDB.sync(entry.getValue());
