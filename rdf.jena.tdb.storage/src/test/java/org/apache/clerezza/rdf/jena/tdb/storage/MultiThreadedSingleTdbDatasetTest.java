@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import junit.framework.Assert;
 
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Literal;
@@ -43,6 +42,7 @@ import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -251,7 +251,11 @@ public class MultiThreadedSingleTdbDatasetTest {
     @AfterClass
     public static void cleanUpDirectory() throws IOException {
         provider.deactivate(null);
-        TdbTcProvider.delete(tempFile);
+        try {
+            TdbTcProvider.delete(tempFile);
+        } catch (IOException e) {
+            System.err.println("Failed removing tempfile "+tempFile);
+        }
     }
 
 }
