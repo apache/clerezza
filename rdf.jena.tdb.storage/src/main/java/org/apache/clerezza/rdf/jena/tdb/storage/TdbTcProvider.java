@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,8 @@ public class TdbTcProvider implements WeightedTcProvider {
     private Map<UriRef, Graph> graphMap = new HashMap<UriRef, Graph>();
     private Map<File, com.hp.hpl.jena.graph.Graph> dir2JenaGraphMap =
             new HashMap<File, com.hp.hpl.jena.graph.Graph>();
+    private Map<File, Lock> dir2Lock =
+            new HashMap<File, Lock>();
     private final Map<File, Dataset> dir2Dataset = new HashMap<File, Dataset>();
     private static final Logger log = LoggerFactory.getLogger(TdbTcProvider.class);
     private int weight = 105;
@@ -200,6 +203,7 @@ public class TdbTcProvider implements WeightedTcProvider {
             throw new RuntimeException(ex);
         }
         LockableMGraph result = new LockableMGraphWrapper(getMGraph(tcDir));
+        dir2Lock.put(tcDir, result.getLock().writeLock());
         mGraphMap.put(name, result);
         return result;
     }
@@ -338,6 +342,7 @@ public class TdbTcProvider implements WeightedTcProvider {
         //Model model = TDBFactory.createModel(tcDir.getAbsolutePath());
         final com.hp.hpl.jena.graph.Graph jenaGraph = model.getGraph();
         dir2JenaGraphMap.put(tcDir, jenaGraph);
+        //dataset.
         synchronized(dir2Dataset) {
             dir2Dataset.put(tcDir, dataset);
         }
@@ -383,7 +388,10 @@ public class TdbTcProvider implements WeightedTcProvider {
                 try {
                     UriRef uri = new UriRef(URLDecoder.decode(mGraphDirName, "utf-8"));
                     log.info("loading: "+mGraphDirName);
-                    mGraphMap.put(uri, new LockableMGraphWrapper(getMGraph(new File(mGraphsDir, mGraphDirName))));
+                    final File tcDir = new File(mGraphsDir, mGraphDirName);
+                    final LockableMGraphWrapper lockableMGraph = new LockableMGraphWrapper(getMGraph(tcDir));
+                    mGraphMap.put(uri, lockableMGraph);
+                    dir2Lock.put(tcDir, lockableMGraph.getLock().writeLock());
                 } catch (UnsupportedEncodingException ex) {
                     throw new RuntimeException("utf-8 not supported", ex);
                 } catch (Exception e) {
@@ -395,8 +403,14 @@ public class TdbTcProvider implements WeightedTcProvider {
     
     public void syncWithFileSystem() {
         synchronized(dir2Dataset) {
-            for (Dataset dataset : dir2Dataset.values()) {
-                TDB.sync(dataset);
+            for (Map.Entry<File,Dataset> entry : dir2Dataset.entrySet()) {
+                Lock l = dir2Lock.get(entry.getKey());
+                l.lock();
+                try {
+                    TDB.sync(entry.getValue());
+                } finally {
+                    l.unlock();
+                }
             }
         }
     }
