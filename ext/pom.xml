@@ -37,7 +37,6 @@
 
     <modules>
         <module>bundles-pom</module>
-        <module>src-assembly</module>
         <module>jena-iri</module>
         <module>jena-core</module>
         <module>jena-arq</module>
