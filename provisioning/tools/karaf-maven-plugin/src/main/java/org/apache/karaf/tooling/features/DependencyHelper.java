@@ -245,7 +245,7 @@ public class DependencyHelper {
                         isFromFeature = true;
                     }
                 }
-                if (accept.isContinue()) {
+                if (useTransitiveDependencies && accept.isContinue()) {
                     List<DependencyNode> children = dependencyNode.getChildren();
                     for (DependencyNode child : children) {
                         scan(child, accept, useTransitiveDependencies, isFromFeature, indent + "  ");
