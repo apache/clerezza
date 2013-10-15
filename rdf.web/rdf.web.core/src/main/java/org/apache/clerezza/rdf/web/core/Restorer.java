@@ -21,8 +21,12 @@ package org.apache.clerezza.rdf.web.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -80,14 +84,27 @@ public class Restorer {
             if (entry.isDirectory()) {
                 folder = entryName;
             } else {
+                File tempFile = File.createTempFile("graph", "data");
+                OutputStream fos = new FileOutputStream(tempFile);
+                
+                int count;
+                byte buffer[] = new byte[2048];
+                while ((count = compressedTcs.read(buffer, 0, 2048)) != -1) {
+                    fos.write(buffer, 0, count);
+                }
+                fos.close();
+                InputStream serializedGraph = new FileInputStream(tempFile);
+                /*
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 int count;
                 byte buffer[] = new byte[2048];
                 while ((count = compressedTcs.read(buffer, 0, 2048)) != -1) {
                     baos.write(buffer, 0, count);
                 }
+                baos.close();
                 ByteArrayInputStream serializedGraph = new ByteArrayInputStream(
                         baos.toByteArray());
+                */
                 if (entryName.equals("triplecollections.nt")) {
                     metaGraph = parser.parse(serializedGraph,
                             SupportedFormat.N_TRIPLE, null);
@@ -96,8 +113,7 @@ public class Restorer {
                             SupportedFormat.N_TRIPLE, null);
                     extractedTc.put(entryName, deserializedGraph);
                 }
-                baos.flush();
-                baos.close();
+                serializedGraph.close();
             }
         }
         if (metaGraph == null) {
