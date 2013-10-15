@@ -104,9 +104,14 @@ public class IndexDefinitionManager {
      */
     public void deleteDefinition(UriRef rdfType) {
         GraphNode node = new GraphNode(rdfType, definitionGraph);
-        Iterator<GraphNode> iter = node.getSubjectNodes(CRIS.indexedType);
-        while (iter.hasNext()) {
-            iter.next().deleteNodeContext();
+        node.writeLock().lock();
+        try {
+            Iterator<GraphNode> iter = node.getSubjectNodes(CRIS.indexedType);
+            while (iter.hasNext()) {
+                iter.next().deleteNodeContext();
+            }
+        } finally {
+            node.writeLock().unlock();
         }
     }
 
