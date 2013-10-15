@@ -54,7 +54,7 @@ public class MultiThreadedTest {
     /**
      * how many seconds to let them run
      */
-    private static final int DELAY = 120;
+    private static final int DELAY = 15;
     
     
     private MGraph mGraph;

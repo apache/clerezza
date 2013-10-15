@@ -49,8 +49,12 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
         //tests want us to deactivate/activate the TcProvider on multiple calls
         //to getInstance within the same test
         if(provider !=null){
-            provider.close();
-            provider = null;
+            try {
+                provider.deactivate(null);
+                provider = null;
+            } catch (Exception e) {
+                System.err.println("Error cleaning up: "+e.getMessage());
+            }
         }
         try {
             provider = new SingleTdbDatasetTcProvider(config);
@@ -64,9 +68,13 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
     public void cleanData() throws IOException{
         //We need to remove all remaining data after a test
         if(provider != null){
-            provider.deactivate(null);
-            TdbTcProvider.delete(tempFile);
-            provider = null;
+            try {
+                provider.deactivate(null);
+                TdbTcProvider.delete(tempFile);
+                provider = null;
+            } catch (Exception e) {
+                System.err.println("Error cleaning up: "+e.getMessage());
+            }
         }
     }
     

@@ -39,7 +39,11 @@ public class SingleTdbDatasetMGraphTest extends MGraphTest {
             provider.deleteTripleCollection(new UriRef(MGRAPHNAME_PREFIX+i));
         }
         provider.deactivate(null);
-        TdbTcProvider.delete(tempFile);
+        try {
+            TdbTcProvider.delete(tempFile);
+        } catch (IOException e) {
+            System.err.println("Couldn't remove "+tempFile);
+        }
     }
 
     @Override
