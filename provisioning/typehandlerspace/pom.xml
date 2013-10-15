@@ -24,16 +24,57 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <artifactId>clerezza</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <version>0.5-SNAPSHOT</version>
+        <relativePath>../../parent</relativePath>
+    </parent>
+
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>typehandlerspace</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>Typehandlerspace feature</name>
-    <description>What's needed to get typehandlerspace working on top of 
-        JAX-RS 2.0.</description>
+    <description>Clerezza - Provisioning: What's needed to get typehandlerspace working on top of 
+        JAX-RS 2.0. It depends on the Clerezza rdf libraries as provided by the RDF feature.</description>
 
     <dependencies>
+ 
+        <!-- this is currently in the stanbol ng branch -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.stanbol</groupId>
+            <artifactId>org.apache.stanbol.commons.jsonld</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.stanbol</groupId>
+            <artifactId>org.apache.stanbol.commons.web.base</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.stanbol</groupId>
+            <artifactId>org.apache.stanbol.commons.web.base.jersey</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        
+        
+        <!-- /remove till here -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <scope>provided</scope>
+        </dependency> 	
        
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
@@ -43,11 +84,11 @@
         </dependency> 	
  
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>2.10.0</version>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>permissiondescriptions</artifactId>
+            <version>0.2-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency> 	
+        </dependency>
  
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -58,10 +99,30 @@
  
         <dependency>
             <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform</artifactId>
+            <version>0.2-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency> 	
+ 
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.graphprovider.content</artifactId>
+            <version>0.7-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.config</artifactId>
+            <version>0.4-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+                    
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.users.core</artifactId>
             <version>0.2-SNAPSHOT</version>
             <scope>provided</scope>
-
         </dependency> 	
  
         <dependency>
