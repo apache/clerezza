@@ -462,7 +462,12 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      */
     @Override
     public Set<UriRef> listGraphs() {
-        return new UriRefSet( graphNameIndex, Symbols.Graph );
+        datasetLock.readLock().lock();
+        try {
+            return new HashSet(new UriRefSet( graphNameIndex, Symbols.Graph ));
+        } finally {
+            datasetLock.readLock().unlock();
+        }
     }
 
     /*
@@ -471,7 +476,12 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      */
     @Override
     public Set<UriRef> listMGraphs() {
-        return new UriRefSet( graphNameIndex, Symbols.MGraph );
+        datasetLock.readLock().lock();
+        try {
+            return  new HashSet(new UriRefSet( graphNameIndex, Symbols.MGraph ));
+        } finally {
+            datasetLock.readLock().unlock();
+        }
     }
 
     /*
@@ -480,7 +490,12 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      */
     @Override
     public Set<UriRef> listTripleCollections() {
-        return new UriRefSet( graphNameIndex, null );
+        datasetLock.readLock().lock();
+        try {
+            return  new HashSet(new UriRefSet( graphNameIndex, null ));
+        } finally {
+            datasetLock.readLock().unlock();
+        }
     }
 
     /*
