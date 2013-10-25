@@ -41,19 +41,11 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
  */
 public class LockableMGraphWrapper implements LockableMGraph {
 
-
     private static final String DEBUG_MODE = "rdfLocksDebugging";
     private final ReadWriteLock lock;
-    {
-        String debugMode = System.getProperty(DEBUG_MODE);
-        if (debugMode != null && debugMode.toLowerCase().equals("true")) {
-            lock = new ReentrantReadWriteLockTracker();
-        } else {
-            lock = new ReentrantReadWriteLock();
-        }
-    }
-    private final Lock readLock = lock.readLock();
-    private final Lock writeLock = lock.writeLock();
+
+    private final Lock readLock;
+    private final Lock writeLock;
     private final MGraph wrapped;
 
     /**
@@ -63,6 +55,23 @@ public class LockableMGraphWrapper implements LockableMGraph {
      */
     public LockableMGraphWrapper(final MGraph providedMGraph) {
         this.wrapped = providedMGraph;
+        {
+            String debugMode = System.getProperty(DEBUG_MODE);
+            if (debugMode != null && debugMode.toLowerCase().equals("true")) {
+                lock = new ReentrantReadWriteLockTracker();
+            } else {
+                lock = new ReentrantReadWriteLock();
+            }
+        }
+        readLock = lock.readLock();
+        writeLock = lock.writeLock();
+    }
+    
+    public LockableMGraphWrapper(final MGraph providedMGraph, final ReadWriteLock lock) {
+        this.wrapped = providedMGraph;
+        this.lock = lock;
+        readLock = lock.readLock();
+        writeLock = lock.writeLock();
     }
 
     @Override
@@ -243,16 +252,16 @@ public class LockableMGraphWrapper implements LockableMGraph {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) {
+        if (obj == null) {
             return false;
         }
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(obj.getClass() != getClass()) {
+        if (obj.getClass() != getClass()) {
             return false;
         }
-        
+
         LockableMGraphWrapper other = (LockableMGraphWrapper) obj;
         return wrapped.equals(other.wrapped);
     }
@@ -261,4 +270,5 @@ public class LockableMGraphWrapper implements LockableMGraph {
     public String toString() {
         return wrapped.toString();
     }
+
 }
