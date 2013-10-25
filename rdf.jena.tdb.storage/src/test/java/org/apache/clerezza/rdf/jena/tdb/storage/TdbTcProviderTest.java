@@ -45,8 +45,7 @@ public class TdbTcProviderTest extends TcProviderTest {
 
     @After
     public void cleanUp() throws IOException {
-        //as TDB tends to keep files open this causes troubles on windows
-        //TdbTcProvider.delete(tempFile);
+        TdbTcProvider.delete(tempFile);
     }
 
 
