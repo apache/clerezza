@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
+import java.util.logging.Level;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +51,14 @@ import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedMGraphWrapper;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
+import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 
 /**
- * A {@link org.apache.clerezza.rdf.core.access.WeightedTcProvider} based on Jena TDB.
+ * A {@link org.apache.clerezza.rdf.core.access.WeightedTcProvider} based on
+ * Jena TDB.
  *
  * @see <a href="http://jena.hpl.hp.com/wiki/TDB/JavaAPI">
  * TDB/JavaAPI</a>
@@ -63,13 +66,14 @@ import org.apache.felix.scr.annotations.Service;
  * @author reto, hasan
  *
  * @scr.component immediate="true"
- * @scr.service interface="org.apache.clerezza.rdf.core.access.WeightedTcProvider"
+ * @scr.service
+ * interface="org.apache.clerezza.rdf.core.access.WeightedTcProvider"
  * @scr.property name="weight" type="Integer" value="105"
  *
  */
-@Component(metatype=true, immediate=true)
+@Component(metatype = true, immediate = true)
 @Service(WeightedTcProvider.class)
-@Property(name="weight", intValue=105)
+@Property(name = "weight", intValue = 105)
 public class TdbTcProvider implements WeightedTcProvider {
 
     static {
@@ -77,35 +81,36 @@ public class TdbTcProvider implements WeightedTcProvider {
         //it is only needed so that on windows the files of a dataset can be deleteds
         SystemTDB.setFileMode(FileMode.direct);
     }
-    
-    @Property(intValue=6, description="Specifies the number of seconds to wait "
-    + "between synchronizations of the TDB datasets to the filesystem")
+
+    @Property(intValue = 6, description = "Specifies the number of seconds to wait "
+            + "between synchronizations of the TDB datasets to the filesystem")
     public static final String SYNC_INTERVAL = "sync-interval";
     private int syncInterval = 6;
 
     /**
-     *    directory where all graphs are stored
+     * directory where all graphs are stored
      */
     private static final String DATA_PATH_NAME = "tdb-data/";
     private String dataPathString = DATA_PATH_NAME;
     private Map<UriRef, LockableMGraph> mGraphMap = new HashMap<UriRef, LockableMGraph>();
     private Map<UriRef, Graph> graphMap = new HashMap<UriRef, Graph>();
-    private Map<File, com.hp.hpl.jena.graph.Graph> dir2JenaGraphMap =
-            new HashMap<File, com.hp.hpl.jena.graph.Graph>();
-    private Map<File, Lock> dir2Lock =
-            new HashMap<File, Lock>();
+    private Map<File, com.hp.hpl.jena.graph.Graph> dir2JenaGraphMap
+            = new HashMap<File, com.hp.hpl.jena.graph.Graph>();
+    private Map<File, Lock> dir2Lock
+            = new HashMap<File, Lock>();
     private final Map<File, Dataset> dir2Dataset = new HashMap<File, Dataset>();
     private static final Logger log = LoggerFactory.getLogger(TdbTcProvider.class);
     private int weight = 105;
-    
+
     class SyncThread extends Thread {
+
         private boolean stopRequested = false;
 
         @Override
         public void run() {
             while (!stopRequested) {
                 try {
-                    Thread.sleep(syncInterval*1000);
+                    Thread.sleep(syncInterval * 1000);
                 } catch (InterruptedException ex) {
                     interrupt();
                 }
@@ -114,7 +119,7 @@ public class TdbTcProvider implements WeightedTcProvider {
                 }
             }
         }
-        
+
         public void requestStop() {
             stopRequested = true;
         }
@@ -151,7 +156,7 @@ public class TdbTcProvider implements WeightedTcProvider {
         for (com.hp.hpl.jena.graph.Graph jenaGraph : dir2JenaGraphMap.values()) {
             jenaGraph.close();
         }
-        synchronized(dir2Dataset) {
+        synchronized (dir2Dataset) {
             for (Dataset dataset : dir2Dataset.values()) {
                 dataset.close();
             }
@@ -254,23 +259,38 @@ public class TdbTcProvider implements WeightedTcProvider {
         if (tcDir.exists()) {
             dir2JenaGraphMap.get(tcDir).close();
             dir2JenaGraphMap.remove(tcDir);
-            synchronized(dir2Dataset) {
+            synchronized (dir2Dataset) {
                 dir2Dataset.get(tcDir).close();
                 dir2Dataset.remove(tcDir);
             }
             try {
                 delete(tcDir);
             } catch (IOException ex) {
+                for (int i = 0; i < 10; i++) {
+                    try {
+                        System.gc();
+                        delete(tcDir);
+                    } catch (IOException ex1) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex2) {
+                            Thread.currentThread().interrupt();
+                        }
+                        continue;
+                    }
+                    return true;
+                }
                 throw new RuntimeException(ex);
             }
             return true;
         }
         return false;
     }
-    
+
     /**
      * Cleans the content of the specified directory recursively.
-     * @param dir  Abstract path denoting the directory to clean.
+     *
+     * @param dir Abstract path denoting the directory to clean.
      */
     private static void cleanDirectory(File dir) throws IOException {
         File[] files = dir.listFiles();
@@ -283,16 +303,17 @@ public class TdbTcProvider implements WeightedTcProvider {
 
     /**
      * Deletes the specified file or directory.
-     * @param file  Abstract path denoting the file or directory to clean.
+     *
+     * @param file Abstract path denoting the file or directory to clean.
      */
     protected static void delete(File file) throws IOException {
         if (file.isDirectory()) {
             cleanDirectory(file);
         }
         //better but only in java 7
-        //Files.delete(file.toPath());
+        //java.nio.file.Files.delete(file.toPath());
         if (!file.delete()) {
-            throw new IOException("couldn't delete "+file.getAbsolutePath());
+            throw new IOException("couldn't delete " + file.getAbsolutePath());
         }
     }
 
@@ -343,7 +364,7 @@ public class TdbTcProvider implements WeightedTcProvider {
         final com.hp.hpl.jena.graph.Graph jenaGraph = model.getGraph();
         dir2JenaGraphMap.put(tcDir, jenaGraph);
         //dataset.
-        synchronized(dir2Dataset) {
+        synchronized (dir2Dataset) {
             dir2Dataset.put(tcDir, dataset);
         }
         return new PrivilegedMGraphWrapper(new JenaGraphAdaptor(jenaGraph));
@@ -363,19 +384,18 @@ public class TdbTcProvider implements WeightedTcProvider {
         }
     }
 
-
     private void loadGraphs() {
         File graphsDir = new File(new File(dataPathString), "graph");
         if (graphsDir.exists()) {
             for (String graphDirName : graphsDir.list()) {
                 try {
                     UriRef uri = new UriRef(URLDecoder.decode(graphDirName, "utf-8"));
-                    log.info("loading: "+graphDirName);
+                    log.info("loading: " + graphDirName);
                     graphMap.put(uri, getGraph(new File(graphsDir, graphDirName)));
                 } catch (UnsupportedEncodingException ex) {
                     throw new RuntimeException("utf-8 not supported", ex);
                 } catch (Exception e) {
-                    log.error("Could not load tdb graph in "+graphDirName, e);
+                    log.error("Could not load tdb graph in " + graphDirName, e);
                 }
             }
         }
@@ -387,7 +407,7 @@ public class TdbTcProvider implements WeightedTcProvider {
             for (String mGraphDirName : mGraphsDir.list()) {
                 try {
                     UriRef uri = new UriRef(URLDecoder.decode(mGraphDirName, "utf-8"));
-                    log.info("loading: "+mGraphDirName);
+                    log.info("loading: " + mGraphDirName);
                     final File tcDir = new File(mGraphsDir, mGraphDirName);
                     final LockableMGraphWrapper lockableMGraph = new LockableMGraphWrapper(getMGraph(tcDir));
                     mGraphMap.put(uri, lockableMGraph);
@@ -395,17 +415,19 @@ public class TdbTcProvider implements WeightedTcProvider {
                 } catch (UnsupportedEncodingException ex) {
                     throw new RuntimeException("utf-8 not supported", ex);
                 } catch (Exception e) {
-                    log.error("Could not load tdb graph in "+mGraphDirName, e);
+                    log.error("Could not load tdb graph in " + mGraphDirName, e);
                 }
             }
         }
     }
-    
+
     public void syncWithFileSystem() {
-        synchronized(dir2Dataset) {
-            for (Map.Entry<File,Dataset> entry : dir2Dataset.entrySet()) {
+        synchronized (dir2Dataset) {
+            for (Map.Entry<File, Dataset> entry : dir2Dataset.entrySet()) {
                 Lock l = dir2Lock.get(entry.getKey());
-                if (l == null) return;
+                if (l == null) {
+                    return;
+                }
                 l.lock();
                 try {
                     TDB.sync(entry.getValue());

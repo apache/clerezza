@@ -72,6 +72,7 @@ public abstract class TcProviderTest {
         } catch (EntityAlreadyExistsException e) {
             assertTrue(true);
         }
+        simpleTcmProvider.deleteTripleCollection(uriRefA);
     }
 
     @Test
@@ -86,6 +87,7 @@ public abstract class TcProviderTest {
         } catch (EntityAlreadyExistsException e) {
             assertTrue(true);
         }
+        simpleTcmProvider.deleteTripleCollection(uriRefA);
     }
 
     @Test
@@ -109,6 +111,10 @@ public abstract class TcProviderTest {
         Iterator<Triple> iterator = bGraph.iterator();
         assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
         assertFalse(iterator.hasNext());
+        simpleTcmProvider.deleteTripleCollection(uriRefA);
+        simpleTcmProvider.deleteTripleCollection(uriRefA1);
+        simpleTcmProvider.deleteTripleCollection(uriRefB);
+        simpleTcmProvider.deleteTripleCollection(uriRefB1);
     }
 
     @Test
@@ -131,6 +137,11 @@ public abstract class TcProviderTest {
         Iterator<Triple> iterator = bGraph.iterator();
         assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
         assertFalse(iterator.hasNext());
+        simpleTcmProvider.deleteTripleCollection(uriRefA);
+        simpleTcmProvider.deleteTripleCollection(uriRefA1);
+        simpleTcmProvider.deleteTripleCollection(uriRefB);
+        simpleTcmProvider.deleteTripleCollection(uriRefB1);
+        
     }
 
     @Test
@@ -161,6 +172,10 @@ public abstract class TcProviderTest {
         iterator = tripleCollection2.iterator();
         assertEquals(new TripleImpl(uriRefB1, uriRefB1, uriRefB1), iterator.next());
         assertFalse(iterator.hasNext());
+        simpleTcmProvider.deleteTripleCollection(uriRefA);
+        simpleTcmProvider.deleteTripleCollection(uriRefA1);
+        simpleTcmProvider.deleteTripleCollection(uriRefB);
+        simpleTcmProvider.deleteTripleCollection(uriRefB1);
     }
 
     @Test
@@ -183,6 +198,7 @@ public abstract class TcProviderTest {
         // Check that graph is still available under uriRefC
         Graph cGraph = simpleTcmProvider.getGraph(uriRefC);
         assertNotNull(cGraph);
+        simpleTcmProvider.deleteTripleCollection(uriRefC);
     }
 
     /**
@@ -236,6 +252,7 @@ public abstract class TcProviderTest {
         }
 
         assertTrue(expThrown);
+        provider.deleteTripleCollection(graphUriRef);
     }
 
     @Test
@@ -261,6 +278,7 @@ public abstract class TcProviderTest {
         }
 
         assertTrue(expThrown);
+        provider.deleteTripleCollection(graphUriRef);
     }
 
     @Test
@@ -276,6 +294,7 @@ public abstract class TcProviderTest {
             expThrown = true;
         }
         assertTrue(expThrown);
+        provider.deleteTripleCollection(graphUriRef);
     }
 
     @Test
@@ -291,6 +310,7 @@ public abstract class TcProviderTest {
             expThrown = true;
         }
         assertTrue(expThrown);
+        provider.deleteTripleCollection(graphUriRef);
     }
 
     @Test
@@ -304,6 +324,7 @@ public abstract class TcProviderTest {
 
         assertEquals(1, graph.size());
         assertTrue(graph.contains(t1));
+        provider.deleteTripleCollection(graphUriRef);
     }
 
     @Test
@@ -364,6 +385,7 @@ public abstract class TcProviderTest {
         }
 
         assertTrue(expThrown);
+        provider.deleteTripleCollection(graphUriRef);
     }
 
 //    This tests can not pass, because equals in AbstractGraph is not implemented
@@ -427,6 +449,7 @@ public abstract class TcProviderTest {
         }
 
         assertTrue(expThrown);
+        provider.deleteTripleCollection(name2);
     }
 
 
@@ -437,6 +460,7 @@ public abstract class TcProviderTest {
                 createTestTripleCollection(createTestTriple()));
         TripleCollection tc = provider.getTriples(graphUriRef);
         assertNotNull(tc);
+        provider.deleteTripleCollection(graphUriRef);
     }
 
     @Test
@@ -447,6 +471,7 @@ public abstract class TcProviderTest {
 
         TripleCollection tc = provider.getTriples(graphUriRef);
         assertNotNull(tc);
+        provider.deleteTripleCollection(graphUriRef);
     }
 
     private Triple createTestTriple() {
