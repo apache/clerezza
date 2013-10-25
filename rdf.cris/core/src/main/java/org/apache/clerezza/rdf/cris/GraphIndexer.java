@@ -38,6 +38,7 @@ import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.event.FilterTriple;
 import org.apache.clerezza.rdf.core.event.GraphEvent;
 import org.apache.clerezza.rdf.core.event.GraphListener;
@@ -66,35 +67,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Creates an index of RDF resources and provides an interface to 
- * search for indexed resources.
+ * Creates an index of RDF resources and provides an interface to search for
+ * indexed resources.
  *
  * @author reto, tio, daniel
  */
 public class GraphIndexer extends ResourceFinder {
-    
+
     /**
      * Default value for {@code maxhits}.
      */
     public static final int DEFAULT_MAXHITS = 100000;
-    
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     /**
      * Prefix for stored Lucene fields.
      */
     static final String SORT_PREFIX = "_STORED_";
-    
+
     /**
      * Field name for the resource field in Lucene.
      */
     static final String URI_FIELD_NAME = "resource-uri";
-    
+
     /**
      * Handler for asynchronous indexing.
      */
     ReindexThread reindexer;
-    
+
     private TripleCollection definitionGraph;
     private TripleCollection baseGraph;
     private int maxHits;
@@ -108,23 +109,24 @@ public class GraphIndexer extends ResourceFinder {
     private Map<SortFieldArrayWrapper, Sort> sortCache = new HashMap<SortFieldArrayWrapper, Sort>();
     private Timer timer = new Timer();
     private final OptimizationTask optimizationTask = new OptimizationTask();
-    
+
     /**
      * Allows to schedule optimizations using a Timer.
-     * 
+     *
      * NOTE: not for public access as this functionality is likely to be moved
      * into a stand-alone service.
      */
     private class OptimizationTask extends TimerTask {
+
         @Override
         public void run() {
             optimizeIndex();
         }
     }
-    
+
     /**
-     * When resources are (re)-indexed, 
-     * this thread updates the Lucene index asynchronously. 
+     * When resources are (re)-indexed, this thread updates the Lucene index
+     * asynchronously.
      */
     class ReindexThread extends Thread {
 
@@ -133,34 +135,32 @@ public class GraphIndexer extends ResourceFinder {
         private final String name;
         private final Set<Resource> resourcesToProcess;
         private final Lock lock = new ReentrantLock(true);
-        private final java.util.concurrent.locks.Condition indexResources =
-                lock.newCondition();
+        private final java.util.concurrent.locks.Condition indexResources
+                = lock.newCondition();
         private long counter;
         private boolean stop;
         private boolean resourcesClean;
 
         /**
-         * Constructs a new thread with specified name and indexing threshold. 
-         * Setting the name may be useful for distinguishing logging output when 
+         * Constructs a new thread with specified name and indexing threshold.
+         * Setting the name may be useful for distinguishing logging output when
          * multiple instances of GraphIndexer are running.
-         * 
-         * {@code stableThreshold} specifies a waiting period before the 
-         * indexing starts. The timer is restarted if more resources are added 
-         * within {@code stableThreshold} nanoseconds. A high value means the 
-         * thread will wait a long time before indexing resources added using 
-         * {@link addResource(Resource resource)}. A short value means new 
-         * resources are added to the index quickly. Configure this value such 
-         * that when adding many new resources in a short time these are 
+         *
+         * {@code stableThreshold} specifies a waiting period before the
+         * indexing starts. The timer is restarted if more resources are added
+         * within {@code stableThreshold} nanoseconds. A high value means the
+         * thread will wait a long time before indexing resources added using
+         * {@link addResource(Resource resource)}. A short value means new
+         * resources are added to the index quickly. Configure this value such
+         * that when adding many new resources in a short time these are
          * gathered and indexed at once.
-         * 
-         * @param name    the thread name (used in logging output).
-         * @param stableThreshold
-         *        If no new resource has been added for {@code stableThreshold} 
-         *        nanoseconds and there are cached unindexed resources, then 
-         *        indexing starts.
-         * @param resourceCacheCapacity  
-         *        How many resources will be cached maximally before indexing.
-         *        A negative number means infinite.
+         *
+         * @param name the thread name (used in logging output).
+         * @param stableThreshold If no new resource has been added for
+         * {@code stableThreshold} nanoseconds and there are cached unindexed
+         * resources, then indexing starts.
+         * @param resourceCacheCapacity How many resources will be cached
+         * maximally before indexing. A negative number means infinite.
          */
         ReindexThread(String name, long stableThreshold, long resourceCacheCapacity) {
             this.resourceCacheCapacity = resourceCacheCapacity;
@@ -169,34 +169,31 @@ public class GraphIndexer extends ResourceFinder {
             this.resourcesToProcess = new HashSet<Resource>();
             this.resourcesClean = true;
         }
-        
+
         /**
          * Constructs a new thread with specified indexing threshold.
-         * 
-         * @code stableThreshold} specifies a waiting period before the 
-         * indexing starts. The timer is restarted if more resources are added 
-         * within {@code stableThreshold} nanoseconds. A high value means the 
-         * thread will wait a long time before indexing resources added using 
-         * {@link addResource(Resource resource)}. A short value means new 
-         * resources are added to the index quickly. Configure this value such 
-         * that when adding many new resources in a short time these are 
+         *
+         * @code stableThreshold} specifies a waiting period before the indexing
+         * starts. The timer is restarted if more resources are added within
+         * {@code stableThreshold} nanoseconds. A high value means the thread
+         * will wait a long time before indexing resources added using
+         * {@link addResource(Resource resource)}. A short value means new
+         * resources are added to the index quickly. Configure this value such
+         * that when adding many new resources in a short time these are
          * gathered and indexed at once.
-         * 
-         * @param stableThreshold 
-         *        If no new resource has been added for {@code stableThreshold} 
-         *        nanoseconds and there are cached unindexed resources, then 
-         *        indexing starts.
-         * @param resourceCacheCapacity  
-         *        How many resources will be cached maximally before indexing.
-         *        A negative number means infinite.
+         *
+         * @param stableThreshold If no new resource has been added for
+         * {@code stableThreshold} nanoseconds and there are cached unindexed
+         * resources, then indexing starts.
+         * @param resourceCacheCapacity How many resources will be cached
+         * maximally before indexing. A negative number means infinite.
          */
         ReindexThread(long stableThreshold, long resourceCacheCapacity) {
             this(null, stableThreshold, resourceCacheCapacity);
         }
-        
 
         /**
-         * Request the termination of this thread. The thread will finish its 
+         * Request the termination of this thread. The thread will finish its
          * current operations before it terminates.
          */
         void stopThread() {
@@ -211,7 +208,7 @@ public class GraphIndexer extends ResourceFinder {
 
         @Override
         public void run() {
-            if(name == null) {
+            if (name == null) {
                 setName("CRIS Reindex Thread[" + getId() + "]");
             } else {
                 setName(name);
@@ -248,12 +245,12 @@ public class GraphIndexer extends ResourceFinder {
             }
             logger.info("{} stopped.", getName());
         }
-        
+
         private void waitUntilStable() throws InterruptedException {
             while (!resourcesClean) {
                 resourcesClean = true;
                 indexResources.awaitNanos(stableThreshold);
-                if(resourceCacheCapacity >= 0 && ++counter > resourceCacheCapacity) {
+                if (resourceCacheCapacity >= 0 && ++counter > resourceCacheCapacity) {
                     break;
                 }
             }
@@ -267,7 +264,7 @@ public class GraphIndexer extends ResourceFinder {
 
         /**
          * Add a new resource for indexing.
-         * 
+         *
          * @param resource the resource.
          */
         public void addResource(Resource resource) {
@@ -284,36 +281,32 @@ public class GraphIndexer extends ResourceFinder {
 
     /**
      * Creates a new index.
-     * 
-     * The {@code GraphIndexer} looks for specifications of what properties on 
+     *
+     * The {@code GraphIndexer} looks for specifications of what properties on
      * what resources to index in the {@code definitionGraph}.
-     * 
+     *
      * The {@code baseGraph} specifies the graph on which the index is built.
-     * 
-     * <p>Notes: 
-     * 
+     *
      * <p>
-     * This is an expensive operation and it is advisable to call 
+     * Notes:
+     *
+     * <p>
+     * This is an expensive operation and it is advisable to call
      * {@link #closeLuceneIndex()} when this instance is no longer needed.
      * </p><p>
      * The GraphIndexer must have write-access to the index directory specified.
      * </p>
-     * 
-     * @param definitionGraph
-     *        where index definitions are stored
-     * @param baseGraph
-     *        where the resources to index are stored
-     * @param indexDirectory
-     *        The directory where the index is stored.
-     * @param createNewIndex
-     *        Whether to create a new index or reuse an existing one. 
-     *        The constructor does not check if there is a valid exiting index. 
-     *        The user is responsible for setting this value correctly.
-     * @param maxHits
-     *        How many results the indexer returns. All entries in the index are 
-     *        searched, but only @code{maxHits} resources are resolved and 
-     *        returned in the result.
-     * 
+     *
+     * @param definitionGraph where index definitions are stored
+     * @param baseGraph where the resources to index are stored
+     * @param indexDirectory The directory where the index is stored.
+     * @param createNewIndex Whether to create a new index or reuse an existing
+     * one. The constructor does not check if there is a valid exiting index.
+     * The user is responsible for setting this value correctly.
+     * @param maxHits How many results the indexer returns. All entries in the
+     * index are searched, but only @code{maxHits} resources are resolved and
+     * returned in the result.
+     *
      * @see IndexDefinitionManager
      */
     public GraphIndexer(TripleCollection definitionGraph,
@@ -361,7 +354,7 @@ public class GraphIndexer extends ResourceFinder {
                     logger.debug("Predicate: " + predicate);
                     for (VirtualProperty vProperty : vProperties) {
                         logger.debug("Subject: " + " " + triple.getSubject());
-                        followInversePaths(triple.getSubject(), 
+                        followInversePaths(triple.getSubject(),
                                 vProperty.pathToIndexedResource(predicate), indexedResources);
 
                     }
@@ -392,24 +385,24 @@ public class GraphIndexer extends ResourceFinder {
             }
         };
 
-        baseGraph.addGraphListener(indexedPropertyChangeListener, 
+        baseGraph.addGraphListener(indexedPropertyChangeListener,
                 new FilterTriple(null, null, null) {
 
-            @Override
-            public boolean match(Triple triple) {
-                UriRef predicate = triple.getPredicate();
-                //check indirectly involved properties
-                Set<VirtualProperty> vProperties = property2IncludingVProperty.get(predicate);
-                if (vProperties != null) {
-                    for (VirtualProperty vProperty : vProperties) {
-                        if (property2TypeMap.containsKey(vProperty)) {
-                            return true;
+                    @Override
+                    public boolean match(Triple triple) {
+                        UriRef predicate = triple.getPredicate();
+                        //check indirectly involved properties
+                        Set<VirtualProperty> vProperties = property2IncludingVProperty.get(predicate);
+                        if (vProperties != null) {
+                            for (VirtualProperty vProperty : vProperties) {
+                                if (property2TypeMap.containsKey(vProperty)) {
+                                    return true;
+                                }
+                            }
                         }
+                        return false;
                     }
-                }
-                return false;
-            }
-        });
+                });
 
         reindexer.start();
 
@@ -417,70 +410,66 @@ public class GraphIndexer extends ResourceFinder {
             reCreateIndex();
         }
     }
-    
+
     /**
      * Creates a new index with default {@code maxHits}.
-     * 
-     * The {@code GraphIndexer} looks for specifications of what properties on 
+     *
+     * The {@code GraphIndexer} looks for specifications of what properties on
      * what resources to index in the {@code definitionGraph}.
-     * 
+     *
      * The {@code baseGraph} specifies the graph on which the index is built.
-     * 
-     * <p>Notes: 
-     * 
+     *
      * <p>
-     * This is an expensive operation and it is advisable to call 
+     * Notes:
+     *
+     * <p>
+     * This is an expensive operation and it is advisable to call
      * {@link #closeLuceneIndex()} when this instance is no longer needed.
      * </p><p>
      * The GraphIndexer must have write-access to the index directory specified.
      * </p>
-     * 
-     * @param definitionGraph
-     *        where index definitions are stored
-     * @param baseGraph
-     *        where the resources to index are stored
-     * @param indexDirectory
-     *        The directory where the index is stored.
-     * @param createNewIndex
-     *        Whether to create a new index or reuse an existing one. 
-     *        The constructor does not check if there is a valid exiting index. 
-     *        The user is responsible for setting this value correctly.
+     *
+     * @param definitionGraph where index definitions are stored
+     * @param baseGraph where the resources to index are stored
+     * @param indexDirectory The directory where the index is stored.
+     * @param createNewIndex Whether to create a new index or reuse an existing
+     * one. The constructor does not check if there is a valid exiting index.
+     * The user is responsible for setting this value correctly.
      */
     public GraphIndexer(TripleCollection definitionGraph,
             TripleCollection baseGraph, Directory indexDirectory,
             boolean createNewIndex) {
-        this(definitionGraph, baseGraph, indexDirectory, createNewIndex, 
+        this(definitionGraph, baseGraph, indexDirectory, createNewIndex,
                 DEFAULT_MAXHITS);
     }
 
     /**
      * Creates a new in-memory index with default {@code maxHits}.
-     * 
-     * The {@code GraphIndexer} looks for specifications of what properties on 
+     *
+     * The {@code GraphIndexer} looks for specifications of what properties on
      * what resources to index in the {@code definitionGraph}.
-     * 
+     *
      * The {@code baseGraph} specifies the graph on which the index is built.
-     * 
-     * <p>Notes: 
-     * 
+     *
      * <p>
-     * This is an expensive operation and it is advisable to call 
+     * Notes:
+     *
+     * <p>
+     * This is an expensive operation and it is advisable to call
      * {@link #closeLuceneIndex()} when this instance is no longer needed.
      * </p><p>
      * The GraphIndexer must have write-access to the index directory specified.
      * </p>
-     * 
-     * @param definitionGraph
-     *        where index definitions are stored
-     * @param baseGraph
-     *        where the resources to index are stored
+     *
+     * @param definitionGraph where index definitions are stored
+     * @param baseGraph where the resources to index are stored
      */
     public GraphIndexer(TripleCollection definitionGraph, TripleCollection baseGraph) {
         this(definitionGraph, baseGraph, new RAMDirectory(), true);
     }
 
     /**
-     * Releases resources held by GraphIndexer. After the call to this method, 
+     * Releases resources held by GraphIndexer. After the call to this method,
      * this GraphIndexer instance must not be used anymore.
      */
     public void closeLuceneIndex() {
@@ -491,10 +480,10 @@ public class GraphIndexer extends ResourceFinder {
         this.luceneTools.closeIndexWriter();
         this.sortCache.clear();
     }
-    
+
     /**
      * Returns the Analyzer used by this GraphIndexer instance.
-     * 
+     *
      * @return the Analyzer
      */
     public Analyzer getAnalyzer() {
@@ -503,26 +492,26 @@ public class GraphIndexer extends ResourceFinder {
 
     /**
      * Returns the graph that this GraphIndexer builds an index on.
-     * 
-     * @return    The graph containing the indexed resources.
+     *
+     * @return The graph containing the indexed resources.
      */
     public TripleCollection getBaseGraph() {
         return baseGraph;
     }
-    
+
     /**
      * Returns the graph where the index definitions are stored.
-     * 
+     *
      * @return The graph with the index definitions.
      */
     public TripleCollection getDefinitionGraph() {
         return definitionGraph;
     }
-    
+
     /**
      * How many results a search on the index returns maximally.
-     * 
-     * @return    the maximum number of results.
+     *
+     * @return the maximum number of results.
      */
     public int getMaxHits() {
         return maxHits;
@@ -530,8 +519,8 @@ public class GraphIndexer extends ResourceFinder {
 
     /**
      * Set how many results a search on the index returns maximally.
-     * 
-     * @param maxHits    the maximum number of results.
+     *
+     * @param maxHits the maximum number of results.
      */
     public void setMaxHits(int maxHits) {
         this.maxHits = maxHits;
@@ -541,23 +530,22 @@ public class GraphIndexer extends ResourceFinder {
     public void optimizeIndex() {
         luceneTools.optimizeIndex();
     }
-    
+
     /**
      * Schedule optimizations for repeated executions.
-     * 
-     * @param delay 
-     *        The delay before the first execution in milliseconds.
-     * @param period 
-     *        Time between successive executions (execution rate) in milliseconds.
+     *
+     * @param delay The delay before the first execution in milliseconds.
+     * @param period Time between successive executions (execution rate) in
+     * milliseconds.
      */
     public void scheduleIndexOptimizations(long delay, long period) {
-        if(timer != null) {
+        if (timer != null) {
             timer.cancel();
         }
         timer = new Timer();
         timer.scheduleAtFixedRate(optimizationTask, delay, period);
     }
-    
+
     /**
      * Cancel scheduled optimizations. This call does not have any effect on
      * optimizations that are being executed while the method is called.
@@ -565,7 +553,7 @@ public class GraphIndexer extends ResourceFinder {
     public void terminateIndexOptimizationSchedule() {
         timer.cancel();
         timer = null;
-    } 
+    }
 
     @Override
     public void reCreateIndex() {
@@ -575,10 +563,10 @@ public class GraphIndexer extends ResourceFinder {
 
         for (UriRef indexedType : type2IndexedProperties.keySet()) {
             //lock necessary?
-            Lock lock =  new GraphNode(indexedType, this.baseGraph).readLock();
+            Lock lock = new GraphNode(indexedType, this.baseGraph).readLock();
             lock.lock();
             try {
-                Iterator<Triple> iter  = this.baseGraph.filter(null, RDF.type, indexedType);
+                Iterator<Triple> iter = this.baseGraph.filter(null, RDF.type, indexedType);
                 while (iter.hasNext()) {
                     instances.add(iter.next().getSubject());
                 }
@@ -600,65 +588,61 @@ public class GraphIndexer extends ResourceFinder {
     }
 
     @Override
-    public List<NonLiteral> findResources(List<? extends Condition> conditions, 
-            SortSpecification sortSpecification, 
+    public List<NonLiteral> findResources(List<? extends Condition> conditions,
+            SortSpecification sortSpecification,
             FacetCollector... facetCollectors) throws ParseException {
-        return findResources(conditions, sortSpecification, 
+        return findResources(conditions, sortSpecification,
                 Arrays.asList(facetCollectors), 0, maxHits + 1);
     }
-    
+
     /**
-     * Find resources using conditions and collect facets and specify a sort order. 
-     * 
+     * Find resources using conditions and collect facets and specify a sort
+     * order.
+     *
      * This method allows to specify the indices of the query results to return
      * (e.g. for pagination).
-     * 
-     * @param conditions
-     *        a list of conditions to construct a query from.
-     * @param facetCollectors
-     *        Facet collectors to apply to the query result. 
-     *        Can be {@link Collections#EMPTY_LIST}, if not used.
-     * @param sortSpecification 
-     *        Specifies the sort order. Can be null, if not used.
-     * @param from
-     *        return results starting from this index (inclusive).
-     * @param to
-     *        return results until this index (exclusive).
-     * @return    
-     *        a list of resources that match the query.
-     * 
+     *
+     * @param conditions a list of conditions to construct a query from.
+     * @param facetCollectors Facet collectors to apply to the query result. Can
+     * be {@link Collections#EMPTY_LIST}, if not used.
+     * @param sortSpecification Specifies the sort order. Can be null, if not
+     * used.
+     * @param from return results starting from this index (inclusive).
+     * @param to return results until this index (exclusive).
+     * @return a list of resources that match the query.
+     *
      * @throws ParseException when the resulting query is illegal.
      */
-    public List<NonLiteral> findResources(List<? extends Condition> conditions, 
-            SortSpecification sortSpecification, 
+    public List<NonLiteral> findResources(List<? extends Condition> conditions,
+            SortSpecification sortSpecification,
             List<FacetCollector> facetCollectors, int from, int to)
             throws ParseException {
 
-        if(from < 0) {
+        if (from < 0) {
             from = 0;
         }
-        
-        if(to < from) {
+
+        if (to < from) {
             to = from + 1;
         }
-        
-        if(facetCollectors == null) {
+
+        if (facetCollectors == null) {
             facetCollectors = Collections.EMPTY_LIST;
         }
-        
+
         BooleanQuery booleanQuery = new BooleanQuery();
         for (Condition c : conditions) {
             booleanQuery.add(c.query(), BooleanClause.Occur.MUST);
         }
-        
+
         IndexSearcher searcher = luceneTools.getIndexSearcher();
         ScoreDoc[] hits = null;
         try {
-            if(sortSpecification != null) {
-                SortFieldArrayWrapper fieldKey = 
-                        new SortFieldArrayWrapper(sortSpecification.getSortFields());
+            if (sortSpecification != null) {
+                SortFieldArrayWrapper fieldKey
+                        = new SortFieldArrayWrapper(sortSpecification.getSortFields());
                 Sort sort = sortCache.get(fieldKey);
-                if(sort == null) {
+                if (sort == null) {
                     sort = new Sort(sortSpecification.getSortFields());
                     sortCache.put(fieldKey, sort);
                 }
@@ -687,14 +671,14 @@ public class GraphIndexer extends ResourceFinder {
                 logger.error("CRIS Error: ", ex);
             }
         }
-        
-        for(FacetCollector facetCollector : facetCollectors) {
+
+        for (FacetCollector facetCollector : facetCollectors) {
             facetCollector.postProcess();
         }
-        
+
         return result;
     }
-    
+
     @Override
     public void finalize()
             throws Throwable {
@@ -702,11 +686,11 @@ public class GraphIndexer extends ResourceFinder {
         closeLuceneIndex();
 
     }
-    
+
     /**
      * Schedule an update or creation of an index for a resource.
-     * 
-     * @param resource    the resource to index.
+     *
+     * @param resource the resource to index.
      */
     protected void scheduleForReindex(Resource resource) {
         logger.debug("Scheduling for reindex: " + resource);
@@ -717,56 +701,64 @@ public class GraphIndexer extends ResourceFinder {
      * Read the index definitions and initialize the GraphIndexer with them.
      */
     protected void processDefinitions() {
-
-        Iterator<Triple> indexDefinitionResources = 
-                this.definitionGraph.filter(null, RDF.type, CRIS.IndexDefinition);
-
-        Map<UriRef, Set<VirtualProperty>> type2IndexedPropertiesTuples = 
-                new HashMap<UriRef, Set<VirtualProperty>>();
-
-        while (indexDefinitionResources.hasNext()) {
-            GraphNode node = new GraphNode(indexDefinitionResources.next().getSubject(), 
-                    this.definitionGraph);
-            Iterator<GraphNode> types = node.getObjectNodes(CRIS.indexedType);
-            while (types.hasNext()) {
-                UriRef tUri = (UriRef) types.next().getNode();
-                Iterator<GraphNode> properties = node.getObjectNodes(CRIS.indexedProperty);
-                Set<VirtualProperty> props = new HashSet<VirtualProperty>();
-                while (properties.hasNext()) {
-                    VirtualProperty vProp = asVirtualProperty(properties.next(), null);
-                    if (property2TypeMap.containsKey(vProp)) {
-                        property2TypeMap.get(vProp).add(tUri);
-                    } else {
-                        Set<UriRef> set = new HashSet<UriRef>();
-                        set.add(tUri);
-                        property2TypeMap.put(vProp, set);
-                    }
-
-                    for (UriRef baseProperty : vProp.baseProperties) {
-                        if (property2IncludingVProperty.containsKey(baseProperty)) {
-                            property2IncludingVProperty.get(baseProperty).add(vProp);
+        Lock l;
+        if (definitionGraph instanceof LockableMGraph) {
+            l = ((LockableMGraph) definitionGraph).getLock().readLock();
+        } else {
+            l = new ReentrantLock();
+        }
+        Map<UriRef, Set<VirtualProperty>> type2IndexedPropertiesTuples
+                = new HashMap<UriRef, Set<VirtualProperty>>();
+        l.lock();
+        try {
+            Iterator<Triple> indexDefinitionResources
+                    = this.definitionGraph.filter(null, RDF.type, CRIS.IndexDefinition);
+            while (indexDefinitionResources.hasNext()) {
+                GraphNode node = new GraphNode(indexDefinitionResources.next().getSubject(),
+                        this.definitionGraph);
+                Iterator<GraphNode> types = node.getObjectNodes(CRIS.indexedType);
+                while (types.hasNext()) {
+                    UriRef tUri = (UriRef) types.next().getNode();
+                    Iterator<GraphNode> properties = node.getObjectNodes(CRIS.indexedProperty);
+                    Set<VirtualProperty> props = new HashSet<VirtualProperty>();
+                    while (properties.hasNext()) {
+                        VirtualProperty vProp = asVirtualProperty(properties.next(), null);
+                        if (property2TypeMap.containsKey(vProp)) {
+                            property2TypeMap.get(vProp).add(tUri);
                         } else {
-                            Set<VirtualProperty> set = new HashSet<VirtualProperty>();
-                            set.add(vProp);
-                            property2IncludingVProperty.put(baseProperty, set);
+                            Set<UriRef> set = new HashSet<UriRef>();
+                            set.add(tUri);
+                            property2TypeMap.put(vProp, set);
                         }
+
+                        for (UriRef baseProperty : vProp.baseProperties) {
+                            if (property2IncludingVProperty.containsKey(baseProperty)) {
+                                property2IncludingVProperty.get(baseProperty).add(vProp);
+                            } else {
+                                Set<VirtualProperty> set = new HashSet<VirtualProperty>();
+                                set.add(vProp);
+                                property2IncludingVProperty.put(baseProperty, set);
+                            }
+                        }
+                        props.add(vProp);
+
                     }
-                    props.add(vProp);
+                    type2IndexedPropertiesTuples.put(tUri, props);
 
                 }
-                type2IndexedPropertiesTuples.put(tUri, props);
-
             }
+        } finally {
+            l.unlock();
         }
         type2IndexedProperties = new HashMap(type2IndexedPropertiesTuples);
 
     }
-    
+
     /**
      * Index a resource.
-     * 
-     * @param resource    the resource to index.
-     * @param writer    the index writer.
+     *
+     * @param resource the resource to index.
+     * @param writer the index writer.
      */
     protected void indexResource(Resource resource, IndexWriter writer) {
         if (resource instanceof UriRef) {
@@ -779,7 +771,7 @@ public class GraphIndexer extends ResourceFinder {
             indexAnonymousResource(resource);
         }
     }
-    
+
     private NonLiteral getResource(Document d) {
         return new UriRef(d.get(URI_FIELD_NAME));
     }
@@ -814,12 +806,12 @@ public class GraphIndexer extends ResourceFinder {
                     r.hasProperty(RDF.type, CRIS.FacetProperty));
         } else {
             if (r.hasProperty(RDF.type, CRIS.PathVirtualProperty)) {
-                return new PathVirtualProperty(getUriPropertyList(r), 
+                return new PathVirtualProperty(getUriPropertyList(r),
                         r.hasProperty(RDF.type, CRIS.FacetProperty));
             } else {
                 if ((r.getNode()) instanceof UriRef) {
                     return new PropertyHolder((UriRef) r.getNode(),
-                        r.hasProperty(RDF.type, CRIS.FacetProperty));
+                            r.hasProperty(RDF.type, CRIS.FacetProperty));
                 } else {
                     throw new RuntimeException(r + " is not of a knows VirtualProperty type and its not a UriRef  (it's a " + (r.getNode()).getClass() + ")");
                 }
@@ -854,16 +846,16 @@ public class GraphIndexer extends ResourceFinder {
         }
         throw new RuntimeException("There is no propertyList on this definition.");
     }
-    
+
     private void collectFacets(List<FacetCollector> facetCollectors, Document d) {
-        if(facetCollectors.size() > 0) {
-            for(FacetCollector facetCollector : facetCollectors) {
-                Map<VirtualProperty, Map<String, Object>> facetMap = 
-                        facetCollector.getFacetMap();
-                for(VirtualProperty property : facetMap.keySet()) {
+        if (facetCollectors.size() > 0) {
+            for (FacetCollector facetCollector : facetCollectors) {
+                Map<VirtualProperty, Map<String, Object>> facetMap
+                        = facetCollector.getFacetMap();
+                for (VirtualProperty property : facetMap.keySet()) {
                     String[] values = d.getValues(SORT_PREFIX + property.getStringKey());
-                    if(values != null) {
-                        for(String value : values) {
+                    if (values != null) {
+                        for (String value : values) {
                             facetCollector.addFacetValue(property, value);
                         }
                     }
@@ -934,7 +926,7 @@ public class GraphIndexer extends ResourceFinder {
     private void indexAnonymousResource(Resource resource) {
         logger.warn("Currently only indexing named resources is supported");
         /*val doc = resourceToDocument(resource)
-        doc.add(new Field(URI_FIELD_NAME, getIdentifier(resource), Field.Store.YES, Field.Index.ANALYZED))
-        writer.addDocument(doc)*/
+         doc.add(new Field(URI_FIELD_NAME, getIdentifier(resource), Field.Store.YES, Field.Index.ANALYZED))
+         writer.addDocument(doc)*/
     }
 }

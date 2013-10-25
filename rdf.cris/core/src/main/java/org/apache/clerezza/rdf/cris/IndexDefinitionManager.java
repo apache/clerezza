@@ -19,8 +19,10 @@
 package org.apache.clerezza.rdf.cris;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
@@ -31,6 +33,8 @@ import org.apache.clerezza.rdf.cris.ontologies.CRIS;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.RdfList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates the definitions that specify which literals of a resource are
@@ -40,7 +44,9 @@ import org.apache.clerezza.rdf.utils.RdfList;
  */
 public class IndexDefinitionManager {
 
-    private MGraph definitionGraph;
+    private static final Logger log = LoggerFactory.getLogger(IndexDefinitionManager.class);
+    
+    private final MGraph definitionGraph;
 
     /**
      * Creates a new IndexDefinitionManager.
@@ -89,11 +95,15 @@ public class IndexDefinitionManager {
     public void addDefinitionVirtual(UriRef rdfType, List<VirtualProperty> properties) {
         deleteDefinition(rdfType);
         GraphNode node = new GraphNode(new BNode(), definitionGraph);
-        node.addProperty(RDF.type, CRIS.IndexDefinition);
-        node.addProperty(CRIS.indexedType, rdfType);
-
-        for (VirtualProperty p : properties) {
-            node.addProperty(CRIS.indexedProperty, asResource(p));
+        node.writeLock().lock();
+        try {
+            node.addProperty(RDF.type, CRIS.IndexDefinition);
+            node.addProperty(CRIS.indexedType, rdfType);
+            for (VirtualProperty p : properties) {
+                node.addProperty(CRIS.indexedProperty, asResource(p));
+            }
+        } finally {
+            node.writeLock().unlock();
         }
     }
 
@@ -104,11 +114,20 @@ public class IndexDefinitionManager {
      */
     public void deleteDefinition(UriRef rdfType) {
         GraphNode node = new GraphNode(rdfType, definitionGraph);
-        node.writeLock().lock();
-        try {
+        Set<GraphNode> toDelete = new HashSet<GraphNode>();
+        node.readLock().lock();
+        try {    
             Iterator<GraphNode> iter = node.getSubjectNodes(CRIS.indexedType);
             while (iter.hasNext()) {
-                iter.next().deleteNodeContext();
+                toDelete.add(iter.next());
+            }
+        } finally {
+            node.readLock().unlock();
+        }
+        node.writeLock().lock();
+        try {
+            for (GraphNode graphNode : toDelete) {
+                graphNode.deleteNodeContext();
             }
         } finally {
             node.writeLock().unlock();
