@@ -41,11 +41,11 @@ public class SimpleDataSet implements DataSet {
         return namedGraphs;
     }
 
-    void addDefaultGraph(UriRef defaultGraph) {
+    public void addDefaultGraph(UriRef defaultGraph) {
         defaultGraphs.add(defaultGraph);
     }
 
-    void addNamedGraph(UriRef namedGraph) {
+    public void addNamedGraph(UriRef namedGraph) {
         namedGraphs.add(namedGraph);
     }
 }

@@ -20,6 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.List;
 import java.util.Set;
+import org.apache.clerezza.rdf.core.UriRef;
 
 /**
  * Defines a group graph pattern.
@@ -52,7 +53,14 @@ public interface GroupGraphPattern extends GraphPattern {
 	 */
 	public Set<GraphPattern> getGraphPatterns();
 
-	/**
+    /**
+     * 
+     * @return
+     *      all graphs referred in this graph pattern.
+     */
+    public Set<UriRef> getReferredGraphs();
+
+    /**
 	 * @return 
      *      null if it wraps a {@link SelectQuery}, otherwise
 	 *		a list of filter expressions for all patterns in the group if any.

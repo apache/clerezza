@@ -365,4 +365,113 @@ public class SparqlPreParserTest {
         expected.add(new UriRef("http://example.com/addresses"));
         Assert.assertTrue(referredGraphs.containsAll(expected));
     }
+
+    @Test
+    public void testModifyOperationWithFallbackGraph() throws ParseException {
+        String queryStr = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> WITH " + TEST_GRAPH.toString() +
+                " DELETE { ?person foaf:givenName 'Bill' } INSERT { ?person foaf:givenName 'William' }" +
+                " WHERE { ?person foaf:givenName 'Bill' }";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+    }
+
+    @Test
+    public void testDeleteOperationInDefaultGraph() throws ParseException {
+        String queryStr = "PREFIX dc:  <http://purl.org/dc/elements/1.1/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
+                "DELETE { ?book ?p ?v } WHERE { ?book dc:date ?date . " +
+                "FILTER ( ?date > \"1970-01-01T00:00:00-02:00\"^^xsd:dateTime ) ?book ?p ?v }";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testInsertOperationToNamedGraph() throws ParseException {
+        String queryStr = "PREFIX dc:  <http://purl.org/dc/elements/1.1/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
+                "INSERT { GRAPH <http://example/bookStore2> { ?book ?p ?v } } " +
+                "WHERE { GRAPH <http://example/bookStore> { ?book dc:date ?date . " +
+                "FILTER ( ?date > \"1970-01-01T00:00:00-02:00\"^^xsd:dateTime ) ?book ?p ?v } }";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(new UriRef("http://example/bookStore2"));
+        expected.add(new UriRef("http://example/bookStore"));
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
+
+    @Test
+    public void testInsertAndDeleteWithCommonPrefix() throws ParseException {
+        String queryStr = "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n" +
+                "PREFIX dcmitype: <http://purl.org/dc/dcmitype/>\n" +
+                "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n\n" +
+                "INSERT\n" +
+                "  { GRAPH <http://example/bookStore2> { ?book ?p ?v } }\n" +
+                "WHERE\n" +
+                "  { GRAPH <http://example/bookStore>\n" +
+                "    { ?book dc:date ?date . \n" +
+                "      FILTER ( ?date < \"2000-01-01T00:00:00-02:00\"^^xsd:dateTime )\n" +
+                "      ?book ?p ?v\n" +
+                "    }\n" +
+                "  } ;\n\n" +
+                "WITH <http://example/bookStore>\n" +
+                "DELETE\n" +
+                " { ?book ?p ?v }\n" +
+                "WHERE\n" +
+                "  { ?book dc:date ?date ;\n" +
+                "          dc:type dcmitype:PhysicalObject .\n" +
+                "    FILTER ( ?date < \"2000-01-01T00:00:00-02:00\"^^xsd:dateTime ) \n" +
+                "    ?book ?p ?v\n" +
+                "  }";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+
+        Set<UriRef> expected = new HashSet<UriRef>();
+        expected.add(new UriRef("http://example/bookStore2"));
+        expected.add(new UriRef("http://example/bookStore"));
+        Assert.assertTrue(referredGraphs.containsAll(expected));
+    }
+
+    @Test
+    public void testExistsFunction() throws ParseException {
+        String queryStr = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+                "PREFIX foaf: <http://xmlns.com/foaf/0.1/> \n\n" +
+                "SELECT ?person\n" +
+                "WHERE \n" +
+                "{\n" +
+                "  ?person rdf:type foaf:Person .\n" +
+                "  FILTER EXISTS { ?person foaf:name ?name }\n" +
+                "}";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
+    public void testNotExistsFunction() throws ParseException {
+        String queryStr = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+                "PREFIX foaf: <http://xmlns.com/foaf/0.1/> \n\n" +
+                "SELECT ?person\n" +
+                "WHERE \n" +
+                "{\n" +
+                "  ?person rdf:type foaf:Person .\n" +
+                "  FILTER NOT EXISTS { ?person foaf:name ?name }\n" +
+                "}";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
 }

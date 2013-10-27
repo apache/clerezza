@@ -19,17 +19,24 @@
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.BasicGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.Expression;
+import org.apache.clerezza.rdf.core.sparql.query.GraphGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.GraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.MinusGraphPattern;
+import org.apache.clerezza.rdf.core.sparql.query.OptionalGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.PathSupportedBasicGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathPattern;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
+import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;
 
 /**
  * This class implements {@link GroupGraphPattern}.
@@ -180,4 +187,50 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 		graphPatterns.add(new SimpleMinusGraphPattern(prevGraphPattern, subtrahend));
         lastBasicGraphPatternIsComplete = true;
 	}
+
+    @Override
+    public Set<UriRef> getReferredGraphs() {
+        Set<UriRef> referredGraphs = new HashSet<UriRef>();
+        if (subSelect != null) {
+            GroupGraphPattern queryPattern = subSelect.getQueryPattern();
+            referredGraphs.addAll(queryPattern.getReferredGraphs());
+        } else {
+            for (GraphPattern graphPattern : graphPatterns) {
+                referredGraphs.addAll(getReferredGraphs(graphPattern));
+            }
+        }
+        return referredGraphs;
+    }
+
+    private Set<UriRef> getReferredGraphs(GraphPattern graphPattern) {
+        Set<UriRef> referredGraphs = new HashSet<UriRef>();
+        if (graphPattern instanceof GraphGraphPattern) {
+            GraphGraphPattern graphGraphPattern = (GraphGraphPattern) graphPattern;
+            UriRefOrVariable graph = graphGraphPattern.getGraph();
+            if (!graph.isVariable()) {
+                referredGraphs.add(graph.getResource());
+            }
+            referredGraphs.addAll(graphGraphPattern.getGroupGraphPattern().getReferredGraphs());
+        } else if (graphPattern instanceof AlternativeGraphPattern) {
+            List<GroupGraphPattern> alternativeGraphPatterns =
+                    ((AlternativeGraphPattern) graphPattern).getAlternativeGraphPatterns();
+            for (GroupGraphPattern groupGraphPattern : alternativeGraphPatterns) {
+                referredGraphs.addAll(groupGraphPattern.getReferredGraphs());
+            }
+        } else if (graphPattern instanceof OptionalGraphPattern) {
+            GraphPattern mainGraphPattern = ((OptionalGraphPattern) graphPattern).getMainGraphPattern();
+            referredGraphs.addAll(getReferredGraphs(mainGraphPattern));
+            GroupGraphPattern optionalGraphPattern = ((OptionalGraphPattern) graphPattern).getOptionalGraphPattern();
+            referredGraphs.addAll(optionalGraphPattern.getReferredGraphs());
+        } else if (graphPattern instanceof MinusGraphPattern) {
+            GraphPattern minuendGraphPattern = ((MinusGraphPattern) graphPattern).getMinuendGraphPattern();
+            referredGraphs.addAll(getReferredGraphs(minuendGraphPattern));
+            GroupGraphPattern subtrahendGraphPattern = ((MinusGraphPattern) graphPattern).getSubtrahendGraphPattern();
+            referredGraphs.addAll(subtrahendGraphPattern.getReferredGraphs());
+        } else if (graphPattern instanceof GroupGraphPattern) {
+            GroupGraphPattern groupGraphPattern = (GroupGraphPattern) graphPattern;
+            referredGraphs.addAll(groupGraphPattern.getReferredGraphs());
+        }
+        return referredGraphs;
+    }
 }

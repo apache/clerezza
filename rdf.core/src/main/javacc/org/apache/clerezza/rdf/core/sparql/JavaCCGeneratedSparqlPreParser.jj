@@ -56,6 +56,7 @@ import org.apache.clerezza.rdf.core.sparql.query.FunctionCall;
 import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.InlineData;
 import org.apache.clerezza.rdf.core.sparql.query.LiteralExpression;
+import org.apache.clerezza.rdf.core.sparql.query.PatternExistenceCondition;
 import org.apache.clerezza.rdf.core.sparql.query.PredicatePath;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathExpressionOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathExpression;
@@ -75,6 +76,7 @@ import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleAlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleAskQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleConstructQuery;
+import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleDataSet;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleDescribeQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleGraphGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleGroupGraphPattern;
@@ -100,6 +102,7 @@ import org.apache.clerezza.rdf.core.sparql.update.impl.DeleteWhereOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.DropOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.InsertDataOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.LoadOperation;
+import org.apache.clerezza.rdf.core.sparql.update.impl.ModifyOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.MoveOperation;
 import org.apache.clerezza.rdf.core.sparql.update.impl.SimpleUpdate;
 import org.apache.clerezza.rdf.core.sparql.update.impl.SimpleUpdateOperation;
@@ -390,6 +393,7 @@ TOKEN [IGNORE_CASE] :
 |   < ALL : "ALL" >
 |   < IN : "IN" >
 |   < NOT : "NOT" >
+|   < EXISTS : "EXISTS" >
 |   < BNODE : "BNODE" >
 |   < RAND : "RAND" >
 |   < CONCAT : "CONCAT" >
@@ -760,12 +764,16 @@ private void Update1(Update update) : {
     |
         updateOperation = Create()
     |
+        LOOKAHEAD(2)
         updateOperation = InsertData()
     |
         LOOKAHEAD(2)
         updateOperation = DeleteData()
     |
+        LOOKAHEAD(2)
         updateOperation = DeleteWhere()
+    |
+        updateOperation = Modify()
     ) {
     if (updateOperation != null) {
         update.addOperation(updateOperation);
@@ -919,9 +927,77 @@ private UpdateOperation DeleteWhere() : {
 }
 
 /* [41]    Modify ::= ( 'WITH' iri )? ( DeleteClause InsertClause? | InsertClause ) UsingClause* 'WHERE' GroupGraphPattern */
+private UpdateOperation Modify() : {
+    UriRef fallbackGraph = null;
+    UpdateOperationWithQuads deleteOperation = null;
+    UpdateOperationWithQuads insertOperation = null;
+    SimpleDataSet dataSet = new SimpleDataSet();
+    GroupGraphPattern queryPattern;
+    ModifyOperation operation; } {
+    (
+        <WITH>
+        fallbackGraph = Iri()
+    )?
+    (
+        deleteOperation = DeleteClause()
+        (
+            insertOperation = InsertClause()
+        )?
+    |
+        insertOperation = InsertClause()
+    ) {
+    operation = new ModifyOperation();
+    if (fallbackGraph != null) {
+        operation.setFallbackGraph(fallbackGraph);
+    }
+    if (deleteOperation != null) {
+        operation.setDeleteOperation(deleteOperation);
+    }
+    if (insertOperation != null) {
+        operation.setInsertOperation(insertOperation);
+    } }
+    (
+        UsingClause(dataSet)
+    )* {
+    operation.setDataSet(dataSet); }
+
+    <WHERE>
+    queryPattern = GroupGraphPattern() {
+    operation.setQueryPattern(queryPattern);
+    return operation; }
+}
+
 /* [42]    DeleteClause ::= 'DELETE' QuadPattern */
+private UpdateOperationWithQuads DeleteClause() : {
+    UpdateOperationWithQuads operation; } {
+    <DELETE> {
+    operation = new UpdateOperationWithQuads(); }
+    QuadPattern(operation) {
+    return operation; }
+}
+
 /* [43]    InsertClause ::= 'INSERT' QuadPattern */
+private UpdateOperationWithQuads InsertClause() : {
+    UpdateOperationWithQuads operation; } {
+    <INSERT> {
+    operation = new UpdateOperationWithQuads(); }
+    QuadPattern(operation) {
+    return operation; }
+}
+
 /* [44]    UsingClause ::= 'USING' ( iri | 'NAMED' iri ) */
+private void UsingClause(SimpleDataSet dataSet) : {
+    UriRef graph; } {
+    <USING>
+    (
+        graph = Iri() {
+        dataSet.addDefaultGraph(graph); }
+    |
+        <NAMED>
+        graph = Iri() {
+        dataSet.addNamedGraph(graph); }
+    )
+}
 
 /* [45]    GraphOrDefault ::= 'DEFAULT_T' | 'GRAPH'? iri */
 private GraphRefAllSpec GraphOrDefault() : {
@@ -2146,11 +2222,12 @@ private BuiltInCall BuiltInCall() : {
         <COALESCE> {
         name = "COALESCE"; }
         args=ExpressionList()
-/*
     |
         e=NotExistsFunc() {
         return (BuiltInCall) e; }
-*/
+    |
+        e=ExistsFunc() {
+        return (BuiltInCall) e; }
     |
         name=BuiltInCallName()
         "("
@@ -2182,10 +2259,30 @@ private String BuiltInCallName() : {
     return t.image; }
 }
 
-/*
-[125]    ExistsFunc ::= 'EXISTS' GroupGraphPattern
-[126]    NotExistsFunc ::= 'NOT' 'EXISTS' GroupGraphPattern
-*/
+/* [125]    ExistsFunc ::= 'EXISTS' GroupGraphPattern */
+private Expression ExistsFunc() : {
+    GroupGraphPattern pattern; 
+    PatternExistenceCondition patternExistenceCondition; } {
+
+    <EXISTS>
+    pattern = GroupGraphPattern() {
+    patternExistenceCondition = new PatternExistenceCondition();
+    patternExistenceCondition.setPattern(pattern);
+    return patternExistenceCondition; }
+}
+
+/* [126]    NotExistsFunc ::= 'NOT' 'EXISTS' GroupGraphPattern */
+private Expression NotExistsFunc() : {
+    GroupGraphPattern pattern; 
+    PatternExistenceCondition patternExistenceCondition; } {
+
+    <NOT> <EXISTS>
+    pattern = GroupGraphPattern() {
+    patternExistenceCondition = new PatternExistenceCondition();
+    patternExistenceCondition.setPattern(pattern);
+    patternExistenceCondition.setExistenceTest(false);
+    return patternExistenceCondition; }
+}
 
 /* [128]    IriOrFunction ::= iri ArgList? */
 private Expression IriOrFunction() : {

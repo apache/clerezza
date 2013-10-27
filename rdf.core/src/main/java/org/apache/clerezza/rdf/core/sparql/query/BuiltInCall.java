@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class BuiltInCall implements Expression {
 
-    private final String name;
+    protected String name;
     private final List<Expression> arguments;
 
     public BuiltInCall(String name, List<Expression> arguments) {
