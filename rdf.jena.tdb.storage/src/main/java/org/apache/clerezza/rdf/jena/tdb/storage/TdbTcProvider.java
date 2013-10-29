@@ -51,7 +51,6 @@ import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedMGraphWrapper;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
-import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
