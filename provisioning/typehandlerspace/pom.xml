@@ -36,7 +36,7 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>Typehandlerspace feature</name>
+    <name>Clerezza - Provisioning - Typehandlerspace</name>
     <description>Clerezza - Provisioning: What's needed to get typehandlerspace working on top of 
         JAX-RS 2.0. It depends on the Clerezza rdf libraries as provided by the RDF feature.</description>
 
@@ -165,8 +165,8 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.clerezza.provisionig.tooling</groupId>
-                    <artifactId>karaf-maven-plugin</artifactId>
+                    <groupId>org.wymiwyg.karaf.tooling</groupId>
+                    <artifactId>karaf-sling-maven-plugin</artifactId>
                     <version>3.0.0.RC1</version>
                     <extensions>true</extensions>
                 </plugin>
@@ -174,8 +174,8 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.clerezza.provisionig.tooling</groupId>
-                <artifactId>karaf-maven-plugin</artifactId>
+                <groupId>org.wymiwyg.karaf.tooling</groupId>
+                <artifactId>karaf-sling-maven-plugin</artifactId>
                 <configuration>
                     <startLevel>25</startLevel>
                     <aggregateFeatures>true</aggregateFeatures>
