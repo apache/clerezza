@@ -64,15 +64,11 @@ import org.apache.felix.scr.annotations.Service;
  *
  * @author reto, hasan
  *
- * @scr.component immediate="true"
- * @scr.service
- * interface="org.apache.clerezza.rdf.core.access.WeightedTcProvider"
- * @scr.property name="weight" type="Integer" value="105"
  *
  */
 @Component(metatype = true, immediate = true)
 @Service(WeightedTcProvider.class)
-@Property(name = "weight", intValue = 105)
+@Property(name = "weight", intValue = 107)
 public class TdbTcProvider implements WeightedTcProvider {
 
     static {
@@ -99,7 +95,7 @@ public class TdbTcProvider implements WeightedTcProvider {
             = new HashMap<File, Lock>();
     private final Map<File, Dataset> dir2Dataset = new HashMap<File, Dataset>();
     private static final Logger log = LoggerFactory.getLogger(TdbTcProvider.class);
-    private int weight = 105;
+    private int weight = 107;
 
     class SyncThread extends Thread {
 

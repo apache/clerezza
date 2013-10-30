@@ -85,7 +85,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
     @Property(name=SingleTdbDatasetTcProvider.TDB_DIR),
     @Property(name=SingleTdbDatasetTcProvider.DEFAULT_GRAPH_NAME),
     @Property(name=SingleTdbDatasetTcProvider.SYNC_INTERVAL, intValue=SingleTdbDatasetTcProvider.DEFAULT_SYNC_INTERVAL),
-    @Property(name=SingleTdbDatasetTcProvider.WEIGHT, intValue=107)
+    @Property(name=SingleTdbDatasetTcProvider.WEIGHT, intValue=105)
 })
 public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements WeightedTcProvider {
 
