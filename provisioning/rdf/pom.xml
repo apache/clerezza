@@ -117,6 +117,11 @@
             <version>0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.clerezza.ext</groupId>
+            <artifactId>org.json.simple</artifactId>
+            <version>0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.sparql</artifactId>
             <version>0.7-SNAPSHOT</version>
@@ -144,28 +149,10 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.clerezza.provisionig.tooling</groupId>
-                    <artifactId>karaf-maven-plugin</artifactId>
-                    <version>3.0.0.RC1</version>
-                    <extensions>true</extensions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.clerezza.provisionig.tooling</groupId>
-                <artifactId>karaf-maven-plugin</artifactId>
-                <configuration>
-                    <startLevel>20</startLevel>
-                    <aggregateFeatures>true</aggregateFeatures>
-                    <resolver>(obr)</resolver>
-                    <checkDependencyChange>false</checkDependencyChange>
-                    <includeTransitiveDependency>false</includeTransitiveDependency>
-                    <createSlingPartialBundleList>true</createSlingPartialBundleList>
-                </configuration>
+                <groupId>org.wymiwyg.karaf.tooling</groupId>
+                <artifactId>karaf-sling-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
