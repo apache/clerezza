@@ -109,8 +109,9 @@ public class TcManager extends TcProviderMultiplexer {
     private TcAccessController tcAccessController = new TcAccessController(this);
     private Map<UriRef, ServiceRegistration> serviceRegistrations = Collections
             .synchronizedMap(new HashMap<UriRef, ServiceRegistration>());
+    
     @Reference(policy = ReferencePolicy.DYNAMIC,
-            cardinality = ReferenceCardinality.MANDATORY_UNARY)
+            cardinality = ReferenceCardinality.OPTIONAL_UNARY)
     protected QueryEngine queryEngine;
 
     private ComponentContext componentContext;
