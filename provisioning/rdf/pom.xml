@@ -36,7 +36,7 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>Clerezza - Provisioning: RDF feature</name>
+    <name>Clerezza - Provisioning - RDF</name>
     <description>A Karaf feature and partialbundlelist with the Java RDF 
         libraries and jena based implementations.
     
