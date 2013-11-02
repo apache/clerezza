@@ -45,7 +45,9 @@
     <modules>
         <module>jaxrs-whiteboard</module>
         <module>rdf</module>
+        <module>platform.graphnodeprovider</module>
         <module>typehandlerspace</module>
+        <module>typerendering</module>
         <module>sling-launcher</module>
     </modules>
 

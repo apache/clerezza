@@ -227,6 +227,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>platform.graphnodeprovider</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
+      <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>jaxrs</artifactId>
             <version>0.1-SNAPSHOT</version>
             <type>partialbundlelist</type>

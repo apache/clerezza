@@ -32,79 +32,76 @@
     </parent>
 
     <groupId>org.apache.clerezza.provisioning</groupId>
-    <artifactId>typerendering</artifactId>
+    <artifactId>platform.graphnodeprovider</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>Clerezza - Provisioning - Typerendering</name>
-    <description>Clerezza - Provisioning: What's needed to get typerenering working.
-        It depends on the Clerezza rdf libraries as provided by the RDF feature 
-        and on JAX-RS.</description>
+    <name>Clerezza - Provisioning - Platform GraphNodeProvider</name>
+    <description>Clerezza - Provisioning: The platform graphnodeprovider and
+        its dependencies. It depends on the Clerezza rdf libraries as provided 
+        by the RDF feature.</description>
 
     <dependencies>
  
         <dependency>
             <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>            
+            <artifactId>scala-library</artifactId>
         </dependency> 	
-        
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-actors</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-reflect</artifactId>
-        </dependency>
        
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>slf4j-scala-api</artifactId>
-            <version>1.6.3-SNAPSHOT</version>       
+            <version>1.6.3-SNAPSHOT</version>
         </dependency> 	
  
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typepriority</artifactId>
+            <artifactId>permissiondescriptions</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
-        
+ 
+        <dependency> <!-- dependency of platform.user.core (implementation of WebIdInfo.forceCacheUpdate() ) -->
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.storage.web</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+ 
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typerendering.core</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <artifactId>platform</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+ 
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.graphprovider.content</artifactId>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typerendering.ontologies</artifactId>
-            <version>0.3-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typerendering.scalaserverpages</artifactId>
+            <artifactId>platform.config</artifactId>
             <version>0.4-SNAPSHOT</version>
         </dependency>
-        
+                    
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typerendering.scala</artifactId>
+            <artifactId>platform.users.core</artifactId>
             <version>0.2-SNAPSHOT</version>
-        </dependency>
-        
+        </dependency> 	
+ 
         <dependency>
-            <groupId>org.apache.clerezza.scala</groupId>
-            <artifactId>script-engine</artifactId>
-            <version>0.3-SNAPSHOT</version>
-        </dependency>
-        
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.usermanager</artifactId>
+            <version>0.14-SNAPSHOT</version>
+        </dependency> 	
+ 
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.graphnodeprovider</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency> 	
+ 
     </dependencies>
 
     <build>
