@@ -27,41 +27,41 @@ import org.osgi.service.component.ComponentContext
 import scala.collection.JavaConversions._
 
 class OsgiDsl(context: ComponentContext, outputStream: OutputStream) 
-		extends ServicesDsl(context.getBundleContext) {
+    extends ServicesDsl(context.getBundleContext) {
 
-	lazy val out = new PrintWriter(new OutputStreamWriter(outputStream, "utf-8"), true)
-	val bundleContext = context.getBundleContext
+  lazy val out = new PrintWriter(new OutputStreamWriter(outputStream, "utf-8"), true)
+  val bundleContext = context.getBundleContext
 
-	def ps = {
-		for (b <- bundleContext.getBundles) {out.println(b.getBundleId+" - "+b.getSymbolicName+" "+b.getLocation)}
-	}
+  def ps = {
+    for (b <- bundleContext.getBundles) {out.println(b.getBundleId+" - "+b.getSymbolicName+" "+b.getLocation)}
+  }
 
-	def install(uri: String) = {
-		bundleContext.installBundle(uri)
-	}
+  def install(uri: String) = {
+    bundleContext.installBundle(uri)
+  }
 
-	def start(uri: String) = {
-		val b = install(uri)
-		b.start()
-		b
-	}
+  def start(uri: String) = {
+    val b = install(uri)
+    b.start()
+    b
+  }
 
-	def update(pattern: String) = {
-		for (b <- bundleContext.getBundles; if (b.getLocation.matches(pattern))) {
-			out.println("updating "+b.getLocation)
-			b.update()
-		}
-	}
+  def update(pattern: String) = {
+    for (b <- bundleContext.getBundles; if (b.getLocation.matches(pattern))) {
+      out.println("updating "+b.getLocation)
+      b.update()
+    }
+  }
 
-	def headers(bundleId: Int) {
-		headers(bundleContext.getBundle(bundleId))
-	}
+  def headers(bundleId: Int) {
+    headers(bundleContext.getBundle(bundleId))
+  }
 
-	def headers(bundle: Bundle) {
-		for ((k,v) <- bundle.getHeaders) {out.println(k+" = "+v) }
-	}
+  def headers(bundle: Bundle) {
+    for ((k,v) <- bundle.getHeaders) {out.println(k+" = "+v) }
+  }
 
-	def shutdown {
-		bundleContext.getBundle(0).stop()
-	}
+  def shutdown {
+    bundleContext.getBundle(0).stop()
+  }
 }
