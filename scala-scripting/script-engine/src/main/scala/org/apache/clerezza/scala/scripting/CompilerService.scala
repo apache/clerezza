@@ -147,29 +147,26 @@ class CompilerService() extends BundleListener  {
 	def compileIsolated(sources: List[Array[Char]], outputDirectory: AbstractFile): List[Class[_]] = {
 		AccessController.checkPermission(new CompilePermission)
 		sharedCompiler.synchronized {
-			try {
-				AccessController.doPrivileged[List[Class[_]]](
-					new PrivilegedExceptionAction[List[Class[_]]] {
-						def run() = {
-							val out = new ByteArrayOutputStream
-							val printWriter = new PrintWriter(out)
-							val compiler = createCompiler(printWriter, outputDirectory)
-							try {
-								compiler.compile(sources)
-							} catch {
-								case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"), c)
-								case e: Exception => throw e
-							}
-						}
-					})
-			}
+                              AccessController.doPrivileged[List[Class[_]]](
+                                      new PrivilegedExceptionAction[List[Class[_]]] {
+                                              def run() = {
+                                                      val out = new ByteArrayOutputStream
+                                                      val printWriter = new PrintWriter(out)
+                                                      val compiler = createCompiler(printWriter, outputDirectory)
+                                                      try {
+                                                              compiler.compile(sources)
+                                                      } catch {
+                                                              case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"), c)
+                                                              case e: Exception => throw e
+                                                      }
+                                              }
+                                      })
 		}
 	}
 
 	def compileToDir(sources: List[Array[Char]], outputDirectory: AbstractFile): List[AbstractFile] = {
 		AccessController.checkPermission(new CompilePermission)
 		sharedCompiler.synchronized {
-			try {
 				AccessController.doPrivileged[List[AbstractFile]](
 					new PrivilegedExceptionAction[List[AbstractFile]] {
 						def run() = {
@@ -184,7 +181,6 @@ class CompilerService() extends BundleListener  {
 							}
 						}
 					})
-			}
 		}
 	}
 

@@ -26,8 +26,8 @@
 
 package org.apache.clerezza.scala.scripting.util
 
-import scala.tools.nsc.io.AbstractFile
-import scala.tools.nsc.io.VirtualDirectory
+import scala.reflect.io.AbstractFile
+import scala.reflect.io.VirtualDirectory
 
 class VirtualDirectoryWrapper(val wrapped: AbstractFile,
 							  val childWrapper: (AbstractFile) => AbstractFile) extends VirtualDirectory(null, None)
