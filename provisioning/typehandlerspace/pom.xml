@@ -38,7 +38,8 @@
 
     <name>Clerezza - Provisioning - Typehandlerspace</name>
     <description>Clerezza - Provisioning: What's needed to get typehandlerspace working on top of 
-        JAX-RS 2.0. It depends on the Clerezza rdf libraries as provided by the RDF feature.</description>
+        JAX-RS 2.0. It depends on the Clerezza rdf libraries as provided by the RDF feature 
+        and platform.graphnodeprovider.</description>
 
     <dependencies>
  

@@ -38,8 +38,8 @@
 
     <name>Clerezza - Provisioning - Typerendering</name>
     <description>Clerezza - Provisioning: What's needed to get typerenering working.
-        It depends on the Clerezza rdf libraries as provided by the RDF feature 
-        and on JAX-RS.</description>
+        It depends on the Clerezza rdf libraries as provided by the RDF feature, 
+        on JAX-RS and on platform.graphnodeprovider..</description>
 
     <dependencies>
  
