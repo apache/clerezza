@@ -20,8 +20,6 @@
 package org.apache.clerezza.scala.scripting
 
 
-import org.apache.clerezza.scala.scripting.util.FileWrapper
-import org.apache.clerezza.scala.scripting.util.GenericFileWrapperTrait
 import org.apache.clerezza.scala.scripting.util.SplittingDirectory
 import org.apache.clerezza.scala.scripting.util.VirtualDirectoryWrapper
 import org.osgi.framework.BundleContext
@@ -32,8 +30,8 @@ import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.io.VirtualDirectory
 import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.reporters.Reporter
-import scala.tools.nsc.util._
-import java.io.ByteArrayOutputStream
+import scala.reflect.internal.util.SourceFile
+import scala.reflect.internal.util.BatchSourceFile
 import java.io.PrintWriter
 import java.net._
 

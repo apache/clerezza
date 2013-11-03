@@ -30,7 +30,7 @@ import scala.tools.nsc.io.AbstractFile
 
 class FileWrapper(val wrapped: AbstractFile, val childWrapper: (AbstractFile) => AbstractFile) extends AbstractFile with GenericFileWrapperTrait {
 
-	/** overriding this hgere rather than in the trait as this is a var in VirtualDirectory
+	/** overriding this here rather than in the trait as this is a var in VirtualDirectory
 	*/
 	def lastModified = {
 		wrapped.lastModified
@@ -41,7 +41,7 @@ class FileWrapper(val wrapped: AbstractFile, val childWrapper: (AbstractFile) =>
 		try {
 			super.unsupported(msg)
 		} catch {
-			case e => e.printStackTrace(); throw e
+			case e: Exception => e.printStackTrace(); throw e
 		}
 	}
 }

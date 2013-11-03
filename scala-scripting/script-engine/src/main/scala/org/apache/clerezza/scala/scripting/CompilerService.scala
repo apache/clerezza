@@ -45,8 +45,9 @@ import java.io.PrintWriter
 import java.io.Reader
 import java.net._
 
-class CompileErrorsException(message: String) extends Exception(message) {
-	def this() = this(null)
+class CompileErrorsException(message: String, cause: Exception) extends Exception(message, cause) {
+	def this(cause: Exception) = this(null, cause)
+        def this() = this(null)
 }
 
 class CompilePermission extends Permission("Compile Permssion") {
@@ -118,9 +119,11 @@ class CompilerService() extends BundleListener  {
 							try {
 								sharedCompiler.compile(sources)
 							} catch {
-								case c: CompileErrorsException => throw new CompileErrorsException(
-										new String(baos.toByteArray, "utf-8"))
-								case e => throw e
+								case c: CompileErrorsException => {           
+                                                                    throw new CompileErrorsException(
+										new String(baos.toByteArray, "utf-8"), c)
+                                                                }
+								case e: Exception => throw e
 							} finally {
 								currentSharedCompilerOutputStream = null
 							}
@@ -128,7 +131,7 @@ class CompilerService() extends BundleListener  {
 					})
 			} catch {
 				case e: PrivilegedActionException => throw e.getCause
-				case e => throw e
+				case e: Exception => throw e
 			}
 		}
 	}
@@ -154,8 +157,8 @@ class CompilerService() extends BundleListener  {
 							try {
 								compiler.compile(sources)
 							} catch {
-								case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"))
-								case e => throw e
+								case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"), c)
+								case e: Exception => throw e
 							}
 						}
 					})
@@ -176,8 +179,8 @@ class CompilerService() extends BundleListener  {
 							try {
 								compiler.compileToDir(sources)
 							} catch {
-								case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"))
-								case e => throw e
+								case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"), c)
+								case e: Exception => throw e
 							}
 						}
 					})

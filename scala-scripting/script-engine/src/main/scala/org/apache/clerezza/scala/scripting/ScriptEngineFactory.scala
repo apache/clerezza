@@ -169,7 +169,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 								}
 								sender ! interpreter.valueOfTerm("zzScriptResult")
 							} catch {
-								case e => sender ! ScriptEngineFactory.ActorException(e)
+								case e: Exception => sender ! ScriptEngineFactory.ActorException(e)
 							}
 						}
 						case ScriptEngineFactory.RefreshInterpreter => {
