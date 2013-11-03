@@ -234,7 +234,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
 							compilerService.compile(sources)(0)
 						} catch {
 							case e: CompileErrorsException => throw new ScriptException(e.getMessage, "script", -1);
-							case e => throw e
+							case e: Exception => throw e
 						}
 						val scriptObject = clazz.newInstance()
 
