@@ -50,6 +50,12 @@ public class Smusher {
         smush(lockable(mGraph), tBox);
     }
 
+    /**
+     * Smushes the specified graph adding owl:sameAs statements pointing to the new canonical IRI
+     * 
+     * @param mGraph
+     * @param owlSameStatements 
+     */
     public static void sameAsSmush(MGraph mGraph, TripleCollection owlSameStatements) {
         sameAsSmush(lockable(mGraph), owlSameStatements);
     }

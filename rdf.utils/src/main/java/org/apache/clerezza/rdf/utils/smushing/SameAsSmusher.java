@@ -48,7 +48,7 @@ public class SameAsSmusher extends BaseSmusher {
      * to the preferedIri as returned by {@code getPreferedIri}
      * @param mGraph
      * @param owlSameStatements 
-     * @param addCanonicalSameAsStatements if true owl:sameAsSteemntes with the preferedIri as object will be added
+     * @param addCanonicalSameAsStatements if true owl:sameAsStatements with the preferedIri as object will be added
      */
     public void smush(LockableMGraph mGraph, 
             TripleCollection owlSameStatements,
