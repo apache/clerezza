@@ -94,7 +94,8 @@
                         scala.tools.jline.console.history, 
                         scala.tools.jline.console.completer</Export-Package>
                         <Bundle-SymbolicName>org.apache.clerezza.shell</Bundle-SymbolicName>
-                        <Import-Package>org.apache.clerezza.platform.security;resolution:=optional, *</Import-Package>
+                        <Import-Package>org.apache.clerezza.platform.security;resolution:=optional, 
+                            org.osgi.*; version="[1,2)", *</Import-Package>
                         <Embed-Dependency>jline, scala-actors</Embed-Dependency>
                     </instructions>
                 </configuration>

@@ -25,7 +25,7 @@ import org.osgi.service.component.ComponentContext
 import java.io.InputStream
 import java.io.OutputStream
 import java.security.AccessController
-import java.security.PrivilegedAction
+import java.security.PrivilegedExceptionAction
 import org.apache.clerezza.scala.scripting.InterpreterFactory
 import scala.tools.jline.Terminal
 
@@ -34,77 +34,78 @@ class ShellFactory()  {
 
 
 
-	private var interpreterFactory: InterpreterFactory = null
-	private var componentContext: ComponentContext = null
-	private var commands = Set[ShellCommand]()
-	private var customizers = Set[ShellCustomizer]()
-	
-	def activate(componentContext: ComponentContext)= {
-		this.componentContext = componentContext
-	}
+  private var interpreterFactory: InterpreterFactory = null
+  private var componentContext: ComponentContext = null
+  private var commands = Set[ShellCommand]()
+  private var customizers = Set[ShellCustomizer]()
+  
+  def activate(componentContext: ComponentContext)= {
+    this.componentContext = componentContext
+  }
 
-	def deactivate(componentContext: ComponentContext) = {
-		this.componentContext = componentContext
-	}
+  def deactivate(componentContext: ComponentContext) = {
+    this.componentContext = componentContext
+  }
 
-	/* 
-	 * Using overloading instead of default, as default is not supported when calling from java
-	 */
-	def createShell(pIn: InputStream, pOut: OutputStream): Shell = {
-	  createShell(pIn, pOut, None)
-	}
-	def createShell(pIn: InputStream, pOut: OutputStream, terminalOption: Option[Terminal]): Shell = {
+  /* 
+   * Using overloading instead of default, as default is not supported when calling from java
+   */
+  def createShell(pIn: InputStream, pOut: OutputStream): Shell = {
+    createShell(pIn, pOut, None)
+  }
+  def createShell(pIn: InputStream, pOut: OutputStream, terminalOption: Option[Terminal]): Shell = {
     var security: SecurityManager = System.getSecurityManager
     if (security != null) {
       AccessController.checkPermission(new ShellPermission())
     }
-		AccessController.doPrivileged(new PrivilegedAction[Shell] {
-				override def run() = {
-					val shell = new Shell(interpreterFactory, pIn, pOut, commands, terminalOption)
-					//shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
-					//shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
-					shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext, pOut))
-					shell.addImport("org.apache.clerezza.{scala => zzscala, _ }")
-					shell.addImport("osgiDsl._")
-					val environment = new Shell.Environment {
-						val componentContext: ComponentContext = ShellFactory.this.componentContext
-						val in: InputStream = pIn;
-						val out: OutputStream = pOut;
-					}
-					for (c <- customizers) {
-						for(b <- c.bindings(environment)) {
-							shell.bind(b._1, b._2, b._3)
-						}
-						for(i <- c.imports) {
-							shell.addImport(i)
-						}
-					}
-					shell
-				}
-			})
-	}
+    AccessController.doPrivileged(new PrivilegedExceptionAction[Shell] {
+        override def run() = {
+          val shell = new Shell(interpreterFactory, pIn, pOut, commands, terminalOption)
+          //shell.bind("bundleContext", classOf[BundleContext].getName, componentContext.getBundleContext)
+          //shell.bind("componentContext", classOf[ComponentContext].getName, componentContext)
+          shell.bind("osgiDsl", classOf[OsgiDsl].getName, new OsgiDsl(componentContext, pOut))
+          shell.addImport("org.apache.clerezza.{scala => zzscala, _ }")
+          shell.addImport("osgiDsl._")
+          val environment = new Shell.Environment {
+            val componentContext: ComponentContext = ShellFactory.this.componentContext
+            val in: InputStream = pIn;
+            val out: OutputStream = pOut;
+          }
+          for (c <- customizers) {
+            for(b <- c.bindings(environment)) {
+              shell.bind(b._1, b._2, b._3)
+            }
+            for(i <- c.imports) {
+              shell.addImport(i)
+            }
+          }
+          shell
+        }
+      })
 
-	def bindInterpreterFactory(f: InterpreterFactory) = {
-		interpreterFactory = f
-	}
+  }
 
-	def unbindInterpreterFactory(f: InterpreterFactory) = {
-		interpreterFactory = null
-	}
+  def bindInterpreterFactory(f: InterpreterFactory) = {
+    interpreterFactory = f
+  }
 
-	def bindCommand(c: ShellCommand) = {
-		commands += c
-	}
+  def unbindInterpreterFactory(f: InterpreterFactory) = {
+    interpreterFactory = null
+  }
 
-	def unbindCommand(c: ShellCommand) = {
-		commands -= c
-	}
+  def bindCommand(c: ShellCommand) = {
+    commands += c
+  }
 
-	def bindCustomizer(c: ShellCustomizer) = {
-		customizers += c
-	}
+  def unbindCommand(c: ShellCommand) = {
+    commands -= c
+  }
 
-	def unbindCustomizer(c: ShellCustomizer) = {
-		customizers -= c
-	}
+  def bindCustomizer(c: ShellCustomizer) = {
+    customizers += c
+  }
+
+  def unbindCustomizer(c: ShellCustomizer) = {
+    customizers -= c
+  }
 }

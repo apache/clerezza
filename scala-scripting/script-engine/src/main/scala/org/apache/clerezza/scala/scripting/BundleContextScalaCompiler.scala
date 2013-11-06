@@ -19,6 +19,7 @@
 package org.apache.clerezza.scala.scripting
 
 import org.osgi.framework.BundleContext
+//import org.fusesource.scalate.util.Strings
 import org.osgi.framework.Bundle
 /*import java.io.File
 import scala.tools.nsc._;
@@ -29,8 +30,8 @@ import java.net._
 import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
 import scala.tools.util.PathResolver*/
-import org.fusesource.scalate._
-import osgi.{BundleHeaders, BundleClassPathBuilder, BundleClassLoader}
+import java.net.URL
+//import org.fusesource.scalate.osgi.BundleClassPathBuilder
 import scala.tools.nsc.Global
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.ReplGlobal
@@ -43,8 +44,9 @@ import scala.runtime.ByteRef
 import scala.util.parsing.input.OffsetPosition
 import collection.mutable.ListBuffer
 import org.osgi.framework.Bundle
-import java.io.{PrintWriter, StringWriter, File}
+import java.io.{PrintWriter, StringWriter, File, IOException, InputStream}
 import org.slf4j.scala._
+import scala.collection.mutable.ListBuffer
 
 /*
  * unfortunately there seems to be no way to change the classpath, so this doesn't
@@ -69,11 +71,11 @@ class BundleContextScalaCompiler(bundleContext : BundleContext,
   def createClassPath[T](original: ClassPath[T]) = {
     
     var result = ListBuffer(original)
-    for (bundle <- bundleContext.getBundles; if bundle.getResource("/") != null) {
+    for (bundle <- bundleContext.getBundles/*; if bundle.getResource("/") != null*/) {
       try {
-        val files = BundleClassPathBuilder.fromBundle(bundle) 
+        val files = ListBuffer(BundleFS.create(bundle)); //BundleClassPathBuilder.fromBundle(bundle) 
         files.foreach(file => {
-          //debug("Adding bundle " + file + " to the Scala compiler classpath")
+          //println("Adding bundle " + file + " to the Scala compiler classpath for "+bundle)
           result += original.context.newClassPath(file)
         })
       } catch {
@@ -110,6 +112,6 @@ class BundleContextScalaCompiler(bundleContext : BundleContext,
 	/*override def rootLoader: LazyType = {
 		new loaders.JavaPackageLoader(classPath)
 	}*/
-}
+        }
 
 

@@ -40,11 +40,11 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-actors</artifactId>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>org.fusesource.scalate</groupId>
             <artifactId>scalate-core_2.10</artifactId>
             <version>1.6.1</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr.annotations</artifactId>
@@ -72,13 +72,13 @@
                     <instructions>
                         <Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
                         <Export-Package>org.apache.clerezza.scala.scripting,org.apache.clerezza.scala.scripting.util</Export-Package>
-                        <Import-Package>!com.sun.*,!javax.servlet,!javax.servlet.*,
+                        <!-- <Import-Package>!com.sun.*,!javax.servlet,!javax.servlet.*,
                             !org.fusesource.*,!org.mozilla.*,!scala.reflect.*,!javax.ws.rs,!javax.ws.rs.*,*
-                        </Import-Package>
-                        <Private-Package>org.fusesource.*</Private-Package>
+                        </Import-Package> -->
+                        <!-- <Private-Package>org.fusesource.*</Private-Package> -->
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Bundle-SymbolicName>org.apache.clerezza.scala.scripting</Bundle-SymbolicName>
-                        <Embed-Dependency>scalate-core_2.10</Embed-Dependency>
+                    <!--    <Embed-Dependency>scalate-core_2.10</Embed-Dependency> -->
                     </instructions>
                 </configuration>
             </plugin>

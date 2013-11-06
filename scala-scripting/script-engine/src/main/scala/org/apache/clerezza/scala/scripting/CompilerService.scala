@@ -46,143 +46,143 @@ import java.io.Reader
 import java.net._
 
 class CompileErrorsException(message: String, cause: Exception) extends Exception(message, cause) {
-	def this(cause: Exception) = this(null, cause)
-        def this() = this(null)
+  def this(cause: Exception) = this(null, cause)
+  def this() = this(null)
 }
 
 class CompilePermission extends Permission("Compile Permssion") {
-	def getActions() = ""
-	def implies(p: Permission) = p.isInstanceOf[CompilePermission]
-	override def equals(o: Any): Boolean = o.isInstanceOf[CompilePermission]
-	override def hashCode = classOf[CompilePermission].hashCode
+  def getActions() = ""
+  def implies(p: Permission) = p.isInstanceOf[CompilePermission]
+  override def equals(o: Any): Boolean = o.isInstanceOf[CompilePermission]
+  override def hashCode = classOf[CompilePermission].hashCode
 }
 
 class CompilerService() extends BundleListener  {
 
-	protected var bundleContext : BundleContext = null;
-	//protected val sharedVirtualDirectory = new VirtualDirectory("(memory)", None)
-	protected var currentSharedCompilerOutputStream: OutputStream = null
-	protected val splipptingOutputStream = new OutputStream() {
-		def write(b: Int) {
-			if (currentSharedCompilerOutputStream == null) {
-				throw new IOException("no currentSharedCompilerOutputStream set")
-			}
-			currentSharedCompilerOutputStream.write(b)
-		}
-	}
-	protected val splittingPrintWriter = new PrintWriter(splipptingOutputStream, true)
+  protected var bundleContext : BundleContext = null;
+  //protected val sharedVirtualDirectory = new VirtualDirectory("(memory)", None)
+  protected var currentSharedCompilerOutputStream: OutputStream = null
+  protected val splipptingOutputStream = new OutputStream() {
+    def write(b: Int) {
+      if (currentSharedCompilerOutputStream == null) {
+        throw new IOException("no currentSharedCompilerOutputStream set")
+      }
+      currentSharedCompilerOutputStream.write(b)
+    }
+  }
+  protected val splittingPrintWriter = new PrintWriter(splipptingOutputStream, true)
 
-	protected var currentSharedCompiler: TrackingCompiler = null;
-	protected def sharedCompiler = {
-		if (currentSharedCompiler == null) {
-			synchronized {
-				if (currentSharedCompiler == null) {
-					currentSharedCompiler = TrackingCompiler(bundleContext, splittingPrintWriter, None)
-					//createCompiler(splittingPrintWriter, sharedVirtualDirectory)
-				}
-			}
-		}
-		currentSharedCompiler
-	}
+  protected var currentSharedCompiler: TrackingCompiler = null;
+  protected def sharedCompiler = {
+    if (currentSharedCompiler == null) {
+      synchronized {
+        if (currentSharedCompiler == null) {
+          currentSharedCompiler = TrackingCompiler(bundleContext, splittingPrintWriter, None)
+          //createCompiler(splittingPrintWriter, sharedVirtualDirectory)
+        }
+      }
+    }
+    currentSharedCompiler
+  }
 
-	def activate(componentContext: ComponentContext)= {
-		bundleContext = componentContext.getBundleContext
-		bundleContext.addBundleListener(this)
-	}
+  def activate(componentContext: ComponentContext)= {
+    bundleContext = componentContext.getBundleContext
+    bundleContext.addBundleListener(this)
+  }
 
-	def deactivate(componentContext: ComponentContext) = {
-		currentSharedCompiler = null
-		bundleContext.removeBundleListener(this)
-	}
+  def deactivate(componentContext: ComponentContext) = {
+    currentSharedCompiler = null
+    bundleContext.removeBundleListener(this)
+  }
 
-	def bundleChanged(event: BundleEvent) = {
-		currentSharedCompiler = null
-	}
+  def bundleChanged(event: BundleEvent) = {
+    currentSharedCompiler = null
+  }
 
-	def createCompiler(out: PrintWriter, outputSirectory: AbstractFile) : TrackingCompiler = {
-		TrackingCompiler(bundleContext, out, Some(outputSirectory))
-	}
+  def createCompiler(out: PrintWriter, outputSirectory: AbstractFile) : TrackingCompiler = {
+    TrackingCompiler(bundleContext, out, Some(outputSirectory))
+  }
 
-	def compile(sources: Array[Array[Char]]): Array[Class[_]] = {
-		compile(sources.toList).toArray
-	}
+  def compile(sources: Array[Array[Char]]): Array[Class[_]] = {
+    compile(sources.toList).toArray
+  }
 
-	def compile(sources: List[Array[Char]]): List[Class[_]] = {
-		AccessController.checkPermission(new CompilePermission)
-		sharedCompiler.synchronized {
-			try {
-				AccessController.doPrivileged[List[Class[_]]](
-					new PrivilegedExceptionAction[List[Class[_]]] {
-						def run(): List[Class[_]] = {
-							val baos = new ByteArrayOutputStream
-							currentSharedCompilerOutputStream = baos
-							try {
-								sharedCompiler.compile(sources)
-							} catch {
-								case c: CompileErrorsException => {           
-                                                                    throw new CompileErrorsException(
-										new String(baos.toByteArray, "utf-8"), c)
-                                                                }
-								case e: Exception => throw e
-							} finally {
-								currentSharedCompilerOutputStream = null
-							}
-						}
-					})
-			} catch {
-				case e: PrivilegedActionException => throw e.getCause
-				case e: Exception => throw e
-			}
-		}
-	}
+  def compile(sources: List[Array[Char]]): List[Class[_]] = {
+    AccessController.checkPermission(new CompilePermission)
+    sharedCompiler.synchronized {
+      try {
+        AccessController.doPrivileged[List[Class[_]]](
+          new PrivilegedExceptionAction[List[Class[_]]] {
+            def run(): List[Class[_]] = {
+              val baos = new ByteArrayOutputStream
+              currentSharedCompilerOutputStream = baos
+              try {
+                sharedCompiler.compile(sources)
+              } catch {
+                case c: CompileErrorsException => {  
+                    throw new CompileErrorsException(
+                      new String(baos.toByteArray, "utf-8"), c)
+                  }
+                case e: Exception => throw e
+              } finally {
+                currentSharedCompilerOutputStream = null
+              }
+            }
+          })
+      } catch {
+        case e: PrivilegedActionException => throw e.getCause
+        case e: Exception => throw e
+      }
+    }
+  }
 
-	/**
-	 * compiles a set of sources with a dedicated compiler
-	 */
-	def compileIsolated(sources: List[Array[Char]]): List[Class[_]] = {
-		val virtualDirectory = new VirtualDirectory("(memory)", None)
-		compileIsolated(sources, virtualDirectory)
-	}
+  /**
+   * compiles a set of sources with a dedicated compiler
+   */
+  def compileIsolated(sources: List[Array[Char]]): List[Class[_]] = {
+    val virtualDirectory = new VirtualDirectory("(memory)", None)
+    compileIsolated(sources, virtualDirectory)
+  }
 
-	def compileIsolated(sources: List[Array[Char]], outputDirectory: AbstractFile): List[Class[_]] = {
-		AccessController.checkPermission(new CompilePermission)
-		sharedCompiler.synchronized {
-                              AccessController.doPrivileged[List[Class[_]]](
-                                      new PrivilegedExceptionAction[List[Class[_]]] {
-                                              def run() = {
-                                                      val out = new ByteArrayOutputStream
-                                                      val printWriter = new PrintWriter(out)
-                                                      val compiler = createCompiler(printWriter, outputDirectory)
-                                                      try {
-                                                              compiler.compile(sources)
-                                                      } catch {
-                                                              case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"), c)
-                                                              case e: Exception => throw e
-                                                      }
-                                              }
-                                      })
-		}
-	}
+  def compileIsolated(sources: List[Array[Char]], outputDirectory: AbstractFile): List[Class[_]] = {
+    AccessController.checkPermission(new CompilePermission)
+    sharedCompiler.synchronized {
+      AccessController.doPrivileged[List[Class[_]]](
+        new PrivilegedExceptionAction[List[Class[_]]] {
+          def run() = {
+            val out = new ByteArrayOutputStream
+            val printWriter = new PrintWriter(out)
+            val compiler = createCompiler(printWriter, outputDirectory)
+            try {
+              compiler.compile(sources)
+            } catch {
+              case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"), c)
+              case e: Exception => throw e
+            }
+          }
+        })
+    }
+  }
 
-	def compileToDir(sources: List[Array[Char]], outputDirectory: AbstractFile): List[AbstractFile] = {
-		AccessController.checkPermission(new CompilePermission)
-		sharedCompiler.synchronized {
-				AccessController.doPrivileged[List[AbstractFile]](
-					new PrivilegedExceptionAction[List[AbstractFile]] {
-						def run() = {
-							val out = new ByteArrayOutputStream
-							val printWriter = new PrintWriter(out)
-							val compiler = createCompiler(printWriter, outputDirectory)
-							try {
-								compiler.compileToDir(sources)
-							} catch {
-								case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"), c)
-								case e: Exception => throw e
-							}
-						}
-					})
-		}
-	}
+  def compileToDir(sources: List[Array[Char]], outputDirectory: AbstractFile): List[AbstractFile] = {
+    AccessController.checkPermission(new CompilePermission)
+    sharedCompiler.synchronized {
+      AccessController.doPrivileged[List[AbstractFile]](
+        new PrivilegedExceptionAction[List[AbstractFile]] {
+          def run() = {
+            val out = new ByteArrayOutputStream
+            val printWriter = new PrintWriter(out)
+            val compiler = createCompiler(printWriter, outputDirectory)
+            try {
+              compiler.compileToDir(sources)
+            } catch {
+              case c: CompileErrorsException => throw new CompileErrorsException(new String(out.toByteArray, "utf-8"), c)
+              case e: Exception => throw e
+            }
+          }
+        })
+    }
+  }
 
 	
 }

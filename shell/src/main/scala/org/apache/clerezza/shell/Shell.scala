@@ -69,7 +69,7 @@ import scala.tools.jline.UnixTerminal
 import scala.tools.jline.console.history.History
 
 class Shell(factory: InterpreterFactory, val inStream: InputStream,
-  outStream: OutputStream, shellCommands: immutable.Set[ShellCommand], terminalOption: Option[Terminal] = None) extends Logging {
+            outStream: OutputStream, shellCommands: immutable.Set[ShellCommand], terminalOption: Option[Terminal] = None) extends Logging {
 
   private var bundleContext: BundleContext = null
 
@@ -101,11 +101,11 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
     override lazy val standardCommands: List[LoopCommand] = {
       import LoopCommand._
       (for (shellCommand <- shellCommands) yield {
-        new LineCmd(shellCommand.command, "<unknown>", shellCommand.description, (line: String) => {
-          val (continue, linesToRecord) = shellCommand.execute(line, Shell.this.outStream)
-          Result(continue, linesToRecord)
-        })
-      }).toList ::: List(
+          new LineCmd(shellCommand.command, "<unknown>", shellCommand.description, (line: String) => {
+              val (continue, linesToRecord) = shellCommand.execute(line, Shell.this.outStream)
+              Result(continue, linesToRecord)
+            })
+        }).toList ::: List(
         cmd("help", "[command]", "print this summary or command-specific help", helpCommand),
         historyCommand,
         cmd("h?", "<string>", "search the history", searchHistory),
@@ -119,65 +119,65 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
     }
 
     /** print a friendly help message */
-  override def helpCommand(line: String): Result = {
-    if (line == "") printAdditinalHelp();
+    override def helpCommand(line: String): Result = {
+      if (line == "") printAdditinalHelp();
       
-    super.helpCommand(line);
-  }
+      super.helpCommand(line);
+    }
 
     def printAdditinalHelp() = {
-			out println "This is a scala based console, it supports any Scala expression, as well as the command described below."
-			out println "To access an OSGi service use $[interface]."
-			out println ""
-			out println "Initially the following variables are bound:"
-			for ((name, boundType, value) <- bindings) {
-				out println (name+": "+boundType+" = "+value)
-			}
-			out println ""
-			out println "This are the initial imports: "
-			for (v <- imports) {
-				out println ("import "+v)
-			}
-			out println ""
-		}
+      out println "This is a scala based console, it supports any Scala expression, as well as the command described below."
+      out println "To access an OSGi service use $[interface]."
+      out println ""
+      out println "Initially the following variables are bound:"
+      for ((name, boundType, value) <- bindings) {
+        out println (name+": "+boundType+" = "+value)
+      }
+      out println ""
+      out println "This are the initial imports: "
+      for (v <- imports) {
+        out println ("import "+v)
+      }
+      out println ""
+    }
 
     override def process(settings: Settings): Boolean = {
       this.settings = settings
       createInterpreter()
 
       // sets in to some kind of reader depending on environmental cues
-     //ignore settings.noCompletion.value)
+      //ignore settings.noCompletion.value)
       {
-    	  val myIn = new StreamJLineReader(new JLineCompletion(intp), inStream, outStream, terminal) 
-    	  in =  myIn
-    	  //are we postinit already?
-    	  addThunk(myIn.consoleReader.postInit)
+        val myIn = new StreamJLineReader(new JLineCompletion(intp), inStream, outStream, terminal) 
+        in =  myIn
+        //are we postinit already?
+        addThunk(myIn.consoleReader.postInit)
       }
       loadFiles(settings)
-    // it is broken on startup; go ahead and exit
-    if (intp.reporter.hasErrors)
-      return false
+      // it is broken on startup; go ahead and exit
+      if (intp.reporter.hasErrors)
+        return false
 
-    // This is about the illusion of snappiness.  We call initialize()
-    // which spins off a separate thread, then print the prompt and try
-    // our best to look ready.  The interlocking lazy vals tend to
-    // inter-deadlock, so we break the cycle with a single asynchronous
-    // message to an actor.
-    if (isAsync) {
-      intp initialize initializedCallback()
-      createAsyncListener() // listens for signal to run postInitialization
-    }
-    else {
-      intp.initializeSynchronous()
-      postInitialization()
-    }
-    printWelcome()
+      // This is about the illusion of snappiness.  We call initialize()
+      // which spins off a separate thread, then print the prompt and try
+      // our best to look ready.  The interlocking lazy vals tend to
+      // inter-deadlock, so we break the cycle with a single asynchronous
+      // message to an actor.
+      if (isAsync) {
+        intp initialize initializedCallback()
+        createAsyncListener() // listens for signal to run postInitialization
+      }
+      else {
+        intp.initializeSynchronous()
+        postInitialization()
+      }
+      printWelcome()
 
-    try loop()
-    catch AbstractOrMissingHandler()
-    finally closeInterpreter()
+      try loop()
+      catch AbstractOrMissingHandler()
+      finally closeInterpreter()
 
-    true
+      true
     }
 
     override def printWelcome() {
@@ -187,7 +187,7 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
 				|Console is based on Scala %s (%s, Java %s).
 				|Type in expressions to have them evaluated.
 				|Type :help for more information.""".
-          stripMargin.format(versionString, javaVmName, javaVersion)
+      stripMargin.format(versionString, javaVmName, javaVersion)
 
       echo(welcomeMsg)
     }
