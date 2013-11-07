@@ -1,0 +1,1 @@
+Sling launchpad plugin requires this directory

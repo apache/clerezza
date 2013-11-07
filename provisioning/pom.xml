@@ -43,12 +43,15 @@
     <name>Apache Clerezza - Provisioning - Reactor</name>
 
     <modules>
+        <module>felixosgi</module>
+        <module>felixweb</module>
         <module>jaxrs-whiteboard</module>
         <module>rdf</module>
         <module>platform.graphnodeprovider</module>
         <module>typehandlerspace</module>
         <module>typerendering</module>
-        <module>sling-launcher</module>
+        <module>launchers/shell-launcher</module>
+        <module>launchers/full-launcher</module>
     </modules>
 
 </project>
