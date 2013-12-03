@@ -101,13 +101,10 @@ public class SparqlEndpoint {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
-    private static final String CONTENT_GRAPH_FILTER =
-            "(name="+ Constants.CONTENT_GRAPH_URI_STRING +")";
     
     @Reference
     TcManager tcManager;
-    @Reference(target = CONTENT_GRAPH_FILTER)
-    MGraph contentGraph;
+
     @Reference
     private RenderletManager renderletManager;
 
@@ -173,17 +170,20 @@ public class SparqlEndpoint {
         } else {
             applyServerSide = false;
         }
-        TripleCollection defaultGraph = null;
+        //TripleCollection defaultGraph = null;
         Object result = null;
         try {
             if (defaultGraphUri == null
                     || defaultGraphUri.getUnicodeString().equals("")) {
-                defaultGraph = contentGraph;
+                defaultGraphUri = new UriRef(Constants.CONTENT_GRAPH_URI_STRING);
+                //defaultGraph = contentGraph;
             } else {
-                defaultGraph = tcManager.getTriples(defaultGraphUri);
+                //defaultGraph = tcManager.getTriples(defaultGraphUri);
             }
+            //this is now only used to get the variable names
+            //TODO use ResultSet.getResultVars instead
             Query query = QueryParser.getInstance().parse(queryString);
-            result = tcManager.executeSparqlQuery(query, defaultGraph);
+            result = tcManager.executeSparqlQuery(queryString, defaultGraphUri);
             if (result instanceof Graph) {
                 return (Graph) result;
             } else if ((result instanceof ResultSet)
