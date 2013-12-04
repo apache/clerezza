@@ -140,12 +140,12 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
           if bundle.getState == Bundle.ACTIVE) {
         bundleList ::= bundle
       }
-      context.getBundleContext().addBundleListener(this);
       updateCache
       tcManager.getTcAccessController.setRequiredReadPermissions(
           RESOURCE_MGRAPH_URI, Collections.singleton(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ)))
       cgProvider.addTemporaryAdditionGraph(RESOURCE_MGRAPH_URI)
       updateThread = new UpdateThread()
+      context.getBundleContext().addBundleListener(this);
     }
   }
   protected def deactivate(context: ComponentContext) {
@@ -154,6 +154,7 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
       updateThread.interrupt()
       cgProvider.removeTemporaryAdditionGraph(RESOURCE_MGRAPH_URI)
       tcManager.deleteTripleCollection(currentCacheUri);
+      updateThread == null;
     }
   }
 
@@ -238,6 +239,10 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 
 
   def bundleChanged(event: BundleEvent) {
+    val updateThread = this.updateThread
+    if (updateThread == null) {
+      BundleFsLoader.log.error("UpdateThread is null, yet we get bundle Events")
+    }
     val bundle = event.getBundle();
     event.getType() match  {
       case BundleEvent.STARTED => {
