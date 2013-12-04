@@ -25,47 +25,47 @@ import com.sun.xml.internal.ws.developer.MemberSubmissionAddressing.Validation
 
 class TypeConversionTest {
 
-	private val literalFactory = LiteralFactory.getInstance()
+  private val literalFactory = LiteralFactory.getInstance()
 
-	import Preamble._
+  import Preamble._
 
-	@Test
-	def useStringAsObject {
-		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value")
-		Assert.assertEquals(literalFactory.createTypedLiteral("a value"), t.getObject)
-	}
+  @Test
+  def useStringAsObject {
+    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value")
+    Assert.assertEquals(literalFactory.createTypedLiteral("a value"), t.getObject)
+  }
 
-	/*@Test
-	def useStringWithLanguageTag {
-		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value"("en"))
-		Assert.assertEquals(new PlainLiteralImpl("a value", new Language("en")), t.getObject)
-	}*/
+  /*@Test
+  def useStringWithLanguageTag {
+    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value"("en"))
+    Assert.assertEquals(new PlainLiteralImpl("a value", new Language("en")), t.getObject)
+  }*/
 
-	@Test
-	def useStringWithLanguageTag {
-	   val lit = new PlainLiteralImpl("a value", new Language("en"))
-		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value" lang "en")
-		Assert.assertEquals(lit, t.getObject)
-	}
+  @Test
+  def useStringWithLanguageTag {
+     val lit = new PlainLiteralImpl("a value", new Language("en"))
+    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value" lang "en")
+    Assert.assertEquals(lit, t.getObject)
+  }
 
-	@Test
-	def useStringWithType {
-		val typeUri = new UriRef("http://example.org/dt")
-		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value"^^typeUri)
-		Assert.assertEquals(new TypedLiteralImpl("a value", typeUri), t.getObject)
-	}
+  @Test
+  def useStringWithType {
+    val typeUri = new UriRef("http://example.org/dt")
+    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value"^^typeUri)
+    Assert.assertEquals(new TypedLiteralImpl("a value", typeUri), t.getObject)
+  }
 
-	@Test
-	def literaToString {
-		val lit = literalFactory.createTypedLiteral("a value")
-		val s: String = lit
-		Assert.assertEquals("a value", s)
-	}
+  @Test
+  def literaToString {
+    val lit = literalFactory.createTypedLiteral("a value")
+    val s: String = lit
+    Assert.assertEquals("a value", s)
+  }
 
-	@Test
-	def dotUri {
-		val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "http://example.org".uri)
-		Assert.assertEquals(new UriRef("http://example.org"), t.getObject)
-	}
+  @Test
+  def dotUri {
+    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "http://example.org".uri)
+    Assert.assertEquals(new UriRef("http://example.org"), t.getObject)
+  }
 
 }

@@ -21,19 +21,19 @@ import org.apache.clerezza.platform.security.WebIdBasedPermissionProvider
 import org.apache.clerezza.rdf.core.UriRef
 
 class UserGraphAcessPermissionProvider extends WebIdBasedPermissionProvider {
-	
-	override def getPermissions(webId: UriRef) : java.util.Collection[String] = {
-		import scala.collection.JavaConversions._
-		val uriString = webId.getUnicodeString
-		def uriStringWithoutFragment = {
-			val hashPos = uriString.indexOf('#')
-			if (hashPos != -1) {
-				uriString.substring(0, hashPos)
-			} else {
-				uriString
-			}
-		}
-		List("(org.apache.clerezza.rdf.core.access.security.TcPermission \""+uriStringWithoutFragment+"\" \"readwrite\")")
-	}
+  
+  override def getPermissions(webId: UriRef) : java.util.Collection[String] = {
+    import scala.collection.JavaConversions._
+    val uriString = webId.getUnicodeString
+    def uriStringWithoutFragment = {
+      val hashPos = uriString.indexOf('#')
+      if (hashPos != -1) {
+        uriString.substring(0, hashPos)
+      } else {
+        uriString
+      }
+    }
+    List("(org.apache.clerezza.rdf.core.access.security.TcPermission \""+uriStringWithoutFragment+"\" \"readwrite\")")
+  }
 }
 */

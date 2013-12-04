@@ -22,18 +22,18 @@ package org.apache.clerezza.shell
 import java.security.Permission
 
 class ShellPermission(t: String, a: String) extends Permission(t) {
-	def this() = this(null,null)
+  def this() = this(null,null)
 
-	def getActions = ""
+  def getActions = ""
 
-	def implies(p: Permission) = {
-		p match {
-			case sp: ShellPermission => true
-			case _ => false
-		}
-	}
+  def implies(p: Permission) = {
+    p match {
+      case sp: ShellPermission => true
+      case _ => false
+    }
+  }
 
-	override def hashCode = 67823
+  override def hashCode = 67823
 
-	override def equals(other: Any) = other.isInstanceOf[ShellPermission]
+  override def equals(other: Any) = other.isInstanceOf[ShellPermission]
 }

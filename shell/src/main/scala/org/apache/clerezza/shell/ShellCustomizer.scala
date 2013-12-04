@@ -29,14 +29,14 @@ import org.osgi.service.component.ComponentContext
  */
 trait ShellCustomizer {
 
-	/**
-	 * A list of bindings that will be available in the shell
-	 * The tuple consist of: bindingName, typeName, value
-	 */
-	def bindings(e: Shell.Environment): List[(String, String, Any)]
+  /**
+   * A list of bindings that will be available in the shell
+   * The tuple consist of: bindingName, typeName, value
+   */
+  def bindings(e: Shell.Environment): List[(String, String, Any)]
 
-	/**
-	 * A list of imports that will be available in the shell
-	 */
-	def imports: List[String]
+  /**
+   * A list of imports that will be available in the shell
+   */
+  def imports: List[String]
 }

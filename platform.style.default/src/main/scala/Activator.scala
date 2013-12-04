@@ -38,9 +38,9 @@ import java.io.{FileOutputStream, FileInputStream, File}
  */
 class Activator extends ActivationHelper {
 
-	registerRenderlet(new GlobalMenuRenderlet)
-	registerRenderlet(new HeadedPageRenderlet)
-	registerRenderlet(new CollectionHeader)
-	registerRenderlet(new RdfListRenderlet)
-	
+  registerRenderlet(new GlobalMenuRenderlet)
+  registerRenderlet(new HeadedPageRenderlet)
+  registerRenderlet(new CollectionHeader)
+  registerRenderlet(new RdfListRenderlet)
+  
 }

@@ -15,22 +15,22 @@ import org.apache.felix.scr.annotations.Service;import scala.xml.Unparsed
 @Service(Array(classOf[TypeRenderlet]))
 class HtmlInfoDicobitRDFaNaked extends SRenderlet {
 
-	val getRdfType = DISCOBITS.XHTMLInfoDiscoBit 
+  val getRdfType = DISCOBITS.XHTMLInfoDiscoBit 
     
   override val getMediaType = MediaType.TEXT_HTML_TYPE
 
-	override def getModePattern = "rdfa-naked"
+  override def getModePattern = "rdfa-naked"
 
-	override def renderedPage(arguments: XmlResult.Arguments) = {
-		new XmlResult(arguments) {
-			override def content = {
+  override def renderedPage(arguments: XmlResult.Arguments) = {
+    new XmlResult(arguments) {
+      override def content = {
               <div typeof="disco:XHTMLInfoDiscoBit" about={res*}>
                 <span property="disco:infoBit">
                 {Unparsed(res/DISCOBITS.infoBit*)}
                 </span>
               </div>
-			}
-		}
-	}
+      }
+    }
+  }
 
 }

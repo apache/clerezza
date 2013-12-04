@@ -20,6 +20,6 @@
 package org.apache.clerezza.bundledevtool
 
 class UnavailableSkeletonException(val requested: Symbol, val available: Seq[Symbol])
-	extends RuntimeException("The Skeleton "+requested.name+" is not avialble") {
+  extends RuntimeException("The Skeleton "+requested.name+" is not avialble") {
 
 }

@@ -37,24 +37,24 @@ import org.apache.clerezza.rdf.ontologies.DC
  */
 class RenderletDescriptionRenderlet extends SRenderlet {
 
-	val getRdfType = Ontology.Renderlet
+  val getRdfType = Ontology.Renderlet
 
-	override def getModePattern = "naked"
+  override def getModePattern = "naked"
 
-	override def renderedPage(arguments: XmlResult.Arguments) = {
-		new XmlResult(arguments) {
-			override def content = {
-				resultDocModifier.setTitle("Renderlet Overview")
-				resultDocModifier.addStyleSheet("/styles/renderlets/style.css")
-				<div class="renderlet">
-					<div>Renderlet: <span class="value">{res/Ontology.stringRepresentation*}</span></div>
-					<div>For type: <span class="value">{res/Ontology.rdfType*}</span></div>
-					<div>Producing: <span class="value">{res/Ontology.mediaType*}</span></div>
-					{if ((res/Ontology.modePattern).size > 0) <div>Mode pattern: <span class="value">{res/Ontology.modePattern*}</span></div>}
-					<div>Provided by: <span class="value">{res/Ontology.providingBundle*}</span></div>
-				</div>
-			}
-		}
-	}
+  override def renderedPage(arguments: XmlResult.Arguments) = {
+    new XmlResult(arguments) {
+      override def content = {
+        resultDocModifier.setTitle("Renderlet Overview")
+        resultDocModifier.addStyleSheet("/styles/renderlets/style.css")
+        <div class="renderlet">
+          <div>Renderlet: <span class="value">{res/Ontology.stringRepresentation*}</span></div>
+          <div>For type: <span class="value">{res/Ontology.rdfType*}</span></div>
+          <div>Producing: <span class="value">{res/Ontology.mediaType*}</span></div>
+          {if ((res/Ontology.modePattern).size > 0) <div>Mode pattern: <span class="value">{res/Ontology.modePattern*}</span></div>}
+          <div>Provided by: <span class="value">{res/Ontology.providingBundle*}</span></div>
+        </div>
+      }
+    }
+  }
 
 }

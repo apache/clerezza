@@ -30,46 +30,46 @@ import org.apache.felix.scr.annotations.Service
  * <code>PermissionDescripton</code>s of Account Control Panel permissions.
  * The following permissions are described:
  * <ul>
- * 	<li>org.apache.clerezza.platform.accountcontrolpanel.AccountControlPanelAppPermission</li>
- * 	<li>org.apache.clerezza.platform.accountcontrolpanel.ChangePasswordPermission</li>
- * 	<li>org.apache.clerezza.platform.accountcontrolpanel.UserBundlePermission</li>
+ *   <li>org.apache.clerezza.platform.accountcontrolpanel.AccountControlPanelAppPermission</li>
+ *   <li>org.apache.clerezza.platform.accountcontrolpanel.ChangePasswordPermission</li>
+ *   <li>org.apache.clerezza.platform.accountcontrolpanel.UserBundlePermission</li>
  * </ul>
  *
  * @author mir
  */
 object AcpPermissionDescriptionsProvider {
-	private  val ACP_PERMISSION_DESCRIPTIONS: Set[PermissionDescripton] = new HashSet[PermissionDescripton]
-	ACP_PERMISSION_DESCRIPTIONS.add(
-		new PermissionDescripton("Change Own Password Permission",
-			"Grants permission to the user to change its own password",
-			null, classOf[ChangePasswordPermission],
-			"(org.apache.clerezza.platform.accountcontrolpanel.ChangePasswordPermission \"{username}\" \"\")"
-		)
-	)
+  private  val ACP_PERMISSION_DESCRIPTIONS: Set[PermissionDescripton] = new HashSet[PermissionDescripton]
+  ACP_PERMISSION_DESCRIPTIONS.add(
+    new PermissionDescripton("Change Own Password Permission",
+      "Grants permission to the user to change its own password",
+      null, classOf[ChangePasswordPermission],
+      "(org.apache.clerezza.platform.accountcontrolpanel.ChangePasswordPermission \"{username}\" \"\")"
+    )
+  )
 
-	ACP_PERMISSION_DESCRIPTIONS.add(
-		new PermissionDescripton("Access Own Account Control Panel Permission",
-			"Grants permission to the user to access its own Account Control Panel",
-			null, classOf[AccountControlPanelAppPermission],
-			"(org.apache.clerezza.platform.accountcontrolpanel.AccountControlPanelAppPermission \"{username}\" \"\")"
-		)
-	)
+  ACP_PERMISSION_DESCRIPTIONS.add(
+    new PermissionDescripton("Access Own Account Control Panel Permission",
+      "Grants permission to the user to access its own Account Control Panel",
+      null, classOf[AccountControlPanelAppPermission],
+      "(org.apache.clerezza.platform.accountcontrolpanel.AccountControlPanelAppPermission \"{username}\" \"\")"
+    )
+  )
 
-	ACP_PERMISSION_DESCRIPTIONS.add(
-		new PermissionDescripton("Bundle Upload Permission",
-			"Grants permission to the user to upload a bundle",
-			null, classOf[AccountControlPanelAppPermission],
-			"(org.apache.clerezza.platform.accountcontrolpanel.UserBundlePermission \"{username}\" \"\")"
-		)
-	)
+  ACP_PERMISSION_DESCRIPTIONS.add(
+    new PermissionDescripton("Bundle Upload Permission",
+      "Grants permission to the user to upload a bundle",
+      null, classOf[AccountControlPanelAppPermission],
+      "(org.apache.clerezza.platform.accountcontrolpanel.UserBundlePermission \"{username}\" \"\")"
+    )
+  )
 
 }
 
 class AcpPermissionDescriptionsProvider extends PermissionDescriptionsProvider {
 
-	import AcpPermissionDescriptionsProvider._
+  import AcpPermissionDescriptionsProvider._
 
-	def getPermissionDescriptors: Set[PermissionDescripton] = {
-		return ACP_PERMISSION_DESCRIPTIONS
-	}
+  def getPermissionDescriptors: Set[PermissionDescripton] = {
+    return ACP_PERMISSION_DESCRIPTIONS
+  }
 }

@@ -35,15 +35,15 @@ import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider
  */
 @Path("hello-world")
 class HelloWorld(context: BundleContext) {
-	val servicesDsl = new ServicesDsl(context)
-	import servicesDsl._
-	@GET def get() = {
-		val resultMGraph = new SimpleMGraph();
-		val graphNode = new GraphNode(new BNode(), resultMGraph);
-		graphNode.addProperty(RDF.`type` , Ontology.HelloWordMessageType);
-		val cgp: ContentGraphProvider = $[ContentGraphProvider]
-		graphNode.addPropertyValue(DC.description,"Hello world of "+cgp.getContentGraph.size);
-		graphNode;
+  val servicesDsl = new ServicesDsl(context)
+  import servicesDsl._
+  @GET def get() = {
+    val resultMGraph = new SimpleMGraph();
+    val graphNode = new GraphNode(new BNode(), resultMGraph);
+    graphNode.addProperty(RDF.`type` , Ontology.HelloWordMessageType);
+    val cgp: ContentGraphProvider = $[ContentGraphProvider]
+    graphNode.addPropertyValue(DC.description,"Hello world of "+cgp.getContentGraph.size);
+    graphNode;
 
-	}
+  }
 }

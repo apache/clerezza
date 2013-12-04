@@ -35,17 +35,17 @@ import clerezza.rdf.core.serializedform.Parser
  */
 class PlatformDsl(outputStream: OutputStream, bundleContext: BundleContext) {
 
-	private lazy val out = new PrintWriter(new OutputStreamWriter(outputStream, "utf-8"), true)
-	private val serviceDsl = new ServicesDsl(bundleContext)
-	import serviceDsl._
+  private lazy val out = new PrintWriter(new OutputStreamWriter(outputStream, "utf-8"), true)
+  private val serviceDsl = new ServicesDsl(bundleContext)
+  import serviceDsl._
 
-	lazy val contentGraph = $[ContentGraphProvider].getContentGraph
-	def parser = $[Parser]
+  lazy val contentGraph = $[ContentGraphProvider].getContentGraph
+  def parser = $[Parser]
 
-	def uname {
-		out println ("Clerezza on "+System.getProperty("java.vm.name"))
-	}
+  def uname {
+    out println ("Clerezza on "+System.getProperty("java.vm.name"))
+  }
 
 
-	//here we could add a command to set the debug output to the console for some packages
+  //here we could add a command to set the debug output to the console for some packages
 }

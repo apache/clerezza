@@ -25,13 +25,13 @@ import org.apache.clerezza.rdf.core.UriRef
  */
 class NameSpace(prefix: String) {
 
-	/**
-	 * returns a UriRef applying this namespace prefix to the given symbol
-	 */
-	def +(s: Symbol) = new UriRef(prefix + s.name)
+  /**
+   * returns a UriRef applying this namespace prefix to the given symbol
+   */
+  def +(s: Symbol) = new UriRef(prefix + s.name)
 
-	/**
-	 * returns a UriRef applying this prefix to the given string
-	 */
-	def +(s: String) = new UriRef(prefix + s)
+  /**
+   * returns a UriRef applying this prefix to the given string
+   */
+  def +(s: String) = new UriRef(prefix + s)
 }

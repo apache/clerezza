@@ -78,14 +78,14 @@ class FoafSslAuthentication extends WeightedAuthenticationMethod {
       claim.principal
     }
 
-	  subject.getPublicCredentials.add(x509c)
-	  if (verified.size > 0) {
-		  subject.getPrincipals().remove(UserUtil.ANONYMOUS)
-		  subject.getPrincipals().addAll(verified)
-		  return true
-	  } else {
-		  return false
-	  }
+    subject.getPublicCredentials.add(x509c)
+    if (verified.size > 0) {
+      subject.getPrincipals().remove(UserUtil.ANONYMOUS)
+      subject.getPrincipals().addAll(verified)
+      return true
+    } else {
+      return false
+    }
   }
 
   def addAgentToSystem(id: WebIDClaim) {

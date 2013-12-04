@@ -163,13 +163,13 @@ object X509Claim {
   }
 
   /*
-  	* This method helps us deal with the old style notation
-  	* of  key rsa:modulus [ cert:hex "a342342bde..." ]
-  	*        rsa:public_exponent [ cert:int "256" ]
-  	*
-  	* where the numbers are representated by blank nodes identified by their relation to a string
-  	*
-  	*/
+    * This method helps us deal with the old style notation
+    * of  key rsa:modulus [ cert:hex "a342342bde..." ]
+    *        rsa:public_exponent [ cert:int "256" ]
+    *
+    * where the numbers are representated by blank nodes identified by their relation to a string
+    *
+    */
   def intValueOfResourceByProperty(n: GraphNode): Option[BigInt] = {
     val hexValues = n / CERT.hex
     if (hexValues.length > 0) {
@@ -186,10 +186,10 @@ object X509Claim {
     return None
   }
 
-	/**
-	 * @prefix a typed literal of some some numeric type
-	 * @return the BigInteger it represents
-	 */
+  /**
+   * @prefix a typed literal of some some numeric type
+   * @return the BigInteger it represents
+   */
   def intValueOfTypedLiteral(l: TypedLiteral): Option[BigInt] = {
     try {
       (l.getLexicalForm, l.getDataType) match {

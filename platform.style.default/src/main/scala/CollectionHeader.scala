@@ -30,9 +30,9 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
  */
 class CollectionHeader extends HeadedPageRenderlet {
 
-	override val getRdfType = HIERARCHY.Collection
+  override val getRdfType = HIERARCHY.Collection
 
-	override def defaultTitle(res: RichGraphNode) = (res*) +  " (Collection)"
+  override def defaultTitle(res: RichGraphNode) = (res*) +  " (Collection)"
 
 
 }

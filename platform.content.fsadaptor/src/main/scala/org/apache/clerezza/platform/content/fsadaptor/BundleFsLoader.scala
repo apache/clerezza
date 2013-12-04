@@ -55,242 +55,242 @@ import scala.util._
  */
 class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider {
 
-	private val RESOURCE_MGRAPH_URI = new UriRef(Constants.URN_LOCAL_INSTANCE+"/web-resources.graph")
-	private val cacheGraphPrefix = Constants.URN_LOCAL_INSTANCE+"/web-resources-cache.graph"
-	private var currentCacheUri: UriRef = null
+  private val RESOURCE_MGRAPH_URI = new UriRef(Constants.URN_LOCAL_INSTANCE+"/web-resources.graph")
+  private val cacheGraphPrefix = Constants.URN_LOCAL_INSTANCE+"/web-resources-cache.graph"
+  private var currentCacheUri: UriRef = null
 
-	private var tcManager: TcManager = null
-	private var cgProvider: ContentGraphProvider = null
-	private var startLevel: StartLevel = null
-	private var pathNodes: List[PathNode] = Nil 
-	private var bundleList = List[Bundle]()
-	private var currentCacheMGraph: MGraph = null
-	
-	private var frequentUpdateDirectory: Option[PathNode] = None
+  private var tcManager: TcManager = null
+  private var cgProvider: ContentGraphProvider = null
+  private var startLevel: StartLevel = null
+  private var pathNodes: List[PathNode] = Nil 
+  private var bundleList = List[Bundle]()
+  private var currentCacheMGraph: MGraph = null
+  
+  private var frequentUpdateDirectory: Option[PathNode] = None
 
-	private val virtualMGraph: MGraph = new AbstractMGraph() {
-	  
-		private def baseGraph: TripleCollection = frequentUpdateDirectory match {
-		    case Some(p) => new DirectoryOverlay(p, currentCacheMGraph)
-		    case None => currentCacheMGraph
-		}
-		
-		override def performFilter(s: NonLiteral, p: UriRef,
-											o: Resource): java.util.Iterator[Triple] = {
-			val baseIter = baseGraph.filter(s,p,o)
-			new java.util.Iterator[Triple]() {
-				override def next = {
-					baseIter.next
-				}
-				override def hasNext = baseIter.hasNext
-				override def remove = throw new UnsupportedOperationException
-			}
-		}
+  private val virtualMGraph: MGraph = new AbstractMGraph() {
+    
+    private def baseGraph: TripleCollection = frequentUpdateDirectory match {
+        case Some(p) => new DirectoryOverlay(p, currentCacheMGraph)
+        case None => currentCacheMGraph
+    }
+    
+    override def performFilter(s: NonLiteral, p: UriRef,
+                      o: Resource): java.util.Iterator[Triple] = {
+      val baseIter = baseGraph.filter(s,p,o)
+      new java.util.Iterator[Triple]() {
+        override def next = {
+          baseIter.next
+        }
+        override def hasNext = baseIter.hasNext
+        override def remove = throw new UnsupportedOperationException
+      }
+    }
 
-		override def size = baseGraph.size
-		
-		override def toString = "BundleFsLoader virtual graph"
-		
-	}
+    override def size = baseGraph.size
+    
+    override def toString = "BundleFsLoader virtual graph"
+    
+  }
 
-	class UpdateThread extends Thread {
+  class UpdateThread extends Thread {
 
-		private var updateRequested = false;
+    private var updateRequested = false;
 
-		start()
+    start()
 
-		override def run() {
-			try {
-				while (!isInterrupted) {
-					synchronized {
-						while (!updateRequested) wait();
-					}
-					updateRequested = false
-					updateCache()
-				}
-			} catch {
-				case e: InterruptedException => BundleFsLoader.log.debug("Update thread interrupted");
-			}
-		}
+    override def run() {
+      try {
+        while (!isInterrupted) {
+          synchronized {
+            while (!updateRequested) wait();
+          }
+          updateRequested = false
+          updateCache()
+        }
+      } catch {
+        case e: InterruptedException => BundleFsLoader.log.debug("Update thread interrupted");
+      }
+    }
 
-		def update() = {
-			synchronized {
-				updateRequested = true
-				notify();
-			}
-		}
-	}
-	
-	private var updateThread: UpdateThread = null
-
-
-	private def deleteCacheGraphs() {
-		import collection.JavaConversions._
-		for(mGraphUri <- tcManager.listMGraphs) {
-			if(mGraphUri.getUnicodeString.startsWith(cacheGraphPrefix)) {
-				tcManager.deleteTripleCollection(mGraphUri);
-			}
-		}
-	}
-
-	protected def activate(context: ComponentContext) {
-		synchronized {
-			deleteCacheGraphs()
-			for (bundle <- context.getBundleContext().getBundles();
-					if bundle.getState == Bundle.ACTIVE) {
-				bundleList ::= bundle
-			}
-			context.getBundleContext().addBundleListener(this);
-			updateCache
-			tcManager.getTcAccessController.setRequiredReadPermissions(
-					RESOURCE_MGRAPH_URI, Collections.singleton(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ)))
-			cgProvider.addTemporaryAdditionGraph(RESOURCE_MGRAPH_URI)
-			updateThread = new UpdateThread()
-		}
-	}
-	protected def deactivate(context: ComponentContext) {
-		synchronized {
-			context.getBundleContext().removeBundleListener(this);
-			updateThread.interrupt()
-			cgProvider.removeTemporaryAdditionGraph(RESOURCE_MGRAPH_URI)
-			tcManager.deleteTripleCollection(currentCacheUri);
-		}
-	}
-
-	private def updateCache() = {
-		def getVirtualTripleCollection(bundles: Seq[Bundle]): TripleCollection = {
-			if (bundles.isEmpty) {
-				new SimpleMGraph()
-			} else {
-				val pathNode = new BundlePathNode(bundles.head, "CLEREZZA-INF/web-resources");
-				if (pathNode.isDirectory) {
-					BundleFsLoader.log.debug("Creating directory overlay for "+bundles.head)
-					new DirectoryOverlay(pathNode, getVirtualTripleCollection(bundles.tail))
-				} else {
-					getVirtualTripleCollection(bundles.tail)
-				}
-			}
-		}
-		synchronized {
-			val sortedList = Sorting.stableSort(bundleList, (b:Bundle) => -startLevel.getBundleStartLevel(b))
-			val newCacheUri = new UriRef(cacheGraphPrefix+System.currentTimeMillis)
-			val newChacheMGraph = tcManager.createMGraph(newCacheUri);
-			tcManager.getTcAccessController.setRequiredReadPermissions(
-					newCacheUri, Collections.singleton(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ)))
-			newChacheMGraph.addAll(getVirtualTripleCollection(sortedList))
-			currentCacheMGraph = newChacheMGraph
-			val oldCacheUri = currentCacheUri
-			currentCacheUri = newCacheUri
-			if (oldCacheUri != null) tcManager.deleteTripleCollection(oldCacheUri);
-			BundleFsLoader.log.debug("updated web-resource cache")
-		}
-	}
-
-	
-
-	override def getWeight() = 30
-
-	override def getMGraph(name: UriRef) = {
-		if (name.equals(RESOURCE_MGRAPH_URI)) {
-		  virtualMGraph
-		} else {
-			throw new NoSuchEntityException(name);
-		}
-	}
-
-	override def getTriples(name: UriRef) = {
-		getMGraph(name);
-	}
-
-	override def getGraph(name: UriRef) = {
-		throw new NoSuchEntityException(name);
-	}
+    def update() = {
+      synchronized {
+        updateRequested = true
+        notify();
+      }
+    }
+  }
+  
+  private var updateThread: UpdateThread = null
 
 
-	override def listMGraphs(): java.util.Set[UriRef] = {
-		java.util.Collections.singleton(RESOURCE_MGRAPH_URI);
-	}
+  private def deleteCacheGraphs() {
+    import collection.JavaConversions._
+    for(mGraphUri <- tcManager.listMGraphs) {
+      if(mGraphUri.getUnicodeString.startsWith(cacheGraphPrefix)) {
+        tcManager.deleteTripleCollection(mGraphUri);
+      }
+    }
+  }
 
-	override def listGraphs() = {
-		new java.util.HashSet[UriRef]();
-	}
+  protected def activate(context: ComponentContext) {
+    synchronized {
+      deleteCacheGraphs()
+      for (bundle <- context.getBundleContext().getBundles();
+          if bundle.getState == Bundle.ACTIVE) {
+        bundleList ::= bundle
+      }
+      context.getBundleContext().addBundleListener(this);
+      updateCache
+      tcManager.getTcAccessController.setRequiredReadPermissions(
+          RESOURCE_MGRAPH_URI, Collections.singleton(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ)))
+      cgProvider.addTemporaryAdditionGraph(RESOURCE_MGRAPH_URI)
+      updateThread = new UpdateThread()
+    }
+  }
+  protected def deactivate(context: ComponentContext) {
+    synchronized {
+      context.getBundleContext().removeBundleListener(this);
+      updateThread.interrupt()
+      cgProvider.removeTemporaryAdditionGraph(RESOURCE_MGRAPH_URI)
+      tcManager.deleteTripleCollection(currentCacheUri);
+    }
+  }
 
-	override def listTripleCollections() = {
-		Collections.singleton(RESOURCE_MGRAPH_URI);
-	}
+  private def updateCache() = {
+    def getVirtualTripleCollection(bundles: Seq[Bundle]): TripleCollection = {
+      if (bundles.isEmpty) {
+        new SimpleMGraph()
+      } else {
+        val pathNode = new BundlePathNode(bundles.head, "CLEREZZA-INF/web-resources");
+        if (pathNode.isDirectory) {
+          BundleFsLoader.log.debug("Creating directory overlay for "+bundles.head)
+          new DirectoryOverlay(pathNode, getVirtualTripleCollection(bundles.tail))
+        } else {
+          getVirtualTripleCollection(bundles.tail)
+        }
+      }
+    }
+    synchronized {
+      val sortedList = Sorting.stableSort(bundleList, (b:Bundle) => -startLevel.getBundleStartLevel(b))
+      val newCacheUri = new UriRef(cacheGraphPrefix+System.currentTimeMillis)
+      val newChacheMGraph = tcManager.createMGraph(newCacheUri);
+      tcManager.getTcAccessController.setRequiredReadPermissions(
+          newCacheUri, Collections.singleton(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ)))
+      newChacheMGraph.addAll(getVirtualTripleCollection(sortedList))
+      currentCacheMGraph = newChacheMGraph
+      val oldCacheUri = currentCacheUri
+      currentCacheUri = newCacheUri
+      if (oldCacheUri != null) tcManager.deleteTripleCollection(oldCacheUri);
+      BundleFsLoader.log.debug("updated web-resource cache")
+    }
+  }
 
-	override def createMGraph(name: UriRef) =  {
-		throw new UnsupportedOperationException("Not supported.");
-	}
+  
 
-	override def createGraph(name: UriRef, triples: TripleCollection): Graph = {
-		throw new UnsupportedOperationException("Not supported.");
-	}
+  override def getWeight() = 30
 
-	override def deleteTripleCollection(name: UriRef) {
-		throw new UnsupportedOperationException("Not supported.");
-	}
+  override def getMGraph(name: UriRef) = {
+    if (name.equals(RESOURCE_MGRAPH_URI)) {
+      virtualMGraph
+    } else {
+      throw new NoSuchEntityException(name);
+    }
+  }
 
-	override def getNames(graph: Graph) = {
-		val result = new java.util.HashSet[UriRef]();
-		result;
-	}
+  override def getTriples(name: UriRef) = {
+    getMGraph(name);
+  }
 
-
-	def bundleChanged(event: BundleEvent) {
-		val bundle = event.getBundle();
-		event.getType() match  {
-			case BundleEvent.STARTED => {
-				bundleList ::= bundle
-				updateThread.update()
-			}
-			case BundleEvent.STOPPED => {
-				bundleList = bundleList.filterNot(b => b == bundle)
-				updateThread.update()
-			}
-			case _ => BundleFsLoader.log.debug("only reacting on bundle start and stop")
-		}
-	}
+  override def getGraph(name: UriRef) = {
+    throw new NoSuchEntityException(name);
+  }
 
 
-	def bindTcManager(tcManager: TcManager) {
-		this.tcManager = tcManager;
-	}
+  override def listMGraphs(): java.util.Set[UriRef] = {
+    java.util.Collections.singleton(RESOURCE_MGRAPH_URI);
+  }
 
-	def unbindTcManager(tcManager: TcManager) {
-		this.tcManager = null;
-	}
+  override def listGraphs() = {
+    new java.util.HashSet[UriRef]();
+  }
 
-	def bindContentGraphProvider(p: ContentGraphProvider) {
-		cgProvider = p
-	}
+  override def listTripleCollections() = {
+    Collections.singleton(RESOURCE_MGRAPH_URI);
+  }
 
-	def unbindContentGraphProvider(p: ContentGraphProvider) {
-		cgProvider = null
-	}
+  override def createMGraph(name: UriRef) =  {
+    throw new UnsupportedOperationException("Not supported.");
+  }
 
-	def bindStartLevel(startLevel: StartLevel) {
-		this.startLevel = startLevel;
-	}
+  override def createGraph(name: UriRef, triples: TripleCollection): Graph = {
+    throw new UnsupportedOperationException("Not supported.");
+  }
 
-	def unbindStartLevel(startLevel: StartLevel) {
-		this.startLevel = null;
-	}
-	
-	def bindPathNode(pathNode: PathNode) {
-		this.pathNodes ::= pathNode;
-		frequentUpdateDirectory = Some(new MultiPathNode(pathNodes: _*))
-	}
-	
-	def unbindPathNode(pathNode: PathNode) {
-		this.pathNodes = this.pathNodes.filter(_ != pathNode);
-		frequentUpdateDirectory = pathNodes match {
-		  case Nil => None
-		  case _ => Some(new MultiPathNode(pathNodes: _*))
-		}
-	}
-	
+  override def deleteTripleCollection(name: UriRef) {
+    throw new UnsupportedOperationException("Not supported.");
+  }
+
+  override def getNames(graph: Graph) = {
+    val result = new java.util.HashSet[UriRef]();
+    result;
+  }
+
+
+  def bundleChanged(event: BundleEvent) {
+    val bundle = event.getBundle();
+    event.getType() match  {
+      case BundleEvent.STARTED => {
+        bundleList ::= bundle
+        updateThread.update()
+      }
+      case BundleEvent.STOPPED => {
+        bundleList = bundleList.filterNot(b => b == bundle)
+        updateThread.update()
+      }
+      case _ => BundleFsLoader.log.debug("only reacting on bundle start and stop")
+    }
+  }
+
+
+  def bindTcManager(tcManager: TcManager) {
+    this.tcManager = tcManager;
+  }
+
+  def unbindTcManager(tcManager: TcManager) {
+    this.tcManager = null;
+  }
+
+  def bindContentGraphProvider(p: ContentGraphProvider) {
+    cgProvider = p
+  }
+
+  def unbindContentGraphProvider(p: ContentGraphProvider) {
+    cgProvider = null
+  }
+
+  def bindStartLevel(startLevel: StartLevel) {
+    this.startLevel = startLevel;
+  }
+
+  def unbindStartLevel(startLevel: StartLevel) {
+    this.startLevel = null;
+  }
+  
+  def bindPathNode(pathNode: PathNode) {
+    this.pathNodes ::= pathNode;
+    frequentUpdateDirectory = Some(new MultiPathNode(pathNodes: _*))
+  }
+  
+  def unbindPathNode(pathNode: PathNode) {
+    this.pathNodes = this.pathNodes.filter(_ != pathNode);
+    frequentUpdateDirectory = pathNodes match {
+      case Nil => None
+      case _ => Some(new MultiPathNode(pathNodes: _*))
+    }
+  }
+  
 }
 object BundleFsLoader {
-	private val log = LoggerFactory.getLogger(classOf[BundleFsLoader])
+  private val log = LoggerFactory.getLogger(classOf[BundleFsLoader])
 }

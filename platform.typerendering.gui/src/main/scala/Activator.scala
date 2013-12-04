@@ -41,86 +41,86 @@ import java.security.{AccessControlException, AccessController}
  */
 class Activator extends BundleActivator {
 
-	private var renderletsOverview: ServiceRegistration[Object] = null
-	private var renderletRegistration: ServiceRegistration[TypeRenderlet] = null
+  private var renderletsOverview: ServiceRegistration[Object] = null
+  private var renderletRegistration: ServiceRegistration[TypeRenderlet] = null
     private var menuProviderRegistration: ServiceRegistration[GlobalMenuItemsProvider] = null
-	private var bundleContext: BundleContext = null
+  private var bundleContext: BundleContext = null
 
 
-	final val path = "admin/renderlets/overview"
-	@Path(path)
-	object RenderletsOverview {
-		@GET def get() = {
-			val resultMGraph = new SimpleMGraph();
-			val preamble = new Preamble(resultMGraph)
-			import preamble._
-			val resultNode = new GraphNode(new BNode(), resultMGraph);
-			resultNode.addProperty(RDF.`type` , Ontology.RenderletOverviewPage);
-			resultNode.addProperty(RDF.`type` , PLATFORM.HeadedPage);
-			resultNode.addProperty(RDF.`type` , RDF.List);
-			val renderletList = resultNode.asList;
-			for (sr <- bundleContext.getServiceReferences(classOf[TypeRenderlet].getName, null)) {
-				val renderlet = bundleContext.getService(sr).asInstanceOf[TypeRenderlet]
-				val rendRes = new BNode()
-				rendRes.addProperty(RDF.`type`, Ontology.Renderlet);
-				rendRes.addPropertyValue(Ontology.mediaType,
-										renderlet.getMediaType.toString)
-				if (renderlet.getModePattern != null) rendRes.addPropertyValue(Ontology.modePattern,
-										renderlet.getModePattern)
-				rendRes.addProperty(Ontology.rdfType,
-										renderlet.getRdfType)
-				rendRes.addPropertyValue(Ontology.stringRepresentation,
-										renderlet.toString)
-				rendRes.addPropertyValue(Ontology.providingBundle,
-										sr.getBundle.getLocation)
-				renderletList.add(rendRes)
-			}
-			resultNode;
-		}
-	}
+  final val path = "admin/renderlets/overview"
+  @Path(path)
+  object RenderletsOverview {
+    @GET def get() = {
+      val resultMGraph = new SimpleMGraph();
+      val preamble = new Preamble(resultMGraph)
+      import preamble._
+      val resultNode = new GraphNode(new BNode(), resultMGraph);
+      resultNode.addProperty(RDF.`type` , Ontology.RenderletOverviewPage);
+      resultNode.addProperty(RDF.`type` , PLATFORM.HeadedPage);
+      resultNode.addProperty(RDF.`type` , RDF.List);
+      val renderletList = resultNode.asList;
+      for (sr <- bundleContext.getServiceReferences(classOf[TypeRenderlet].getName, null)) {
+        val renderlet = bundleContext.getService(sr).asInstanceOf[TypeRenderlet]
+        val rendRes = new BNode()
+        rendRes.addProperty(RDF.`type`, Ontology.Renderlet);
+        rendRes.addPropertyValue(Ontology.mediaType,
+                    renderlet.getMediaType.toString)
+        if (renderlet.getModePattern != null) rendRes.addPropertyValue(Ontology.modePattern,
+                    renderlet.getModePattern)
+        rendRes.addProperty(Ontology.rdfType,
+                    renderlet.getRdfType)
+        rendRes.addPropertyValue(Ontology.stringRepresentation,
+                    renderlet.toString)
+        rendRes.addPropertyValue(Ontology.providingBundle,
+                    sr.getBundle.getLocation)
+        renderletList.add(rendRes)
+      }
+      resultNode;
+    }
+  }
 
-	object MenuProvider extends GlobalMenuItemsProvider {
-		override def getMenuItems: java.util.Set[GlobalMenuItem] = {
-			import collection.JavaConversions._
-			val result = new HashSet[GlobalMenuItem]();
-			try {
-				//TODO should have a more general way to say that a user has some administrative priviledges
-				AccessController.checkPermission(new TcPermission("urn:x-localinstance:/content.graph", "readwrite"))
-			}
-			catch {
-				case e: AccessControlException => {
-					return result
-				}
-			}
-			result.add(new GlobalMenuItem("/"+path,"renderlet-overview", "Renderlet Overview", -999, "Administration"))
-			result
-		}
-	}
+  object MenuProvider extends GlobalMenuItemsProvider {
+    override def getMenuItems: java.util.Set[GlobalMenuItem] = {
+      import collection.JavaConversions._
+      val result = new HashSet[GlobalMenuItem]();
+      try {
+        //TODO should have a more general way to say that a user has some administrative priviledges
+        AccessController.checkPermission(new TcPermission("urn:x-localinstance:/content.graph", "readwrite"))
+      }
+      catch {
+        case e: AccessControlException => {
+          return result
+        }
+      }
+      result.add(new GlobalMenuItem("/"+path,"renderlet-overview", "Renderlet Overview", -999, "Administration"))
+      result
+    }
+  }
 
-	/**
-	 * called when the bundle is started, this method initializes the provided service
-	 */
-	def start(context: BundleContext) {
-		this.bundleContext = context
-		val args = scala.collection.mutable.Map("javax.ws.rs" -> true)
-		renderletsOverview = context.registerService(classOf[Object],
-													 RenderletsOverview, args)
-		val renderlet = new RenderletDescriptionRenderlet
-		val serviceReference = context.getServiceReference(classOf[RenderletManager].getName)
-		renderletRegistration = context.registerService(classOf[TypeRenderlet],
-														renderlet, null)
-		menuProviderRegistration = context.registerService(classOf[GlobalMenuItemsProvider],
-														MenuProvider, null)
-	}
+  /**
+   * called when the bundle is started, this method initializes the provided service
+   */
+  def start(context: BundleContext) {
+    this.bundleContext = context
+    val args = scala.collection.mutable.Map("javax.ws.rs" -> true)
+    renderletsOverview = context.registerService(classOf[Object],
+                           RenderletsOverview, args)
+    val renderlet = new RenderletDescriptionRenderlet
+    val serviceReference = context.getServiceReference(classOf[RenderletManager].getName)
+    renderletRegistration = context.registerService(classOf[TypeRenderlet],
+                            renderlet, null)
+    menuProviderRegistration = context.registerService(classOf[GlobalMenuItemsProvider],
+                            MenuProvider, null)
+  }
 
-	/**
-	 * called when the bundle is stopped, this method unregisters the provided service
-	 */
-	def stop(context: BundleContext) {
-		renderletsOverview.unregister()
-		renderletRegistration.unregister()
-		menuProviderRegistration.unregister()
-		this.bundleContext = null
-	}
+  /**
+   * called when the bundle is stopped, this method unregisters the provided service
+   */
+  def stop(context: BundleContext) {
+    renderletsOverview.unregister()
+    renderletRegistration.unregister()
+    menuProviderRegistration.unregister()
+    this.bundleContext = null
+  }
 
 }

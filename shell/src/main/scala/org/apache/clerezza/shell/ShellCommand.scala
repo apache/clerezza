@@ -21,10 +21,10 @@ package org.apache.clerezza.shell
 import java.io.OutputStream
 
 trait ShellCommand {
-	def command: String
-	def description: String
-	/**
-	 * Extecutes the command an return (keepRunning,Option[lineToRecord])
-	 */
-	def execute(line: String, out: OutputStream): (Boolean, Option[String])
+  def command: String
+  def description: String
+  /**
+   * Extecutes the command an return (keepRunning,Option[lineToRecord])
+   */
+  def execute(line: String, out: OutputStream): (Boolean, Option[String])
 }

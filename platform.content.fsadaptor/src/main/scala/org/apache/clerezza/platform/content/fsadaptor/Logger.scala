@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
 
 trait Logger {
 
-	private val slf4jLogger = LoggerFactory.getLogger(this.getClass)
-//	val logger: org.slf4j.Logger = new LoggerWrapper(slf4jLogger, this.getClass.getName)
+  private val slf4jLogger = LoggerFactory.getLogger(this.getClass)
+//  val logger: org.slf4j.Logger = new LoggerWrapper(slf4jLogger, this.getClass.getName)
 
 }

@@ -32,32 +32,32 @@ import scala.xml.Text
  * Metadata class for the person panel
  */
 class PersonBox extends SRenderlet {
-	def getRdfType() = FOAF.Person
+  def getRdfType() = FOAF.Person
 
-	override def getModePattern = "box-naked"
+  override def getModePattern = "box-naked"
 
-	override def renderedPage(arguments: XmlResult.Arguments) = new XmlPerson(arguments)
+  override def renderedPage(arguments: XmlResult.Arguments) = new XmlPerson(arguments)
 
-	/**
-	 * Content class for the Person Panel
-	 */
-	class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
+  /**
+   * Content class for the Person Panel
+   */
+  class XmlPerson(args: XmlResult.Arguments) extends XmlResult(args) {
 
-		import RenderingUtility._
-		
-		//
-		// the content itself.
-		// This is the piece that is closest to a pure ssp, though there is still too much code in it
-		//
+    import RenderingUtility._
+    
+    //
+    // the content itself.
+    // This is the piece that is closest to a pure ssp, though there is still too much code in it
+    //
 
-		override def content = {
-			val pixml= getAgentPix(res)
-			<div class="personInABox">
-				<table><tr><td>{pixml}</td></tr>
-				<tr><td>{new Text(getName(res))}</td></tr>
-				</table>
-			</div>
-		}
+    override def content = {
+      val pixml= getAgentPix(res)
+      <div class="personInABox">
+        <table><tr><td>{pixml}</td></tr>
+        <tr><td>{new Text(getName(res))}</td></tr>
+        </table>
+      </div>
+    }
 
-	}
+  }
 }

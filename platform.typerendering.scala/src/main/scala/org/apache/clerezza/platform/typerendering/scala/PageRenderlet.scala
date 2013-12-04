@@ -39,26 +39,26 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
  */
 abstract class PageRenderlet extends AbstractRenderlet {
 
-	def renderedPage(renderingArguments: RenderedPage.Arguments): RenderedPage
-	def rdfType: UriRef
-	def mode = "naked"
+  def renderedPage(renderingArguments: RenderedPage.Arguments): RenderedPage
+  def rdfType: UriRef
+  def mode = "naked"
 
-	var renderletManager: RenderletManager = null;
+  var renderletManager: RenderletManager = null;
 
-	def activate(context: ComponentContext) = {
-		renderletManager.registerRenderlet(this.getClass.getName,
-				null,
-				rdfType, mode,
-				MediaType.APPLICATION_XHTML_XML_TYPE, true);
-	}
+  def activate(context: ComponentContext) = {
+    renderletManager.registerRenderlet(this.getClass.getName,
+        null,
+        rdfType, mode,
+        MediaType.APPLICATION_XHTML_XML_TYPE, true);
+  }
 
-	def bindRenderletManager(m: RenderletManager)  = {
-		renderletManager = m
-	}
+  def bindRenderletManager(m: RenderletManager)  = {
+    renderletManager = m
+  }
 
-	def unbindRenderletManager(m: RenderletManager)  = {
-		renderletManager = null
-	}
+  def unbindRenderletManager(m: RenderletManager)  = {
+    renderletManager = null
+  }
 
 }
 

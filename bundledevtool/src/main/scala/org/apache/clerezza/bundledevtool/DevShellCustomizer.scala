@@ -22,9 +22,9 @@ import org.apache.clerezza.shell.Shell
 import org.apache.clerezza.shell.ShellCustomizer
 
 class DevShellCustomizer extends ShellCustomizer {
-	def bindings(e: Shell.Environment): List[(String, String, Any)] = {
-		List(("devDsl", classOf[DevDsl].getName, new DevDsl(e.out,
-						e.componentContext.getBundleContext)))
-	}
-	def imports: List[String] = List("devDsl._")
+  def bindings(e: Shell.Environment): List[(String, String, Any)] = {
+    List(("devDsl", classOf[DevDsl].getName, new DevDsl(e.out,
+            e.componentContext.getBundleContext)))
+  }
+  def imports: List[String] = List("devDsl._")
 }

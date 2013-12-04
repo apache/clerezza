@@ -30,84 +30,84 @@ import org.osgi.framework.{ServiceRegistration, BundleContext, BundleActivator}
  */
 trait ActivationHelper extends BundleActivator {
 
-	/**
-	 * this is intended to be used exclusively in the argument to the register-methods
-	 */
-	protected var context: BundleContext= null
+  /**
+   * this is intended to be used exclusively in the argument to the register-methods
+   */
+  protected var context: BundleContext= null
 
-	/**
-	 * Registers a JAX-RS Root Resource
-	 */
-	protected def registerRootResource(rootResource: =>Object) {
-		registerService(rootResource, classOf[Object], "javax.ws.rs" -> true)
-	}
+  /**
+   * Registers a JAX-RS Root Resource
+   */
+  protected def registerRootResource(rootResource: =>Object) {
+    registerService(rootResource, classOf[Object], "javax.ws.rs" -> true)
+  }
 
-	/**
-	 * Register a Renderlet
-	 * Note: renderlet must implement org.apache.clerezza.platform.typerendering.TypeRenderlet, argument not decalred on
-	 * this type to avoid dependency
-	 */
-	protected def registerRenderlet(renderlet: =>Object) {
-		registerServiceStringInterfaces(renderlet, Seq("org.apache.clerezza.platform.typerendering.TypeRenderlet"), Map[String, Any]())
-	}
+  /**
+   * Register a Renderlet
+   * Note: renderlet must implement org.apache.clerezza.platform.typerendering.TypeRenderlet, argument not decalred on
+   * this type to avoid dependency
+   */
+  protected def registerRenderlet(renderlet: =>Object) {
+    registerServiceStringInterfaces(renderlet, Seq("org.apache.clerezza.platform.typerendering.TypeRenderlet"), Map[String, Any]())
+  }
 
-	/**
-	 * Register a TypeHandler
-	 */
-	protected def registerTypeHandler(typeHandler: => Object) {
-		registerService(typeHandler, classOf[Object], "org.apache.clerezza.platform.typehandler" -> true)
-	}
+  /**
+   * Register a TypeHandler
+   */
+  protected def registerTypeHandler(typeHandler: => Object) {
+    registerService(typeHandler, classOf[Object], "org.apache.clerezza.platform.typehandler" -> true)
+  }
 
-	/**
-	 * Register a service exposing a specified interface with an arbitrary number of
-	 * arguments
-	 */
-	protected def registerService(instance: => AnyRef, interface:Class[_],
-																arguments: (String, Any)*) {
-		registerService(instance, Seq(interface), Map(arguments:_*))
-	}
+  /**
+   * Register a service exposing a specified interface with an arbitrary number of
+   * arguments
+   */
+  protected def registerService(instance: => AnyRef, interface:Class[_],
+                                arguments: (String, Any)*) {
+    registerService(instance, Seq(interface), Map(arguments:_*))
+  }
 
-	/**
-	 * Registers a service for a Seq of interfaces and a map of arguments
-	 */
-	protected def registerService(instance: => AnyRef, interfaces: Seq[Class[_]],
-																arguments: Map[String, Any]) {
-		  registerServiceStringInterfaces(instance, for (i <- interfaces) yield i.getName, arguments)
-	}
-	/**
-	 * Registers a service for a Seq of interfaces and a map of arguments
-	 */
-	private def registerServiceStringInterfaces(instance: => AnyRef, interfaces: Seq[String],
-																arguments: Map[String, Any]) {
-		managedServices ::= ((() => instance, interfaces, arguments))
-	}
+  /**
+   * Registers a service for a Seq of interfaces and a map of arguments
+   */
+  protected def registerService(instance: => AnyRef, interfaces: Seq[Class[_]],
+                                arguments: Map[String, Any]) {
+      registerServiceStringInterfaces(instance, for (i <- interfaces) yield i.getName, arguments)
+  }
+  /**
+   * Registers a service for a Seq of interfaces and a map of arguments
+   */
+  private def registerServiceStringInterfaces(instance: => AnyRef, interfaces: Seq[String],
+                                arguments: Map[String, Any]) {
+    managedServices ::= ((() => instance, interfaces, arguments))
+  }
 
-	/**
-	 * invoked by the OSGi environment when the bundle is started, this method registers
-	 * the services for which the register-methods hqave been called (during object construction)
-	 */
-	def start(context: BundleContext) {
-		this.context = context
-		registeredServices = Nil
-		for (entry <- managedServices) {
-			val args = asJavaDictionary(mutable.Map(entry._3.toSeq:_*))
-			registeredServices ::= context.registerService(
-				entry._2.toArray, entry._1(), args)
-		}
-		this.context = null
-	}
+  /**
+   * invoked by the OSGi environment when the bundle is started, this method registers
+   * the services for which the register-methods hqave been called (during object construction)
+   */
+  def start(context: BundleContext) {
+    this.context = context
+    registeredServices = Nil
+    for (entry <- managedServices) {
+      val args = asJavaDictionary(mutable.Map(entry._3.toSeq:_*))
+      registeredServices ::= context.registerService(
+        entry._2.toArray, entry._1(), args)
+    }
+    this.context = null
+  }
 
-	/**
-	 * called when the bundle is stopped, this method unregisters the provided service
-	 */
-	def stop(context: BundleContext) {
-		for(sr <- registeredServices) {
-			sr.unregister();
-		}
-		registeredServices = null
-	}
+  /**
+   * called when the bundle is stopped, this method unregisters the provided service
+   */
+  def stop(context: BundleContext) {
+    for(sr <- registeredServices) {
+      sr.unregister();
+    }
+    registeredServices = null
+  }
 
-	private var managedServices: List[(() => Any, Seq[String], Map[String, Any])] = Nil
+  private var managedServices: List[(() => Any, Seq[String], Map[String, Any])] = Nil
 
-	private var registeredServices: List[ServiceRegistration[_]] = null
+  private var registeredServices: List[ServiceRegistration[_]] = null
 }

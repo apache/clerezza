@@ -24,47 +24,47 @@ import scala.actors.Actor
 import scala.actors.Actor._
 
 class InterruptibleInputStream(base: InputStream) extends InputStream {
-	private case object Stop
-	private case object Read
+  private case object Stop
+  private case object Read
 
-	private var readingThread: Thread = null
+  private var readingThread: Thread = null
 
-	val readerActor = new Actor() {
-		def act() {
-			loop {
-				react {
-					case Stop => exit()
-					case Read => {
-							readingThread = Thread.currentThread
-							val ch = try {
-								 base.read()
-							} catch {
-								case e: ClosedByInterruptException => {
-										-1
-								}
-							}
-							readingThread = null
-							sender ! ch
-					}
-				}
-			}
-		}
-	}
-	readerActor.start()
+  val readerActor = new Actor() {
+    def act() {
+      loop {
+        react {
+          case Stop => exit()
+          case Read => {
+              readingThread = Thread.currentThread
+              val ch = try {
+                 base.read()
+              } catch {
+                case e: ClosedByInterruptException => {
+                    -1
+                }
+              }
+              readingThread = null
+              sender ! ch
+          }
+        }
+      }
+    }
+  }
+  readerActor.start()
 
-	def read() = {
-		readerActor ! Read
-		self.receive {
-			case x: Int => x
-		}
-	}
+  def read() = {
+    readerActor ! Read
+    self.receive {
+      case x: Int => x
+    }
+  }
 
-	def terminate() {
-		readerActor ! Stop
-		val currentReadingThread = readingThread
-		if (currentReadingThread != null) {
-			currentReadingThread.interrupt()
-		}
-	}
+  def terminate() {
+    readerActor ! Stop
+    val currentReadingThread = readingThread
+    if (currentReadingThread != null) {
+      currentReadingThread.interrupt()
+    }
+  }
 
 }

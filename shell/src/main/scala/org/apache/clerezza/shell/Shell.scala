@@ -184,9 +184,9 @@ class Shell(factory: InterpreterFactory, val inStream: InputStream,
       import Properties._
       val welcomeMsg =
         """|Welcome to the Apache Clerezza Console
-				|Console is based on Scala %s (%s, Java %s).
-				|Type in expressions to have them evaluated.
-				|Type :help for more information.""".
+        |Console is based on Scala %s (%s, Java %s).
+        |Type in expressions to have them evaluated.
+        |Type :help for more information.""".
       stripMargin.format(versionString, javaVmName, javaVersion)
 
       echo(welcomeMsg)

@@ -35,54 +35,54 @@ import org.osgi.framework.BundleActivator
 
 class Activator extends BundleActivator {
 
-	private val configurationAdminClassName = classOf[ConfigurationAdmin].getName
+  private val configurationAdminClassName = classOf[ConfigurationAdmin].getName
 
-	def start(context: BundleContext) {
-		import scala.collection.JavaConversions._
-		val paxLoggingLocation: String = context.getBundles().
-			find(bundle => bundle.getSymbolicName().equals("org.ops4j.pax.logging.pax-logging-service")) match {
-				case Some(b) => b.getLocation();
-				case _ => throw new RuntimeException("org.ops4j.pax.logging.pax-logging-service not found")
-			}
-		val serviceReference = context.getServiceReference(configurationAdminClassName);
-		def configureIfUnconfigured(serviceReference: ServiceReference[_]) {
-			val configurationAdmin = context.getService(serviceReference).asInstanceOf[ConfigurationAdmin]
-			val config: Configuration = configurationAdmin.getConfiguration(
-				"org.ops4j.pax.logging", paxLoggingLocation);
-			if (config.getProperties() == null) {
-				val props: Dictionary[String, String] = new Hashtable[String, String]();
-				props.put("log4j.rootLogger", "INFO, R, stdout");
-				props.put("log4j.logger.org.apache.clerezza","DEBUG")
-				props.put("log4j.appender.stdout", "org.apache.log4j.ConsoleAppender");
-				props.put("log4j.appender.stdout.layout", "org.apache.log4j.PatternLayout");
-				props.put("log4j.appender.stdout.Threshold", "WARN");
-				// Pattern to output the caller's file name and line number.
-				props.put("log4j.appender.stdout.layout.ConversionPattern", "%d [%t] %5p [%t] (%F\\:%L) - %m%n");
-				props.put("log4j.appender.R", "org.apache.log4j.FileAppender");
-				props.put("log4j.appender.R.File", "clerezza.log");
-				props.put("log4j.appender.R.layout", "org.apache.log4j.PatternLayout");
-				props.put("log4j.appender.R.layout.ConversionPattern", "%d [%t] %p %t %c - %m%n");
+  def start(context: BundleContext) {
+    import scala.collection.JavaConversions._
+    val paxLoggingLocation: String = context.getBundles().
+      find(bundle => bundle.getSymbolicName().equals("org.ops4j.pax.logging.pax-logging-service")) match {
+        case Some(b) => b.getLocation();
+        case _ => throw new RuntimeException("org.ops4j.pax.logging.pax-logging-service not found")
+      }
+    val serviceReference = context.getServiceReference(configurationAdminClassName);
+    def configureIfUnconfigured(serviceReference: ServiceReference[_]) {
+      val configurationAdmin = context.getService(serviceReference).asInstanceOf[ConfigurationAdmin]
+      val config: Configuration = configurationAdmin.getConfiguration(
+        "org.ops4j.pax.logging", paxLoggingLocation);
+      if (config.getProperties() == null) {
+        val props: Dictionary[String, String] = new Hashtable[String, String]();
+        props.put("log4j.rootLogger", "INFO, R, stdout");
+        props.put("log4j.logger.org.apache.clerezza","DEBUG")
+        props.put("log4j.appender.stdout", "org.apache.log4j.ConsoleAppender");
+        props.put("log4j.appender.stdout.layout", "org.apache.log4j.PatternLayout");
+        props.put("log4j.appender.stdout.Threshold", "WARN");
+        // Pattern to output the caller's file name and line number.
+        props.put("log4j.appender.stdout.layout.ConversionPattern", "%d [%t] %5p [%t] (%F\\:%L) - %m%n");
+        props.put("log4j.appender.R", "org.apache.log4j.FileAppender");
+        props.put("log4j.appender.R.File", "clerezza.log");
+        props.put("log4j.appender.R.layout", "org.apache.log4j.PatternLayout");
+        props.put("log4j.appender.R.layout.ConversionPattern", "%d [%t] %p %t %c - %m%n");
 
-				config.update(props);
-			}
-		}
-		if (serviceReference != null) {
-			configureIfUnconfigured(serviceReference);
-		} else {
-			val filter: String = "(objectclass=" + configurationAdminClassName + ")";
-			context.addServiceListener(new ServiceListener{
-				def serviceChanged(e: ServiceEvent) {
-					if (e.getType == ServiceEvent.REGISTERED) {
-						configureIfUnconfigured(e.getServiceReference)
-					}
-				}
-			},filter)
-		}
-		
-	}
+        config.update(props);
+      }
+    }
+    if (serviceReference != null) {
+      configureIfUnconfigured(serviceReference);
+    } else {
+      val filter: String = "(objectclass=" + configurationAdminClassName + ")";
+      context.addServiceListener(new ServiceListener{
+        def serviceChanged(e: ServiceEvent) {
+          if (e.getType == ServiceEvent.REGISTERED) {
+            configureIfUnconfigured(e.getServiceReference)
+          }
+        }
+      },filter)
+    }
+    
+  }
 
-	def stop(context: BundleContext) {
+  def stop(context: BundleContext) {
 
-	}
+  }
 
 }

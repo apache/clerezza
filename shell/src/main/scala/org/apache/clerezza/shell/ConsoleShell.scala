@@ -37,57 +37,57 @@ class ConsoleShell()  {
 
 
 
-	var factory: ShellFactory = null
-	var bundleContext: BundleContext = null
-	var stoppedBundle: Option[Bundle] = None
-	var shellOption: Option[Shell] = None
-	var interruptibleIn: InterruptibleInputStream = null
+  var factory: ShellFactory = null
+  var bundleContext: BundleContext = null
+  var stoppedBundle: Option[Bundle] = None
+  var shellOption: Option[Shell] = None
+  var interruptibleIn: InterruptibleInputStream = null
 
-	def activate(componentContext: ComponentContext)= {
-		bundleContext = componentContext.getBundleContext
-		if (("true" != bundleContext.getProperty("clerezza.shell.disable")) &&
-		    (System.console != null)) {
-			for (bundle <- bundleContext.getBundles;
-					if (bundle.getSymbolicName == "org.apache.felix.shell.tui");
-					if (bundle.getState == Bundle.ACTIVE)) {
-				println("stopping "+bundle);
-				bundle.stop()
-				stoppedBundle = Some(bundle)
-			}
-			//this call sets the console terminal to the right settings
-			//and it must not be invoked when there is no console input, or the system will stop
-			val terminalOption = Some(scala.tools.jline.TerminalFactory.create())
-			val in =  Channels.newInputStream(
-				(new FileInputStream(FileDescriptor.in)).getChannel());
-			interruptibleIn = new InterruptibleInputStream(in)
-			val shell = factory.createShell(interruptibleIn, System.out, terminalOption)
-			shell.start()
-			shellOption = Some(shell)
-		}
-	}
+  def activate(componentContext: ComponentContext)= {
+    bundleContext = componentContext.getBundleContext
+    if (("true" != bundleContext.getProperty("clerezza.shell.disable")) &&
+        (System.console != null)) {
+      for (bundle <- bundleContext.getBundles;
+          if (bundle.getSymbolicName == "org.apache.felix.shell.tui");
+          if (bundle.getState == Bundle.ACTIVE)) {
+        println("stopping "+bundle);
+        bundle.stop()
+        stoppedBundle = Some(bundle)
+      }
+      //this call sets the console terminal to the right settings
+      //and it must not be invoked when there is no console input, or the system will stop
+      val terminalOption = Some(scala.tools.jline.TerminalFactory.create())
+      val in =  Channels.newInputStream(
+        (new FileInputStream(FileDescriptor.in)).getChannel());
+      interruptibleIn = new InterruptibleInputStream(in)
+      val shell = factory.createShell(interruptibleIn, System.out, terminalOption)
+      shell.start()
+      shellOption = Some(shell)
+    }
+  }
 
 
-	def deactivate(componentContext: ComponentContext) = {
-		bundleContext = componentContext.getBundleContext
-		stoppedBundle match {
-			case Some(bundle) => bundle.start()
-			case _ =>
-		}
-		shellOption match {
-			case Some(shell) => shell.stop()
-			case _ =>
-		}
-		if (interruptibleIn != null) {
-			interruptibleIn.terminate()
-		}
-	}
+  def deactivate(componentContext: ComponentContext) = {
+    bundleContext = componentContext.getBundleContext
+    stoppedBundle match {
+      case Some(bundle) => bundle.start()
+      case _ =>
+    }
+    shellOption match {
+      case Some(shell) => shell.stop()
+      case _ =>
+    }
+    if (interruptibleIn != null) {
+      interruptibleIn.terminate()
+    }
+  }
 
-	def bindShellFactory(f: ShellFactory) = {
-		factory = f
-	}
+  def bindShellFactory(f: ShellFactory) = {
+    factory = f
+  }
 
-	def unbindShellFactory(f: ShellFactory) = {
-		factory = null
-	}
-	
+  def unbindShellFactory(f: ShellFactory) = {
+    factory = null
+  }
+  
 }

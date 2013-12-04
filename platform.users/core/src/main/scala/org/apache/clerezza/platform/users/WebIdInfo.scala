@@ -31,31 +31,31 @@ import org.apache.clerezza.rdf.core.access.LockableMGraph
  */
 trait WebIdInfo {
 
-	/**
-	 * The WebID this instance is about
-	 */
-	def webId: UriRef
+  /**
+   * The WebID this instance is about
+   */
+  def webId: UriRef
 
-	/**
-	 * The WebId profile graph, for remote users this is immutable
-	 */
-	def publicProfile: TripleCollection
+  /**
+   * The WebId profile graph, for remote users this is immutable
+   */
+  def publicProfile: TripleCollection
 
-	/**
-	 * An MGraph used to store public information about the user. For local
-	 * users this is the same as publicProfile. In any case this contains the
-	 * triples of the publicProfile.
-	 */
-	def localPublicUserData: LockableMGraph
+  /**
+   * An MGraph used to store public information about the user. For local
+   * users this is the same as publicProfile. In any case this contains the
+   * triples of the publicProfile.
+   */
+  def localPublicUserData: LockableMGraph
 
-	/**
-	 * indicates if this WebId is local.
-	 */
-	def isLocal: Boolean
+  /**
+   * indicates if this WebId is local.
+   */
+  def isLocal: Boolean
 
-	/**
-	 * forces an update of cached graphs associated with thie WebID (if any)
-	 */
-	def forceCacheUpdate(): Unit
+  /**
+   * forces an update of cached graphs associated with thie WebID (if any)
+   */
+  def forceCacheUpdate(): Unit
 
 }

@@ -24,27 +24,27 @@ import org.apache.clerezza.shell.ShellCommand
 import org.apache.felix.shell.ShellService
 
 class FelixShellCommand extends ShellCommand {
-	private var felixShell: ShellService = null
+  private var felixShell: ShellService = null
 
-	def command: String = "felix"
-	def description: String = "execute a felix shell command"
-	/**
-	 * Extecutes the command an return (keepRunning,Option[lineToRecord])
-	 */
-	def execute(line: String, out: OutputStream): (Boolean, Option[String]) = {
-		val printStream = new PrintStream(out)
-		felixShell.executeCommand(line, printStream, printStream)
-		printStream.flush()
-		(true, None)
-	}
+  def command: String = "felix"
+  def description: String = "execute a felix shell command"
+  /**
+   * Extecutes the command an return (keepRunning,Option[lineToRecord])
+   */
+  def execute(line: String, out: OutputStream): (Boolean, Option[String]) = {
+    val printStream = new PrintStream(out)
+    felixShell.executeCommand(line, printStream, printStream)
+    printStream.flush()
+    (true, None)
+  }
 
-	def bindFelixShell(felixShell: ShellService)  {
-		this.felixShell = felixShell
-	}
+  def bindFelixShell(felixShell: ShellService)  {
+    this.felixShell = felixShell
+  }
 
-	def unbindFelixShell(felixShell: ShellService)  {
-		this.felixShell = null
-	}
+  def unbindFelixShell(felixShell: ShellService)  {
+    this.felixShell = null
+  }
 
 
 }

@@ -46,46 +46,46 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
  *
  * class BookFormRenderlet extends AbstractRenderlet {
  *
- *	 override def renderedPage(arguments: RenderedPage.Arguments): RenderedPage = {
- *		new RenderedPage(arguments) {
+ *   override def renderedPage(arguments: RenderedPage.Arguments): RenderedPage = {
+ *    new RenderedPage(arguments) {
  *
- *			override def content = <div xmlns="http://www.w3.org/1999/xhtml">
- *			   ....
- *			</div>
- *		}
- *	 }
+ *      override def content = <div xmlns="http://www.w3.org/1999/xhtml">
+ *         ....
+ *      </div>
+ *    }
+ *   }
  * }
  */
 abstract class AbstractRenderlet extends Renderlet {
 
-	def renderedPage(renderingArguments: RenderedPage.Arguments): RenderedPage
+  def renderedPage(renderingArguments: RenderedPage.Arguments): RenderedPage
 
-	def ifx[T](con:  => Boolean)(f: => T) :  T = {
-		if (con) f else null.asInstanceOf[T]
-	}
+  def ifx[T](con:  => Boolean)(f: => T) :  T = {
+    if (con) f else null.asInstanceOf[T]
+  }
 
-	val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
+  val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
 
-	@throws(classOf[IOException])
-	override def render(res: GraphNode, context: GraphNode,
-					sharedRenderingValues: java.util.Map[String, Object],
-					renderer: CallbackRenderer ,
-					renderingSpecification:  URI,
-					mode: String,
-					mediaType: MediaType,
-					requestProperties: RequestProperties,
-					os: OutputStream) = {
-			if (os == null) {
-				throw new IllegalArgumentException("Exception!")
-			}
-			val renderingSpecificationOption = if (renderingSpecification != null) {Some(renderingSpecification)} else {None}
-			val modeOption = if (mode != null) {Some(mode)} else {None}
-			renderedPage(
-				RenderedPage.Arguments(res, context, sharedRenderingValues, renderer,
-								   renderingSpecificationOption, modeOption, 
-								   mediaType, requestProperties, os));
+  @throws(classOf[IOException])
+  override def render(res: GraphNode, context: GraphNode,
+          sharedRenderingValues: java.util.Map[String, Object],
+          renderer: CallbackRenderer ,
+          renderingSpecification:  URI,
+          mode: String,
+          mediaType: MediaType,
+          requestProperties: RequestProperties,
+          os: OutputStream) = {
+      if (os == null) {
+        throw new IllegalArgumentException("Exception!")
+      }
+      val renderingSpecificationOption = if (renderingSpecification != null) {Some(renderingSpecification)} else {None}
+      val modeOption = if (mode != null) {Some(mode)} else {None}
+      renderedPage(
+        RenderedPage.Arguments(res, context, sharedRenderingValues, renderer,
+                   renderingSpecificationOption, modeOption, 
+                   mediaType, requestProperties, os));
 
-	}
+  }
 
 }
 

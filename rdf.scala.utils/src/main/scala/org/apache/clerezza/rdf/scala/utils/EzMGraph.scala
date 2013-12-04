@@ -34,44 +34,44 @@ import scala.collection.mutable.HashMap
 class EzMGraph(val baseTc: MGraph) extends AbstractMGraph with TcDependentConversions {
 
 
-	def this() = this (new SimpleMGraph())
+  def this() = this (new SimpleMGraph())
 
-	def performFilter(subject: NonLiteral, predicate: UriRef,
-			obj: Resource): java.util.Iterator[Triple] = baseTc.filter(subject, predicate, obj)
+  def performFilter(subject: NonLiteral, predicate: UriRef,
+      obj: Resource): java.util.Iterator[Triple] = baseTc.filter(subject, predicate, obj)
 
-	override def size = baseTc.size
+  override def size = baseTc.size
 
-	override def add(t: Triple) = baseTc.add(t)
+  override def add(t: Triple) = baseTc.add(t)
 
-	/**
-	 * Add all triples into the other graph to this one
-	 */
-	def +=(other: Graph) = {
-		if (baseTc ne other) baseTc.addAll(other)
-	}
+  /**
+   * Add all triples into the other graph to this one
+   */
+  def +=(other: Graph) = {
+    if (baseTc ne other) baseTc.addAll(other)
+  }
 
-	/**
-	 * create a new bnode
-	 */
-	def bnode: BNode = {
-		new BNode
-	}
+  /**
+   * create a new bnode
+   */
+  def bnode: BNode = {
+    new BNode
+  }
 
-	private val namedBnodes = new HashMap[String,BNode]
+  private val namedBnodes = new HashMap[String,BNode]
 
-	/**
-	 * create a new named bnode based EzGraphNode with the preferred writing style
-	 */
-	def b_(name: String): BNode = {
-		namedBnodes.get(name) match {
-			case Some(bnode) => bnode
-			case None => {
-				val bn = new BNode
-				namedBnodes.put(name, bn);
-				bn
-			}
-		}
-	}
+  /**
+   * create a new named bnode based EzGraphNode with the preferred writing style
+   */
+  def b_(name: String): BNode = {
+    namedBnodes.get(name) match {
+      case Some(bnode) => bnode
+      case None => {
+        val bn = new BNode
+        namedBnodes.put(name, bn);
+        bn
+      }
+    }
+  }
 
 }
 

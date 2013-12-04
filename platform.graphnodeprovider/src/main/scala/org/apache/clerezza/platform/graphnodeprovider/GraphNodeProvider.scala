@@ -40,27 +40,27 @@ import java.security.{PrivilegedAction, AccessController}
  */
 class GraphNodeProvider extends Logging {
 
-	/**
-	 * Get a GraphNode for the specified resource, see class comments for details.
-	 */
-	def get(uriRef: UriRef): GraphNode = {
-		val uriString = uriRef.getUnicodeString
-		val isLocal: Boolean = {
-			import scala.collection.JavaConversions._
-			//we assume all non http* uris to be local
-			!uriString.toLowerCase.startsWith("http") || platformConfig.getBaseUris.exists(baseUri => uriString.startsWith(baseUri.getUnicodeString))
-		}
-		get(uriRef, isLocal)
-	}
+  /**
+   * Get a GraphNode for the specified resource, see class comments for details.
+   */
+  def get(uriRef: UriRef): GraphNode = {
+    val uriString = uriRef.getUnicodeString
+    val isLocal: Boolean = {
+      import scala.collection.JavaConversions._
+      //we assume all non http* uris to be local
+      !uriString.toLowerCase.startsWith("http") || platformConfig.getBaseUris.exists(baseUri => uriString.startsWith(baseUri.getUnicodeString))
+    }
+    get(uriRef, isLocal)
+  }
 
-	/**
-	 * Get a GraphNode for the specified resource, The resource is assumed to be local, i.e. the method behaves like
-	 * get(UriRef) for a Uri with an authority section contained in the Set retuned by
-	 * <code>org.apache.clerezza.platform.config.PlatformConfig#getBaseUris()</code>
-	 */
-	def getLocal(uriRef: UriRef): GraphNode = {
-		get(uriRef, true)
-	}
+  /**
+   * Get a GraphNode for the specified resource, The resource is assumed to be local, i.e. the method behaves like
+   * get(UriRef) for a Uri with an authority section contained in the Set retuned by
+   * <code>org.apache.clerezza.platform.config.PlatformConfig#getBaseUris()</code>
+   */
+  def getLocal(uriRef: UriRef): GraphNode = {
+    get(uriRef, true)
+  }
     
     
     /**
@@ -70,8 +70,8 @@ class GraphNodeProvider extends Logging {
         val cgGraph = cgProvider.getContentGraph
         lazy val localInstanceUri = {
             val uri = new java.net.URI(uriRef.getUnicodeString)
-			new UriRef(Constants.URN_LOCAL_INSTANCE + uri.getPath)
-		}
+      new UriRef(Constants.URN_LOCAL_INSTANCE + uri.getPath)
+    }
         //TODO handle /user/
         existsInGraph(uriRef,cgGraph) || existsInGraph(localInstanceUri, cgGraph)
     }
@@ -88,157 +88,157 @@ class GraphNodeProvider extends Logging {
     }
     
   
-	private def get(uriRef: UriRef, isLocal: Boolean): GraphNode = {
-		val uriString = uriRef.getUnicodeString
-		
+  private def get(uriRef: UriRef, isLocal: Boolean): GraphNode = {
+    val uriString = uriRef.getUnicodeString
+    
 
-		val uriPath = {
-			val uri = new java.net.URI(uriString)
-			uri.getPath
-		}
+    val uriPath = {
+      val uri = new java.net.URI(uriString)
+      uri.getPath
+    }
 
-		lazy val uriPrefix = {
-			val uri = new java.net.URI(uriString)
-			uri.getScheme+"://"+uri.getAuthority
-		}
+    lazy val uriPrefix = {
+      val uri = new java.net.URI(uriString)
+      uri.getScheme+"://"+uri.getAuthority
+    }
 
-		val anyHostUri = new UriRef(Constants.URN_LOCAL_INSTANCE + uriPath)
+    val anyHostUri = new UriRef(Constants.URN_LOCAL_INSTANCE + uriPath)
 
-		var mGraphs: List[TripleCollection] = Nil
+    var mGraphs: List[TripleCollection] = Nil
 
-		def addToUnion(mGraph: LockableMGraph) {
-			//adding uncondinionately if (existsInGraph(uriRef, mGraph)) {
-			mGraphs ::= mGraph
-			//}
-			if (isLocal) {
-				if (existsInGraph(anyHostUri, mGraph)) {
-					mGraphs ::= new UriMutatingTripleCollection(mGraph, Constants.URN_LOCAL_INSTANCE, uriPrefix)
-				}
-			}
-		}
+    def addToUnion(mGraph: LockableMGraph) {
+      //adding uncondinionately if (existsInGraph(uriRef, mGraph)) {
+      mGraphs ::= mGraph
+      //}
+      if (isLocal) {
+        if (existsInGraph(anyHostUri, mGraph)) {
+          mGraphs ::= new UriMutatingTripleCollection(mGraph, Constants.URN_LOCAL_INSTANCE, uriPrefix)
+        }
+      }
+    }
 
-		val cgGraph = cgProvider.getContentGraph
+    val cgGraph = cgProvider.getContentGraph
 
-		addToUnion(cgGraph)
+    addToUnion(cgGraph)
 
-		if (isLocal && uriPath.startsWith("/user/")) {
-			val nextSlash = uriPath.indexOf('/',6)		
-			if (nextSlash != -1) {
-				val userName = uriPath.substring(6, nextSlash)
-				val webIdOption = AccessController.doPrivileged(new PrivilegedAction[Option[UriRef]]() {
-						def run(): Option[UriRef] = {
-							val userNode: GraphNode = userManager.getUserInSystemGraph(userName)
-							if (userNode != null) {
-								userNode.getNode match {
-									case u: UriRef => Some(u)
-									case _ => None
-								}
-							} else {
-								None
-							}
-						}
-					}
-				)
-				webIdOption match {
-					case Some(u) => {
-						val webIdInfo = webIdGraphsService.getWebIdInfo(u)
-						addToUnion(webIdInfo.localPublicUserData)
-					}
-					case None => ;
-				}
-			}
-		}
+    if (isLocal && uriPath.startsWith("/user/")) {
+      val nextSlash = uriPath.indexOf('/',6)    
+      if (nextSlash != -1) {
+        val userName = uriPath.substring(6, nextSlash)
+        val webIdOption = AccessController.doPrivileged(new PrivilegedAction[Option[UriRef]]() {
+            def run(): Option[UriRef] = {
+              val userNode: GraphNode = userManager.getUserInSystemGraph(userName)
+              if (userNode != null) {
+                userNode.getNode match {
+                  case u: UriRef => Some(u)
+                  case _ => None
+                }
+              } else {
+                None
+              }
+            }
+          }
+        )
+        webIdOption match {
+          case Some(u) => {
+            val webIdInfo = webIdGraphsService.getWebIdInfo(u)
+            addToUnion(webIdInfo.localPublicUserData)
+          }
+          case None => ;
+        }
+      }
+    }
 
-		if (!isLocal) {
-			/**
-			 * As the resource might identify something other than a document we use this to find the redirect location
-			 */
-			lazy val redirectLocationString = {
-				val acceptHeader = "application/rdf+xml,*/*;q.1"
-				val url = new URL(uriString)
-				val connection = url.openConnection()
-				connection match {
-					case hc : HttpURLConnection => {
-							hc.setRequestMethod("HEAD");
-							hc.setInstanceFollowRedirects(false)
-							hc.addRequestProperty("Accept",  acceptHeader)
-							hc.getResponseCode match {
-								case HttpURLConnection.HTTP_SEE_OTHER  => {
-										val location = hc.getHeaderField("Location")
-										if (location == null) {
-											throw new RuntimeException("No Location Headers in 303 response")
-										}
-										location
-									}
-								case _ => uriString
-							}
-						}
-					case _ => uriString
-				}
-			}
+    if (!isLocal) {
+      /**
+       * As the resource might identify something other than a document we use this to find the redirect location
+       */
+      lazy val redirectLocationString = {
+        val acceptHeader = "application/rdf+xml,*/*;q.1"
+        val url = new URL(uriString)
+        val connection = url.openConnection()
+        connection match {
+          case hc : HttpURLConnection => {
+              hc.setRequestMethod("HEAD");
+              hc.setInstanceFollowRedirects(false)
+              hc.addRequestProperty("Accept",  acceptHeader)
+              hc.getResponseCode match {
+                case HttpURLConnection.HTTP_SEE_OTHER  => {
+                    val location = hc.getHeaderField("Location")
+                    if (location == null) {
+                      throw new RuntimeException("No Location Headers in 303 response")
+                    }
+                    location
+                  }
+                case _ => uriString
+              }
+            }
+          case _ => uriString
+        }
+      }
 
-			//TODO add method to WebProxy to get the graph location location
-			val graphUriString = {
-				val hashPos = uriString.indexOf('#')
-				if (hashPos != -1) {
-					uriString.substring(0, hashPos)
-				} else {
-					redirectLocationString
-				}
-			}
-			
-			addToUnion(tcManager.getMGraph(new UriRef(graphUriString)))
-		}
+      //TODO add method to WebProxy to get the graph location location
+      val graphUriString = {
+        val hashPos = uriString.indexOf('#')
+        if (hashPos != -1) {
+          uriString.substring(0, hashPos)
+        } else {
+          redirectLocationString
+        }
+      }
+      
+      addToUnion(tcManager.getMGraph(new UriRef(graphUriString)))
+    }
 
-		val unionMGraph = new UnionMGraph(mGraphs:_*);
-		new GraphNode(uriRef, unionMGraph)
-	}
+    val unionMGraph = new UnionMGraph(mGraphs:_*);
+    new GraphNode(uriRef, unionMGraph)
+  }
 
-	private var tcManager: TcManager = null;
+  private var tcManager: TcManager = null;
 
-	protected def bindTcManager(tcManager: TcManager) = {
-		this.tcManager = tcManager
-	}
+  protected def bindTcManager(tcManager: TcManager) = {
+    this.tcManager = tcManager
+  }
 
-	protected def unbindTcManager(tcManager: TcManager) = {
-		this.tcManager = null
-	}
+  protected def unbindTcManager(tcManager: TcManager) = {
+    this.tcManager = null
+  }
 
-	private var platformConfig: PlatformConfig = null;
+  private var platformConfig: PlatformConfig = null;
 
-	protected def bindPlatformConfig(c: PlatformConfig) = {
-		this.platformConfig = c
-	}
+  protected def bindPlatformConfig(c: PlatformConfig) = {
+    this.platformConfig = c
+  }
 
-	protected def unbindPlatformConfig(c: PlatformConfig) = {
-		this.platformConfig = null
-	}
+  protected def unbindPlatformConfig(c: PlatformConfig) = {
+    this.platformConfig = null
+  }
 
-	private var cgProvider: ContentGraphProvider = null
-	protected def bindCgProvider(p: ContentGraphProvider) {
-		this.cgProvider = p
-	}
-	protected def unbindCgProvider(p: ContentGraphProvider) {
-		this.cgProvider = null
-	}
+  private var cgProvider: ContentGraphProvider = null
+  protected def bindCgProvider(p: ContentGraphProvider) {
+    this.cgProvider = p
+  }
+  protected def unbindCgProvider(p: ContentGraphProvider) {
+    this.cgProvider = null
+  }
 
-	private var webIdGraphsService: WebIdGraphsService = null
-	protected def bindWebIdGraphsService(webIdGraphsService: WebIdGraphsService): Unit = {
-		this.webIdGraphsService = webIdGraphsService
-	}
+  private var webIdGraphsService: WebIdGraphsService = null
+  protected def bindWebIdGraphsService(webIdGraphsService: WebIdGraphsService): Unit = {
+    this.webIdGraphsService = webIdGraphsService
+  }
 
-	protected def unbindWebIdGraphsService(webIdGraphsService: WebIdGraphsService): Unit = {
-		this.webIdGraphsService = null
-	}
+  protected def unbindWebIdGraphsService(webIdGraphsService: WebIdGraphsService): Unit = {
+    this.webIdGraphsService = null
+  }
 
-	private var userManager: UserManager = null
+  private var userManager: UserManager = null
 
-	protected def bindUserManager(userManager: UserManager): Unit = {
-		this.userManager = userManager
-	}
+  protected def bindUserManager(userManager: UserManager): Unit = {
+    this.userManager = userManager
+  }
 
-	protected def unbindUserManager(userManager: UserManager): Unit = {
-		this.userManager = null
-	}
+  protected def unbindUserManager(userManager: UserManager): Unit = {
+    this.userManager = null
+  }
 
 }

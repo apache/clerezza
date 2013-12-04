@@ -37,20 +37,20 @@ import org.apache.clerezza.rdf.ontologies.DC
  */
 class HelloWorldMessageRenderlet extends SRenderlet {
 
-	val getRdfType = Ontology.HelloWordMessageType
+  val getRdfType = Ontology.HelloWordMessageType
 
-	override def getModePattern = "naked"
+  override def getModePattern = "naked"
 
-	override def renderedPage(arguments: XmlResult.Arguments) = {
-		new XmlResult(arguments) {
-			override def content = {
-				resultDocModifier.addStyleSheet("/styles/hello-world/style.css")
-				<div xmlns="http://www.w3.org/1999/xhtml" id="tx-content">
-					<h2>A Message</h2>
-					<div class="message">{res/DC.description*}</div>
-				</div>
-			}
-		}
-	}
+  override def renderedPage(arguments: XmlResult.Arguments) = {
+    new XmlResult(arguments) {
+      override def content = {
+        resultDocModifier.addStyleSheet("/styles/hello-world/style.css")
+        <div xmlns="http://www.w3.org/1999/xhtml" id="tx-content">
+          <h2>A Message</h2>
+          <div class="message">{res/DC.description*}</div>
+        </div>
+      }
+    }
+  }
 
 }

@@ -8,10 +8,10 @@ class PermissionGrantingPathNode(wrapped: PathNode) extends PathNode {
 
   def doPrivileged[T](m: => T): T = {
      AccessController.doPrivileged(new PrivilegedAction[T] {
-		def run: T = {
-			m
-		}
-	})
+    def run: T = {
+      m
+    }
+  })
   }
   
   def exists(): Boolean = doPrivileged(wrapped.exists())

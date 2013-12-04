@@ -43,134 +43,134 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 @deprecated("user XmlResult with SRenderlet", "2012")
 abstract class RenderedPage(arguments: RenderedPage.Arguments) {
 
-	val RenderedPage.Arguments(
-					res: GraphNode,
-					context: GraphNode,
-					sharedRenderingValues: java.util.Map[String, Object],
-					renderer: CallbackRenderer,
-					renderingSpecificationOption:  Option[URI],
-					modeOption: Option[String],
-					mediaType: MediaType,
-					requestProperties: RequestProperties,
-					os: OutputStream) = arguments;
-	val mode = modeOption match {
-		case Some(x) => x
-		case None => null
-	}
+  val RenderedPage.Arguments(
+          res: GraphNode,
+          context: GraphNode,
+          sharedRenderingValues: java.util.Map[String, Object],
+          renderer: CallbackRenderer,
+          renderingSpecificationOption:  Option[URI],
+          modeOption: Option[String],
+          mediaType: MediaType,
+          requestProperties: RequestProperties,
+          os: OutputStream) = arguments;
+  val mode = modeOption match {
+    case Some(x) => x
+    case None => null
+  }
 
-	val uriInfo = requestProperties.getUriInfo
-	val requestHeaders = requestProperties.getRequestHeaders
-	val responseHeaders = requestProperties.getResponseHeaders
+  val uriInfo = requestProperties.getUriInfo
+  val requestHeaders = requestProperties.getRequestHeaders
+  val responseHeaders = requestProperties.getResponseHeaders
 
-	def render(resource: GraphNode): Seq[Node] = {
-		modeOption match {
-			case Some(m) => render(resource, m)
-			case None => render(resource, "naked")
-		}
-	}
+  def render(resource: GraphNode): Seq[Node] = {
+    modeOption match {
+      case Some(m) => render(resource, m)
+      case None => render(resource, "naked")
+    }
+  }
 
-	def render(resource: GraphNode, mode: String) = {
-		def parseNodeSeq(string: String) = {
-			_root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
-		}
-		val baos = new java.io.ByteArrayOutputStream
-		renderer.render(resource, context, mode, baos)
-		parseNodeSeq(new String(baos.toByteArray))
-	}
+  def render(resource: GraphNode, mode: String) = {
+    def parseNodeSeq(string: String) = {
+      _root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
+    }
+    val baos = new java.io.ByteArrayOutputStream
+    renderer.render(resource, context, mode, baos)
+    parseNodeSeq(new String(baos.toByteArray))
+  }
 
-	/**
-	 * renders the specified resource without using the base-graph from resource
-	 * rendered by the caller but getting a new context using the GraphNodeProvider
-	 */
-	def render(resource: UriRef): Seq[Node] = {
-		modeOption match {
-			case Some(m) => render(resource, m)
-			case None => render(resource, "naked")
-		}
-	}
+  /**
+   * renders the specified resource without using the base-graph from resource
+   * rendered by the caller but getting a new context using the GraphNodeProvider
+   */
+  def render(resource: UriRef): Seq[Node] = {
+    modeOption match {
+      case Some(m) => render(resource, m)
+      case None => render(resource, "naked")
+    }
+  }
 
-	/**
-	 * renders the specified resource without using the base-graph from resource
-	 * rendered by the caller but getting a new context using the GraphNodeProvider
-	 */
-	def render(resource: UriRef, mode: String) = {
-		def parseNodeSeq(string: String) = {
-			_root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
-		}
-		val baos = new java.io.ByteArrayOutputStream
-		renderer.render(resource, context, mode, baos)
-		parseNodeSeq(new String(baos.toByteArray))
-	}
+  /**
+   * renders the specified resource without using the base-graph from resource
+   * rendered by the caller but getting a new context using the GraphNodeProvider
+   */
+  def render(resource: UriRef, mode: String) = {
+    def parseNodeSeq(string: String) = {
+      _root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
+    }
+    val baos = new java.io.ByteArrayOutputStream
+    renderer.render(resource, context, mode, baos)
+    parseNodeSeq(new String(baos.toByteArray))
+  }
 
-	/**
-	 * This is an object that allows one to use some nice shortcuts in scala based subclasses
-	 * - $variable will get the value of the sharedRenderingValues hash
-	 * - $variable = value allows one to update the sharedRenderingValues hash
-	 * - $[ClassName] allows to access an osgi service annotated to be a WebRenderingService
-	 */
-	object dollar {
-		def apply(key: String) = sharedRenderingValues.get(key)
+  /**
+   * This is an object that allows one to use some nice shortcuts in scala based subclasses
+   * - $variable will get the value of the sharedRenderingValues hash
+   * - $variable = value allows one to update the sharedRenderingValues hash
+   * - $[ClassName] allows to access an osgi service annotated to be a WebRenderingService
+   */
+  object dollar {
+    def apply(key: String) = sharedRenderingValues.get(key)
 
-		def update(key: String, value: Object) = sharedRenderingValues.put(key, value)
+    def update(key: String, value: Object) = sharedRenderingValues.put(key, value)
 
-		def apply[T](implicit m: Manifest[T]): T = {
-			val clazz = m.erasure.asInstanceOf[Class[T]]
-			requestProperties.getRenderingService(clazz)
-		}
-	}
+    def apply[T](implicit m: Manifest[T]): T = {
+      val clazz = m.erasure.asInstanceOf[Class[T]]
+      requestProperties.getRenderingService(clazz)
+    }
+  }
     
     /** no idea why, but since scala 2.10 it doesn't work if the object 
     * is called $ directly */
     val $ = dollar
 
-	def ifx[T](con: => Boolean)(f: => T): T = {
-		if (con) f else null.asInstanceOf[T]
-	}
+  def ifx[T](con: => Boolean)(f: => T): T = {
+    if (con) f else null.asInstanceOf[T]
+  }
 
-	val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
+  val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
 
-	val out = new PrintWriter(os)
+  val out = new PrintWriter(os)
 
-	out.print(
-		content match {
-			case s: Seq[_] => s.mkString
-			case o => o.toString
-		}
-	)
-	out.flush()
+  out.print(
+    content match {
+      case s: Seq[_] => s.mkString
+      case o => o.toString
+    }
+  )
+  out.flush()
 
-	/**
-	 * This is the main method/variable that needs to be implemented by subclasses
-	 */
-	def content: AnyRef;
+  /**
+   * This is the main method/variable that needs to be implemented by subclasses
+   */
+  def content: AnyRef;
 
 
 }
 
 object RenderedPage {
 
-	/**
-	 * Class to encapsulate information sent to the rendering engine.
-	 *
-	 * @param res  RDF resource to be rendered with the template.
-	 * @param context  RDF resource providing a rendering context.
-	 * @param sharedRenderingValues	a map that can be used for sharing values
-	 * across the different Renderlets involved in a rendering process
-	 * @param callbackRenderer  renderer for call backs.
-	 * @param renderingSpecification  the rendering specification
-	 * @param modeOption the mode this Renderlet was invoked with, this is mainly used
-	 * so that the callbackRenderer can be claeed inheriting the mode.
-	 * @param mediaType  the media type this media produces (a part of)
-	 * @param requestProperties properties of the http request, may be null
-	 * @param os  where the output will be written to.
-	 */
-	case class Arguments(res: GraphNode,
-								context: GraphNode,
-								sharedRenderingValues: java.util.Map[String, Object],
-								renderer: CallbackRenderer,
-								renderingSpecificationOption: Option[URI],
-								modeOption: Option[String],
-								mediaType: MediaType,
-								requestProperties: RequestProperties,
-								os: OutputStream);
+  /**
+   * Class to encapsulate information sent to the rendering engine.
+   *
+   * @param res  RDF resource to be rendered with the template.
+   * @param context  RDF resource providing a rendering context.
+   * @param sharedRenderingValues  a map that can be used for sharing values
+   * across the different Renderlets involved in a rendering process
+   * @param callbackRenderer  renderer for call backs.
+   * @param renderingSpecification  the rendering specification
+   * @param modeOption the mode this Renderlet was invoked with, this is mainly used
+   * so that the callbackRenderer can be claeed inheriting the mode.
+   * @param mediaType  the media type this media produces (a part of)
+   * @param requestProperties properties of the http request, may be null
+   * @param os  where the output will be written to.
+   */
+  case class Arguments(res: GraphNode,
+                context: GraphNode,
+                sharedRenderingValues: java.util.Map[String, Object],
+                renderer: CallbackRenderer,
+                renderingSpecificationOption: Option[URI],
+                modeOption: Option[String],
+                mediaType: MediaType,
+                requestProperties: RequestProperties,
+                os: OutputStream);
 }

@@ -37,32 +37,32 @@ import java.util.concurrent.locks.Lock
  */
 class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends immutable.Seq[T] {
 
-	def this(jList : java.util.List[T], readLock: Lock) = this(() => jList.iterator(), readLock)
-	def this() = this( ()=> java.util.Collections.emptyList[T].iterator(),null)
+  def this(jList : java.util.List[T], readLock: Lock) = this(() => jList.iterator(), readLock)
+  def this() = this( ()=> java.util.Collections.emptyList[T].iterator(),null)
 
-	var iter = iterCreator()
-	var firstIter = true
+  var iter = iterCreator()
+  var firstIter = true
 
-	private val collectedElems = new ArrayBuffer[T]()
+  private val collectedElems = new ArrayBuffer[T]()
 
-	/**
+  /**
     * This method allows the position to be expressed between parenthesis
     */
     def apply(pos : Int) = {
-    	ensureReadTill(pos)
-    	collectedElems(pos)
+      ensureReadTill(pos)
+      collectedElems(pos)
     }
 
 
-	/**
-	* returns a new fully expanded and sorted CollectediterCreator
-	*/
-	def sort(lt : (T,T) => Boolean) = {
-		val sortedElems = iterator.toList.sortWith(lt)
-		//TODO this re-expands everything, return sorted-list directly
-		new CollectedIter[T](sortedElems, readLock)
+  /**
+  * returns a new fully expanded and sorted CollectediterCreator
+  */
+  def sort(lt : (T,T) => Boolean) = {
+    val sortedElems = iterator.toList.sortWith(lt)
+    //TODO this re-expands everything, return sorted-list directly
+    new CollectedIter[T](sortedElems, readLock)
 
-	}
+  }
 
     /**
     * Operator style syntax to access a position.
@@ -70,42 +70,42 @@ class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends i
     def %(pos: Int) = apply(pos)
 
     private def ensureReadTill(pos: Int) {
-		try {
-			
-			while (iter.hasNext && (collectedElems.length-1 <= pos)) {
-				val next = iter.next()
-				if (firstIter || !collectedElems.contains(next)) {
-					collectedElems += next
-				}
-			}
-		} catch {
-			case e: ConcurrentModificationException => {
-					readLock.lock()
-					try {
-						iter = iterCreator()
-						firstIter = false
-						//going beyond pos, do reduce chance we have to aquire another lock
-						val biggerPos = if (pos < (Integer.MAX_VALUE - 100)) {
-							pos + 100
-						} else {
-							Integer.MAX_VALUE
-						}
-						while (iter.hasNext && (collectedElems.length-1 <= biggerPos)) {
-							val next = iter.next()
-							if (!collectedElems.contains(next)) {
-								collectedElems += next
-							}
-						}
-					} finally {
-						readLock.unlock()
-					}
-			}
-			case e => throw e
-		}
+    try {
+      
+      while (iter.hasNext && (collectedElems.length-1 <= pos)) {
+        val next = iter.next()
+        if (firstIter || !collectedElems.contains(next)) {
+          collectedElems += next
+        }
+      }
+    } catch {
+      case e: ConcurrentModificationException => {
+          readLock.lock()
+          try {
+            iter = iterCreator()
+            firstIter = false
+            //going beyond pos, do reduce chance we have to aquire another lock
+            val biggerPos = if (pos < (Integer.MAX_VALUE - 100)) {
+              pos + 100
+            } else {
+              Integer.MAX_VALUE
+            }
+            while (iter.hasNext && (collectedElems.length-1 <= biggerPos)) {
+              val next = iter.next()
+              if (!collectedElems.contains(next)) {
+                collectedElems += next
+              }
+            }
+          } finally {
+            readLock.unlock()
+          }
+      }
+      case e => throw e
+    }
     }
 
     override def length : Int = {
-    	length(Integer.MAX_VALUE)
+      length(Integer.MAX_VALUE)
     }
 
     /**
@@ -114,20 +114,20 @@ class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends i
     * the result is smaller than max it is the length of the collection.
     */
     def length(max: Int) : Int = {
-    	ensureReadTill(max)
-    	collectedElems.length
-	}
+      ensureReadTill(max)
+      collectedElems.length
+  }
 
     override def toString() = {
-    	if (length(1) > 0) {
-        	apply(0).toString
-    	} else {
-        	"empty"
+      if (length(1) > 0) {
+          apply(0).toString
+      } else {
+          "empty"
         }
     }
 
     override def iterator = {
-    	ensureReadTill(Integer.MAX_VALUE)
+      ensureReadTill(Integer.MAX_VALUE)
         collectedElems.iterator
     }
 }

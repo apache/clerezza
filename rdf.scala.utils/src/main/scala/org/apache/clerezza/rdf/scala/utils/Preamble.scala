@@ -59,59 +59,59 @@ object Preamble extends TcIndependentConversions {
 * @author bblfish, reto
 */
 class Preamble(val baseTc: TripleCollection) extends TcDependentConversions {
-	
+  
 }
 protected trait TcDependentConversions extends TcIndependentConversions {
-	
-	def baseTc: TripleCollection
-	
-	implicit def toRichGraphNode(resource: Resource) = {
-		new RichGraphNode(new GraphNode(resource, baseTc))
-	}
+  
+  def baseTc: TripleCollection
+  
+  implicit def toRichGraphNode(resource: Resource) = {
+    new RichGraphNode(new GraphNode(resource, baseTc))
+  }
 }
 
 protected trait TcIndependentConversions extends EzLiteralImplicits {
-	implicit def toRichGraphNode(node: GraphNode) = {
-		new RichGraphNode(node)
-	}
+  implicit def toRichGraphNode(node: GraphNode) = {
+    new RichGraphNode(node)
+  }
 
-	implicit def toFirstElement(c: CollectedIter[RichGraphNode])  = {
-		if (c.length(1) > 0) {
-			c(0)
-		} else {
-			TcIndependentConversions.emptyLiteral
-		}
-	}
+  implicit def toFirstElement(c: CollectedIter[RichGraphNode])  = {
+    if (c.length(1) > 0) {
+      c(0)
+    } else {
+      TcIndependentConversions.emptyLiteral
+    }
+  }
 
-	private val litFactory = LiteralFactory.getInstance
+  private val litFactory = LiteralFactory.getInstance
 
 
-	implicit def lit2String(lit: Literal) = lit.getLexicalForm
+  implicit def lit2String(lit: Literal) = lit.getLexicalForm
 
-	implicit def date2lit(date: Date) = litFactory.createTypedLiteral(date)
+  implicit def date2lit(date: Date) = litFactory.createTypedLiteral(date)
 
-	implicit def int2lit(int: Int) = litFactory.createTypedLiteral(int)
+  implicit def int2lit(int: Int) = litFactory.createTypedLiteral(int)
 
-	implicit def bigint2lit(bint: BigInt) = litFactory.createTypedLiteral(bint.underlying())
+  implicit def bigint2lit(bint: BigInt) = litFactory.createTypedLiteral(bint.underlying())
 
-	implicit def bigint2lit(bigInt: BigInteger) = litFactory.createTypedLiteral(bigInt)
+  implicit def bigint2lit(bigInt: BigInteger) = litFactory.createTypedLiteral(bigInt)
 
-	implicit def bool2lit(boolean: Boolean) = litFactory.createTypedLiteral(boolean)
+  implicit def bool2lit(boolean: Boolean) = litFactory.createTypedLiteral(boolean)
 
-	implicit def long2lit(long: Long) = litFactory.createTypedLiteral(long)
+  implicit def long2lit(long: Long) = litFactory.createTypedLiteral(long)
 
-	implicit def double2lit(double: Double) = litFactory.createTypedLiteral(double)
+  implicit def double2lit(double: Double) = litFactory.createTypedLiteral(double)
 
-	implicit def uriRef2Prefix(uriRef: UriRef) = new NameSpace(uriRef.getUnicodeString)
+  implicit def uriRef2Prefix(uriRef: UriRef) = new NameSpace(uriRef.getUnicodeString)
 
-	implicit def URItoUriRef(uri: URI) = new UriRef(uri.toString)
+  implicit def URItoUriRef(uri: URI) = new UriRef(uri.toString)
 
-	implicit def URLtoUriRef(url: URL) = new UriRef(url.toExternalForm)
-	
+  implicit def URLtoUriRef(url: URL) = new UriRef(url.toExternalForm)
+  
 }
 protected object TcIndependentConversions {
-	val emptyGraph = new impl.SimpleGraph(new impl.SimpleMGraph)
-	val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
+  val emptyGraph = new impl.SimpleGraph(new impl.SimpleMGraph)
+  val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
 
 }
 

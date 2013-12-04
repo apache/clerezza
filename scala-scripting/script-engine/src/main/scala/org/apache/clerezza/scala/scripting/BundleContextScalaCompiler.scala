@@ -54,8 +54,8 @@ import scala.collection.mutable.ListBuffer
  * TODO: check if this is still true with Scala 2.20
  */
 class BundleContextScalaCompiler(bundleContext : BundleContext,
-		settings: Settings, reporter: Reporter)
-		extends Global(settings, reporter) with ReplGlobal with Logging { self =>
+    settings: Settings, reporter: Reporter)
+    extends Global(settings, reporter) with ReplGlobal with Logging { self =>
 
 
   override lazy val platform: ThisPlatform = {
@@ -85,33 +85,33 @@ class BundleContextScalaCompiler(bundleContext : BundleContext,
     }
     new MergedClassPath(result.toList.reverse, original.context)
   }
-	/*override lazy val classPath: ClassPath[AbstractFile] = {
+  /*override lazy val classPath: ClassPath[AbstractFile] = {
 
-		val classPathOrig: ClassPath[AbstractFile]  = new PathResolver(settings).result
-		var bundles: Array[Bundle] = bundleContext.getBundles
-		val classPathAbstractFiles = for (bundle <- bundles;
-										  val url = bundle.getResource("/");
-										  if url != null) yield {
-			if ("file".equals(url.getProtocol())) {
-				new PlainFile(new File(url.toURI()))
-			}
-			else {
-				BundleFS.create(bundle);
-			}
-		}
-		val classPaths: List[ClassPath[AbstractFile]] = (for (abstractFile <- classPathAbstractFiles)
-			yield {
-					new DirectoryClassPath(abstractFile, classPathOrig.context)
-				}) toList
+    val classPathOrig: ClassPath[AbstractFile]  = new PathResolver(settings).result
+    var bundles: Array[Bundle] = bundleContext.getBundles
+    val classPathAbstractFiles = for (bundle <- bundles;
+                      val url = bundle.getResource("/");
+                      if url != null) yield {
+      if ("file".equals(url.getProtocol())) {
+        new PlainFile(new File(url.toURI()))
+      }
+      else {
+        BundleFS.create(bundle);
+      }
+    }
+    val classPaths: List[ClassPath[AbstractFile]] = (for (abstractFile <- classPathAbstractFiles)
+      yield {
+          new DirectoryClassPath(abstractFile, classPathOrig.context)
+        }) toList
 
-		new MergedClassPath[AbstractFile](classPathOrig :: classPaths,
-			   classPathOrig.context)
+    new MergedClassPath[AbstractFile](classPathOrig :: classPaths,
+         classPathOrig.context)
 
-	}*/
+  }*/
 
-	/*override def rootLoader: LazyType = {
-		new loaders.JavaPackageLoader(classPath)
-	}*/
+  /*override def rootLoader: LazyType = {
+    new loaders.JavaPackageLoader(classPath)
+  }*/
         }
 
 

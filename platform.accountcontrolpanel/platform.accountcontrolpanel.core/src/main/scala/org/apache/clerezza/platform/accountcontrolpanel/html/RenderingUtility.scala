@@ -35,60 +35,60 @@ import rdf.scala.utils.Preamble._
  * Some utility methods for the renderlets
  */
 object RenderingUtility {
-	val emptyText = new Text("")
+  val emptyText = new Text("")
 
-	def ifE[T](arg:T)(template: T=>Node ):NodeSeq = {
-		def isEmpty(arg: Any): Boolean = {
-			arg match {
-				case prod: Product => prod.productIterator.forall(isEmpty(_))
-				case str: String => (str.size == 0)
-				case it: CollectedIter[RichGraphNode] => (it.size == 0)
-				case node: RichGraphNode => (null == node)
-				case other: AnyRef => (null == other)
-				case _ => false //literals can't be empty
-			}
-		}
-		if (isEmpty(arg)) return emptyText else template(arg)
-	}
+  def ifE[T](arg:T)(template: T=>Node ):NodeSeq = {
+    def isEmpty(arg: Any): Boolean = {
+      arg match {
+        case prod: Product => prod.productIterator.forall(isEmpty(_))
+        case str: String => (str.size == 0)
+        case it: CollectedIter[RichGraphNode] => (it.size == 0)
+        case node: RichGraphNode => (null == node)
+        case other: AnyRef => (null == other)
+        case _ => false //literals can't be empty
+      }
+    }
+    if (isEmpty(arg)) return emptyText else template(arg)
+  }
 
-	def firstOf(node: RichGraphNode, uris: UriRef*):CollectedIter[RichGraphNode] = {
-		for (uri <- uris) {
-			val res : CollectedIter[RichGraphNode] = node/uri
-			if (res.size>0) return res
-		}
-		return new CollectedIter[RichGraphNode]()
-	}
+  def firstOf(node: RichGraphNode, uris: UriRef*):CollectedIter[RichGraphNode] = {
+    for (uri <- uris) {
+      val res : CollectedIter[RichGraphNode] = node/uri
+      if (res.size>0) return res
+    }
+    return new CollectedIter[RichGraphNode]()
+  }
 
 
 
-	/**
-	 * Show a person: a picture, a link to their local profile and their name
-	 * Different default icons should be shown if the agent is a person, company, group, robot...
-	 *
-	 * assumes the p is WebID node (can change later)
-	 */
-	def getAgentPix(p: RichGraphNode) = {
-		val pix = firstOf(p, FOAF.depiction, FOAF.logo, FOAF.img).getNode match {
-			case uri: UriRef => uri.getUnicodeString
-			case _ => "http://upload.wikimedia.org/wikipedia/commons/0/0a/Gnome-stock_person.svg"
-		}
-		<a href={"/browse/person?uri="+encode(p*)}><img class="mugshot" src={pix}/></a>
-	}
+  /**
+   * Show a person: a picture, a link to their local profile and their name
+   * Different default icons should be shown if the agent is a person, company, group, robot...
+   *
+   * assumes the p is WebID node (can change later)
+   */
+  def getAgentPix(p: RichGraphNode) = {
+    val pix = firstOf(p, FOAF.depiction, FOAF.logo, FOAF.img).getNode match {
+      case uri: UriRef => uri.getUnicodeString
+      case _ => "http://upload.wikimedia.org/wikipedia/commons/0/0a/Gnome-stock_person.svg"
+    }
+    <a href={"/browse/person?uri="+encode(p*)}><img class="mugshot" src={pix}/></a>
+  }
 
-	private def encode(url: String): String =  URLEncoder.encode(url,"UTF8")
+  private def encode(url: String): String =  URLEncoder.encode(url,"UTF8")
 
-	/**
-	 * get a usable name from the properties available including nick
-	 */
-	def getName(p: RichGraphNode): String =  {
-		 val name = p/FOAF.name*;
-		 if ("" != name ) { return name }
-		 val firstNm: String = p/FOAF.firstName*;
-		 val fmlyNm :String = firstOf(p, FOAF.family_name,FOAF.familyName)*;
-  		 if ("" != firstNm || "" != fmlyNm) { return firstNm+" "+fmlyNm }
-		 return p*
+  /**
+   * get a usable name from the properties available including nick
+   */
+  def getName(p: RichGraphNode): String =  {
+     val name = p/FOAF.name*;
+     if ("" != name ) { return name }
+     val firstNm: String = p/FOAF.firstName*;
+     val fmlyNm :String = firstOf(p, FOAF.family_name,FOAF.familyName)*;
+       if ("" != firstNm || "" != fmlyNm) { return firstNm+" "+fmlyNm }
+     return p*
 
-	}
+  }
 
 }
 

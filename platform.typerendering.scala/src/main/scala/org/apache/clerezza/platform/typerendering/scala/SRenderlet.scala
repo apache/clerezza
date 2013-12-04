@@ -45,46 +45,46 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
  *
  * class BookFormRenderlet extends SRenderlet {
  *
- *	 override def renderedPage(arguments: RenderedPage.Arguments) = {
- *		new XmlResult(arguments) {
+ *   override def renderedPage(arguments: RenderedPage.Arguments) = {
+ *    new XmlResult(arguments) {
  *
- *			override def content = <div xmlns="http://www.w3.org/1999/xhtml">
- *			   ....
- *			</div>
- *		}
- *	 }
+ *      override def content = <div xmlns="http://www.w3.org/1999/xhtml">
+ *         ....
+ *      </div>
+ *    }
+ *   }
  * }
  */
 trait SRenderlet extends TypeRenderlet {
 
-	def renderedPage(renderingArguments: XmlResult.Arguments): XmlResult
+  def renderedPage(renderingArguments: XmlResult.Arguments): XmlResult
 
-	def ifx[T](con:  => Boolean)(f: => T) :  T = {
-		if (con) f else null.asInstanceOf[T]
-	}
+  def ifx[T](con:  => Boolean)(f: => T) :  T = {
+    if (con) f else null.asInstanceOf[T]
+  }
 
-	val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
+  val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
 
-	@throws(classOf[IOException])
-	override def render(res: GraphNode, context: GraphNode,
-					sharedRenderingValues: java.util.Map[String, Object],
-					renderer: CallbackRenderer ,
-					requestProperties: RequestProperties,
-					os: OutputStream) = {
-			if (os == null) {
-				throw new IllegalArgumentException("Exception!")
-			}
-			val modeOption = if (requestProperties.getMode != null) {Some(requestProperties.getMode)} else {None}
-			renderedPage(
-				XmlResult.Arguments(res, context, sharedRenderingValues, renderer,
-								   modeOption, 
-								   requestProperties.getMediaType, requestProperties, os));
+  @throws(classOf[IOException])
+  override def render(res: GraphNode, context: GraphNode,
+          sharedRenderingValues: java.util.Map[String, Object],
+          renderer: CallbackRenderer ,
+          requestProperties: RequestProperties,
+          os: OutputStream) = {
+      if (os == null) {
+        throw new IllegalArgumentException("Exception!")
+      }
+      val modeOption = if (requestProperties.getMode != null) {Some(requestProperties.getMode)} else {None}
+      renderedPage(
+        XmlResult.Arguments(res, context, sharedRenderingValues, renderer,
+                   modeOption, 
+                   requestProperties.getMediaType, requestProperties, os));
 
-	}
+  }
 
-	override def getMediaType() = MediaType.APPLICATION_XHTML_XML_TYPE
+  override def getMediaType() = MediaType.APPLICATION_XHTML_XML_TYPE
 
-	def getModePattern = "naked"
+  def getModePattern = "naked"
 
 }
 

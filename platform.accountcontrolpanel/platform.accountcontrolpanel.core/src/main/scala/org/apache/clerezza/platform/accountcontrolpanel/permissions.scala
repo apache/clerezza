@@ -32,40 +32,40 @@ import org.slf4j.scala.Logging
  */
 abstract
 class AbstractPermission(val accountName: String, val actions: String ="")
-	extends Permission(accountName) with Logging  {
+  extends Permission(accountName) with Logging  {
 
-	if (actions != "") {
-		throw new RuntimeException(getClass.getName+": actions must be an empty String "+
-			"(second argument only in constructor for supporting building from canonical form")
-	}
+  if (actions != "") {
+    throw new RuntimeException(getClass.getName+": actions must be an empty String "+
+      "(second argument only in constructor for supporting building from canonical form")
+  }
 
-	def getActions: String = actions
+  def getActions: String = actions
 
-	/**
-	 * A subclass implies another permission if and only if they are equals
-	 */
+  /**
+   * A subclass implies another permission if and only if they are equals
+   */
    override
-	def implies(permission: Permission): Boolean = {
-		logger.debug("checking for "+permission+" is implied by "+ this)
-		var result: Boolean = equals(permission)
-		return result
-	}
+  def implies(permission: Permission): Boolean = {
+    logger.debug("checking for "+permission+" is implied by "+ this)
+    var result: Boolean = equals(permission)
+    return result
+  }
 
-	override
-	def equals(other: Any): Boolean =
-	    other match {
-			case that:  AbstractPermission  =>  
-				(that eq this ) || ((this.getClass == that.getClass) && accountName == that.accountName )
-			case _ => false
-	    }
+  override
+  def equals(other: Any): Boolean =
+      other match {
+      case that:  AbstractPermission  =>  
+        (that eq this ) || ((this.getClass == that.getClass) && accountName == that.accountName )
+      case _ => false
+      }
 
-	/**
-	 * For the hashCode the class and the accountName is considered
-	 */
-	override
-	def hashCode: Int = {
-		return  getClass.hashCode + (if (accountName != null) accountName.hashCode else 0)
-	}
+  /**
+   * For the hashCode the class and the accountName is considered
+   */
+  override
+  def hashCode: Int = {
+    return  getClass.hashCode + (if (accountName != null) accountName.hashCode else 0)
+  }
 }
 
 /**
@@ -74,7 +74,7 @@ class AbstractPermission(val accountName: String, val actions: String ="")
  *
  */
 class ChangePasswordPermission(accountName: String, actions: String ="")
-	extends AbstractPermission(accountName, actions) {
+  extends AbstractPermission(accountName, actions) {
 
 }
 
@@ -85,7 +85,7 @@ class ChangePasswordPermission(accountName: String, actions: String ="")
  *
  */
 class AccountControlPanelAppPermission(accountName: String, actions: String ="")
-	extends AbstractPermission(accountName)  {
+  extends AbstractPermission(accountName)  {
 
 
 }
@@ -97,7 +97,7 @@ class AccountControlPanelAppPermission(accountName: String, actions: String ="")
  *
  */
 class UserBundlePermission( accountName: String, actions: String ="")
-	extends AbstractPermission(accountName)  {
+  extends AbstractPermission(accountName)  {
 
 
 }

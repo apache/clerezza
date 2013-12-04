@@ -44,28 +44,28 @@ import org.apache.stanbol.commons.security.UserUtil
  * @author reto
  */
 class MenuItemProvider extends GlobalMenuItemsProvider {
-	def getMenuItems: Set[GlobalMenuItem] = {
-		var items: Set[GlobalMenuItem] = new HashSet[GlobalMenuItem]
-		var userName: String = UserUtil.getCurrentUserName
-		if (userName != null) {
-			try {
-				AccessController.checkPermission(new AccountControlPanelAppPermission(userName, ""))
-			}
-			catch {
-				case e: AccessControlException => {
-					return items
-				}
-			}
-			try {
-				var path: String = "/user/" + URLEncoder.encode(userName, "utf-8") + "/control-panel"
-				items.add(new GlobalMenuItem(path, "ACP", "Account Control Panel", 5, "Administration"))
-			}
-			catch {
-				case e: UnsupportedEncodingException => {
-					throw new RuntimeException(e)
-				}
-			}
-		}
-		return items
-	}
+  def getMenuItems: Set[GlobalMenuItem] = {
+    var items: Set[GlobalMenuItem] = new HashSet[GlobalMenuItem]
+    var userName: String = UserUtil.getCurrentUserName
+    if (userName != null) {
+      try {
+        AccessController.checkPermission(new AccountControlPanelAppPermission(userName, ""))
+      }
+      catch {
+        case e: AccessControlException => {
+          return items
+        }
+      }
+      try {
+        var path: String = "/user/" + URLEncoder.encode(userName, "utf-8") + "/control-panel"
+        items.add(new GlobalMenuItem(path, "ACP", "Account Control Panel", 5, "Administration"))
+      }
+      catch {
+        case e: UnsupportedEncodingException => {
+          throw new RuntimeException(e)
+        }
+      }
+    }
+    return items
+  }
 }

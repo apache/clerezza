@@ -35,30 +35,30 @@ import javax.ws.rs.core.Response.Status
  */
 class DefaultPageNotFoundService extends PageNotFoundService {
 
-	private val notFoundPagePath = "/page-not-found"
+  private val notFoundPagePath = "/page-not-found"
 
-	override def createResponse(uriInfo: UriInfo) = {
-		if (uriInfo.getPath == notFoundPagePath) {
-			Response.status(Status.NOT_FOUND).build();
-		} else {
-			val pageNotFoundUrl = new URL(uriInfo.getBaseUri.toURL, notFoundPagePath)
-			AccessController.doPrivileged(
-				new PrivilegedAction[Option[(String, InputStream)]] {
-					def run() = {
-						val connection = pageNotFoundUrl.openConnection()
-						try {
-							Some(connection.getContentType, connection.getInputStream)
-						} catch {
-							case _: FileNotFoundException => None
-						}
-					}
-				}
-			) match {
-				case Some((mediaTypeString, in)) => Response.status(Status.NOT_FOUND).`type`(mediaTypeString).entity(in).build();
-				case None => Response.status(Status.NOT_FOUND).build();
-			}
+  override def createResponse(uriInfo: UriInfo) = {
+    if (uriInfo.getPath == notFoundPagePath) {
+      Response.status(Status.NOT_FOUND).build();
+    } else {
+      val pageNotFoundUrl = new URL(uriInfo.getBaseUri.toURL, notFoundPagePath)
+      AccessController.doPrivileged(
+        new PrivilegedAction[Option[(String, InputStream)]] {
+          def run() = {
+            val connection = pageNotFoundUrl.openConnection()
+            try {
+              Some(connection.getContentType, connection.getInputStream)
+            } catch {
+              case _: FileNotFoundException => None
+            }
+          }
+        }
+      ) match {
+        case Some((mediaTypeString, in)) => Response.status(Status.NOT_FOUND).`type`(mediaTypeString).entity(in).build();
+        case None => Response.status(Status.NOT_FOUND).build();
+      }
 
-		}
-	}
-	
+    }
+  }
+  
 }

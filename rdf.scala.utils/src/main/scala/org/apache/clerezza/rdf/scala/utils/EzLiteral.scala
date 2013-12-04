@@ -27,7 +27,7 @@ object EzLiteral extends EzLiteralImplicits
 
 trait EzLiteralImplicits {
 
-	implicit def string2lit(str: String) = new EzLiteral(str)
+  implicit def string2lit(str: String) = new EzLiteral(str)
 
 }
 
@@ -47,24 +47,24 @@ trait EzLiteralImplicits {
  */
 class EzLiteral(string: String) extends TypedLiteralImpl(string,XSD.string) {
 
-	/**
-	 * @return a plain literal with language specified by lang
-	 */
-	def lang(lng: String): PlainLiteral = lang(new Language(lng))
+  /**
+   * @return a plain literal with language specified by lang
+   */
+  def lang(lng: String): PlainLiteral = lang(new Language(lng))
 
-	/**
-	 * @return a plain literal with language specified by lang
-	 */
-	def lang(lng: Language): PlainLiteral = new PlainLiteralImpl(string, lng)
+  /**
+   * @return a plain literal with language specified by lang
+   */
+  def lang(lng: Language): PlainLiteral = new PlainLiteralImpl(string, lng)
 
-	/**
-	 * Map to a Typed Literal of given type
-	 */
-	def ^^(typ: UriRef): TypedLiteral = new TypedLiteralImpl(string, typ)
+  /**
+   * Map to a Typed Literal of given type
+   */
+  def ^^(typ: UriRef): TypedLiteral = new TypedLiteralImpl(string, typ)
 
-	/**
-	 * Map to a URI of given lexical form
-	 */
-	def uri = new UriRef(string)
+  /**
+   * Map to a URI of given lexical form
+   */
+  def uri = new UriRef(string)
 
 }

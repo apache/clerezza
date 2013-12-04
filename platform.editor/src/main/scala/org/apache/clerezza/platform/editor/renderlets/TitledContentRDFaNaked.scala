@@ -14,15 +14,15 @@ import org.apache.felix.scr.annotations.Service;
 @Service(Array(classOf[TypeRenderlet]))
 class TitledContentRDFaNaked extends SRenderlet {
 
-	val getRdfType = DISCOBITS.TitledContent 
+  val getRdfType = DISCOBITS.TitledContent 
     
   override val getMediaType = MediaType.TEXT_HTML_TYPE
 
-	override def getModePattern = "rdfa-naked"
+  override def getModePattern = "rdfa-naked"
 
-	override def renderedPage(arguments: XmlResult.Arguments) = {
-		new XmlResult(arguments) {
-			override def content = {
+  override def renderedPage(arguments: XmlResult.Arguments) = {
+    new XmlResult(arguments) {
+      override def content = {
               <div typeof="disco:TitledContent" about={res*}>
               {for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "0")) 
                 yield <span property="disco:holds" typeof="disco:Entry">
@@ -35,8 +35,8 @@ class TitledContentRDFaNaked extends SRenderlet {
                        <div property="disco:holds" resource={part/DISCOBITS.holds*}>{render(part/DISCOBITS.holds, "rdfa-naked")}</div>
                     </div>}
               </div>
-			}
-		}
-	}
+      }
+    }
+  }
 
 }

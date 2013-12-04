@@ -30,22 +30,22 @@ import java.net._
 
 
 class InterpreterFactory() {
-	
-	protected var bundles: Array[Bundle] = null
-	protected var bundleContext : BundleContext = null;
+  
+  protected var bundles: Array[Bundle] = null
+  protected var bundleContext : BundleContext = null;
 
-	def activate(componentContext: ComponentContext)= {
-		bundleContext = componentContext.getBundleContext
-	}
+  def activate(componentContext: ComponentContext)= {
+    bundleContext = componentContext.getBundleContext
+  }
 
-	def deactivate(componentContext: ComponentContext) = {
-		bundleContext = null
-	}
+  def deactivate(componentContext: ComponentContext) = {
+    bundleContext = null
+  }
 
-	def createInterpreter(out: PrintWriter) : IMain = {
-		val i = new BundleContextScalaInterpreter(bundleContext, out)
-		i
-	}
+  def createInterpreter(out: PrintWriter) : IMain = {
+    val i = new BundleContextScalaInterpreter(bundleContext, out)
+    i
+  }
 
-	
+  
 }

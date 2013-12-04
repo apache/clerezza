@@ -33,21 +33,21 @@ import org.apache.clerezza.platform.typerendering.scala._
  */
 class RdfListRenderlet extends SRenderlet {
 
-	val getRdfType = RDF.List
+  val getRdfType = RDF.List
 
-	
-	override def renderedPage(arguments: XmlResult.Arguments) = {
-		new XmlResult(arguments) {
-			override def content = {
-				<div id="tx-content" class="list">
-					{for (entry <- res!!) yield
-						<div class="entry">
-							{render(entry, mode)}
-						</div>
-					}
-				</div>
-			}
-		}
-	}
+  
+  override def renderedPage(arguments: XmlResult.Arguments) = {
+    new XmlResult(arguments) {
+      override def content = {
+        <div id="tx-content" class="list">
+          {for (entry <- res!!) yield
+            <div class="entry">
+              {render(entry, mode)}
+            </div>
+          }
+        </div>
+      }
+    }
+  }
 
 }
