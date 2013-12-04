@@ -24,9 +24,6 @@ import java.security.PrivilegedAction;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.sparql.QueryEngine;
-import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
-import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
-import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
 
@@ -36,20 +33,15 @@ import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.sparql.resultset.SPARQLResult;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 
-/**
- * 
- * @scr.component
- * @scr.service interface="org.apache.clerezza.rdf.core.sparql.QueryEngine"
- * 
- * @author rbn
- */
+
+@Component
+@Service(QueryEngine.class)
 public class JenaSparqlEngine implements QueryEngine {
 
     // ------------------------------------------------------------------------
