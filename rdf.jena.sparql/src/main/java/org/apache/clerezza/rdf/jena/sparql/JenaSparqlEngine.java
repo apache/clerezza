@@ -28,11 +28,13 @@ import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
 
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
@@ -57,7 +59,8 @@ public class JenaSparqlEngine implements QueryEngine {
     @Override
     public Object execute(TcManager tcManager, TripleCollection defaultGraph,
             final String query) {
-        final Dataset dataset = new TcDataset(tcManager, defaultGraph);
+        final DatasetGraph datasetGraph = new TcDatasetGraph(tcManager, defaultGraph);
+        final Dataset dataset = DatasetFactory.create(datasetGraph);
 
         // Missing permission (java.lang.RuntimePermission getClassLoader)
         // when calling QueryFactory.create causes ExceptionInInitializerError
