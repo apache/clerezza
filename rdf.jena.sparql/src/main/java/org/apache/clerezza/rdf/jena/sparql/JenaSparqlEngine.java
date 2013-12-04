@@ -52,35 +52,35 @@ import com.hp.hpl.jena.update.UpdateRequest;
  */
 public class JenaSparqlEngine implements QueryEngine {
 
-	// ------------------------------------------------------------------------
-	// Implementing QueryEngine
-	// ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // Implementing QueryEngine
+    // ------------------------------------------------------------------------
 
-	@Override
-	public Object execute(TcManager tcManager, TripleCollection defaultGraph,
-			final Query query) {
-		return execute(tcManager, defaultGraph, query.toString());
-	}
+    @Override
+    public Object execute(TcManager tcManager, TripleCollection defaultGraph,
+            final Query query) {
+        return execute(tcManager, defaultGraph, query.toString());
+    }
 
-	@Override
-	public Object execute(TcManager tcManager, TripleCollection defaultGraph,
-			final String query) {
-		final Dataset dataset = new TcDataset(tcManager, defaultGraph);
+    @Override
+    public Object execute(TcManager tcManager, TripleCollection defaultGraph,
+            final String query) {
+        final Dataset dataset = new TcDataset(tcManager, defaultGraph);
 
-		// Missing permission (java.lang.RuntimePermission getClassLoader)
-		// when calling QueryFactory.create causes ExceptionInInitializerError
-		// to be thrown.
-		// QueryExecutionFactory.create requires
-		// (java.io.FilePermission [etc/]location-mapping.* read)
-		// Thus, they are placed within doPrivileged
-		QueryExecution qexec = AccessController
-				.doPrivileged(new PrivilegedAction<QueryExecution>() {
+        // Missing permission (java.lang.RuntimePermission getClassLoader)
+        // when calling QueryFactory.create causes ExceptionInInitializerError
+        // to be thrown.
+        // QueryExecutionFactory.create requires
+        // (java.io.FilePermission [etc/]location-mapping.* read)
+        // Thus, they are placed within doPrivileged
+        QueryExecution qexec = AccessController
+                .doPrivileged(new PrivilegedAction<QueryExecution>() {
 
-					@Override
-					public QueryExecution run() {
+                    @Override
+                    public QueryExecution run() {
                         try {
                             com.hp.hpl.jena.query.Query jenaQuery = QueryFactory
-                                	.create(query);
+                                    .create(query);
                             if (jenaQuery.isUnknownType()) {
                                 return null;
                             }
@@ -89,32 +89,32 @@ public class JenaSparqlEngine implements QueryEngine {
                             return null;
                         }
                         
-					}
-				});
+                    }
+                });
         if (qexec == null) {
             return executeUpdate(dataset, query);
         }
         //TODO check with rather than trial and error: if (qexec.getQuery().isSelectType()) {
-		try {
-			try {
-				return new ResultSetWrapper(qexec.execSelect());
-			} catch (QueryExecException e) {
-				try {
-					return Boolean.valueOf(qexec.execAsk());
-				} catch (QueryExecException e2) {
-					try {
-						return new JenaGraphAdaptor(qexec.execDescribe()
-								.getGraph()).getGraph();
-					} catch (QueryExecException e3) {
-						return new JenaGraphAdaptor(qexec.execConstruct()
-								.getGraph()).getGraph();
-					}
-				}
-			}
-		} finally {
-			qexec.close();
-		}
-	}
+        try {
+            try {
+                return new ResultSetWrapper(qexec.execSelect());
+            } catch (QueryExecException e) {
+                try {
+                    return Boolean.valueOf(qexec.execAsk());
+                } catch (QueryExecException e2) {
+                    try {
+                        return new JenaGraphAdaptor(qexec.execDescribe()
+                                .getGraph()).getGraph();
+                    } catch (QueryExecException e3) {
+                        return new JenaGraphAdaptor(qexec.execConstruct()
+                                .getGraph()).getGraph();
+                    }
+                }
+            }
+        } finally {
+            qexec.close();
+        }
+    }
 
     private Object executeUpdate(Dataset dataset, String query) {
         GraphStore graphStore = GraphStoreFactory.create(dataset) ;
