@@ -34,7 +34,9 @@ import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.sparql.core.DatasetDescription;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DynamicDatasets;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
@@ -79,7 +81,9 @@ public class JenaSparqlEngine implements QueryEngine {
                             if (jenaQuery.isUnknownType()) {
                                 return null;
                             }
-                            return QueryExecutionFactory.create(jenaQuery, dataset);
+                            DatasetDescription dd = DatasetDescription.create(jenaQuery);
+                            Dataset dynaDataset = DynamicDatasets.dynamicDataset(dd, dataset, false);
+                            return QueryExecutionFactory.create(jenaQuery, dynaDataset);
                         } catch (QueryException ex) {
                             return null;
                         }

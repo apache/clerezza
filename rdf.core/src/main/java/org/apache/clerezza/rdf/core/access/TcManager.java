@@ -363,10 +363,6 @@ public class TcManager extends TcProviderMultiplexer {
 	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
 	        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
 	        if ((referencedGraphs != null)) {
-                    //this is a partial work-around for CLEREZZA-847, allowing support for queries with exactly 1 from clause
-                    if (referencedGraphs.size() == 1) {
-                        defaultGraphName = referencedGraphs.iterator().next();
-                    }
 	            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
 	        }
     	}
