@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.clerezza.rdf.cris;
 
 import java.util.ArrayList;
@@ -70,15 +69,15 @@ public class GraphIndexerTest {
 
         definitions.clear();
         dataGraph.clear();
-        
-        
+
+
         List<UriRef> list = new ArrayList<UriRef>();
         list.add(FOAF.firstName);
         list.add(FOAF.lastName);
         list.add(FOAF.homepage);
         createDefinition(FOAF.Person, list);
         service = new GraphIndexer(definitions, dataGraph);
-        
+
         GraphNode nodeB = new GraphNode(new UriRef(Util.createURN5()), dataGraph);
         nodeB.addProperty(RDF.type, FOAF.Person);
         nodeB.addProperty(FOAF.homepage, new UriRef("http://myhomepage/foo?query=bla&bla=test"));
@@ -90,35 +89,47 @@ public class GraphIndexerTest {
         createPerson("Jane", "Bloggs");
         createPerson("Harry", "Wotsit");
         createPerson("Harry Joe", "Wotsit-Bloggs");
-        //a person with two first-names
-        GraphNode node = new GraphNode(new UriRef(Util.createURN5()), dataGraph);
-        node.addProperty(RDF.type, FOAF.Person);
-        node.addPropertyValue(FOAF.firstName, "John");
-        node.addPropertyValue(FOAF.firstName, "William");
-        node.addPropertyValue(FOAF.lastName, "Smith");
-        node.addPropertyValue(RDFS.comment, "A person with two names");
-        //and a pet
-        BNode pet = new BNode();
-        node.addProperty(ownsPetProperty, pet);
+        {
+            //a person with two first-names
+            GraphNode node = new GraphNode(new UriRef(Util.createURN5()), dataGraph);
+            node.addProperty(RDF.type, FOAF.Person);
+            node.addPropertyValue(FOAF.firstName, "John");
+            node.addPropertyValue(FOAF.firstName, "William");
+            node.addPropertyValue(FOAF.lastName, "Smith");
+            node.addPropertyValue(RDFS.comment, "A person with two names");
+            //and a pet
+            BNode pet = new BNode();
+            node.addProperty(ownsPetProperty, pet);
 
-        GraphNode petNode = new GraphNode(pet, dataGraph);
-        petNode.addPropertyValue(FOAF.name, "Silvio");
-
+            GraphNode petNode = new GraphNode(pet, dataGraph);
+            petNode.addPropertyValue(FOAF.name, "Silvio");
+        }
         
+        {
+            //a person with languages first names
+            GraphNode node = new GraphNode(new UriRef(Util.createURN5()), dataGraph);
+            node.addProperty(RDF.type, FOAF.Person);
+            node.addProperty(FOAF.firstName, new PlainLiteralImpl("Marc", new Language("en")));
+            node.addProperty(FOAF.firstName, new PlainLiteralImpl("Markus", new Language("de")));
+            node.addPropertyValue(FOAF.lastName, "Matter");
+            node.addPropertyValue(RDFS.comment, "A person with firstnames in two languages");
+        }
+
+
     }
 
     @Test
     public void findResourcesViaUriRef() throws ParseException, InterruptedException {
         List<NonLiteral> results;
         Thread.sleep(1000);
-        
+
         results = service.findResources(FOAF.homepage, "*p://myhomepage/foo?query=bla&bla=te*");
         Assert.assertEquals(1, results.size());
-        
+
         results = service.findResources(FOAF.homepage, "http://myhomepage/foo?query=bla&bla=test");
         Assert.assertEquals(1, results.size());
-        
-        
+
+
     }
 
     @Test
@@ -126,19 +137,23 @@ public class GraphIndexerTest {
         List<NonLiteral> results;
         Thread.sleep(1000);
         results = service.findResources(FOAF.firstName, "*Joe*");
-
-        
         Assert.assertEquals(2, results.size());
+        results = service.findResources(FOAF.firstName, "*William*");
+        Assert.assertEquals(1, results.size());
+        results = service.findResources(FOAF.firstName, "*Marc*");
+        Assert.assertEquals(1, results.size());
+        results = service.findResources(FOAF.firstName, "*Markus*");
+        Assert.assertEquals(1, results.size());
     }
 
     @Test
     public void findMultiProperties() throws InterruptedException, ParseException {
-            List<Condition> conditions = new ArrayList<Condition>();
-            conditions.add(new WildcardCondition(FOAF.firstName, "*Joe*"));
-            conditions.add(new WildcardCondition(FOAF.lastName, "*Wotsit*"));
-            Thread.sleep(1000);
-            List<NonLiteral> results = service.findResources(conditions);
-            Assert.assertEquals(1, results.size());
+        List<Condition> conditions = new ArrayList<Condition>();
+        conditions.add(new WildcardCondition(FOAF.firstName, "*Joe*"));
+        conditions.add(new WildcardCondition(FOAF.lastName, "*Wotsit*"));
+        Thread.sleep(1000);
+        List<NonLiteral> results = service.findResources(conditions);
+        Assert.assertEquals(1, results.size());
     }
 
     @Test
@@ -170,16 +185,16 @@ public class GraphIndexerTest {
     @Test
     public void lateAdditionInverse() throws InterruptedException, ParseException {
 
-            GraphNode node = new GraphNode(new UriRef(Util.createURN5()), dataGraph);
-            node.addPropertyValue(FOAF.firstName, "Another Jane");
-            node.addPropertyValue(FOAF.lastName, "Samsing");
-            Thread.sleep(1000);
-            List<NonLiteral> results = service.findResources(FOAF.firstName, "*Jane*");
-            Assert.assertEquals(2, results.size());
-            node.addProperty(RDF.type, FOAF.Person);
-            Thread.sleep(1000);
-            List<NonLiteral> results2 = service.findResources(FOAF.firstName, "*Jane*");
-            Assert.assertEquals(3, results2.size());
+        GraphNode node = new GraphNode(new UriRef(Util.createURN5()), dataGraph);
+        node.addPropertyValue(FOAF.firstName, "Another Jane");
+        node.addPropertyValue(FOAF.lastName, "Samsing");
+        Thread.sleep(1000);
+        List<NonLiteral> results = service.findResources(FOAF.firstName, "*Jane*");
+        Assert.assertEquals(2, results.size());
+        node.addProperty(RDF.type, FOAF.Person);
+        Thread.sleep(1000);
+        List<NonLiteral> results2 = service.findResources(FOAF.firstName, "*Jane*");
+        Assert.assertEquals(3, results2.size());
 
     }
 
@@ -220,7 +235,7 @@ public class GraphIndexerTest {
         } catch (InterruptedException ex) {
         }
     }
-    
+
     @Test
     public void clearGraph() {
         try {
@@ -276,7 +291,7 @@ public class GraphIndexerTest {
             try {
                 //the newly indexed property
                 List<NonLiteral> results = service.findResources(RDFS.comment, "*two*");
-                Assert.assertEquals(1, results.size());
+                Assert.assertEquals(2, results.size());
             } catch (ParseException ex) {
             }
         }
@@ -386,28 +401,28 @@ public class GraphIndexerTest {
                 final Set<Entry<String, Integer>> facets = facetCollector.getFacets(new PropertyHolder(ownsPetProperty));
 
                 //there are 7 distinct first names
-                
+
                 Assert.assertEquals(1, facets.size());
                 /*//the firstname "Frank" appears once
-                Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Frank"));
-                //the firstname "frank" never appears
-                Assert.assertNull(facetCollector.getFacetValue(firstName, "frank"));
-                //the firstname "Jane" appears twice
-                Assert.assertEquals(new Integer(2), facetCollector.getFacetValue(firstName, "Jane"));
-                //the firstname "Harry" appears once
-                Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Harry"));
-                //the firstname "Harry Joe" appears once
-                Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Harry Joe"));
-                //the firstname "William" appears once
-                Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "William"));
-                //the firstname "John" appears twice
-                Assert.assertEquals(new Integer(2), facetCollector.getFacetValue(firstName, "John")); */
+                 Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Frank"));
+                 //the firstname "frank" never appears
+                 Assert.assertNull(facetCollector.getFacetValue(firstName, "frank"));
+                 //the firstname "Jane" appears twice
+                 Assert.assertEquals(new Integer(2), facetCollector.getFacetValue(firstName, "Jane"));
+                 //the firstname "Harry" appears once
+                 Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Harry"));
+                 //the firstname "Harry Joe" appears once
+                 Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Harry Joe"));
+                 //the firstname "William" appears once
+                 Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "William"));
+                 //the firstname "John" appears twice
+                 Assert.assertEquals(new Integer(2), facetCollector.getFacetValue(firstName, "John")); */
             }
         } catch (ParseException ex) {
         } catch (InterruptedException ex) {
         }
     }
-    
+
     @Test
     public void facetCollectorTest() throws InterruptedException, ParseException {
         IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(definitions);
@@ -417,18 +432,18 @@ public class GraphIndexerTest {
         properties.add(new PropertyHolder(FOAF.lastName));
         indexDefinitionManager.addDefinitionVirtual(FOAF.Person, properties);
         service.reCreateIndex();
-        
+
         //count occurence of distinct firstnames
         CountFacetCollector facetCollector = new CountFacetCollector();
         facetCollector.addFacetProperty(firstName);
-        
+
         Thread.sleep(1000);
         {
             List<NonLiteral> results = service.findResources(firstName, "*", false, facetCollector);
             Assert.assertTrue(results.size() > 0);
-            
+
             //there are 7 distinct first names
-            Assert.assertEquals(7, facetCollector.getFacets(firstName).size());
+            Assert.assertEquals(9, facetCollector.getFacets(firstName).size());
             //the firstname "Frank" appears once
             Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Frank"));
             //the firstname "frank" never appears
@@ -445,7 +460,7 @@ public class GraphIndexerTest {
             Assert.assertEquals(new Integer(2), facetCollector.getFacetValue(firstName, "John"));
         }
     }
-    
+
     @Test
     public void sortedfacetCollectorTest() throws InterruptedException, ParseException {
         IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(definitions);
@@ -454,41 +469,41 @@ public class GraphIndexerTest {
         properties.add(firstName);
         properties.add(new PropertyHolder(FOAF.lastName));
         indexDefinitionManager.addDefinitionVirtual(FOAF.Person, properties);
-        
+
         createPerson("Aaron", "Ignore");
         createPerson("Aaron", "IgnoreMore");
         createPerson("Alpha", "Ignore");
         createPerson("Alpha", "IgnoreMore");
         createPerson("Beta", "Ignore");
-        
+
         service.reCreateIndex();
-        
+
         CountFacetCollector facetCollector = new SortedCountFacetCollector(false, true);
         facetCollector.addFacetProperty(firstName);
-        
+
         Thread.sleep(1000);
         {
             List<NonLiteral> results = service.findResources(firstName, "*", false, facetCollector);
             Assert.assertTrue(results.size() > 0);
-            
+
             Set<Entry<String, Integer>> facets = facetCollector.getFacets(firstName);
             Integer old = Integer.MAX_VALUE;
             String oldKey = null;
-            for(Entry<String, Integer> facet : facets) {
-                if(old == facet.getValue() && 
-                        oldKey != null && 
-                        (facet.getKey().compareTo(oldKey) < 0)) {
-                    
+            for (Entry<String, Integer> facet : facets) {
+                if (old == facet.getValue()
+                        && oldKey != null
+                        && (facet.getKey().compareTo(oldKey) < 0)) {
+
                     Assert.fail("Facet keys are not ordered in ascending order.");
                 }
-                if(facet.getValue() > old) {
+                if (facet.getValue() > old) {
                     Assert.fail("Facet values are not ordered in descending order.");
                 }
                 old = facet.getValue();
                 oldKey = facet.getKey();
             }
         }
-        
+
         facetCollector = new SortedCountFacetCollector(false, false);
         facetCollector.addFacetProperty(firstName);
 
@@ -564,7 +579,7 @@ public class GraphIndexerTest {
             }
         }
     }
-    
+
     @Test
     public void sortResultsTest() throws InterruptedException, ParseException {
         IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(definitions);
@@ -573,16 +588,16 @@ public class GraphIndexerTest {
         properties.add(firstName);
         indexDefinitionManager.addDefinitionVirtual(FOAF.Person, properties);
         service.reCreateIndex();
-        
+
         SortSpecification sortSpecification = new SortSpecification();
         sortSpecification.add(firstName, SortSpecification.Type.STRING_VAL);
         sortSpecification.add(SortSpecification.INDEX_ORDER);
-        
+
         Thread.sleep(1000);
         {
             List<NonLiteral> results = service.findResources(firstName, "*", false, sortSpecification);
             Assert.assertTrue(results.size() > 0);
-            
+
             List<String> expected = new ArrayList<String>(7);
             expected.add("Frank");
             expected.add("Harry");
@@ -591,25 +606,25 @@ public class GraphIndexerTest {
             expected.add("Jane");
             expected.add("Joe");
             expected.add("John");
-            
-            
-            
+
+
+
             List<String> actual = new ArrayList<String>(results.size());
-            for(NonLiteral result : results) {
+            for (NonLiteral result : results) {
                 GraphNode node = new GraphNode(result, dataGraph);
                 Iterator<Literal> it = node.getLiterals(FOAF.firstName);
-                while(it.hasNext()) {
+                while (it.hasNext()) {
                     actual.add(it.next().getLexicalForm());
                 }
             }
-            
+
             //ignore "John William" because we can not make assumptions about 
             //the order of properties
-            Assert.assertArrayEquals(expected.toArray(), 
+            Assert.assertArrayEquals(expected.toArray(),
                     Arrays.copyOfRange(actual.toArray(), 0, 7));
         }
     }
-    
+
     @Test
     public void paginationTest() throws InterruptedException, ParseException {
         IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(definitions);
@@ -618,60 +633,60 @@ public class GraphIndexerTest {
         properties.add(firstName);
         indexDefinitionManager.addDefinitionVirtual(FOAF.Person, properties);
         service.reCreateIndex();
-        
+
         SortSpecification sortSpecification = new SortSpecification();
         sortSpecification.add(firstName, SortSpecification.Type.STRING_VAL);
         sortSpecification.add(SortSpecification.INDEX_ORDER);
-        
+
         Thread.sleep(1000);
         {
             List<Condition> fl = new ArrayList<Condition>();
             fl.add(new WildcardCondition(firstName, "*"));
-            List<NonLiteral> results = service.findResources(fl, sortSpecification, 
+            List<NonLiteral> results = service.findResources(fl, sortSpecification,
                     Collections.EMPTY_LIST, 0, 2);
             Assert.assertTrue(results.size() == 2);
-            
+
             List<String> expected = new ArrayList<String>(7);
             expected.add("Frank");
             expected.add("Harry");
-            
+
             List<String> actual = new ArrayList<String>(results.size());
-            for(NonLiteral result : results) {
+            for (NonLiteral result : results) {
                 GraphNode node = new GraphNode(result, dataGraph);
                 Iterator<Literal> it = node.getLiterals(FOAF.firstName);
-                while(it.hasNext()) {
+                while (it.hasNext()) {
                     actual.add(it.next().getLexicalForm());
                 }
             }
-            
+
             Assert.assertArrayEquals(expected.toArray(), actual.toArray());
-            
-            results = service.findResources(fl, sortSpecification, 
+
+            results = service.findResources(fl, sortSpecification,
                     Collections.EMPTY_LIST, 2, 5);
             Assert.assertTrue(results.size() == 3);
-            
+
             expected = new ArrayList<String>(7);
             expected.add("Harry Joe");
             expected.add("Jane");
             expected.add("Jane");
-            
+
             actual = new ArrayList<String>(results.size());
-            for(NonLiteral result : results) {
+            for (NonLiteral result : results) {
                 GraphNode node = new GraphNode(result, dataGraph);
                 Iterator<Literal> it = node.getLiterals(FOAF.firstName);
-                while(it.hasNext()) {
+                while (it.hasNext()) {
                     actual.add(it.next().getLexicalForm());
                 }
             }
-            
+
             Assert.assertArrayEquals(expected.toArray(), actual.toArray());
-            
-            results = service.findResources(fl, sortSpecification, 
+
+            results = service.findResources(fl, sortSpecification,
                     Collections.EMPTY_LIST, 2, 100000);
-            Assert.assertTrue(results.size() == 6);
+            Assert.assertEquals(7, results.size());
         }
     }
-    
+
     @Test
     public void genericConditionTest() throws InterruptedException, ParseException {
         IndexDefinitionManager indexDefinitionManager = new IndexDefinitionManager(definitions);
@@ -680,8 +695,8 @@ public class GraphIndexerTest {
         properties.add(firstName);
         indexDefinitionManager.addDefinitionVirtual(FOAF.Person, properties);
         service.reCreateIndex();
-        
-        
+
+
         Thread.sleep(1000);
         {
             List<Condition> conditions = new ArrayList<Condition>(1);
@@ -726,6 +741,6 @@ public class GraphIndexerTest {
             Assert.assertEquals(2, results.size());
             conditions.clear();
         }
-        
+
     }
 }
