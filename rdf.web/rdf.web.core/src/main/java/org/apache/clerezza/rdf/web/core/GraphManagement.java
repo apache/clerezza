@@ -43,7 +43,6 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
@@ -51,7 +50,6 @@ import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.TCPROVIDER;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.web.ontologies.GRAPHMANAGEMENT;
-import org.apache.felix.scr.annotations.Services;
 import org.osgi.service.component.ComponentContext;
 
 /**
@@ -62,10 +60,7 @@ import org.osgi.service.component.ComponentContext;
  * @author reto
  */
 @Component
-@Services({
-    @Service(value = Object.class),
-    @Service(value = GlobalMenuItemsProvider.class)
-})
+@Service({Object.class, GlobalMenuItemsProvider.class})
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/graphs")
 public class GraphManagement implements GlobalMenuItemsProvider {
