@@ -97,14 +97,30 @@ public class GraphIndexerTest {
             node.addPropertyValue(FOAF.firstName, "William");
             node.addPropertyValue(FOAF.lastName, "Smith");
             node.addPropertyValue(RDFS.comment, "A person with two names");
-            //and a pet
-            BNode pet = new BNode();
-            node.addProperty(ownsPetProperty, pet);
-
-            GraphNode petNode = new GraphNode(pet, dataGraph);
-            petNode.addPropertyValue(FOAF.name, "Silvio");
+            {
+                //and a pet
+                BNode pet = new BNode();
+                node.addProperty(ownsPetProperty, pet);
+                GraphNode petNode = new GraphNode(pet, dataGraph);
+                petNode.addPropertyValue(FOAF.name, "Silvio");
+            }
+            {
+                //and another pet
+                BNode pet = new BNode();
+                node.addProperty(ownsPetProperty, pet);
+                GraphNode petNode = new GraphNode(pet, dataGraph);
+                petNode.addPropertyValue(FOAF.name, "Beni");
+            }
+            {
+                //and another pet
+                NonLiteral pet = new UriRef("http://example.org/pets/Robi");
+                node.addProperty(ownsPetProperty, pet);
+                GraphNode petNode = new GraphNode(pet, dataGraph);
+                petNode.addPropertyValue(FOAF.name, "Robi");
+                petNode.addPropertyValue(FOAF.name, "Robert");
+            }
         }
-        
+
         {
             //a person with languages first names
             GraphNode node = new GraphNode(new UriRef(Util.createURN5()), dataGraph);
@@ -368,6 +384,18 @@ public class GraphIndexerTest {
                 List<NonLiteral> results = service.findResources(pathProperty, "Silvio");
                 Assert.assertEquals(1, results.size());
             }
+            {
+                List<NonLiteral> results = service.findResources(pathProperty, "Beni");
+                Assert.assertEquals(1, results.size());
+            }
+            {
+                List<NonLiteral> results = service.findResources(pathProperty, "Robi");
+                Assert.assertEquals(1, results.size());
+            }
+            {
+                List<NonLiteral> results = service.findResources(pathProperty, "Robert");
+                Assert.assertEquals(1, results.size());
+            }
             //and a late addtition, lets give Frank a pet
             GraphNode frank = new GraphNode(service.findResources(FOAF.firstName, "Frank").get(0), dataGraph);
             GraphNode pet = new GraphNode(new UriRef("http://example.org/pet"), dataGraph);
@@ -402,7 +430,7 @@ public class GraphIndexerTest {
 
                 //there are 7 distinct first names
 
-                Assert.assertEquals(1, facets.size());
+                Assert.assertEquals(2, facets.size());
                 /*//the firstname "Frank" appears once
                  Assert.assertEquals(new Integer(1), facetCollector.getFacetValue(firstName, "Frank"));
                  //the firstname "frank" never appears
