@@ -28,7 +28,7 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Clerezza - Sling Based Standalone Launcher</name>
+    <name>Clerezza - Launcher: Full (sling based)</name>
     <description>Runnable jar using all the clerezza partial bundlelists.
     Note that this is not (yet) as complete as the clerezza platform tdb launcher.</description>
 
@@ -263,6 +263,12 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>typerendering</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>rdf.web</artifactId>
             <version>0.1-SNAPSHOT</version>
             <type>partialbundlelist</type>
         </dependency>

@@ -21,15 +21,16 @@
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
         <version>0.5-SNAPSHOT</version>
-        <relativePath>../../../parent</relativePath>
+        <relativePath>../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza.provisioning</groupId>
-    <artifactId>shell-launcher</artifactId>
+    <artifactId>linked-data-launcher</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Clerezza - Launcher: Shell only</name>
-    <description>Runnable jar using the clerezza partial bundlelists.</description>
+    <name>Clerezza - Launcher: Core Linked Data</name>
+    <description>Runnable jar using the clerezza partial bundlelists for Web
+        access to the RDF Data.</description>
 
     <prerequisites>
       <maven>3.0.2</maven>
@@ -225,11 +226,46 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
-            <artifactId>shell</artifactId>
+            <artifactId>felixweb</artifactId>
             <version>0.1-SNAPSHOT</version>
             <type>partialbundlelist</type>
         </dependency>
-       
+       <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>rdf</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>platform.graphnodeprovider</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
+      <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>jaxrs</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>typehandlerspace</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>typerendering</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>rdf.web</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
     </dependencies>
   
   

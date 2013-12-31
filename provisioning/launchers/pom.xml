@@ -33,26 +33,19 @@
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
         <version>0.5-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
+        <relativePath>../../parent</relativePath>
      </parent>
 
     <groupId>org.apache.clerezza.provisioning</groupId>
-    <artifactId>reactor</artifactId>
+    <artifactId>launchers-reactor</artifactId>
     <version>1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Clerezza - Provisioning - Reactor</name>
+    <name>Clerezza - Provisioning - Launchers - Reactor</name>
 
     <modules>
-        <module>felixosgi</module>
-        <module>felixweb</module>
-        <module>jaxrs-whiteboard</module>
-        <module>rdf</module>
-        <module>platform.graphnodeprovider</module>
-        <module>typehandlerspace</module>
-        <module>typerendering</module>
-        <module>rdf.web</module>
-        <module>shell</module>
-        <module>launchers</module>
+        <module>linked-data-launcher</module>
+        <module>shell-launcher</module>
+        <module>full-launcher</module>
     </modules>
 
 </project>
