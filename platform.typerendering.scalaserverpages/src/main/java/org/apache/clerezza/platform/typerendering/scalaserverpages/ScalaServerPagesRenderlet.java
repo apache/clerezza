@@ -177,9 +177,6 @@ public class ScalaServerPagesRenderlet implements Renderlet {
                 if (cause instanceof RuntimeException) {
                     throw (RuntimeException) cause;
                 }
-                if (cause instanceof CompileErrorsException) {
-                    throw (CompileErrorsException) cause;
-                }
                 throw new RuntimeException(e);
             }
             try {
