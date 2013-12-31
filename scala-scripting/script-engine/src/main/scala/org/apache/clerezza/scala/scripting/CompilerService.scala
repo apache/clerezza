@@ -21,12 +21,8 @@ package org.apache.clerezza.scala.scripting;
 
 import java.security.AccessController
 import java.security.Permission
-import java.security.PrivilegedAction
 import java.security.PrivilegedActionException
 import java.security.PrivilegedExceptionAction
-import org.apache.clerezza.scala.scripting.util.FileWrapper
-import org.apache.clerezza.scala.scripting.util.GenericFileWrapperTrait
-import org.apache.clerezza.scala.scripting.util.VirtualDirectoryWrapper
 import org.osgi.framework.BundleContext
 import org.osgi.framework.BundleEvent
 import org.osgi.framework.BundleListener
@@ -35,19 +31,16 @@ import scala.tools.nsc._;
 import scala.tools.nsc.interpreter._;
 import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.io.VirtualDirectory
-import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.util._
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.io.PrintWriter
-import java.io.Reader
 import java.net._
 
 class CompileErrorsException(message: String, cause: Exception) extends Exception(message, cause) {
-  def this(cause: Exception) = this(null, cause)
-  def this() = this(null)
+  def this(cause: Exception) = this("Compilation failed", cause)
+  def this() = this("Compile failed", null)
 }
 
 class CompilePermission extends Permission("Compile Permssion") {
@@ -120,8 +113,9 @@ class CompilerService() extends BundleListener  {
                 sharedCompiler.compile(sources)
               } catch {
                 case c: CompileErrorsException => {  
+                    val compilerOutput = new String(baos.toByteArray, "utf-8")
                     throw new CompileErrorsException(
-                      new String(baos.toByteArray, "utf-8"), c)
+                      compilerOutput, c)
                   }
                 case e: Exception => throw e
               } finally {
