@@ -4,4 +4,5 @@ target/
 .cache
 .project
 .classpath
+dependency-reduced-pom.xml
 
