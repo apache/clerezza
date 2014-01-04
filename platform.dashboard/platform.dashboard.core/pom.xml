@@ -84,6 +84,11 @@
             <artifactId>platform.typerendering.core</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.globalmenu.api</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

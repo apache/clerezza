@@ -158,7 +158,7 @@ public class FelixClerezzaPlatformTest {
                 mavenBundle().groupId("org.apache.clerezza").artifactId(
                 "org.apache.clerezza.utils.customproperty").versionAsInProject(),
                 mavenBundle().groupId("org.apache.clerezza").artifactId(
-                "org.apache.clerezza.platform.dashboard.core").versionAsInProject(),
+                "org.apache.clerezza.platform.globalmenu.api").versionAsInProject(),
                 mavenBundle().groupId("org.apache.clerezza").artifactId(
                 "org.apache.clerezza.platform.dashboard.ontologies").versionAsInProject(),
                 mavenBundle().groupId("org.apache.clerezza").artifactId(

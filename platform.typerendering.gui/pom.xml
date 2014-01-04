@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.dashboard.core</artifactId>
+            <artifactId>platform.globalmenu.api</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>

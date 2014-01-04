@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--
 
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -17,9 +18,9 @@
  specific language governing permissions and limitations
  under the License.
 
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+-->
 
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
@@ -27,30 +28,22 @@
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
-    <artifactId>rdf.locking</artifactId>
-    <version>0.2-SNAPSHOT</version>
-    
+    <artifactId>platform.globalmenu.api</artifactId>
     <packaging>bundle</packaging>
-    <name>Clerezza - RDF Utility for MGraph lock monitoring</name>
-    <description>Provides a web page containig an overview of locks on MGraphs.</description>
+    <version>0.3-SNAPSHOT</version>
+    <name>Clerezza - Platform GlobalMenu API</name>
+    <description>
+        The API for providing entries to the global clerezza menu
+    </description>
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr.annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.globalmenu.api</artifactId>
-            <version>0.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typerendering.core</artifactId>
-            <version>0.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

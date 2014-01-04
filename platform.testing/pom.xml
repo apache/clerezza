@@ -212,7 +212,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.dashboard.core</artifactId>
+            <artifactId>platform.globalmenu.api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

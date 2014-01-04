@@ -366,6 +366,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.globalmenu.api</artifactId>
+            <scope>runtime</scope>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.dashboard.webinterface</artifactId>
             <scope>runtime</scope>
             <version>0.2-SNAPSHOT</version>
