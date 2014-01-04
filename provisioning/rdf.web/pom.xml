@@ -48,6 +48,11 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
+            <artifactId>jaxrs.rdf.providers</artifactId>
+            <version>0.15-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.web.core</artifactId>
             <version>0.4-SNAPSHOT</version>
         </dependency>
