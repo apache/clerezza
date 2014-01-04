@@ -100,7 +100,7 @@ class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends i
             readLock.unlock()
           }
       }
-      case e => throw e
+      case e: Exception => throw e
     }
     }
 

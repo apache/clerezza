@@ -33,6 +33,8 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.typerendering.UserContextProvider;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.platform.dashboard.ontologies.*;
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItem;
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItemsProvider;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.LiteralFactory;

@@ -25,8 +25,8 @@ import org.apache.clerezza.rdf.core.BNode
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph
 import org.osgi.framework.{BundleActivator, BundleContext, ServiceRegistration}
 import scala.collection.JavaConversions._
-import org.apache.clerezza.platform.dashboard.GlobalMenuItem
-import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItem
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItemsProvider
 import org.apache.clerezza.platform.typerendering.{TypeRenderlet, RenderletManager}
 import java.util.HashSet
 import javax.ws.rs._

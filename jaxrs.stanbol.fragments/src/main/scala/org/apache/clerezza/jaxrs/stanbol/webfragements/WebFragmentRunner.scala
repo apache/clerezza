@@ -29,8 +29,8 @@ import javax.servlet.http.HttpServlet
 import javax.ws.rs.ext.ContextResolver
 import javax.ws.rs.ext.Provider
 import org.apache.clerezza.osgi.services.ActivationHelper
-import org.apache.clerezza.platform.dashboard.GlobalMenuItem
-import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItem
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItemsProvider
 import org.apache.felix.scr.annotations._
 import org.apache.stanbol.commons.web.base.LinkResource
 import org.apache.stanbol.commons.web.base.NavigationLink

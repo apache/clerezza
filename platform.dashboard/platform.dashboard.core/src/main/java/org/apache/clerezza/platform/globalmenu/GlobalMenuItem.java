@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.platform.dashboard;
+package org.apache.clerezza.platform.globalmenu;
 
 /**
  * This class keeps information about an item for the global menu.

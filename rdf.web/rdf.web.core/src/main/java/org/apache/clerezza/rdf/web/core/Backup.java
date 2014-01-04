@@ -19,8 +19,8 @@
 package org.apache.clerezza.rdf.web.core;
 
 import org.apache.clerezza.platform.Constants;
-import org.apache.clerezza.platform.dashboard.GlobalMenuItem;
-import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider;
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItem;
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesService;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.MGraph;

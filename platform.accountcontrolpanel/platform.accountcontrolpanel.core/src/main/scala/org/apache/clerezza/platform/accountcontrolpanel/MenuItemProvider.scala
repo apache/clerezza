@@ -32,8 +32,8 @@ import java.util.Set
 import javax.security.auth.Subject
 import org.apache.felix.scr.annotations.Component
 import org.apache.felix.scr.annotations.Service
-import org.apache.clerezza.platform.dashboard.GlobalMenuItem
-import org.apache.clerezza.platform.dashboard.GlobalMenuItemsProvider
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItem
+import org.apache.clerezza.platform.globalmenu.GlobalMenuItemsProvider
 import org.apache.stanbol.commons.security.UserUtil
 
 /**
