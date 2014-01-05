@@ -59,33 +59,32 @@ def dct(s: Any) = new UriRef("http://purl.org/dc/terms/"+s)
               <ul>
                 
 
-  { println("res/menu(\"globalMenu\").lenght: "+(res/menu("globalMenu")).length)
-   ifx ((res/menu("globalMenu")).length > 0) {
-    for (menuItem <- res/menu("globalMenu")!!) yield
-    <li class="top-nav-entry"><div class="title">
-      {
-        if ((menuItem/menu("path")).length > 0) {
-          <a href={menuItem/menu("path")*}>{(menuItem/rdfs("label")*)}</a>
-        } else {
-          <a href="#" onclick="return false">{(menuItem/rdfs("label")*)}</a>
+  { ifx ((res/menu("globalMenu")).length > 0) {
+      for (menuItem <- res/menu("globalMenu")!!) yield
+      <li class="top-nav-entry"><div class="title">
+        {
+          if ((menuItem/menu("path")).length > 0) {
+            <a href={menuItem/menu("path")*}>{(menuItem/rdfs("label")*)}</a>
+          } else {
+            <a href="#" onclick="return false">{(menuItem/rdfs("label")*)}</a>
+          }
         }
-      }
-     </div>
-      {
-        ifx ((menuItem/menu("children")).length > 0) {
-        <div>
-          <ul class="nav-entries">
-             {
-              for (childMenuItem <- menuItem/menu("children")!!) yield {
-              <li><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a><span>{childMenuItem/dct("description")*}</span></li>
-              }
-             }
-          </ul>
-        </div>
+       </div>
+        {
+          ifx ((menuItem/menu("children")).length > 0) {
+          <div>
+            <ul class="nav-entries">
+               {
+                for (childMenuItem <- menuItem/menu("children")!!) yield {
+                <li><a href={childMenuItem/menu("path")*}>{childMenuItem/rdfs("label")*}</a><span>{childMenuItem/dct("description")*}</span></li>
+                }
+               }
+            </ul>
+          </div>
+          }
         }
-      }
-    </li>
-  }
+      </li>
+    }
   }
   </ul>
 </div>
