@@ -59,7 +59,9 @@ def dct(s: Any) = new UriRef("http://purl.org/dc/terms/"+s)
               <ul>
                 
 
-  {for (menuItem <- res/menu("globalMenu")!!) yield
+  { println("res/menu(\"globalMenu\").lenght: "+(res/menu("globalMenu")).length)
+   ifx ((res/menu("globalMenu")).length > 0) {
+    for (menuItem <- res/menu("globalMenu")!!) yield
     <li class="top-nav-entry"><div class="title">
       {
         if ((menuItem/menu("path")).length > 0) {
@@ -83,6 +85,7 @@ def dct(s: Any) = new UriRef("http://purl.org/dc/terms/"+s)
         }
       }
     </li>
+  }
   }
   </ul>
 </div>

@@ -100,6 +100,31 @@
             <version>0.2-SNAPSHOT</version>
         </dependency>
         
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.typerendering.gui</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.globalmenu.api</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.style.default</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- needed by default style -->
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>osgi.services</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        
         <!-- needed by scalaservepages and typesrendering.scala -->
         <dependency>
             <groupId>org.apache.clerezza</groupId>
