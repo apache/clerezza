@@ -73,17 +73,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.dashboard.ontologies</artifactId>
-            <version>0.3-SNAPSHOT</version>
-        </dependency>
-        <!-- Required by DashBoard's UserLoginNode -->
-        <dependency>
-            <groupId>org.apache.stanbol</groupId>
-            <artifactId>org.apache.stanbol.commons.security.core</artifactId>
-            <version>0.11.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
             <artifactId>web.fileserver</artifactId>
             <version>0.10-SNAPSHOT</version>
         </dependency>
