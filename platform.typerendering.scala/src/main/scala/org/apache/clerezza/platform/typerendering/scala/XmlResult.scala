@@ -19,6 +19,7 @@
 package org.apache.clerezza.platform.typerendering.scala
 
 import java.io.OutputStream
+import java.io.OutputStreamWriter
 import java.io.PrintWriter
 import java.net.URI
 import javax.ws.rs.core.HttpHeaders
@@ -31,6 +32,7 @@ import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
+import java.nio.charset.Charset
 import java.security.{PrivilegedAction, AccessController}
 import org.osgi.framework.{BundleContext, ServiceReference}
 import org.apache.clerezza.rdf.scala.utils.RichGraphNode
@@ -42,6 +44,8 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
  */
 abstract class XmlResult(arguments: XmlResult.Arguments) {
 
+  private val UTF8: Charset = Charset.forName("utf-8")
+  
   val XmlResult.Arguments(
           res: GraphNode,
           context: GraphNode,
@@ -73,7 +77,7 @@ abstract class XmlResult(arguments: XmlResult.Arguments) {
     }
     val baos = new java.io.ByteArrayOutputStream
     renderer.render(resource, context, mode, baos)
-    parseNodeSeq(new String(baos.toByteArray))
+    parseNodeSeq(new String(baos.toByteArray, UTF8))
   }
 
   /**
@@ -97,7 +101,7 @@ abstract class XmlResult(arguments: XmlResult.Arguments) {
     }
     val baos = new java.io.ByteArrayOutputStream
     renderer.render(resource, context, mode, baos)
-    parseNodeSeq(new String(baos.toByteArray))
+    parseNodeSeq(new String(baos.toByteArray, UTF8))
   }
 
   /**
@@ -127,7 +131,7 @@ abstract class XmlResult(arguments: XmlResult.Arguments) {
 
   val resultDocModifier = org.apache.clerezza.platform.typerendering.ResultDocModifier.getInstance();
 
-  val out = new PrintWriter(os)
+  val out = new PrintWriter(new OutputStreamWriter(os,UTF8))
 
   out.print(
     content match {
