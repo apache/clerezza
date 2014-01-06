@@ -664,5 +664,35 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <!--
+             This profile allows for installing/updating a bundle in a running
+             instance right after building it. Example: mvn clean install -P
+             installBundle -Dsling.url=http://localhost:8080/system/console Or,
+             to make it faster without cleaning up or running tests: mvn -o
+             install -DskipTests -P installBundle
+             -Dsling.url=http://localhost:8080/system/console
+            -->
+            <id>installBundle</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.sling</groupId>
+                        <artifactId>maven-sling-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-bundle</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
