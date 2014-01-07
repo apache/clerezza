@@ -43,6 +43,7 @@
     <name>Clerezza - Provisioning - Launchers - Reactor</name>
 
     <modules>
+        <module>typerendering-launcher</module>
         <module>linked-data-launcher</module>
         <module>shell-launcher</module>
         <module>full-launcher</module>

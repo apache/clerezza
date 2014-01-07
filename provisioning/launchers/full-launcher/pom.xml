@@ -272,6 +272,12 @@
             <version>0.1-SNAPSHOT</version>
             <type>partialbundlelist</type>
         </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.provisioning</groupId>
+            <artifactId>platform.content</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>partialbundlelist</type>
+        </dependency>
     </dependencies>
   
   

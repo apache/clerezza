@@ -51,6 +51,7 @@
         <module>typehandlerspace</module>
         <module>typerendering</module>
         <module>rdf.web</module>
+        <module>platform.content</module>
         <module>shell</module>
         <module>launchers</module>
     </modules>
