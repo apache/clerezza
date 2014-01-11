@@ -31,7 +31,7 @@
     <groupId>org.apache.clerezza.ext</groupId>
     <artifactId>bundles-pom</artifactId>
     <packaging>pom</packaging>
-    <version>1</version>
+    <version>0.1-SNAPSHOT</version>
     <name>Apache clerezza :: Ext Bundles :: Parent</name>
 
     <properties>
