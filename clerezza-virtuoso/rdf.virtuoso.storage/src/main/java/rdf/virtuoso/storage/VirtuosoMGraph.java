@@ -38,6 +38,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
+import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -554,92 +555,113 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			this.p = p;
 			this.o = o;
 		}
-
-		public Triple build() {
-			logger.debug("TripleBuilder.build()");
-			return new Triple() {
-				@Override
-				public NonLiteral getSubject() {
-					logger.debug("TripleBuilder.getSubject() : {}", s);
-					if (s instanceof VirtuosoExtendedString) {
-						VirtuosoExtendedString vs = (VirtuosoExtendedString) s;
-						if (vs.iriType == VirtuosoExtendedString.IRI
-								&& (vs.strType & 0x01) == 0x01) {
-							// Subject is IRI
-							return new UriRef(vs.str);
-						} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
-							return VirtuosoMGraph.this.toBNode(vs.str);
-						} else {
-							// !Cannot happen
-							throw new IllegalStateException(
-									"Subject must be an IRI or a BNODE");
-						}
-					} else {
-						throw new IllegalStateException(
-								"Subject must be an instance of VirtuosoExtendedString");
-					}
+		
+		private NonLiteral buildSubject() {
+			logger.debug("TripleBuilder.getSubject() : {}", s);
+			if (s instanceof VirtuosoExtendedString) {
+				VirtuosoExtendedString vs = (VirtuosoExtendedString) s;
+				if (vs.iriType == VirtuosoExtendedString.IRI
+						&& (vs.strType & 0x01) == 0x01) {
+					// Subject is IRI
+					return new UriRef(vs.str);
+				} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
+					return VirtuosoMGraph.this.toBNode(vs.str);
+				} else {
+					// !Cannot happen
+					throw new IllegalStateException(
+							"Subject must be an IRI or a BNODE");
 				}
+			} else {
+				throw new IllegalStateException(
+						"Subject must be an instance of VirtuosoExtendedString");
+			}
+		}
 
-				@Override
-				public UriRef getPredicate() {
-					logger.debug("TripleBuilder.getPredicate() : {}", p);
-					if (p instanceof VirtuosoExtendedString) {
-						VirtuosoExtendedString vs = (VirtuosoExtendedString) p;
-						if (vs.iriType == VirtuosoExtendedString.IRI
-								&& (vs.strType & 0x01) == 0x01) {
-							// Subject is IRI
-							return new UriRef(vs.str);
-						} else {
-							// !Cannot happen
-							throw new IllegalStateException(
-									"Predicate must be an IRI ");
-						}
-					} else {
-						throw new IllegalStateException(
-								"Predicate must be an IRI");
-					}
+		private UriRef buildPredicate() {
+			logger.debug("TripleBuilder.getPredicate() : {}", p);
+			if (p instanceof VirtuosoExtendedString) {
+				VirtuosoExtendedString vs = (VirtuosoExtendedString) p;
+				if (vs.iriType == VirtuosoExtendedString.IRI
+						&& (vs.strType & 0x01) == 0x01) {
+					// Subject is IRI
+					return new UriRef(vs.str);
+				} else {
+					// !Cannot happen
+					throw new IllegalStateException(
+							"Predicate must be an IRI ");
 				}
-
-				@Override
-				public Resource getObject() {
-					logger.debug("TripleBuilder.getObject() : {}", o);
-					if (o instanceof VirtuosoExtendedString) {
-						// In case is IRI
-						VirtuosoExtendedString vs = (VirtuosoExtendedString) o;
-						if (vs.iriType == VirtuosoExtendedString.IRI
-								&& (vs.strType & 0x01) == 0x01) {
-							// Is IRI
-							return new UriRef(vs.str);
-						} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
-							//
-							return VirtuosoMGraph.this.toBNode(vs.str);
-						} else {
-							// Is a plain literal
-							return new PlainLiteralImpl(vs.str);
-						}
-					} else if (o instanceof VirtuosoRdfBox) {
-						// In case is typed literal
-						VirtuosoRdfBox rb = (VirtuosoRdfBox) o;
-						String value = (String) rb.rb_box;
-						String lang = rb.getLang();
+			} else {
+				throw new IllegalStateException(
+						"Predicate must be an IRI");
+			}
+		}
+		
+		Resource buildObject() {
+			logger.debug("TripleBuilder.getObject() : {}", o);
+			if (o instanceof VirtuosoExtendedString) {
+				// In case is IRI
+				VirtuosoExtendedString vs = (VirtuosoExtendedString) o;
+				if (vs.iriType == VirtuosoExtendedString.IRI
+						&& (vs.strType & 0x01) == 0x01) {
+					// Is IRI
+					return new UriRef(vs.str);
+				} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
+					//
+					return VirtuosoMGraph.this.toBNode(vs.str);
+				} else {
+					// Is a plain literal
+					return new PlainLiteralImpl(vs.str);							
+				}
+			} else if (o instanceof VirtuosoRdfBox) {
+				// In case is typed literal
+				VirtuosoRdfBox rb = (VirtuosoRdfBox) o;
+				
+				String value;
+				if(rb.rb_box.getClass().isAssignableFrom(String.class)){
+					//logger.info("assignable from string: {}", rb.rb_box);
+					value = (String) rb.rb_box;
+					String lang = rb.getLang();
+					String type = rb.getType();
+					if (type == null) {
+						Language language = lang == null ? null
+								: new Language(lang);
+						return new PlainLiteralImpl(value, language);
+					} else {
+						return new TypedLiteralImpl(value, new UriRef(type));
+					}
+				}else if(rb.rb_box instanceof VirtuosoExtendedString){
+					//logger.info("VirtuosoExtendedString");
+					VirtuosoExtendedString vs = (VirtuosoExtendedString) rb.rb_box;
+					
+					if (vs.iriType == VirtuosoExtendedString.IRI
+							&& (vs.strType & 0x01) == 0x01) {
+						// Is IRI
+						return new UriRef(vs.str);
+					} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
+						//
+						return VirtuosoMGraph.this.toBNode(vs.str);
+					} else {
 						String type = rb.getType();
 						if (type == null) {
-							Language language = lang == null ? null
-									: new Language(lang);
-							return new PlainLiteralImpl(value, language);
+							// Is a plain literal
+							return new PlainLiteralImpl(vs.str);							
 						} else {
-							return new TypedLiteralImpl(value, new UriRef(type));
+							return new TypedLiteralImpl(vs.str, new UriRef(type));
 						}
-					} else if (o == null) {
-						// Raise an exception
-						throw new IllegalStateException(
-								"Object cannot be NULL!");
-					} else {
-						// FIXME (not clear this...)
-						return new PlainLiteralImpl(o.toString());
 					}
 				}
-			};
+			} else if (o == null) {
+				// Raise an exception
+				throw new IllegalStateException(
+						"Object cannot be NULL!");
+			}
+			
+			// FIXME (not clear this...)
+			return new PlainLiteralImpl(o.toString());
+		}
+		public Triple build() {
+			logger.debug("TripleBuilder.build()");
+			return new TripleImpl(buildSubject(), buildPredicate(), buildObject());
 		}
 	}
 
