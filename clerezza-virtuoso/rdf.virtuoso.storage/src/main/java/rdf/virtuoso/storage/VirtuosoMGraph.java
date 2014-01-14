@@ -378,7 +378,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		BNode bnode = bnodesMap.get(virtbnode);
 		if (bnode == null) {
 			bnode = new BNode();
-			bnodesMap.put(virtbnode, bnode);
+			bnodesMap.put(virtbnode.replaceFirst("nodeID://", "_:"), bnode);
 		}
 		// Subject is BNode
 		return bnode;
@@ -404,6 +404,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private String toVirtBnode(BNode bnode) {
 		logger.debug("toVirtBnode(BNode {})", bnode);
 		String virtBnode = bnodesMap.getKey(bnode);
+		
 		if (virtBnode == null) {
 			// We create a local bnode mapped to the BNode given
 			virtBnode = nextVirtBnode();

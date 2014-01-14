@@ -20,12 +20,14 @@ package rdf.virtuoso.storage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 
+import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
@@ -101,6 +103,7 @@ public class VirtuosoMGraphTest {
 		assertTrue(mgraph.size() == 1);
 	}
 
+
 	@Test
 	public void testFilter() {
 		log.info("testFilter(); Test filter(s,p,o)");
@@ -142,6 +145,69 @@ public class VirtuosoMGraphTest {
 				TestUtils.stamp(t);
 			}
 			assertEquals(t.getSubject(), enridaga);
+		}
+		assertTrue(found);
+	}
+
+
+	@Test
+	public void testFilterSubjectBnode() {
+		log.info("testFilterSubjectBnode(); Test filter(s,null,null)");
+		if (TestUtils.SKIP) {
+			log.warn("SKIPPED");
+			return;
+		}
+		// We use testAdd to prepare this
+		Triple triple = new Triple() {
+
+			@Override
+			public NonLiteral getSubject() {
+				return new BNode();
+			}
+
+			@Override
+			public UriRef getPredicate() {
+				return predicate;
+			}
+
+			@Override
+			public Resource getObject() {
+				return new BNode();
+			}
+		};
+
+		boolean success = mgraph.add(triple);
+		assertTrue(success);
+		Iterator<Triple> it = mgraph.filter(new BNode(), predicate, new BNode());
+		boolean found = false;
+		Triple t = null; // we will use it to make a further query
+		while (it.hasNext()) {
+			found = true;
+			 t = it.next();
+			if (log.isDebugEnabled()) {
+				log.debug("Found matching triple: {}", t);
+				TestUtils.stamp(t);
+			}
+			assertEquals(t.getPredicate(), predicate);
+		}
+		assertTrue(found);
+		
+		assertNotNull(t);
+		
+		//NonLiteral s = t.getSubject();
+		it = mgraph.filter(t.getSubject(), predicate, t.getObject());
+		found = false;
+		while (it.hasNext()) {
+			found = true;
+			 t = it.next();
+			if (log.isDebugEnabled()) {
+				log.debug("Found matching triple: {}", t);
+				TestUtils.stamp(t);
+			}
+			//assertEquals(t.getSubject(), s);
+			//log.info(" {} {}", s, t.getSubject());
+			//assertEquals(t.getPredicate(), predicate);
+			assertEquals(t.getPredicate(), predicate);
 		}
 		assertTrue(found);
 	}
