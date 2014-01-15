@@ -23,6 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
@@ -151,7 +152,7 @@ public class VirtuosoMGraphTest {
 
 
 	@Test
-	public void testFilterSubjectBnode() {
+	public void testFilterSubjectBnode() throws VirtuosoException, SQLException, ClassNotFoundException {
 		log.info("testFilterSubjectBnode(); Test filter(s,null,null)");
 		if (TestUtils.SKIP) {
 			log.warn("SKIPPED");
@@ -190,9 +191,14 @@ public class VirtuosoMGraphTest {
 			}
 			assertEquals(t.getPredicate(), predicate);
 		}
+		Statement st = TestUtils.getConnection().createStatement();
+		boolean has = st.execute("SPARQL SELECT ?SUBJECT ?PREDICATE ?OBJECT WHERE { GRAPH <VirtuosoMGraphTest> {  ?SUBJECT ?PREDICATE ?OBJECT . FILTER( ?SUBJECT = <nodeID://b10076>) . FILTER( ?PREDICATE = <http://property/name>) . FILTER( ?OBJECT = <nodeID://b10077>)  } } ");
+		assertTrue(has);
+		//rs.close();
 		assertTrue(found);
 		
 		assertNotNull(t);
+		log.info("{} {} {}", new Object[]{t.getSubject(), t.getPredicate(), t.getObject()});
 		
 		//NonLiteral s = t.getSubject();
 		it = mgraph.filter(t.getSubject(), predicate, t.getObject());

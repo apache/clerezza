@@ -228,5 +228,4 @@ public class RdfIOTest {
 		// bnodes cannot be equals!
 		Assert.assertNotSame(read, new TripleImpl(subject, predicate, object));
 	}
-	
 }

@@ -145,25 +145,60 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		String virtSubject = toVirtSubject(subject);
 		String virtPredicate = toVirtPredicate(predicate);
 		String virtObject = toVirtObject(object);
-		sb.append("SPARQL SELECT ?SUBJECT ?PREDICATE ?OBJECT WHERE { GRAPH <")
-				.append(this.getName()).append("> { ")
-				.append(" ?SUBJECT ?PREDICATE ?OBJECT ");
+//		
+//		sb.append("SPARQL SELECT ?SUBJECT ?PREDICATE ?OBJECT WHERE { GRAPH <")
+//				.append(this.getName()).append("> { ")
+//				.append(" ?SUBJECT ?PREDICATE ?OBJECT ");
+//		if (virtSubject != null) {
+//			sb.append(". FILTER( ").append("?SUBJECT = ").append(virtSubject)
+//					.append(") ");
+//		}
+//		if (virtPredicate != null) {
+//			sb.append(". FILTER( ").append("?PREDICATE = ")
+//					.append(virtPredicate).append(") ");
+//		}
+//		if (virtObject != null) {
+//			sb.append(". FILTER( ").append("?OBJECT = ").append(virtObject)
+//					.append(") ");
+//		}
+		
+		sb.append("SPARQL SELECT ");
 		if (virtSubject != null) {
-			sb.append(". FILTER( ").append("?SUBJECT = ").append(virtSubject)
-					.append(") ");
+			sb.append(" ").append(virtSubject).append(" as ?subject");
+		}else{
+			sb.append(" ?subject ");
 		}
 		if (virtPredicate != null) {
-			sb.append(". FILTER( ").append("?PREDICATE = ")
-					.append(virtPredicate).append(") ");
+			sb.append(" ").append(virtPredicate).append(" as ?predicate");
+		}else{
+			sb.append(" ?predicate ");
 		}
 		if (virtObject != null) {
-			sb.append(". FILTER( ").append("?OBJECT = ").append(virtObject)
-					.append(") ");
+			sb.append(" ").append(virtObject).append(" as ?object");
+		}else{
+			sb.append(" ?object ");
 		}
+		sb.append(" WHERE { GRAPH <").append(this.getName()).append("> { ");
+		if (virtSubject != null) {
+			sb.append(" ").append(virtSubject).append(" ");
+		}else{
+			sb.append(" ?subject ");
+		}
+		if (virtPredicate != null) {
+			sb.append(" ").append(virtPredicate).append(" ");
+		}else{
+			sb.append(" ?predicate ");
+		}
+		if (virtObject != null) {
+			sb.append(" ").append(virtObject).append(" ");
+		}else{
+			sb.append(" ?object ");
+		}
+		
 		sb.append(" } } ");
 
 		String sql = sb.toString();
-		logger.debug("Executing SQL: {}", sql);
+		logger.info("Executing SQL: {}", sql);
 		Statement st;
 		try {
 			readLock.lock();
@@ -228,9 +263,11 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			};
 		} catch (VirtuosoException e) {
 			logger.error("ERROR while executing statement", e);
+			logger.error(" executing SQL: {}", sql);
 			throw new RuntimeException(e);
 		} catch (SQLException e) {
 			logger.error("ERROR while executing statement", e);
+			logger.error(" executing SQL: {}", sql);
 			throw new RuntimeException(e);
 		}
 	}
@@ -378,7 +415,9 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		BNode bnode = bnodesMap.get(virtbnode);
 		if (bnode == null) {
 			bnode = new BNode();
-			bnodesMap.put(virtbnode.replaceFirst("nodeID://", "_:"), bnode);
+			// skolemize so we get it in future queries
+			//bnodesMap.put(virtbnode.replaceFirst("nodeID://", "_:"), bnode);
+			bnodesMap.put(new StringBuilder().append('<').append(virtbnode).append('>').toString(), bnode);
 		}
 		// Subject is BNode
 		return bnode;
