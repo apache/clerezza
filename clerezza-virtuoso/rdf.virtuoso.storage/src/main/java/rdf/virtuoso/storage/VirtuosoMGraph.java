@@ -70,7 +70,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * Bidirectional map for managing the conversion from virtuoso blank nodes
 	 * (strings) to clerezza blank nodes and vice versa.
 	 */
-	private final BidiMap<String, BNode> bnodesMap;
+//	private final BidiMap<String, BNode> bnodesMap;
 	private int maxVirtBnodeIndex = 0;
 
 	/**
@@ -102,7 +102,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				provider);
 		this.name = name;
 		this.provider  = provider;
-		this.bnodesMap = new BidiMapImpl<String, BNode>();
+//		this.bnodesMap = new BidiMapImpl<String, BNode>();
 	}
 
 	/**
@@ -556,15 +556,17 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * @param virtbnode
 	 * @return
 	 */
-	private BNode toBNode(String virtbnode) {
+	private VirtuosoBNode toBNode(String virtbnode) {
 		logger.debug("toBNode(String {})", virtbnode);
-		BNode bnode = bnodesMap.get(virtbnode);
-		if (bnode == null) {
-			bnode = new BNode();
+//		VirtuosoBNode bnode = bnodesMap.get(virtbnode);
+		VirtuosoBNode bnode;
+//		if (bnode == null) {
+			//bnode = new BNode();
+			bnode = new VirtuosoBNode(virtbnode);
 			// skolemize so we get it in future queries
 			//bnodesMap.put(virtbnode.replaceFirst("nodeID://", "_:"), bnode);
-			bnodesMap.put(new StringBuilder().append('<').append(virtbnode).append('>').toString(), bnode);
-		}
+//			bnodesMap.put(new StringBuilder().append('<').append(virtbnode).append('>').toString(), bnode);
+//		}
 		// Subject is BNode
 		return bnode;
 	}
@@ -588,14 +590,19 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 */
 	private String toVirtBnode(BNode bnode) {
 		logger.debug("toVirtBnode(BNode {})", bnode);
-		String virtBnode = bnodesMap.getKey(bnode);
-		
-		if (virtBnode == null) {
-			// We create a local bnode mapped to the BNode given
-			virtBnode = nextVirtBnode();
-			bnodesMap.put(virtBnode, bnode);
+//		String virtBnode = bnodesMap.getKey(bnode);
+//		
+//		if (virtBnode == null) {
+//			// We create a local bnode mapped to the BNode given
+//			virtBnode = nextVirtBnode();
+//			bnodesMap.put(virtBnode, bnode);
+//		}
+//		return virtBnode;
+		if(bnode instanceof VirtuosoBNode){
+			return ((VirtuosoBNode) bnode).asSkolemIri();
+		}else{
+			return nextVirtBnode();
 		}
-		return virtBnode;
 	}
 
 	private String getAddSQLStatement(Triple triple) {
