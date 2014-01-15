@@ -67,17 +67,7 @@ public class VirtuosoWeightedProviderTest {
 			log.warn("SKIPPED");
 			return;
 		}
-		wp = new VirtuosoWeightedProvider(TestUtils.getConnection());
-	}
-
-	@Test
-	public void initialization() throws ClassNotFoundException, SQLException {
-		log.info("Check if initialized correctly with wp.isConnectionAlive()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
-		assertTrue(wp.isConnectionAlive());
+		wp = TestUtils.getProvider();
 	}
 
 	@Test

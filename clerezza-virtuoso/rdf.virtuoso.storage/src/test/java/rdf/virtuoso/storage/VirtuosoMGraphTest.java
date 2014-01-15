@@ -62,7 +62,7 @@ public class VirtuosoMGraphTest {
 			log.warn("SKIPPED");
 			return;
 		}
-		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, TestUtils.getConnection());
+		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, TestUtils.getProvider());
 		mgraph.clear();
 		log.debug("Clearing graph <{}>", TEST_GRAPH_NAME);
 	}

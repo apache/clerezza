@@ -43,7 +43,7 @@ public class TestUtils {
 
 	public static final String FOAF_NS = "http://xmlns.com/foaf/0.1/";
 
-	private static VirtuosoConnection connection = null;
+	private static VirtuosoWeightedProvider provider = null;
 	private static String jdbcConnectionString = null;
 	private static String jdbcUser = null;
 	private static String jdbcPassword = null;
@@ -60,15 +60,18 @@ public class TestUtils {
 			SKIP = !skipProperty.equals("true");
 	}
 
-	public static VirtuosoConnection getConnection()
+	public static VirtuosoConnection getConnection() throws SQLException, ClassNotFoundException{
+		return getProvider().getConnection();
+	}
+	public static VirtuosoWeightedProvider getProvider()
 			throws ClassNotFoundException, SQLException {
-		if (connection == null) {
-			initConnection();
+		if (provider == null) {
+			initProvider();
 		}
-		return connection;
+		return provider;
 	}
 
-	private static void initConnection() throws ClassNotFoundException,
+	private static void initProvider() throws ClassNotFoundException,
 			SQLException {
 		if (SKIP) {
 			log.warn("SKIPPING ALL TESTS!");
@@ -108,11 +111,11 @@ public class TestUtils {
 		cb.append(":");
 		cb.append(port);
 		jdbcConnectionString = cb.toString();
-		Class.forName(VirtuosoWeightedProvider.DRIVER);
-		log.info("Create connection");
-		connection = (VirtuosoConnection) DriverManager.getConnection(
-				jdbcConnectionString, jdbcUser, jdbcPassword);
-
+//		Class.forName(VirtuosoWeightedProvider.DRIVER);
+		log.info("Create provider");
+//		connection = (VirtuosoConnection) DriverManager.getConnection(
+//				jdbcConnectionString, jdbcUser, jdbcPassword);
+		provider = new VirtuosoWeightedProvider(jdbcConnectionString, jdbcUser, jdbcPassword);
 		log.debug("Connection URL: {}", jdbcConnectionString);
 		log.debug("Connection user: {}", jdbcUser);
 	}

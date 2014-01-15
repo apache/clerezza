@@ -36,6 +36,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
+
 import virtuoso.jdbc4.VirtuosoException;
 
 public class RdfIOTest {
@@ -43,7 +45,7 @@ public class RdfIOTest {
 	static final String TEST_GRAPH_NAME = "RdfIOTest";
 	static final String XSD = "http://www.w3.org/2001/XMLSchema#";
 	static Logger log = LoggerFactory.getLogger(RdfIOTest.class);
-	
+	static VirtuosoWeightedProvider wp ;
 	/**
 	 * Clean before any test
 	 * 
@@ -56,7 +58,8 @@ public class RdfIOTest {
 			log.warn("SKIPPED");
 			return;
 		}
-		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, TestUtils.getConnection());
+		wp = TestUtils.getProvider();
+		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, wp);
 		mgraph.clear();
 		log.debug("Clearing graph <{}>", TEST_GRAPH_NAME);
 	}
@@ -127,7 +130,7 @@ public class RdfIOTest {
 	}
 	
 	private Triple writeAndRead(NonLiteral subject, UriRef predicate, Resource object) throws ClassNotFoundException, SQLException{
-		VirtuosoMGraph graph = new VirtuosoMGraph(TEST_GRAPH_NAME, TestUtils.getConnection());
+		VirtuosoMGraph graph = new VirtuosoMGraph(TEST_GRAPH_NAME, TestUtils.getProvider());
 		Triple t = new TripleImpl(subject, predicate, object);
 		graph.add(t);
 		Triple read = graph.getGraph().iterator().next();

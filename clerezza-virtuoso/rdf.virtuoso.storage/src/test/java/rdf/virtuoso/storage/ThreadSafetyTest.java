@@ -61,7 +61,7 @@ public class ThreadSafetyTest {
 			return;
 		}
 		mgraph = new VirtuosoMGraph("ThreadSafetyTest",
-				TestUtils.getConnection());
+				TestUtils.getProvider());
 		executor = Executors.newCachedThreadPool();
 	}
 

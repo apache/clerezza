@@ -18,6 +18,7 @@
  */
 package rdf.virtuoso.storage.access;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -102,7 +103,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	/**
 	 * JDBC Connection to Virtuoso DBMS
 	 */
-	private VirtuosoConnection connection = null;
+//	private VirtuosoConnection connection = null;
 
 	/**
 	 * Weight
@@ -114,6 +115,11 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	 */
 	private Logger logger = LoggerFactory
 			.getLogger(VirtuosoWeightedProvider.class);
+	private String host;
+	private Integer port;
+	private String user;
+	private String pwd;
+	private String connStr;
 
 	/**
 	 * Creates a new {@link VirtuosoWeightedProvider}.
@@ -125,29 +131,36 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		logger.debug("Created VirtuosoWeightedProvider.");
 	}
 
-	/**
-	 * Creates a new {@link VirtuosoWeightedProvider}
-	 * 
-	 * @param connection
-	 */
-	public VirtuosoWeightedProvider(VirtuosoConnection connection) {
-		logger.debug("Created VirtuosoWeightedProvider with connection: {}",
-				connection);
-		this.connection = connection;
-	}
+//	/**
+//	 * Creates a new {@link VirtuosoWeightedProvider}
+//	 * 
+//	 * @param connection
+//	 */
+//	public VirtuosoWeightedProvider(VirtuosoConnection connection) {
+//		logger.debug("Created VirtuosoWeightedProvider with connection: {}",
+//				connection);
+////		this.connection = connection;
+//	}
 
-	/**
-	 * Creates a new {@link VirtuosoWeightedProvider}
-	 * 
-	 * @param connection
-	 * @param weight
-	 */
-	public VirtuosoWeightedProvider(VirtuosoConnection connection, int weight) {
-		logger.debug(
-				"Created VirtuosoWeightedProvider with connection = {} and weight = {}.",
-				connection, weight);
-		this.weight = weight;
-		this.connection = connection;
+//	/**
+//	 * Creates a new {@link VirtuosoWeightedProvider}
+//	 * 
+//	 * @param connection
+//	 * @param weight
+//	 */
+//	public VirtuosoWeightedProvider(VirtuosoConnection connection, int weight) {
+//		logger.debug(
+//				"Created VirtuosoWeightedProvider with connection = {} and weight = {}.",
+//				connection, weight);
+//		this.weight = weight;
+////		this.connection = connection;
+//	}
+
+	public VirtuosoWeightedProvider(String jdbcConnectionString,
+			String jdbcUser, String jdbcPassword) {
+		connStr = jdbcConnectionString;
+		user = jdbcUser;
+		pwd = jdbcPassword;
 	}
 
 	/**
@@ -164,8 +177,9 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	public void activate(ComponentContext cCtx) {
 		logger.info("activate(ComponentContext {})", cCtx);
 		logger.info("Activating VirtuosoWeightedProvider...");
-		if (cCtx == null && connection == null) {
-			logger.error("No component context given and connection was not set");
+//		if (cCtx == null && connection == null) {
+		if (cCtx == null ) {
+				logger.error("No component context given and connection was not set");
 			throw new IllegalArgumentException(
 					"No component context given and connection was not set");
 		} else if (cCtx != null) {
@@ -185,17 +199,19 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				/**
 				 * Retrieve connection properties
 				 */
-				String host = (String) cCtx.getProperties().get(HOST);
-				int port = (Integer) cCtx.getProperties().get(PORT);
-				String user = (String) cCtx.getProperties().get(USER);
-				String pwd = (String) cCtx.getProperties().get(PASSWORD);
+				 host = (String) cCtx.getProperties().get(HOST);
+				 port = (Integer) cCtx.getProperties().get(PORT);
+				 user = (String) cCtx.getProperties().get(USER);
+				 pwd = (String) cCtx.getProperties().get(PASSWORD);
 
 				// Build connection string
-				String connStr = new StringBuilder().append("jdbc:virtuoso://")
+				 connStr = new StringBuilder().append("jdbc:virtuoso://")
 						.append(host).append(":").append(port).toString();
+				
 				// Init connection
-				this.initConnection(connStr, user, pwd);
-
+//				this.initConnection(connStr, user, pwd);
+				VirtuosoConnection connection = getConnection(connStr, user, pwd);
+				
 				// Debug activation
 				if (logger.isDebugEnabled()) {
 					logger.debug("Component context properties: ");
@@ -223,6 +239,9 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				}
 				logger.info("Connection to {} initialized. User is {}",
 						connStr, user);
+				
+				// everything went ok
+				connection.close();
 			} catch (VirtuosoException e) {
 				logger.error(
 						"A problem occurred while intializing connection to Virtuoso",
@@ -258,20 +277,20 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	@Deactivate
 	public void deactivate(ComponentContext cCtx) {
 		logger.debug("deactivate(ComponentContext {})", cCtx);
-		try {
-			if (this.connection != null) {
-				if (this.connection.isClosed()) {
-					logger.debug("Connection is already closed");
-				} else {
-					logger.debug("Closing connection");
-					// We close the connection
-					this.connection.close();
-				}
-			}
-		} catch (Exception re) {
-			logger.warn(re.toString(), re);
-			throw new RuntimeException(re);
-		}
+//		try {
+//			if (this.connection != null) {
+//				if (this.connection.isClosed()) {
+//					logger.debug("Connection is already closed");
+//				} else {
+//					logger.debug("Closing connection");
+//					// We close the connection
+//					this.connection.close();
+//				}
+//			}
+//		} catch (Exception re) {
+//			logger.warn(re.toString(), re);
+//			throw new RuntimeException(re);
+//		}
 		logger.info("Shutdown complete.");
 	}
 
@@ -284,15 +303,44 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	private void initConnection(String connStr, String user, String pwd)
-			throws SQLException, ClassNotFoundException {
-		logger.debug("initConnection(String {}, String {}, String *******)",
+//	private void initConnection(String connStr, String user, String pwd)
+//			throws SQLException, ClassNotFoundException {
+//		logger.debug("initConnection(String {}, String {}, String *******)",
+//				connStr, user);
+//		if (this.connection != null) {
+//			logger.debug("Connection already instantiated: {}", this.connection);
+//			logger.debug("Closing connection");
+//			this.connection.close();
+//		}
+//		/**
+//		 * FIXME For some reasons, it looks the DriverManager is instantiating a
+//		 * new virtuoso.jdbc4.Driver instance upon any activation. (Enable debug
+//		 * to see this in the stderr stream)
+//		 */
+//		logger.debug("Loading JDBC Driver");
+//		Class.forName(VirtuosoWeightedProvider.DRIVER, true, this.getClass()
+//				.getClassLoader());
+//		if (logger.isDebugEnabled()) {
+//			logger.debug("Activating logging for DriverManager in stderr");
+//			// FIXME! How to redirect logging to our logger???
+//			DriverManager.setLogWriter(new PrintWriter(System.err));
+//		}
+//		connection = (VirtuosoConnection) DriverManager.getConnection(connStr,
+//				user, pwd);
+//		logger.debug("Connection initialized: {}", connection);
+//	}
+	public VirtuosoConnection getConnection() throws SQLException, ClassNotFoundException{
+		return getConnection(connStr, user, pwd);
+	}
+	private VirtuosoConnection getConnection(String connStr, String user, String pwd)
+ throws SQLException, ClassNotFoundException {
+		logger.debug("getConnection(String {}, String {}, String *******)",
 				connStr, user);
-		if (this.connection != null) {
-			logger.debug("Connection already instantiated: {}", this.connection);
-			logger.debug("Closing connection");
-			this.connection.close();
-		}
+		// if (this.connection != null) {
+		// logger.debug("Connection already instantiated: {}", this.connection);
+		// logger.debug("Closing connection");
+		// this.connection.close();
+		// }
 		/**
 		 * FIXME For some reasons, it looks the DriverManager is instantiating a
 		 * new virtuoso.jdbc4.Driver instance upon any activation. (Enable debug
@@ -306,9 +354,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			// FIXME! How to redirect logging to our logger???
 			DriverManager.setLogWriter(new PrintWriter(System.err));
 		}
-		connection = (VirtuosoConnection) DriverManager.getConnection(connStr,
-				user, pwd);
-		logger.debug("Connection initialized: {}", connection);
+		return (VirtuosoConnection) DriverManager.getConnection(connStr, user,
+				pwd);
 	}
 
 	/**
@@ -316,22 +363,23 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	 * 
 	 * @return
 	 */
-	public boolean isConnectionAlive() {
-		logger.debug("isConnectionAlive() : {}", connection);
-		if (this.connection == null) {
-			logger.warn("Connection is null");
-			return false;
-		}
-		if (this.connection.isClosed()) {
-			logger.warn("Connection is closed");
-			return false;
-		}
-		if (this.connection.isConnectionLost()) {
-			logger.warn("Connection is lost");
-			return false;
-		}
-		return true;
-	}
+//	public boolean isConnectionAlive() {
+//		
+//		logger.debug("isConnectionAlive() : {}", connection);
+//		if (this.connection == null) {
+//			logger.warn("Connection is null");
+//			return false;
+//		}
+//		if (this.connection.isClosed()) {
+//			logger.warn("Connection is closed");
+//			return false;
+//		}
+//		if (this.connection.isConnectionLost()) {
+//			logger.warn("Connection is lost");
+//			return false;
+//		}
+//		return true;
+//	}
 
 	/**
 	 * Retrieves the Graph (unmodifiable) with the given UriRef If no graph
@@ -384,6 +432,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	 */
 	private VirtuosoMGraph loadGraphOnce(UriRef name) {
 		logger.debug("loadGraphOnce({})", name);
+		
 		// Is it the first itme we invoke a graph here?
 		if (graphs == null) {
 			graphs = new HashMap<UriRef, VirtuosoMGraph>();
@@ -392,47 +441,71 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		if (graphs.containsKey(name)) {
 			logger.debug("{} is already loaded", name);
 			return graphs.get(name);
-		}
-
-		logger.debug("Attempt to load {}", name);
-		// Let's create the graph object
-		String SQL = "SPARQL SELECT ?G WHERE { GRAPH ?G {?A ?B ?C} . FILTER(?G = "
-				+ name + ")} LIMIT 1";
-
-		Statement st;
-		try {
-			st = connection.createStatement();
-			logger.debug("Executing SQL: {}", SQL);
-			st.execute(SQL);
-			VirtuosoResultSet rs = (VirtuosoResultSet) st.getResultSet();
-			if (rs.next() == false) {
-				// The graph is empty, it is not readable or does not exists
-				logger.warn("Graph does not exists: {}", name);
-				throw new NoSuchEntityException(name);
-			} else {
-				// The graph exists and it is readable ...
-				logger.debug("Graph {} is readable", name);
-				// is it writable?
-				logger.debug("Is {} writable?", name);
-				if (canModify(name)) {
-					logger.debug("Creating writable MGraph for graph {}", name);
-					graphs.put(name, new VirtuosoMGraph(
-							name.getUnicodeString(), connection));
+		}else{
+			VirtuosoMGraph graph = null;
+			logger.debug("Attempt to load {}", name);
+			// Let's create the graph object
+			String SQL = "SPARQL SELECT ?G WHERE { GRAPH ?G {?A ?B ?C} . FILTER(?G = "
+					+ name + ")} LIMIT 1";
+	
+			Statement st = null;
+			VirtuosoResultSet rs = null;
+			VirtuosoConnection connection = null;
+			Exception e = null;
+			try {
+				connection = getConnection(connStr, user, pwd);
+				st = connection.createStatement();
+				logger.debug("Executing SQL: {}", SQL);
+				st.execute(SQL);
+				rs = (VirtuosoResultSet) st.getResultSet();
+				if (rs.next() == false) {
+					// The graph is empty, it is not readable or does not exists
+					logger.warn("Graph does not exists: {}", name);
+					throw new NoSuchEntityException(name);
 				} else {
-					logger.debug("Creating read-only Graph for graph {}", name);
-					graphs.put(name, new VirtuosoMGraph(
-							name.getUnicodeString(), connection)
-							.asVirtuosoGraph());
+					// The graph exists and it is readable ...
+					logger.debug("Graph {} is readable", name);
+					// is it writable?
+					logger.debug("Is {} writable?", name);
+					if (canModify(name)) {
+						logger.debug("Creating writable MGraph for graph {}", name);
+						graphs.put(name, new VirtuosoMGraph(
+								name.getUnicodeString(), this));
+					} else {
+						logger.debug("Creating read-only Graph for graph {}", name);
+						graphs.put(name, new VirtuosoMGraph(
+								name.getUnicodeString(), this)
+								.asVirtuosoGraph());
+					}
+					graph = graphs.get(name);
 				}
-				return graphs.get(name);
+				
+			} catch (VirtuosoException ve) {
+				logger.error("Error while executing query/connection.", ve);
+				e = ve;
+			} catch (SQLException se) {
+				logger.error("Error while executing query/connection.", se);
+				e = se;
+			} catch (ClassNotFoundException ce) {
+				logger.error("Error while executing query/connection.", ce);
+				e = ce;
+			}finally{
+				try { if (rs != null) rs.close(); } catch (Exception ex) {};
+			    try { if (st != null) st.close(); } catch (Exception ex) {};
+				if(connection!=null){
+					try {
+						connection.close();
+					} catch (VirtuosoException e1) {
+						logger.error("Cannot close connection", e1);
+					}
+				}
 			}
-		} catch (VirtuosoException e) {
-			logger.error("Error while executing query/connection.", e);
-			throw new RuntimeException(e);
-		} catch (SQLException e) {
-			logger.error("Error while executing query/connection.", e);
-			throw new RuntimeException(e);
+			if(e!=null){
+				throw new RuntimeException(e);
+			}
+			return graph;
 		}
+		
 	}
 
 	/**
@@ -459,18 +532,43 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		Set<UriRef> graphs = new HashSet<UriRef>();
 		// Returns the list of graphs in the virtuoso quad store
 		String SQL = "SPARQL SELECT DISTINCT ?G WHERE {GRAPH ?G {?S ?P ?O} }";
+		VirtuosoConnection connection = null;
+		Exception e = null;
+		VirtuosoStatement st = null;
+		VirtuosoResultSet rs = null;
 		try {
-			VirtuosoStatement st = (VirtuosoStatement) this.connection
+			connection = getConnection();
+			st = (VirtuosoStatement) connection
 					.createStatement();
 			logger.debug("Executing SQL: {}", SQL);
-			VirtuosoResultSet rs = (VirtuosoResultSet) st.executeQuery(SQL);
+			rs = (VirtuosoResultSet) st.executeQuery(SQL);
 			while (rs.next()) {
 				UriRef graph = new UriRef(rs.getString(1));
 				logger.debug(" > Graph {}", graph);
 				graphs.add(graph);
 			}
-		} catch (VirtuosoException e) {
-			logger.error("Error while executing query/connection.", e);
+		} catch (VirtuosoException e1) {
+			logger.error("Error while executing query/connection.", e1);
+			e = e1;
+		} catch (SQLException e1) {
+			logger.error("Error while executing query/connection.", e1);
+			e = e1;
+		} catch (ClassNotFoundException e1) {
+			logger.error("Error while executing query/connection.", e1);
+			e = e1;
+		}finally{
+
+			try { if (rs != null) rs.close(); } catch (Exception ex) {};
+		    try { if (st != null) st.close(); } catch (Exception ex) {};
+			if(connection!=null){
+				try {
+					connection.close();
+				} catch (VirtuosoException e1) {
+					logger.error("Cannot close connection", e1);
+				}
+			}
+		}
+		if(e!=null){
 			throw new RuntimeException(e);
 		}
 		return Collections.unmodifiableSet(graphs);
@@ -492,8 +590,12 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	}
 
 	private long getPermissions(String graph) {
+		VirtuosoConnection connection = null;
+		logger.debug("getPermissions(String {})", graph);
+		Exception e = null;
+		Long result = null;
 		try {
-			logger.debug("getPermissions(String {})", graph);
+			connection = getConnection();
 			ResultSet rs;
 			String sql = "SELECT DB.DBA.RDF_GRAPH_USER_PERMS_GET ('" + graph
 					+ "','" + connection.getMetaData().getUserName() + "') ";
@@ -502,16 +604,30 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			st.execute(sql);
 			rs = st.getResultSet();
 			rs.next();
-			long result = rs.getLong(1);
+			result = rs.getLong(1);
 			logger.debug("Permission: {}", result);
-			return result;
-		} catch (VirtuosoException e) {
+		} catch (VirtuosoException ve) {
 			logger.error("A virtuoso SQL exception occurred.");
-			throw new RuntimeException(e);
-		} catch (SQLException e) {
+			e = ve;
+		} catch (SQLException se) {
 			logger.error("An SQL exception occurred.");
+			e = se;
+		} catch (ClassNotFoundException e1) {
+			logger.error("An ClassNotFoundException occurred.");
+			e = e1;
+		} finally {
+			if(connection!=null){
+				try {
+					connection.close();
+				} catch (VirtuosoException e1) {
+					logger.error("Cannot close connection", e1);
+				}
+			}
+		}
+		if (e != null) {
 			throw new RuntimeException(e);
 		}
+		return result;
 	}
 
 	public boolean canRead(UriRef graph) {
@@ -556,7 +672,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		} catch (NoSuchEntityException nsee) {
 			if (canModify(name)) {
 				graphs.put(name, new VirtuosoMGraph(name.getUnicodeString(),
-						connection));
+							this));
 				return graphs.get(name);
 			} else {
 				logger.error("Cannot create MGraph {}", name);

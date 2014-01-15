@@ -49,6 +49,10 @@ public class ConnectionTest {
 
 	@BeforeClass
 	public static void before() throws ClassNotFoundException, SQLException {
+		if (TestUtils.SKIP) {
+			log.warn("SKIPPED");
+			return;
+		}
 		connection = TestUtils.getConnection();
 	}
 

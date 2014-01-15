@@ -25,6 +25,8 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
+
 import virtuoso.jdbc4.VirtuosoConnection;
 /**
  * This is a read-only version of {@link VirtuosoMGraph}
@@ -39,8 +41,8 @@ public class VirtuosoGraph extends VirtuosoMGraph implements Graph{
 	protected Logger logger = LoggerFactory
 			.getLogger(VirtuosoGraph.class);
 	
-	public VirtuosoGraph(String name, VirtuosoConnection connection) {
-		super(name, connection);
+	public VirtuosoGraph(String name, VirtuosoWeightedProvider provider) {
+		super(name, provider);
 	}
 
 	@Override
