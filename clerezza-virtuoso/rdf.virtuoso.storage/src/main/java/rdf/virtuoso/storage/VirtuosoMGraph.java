@@ -198,7 +198,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		sb.append(" } } ");
 
 		String sql = sb.toString();
-		logger.info("Executing SQL: {}", sql);
+		logger.debug("Executing SQL: {}", sql);
 		Statement st;
 		try {
 			readLock.lock();

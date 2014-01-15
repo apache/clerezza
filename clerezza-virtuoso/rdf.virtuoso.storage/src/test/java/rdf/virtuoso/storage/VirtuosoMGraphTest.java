@@ -195,7 +195,6 @@ public class VirtuosoMGraphTest {
 		assertTrue(found);
 		
 		assertNotNull(t);
-		log.info("{} {} {}", new Object[]{t.getSubject(), t.getPredicate(), t.getObject()});
 		
 		//NonLiteral s = t.getSubject();
 		it = mgraph.filter(t.getSubject(), predicate, t.getObject());
