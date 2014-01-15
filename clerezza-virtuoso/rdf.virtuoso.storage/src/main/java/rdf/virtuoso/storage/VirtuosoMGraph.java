@@ -70,7 +70,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * Bidirectional map for managing the conversion from virtuoso blank nodes
 	 * (strings) to clerezza blank nodes and vice versa.
 	 */
-//	private final BidiMap<String, BNode> bnodesMap;
+	private final BidiMap<String, BNode> bnodesMap;
 	private int maxVirtBnodeIndex = 0;
 
 	/**
@@ -102,7 +102,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				provider);
 		this.name = name;
 		this.provider  = provider;
-//		this.bnodesMap = new BidiMapImpl<String, BNode>();
+		this.bnodesMap = new BidiMapImpl<String, BNode>();
 	}
 
 	/**
@@ -601,7 +601,13 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		if(bnode instanceof VirtuosoBNode){
 			return ((VirtuosoBNode) bnode).asSkolemIri();
 		}else{
-			return nextVirtBnode();
+			String virtBnode = bnodesMap.getKey(bnode);
+			if (virtBnode == null) {
+				// We create a local bnode mapped to the BNode given
+				virtBnode = nextVirtBnode();
+				bnodesMap.put(virtBnode, bnode);
+			}
+			return bnodesMap.getKey(bnode);
 		}
 	}
 
