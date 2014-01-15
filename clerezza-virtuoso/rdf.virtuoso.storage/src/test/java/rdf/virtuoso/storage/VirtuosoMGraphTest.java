@@ -192,9 +192,6 @@ public class VirtuosoMGraphTest {
 			assertEquals(t.getPredicate(), predicate);
 		}
 		Statement st = TestUtils.getConnection().createStatement();
-		boolean has = st.execute("SPARQL SELECT ?SUBJECT ?PREDICATE ?OBJECT WHERE { GRAPH <VirtuosoMGraphTest> {  ?SUBJECT ?PREDICATE ?OBJECT . FILTER( ?SUBJECT = <nodeID://b10076>) . FILTER( ?PREDICATE = <http://property/name>) . FILTER( ?OBJECT = <nodeID://b10077>)  } } ");
-		assertTrue(has);
-		//rs.close();
 		assertTrue(found);
 		
 		assertNotNull(t);
