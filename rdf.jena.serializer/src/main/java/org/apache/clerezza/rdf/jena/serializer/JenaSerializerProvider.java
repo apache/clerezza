@@ -27,7 +27,10 @@ import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.serializedform.UnsupportedSerializationFormatException;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
@@ -54,15 +57,21 @@ public class JenaSerializerProvider implements SerializingProvider {
     public void serialize(OutputStream serializedGraph, TripleCollection tc,
             String formatIdentifier) {
         String jenaFormat = getJenaFormat(formatIdentifier);
-        com.hp.hpl.jena.graph.Graph graph = new JenaGraph(tc);
-        Model model = ModelFactory.createModelForGraph(graph);
-        RDFWriter writer = model.getWriter(jenaFormat);
-        if ("RDF/XML".equals(jenaFormat)) {
-            //jena complains about some URIs that aren't truely bad
-            //see: http://tech.groups.yahoo.com/group/jena-dev/message/38313
-            writer.setProperty("allowBadURIs", Boolean.TRUE);
+        Lock l = (tc instanceof LockableMGraph) ? ((LockableMGraph)tc).getLock().readLock() : (new ReentrantReadWriteLock()).readLock();
+        l.lock();
+        try {
+            com.hp.hpl.jena.graph.Graph graph = new JenaGraph(tc);
+            Model model = ModelFactory.createModelForGraph(graph);
+            RDFWriter writer = model.getWriter(jenaFormat);
+            if ("RDF/XML".equals(jenaFormat)) {
+                //jena complains about some URIs that aren't truely bad
+                //see: http://tech.groups.yahoo.com/group/jena-dev/message/38313
+                writer.setProperty("allowBadURIs", Boolean.TRUE);
+            }
+            writer.write(model, serializedGraph, "");
+        } finally {
+            l.unlock();
         }
-        writer.write(model, serializedGraph, "");
     }
 
     private String getJenaFormat(String formatIdentifier) {
