@@ -591,16 +591,17 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 
 	private long getPermissions(String graph) {
 		VirtuosoConnection connection = null;
+		ResultSet rs = null;
+		Statement st = null;
 		logger.debug("getPermissions(String {})", graph);
 		Exception e = null;
 		Long result = null;
 		try {
 			connection = getConnection();
-			ResultSet rs;
 			String sql = "SELECT DB.DBA.RDF_GRAPH_USER_PERMS_GET ('" + graph
 					+ "','" + connection.getMetaData().getUserName() + "') ";
 			logger.debug("Executing SQL: {}", sql);
-			Statement st = connection.createStatement();
+			 st = connection.createStatement();
 			st.execute(sql);
 			rs = st.getResultSet();
 			rs.next();
@@ -616,6 +617,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			logger.error("An ClassNotFoundException occurred.");
 			e = e1;
 		} finally {
+			try { if (rs != null) rs.close(); } catch (Exception ex) {};
+		    try { if (st != null) st.close(); } catch (Exception ex) {};
 			if(connection!=null){
 				try {
 					connection.close();

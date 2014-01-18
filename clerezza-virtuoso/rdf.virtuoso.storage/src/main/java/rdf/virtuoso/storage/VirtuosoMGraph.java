@@ -221,7 +221,6 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				list.add(new TripleBuilder(rs.getObject(1),
 						rs.getObject(2), rs.getObject(3)).build());
 			}
-			readLock.unlock();
 			/*
 			iterator = new Iterator<Triple>() {
 				Triple current = null;
@@ -300,10 +299,13 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			logger.error("ERROR while executing statement", e1);
 			e = e1;
 		} finally{
+			readLock.unlock();
 			try { if (rs != null) rs.close(); } catch (Exception ex) {};
 		    try { if (st != null) st.close(); } catch (Exception ex) {};
 			try {
-				connection.close();
+				if(connection != null){
+					connection.close();
+				}
 			} catch (VirtuosoException e1) {
 				logger.error("Cannot close connection", e1);
 			}
@@ -607,7 +609,8 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				virtBnode = nextVirtBnode();
 				bnodesMap.put(virtBnode, bnode);
 			}
-			return bnodesMap.getKey(bnode);
+			logger.info("{} {}", virtBnode, bnode);
+			return virtBnode;
 		}
 	}
 
