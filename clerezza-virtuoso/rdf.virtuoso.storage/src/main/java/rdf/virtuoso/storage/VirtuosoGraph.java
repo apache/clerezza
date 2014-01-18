@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
 
-import virtuoso.jdbc4.VirtuosoConnection;
 /**
  * This is a read-only version of {@link VirtuosoMGraph}
  * @author enridaga

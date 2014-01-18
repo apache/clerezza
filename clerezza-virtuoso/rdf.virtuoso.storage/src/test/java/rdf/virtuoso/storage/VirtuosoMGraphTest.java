@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
@@ -191,12 +190,10 @@ public class VirtuosoMGraphTest {
 			}
 			assertEquals(t.getPredicate(), predicate);
 		}
-		Statement st = TestUtils.getConnection().createStatement();
 		assertTrue(found);
 		
 		assertNotNull(t);
 		
-		//NonLiteral s = t.getSubject();
 		log.info("{}",t.getSubject());
 		it = mgraph.filter(t.getSubject(), predicate, t.getObject());
 		found = false;
@@ -207,9 +204,6 @@ public class VirtuosoMGraphTest {
 				log.debug("Found matching triple: {}", t);
 				TestUtils.stamp(t);
 			}
-			//assertEquals(t.getSubject(), s);
-			//log.info(" {} {}", s, t.getSubject());
-			//assertEquals(t.getPredicate(), predicate);
 			assertEquals(t.getPredicate(), predicate);
 		}
 		assertTrue(found);
