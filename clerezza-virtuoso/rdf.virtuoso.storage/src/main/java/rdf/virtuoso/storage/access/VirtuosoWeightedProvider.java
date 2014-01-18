@@ -18,7 +18,6 @@
  */
 package rdf.virtuoso.storage.access;
 
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -101,11 +100,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	private Map<UriRef, VirtuosoMGraph> graphs = null;
 
 	/**
-	 * JDBC Connection to Virtuoso DBMS
-	 */
-//	private VirtuosoConnection connection = null;
-
-	/**
 	 * Weight
 	 */
 	private int weight = DEFAULT_WEIGHT;
@@ -131,31 +125,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		logger.debug("Created VirtuosoWeightedProvider.");
 	}
 
-//	/**
-//	 * Creates a new {@link VirtuosoWeightedProvider}
-//	 * 
-//	 * @param connection
-//	 */
-//	public VirtuosoWeightedProvider(VirtuosoConnection connection) {
-//		logger.debug("Created VirtuosoWeightedProvider with connection: {}",
-//				connection);
-////		this.connection = connection;
-//	}
-
-//	/**
-//	 * Creates a new {@link VirtuosoWeightedProvider}
-//	 * 
-//	 * @param connection
-//	 * @param weight
-//	 */
-//	public VirtuosoWeightedProvider(VirtuosoConnection connection, int weight) {
-//		logger.debug(
-//				"Created VirtuosoWeightedProvider with connection = {} and weight = {}.",
-//				connection, weight);
-//		this.weight = weight;
-////		this.connection = connection;
-//	}
-
 	public VirtuosoWeightedProvider(String jdbcConnectionString,
 			String jdbcUser, String jdbcPassword) {
 		connStr = jdbcConnectionString;
@@ -177,7 +146,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	public void activate(ComponentContext cCtx) {
 		logger.info("activate(ComponentContext {})", cCtx);
 		logger.info("Activating VirtuosoWeightedProvider...");
-//		if (cCtx == null && connection == null) {
+
 		if (cCtx == null ) {
 				logger.error("No component context given and connection was not set");
 			throw new IllegalArgumentException(
@@ -208,8 +177,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				 connStr = new StringBuilder().append("jdbc:virtuoso://")
 						.append(host).append(":").append(port).toString();
 				
-				// Init connection
-//				this.initConnection(connStr, user, pwd);
+				// Check connection
 				VirtuosoConnection connection = getConnection(connStr, user, pwd);
 				
 				// Debug activation
@@ -277,58 +245,10 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	@Deactivate
 	public void deactivate(ComponentContext cCtx) {
 		logger.debug("deactivate(ComponentContext {})", cCtx);
-//		try {
-//			if (this.connection != null) {
-//				if (this.connection.isClosed()) {
-//					logger.debug("Connection is already closed");
-//				} else {
-//					logger.debug("Closing connection");
-//					// We close the connection
-//					this.connection.close();
-//				}
-//			}
-//		} catch (Exception re) {
-//			logger.warn(re.toString(), re);
-//			throw new RuntimeException(re);
-//		}
+		// XXX Anything to do here?
 		logger.info("Shutdown complete.");
 	}
-
-	/**
-	 * Initialize the JDBC connection
-	 * 
-	 * @param connStr
-	 * @param user
-	 * @param pwd
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
-	 */
-//	private void initConnection(String connStr, String user, String pwd)
-//			throws SQLException, ClassNotFoundException {
-//		logger.debug("initConnection(String {}, String {}, String *******)",
-//				connStr, user);
-//		if (this.connection != null) {
-//			logger.debug("Connection already instantiated: {}", this.connection);
-//			logger.debug("Closing connection");
-//			this.connection.close();
-//		}
-//		/**
-//		 * FIXME For some reasons, it looks the DriverManager is instantiating a
-//		 * new virtuoso.jdbc4.Driver instance upon any activation. (Enable debug
-//		 * to see this in the stderr stream)
-//		 */
-//		logger.debug("Loading JDBC Driver");
-//		Class.forName(VirtuosoWeightedProvider.DRIVER, true, this.getClass()
-//				.getClassLoader());
-//		if (logger.isDebugEnabled()) {
-//			logger.debug("Activating logging for DriverManager in stderr");
-//			// FIXME! How to redirect logging to our logger???
-//			DriverManager.setLogWriter(new PrintWriter(System.err));
-//		}
-//		connection = (VirtuosoConnection) DriverManager.getConnection(connStr,
-//				user, pwd);
-//		logger.debug("Connection initialized: {}", connection);
-//	}
+	
 	public VirtuosoConnection getConnection() throws SQLException, ClassNotFoundException{
 		return getConnection(connStr, user, pwd);
 	}
@@ -336,11 +256,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
  throws SQLException, ClassNotFoundException {
 		logger.debug("getConnection(String {}, String {}, String *******)",
 				connStr, user);
-		// if (this.connection != null) {
-		// logger.debug("Connection already instantiated: {}", this.connection);
-		// logger.debug("Closing connection");
-		// this.connection.close();
-		// }
 		/**
 		 * FIXME For some reasons, it looks the DriverManager is instantiating a
 		 * new virtuoso.jdbc4.Driver instance upon any activation. (Enable debug
@@ -357,29 +272,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		return (VirtuosoConnection) DriverManager.getConnection(connStr, user,
 				pwd);
 	}
-
-	/**
-	 * Whether the connection is active or not
-	 * 
-	 * @return
-	 */
-//	public boolean isConnectionAlive() {
-//		
-//		logger.debug("isConnectionAlive() : {}", connection);
-//		if (this.connection == null) {
-//			logger.warn("Connection is null");
-//			return false;
-//		}
-//		if (this.connection.isClosed()) {
-//			logger.warn("Connection is closed");
-//			return false;
-//		}
-//		if (this.connection.isConnectionLost()) {
-//			logger.warn("Connection is lost");
-//			return false;
-//		}
-//		return true;
-//	}
 
 	/**
 	 * Retrieves the Graph (unmodifiable) with the given UriRef If no graph

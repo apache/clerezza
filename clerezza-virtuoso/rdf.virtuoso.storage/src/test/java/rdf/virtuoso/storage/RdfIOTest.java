@@ -242,7 +242,7 @@ public class RdfIOTest {
 				"urn:io-test:enridaga"));
 		Assert.assertNotSame(read.getObject(),
 				new UriRef("urn:io-test:alexdma"));
-		// bnodes cannot be equals!
+		// these bnodes cannot be equals!
 		Assert.assertNotSame(read, new TripleImpl(subject, predicate, object));
 	}
 
@@ -279,7 +279,6 @@ public class RdfIOTest {
 		graph.add(new TripleImpl(s2intern, p1, s3));
 		Triple second = graph.filter(s2intern, p1, null).next();
 		Assert.assertTrue(second.getObject() instanceof VirtuosoBNode);
-		BNode s3intern = (BNode) second.getObject();
 		
 		graph.add(new TripleImpl(s1intern, p2, s4));
 		Triple third = graph.filter(s1intern, p2, null).next();
@@ -305,7 +304,7 @@ public class RdfIOTest {
 				Triple s1it = s1i.next();
 				found = true;
 				log.info("{} {}",s1it.getSubject(), s1t.getSubject());
-				//Assert.assertTrue(s1it.getSubject().equals(s1t.getSubject()));
+				Assert.assertTrue(s1it.getSubject().equals(s1t.getSubject()));
 				Assert.assertTrue(s1it.getPredicate().equals(p1)
 						|| s1it.getPredicate().equals(p2));
 
