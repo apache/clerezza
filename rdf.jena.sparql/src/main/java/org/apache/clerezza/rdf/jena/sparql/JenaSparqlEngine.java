@@ -40,6 +40,16 @@ import com.hp.hpl.jena.sparql.core.DynamicDatasets;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.clerezza.rdf.core.sparql.ParseException;
+import org.apache.clerezza.rdf.core.sparql.SparqlPreParser;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 
@@ -61,57 +71,87 @@ public class JenaSparqlEngine implements QueryEngine {
     @Override
     public Object execute(TcManager tcManager, TripleCollection defaultGraph,
             final String query) {
-        final DatasetGraph datasetGraph = new TcDatasetGraph(tcManager, defaultGraph);
-        final Dataset dataset = DatasetFactory.create(datasetGraph);
+        final SparqlPreParser sparqlPreParser = new SparqlPreParser(tcManager);
+        final UriRef defaultGraphName = new UriRef("http://fake-default.uri/879872");
+        Set<UriRef> referencedGraphs;
+        try {
+            referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex);
+        }
+        Set<UriRef> graphsToLock = referencedGraphs != null ? referencedGraphs : tcManager.listTripleCollections();
+        List<Lock> locks = new ArrayList<Lock>(graphsToLock.size());
+        for (UriRef uriRef : graphsToLock) {
+            TripleCollection tc;
+            if (uriRef.equals(defaultGraphName)) {
+                tc = defaultGraph;
+            } else {
+                tc = tcManager.getTriples(uriRef);
+            }
+            if (tc instanceof LockableMGraph) {
+                locks.add(((LockableMGraph) tc).getLock().readLock());
+            }
+        }
+        for (Lock lock : locks) {
+            lock.lock();
+        }
+        try {
+            final DatasetGraph datasetGraph = new TcDatasetGraph(tcManager, defaultGraph);
+            final Dataset dataset = DatasetFactory.create(datasetGraph);
 
-        // Missing permission (java.lang.RuntimePermission getClassLoader)
-        // when calling QueryFactory.create causes ExceptionInInitializerError
-        // to be thrown.
-        // QueryExecutionFactory.create requires
-        // (java.io.FilePermission [etc/]location-mapping.* read)
-        // Thus, they are placed within doPrivileged
-        QueryExecution qexec = AccessController
-                .doPrivileged(new PrivilegedAction<QueryExecution>() {
+            // Missing permission (java.lang.RuntimePermission getClassLoader)
+            // when calling QueryFactory.create causes ExceptionInInitializerError
+            // to be thrown.
+            // QueryExecutionFactory.create requires
+            // (java.io.FilePermission [etc/]location-mapping.* read)
+            // Thus, they are placed within doPrivileged
+            QueryExecution qexec = AccessController
+                    .doPrivileged(new PrivilegedAction<QueryExecution>() {
 
-                    @Override
-                    public QueryExecution run() {
-                        try {
-                            com.hp.hpl.jena.query.Query jenaQuery = QueryFactory
-                                    .create(query);
-                            if (jenaQuery.isUnknownType()) {
+                        @Override
+                        public QueryExecution run() {
+                            try {
+                                com.hp.hpl.jena.query.Query jenaQuery = QueryFactory
+                                        .create(query);
+                                if (jenaQuery.isUnknownType()) {
+                                    return null;
+                                }
+                                DatasetDescription dd = DatasetDescription.create(jenaQuery);
+                                Dataset dynaDataset = DynamicDatasets.dynamicDataset(dd, dataset, false);
+                                return QueryExecutionFactory.create(jenaQuery, dynaDataset);
+                            } catch (QueryException ex) {
                                 return null;
                             }
-                            DatasetDescription dd = DatasetDescription.create(jenaQuery);
-                            Dataset dynaDataset = DynamicDatasets.dynamicDataset(dd, dataset, false);
-                            return QueryExecutionFactory.create(jenaQuery, dynaDataset);
-                        } catch (QueryException ex) {
-                            return null;
+
                         }
-                        
-                    }
-                });
-        if (qexec == null) {
-            return executeUpdate(dataset, query);
-        }
-        //TODO check with rather than trial and error: if (qexec.getQuery().isSelectType()) {
-        try {
+                    });
+            if (qexec == null) {
+                return executeUpdate(dataset, query);
+            }
+            //TODO check with rather than trial and error: if (qexec.getQuery().isSelectType()) {
             try {
-                return new ResultSetWrapper(qexec.execSelect());
-            } catch (QueryExecException e) {
                 try {
-                    return Boolean.valueOf(qexec.execAsk());
-                } catch (QueryExecException e2) {
+                    return new ResultSetWrapper(qexec.execSelect());
+                } catch (QueryExecException e) {
                     try {
-                        return new JenaGraphAdaptor(qexec.execDescribe()
-                                .getGraph()).getGraph();
-                    } catch (QueryExecException e3) {
-                        return new JenaGraphAdaptor(qexec.execConstruct()
-                                .getGraph()).getGraph();
+                        return Boolean.valueOf(qexec.execAsk());
+                    } catch (QueryExecException e2) {
+                        try {
+                            return new JenaGraphAdaptor(qexec.execDescribe()
+                                    .getGraph()).getGraph();
+                        } catch (QueryExecException e3) {
+                            return new JenaGraphAdaptor(qexec.execConstruct()
+                                    .getGraph()).getGraph();
+                        }
                     }
                 }
+            } finally {
+                qexec.close();
             }
         } finally {
-            qexec.close();
+            for (Lock lock : locks) {
+                lock.unlock();
+            }
         }
     }
 

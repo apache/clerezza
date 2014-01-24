@@ -31,4 +31,14 @@
                 <generateBackupPoms>false</generateBackupPoms>
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-deploy</actionName>
+            <goals>
+                <goal>clean</goal>
+                <goal>deploy</goal>
+            </goals>
+            <properties>
+                <Env.MAVEN_OPTS>-Xmx1024M -XX:MaxPermSize=128M</Env.MAVEN_OPTS>            
+            </properties>
+        </action>
     </actions>

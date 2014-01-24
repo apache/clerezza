@@ -25,7 +25,7 @@ class TitledContentRDFaNaked extends SRenderlet {
       override def content = {
               <div typeof="disco:TitledContent" about={res*}>
               {for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "0")) 
-                yield <span property="disco:holds" typeof="disco:Entry">
+                yield <span property="disco:contains" typeof="disco:Entry">
                    <span property="disco:pos" style="display: none">0</span>
                    <h1 resource={part/DISCOBITS.holds*} property="disco:holds">{render(part/DISCOBITS.holds, "rdfa-naked")}</h1>
                   </span>}

@@ -81,7 +81,8 @@ public class Editor extends FileServer {
     private static final Logger logger = LoggerFactory.getLogger(Editor.class);
 
     private Providers providers;
-    private final MediaType rdfXmlType = MediaType.valueOf("application/rdf+xml");
+    private final String rdfXml = "application/rdf+xml";
+    
     
     
     /**
@@ -128,13 +129,18 @@ public class Editor extends FileServer {
     @Path("post")
     public void postDiscobit(@QueryParam("graph") UriRef graphUri,
             @FormParam("assert") String assertedString,
-            @FormParam("revoke") String revokedString) {
-        MessageBodyReader<Graph> graphReader = providers.getMessageBodyReader(Graph.class, Graph.class, null,rdfXmlType);
+            @FormParam("revoke") String revokedString,
+            @FormParam("rdfFormat") String rdfFormat) {
+        if (rdfFormat == null) {
+            rdfFormat = rdfXml;
+        }
+        MediaType mediaType = MediaType.valueOf(rdfFormat);
+        MessageBodyReader<Graph> graphReader = providers.getMessageBodyReader(Graph.class, Graph.class, null,mediaType);
         final Graph assertedGraph;
         final Graph revokedGraph;
         try {
-            assertedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(assertedString.getBytes()));
-            revokedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], rdfXmlType, null, new ByteArrayInputStream(revokedString.getBytes()));
+            assertedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], mediaType, null, new ByteArrayInputStream(assertedString.getBytes()));
+            revokedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], mediaType, null, new ByteArrayInputStream(revokedString.getBytes()));
         } catch (IOException ex) {
             logger.error("reading graph {}", ex);
             throw new WebApplicationException(ex, 500);

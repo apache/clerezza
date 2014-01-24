@@ -30,12 +30,28 @@ class TitledContentEtch extends SRenderlet {
       override def content = {
         val initScript = """
                        var discoBitsCollection = new Backbone.Collection();
-            (function() {
-                
+            $(function() {
+              
+                var gp = new GraphRDFaProcessor();
+                gp.target.graph = new RDFaGraph();
+                gp.process(document);
+                var origTurtle = gp.target.graph.toString();
+                //alert(origTurtle);
                 function saveAllModified() {
-                    var modifiedModels = discoBitsCollection.filter(function(model) {return model.hasChanged()})
+                    /*var modifiedModels = discoBitsCollection.filter(function(model) {return model.hasChanged()})
                     var modified = new Backbone.Collection(modifiedModels);
-                    alert("would save: " +modifiedModels+" models "+ JSON.stringify(modified.toJSON()))
+                    alert("could save: " +modifiedModels+" models "+ JSON.stringify(modified.toJSON()))
+                    var gp = new GraphRDFaProcessor();*/
+                    gp.target.graph = new RDFaGraph();
+                    gp.process(document);
+                    var newTurtle = gp.target.graph.toString()
+                    $.post( "/tools/editor/post", { assert: newTurtle, revoke: origTurtle, rdfFormat: 'text/turtle' }, function( data ) {
+                      alert("saved");
+                      origTurtle = newTurtle;
+                    }) .fail(function( data) {
+                      errdata = data
+                      alert( "error: " + data.statusText);
+                    });
                 }
                 
                 var InfoBit = Backbone.Model.extend({
@@ -108,20 +124,59 @@ class TitledContentEtch extends SRenderlet {
                 });
                 //var view = new articleView({model: model, el: $article[0], tagName: $article[0].tagName});
 
-            })()
+            });
 
             Backbone.on('all', function(s) {
                 console.log('Handling all: ' + s);
-            });"""
+            });
+        
+            
+        
+            /*document.addEventListener(
+              "rdfa.loaded",
+              function() {
+                 _.forEach(document.getElementsByType("http://discobits.org/ontology#Entry"), function(e) {
+                  $(e).css('background-color', 'blue');
+                });
+                console.log('all colored');
+                //console.log('activating: '+RDFaProcessor);
+                CallbackProcessor.prototype = new RDFaProcessor();
+                CallbackProcessor.prototype.constructor=RDFaProcessor;
+                function CallbackProcessor() {
+                   RDFaProcessor.call(this);
+                }
+
+                CallbackProcessor.prototype.newSubjectOrigin = function(origin,subject) {
+                   console.log("New origin for "+subject);
+                }
+
+                CallbackProcessor.prototype.addTriple = function(origin,subject,predicate,object) {
+                   console.log("New triple: "+subject+", predicate "+predicate+
+                               ", object "+object.value+", "+object.language+", "+object.type);
+                }
+                console.log('activated: '+CallbackProcessor);
+                processor = new CallbackProcessor();
+                processor.finishedHandlers.push(
+                    function(node) {
+                       alert("Done!");
+                    }
+                 );
+                 processor.process(document);
+                 console.log('done');
+              },
+              false
+            );*/
+            """
         <html xmlns:disco="http://discobits.org/ontology#"> 
-          {for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "0")) yield
+          
             <head>
                 <link type="text/css" href="/style/style.css" rel="stylesheet" />
                 <link rel="stylesheet" href="/tools/editor/styles/etch.css" />
-                <title>Editing: {part/DISCOBITS.holds/DISCOBITS.infoBit*}</title>
-                
+                {for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "0")) yield
+                <title>Editing: {part/DISCOBITS.holds/DISCOBITS.infoBit*}</title> }
+                <script src="/tools/editor/scripts/RDFaProcessor.1.3.0.js"></script>
+                <script src="/tools/editor/scripts/RDFa.1.3.0.js"></script>
             </head>
-          }
           <body>
             {render(res, "rdfa-naked")}
             <script src="/tools/editor/scripts/jquery.min.js"></script>
@@ -138,4 +193,12 @@ class TitledContentEtch extends SRenderlet {
     }
   }
 
+}
+
+@Component
+@Service(Array(classOf[TypeRenderlet]))
+class HtmlInfoDiscobitEtch extends TitledContentEtch {
+
+  override val getRdfType = DISCOBITS.XHTMLInfoDiscoBit 
+    
 }

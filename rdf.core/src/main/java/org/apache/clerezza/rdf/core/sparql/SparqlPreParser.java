@@ -82,8 +82,10 @@ public class SparqlPreParser {
                 referredGraphs = new HashSet<UriRef>();
             }
             GroupGraphPattern queryPattern = q.getQueryPattern();
-            Set<GraphPattern> graphPatterns = queryPattern.getGraphPatterns();
-            for (GraphPattern graphPattern : graphPatterns) {
+            if (queryPattern != null) {
+                Set<GraphPattern> graphPatterns = queryPattern.getGraphPatterns();
+                for (GraphPattern graphPattern : graphPatterns) {
+                }
             }
 //            referringVariableNamedGraph = q.referringVariableNamedGraph();
             referringVariableNamedGraph = referringVariableNamedGraph(q);
@@ -102,6 +104,9 @@ public class SparqlPreParser {
 
     private boolean referringVariableNamedGraph(Query query) {
         GroupGraphPattern queryPattern = query.getQueryPattern();
+        if (queryPattern == null) {
+            return false;
+        }
         Set<GraphPattern> graphPatterns = queryPattern.getGraphPatterns();
         return referringVariableNamedGraph(graphPatterns);
     }
