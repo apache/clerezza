@@ -157,12 +157,13 @@ public class VirtuosoMGraphTest {
 			log.warn("SKIPPED");
 			return;
 		}
+		final BNode bn = new BNode();
 		// We use testAdd to prepare this
 		Triple triple = new Triple() {
 
 			@Override
 			public NonLiteral getSubject() {
-				return new BNode();
+				return bn;
 			}
 
 			@Override
@@ -178,7 +179,7 @@ public class VirtuosoMGraphTest {
 
 		boolean success = mgraph.add(triple);
 		assertTrue(success);
-		Iterator<Triple> it = mgraph.filter(new BNode(), predicate, new BNode());
+		Iterator<Triple> it = mgraph.filter(bn, predicate, null);
 		boolean found = false;
 		Triple t = null; // we will use it to make a further query
 		while (it.hasNext()) {

@@ -236,8 +236,10 @@ public class RdfIOTest {
 		// bnodes cannot be equals!
 		Assert.assertFalse(read.getObject().equals(object));
 		Assert.assertTrue(read.getSubject().equals(subject));
+		
 		Assert.assertTrue(read.getObject() instanceof BNode);
-		Assert.assertNotSame(read.getObject(), object);
+		Assert.assertTrue(read.getObject() instanceof VirtuosoBNode);
+		
 		Assert.assertNotSame(read.getObject(), new UriRef(
 				"urn:io-test:enridaga"));
 		Assert.assertNotSame(read.getObject(),

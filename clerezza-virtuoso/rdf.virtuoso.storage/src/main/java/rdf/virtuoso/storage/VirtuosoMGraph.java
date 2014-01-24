@@ -94,10 +94,10 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * @param connection
 	 */
 	public VirtuosoMGraph(String name, VirtuosoWeightedProvider provider) {
-		logger.debug("VirtuosoMGraph(String {}, VirtuosoWeightedProvider {})", name,
-				provider);
+		logger.debug("VirtuosoMGraph(String {}, VirtuosoWeightedProvider {})",
+				name, provider);
 		this.name = name;
-		this.provider  = provider;
+		this.provider = provider;
 		this.bnodesMap = new BidiMapImpl<String, BNode>();
 	}
 
@@ -105,10 +105,11 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * Gets the connection
 	 * 
 	 * @return
-	 * @throws ClassNotFoundException 
-	 * @throws SQLException 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
 	 */
-	protected VirtuosoConnection getConnection() throws SQLException, ClassNotFoundException {
+	protected VirtuosoConnection getConnection() throws SQLException,
+			ClassNotFoundException {
 		logger.debug("getConnection()");
 		return this.provider.getConnection();
 	}
@@ -147,40 +148,40 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		String virtSubject = toVirtSubject(subject);
 		String virtPredicate = toVirtPredicate(predicate);
 		String virtObject = toVirtObject(object);
-		
+
 		sb.append("SPARQL SELECT ");
 		if (virtSubject != null) {
 			sb.append(" ").append(virtSubject).append(" as ?subject");
-		}else{
+		} else {
 			sb.append(" ?subject ");
 		}
 		if (virtPredicate != null) {
 			sb.append(" ").append(virtPredicate).append(" as ?predicate");
-		}else{
+		} else {
 			sb.append(" ?predicate ");
 		}
 		if (virtObject != null) {
 			sb.append(" ").append(virtObject).append(" as ?object");
-		}else{
+		} else {
 			sb.append(" ?object ");
 		}
 		sb.append(" WHERE { GRAPH <").append(this.getName()).append("> { ");
 		if (virtSubject != null) {
 			sb.append(" ").append(virtSubject).append(" ");
-		}else{
+		} else {
 			sb.append(" ?subject ");
 		}
 		if (virtPredicate != null) {
 			sb.append(" ").append(virtPredicate).append(" ");
-		}else{
+		} else {
 			sb.append(" ?predicate ");
 		}
 		if (virtObject != null) {
 			sb.append(" ").append(virtObject).append(" ");
-		}else{
+		} else {
 			sb.append(" ?object ");
 		}
-		
+
 		sb.append(" } } ");
 
 		String sql = sb.toString();
@@ -197,9 +198,9 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			st.execute(sql);
 			rs = (VirtuosoResultSet) st.getResultSet();
 			list = new ArrayList<Triple>();
-			while(rs.next()){
-				list.add(new TripleBuilder(rs.getObject(1),
-						rs.getObject(2), rs.getObject(3)).build());
+			while (rs.next()) {
+				list.add(new TripleBuilder(rs.getObject(1), rs.getObject(2), rs
+						.getObject(3)).build());
 			}
 		} catch (VirtuosoException ve) {
 			logger.error("ERROR while executing statement", ve);
@@ -212,20 +213,30 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		} catch (ClassNotFoundException e1) {
 			logger.error("ERROR while executing statement", e1);
 			e = e1;
-		} finally{
+		} finally {
 			readLock.unlock();
-			try { if (rs != null) rs.close(); } catch (Exception ex) {};
-		    try { if (st != null) st.close(); } catch (Exception ex) {};
 			try {
-				if(connection != null){
+				if (rs != null)
+					rs.close();
+			} catch (Exception ex) {
+			}
+			;
+			try {
+				if (st != null)
+					st.close();
+			} catch (Exception ex) {
+			}
+			;
+			try {
+				if (connection != null) {
 					connection.close();
 				}
 			} catch (VirtuosoException e1) {
 				logger.error("Cannot close connection", e1);
 			}
 		}
-		
-		if(list == null || e != null){
+
+		if (list == null || e != null) {
 			throw new RuntimeException(e);
 		}
 		return list.iterator();
@@ -248,7 +259,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		this.writeLock.lock();
 		VirtuosoConnection connection = null;
 		Exception e = null;
-		Statement st =null;
+		Statement st = null;
 		try {
 			logger.debug("Executing SQL: {}", SQL);
 			connection = getConnection();
@@ -269,8 +280,13 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		} catch (ClassNotFoundException e1) {
 			e = e1;
 		} finally {
-		    try { if (st != null) st.close(); } catch (Exception ex) {};
-			if(connection != null){
+			try {
+				if (st != null)
+					st.close();
+			} catch (Exception ex) {
+			}
+			;
+			if (connection != null) {
 				try {
 					connection.close();
 				} catch (VirtuosoException e1) {
@@ -279,7 +295,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			}
 			this.writeLock.unlock();
 		}
-		if(e!=null){
+		if (e != null) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -314,9 +330,19 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		} finally {
 			this.readLock.unlock();
 			logger.debug("loadSize() unlock");
-			try { if (rs != null) rs.close(); } catch (Exception ex) {};
-		    try { if (st != null) st.close(); } catch (Exception ex) {};
-			if(connection != null){
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (Exception ex) {
+			}
+			;
+			try {
+				if (st != null)
+					st.close();
+			} catch (Exception ex) {
+			}
+			;
+			if (connection != null) {
 				try {
 					connection.close();
 				} catch (VirtuosoException e1) {
@@ -324,7 +350,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				}
 			}
 		}
-		if(e!=null){
+		if (e != null) {
 			throw new RuntimeException(e);
 		}
 		this.size = size;
@@ -334,6 +360,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		logger.debug("performAdd(Triple {})", triple);
 		String sql = getAddSQLStatement(triple);
 		logger.debug("Executing SQL: {}", sql);
+		// logger.info("--- {} ", sql);
 		writeLock.lock();
 		VirtuosoConnection connection = null;
 		Exception e = null;
@@ -352,8 +379,13 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			e = e1;
 		} finally {
 			writeLock.unlock();
-		    try { if (st != null) st.close(); } catch (Exception ex) {};
-			if(connection != null){
+			try {
+				if (st != null)
+					st.close();
+			} catch (Exception ex) {
+			}
+			;
+			if (connection != null) {
 				try {
 					connection.close();
 				} catch (VirtuosoException e1) {
@@ -361,15 +393,14 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				}
 			}
 		}
-		if(e!=null){
+		if (e != null) {
 			return false;
 		}
 		return true;
 	}
 
 	protected boolean performRemove(Triple triple) {
-		logger.debug("performRemove(Triple triple)",
-				triple);
+		logger.debug("performRemove(Triple triple)", triple);
 		String sql = getRemoveSQLStatement(triple);
 		logger.debug("Executing SQL: {}", sql);
 		writeLock.lock();
@@ -387,8 +418,13 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			e = e1;
 		} finally {
 			writeLock.unlock();
-		    try { if (st != null) st.close(); } catch (Exception ex) {};
-			if(connection != null){
+			try {
+				if (st != null)
+					st.close();
+			} catch (Exception ex) {
+			}
+			;
+			if (connection != null) {
 				try {
 					connection.close();
 				} catch (VirtuosoException e1) {
@@ -396,7 +432,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				}
 			}
 		}
-		if(e!=null){
+		if (e != null) {
 			return false;
 		}
 		return true;
@@ -430,11 +466,75 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * 
 	 * @return
 	 */
-	private String nextVirtBnode() {
-		logger.debug("nextVirtBnode()");
-		maxVirtBnodeIndex++;
-		return new StringBuilder().append("_:b").append(maxVirtBnodeIndex)
+	private String nextVirtBnode(BNode bn) {
+		logger.debug("nextVirtBnode(BNode)");
+//		maxVirtBnodeIndex++;
+		
+		String temp_graph = "<urn:x-virtuoso:bnode-tmp>";
+		String bno = new StringBuilder().append('<').append(bn).append('>')
 				.toString();
+		String _bnodeObject = "<urn:x-virtuoso:bnode:object>";
+		String sql_insert = new StringBuilder()
+				.append("sparql INSERT IN GRAPH ").append(temp_graph)
+				.append(" { [] ").append(_bnodeObject).append(' ').append(bno)
+				.append(" } ").toString();
+		logger.trace(" insert: {}", sql_insert);
+		String sql_select = new StringBuilder()
+				.append("sparql SELECT ?S FROM ").append(temp_graph)
+				.append(" WHERE { ?S ").append(_bnodeObject).append(' ')
+				.append(bno).append(' ').append(" } LIMIT 1").toString();
+		logger.trace(" select new bnode: {}", sql_select);
+		String sql_delete = new StringBuilder().append("sparql DELETE FROM ")
+				.append(temp_graph).append(" { ?S ").append(_bnodeObject)
+				.append(' ').append(bno).append(" } ").toString();
+		logger.trace(" delete tmp triple: {}", sql_delete);
+		
+//		logger.info("SQL {}", sql);
+		writeLock.lock();
+		VirtuosoConnection connection = null;
+		Exception e = null;
+		Statement st = null;
+		VirtuosoResultSet rs = null;
+		String bnodeId = null;
+		try {
+			connection = getConnection();
+			st = connection.createStatement();
+			st.executeUpdate(sql_insert);
+			rs = (VirtuosoResultSet) st.executeQuery(sql_select);
+			rs.next();
+			bnodeId = rs.getString(1);
+			st.executeUpdate(sql_delete);
+		} catch (VirtuosoException ve) {
+			logger.error("ERROR while executing statement", ve);
+			e = ve;
+		} catch (SQLException se) {
+			logger.error("ERROR while executing statement", se);
+			e = se;
+		} catch (ClassNotFoundException e1) {
+			e = e1;
+		} finally {
+			writeLock.unlock();
+			try {
+				if (st != null)
+					st.close();
+			} catch (Exception ex) {
+			}
+			;
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (Exception ex) {
+			}
+			;
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (VirtuosoException e1) {
+					logger.error("Cannot close connection", e1);
+				}
+			}
+		}
+		return new StringBuilder().append('<').append(bnodeId).append('>').toString();
 	}
 
 	/**
@@ -444,16 +544,15 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 */
 	private String toVirtBnode(BNode bnode) {
 		logger.debug("toVirtBnode(BNode {})", bnode);
-		if(bnode instanceof VirtuosoBNode){
+		if (bnode instanceof VirtuosoBNode) {
 			return ((VirtuosoBNode) bnode).asSkolemIri();
-		}else{
+		} else {
 			String virtBnode = bnodesMap.getKey(bnode);
 			if (virtBnode == null) {
 				// We create a local bnode mapped to the BNode given
-				virtBnode = nextVirtBnode();
+				virtBnode = nextVirtBnode(bnode);
 				bnodesMap.put(virtBnode, bnode);
 			}
-			logger.info("{} {}", virtBnode, bnode);
 			return virtBnode;
 		}
 	}
@@ -601,7 +700,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			this.p = p;
 			this.o = o;
 		}
-		
+
 		private NonLiteral buildSubject() {
 			logger.debug("TripleBuilder.getSubject() : {}", s);
 			if (s instanceof VirtuosoExtendedString) {
@@ -633,15 +732,13 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 					return new UriRef(vs.str);
 				} else {
 					// !Cannot happen
-					throw new IllegalStateException(
-							"Predicate must be an IRI ");
+					throw new IllegalStateException("Predicate must be an IRI ");
 				}
 			} else {
-				throw new IllegalStateException(
-						"Predicate must be an IRI");
+				throw new IllegalStateException("Predicate must be an IRI");
 			}
 		}
-		
+
 		Resource buildObject() {
 			logger.debug("TripleBuilder.getObject() : {}", o);
 			if (o instanceof VirtuosoExtendedString) {
@@ -656,28 +753,28 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 					return VirtuosoMGraph.this.toBNode(vs.str);
 				} else {
 					// Is a plain literal
-					return new PlainLiteralImpl(vs.str);							
+					return new PlainLiteralImpl(vs.str);
 				}
 			} else if (o instanceof VirtuosoRdfBox) {
 				// In case is typed literal
 				VirtuosoRdfBox rb = (VirtuosoRdfBox) o;
-				
+
 				String value;
-				if(rb.rb_box.getClass().isAssignableFrom(String.class)){
-					//logger.info("assignable from string: {}", rb.rb_box);
+				if (rb.rb_box.getClass().isAssignableFrom(String.class)) {
+					// logger.info("assignable from string: {}", rb.rb_box);
 					value = (String) rb.rb_box;
 					String lang = rb.getLang();
 					String type = rb.getType();
 					if (type == null) {
-						Language language = lang == null ? null
-								: new Language(lang);
+						Language language = lang == null ? null : new Language(
+								lang);
 						return new PlainLiteralImpl(value, language);
 					} else {
 						return new TypedLiteralImpl(value, new UriRef(type));
 					}
-				}else if(rb.rb_box instanceof VirtuosoExtendedString){
+				} else if (rb.rb_box instanceof VirtuosoExtendedString) {
 					VirtuosoExtendedString vs = (VirtuosoExtendedString) rb.rb_box;
-					
+
 					if (vs.iriType == VirtuosoExtendedString.IRI
 							&& (vs.strType & 0x01) == 0x01) {
 						// Is IRI
@@ -689,24 +786,26 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 						String type = rb.getType();
 						if (type == null) {
 							// Is a plain literal
-							return new PlainLiteralImpl(vs.str);							
+							return new PlainLiteralImpl(vs.str);
 						} else {
-							return new TypedLiteralImpl(vs.str, new UriRef(type));
+							return new TypedLiteralImpl(vs.str,
+									new UriRef(type));
 						}
 					}
 				}
 			} else if (o == null) {
 				// Raise an exception
-				throw new IllegalStateException(
-						"Object cannot be NULL!");
+				throw new IllegalStateException("Object cannot be NULL!");
 			}
-			
+
 			// FIXME (not clear this...)
 			return new PlainLiteralImpl(o.toString());
 		}
+
 		public Triple build() {
 			logger.debug("TripleBuilder.build()");
-			return new TripleImpl(buildSubject(), buildPredicate(), buildObject());
+			return new TripleImpl(buildSubject(), buildPredicate(),
+					buildObject());
 		}
 	}
 
