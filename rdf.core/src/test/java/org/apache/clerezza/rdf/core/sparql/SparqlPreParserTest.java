@@ -92,6 +92,17 @@ public class SparqlPreParserTest {
     }
 
     @Test
+    public void testSimpleDescribe() throws ParseException {
+
+        String queryStr = "DESCRIBE <http://example.org/>";
+
+        SparqlPreParser parser;
+        parser = new SparqlPreParser(TcManager.getInstance());
+        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
+        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+    }
+
+    @Test
     public void testLoadingToDefaultGraph() throws ParseException {
 
         String queryStr = "LOAD SILENT <http://example.org/mydata>";
@@ -156,17 +167,6 @@ public class SparqlPreParserTest {
         Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
         Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
-    
-    /*@Test
-    public void testSimpleDescribe() throws ParseException {
-
-        String queryStr = "DESCRIBE <http://example.org/>";
-
-        SparqlPreParser parser;
-        parser = new SparqlPreParser(TcManager.getInstance());
-        Set<UriRef> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
-    }*/
 
     @Test
     public void testDroppingNamedGraph() throws ParseException {
