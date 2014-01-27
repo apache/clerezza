@@ -18,11 +18,15 @@
  */
 package rdf.virtuoso.storage;
 
+import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 
+import org.apache.clerezza.platform.config.SystemConfig;
 import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
@@ -30,6 +34,9 @@ import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
+import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
+import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -326,5 +333,28 @@ public class RdfIOTest {
 		}
 		Assert.assertEquals(n, 1);
 
+	}
+	
+	@Test
+	public void sysconfigTest(){
+		if (TestUtils.SKIP) {
+			log.warn("SKIPPED");
+			return;
+		}
+		
+		SystemConfig sc = new SystemConfig();
+		MGraph systemGraph = mgraph;
+		URL config = sc.getClass().getResource(SystemConfig.CONFIG_FILE);
+        if (config == null) {
+            throw new RuntimeException("no config file found");
+        }
+        ParsingProvider parser = new JenaParserProvider();
+        try {
+            parser.parse(systemGraph, config.openStream(),
+                    SupportedFormat.RDF_XML, null);
+        } catch (IOException ex) {
+            log.warn("Cannot parse coniguration at URL: {}", config);
+            throw new RuntimeException(ex);
+        }
 	}
 }

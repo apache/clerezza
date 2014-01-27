@@ -71,7 +71,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * (strings) to clerezza blank nodes and vice versa.
 	 */
 	private final BidiMap<String, BNode> bnodesMap;
-	private int maxVirtBnodeIndex = 0;
+//	private int maxVirtBnodeIndex = 0;
 
 	/**
 	 * Logger
@@ -359,7 +359,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	protected boolean performAdd(Triple triple) {
 		logger.debug("performAdd(Triple {})", triple);
 		String sql = getAddSQLStatement(triple);
-		logger.debug("Executing SQL: {}", sql);
+		logger.info("Executing SQL: {}", sql);
 		// logger.info("--- {} ", sql);
 		writeLock.lock();
 		VirtuosoConnection connection = null;
@@ -370,10 +370,10 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			st = connection.createStatement();
 			st.execute(sql);
 		} catch (VirtuosoException ve) {
-			logger.error("ERROR while executing statement", e);
+			logger.error("ERROR while executing statement", ve);
 			e = ve;
 		} catch (SQLException se) {
-			logger.error("ERROR while executing statement", e);
+			logger.error("ERROR while executing statement", se);
 			e = se;
 		} catch (ClassNotFoundException e1) {
 			e = e1;
@@ -394,7 +394,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			}
 		}
 		if (e != null) {
-			return false;
+			throw new RuntimeException(e);
 		}
 		return true;
 	}
@@ -433,7 +433,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			}
 		}
 		if (e != null) {
-			return false;
+			throw new RuntimeException(e);
 		}
 		return true;
 	}
@@ -511,6 +511,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			logger.error("ERROR while executing statement", se);
 			e = se;
 		} catch (ClassNotFoundException e1) {
+			logger.error("ERROR while executing statement", e1);
 			e = e1;
 		} finally {
 			writeLock.unlock();
@@ -533,6 +534,9 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 					logger.error("Cannot close connection", e1);
 				}
 			}
+		}
+		if(e!=null){
+			throw new RuntimeException(e);
 		}
 		return new StringBuilder().append('<').append(bnodeId).append('>').toString();
 	}
@@ -603,6 +607,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		} else if (object instanceof TypedLiteral) {
 			return toVirtTypedLiteral((TypedLiteral) object);
 		}
+		// XXX throw exception here?
 		return null;
 	}
 
@@ -615,7 +620,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private String toVirtTypedLiteral(TypedLiteral object) {
 		logger.debug("toVirtTypedLiteral(TypedLiteral {})", object);
 		UriRef dt = object.getDataType();
-		String literal = object.getLexicalForm();
+		String literal = object.getLexicalForm().replaceAll("\"", "\\\\\"");
 		return new StringBuilder().append('"').append(literal).append('"')
 				.append("^^").append(toVirtIri(dt)).toString();
 	}
@@ -629,7 +634,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private String toVirtPlainLiteral(PlainLiteral object) {
 		logger.debug("toVirtPlainLiteral(PlainLiteral {})", object);
 		Language lang = object.getLanguage();
-		String literal = object.getLexicalForm();
+		String literal = object.getLexicalForm().replaceAll("\"", "\\\\\"");
 		StringBuilder sb = new StringBuilder().append('"').append(literal)
 				.append('"');
 		if (lang == null) {
