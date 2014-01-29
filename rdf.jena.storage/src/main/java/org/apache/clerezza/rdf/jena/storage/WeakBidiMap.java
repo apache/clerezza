@@ -33,8 +33,8 @@ import org.wymiwyg.commons.util.collections.BidiMap;
  */
 public class WeakBidiMap<K, V> implements BidiMap<K, V> {
 
-    private Map<K, V> forward = new WeakHashMap<K, V>();
-    private Map<V, WeakReference<K>> backward = new HashMap<V, WeakReference<K>>();
+    private final Map<K, V> forward = new WeakHashMap<K, V>();
+    private final Map<V, WeakReference<K>> backward = new HashMap<V, WeakReference<K>>();
 
     public WeakBidiMap() {
         super();
