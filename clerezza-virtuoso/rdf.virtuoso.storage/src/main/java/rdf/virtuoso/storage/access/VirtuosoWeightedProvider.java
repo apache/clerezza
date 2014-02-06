@@ -422,6 +422,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	public Set<UriRef> listGraphs() {
 		logger.debug("listGraphs()");
 		Set<UriRef> graphs = new HashSet<UriRef>();
+		// XXX Add the active (possibly empty) mgraphs
+		graphs.addAll(this.graphs.keySet());
 		// Returns the list of graphs in the virtuoso quad store
 		String SQL = "SPARQL SELECT DISTINCT ?G WHERE {GRAPH ?G {?S ?P ?O} }";
 		VirtuosoConnection connection = null;

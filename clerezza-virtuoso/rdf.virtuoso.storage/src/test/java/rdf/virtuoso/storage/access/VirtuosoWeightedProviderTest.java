@@ -32,11 +32,13 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -253,6 +255,30 @@ public class VirtuosoWeightedProviderTest {
 		}
 		try {
 			wp.deleteTripleCollection(new UriRef(TEST_GRAPH_URI));
+		} catch (NoSuchEntityException nsee) {
+			// Nothing to do
+		}
+	}
+	
+	@Test
+	public void testCreateEmptyMGraph(){
+		log.info("testCreateEmptyMGraph()");
+		if (TestUtils.SKIP) {
+			log.warn("SKIPPED");
+			return;
+		}
+		try {
+			UriRef ur = new UriRef("urn:my-empty-graph");
+			Assert.assertFalse(wp.listGraphs().contains(ur));
+			Assert.assertFalse(wp.listMGraphs().contains(ur));
+			wp.createMGraph(ur);
+			Assert.assertTrue(wp.canRead(ur));
+			Assert.assertTrue(wp.canModify(ur));
+			Assert.assertTrue(wp.listGraphs().contains(ur));
+			Assert.assertTrue(wp.listMGraphs().contains(ur));
+			wp.deleteTripleCollection(ur);
+			Assert.assertFalse(wp.listGraphs().contains(ur));
+			Assert.assertFalse(wp.listMGraphs().contains(ur));
 		} catch (NoSuchEntityException nsee) {
 			// Nothing to do
 		}
