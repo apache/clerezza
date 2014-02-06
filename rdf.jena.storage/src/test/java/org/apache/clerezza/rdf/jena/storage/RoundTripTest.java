@@ -51,6 +51,7 @@ public class RoundTripTest {
                 LiteralFactory.getInstance().createTypedLiteral("foo")));
         Assert.assertEquals(2, rewrappedMGraph.size());
         Assert.assertEquals(2, mGraph.size());
+        Assert.assertEquals(mGraph.getGraph(), rewrappedMGraph.getGraph());
         rewrappedMGraph.clear();
         Assert.assertEquals(0, rewrappedMGraph.size());
     }

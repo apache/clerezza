@@ -44,7 +44,7 @@ import org.wymiwyg.commons.util.collections.BidiMapImpl;
 public class JenaGraphAdaptor extends AbstractMGraph {
 
     private final Graph jenaGraph;
-    final BidiMap<BNode, Node> tria2JenaBNodes = new BidiMapImpl<BNode, Node>();
+    final BidiMap<BNode, Node> tria2JenaBNodes = new WeakBidiMap<BNode, Node>();
     final Jena2TriaUtil jena2TriaUtil =
             new Jena2TriaUtil(tria2JenaBNodes.inverse());
     final Tria2JenaUtil tria2JenaUtil =
