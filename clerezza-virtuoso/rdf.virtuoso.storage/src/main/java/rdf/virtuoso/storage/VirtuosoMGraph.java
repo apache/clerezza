@@ -359,7 +359,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	protected boolean performAdd(Triple triple) {
 		logger.debug("performAdd(Triple {})", triple);
 		String sql = getAddSQLStatement(triple);
-		logger.info("Executing SQL: {}", sql);
+//		logger.info("Executing SQL: {}", sql);
 		// logger.info("--- {} ", sql);
 		writeLock.lock();
 		VirtuosoConnection connection = null;
@@ -394,6 +394,9 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			}
 		}
 		if (e != null) {
+			logger.error("S {}", triple.getSubject());
+			logger.error("P {}", triple.getPredicate());
+			logger.error("O {}", triple.getObject());
 			throw new RuntimeException(e);
 		}
 		return true;
@@ -620,10 +623,31 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private String toVirtTypedLiteral(TypedLiteral object) {
 		logger.debug("toVirtTypedLiteral(TypedLiteral {})", object);
 		UriRef dt = object.getDataType();
-		String literal = object.getLexicalForm().replaceAll("\"", "\\\\\"");
-		return new StringBuilder().append('"').append(literal).append('"')
+		String literal = object.getLexicalForm();//.replaceAll("\"", "\\\\\"");
+		return new StringBuilder().append('"').append('"').append('"').append(prepareString(literal)).append('"').append('"').append('"')
 				.append("^^").append(toVirtIri(dt)).toString();
 	}
+	
+	private StringBuilder prepareString(String str) {
+		  StringBuilder retStr = new StringBuilder();
+		  for(int i=0; i<str.length(); i++) {
+		    int cp = Character.codePointAt(str, i);
+		    int charCount = Character.charCount(cp);
+		    if (charCount > 1) {
+		      i += charCount - 1; // 2.
+		      if (i >= str.length()) {
+		        throw new IllegalArgumentException("truncated unexpectedly");
+		      }
+		    }
+
+		    if (cp < 128) {
+		      retStr.appendCodePoint(cp);
+		    } else {
+		      retStr.append(String.format("\\u%04x", cp));
+		    }
+		  }
+		  return retStr;
+		}
 
 	/**
 	 * Returns a string to be used in SQL statements.
@@ -634,9 +658,9 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private String toVirtPlainLiteral(PlainLiteral object) {
 		logger.debug("toVirtPlainLiteral(PlainLiteral {})", object);
 		Language lang = object.getLanguage();
-		String literal = object.getLexicalForm().replaceAll("\"", "\\\\\"");
-		StringBuilder sb = new StringBuilder().append('"').append(literal)
-				.append('"');
+		String literal = object.getLexicalForm();//.replaceAll("\"", "\\\\\"");
+		StringBuilder sb = new StringBuilder().append('"').append('"').append('"').append(prepareString(literal))
+				.append('"').append('"').append('"');
 		if (lang == null) {
 			return sb.toString();
 		} else {

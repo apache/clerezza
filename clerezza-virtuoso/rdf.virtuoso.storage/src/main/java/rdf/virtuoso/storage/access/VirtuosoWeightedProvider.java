@@ -175,7 +175,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 
 				// Build connection string
 				 connStr = new StringBuilder().append("jdbc:virtuoso://")
-						.append(host).append(":").append(port).toString();
+						.append(host).append(":").append(port).append("/CHARSET=UTF-8").toString();
 				
 				// Check connection
 				VirtuosoConnection connection = getConnection(connStr, user, pwd);

@@ -110,6 +110,7 @@ public class RdfIOTest {
 				.equals(new TripleImpl(subject, predicate, object)));
 		Assert.assertTrue(read.getObject() instanceof TypedLiteral);
 		TypedLiteral l = (TypedLiteral) read.getObject();
+		Assert.assertEquals(l.getLexicalForm(), "lorem ipsum");
 		Assert.assertEquals(l.getDataType(), new UriRef(XSD + "string"));
 
 	}
@@ -334,7 +335,7 @@ public class RdfIOTest {
 		Assert.assertEquals(n, 1);
 
 	}
-	
+
 	@Test
 	public void sysconfigTest(){
 		if (TestUtils.SKIP) {
@@ -356,5 +357,30 @@ public class RdfIOTest {
             log.warn("Cannot parse coniguration at URL: {}", config);
             throw new RuntimeException(ex);
         }
+	}
+	
+	@Test
+	public void testUnicodeChars() throws ClassNotFoundException, SQLException {
+		if (TestUtils.SKIP) {
+			log.warn("SKIPPED");
+			return;
+		}
+		log.info("Text an xsd:string");
+		
+		String s = "lorem ipsum è é £ ò ç à ù β ät ü ä";
+		TypedLiteral object = new TypedLiteralImpl(s, new UriRef(
+				XSD + "string"));
+		UriRef subject = new UriRef("urn:io-test:reto");
+		UriRef predicate = new UriRef("urn:io-test:hasText");
+
+		Triple read = writeAndRead(subject, predicate, object);
+		log.info("o: {} :: {}", object, read.getObject());
+		Assert.assertTrue(read
+				.equals(new TripleImpl(subject, predicate, object)));
+		Assert.assertTrue(read.getObject() instanceof TypedLiteral);
+		TypedLiteral l = (TypedLiteral) read.getObject();
+		Assert.assertEquals(l.getLexicalForm(), s);
+		Assert.assertEquals(l.getDataType(), new UriRef(XSD + "string"));
+
 	}
 }

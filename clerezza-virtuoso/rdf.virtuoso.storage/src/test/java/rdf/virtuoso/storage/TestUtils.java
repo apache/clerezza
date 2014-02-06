@@ -108,7 +108,7 @@ public class TestUtils {
 		cb.append("jdbc:virtuoso://");
 		cb.append(host);
 		cb.append(":");
-		cb.append(port);
+		cb.append(port).append("/CHARSET=UTF-8");
 		jdbcConnectionString = cb.toString();
 //		Class.forName(VirtuosoWeightedProvider.DRIVER);
 		log.info("Create provider");
