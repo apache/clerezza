@@ -149,7 +149,6 @@ public class RdfIOTest {
 		Triple t = new TripleImpl(subject, predicate, object);
 		graph.add(t);
 		Triple read = graph.getGraph().iterator().next();
-
 		return read;
 	}
 

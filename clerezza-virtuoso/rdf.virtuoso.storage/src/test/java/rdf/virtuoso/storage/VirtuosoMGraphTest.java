@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.Language;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -70,7 +71,7 @@ public class VirtuosoMGraphTest {
 	final UriRef alexdma = new UriRef("alexdma");
 	final UriRef anuzzolese = new UriRef("anuzzolese");
 	final UriRef predicate = new UriRef("http://property/name");
-	final PlainLiteral object = new PlainLiteralImpl("Enrico Daga");
+	final PlainLiteral object = new PlainLiteralImpl("Enrico Daga", new Language("it"));
 	final UriRef knows = new UriRef(TestUtils.FOAF_NS + "knows");
 
 	@Test
@@ -97,7 +98,6 @@ public class VirtuosoMGraphTest {
 				return object;
 			}
 		};
-
 		boolean success = mgraph.add(triple);
 		assertTrue(success);
 		assertTrue(mgraph.size() == 1);
@@ -113,6 +113,20 @@ public class VirtuosoMGraphTest {
 		}
 		// We use testAdd to prepare this
 		testAddSingle();
+
+		
+		Iterator<Triple> its = mgraph.filter(null, null, null);
+		while (its.hasNext()) {
+			Triple t = its.next();
+			log.info("Found --- triple: {}", t);
+			log.info("Found --- s: {} {}", t.getSubject(), t.getSubject().getClass());
+			log.info("Found --- p: {} {}", t.getPredicate(), t.getPredicate().getClass());
+			log.info("Found --- o: {} {}", t.getObject(), t.getObject().getClass());
+			assertEquals(t.getSubject(), enridaga);
+			assertEquals(t.getPredicate(), predicate);
+			assertEquals(t.getObject(), object);
+		}
+
 		Iterator<Triple> it = mgraph.filter(enridaga, predicate, object);
 		boolean found = false;
 		while (it.hasNext()) {
@@ -434,10 +448,10 @@ public class VirtuosoMGraphTest {
 			log.warn("SKIPPED");
 			return;
 		}
-		log.debug("Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
+		log.info("not Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
 				mgraph.size());
 		log.debug("Removing graph <{}>", TEST_GRAPH_NAME);
-		Statement st = TestUtils.getConnection().createStatement();
-		st.execute("SPARQL CLEAR GRAPH <" + TEST_GRAPH_NAME + ">");
+//		Statement st = TestUtils.getConnection().createStatement();
+//		st.execute("SPARQL CLEAR GRAPH <" + TEST_GRAPH_NAME + ">");
 	}
 }

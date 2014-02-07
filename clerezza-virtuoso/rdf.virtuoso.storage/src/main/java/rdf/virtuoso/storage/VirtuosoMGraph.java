@@ -18,6 +18,7 @@
  */
 package rdf.virtuoso.storage;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Language;
+import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
@@ -62,6 +64,12 @@ import virtuoso.jdbc4.VirtuosoResultSet;
  */
 public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		LockableMGraph {
+	
+	// XXX This may be a configuration of the weighted provider
+	private static final int PLAN_B_LITERAL_SIZE = 50000;
+
+	private static final int CHECKPOINT = 1000;
+	
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
@@ -70,8 +78,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * Bidirectional map for managing the conversion from virtuoso blank nodes
 	 * (strings) to clerezza blank nodes and vice versa.
 	 */
-	private final BidiMap<String, BNode> bnodesMap;
-//	private int maxVirtBnodeIndex = 0;
+	private final BidiMap<VirtuosoBNode, BNode> bnodesMap;
 
 	/**
 	 * Logger
@@ -98,7 +105,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				name, provider);
 		this.name = name;
 		this.provider = provider;
-		this.bnodesMap = new BidiMapImpl<String, BNode>();
+		this.bnodesMap = new BidiMapImpl<VirtuosoBNode, BNode>();
 	}
 
 	/**
@@ -148,7 +155,6 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		String virtSubject = toVirtSubject(subject);
 		String virtPredicate = toVirtPredicate(predicate);
 		String virtObject = toVirtObject(object);
-
 		sb.append("SPARQL SELECT ");
 		if (virtSubject != null) {
 			sb.append(" ").append(virtSubject).append(" as ?subject");
@@ -185,7 +191,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		sb.append(" } } ");
 
 		String sql = sb.toString();
-		logger.debug("Executing SQL: {}", sql);
+//		logger.trace("Executing SQL: {}", sql);
 		Statement st = null;
 		List<Triple> list = null;
 		Exception e = null;
@@ -356,19 +362,69 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		this.size = size;
 	}
 
-	protected boolean performAdd(Triple triple) {
-		logger.debug("performAdd(Triple {})", triple);
-		String sql = getAddSQLStatement(triple);
-//		logger.info("Executing SQL: {}", sql);
-		// logger.info("--- {} ", sql);
-		writeLock.lock();
+	private int checkpoint = 0;
+	private void checkpoint(boolean force){
+		if(checkpoint <= CHECKPOINT && force == false){
+			checkpoint++;
+			return;
+		}else{
+			checkpoint = 0;
+		}
 		VirtuosoConnection connection = null;
 		Exception e = null;
 		Statement st = null;
 		try {
-			connection = getConnection();
+			connection = provider.getConnection();
 			st = connection.createStatement();
-			st.execute(sql);
+			st.execute("Checkpoint");
+			logger.info("Checkpoint.");
+		} catch (VirtuosoException ve) {
+			logger.error("ERROR while executing statement", ve);
+			e = ve;
+		} catch (SQLException se) {
+			logger.error("ERROR while executing statement", se);
+			e = se;
+		} catch (ClassNotFoundException e1) {
+			e = e1;
+		} finally {
+			try {
+				if (st != null)
+					st.close();
+			} catch (Exception ex) {
+			}
+			;
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (VirtuosoException e1) {
+					logger.error("Cannot close connection", e1);
+				}
+			}
+		}
+		if (e != null) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private boolean performAddPlanB(Triple triple){
+		StringBuilder b = new StringBuilder();
+		b.append(toVirtSubject(triple.getSubject()))
+		.append(" ")
+		.append(toVirtPredicate(triple.getPredicate()))
+		.append(" ")
+		.append(toVirtObject(triple.getObject()))
+		.append(" . ");
+		String sql = "db.dba.ttlp(?, '', '" + this.getName() + "2', 0)";
+		logger.debug("Exec Plan B: {}", sql);
+		writeLock.lock();
+		VirtuosoConnection connection = null;
+		Exception e = null;
+		PreparedStatement st = null;
+		try {
+			connection = provider.getConnection();
+			st = connection.prepareStatement(sql);
+			st.setNString(1, b.toString());
+			st.execute();
 		} catch (VirtuosoException ve) {
 			logger.error("ERROR while executing statement", ve);
 			e = ve;
@@ -392,14 +448,138 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 					logger.error("Cannot close connection", e1);
 				}
 			}
+			checkpoint(true);
 		}
 		if (e != null) {
 			logger.error("S {}", triple.getSubject());
 			logger.error("P {}", triple.getPredicate());
 			logger.error("O {}", triple.getObject());
+			logger.error(" O size: {}", triple.getObject().toString().length());
+			logger.error("Sql: {}", sql);
 			throw new RuntimeException(e);
 		}
 		return true;
+	}
+	protected boolean performAdd(Triple triple) {
+		logger.debug("performAdd(Triple {})", triple);
+		
+		// XXX If the object is a very long literal we use plan B
+		if (triple.getObject() instanceof Literal) {
+			if (((Literal) triple.getObject()).getLexicalForm().length() > PLAN_B_LITERAL_SIZE) {
+				return performAddPlanB(triple);
+			}
+		}
+
+		// String sql = getAddSQLStatement(triple);
+		String sql = INSERT;
+		// logger.info("Executing SQL: {}", sql);
+		// logger.info("--- {} ", sql);
+		writeLock.lock();
+		VirtuosoConnection connection = null;
+		Exception e = null;
+		PreparedStatement st = null;
+		try {
+			connection = getConnection();
+			// st = connection.createStatement();
+			st = connection.prepareStatement(sql);
+			bindGraph(st, 1, new UriRef(getName()));
+			bindSubject(st, 2, triple.getSubject());
+			bindPredicate(st, 3, triple.getPredicate());
+			bindValue(st, 4, triple.getObject());
+			
+			st.execute();
+		} catch (VirtuosoException ve) {
+			logger.error("ERROR while executing statement", ve);
+			e = ve;
+		} catch (SQLException se) {
+			logger.error("ERROR while executing statement", se);
+			e = se;
+		} catch (ClassNotFoundException e1) {
+			e = e1;
+		} finally {
+			writeLock.unlock();
+			try {
+				if (st != null)
+					st.close();
+			} catch (Exception ex) {
+			}
+			;
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (VirtuosoException e1) {
+					logger.error("Cannot close connection", e1);
+				}
+			}
+			checkpoint(false);
+		}
+		if (e != null) {
+			logger.error("S {}", triple.getSubject());
+			logger.error("P {}", triple.getPredicate());
+			logger.error("O {}", triple.getObject());
+			logger.error(" O size: {}", triple.getObject().toString().length());
+			logger.error("Sql: {}", sql);
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	private void bindValue(PreparedStatement st, int i, Resource object) throws SQLException {
+		if (object instanceof UriRef) {
+			st.setInt(i, 1);
+			st.setString(i + 1,((UriRef)object).getUnicodeString());
+			st.setNull(i + 2, java.sql.Types.VARCHAR);
+		} else if (object instanceof BNode) {
+			st.setInt(i, 1);
+			st.setString(i + 1, toVirtBnode((BNode) object).getSkolemId());
+			st.setNull(i + 2, java.sql.Types.VARCHAR);
+		} else if (object instanceof TypedLiteral) {
+			TypedLiteral tl = ((TypedLiteral)object);
+			st.setInt(i, 4);
+			// if datatype is XMLLiteral
+			String lf = tl.getLexicalForm();
+			if(tl.getDataType().getUnicodeString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral")){
+				//lf = prepareString(lf, true).toString();
+			}
+
+			// XXX
+			if(object.toString().length() == 416){
+				logger.warn("416 Chars length");
+				lf += " XXXXXXXXXX  ";
+			}
+			st.setString(i+1, lf);
+			st.setString(i+2, tl.getDataType().getUnicodeString());
+		} else if (object instanceof PlainLiteral) {
+			PlainLiteral pl = (PlainLiteral) object;
+			if(pl.getLanguage() != null){
+				st.setInt(i, 5);
+				st.setString(i + 1, pl.getLexicalForm());
+				st.setString(i + 2, pl.getLanguage().toString());
+			}else{
+				st.setInt(i, 3);
+				st.setString(i + 1, pl.getLexicalForm());
+				st.setNull(i + 2, java.sql.Types.VARCHAR);
+			}
+		}else throw new IllegalArgumentException(object.toString());
+	}
+
+	private void bindPredicate(PreparedStatement st, int i, UriRef predicate)
+			throws SQLException {
+		st.setString(i, predicate.getUnicodeString());
+	}
+
+	private void bindSubject(PreparedStatement st, int i, NonLiteral subject)
+			throws SQLException {
+		if (subject instanceof UriRef) {
+			st.setString(i, ((UriRef) subject).getUnicodeString());
+		} else {
+			st.setString(i, toVirtBnode((BNode) subject).getSkolemId());
+		}
+	}
+
+	private void bindGraph(PreparedStatement st, int i, UriRef uriRef)
+			throws SQLException {
+		st.setString(i, uriRef.getUnicodeString());
 	}
 
 	protected boolean performRemove(Triple triple) {
@@ -434,6 +614,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 					logger.error("Cannot close connection", e1);
 				}
 			}
+			checkpoint(false);
 		}
 		if (e != null) {
 			throw new RuntimeException(e);
@@ -469,10 +650,10 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * 
 	 * @return
 	 */
-	private String nextVirtBnode(BNode bn) {
+	private VirtuosoBNode nextVirtBnode(BNode bn) {
 		logger.debug("nextVirtBnode(BNode)");
-//		maxVirtBnodeIndex++;
-		
+		// maxVirtBnodeIndex++;
+
 		String temp_graph = "<urn:x-virtuoso:bnode-tmp>";
 		String bno = new StringBuilder().append('<').append(bn).append('>')
 				.toString();
@@ -491,8 +672,8 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				.append(temp_graph).append(" { ?S ").append(_bnodeObject)
 				.append(' ').append(bno).append(" } ").toString();
 		logger.trace(" delete tmp triple: {}", sql_delete);
-		
-//		logger.info("SQL {}", sql);
+
+		// logger.info("SQL {}", sql);
 		writeLock.lock();
 		VirtuosoConnection connection = null;
 		Exception e = null;
@@ -537,11 +718,12 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 					logger.error("Cannot close connection", e1);
 				}
 			}
+			checkpoint(false);
 		}
-		if(e!=null){
+		if (e != null) {
 			throw new RuntimeException(e);
 		}
-		return new StringBuilder().append('<').append(bnodeId).append('>').toString();
+		return new VirtuosoBNode(bnodeId);
 	}
 
 	/**
@@ -549,12 +731,12 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * @param bnode
 	 * @return
 	 */
-	private String toVirtBnode(BNode bnode) {
+	private VirtuosoBNode toVirtBnode(BNode bnode) {
 		logger.debug("toVirtBnode(BNode {})", bnode);
 		if (bnode instanceof VirtuosoBNode) {
-			return ((VirtuosoBNode) bnode).asSkolemIri();
+			return ((VirtuosoBNode) bnode);
 		} else {
-			String virtBnode = bnodesMap.getKey(bnode);
+			VirtuosoBNode virtBnode = bnodesMap.getKey(bnode);
 			if (virtBnode == null) {
 				// We create a local bnode mapped to the BNode given
 				virtBnode = nextVirtBnode(bnode);
@@ -564,17 +746,20 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		}
 	}
 
-	private String getAddSQLStatement(Triple triple) {
-		logger.debug("getAddSQLStatement(Triple {})", triple);
-		StringBuilder sb = new StringBuilder();
-		String subject = toVirtSubject(triple.getSubject());
-		String predicate = toVirtPredicate(triple.getPredicate());
-		String object = toVirtObject(triple.getObject());
-		String sql = sb.append("SPARQL INSERT INTO <").append(this.getName())
-				.append("> { ").append(subject).append(" ").append(predicate)
-				.append(" ").append(object).append(" }").toString();
-		return sql;
-	}
+	private static String INSERT = "SPARQL INSERT INTO iri(??) {`iri(??)` `iri(??)` "
+			+ "`bif:__rdf_long_from_batch_params(??,??,??)`}";
+
+//	private String getAddSQLStatement(Triple triple) {
+//		logger.debug("getAddSQLStatement(Triple {})", triple);
+//		StringBuilder sb = new StringBuilder();
+//		String subject = toVirtSubject(triple.getSubject());
+//		String predicate = toVirtPredicate(triple.getPredicate());
+//		String object = toVirtObject(triple.getObject());
+//		String sql = sb.append("SPARQL INSERT INTO <").append(this.getName())
+//				.append("> { ").append(subject).append(" ").append(predicate)
+//				.append(" ").append(object).append(" }").toString();
+//		return sql;
+//	}
 
 	private String getRemoveSQLStatement(Triple triple) {
 		logger.debug("getRemoveSQLStatement(Triple {})", triple);
@@ -592,7 +777,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	}
 
 	/**
-	 * Returns a string to be used in SQL statements as Object of a triple.
+	 * Returns a string to be used inline in SQL statements as Object of a triple.
 	 * 
 	 * @param object
 	 * @return
@@ -604,7 +789,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		if (object instanceof UriRef) {
 			return toVirtIri((UriRef) object);
 		} else if (object instanceof BNode) {
-			return toVirtBnode((BNode) object);
+			return toVirtBnode((BNode) object).asSkolemIri();
 		} else if (object instanceof PlainLiteral) {
 			return toVirtPlainLiteral((PlainLiteral) object);
 		} else if (object instanceof TypedLiteral) {
@@ -623,38 +808,42 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private String toVirtTypedLiteral(TypedLiteral object) {
 		logger.debug("toVirtTypedLiteral(TypedLiteral {})", object);
 		UriRef dt = object.getDataType();
-		String literal = object.getLexicalForm();//.replaceAll("\"", "\\\\\"");
+		String literal = object.getLexicalForm();// .replaceAll("\"", "\\\\\"");
 		StringBuilder prepared;
 		// If XMLLiteral, prepare XML entities
-		prepared = prepareString(literal, dt.getUnicodeString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"));
-		return new StringBuilder().append('"').append('"').append('"').append(prepared).append('"').append('"').append('"')
+		prepared = prepareString(
+				literal,
+				dt.getUnicodeString()
+						.equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"));
+		return new StringBuilder().append('"').append('"').append('"')
+				.append(prepared).append('"').append('"').append('"')
 				.append("^^").append(toVirtIri(dt)).toString();
 	}
-	
-	private StringBuilder prepareString(String str, boolean xml) {
-		  StringBuilder retStr = new StringBuilder();
-		  for(int i=0; i<str.length(); i++) {
-		    int cp = Character.codePointAt(str, i);
-		    int charCount = Character.charCount(cp);
-		    if (charCount > 1) {
-		      i += charCount - 1; // 2.
-		      if (i >= str.length()) {
-		        throw new IllegalArgumentException("truncated unexpectedly");
-		      }
-		    }
 
-		    if (cp < 128) {
-		      retStr.appendCodePoint(cp);
-		    } else {
-		    	if(xml){
-		    		 retStr.append(String.format("&#x%04x;", cp));
-		    	}else{
-		    		retStr.append(String.format("\\u%04x", cp));
-		    	}
-		    }
-		  }
-		  return retStr;
+	private StringBuilder prepareString(String str, boolean xml) {
+		StringBuilder retStr = new StringBuilder();
+		for (int i = 0; i < str.length(); i++) {
+			int cp = Character.codePointAt(str, i);
+			int charCount = Character.charCount(cp);
+			if (charCount > 1) {
+				i += charCount - 1; // 2.
+				if (i >= str.length()) {
+					throw new IllegalArgumentException("truncated unexpectedly");
+				}
+			}
+
+			if (cp < 128) {
+				retStr.appendCodePoint(cp);
+			} else {
+				if (xml) {
+					retStr.append(String.format("&#x%04x;", cp));
+				} else {
+					retStr.append(String.format("\\u%04x", cp));
+				}
+			}
 		}
+		return retStr;
+	}
 
 	/**
 	 * Returns a string to be used in SQL statements.
@@ -665,9 +854,10 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private String toVirtPlainLiteral(PlainLiteral object) {
 		logger.debug("toVirtPlainLiteral(PlainLiteral {})", object);
 		Language lang = object.getLanguage();
-		String literal = object.getLexicalForm();//.replaceAll("\"", "\\\\\"");
-		StringBuilder sb = new StringBuilder().append('"').append('"').append('"').append(prepareString(literal, false))
-				.append('"').append('"').append('"');
+		String literal = object.getLexicalForm();// .replaceAll("\"", "\\\\\"");
+		StringBuilder sb = new StringBuilder().append('"').append('"')
+				.append('"').append(prepareString(literal, false)).append('"')
+				.append('"').append('"');
 		if (lang == null) {
 			return sb.toString();
 		} else {
@@ -707,7 +897,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		if (subject instanceof UriRef) {
 			return toVirtIri((UriRef) subject);
 		} else if (subject instanceof BNode) {
-			return toVirtBnode((BNode) subject);
+			return toVirtBnode((BNode) subject).asSkolemIri();
 		} else {
 			// These should be the only 2 implementations
 			throw new IllegalArgumentException(
@@ -777,6 +967,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 
 		Resource buildObject() {
 			logger.debug("TripleBuilder.getObject() : {}", o);
+			
 			if (o instanceof VirtuosoExtendedString) {
 				// In case is IRI
 				VirtuosoExtendedString vs = (VirtuosoExtendedString) o;
@@ -794,10 +985,9 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			} else if (o instanceof VirtuosoRdfBox) {
 				// In case is typed literal
 				VirtuosoRdfBox rb = (VirtuosoRdfBox) o;
-
+				
 				String value;
 				if (rb.rb_box.getClass().isAssignableFrom(String.class)) {
-					// logger.info("assignable from string: {}", rb.rb_box);
 					value = (String) rb.rb_box;
 					String lang = rb.getLang();
 					String type = rb.getType();
@@ -821,6 +1011,10 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 					} else {
 						String type = rb.getType();
 						if (type == null) {
+							String lang = rb.getLang();
+							if(lang != null){
+								return new PlainLiteralImpl(vs.str, new Language(lang));
+							}
 							// Is a plain literal
 							return new PlainLiteralImpl(vs.str);
 						} else {

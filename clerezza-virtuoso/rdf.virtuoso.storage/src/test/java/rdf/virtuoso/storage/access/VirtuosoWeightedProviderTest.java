@@ -267,7 +267,7 @@ public class VirtuosoWeightedProviderTest {
 			log.warn("SKIPPED");
 			return;
 		}
-		try {
+//		try {
 			UriRef ur = new UriRef("urn:my-empty-graph");
 			Assert.assertFalse(wp.listGraphs().contains(ur));
 			Assert.assertFalse(wp.listMGraphs().contains(ur));
@@ -279,8 +279,8 @@ public class VirtuosoWeightedProviderTest {
 			wp.deleteTripleCollection(ur);
 			Assert.assertFalse(wp.listGraphs().contains(ur));
 			Assert.assertFalse(wp.listMGraphs().contains(ur));
-		} catch (NoSuchEntityException nsee) {
-			// Nothing to do
-		}
+//		} catch (NoSuchEntityException nsee) {
+//			// Nothing to do
+//		}
 	}
 }

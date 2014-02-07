@@ -97,7 +97,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	/**
 	 * MAP OF LOADED GRAPHS
 	 */
-	private Map<UriRef, VirtuosoMGraph> graphs = null;
+	private Map<UriRef, VirtuosoMGraph> graphs = new HashMap<UriRef, VirtuosoMGraph>();
 
 	/**
 	 * Weight
@@ -269,8 +269,10 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			// FIXME! How to redirect logging to our logger???
 			DriverManager.setLogWriter(new PrintWriter(System.err));
 		}
-		return (VirtuosoConnection) DriverManager.getConnection(connStr, user,
+		VirtuosoConnection c = (VirtuosoConnection) DriverManager.getConnection(connStr, user,
 				pwd);
+		c.setAutoCommit(true);
+		return c;
 	}
 
 	/**
@@ -317,7 +319,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	 * 
 	 * If no triples exists, the graph does not exists or it is not readable.
 	 * 
-	 * WARNING! THIS SHOULD BE THE ONLY METHOD TO ACCESS THE MAP graphs
 	 * 
 	 * @param name
 	 * @return
@@ -325,10 +326,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	private VirtuosoMGraph loadGraphOnce(UriRef name) {
 		logger.debug("loadGraphOnce({})", name);
 		
-		// Is it the first itme we invoke a graph here?
-		if (graphs == null) {
-			graphs = new HashMap<UriRef, VirtuosoMGraph>();
-		}
 		// Check whether the graph have been already loaded once
 		if (graphs.containsKey(name)) {
 			logger.debug("{} is already loaded", name);
