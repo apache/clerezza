@@ -624,11 +624,14 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		logger.debug("toVirtTypedLiteral(TypedLiteral {})", object);
 		UriRef dt = object.getDataType();
 		String literal = object.getLexicalForm();//.replaceAll("\"", "\\\\\"");
-		return new StringBuilder().append('"').append('"').append('"').append(prepareString(literal)).append('"').append('"').append('"')
+		StringBuilder prepared;
+		// If XMLLiteral, prepare XML entities
+		prepared = prepareString(literal, dt.getUnicodeString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"));
+		return new StringBuilder().append('"').append('"').append('"').append(prepared).append('"').append('"').append('"')
 				.append("^^").append(toVirtIri(dt)).toString();
 	}
 	
-	private StringBuilder prepareString(String str) {
+	private StringBuilder prepareString(String str, boolean xml) {
 		  StringBuilder retStr = new StringBuilder();
 		  for(int i=0; i<str.length(); i++) {
 		    int cp = Character.codePointAt(str, i);
@@ -643,7 +646,11 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		    if (cp < 128) {
 		      retStr.appendCodePoint(cp);
 		    } else {
-		      retStr.append(String.format("\\u%04x", cp));
+		    	if(xml){
+		    		 retStr.append(String.format("&#x%04x;", cp));
+		    	}else{
+		    		retStr.append(String.format("\\u%04x", cp));
+		    	}
 		    }
 		  }
 		  return retStr;
@@ -659,7 +666,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		logger.debug("toVirtPlainLiteral(PlainLiteral {})", object);
 		Language lang = object.getLanguage();
 		String literal = object.getLexicalForm();//.replaceAll("\"", "\\\\\"");
-		StringBuilder sb = new StringBuilder().append('"').append('"').append('"').append(prepareString(literal))
+		StringBuilder sb = new StringBuilder().append('"').append('"').append('"').append(prepareString(literal, false))
 				.append('"').append('"').append('"');
 		if (lang == null) {
 			return sb.toString();
