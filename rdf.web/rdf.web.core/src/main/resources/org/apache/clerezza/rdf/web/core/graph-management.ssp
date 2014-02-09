@@ -30,7 +30,7 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 
 <div id="tx-content">
 <table>
-	<tr><th>Name</th><th>Size</th><th>type</th><th colspan="2">Actions</th></tr>
+	<tr><th>Name</th><th>Size</th><th>type</th><th colspan="3">Actions</th></tr>
 				{for (tc <- (res/gm("tripleCollection"))) yield
 					<tr>
 						<td>{tc*}</td>
@@ -47,6 +47,10 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 							<input type="hidden" name="graphName" value={tc*} />
 						<input type="submit" value="smush" /></div></form>}
 						}</td>
+                                                <td><form action="delete" method="post" onsubmit="return confirm('Are you sure you want to delete this graph?');"><div>
+							<input type="hidden" name="graphName" value={tc*} />
+						<input type="submit" value="delete" /></div></form>
+						</td>
 						<td><form action="/graph" method="get"><div>
 							<input type="hidden" name="name" value={tc*} />
 						<input type="submit" value="get" /></div></form>
