@@ -123,7 +123,7 @@ public class RdfIOTest {
 		}
 		log.info("Test a long xsd:string");
 		StringBuilder longStr = new StringBuilder();
-		int c = 1500;
+		int c = 2500;
 		while (c > 0) {
 			longStr.append(" ");
 			c--;

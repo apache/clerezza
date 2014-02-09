@@ -55,6 +55,7 @@ import virtuoso.jdbc4.VirtuosoException;
 import virtuoso.jdbc4.VirtuosoExtendedString;
 import virtuoso.jdbc4.VirtuosoRdfBox;
 import virtuoso.jdbc4.VirtuosoResultSet;
+import virtuoso.jdbc4.VirtuosoStatement;
 
 /**
  * Implementation of MGraph for the Virtuoso quad store.
@@ -191,7 +192,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 
 		String sql = sb.toString();
 //		logger.trace("Executing SQL: {}", sql);
-		Statement st = null;
+		VirtuosoStatement st = null;
 		List<Triple> list = null;
 		Exception e = null;
 		VirtuosoConnection connection = null;
@@ -199,10 +200,11 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		try {
 			readLock.lock();
 			connection = provider.getConnection();
-			st = connection.createStatement();
+			st = (VirtuosoStatement) connection.createStatement();
 			st.execute(sql);
 			rs = (VirtuosoResultSet) st.getResultSet();
 			list = new ArrayList<Triple>();
+			
 			while (rs.next()) {
 				list.add(new TripleBuilder(rs.getObject(1), rs.getObject(2), rs
 						.getObject(3)).build());
@@ -223,13 +225,15 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			try {
 				if (rs != null)
 					rs.close();
-			} catch (Exception ex) {
+			} catch (Throwable ex) {
+				logger.error("Cannot close result set", ex);
 			}
 			;
 			try {
 				if (st != null)
 					st.close();
-			} catch (Exception ex) {
+			} catch (Throwable ex) {
+				logger.error("Cannot close statement", ex);
 			}
 			;
 			try {
@@ -413,7 +417,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		.append(" ")
 		.append(toVirtObject(triple.getObject()))
 		.append(" . ");
-		String sql = "db.dba.ttlp(?, '', '" + this.getName() + "2', 0)";
+		String sql = "db.dba.ttlp(?, '', '" + this.getName() + "', 0)";
 		logger.debug("Exec Plan B: {}", sql);
 		writeLock.lock();
 		VirtuosoConnection connection = null;
@@ -488,6 +492,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		PreparedStatement st = null;
 		try {
 			connection = getConnection();
+			connection.setAutoCommit(false);
 			// st = connection.createStatement();
 			st = connection.prepareStatement(sql);
 			bindGraph(st, 1, new UriRef(getName()));
@@ -495,7 +500,14 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			bindPredicate(st, 3, triple.getPredicate());
 			bindValue(st, 4, triple.getObject());
 			
-			st.execute();
+			try{
+				st.executeUpdate();
+				connection.commit();
+			}catch(VirtuosoException ve){
+				logger.error("FAILED ", ve);
+				connection.rollback();
+				throw ve;
+			}
 		} catch (VirtuosoException ve) {
 			logger.error("ERROR while executing statement", ve);
 			e = ve;
@@ -510,6 +522,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
 			;
 			if (connection != null) {
