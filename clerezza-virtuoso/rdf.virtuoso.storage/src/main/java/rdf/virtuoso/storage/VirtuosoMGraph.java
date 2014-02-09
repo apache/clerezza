@@ -65,8 +65,7 @@ import virtuoso.jdbc4.VirtuosoResultSet;
 public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		LockableMGraph {
 	
-	// XXX This may be a configuration of the weighted provider
-	private static final int PLAN_B_LITERAL_SIZE = 50000;
+	private static final int PLAN_B_LITERAL_SIZE = 1900;
 
 	private static final int CHECKPOINT = 1000;
 	
@@ -425,6 +424,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			st = connection.prepareStatement(sql);
 			st.setNString(1, b.toString());
 			st.execute();
+			connection.commit();
 		} catch (VirtuosoException ve) {
 			logger.error("ERROR while executing statement", ve);
 			e = ve;
@@ -463,17 +463,25 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	protected boolean performAdd(Triple triple) {
 		logger.debug("performAdd(Triple {})", triple);
 		
-		// XXX If the object is a very long literal we use plan B
+		// XXX 
+		// If the object is a very long literal we use plan B
+		// Reason:
+		// Virtuoso Error:
+		// SR449: Key is too long, index RDF_QUAD, ruling part is 1901 bytes that exceeds 1900 byte limit
 		if (triple.getObject() instanceof Literal) {
-			if (((Literal) triple.getObject()).getLexicalForm().length() > PLAN_B_LITERAL_SIZE) {
+			int litsize = ((Literal) triple.getObject()).getLexicalForm().getBytes().length;
+			if(triple.getObject() instanceof TypedLiteral){
+				litsize += ((TypedLiteral) triple.getObject()).getDataType().getUnicodeString().getBytes().length;
+			}else{
+				litsize += 10; // lang annotation should not be longer then 10 bytes...
+			}
+			if ( litsize > PLAN_B_LITERAL_SIZE) {
 				return performAddPlanB(triple);
 			}
 		}
 
 		// String sql = getAddSQLStatement(triple);
 		String sql = INSERT;
-		// logger.info("Executing SQL: {}", sql);
-		// logger.info("--- {} ", sql);
 		writeLock.lock();
 		VirtuosoConnection connection = null;
 		Exception e = null;
@@ -539,13 +547,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 			// if datatype is XMLLiteral
 			String lf = tl.getLexicalForm();
 			if(tl.getDataType().getUnicodeString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral")){
-				//lf = prepareString(lf, true).toString();
-			}
-
-			// XXX
-			if(object.toString().length() == 416){
-				logger.warn("416 Chars length");
-				lf += " XXXXXXXXXX  ";
+				lf = prepareString(lf, true).toString();
 			}
 			st.setString(i+1, lf);
 			st.setString(i+2, tl.getDataType().getUnicodeString());
@@ -652,7 +654,6 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 */
 	private VirtuosoBNode nextVirtBnode(BNode bn) {
 		logger.debug("nextVirtBnode(BNode)");
-		// maxVirtBnodeIndex++;
 
 		String temp_graph = "<urn:x-virtuoso:bnode-tmp>";
 		String bno = new StringBuilder().append('<').append(bn).append('>')
@@ -854,7 +855,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private String toVirtPlainLiteral(PlainLiteral object) {
 		logger.debug("toVirtPlainLiteral(PlainLiteral {})", object);
 		Language lang = object.getLanguage();
-		String literal = object.getLexicalForm();// .replaceAll("\"", "\\\\\"");
+		String literal = object.getLexicalForm();
 		StringBuilder sb = new StringBuilder().append('"').append('"')
 				.append('"').append(prepareString(literal, false)).append('"')
 				.append('"').append('"');

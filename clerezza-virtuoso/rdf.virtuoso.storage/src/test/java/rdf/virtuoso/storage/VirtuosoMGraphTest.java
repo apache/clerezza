@@ -448,10 +448,10 @@ public class VirtuosoMGraphTest {
 			log.warn("SKIPPED");
 			return;
 		}
-		log.info("not Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
+		log.info("Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
 				mgraph.size());
 		log.debug("Removing graph <{}>", TEST_GRAPH_NAME);
-//		Statement st = TestUtils.getConnection().createStatement();
-//		st.execute("SPARQL CLEAR GRAPH <" + TEST_GRAPH_NAME + ">");
+		Statement st = TestUtils.getConnection().createStatement();
+		st.execute("SPARQL CLEAR GRAPH <" + TEST_GRAPH_NAME + ">");
 	}
 }

@@ -116,16 +116,16 @@ public class RdfIOTest {
 	}
 
 	@Test
-	public void longString() throws ClassNotFoundException, SQLException {
+	public void longString() throws ClassNotFoundException, SQLException, InterruptedException {
 		if (TestUtils.SKIP) {
 			log.warn("SKIPPED");
 			return;
 		}
 		log.info("Test a long xsd:string");
 		StringBuilder longStr = new StringBuilder();
-		int c = 1000;
+		int c = 1500;
 		while (c > 0) {
-			longStr.append(" another piece of string ");
+			longStr.append(" ");
 			c--;
 		}
 		int size = longStr.length();
