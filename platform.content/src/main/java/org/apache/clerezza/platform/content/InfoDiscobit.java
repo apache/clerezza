@@ -71,25 +71,30 @@ public class InfoDiscobit {
             Iterator<Literal> mediaTypeLits = infoBit.getLiterals(DISCOBITS.mediaType);
             if (mediaTypeLits.hasNext()) {
                 return mediaTypeLits.next().getLexicalForm();
+            } else {
+                throw new RuntimeException("InfoDiscobit has no media type property");
             }
         } finally {
             readLock.unlock();
         }
-        return null;
     }
     
     public byte[] getData() {
-        byte[] result = null;
+        byte[] result;
         Lock readLock = infoBit.readLock();
         readLock.lock();
         try {
-            Iterator<Literal> mediaTypeLits = infoBit.getLiterals(DISCOBITS.infoBit);
-            if (mediaTypeLits.hasNext()) {
-                final Literal literalValue = mediaTypeLits.next();
+            Iterator<Literal> infoBitLits = infoBit.getLiterals(DISCOBITS.infoBit);
+            if (infoBitLits.hasNext()) {
+                final Literal literalValue = infoBitLits.next();
                 if (literalValue instanceof TypedLiteral) {
                     result = LiteralFactory.getInstance().createObject(
                             (new byte[0]).getClass(), (TypedLiteral) literalValue);
+                } else {
+                    throw new RuntimeException("InfoDiscobit has infoBit value which is not a TypedLiteral but "+literalValue);
                 }
+            } else {
+                throw new RuntimeException("InfoDiscobit has not infoBit property");
             }
         } finally {
             readLock.unlock();
