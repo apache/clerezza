@@ -65,8 +65,9 @@ import virtuoso.jdbc4.VirtuosoStatement;
  */
 public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		LockableMGraph {
-	
-	private static final int PLAN_B_LITERAL_SIZE = 1900;
+	// XXX Do not change this, sometimes the database crashes with some literals
+	// using the standard syntax
+//	private static final int PLAN_B_LITERAL_SIZE = 0; 
 
 	private static final int CHECKPOINT = 1000;
 	
@@ -293,6 +294,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
 			;
 			if (connection != null) {
@@ -343,12 +345,14 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				if (rs != null)
 					rs.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close result set", ex);
 			}
 			;
 			try {
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
 			;
 			if (connection != null) {
@@ -394,6 +398,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
 			;
 			if (connection != null) {
@@ -443,6 +448,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
 			;
 			if (connection != null) {
@@ -452,7 +458,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 					logger.error("Cannot close connection", e1);
 				}
 			}
-			checkpoint(true);
+			checkpoint(false);
 		}
 		if (e != null) {
 			logger.error("S {}", triple.getSubject());
@@ -467,23 +473,27 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	protected boolean performAdd(Triple triple) {
 		logger.debug("performAdd(Triple {})", triple);
 		
-		// XXX 
 		// If the object is a very long literal we use plan B
 		// Reason:
 		// Virtuoso Error:
 		// SR449: Key is too long, index RDF_QUAD, ruling part is 1901 bytes that exceeds 1900 byte limit
-		if (triple.getObject() instanceof Literal) {
-			int litsize = ((Literal) triple.getObject()).getLexicalForm().getBytes().length;
-			if(triple.getObject() instanceof TypedLiteral){
-				litsize += ((TypedLiteral) triple.getObject()).getDataType().getUnicodeString().getBytes().length;
-			}else{
-				litsize += 10; // lang annotation should not be longer then 10 bytes...
-			}
-			if ( litsize > PLAN_B_LITERAL_SIZE) {
-				return performAddPlanB(triple);
-			}
-		}
+//		if (triple.getObject() instanceof Literal) {
+//			int litsize = ((Literal) triple.getObject()).getLexicalForm().getBytes().length;
+//			if(triple.getObject() instanceof TypedLiteral){
+//				litsize += ((TypedLiteral) triple.getObject()).getDataType().getUnicodeString().getBytes().length;
+//			}else{
+//				litsize += 10; // lang annotation should not be longer then 10 bytes...
+//			}
+//			if ( litsize > PLAN_B_LITERAL_SIZE) {
+//				return performAddPlanB(triple);
+//			}
+//		}
 
+		// We use alternative method for literals
+		if (triple.getObject() instanceof Literal) {
+			return performAddPlanB(triple);
+		}
+		
 		// String sql = getAddSQLStatement(triple);
 		String sql = INSERT;
 		writeLock.lock();
@@ -620,6 +630,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
 			;
 			if (connection != null) {
@@ -667,7 +678,14 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 */
 	private VirtuosoBNode nextVirtBnode(BNode bn) {
 		logger.debug("nextVirtBnode(BNode)");
-
+		/**
+		 * XXX 
+		 * Here we force virtuoso to generate a valid skolem uri
+		 * for a blank node we are going to insert for the first time.
+		 * 
+		 * All this process should be more efficient, possibly invoking a native procedure,
+		 * instead of insert/select/delete a fake triple as it is now.
+		 */
 		String temp_graph = "<urn:x-virtuoso:bnode-tmp>";
 		String bno = new StringBuilder().append('<').append(bn).append('>')
 				.toString();
@@ -763,7 +781,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	private static String INSERT = "SPARQL INSERT INTO iri(??) {`iri(??)` `iri(??)` "
 			+ "`bif:__rdf_long_from_batch_params(??,??,??)`}";
 
-//	private String getAddSQLStatement(Triple triple) {
+//	protected String getAddSQLStatement(Triple triple) {
 //		logger.debug("getAddSQLStatement(Triple {})", triple);
 //		StringBuilder sb = new StringBuilder();
 //		String subject = toVirtSubject(triple.getSubject());
@@ -775,7 +793,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 //		return sql;
 //	}
 
-	private String getRemoveSQLStatement(Triple triple) {
+	protected String getRemoveSQLStatement(Triple triple) {
 		logger.debug("getRemoveSQLStatement(Triple {})", triple);
 		StringBuilder sb = new StringBuilder();
 		String subject = toVirtSubject(triple.getSubject());
