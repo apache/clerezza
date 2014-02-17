@@ -31,7 +31,7 @@ import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 <div id="tx-content">
 <table>
 	<tr><th>Name</th><th>Size</th><th>type</th><th colspan="3">Actions</th></tr>
-				{for (tc <- (res/gm("tripleCollection"))) yield
+				{for (tc <- (res/gm("tripleCollection")).sortBy(tc => tc*)) yield
 					<tr>
 						<td>{tc*}</td>
 						<td>{tc/gm("size")*}</td>
