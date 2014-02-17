@@ -71,7 +71,7 @@ public class ConnectionTest {
 			log.warn("SKIPPED");
 			return;
 		}
-		assertFalse(connection.isConnectionLost());
+		assertFalse(connection.isConnectionLost(0));
 	}
 
 	@Test

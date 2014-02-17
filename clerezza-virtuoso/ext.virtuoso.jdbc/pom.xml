@@ -29,6 +29,7 @@
 	<artifactId>ext.virtuoso.jdbc</artifactId>
 	<name>Clerezza/Virtuoso Ext - Virtuoso JDBC OSGi Bundle</name>
 	<description>Virtuoso JDBC</description>
+		<version>0.3-SNAPSHOT</version>
 	<repositories>
 		<repository>
 			<releases>
@@ -46,7 +47,7 @@
 			<groupId>virtuoso</groupId>
 			<artifactId>virtjdbc</artifactId>
 			<type>jar</type>
-			<version>4.0</version>
+			<version>4.1</version>
 		</dependency>
 	</dependencies>
 
