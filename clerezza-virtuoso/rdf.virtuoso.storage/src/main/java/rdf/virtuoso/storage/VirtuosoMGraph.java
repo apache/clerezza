@@ -431,6 +431,8 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 		try {
 			connection = provider.getConnection();
 			st = connection.prepareStatement(sql);
+			String s = b.toString();
+			logger.trace(" TTL is \n{}\n", s);
 			st.setNString(1, b.toString());
 			st.execute();
 			connection.commit();

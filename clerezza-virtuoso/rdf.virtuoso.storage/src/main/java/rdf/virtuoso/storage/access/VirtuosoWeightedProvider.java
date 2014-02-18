@@ -52,9 +52,11 @@ import org.osgi.service.component.ComponentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import rdf.virtuoso.storage.VirtuosoGraph;
 import rdf.virtuoso.storage.VirtuosoMGraph;
 import virtuoso.jdbc4.VirtuosoConnection;
 import virtuoso.jdbc4.VirtuosoException;
+import virtuoso.jdbc4.VirtuosoPreparedStatement;
 import virtuoso.jdbc4.VirtuosoResultSet;
 import virtuoso.jdbc4.VirtuosoStatement;
 
@@ -98,7 +100,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	 * MAP OF LOADED GRAPHS
 	 */
 	private Map<UriRef, VirtuosoMGraph> graphs = new HashMap<UriRef, VirtuosoMGraph>();
-
+	private String ACTIVE_GRAPHS_GRAPH = "urn:x-virtuoso:active-graphs";
+	
 	/**
 	 * Weight
 	 */
@@ -233,7 +236,177 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				throw new ComponentException(e.getLocalizedMessage());
 			}
 		}
+		// Load remembered graphs
+		Set<UriRef> remembered = readRememberedGraphs();
+		for(UriRef name : remembered){
+			if (canModify(name)) {
+				graphs.put(name, new VirtuosoMGraph(name.getUnicodeString(),
+							this));
+			} else {
+				graphs.put(name,  new VirtuosoGraph(name.getUnicodeString(), this));
+			}
+		}
 		logger.info("Activated VirtuosoWeightedProvider.");
+	}
+
+	private Set<UriRef> readRememberedGraphs(){
+		logger.trace(" readRememberedGraphs()");
+		String SQL = "SPARQL SELECT DISTINCT ?G FROM <" + ACTIVE_GRAPHS_GRAPH + "> WHERE { ?G a <urn:x-virtuoso/active-graph> }";
+		VirtuosoConnection connection = null;
+		Exception e = null;
+		VirtuosoStatement st = null;
+		VirtuosoResultSet rs = null;
+		Set<UriRef> remembered = new HashSet<UriRef>();
+		try {
+			connection = getConnection();
+			st = (VirtuosoStatement) connection
+					.createStatement();
+			logger.debug("Executing SQL: {}", SQL);
+			rs = (VirtuosoResultSet) st.executeQuery(SQL);
+			while (rs.next()) {
+				UriRef name = new UriRef(rs.getString(1));
+				logger.debug(" > Graph {}", name);
+				remembered.add(name);
+			}
+		} catch (VirtuosoException e1) {
+			logger.error("Error while executing query/connection.", e1);
+			e = e1;
+		} catch (SQLException e1) {
+			logger.error("Error while executing query/connection.", e1);
+			e = e1;
+		} catch (ClassNotFoundException e1) {
+			logger.error("Error while executing query/connection.", e1);
+			e = e1;
+		}finally{
+
+			try { if (rs != null) rs.close(); } catch (Exception ex) {};
+		    try { if (st != null) st.close(); } catch (Exception ex) {};
+			if(connection!=null){
+				try {
+					connection.close();
+				} catch (VirtuosoException e1) {
+					logger.error("Cannot close connection", e1);
+				}
+			}
+		}
+		if(e!=null){
+			throw new RuntimeException(e);
+		}
+		return remembered;
+	}
+
+	private void rememberGraphs(UriRef... graphs){
+		logger.trace(" saveActiveGraphs()");
+		if (graphs.length>0) {
+			// Returns the list of graphs in the virtuoso quad store
+			String SQL = "SPARQL INSERT INTO <" + ACTIVE_GRAPHS_GRAPH + "> { `iri(??)` a <urn:x-virtuoso/active-graph> }";
+			VirtuosoConnection connection = null;
+			Exception e = null;
+			VirtuosoPreparedStatement st = null;
+			VirtuosoResultSet rs = null;
+			try {
+				try {
+					connection = getConnection();
+					connection.setAutoCommit(false);
+					st = (VirtuosoPreparedStatement) connection
+							.prepareStatement(SQL);
+					logger.debug("Executing SQL: {}", SQL);
+					for (UriRef u : graphs) {
+						logger.trace(" > remembering {}", u);
+						st.setString(1, u.getUnicodeString());
+						st.executeUpdate();
+					}
+					connection.commit();
+				} catch (Exception e1) {
+					logger.error("Error while executing query/connection.", e1);
+					e = e1;
+					connection.rollback();
+				}
+			} catch (SQLException e1) {
+				logger.error("Error while executing query/connection.", e1);
+				e = e1;
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+				} catch (Exception ex) {
+				}
+				;
+				try {
+					if (st != null)
+						st.close();
+				} catch (Exception ex) {
+				}
+				;
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (VirtuosoException e1) {
+						logger.error("Cannot close connection", e1);
+					}
+				}
+			}
+			if (e != null) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
+	private void forgetGraphs(UriRef... graphs){
+		logger.trace(" forgetGraphs()");
+		if (graphs.length>0) {
+			// Returns the list of graphs in the virtuoso quad store
+			String SQL = "SPARQL WITH <" + ACTIVE_GRAPHS_GRAPH + "> DELETE { ?s ?p ?v } WHERE { ?s ?p ?v . FILTER( ?s = iri(??) ) }";
+			VirtuosoConnection connection = null;
+			Exception e = null;
+			VirtuosoPreparedStatement st = null;
+			VirtuosoResultSet rs = null;
+			try {
+				try {
+					connection = getConnection();
+					connection.setAutoCommit(false);
+					st = (VirtuosoPreparedStatement) connection
+							.prepareStatement(SQL);
+					logger.debug("Executing SQL: {}", SQL);
+					for (UriRef u : graphs) {
+						logger.trace(" > remembering {}", u);
+						st.setString(1, u.getUnicodeString());
+						st.executeUpdate();
+					}
+					connection.commit();
+				} catch (Exception e1) {
+					logger.error("Error while executing query/connection.", e1);
+					e = e1;
+					connection.rollback();
+				}
+			} catch (SQLException e1) {
+				logger.error("Error while executing query/connection.", e1);
+				e = e1;
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+				} catch (Exception ex) {
+				}
+				;
+				try {
+					if (st != null)
+						st.close();
+				} catch (Exception ex) {
+				}
+				;
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (VirtuosoException e1) {
+						logger.error("Cannot close connection", e1);
+					}
+				}
+			}
+			if (e != null) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	/**
@@ -245,7 +418,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	@Deactivate
 	public void deactivate(ComponentContext cCtx) {
 		logger.debug("deactivate(ComponentContext {})", cCtx);
-		// XXX Anything to do here?
+		// Save active (possibly empty) graphs to a dedicated graph
+		rememberGraphs();
 		logger.info("Shutdown complete.");
 	}
 	
@@ -334,7 +508,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			VirtuosoMGraph graph = null;
 			logger.debug("Attempt to load {}", name);
 			// Let's create the graph object
-			String SQL = "SPARQL SELECT ?G WHERE { GRAPH ?G {?A ?B ?C} . FILTER(?G = "
+			String SQL = "SPARQL SELECT ?G WHERE { GRAPH ?G {[] [] []} . FILTER(?G = "
 					+ name + ")} LIMIT 1";
 	
 			Statement st = null;
@@ -422,7 +596,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		// XXX Add the active (possibly empty) mgraphs
 		graphs.addAll(this.graphs.keySet());
 		// Returns the list of graphs in the virtuoso quad store
-		String SQL = "SPARQL SELECT DISTINCT ?G WHERE {GRAPH ?G {?S ?P ?O} }";
+		String SQL = "SPARQL SELECT DISTINCT ?G WHERE {GRAPH ?G {[] [] []} }";
 		VirtuosoConnection connection = null;
 		Exception e = null;
 		VirtuosoStatement st = null;
@@ -567,6 +741,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			if (canModify(name)) {
 				graphs.put(name, new VirtuosoMGraph(name.getUnicodeString(),
 							this));
+				rememberGraphs(name);
 				return graphs.get(name);
 			} else {
 				logger.error("Cannot create MGraph {}", name);
@@ -616,6 +791,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		} else {
 			((MGraph) g).clear();
 			graphs.remove(name);
+			forgetGraphs(name);
 		}
 	}
 
