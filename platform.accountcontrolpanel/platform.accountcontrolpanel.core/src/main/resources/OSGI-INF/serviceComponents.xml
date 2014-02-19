@@ -66,7 +66,7 @@
         <property name="service.pid" value="org.apache.clerezza.platform.accountcontrolpanel.ProfilePanel"/>
         <reference name="userManager" interface="org.apache.clerezza.platform.usermanager.UserManager"
                    cardinality="1..1" policy="static" bind="bindUserManager" unbind="unbindUserManager"/>
-        <reference name="graphNodeProvider" interface="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider"
+        <reference name="graphNodeProvider" interface="org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider"
                    cardinality="1..1" policy="static" bind="bindGraphNodeProvider" unbind="unbindGraphNodeProvider"/>
         <reference name="keygenSrvc" interface="org.apache.clerezza.ssl.keygen.KeygenService"
                    cardinality="1..1" policy="static" bind="bindKeygenSrvc" unbind="unbindKeygenSrvc"/>

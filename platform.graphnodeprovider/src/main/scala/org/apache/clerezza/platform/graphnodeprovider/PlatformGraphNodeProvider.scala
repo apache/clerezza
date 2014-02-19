@@ -31,6 +31,7 @@ import org.apache.clerezza.rdf.utils.{UnionMGraph, UriMutatingTripleCollection, 
 import java.util.concurrent.locks.Lock
 import org.apache.clerezza.platform.usermanager.UserManager
 import java.security.{PrivilegedAction, AccessController}
+import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider
 
 /**
  * A service that returns a GraphNode for a specified named resource, the returned GraphNode has
@@ -38,7 +39,7 @@ import java.security.{PrivilegedAction, AccessController}
  * Graphs they dereference to and for local URIs with a path-section starting with /user/{username}/
  * the local-public-graph of that user.
  */
-class GraphNodeProvider extends Logging {
+class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
 
   /**
    * Get a GraphNode for the specified resource, see class comments for details.

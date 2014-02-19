@@ -32,7 +32,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
+import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
 
 /**
  *

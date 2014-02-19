@@ -48,7 +48,7 @@ public interface CallbackRenderer {
 
     /**
      * Renders a specified named resource using the GraphNode returned by
-     * <code>org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider#get(org.apache.clerezza.rdf.core.UriRef)</code>.
+     * <code>org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider#get(org.apache.clerezza.rdf.core.UriRef)</code>.
      *
      * Otherwise same as render(GraphNode, .GraphNode, String, OutputStream)
      *
