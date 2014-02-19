@@ -29,6 +29,7 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,9 +74,12 @@ public class SystemConfig {
         try {
             tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI);
         } catch (NoSuchEntityException nsee) {
+            MGraph loadedFile = new SimpleMGraph();
+            readConfigGraphFile(loadedFile);
             MGraph systemGraph = tcManager.createMGraph(Constants.SYSTEM_GRAPH_URI);
+            systemGraph.addAll(loadedFile);
             logger.info("Add initial configuration to system graph");
-            readConfigGraphFile(systemGraph);
+            
             
         }
     }
