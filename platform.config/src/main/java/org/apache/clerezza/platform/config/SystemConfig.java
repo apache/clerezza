@@ -22,7 +22,6 @@ package org.apache.clerezza.platform.config;
 import java.io.IOException;
 import java.net.URL;
 import org.apache.clerezza.platform.Constants;
-import org.apache.clerezza.platform.graphprovider.content.GraphNameTransitioner;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.osgi.service.component.ComponentContext;
@@ -71,7 +70,6 @@ public class SystemConfig {
     private ParsingProvider parser;
 
     protected void activate(ComponentContext componentContext) {
-        GraphNameTransitioner.renameGraphsWithOldNames(tcManager);
         try {
             tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI);
         } catch (NoSuchEntityException nsee) {
