@@ -51,8 +51,11 @@ public class FileMGraph extends SimpleMGraph {
 
     FileMGraph(UriRef uri, Parser parser,
             Serializer serializer) {
-        file = new File(URI.create(uri.getUnicodeString()));
-        String fileEnding = extractFileEnding(uri);
+        this(new File(URI.create(uri.getUnicodeString())), parser, serializer);    
+    }
+
+    public FileMGraph(File file, Parser parser, Serializer serializer) {
+        String fileEnding = extractFileEnding(file.getPath());
         fileType = getMediaTypeForFileEnding(fileEnding);
         this.serializer = serializer;
         try {
@@ -65,8 +68,7 @@ public class FileMGraph extends SimpleMGraph {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
+        }    }
     
     @Override
     public boolean add(Triple e) {
@@ -154,8 +156,7 @@ public class FileMGraph extends SimpleMGraph {
         return modified;
     }
 
-    private String extractFileEnding(UriRef uri) {
-        String uriString = uri.getUnicodeString();
+    private String extractFileEnding(String uriString) {
         String fileEnding = uriString.substring(uriString.lastIndexOf(".") + 1, uriString.length());
         return fileEnding;
     }
