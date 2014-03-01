@@ -30,15 +30,15 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
 
 
-@Component
-@Service(WeightedTcProvider.class)
+
+@Component(service = WeightedTcProvider.class, property = TcManager.GENERAL_PURPOSE_TC+"=true")
 public class SimpleTcProvider implements WeightedTcProvider {
 
     private Map<UriRef, TripleCollection> tripleMap = new HashMap<UriRef, TripleCollection>();
