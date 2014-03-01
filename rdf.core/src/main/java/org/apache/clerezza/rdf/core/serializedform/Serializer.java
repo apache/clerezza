@@ -30,6 +30,11 @@ import java.util.ServiceLoader;
 
 import org.apache.clerezza.rdf.core.TripleCollection;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+
 /**
  * This singleton class provides a method <code>serialize</code> to transform a
  * {@link Graph} into serialized RDF forms.
@@ -44,13 +49,8 @@ import org.apache.clerezza.rdf.core.TripleCollection;
  * 
  * @author mir
  * 
- * @scr.component
- * @scr.service interface="org.apache.clerezza.rdf.core.serializedform.Serializer"
- * @scr.reference 
- *                name="serializingProvider"
- *                cardinality="0..n" policy="dynamic"
- *                interface="org.apache.clerezza.rdf.core.serializedform.SerializingProvider"
  */
+@Component(service = Serializer.class)
 public class Serializer {
 
     /**
@@ -150,6 +150,8 @@ public class Serializer {
      * @param provider
      *            the provider to be registered
      */
+    @Reference(policy = ReferencePolicy.DYNAMIC, 
+            cardinality = ReferenceCardinality.MULTIPLE)
     public void bindSerializingProvider(SerializingProvider provider) {
         providerList.add(provider);
         refreshProviderMap();

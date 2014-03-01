@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,11 @@ import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * This singleton class provides a method <code>parse</code> to transform 
@@ -48,12 +52,8 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
  * 
  * @author reto
  * 
- * @scr.component
- * @scr.service interface="org.apache.clerezza.rdf.core.serializedform.Parser"
- * @scr.reference name="parsingProvider"
- *     cardinality="0..n" policy="dynamic"
- *     interface="org.apache.clerezza.rdf.core.serializedform.ParsingProvider"
  */
+@Component(service = Parser.class)
 public class Parser {
 
     /**
@@ -204,6 +204,8 @@ public class Parser {
      *
      * @param provider the provider to be registered
      */
+    @Reference(policy = ReferencePolicy.DYNAMIC, 
+            cardinality = ReferenceCardinality.MULTIPLE)
     public void bindParsingProvider(ParsingProvider provider) {
         providerList.add(provider);
         refreshProviderMap();
