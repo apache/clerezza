@@ -29,6 +29,8 @@ import java.net.URI;
 import java.util.Collection;
 
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -179,17 +181,19 @@ public class FileMGraph extends SimpleMGraph {
 
     private void writeToFile() {
         synchronized(this) {
-            OutputStream out = null;
+            OutputStream out;
             try {
                 out = new FileOutputStream(file);
-                serializer.serialize(out, this, fileType);
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
+            }
+            try {
+                serializer.serialize(out, this, fileType);
             } finally {
                 try {
                     out.close();
                 } catch (IOException ex) {
-                    new RuntimeException(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
