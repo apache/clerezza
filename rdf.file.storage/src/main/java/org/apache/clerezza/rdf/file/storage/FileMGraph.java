@@ -57,6 +57,7 @@ public class FileMGraph extends SimpleMGraph {
     }
 
     public FileMGraph(File file, Parser parser, Serializer serializer) {
+        this.file = file;
         String fileEnding = extractFileEnding(file.getPath());
         fileType = getMediaTypeForFileEnding(fileEnding);
         this.serializer = serializer;
@@ -70,7 +71,8 @@ public class FileMGraph extends SimpleMGraph {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }    }
+        }
+    }
     
     @Override
     public boolean add(Triple e) {
