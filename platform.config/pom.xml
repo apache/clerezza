@@ -70,5 +70,10 @@
             <artifactId>permissiondescriptions</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.file.storage</artifactId>
+            <version>0.4-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

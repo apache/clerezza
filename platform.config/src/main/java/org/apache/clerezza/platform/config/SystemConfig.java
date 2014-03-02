@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.platform.config;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -35,11 +36,15 @@ import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
+import org.apache.clerezza.rdf.core.serializedform.Serializer;
+import org.apache.clerezza.rdf.file.storage.FileMGraph;
 import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
 
@@ -51,11 +56,12 @@ import org.osgi.service.component.annotations.Deactivate;
  *
  * @author mir
  */
-@Component
+@Component(immediate = true)
 @Service(WeightedTcProvider.class)
 public class SystemConfig implements WeightedTcProvider {
 
-    public static final String CONFIG_FILE = "default-system-graph.rdf";
+    public static final String DEFAULT_SYSTEM_GRAPH = "default-system-graph.rdf";
+    private static final String DATA_FILE_SYSTEM_GRAPH = "system-graph.nt";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     /**
      *
@@ -70,27 +76,39 @@ public class SystemConfig implements WeightedTcProvider {
      */
     public static final String SYSTEM_GRAPH_FILTER =
             "(name=" + Constants.SYSTEM_GRAPH_URI_STRING + ")";
+    
     public static final String PARSER_FILTER =
-            "(supportedFormat=" + SupportedFormat.RDF_XML + ")";
+            "(&("+SupportedFormat.supportedFormat+"=" + SupportedFormat.RDF_XML + ") "+
+            "("+SupportedFormat.supportedFormat+"=" + SupportedFormat.N_TRIPLE + "))";
     @Reference(target = PARSER_FILTER)
-    private ParsingProvider parser;
-    private MGraph loadedFile;
+    private Parser parser;
+    
+    public static final String SERIALIZER_FILTER =
+            "("+SupportedFormat.supportedFormat+"=" + SupportedFormat.N_TRIPLE + ")";
+    @Reference(target = SERIALIZER_FILTER)
+    private Serializer serializer;
+    private MGraph systemGraph;
 
     @Activate
     protected void activate(ComponentContext componentContext) {
+        final BundleContext bundleContext = componentContext.getBundleContext();
+        File systemGraphFile = bundleContext.getDataFile(DATA_FILE_SYSTEM_GRAPH);
+        boolean dataFileExisted = systemGraphFile.exists();
         //yould be good to use IndexedMGraph to be faster
-        loadedFile = new SimpleMGraph();
-        readConfigGraphFile(loadedFile);
-        logger.info("Add initial configuration to system graph");
+        systemGraph = new FileMGraph(systemGraphFile, parser, serializer);
+        if (!dataFileExisted) {
+            readConfigGraphFile(systemGraph);
+            logger.info("Add initial configuration to system graph");
+        }
     }
 
     @Deactivate
     protected void deactivate(ComponentContext componentContext) {
-        loadedFile = null;
+        systemGraph = null;
     }
 
     private void readConfigGraphFile(MGraph mGraph) {
-        URL config = getClass().getResource(CONFIG_FILE);
+        URL config = getClass().getResource(DEFAULT_SYSTEM_GRAPH);
         if (config == null) {
             throw new RuntimeException("no config file found");
         }
@@ -120,7 +138,7 @@ public class SystemConfig implements WeightedTcProvider {
     @Override
     public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
         if (name.equals(Constants.SYSTEM_GRAPH_URI)) {
-            return loadedFile;
+            return systemGraph;
         } else {
             throw new NoSuchEntityException(name);
         }
