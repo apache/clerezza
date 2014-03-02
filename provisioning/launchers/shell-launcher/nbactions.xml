@@ -37,6 +37,24 @@
     </properties>
   </action>
   <action>
+        <actionName>CUSTOM-run-online</actionName>
+        <displayName>Run (online mode)</displayName>
+        <goals>
+            <goal>antrun:run</goal>
+            <goal>clean</goal>
+            <goal>package</goal>
+            <goal>antrun:run</goal>
+        </goals>
+  </action>
+  <action>
+        <actionName>CUSTOM-resume-run</actionName>
+        <displayName>Resume run</displayName>
+        <goals>
+            <goal>antrun:run</goal>
+            <goal>-o</goal>
+        </goals>
+  </action>
+  <action>
         <actionName>CUSTOM-resume-debug</actionName>
         <displayName>Resume Debug</displayName>
         <goals>
