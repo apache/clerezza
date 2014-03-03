@@ -100,6 +100,7 @@ public class Parser {
      * @param dummy an ignored argument to distinguish this from the other constructor
      */
     Parser(Object dummy) {
+        active = true;
     }
 
     /**
@@ -121,6 +122,8 @@ public class Parser {
                         ParsingProvider parsingProvider = parsingProviders.next();
                         instance.bindParsingProvider(parsingProvider);
                     }
+                    instance.active = true;
+                    instance.refreshProviderMap();
                 }
             }
         }
@@ -283,14 +286,16 @@ public class Parser {
                     }
                 }
                 providerMap = newProviderMap;
-                Dictionary<String, Object> newConfig = configurationAdmin.getConfiguration(getClass().getName()).getProperties();
-                if (newConfig == null) {
-                    newConfig = new Hashtable<String, Object>();
+                if (configurationAdmin != null) { //i.e. when we are in an OSGi environment
+                    Dictionary<String, Object> newConfig = configurationAdmin.getConfiguration(getClass().getName()).getProperties();
+                    if (newConfig == null) {
+                        newConfig = new Hashtable<String, Object>();
+                    }
+                    Set<String> supportedFormats = getSupportedFormats();
+                    String[] supportedFromatsArray = supportedFormats.toArray(new String[supportedFormats.size()]);
+                    newConfig.put(SupportedFormat.supportedFormat, supportedFromatsArray);
+                    configurationAdmin.getConfiguration(getClass().getName()).update(newConfig);
                 }
-                Set<String> supportedFormats = getSupportedFormats();
-                String[] supportedFromatsArray = supportedFormats.toArray(new String[supportedFormats.size()]);
-                newConfig.put(SupportedFormat.supportedFormat, supportedFromatsArray);
-                configurationAdmin.getConfiguration(getClass().getName()).update(newConfig);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

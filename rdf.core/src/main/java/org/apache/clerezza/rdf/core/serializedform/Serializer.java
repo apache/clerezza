@@ -102,6 +102,7 @@ public class Serializer {
      *            constructor
      */
     Serializer(Object dummy) {
+        active = true;
     }
 
     /**
@@ -124,6 +125,8 @@ public class Serializer {
                                 .next();
                         instance.bindSerializingProvider(SerializingProvider);
                     }
+                    instance.active = true;
+                    instance.refreshProviderMap();
                 }
             }
         }
@@ -229,17 +232,19 @@ public class Serializer {
                 }
             }
             providerMap = newProviderMap;
-            try {
-                Dictionary<String, Object> newConfig = configurationAdmin.getConfiguration(getClass().getName()).getProperties();
-                if (newConfig == null) {
-                    newConfig = new Hashtable<String, Object>();
+            if (configurationAdmin != null) { //we are in OSGi environment
+                try {
+                    Dictionary<String, Object> newConfig = configurationAdmin.getConfiguration(getClass().getName()).getProperties();
+                    if (newConfig == null) {
+                        newConfig = new Hashtable<String, Object>();
+                    }
+                    Set<String> supportedFormats = getSupportedFormats();
+                    String[] supportedFromatsArray = supportedFormats.toArray(new String[supportedFormats.size()]);
+                    newConfig.put(SupportedFormat.supportedFormat, supportedFromatsArray);
+                    configurationAdmin.getConfiguration(getClass().getName()).update(newConfig);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
-                Set<String> supportedFormats = getSupportedFormats();
-                String[] supportedFromatsArray = supportedFormats.toArray(new String[supportedFormats.size()]);
-                newConfig.put(SupportedFormat.supportedFormat, supportedFromatsArray);
-                configurationAdmin.getConfiguration(getClass().getName()).update(newConfig);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         }
     }
