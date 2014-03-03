@@ -44,5 +44,9 @@
             <artifactId>rdf.jena.facade</artifactId>
             <version>0.14-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
     </dependencies>
 </project>
