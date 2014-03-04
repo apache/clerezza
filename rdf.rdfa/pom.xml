@@ -67,6 +67,10 @@
             <artifactId>htmlparser</artifactId>
             <version>1.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
         <!-- see http://weblogs.java.net/blog/kohsuke/archive/2009/03/my_project_of_t.html
         not in central repo
         <dependency>
