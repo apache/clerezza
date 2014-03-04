@@ -52,9 +52,11 @@ import org.apache.clerezza.utils.security.PermissionParser;
  * access a TripleCollection. These permissions are stored persistently in an
  * MGraph named urn:x-localinstance:/graph-access.graph
  *
+ * Clients should get an instance from TcManager.getTcAccessController()
+ * 
  * @author reto
  */
-public class TcAccessController {
+public abstract class TcAccessController {
 
     private final TcManager tcManager;
     private final UriRef permissionGraphName = new UriRef("urn:x-localinstance:/graph-access.graph");
@@ -80,8 +82,8 @@ public class TcAccessController {
      *
      * @param tcManager the tcManager used to locate urn:x-localinstance:/graph-access.graph
      */
-    public TcAccessController(TcManager tcManager) {
-        this.tcManager = tcManager;
+    public TcAccessController() {
+        this.tcManager = getTcManager();
     }
 
     public void checkReadPermission(UriRef tripleCollectionUri) {
@@ -343,4 +345,10 @@ public class TcAccessController {
             return tcManager.createMGraph(permissionGraphName);
         }
     }
+
+    /**
+     * Note that this will only be invoked once
+     * @return 
+     */
+    protected abstract TcManager getTcManager();
 }

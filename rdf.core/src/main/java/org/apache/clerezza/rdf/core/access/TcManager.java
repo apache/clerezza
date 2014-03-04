@@ -103,7 +103,14 @@ public class TcManager extends TcProviderMultiplexer {
 
     public final static String GENERAL_PURPOSE_TC = "general.purpose.tc";
     private static volatile TcManager instance;
-    private TcAccessController tcAccessController = new TcAccessController(this);
+    private TcAccessController tcAccessController = new TcAccessController() {
+
+        @Override
+        protected TcManager getTcManager() {
+            return TcManager.this;
+        }
+            
+    };
     private Map<UriRef, ServiceRegistration> serviceRegistrations = Collections
             .synchronizedMap(new HashMap<UriRef, ServiceRegistration>());
     
