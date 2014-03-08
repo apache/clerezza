@@ -2,7 +2,7 @@ package rdf.virtuoso.storage;
 
 import org.apache.clerezza.rdf.core.BNode;
 
-class VirtuosoBNode extends BNode {
+public class VirtuosoBNode extends BNode {
 	private String skolemId;
 	public VirtuosoBNode(String skolemId) {
 		this.skolemId = skolemId;

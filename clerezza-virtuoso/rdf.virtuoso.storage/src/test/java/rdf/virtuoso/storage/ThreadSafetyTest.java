@@ -39,6 +39,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import rdf.virtuoso.storage.access.DataAccess;
+
 /**
  * 
  * Credit: This code is largely cloned by the thread safe test in
@@ -51,7 +53,7 @@ public class ThreadSafetyTest {
 
 	private ExecutorService executor;
 	private VirtuosoMGraph mgraph;
-
+	private DataAccess da = null;
 	static Logger log = LoggerFactory.getLogger(ThreadSafetyTest.class);
 
 	@Before
@@ -60,8 +62,11 @@ public class ThreadSafetyTest {
 			log.warn("SKIPPED");
 			return;
 		}
+		da = TestUtils.getProvider().createDataAccess();
+		da.clearGraph("ThreadSafetyTest");
 		mgraph = new VirtuosoMGraph("ThreadSafetyTest",
-				TestUtils.getProvider());
+				da);
+		mgraph.clear();
 		executor = Executors.newCachedThreadPool();
 	}
 
@@ -79,6 +84,8 @@ public class ThreadSafetyTest {
 		} finally {
 			mgraph.clear();
 			mgraph = null;
+			da.close();
+			da = null;
 		}
 	}
 

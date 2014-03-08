@@ -100,6 +100,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	 * MAP OF LOADED GRAPHS
 	 */
 	private Map<UriRef, VirtuosoMGraph> graphs = new HashMap<UriRef, VirtuosoMGraph>();
+	private Set<DataAccess> dataAccessSet = new HashSet<DataAccess>();
 	private String ACTIVE_GRAPHS_GRAPH = "urn:x-virtuoso:active-graphs";
 	
 	/**
@@ -241,9 +242,9 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		for(UriRef name : remembered){
 			if (canModify(name)) {
 				graphs.put(name, new VirtuosoMGraph(name.getUnicodeString(),
-							this));
+						createDataAccess()));
 			} else {
-				graphs.put(name,  new VirtuosoGraph(name.getUnicodeString(), this));
+				graphs.put(name,  new VirtuosoGraph(name.getUnicodeString(), createDataAccess()));
 			}
 		}
 		logger.info("Activated VirtuosoWeightedProvider.");
@@ -420,6 +421,11 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		logger.debug("deactivate(ComponentContext {})", cCtx);
 		// Save active (possibly empty) graphs to a dedicated graph
 		rememberGraphs();
+		// XXX Important. Close all opened resources
+		for(DataAccess mg : dataAccessSet){
+			mg.close();
+		}
+		
 		logger.info("Shutdown complete.");
 	}
 	
@@ -533,11 +539,11 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 					if (canModify(name)) {
 						logger.debug("Creating writable MGraph for graph {}", name);
 						graphs.put(name, new VirtuosoMGraph(
-								name.getUnicodeString(), this));
+								name.getUnicodeString(), createDataAccess()));
 					} else {
 						logger.debug("Creating read-only Graph for graph {}", name);
 						graphs.put(name, new VirtuosoMGraph(
-								name.getUnicodeString(), this)
+								name.getUnicodeString(), createDataAccess())
 								.asVirtuosoGraph());
 					}
 					graph = graphs.get(name);
@@ -570,6 +576,15 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		}
 		
 	}
+	
+
+	public DataAccess createDataAccess(){
+		DataAccess da = new DataAccess(connStr, user, pwd);
+		dataAccessSet.add(da);
+		// Remember all opened ones
+		return da;
+	}
+	
 
 	/**
 	 * Generic implementation of the get(M)Graph method. If the named graph is
@@ -740,7 +755,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		} catch (NoSuchEntityException nsee) {
 			if (canModify(name)) {
 				graphs.put(name, new VirtuosoMGraph(name.getUnicodeString(),
-							this));
+							createDataAccess()));
 				rememberGraphs(name);
 				return graphs.get(name);
 			} else {
