@@ -18,17 +18,33 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.apache.clerezza.rdf.core.TripleCollection;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This singleton class provides a method <code>serialize</code> to transform a
@@ -44,14 +60,11 @@ import org.apache.clerezza.rdf.core.TripleCollection;
  * 
  * @author mir
  * 
- * @scr.component
- * @scr.service interface="org.apache.clerezza.rdf.core.serializedform.Serializer"
- * @scr.reference 
- *                name="serializingProvider"
- *                cardinality="0..n" policy="dynamic"
- *                interface="org.apache.clerezza.rdf.core.serializedform.SerializingProvider"
  */
+@Component(service = Serializer.class)
 public class Serializer {
+    
+    private ConfigurationAdmin configurationAdmin;
 
     /**
      * The list of providers in the order of registration
@@ -67,6 +80,10 @@ public class Serializer {
      * The singleton instance
      */
     private volatile static Serializer instance;
+    
+    private static final Logger log = LoggerFactory.getLogger(Serializer.class);
+    
+    private boolean active;
 
     /**
      * the constructor sets the singleton instance to allow instantiation
@@ -85,6 +102,7 @@ public class Serializer {
      *            constructor
      */
     Serializer(Object dummy) {
+        active = true;
     }
 
     /**
@@ -107,11 +125,29 @@ public class Serializer {
                                 .next();
                         instance.bindSerializingProvider(SerializingProvider);
                     }
+                    instance.active = true;
+                    instance.refreshProviderMap();
                 }
             }
         }
         return instance;
 
+    }
+ 
+    @Activate
+    protected void activate(final ComponentContext componentContext) {
+        active = true;
+        refreshProviderMap();
+    }
+
+    @Deactivate
+    protected void deactivate(final ComponentContext componentContext) {
+        active = false;
+    }
+    
+    @Modified
+    void modified(ComponentContext ctx) {
+        log.debug("modified");
     }
 
     /**
@@ -145,11 +181,22 @@ public class Serializer {
     }
 
     /**
+     * Get a set of supported formats
+     *
+     * @return a set if stings identifying formats (usually the MIME-type)
+     */
+    public Set<String> getSupportedFormats() {
+        return Collections.unmodifiableSet(providerMap.keySet());
+    }
+    
+    /**
      * Registers a Serializing provider
      * 
      * @param provider
      *            the provider to be registered
      */
+    @Reference(policy = ReferencePolicy.DYNAMIC, 
+            cardinality = ReferenceCardinality.MULTIPLE)
     public void bindSerializingProvider(SerializingProvider provider) {
         providerList.add(provider);
         refreshProviderMap();
@@ -169,23 +216,37 @@ public class Serializer {
     }
 
     private void refreshProviderMap() {
-        final Map<String, SerializingProvider> newProviderMap = new HashMap<String, SerializingProvider>();
-        //we want more generic providers first so they get overridden by more specific ones
-        Collections.sort(providerList, new Comparator<SerializingProvider>() {
-
-            @Override
-            public int compare(SerializingProvider s1, SerializingProvider s2) {
-                return getFormatIdentifiers(s2).length - getFormatIdentifiers(s1).length;
+        if (active) {
+            final Map<String, SerializingProvider> newProviderMap = new HashMap<String, SerializingProvider>();
+            //we want more generic providers first so they get overridden by more specific ones
+            Collections.sort(providerList, new Comparator<SerializingProvider>() {
+                @Override
+                public int compare(SerializingProvider s1, SerializingProvider s2) {
+                    return getFormatIdentifiers(s2).length - getFormatIdentifiers(s1).length;
+                }
+            });
+            for (SerializingProvider provider : providerList) {
+                String[] formatIdentifiers = getFormatIdentifiers(provider);
+                for (String formatIdentifier : formatIdentifiers) {
+                    newProviderMap.put(formatIdentifier, provider);
+                }
             }
-
-        });
-        for (SerializingProvider provider : providerList) {
-            String[] formatIdentifiers = getFormatIdentifiers(provider);
-            for (String formatIdentifier : formatIdentifiers) {
-                newProviderMap.put(formatIdentifier, provider);
+            providerMap = newProviderMap;
+            if (configurationAdmin != null) { //we are in OSGi environment
+                try {
+                    Dictionary<String, Object> newConfig = configurationAdmin.getConfiguration(getClass().getName()).getProperties();
+                    if (newConfig == null) {
+                        newConfig = new Hashtable<String, Object>();
+                    }
+                    Set<String> supportedFormats = getSupportedFormats();
+                    String[] supportedFromatsArray = supportedFormats.toArray(new String[supportedFormats.size()]);
+                    newConfig.put(SupportedFormat.supportedFormat, supportedFromatsArray);
+                    configurationAdmin.getConfiguration(getClass().getName()).update(newConfig);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
-        providerMap = newProviderMap;
     }
 
     private String[] getFormatIdentifiers(
@@ -196,5 +257,14 @@ public class Serializer {
                 .getAnnotation(SupportedFormat.class);
         String[] formatIdentifiers = supportedFormatAnnotation.value();
         return formatIdentifiers;
+    }
+    
+    @Reference
+    protected void bindConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
+        this.configurationAdmin = configurationAdmin;
+    }
+
+    protected void unbindConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
+        this.configurationAdmin = null;
     }
 }

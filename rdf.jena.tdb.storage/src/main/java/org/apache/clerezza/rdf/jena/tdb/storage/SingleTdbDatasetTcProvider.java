@@ -48,6 +48,7 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import org.apache.clerezza.rdf.core.access.TcManager;
 
 /**
  * {@link WeightedTcProvider} implementation for Jena TDB that uses a single
@@ -85,7 +86,8 @@ import com.hp.hpl.jena.tdb.TDBFactory;
     @Property(name=SingleTdbDatasetTcProvider.TDB_DIR),
     @Property(name=SingleTdbDatasetTcProvider.DEFAULT_GRAPH_NAME),
     @Property(name=SingleTdbDatasetTcProvider.SYNC_INTERVAL, intValue=SingleTdbDatasetTcProvider.DEFAULT_SYNC_INTERVAL),
-    @Property(name=SingleTdbDatasetTcProvider.WEIGHT, intValue=105)
+    @Property(name=SingleTdbDatasetTcProvider.WEIGHT, intValue=105),
+    @Property(name=TcManager.GENERAL_PURPOSE_TC, boolValue = true)
 })
 public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements WeightedTcProvider {
 

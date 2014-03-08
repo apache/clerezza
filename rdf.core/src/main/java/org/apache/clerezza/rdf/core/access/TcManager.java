@@ -48,14 +48,13 @@ import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.ReferenceCardinality;
-import org.apache.felix.scr.annotations.ReferencePolicy;
-import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * This class implements
@@ -98,20 +97,23 @@ import org.osgi.service.component.ComponentContext;
  * @author reto, mir, hasan
  *
  */
-@Component
-@Service(TcManager.class)
-@Reference(name = "weightedTcProvider", policy = ReferencePolicy.DYNAMIC,
-        referenceInterface = WeightedTcProvider.class,
-        cardinality = ReferenceCardinality.MANDATORY_MULTIPLE)
+//immedia is set to true as this should register the graph services (even if manager service is not required)
+@Component(service = TcManager.class, immediate = true)
 public class TcManager extends TcProviderMultiplexer {
 
+    public final static String GENERAL_PURPOSE_TC = "general.purpose.tc";
     private static volatile TcManager instance;
-    private TcAccessController tcAccessController = new TcAccessController(this);
+    private TcAccessController tcAccessController = new TcAccessController() {
+
+        @Override
+        protected TcManager getTcManager() {
+            return TcManager.this;
+        }
+            
+    };
     private Map<UriRef, ServiceRegistration> serviceRegistrations = Collections
             .synchronizedMap(new HashMap<UriRef, ServiceRegistration>());
     
-    @Reference(policy = ReferencePolicy.DYNAMIC,
-            cardinality = ReferenceCardinality.OPTIONAL_UNARY)
     protected QueryEngine queryEngine;
 
     private ComponentContext componentContext;
@@ -471,6 +473,8 @@ public class TcManager extends TcProviderMultiplexer {
      *
      * @param provider the provider to be registered
      */
+    @Reference(policy = ReferencePolicy.DYNAMIC, 
+            cardinality = ReferenceCardinality.MULTIPLE)
     protected void bindWeightedTcProvider(WeightedTcProvider provider) {
         addWeightedTcProvider(provider);
     }
@@ -483,6 +487,38 @@ public class TcManager extends TcProviderMultiplexer {
     protected void unbindWeightedTcProvider(
             WeightedTcProvider provider) {
         removeWeightedTcProvider(provider);
+    }
+    
+    /**
+     * Registers a provider
+     *
+     * @param provider the provider to be registered
+     */
+    @Reference(policy = ReferencePolicy.DYNAMIC, 
+            cardinality = ReferenceCardinality.AT_LEAST_ONE,
+            target = "("+TcManager.GENERAL_PURPOSE_TC+"=true)")
+    protected void bindGpWeightedTcProvider(WeightedTcProvider provider) {
+        addWeightedTcProvider(provider);
+    }
+
+    /**
+     * Unregister a provider
+     *
+     * @param provider the provider to be deregistered
+     */
+    protected void unbindGpWeightedTcProvider(
+            WeightedTcProvider provider) {
+        removeWeightedTcProvider(provider);
+    }
+    
+    @Reference(policy = ReferencePolicy.DYNAMIC,
+            cardinality = ReferenceCardinality.OPTIONAL)
+    protected void bindQueryEngine(QueryEngine queryEngine) {
+        this.queryEngine = queryEngine;
+    }
+    
+    protected void unbindQueryEngine(QueryEngine queryEngine) {
+        this.queryEngine = null;
     }
 
     @Override

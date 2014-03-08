@@ -163,16 +163,27 @@
             <version>0.14-SNAPSHOT</version>
         </dependency>
         
-        <dependency> <!--required for tcprovider, which is needed for the systemgraph to be available to stanbol.security.core -->
+        <dependency> <!--required by platform.config -->
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.simple.storage</artifactId>
             <version>0.8-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency> <!--required by platform.config -->
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.file.storage</artifactId>
+            <version>0.4-SNAPSHOT</version>
         </dependency>
         
         <dependency><!-- system config rquires an rdf/xml parsing proivder -->
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
             <version>0.12-SNAPSHOT</version>
+        </dependency>
+        <dependency><!-- system config rquires an n-triples parsing proivder -->
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.jena.serializer</artifactId>
+            <version>0.11-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>

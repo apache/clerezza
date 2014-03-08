@@ -29,6 +29,8 @@ import java.net.URI;
 import java.util.Collection;
 
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -51,8 +53,12 @@ public class FileMGraph extends SimpleMGraph {
 
     FileMGraph(UriRef uri, Parser parser,
             Serializer serializer) {
-        file = new File(URI.create(uri.getUnicodeString()));
-        String fileEnding = extractFileEnding(uri);
+        this(new File(URI.create(uri.getUnicodeString())), parser, serializer);    
+    }
+
+    public FileMGraph(File file, Parser parser, Serializer serializer) {
+        this.file = file;
+        String fileEnding = extractFileEnding(file.getPath());
         fileType = getMediaTypeForFileEnding(fileEnding);
         this.serializer = serializer;
         try {
@@ -154,8 +160,7 @@ public class FileMGraph extends SimpleMGraph {
         return modified;
     }
 
-    private String extractFileEnding(UriRef uri) {
-        String uriString = uri.getUnicodeString();
+    private String extractFileEnding(String uriString) {
         String fileEnding = uriString.substring(uriString.lastIndexOf(".") + 1, uriString.length());
         return fileEnding;
     }
@@ -178,17 +183,19 @@ public class FileMGraph extends SimpleMGraph {
 
     private void writeToFile() {
         synchronized(this) {
-            OutputStream out = null;
+            OutputStream out;
             try {
                 out = new FileOutputStream(file);
-                serializer.serialize(out, this, fileType);
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
+            }
+            try {
+                serializer.serialize(out, this, fileType);
             } finally {
                 try {
                     out.close();
                 } catch (IOException ex) {
-                    new RuntimeException(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }

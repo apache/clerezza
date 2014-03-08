@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.clerezza.jaxrs.extensions.ResourceMethodException;
-import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
+import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.platform.typehandlerspace.TypeHandlerDiscovery;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.UriRef;

@@ -23,7 +23,7 @@ import java.util.Arrays
 import java.util.Collections
 import java.util.Iterator
 import ontologies.CONTROLPANEL
-import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider
+import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider
 import org.apache.clerezza.ssl.keygen.CertSerialisation
 import org.apache.clerezza.ssl.keygen.Certificate
 import org.apache.clerezza.foafssl.ontologies.CERT

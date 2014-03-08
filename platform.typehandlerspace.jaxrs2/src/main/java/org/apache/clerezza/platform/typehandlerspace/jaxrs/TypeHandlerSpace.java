@@ -29,7 +29,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
+import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.platform.typehandlerspace.TypeHandlerDiscovery;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.UriRef;

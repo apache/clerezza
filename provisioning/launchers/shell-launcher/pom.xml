@@ -30,7 +30,8 @@
 
     <name>Clerezza - Launcher: Shell only</name>
     <description>Runnable jar using the clerezza partial bundlelists.</description>
-
+    <!-- note that the sling launchpad unnecessarily adds a webserser to it, 
+    see: http://mail-archives.apache.org/mod_mbox/sling-users/201403.mbox/%3CCAKkCf4p3gOBwG8ALTNXXb-QYT3Eb6zwSWdVTF8xs8DgkY_fD1A%40mail.gmail.com%3E -->
     <prerequisites>
       <maven>3.0.2</maven>
     </prerequisites>

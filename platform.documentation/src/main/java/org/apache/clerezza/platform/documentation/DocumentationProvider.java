@@ -265,6 +265,10 @@ public class DocumentationProvider implements WeightedTcProvider, BundleListener
     private void createUnionGraph() {
         MGraph[] docGraphs = bundle2DocGraphMap.values().
                 toArray(new MGraph[bundle2DocGraphMap.size()]);
-        unitedDocumentations = new SimpleGraph(new UnionMGraph(docGraphs), true);
+        if (docGraphs.length > 0) {
+            unitedDocumentations = new SimpleGraph(new UnionMGraph(docGraphs), true);
+        } else {
+            unitedDocumentations = new SimpleGraph(new SimpleMGraph(), true);
+        }
     }
 }

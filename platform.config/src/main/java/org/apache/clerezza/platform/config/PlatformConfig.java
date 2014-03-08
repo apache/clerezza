@@ -25,8 +25,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.platform.Constants;
-import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
-import org.apache.clerezza.platform.graphprovider.content.GraphNameTransitioner;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -74,9 +72,6 @@ public class PlatformConfig {
 
     @Reference
     private TcManager tcManager;
-
-    @Reference
-    private ContentGraphProvider cgProvider;
 
 
     /**
@@ -182,18 +177,15 @@ public class PlatformConfig {
     }
 
     protected void activate(ComponentContext componentContext) {
-        GraphNameTransitioner.renameGraphsWithOldNames(tcManager);
         this.context = componentContext.getBundleContext();
         try {
-            tcManager.getMGraph(CONFIG_GRAPH_URI);
+            tcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
         } catch (NoSuchEntityException nsee) {
-            tcManager.createMGraph(CONFIG_GRAPH_URI);            
+            tcManager.createMGraph(Constants.CONFIG_GRAPH_URI);            
         }
-        cgProvider.addTemporaryAdditionGraph(CONFIG_GRAPH_URI);
     }
     
     protected void deactivate(ComponentContext componentContext) {
         this.context = null;
-        cgProvider.removeTemporaryAdditionGraph(CONFIG_GRAPH_URI);
     }
 }

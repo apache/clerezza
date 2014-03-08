@@ -47,11 +47,13 @@ import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedMGraphWrapper;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 
@@ -68,7 +70,9 @@ import org.apache.felix.scr.annotations.Service;
  */
 @Component(metatype = true, immediate = true)
 @Service(WeightedTcProvider.class)
-@Property(name = "weight", intValue = 107)
+@Properties({
+    @Property(name = "weight", intValue = 107),
+    @Property(name = TcManager.GENERAL_PURPOSE_TC, boolValue = true)})
 public class TdbTcProvider implements WeightedTcProvider {
 
     static {
@@ -76,12 +80,10 @@ public class TdbTcProvider implements WeightedTcProvider {
         //it is only needed so that on windows the files of a dataset can be deleteds
         SystemTDB.setFileMode(FileMode.direct);
     }
-
     @Property(intValue = 6, description = "Specifies the number of seconds to wait "
             + "between synchronizations of the TDB datasets to the filesystem")
     public static final String SYNC_INTERVAL = "sync-interval";
     private int syncInterval = 6;
-
     /**
      * directory where all graphs are stored
      */
@@ -89,10 +91,8 @@ public class TdbTcProvider implements WeightedTcProvider {
     private String dataPathString = DATA_PATH_NAME;
     private Map<UriRef, LockableMGraph> mGraphMap = new HashMap<UriRef, LockableMGraph>();
     private Map<UriRef, Graph> graphMap = new HashMap<UriRef, Graph>();
-    private Map<File, com.hp.hpl.jena.graph.Graph> dir2JenaGraphMap
-            = new HashMap<File, com.hp.hpl.jena.graph.Graph>();
-    private Map<File, Lock> dir2Lock
-            = new HashMap<File, Lock>();
+    private Map<File, com.hp.hpl.jena.graph.Graph> dir2JenaGraphMap = new HashMap<File, com.hp.hpl.jena.graph.Graph>();
+    private Map<File, Lock> dir2Lock = new HashMap<File, Lock>();
     private final Map<File, Dataset> dir2Dataset = new HashMap<File, Dataset>();
     private static final Logger log = LoggerFactory.getLogger(TdbTcProvider.class);
     private int weight = 107;
@@ -119,7 +119,6 @@ public class TdbTcProvider implements WeightedTcProvider {
             stopRequested = true;
         }
     }
-
     private SyncThread syncThread;
 
     public TdbTcProvider() {

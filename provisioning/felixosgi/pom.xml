@@ -56,32 +56,32 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>1.6.2</version>
+            <version>1.8.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
-            <version>1.2.8</version>
+            <version>1.8.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.metatype</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.10</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.eventadmin</artifactId>
-            <version>1.2.14</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.dependencymanager</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.dependencymanager.runtime</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -95,7 +95,7 @@
         <dependency> 
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.commons.log</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.sling</groupId>

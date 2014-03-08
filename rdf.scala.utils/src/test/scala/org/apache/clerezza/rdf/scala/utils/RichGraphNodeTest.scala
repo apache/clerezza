@@ -52,7 +52,7 @@ class RichGraphNodeTest {
     rdfList.add(johnUri)
     rdfList.add(new PlainLiteralImpl("foo"))
     rdfList.add(new PlainLiteralImpl("bar"))
-    mGraph.add(new TripleImpl(johnUri, SKOS.related, listUri))
+    mGraph.add(new TripleImpl(johnUri, SKOS04.related, listUri))
     val litEn = new PlainLiteralImpl("hello",
           new Language("en"))
     val litFr = new PlainLiteralImpl("satul",
@@ -131,19 +131,19 @@ class RichGraphNodeTest {
 
   @Test
   def testLists = {
-    Assert.assertEquals(new PlainLiteralImpl("foo"),(node/SKOS.related).asList().get(1))
-    Assert.assertEquals(new PlainLiteralImpl("foo"), (node/SKOS.related%0!!)(1)!)
+    Assert.assertEquals(new PlainLiteralImpl("foo"),(node/SKOS04.related).asList().get(1))
+    Assert.assertEquals(new PlainLiteralImpl("foo"), (node/SKOS04.related%0!!)(1)!)
     Assert.assertEquals(new PlainLiteralImpl("foo"),
-              (for (value <- node/SKOS.related%0!!) yield value!).toList(1))
+              (for (value <- node/SKOS04.related%0!!) yield value!).toList(1))
     Assert.assertEquals(new PlainLiteralImpl("bar"),
-              (for (value <- node/SKOS.related%0!!) yield value!).toList(2))
-    Assert.assertEquals(new PlainLiteralImpl("foo"), node/SKOS.related%0%!!1!)
+              (for (value <- node/SKOS04.related%0!!) yield value!).toList(2))
+    Assert.assertEquals(new PlainLiteralImpl("foo"), node/SKOS04.related%0%!!1!)
   }
 
   @Test
   def sortProperties = {
-    Assert.assertEquals(new PlainLiteralImpl("bar"), (node/SKOS.related%0!!).sortWith((a,b) => ((a*) < (b*)))(0)!)
-    Assert.assertEquals(johnUri, (node/SKOS.related%0!!).sortWith((a,b) => ((a*) > (b*)))(0)!)
+    Assert.assertEquals(new PlainLiteralImpl("bar"), (node/SKOS04.related%0!!).sortWith((a,b) => ((a*) < (b*)))(0)!)
+    Assert.assertEquals(johnUri, (node/SKOS04.related%0!!).sortWith((a,b) => ((a*) > (b*)))(0)!)
   }
 
   @Test

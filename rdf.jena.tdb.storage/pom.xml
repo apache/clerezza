@@ -94,6 +94,10 @@
             <version>14.0</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core.test</artifactId>
             <scope>test</scope>

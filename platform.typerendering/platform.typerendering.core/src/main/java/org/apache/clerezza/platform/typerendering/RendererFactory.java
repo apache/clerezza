@@ -21,7 +21,7 @@ package org.apache.clerezza.platform.typerendering;
 
 import java.util.*;
 import javax.ws.rs.core.MediaType;
-import org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider;
+import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.platform.typepriority.TypePrioritizer;
 import org.apache.clerezza.platform.typerendering.utils.MediaTypeMap;
 import org.apache.clerezza.platform.typerendering.utils.RegexMap;

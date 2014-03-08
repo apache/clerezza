@@ -39,6 +39,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -76,6 +77,7 @@ import virtuoso.jdbc4.VirtuosoStatement;
  */
 @Component(metatype=true, immediate=true)
 @Service(WeightedTcProvider.class)
+@Property(name = TcManager.GENERAL_PURPOSE_TC, boolValue = true)
 public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	@Property(value="localhost", description="The host running the Virtuoso server")
 	public static final String HOST = "host";

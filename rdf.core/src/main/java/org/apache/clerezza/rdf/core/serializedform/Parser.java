@@ -18,44 +18,57 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This singleton class provides a method <code>parse</code> to transform 
- * serialized RDF forms into {@link Graph}s.
- * 
- * Functionality is delegated to registered {@link ParsingProvider}s. Such
- * <code>ParsingProvider</code>s can be registered and unregistered, later 
- * registered <code>ParsingProvider</code>s shadow previously registered
- * providers for the same format.
+ * This singleton class provides a method
+ * <code>parse</code> to transform serialized RDF forms into {@link Graph}s.
  *
- * Note on synchronization: <code>ParsingProvider</code>s must be able to handle
- * concurrent requests.
- * 
+ * Functionality is delegated to registered {@link ParsingProvider}s. Such
+ * <code>ParsingProvider</code>s can be registered and unregistered, later
+ * registered
+ * <code>ParsingProvider</code>s shadow previously registered providers for the
+ * same format.
+ *
+ * Note on synchronization:
+ * <code>ParsingProvider</code>s must be able to handle concurrent requests.
+ *
  * @author reto
- * 
- * @scr.component
- * @scr.service interface="org.apache.clerezza.rdf.core.serializedform.Parser"
- * @scr.reference name="parsingProvider"
- *     cardinality="0..n" policy="dynamic"
- *     interface="org.apache.clerezza.rdf.core.serializedform.ParsingProvider"
+ *
  */
+@Component(service = Parser.class)
 public class Parser {
 
+    private ConfigurationAdmin configurationAdmin;
     /**
      * The list of providers in the order of registration
      */
@@ -68,26 +81,30 @@ public class Parser {
      * The singleton instance
      */
     private volatile static Parser instance;
+    private boolean active;
 
+    private static final Logger log = LoggerFactory.getLogger(Parser.class);
     /**
      * the constructor sets the singleton instance to allow instantiation
      * by OSGi-DS. This constructor should not be called except by OSGi-DS,
      * otherwise the static <code>getInstance</code> method should be used.
      */
     public Parser() {
+        log.info("constructing Parser");
         Parser.instance = this;
     }
 
     /**
      * A constructor for tests, which doesn't set the singleton instance
-     * 
+     *
      * @param dummy an ignored argument to distinguish this from the other constructor
      */
     Parser(Object dummy) {
+        active = true;
     }
 
     /**
-     * This returns the singleton instance, if an instance has been previously 
+     * This returns the singleton instance, if an instance has been previously
      * created (e.g. by OSGi declarative services) this instance is returned,
      * otherwise a new instance is created and providers are injected using 
      * the service provider interface (META-INF/services/)
@@ -105,11 +122,43 @@ public class Parser {
                         ParsingProvider parsingProvider = parsingProviders.next();
                         instance.bindParsingProvider(parsingProvider);
                     }
+                    instance.active = true;
+                    instance.refreshProviderMap();
                 }
             }
         }
         return instance;
 
+    }
+
+    @Activate
+    protected void activate(final ComponentContext componentContext) {
+        active = true;
+        refreshProviderMap();
+        //changing the congiguration before this finshed activating causes a new instance to be created
+        /*(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    return;
+                }
+                refreshProviderMap();
+            }
+            
+            
+        }).start();*/
+    }
+
+    @Deactivate
+    protected void deactivate(final ComponentContext componentContext) {
+        active = false;
+    }
+    
+    @Modified
+    void modified(ComponentContext ctx) {
+        log.debug("modified");
     }
 
     /**
@@ -190,9 +239,10 @@ public class Parser {
         }
         provider.parse(target, serializedGraph, formatIdentifier, baseUri);
     }
-    
+
     /**
      * Get a set of supported formats
+     *
      * @return a set if stings identifying formats (usually the MIME-type)
      */
     public Set<String> getSupportedFormats() {
@@ -204,6 +254,8 @@ public class Parser {
      *
      * @param provider the provider to be registered
      */
+    @Reference(policy = ReferencePolicy.DYNAMIC,
+            cardinality = ReferenceCardinality.MULTIPLE)
     public void bindParsingProvider(ParsingProvider provider) {
         providerList.add(provider);
         refreshProviderMap();
@@ -221,18 +273,36 @@ public class Parser {
 
     /**
      * Update providerMap with the providers in the providerList
-     * 
+     *
      */
     private void refreshProviderMap() {
-        final Map<String, ParsingProvider> newProviderMap = new HashMap<String, ParsingProvider>();
-        for (ParsingProvider provider : providerList) {
-            String[] formatIdentifiers = getFormatIdentifiers(provider);
-            for (String formatIdentifier : formatIdentifiers) {
-                newProviderMap.put(formatIdentifier, provider);
+        if (active) {
+            try {
+                final Map<String, ParsingProvider> newProviderMap = new HashMap<String, ParsingProvider>();
+                for (ParsingProvider provider : providerList) {
+                    String[] formatIdentifiers = getFormatIdentifiers(provider);
+                    for (String formatIdentifier : formatIdentifiers) {
+                        newProviderMap.put(formatIdentifier, provider);
+                    }
+                }
+                providerMap = newProviderMap;
+                if (configurationAdmin != null) { //i.e. when we are in an OSGi environment
+                    Dictionary<String, Object> newConfig = configurationAdmin.getConfiguration(getClass().getName()).getProperties();
+                    if (newConfig == null) {
+                        newConfig = new Hashtable<String, Object>();
+                    }
+                    Set<String> supportedFormats = getSupportedFormats();
+                    String[] supportedFromatsArray = supportedFormats.toArray(new String[supportedFormats.size()]);
+                    newConfig.put(SupportedFormat.supportedFormat, supportedFromatsArray);
+                    configurationAdmin.getConfiguration(getClass().getName()).update(newConfig);
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         }
-        providerMap = newProviderMap;
     }
+
+    
 
     /**
      * Extract format identifiers for a parsing provider
@@ -245,5 +315,14 @@ public class Parser {
         SupportedFormat supportedFormatAnnotation = clazz.getAnnotation(SupportedFormat.class);
         String[] formatIdentifiers = supportedFormatAnnotation.value();
         return formatIdentifiers;
+    }
+
+    @Reference
+    protected void bindConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
+        this.configurationAdmin = configurationAdmin;
+    }
+
+    protected void unbindConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
+        this.configurationAdmin = null;
     }
 }

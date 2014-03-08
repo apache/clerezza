@@ -39,8 +39,10 @@
     <name>Clerezza - Provisioning - Typerendering</name>
     <description>Clerezza - Provisioning: What's needed to get typerenering working,
         including support for ScalaServerPages.
-        It depends on the Clerezza rdf libraries as provided by the RDF feature, 
-        on JAX-RS and on platform.graphnodeprovider..</description>
+        It depends on 
+        - the Clerezza rdf libraries as provided by the RDF feature, 
+        - on JAX-RS
+        - on an implementation of GraphNodeProvider such as platform.graphnodeprovider.</description>
 
     <dependencies>
  
@@ -74,6 +76,26 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typepriority</artifactId>
             <version>0.2-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- required by platform.config -->
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>permissiondescriptions</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- provides system graph as required by typepriority -->
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.config</artifactId>
+            <version>0.4-SNAPSHOT</version>
         </dependency>
         
         <dependency>

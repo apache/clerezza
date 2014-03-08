@@ -19,9 +19,8 @@
 package org.apache.clerezza.rdf.core.sparql;
 
 import java.io.StringReader;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * This class implements an OSGi service to provide a method to parse a
@@ -30,8 +29,7 @@ import org.apache.clerezza.rdf.core.sparql.query.Query;
  * @author hasan
  */
 
-@Component
-@Service(QueryParser.class)
+@Component(service = QueryParser.class)
 public class QueryParser {
 
     private static volatile QueryParser instance;

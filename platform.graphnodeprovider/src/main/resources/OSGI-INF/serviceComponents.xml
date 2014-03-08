@@ -22,10 +22,10 @@
 
 <components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
 
-    <scr:component enabled="true" name="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider">
-        <implementation class="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider"/>
+    <scr:component enabled="true" name="org.apache.clerezza.platform.graphnodeprovider.PlatformGraphNodeProvider">
+        <implementation class="org.apache.clerezza.platform.graphnodeprovider.PlatformGraphNodeProvider"/>
         <service servicefactory="false">
-            <provide interface="org.apache.clerezza.platform.graphnodeprovider.GraphNodeProvider"/>
+            <provide interface="org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider"/>
         </service>
         <reference name="tcManager" interface="org.apache.clerezza.rdf.core.access.TcManager"
         cardinality="1..1" policy="static" bind="bindTcManager" unbind="unbindTcManager"/>

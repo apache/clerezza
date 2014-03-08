@@ -19,6 +19,7 @@
 package org.apache.clerezza.platform.content;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
@@ -52,6 +53,7 @@ import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.MGraphUtils;
 import org.apache.clerezza.web.fileserver.BundlePathNode;
@@ -76,6 +78,9 @@ public class Editor extends FileServer {
 
     @Reference
     private TcManager tcManager;
+    
+    @Reference
+    private Serializer serializer;
 
     
     private static final Logger logger = LoggerFactory.getLogger(Editor.class);
@@ -148,6 +153,10 @@ public class Editor extends FileServer {
         final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
             tcManager.getMGraph(graphUri);
         try {
+            serializer.serialize(System.out, revokedGraph, "text/turtle");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            serializer.serialize(baos, revokedGraph, "text/turtle");
+            System.out.println(new String(baos.toByteArray()).contains("\r"));
             MGraphUtils.removeSubGraph(mGraph, revokedGraph);
         } catch (NoSuchSubGraphException ex) {
             throw new RuntimeException(ex);

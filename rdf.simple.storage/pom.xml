@@ -18,10 +18,10 @@
  specific language governing permissions and limitations
  under the License.
 
--->
+    -->
 
     <modelVersion>4.0.0</modelVersion>
-     <parent>
+    <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
         <version>0.5-SNAPSHOT</version>
@@ -49,5 +49,27 @@
             <scope>test</scope>
             <version>0.15-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+            <version>1.2.4</version>
+        </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+                <version>1.15.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-scr-scrdescriptor</id>
+                        <goals>
+                            <goal>scr</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -33,6 +33,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SupportedFormat {
 
+    /**
+     * used as a key for the OSGi service property
+     */
+    public static final String supportedFormat = "supportedFormat";
     public static final String RDF_XML = "application/rdf+xml";
     public static final String TURTLE = "text/turtle";
     public static final String X_TURTLE = "application/x-turtle";
