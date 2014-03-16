@@ -3,7 +3,6 @@ package rdf.virtuoso.storage.access;
 import java.sql.SQLException;
 
 import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
@@ -44,8 +43,6 @@ public class DataAccessTest {
 
 		Assert.assertTrue(da.filter(g, t.getSubject(), null, null).hasNext());
 		Assert.assertTrue(da.filter(g, null, t.getPredicate(), null).hasNext());
-		Resource o = da.filter(g, null, null, null).next().getObject();
-		log.info("object: {}", o);
 		Assert.assertTrue(da.filter(g, null, null, t.getObject()).hasNext());
 		
 		Assert.assertTrue(da.filter(g, null, t.getPredicate(), t.getObject()).hasNext());
