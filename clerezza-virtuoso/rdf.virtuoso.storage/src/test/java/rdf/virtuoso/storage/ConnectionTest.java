@@ -49,47 +49,28 @@ public class ConnectionTest {
 
 	@BeforeClass
 	public static void before() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
 		connection = TestUtils.getConnection();
 	}
 
 	@Test
 	public void testIsClosed() {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		assertFalse(connection.isClosed());
 	}
 
 	@Test
 	public void testIsConnectionLost() {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		assertFalse(connection.isConnectionLost(0));
 	}
 
 	@Test
 	public void testIsReadOnly() throws VirtuosoException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		assertFalse(connection.isReadOnly());
 	}
 
 	@Test
 	public void testConnection() {
 		log.info("testConnection()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		try {
 
 			Statement st = connection.createStatement();
@@ -128,10 +109,6 @@ public class ConnectionTest {
 
 	@Test
 	public void test() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		DatabaseMetaData dm = connection.getMetaData();
 		log.debug("Username is {}", dm.getUserName());
 		Properties p = connection.getClientInfo();

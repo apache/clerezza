@@ -40,6 +40,8 @@ import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,11 @@ public class VirtuosoMGraphTest {
 
 	static Logger log = LoggerFactory.getLogger(VirtuosoMGraphTest.class);
 	
+	@BeforeClass
+	public static void assume(){
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+	}
+	
 	/**
 	 * Clean before any test
 	 * 
@@ -62,10 +69,7 @@ public class VirtuosoMGraphTest {
 	 */
 	@Before
 	public void before() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
+		
 		da = TestUtils.getProvider().createDataAccess();
 		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, da);
 		mgraph.clear();
@@ -85,10 +89,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testAddSingle() {
 		log.info("testAddSingle()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple triple = new Triple() {
 
 			@Override
@@ -116,10 +116,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testAddSingleTypedLiteral() {
 		log.info("testAddSingleTypedLiteral()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple triple = new Triple() {
 
 			@Override
@@ -143,14 +139,11 @@ public class VirtuosoMGraphTest {
 		assertTrue(mgraph.filter(enridaga, predicate, objectTyped).hasNext());
 		assertTrue(mgraph.filter(enridaga, predicate, objectTyped).next().equals(triple));
 	}
-	
-//	@Test
+
+	@Ignore
+	@Test
 	public void testAddSingleXMLLiteral() {
 		log.info("testAddSingleXMLLiteral()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple triple = new Triple() {
 
 			@Override
@@ -184,13 +177,8 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilter() {
 		log.info("testFilter(); Test filter(s,p,o)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
-
 		
 		Iterator<Triple> its = mgraph.filter(null, null, null);
 		while (its.hasNext()) {
@@ -220,10 +208,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterSubject() {
 		log.info("testFilterSubject(); Test filter(s,null,null)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
 		Iterator<Triple> it = mgraph.filter(enridaga, null, null);
@@ -244,10 +228,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterSubjectBnode() throws VirtuosoException, SQLException, ClassNotFoundException {
 		log.info("testFilterSubjectBnode(); Test filter(s,null,null)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		final BNode bn = new BNode();
 		// We use testAdd to prepare this
 		Triple triple = new Triple() {
@@ -304,10 +284,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterPredicate() {
 		log.info("testFilterPredicate(); Test filter(null,p,null)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
 		Iterator<Triple> it = mgraph.filter(null, predicate, null);
@@ -327,10 +303,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterObject() {
 		log.info("testFilterObject(); Test filter(null,null,o)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
 		Iterator<Triple> it = mgraph.filter(null, null, object);
@@ -350,10 +322,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterObjectTyped() {
 		log.info("testFilterObjectTyped(); Test filter(null,null,o)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingleTypedLiteral();
 		Iterator<Triple> it = mgraph.filter(null, null, objectTyped);
@@ -370,13 +338,10 @@ public class VirtuosoMGraphTest {
 		assertTrue(found);
 	}
 
-//	@Test
+	@Ignore
+	@Test
 	public void testFilterObjectXml() {
 		log.info("testFilterObjectXml(); Test filter(null,null,o)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingleXMLLiteral();
 		Iterator<Triple> it = mgraph.filter(null, null, objectXml);
@@ -396,10 +361,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testSize() {
 		log.info("testSize()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
 		// Should be 1 at this time
@@ -411,10 +372,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testIncreaseSize() {
 		log.info("testIncreaseSize()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		int beforeSize = mgraph.size();
 		Triple t = new Triple() {
 
@@ -441,10 +398,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testAddRemoveSize() {
 		log.info("testAddRemoveSize()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		int beforeSize = mgraph.size();
 		Triple t = new Triple() {
 
@@ -472,10 +425,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testGetGraphReadOnly() {
 		log.info("testGetGraphReadOnly()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Graph g = mgraph.getGraph();
 		Triple t = new Triple() {
 
@@ -507,10 +456,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testContains() {
 		log.info("testContains()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple t = new Triple() {
 
 			@Override
@@ -567,10 +512,6 @@ public class VirtuosoMGraphTest {
 	@After
 	public void clear() throws VirtuosoException, ClassNotFoundException,
 			SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
 				mgraph.size());
 		log.debug("Removing graph <{}>", TEST_GRAPH_NAME);

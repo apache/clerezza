@@ -53,7 +53,7 @@ public class TestUtils {
 	static {
 		String skipProperty = System.getProperty("virtuoso.test");
 		if (skipProperty == null) {
-			log.warn("virtuoso.skip property is not set. We skip tests by default.");
+			log.info("virtuoso.skip property is not set. We skip tests by default.");
 			SKIP = true;
 		} else
 			SKIP = !skipProperty.equals("true");
@@ -73,7 +73,7 @@ public class TestUtils {
 	private static void initProvider() throws ClassNotFoundException,
 			SQLException {
 		if (SKIP) {
-			log.warn("SKIPPING ALL TESTS!");
+			log.warn("Skipping tests.");
 			return;
 		}
 		String host = System.getProperty("virtuoso.host");

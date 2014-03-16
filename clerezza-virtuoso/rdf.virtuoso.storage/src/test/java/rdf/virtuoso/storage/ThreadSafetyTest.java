@@ -35,6 +35,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +57,14 @@ public class ThreadSafetyTest {
 	private DataAccess da = null;
 	static Logger log = LoggerFactory.getLogger(ThreadSafetyTest.class);
 
+	@BeforeClass
+	public static void assume(){
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+	}
+	
 	@Before
 	public void setUp() throws Exception {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
+		
 		da = TestUtils.getProvider().createDataAccess();
 		da.clearGraph("ThreadSafetyTest");
 		mgraph = new VirtuosoMGraph("ThreadSafetyTest",
@@ -72,10 +75,6 @@ public class ThreadSafetyTest {
 
 	@After
 	public void tearDown() throws Exception {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		try {
 			executor.shutdown();
 			if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
@@ -92,10 +91,6 @@ public class ThreadSafetyTest {
 	@Test
 	public void testProduceFirstAndThenConsume() throws Exception {
 		log.info("testProduceFirstAndThenConsume()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// Produce first...
 		Future<Result> fp = executor.submit(new Producer("A", 100));
 		fp.get().assertResult();
@@ -114,10 +109,6 @@ public class ThreadSafetyTest {
 	@Test
 	public void testProduceAndConsumeSingle() throws Exception {
 		log.info("testProduceAndConsumeSingle()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		List<Task> tasks = Arrays.asList(
 				new Consumer("A", 100), new Producer("A", 100));
 		List<Future<Result>> futures = executor.invokeAll(tasks);
@@ -130,10 +121,6 @@ public class ThreadSafetyTest {
 	@Test
 	public void testProduceAndConsumeMultiple() throws Exception {
 		log.info("testProduceAndConsumeMultiple()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		List<Task> tasks = Arrays.asList(
 				new Consumer("A", 100), new Producer("A", 100),
 				new Consumer("B", 100), new Producer("B", 100),
@@ -149,10 +136,6 @@ public class ThreadSafetyTest {
 	@Test
 	public void testProduceAndConsumeMixed() throws Exception {
 		log.info("testProduceAndConsumeMixed()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		List<? extends Task> tasks = Arrays.asList(
 				new Consumer("A", 110), new Consumer("A", 170),
 				new Consumer("B", 100), new Consumer("B", 500),

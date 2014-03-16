@@ -65,21 +65,15 @@ public class VirtuosoWeightedProviderTest {
 
 	@BeforeClass
 	public static void before() throws ClassNotFoundException, SQLException {
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+		
 		log.info("Preparing VirtuosoWeightedProvider for test");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		wp = TestUtils.getProvider();
 	}
 
 	@Test
 	public void weight() {
 		log.info("Test setting the weight");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		int w = 200;
 		wp.setWeight(w);
 		assertTrue(wp.getWeight() == w);
@@ -88,10 +82,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void listGraphs() {
 		log.info("Test listGraphs()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Set<UriRef> gs = wp.listGraphs();
 		Iterator<UriRef> it = gs.iterator();
 		log.debug("Graphs:");
@@ -108,10 +98,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void listGraphsIsUnmodifiable() {
 		log.info("Test listGraphsIsUnmodifiable()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Set<UriRef> gs = wp.listGraphs();
 		boolean exception = false;
 		try {
@@ -128,10 +114,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void listMGraphs() {
 		log.info("Test listMGraphs()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Set<UriRef> mg = wp.listMGraphs();
 		log.debug("Graphs:");
 		for (UriRef r : mg) {
@@ -153,10 +135,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void createMGraph() {
 		log.info("createMGraph()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		try {
 			MGraph mgraph = wp.createMGraph(new UriRef(TEST_GRAPH_URI));
 			assertNotNull(mgraph);
@@ -192,10 +170,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void createGraph() throws VirtuosoException, ClassNotFoundException,
 			SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		MGraph smg = new SimpleMGraph();
 		Triple t = new Triple() {
 
@@ -230,10 +204,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void testEquals() {
 		log.info("testEquals()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		UriRef name = new UriRef(TEST_GRAPH_URI);
 		MGraph g = wp.createMGraph(name);
 		// Equals
@@ -250,10 +220,6 @@ public class VirtuosoWeightedProviderTest {
 	public void clear() throws VirtuosoException, ClassNotFoundException,
 			SQLException {
 		log.info("clear()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.debug("Removing test graphs <{}>", TEST_GRAPH_URI);
 		try {
 			wp.deleteTripleCollection(new UriRef(TEST_GRAPH_URI));
@@ -275,10 +241,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void testCreateEmptyMGraph(){
 		log.info("testCreateEmptyMGraph()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 //		try {
 			UriRef ur = new UriRef("urn:my-empty-graph");
 			Assert.assertFalse(wp.listGraphs().contains(ur));
@@ -299,10 +261,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void testEmptyAndNonEmptyGraphs(){
 		log.info("testEmptyAndNonEmptyGraphs()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		
 		UriRef ur = new UriRef("urn:my-empty-graph");
 		UriRef nur = new UriRef("urn:my-non-empty-graph");

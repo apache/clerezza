@@ -10,6 +10,7 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,22 +23,19 @@ public class DataAccessTest {
 
 	static Logger log = LoggerFactory.getLogger(DataAccessTest.class);
 	
+	@BeforeClass
+	public static void assume(){
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+	}
+	
 	@Before
 	public void before() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		da = TestUtils.getProvider().createDataAccess();
 		da.clearGraph( "urn:x-test:DataAccessTest" );
 	}
 
 	@After
 	public void after() {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		da.clearGraph( "urn:x-test:DataAccessTest" );
 		da.close();
 		da = null;
@@ -69,40 +67,24 @@ public class DataAccessTest {
 
 	@Test
 	public void test_Uri_Uri_Uri(){
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
 		testTriple(t);
 	}
 
 	@Test
 	public void test_Uri_Uri_PlainLiteral(){
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new PlainLiteralImpl("Lorem Ipsum"));
 		testTriple(t);
 	}
 	
 	@Test
 	public void test_Uri_Uri_BNode(){
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new BNode());
 		testTriple(t);
 	}
 	
 	@Test
 	public void testRenew(){
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		int i = 100;
 		while(i>0){
 			test_Uri_Uri_Uri();

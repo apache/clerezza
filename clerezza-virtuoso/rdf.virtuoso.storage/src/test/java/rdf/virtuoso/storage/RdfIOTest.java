@@ -40,6 +40,7 @@ import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,11 @@ public class RdfIOTest {
 	static Logger log = LoggerFactory.getLogger(RdfIOTest.class);
 	static DataAccess da;
 
+	@BeforeClass
+	public static void assume(){
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+	}
+	
 	/**
 	 * Clean before any test
 	 * 
@@ -62,10 +68,7 @@ public class RdfIOTest {
 	 */
 	@Before
 	public void before() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
+		
 		da = TestUtils.getProvider().createDataAccess();
 		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, da);
 		mgraph.clear();
@@ -82,10 +85,6 @@ public class RdfIOTest {
 	@After
 	public void clear() throws VirtuosoException, ClassNotFoundException,
 			SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.debug("Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
 				mgraph.size());
 		// clear all resources
@@ -102,10 +101,6 @@ public class RdfIOTest {
 
 	@Test
 	public void xsdString() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Text an xsd:string");
 		TypedLiteral object = new TypedLiteralImpl("lorem ipsum", new UriRef(
 				XSD + "string"));
@@ -124,10 +119,6 @@ public class RdfIOTest {
 
 	@Test
 	public void longString() throws ClassNotFoundException, SQLException, InterruptedException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test a long xsd:string");
 		StringBuilder longStr = new StringBuilder();
 		int c = 250000;
@@ -159,10 +150,6 @@ public class RdfIOTest {
 
 	@Test
 	public void subjectAsUriTest() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test subject as UriRef");
 
 		NonLiteral subject;
@@ -184,10 +171,6 @@ public class RdfIOTest {
 	@Test
 	public void subjectAsBnodeTest() throws ClassNotFoundException,
 			SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test subject as BNode");
 
 		NonLiteral subject;
@@ -210,10 +193,6 @@ public class RdfIOTest {
 
 	@Test
 	public void objectAsUriTest() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test object as UriRef");
 
 		NonLiteral subject = new UriRef("urn:io-test:enridaga");
@@ -232,10 +211,6 @@ public class RdfIOTest {
 
 	@Test
 	public void objectAsBnodeTest() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test object as Bnode");
 
 		NonLiteral subject = new UriRef("urn:io-test:subject");
@@ -262,10 +237,6 @@ public class RdfIOTest {
 
 	@Test
 	public void bnodesTest() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test iterations and filter with bnode");
 
 		NonLiteral s1 = new BNode();
@@ -339,10 +310,6 @@ public class RdfIOTest {
 
 	@Test
 	public void sysconfigTest(){
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		
 		SystemConfig sc = new SystemConfig();
 		MGraph systemGraph = mgraph;
@@ -362,10 +329,6 @@ public class RdfIOTest {
 	
 	@Test
 	public void testUnicodeChars() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Text an xsd:string");
 		
 		String s = "lorem ipsum è é £ ò ç à ù β ät ü ä";
