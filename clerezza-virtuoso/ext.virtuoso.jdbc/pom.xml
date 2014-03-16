@@ -59,7 +59,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;scope=compile;artifactId=!slf4j-api</Embed-Dependency>
 						<!-- Embed-Transitive>true</Embed-Transitive -->
 						<!-- Import-Package> </Import-Package -->
