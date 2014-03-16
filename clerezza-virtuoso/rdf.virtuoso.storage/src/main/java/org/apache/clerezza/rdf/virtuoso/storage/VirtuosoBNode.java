@@ -1,4 +1,4 @@
-package rdf.virtuoso.storage;
+package org.apache.clerezza.rdf.virtuoso.storage;
 
 import org.apache.clerezza.rdf.core.BNode;
 

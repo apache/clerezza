@@ -1,4 +1,4 @@
-package rdf.virtuoso.storage.access;
+package org.apache.clerezza.rdf.virtuoso.storage.access;
 
 import java.sql.SQLException;
 
@@ -7,6 +7,8 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.virtuoso.storage.TestUtils;
+import org.apache.clerezza.rdf.virtuoso.storage.access.DataAccess;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,7 +17,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rdf.virtuoso.storage.TestUtils;
 
 public class DataAccessTest {
 

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage;
+package org.apache.clerezza.rdf.virtuoso.storage;
 
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
@@ -32,10 +32,10 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
+import org.apache.clerezza.rdf.virtuoso.storage.access.DataAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rdf.virtuoso.storage.access.DataAccess;
 
 /**
  * Implementation of MGraph for the Virtuoso quad store.

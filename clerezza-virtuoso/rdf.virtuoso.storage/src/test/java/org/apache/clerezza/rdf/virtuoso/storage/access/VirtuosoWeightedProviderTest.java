@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage.access;
+package org.apache.clerezza.rdf.virtuoso.storage.access;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,6 +37,8 @@ import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.virtuoso.storage.TestUtils;
+import org.apache.clerezza.rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +47,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rdf.virtuoso.storage.TestUtils;
 import virtuoso.jdbc4.VirtuosoException;
 
 /**

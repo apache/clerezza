@@ -1,4 +1,4 @@
-package rdf.virtuoso.storage.access;
+package org.apache.clerezza.rdf.virtuoso.storage.access;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,12 +26,12 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoBNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wymiwyg.commons.util.collections.BidiMap;
 import org.wymiwyg.commons.util.collections.BidiMapImpl;
 
-import rdf.virtuoso.storage.VirtuosoBNode;
 import virtuoso.jdbc4.VirtuosoConnection;
 import virtuoso.jdbc4.VirtuosoException;
 import virtuoso.jdbc4.VirtuosoExtendedString;
