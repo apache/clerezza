@@ -1,6 +1,5 @@
 package rdf.virtuoso.storage.access;
 
-import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -110,11 +109,6 @@ public class DataAccess {
 		try {
 			Class.forName(VirtuosoWeightedProvider.DRIVER, true, this
 					.getClass().getClassLoader());
-			if (logger.isDebugEnabled()) {
-				logger.debug("Activating logging for DriverManager in stderr");
-				// FIXME! How to redirect logging to our logger???
-				DriverManager.setLogWriter(new PrintWriter(System.err));
-			}
 			VirtuosoConnection c = (VirtuosoConnection) DriverManager
 					.getConnection(connectionString, user, pwd);
 			c.setAutoCommit(true);
@@ -126,8 +120,16 @@ public class DataAccess {
 		}
 	}
 
+	// A simple renewal policy
+	private int statementCalls = 0;
 	protected PreparedStatement getStatement(String query)
 			throws VirtuosoException {
+		if(statementCalls >= 10000){
+			statementCalls=0; 
+			renew();
+		}else{
+			statementCalls++;
+		}
 		if (!preparedStatements.containsKey(query)) {
 			VirtuosoPreparedStatement ps = (VirtuosoPreparedStatement) connection
 					.prepareStatement(query);
@@ -158,6 +160,7 @@ public class DataAccess {
 	}
 
 	public void close() {
+		logger.trace("closing resources...");
 		Collection<VirtuosoPreparedStatement> pss = preparedStatements.values();
 		for (VirtuosoPreparedStatement ps : pss) {
 			try {
@@ -167,9 +170,11 @@ public class DataAccess {
 				logger.error("Cannot close statement", e);
 			}
 		}
+		logger.trace("closed {} statements.", pss.size());
 		preparedStatements.clear();
 		try {
 			connection.close();
+			logger.trace("Connection closed");
 		} catch (Exception e) {
 			logger.error("Cannot close connection", e);
 		}
