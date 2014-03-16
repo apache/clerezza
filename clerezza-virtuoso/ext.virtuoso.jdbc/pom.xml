@@ -21,10 +21,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>clerezza-virtuoso</groupId>
-		<artifactId>parent</artifactId>
-		<version>0.2-SNAPSHOT</version>
-		<relativePath>../</relativePath>
+		<groupId>org.apache.clerezza</groupId>
+		<artifactId>clerezza</artifactId>
+		<version>0.5-SNAPSHOT</version>
+		<relativePath>../../parent</relativePath>
 	</parent>
 	<artifactId>ext.virtuoso.jdbc</artifactId>
 	<name>Clerezza/Virtuoso Ext - Virtuoso JDBC OSGi Bundle</name>
