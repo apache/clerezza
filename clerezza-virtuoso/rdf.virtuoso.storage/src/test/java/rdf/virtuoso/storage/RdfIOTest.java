@@ -130,9 +130,9 @@ public class RdfIOTest {
 		}
 		log.info("Test a long xsd:string");
 		StringBuilder longStr = new StringBuilder();
-		int c = 2500;
+		int c = 250000;
 		while (c > 0) {
-			longStr.append(" ");
+			longStr.append(" lorem ipsum ");
 			c--;
 		}
 		int size = longStr.length();
