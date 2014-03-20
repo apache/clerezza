@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage.access;
+package org.apache.clerezza.rdf.virtuoso.storage.access;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -32,19 +32,21 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.virtuoso.storage.TestUtils;
+import org.apache.clerezza.rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rdf.virtuoso.storage.TestUtils;
 import virtuoso.jdbc4.VirtuosoException;
 
 /**
@@ -64,21 +66,15 @@ public class VirtuosoWeightedProviderTest {
 
 	@BeforeClass
 	public static void before() throws ClassNotFoundException, SQLException {
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+		
 		log.info("Preparing VirtuosoWeightedProvider for test");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		wp = TestUtils.getProvider();
 	}
 
 	@Test
 	public void weight() {
 		log.info("Test setting the weight");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		int w = 200;
 		wp.setWeight(w);
 		assertTrue(wp.getWeight() == w);
@@ -87,10 +83,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void listGraphs() {
 		log.info("Test listGraphs()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Set<UriRef> gs = wp.listGraphs();
 		Iterator<UriRef> it = gs.iterator();
 		log.debug("Graphs:");
@@ -107,10 +99,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void listGraphsIsUnmodifiable() {
 		log.info("Test listGraphsIsUnmodifiable()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Set<UriRef> gs = wp.listGraphs();
 		boolean exception = false;
 		try {
@@ -127,10 +115,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void listMGraphs() {
 		log.info("Test listMGraphs()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Set<UriRef> mg = wp.listMGraphs();
 		log.debug("Graphs:");
 		for (UriRef r : mg) {
@@ -152,10 +136,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void createMGraph() {
 		log.info("createMGraph()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		try {
 			MGraph mgraph = wp.createMGraph(new UriRef(TEST_GRAPH_URI));
 			assertNotNull(mgraph);
@@ -191,10 +171,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void createGraph() throws VirtuosoException, ClassNotFoundException,
 			SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		MGraph smg = new SimpleMGraph();
 		Triple t = new Triple() {
 
@@ -229,10 +205,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void testEquals() {
 		log.info("testEquals()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		UriRef name = new UriRef(TEST_GRAPH_URI);
 		MGraph g = wp.createMGraph(name);
 		// Equals
@@ -244,17 +216,24 @@ public class VirtuosoWeightedProviderTest {
 		assertFalse(g.equals(g.getGraph()));
 	}
 
+	@Before
 	@After
 	public void clear() throws VirtuosoException, ClassNotFoundException,
 			SQLException {
 		log.info("clear()");
-		log.debug("Removing graph <{}>", TEST_GRAPH_URI);
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
+		log.debug("Removing test graphs <{}>", TEST_GRAPH_URI);
 		try {
 			wp.deleteTripleCollection(new UriRef(TEST_GRAPH_URI));
+		} catch (NoSuchEntityException nsee) {
+			// Nothing to do
+		}
+		try {
+			wp.deleteTripleCollection(new UriRef("urn:my-empty-graph"));
+		} catch (NoSuchEntityException nsee) {
+			// Nothing to do
+		}
+		try {
+			wp.deleteTripleCollection(new UriRef("urn:my-non-empty-graph"));
 		} catch (NoSuchEntityException nsee) {
 			// Nothing to do
 		}
@@ -263,10 +242,6 @@ public class VirtuosoWeightedProviderTest {
 	@Test
 	public void testCreateEmptyMGraph(){
 		log.info("testCreateEmptyMGraph()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 //		try {
 			UriRef ur = new UriRef("urn:my-empty-graph");
 			Assert.assertFalse(wp.listGraphs().contains(ur));
@@ -282,5 +257,54 @@ public class VirtuosoWeightedProviderTest {
 //		} catch (NoSuchEntityException nsee) {
 //			// Nothing to do
 //		}
+	}
+	
+	@Test
+	public void testEmptyAndNonEmptyGraphs(){
+		log.info("testEmptyAndNonEmptyGraphs()");
+		
+		UriRef ur = new UriRef("urn:my-empty-graph");
+		UriRef nur = new UriRef("urn:my-non-empty-graph");
+		
+		Assert.assertFalse(wp.listGraphs().contains(ur));
+		Assert.assertFalse(wp.listMGraphs().contains(ur));
+		wp.createMGraph(ur);
+		Assert.assertTrue(wp.canRead(ur));
+		Assert.assertTrue(wp.canModify(ur));
+		wp.createMGraph(nur);
+		Assert.assertTrue(wp.canRead(nur));
+		Assert.assertTrue(wp.canModify(nur));
+		Assert.assertTrue(wp.listGraphs().contains(nur));
+		Assert.assertTrue(wp.listMGraphs().contains(nur));
+		
+		// Add a triple to the non-empty graph
+		Triple t = new TripleImpl(new UriRef("urn:test:subject"), new UriRef("urn:test:predicate"), 
+				new PlainLiteralImpl("A literal"));
+		wp.getMGraph(nur).add(t);
+		// Show inserted triple
+		Iterator<Triple> ti = wp.getMGraph(nur).iterator();
+		while(ti.hasNext()){
+			log.info(" > {}", ti.next());
+		}
+		Assert.assertTrue(wp.getMGraph(nur).contains(t));
+		Assert.assertTrue(wp.getMGraph(ur).isEmpty());
+		// We delete the empty graph
+		wp.deleteTripleCollection(ur);
+		Assert.assertFalse(wp.listGraphs().contains(ur));
+		Assert.assertFalse(wp.listMGraphs().contains(ur));
+		// But the other is still there
+		Assert.assertTrue(wp.listGraphs().contains(nur));
+		Assert.assertTrue(wp.listMGraphs().contains(nur));
+		// And it still contains its triple
+		Assert.assertTrue(wp.getMGraph(nur).contains(t));
+		// We delete the triple
+		wp.getMGraph(nur).remove(t);
+		Assert.assertFalse(wp.getMGraph(nur).contains(t));
+		Assert.assertTrue(wp.getMGraph(nur).isEmpty());
+		// We delete the non empty graph
+		wp.deleteTripleCollection(nur);
+		Assert.assertFalse(wp.listGraphs().contains(nur));
+		Assert.assertFalse(wp.listMGraphs().contains(nur));
+
 	}
 }

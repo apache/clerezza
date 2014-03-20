@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage;
+package org.apache.clerezza.rdf.virtuoso.storage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -33,11 +33,15 @@ import java.util.concurrent.TimeUnit;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoMGraph;
+import org.apache.clerezza.rdf.virtuoso.storage.access.DataAccess;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * 
@@ -51,26 +55,27 @@ public class ThreadSafetyTest {
 
 	private ExecutorService executor;
 	private VirtuosoMGraph mgraph;
-
+	private DataAccess da = null;
 	static Logger log = LoggerFactory.getLogger(ThreadSafetyTest.class);
 
+	@BeforeClass
+	public static void assume(){
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+	}
+	
 	@Before
 	public void setUp() throws Exception {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
+		
+		da = TestUtils.getProvider().createDataAccess();
+		da.clearGraph("ThreadSafetyTest");
 		mgraph = new VirtuosoMGraph("ThreadSafetyTest",
-				TestUtils.getProvider());
+				da);
+		mgraph.clear();
 		executor = Executors.newCachedThreadPool();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		try {
 			executor.shutdown();
 			if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
@@ -79,16 +84,14 @@ public class ThreadSafetyTest {
 		} finally {
 			mgraph.clear();
 			mgraph = null;
+			da.close();
+			da = null;
 		}
 	}
 
 	@Test
 	public void testProduceFirstAndThenConsume() throws Exception {
 		log.info("testProduceFirstAndThenConsume()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// Produce first...
 		Future<Result> fp = executor.submit(new Producer("A", 100));
 		fp.get().assertResult();
@@ -107,10 +110,6 @@ public class ThreadSafetyTest {
 	@Test
 	public void testProduceAndConsumeSingle() throws Exception {
 		log.info("testProduceAndConsumeSingle()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		List<Task> tasks = Arrays.asList(
 				new Consumer("A", 100), new Producer("A", 100));
 		List<Future<Result>> futures = executor.invokeAll(tasks);
@@ -123,10 +122,6 @@ public class ThreadSafetyTest {
 	@Test
 	public void testProduceAndConsumeMultiple() throws Exception {
 		log.info("testProduceAndConsumeMultiple()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		List<Task> tasks = Arrays.asList(
 				new Consumer("A", 100), new Producer("A", 100),
 				new Consumer("B", 100), new Producer("B", 100),
@@ -142,10 +137,6 @@ public class ThreadSafetyTest {
 	@Test
 	public void testProduceAndConsumeMixed() throws Exception {
 		log.info("testProduceAndConsumeMixed()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		List<? extends Task> tasks = Arrays.asList(
 				new Consumer("A", 110), new Consumer("A", 170),
 				new Consumer("B", 100), new Consumer("B", 500),

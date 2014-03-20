@@ -16,17 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage;
+package org.apache.clerezza.rdf.virtuoso.storage;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
 import virtuoso.jdbc4.VirtuosoConnection;
 import virtuoso.jdbc4.VirtuosoExtendedString;
 import virtuoso.jdbc4.VirtuosoRdfBox;
@@ -53,7 +53,7 @@ public class TestUtils {
 	static {
 		String skipProperty = System.getProperty("virtuoso.test");
 		if (skipProperty == null) {
-			log.warn("virtuoso.skip property is not set. We skip tests by default.");
+			log.info("virtuoso.skip property is not set. We skip tests by default.");
 			SKIP = true;
 		} else
 			SKIP = !skipProperty.equals("true");
@@ -73,7 +73,7 @@ public class TestUtils {
 	private static void initProvider() throws ClassNotFoundException,
 			SQLException {
 		if (SKIP) {
-			log.warn("SKIPPING ALL TESTS!");
+			log.warn("Skipping tests.");
 			return;
 		}
 		String host = System.getProperty("virtuoso.host");

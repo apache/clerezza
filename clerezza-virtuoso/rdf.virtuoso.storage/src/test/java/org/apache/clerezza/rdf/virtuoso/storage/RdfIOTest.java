@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage;
+package org.apache.clerezza.rdf.virtuoso.storage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,14 +37,17 @@ import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
+import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoBNode;
+import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoMGraph;
+import org.apache.clerezza.rdf.virtuoso.storage.access.DataAccess;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
 import virtuoso.jdbc4.VirtuosoException;
 
 public class RdfIOTest {
@@ -52,8 +55,13 @@ public class RdfIOTest {
 	static final String TEST_GRAPH_NAME = "RdfIOTest";
 	static final String XSD = "http://www.w3.org/2001/XMLSchema#";
 	static Logger log = LoggerFactory.getLogger(RdfIOTest.class);
-	static VirtuosoWeightedProvider wp;
+	static DataAccess da;
 
+	@BeforeClass
+	public static void assume(){
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+	}
+	
 	/**
 	 * Clean before any test
 	 * 
@@ -62,12 +70,9 @@ public class RdfIOTest {
 	 */
 	@Before
 	public void before() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
-		wp = TestUtils.getProvider();
-		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, wp);
+		
+		da = TestUtils.getProvider().createDataAccess();
+		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, da);
 		mgraph.clear();
 		log.debug("Clearing graph <{}>", TEST_GRAPH_NAME);
 	}
@@ -82,23 +87,22 @@ public class RdfIOTest {
 	@After
 	public void clear() throws VirtuosoException, ClassNotFoundException,
 			SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.debug("Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
 				mgraph.size());
+		// clear all resources
+		da.close();
+		
+		da = null;
+		mgraph = null;
+		
 		log.debug("Removing graph <{}>", TEST_GRAPH_NAME);
 		Statement st = TestUtils.getConnection().createStatement();
 		st.execute("SPARQL CLEAR GRAPH <" + TEST_GRAPH_NAME + ">");
+		st.close();
 	}
 
 	@Test
 	public void xsdString() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Text an xsd:string");
 		TypedLiteral object = new TypedLiteralImpl("lorem ipsum", new UriRef(
 				XSD + "string"));
@@ -117,15 +121,11 @@ public class RdfIOTest {
 
 	@Test
 	public void longString() throws ClassNotFoundException, SQLException, InterruptedException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test a long xsd:string");
 		StringBuilder longStr = new StringBuilder();
-		int c = 2500;
+		int c = 250000;
 		while (c > 0) {
-			longStr.append(" ");
+			longStr.append(" lorem ipsum ");
 			c--;
 		}
 		int size = longStr.length();
@@ -144,20 +144,14 @@ public class RdfIOTest {
 
 	private Triple writeAndRead(NonLiteral subject, UriRef predicate,
 			Resource object) throws ClassNotFoundException, SQLException {
-		VirtuosoMGraph graph = new VirtuosoMGraph(TEST_GRAPH_NAME,
-				TestUtils.getProvider());
 		Triple t = new TripleImpl(subject, predicate, object);
-		graph.add(t);
-		Triple read = graph.getGraph().iterator().next();
+		mgraph.add(t);
+		Triple read = mgraph.getGraph().iterator().next();
 		return read;
 	}
 
 	@Test
 	public void subjectAsUriTest() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test subject as UriRef");
 
 		NonLiteral subject;
@@ -179,10 +173,6 @@ public class RdfIOTest {
 	@Test
 	public void subjectAsBnodeTest() throws ClassNotFoundException,
 			SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test subject as BNode");
 
 		NonLiteral subject;
@@ -205,10 +195,6 @@ public class RdfIOTest {
 
 	@Test
 	public void objectAsUriTest() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test object as UriRef");
 
 		NonLiteral subject = new UriRef("urn:io-test:enridaga");
@@ -227,10 +213,6 @@ public class RdfIOTest {
 
 	@Test
 	public void objectAsBnodeTest() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test object as Bnode");
 
 		NonLiteral subject = new UriRef("urn:io-test:subject");
@@ -257,10 +239,6 @@ public class RdfIOTest {
 
 	@Test
 	public void bnodesTest() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Test iterations and filter with bnode");
 
 		NonLiteral s1 = new BNode();
@@ -272,12 +250,9 @@ public class RdfIOTest {
 		UriRef p2 = new UriRef("p2");
 		UriRef p3 = new UriRef("p3");
 
-		VirtuosoMGraph graph = new VirtuosoMGraph(TEST_GRAPH_NAME,
-				TestUtils.getProvider());
-
-		graph.add(new TripleImpl(s1, p1, s2));
+		mgraph.add(new TripleImpl(s1, p1, s2));
 		// Get the bnode of s1
-		Triple first = graph.filter(null, p1, null).next();
+		Triple first = mgraph.filter(null, p1, null).next();
 
 		Assert.assertTrue(first.getSubject() instanceof VirtuosoBNode);
 		Assert.assertTrue(first.getObject() instanceof VirtuosoBNode);
@@ -285,29 +260,29 @@ public class RdfIOTest {
 		BNode s1intern = (BNode) first.getSubject();
 		BNode s2intern = (BNode) first.getObject();
 		
-		graph.add(new TripleImpl(s2intern, p1, s3));
-		Triple second = graph.filter(s2intern, p1, null).next();
+		mgraph.add(new TripleImpl(s2intern, p1, s3));
+		Triple second = mgraph.filter(s2intern, p1, null).next();
 		Assert.assertTrue(second.getObject() instanceof VirtuosoBNode);
 		
-		graph.add(new TripleImpl(s1intern, p2, s4));
-		Triple third = graph.filter(s1intern, p2, null).next();
+		mgraph.add(new TripleImpl(s1intern, p2, s4));
+		Triple third = mgraph.filter(s1intern, p2, null).next();
 		Assert.assertTrue(third.getObject() instanceof VirtuosoBNode);
 		BNode s4intern = (BNode) third.getObject();
 		
-		graph.add(new TripleImpl(s1intern, p2, s4intern));
-		graph.add(new TripleImpl(s4intern, p3, s1intern));
+		mgraph.add(new TripleImpl(s1intern, p2, s4intern));
+		mgraph.add(new TripleImpl(s4intern, p3, s1intern));
 
-		Iterator<Triple> all = graph.iterator();
+		Iterator<Triple> all = mgraph.iterator();
 		while(all.hasNext()){
 			Triple l = all.next();
 			log.info("{} {} {}",new Object[]{ l.getSubject(), l.getPredicate(), l.getObject()});
 		}
-		Iterator<Triple> i = graph.filter(null, p2, null);
+		Iterator<Triple> i = mgraph.filter(null, p2, null);
 		int n = 0;
 		while (i.hasNext()) {
 			n++;
 			Triple s1t = i.next();
-			Iterator<Triple> s1i = graph.filter(s1t.getSubject(), null, null);
+			Iterator<Triple> s1i = mgraph.filter(s1t.getSubject(), null, null);
 			boolean found = false;
 			while (s1i.hasNext()) {
 				Triple s1it = s1i.next();
@@ -321,7 +296,7 @@ public class RdfIOTest {
 			Assert.assertTrue(found);
 			Assert.assertTrue(s1t.getObject() instanceof VirtuosoBNode);
 			Assert.assertTrue(s1t.getSubject() instanceof VirtuosoBNode);
-			Iterator<Triple> s4i = graph.filter((NonLiteral) s1t.getObject(),
+			Iterator<Triple> s4i = mgraph.filter((NonLiteral) s1t.getObject(),
 					null, null);
 			log.info("s4 {} ",s1t.getObject());
 			while (s4i.hasNext()) {
@@ -337,10 +312,6 @@ public class RdfIOTest {
 
 	@Test
 	public void sysconfigTest(){
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		
 		SystemConfig sc = new SystemConfig();
 		MGraph systemGraph = mgraph;
@@ -360,10 +331,6 @@ public class RdfIOTest {
 	
 	@Test
 	public void testUnicodeChars() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Text an xsd:string");
 		
 		String s = "lorem ipsum è é £ ò ç à ù β ät ü ä";

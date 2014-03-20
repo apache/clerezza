@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage;
+package org.apache.clerezza.rdf.virtuoso.storage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,10 +34,16 @@ import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
+import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoMGraph;
+import org.apache.clerezza.rdf.virtuoso.storage.access.DataAccess;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +52,15 @@ import virtuoso.jdbc4.VirtuosoException;
 
 public class VirtuosoMGraphTest {
 	static VirtuosoMGraph mgraph = null;
+	static DataAccess da = null;
 	static final String TEST_GRAPH_NAME = "VirtuosoMGraphTest";
 
 	static Logger log = LoggerFactory.getLogger(VirtuosoMGraphTest.class);
+	
+	@BeforeClass
+	public static void assume(){
+		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
+	}
 	
 	/**
 	 * Clean before any test
@@ -58,11 +70,9 @@ public class VirtuosoMGraphTest {
 	 */
 	@Before
 	public void before() throws ClassNotFoundException, SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
-		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, TestUtils.getProvider());
+		
+		da = TestUtils.getProvider().createDataAccess();
+		mgraph = new VirtuosoMGraph(TEST_GRAPH_NAME, da);
 		mgraph.clear();
 		log.debug("Clearing graph <{}>", TEST_GRAPH_NAME);
 	}
@@ -72,15 +82,14 @@ public class VirtuosoMGraphTest {
 	final UriRef anuzzolese = new UriRef("anuzzolese");
 	final UriRef predicate = new UriRef("http://property/name");
 	final PlainLiteral object = new PlainLiteralImpl("Enrico Daga", new Language("it"));
+	final TypedLiteral objectTyped = new TypedLiteralImpl("Enrico Daga", new UriRef("http://www.w3.org/2001/XMLSchema#string"));
+	final TypedLiteral objectXml = new TypedLiteralImpl("<div>Enrico Daga</div>" , 
+			new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"));
 	final UriRef knows = new UriRef(TestUtils.FOAF_NS + "knows");
 
 	@Test
 	public void testAddSingle() {
 		log.info("testAddSingle()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple triple = new Triple() {
 
 			@Override
@@ -101,19 +110,76 @@ public class VirtuosoMGraphTest {
 		boolean success = mgraph.add(triple);
 		assertTrue(success);
 		assertTrue(mgraph.size() == 1);
+		assertTrue(mgraph.filter(enridaga, predicate, object).hasNext());
+		assertTrue(mgraph.filter(enridaga, predicate, object).next().equals(triple));
+	}
+	
+	@Test
+	public void testAddSingleTypedLiteral() {
+		log.info("testAddSingleTypedLiteral()");
+		Triple triple = new Triple() {
+
+			@Override
+			public NonLiteral getSubject() {
+				return enridaga;
+			}
+
+			@Override
+			public UriRef getPredicate() {
+				return predicate;
+			}
+
+			@Override
+			public Resource getObject() {
+				return objectTyped;
+			}
+		};
+		boolean success = mgraph.add(triple);
+		assertTrue(success);
+		assertTrue(mgraph.size() == 1);
+		assertTrue(mgraph.filter(enridaga, predicate, objectTyped).hasNext());
+		assertTrue(mgraph.filter(enridaga, predicate, objectTyped).next().equals(triple));
+	}
+
+	@Ignore
+	@Test
+	public void testAddSingleXMLLiteral() {
+		log.info("testAddSingleXMLLiteral()");
+		Triple triple = new Triple() {
+
+			@Override
+			public NonLiteral getSubject() {
+				return enridaga;
+			}
+
+			@Override
+			public UriRef getPredicate() {
+				return predicate;
+			}
+
+			@Override
+			public Resource getObject() {
+				return objectXml;
+			}
+		};
+		boolean success = mgraph.add(triple);
+		assertTrue(success);
+		assertTrue(mgraph.size() == 1);
+		Triple rt = mgraph.filter(enridaga, predicate, null).next();
+		log.info(" > s: {} ", rt.getSubject());
+		log.info(" > p: {} ", rt.getPredicate());
+		log.info(" > o: {} ", rt.getObject());
+		log.info(" > tl?: {} ", rt.getObject() instanceof TypedLiteral);
+		assertTrue(mgraph.filter(enridaga, predicate, objectXml).hasNext());
+		assertTrue(mgraph.filter(enridaga, predicate, objectXml).next().equals(triple));
 	}
 
 
 	@Test
 	public void testFilter() {
 		log.info("testFilter(); Test filter(s,p,o)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
-
 		
 		Iterator<Triple> its = mgraph.filter(null, null, null);
 		while (its.hasNext()) {
@@ -143,10 +209,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterSubject() {
 		log.info("testFilterSubject(); Test filter(s,null,null)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
 		Iterator<Triple> it = mgraph.filter(enridaga, null, null);
@@ -167,10 +229,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterSubjectBnode() throws VirtuosoException, SQLException, ClassNotFoundException {
 		log.info("testFilterSubjectBnode(); Test filter(s,null,null)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		final BNode bn = new BNode();
 		// We use testAdd to prepare this
 		Triple triple = new Triple() {
@@ -227,10 +285,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterPredicate() {
 		log.info("testFilterPredicate(); Test filter(null,p,null)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
 		Iterator<Triple> it = mgraph.filter(null, predicate, null);
@@ -250,10 +304,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testFilterObject() {
 		log.info("testFilterObject(); Test filter(null,null,o)");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
 		Iterator<Triple> it = mgraph.filter(null, null, object);
@@ -271,12 +321,47 @@ public class VirtuosoMGraphTest {
 	}
 
 	@Test
+	public void testFilterObjectTyped() {
+		log.info("testFilterObjectTyped(); Test filter(null,null,o)");
+		// We use testAdd to prepare this
+		testAddSingleTypedLiteral();
+		Iterator<Triple> it = mgraph.filter(null, null, objectTyped);
+		boolean found = false;
+		while (it.hasNext()) {
+			found = true;
+			Triple t = it.next();
+			if (log.isDebugEnabled()) {
+				log.debug("Found matching triple: {}", t);
+				TestUtils.stamp(t);
+			}
+			assertEquals(t.getObject(), objectTyped);
+		}
+		assertTrue(found);
+	}
+
+	@Ignore
+	@Test
+	public void testFilterObjectXml() {
+		log.info("testFilterObjectXml(); Test filter(null,null,o)");
+		// We use testAdd to prepare this
+		testAddSingleXMLLiteral();
+		Iterator<Triple> it = mgraph.filter(null, null, objectXml);
+		boolean found = false;
+		while (it.hasNext()) {
+			found = true;
+			Triple t = it.next();
+			if (log.isDebugEnabled()) {
+				log.debug("Found matching triple: {}", t);
+				TestUtils.stamp(t);
+			}
+			assertEquals(t.getObject(), objectXml);
+		}
+		assertTrue(found);
+	}
+
+	@Test
 	public void testSize() {
 		log.info("testSize()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		// We use testAdd to prepare this
 		testAddSingle();
 		// Should be 1 at this time
@@ -288,10 +373,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testIncreaseSize() {
 		log.info("testIncreaseSize()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		int beforeSize = mgraph.size();
 		Triple t = new Triple() {
 
@@ -318,10 +399,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testAddRemoveSize() {
 		log.info("testAddRemoveSize()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		int beforeSize = mgraph.size();
 		Triple t = new Triple() {
 
@@ -349,10 +426,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testGetGraphReadOnly() {
 		log.info("testGetGraphReadOnly()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Graph g = mgraph.getGraph();
 		Triple t = new Triple() {
 
@@ -384,10 +457,6 @@ public class VirtuosoMGraphTest {
 	@Test
 	public void testContains() {
 		log.info("testContains()");
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		Triple t = new Triple() {
 
 			@Override
@@ -444,14 +513,14 @@ public class VirtuosoMGraphTest {
 	@After
 	public void clear() throws VirtuosoException, ClassNotFoundException,
 			SQLException {
-		if (TestUtils.SKIP) {
-			log.warn("SKIPPED");
-			return;
-		}
 		log.info("Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
 				mgraph.size());
 		log.debug("Removing graph <{}>", TEST_GRAPH_NAME);
+		da.close();
+		da = null;
+		mgraph = null;
 		Statement st = TestUtils.getConnection().createStatement();
 		st.execute("SPARQL CLEAR GRAPH <" + TEST_GRAPH_NAME + ">");
+		st.close();
 	}
 }

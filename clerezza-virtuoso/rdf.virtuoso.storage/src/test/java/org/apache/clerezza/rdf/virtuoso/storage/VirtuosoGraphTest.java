@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage;
+package org.apache.clerezza.rdf.virtuoso.storage;
 
 import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoGraph;
 
 /**
  * Tests the {@link VirtuosoGraph} implementation of {@link Graph}

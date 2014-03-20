@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package rdf.virtuoso.storage;
+package org.apache.clerezza.rdf.virtuoso.storage;
 
 import java.util.Collection;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.virtuoso.storage.access.DataAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
 
 /**
  * This is a read-only version of {@link VirtuosoMGraph}
@@ -40,8 +40,8 @@ public class VirtuosoGraph extends VirtuosoMGraph implements Graph{
 	protected Logger logger = LoggerFactory
 			.getLogger(VirtuosoGraph.class);
 	
-	public VirtuosoGraph(String name, VirtuosoWeightedProvider provider) {
-		super(name, provider);
+	public VirtuosoGraph(String name, DataAccess dataAccess) {
+		super(name, dataAccess);
 	}
 
 	@Override
