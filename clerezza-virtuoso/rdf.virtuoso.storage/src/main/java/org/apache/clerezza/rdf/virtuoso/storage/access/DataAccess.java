@@ -197,6 +197,25 @@ public class DataAccess {
 			logger.error("Cannot close connection", e);
 		}
 	}
+	
+	private void close(String statementId){
+		try {
+			VirtuosoPreparedStatement ps = preparedStatements.get(statementId);
+			if (ps == null) {
+				logger.warn(
+						"Attempting to close a statement that was not prepared: {}",
+						statementId);
+			} else {
+				logger.trace("Closing prepared statement {}", ps);
+				ps.close();
+			}
+		} catch (Exception e) {
+			logger.error("Cannot close statement", e);
+		} finally {
+			// We won't reuse a statement that thrown a n exception on close...
+			preparedStatements.remove(statementId);
+		}
+	}
 
 	private void bindValue(PreparedStatement st, int i, Resource object)
 			throws SQLException {
@@ -317,6 +336,9 @@ public class DataAccess {
 			}
 		}
 		if (e != null) {
+			close(INSERT_NEW_BNODE);
+			close(SELECT_TRIPLES_NULL_P_O);
+			close(DELETE_NEW_BNODE);
 			throw new RuntimeException(e);
 		}
 		return new VirtuosoBNode(bnodeId);
@@ -363,6 +385,7 @@ public class DataAccess {
 		if(o instanceof BNode){
 			o = toVirtBnode((BNode) o);
 		}
+		Exception e = null;
 		try {
 			PreparedStatement st = getStatement(DELETE_QUAD);
 			bindGraph(st, 1, graph);
@@ -370,51 +393,64 @@ public class DataAccess {
 			bindPredicate(st, 3, p);
 			bindValue(st, 4, o);
 			st.executeUpdate();
-		} catch (VirtuosoException e) {
-			logger.error("Cannot execute statement", e);
-			throw new RuntimeException(e);
-		} catch (SQLException e) {
-			logger.error("Cannot execute statement", e);
+		} catch (VirtuosoException ex) {
+			logger.error("Cannot execute statement", ex);
+			e = ex;
+		} catch (SQLException ex) {
+			logger.error("Cannot execute statement", ex);
+			e = ex;
+		}
+		
+		if (e != null) {
+			close(DELETE_QUAD);
 			throw new RuntimeException(e);
 		}
 	}
 
 	public Set<UriRef> listGraphs() {
+		Exception e = null;
+
+		Set<UriRef> graphs = new HashSet<UriRef>();
 		try {
 			PreparedStatement st = getStatement(LIST_GRAPHS);
 			ResultSet rs = st.executeQuery();
-			Set<UriRef> graphs = new HashSet<UriRef>();
 			while (rs.next()) {
 				UriRef graph = new UriRef(rs.getString(1));
 				logger.debug(" > Graph {}", graph);
 				graphs.add(graph);
 			}
-			return Collections.unmodifiableSet(graphs);
-		} catch (VirtuosoException e) {
-			logger.error("Cannot execute query", e);
-			throw new RuntimeException(e);
-		} catch (SQLException e) {
-			logger.error("Cannot execute query", e);
+		} catch (VirtuosoException ex) {
+			logger.error("Cannot execute query", ex);
+			e = ex;
+		} catch (SQLException ex) {
+			logger.error("Cannot execute query", ex);
+			e = ex;
+		}
+		
+		if(e != null){
+			close(LIST_GRAPHS);
 			throw new RuntimeException(e);
 		}
+		
+		return Collections.unmodifiableSet(graphs);
 	}
 
 	public void clearGraph(String graph) {
+		Exception e = null;
 		try {
 			PreparedStatement st = getStatement(CLEAR_GRAPH);
 			bindGraph(st, 1, graph);
 			st.executeUpdate();
-			try {
-				connection.commit();
-			} catch (Exception e) {
-				logger.error("Rolling back");
-				connection.rollback();
-			}
-		} catch (VirtuosoException e) {
-			logger.error("Cannot execute statement", e);
-			throw new RuntimeException(e);
-		} catch (SQLException e) {
-			logger.error("Cannot execute statement", e);
+		} catch (VirtuosoException ex) {
+			logger.error("Cannot execute statement", ex);
+			e = ex;
+		} catch (SQLException ex) {
+			logger.error("Cannot execute statement", ex);
+			e = ex;
+		} 
+		
+		if(e != null){
+			close(CLEAR_GRAPH);
 			throw new RuntimeException(e);
 		}
 	}
@@ -532,6 +568,8 @@ public class DataAccess {
 		}
 
 		if (list == null || e != null) {
+			// We also close the statement
+			close(filter);
 			throw new RuntimeException(e);
 		}
 		return list.iterator();
@@ -547,9 +585,13 @@ public class DataAccess {
 			// In any case the first binding is the graph
 			bindGraph(ps, 1, graph);
 			ps.execute();
+
 			rs = (VirtuosoResultSet) ps.getResultSet();
+
 			rs.next();
+
 			size = rs.getInt(1);
+
 		} catch (VirtuosoException e1) {
 			logger.error("ERROR while executing statement", ps);
 			e = e1;
@@ -564,9 +606,13 @@ public class DataAccess {
 				logger.error("Cannot close result set", ex);
 			}
 		}
+		
 		if (size == -1 || e != null) {
+			// We also close the statement
+			close(COUNT_TRIPLES_OF_GRAPH);
 			throw new RuntimeException(e);
 		}
+
 		return size;	
 	}
 	
@@ -734,11 +780,14 @@ public class DataAccess {
 			e = se;
 		}
 		if (e != null) {
-			logger.error("S {}", triple.getSubject());
-			logger.error("P {}", triple.getPredicate());
-			logger.error("O {}", triple.getObject());
-			logger.error(" O length: {}", triple.getObject().toString()
+			close(sql);
+			if(logger.isDebugEnabled()){
+				logger.error("S {}", triple.getSubject());
+				logger.error("P {}", triple.getPredicate());
+				logger.error("O {}", triple.getObject());
+				logger.error(" O length: {}", triple.getObject().toString()
 					.length());
+			}
 			logger.error("Sql: {}", sql);
 			throw new RuntimeException(e);
 		}
