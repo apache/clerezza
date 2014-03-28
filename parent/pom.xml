@@ -571,7 +571,11 @@
               <artifactId>org.apache.stanbol.commons.security.core</artifactId>
               <version>${stanbol.version}</version>
             </dependency>
-
+	    <dependency>
+              <groupId>org.apache.stanbol</groupId>
+              <artifactId>org.apache.stanbol.commons.web.base</artifactId>
+	      <version>${stanbol.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <distributionManagement>
