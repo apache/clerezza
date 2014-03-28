@@ -33,11 +33,87 @@
     <modules>
         <module>platform.launcher.storageless</module>
     </modules>
+    
+    <dependencyManagement>
+      <dependencies>
+	<!-- Apache Stanbol Dependencies -->
+	<dependency>
+          <groupId>org.apache.stanbol</groupId>
+          <artifactId>org.apache.stanbol.commons.frameworkfragment</artifactId>
+          <version>${stanbol.version}</version>
+        </dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.web.resources</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.security.core</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.authentication.basic</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+          <groupId>org.apache.stanbol</groupId>
+          <artifactId>org.apache.stanbol.commons.security.fexilwebconsole</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+          <groupId>org.apache.stanbol</groupId>
+          <artifactId>org.apache.stanbol.commons.security.usermanagement</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.ldpath.clerezza</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.ldpathtemplate</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.web.viewable</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.web.rdfviewable.writer</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.web.base</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.freemarker</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.indexedgraph</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.stanbol</groupId>
+	  <artifactId>org.apache.stanbol.commons.jsonld</artifactId>
+	  <version>${stanbol.version}</version>
+	</dependency>
+      </dependencies>
+    </dependencyManagement>
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.stanbol</groupId>
             <artifactId>org.apache.stanbol.commons.frameworkfragment</artifactId>
-            <version>0.12.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -479,29 +555,24 @@
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.web.resources</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.security.core</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.authentication.basic</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
         <groupId>org.apache.stanbol</groupId>
         <artifactId>org.apache.stanbol.commons.security.fexilwebconsole</artifactId>
-        <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
         <groupId>org.apache.stanbol</groupId>
         <artifactId>org.apache.stanbol.commons.security.usermanagement</artifactId>
-        <version>0.12.0-SNAPSHOT</version>
     </dependency>
-        <dependency> <!-- LD Path -->
+    <dependency> <!-- LD Path -->
       <groupId>at.newmedialab.ldpath</groupId>
       <artifactId>ldpath-api</artifactId>
       <version>0.9.5</version>
@@ -514,42 +585,34 @@
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.ldpath.clerezza</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.ldpathtemplate</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.web.viewable</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.web.rdfviewable.writer</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.web.base</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.freemarker</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.indexedgraph</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.stanbol</groupId>
       <artifactId>org.apache.stanbol.commons.jsonld</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency> <!-- used also for all the other JSON parsing/writing in Stanbol -->
       <groupId>org.codehaus.jettison</groupId>

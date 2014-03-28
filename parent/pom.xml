@@ -34,6 +34,7 @@
     <description>The direct or indirect parent of all Clerezza Artifacts</description>
     <properties>
         <sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
+	<stanbol.version>0.12.0</stanbol.version>
     </properties>
     <licenses>
         <license>
@@ -563,6 +564,14 @@
                 <artifactId>bcprov-jdk16</artifactId>
                 <version>1.46</version>
             </dependency>
+	    
+	    <!-- Apache Stanbol dependencies -->
+	    <dependency>
+              <groupId>org.apache.stanbol</groupId>
+              <artifactId>org.apache.stanbol.commons.security.core</artifactId>
+              <version>${stanbol.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <distributionManagement>
