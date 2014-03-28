@@ -125,7 +125,7 @@
 	<skos:definition xml:lang="en">Points to a string of hex values
 	expressed using digits and the lower-case letters a-f encoding the password with the SHA1
 	algorithm, for encoding the password it is expressed as sequence of utf-8 encoded
-	characters of its normal form C (NFC). In Java if s is a string expressing the passwort
+	characters of its normal form C (NFC). In Java if s is a string expressing the password
 	in NFC, java.security.MessageDigest.getInstance("SHA1").digest(s.getBytes("UTF-8"))
 	will return the sequence of bytes to be hex-encoded as value of this property.
 	</skos:definition>
