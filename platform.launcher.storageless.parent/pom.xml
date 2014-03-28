@@ -347,6 +347,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
+            <artifactId>rdf.file.storage</artifactId>
+            <scope>runtime</scope>
+            <version>0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.sparql</artifactId>
             <scope>runtime</scope>
             <version>0.7-SNAPSHOT</version>
