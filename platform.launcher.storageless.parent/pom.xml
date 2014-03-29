@@ -538,17 +538,21 @@
             <artifactId>platform.security.foafssl.test</artifactId>
             <scope>runtime</scope>
         </dependency>
-            <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.security.foafssl.ontologies</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+	-->
         <dependency>
+          <groupId>org.apache.clerezza</groupId>
+          <artifactId>platform.security.foafssl.ontologies</artifactId>
+	  <version>0.2-SNAPSHOT</version>
+          <scope>runtime</scope>
+        </dependency>
+        
+	<dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>ssl.keygen.base</artifactId>
+	       <version>0.6-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.security.auth.basic</artifactId>
             <scope>runtime</scope>
