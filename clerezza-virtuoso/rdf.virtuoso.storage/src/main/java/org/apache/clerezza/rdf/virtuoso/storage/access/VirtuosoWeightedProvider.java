@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,10 +74,10 @@ import virtuoso.jdbc4.VirtuosoStatement;
 @Component(metatype = true, immediate = true)
 @Service(WeightedTcProvider.class)
 @Properties({
-		@Property(name = "password", value = "dba", description = "User password"),
-		@Property(name = "host", value = "localhost", description = "The host running the Virtuoso server"),
-		@Property(name = "port", intValue = 1111, description = "The port number"),
-		@Property(name = "user", value = "dba", description = "User name"),
+		@Property(name = "password", description = "User password"),
+		@Property(name = "host", description = "The host running the Virtuoso server"),
+		@Property(name = "port", description = "The port number"),
+		@Property(name = "user", description = "User name"),
 		@Property(name = "weight", intValue = 110, description = "Weight assigned to this provider"),
 		@Property(name = TcManager.GENERAL_PURPOSE_TC, boolValue = true) })
 public class VirtuosoWeightedProvider implements WeightedTcProvider {
@@ -182,7 +182,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 						@Override
 						public void close() throws IOException {
 							l.debug("{}", b.toString());
-							l.debug("Log PrintWriter closed");
+							l.debug("Log DriverManager PrintWriter closed");
 						}
 					}));
 				}
@@ -197,12 +197,41 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				}
 
 				/**
-				 * Retrieve connection properties
+				 * Initialize connection properties
 				 */
-				host = (String) cCtx.getProperties().get(HOST);
-				port = (Integer) cCtx.getProperties().get(PORT);
-				user = (String) cCtx.getProperties().get(USER);
-				pwd = (String) cCtx.getProperties().get(PASSWORD);
+				// We take the configuration of the SCR component
+				Object phost = cCtx.getProperties().get(HOST);
+				Object pport = cCtx.getProperties().get(PORT);
+				Object puser = cCtx.getProperties().get(USER);
+				Object ppwd = cCtx.getProperties().get(PASSWORD);
+
+				// If the component is not configured, we inspect system properties
+				// Maybe this is a first launch, otherwise we set a value as default
+				if(phost == null && System.getProperty("virtuoso.host") != null){
+					phost = System.getProperty("virtuoso.host");
+				} else if(phost == null){
+					phost = "localhost"; 
+				}
+				if(pport == null && System.getProperty("virtuoso.port") != null){
+					pport = System.getProperty("virtuoso.port");
+				} else if(pport == null){
+					pport = Integer.valueOf(1111); 
+				}
+				if(puser == null && System.getProperty("virtuoso.user") != null){
+					puser = System.getProperty("virtuoso.user");
+				} else if(puser == null){
+					puser = "dba"; 
+				}
+				if(ppwd == null && System.getProperty("virtuoso.password") != null){
+					ppwd = System.getProperty("virtuoso.password");
+				} else if(ppwd == null){
+					ppwd = "dba"; 
+				}
+				// We set the configuration
+				host = (String) phost;
+				port = (Integer) pport;
+				user = (String) puser;
+				pwd = (String) ppwd;
 
 				// Build connection string
 				connStr = getConnectionString(host, port);
@@ -210,54 +239,26 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				// Check connection
 				VirtuosoConnection connection = getConnection(connStr, user,
 						pwd);
-
-				// Debug activation
-				if (logger.isDebugEnabled()) {
-					logger.debug("Component context properties: ");
-					logger.debug("> host: {}", host);
-					logger.debug("> port: {}", port);
-					logger.debug("> user: {}", user);
-					// We hide the password in log files:
-					MessageDigest algorithm;
-					try {
-						algorithm = MessageDigest.getInstance("MD5");
-					} catch (NoSuchAlgorithmException e) {
-						throw new RuntimeException(e);
-					}
-					algorithm.reset();
-					algorithm.update(pwd.getBytes());
-					byte messageDigest[] = algorithm.digest();
-
-					StringBuffer hexString = new StringBuffer();
-					for (int i = 0; i < messageDigest.length; i++) {
-						hexString.append(Integer
-								.toHexString(0xFF & messageDigest[i]));
-					}
-					String foo = messageDigest.toString();
-					logger.debug("> password: {}", foo);
-				}
-				logger.info("Connection to {} initialized. User is {}",
-						connStr, user);
-
+				logger.info("Connection to {} initialized. User is {}", connStr, user);
 				// everything went ok
 				connection.close();
 			} catch (VirtuosoException e) {
 				logger.error(
-						"A problem occurred while intializing connection to Virtuoso",
+						"A problem occurred while initializing connection to Virtuoso",
 						e);
 				logger.error("Be sure you have configured the connection parameters correctly in the OSGi/SCR configuration");
 				cCtx.disableComponent(pid);
 				throw new ComponentException(e.getLocalizedMessage());
 			} catch (SQLException e) {
 				logger.error(
-						"A problem occurred while intializing connection to Virtuoso",
+						"A problem occurred while initializing connection to Virtuoso",
 						e);
 				logger.error("Be sure you have configured the connection parameters correctly in the OSGi/SCR configuration");
 				cCtx.disableComponent(pid);
 				throw new ComponentException(e.getLocalizedMessage());
 			} catch (ClassNotFoundException e) {
 				logger.error(
-						"A problem occurred while intializing connection to Virtuoso",
+						"A problem occurred while initializing connection to Virtuoso",
 						e);
 				logger.error("Be sure you have configured the connection parameters correctly in the OSGi/SCR configuration");
 				cCtx.disableComponent(pid);
@@ -473,7 +474,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		for (DataAccess mg : dataAccessSet) {
 			mg.close();
 		}
-
 		logger.info("Shutdown complete.");
 	}
 
@@ -482,8 +482,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		return getConnection(connStr, user, pwd);
 	}
 
-	private VirtuosoConnection getConnection(String connStr, String user,
-			String pwd) throws SQLException, ClassNotFoundException {
+	private VirtuosoConnection getConnection(final String connStr,final String user,
+			final String pwd) throws SQLException, ClassNotFoundException {
 		logger.debug("getConnection(String {}, String {}, String *******)",
 				connStr, user);
 		/**
@@ -492,12 +492,27 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		 * to see this)
 		 */
 		logger.debug("Loading JDBC Driver");
-		Class.forName(VirtuosoWeightedProvider.DRIVER, true, this.getClass()
-				.getClassLoader());
-		VirtuosoConnection c = (VirtuosoConnection) DriverManager
-				.getConnection(connStr, user, pwd);
-		c.setAutoCommit(true);
-		return c;
+		try {
+			VirtuosoConnection c = AccessController
+					.doPrivileged(new PrivilegedAction<VirtuosoConnection>() {
+						public VirtuosoConnection run() {
+							try {
+								Class.forName(VirtuosoWeightedProvider.DRIVER,
+										true, this.getClass().getClassLoader());
+								return (VirtuosoConnection) DriverManager
+										.getConnection(connStr, user, pwd);
+							} catch (ClassNotFoundException e) {
+								throw new RuntimeException(e);
+							} catch (SQLException e) {
+								throw new RuntimeException(e);
+							}
+						}
+					});
+			c.setAutoCommit(true);
+			return c;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -535,15 +550,14 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	}
 
 	/**
-	 * Load the graph once. It check whether a graph object have been alrady
+	 * Load the graph once. It check whether a graph object have been already
 	 * created for that UriRef, if yes returns it.
 	 * 
 	 * If not check if at least 1 triple is present in the quad for such graph
 	 * identifier. If yes, creates a new graph object and loads it in the map,
 	 * referring to it on next calls.
-	 * 
-	 * If no triples exists, the graph does not exists or it is not readable.
-	 * 
+	 *
+	 * This method returns a VirtuosoGraph if the graph is read-only
 	 * 
 	 * @param name
 	 * @return
@@ -574,21 +588,21 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				rs = (VirtuosoResultSet) st.getResultSet();
 				if (rs.next() == false) {
 					// The graph is empty, it is not readable or does not exists
-					logger.warn("Graph does not exists: {}", name);
+					logger.debug("Graph does not exists: {}", name);
 					throw new NoSuchEntityException(name);
 				} else {
 					// The graph exists and it is readable ...
-					logger.debug("Graph {} is readable", name);
+					logger.trace("Graph {} is readable", name);
 					// is it writable?
-					logger.debug("Is {} writable?", name);
+					logger.trace("Is {} writable?", name);
 					if (canModify(name)) {
-						logger.debug("Creating writable MGraph for graph {}",
+						logger.trace("Creating writable graph {}",
 								name);
 						graphs.put(name,
 								new VirtuosoMGraph(name.getUnicodeString(),
 										createDataAccess()));
 					} else {
-						logger.debug("Creating read-only Graph for graph {}",
+						logger.trace("Creating read-only graph {}",
 								name);
 						graphs.put(name,
 								new VirtuosoMGraph(name.getUnicodeString(),

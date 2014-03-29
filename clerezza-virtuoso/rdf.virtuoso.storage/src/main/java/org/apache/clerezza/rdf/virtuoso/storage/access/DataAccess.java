@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.rdf.virtuoso.storage.access;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -115,7 +117,8 @@ public class DataAccess {
 		this.connectionString = connectionString;
 		this.user = user;
 		this.pwd = pwd;
-		connection = createConnection();
+		
+		connection = createConnection(connectionString, user, pwd);
 		
 		// Init collections
 		this.preparedStatements = new HashMap<String,VirtuosoPreparedStatement>();
@@ -123,16 +126,26 @@ public class DataAccess {
 
 	}
 
-	private VirtuosoConnection createConnection() {
+	private VirtuosoConnection createConnection(final String cs, final String u, final String p) {
 		try {
-			Class.forName(VirtuosoWeightedProvider.DRIVER, true, this
-					.getClass().getClassLoader());
-			VirtuosoConnection c = (VirtuosoConnection) DriverManager
-					.getConnection(connectionString, user, pwd);
+			VirtuosoConnection c =  AccessController.doPrivileged(
+					new PrivilegedAction<VirtuosoConnection>() {
+				          public VirtuosoConnection run() {
+				        	  try {
+								Class.forName(VirtuosoWeightedProvider.DRIVER, true, this
+											.getClass().getClassLoader());
+								return  (VirtuosoConnection) DriverManager
+					  					.getConnection(cs, u, p);
+							} catch (ClassNotFoundException e) {
+								throw new RuntimeException(e);
+							} catch (SQLException e) {
+								throw new RuntimeException(e);
+							}
+				          } 
+				        } 
+				     ); 
 			c.setAutoCommit(true);
 			return c;
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -174,7 +187,7 @@ public class DataAccess {
 	public void renew() {
 		logger.trace("renewing...");
 		close();
-		connection = createConnection();
+		connection = createConnection(connectionString, user, pwd);
 	}
 
 	public void close() {
@@ -463,7 +476,7 @@ public class DataAccess {
 
 	public Iterator<Triple> filter(String graph, NonLiteral subject,
 			UriRef predicate, Resource object) {
-		
+		logger.debug("filter(String graph, NonLiteral s, UriRef p, Resource o)");
 
 		// Override blank node object to be a skolemized IRI
 		if (object != null && object instanceof BNode) {
@@ -475,12 +488,11 @@ public class DataAccess {
 			subject = new UriRef(toVirtBnode((BNode) subject).getSkolemId());
 		}
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("performFilter(UriRef graph, NonLiteral s, UriRef p, Resource o)");
-			logger.debug(" > g: {}", graph);
-			logger.debug(" > s: {}", subject);
-			logger.debug(" > p: {}", predicate);
-			logger.debug(" > o: {}", object);
+		if (logger.isTraceEnabled()) {
+			logger.trace(" > g: {}", graph);
+			logger.trace(" > s: {}", subject);
+			logger.trace(" > p: {}", predicate);
+			logger.trace(" > o: {}", object);
 		}
 
 		List<Triple> list = null;
@@ -576,22 +588,32 @@ public class DataAccess {
 	}
 
 	public int size(String graph){
+		logger.trace("called size({})", graph);
 		Exception e = null;
 		PreparedStatement ps = null;
 		VirtuosoResultSet rs = null;
 		int size = -1;
 		try {
 			ps = getStatement(COUNT_TRIPLES_OF_GRAPH);
+			logger.trace("statement got: {}", ps);
 			// In any case the first binding is the graph
 			bindGraph(ps, 1, graph);
-			ps.execute();
-
-			rs = (VirtuosoResultSet) ps.getResultSet();
-
-			rs.next();
-
-			size = rs.getInt(1);
-
+			logger.trace("bound value: {}", graph);
+			boolean r = ps.execute();
+			logger.trace("Executed statement: {}", r);
+			if(r){
+				rs = (VirtuosoResultSet) ps.getResultSet();
+				logger.trace("Got result set, has next?");
+				boolean hn = rs.next();
+				logger.trace(" > {}", hn);
+				if(hn){
+					size = rs.getInt(1);
+				}else{
+					e = new RuntimeException("Incosistent result. A result row was expected. None obtained.");
+				}
+			}else{
+				e = new RuntimeException("Incosistent result. ResultSet expected but 'false' returned by statement execute() ");
+			}
 		} catch (VirtuosoException e1) {
 			logger.error("ERROR while executing statement", ps);
 			e = e1;
