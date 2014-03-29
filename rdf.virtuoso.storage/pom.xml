@@ -24,7 +24,7 @@
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
         <version>0.5-SNAPSHOT</version>
-        <relativePath>../../parent</relativePath>
+        <relativePath>../parent</relativePath>
 	</parent>
 	<artifactId>rdf.virtuoso.storage</artifactId>
 	<name>Clerezza - SCB Virtuoso storage provider</name>

@@ -156,6 +156,10 @@
                 <module>web.resources.yui</module>
                 <module>rdf.storage.externalizer</module>
                 <module>rdf.storage.web</module>
+
+		<module>ext.virtuoso.jdbc</module>
+		<module>rdf.virtuoso.storage</module>
+		<module>platform.launcher.virtuoso</module>
             </modules>
         </profile>
         <profile>
