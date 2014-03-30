@@ -95,7 +95,7 @@ public class ThreadSafetyTest {
 		// Produce first...
 		Future<Result> fp = executor.submit(new Producer("A", 100));
 		fp.get().assertResult();
-
+		
 		// ...and then consume
 		Future<Result> fc = executor.submit(new Consumer("A", 100));
 		fc.get().assertResult();
@@ -227,9 +227,10 @@ public class ThreadSafetyTest {
 				final Triple t = createTriple(elementName);
 				if (mgraph.add(t)) {
 					counter++;
+					log.debug("Produced {} {}", collectionName, counter);
 					yield();
 				} else {
-					System.out.println("WARNING: element " + t + "NOT created");
+					log.warn("WARNING: element {} NOT created", t);
 				}
 			}
 			return new Result(collectionName, "Produced elements", numElements,
@@ -293,6 +294,7 @@ public class ThreadSafetyTest {
 					if (triple != null && mgraph.remove(triple)) {
 						counter++;
 					}
+					log.debug("Consumed {} {}", collectionName, counter);
 				} finally {
 					mgraph.getLock().writeLock().unlock();
 				}

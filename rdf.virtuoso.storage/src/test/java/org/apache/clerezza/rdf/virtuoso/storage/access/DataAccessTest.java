@@ -102,28 +102,28 @@ public class DataAccessTest {
 		testTriple(t);
 	}
 	
-	@Test
-	public void testRenew(){
-		int i = 100;
-		while(i>0){
-			test_Uri_Uri_Uri();
-			test_Uri_Uri_PlainLiteral();
-			i--;
-		}
-		da.renew();
-		i = 100;
-		while(i>0){
-			test_Uri_Uri_Uri();
-			test_Uri_Uri_PlainLiteral();
-			i--;
-		}
-		da.renew();
-		i = 100;
-		while(i>0){
-			test_Uri_Uri_Uri();
-			test_Uri_Uri_PlainLiteral();
-			i--;
-		}
-	}
+//	@Test
+//	public void testRenew(){
+//		int i = 100;
+//		while(i>0){
+//			test_Uri_Uri_Uri();
+//			test_Uri_Uri_PlainLiteral();
+//			i--;
+//		}
+//		da.renew();
+//		i = 100;
+//		while(i>0){
+//			test_Uri_Uri_Uri();
+//			test_Uri_Uri_PlainLiteral();
+//			i--;
+//		}
+//		da.renew();
+//		i = 100;
+//		while(i>0){
+//			test_Uri_Uri_Uri();
+//			test_Uri_Uri_PlainLiteral();
+//			i--;
+//		}
+//	}
 
 }

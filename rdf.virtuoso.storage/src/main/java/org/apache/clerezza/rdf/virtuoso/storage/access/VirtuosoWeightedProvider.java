@@ -24,7 +24,9 @@ import java.io.Writer;
 import java.math.BigInteger;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,6 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.sql.PooledConnection;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -58,10 +62,8 @@ import org.osgi.service.component.ComponentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import virtuoso.jdbc4.VirtuosoConnection;
+import virtuoso.jdbc4.VirtuosoConnectionPoolDataSource;
 import virtuoso.jdbc4.VirtuosoException;
-import virtuoso.jdbc4.VirtuosoPreparedStatement;
-import virtuoso.jdbc4.VirtuosoResultSet;
 import virtuoso.jdbc4.VirtuosoStatement;
 
 /**
@@ -104,6 +106,9 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	// DataAccess registry
 	private Set<DataAccess> dataAccessSet = new HashSet<DataAccess>();
 
+	// ConnectionPool
+	private VirtuosoConnectionPoolDataSource pds = null;
+	
 	// Logger
 	private Logger logger = LoggerFactory
 			.getLogger(VirtuosoWeightedProvider.class);
@@ -113,9 +118,11 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	private Integer port;
 	private String user;
 	private String pwd;
-	private String connStr;
+	
 	private int weight = DEFAULT_WEIGHT;
-
+	private String charset = "UTF-8";
+	private String roundrobin = "0";
+	
 	/**
 	 * Creates a new {@link VirtuosoWeightedProvider}.
 	 * 
@@ -126,13 +133,41 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		logger.debug("Created VirtuosoWeightedProvider.");
 	}
 
-	public VirtuosoWeightedProvider(String jdbcConnectionString,
+	public VirtuosoWeightedProvider(String host, Integer port,
 			String jdbcUser, String jdbcPassword) {
-		connStr = jdbcConnectionString;
-		user = jdbcUser;
-		pwd = jdbcPassword;
+		this.host = host;
+		this.port = port;
+		this.user = jdbcUser;
+		this.pwd = jdbcPassword;
+		initConnectionPoolDataSource();
 	}
 
+	private void initConnectionPoolDataSource(){
+		if(pds != null){
+			try {
+				pds.close();
+			} catch (SQLException e) {
+				logger.error("Cannot close connection pool datasource", e);
+			}finally{
+				pds = null;
+			}
+		}
+		// Build connection string
+		pds = new VirtuosoConnectionPoolDataSource();
+		try {
+			pds.setInitialPoolSize(10);
+		} catch (SQLException e) {
+			logger.error("Cannot set initial pool size", e);
+		}
+		pds.setUsepstmtpool(true);
+		pds.setServerName(host);
+		pds.setPortNumber(port);
+		pds.setUser(user);
+		pds.setPassword(pwd);
+		pds.setCharset(charset);
+		pds.setRoundrobin(roundrobin.equals("1"));
+	}
+	
 	/**
 	 * Activates this component.<br />
 	 * 
@@ -233,15 +268,18 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				user = (String) puser;
 				pwd = (String) ppwd;
 
-				// Build connection string
-				connStr = getConnectionString(host, port);
-
+				initConnectionPoolDataSource();
+				
 				// Check connection
-				VirtuosoConnection connection = getConnection(connStr, user,
-						pwd);
-				logger.info("Connection to {} initialized. User is {}", connStr, user);
-				// everything went ok
+				Connection connection = getConnection();
+				boolean ok = connection.isValid(10); // Please answer in 10 sec!
 				connection.close();
+				if(!ok){
+					logger.error("Connection test failed: {}", ok);
+					throw new ComponentException("A problem occurred while initializing connection to Virtuoso.");
+				}
+				logger.info("Connection {} initialized. User is {}", connection, user);
+				// everything went ok
 			} catch (VirtuosoException e) {
 				logger.error(
 						"A problem occurred while initializing connection to Virtuoso",
@@ -256,14 +294,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				logger.error("Be sure you have configured the connection parameters correctly in the OSGi/SCR configuration");
 				cCtx.disableComponent(pid);
 				throw new ComponentException(e.getLocalizedMessage());
-			} catch (ClassNotFoundException e) {
-				logger.error(
-						"A problem occurred while initializing connection to Virtuoso",
-						e);
-				logger.error("Be sure you have configured the connection parameters correctly in the OSGi/SCR configuration");
-				cCtx.disableComponent(pid);
-				throw new ComponentException(e.getLocalizedMessage());
-			}
+			} 
 		}
 		// Load remembered graphs
 		Set<UriRef> remembered = readRememberedGraphs();
@@ -282,7 +313,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	public static final String getConnectionString(String hostName,
 			Integer portNumber) {
 		return new StringBuilder().append("jdbc:virtuoso://").append(hostName)
-				.append(":").append(portNumber).append("/CHARSET=UTF-8")
+				.append(":").append(portNumber).append("/charset=UTF-8/log_enable=2")
 				.toString();
 	}
 
@@ -290,16 +321,16 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		logger.trace(" readRememberedGraphs()");
 		String SQL = "SPARQL SELECT DISTINCT ?G FROM <" + ACTIVE_GRAPHS_GRAPH
 				+ "> WHERE { ?G a <urn:x-virtuoso/active-graph> }";
-		VirtuosoConnection connection = null;
+		Connection connection = null;
 		Exception e = null;
 		VirtuosoStatement st = null;
-		VirtuosoResultSet rs = null;
+		ResultSet rs = null;
 		Set<UriRef> remembered = new HashSet<UriRef>();
 		try {
 			connection = getConnection();
 			st = (VirtuosoStatement) connection.createStatement();
 			logger.debug("Executing SQL: {}", SQL);
-			rs = (VirtuosoResultSet) st.executeQuery(SQL);
+			rs = (ResultSet) st.executeQuery(SQL);
 			while (rs.next()) {
 				UriRef name = new UriRef(rs.getString(1));
 				logger.debug(" > Graph {}", name);
@@ -311,29 +342,23 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		} catch (SQLException e1) {
 			logger.error("Error while executing query/connection.", e1);
 			e = e1;
-		} catch (ClassNotFoundException e1) {
-			logger.error("Error while executing query/connection.", e1);
-			e = e1;
 		} finally {
-
 			try {
 				if (rs != null)
 					rs.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close result set", ex);
 			}
-			;
 			try {
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
-			;
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (VirtuosoException e1) {
-					logger.error("Cannot close connection", e1);
-				}
+			try{
+				if(connection != null) connection.close();
+			}catch (Exception ex) {
+				logger.error("Cannot close connection", ex);
 			}
 		}
 		if (e != null) {
@@ -348,15 +373,14 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			// Returns the list of graphs in the virtuoso quad store
 			String SQL = "SPARQL INSERT INTO <" + ACTIVE_GRAPHS_GRAPH
 					+ "> { `iri(??)` a <urn:x-virtuoso/active-graph> }";
-			VirtuosoConnection connection = null;
+			Connection connection = null;
 			Exception e = null;
-			VirtuosoPreparedStatement st = null;
-			VirtuosoResultSet rs = null;
+			PreparedStatement st = null;
+			ResultSet rs = null;
 			try {
 				try {
 					connection = getConnection();
-					connection.setAutoCommit(false);
-					st = (VirtuosoPreparedStatement) connection
+					st = (PreparedStatement) connection
 							.prepareStatement(SQL);
 					logger.debug("Executing SQL: {}", SQL);
 					for (UriRef u : graphs) {
@@ -364,34 +388,27 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 						st.setString(1, u.getUnicodeString());
 						st.executeUpdate();
 					}
-					connection.commit();
 				} catch (Exception e1) {
 					logger.error("Error while executing query/connection.", e1);
 					e = e1;
-					connection.rollback();
 				}
-			} catch (SQLException e1) {
-				logger.error("Error while executing query/connection.", e1);
-				e = e1;
 			} finally {
 				try {
 					if (rs != null)
 						rs.close();
 				} catch (Exception ex) {
+					logger.error("Cannot close result set", ex);
 				}
-				;
 				try {
 					if (st != null)
 						st.close();
 				} catch (Exception ex) {
+					logger.error("Cannot close statement", ex);
 				}
-				;
-				if (connection != null) {
-					try {
-						connection.close();
-					} catch (VirtuosoException e1) {
-						logger.error("Cannot close connection", e1);
-					}
+				try{
+					if(connection != null) connection.close();
+				}catch (Exception ex) {
+					logger.error("Cannot close connection", ex);
 				}
 			}
 			if (e != null) {
@@ -407,50 +424,41 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			String SQL = "SPARQL WITH <"
 					+ ACTIVE_GRAPHS_GRAPH
 					+ "> DELETE { ?s ?p ?v } WHERE { ?s ?p ?v . FILTER( ?s = iri(??) ) }";
-			VirtuosoConnection connection = null;
 			Exception e = null;
-			VirtuosoPreparedStatement st = null;
-			VirtuosoResultSet rs = null;
+			Connection connection = null;
+			PreparedStatement st = null;
+			ResultSet rs = null;
 			try {
-				try {
-					connection = getConnection();
-					connection.setAutoCommit(false);
-					st = (VirtuosoPreparedStatement) connection
-							.prepareStatement(SQL);
-					logger.debug("Executing SQL: {}", SQL);
-					for (UriRef u : graphs) {
-						logger.trace(" > remembering {}", u);
-						st.setString(1, u.getUnicodeString());
-						st.executeUpdate();
-					}
-					connection.commit();
-				} catch (Exception e1) {
-					logger.error("Error while executing query/connection.", e1);
-					e = e1;
-					connection.rollback();
+				connection = getConnection();
+				st = (PreparedStatement) connection
+						.prepareStatement(SQL);
+				logger.debug("Executing SQL: {}", SQL);
+				for (UriRef u : graphs) {
+					logger.trace(" > remembering {}", u);
+					st.setString(1, u.getUnicodeString());
+					st.executeUpdate();
 				}
 			} catch (SQLException e1) {
 				logger.error("Error while executing query/connection.", e1);
 				e = e1;
 			} finally {
+
 				try {
 					if (rs != null)
 						rs.close();
 				} catch (Exception ex) {
+					logger.error("Cannot close result set", ex);
 				}
-				;
 				try {
 					if (st != null)
 						st.close();
 				} catch (Exception ex) {
+					logger.error("Cannot close statement", ex);
 				}
-				;
-				if (connection != null) {
-					try {
-						connection.close();
-					} catch (VirtuosoException e1) {
-						logger.error("Cannot close connection", e1);
-					}
+				try{
+					if(connection != null) connection.close();
+				}catch (Exception ex) {
+					logger.error("Cannot close connection", ex);
 				}
 			}
 			if (e != null) {
@@ -474,46 +482,60 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		for (DataAccess mg : dataAccessSet) {
 			mg.close();
 		}
+		try {
+			pds.close();
+		} catch (SQLException e) {
+			logger.error("Cannot close connection pool data source", e);
+		}
 		logger.info("Shutdown complete.");
 	}
 
-	public VirtuosoConnection getConnection() throws SQLException,
-			ClassNotFoundException {
-		return getConnection(connStr, user, pwd);
+	public Connection getConnection() throws SQLException {
+		return AccessController
+				.doPrivileged(new PrivilegedAction<Connection>() {
+					public Connection run() {
+						try {
+							PooledConnection pconn = pds.getPooledConnection();
+							return pconn.getConnection();
+						} catch (Throwable e) {
+							throw new RuntimeException(e);
+						}
+					}
+				});
 	}
 
-	private VirtuosoConnection getConnection(final String connStr,final String user,
-			final String pwd) throws SQLException, ClassNotFoundException {
-		logger.debug("getConnection(String {}, String {}, String *******)",
-				connStr, user);
-		/**
-		 * FIXME For some reasons, it looks the DriverManager is instantiating a
-		 * new virtuoso.jdbc4.Driver instance upon any activation. (Enable DEBUG
-		 * to see this)
-		 */
-		logger.debug("Loading JDBC Driver");
-		try {
-			VirtuosoConnection c = AccessController
-					.doPrivileged(new PrivilegedAction<VirtuosoConnection>() {
-						public VirtuosoConnection run() {
-							try {
-								Class.forName(VirtuosoWeightedProvider.DRIVER,
-										true, this.getClass().getClassLoader());
-								return (VirtuosoConnection) DriverManager
-										.getConnection(connStr, user, pwd);
-							} catch (ClassNotFoundException e) {
-								throw new RuntimeException(e);
-							} catch (SQLException e) {
-								throw new RuntimeException(e);
-							}
-						}
-					});
-			c.setAutoCommit(true);
-			return c;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	private VirtuosoConnection getConnection(final String connStr,final String user,
+//			final String pwd) throws SQLException, ClassNotFoundException {
+//		logger.debug("getConnection(String {}, String {}, String *******)",
+//				connStr, user);
+//		/**
+//		 * FIXME For some reasons, it looks the DriverManager is instantiating a
+//		 * new virtuoso.jdbc4.Driver instance upon any activation. (Enable DEBUG
+//		 * to see this)
+//		 */
+//		logger.debug("Loading JDBC Driver");
+//		try {
+//			VirtuosoConnection c = AccessController
+//					.doPrivileged(new PrivilegedAction<VirtuosoConnection>() {
+//						public VirtuosoConnection run() {
+//							try {
+//								Class.forName(VirtuosoWeightedProvider.DRIVER,
+//										true, this.getClass().getClassLoader());
+//								return (VirtuosoConnection) DriverManager
+//										.getConnection(connStr, user, pwd);
+//							} catch (ClassNotFoundException e) {
+//								throw new RuntimeException(e);
+//							} catch (SQLException e) {
+//								throw new RuntimeException(e);
+//							}
+//						}
+//					});
+//			c.setAutoCommit(true);
+//			return c;
+//		} catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	/**
 	 * Retrieves the Graph (unmodifiable) with the given UriRef If no graph
@@ -577,15 +599,15 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 					+ name + ")} LIMIT 1";
 
 			Statement st = null;
-			VirtuosoResultSet rs = null;
-			VirtuosoConnection connection = null;
+			ResultSet rs = null;
+			Connection connection = null;
 			Exception e = null;
 			try {
-				connection = getConnection(connStr, user, pwd);
+				connection = getConnection();
 				st = connection.createStatement();
 				logger.debug("Executing SQL: {}", SQL);
 				st.execute(SQL);
-				rs = (VirtuosoResultSet) st.getResultSet();
+				rs = (ResultSet) st.getResultSet();
 				if (rs.next() == false) {
 					// The graph is empty, it is not readable or does not exists
 					logger.debug("Graph does not exists: {}", name);
@@ -617,28 +639,24 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 			} catch (SQLException se) {
 				logger.error("Error while executing query/connection.", se);
 				e = se;
-			} catch (ClassNotFoundException ce) {
-				logger.error("Error while executing query/connection.", ce);
-				e = ce;
 			} finally {
 				try {
 					if (rs != null)
 						rs.close();
 				} catch (Exception ex) {
+					logger.error("Cannot close result set", ex);
 				}
 				;
 				try {
 					if (st != null)
 						st.close();
 				} catch (Exception ex) {
+					logger.error("Cannot close statement", ex);
 				}
-				;
-				if (connection != null) {
-					try {
-						connection.close();
-					} catch (VirtuosoException e1) {
-						logger.error("Cannot close connection", e1);
-					}
+				try{
+					if(connection != null) connection.close();
+				}catch (Exception ex) {
+					logger.error("Cannot close connection", ex);
 				}
 			}
 			if (e != null) {
@@ -650,7 +668,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	}
 
 	public DataAccess createDataAccess() {
-		DataAccess da = new DataAccess(connStr, user, pwd);
+		DataAccess da = new DataAccess(pds);
 		dataAccessSet.add(da);
 		// Remember all opened ones
 		return da;
@@ -682,15 +700,15 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		graphs.addAll(this.graphs.keySet());
 		// Returns the list of graphs in the virtuoso quad store
 		String SQL = "SPARQL SELECT DISTINCT ?G WHERE {GRAPH ?G {[] [] []} }";
-		VirtuosoConnection connection = null;
+		Connection connection = null;
 		Exception e = null;
-		VirtuosoStatement st = null;
-		VirtuosoResultSet rs = null;
+		Statement st = null;
+		ResultSet rs = null;
 		try {
 			connection = getConnection();
-			st = (VirtuosoStatement) connection.createStatement();
+			st = (Statement) connection.createStatement();
 			logger.debug("Executing SQL: {}", SQL);
-			rs = (VirtuosoResultSet) st.executeQuery(SQL);
+			rs = (ResultSet) st.executeQuery(SQL);
 			while (rs.next()) {
 				UriRef graph = new UriRef(rs.getString(1));
 				logger.debug(" > Graph {}", graph);
@@ -702,27 +720,26 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		} catch (SQLException e1) {
 			logger.error("Error while executing query/connection.", e1);
 			e = e1;
-		} catch (ClassNotFoundException e1) {
-			logger.error("Error while executing query/connection.", e1);
-			e = e1;
 		} finally {
 
 			try {
 				if (rs != null)
 					rs.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close result set", ex);
 			}
 			;
 			try {
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
 			;
 			if (connection != null) {
 				try {
 					connection.close();
-				} catch (VirtuosoException e1) {
+				} catch (Throwable e1) {
 					logger.error("Cannot close connection", e1);
 				}
 			}
@@ -749,7 +766,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	}
 
 	private long getPermissions(String graph) {
-		VirtuosoConnection connection = null;
+		Connection connection = null;
 		ResultSet rs = null;
 		Statement st = null;
 		logger.debug("getPermissions(String {})", graph);
@@ -772,28 +789,23 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		} catch (SQLException se) {
 			logger.error("An SQL exception occurred.");
 			e = se;
-		} catch (ClassNotFoundException e1) {
-			logger.error("An ClassNotFoundException occurred.");
-			e = e1;
 		} finally {
 			try {
 				if (rs != null)
 					rs.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close result set", ex);
 			}
-			;
 			try {
 				if (st != null)
 					st.close();
 			} catch (Exception ex) {
+				logger.error("Cannot close statement", ex);
 			}
-			;
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (VirtuosoException e1) {
-					logger.error("Cannot close connection", e1);
-				}
+			try{
+				if(connection != null) connection.close();
+			}catch (Exception ex) {
+				logger.error("Cannot close connection", ex);
 			}
 		}
 		if (e != null) {

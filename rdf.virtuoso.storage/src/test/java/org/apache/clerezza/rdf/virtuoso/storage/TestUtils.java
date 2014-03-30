@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.virtuoso.storage;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -27,10 +28,8 @@ import org.apache.clerezza.rdf.virtuoso.storage.access.VirtuosoWeightedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import virtuoso.jdbc4.VirtuosoConnection;
 import virtuoso.jdbc4.VirtuosoExtendedString;
 import virtuoso.jdbc4.VirtuosoRdfBox;
-import virtuoso.jdbc4.VirtuosoResultSet;
 
 /**
  * Utilities for tests
@@ -43,10 +42,8 @@ public class TestUtils {
 	public static final String FOAF_NS = "http://xmlns.com/foaf/0.1/";
 
 	private static VirtuosoWeightedProvider provider = null;
-	private static String jdbcConnectionString = null;
 	private static String jdbcUser = null;
 	private static String jdbcPassword = null;
-	private static String jdbcDriver = null;
 
 	static Logger log = LoggerFactory.getLogger(TestUtils.class);
 	public static boolean SKIP = false;
@@ -59,7 +56,7 @@ public class TestUtils {
 			SKIP = !skipProperty.equals("true");
 	}
 
-	public static VirtuosoConnection getConnection() throws SQLException, ClassNotFoundException{
+	public static Connection getConnection() throws SQLException, ClassNotFoundException{
 		return getProvider().getConnection();
 	}
 	public static VirtuosoWeightedProvider getProvider()
@@ -80,7 +77,6 @@ public class TestUtils {
 		String port = System.getProperty("virtuoso.port");
 		jdbcUser = System.getProperty("virtuoso.user");
 		jdbcPassword = System.getProperty("virtuoso.password");
-		jdbcDriver = System.getProperty("virtuoso.driver");
 		if (host == null) {
 			host = "localhost";
 			log.info("Missing param 'host', setting to default: {}", host);
@@ -98,24 +94,10 @@ public class TestUtils {
 			log.info("Missing param 'password', setting to default: {}",
 					jdbcPassword);
 		}
-		if (jdbcDriver == null) {
-			jdbcDriver = "virtuoso.jdbc4.Driver";
-			log.info("Missing param 'password', setting to default: {}",
-					jdbcDriver);
-		}
-
-		StringBuilder cb = new StringBuilder();
-		cb.append("jdbc:virtuoso://");
-		cb.append(host);
-		cb.append(":");
-		cb.append(port).append("/CHARSET=UTF-8");
-		jdbcConnectionString = cb.toString();
-//		Class.forName(VirtuosoWeightedProvider.DRIVER);
+		
 		log.info("Create provider");
-//		connection = (VirtuosoConnection) DriverManager.getConnection(
-//				jdbcConnectionString, jdbcUser, jdbcPassword);
-		provider = new VirtuosoWeightedProvider(jdbcConnectionString, jdbcUser, jdbcPassword);
-		log.debug("Connection URL: {}", jdbcConnectionString);
+		provider = new VirtuosoWeightedProvider(host, Integer.valueOf(port), jdbcUser, jdbcPassword);
+		log.debug("Connection to: {}:{}", host, port);
 		log.debug("Connection user: {}", jdbcUser);
 	}
 
@@ -132,7 +114,7 @@ public class TestUtils {
 			while (rs.next()) {
 				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
 					String s = rs.getString(i);
-					Object o = ((VirtuosoResultSet) rs).getObject(i);
+					Object o = ((ResultSet) rs).getObject(i);
 					if (o instanceof VirtuosoExtendedString) {
 						// In case is IRI
 						VirtuosoExtendedString vs = (VirtuosoExtendedString) o;

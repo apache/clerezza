@@ -21,6 +21,7 @@ package org.apache.clerezza.rdf.virtuoso.storage;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,9 +34,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import virtuoso.jdbc4.VirtuosoConnection;
-import virtuoso.jdbc4.VirtuosoException;
-
 /**
  * Tests the connection to the Virtuoso DBMS
  * 
@@ -45,27 +43,21 @@ public class ConnectionTest {
 
 	static final Logger log = LoggerFactory.getLogger(ConnectionTest.class);
 
-	private static VirtuosoConnection connection = null;
+	private static Connection connection = null;
 
 	@BeforeClass
 	public static void before() throws ClassNotFoundException, SQLException {
 		org.junit.Assume.assumeTrue(!TestUtils.SKIP);
 		connection = TestUtils.getConnection();
 	}
+	
+	public void testIsValid() throws SQLException {
+		assertTrue(connection.isValid(10));
+	}
 
 	@Test
-	public void testIsClosed() {
+	public void testIsClosed() throws SQLException {
 		assertFalse(connection.isClosed());
-	}
-
-	@Test
-	public void testIsConnectionLost() {
-		assertFalse(connection.isConnectionLost(0));
-	}
-
-	@Test
-	public void testIsReadOnly() throws VirtuosoException {
-		assertFalse(connection.isReadOnly());
 	}
 
 	@Test
@@ -111,16 +103,16 @@ public class ConnectionTest {
 	public void test() throws ClassNotFoundException, SQLException {
 		DatabaseMetaData dm = connection.getMetaData();
 		log.debug("Username is {}", dm.getUserName());
-		Properties p = connection.getClientInfo();
-		if (p == null) {
-			log.warn("Client info is null...");
-		} else
-			for (Entry<Object, Object> e : p.entrySet()) {
-				log.info("Client info property: {} => {}", e.getKey(),
-						e.getValue());
-			}
+//		Properties p = connection.getClientInfo();
+//		if (p == null) {
+//			log.warn("Client info is null...");
+//		} else
+//			for (Entry<Object, Object> e : p.entrySet()) {
+//				log.info("Client info property: {} => {}", e.getKey(),
+//						e.getValue());
+//			}
 		String SQL = "SELECT DISTINCT id_to_iri(G) FROM DB.DBA.RDF_QUAD quad ";
-		VirtuosoConnection cn = TestUtils.getConnection();
+		Connection cn = TestUtils.getConnection();
 		long startAt = System.currentTimeMillis();
 		// get the list of quad using SQL
 		log.debug("Executing SQL: {}", SQL);

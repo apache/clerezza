@@ -20,20 +20,20 @@ package org.apache.clerezza.rdf.virtuoso.storage.access;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.sql.DriverManager;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
+import javax.sql.PooledConnection;
 
 import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Language;
@@ -52,12 +52,10 @@ import org.slf4j.LoggerFactory;
 import org.wymiwyg.commons.util.collections.BidiMap;
 import org.wymiwyg.commons.util.collections.BidiMapImpl;
 
-import virtuoso.jdbc4.VirtuosoConnection;
+import virtuoso.jdbc4.VirtuosoConnectionPoolDataSource;
 import virtuoso.jdbc4.VirtuosoException;
 import virtuoso.jdbc4.VirtuosoExtendedString;
-import virtuoso.jdbc4.VirtuosoPreparedStatement;
 import virtuoso.jdbc4.VirtuosoRdfBox;
-import virtuoso.jdbc4.VirtuosoResultSet;
 
 /**
  * 
@@ -66,7 +64,7 @@ import virtuoso.jdbc4.VirtuosoResultSet;
  */
 public class DataAccess {
 	private Logger logger = LoggerFactory.getLogger(DataAccess.class);
-
+	
 	final static String DRIVER = "virtuoso.jdbc4.Driver";
 
 	// XXX This is only used to create a new bnode identifier in virtuoso
@@ -105,68 +103,37 @@ public class DataAccess {
 	 * (strings) to clerezza blank nodes and vice versa.
 	 */
 	private final BidiMap<VirtuosoBNode, BNode> bnodesMap;
+	
+	private VirtuosoConnectionPoolDataSource pds;
 
-	private Map<String, VirtuosoPreparedStatement> preparedStatements = null;
-	private VirtuosoConnection connection = null;
-	private String connectionString;
-	private String user;
-	private String pwd;
+	private int preftechSize;
 
 	// We protect the constructor from outside the package...
-	DataAccess(String connectionString, String user, String pwd) {
-		this.connectionString = connectionString;
-		this.user = user;
-		this.pwd = pwd;
-		
-		connection = createConnection(connectionString, user, pwd);
-		
-		// Init collections
-		this.preparedStatements = new HashMap<String,VirtuosoPreparedStatement>();
+	DataAccess(VirtuosoConnectionPoolDataSource pds) {
+		this.pds = pds;
+		this.preftechSize = 200;
+		// Init bnodes map
 		this.bnodesMap = new BidiMapImpl<VirtuosoBNode, BNode>();
-
 	}
 
-	private VirtuosoConnection createConnection(final String cs, final String u, final String p) {
-		try {
-			VirtuosoConnection c =  AccessController.doPrivileged(
-					new PrivilegedAction<VirtuosoConnection>() {
-				          public VirtuosoConnection run() {
-				        	  try {
-								Class.forName(VirtuosoWeightedProvider.DRIVER, true, this
-											.getClass().getClassLoader());
-								return  (VirtuosoConnection) DriverManager
-					  					.getConnection(cs, u, p);
-							} catch (ClassNotFoundException e) {
-								throw new RuntimeException(e);
-							} catch (SQLException e) {
-								throw new RuntimeException(e);
-							}
-				          } 
-				        } 
-				     ); 
-			c.setAutoCommit(true);
-			return c;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+	private Connection getConnection(){
+		return AccessController
+				.doPrivileged(new PrivilegedAction<Connection>() {
+					public Connection run() {
+						try {
+							PooledConnection pconn = pds.getPooledConnection();
+							return pconn.getConnection();
+						} catch (Throwable e) {
+							throw new RuntimeException(e);
+						}
+					}
+				});
 	}
 
-	// A simple renewal policy
-	private int statementCalls = 0;
-	protected PreparedStatement getStatement(String query)
-			throws VirtuosoException {
-		if(statementCalls >= 10000){
-			statementCalls=0; 
-			renew();
-		}else{
-			statementCalls++;
-		}
-		if (!preparedStatements.containsKey(query)) {
-			VirtuosoPreparedStatement ps = (VirtuosoPreparedStatement) connection
-					.prepareStatement(query);
-			preparedStatements.put(query, ps);
-		}
-		return preparedStatements.get(query);
+	private PreparedStatement getStatement(Connection connection, String query) throws SQLException {
+		PreparedStatement ps = connection.prepareStatement(query);
+		ps.setFetchSize(this.preftechSize);
+		return ps;
 	}
 
 	private VirtuosoBNode toVirtBnode(BNode bnode) {
@@ -184,52 +151,28 @@ public class DataAccess {
 		}
 	}
 
-	public void renew() {
-		logger.trace("renewing...");
-		close();
-		connection = createConnection(connectionString, user, pwd);
+	public void close() {
+
 	}
 
-	public void close() {
-		logger.trace("closing resources...");
-		Collection<VirtuosoPreparedStatement> pss = preparedStatements.values();
-		for (VirtuosoPreparedStatement ps : pss) {
+	private void close(Object... resources) {
+		for (Object o : resources) {
 			try {
-				logger.trace("Closing prepared statement {}", ps);
-				ps.close();
-			} catch (Exception e) {
-				logger.error("Cannot close statement", e);
+				if (o instanceof ResultSet ) {
+					((ResultSet) o).close();
+				} else if (o instanceof Statement) {
+					((Statement) o).close();
+				}else if (o instanceof Connection) {
+					((Connection) o).close();
+				}else{
+					throw new SQLException("XXX Unsupported resource: " + o.toString());
+				}
+			} catch (SQLException e) {
+				logger.error("Cannot close resource of type {}", o.getClass());
 			}
-		}
-		logger.trace("closed {} statements.", pss.size());
-		preparedStatements.clear();
-		try {
-			connection.close();
-			logger.trace("Connection closed");
-		} catch (Exception e) {
-			logger.error("Cannot close connection", e);
 		}
 	}
 	
-	private void close(String statementId){
-		try {
-			VirtuosoPreparedStatement ps = preparedStatements.get(statementId);
-			if (ps == null) {
-				logger.warn(
-						"Attempting to close a statement that was not prepared: {}",
-						statementId);
-			} else {
-				logger.trace("Closing prepared statement {}", ps);
-				ps.close();
-			}
-		} catch (Exception e) {
-			logger.error("Cannot close statement", e);
-		} finally {
-			// We won't reuse a statement that thrown a n exception on close...
-			preparedStatements.remove(statementId);
-		}
-	}
-
 	private void bindValue(PreparedStatement st, int i, Resource object)
 			throws SQLException {
 		if (object instanceof UriRef) {
@@ -306,29 +249,34 @@ public class DataAccess {
 				.append("urn:x-virtuoso:bnode:").append(bn).toString());
 
 		Exception e = null;
-		VirtuosoResultSet rs = null;
+		ResultSet rs = null;
 
 		String bnodeId = null;
+
+		Connection connection = getConnection();
+		PreparedStatement insert = null;
+		PreparedStatement select = null;
+		PreparedStatement delete = null;
 		// insert
 		try {
-			PreparedStatement insert = getStatement(INSERT_NEW_BNODE);
+			insert = connection.prepareStatement(INSERT_NEW_BNODE);
 			bindGraph(insert, 1, g);
 			bindPredicate(insert, 2, p);
 			bindSubject(insert, 3, o);
 			insert.executeUpdate();
 
 			// select
-			PreparedStatement select = getStatement(SELECT_TRIPLES_NULL_P_O);
+			select = connection.prepareStatement(SELECT_TRIPLES_NULL_P_O);
 			bindGraph(select, 1, g);
 			bindPredicate(select, 2, p);
 			bindValue(select, 3, o);
-			rs = (VirtuosoResultSet) select.executeQuery();
+			rs = (ResultSet) select.executeQuery();
 			rs.next();
 			bnodeId = rs.getString(1);
 			rs.close();
 
 			// delete
-			PreparedStatement delete = getStatement(DELETE_NEW_BNODE);
+			delete = connection.prepareStatement(DELETE_NEW_BNODE);
 			bindGraph(delete, 1, g);
 			bindPredicate(delete, 2, p);
 			bindSubject(delete, 3, o); // It is a IRI
@@ -341,17 +289,9 @@ public class DataAccess {
 			logger.error("ERROR while executing statement", se);
 			e = se;
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (Exception ex) {
-				logger.error("Error attempting to close result set", ex);
-			}
+			close(rs, insert, select, delete, connection);
 		}
 		if (e != null) {
-			close(INSERT_NEW_BNODE);
-			close(SELECT_TRIPLES_NULL_P_O);
-			close(DELETE_NEW_BNODE);
 			throw new RuntimeException(e);
 		}
 		return new VirtuosoBNode(bnodeId);
@@ -369,19 +309,27 @@ public class DataAccess {
 		if(o instanceof BNode){
 			o = toVirtBnode((BNode) o);
 		}
-		
+		Exception e = null;
+		PreparedStatement st = null;
+		Connection connection = null;
 		try {
-			PreparedStatement st = getStatement(INSERT_QUAD);
+			connection = getConnection();
+			st = getStatement(connection, INSERT_QUAD);
 			bindGraph(st, 1, graph);
 			bindSubject(st, 2, s);
 			bindPredicate(st, 3, p);
 			bindValue(st, 4, o);
 			st.executeUpdate();
-		} catch (VirtuosoException e) {
-			logger.error("Cannot execute statement", e);
-			throw new RuntimeException(e);
-		} catch (SQLException e) {
-			logger.error("Cannot execute statement", e);
+		} catch (VirtuosoException e1) {
+			logger.error("Cannot execute statement", e1);
+			e = e1;
+		} catch (SQLException e1) {
+			logger.error("Cannot execute statement", e1);
+			e = e1;
+		} finally{
+			close(st, connection);
+		}
+		if(e!=null){
 			throw new RuntimeException(e);
 		}
 	}
@@ -399,8 +347,11 @@ public class DataAccess {
 			o = toVirtBnode((BNode) o);
 		}
 		Exception e = null;
+		PreparedStatement st = null;
+		Connection connection = null;
 		try {
-			PreparedStatement st = getStatement(DELETE_QUAD);
+			connection = getConnection();
+			st = getStatement(connection, DELETE_QUAD);
 			bindGraph(st, 1, graph);
 			bindSubject(st, 2, s);
 			bindPredicate(st, 3, p);
@@ -412,10 +363,11 @@ public class DataAccess {
 		} catch (SQLException ex) {
 			logger.error("Cannot execute statement", ex);
 			e = ex;
+		} finally {
+			close(st, connection);
 		}
 		
 		if (e != null) {
-			close(DELETE_QUAD);
 			throw new RuntimeException(e);
 		}
 	}
@@ -424,9 +376,13 @@ public class DataAccess {
 		Exception e = null;
 
 		Set<UriRef> graphs = new HashSet<UriRef>();
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		Connection connection = null;
 		try {
-			PreparedStatement st = getStatement(LIST_GRAPHS);
-			ResultSet rs = st.executeQuery();
+			connection = getConnection();
+			st = getStatement(connection, LIST_GRAPHS);
+			rs = st.executeQuery();
 			while (rs.next()) {
 				UriRef graph = new UriRef(rs.getString(1));
 				logger.debug(" > Graph {}", graph);
@@ -438,10 +394,10 @@ public class DataAccess {
 		} catch (SQLException ex) {
 			logger.error("Cannot execute query", ex);
 			e = ex;
+		} finally{
+			close(rs, st, connection);
 		}
-		
 		if(e != null){
-			close(LIST_GRAPHS);
 			throw new RuntimeException(e);
 		}
 		
@@ -450,8 +406,11 @@ public class DataAccess {
 
 	public void clearGraph(String graph) {
 		Exception e = null;
+		PreparedStatement st = null;
+		Connection connection = null;
 		try {
-			PreparedStatement st = getStatement(CLEAR_GRAPH);
+			connection = getConnection();
+			st = getStatement(connection, CLEAR_GRAPH);
 			bindGraph(st, 1, graph);
 			st.executeUpdate();
 		} catch (VirtuosoException ex) {
@@ -460,10 +419,10 @@ public class DataAccess {
 		} catch (SQLException ex) {
 			logger.error("Cannot execute statement", ex);
 			e = ex;
-		} 
-		
+		} finally{
+			close(st, connection);
+		}
 		if(e != null){
-			close(CLEAR_GRAPH);
 			throw new RuntimeException(e);
 		}
 	}
@@ -486,13 +445,6 @@ public class DataAccess {
 		// Override blank node subjects to be a skolemized IRI
 		if (subject != null && subject instanceof BNode) {
 			subject = new UriRef(toVirtBnode((BNode) subject).getSkolemId());
-		}
-		
-		if (logger.isTraceEnabled()) {
-			logger.trace(" > g: {}", graph);
-			logger.trace(" > s: {}", subject);
-			logger.trace(" > p: {}", predicate);
-			logger.trace(" > o: {}", object);
 		}
 
 		List<Triple> list = null;
@@ -537,10 +489,12 @@ public class DataAccess {
 		// There must be only 1 boss
 		String filter = filters.iterator().next();
 		PreparedStatement ps = null;
-		VirtuosoResultSet rs = null;
+		ResultSet rs = null;
+		Connection connection = null;
 		try {
 			logger.debug("query: {}", filter);
-			ps = getStatement(filter);
+			connection = getConnection();
+			ps = getStatement(connection, filter);
 			// In any case the first binding is the graph
 			bindGraph(ps, 1, graph);
 
@@ -557,7 +511,7 @@ public class DataAccess {
 				bindValue(ps, index, object);
 			}
 
-			rs = (VirtuosoResultSet) ps.executeQuery();
+			rs = (ResultSet) ps.executeQuery();
 			list = new ArrayList<Triple>();
 
 			while (rs.next()) {
@@ -571,17 +525,10 @@ public class DataAccess {
 			logger.error("ERROR while executing statement", ps);
 			e = e1;
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (Throwable ex) {
-				logger.error("Cannot close result set", ex);
-			}
+			close(rs, ps, connection);
 		}
 
 		if (list == null || e != null) {
-			// We also close the statement
-			close(filter);
 			throw new RuntimeException(e);
 		}
 		return list.iterator();
@@ -591,10 +538,12 @@ public class DataAccess {
 		logger.trace("called size({})", graph);
 		Exception e = null;
 		PreparedStatement ps = null;
-		VirtuosoResultSet rs = null;
+		ResultSet rs = null;
+		Connection connection = null;
 		int size = -1;
 		try {
-			ps = getStatement(COUNT_TRIPLES_OF_GRAPH);
+			connection = getConnection();
+			ps = getStatement(connection, COUNT_TRIPLES_OF_GRAPH);
 			logger.trace("statement got: {}", ps);
 			// In any case the first binding is the graph
 			bindGraph(ps, 1, graph);
@@ -602,7 +551,7 @@ public class DataAccess {
 			boolean r = ps.execute();
 			logger.trace("Executed statement: {}", r);
 			if(r){
-				rs = (VirtuosoResultSet) ps.getResultSet();
+				rs = (ResultSet) ps.getResultSet();
 				logger.trace("Got result set, has next?");
 				boolean hn = rs.next();
 				logger.trace(" > {}", hn);
@@ -621,17 +570,10 @@ public class DataAccess {
 			logger.error("ERROR while executing statement", ps);
 			e = e1;
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (Throwable ex) {
-				logger.error("Cannot close result set", ex);
-			}
+			close(rs, ps, connection);
 		}
 		
 		if (size == -1 || e != null) {
-			// We also close the statement
-			close(COUNT_TRIPLES_OF_GRAPH);
 			throw new RuntimeException(e);
 		}
 
@@ -649,11 +591,8 @@ public class DataAccess {
 		Object o = null;
 
 		public TripleBuilder(Object s, Object p, Object o) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("TripleBuilder(Object s, Object p, Object o)");
-				logger.debug("> s: {}", s);
-				logger.debug("> p: {}", p);
-				logger.debug("> o: {}", o);
+			if (logger.isTraceEnabled()) {
+				logger.trace("TripleBuilder({}, {}, {})", new Object[]{ s, p, o });
 			}
 			this.s = s;
 			this.p = p;
@@ -661,7 +600,6 @@ public class DataAccess {
 		}
 
 		private NonLiteral buildSubject() {
-			logger.debug("TripleBuilder.getSubject() : {}", s);
 			if (s instanceof VirtuosoExtendedString) {
 				VirtuosoExtendedString vs = (VirtuosoExtendedString) s;
 				if (vs.iriType == VirtuosoExtendedString.IRI
@@ -682,7 +620,6 @@ public class DataAccess {
 		}
 
 		private UriRef buildPredicate() {
-			logger.debug("TripleBuilder.getPredicate() : {}", p);
 			if (p instanceof VirtuosoExtendedString) {
 				VirtuosoExtendedString vs = (VirtuosoExtendedString) p;
 				if (vs.iriType == VirtuosoExtendedString.IRI
@@ -699,8 +636,6 @@ public class DataAccess {
 		}
 
 		Resource buildObject() {
-			logger.debug("TripleBuilder.getObject() : {}", o);
-
 			if (o instanceof VirtuosoExtendedString) {
 				// In case is IRI
 				VirtuosoExtendedString vs = (VirtuosoExtendedString) o;
@@ -788,10 +723,10 @@ public class DataAccess {
 		logger.debug("Exec Plan B: {}", sql);
 		Exception e = null;
 		PreparedStatement st = null;
+		Connection connection = null;
 		try {
-			st = getStatement(sql);
-			String s = b.toString();
-			logger.trace(" TTL is \n{}\n", s);
+			connection = getConnection();
+			st = getStatement(connection, sql);
 			st.setNString(1, b.toString());
 			st.execute();
 		} catch (VirtuosoException ve) {
@@ -800,17 +735,10 @@ public class DataAccess {
 		} catch (SQLException se) {
 			logger.error("ERROR while executing statement", se);
 			e = se;
+		} finally {
+			close(st, connection);
 		}
 		if (e != null) {
-			close(sql);
-			if(logger.isDebugEnabled()){
-				logger.error("S {}", triple.getSubject());
-				logger.error("P {}", triple.getPredicate());
-				logger.error("O {}", triple.getObject());
-				logger.error(" O length: {}", triple.getObject().toString()
-					.length());
-			}
-			logger.error("Sql: {}", sql);
 			throw new RuntimeException(e);
 		}
 		return true;
