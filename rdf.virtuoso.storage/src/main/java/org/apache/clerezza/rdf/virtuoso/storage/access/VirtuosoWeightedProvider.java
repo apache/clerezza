@@ -64,7 +64,6 @@ import org.slf4j.LoggerFactory;
 
 import virtuoso.jdbc4.VirtuosoConnectionPoolDataSource;
 import virtuoso.jdbc4.VirtuosoException;
-import virtuoso.jdbc4.VirtuosoStatement;
 
 /**
  * A {@link org.apache.clerezza.rdf.core.access.WeightedTcProvider} for
@@ -236,7 +235,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				 */
 				// We take the configuration of the SCR component
 				Object phost = cCtx.getProperties().get(HOST);
-				Object pport = cCtx.getProperties().get(PORT);
+				Object pport = Integer.valueOf((String)cCtx.getProperties().get(PORT));
 				Object puser = cCtx.getProperties().get(USER);
 				Object ppwd = cCtx.getProperties().get(PASSWORD);
 
@@ -248,7 +247,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 					phost = "localhost"; 
 				}
 				if(pport == null && System.getProperty("virtuoso.port") != null){
-					pport = System.getProperty("virtuoso.port");
+					pport = Integer.valueOf(System.getProperty("virtuoso.port"));
 				} else if(pport == null){
 					pport = Integer.valueOf(1111); 
 				}
@@ -323,12 +322,12 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				+ "> WHERE { ?G a <urn:x-virtuoso/active-graph> }";
 		Connection connection = null;
 		Exception e = null;
-		VirtuosoStatement st = null;
+		Statement st = null;
 		ResultSet rs = null;
 		Set<UriRef> remembered = new HashSet<UriRef>();
 		try {
 			connection = getConnection();
-			st = (VirtuosoStatement) connection.createStatement();
+			st = connection.createStatement();
 			logger.debug("Executing SQL: {}", SQL);
 			rs = (ResultSet) st.executeQuery(SQL);
 			while (rs.next()) {
