@@ -46,6 +46,8 @@ import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.access.QueryableTcProvider;
+import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoGraph;
 import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoMGraph;
@@ -73,7 +75,7 @@ import virtuoso.jdbc4.VirtuosoException;
  * 
  */
 @Component(metatype = true, immediate = true)
-@Service(WeightedTcProvider.class)
+@Service({WeightedTcProvider.class, TcProvider.class})
 @Properties({
 		@Property(name = "password", description = "User password"),
 		@Property(name = "host", description = "The host running the Virtuoso server"),
