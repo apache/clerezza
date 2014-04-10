@@ -21,6 +21,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
+import org.apache.clerezza.rdf.core.access.QueryableTcProvider;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -81,7 +82,7 @@ import org.apache.clerezza.rdf.core.access.TcManager;
  */
 @Component(metatype=true, immediate=true,
     configurationFactory=true, policy=ConfigurationPolicy.OPTIONAL)
-@Service(WeightedTcProvider.class)
+@Service({WeightedTcProvider.class, TcProvider.class, QueryableTcProvider.class})
 @Properties(value={
     @Property(name=SingleTdbDatasetTcProvider.TDB_DIR),
     @Property(name=SingleTdbDatasetTcProvider.DEFAULT_GRAPH_NAME),
