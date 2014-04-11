@@ -83,7 +83,7 @@ import virtuoso.jdbc4.VirtuosoException;
 		@Property(name = "user", description = "User name"),
 		@Property(name = "weight", intValue = 110, description = "Weight assigned to this provider"),
 		@Property(name = TcManager.GENERAL_PURPOSE_TC, boolValue = true) })
-public class VirtuosoWeightedProvider implements WeightedTcProvider {
+public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTcProvider {
 
 	// JDBC driver class (XXX move to DataAccess?)
 	public static final String DRIVER = "virtuoso.jdbc4.Driver";
@@ -123,6 +123,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	private int weight = DEFAULT_WEIGHT;
 	private String charset = "UTF-8";
 	private String roundrobin = "0";
+
+	private DataAccess sparqlDataAccess;
 	
 	/**
 	 * Creates a new {@link VirtuosoWeightedProvider}.
@@ -141,6 +143,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 		this.user = jdbcUser;
 		this.pwd = jdbcPassword;
 		initConnectionPoolDataSource();
+		this.sparqlDataAccess = createDataAccess();
 	}
 
 	private void initConnectionPoolDataSource(){
@@ -270,6 +273,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 				pwd = (String) ppwd;
 
 				initConnectionPoolDataSource();
+				// Prepare SPARQL data access
+				this.sparqlDataAccess = createDataAccess();
 				
 				// Check connection
 				Connection connection = getConnection();
@@ -946,5 +951,13 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider {
 	public void setWeight(int weight) {
 		logger.debug("setWeight(int {})", weight);
 		this.weight = weight;
+	}
+	
+	/**
+	 * Executes a SPARQL query
+	 */
+	@Override
+	public Object executeSparqlQuery(String query, UriRef defaultGraphUri) {
+		return this.sparqlDataAccess.executeSparqlQuery(query, defaultGraphUri);
 	}
 }

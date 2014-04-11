@@ -27,10 +27,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.sql.PooledConnection;
@@ -44,8 +46,11 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
+import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
+import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoBNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -581,7 +586,7 @@ public class DataAccess {
 	}
 	
 	/**
-	 * Builds a clerezza Triple from Virtuoso result types
+	 * Builds a clerezza Triple from a Virtuoso result types
 	 * 
 	 */
 	private class TripleBuilder {
@@ -599,112 +604,10 @@ public class DataAccess {
 			this.o = o;
 		}
 
-		private NonLiteral buildSubject() {
-			if (s instanceof VirtuosoExtendedString) {
-				VirtuosoExtendedString vs = (VirtuosoExtendedString) s;
-				if (vs.iriType == VirtuosoExtendedString.IRI
-						&& (vs.strType & 0x01) == 0x01) {
-					// Subject is IRI
-					return new UriRef(vs.str);
-				} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
-					return DataAccess.this.toBNode(vs.str);
-				} else {
-					// !Cannot happen
-					throw new IllegalStateException(
-							"Subject must be an IRI or a BNODE");
-				}
-			} else {
-				throw new IllegalStateException(
-						"Subject must be an instance of VirtuosoExtendedString");
-			}
-		}
-
-		private UriRef buildPredicate() {
-			if (p instanceof VirtuosoExtendedString) {
-				VirtuosoExtendedString vs = (VirtuosoExtendedString) p;
-				if (vs.iriType == VirtuosoExtendedString.IRI
-						&& (vs.strType & 0x01) == 0x01) {
-					// Subject is IRI
-					return new UriRef(vs.str);
-				} else {
-					// !Cannot happen
-					throw new IllegalStateException("Predicate must be an IRI ");
-				}
-			} else {
-				throw new IllegalStateException("Predicate must be an IRI");
-			}
-		}
-
-		Resource buildObject() {
-			if (o instanceof VirtuosoExtendedString) {
-				// In case is IRI
-				VirtuosoExtendedString vs = (VirtuosoExtendedString) o;
-				if (vs.iriType == VirtuosoExtendedString.IRI
-						&& (vs.strType & 0x01) == 0x01) {
-					// Is IRI
-					return new UriRef(vs.str);
-				} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
-					//
-					return DataAccess.this.toBNode(vs.str);
-				} else {
-					// Is a plain literal
-					return new PlainLiteralImpl(vs.str);
-				}
-			} else if (o instanceof VirtuosoRdfBox) {
-				// In case is typed literal
-				VirtuosoRdfBox rb = (VirtuosoRdfBox) o;
-
-				String value;
-				if (rb.rb_box.getClass().isAssignableFrom(String.class)) {
-					value = (String) rb.rb_box;
-					String lang = rb.getLang();
-					String type = rb.getType();
-					if (type == null) {
-						Language language = lang == null ? null : new Language(
-								lang);
-						return new PlainLiteralImpl(value, language);
-					} else {
-						return new TypedLiteralImpl(value, new UriRef(type));
-					}
-				} else if (rb.rb_box instanceof VirtuosoExtendedString) {
-					VirtuosoExtendedString vs = (VirtuosoExtendedString) rb.rb_box;
-
-					if (vs.iriType == VirtuosoExtendedString.IRI
-							&& (vs.strType & 0x01) == 0x01) {
-						// Is IRI
-						return new UriRef(vs.str);
-					} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
-						//
-						return DataAccess.this.toBNode(vs.str);
-					} else {
-						String type = rb.getType();
-						if (type == null) {
-							String lang = rb.getLang();
-							if (lang != null) {
-								return new PlainLiteralImpl(vs.str,
-										new Language(lang));
-							}
-							// Is a plain literal
-							return new PlainLiteralImpl(vs.str);
-						} else {
-							return new TypedLiteralImpl(vs.str,
-									new UriRef(type));
-						}
-					}
-				}
-			} else if (o == null) {
-				// Raise an exception
-				throw new IllegalStateException("Object cannot be NULL!");
-			}
-
-			// FIXME (not clear this...)
-			return new PlainLiteralImpl(o.toString());
-		}
-
 		public Triple build() {
 			logger.debug("TripleBuilder.build()");
-			return new TripleImpl(buildSubject(), buildPredicate(),
-					buildObject());
+			return new TripleImpl(buildSubject(this.s), buildPredicate(this.p),
+					buildObject(this.o));
 		}
 	}
 
@@ -873,5 +776,311 @@ public class DataAccess {
 					"subject must be BNode or UriRef");
 		}
 	}
+	
+	/**
+	 * From a Virtuoso object to NonLiteral
+	 * 
+	 * @param s
+	 * @return
+	 */
+	private NonLiteral buildSubject(Object s) {
+		if (s instanceof VirtuosoExtendedString) {
+			VirtuosoExtendedString vs = (VirtuosoExtendedString) s;
+			if (vs.iriType == VirtuosoExtendedString.IRI
+					&& (vs.strType & 0x01) == 0x01) {
+				// Subject is IRI
+				return new UriRef(vs.str);
+			} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
+				return DataAccess.this.toBNode(vs.str);
+			} else {
+				// !Cannot happen
+				throw new IllegalStateException(
+						"Subject must be an IRI or a BNODE");
+			}
+		} else {
+			throw new IllegalStateException(
+					"Subject must be an instance of VirtuosoExtendedString");
+		}
+	}
+
+	private UriRef buildPredicate(Object p) {
+		if (p instanceof VirtuosoExtendedString) {
+			VirtuosoExtendedString vs = (VirtuosoExtendedString) p;
+			if (vs.iriType == VirtuosoExtendedString.IRI
+					&& (vs.strType & 0x01) == 0x01) {
+				// Subject is IRI
+				return new UriRef(vs.str);
+			} else {
+				// !Cannot happen
+				throw new IllegalStateException("Predicate must be an IRI ");
+			}
+		} else {
+			throw new IllegalStateException("Predicate must be an IRI");
+		}
+	}
+
+	private Resource buildObject(Object o) {
+		if (o instanceof VirtuosoExtendedString) {
+			// In case is IRI
+			VirtuosoExtendedString vs = (VirtuosoExtendedString) o;
+			if (vs.iriType == VirtuosoExtendedString.IRI
+					&& (vs.strType & 0x01) == 0x01) {
+				// Is IRI
+				return new UriRef(vs.str);
+			} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
+				//
+				return DataAccess.this.toBNode(vs.str);
+			} else {
+				// Is a plain literal
+				return new PlainLiteralImpl(vs.str);
+			}
+		} else if (o instanceof VirtuosoRdfBox) {
+			// In case is typed literal
+			VirtuosoRdfBox rb = (VirtuosoRdfBox) o;
+
+			String value;
+			if (rb.rb_box.getClass().isAssignableFrom(String.class)) {
+				value = (String) rb.rb_box;
+				String lang = rb.getLang();
+				String type = rb.getType();
+				if (type == null) {
+					Language language = lang == null ? null : new Language(
+							lang);
+					return new PlainLiteralImpl(value, language);
+				} else {
+					return new TypedLiteralImpl(value, new UriRef(type));
+				}
+			} else if (rb.rb_box instanceof VirtuosoExtendedString) {
+				VirtuosoExtendedString vs = (VirtuosoExtendedString) rb.rb_box;
+
+				if (vs.iriType == VirtuosoExtendedString.IRI
+						&& (vs.strType & 0x01) == 0x01) {
+					// Is IRI
+					return new UriRef(vs.str);
+				} else if (vs.iriType == VirtuosoExtendedString.BNODE) {
+					//
+					return DataAccess.this.toBNode(vs.str);
+				} else {
+					String type = rb.getType();
+					if (type == null) {
+						String lang = rb.getLang();
+						if (lang != null) {
+							return new PlainLiteralImpl(vs.str,
+									new Language(lang));
+						}
+						// Is a plain literal
+						return new PlainLiteralImpl(vs.str);
+					} else {
+						return new TypedLiteralImpl(vs.str,
+								new UriRef(type));
+					}
+				}
+			}
+		} else if (o == null) {
+			// Raise an exception
+			throw new IllegalStateException("Object cannot be NULL!");
+		}
+
+		// FIXME (not clear this...)
+		return new PlainLiteralImpl(o.toString());
+	}
+	
+	private Resource objectToResource(Object o){
+		return buildObject(o);
+	}
+	
+	/**
+	 * This is to execute SPARQL queries.
+	 * 
+	 * @param query
+	 * @param defaultGraphUri
+	 * @return
+	 */
+	public Object executeSparqlQuery(String query, UriRef defaultGraphUri) {
+		Connection connection = null;
+		ResultSet rs = null;
+		Statement st = null;
+		logger.debug("executeSparqlQuery(String {}, UriRef {})", query, defaultGraphUri);
+		Exception e = null;
+		
+		StringBuilder qb = new StringBuilder();
+		qb.append("SPARQL ");
+		if(defaultGraphUri != null){
+			qb.append("DEFINE input:default-graph-uri <");
+			qb.append(defaultGraphUri.getUnicodeString());
+			qb.append(">");
+			qb.append("\n");
+		}
+		qb.append(query);
+		Object returnThis = null;
+		try {
+			connection = getConnection();
+			String sql = qb.toString();
+			logger.debug("Executing SQL: {}", sql);
+			st = connection.createStatement();
+			st.execute(sql);
+			rs = st.getResultSet();
+			// ASK :: Boolean
+			if (rs.getMetaData().getColumnCount() == 1
+					&& rs.getMetaData().getColumnType(1) == 4) {
+				rs.next();
+				returnThis = rs.getBoolean(1);
+			} else
+			// CONSTRCUT/DESCRIBE :: TripleCollection
+			if (rs.getMetaData().getColumnCount() == 3
+					&& rs.getMetaData().getColumnType(1) == 12
+					&& rs.getMetaData().getColumnType(2) == 12
+					&& rs.getMetaData().getColumnType(3) == 1111) {
+				final List<Triple> lt = new ArrayList<Triple>();
+				while (rs.next()) {
+					lt.add(new TripleBuilder(rs.getObject(1), rs.getObject(2),
+							rs.getObject(3)).build());
+				}
+				returnThis = new SimpleGraph(lt.iterator());
+			} else {
+				// SELECT (anything else?)
+				returnThis = new SparqlResultSetWrapper(rs);
+			}
+		} catch (VirtuosoException ve) {
+			logger.error("A virtuoso SQL exception occurred.");
+			e = ve;
+		} catch (SQLException se) {
+			logger.error("An SQL exception occurred.");
+			e = se;
+		} finally {
+			close(rs, st, connection);
+		}
+		if (e != null) {
+			throw new RuntimeException(e);
+		}
+		
+		return returnThis;
+	}
+	
+	/**
+	 * To wrap a sparql result set
+	 * @author enridaga
+	 *
+	 */
+	private class SparqlResultSetWrapper implements org.apache.clerezza.rdf.core.sparql.ResultSet {
+
+	    private final List<String> resultVars;
+	    private Iterator<SolutionMapping> iterator;
+	    
+	    SparqlResultSetWrapper(final ResultSet jdbcResultSet) throws SQLException {
+	    	
+	        resultVars = new ArrayList<String>();
+	        for(int x = 1; x < jdbcResultSet.getMetaData().getColumnCount() + 1; x++){
+	        	resultVars.add(jdbcResultSet.getMetaData().getColumnName(x));
+	        }
+	        
+	        final List<SolutionMapping> solutions = new ArrayList<SolutionMapping>();
+	        while (jdbcResultSet.next()) {
+	        	RSSolutionMapping sm = new RSSolutionMapping();
+	        	for(String column : resultVars){
+	        		sm.put(new Variable(column), objectToResource(jdbcResultSet.getObject(column)));
+	        	}
+	        	solutions.add(sm);
+	        }
+	        iterator = solutions.iterator();
+	    }
+
+	    @Override
+	    public boolean hasNext() {
+	        return iterator.hasNext();
+	    }
+
+	    @Override
+	    public SolutionMapping next() {
+	        return iterator.next();
+	    }
+
+	    @Override
+	    public void remove() {
+	        throw new UnsupportedOperationException("Not supported yet.");
+	    }
+
+	    @Override
+	    public List<String> getResultVars() {
+	    	return resultVars;
+	    }
+	}
+	
+	/**
+	 * This is a utility class
+	 * 
+	 * @author enridaga
+	 *
+	 */
+	private class RSSolutionMapping implements SolutionMapping {
+
+    	private Map<Variable, Resource> map;
+    	
+		@Override
+		public int size() {
+			return map.size();
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return map.isEmpty();
+		}
+
+		@Override
+		public boolean containsKey(Object key) {
+			return map.containsKey(key);
+		}
+
+		@Override
+		public boolean containsValue(Object value) {
+			return map.containsValue(value);
+		}
+
+		@Override
+		public Resource get(Object key) {
+			return map.get(key);
+		}
+
+		@Override
+		public Resource put(Variable key, Resource value) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Resource remove(Object key) {
+			return map.remove(key);
+		}
+
+		@Override
+		public void putAll(Map<? extends Variable, ? extends Resource> m) {
+			map.putAll(m);
+		}
+
+		@Override
+		public void clear() {
+			map.clear();
+		}
+
+		@Override
+		public Set<Variable> keySet() {
+			return map.keySet();
+		}
+
+		@Override
+		public Collection<Resource> values() {
+			return map.values();
+		}
+
+		@Override
+		public Set<java.util.Map.Entry<Variable, Resource>> entrySet() {
+			return map.entrySet();
+		}
+
+		@Override
+		public Resource get(String name) {
+			return map.get(new Variable(name));
+		}
+    }
 
 }

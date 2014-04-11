@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class DataAccessTest {
 
 	private static DataAccess da = null;
-
+	private final static String testGraphName = "urn:x-test:DataAccessTest";
 	static Logger log = LoggerFactory.getLogger(DataAccessTest.class);
 	
 	@BeforeClass
@@ -50,18 +50,18 @@ public class DataAccessTest {
 	@Before
 	public void before() throws ClassNotFoundException, SQLException {
 		da = TestUtils.getProvider().createDataAccess();
-		da.clearGraph( "urn:x-test:DataAccessTest" );
+		da.clearGraph( testGraphName );
 	}
 
 	@After
 	public void after() {
-		da.clearGraph( "urn:x-test:DataAccessTest" );
+		da.clearGraph( testGraphName );
 		da.close();
 		da = null;
 	}
 
 	private void testTriple(Triple t){
-		String g = "urn:x-test:DataAccessTest";
+		String g = testGraphName;
 		da.insertQuad(g, t);
 		
 		Assert.assertTrue(da.filter(g, null, null, null).hasNext());
@@ -100,6 +100,42 @@ public class DataAccessTest {
 	public void test_Uri_Uri_BNode(){
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new BNode());
 		testTriple(t);
+	}
+
+	@Test
+	public void testSparqlSelect(){
+		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
+		da.insertQuad(testGraphName, t);
+		String select = "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 1";
+		da.executeSparqlQuery(select, new UriRef(testGraphName));
+		da.executeSparqlQuery(select, null);
+	}
+	
+	@Test
+	public void testSparqlConstruct(){
+		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
+		da.insertQuad(testGraphName, t);
+		String select = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 1";
+		da.executeSparqlQuery(select, new UriRef(testGraphName));
+		da.executeSparqlQuery(select, null);
+	}
+	
+	@Test
+	public void testSparqlAsk(){
+		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
+		da.insertQuad(testGraphName, t);
+		String ask = "ASK { [] [] [] }";
+		da.executeSparqlQuery(ask, new UriRef(testGraphName));
+		da.executeSparqlQuery(ask, null);
+	}
+	
+	@Test
+	public void testSparqlDescribe(){
+		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
+		da.insertQuad(testGraphName, t);
+		String describe = "DESCRIBE <urn:subject> ";
+		da.executeSparqlQuery(describe, new UriRef(testGraphName));
+		da.executeSparqlQuery(describe, null);
 	}
 	
 //	@Test
