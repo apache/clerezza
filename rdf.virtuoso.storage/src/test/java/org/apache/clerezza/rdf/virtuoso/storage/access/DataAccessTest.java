@@ -21,10 +21,12 @@ package org.apache.clerezza.rdf.virtuoso.storage.access;
 import java.sql.SQLException;
 
 import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.virtuoso.storage.TestUtils;
 import org.apache.clerezza.rdf.virtuoso.storage.access.DataAccess;
 import org.junit.After;
@@ -107,8 +109,10 @@ public class DataAccessTest {
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
 		da.insertQuad(testGraphName, t);
 		String select = "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 1";
-		da.executeSparqlQuery(select, new UriRef(testGraphName));
-		da.executeSparqlQuery(select, null);
+		Object result = da.executeSparqlQuery(select, new UriRef(testGraphName));
+		Assert.assertTrue(result instanceof ResultSet);
+		result = da.executeSparqlQuery(select, null);
+		Assert.assertTrue(result instanceof ResultSet);
 	}
 	
 	@Test
@@ -116,8 +120,10 @@ public class DataAccessTest {
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
 		da.insertQuad(testGraphName, t);
 		String select = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 1";
-		da.executeSparqlQuery(select, new UriRef(testGraphName));
-		da.executeSparqlQuery(select, null);
+		Object result = da.executeSparqlQuery(select, new UriRef(testGraphName));
+		Assert.assertTrue(result instanceof Graph);
+		result = da.executeSparqlQuery(select, null);
+		Assert.assertTrue(result instanceof Graph);
 	}
 	
 	@Test
@@ -125,8 +131,9 @@ public class DataAccessTest {
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
 		da.insertQuad(testGraphName, t);
 		String ask = "ASK { [] [] [] }";
-		da.executeSparqlQuery(ask, new UriRef(testGraphName));
-		da.executeSparqlQuery(ask, null);
+		Object result = da.executeSparqlQuery(ask, new UriRef(testGraphName));
+		Assert.assertTrue(result instanceof Boolean);
+		result = da.executeSparqlQuery(ask, null);
 	}
 	
 	@Test
@@ -134,32 +141,10 @@ public class DataAccessTest {
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
 		da.insertQuad(testGraphName, t);
 		String describe = "DESCRIBE <urn:subject> ";
-		da.executeSparqlQuery(describe, new UriRef(testGraphName));
-		da.executeSparqlQuery(describe, null);
+		Object result = da.executeSparqlQuery(describe, new UriRef(testGraphName));
+		Assert.assertTrue(result instanceof Graph);
+		result = da.executeSparqlQuery(describe, null);
+		Assert.assertTrue(result instanceof Graph);
 	}
-	
-//	@Test
-//	public void testRenew(){
-//		int i = 100;
-//		while(i>0){
-//			test_Uri_Uri_Uri();
-//			test_Uri_Uri_PlainLiteral();
-//			i--;
-//		}
-//		da.renew();
-//		i = 100;
-//		while(i>0){
-//			test_Uri_Uri_Uri();
-//			test_Uri_Uri_PlainLiteral();
-//			i--;
-//		}
-//		da.renew();
-//		i = 100;
-//		while(i>0){
-//			test_Uri_Uri_Uri();
-//			test_Uri_Uri_PlainLiteral();
-//			i--;
-//		}
-//	}
 
 }
