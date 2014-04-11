@@ -142,13 +142,25 @@
 
 	<profiles>
 		<profile>
-			<id>virtuoso-do-tests</id>
+			<id>virtuoso-skip-tests</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<property>
+					<name>!virtuoso.test</name>
+				</property>
 			</activation>
-			<properties>
-				<virtuoso.test>true</virtuoso.test>
-			</properties>
+		<build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 		</profile>
 	</profiles>
 	<build>
@@ -157,7 +169,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>default-test</id>
+						<id>virtuoso-tests</id>
 						<phase>test</phase>
 						<goals>
 							<goal>test</goal>
