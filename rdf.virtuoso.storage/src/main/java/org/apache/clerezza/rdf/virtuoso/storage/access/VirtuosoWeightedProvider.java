@@ -75,7 +75,7 @@ import virtuoso.jdbc4.VirtuosoException;
  * 
  */
 @Component(metatype = true, immediate = true)
-@Service({WeightedTcProvider.class, TcProvider.class})
+@Service({WeightedTcProvider.class, TcProvider.class, QueryableTcProvider.class})
 @Properties({
 		@Property(name = "password", description = "User password"),
 		@Property(name = "host", description = "The host running the Virtuoso server"),
