@@ -121,7 +121,6 @@ public class RdfIOTest {
 
 	@Test
 	public void longString() throws ClassNotFoundException, SQLException, InterruptedException {
-		log.info("Test a long xsd:string");
 		StringBuilder longStr = new StringBuilder();
 		int c = 250000;
 		while (c > 0) {
@@ -129,6 +128,7 @@ public class RdfIOTest {
 			c--;
 		}
 		int size = longStr.length();
+		log.info("Test a long xsd:string: {} chars",size);
 		TypedLiteral object = new TypedLiteralImpl(longStr.toString(),
 				new UriRef(XSD + "string"));
 		UriRef subject = new UriRef("urn:io-test:reto");
@@ -347,6 +347,5 @@ public class RdfIOTest {
 		TypedLiteral l = (TypedLiteral) read.getObject();
 		Assert.assertEquals(l.getLexicalForm(), s);
 		Assert.assertEquals(l.getDataType(), new UriRef(XSD + "string"));
-
 	}
 }

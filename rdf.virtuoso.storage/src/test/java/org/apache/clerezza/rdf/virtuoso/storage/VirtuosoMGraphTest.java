@@ -43,7 +43,6 @@ import org.apache.clerezza.rdf.virtuoso.storage.access.DataAccess;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,7 +140,7 @@ public class VirtuosoMGraphTest {
 		assertTrue(mgraph.filter(enridaga, predicate, objectTyped).next().equals(triple));
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	public void testAddSingleXMLLiteral() {
 		log.info("testAddSingleXMLLiteral()");
@@ -171,7 +170,9 @@ public class VirtuosoMGraphTest {
 		log.info(" > o: {} ", rt.getObject());
 		log.info(" > tl?: {} ", rt.getObject() instanceof TypedLiteral);
 		assertTrue(mgraph.filter(enridaga, predicate, objectXml).hasNext());
-		assertTrue(mgraph.filter(enridaga, predicate, objectXml).next().equals(triple));
+		Triple tr = mgraph.filter(enridaga, predicate, objectXml).next();
+		log.info("!! {} {} {} !!", new Object[]{tr.getSubject(), tr.getPredicate(), tr.getObject()});
+		assertTrue(tr.equals(triple));
 	}
 
 
@@ -339,7 +340,7 @@ public class VirtuosoMGraphTest {
 		assertTrue(found);
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	public void testFilterObjectXml() {
 		log.info("testFilterObjectXml(); Test filter(null,null,o)");

@@ -103,6 +103,10 @@ public class DataAccess {
 			SELECT_TRIPLES_NULL_P_NULL, SELECT_TRIPLES_S_P_NULL,
 			SELECT_TRIPLES_NULL_P_O, SELECT_TRIPLES_S_NULL_O };
 
+	// rdf:XMLLiteral needs to be shadowed in the storage because of a BUG in virtuoso
+	private final static UriRef XMLLiteral = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
+	private final static UriRef XMLLiteralShadowed = new UriRef("urn:x-clerezza:rdf#XMLLiteral");
+	
 	/**
 	 * Bidirectional map for managing the conversion from virtuoso blank nodes
 	 * (strings) to clerezza blank nodes and vice versa.
@@ -192,7 +196,14 @@ public class DataAccess {
 			TypedLiteral tl = ((TypedLiteral) object);
 			st.setInt(i, 4);
 			st.setString(i + 1, tl.getLexicalForm());
-			st.setString(i + 2, tl.getDataType().getUnicodeString());
+			
+			// XXX Shadow rdf:XMLLiteral datatype
+			// See CLEREZZA-XXX
+			UriRef dt = tl.getDataType();
+			if(dt.equals(XMLLiteral)){
+				dt = XMLLiteralShadowed;
+			}
+			st.setString(i + 2, dt.getUnicodeString());
 		} else if (object instanceof PlainLiteral) {
 			PlainLiteral pl = (PlainLiteral) object;
 			if (pl.getLanguage() != null) {
@@ -614,8 +625,10 @@ public class DataAccess {
 	/**
 	 * The following private methods are used to support the triple addition
 	 * plan B
+	 * 
+	 * XXX This is deprecated. Discussion at CLEREZZA-908
 	 */
-	
+	@Deprecated
 	public boolean performAddPlanB(String graph, Triple triple) {
 
 		StringBuilder b = new StringBuilder();
@@ -848,7 +861,14 @@ public class DataAccess {
 							lang);
 					return new PlainLiteralImpl(value, language);
 				} else {
-					return new TypedLiteralImpl(value, new UriRef(type));
+					// XXX Shadowing XMLLiteral
+					UriRef dt;
+					if(type.equals(XMLLiteralShadowed.getUnicodeString())){
+						dt = XMLLiteral;
+					} else {
+						dt = new UriRef(type);
+					}
+					return new TypedLiteralImpl(value, dt);
 				}
 			} else if (rb.rb_box instanceof VirtuosoExtendedString) {
 				VirtuosoExtendedString vs = (VirtuosoExtendedString) rb.rb_box;
@@ -910,6 +930,13 @@ public class DataAccess {
 			qb.append(defaultGraphUri.getUnicodeString());
 			qb.append(">");
 			qb.append("\n");
+		}
+		// XXX Shadowing XMLLiteral
+		// This is not very accurate, but we can't go too much further on this, since it is an hack to
+		// bypass a virtuoso bug
+		// See CLEREZZA-908
+		if(query.contains(XMLLiteral.getUnicodeString())){
+			query.replace(XMLLiteral.getUnicodeString(), XMLLiteralShadowed.getUnicodeString());
 		}
 		qb.append(query);
 		Object returnThis = null;

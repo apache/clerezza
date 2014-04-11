@@ -24,7 +24,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
@@ -135,19 +134,13 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 
 	protected boolean performAdd(Triple triple) {
 		logger.debug("performAdd(Triple {})", triple);
-
-		// If the object is a very long literal we use plan B
-		// Reason:
-		// Virtuoso Error:
-		// SR449: Key is too long, index RDF_QUAD, ruling part is 1901 bytes
-		// that exceeds 1900 byte limit
-		// We use alternative method for literals
 		writeLock.lock();
-		if (triple.getObject() instanceof Literal) {
-			getDataAccess().performAddPlanB(getName(), triple);
-		}else{
-			getDataAccess().insertQuad(getName(), triple);
-		}
+		// XXX This is disabled because of CLEREZZA-908
+//		if (triple.getObject() instanceof Literal && false) {
+//			getDataAccess().performAddPlanB(getName(), triple);
+//		}else{
+		getDataAccess().insertQuad(getName(), triple);
+//		}
 		writeLock.unlock();
 		return true;
 	}
