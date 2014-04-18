@@ -950,8 +950,13 @@ public class DataAccess {
 			// ASK :: Boolean
 			if (rs.getMetaData().getColumnCount() == 1
 					&& rs.getMetaData().getColumnType(1) == 4) {
-				rs.next();
-				returnThis = rs.getBoolean(1);
+//				rs.next();
+//				returnThis = rs.getBoolean(1);
+				if(rs.next()){
+					returnThis = rs.getBoolean(1);
+				}else{
+					returnThis = false;
+				}
 			} else
 			// CONSTRCUT/DESCRIBE :: TripleCollection
 			if (rs.getMetaData().getColumnCount() == 3

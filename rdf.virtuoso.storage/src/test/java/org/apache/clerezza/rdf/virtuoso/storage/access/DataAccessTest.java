@@ -129,10 +129,17 @@ public class DataAccessTest {
 	@Test
 	public void testSparqlAsk(){
 		Triple t = new TripleImpl(new UriRef("urn:subject"), new UriRef("urn:predicate"), new UriRef("urn:object"));
-		da.insertQuad(testGraphName, t);
+		
 		String ask = "ASK { [] [] [] }";
 		Object result = da.executeSparqlQuery(ask, new UriRef(testGraphName));
 		Assert.assertTrue(result instanceof Boolean);
+		Assert.assertTrue(((Boolean)result) == false);
+		
+		da.insertQuad(testGraphName, t);
+
+		result = da.executeSparqlQuery(ask, new UriRef(testGraphName));
+		Assert.assertTrue(result instanceof Boolean);
+		
 		result = da.executeSparqlQuery(ask, null);
 	}
 	
