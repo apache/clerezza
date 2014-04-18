@@ -70,7 +70,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * @param connection
 	 */
 	public VirtuosoMGraph(String name, DataAccess dataAccess) {
-		logger.debug("VirtuosoMGraph(String {}, DataAccess {})", name,
+		logger.trace("VirtuosoMGraph(String {}, DataAccess {})", name,
 				dataAccess);
 		this.name = name;
 		// this.provider = provider;
@@ -79,20 +79,20 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 
 	@Override
 	public ReadWriteLock getLock() {
-		logger.debug("getLock()");
+		logger.trace("getLock()");
 		return lock;
 	}
 
 	@Override
 	public Graph getGraph() {
-		logger.debug("getGraph()");
+		logger.trace("getGraph()");
 		return asVirtuosoGraph();
 	}
 
 	public VirtuosoGraph asVirtuosoGraph() {
-		logger.debug("asVirtuosoGraph()");
+		logger.trace("asVirtuosoGraph()");
 		if (this.readOnly == null) {
-			logger.debug("create embedded singleton read-only instance");
+			logger.trace("create embedded singleton read-only instance");
 			this.readOnly = new VirtuosoGraph(name, getDataAccess());
 		}
 		return readOnly;
@@ -106,10 +106,12 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	protected Iterator<Triple> performFilter(NonLiteral subject,
 			UriRef predicate, Resource object) {
 		readLock.lock();
-		Iterator<Triple> tit = getDataAccess().filter(getName(), subject,
+		try{
+			return getDataAccess().filter(getName(), subject,
 				predicate, object);
-		readLock.unlock();
-		return tit;
+		}finally{
+			readLock.unlock();
+		}
 	}
 
 	/**
@@ -117,39 +119,45 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 */
 	@Override
 	public int size() {
-		logger.debug("size()");
+		logger.trace("size()");
 		readLock.lock();
-		int size = getDataAccess().size(getName());
-		readLock.unlock();
-		return size;
+		try{
+			return getDataAccess().size(getName());
+		}finally{
+			readLock.unlock();
+		}
 	}
 
 	@Override
 	public void clear() {
-		logger.debug("clear()");
+		logger.trace("clear()");
 		writeLock.lock();
-		getDataAccess().clearGraph(getName());
-		writeLock.unlock();
+		try{
+			getDataAccess().clearGraph(getName());
+		}finally{
+			writeLock.unlock();
+		}
 	}
 
 	protected boolean performAdd(Triple triple) {
-		logger.debug("performAdd(Triple {})", triple);
+		logger.trace("performAdd(Triple {})", triple);
 		writeLock.lock();
-		// XXX This is disabled because of CLEREZZA-908
-//		if (triple.getObject() instanceof Literal && false) {
-//			getDataAccess().performAddPlanB(getName(), triple);
-//		}else{
-		getDataAccess().insertQuad(getName(), triple);
-//		}
-		writeLock.unlock();
+		try{
+			getDataAccess().insertQuad(getName(), triple);
+		}finally{
+			writeLock.unlock();
+		}
 		return true;
 	}
 
 	protected boolean performRemove(Triple triple) {
-		logger.debug("performRemove(Triple triple)", triple);
+		logger.trace("performRemove(Triple triple)", triple);
 		writeLock.lock();
-		getDataAccess().deleteQuad(getName(), triple);
-		writeLock.unlock();
+		try{
+			getDataAccess().deleteQuad(getName(), triple);
+		}finally{
+			writeLock.unlock();
+		}
 		return true;
 	}
 
@@ -159,7 +167,7 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * @return
 	 */
 	public String getName() {
-		logger.debug("getName()");
+		logger.trace("getName()");
 		return name;
 	}
 
@@ -168,16 +176,16 @@ public class VirtuosoMGraph extends AbstractMGraph implements MGraph,
 	 * to be equals (VirtuosoGraph is not the same as VirtuosoMGraph)
 	 */
 	public boolean equals(Object o) {
-		logger.debug("equals({})", o.getClass());
+		logger.trace("equals({})", o);
 		// It must be an instance of VirtuosoMGraph
 		if (o.getClass().equals(VirtuosoMGraph.class)) {
-			logger.debug("{} is a VirtuosoMGraph)", o);
+			logger.trace("{} is a VirtuosoMGraph)", o);
 			if (((VirtuosoMGraph) o).getName().equals(this.getName())) {
 				logger.debug("Names are equal! They are equal!");
 				return true;
 			}
 		} else {
-			logger.debug("Not a VirtuosoMGraph instance: {}", o.getClass());
+			logger.trace("Not a VirtuosoMGraph instance: {}", o.getClass());
 		}
 		return false;
 	}
