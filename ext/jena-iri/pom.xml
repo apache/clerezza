@@ -31,14 +31,14 @@
     <groupId>org.apache.clerezza.ext</groupId>
     <artifactId>org.apache.jena.jena-iri</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0_1-SNAPSHOT</version>
+    <version>1.0.1_1-SNAPSHOT</version>
     <name>Apache Clerezza :: Ext Bundles :: ${pkgArtifactId}</name>
     <description>This OSGi bundle wraps ${pkgArtifactId} ${pkgVersion} jar file.</description>
 
     <properties>
         <pkgGroupId>org.apache.jena</pkgGroupId>
         <pkgArtifactId>jena-iri</pkgArtifactId>
-        <pkgVersion>1.0.0</pkgVersion>
+        <pkgVersion>1.0.1</pkgVersion>
         <clerezza.osgi.export.pkg>
             org.apache.jena.iri
         </clerezza.osgi.export.pkg>
