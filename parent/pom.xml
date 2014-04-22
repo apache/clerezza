@@ -610,9 +610,9 @@
 
 
     <scm>
-        <url>http://svn.apache.org/viewvc/clerezza</url>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/clerezza/trunk/parent/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/clerezza/trunk/parent/</developerConnection>
+        <url>http://git.apache.org/clerezza.git/</url>
+        <connection>scm:git:git://git.apache.org/clerezza.git</connection>
+        <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
     </scm>
 
     <!-- lets generate reports -->
