@@ -10,10 +10,14 @@ import org.apache.clerezza.rdf.jena.sparql.ResultSetWrapper;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
 
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateAction;
 import org.apache.clerezza.rdf.core.UriRef;
 
 abstract class BaseTdbTcProvider implements QueryableTcProvider{
@@ -41,11 +45,22 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
 
 					@Override
 					public QueryExecution run() {
-						com.hp.hpl.jena.query.Query jenaQuery = QueryFactory
-								.create(query);
-						return QueryExecutionFactory.create(jenaQuery, getDataset());
+						try {
+							com.hp.hpl.jena.query.Query jenaQuery = QueryFactory
+									.create(query);
+							if (jenaQuery.isUnknownType()) {
+								return null;
+							}
+							return QueryExecutionFactory.create(jenaQuery, getDataset());
+						} catch (QueryException ex) {
+							return null;
+						}							
 					}
 				});
+
+		if (qexec == null) {
+			return executeUpdate(query);
+		}
 
 		try {
 			try {
@@ -67,7 +82,6 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
 			qexec.close();
 		}
     }
-    
 
 	// ------------------------------------------------------------------------
 	// Getters / Setters
@@ -83,4 +97,14 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
     public void setDataset(Dataset dataset) {
 		this.dataset = dataset;
 	}
+
+	// ------------------------------------------------------------------------
+	// Private methods
+	// ------------------------------------------------------------------------
+    
+	private Object executeUpdate(String query) {
+        GraphStore graphStore = GraphStoreFactory.create(getDataset()) ;
+        UpdateAction.parseExecute(query, graphStore) ;
+        return true;
+    }
 }
