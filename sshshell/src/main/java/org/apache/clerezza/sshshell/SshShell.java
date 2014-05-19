@@ -20,6 +20,7 @@ package org.apache.clerezza.sshshell;
  *
 */
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -64,7 +65,15 @@ public class SshShell {
 
     public SshShell() {
         sshd = SshServer.setUpDefaultServer();
-        sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("hostkey.ser"));
+        File clerezzaUserConfigDir = new File(new File(System.getProperty("user.home")), ".clerezza");
+        if (!clerezzaUserConfigDir.exists()) {
+            clerezzaUserConfigDir.mkdir();
+        }
+        File hostKeyDir = new File(clerezzaUserConfigDir, "ssh");
+        if (!hostKeyDir.exists()) {
+            hostKeyDir.mkdir();
+        }
+        sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File(hostKeyDir,"hostkey.ser").getAbsolutePath()));
         sshd.setPasswordAuthenticator(new MyPasswordAuthenticator());
     }
 

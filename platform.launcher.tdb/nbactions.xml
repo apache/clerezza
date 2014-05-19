@@ -8,6 +8,9 @@
             <goal>antrun:run</goal>
             <goal>-o</goal>
         </goals>
+        <properties>
+            <vm.args>-Dclerezza.shell.disable=true</vm.args>
+        </properties>
     </action>
     <action>
         <actionName>debug</actionName>
@@ -18,7 +21,7 @@
             <goal>-o</goal>
         </goals>
         <properties>
-            <vm.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</vm.args>
+            <vm.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -Dclerezza.shell.disable=true</vm.args>
             <jpda.listen>true</jpda.listen>
         </properties>
     </action>
