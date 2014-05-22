@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
+import java.io.Serializable;
+
 /**
  * This interface models logical, relational, and numeric expression.
  * This includes terms and factors in mathematical formulas which can contain
@@ -36,5 +38,5 @@ package org.apache.clerezza.rdf.core.sparql.query;
  *
  * @author hasan
  */
-public interface Expression {
+public interface Expression extends Serializable {
 }
