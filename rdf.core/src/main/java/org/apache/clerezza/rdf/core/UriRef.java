@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.rdf.core;
 
+import java.io.Serializable;
+
 /**
  * Represents an RDF URI Reference
  * 
@@ -29,7 +31,7 @@ package org.apache.clerezza.rdf.core;
  * 
  * @author reto
  */
-public class UriRef implements NonLiteral {
+public class UriRef implements NonLiteral, Serializable {
 
     private String unicodeString;
 

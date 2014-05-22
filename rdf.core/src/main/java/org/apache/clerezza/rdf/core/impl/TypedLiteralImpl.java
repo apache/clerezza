@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import java.io.Serializable;
+
 import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.core.UriRef;
 
@@ -25,7 +27,7 @@ import org.apache.clerezza.rdf.core.UriRef;
  *
  * @author reto
  */
-public class TypedLiteralImpl implements TypedLiteral {
+public class TypedLiteralImpl implements TypedLiteral, Serializable {
     private String lexicalForm;
     private UriRef dataType;
     private int hashCode;

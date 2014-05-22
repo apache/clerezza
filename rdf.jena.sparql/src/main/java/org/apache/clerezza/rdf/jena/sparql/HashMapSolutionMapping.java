@@ -35,7 +35,7 @@ import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
  */
 class HashMapSolutionMapping extends HashMap<Variable, Resource> implements SolutionMapping {
 
-    Jena2TriaUtil convertor = new Jena2TriaUtil(new HashMap<Node,BNode>());
+    transient Jena2TriaUtil convertor = new Jena2TriaUtil(new HashMap<Node,BNode>());
     public HashMapSolutionMapping(QuerySolution querySolution) {
         final Iterator<String> varNames = querySolution.varNames();
         while (varNames.hasNext()) {

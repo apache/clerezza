@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import java.io.Serializable;
+
 import org.apache.clerezza.rdf.core.Language;
 import org.apache.clerezza.rdf.core.PlainLiteral;
 
@@ -25,7 +27,7 @@ import org.apache.clerezza.rdf.core.PlainLiteral;
  *
  * @author reto
  */
-public class PlainLiteralImpl implements PlainLiteral {
+public class PlainLiteralImpl implements PlainLiteral, Serializable {
 
     private String lexicalForm;
     private Language language = null;
