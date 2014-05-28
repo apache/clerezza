@@ -122,7 +122,7 @@ class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
 
     addToUnion(cgGraph)
 
-    if (isLocal && uriPath.startsWith("/user/")) {
+    if (isLocal && (uriPath != null) && uriPath.startsWith("/user/")) {
       val nextSlash = uriPath.indexOf('/',6)    
       if (nextSlash != -1) {
         val userName = uriPath.substring(6, nextSlash)
