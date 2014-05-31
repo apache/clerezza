@@ -1,3 +1,7 @@
+body {
+    padding-top: 3cm;
+}
+
 /* === Editor === */
 .etch-editor-panel { display: none; padding: 5px; position: absolute; z-index: 10000;
     background: #dadada; border: 1px solid #bdbdbd; color: #535353; text-shadow: 0 1px 0 #fff;

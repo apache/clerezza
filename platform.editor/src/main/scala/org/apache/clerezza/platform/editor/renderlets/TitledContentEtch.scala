@@ -9,7 +9,8 @@ import org.apache.clerezza.platform.typerendering.scala._
 import org.apache.clerezza.rdf.ontologies.DISCOBITS
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;import scala.xml.Unparsed
-
+import scala.xml._
+import scala.xml.transform._
 
 
 /**
@@ -167,7 +168,7 @@ class TitledContentEtch extends SRenderlet {
               false
             );*/
             """
-        <html xmlns:disco="http://discobits.org/ontology#"> 
+        val html = <html xmlns:disco="http://discobits.org/ontology#"> 
           
             <head>
                 <link type="text/css" href="/style/style.css" rel="stylesheet" />
@@ -189,6 +190,32 @@ class TitledContentEtch extends SRenderlet {
             </script>
           </body>
         </html>
+        
+        //From: http://www.w3.org/TR/html5/syntax.html#syntax     
+        //"A single newline may be placed immediately after the start tag of pre 
+        //and textarea elements. If the element's contents are intended to 
+        //start with a newline, two consecutive newlines thus need to be 
+        //included by the author."
+        object preRule extends RewriteRule {
+          override def transform(n: Node): Seq[Node] = n match {
+            case e:Elem
+            	if(e.label == "pre") => e.child(0) match   {
+            		case t : Text =>
+            		  if (t.text(0) == '\n') {
+             				val newText = Text("\n"+t.text)
+     					    	e.copy(child = newText ++ e.child.tail)
+     					    } else {
+     					    	e
+     					    }
+     					  case _ => e
+     					}
+            case other => other
+          }
+        }
+        
+        object htmlLineBreaks extends RuleTransformer(preRule)
+
+        htmlLineBreaks(html)
       }
     }
   }
