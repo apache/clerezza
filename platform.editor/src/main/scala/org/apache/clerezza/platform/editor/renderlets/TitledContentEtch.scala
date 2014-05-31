@@ -202,3 +202,11 @@ class HtmlInfoDiscobitEtch extends TitledContentEtch {
   override val getRdfType = DISCOBITS.XHTMLInfoDiscoBit 
     
 }
+
+@Component
+@Service(Array(classOf[TypeRenderlet]))
+class OrderedContentDiscobitEtch extends TitledContentEtch {
+
+  override val getRdfType = DISCOBITS.OrderedContent
+    
+}
