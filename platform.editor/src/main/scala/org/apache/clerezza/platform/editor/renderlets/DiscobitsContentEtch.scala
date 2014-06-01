@@ -1,7 +1,6 @@
 package org.apache.clerezza.platform.editor
 
 import org.apache.clerezza.rdf.core._
-import impl.util.W3CDateFormat
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering.TypeRenderlet
@@ -13,14 +12,8 @@ import scala.xml._
 import scala.xml.transform._
 
 
-/**
- * A Renderlet for rss:items
- */
-@Component
-@Service(Array(classOf[TypeRenderlet]))
-class TitledContentEtch extends SRenderlet {
 
-  val getRdfType = DISCOBITS.TitledContent 
+abstract class DiscobitsContentEtch extends SRenderlet {
     
   override val getMediaType = MediaType.TEXT_HTML_TYPE
 
@@ -224,7 +217,14 @@ class TitledContentEtch extends SRenderlet {
 
 @Component
 @Service(Array(classOf[TypeRenderlet]))
-class HtmlInfoDiscobitEtch extends TitledContentEtch {
+class TitledContentEtch extends DiscobitsContentEtch {
+
+  val getRdfType = DISCOBITS.TitledContent 
+}
+            
+@Component
+@Service(Array(classOf[TypeRenderlet]))
+class HtmlInfoDiscobitEtch extends DiscobitsContentEtch {
 
   override val getRdfType = DISCOBITS.XHTMLInfoDiscoBit 
     
@@ -232,7 +232,7 @@ class HtmlInfoDiscobitEtch extends TitledContentEtch {
 
 @Component
 @Service(Array(classOf[TypeRenderlet]))
-class OrderedContentDiscobitEtch extends TitledContentEtch {
+class OrderedContentDiscobitEtch extends DiscobitsContentEtch {
 
   override val getRdfType = DISCOBITS.OrderedContent
     
