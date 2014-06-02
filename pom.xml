@@ -87,6 +87,7 @@
                 <module>platform.documentation</module>
                 <module>platform.documentation.viewer</module>
                 <module>platform.enrichment</module>
+                <module>platform.editor</module>
                 <module>platform.globalmenu.api</module>
                 <module>platform.graphnodeprovider</module>
                 <module>platform.graphprovider.content</module>
