@@ -47,6 +47,7 @@
         <module>felixweb</module>
         <module>jaxrs-whiteboard</module>
         <module>rdf</module>
+        <module>rdf.tdb</module>
         <module>rdf.virtuoso</module>
         <module>platform.graphnodeprovider</module>
         <module>typehandlerspace</module>
