@@ -236,6 +236,14 @@
             <version>0.1-SNAPSHOT</version>
             <type>partialbundlelist</type>
         </dependency>
+		
+        <dependency>
+             <groupId>org.apache.clerezza.provisioning</groupId>
+             <artifactId>rdf.tdb</artifactId>
+             <version>0.1-SNAPSHOT</version>
+             <type>partialbundlelist</type>
+         </dependency>
+		 
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>platform.graphnodeprovider</artifactId>
