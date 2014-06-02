@@ -64,6 +64,7 @@
                 <module>jaxrs.rdf.providers</module>
                 <module>jaxrs.stanbol.fragments</module>
                 <module>jaxrs.utils</module>
+                <module>jaxrs.whiteboard.jersey</module>
                 <module>maven-jaxrs-report-plugin</module>
                 <module>maven-ontologies-plugin</module>
                 <module>maven-pladoc-plugin</module>
