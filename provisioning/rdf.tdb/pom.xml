@@ -32,19 +32,19 @@
     </parent>
     
     <groupId>org.apache.clerezza.provisioning</groupId>
-    <artifactId>rdf</artifactId>
+    <artifactId>rdf.tdb</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>Clerezza - Provisioning - RDF</name>
-    <description>A Karaf feature and partialbundlelist with the Java RDF 
-        libraries and jena based implementations.
+    <name>Clerezza - Provisioning - Jena TDB Storage</name>
+    <description>A Karaf feature and partialbundlelist with the Jena TDB storage provider
     
         This feature depends on java and OSGi platform libraries (javax.xml,
-        org.osgi.service.cm and others) as well as slf4j logging.
+        org.osgi.service.cm and others) as well as rdf and slf4j logging.
     </description>
 
     <dependencies>
+<!--
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -67,15 +67,18 @@
             <groupId>com.google.guava</groupId>
             <version>14.0</version>
         </dependency>
-
+-->
         <!-- providing packages like javax.xml.stream needed by tdb -->
+<!--
         <dependency>
             <groupId>org.apache.stanbol</groupId>
             <artifactId>org.apache.stanbol.commons.frameworkfragment</artifactId>
             <version>0.11.0</version>
             <scope>provided</scope>
         </dependency>
+-->
         <!-- clerezza bundles -->
+<!--
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>utils</artifactId>
@@ -146,11 +149,13 @@
             <artifactId>rdf.jena.storage</artifactId>
             <version>0.7-SNAPSHOT</version>
         </dependency>
-        <!-- <dependency>
+-->
+        <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.tdb.storage</artifactId>
             <version>0.7-SNAPSHOT</version>
-        </dependency> -->
+        </dependency>
+<!--
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.file.storage</artifactId>
@@ -171,12 +176,13 @@
             <artifactId>org.apache.jena.jena-arq</artifactId>
             <version>2.11.1_1-SNAPSHOT</version>
         </dependency>
-        <!-- <dependency>
+-->
+        <dependency>
             <groupId>org.apache.clerezza.ext</groupId>            
             <artifactId>org.apache.jena.jena-tdb</artifactId>
             <version>1.0.1_1-SNAPSHOT</version>
-        </dependency> -->
-        <dependency>
+        </dependency>
+        <!-- <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.xmlresolver</artifactId>
             <version>1.2_5</version>
@@ -185,7 +191,8 @@
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
             <version>2.11.0_1</version>
-        </dependency>
+        </dependency> -->
+
     </dependencies>
 
     <build>
