@@ -32,13 +32,13 @@
     </parent>
     
     <groupId>org.apache.clerezza.provisioning</groupId>
-    <artifactId>platform.content</artifactId>
+    <artifactId>platform.tools</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>Clerezza - Provisioning - Platform Content</name>
+    <name>Clerezza - Provisioning - Platform Tools</name>
     <description>A Karaf feature and partialbundlelist with the bundles providing 
-        the clerezza content functionality.
+        clerezza platfotm tools such as the editor.
     
         This feature depends on java and OSGi platform libraries (javax.xml,
         org.osgi.service.cm and others), slf4j logging
@@ -46,31 +46,27 @@
         - rdf.web
         - platform.graphnodprovider
         - typerendering
-        - typehandlerspace   
+        - typehandlerspace
+        - platform.content   
+        - shell
     </description>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.content</artifactId>
-            <version>0.14-SNAPSHOT</version>
-        </dependency>
+            <artifactId>platform.editor</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>   
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.content.default404</artifactId>
+            <artifactId>platform.shellcustomizer</artifactId>
             <version>0.2-SNAPSHOT</version>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.content.fsadaptor</artifactId>
+            <artifactId>bundledevtool</artifactId>
             <version>0.2-SNAPSHOT</version>
-        </dependency>
-        <!-- this doesn't strictly belongs to here -->
-        <dependency>
-            <groupId>org.apache.stanbol</groupId>
-            <artifactId>org.apache.stanbol.commons.web.resources</artifactId>
-            <version>0.12.0</version>
-        </dependency>
+        </dependency> 
     </dependencies>
 
     <build>
