@@ -25,7 +25,7 @@ class HtmlInfoDicobitRDFaNaked extends SRenderlet {
     new XmlResult(arguments) {
       override def content = {
               <div typeof="disco:XHTMLInfoDiscoBit" about={res*}>
-                <span property="disco:infoBit"  datatype="rdf:XMLLiteral">{Unparsed(res/DISCOBITS.infoBit*)}</span>
+                <span property="disco:infoBit" content={(res/DISCOBITS.infoBit*).replace("\n","\\n")} datatype="rdf:XMLLiteral">{Unparsed(res/DISCOBITS.infoBit*)}</span>
               </div>
       }
     }
