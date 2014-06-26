@@ -569,7 +569,7 @@
 	    <dependency>
               <groupId>org.apache.stanbol</groupId>
               <artifactId>org.apache.stanbol.commons.security.core</artifactId>
-              <version>${stanbol.version}</version>
+              <version>1.0.0</version>
             </dependency>
 	    <dependency>
               <groupId>org.apache.stanbol</groupId>
