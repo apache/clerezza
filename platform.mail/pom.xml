@@ -43,9 +43,9 @@
             <artifactId>org.osgi.compendium</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.clerezza.ext</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <artifactId>mail</artifactId>
+            <groupId>javax.mail</groupId>
+            <version>1.4.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>

@@ -51,9 +51,9 @@
                 <!-- <module>platform.style.classic.webguiexamples</module> -->
                 <module>ext</module>
                 <!-- <module>ext.org.apache.jena</module>
-                <module>ext.org.apache.jena.tdb</module>
+                <module>ext.org.apache.jena.tdb</module> -->
                 <module>ext.com.ibm.icu</module>
-                <module>ext.javax.mail</module> -->
+                <!-- <module>ext.javax.mail</module> -->
                 <module>ext.org.json.simple</module>
                 <!-- <module>ext.org.ops4j.pax.swissbox.tinybundles</module>
                 <module>ext.org.apache.lucene</module> -->
@@ -67,9 +67,9 @@
                 <module>jaxrs.whiteboard.jersey</module>
                 <!-- <module>maven-jaxrs-report-plugin</module> -->
                 <module>maven-ontologies-plugin</module>
-                <module>maven-pladoc-plugin</module>
+                <!-- <module>maven-pladoc-plugin</module> -->
                 <module>permissiondescriptions</module>
-                <!-- <module>ssl.keygen</module> -->
+                <module>ssl.keygen</module>
                 <module>platform</module>
                 <module>platform.accountcontrolpanel</module>
                 <module>platform.concepts</module>
@@ -98,7 +98,7 @@
                 <module>platform.mail</module>
                 <module>platform.scripting</module>
                 <module>platform.scripting.scriptmanager</module>
-                <!-- <module>platform.security.foafssl</module> -->
+                <module>platform.security.foafssl</module>
                 <module>platform.security.conditions</module>
                 <module>platform.shellcustomizer</module>
                 <module>platform.typehandlerspace</module>
@@ -159,9 +159,9 @@
                 <module>rdf.storage.externalizer</module>
                 <module>rdf.storage.web</module>
 
-		<module>ext.virtuoso.jdbc</module>
-		<module>rdf.virtuoso.storage</module>
-		<module>platform.launcher.virtuoso</module>
+                <module>ext.virtuoso.jdbc</module>
+                <module>rdf.virtuoso.storage</module>
+                <!-- <module>platform.launcher.virtuoso</module> -->
             </modules>
         </profile>
         <profile>
