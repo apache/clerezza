@@ -27,7 +27,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>reactor</artifactId>
     <packaging>pom</packaging>
-    <name>Clerezza - Reactor build (root)</name>
+    <name>Clerezza - Release Reactor 201407</name>
     <url>http://incubator.apache.org/clerezza/mvn-site/</url>
     <version>0.3-SNAPSHOT</version>
     <description>A recator to build all of clerezza</description>
@@ -48,28 +48,28 @@
             <modules>
                 <module>parent</module>
                 <module>clerezza-jar-resource-bundle</module>
-                <module>platform.style.classic.webguiexamples</module>
+                <!-- <module>platform.style.classic.webguiexamples</module> -->
                 <module>ext</module>
-                <module>ext.org.apache.jena</module>
+                <!-- <module>ext.org.apache.jena</module>
                 <module>ext.org.apache.jena.tdb</module>
                 <module>ext.com.ibm.icu</module>
-                <module>ext.javax.mail</module>
+                <module>ext.javax.mail</module> -->
                 <module>ext.org.json.simple</module>
-                <module>ext.org.ops4j.pax.swissbox.tinybundles</module>
-                <module>ext.org.apache.lucene</module>
+                <!-- <module>ext.org.ops4j.pax.swissbox.tinybundles</module>
+                <module>ext.org.apache.lucene</module> -->
                 <module>slf4j-scala-api</module>
-                <module>internal.archetype</module>
+                <!-- <module>internal.archetype</module> -->
                 <module>scala-scripting</module>
                 <module>jaxrs.extensions</module>
                 <module>jaxrs.rdf.providers</module>
                 <module>jaxrs.stanbol.fragments</module>
                 <module>jaxrs.utils</module>
                 <module>jaxrs.whiteboard.jersey</module>
-                <module>maven-jaxrs-report-plugin</module>
+                <!-- <module>maven-jaxrs-report-plugin</module> -->
                 <module>maven-ontologies-plugin</module>
                 <module>maven-pladoc-plugin</module>
                 <module>permissiondescriptions</module>
-                <module>ssl.keygen</module>
+                <!-- <module>ssl.keygen</module> -->
                 <module>platform</module>
                 <module>platform.accountcontrolpanel</module>
                 <module>platform.concepts</module>
@@ -92,13 +92,13 @@
                 <module>platform.graphnodeprovider</module>
                 <module>platform.graphprovider.content</module>
                 <module>platform.language</module>
-                <module>platform.launcher.storageless.parent</module>
-                <module>platform.launcher.tdb</module>
+                <!-- <module>platform.launcher.storageless.parent</module>
+                <module>platform.launcher.tdb</module> -->
                 <module>platform.logging</module>
                 <module>platform.mail</module>
                 <module>platform.scripting</module>
                 <module>platform.scripting.scriptmanager</module>
-                <module>platform.security.foafssl</module>
+                <!-- <module>platform.security.foafssl</module> -->
                 <module>platform.security.conditions</module>
                 <module>platform.shellcustomizer</module>
                 <module>platform.typehandlerspace</module>
