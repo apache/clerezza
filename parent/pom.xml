@@ -333,6 +333,15 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <goals>deploy</goals>
+                    <arguments>-Papache-release </arguments>
+                </configuration>
+            </plugin>
         </plugins>
         <resources>
             <resource>
