@@ -416,7 +416,7 @@
             <plugin>
                 <groupId>org.apache.clerezza</groupId>
                 <artifactId>maven-jaxrs-report-plugin</artifactId>
-                <version>0.2-SNAPSHOT</version>
+                <version>0.1-incubating</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
