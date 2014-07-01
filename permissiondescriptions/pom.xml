@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>permissiondescriptions</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <name>Clerezza - Permission Descriptions</name>
     <description>A bundle providing class and interface for providing permission descriptions.</description>
     <dependencies>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>utils</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
     </dependencies>
 </project>

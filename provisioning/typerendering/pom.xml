@@ -19,21 +19,19 @@
  under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../../parent</relativePath>
     </parent>
 
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>typerendering</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - Typerendering</name>
@@ -69,113 +67,113 @@
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>slf4j-scala-api</artifactId>
-            <version>1.6.3-SNAPSHOT</version>       
+            <version>1.6.3</version>       
         </dependency> 	
  
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typepriority</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         
         <!-- required by platform.config -->
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>permissiondescriptions</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         
         <!-- provides system graph as required by typepriority -->
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.config</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.core</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.ontologies</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.seedsnipe</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>templating</artifactId>
-            <version>0.9-SNAPSHOT</version>
+            <version>0.9</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>templating.seedsnipe</artifactId>
-            <version>0.9-SNAPSHOT</version>
+            <version>0.9</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scalaserverpages</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scala</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.gui</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.globalmenu.api</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.style.default</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         
         <!-- needed by default style -->
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>osgi.services</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         
         <!-- needed by scalaservepages and typesrendering.scala -->
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.scala.utils</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza.scala</groupId>
             <artifactId>script-engine</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         
     </dependencies>

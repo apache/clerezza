@@ -19,21 +19,19 @@
  under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../../parent</relativePath>
     </parent>
     
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>rdf</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - RDF</name>
@@ -52,7 +50,7 @@
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>com.ibm.icu</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.6</version>
         </dependency>
         <dependency>
             <groupId>org.wymiwyg</groupId>
@@ -84,72 +82,72 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>utils</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
-            <version>0.12-SNAPSHOT</version>
+            <version>0.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.metadata</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.commons</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.facade</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.rdfa</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.rdfjson</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>org.json.simple</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.serializer</artifactId>
-            <version>0.11-SNAPSHOT</version>
+            <version>0.11</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
-            <version>0.12-SNAPSHOT</version>
+            <version>0.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.sparql</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.storage</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <!-- <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -159,22 +157,22 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.file.storage</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>            
             <artifactId>org.apache.jena.jena-iri</artifactId>
-            <version>1.0.1_1-SNAPSHOT</version>
+            <version>1.0.1_1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>            
             <artifactId>org.apache.jena.jena-core</artifactId>
-            <version>2.11.1_1-SNAPSHOT</version>
+            <version>2.11.1_1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>            
             <artifactId>org.apache.jena.jena-arq</artifactId>
-            <version>2.11.1_1-SNAPSHOT</version>
+            <version>2.11.1_1</version>
         </dependency>
         <!-- <dependency>
             <groupId>org.apache.clerezza.ext</groupId>            

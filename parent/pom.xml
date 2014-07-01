@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
     <name>Clerezza - Parent for all</name>
     <url>http://clerezza.apache.org/mvn-site/</url>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.5</version>
     <description>The direct or indirect parent of all Clerezza Artifacts</description>
     <properties>
         <sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
@@ -627,7 +627,8 @@
         <url>http://git.apache.org/clerezza.git/</url>
         <connection>scm:git:git://git.apache.org/clerezza.git</connection>
         <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
-    </scm>
+      <tag>reactor-0.3</tag>
+  </scm>
 
     <!-- lets generate reports -->
     <reporting>
