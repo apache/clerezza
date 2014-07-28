@@ -74,7 +74,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.rdf.providers</artifactId>
             <scope>test</scope>
-            <version>0.15-SNAPSHOT</version>
+            <version>0.16-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>

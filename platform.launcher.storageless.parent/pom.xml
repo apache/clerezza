@@ -497,7 +497,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.rdf.providers</artifactId>
             <scope>runtime</scope>
-            <version>0.15-SNAPSHOT</version>
+            <version>0.16-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
