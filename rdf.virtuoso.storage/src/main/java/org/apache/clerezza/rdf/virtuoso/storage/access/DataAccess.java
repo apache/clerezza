@@ -909,6 +909,9 @@ public class DataAccess {
 	}
 	
 	private Resource objectToResource(Object o){
+		if ( o == null ) {
+			return null;
+		}
 		return buildObject(o);
 	}
 	
