@@ -21,6 +21,7 @@ package org.apache.clerezza.rdf.virtuoso.storage.access;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -31,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -183,7 +185,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 	 *             No component context given and connection was not set.
 	 */
 	@Activate
-	public void activate(ComponentContext cCtx) {
+	public void activate(ComponentContext cCtx) throws ConfigurationException {
 		logger.trace("activate(ComponentContext {})", cCtx);
 		logger.info("Activating VirtuosoWeightedProvider...");
 
@@ -226,21 +228,14 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 					}));
 				}
 
-				// FIXME The following should not be needed...
-				try {
-					this.weight = (Integer) cCtx.getProperties().get(WEIGHT);
-				} catch (NumberFormatException nfe) {
-					logger.warn(nfe.toString());
-					logger.warn("Setting weight to defaults");
-					this.weight = DEFAULT_WEIGHT;
-				}
+				weight = readIntegerProperty( cCtx.getProperties(), WEIGHT, DEFAULT_WEIGHT );
 
 				/**
 				 * Initialize connection properties
 				 */
 				// We take the configuration of the SCR component
 				Object phost = cCtx.getProperties().get(HOST);
-				Object pport = Integer.valueOf((String)cCtx.getProperties().get(PORT));
+				Object pport = readIntegerProperty( cCtx.getProperties(), PORT, null );
 				Object puser = cCtx.getProperties().get(USER);
 				Object ppwd = cCtx.getProperties().get(PASSWORD);
 
@@ -272,6 +267,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 				user = (String) puser;
 				pwd = (String) ppwd;
 
+				logger.info("Connecting to Virtuoso on '{}' with username '{}'", host + ":" + port, user);
 				initConnectionPoolDataSource();
 				// Prepare SPARQL data access
 				this.sparqlDataAccess = createDataAccess();
@@ -321,6 +317,23 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 		return new StringBuilder().append("jdbc:virtuoso://").append(hostName)
 				.append(":").append(portNumber).append("/charset=UTF-8/log_enable=2")
 				.toString();
+	}
+	
+	private Integer readIntegerProperty( Dictionary<?, ?> properties, String key, Integer defaultValue ) throws ConfigurationException {
+		// Start if with default.
+		Integer value = defaultValue;
+
+		Object propertyValue = properties.get( key );
+		if(propertyValue instanceof Number){
+			value = ((Number)propertyValue).intValue();
+		} else if(propertyValue != null){
+			try {
+				value = new BigDecimal(propertyValue.toString()).intValueExact();
+			} catch (RuntimeException e) {
+				throw new ConfigurationException( key, "Unable to parse integer!", e);
+			}
+		}
+		return value;
 	}
 
 	private Set<UriRef> readRememberedGraphs() {
