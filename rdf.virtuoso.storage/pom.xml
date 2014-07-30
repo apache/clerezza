@@ -30,7 +30,7 @@
 	<name>Clerezza - SCB Virtuoso storage provider</name>
 	<description>A virtuoso based storage provider</description>
 	<packaging>bundle</packaging>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.4-SNAPSHOT</version>
 	
 	<dependencies>
 		<!-- CLEREZZA -->
