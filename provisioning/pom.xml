@@ -51,7 +51,7 @@
         <module>rdf.virtuoso</module>
         <module>platform.graphnodeprovider</module>
         <module>typehandlerspace</module>
-        <module>typerendering</module>
+        <!--module>typerendering</module -->
         <module>rdf.web</module>
         <module>platform.content</module>
         <module>platform.tools</module>
