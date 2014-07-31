@@ -57,7 +57,7 @@
         <module>platform.tools</module>
         <module>shell</module>
         <module>security</module>
-        <module>launchers</module>
+        <!--module>launchers</module-->
     </modules>
 
 </project>
