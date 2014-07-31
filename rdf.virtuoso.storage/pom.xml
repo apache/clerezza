@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>rdf.core</artifactId>
-			<version>0.14-SNAPSHOT</version>
+			<version>0.14</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>org.apache.clerezza</groupId>
 			<artifactId>ext.virtuoso.jdbc</artifactId>
-			<version>0.3-SNAPSHOT</version>
+			<version>0.3</version>
 			<scope>provided</scope>
 		</dependency>
 
