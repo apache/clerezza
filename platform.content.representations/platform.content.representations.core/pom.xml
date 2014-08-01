@@ -28,7 +28,7 @@
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.content.representations.core</artifactId>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Content Representations Core</name>
     <description>Provides a Meta Data Generator that generates alternative

@@ -29,7 +29,7 @@
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>jaxrs.extensions</artifactId>
-    <version>0.6</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - JAXRS Extensions</name>
     <description>Provides an interface implementable by JAX-RS implementations

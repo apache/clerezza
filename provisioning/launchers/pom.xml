@@ -38,7 +38,7 @@
 
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>launchers-reactor</artifactId>
-    <version>1</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Clerezza - Provisioning - Launchers - Reactor</name>
 

@@ -30,7 +30,7 @@
     </parent>    
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.editor</artifactId>
-    <version>0.1</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Clerezza - Platform Editor</name>

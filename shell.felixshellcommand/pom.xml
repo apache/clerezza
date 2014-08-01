@@ -29,7 +29,7 @@
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>shell.felixshellcommand</artifactId>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Integartion of felix shell commands into clerezza shell</name>
     <description>

@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>jaxrs.rdf.providers</artifactId>
     <packaging>bundle</packaging>
-    <version>0.15</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - JAX-RS MessageBodyProviders for RDF</name>
     <dependencies>
         <dependency>

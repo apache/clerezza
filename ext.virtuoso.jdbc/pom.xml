@@ -28,7 +28,7 @@
 	<artifactId>ext.virtuoso.jdbc</artifactId>
 	<name>Clerezza Ext - Virtuoso JDBC OSGi Bundle</name>
 	<description>Virtuoso JDBC</description>
-		<version>0.3</version>
+		<version>1.0.0-SNAPSHOT</version>
 	<repositories>
 		<repository>
 			<releases>

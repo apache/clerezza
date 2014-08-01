@@ -28,7 +28,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.rdfa</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - SCB RDFa parsing support</name>
     <description>
         A SAX-based parser for RDFa 

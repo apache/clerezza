@@ -27,7 +27,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.concepts.core</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform Concepts Core</name>
     <description>The core part of Platform Concepts</description>
     <dependencies>

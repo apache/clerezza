@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.typerendering.scala</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform Type Rendering Utilities for Scala</name>
     <description>Utilities to write renderlets in Scala</description>
     <dependencies>

@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.accountcontrolpanel</artifactId>
     <packaging>pom</packaging>
-    <version>0.10</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform Account Control Panel</name>
     <description>A web interface that provides functions to configure the account of a platform user.</description>
     

@@ -29,7 +29,7 @@
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.mail</artifactId>
-    <version>0.5</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Mail Deliverly</name>
     <description>Provides services for mail deliverly</description>

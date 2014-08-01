@@ -29,7 +29,7 @@
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>utils.customproperty</artifactId>
-    <version>0.5</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Utils Custom Property</name>
     <description>Management of additional properties of specified items.</description>

@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.style.classic</artifactId>
     <packaging>bundle</packaging>
-    <version>0.5</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Classic Style</name>
     <description>
         Icons and css for HTML pages

@@ -29,7 +29,7 @@
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.usermanager.webinterface</artifactId>
-    <version>0.14</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Usermanager Webinterface</name>
     <description>Management of information about users including their roles</description>

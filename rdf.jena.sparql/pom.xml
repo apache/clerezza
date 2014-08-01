@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.jena.sparql</artifactId>
     <packaging>bundle</packaging>
-    <version>0.7</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - SCB Jena SPARQL engine</name>
     <description>Allows executing SPARQL queries on SCB using the jena sparql engine.</description>
     <dependencies>

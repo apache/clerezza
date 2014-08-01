@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.jena.serializer</artifactId>
     <packaging>bundle</packaging>
-    <version>0.11</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - SCB Jena based Serializer</name>
     <description>A SerializingProvider based on jena</description>
     <dependencies>

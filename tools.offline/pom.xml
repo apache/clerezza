@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>tools.offline</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Tools Offline Site Generator</name>
     <description>The core part of SCB Web Access</description>
     <dependencies>

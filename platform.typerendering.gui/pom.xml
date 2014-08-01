@@ -28,7 +28,7 @@
         <relativePath>../parent</relativePath>
     </parent>
     <artifactId>platform.typerendering.gui</artifactId>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Typerendering GUI</name>
     <dependencies>

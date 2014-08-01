@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.globalmenu.api</artifactId>
     <packaging>bundle</packaging>
-    <version>0.3</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform GlobalMenu API</name>
     <description>
         The API for providing entries to the global clerezza menu

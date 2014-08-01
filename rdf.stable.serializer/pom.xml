@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.stable.serializer</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Stable Serializer</name>
     <description>A SerializingProvider that prodocues a stable output. This means
         if the graph to be serialized changes a little, then also the output 

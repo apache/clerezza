@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.rdfjson</artifactId>
     <packaging>bundle</packaging>
-    <version>0.4</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - SCB rdf/json Parser and Serializer</name>
     <description>A rdf/json Parser- and SerializerProvider</description>
     <dependencies>

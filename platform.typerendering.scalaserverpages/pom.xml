@@ -28,7 +28,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.typerendering.scalaserverpages</artifactId>
     <packaging>bundle</packaging>
-    <version>0.4</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform ScalaServerPages Renderlet</name>
     <description>Renderlet implementation wrapping org.apache.clerezza.scala</description>
     <dependencies>

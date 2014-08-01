@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.web</artifactId>
     <packaging>pom</packaging>
-    <version>0.10</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - SCB Web Access</name>
     <description>Allows access to SCB graphs over HTTP with JAX-RS</description>
     <modules>

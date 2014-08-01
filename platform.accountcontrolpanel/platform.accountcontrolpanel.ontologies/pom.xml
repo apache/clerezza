@@ -28,7 +28,7 @@
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.accountcontrolpanel.ontologies</artifactId>
-    <version>0.3</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Account Contral Panel Ontologies</name>
     <description>

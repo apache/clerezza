@@ -28,7 +28,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>sshshell</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - SSH Shell Access</name>
     <description>SSH access to clerezza</description>
     <dependencies>

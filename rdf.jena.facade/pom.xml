@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.jena.facade</artifactId>
     <packaging>bundle</packaging>
-    <version>0.14</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Jena API on SCB</name>
     <description>An implementation of the Jena API based on triamodel, allows to
     run code written against the Jena API on a Triamodel store.</description>

@@ -31,7 +31,7 @@
 
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.graphprovider.content</artifactId>
-    <version>0.7</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Content-Graph Provider</name>
     <description>A service that provides the content-graph</description>

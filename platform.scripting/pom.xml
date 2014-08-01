@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.scripting</artifactId>
     <packaging>bundle</packaging>
-    <version>0.5</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform Scripting</name>
     <description>A bundle to manage script engines</description>
     <dependencies>

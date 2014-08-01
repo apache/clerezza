@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.dashboard.webinterface</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform Dashboard Webinterface</name>
     <description>Provides a dashboard</description>
     <dependencies>

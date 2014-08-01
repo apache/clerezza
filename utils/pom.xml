@@ -29,7 +29,7 @@
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>utils</artifactId>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Utilities Project</name>
     <description>A collection of commonly used utilities</description>

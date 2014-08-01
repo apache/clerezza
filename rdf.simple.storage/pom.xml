@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.simple.storage</artifactId>
     <packaging>bundle</packaging>
-    <version>0.8</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - SCB Simple TripleCollection Provider</name>
     <dependencies>
         <dependency>

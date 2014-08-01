@@ -28,7 +28,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.storage.externalizer</artifactId>
     <packaging>bundle</packaging>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - SCB Literal Externalizing Storage Provider</name>
     <description>A Storage Provider storing large literals to files before
     and relying on another provider for storing triples.</description>

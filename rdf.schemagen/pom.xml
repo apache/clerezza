@@ -28,7 +28,7 @@
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
-    <version>0.11</version>
+    <version>1.0.0-SNAPSHOT</version>
     <artifactId>rdf.schemagen</artifactId>
     <packaging>jar</packaging>
     <name>Clerezza - SCB Schema-Class Generator</name>

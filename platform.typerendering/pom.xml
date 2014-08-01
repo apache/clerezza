@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.typerendering</artifactId>
     <packaging>pom</packaging>
-    <version>0.7</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform Type Rendering</name>
     <description>This project provides a JAX-RS MessageBodyWriter to render GraphNodes. Rendering requests are delegated to registered renderlets.</description>
     

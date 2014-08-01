@@ -30,7 +30,7 @@
 
     <groupId>org.apache.clerezza.ext</groupId>
     <artifactId>com.ibm.icu</artifactId>
-    <version>0.6</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza Ext - ICU4J Bundle</name>
 

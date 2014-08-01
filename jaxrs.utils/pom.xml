@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>jaxrs.utils</artifactId>
     <packaging>bundle</packaging>
-    <version>0.9</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - JAX-RS Utilities</name>
     <description>Utility classes for JAX-RS (see the Javadoc)</description>
     <dependencies>
