@@ -63,17 +63,21 @@ public class ResultSetTsvMessageBodyWriter implements MessageBodyWriter<ResultSe
 
   private static final Logger logger = LoggerFactory
       .getLogger( ResultSetTsvMessageBodyWriter.class );
-  private static final String UTF_8 = "UTF-8";
-  private static byte[] separator;
 
-  static {
+  private String textEncoding = "UTF-8";
+  private byte[] separator;
+  
+  public ResultSetTsvMessageBodyWriter() {
     try {
-      separator = "\t".getBytes( UTF_8 );
+      buildSeparatorConformEncoding( textEncoding );
     } catch( UnsupportedEncodingException e ) {
       logger.error( "Developer error", e );
     }
-
   }
+  
+  // --------------------------------------------------------------------------
+  // Implementing MessageBodyWriter
+  // --------------------------------------------------------------------------
 
   @Override
   public boolean isWriteable( Class<?> type, Type genericType, Annotation[] annotations,
@@ -99,6 +103,44 @@ public class ResultSetTsvMessageBodyWriter implements MessageBodyWriter<ResultSe
     }
   }
 
+  // --------------------------------------------------------------------------
+  // Public interface
+  // --------------------------------------------------------------------------
+  
+  /**
+   * Sets the text encoding for the resource. This setting must only used 
+   * if the resource response represents text.
+   * 
+   * @param textEncoding
+   *            character encoding of text body
+   * @throws UnsupportedEncodingException when the given encoding is not supported.
+   */
+  public void setTextEncoding(String textEncoding) throws UnsupportedEncodingException {
+    buildSeparatorConformEncoding( textEncoding );
+    this.textEncoding = textEncoding;
+  }
+
+  /**
+   * @return text encoding for resource
+   */
+  protected String getTextEncoding() {
+    return textEncoding;
+  }
+
+  // --------------------------------------------------------------------------
+  // Private methods
+  // --------------------------------------------------------------------------
+
+  /**
+   * Builds the column separator according to the given text encoding.
+   * 
+   * @param encoding the text encoding to be used.
+   * @throws UnsupportedEncodingException when the given encoding is not supported.
+   */  
+  private void buildSeparatorConformEncoding( String encoding ) throws UnsupportedEncodingException {
+    separator = ",".getBytes( encoding );
+  }
+
   /**
    * Write resultset header to the given output stream.
    * 
@@ -117,7 +159,7 @@ public class ResultSetTsvMessageBodyWriter implements MessageBodyWriter<ResultSe
       writeEscaped( outputStream, header );
       first = false;
     }
-    outputStream.write( "\n".getBytes( UTF_8 ) );
+    outputStream.write( "\n".getBytes( textEncoding ) );
   }
 
   /**
@@ -144,7 +186,7 @@ public class ResultSetTsvMessageBodyWriter implements MessageBodyWriter<ResultSe
       }
       first = false;
     }
-    outputStream.write( "\n".getBytes( UTF_8 ) );
+    outputStream.write( "\n".getBytes( textEncoding ) );
   }
 
   /**
@@ -191,7 +233,7 @@ public class ResultSetTsvMessageBodyWriter implements MessageBodyWriter<ResultSe
     if( text.contains( "\t" ) ) {
       line = text.replaceAll( "\t", "\\t" );
     }
-    outputStream.write( line.getBytes( UTF_8 ) );
+    outputStream.write( line.getBytes( textEncoding ) );
   }
 
   private String escapedDQuotes( String text ) {

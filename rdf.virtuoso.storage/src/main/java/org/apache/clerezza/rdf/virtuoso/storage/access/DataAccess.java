@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -166,18 +167,20 @@ public class DataAccess {
 
 	private void close(Object... resources) {
 		for (Object o : resources) {
-			try {
-				if (o instanceof ResultSet ) {
-					((ResultSet) o).close();
-				} else if (o instanceof Statement) {
-					((Statement) o).close();
-				}else if (o instanceof Connection) {
-					((Connection) o).close();
-				}else{
-					throw new SQLException("XXX Unsupported resource: " + o.toString());
+			if ( o != null ) {
+				try {
+					if (o instanceof ResultSet ) {
+						((ResultSet) o).close();
+					} else if (o instanceof Statement) {
+						((Statement) o).close();
+					}else if (o instanceof Connection) {
+						((Connection) o).close();
+					}else{
+						throw new SQLException("XXX Unsupported resource: " + o.toString());
+					}
+				} catch (SQLException e) {
+					logger.error("Cannot close resource of type {}", o.getClass());
 				}
-			} catch (SQLException e) {
-				logger.error("Cannot close resource of type {}", o.getClass());
 			}
 		}
 	}
@@ -906,6 +909,9 @@ public class DataAccess {
 	}
 	
 	private Resource objectToResource(Object o){
+		if ( o == null ) {
+			return null;
+		}
 		return buildObject(o);
 	}
 	
@@ -1046,7 +1052,7 @@ public class DataAccess {
 	 */
 	private class RSSolutionMapping implements SolutionMapping {
 
-    	private Map<Variable, Resource> map;
+		private Map<Variable, Resource> map = new HashMap<Variable, Resource>();
     	
 		@Override
 		public int size() {
@@ -1075,8 +1081,7 @@ public class DataAccess {
 
 		@Override
 		public Resource put(Variable key, Resource value) {
-			// TODO Auto-generated method stub
-			return null;
+			return map.put( key, value );
 		}
 
 		@Override
@@ -1113,6 +1118,6 @@ public class DataAccess {
 		public Resource get(String name) {
 			return map.get(new Variable(name));
 		}
-    }
+	}
 
 }
