@@ -1,0 +1,6 @@
+def greet(s: Any) = new UriRef("http://clerezza.apache.org/skeleton/greeting#" + s)
+
+<div class="tx-content">
+	<h3>Today we greet you as follows:</h3>
+	<strong>{res/greet("words")*}</strong>
+</div>
