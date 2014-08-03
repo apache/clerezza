@@ -135,7 +135,7 @@
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>com.ibm.icu</artifactId>
             <scope>runtime</scope>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
@@ -153,7 +153,7 @@
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>org.json.simple</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -175,7 +175,7 @@
             <groupId>org.apache.clerezza.scala</groupId>
             <artifactId>script-engine</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <!-- <dependency>
             <groupId>com.sun.script.jruby</groupId>
@@ -235,67 +235,67 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.logging.core</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.logging.initializer</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.logging.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.enrichment</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.graphnodeprovider</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.usermanager</artifactId>
             <scope>runtime</scope>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.usermanager.webinterface</artifactId>
             <scope>runtime</scope>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>utils.customproperty</artifactId>
             <scope>runtime</scope>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.accountcontrolpanel.core</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.accountcontrolpanel.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.wink</groupId>
@@ -313,209 +313,209 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
             <scope>runtime</scope>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
             <scope>runtime</scope>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.enrichment</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.facade</artifactId>
             <scope>runtime</scope>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.commons</artifactId>
             <scope>runtime</scope>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.storage</artifactId>
             <scope>runtime</scope>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.file.storage</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.sparql</artifactId>
             <scope>runtime</scope>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
             <scope>runtime</scope>
-            <version>0.12-SNAPSHOT</version>
+            <version>0.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.serializer</artifactId>
             <scope>runtime</scope>
-            <version>0.11-SNAPSHOT</version>
+            <version>0.11</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.rdfa</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.rdfjson</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.12-SNAPSHOT</version>
+            <version>0.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.storage.web</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.content</artifactId>
             <scope>runtime</scope>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.content.default404</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.content.fsadaptor</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.content.imagemetadata</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.content.representations.core</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.content.representations.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.graphprovider.content</artifactId>
             <scope>runtime</scope>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.dashboard.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.dashboard.core</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.globalmenu.api</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.dashboard.webinterface</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.shellcustomizer</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>shell</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>shell.felixshellcommand</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>bundledevtool</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>sshshell</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>web.fileserver</artifactId>
             <scope>runtime</scope>
-            <version>0.10-SNAPSHOT</version>
+            <version>0.10</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.rdf.providers</artifactId>
             <scope>runtime</scope>
-            <version>0.15-SNAPSHOT</version>
+            <version>0.15</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.stanbol.fragments</artifactId>
             <scope>runtime</scope>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.web.core</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.web.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <!--<dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -526,7 +526,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.security.conditions</artifactId>
             <scope>runtime</scope>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.6</version>
         </dependency>
         <!-- <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -542,14 +542,14 @@
         <dependency>
           <groupId>org.apache.clerezza</groupId>
           <artifactId>platform.security.foafssl.ontologies</artifactId>
-	  <version>0.2-SNAPSHOT</version>
+	  <version>0.2</version>
           <scope>runtime</scope>
         </dependency>
         
 	<dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>ssl.keygen.base</artifactId>
-	       <version>0.6-SNAPSHOT</version>
+	       <version>0.6</version>
             <scope>runtime</scope>
         </dependency>
         <!--<dependency>
@@ -638,181 +638,181 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typehandlerspace</artifactId>
             <scope>runtime</scope>
-            <version>0.9-SNAPSHOT</version>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typehandlerspace.wink</artifactId>
             <scope>runtime</scope>
-            <version>0.9-SNAPSHOT</version>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typepriority</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.mail</artifactId>
             <scope>runtime</scope>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>templating</artifactId>
             <scope>runtime</scope>
-            <version>0.9-SNAPSHOT</version>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>templating.seedsnipe</artifactId>
             <scope>runtime</scope>
-            <version>0.9-SNAPSHOT</version>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.utils</artifactId>
             <scope>runtime</scope>
-            <version>0.9-SNAPSHOT</version>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.extensions</artifactId>
             <scope>runtime</scope>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>osgi.services</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.core</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.gui</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.seedsnipe</artifactId>
             <scope>runtime</scope>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.scripting</artifactId>
             <scope>runtime</scope>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.scripting.scriptmanager</artifactId>
             <scope>runtime</scope>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.xhtml2html</artifactId>
             <scope>runtime</scope>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>web.resources.jquery</artifactId>
             <scope>runtime</scope>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>web.resources.yui</artifactId>
             <scope>runtime</scope>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>utils.imageprocessing</artifactId>
             <scope>runtime</scope>
-            <version>0.8-SNAPSHOT</version>
+            <version>0.8</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>web.resources.scripts</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.style.default</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scala</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scalaserverpages</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.scala.utils</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.config</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.config.gui</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.documentation</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.documentation.viewer</artifactId>
             <scope>runtime</scope>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.language.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.language.core</artifactId>
             <scope>runtime</scope>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
 <!--
         <dependency>
@@ -825,37 +825,37 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.concepts.core</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.concepts.ontologies</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.users.core</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>utils</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.metadata</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>permissiondescriptions</artifactId>
             <scope>runtime</scope>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
