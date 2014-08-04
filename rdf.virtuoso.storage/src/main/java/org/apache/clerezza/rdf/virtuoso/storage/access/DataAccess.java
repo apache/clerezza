@@ -108,6 +108,8 @@ public class DataAccess {
 	private final static UriRef XMLLiteral = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
 	private final static UriRef XMLLiteralShadowed = new UriRef("urn:x-clerezza:rdf#XMLLiteral");
 	
+	private final static String ASK_COLUMNNAME = "__ask_retval";  
+	
 	/**
 	 * Bidirectional map for managing the conversion from virtuoso blank nodes
 	 * (strings) to clerezza blank nodes and vice versa.
@@ -955,9 +957,8 @@ public class DataAccess {
 			rs = st.getResultSet();
 			// ASK :: Boolean
 			if (rs.getMetaData().getColumnCount() == 1
-					&& rs.getMetaData().getColumnType(1) == 4) {
-//				rs.next();
-//				returnThis = rs.getBoolean(1);
+			    && rs.getMetaData().getColumnType(1) == 4
+					&& ASK_COLUMNNAME.equals( rs.getMetaData().getColumnName( 1 )) ) {
 				if(rs.next()){
 					returnThis = rs.getBoolean(1);
 				}else{
