@@ -17,20 +17,19 @@
  specific language governing permissions and limitations
  under the License.
 
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../parent</relativePath>
 	</parent>
 	<artifactId>rdf.virtuoso.storage</artifactId>
 	<name>Clerezza - SCB Virtuoso storage provider</name>
 	<description>A virtuoso based storage provider</description>
 	<packaging>bundle</packaging>
-	<version>0.4-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	
 	<dependencies>
 		<!-- CLEREZZA -->
@@ -101,14 +100,14 @@
 	 <dependency>
 	 	<groupId>org.apache.clerezza</groupId>
 	 	<artifactId>platform.config</artifactId>
-	 	<version>0.3-incubating</version>
+	 	<version>0.4</version>
 	 	<type>bundle</type>
 	 	<scope>test</scope>
 	 </dependency>
 	 <dependency>
 	 	<groupId>org.apache.clerezza</groupId>
 	 	<artifactId>rdf.jena.parser</artifactId>
-	 	<version>0.11</version>
+	 	<version>0.12</version>
 	 	<type>bundle</type>
 	 	<scope>test</scope>
 	 </dependency>
@@ -127,14 +126,14 @@
 	 <dependency>
 	 	<groupId>org.apache.clerezza</groupId>
 	 	<artifactId>rdf.jena.facade</artifactId>
-	 	<version>0.13</version>
+	 	<version>0.14</version>
 	 	<type>bundle</type>
 	 	<scope>test</scope>
 	 </dependency>
 	 <dependency>
 	 	<groupId>org.apache.clerezza</groupId>
 	 	<artifactId>rdf.jena.commons</artifactId>
-	 	<version>0.6</version>
+	 	<version>0.7</version>
 	 	<type>bundle</type>
 	 	<scope>test</scope>
 	 </dependency>
@@ -270,7 +269,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>

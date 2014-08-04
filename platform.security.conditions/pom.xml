@@ -24,13 +24,13 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.security.conditions</artifactId>
     <packaging>bundle</packaging>
-    <version>0.6-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform Security Conditions</name>
     <description>Fragment bundle for System Bundle that contains
     conditions for the Conditional Permission Admin</description>

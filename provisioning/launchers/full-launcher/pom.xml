@@ -14,18 +14,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>full-launcher</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Clerezza - Launcher: Full (sling based)</name>
@@ -115,7 +114,7 @@
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
                 <configuration>
-                    <excludes></excludes>
+                    <excludes />
                 </configuration>
             </plugin>
         </plugins>
@@ -148,10 +147,9 @@
                     <version>1.7</version>
                     <configuration>
                         <target>
-                            <property name="vm.args" value=""/>
-                            <java fork="true" jar="${project.build.directory}/${project.build.finalName}.jar"
-                    dir="${project.build.directory}">
-                                <jvmarg line="-Xmx1024m -XX:MaxPermSize=256M ${vm.args}"/>
+                            <property name="vm.args" value="" />
+                            <java fork="true" jar="${project.build.directory}/${project.build.finalName}.jar" dir="${project.build.directory}">
+                                <jvmarg line="-Xmx1024m -XX:MaxPermSize=256M ${vm.args}" />
                             </java>
                         </target>
                     </configuration>
@@ -220,88 +218,88 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>felixosgi</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>felixweb</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>shell</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
        <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
 		
        <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf.tdb</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
 
        <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf.virtuoso</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
 
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>platform.graphnodeprovider</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
       <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>jaxrs</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>typehandlerspace</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>typerendering</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf.web</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>platform.content</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>platform.tools</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>security</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1</version>
             <type>partialbundlelist</type>
         </dependency>
     </dependencies>

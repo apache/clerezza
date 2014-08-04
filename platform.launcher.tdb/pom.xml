@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
@@ -182,13 +182,13 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.tdb.storage</artifactId>
             <scope>runtime</scope>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>org.apache.jena.jena-iri</artifactId>
             <scope>runtime</scope>
-            <version>1.0.0_1-SNAPSHOT</version>
+            <version>1.0.1_1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
@@ -206,19 +206,19 @@
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>org.apache.jena.jena-core</artifactId>
             <scope>runtime</scope>
-            <version>2.11.0_1-SNAPSHOT</version>
+            <version>2.11.1_1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>org.apache.jena.jena-arq</artifactId>
             <scope>runtime</scope>
-            <version>2.11.0_1-SNAPSHOT</version>
+            <version>2.11.1_1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
             <artifactId>org.apache.jena.jena-tdb</artifactId>
             <scope>runtime</scope>
-            <version>1.0.0_1-SNAPSHOT</version>
+            <version>1.0.1_1</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

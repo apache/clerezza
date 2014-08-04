@@ -24,11 +24,11 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>platform.security.foafssl</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.security.foafssl.ontologies</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Security foaf+ssl Ontologies</name>
     <description>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
     </dependencies>
     <build>
@@ -60,7 +60,7 @@
                         </goals>
                     </execution>
                 </executions>
-                <version>0.4-SNAPSHOT</version>
+                <version>0.4</version>
         </plugin>
         </plugins>
     </build>

@@ -24,11 +24,11 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../parent</relativePath>
     </parent>
     <artifactId>osgi.services</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - OSGi Services DSL for Scala</name>
     <description>A Scala DSL to easily access OSGi Services</description>

@@ -24,14 +24,14 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../../parent</relativePath>
     </parent>
 
     <groupId>org.apache.clerezza.ext</groupId>
     <artifactId>bundles-pom</artifactId>
     <packaging>pom</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Apache clerezza :: Ext Bundles :: Parent</name>
 
     <properties>

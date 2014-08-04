@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.5</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.scripting.scriptmanager</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Script Manager</name>
     <description>
@@ -53,47 +53,47 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
-            <version>0.12-SNAPSHOT</version>
+            <version>0.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.scripting</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scalaserverpages</artifactId>
-            <version>0.4-SNAPSHOT</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.graphprovider.content</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.globalmenu.api</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.content</artifactId>
-            <version>0.14-SNAPSHOT</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>permissiondescriptions</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2</version>
         </dependency>
     </dependencies>
 </project>
