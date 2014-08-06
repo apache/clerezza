@@ -62,11 +62,13 @@
           <artifactId>org.apache.stanbol.commons.security.fexilwebconsole</artifactId>
 	  <version>${stanbol.version}</version>
 	</dependency>
+    <!-- 0.12 version is incomaptible with 1.0.0 version of commons.security, so diabling till stanbol 1.0.0 is released
 	<dependency>
           <groupId>org.apache.stanbol</groupId>
           <artifactId>org.apache.stanbol.commons.security.usermanagement</artifactId>
 	  <version>${stanbol.version}</version>
 	</dependency>
+    -->
 	<dependency>
 	  <groupId>org.apache.stanbol</groupId>
 	  <artifactId>org.apache.stanbol.commons.ldpath.clerezza</artifactId>
