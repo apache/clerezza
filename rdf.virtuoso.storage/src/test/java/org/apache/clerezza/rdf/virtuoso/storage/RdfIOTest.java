@@ -310,24 +310,24 @@ public class RdfIOTest {
 
 	}
 
-//	@Test
-//	public void sysconfigTest(){
-//		
-//		SystemConfig sc = new SystemConfig();
-//		MGraph systemGraph = mgraph;
-//		URL config = sc.getClass().getResource(SystemConfig.CONFIG_FILE);
-//        if (config == null) {
-//            throw new RuntimeException("no config file found");
-//        }
-//        ParsingProvider parser = new JenaParserProvider();
-//        try {
-//            parser.parse(systemGraph, config.openStream(),
-//                    SupportedFormat.RDF_XML, null);
-//        } catch (IOException ex) {
-//            log.warn("Cannot parse coniguration at URL: {}", config);
-//            throw new RuntimeException(ex);
-//        }
-//	}
+	@Test
+	public void sysconfigTest(){
+		
+		SystemConfig sc = new SystemConfig();
+		MGraph systemGraph = mgraph;
+		URL config = sc.getClass().getResource(SystemConfig.DEFAULT_SYSTEM_GRAPH);
+        if (config == null) {
+            throw new RuntimeException("no config file found");
+        }
+        ParsingProvider parser = new JenaParserProvider();
+        try {
+            parser.parse(systemGraph, config.openStream(),
+                    SupportedFormat.RDF_XML, null);
+        } catch (IOException ex) {
+            log.warn("Cannot parse coniguration at URL: {}", config);
+            throw new RuntimeException(ex);
+        }
+	}
 	
 	@Test
 	public void testUnicodeChars() throws ClassNotFoundException, SQLException {
