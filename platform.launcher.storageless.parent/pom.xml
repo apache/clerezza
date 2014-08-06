@@ -127,9 +127,21 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
-            <artifactId>org.apache.jena</artifactId>
+            <artifactId>org.apache.jena.jena-core</artifactId>
             <scope>runtime</scope>
-            <version>0.7-SNAPSHOT</version>
+            <version>2.11.1_1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.ext</groupId>
+            <artifactId>org.apache.jena.jena-arq</artifactId>
+            <scope>runtime</scope>
+            <version>2.11.1_1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.ext</groupId>
+            <artifactId>org.apache.jena.jena-iri</artifactId>
+            <scope>runtime</scope>
+            <version>1.0.1_1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
