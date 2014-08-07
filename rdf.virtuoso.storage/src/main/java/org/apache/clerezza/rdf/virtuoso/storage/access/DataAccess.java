@@ -163,10 +163,6 @@ public class DataAccess {
 		}
 	}
 
-	public void close() {
-
-	}
-
 	private void close(Object... resources) {
 		for (Object o : resources) {
 			if ( o != null ) {

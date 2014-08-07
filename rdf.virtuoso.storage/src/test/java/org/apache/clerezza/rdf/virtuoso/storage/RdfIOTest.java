@@ -90,8 +90,6 @@ public class RdfIOTest {
 		log.debug("Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
 				mgraph.size());
 		// clear all resources
-		da.close();
-		
 		da = null;
 		mgraph = null;
 		

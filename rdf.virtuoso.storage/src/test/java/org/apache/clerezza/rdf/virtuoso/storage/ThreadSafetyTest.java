@@ -84,7 +84,6 @@ public class ThreadSafetyTest {
 		} finally {
 			mgraph.clear();
 			mgraph = null;
-			da.close();
 			da = null;
 		}
 	}

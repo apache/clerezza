@@ -58,7 +58,6 @@ public class DataAccessTest {
 	@After
 	public void after() {
 		da.clearGraph( testGraphName );
-		da.close();
 		da = null;
 	}
 

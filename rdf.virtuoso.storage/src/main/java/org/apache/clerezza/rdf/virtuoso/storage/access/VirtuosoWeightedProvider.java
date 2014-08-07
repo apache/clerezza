@@ -27,16 +27,14 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.PooledConnection;
 
@@ -47,11 +45,10 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
-import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.QueryableTcProvider;
+import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoGraph;
 import org.apache.clerezza.rdf.virtuoso.storage.VirtuosoMGraph;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -68,6 +65,8 @@ import org.slf4j.LoggerFactory;
 
 import virtuoso.jdbc4.VirtuosoConnectionPoolDataSource;
 import virtuoso.jdbc4.VirtuosoException;
+
+import com.google.common.collect.MapMaker;
 
 /**
  * A {@link org.apache.clerezza.rdf.core.access.WeightedTcProvider} for
@@ -100,11 +99,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 	public static final String PASSWORD = "password";
 	public static final String WEIGHT = "weight";
 
-	// Name of the graph used to contain the registry of the created graphs
-	public static final String ACTIVE_GRAPHS_GRAPH = "urn:x-virtuoso:active-graphs";
-
-	// Loaded graphs
-	private Map<UriRef, VirtuosoMGraph> graphs = new HashMap<UriRef, VirtuosoMGraph>();
+    // Store used graphs in a map that still allows the graph to be garbage collected if not used.
+    private final ConcurrentMap<UriRef, VirtuosoMGraph> graphs = new MapMaker().weakValues().makeMap();
 
 	// DataAccess registry
 	private Set<DataAccess> dataAccessSet = new HashSet<DataAccess>();
@@ -298,17 +294,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 				throw new ComponentException(e.getLocalizedMessage());
 			} 
 		}
-		// Load remembered graphs
-		Set<UriRef> remembered = readRememberedGraphs();
-		for (UriRef name : remembered) {
-			if (canModify(name)) {
-				graphs.put(name, new VirtuosoMGraph(name.getUnicodeString(),
-						createDataAccess()));
-			} else {
-				graphs.put(name, new VirtuosoGraph(name.getUnicodeString(),
-						createDataAccess()));
-			}
-		}
 		logger.info("Activated VirtuosoWeightedProvider.");
 	}
 
@@ -336,156 +321,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 		return value;
 	}
 
-	private Set<UriRef> readRememberedGraphs() {
-		logger.trace(" readRememberedGraphs()");
-		String SQL = "SPARQL SELECT DISTINCT ?G FROM <" + ACTIVE_GRAPHS_GRAPH
-				+ "> WHERE { ?G a <urn:x-virtuoso/active-graph> }";
-		Connection connection = null;
-		Exception e = null;
-		Statement st = null;
-		ResultSet rs = null;
-		Set<UriRef> remembered = new HashSet<UriRef>();
-		try {
-			connection = getConnection();
-			st = connection.createStatement();
-			logger.debug("Executing SQL: {}", SQL);
-			rs = (ResultSet) st.executeQuery(SQL);
-			while (rs.next()) {
-				UriRef name = new UriRef(rs.getString(1));
-				logger.debug(" > Graph {}", name);
-				remembered.add(name);
-			}
-		} catch (VirtuosoException e1) {
-			logger.error("Error while executing query/connection.", e1);
-			e = e1;
-		} catch (SQLException e1) {
-			logger.error("Error while executing query/connection.", e1);
-			e = e1;
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (Exception ex) {
-				logger.error("Cannot close result set", ex);
-			}
-			try {
-				if (st != null)
-					st.close();
-			} catch (Exception ex) {
-				logger.error("Cannot close statement", ex);
-			}
-			try{
-				if(connection != null) connection.close();
-			}catch (Exception ex) {
-				logger.error("Cannot close connection", ex);
-			}
-		}
-		if (e != null) {
-			throw new RuntimeException(e);
-		}
-		return remembered;
-	}
-
-	private void rememberGraphs(UriRef... graphs) {
-		logger.trace(" saveActiveGraphs()");
-		if (graphs.length > 0) {
-			// Returns the list of graphs in the virtuoso quad store
-			String SQL = "SPARQL INSERT INTO <" + ACTIVE_GRAPHS_GRAPH
-					+ "> { `iri(??)` a <urn:x-virtuoso/active-graph> }";
-			Connection connection = null;
-			Exception e = null;
-			PreparedStatement st = null;
-			ResultSet rs = null;
-			try {
-				try {
-					connection = getConnection();
-					st = (PreparedStatement) connection
-							.prepareStatement(SQL);
-					logger.debug("Executing SQL: {}", SQL);
-					for (UriRef u : graphs) {
-						logger.trace(" > remembering {}", u);
-						st.setString(1, u.getUnicodeString());
-						st.executeUpdate();
-					}
-				} catch (Exception e1) {
-					logger.error("Error while executing query/connection.", e1);
-					e = e1;
-				}
-			} finally {
-				try {
-					if (rs != null)
-						rs.close();
-				} catch (Exception ex) {
-					logger.error("Cannot close result set", ex);
-				}
-				try {
-					if (st != null)
-						st.close();
-				} catch (Exception ex) {
-					logger.error("Cannot close statement", ex);
-				}
-				try{
-					if(connection != null) connection.close();
-				}catch (Exception ex) {
-					logger.error("Cannot close connection", ex);
-				}
-			}
-			if (e != null) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-
-	private void forgetGraphs(UriRef... graphs) {
-		logger.trace(" forgetGraphs()");
-		if (graphs.length > 0) {
-			// Returns the list of graphs in the virtuoso quad store
-			String SQL = "SPARQL WITH <"
-					+ ACTIVE_GRAPHS_GRAPH
-					+ "> DELETE { ?s ?p ?v } WHERE { ?s ?p ?v . FILTER( ?s = iri(??) ) }";
-			Exception e = null;
-			Connection connection = null;
-			PreparedStatement st = null;
-			ResultSet rs = null;
-			try {
-				connection = getConnection();
-				st = (PreparedStatement) connection
-						.prepareStatement(SQL);
-				logger.debug("Executing SQL: {}", SQL);
-				for (UriRef u : graphs) {
-					logger.trace(" > remembering {}", u);
-					st.setString(1, u.getUnicodeString());
-					st.executeUpdate();
-				}
-			} catch (SQLException e1) {
-				logger.error("Error while executing query/connection.", e1);
-				e = e1;
-			} finally {
-
-				try {
-					if (rs != null)
-						rs.close();
-				} catch (Exception ex) {
-					logger.error("Cannot close result set", ex);
-				}
-				try {
-					if (st != null)
-						st.close();
-				} catch (Exception ex) {
-					logger.error("Cannot close statement", ex);
-				}
-				try{
-					if(connection != null) connection.close();
-				}catch (Exception ex) {
-					logger.error("Cannot close connection", ex);
-				}
-			}
-			if (e != null) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-
 	/**
 	 * Deactivates this component.
 	 * 
@@ -495,12 +330,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 	@Deactivate
 	public void deactivate(ComponentContext cCtx) {
 		logger.debug("deactivate(ComponentContext {})", cCtx);
-		// Save active (possibly empty) graphs to a dedicated graph
-		rememberGraphs();
-		// XXX Important. Close all opened resources
-		for (DataAccess mg : dataAccessSet) {
-			mg.close();
-		}
 		try {
 			pds.close();
 		} catch (SQLException e) {
@@ -565,7 +394,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 		logger.debug("getGraph(UriRef {}) ", name);
 		// If it is read-only, returns the Graph
 		// If it is not read-only, returns the getGraph() version of the MGraph
-		VirtuosoMGraph g = loadGraphOnce(name);
+		VirtuosoMGraph g = retrieveGraph(name);
 		if (g instanceof Graph) {
 			return (Graph) g;
 		} else {
@@ -582,7 +411,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 	@Override
 	public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
 		logger.debug("getMGraph(UriRef {}) ", name);
-		VirtuosoMGraph g = loadGraphOnce(name);
+		VirtuosoMGraph g = retrieveGraph(name);
 		if (g instanceof Graph) {
 			// We have this graph but only in read-only mode!
 			throw new NoSuchEntityException(name);
@@ -591,8 +420,8 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 	}
 
 	/**
-	 * Load the graph once. It check whether a graph object have been already
-	 * created for that UriRef, if yes returns it.
+	 * Retrieves the graph. First check whether the graph object is already present 
+	 * in our weak map, if so returns it.
 	 * 
 	 * If not check if at least 1 triple is present in the quad for such graph
 	 * identifier. If yes, creates a new graph object and loads it in the map,
@@ -603,10 +432,10 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 	 * @param name
 	 * @return
 	 */
-	private VirtuosoMGraph loadGraphOnce(UriRef name) {
-		logger.debug("loadGraphOnce({})", name);
+	private VirtuosoMGraph retrieveGraph(UriRef name) {
+		logger.debug("retrieveGraph({})", name);
 
-		// Check whether the graph have been already loaded once
+		// Check whether the graph have been already loaded.
 		if (graphs.containsKey(name)) {
 			logger.debug("{} is already loaded", name);
 			return graphs.get(name);
@@ -702,7 +531,7 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 	public TripleCollection getTriples(UriRef name)
 			throws NoSuchEntityException {
 		logger.debug("getTriples(UriRef {}) ", name);
-		return loadGraphOnce(name);
+		return retrieveGraph(name);
 	}
 
 	/**
@@ -870,13 +699,13 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 		logger.debug("createVirtuosoMGraph(UriRef {})", name);
 		// If the graph already exists, we throw an exception
 		try {
-			loadGraphOnce(name);
+			// TODO: check with a query instead of loading?
+			retrieveGraph(name);
 			throw new EntityAlreadyExistsException(name);
 		} catch (NoSuchEntityException nsee) {
 			if (canModify(name)) {
 				graphs.put(name, new VirtuosoMGraph(name.getUnicodeString(),
 						createDataAccess()));
-				rememberGraphs(name);
 				return graphs.get(name);
 			} else {
 				logger.error("Cannot create MGraph {}", name);
@@ -926,7 +755,6 @@ public class VirtuosoWeightedProvider implements WeightedTcProvider, QueryableTc
 		} else {
 			((MGraph) g).clear();
 			graphs.remove(name);
-			forgetGraphs(name);
 		}
 	}
 

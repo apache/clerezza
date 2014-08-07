@@ -517,7 +517,6 @@ public class VirtuosoMGraphTest {
 		log.info("Clearing graph <{}> of size {}", TEST_GRAPH_NAME,
 				mgraph.size());
 		log.debug("Removing graph <{}>", TEST_GRAPH_NAME);
-		da.close();
 		da = null;
 		mgraph = null;
 		Statement st = TestUtils.getConnection().createStatement();
