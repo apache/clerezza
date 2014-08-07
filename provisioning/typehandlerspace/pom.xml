@@ -45,21 +45,18 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typepriority</artifactId>
             <version>0.2</version>
-            <scope>provided</scope>
         </dependency> 	
  
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typehandlerspace.jaxrs</artifactId>
             <version>0.9</version>
-            <scope>provided</scope>
         </dependency> 	
 
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typehandlerspace</artifactId>
             <version>0.9</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
