@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>platform.dashboard</artifactId>
-        <version>0.5</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.dashboard.ontologies</artifactId>
