@@ -29,8 +29,8 @@
     <packaging>pom</packaging>
     <name>Clerezza - Reactor build (root)</name>
     <url>http://incubator.apache.org/clerezza/mvn-site/</url>
-    <version>0.3</version>
-    <description>A recator to build all of clerezza</description>
+    <version>0.4-SNAPSHOT</version>
+    <description>A reactor to build all of clerezza</description>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
