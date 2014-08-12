@@ -24,11 +24,13 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.MGraph;
@@ -48,7 +50,11 @@ import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -99,9 +105,15 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  */
 //immedia is set to true as this should register the graph services (even if manager service is not required)
 @Component(service = TcManager.class, immediate = true)
+@Properties({
+	@Property(name = TcManager.MGRAPH_CACHE_ENABLED, boolValue = true, description = "Enable caching mgraphs."),
+	@Property(name = TcManager.TRIPLECOLLECTION_SERVICES_ENABLED, boolValue = true, description = "Register triple collections as services.") })
 public class TcManager extends TcProviderMultiplexer {
 
     public final static String GENERAL_PURPOSE_TC = "general.purpose.tc";
+    public final static String TRIPLECOLLECTION_SERVICES_ENABLED = "triplecollection.services.enabled";
+    public final static String MGRAPH_CACHE_ENABLED = "mgraph.cache.enabled";
+
     private static volatile TcManager instance;
     private TcAccessController tcAccessController = new TcAccessController() {
 
@@ -115,10 +127,12 @@ public class TcManager extends TcProviderMultiplexer {
             .synchronizedMap(new HashMap<UriRef, ServiceRegistration>());
     
     protected QueryEngine queryEngine;
+    private boolean isActivated = false;
+    private boolean isTcServicesEnabled = true;
 
     private ComponentContext componentContext;
-    private Collection<UriRef> mGraphsToRegisterOnActivation = new HashSet<UriRef>();
-    private Collection<UriRef> graphsToRegisterOnActivation = new HashSet<UriRef>();
+    protected SortedSet<WeightedTcProvider> tempProviderList = new TreeSet<WeightedTcProvider>(
+            new WeightedProviderComparator());
 
     /**
      * the constructor sets the singleton instance to allow instantiation by
@@ -143,6 +157,7 @@ public class TcManager extends TcProviderMultiplexer {
             synchronized (TcManager.class) {
                 if (instance == null) {
                     instance = new TcManager();
+                    instance.isActivated = true;
                     Iterator<WeightedTcProvider> weightedProviders = ServiceLoader
                             .load(WeightedTcProvider.class).iterator();
                     while (weightedProviders.hasNext()) {
@@ -164,15 +179,26 @@ public class TcManager extends TcProviderMultiplexer {
         }
         return instance;
     }
-
+    
     protected void activate(final ComponentContext componentContext) {
         this.componentContext = componentContext;
-        for (UriRef name : mGraphsToRegisterOnActivation) {
-            registerTripleCollectionAsService(name, true);
+        
+        // Read configuration
+		isTcServicesEnabled = true;
+		Object configTcServicesEnabled = componentContext.getProperties().get(TRIPLECOLLECTION_SERVICES_ENABLED);
+		if ( configTcServicesEnabled != null && configTcServicesEnabled instanceof String ) {
+			isTcServicesEnabled = Boolean.valueOf((String)configTcServicesEnabled);				
+		}
+		Object configCacheEnabled = componentContext.getProperties().get(MGRAPH_CACHE_ENABLED);
+		if ( configCacheEnabled != null && configCacheEnabled instanceof String ) {
+			setCachingEnabled(Boolean.valueOf((String)configCacheEnabled));				
+		}
+		isActivated = true;
+		
+        for (WeightedTcProvider provider : tempProviderList) {
+        	addWeightedTcProvider(provider);
         }
-        for (UriRef name : graphsToRegisterOnActivation) {
-            registerTripleCollectionAsService(name, false);
-        }
+        tempProviderList.clear();
     }
 
     protected void deactivate(final ComponentContext componentContext) {
@@ -181,6 +207,7 @@ public class TcManager extends TcProviderMultiplexer {
         }
         serviceRegistrations.clear();
         this.componentContext = null;
+		isActivated = false;
     }
 
     @Override
@@ -476,7 +503,11 @@ public class TcManager extends TcProviderMultiplexer {
     @Reference(policy = ReferencePolicy.DYNAMIC, 
             cardinality = ReferenceCardinality.MULTIPLE)
     protected void bindWeightedTcProvider(WeightedTcProvider provider) {
-        addWeightedTcProvider(provider);
+    	if (isActivated) {
+    		addWeightedTcProvider(provider);
+    	} else {
+    		tempProviderList.add(provider);  		
+    	}
     }
 
     /**
@@ -498,7 +529,11 @@ public class TcManager extends TcProviderMultiplexer {
             cardinality = ReferenceCardinality.AT_LEAST_ONE,
             target = "("+TcManager.GENERAL_PURPOSE_TC+"=true)")
     protected void bindGpWeightedTcProvider(WeightedTcProvider provider) {
-        addWeightedTcProvider(provider);
+    	if (isActivated) {
+    		addWeightedTcProvider(provider);
+    	} else {
+    		tempProviderList.add(provider);  		
+    	}
     }
 
     /**
@@ -523,24 +558,28 @@ public class TcManager extends TcProviderMultiplexer {
 
     @Override
     protected void mGraphAppears(UriRef name) {
-        if (componentContext == null) {
-            mGraphsToRegisterOnActivation.add(name);
-        } else {
-            registerTripleCollectionAsService(name, true);
-        }
+    	if (isTcServicesEnabled()) {
+    		// Only create the service when activated. When not activated
+    		// creating will be delayed till after activation.
+	        if (componentContext != null) {
+	            registerTripleCollectionAsService(name, true);
+	        }
+    	}
     }
 
     @Override
     protected void graphAppears(UriRef name) {
-        if (componentContext == null) {
-            graphsToRegisterOnActivation.add(name);
-        } else {
-            registerTripleCollectionAsService(name, false);
-        }
+    	if (isTcServicesEnabled()) {
+    		// Only create the service when activated. When not activated
+    		// creating will be delayed till after activation.
+	        if (componentContext != null) {
+	            registerTripleCollectionAsService(name, false);
+	        }
+    	}
     }
 
     private void registerTripleCollectionAsService(UriRef name, boolean isMGraph) {
-        Dictionary props = new Properties();
+        Dictionary<String,Object> props = new Hashtable<String, Object>();
         props.put("name", name.getUnicodeString());
         String[] interfaceNames;
         Object service;
@@ -564,8 +603,6 @@ public class TcManager extends TcProviderMultiplexer {
 
     @Override
     protected void tcDisappears(UriRef name) {
-        mGraphsToRegisterOnActivation.remove(name);
-        graphsToRegisterOnActivation.remove(name);
         ServiceRegistration reg = serviceRegistrations.get(name);
         if (reg != null) {
             reg.unregister();
@@ -590,4 +627,7 @@ public class TcManager extends TcProviderMultiplexer {
         return singleTargetTcProvider;
     }
 
+    public boolean isTcServicesEnabled() {
+		return isTcServicesEnabled;
+	}
 }
