@@ -31,7 +31,7 @@
 
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>typehandlerspace</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - Typehandlerspace</name>
