@@ -81,7 +81,7 @@ public class SameAsSmusher extends BaseSmusher {
                 }
             } else {
                 Set<NonLiteral> objectSet = node2EquivalenceSet.get(object);
-                if (objectSet != null) {
+                if ((objectSet != null) && (objectSet != equivalentNodes)) {
                     //merge two sets
                     for (NonLiteral res : objectSet) {
                         node2EquivalenceSet.remove(res);
