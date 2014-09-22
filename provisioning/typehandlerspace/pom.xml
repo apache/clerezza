@@ -31,7 +31,7 @@
 
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>typehandlerspace</artifactId>
-    <version>0.2</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - Typehandlerspace</name>
@@ -72,7 +72,7 @@
         <url>http://git.apache.org/clerezza.git/</url>
         <connection>scm:git:git://git.apache.org/clerezza.git</connection>
         <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
-      <tag>typehandlerspace-0.2</tag>
+      <tag>HEAD</tag>
   </scm>
     
 </project>
