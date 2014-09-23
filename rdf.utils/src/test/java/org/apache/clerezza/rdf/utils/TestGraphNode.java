@@ -24,10 +24,14 @@ import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.Assert;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.UriRef;
@@ -70,6 +74,31 @@ public class TestGraphNode {
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
         Assert.assertEquals(1, g.size());
+    }
+    
+    @Test
+    public void getNodeContextTest(){
+    	MGraph g = new SimpleMGraph();
+    	NonLiteral subject1 = new UriRef("http://example.org/subject1");
+    	NonLiteral subject2 = new UriRef("http://example.org/subject2");
+        UriRef property1 = new UriRef("http://example.org/property1");
+        //UriRef property2 = new UriRef("http://example.org/property2");
+        Triple forwardTriple = new TripleImpl(subject1, property1, new PlainLiteralImpl("literal"));
+        Triple backwardTriple = new TripleImpl(subject2, property1, subject1);
+        g.add(forwardTriple);
+        g.add(backwardTriple);
+        
+        GraphNode n = new GraphNode(subject1, g);
+        
+        assertEquals(2, n.getNodeContext().size());
+        
+        Graph fwd = n.getNodeContext(true,false);
+        assertEquals(1, fwd.size());
+        assertEquals(true, fwd.contains(forwardTriple));
+        
+        Graph bwd = n.getNodeContext(false,true);
+        assertEquals(1,bwd.size());
+        assertEquals(true, bwd.contains(backwardTriple));
     }
 
     @Test

@@ -96,22 +96,39 @@ public class GraphNode {
      * @return the context of the node represented by the instance
      */
     public Graph getNodeContext() {
+        return getNodeContext(true, true);
+    }
+    
+    /**
+     * This node context can selectively contains the triples containing where the node
+     * is subject or object and recursively the context of the b-nodes in any
+     * of these statements.
+     *
+     * The triples in the Graph returned by this method contain the same bnode
+     * instances as in the original graph.
+     *
+     * @param forward context with only this node as subject
+     * @param backward context with only this node as object
+     * 
+     * @return the context of the node represented by the instance
+     */
+    public Graph getNodeContext(boolean forward, boolean backward) {
         Lock l = readLock();
         l.lock();
         try {
             final HashSet<Resource> dontExpand = new HashSet<Resource>();
             dontExpand.add(resource);
             if (resource instanceof UriRef) {
-                return getContextOf((UriRef) resource, dontExpand).getGraph();
+                return getContextOf((UriRef) resource, dontExpand, forward, backward).getGraph();
             }
-            return getContextOf(resource, dontExpand).getGraph();
+            return getContextOf(resource, dontExpand, forward, backward).getGraph();
         } finally {
             l.unlock();
         }
 
     }
 
-    private MGraph getContextOf(UriRef node, final Set<Resource> dontExpand) {
+    private MGraph getContextOf(UriRef node, final Set<Resource> dontExpand, boolean forward, boolean backward) {
         final String uriPrefix = node.getUnicodeString()+'#';
         return getContextOf(node, dontExpand, new Acceptor() {
 
@@ -125,7 +142,7 @@ public class GraphNode {
                 }
                 return false;
             }
-        });
+        }, forward, backward);
     }
 
     /**
@@ -136,7 +153,7 @@ public class GraphNode {
      * is a BNode it should be contained (potentially faster)
      * @return the context of a node
      */
-    private MGraph getContextOf(Resource node, final Set<Resource> dontExpand) {
+    private MGraph getContextOf(Resource node, final Set<Resource> dontExpand, boolean forward, boolean backward) {
         return getContextOf(node, dontExpand, new Acceptor() {
 
             @Override
@@ -146,15 +163,15 @@ public class GraphNode {
                 }
                 return false;
             }
-        });
+        }, forward, backward);
     }
 
     private interface Acceptor {
         boolean expand(Resource resource);
     }
-    private MGraph getContextOf(Resource node, final Set<Resource> dontExpand, Acceptor acceptor) {
+    private MGraph getContextOf(Resource node, final Set<Resource> dontExpand, Acceptor acceptor, boolean forward, boolean backward) {
         MGraph result = new SimpleMGraph();
-        if (node instanceof NonLiteral) {
+        if (node instanceof NonLiteral && forward) {
             Iterator<Triple> forwardProperties = graph.filter((NonLiteral) node, null, null);
             while (forwardProperties.hasNext()) {
                 Triple triple = forwardProperties.next();
@@ -162,20 +179,23 @@ public class GraphNode {
                 Resource object = triple.getObject();
                 if (acceptor.expand(object) && !dontExpand.contains(object)) {
                     dontExpand.add(object);
-                    result.addAll(getContextOf(object, dontExpand, acceptor));
+                    result.addAll(getContextOf(object, dontExpand, acceptor, forward, backward));
                 }
             }
         }
-        Iterator<Triple> backwardProperties = graph.filter(null, null, node);
-        while (backwardProperties.hasNext()) {
-            Triple triple = backwardProperties.next();
-            result.add(triple);
-            NonLiteral subject = triple.getSubject();
-            if (acceptor.expand(subject) && !dontExpand.contains(subject)) {
-                dontExpand.add(subject);
-                result.addAll(getContextOf(subject, dontExpand, acceptor));
+        if(backward){
+        	Iterator<Triple> backwardProperties = graph.filter(null, null, node);
+            while (backwardProperties.hasNext()) {
+                Triple triple = backwardProperties.next();
+                result.add(triple);
+                NonLiteral subject = triple.getSubject();
+                if (acceptor.expand(subject) && !dontExpand.contains(subject)) {
+                    dontExpand.add(subject);
+                    result.addAll(getContextOf(subject, dontExpand, acceptor, forward, backward));
+                }
             }
         }
+        
         return result;
     }
 
@@ -477,7 +497,7 @@ public class GraphNode {
 
 
     /**
-     * Coverts the value into a typed literals and sets it as object of the
+     * Converts the value into a typed literals and sets it as object of the
      * specified property
      *
      * @param property the predicate of the triple to be created
@@ -556,22 +576,22 @@ public class GraphNode {
     }
 
     /**
-     * Replaces the graph node resouce with the specified <code>NonLiteral</code>.
+     * Replaces the graph node resource with the specified <code>NonLiteral</code>.
      * The resource is only replaced where it is either subject or object.
      * @param replacement
-     * @return a GraphNode representing the replecement node
+     * @return a GraphNode representing the replacement node
      */
     public GraphNode replaceWith(NonLiteral replacement) {
         return replaceWith(replacement, false);
     }
 
     /**
-     * Replaces the graph node resouce with the specified <code>NonLiteral</code>.
+     * Replaces the graph node resource with the specified <code>NonLiteral</code>.
      * Over the boolean <code>checkPredicate</code> it can be specified if the
      * resource should also be replaced where it is used as predicate.
      * @param replacement
      * @param checkPredicates
-     * @return a GraphNode representing the replecement node
+     * @return a GraphNode representing the replacement node
      */
     public GraphNode replaceWith(NonLiteral replacement, boolean checkPredicates) {
         MGraph newTriples = new SimpleMGraph();
