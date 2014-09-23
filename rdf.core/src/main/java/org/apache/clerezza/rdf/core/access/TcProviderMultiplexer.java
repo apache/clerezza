@@ -54,6 +54,12 @@ public class TcProviderMultiplexer implements TcProvider {
      */
     private Map<UriRef, MGraphHolder> mGraphCache = Collections.synchronizedMap(new HashMap<UriRef, MGraphHolder>());
 
+	/**
+	 * Flag to indicate whether mgraphs should be cached for faster access. By
+	 * default caching is enabled for backward compatibility.
+	 */
+	private boolean isCachingEnabled = true;
+
     /**
      * Registers a provider
      *
@@ -142,24 +148,25 @@ public class TcProviderMultiplexer implements TcProvider {
     private void weightedProviderAdded(WeightedTcProvider newProvider,
             Set<UriRef> newProvidedUris) {
         Set<WeightedTcProvider> lowerWeightedProviderList = getLowerWeightedProvider(newProvider);
-        for (UriRef name : newProvidedUris) {
-            final MGraphHolder holder = mGraphCache.get(name);
-            if ((holder != null) && (holder.getWeightedTcProvider() != null)) {
-                if (lowerWeightedProviderList.contains(holder.getWeightedTcProvider())) {
-                    tcDisappears(name);
-                    mGraphCache.remove(name);
-                } else {
-                    continue;
-                }
-            }
-            TripleCollection triples = newProvider.getTriples(name);
-            if (triples instanceof MGraph) {
-                mGraphCache.put(name, new MGraphHolder(newProvider, ensureLockable((MGraph)triples)));
-                mGraphAppears(name);
-            } else {
-                graphAppears(name);
-            }
-
+    	if (isCachingEnabled()) {
+	        for (UriRef name : newProvidedUris) {
+	            final MGraphHolder holder = mGraphCache.get(name);
+	            if ((holder != null) && (holder.getWeightedTcProvider() != null)) {
+	                if (lowerWeightedProviderList.contains(holder.getWeightedTcProvider())) {
+	                    tcDisappears(name);
+	                    mGraphCache.remove(name);
+	                } else {
+	                    continue;
+	                }
+	            }
+	            TripleCollection triples = newProvider.getTriples(name);
+	            if (triples instanceof MGraph) {
+	           		mGraphCache.put(name, new MGraphHolder(newProvider, ensureLockable((MGraph)triples)));
+	                mGraphAppears(name);
+	            } else {
+	                graphAppears(name);
+	            }
+	    	}
         }
     }
 
@@ -188,23 +195,24 @@ public class TcProviderMultiplexer implements TcProvider {
                 tcDisappears(name);
                 mGraphCache.remove(name);
 
-                // check if another WeightedTcProvider has the TripleCollection.
-                // And if so register as service.
-                for (WeightedTcProvider provider : providerList) {
-                    try {
-                        TripleCollection triples = provider.getTriples(name);
-                        if (triples instanceof MGraph) {
-                            mGraphCache.put(name, new MGraphHolder(provider, ensureLockable((MGraph)triples)));
-                            mGraphAppears(name);
-                        } else {
-                            graphAppears(name);
-                        }
-                        break;
-                    } catch (NoSuchEntityException e) {
-                        // continue;
-                    }
-                }
-
+            	if (isCachingEnabled()) {
+	                // check if another WeightedTcProvider has the TripleCollection.
+	                // And if so register as service.
+	                for (WeightedTcProvider provider : providerList) {
+	                    try {
+	                        TripleCollection triples = provider.getTriples(name);
+	                        if (triples instanceof MGraph) {
+	                       		mGraphCache.put(name, new MGraphHolder(provider, ensureLockable((MGraph)triples)));
+	                            mGraphAppears(name);
+	                        } else {
+	                            graphAppears(name);
+	                        }
+	                        break;
+	                    } catch (NoSuchEntityException e) {
+	                        // continue;
+	                    }
+	                }
+            	}
             }
         }
     }
@@ -253,9 +261,10 @@ public class TcProviderMultiplexer implements TcProvider {
                 MGraph providedMGraph = provider.getMGraph(name);
                 LockableMGraph result = ensureLockable(providedMGraph);
 
-                MGraphHolder holder = mGraphCache.get(name);
-                mGraphCache.put(name, new MGraphHolder(
-                        provider, result));
+                if (isCachingEnabled()) {
+	                mGraphCache.put(name, new MGraphHolder(
+	                        provider, result));
+                }
                 return result;
             } catch (NoSuchEntityException e) {
                 //we do nothing and try our luck with the next provider
@@ -305,7 +314,9 @@ public class TcProviderMultiplexer implements TcProvider {
                 // unregisters a possible Graph or MGraph service under this name
                 // provided by a WeightedTcProvider with a lower weight.
                 tcDisappears(name);
-                mGraphCache.put(name, new MGraphHolder(provider, null));
+                if (isCachingEnabled()) {
+                	mGraphCache.put(name, new MGraphHolder(provider, null));
+                }
                 mGraphAppears(name);
                 return result;
             } catch (UnsupportedOperationException e) {
@@ -327,7 +338,9 @@ public class TcProviderMultiplexer implements TcProvider {
                 // unregisters a possible Graph or MGraph service under this name
                 // provided by a WeightedTcProvider with a lower weight.
                 tcDisappears(name);
-                mGraphCache.put(name, new MGraphHolder(provider, null));
+                if (isCachingEnabled()) {
+                	mGraphCache.put(name, new MGraphHolder(provider, null));
+                }
                 graphAppears(name);
                 return result;
             } catch (UnsupportedOperationException e) {
@@ -441,4 +454,16 @@ public class TcProviderMultiplexer implements TcProvider {
     public SortedSet<WeightedTcProvider> getProviderList() {
         return providerList;
     }
+
+    public boolean isCachingEnabled() {
+		return isCachingEnabled;
+	}
+    
+    public void setCachingEnabled(boolean isCachingEnabled) {
+		this.isCachingEnabled = isCachingEnabled;
+		
+		if (!isCachingEnabled()) {
+			mGraphCache.clear();
+		}
+	}
 }

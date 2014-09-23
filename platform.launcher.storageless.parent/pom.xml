@@ -420,6 +420,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.editor</artifactId>
+            <scope>runtime</scope>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.content.fsadaptor</artifactId>
             <scope>runtime</scope>
             <version>0.2</version>

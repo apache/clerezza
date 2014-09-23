@@ -31,6 +31,18 @@
 	<packaging>bundle</packaging>
 	<version>1.0.0-SNAPSHOT</version>
 	
+    <repositories>
+		<repository>
+			<releases>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+			<snapshots>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+			<id>virtuoso-jdbc4-embedded</id>
+			<url>file://localhost/${project.basedir}/src/main/resources/maven/repo</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<!-- CLEREZZA -->
 		<dependency>

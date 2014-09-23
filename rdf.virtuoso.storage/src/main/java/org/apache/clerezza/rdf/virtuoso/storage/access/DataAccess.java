@@ -25,6 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -107,6 +109,9 @@ public class DataAccess {
 	// rdf:XMLLiteral needs to be shadowed in the storage because of a BUG in virtuoso
 	private final static UriRef XMLLiteral = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
 	private final static UriRef XMLLiteralShadowed = new UriRef("urn:x-clerezza:rdf#XMLLiteral");
+	
+	private final static UriRef XMLType_Timestamp = new UriRef("http://www.w3.org/2001/XMLSchema#dateTime");
+	private static final SimpleDateFormat ISO8601FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ" );
 	
 	private final static String ASK_COLUMNNAME = "__ask_retval";  
 	
@@ -897,6 +902,8 @@ public class DataAccess {
 					}
 				}
 			}
+		} else if (o instanceof Timestamp) {
+			return new TypedLiteralImpl(ISO8601FORMAT.format(Timestamp.class.cast(o)),XMLType_Timestamp);
 		} else if (o == null) {
 			// Raise an exception
 			throw new IllegalStateException("Object cannot be NULL!");
