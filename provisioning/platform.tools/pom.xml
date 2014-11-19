@@ -65,6 +65,11 @@
             <artifactId>bundledevtool</artifactId>
             <version>0.2</version>
         </dependency> 
+        <dependency>
+            <groupId>org.apache.clerezza.ext</groupId>
+            <artifactId>org.ops4j.pax.swissbox.tinybundles</artifactId>
+            <version>0.1-incubating</version>
+        </dependency>
     </dependencies>
 
     <build>
