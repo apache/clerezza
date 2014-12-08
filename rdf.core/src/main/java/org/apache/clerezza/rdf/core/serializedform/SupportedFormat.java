@@ -40,7 +40,7 @@ public @interface SupportedFormat {
     public static final String RDF_XML = "application/rdf+xml";
     public static final String TURTLE = "text/turtle";
     public static final String X_TURTLE = "application/x-turtle";
-    public static final String N_TRIPLE = "text/rdf+nt";
+    public static final String N_TRIPLE = "application/n-triples";
     public static final String N3 = "text/rdf+n3";
     public static final String RDF_JSON = "application/rdf+json";
     //both html and xhtml can be rdf formats with RDFa
