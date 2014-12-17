@@ -20,6 +20,15 @@
             </properties>
         </action>
         <action>
+            <actionName>test</actionName>
+            <goals>
+                <goal>test</goal>
+            </goals>
+            <properties>
+                <Env.MAVEN_OPTS>-Xmx3g -XX:MaxPermSize=768M</Env.MAVEN_OPTS>            
+            </properties>
+        </action>
+        <action>
             <actionName>CUSTOM-update zz-version</actionName>
             <displayName>update zz-version</displayName>
             <goals>

@@ -3,7 +3,7 @@ Troubleshooting
 If things don't just work as described in the readme.
 
 Getting the content graph manually:
-- curl -u admin:admin -H "Accept: text/rdf+nt" http://localhost:8080/graph?name=urn:x-localinstance:/content.graph > graph.nt
+- curl -u admin:admin -H "Accept: application/n-triples" http://localhost:8080/graph?name=urn:x-localinstance:/content.graph > graph.nt
 
 Manually deploying:
 - retrieve a zipped offline version from http://localhost:8080/admin/offline/download?baseUri=http://localhost:8080/&targetUri=http://incubator.apache.org/clerezza/&formatExtension=xhtml&formatExtension=rdf&formatExtension=png&formatExtension=html&formatExtension=js&formatExtension=jpeg&rootLinkPrefix=/clerezza

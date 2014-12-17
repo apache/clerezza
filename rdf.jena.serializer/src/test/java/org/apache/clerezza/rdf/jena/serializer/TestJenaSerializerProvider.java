@@ -140,7 +140,7 @@ public class TestJenaSerializerProvider {
         SerializingProvider provider = new JenaSerializerProvider();
 
         ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
-        provider.serialize(serializedGraph, mGraph.getGraph(), "text/rdf+nt");
+        provider.serialize(serializedGraph, mGraph.getGraph(), "application/n-triples");
         InputStream in = new ByteArrayInputStream(serializedGraph.toByteArray());
 
         Graph deserializedGraph = parse(in, "N-TRIPLE");

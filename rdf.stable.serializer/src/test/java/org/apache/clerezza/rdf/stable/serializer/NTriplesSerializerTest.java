@@ -83,7 +83,7 @@ public class NTriplesSerializerTest {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 
-        Graph deserializedGraphNew = parser.parse(bais, "text/rdf+nt");
+        Graph deserializedGraphNew = parser.parse(bais, "application/n-triples");
 
         Assert.assertEquals(deserializedGraphNew, deserializedGraphOld);
     }

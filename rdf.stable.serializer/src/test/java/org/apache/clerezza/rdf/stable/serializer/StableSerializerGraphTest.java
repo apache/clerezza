@@ -77,11 +77,11 @@ public class StableSerializerGraphTest {
         tc.addAll(deserializedGraphOld);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ssp.serialize(baos, tc, "text/rdf+nt");
+        ssp.serialize(baos, tc, "application/n-triples");
 
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 
-        Graph deserializedGraphNew = parser.parse(bais, "text/rdf+nt");
+        Graph deserializedGraphNew = parser.parse(bais, "application/n-triples");
 
         Assert.assertEquals(deserializedGraphOld, deserializedGraphNew);
 
