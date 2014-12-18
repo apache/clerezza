@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.query.DataSet;
 
 /**
@@ -28,24 +28,24 @@ import org.apache.clerezza.rdf.core.sparql.query.DataSet;
  * @author hasan
  */
 public class SimpleDataSet implements DataSet {
-    private Set<UriRef> defaultGraphs = new HashSet<UriRef>();
-    private Set<UriRef> namedGraphs = new HashSet<UriRef>();
+    private Set<Iri> defaultGraphs = new HashSet<Iri>();
+    private Set<Iri> namedGraphs = new HashSet<Iri>();
 
     @Override
-    public Set<UriRef> getDefaultGraphs() {
+    public Set<Iri> getDefaultGraphs() {
         return defaultGraphs;
     }
 
     @Override
-    public Set<UriRef> getNamedGraphs() {
+    public Set<Iri> getNamedGraphs() {
         return namedGraphs;
     }
 
-    public void addDefaultGraph(UriRef defaultGraph) {
+    public void addDefaultGraph(Iri defaultGraph) {
         defaultGraphs.add(defaultGraph);
     }
 
-    public void addNamedGraph(UriRef namedGraph) {
+    public void addNamedGraph(Iri namedGraph) {
         namedGraphs.add(namedGraph);
     }
 }

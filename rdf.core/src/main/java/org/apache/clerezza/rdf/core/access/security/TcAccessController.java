@@ -31,18 +31,18 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.Lock;
-import org.apache.clerezza.rdf.core.BNode;
+import org.apache.commons.rdf.BlankNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.utils.security.PermissionParser;
+import org.apache.commons.rdf.Literal;
 
 /**
  * Controls the permissions needed to access a triple collection provided by
@@ -59,24 +59,24 @@ import org.apache.clerezza.utils.security.PermissionParser;
 public abstract class TcAccessController {
 
     private final TcManager tcManager;
-    private final UriRef permissionGraphName = new UriRef("urn:x-localinstance:/graph-access.graph");
+    private final Iri permissionGraphName = new Iri("urn:x-localinstance:/graph-access.graph");
     //we can't rely on ontology plugin in rdf core
     private String ontologyNamespace = "http://clerezza.apache.org/2010/07/10/graphpermssions#";
-    private final UriRef readPermissionListProperty = new UriRef(ontologyNamespace + "readPermissionList");
-    private final UriRef readWritePermissionListProperty = new UriRef(ontologyNamespace + "readWritePermissionList");
+    private final Iri readPermissionListProperty = new Iri(ontologyNamespace + "readPermissionList");
+    private final Iri readWritePermissionListProperty = new Iri(ontologyNamespace + "readWritePermissionList");
     /**
      * The first item in the subject RDF list.
      */
-    public static final UriRef first = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
+    public static final Iri first = new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
     /**
      * The rest of the subject RDF list after the first item.
      */
-    public static final UriRef rest = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
-    public static final UriRef rdfNil = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
-    private final Map<UriRef, Collection<Permission>> readPermissionCache =
-            Collections.synchronizedMap(new HashMap<UriRef, Collection<Permission>>());
-    private final Map<UriRef, Collection<Permission>> readWritePermissionCache =
-            Collections.synchronizedMap(new HashMap<UriRef, Collection<Permission>>());
+    public static final Iri rest = new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
+    public static final Iri rdfNil = new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
+    private final Map<Iri, Collection<Permission>> readPermissionCache =
+            Collections.synchronizedMap(new HashMap<Iri, Collection<Permission>>());
+    private final Map<Iri, Collection<Permission>> readWritePermissionCache =
+            Collections.synchronizedMap(new HashMap<Iri, Collection<Permission>>());
 
     /**
      *
@@ -86,7 +86,7 @@ public abstract class TcAccessController {
         this.tcManager = getTcManager();
     }
 
-    public void checkReadPermission(UriRef tripleCollectionUri) {
+    public void checkReadPermission(Iri tripleCollectionUri) {
         if (tripleCollectionUri.equals(permissionGraphName)) {
             //This is world readable, as this prevents as from doingf things as
             //priviledged during verfification
@@ -111,7 +111,7 @@ public abstract class TcAccessController {
         }
     }
 
-    public void checkReadWritePermission(UriRef tripleCollectionUri) {
+    public void checkReadWritePermission(Iri tripleCollectionUri) {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             //will AllPermissions the rest is obsolete
@@ -143,7 +143,7 @@ public abstract class TcAccessController {
      * @param tripleCollectionUri
      * @param permissionDescriptions
      */
-    public void setRequiredReadPermissionStrings(UriRef tripleCollectionUri,
+    public void setRequiredReadPermissionStrings(Iri tripleCollectionUri,
             Collection<String> permissionDescriptions) {
         readPermissionCache.remove(tripleCollectionUri);
         final LockableMGraph permissionMGraph = getOrCreatePermisionGraph();
@@ -151,7 +151,7 @@ public abstract class TcAccessController {
         l.lock();
         try {
             removeExistingRequiredReadPermissions(tripleCollectionUri, permissionMGraph);
-            final NonLiteral permissionList = createList(permissionDescriptions.iterator(), permissionMGraph);
+            final BlankNodeOrIri permissionList = createList(permissionDescriptions.iterator(), permissionMGraph);
             permissionMGraph.add(new TripleImpl(tripleCollectionUri,
                     readPermissionListProperty, permissionList));
         } finally {
@@ -166,7 +166,7 @@ public abstract class TcAccessController {
      * @param tripleCollectionUri
      * @param permissionDescriptions
      */
-    public void setRequiredReadPermissions(UriRef tripleCollectionUri,
+    public void setRequiredReadPermissions(Iri tripleCollectionUri,
             Collection<Permission> permissions) {
         Collection<String> permissionStrings = new ArrayList<String>();
         for (Permission permission : permissions) {
@@ -183,7 +183,7 @@ public abstract class TcAccessController {
      * @param tripleCollectionUri
      * @param permissionDescriptions
      */
-    public void setRequiredReadWritePermissionStrings(UriRef tripleCollectionUri,
+    public void setRequiredReadWritePermissionStrings(Iri tripleCollectionUri,
             Collection<String> permissionDescriptions) {
         readWritePermissionCache.remove(tripleCollectionUri);
         final LockableMGraph permissionMGraph = getOrCreatePermisionGraph();
@@ -191,7 +191,7 @@ public abstract class TcAccessController {
         l.lock();
         try {
             removeExistingRequiredReadPermissions(tripleCollectionUri, permissionMGraph);
-            final NonLiteral permissionList = createList(permissionDescriptions.iterator(), permissionMGraph);
+            final BlankNodeOrIri permissionList = createList(permissionDescriptions.iterator(), permissionMGraph);
             permissionMGraph.add(new TripleImpl(tripleCollectionUri,
                     readWritePermissionListProperty, permissionList));
         } finally {
@@ -207,7 +207,7 @@ public abstract class TcAccessController {
      * @param tripleCollectionUri
      * @param permissionDescriptions
      */
-    public void setRequiredReadWritePermissions(UriRef tripleCollectionUri,
+    public void setRequiredReadWritePermissions(Iri tripleCollectionUri,
             Collection<Permission> permissions) {
         Collection<String> permissionStrings = new ArrayList<String>();
         for (Permission permission : permissions) {
@@ -224,7 +224,7 @@ public abstract class TcAccessController {
      * @param tripleCollectionUri
      * @return the collection of permissions
      */
-    public Collection<Permission> getRequiredReadPermissions(UriRef tripleCollectionUri) {
+    public Collection<Permission> getRequiredReadPermissions(Iri tripleCollectionUri) {
         Collection<Permission> result = readPermissionCache.get(tripleCollectionUri);
         if (result == null) {
             result = new ArrayList<Permission>();
@@ -245,7 +245,7 @@ public abstract class TcAccessController {
      * @param tripleCollectionUri
      * @return the collection of permissions
      */
-    public Collection<Permission> getRequiredReadWritePermissions(UriRef tripleCollectionUri) {
+    public Collection<Permission> getRequiredReadWritePermissions(Iri tripleCollectionUri) {
         Collection<Permission> result = readWritePermissionCache.get(tripleCollectionUri);
         if (result == null) {
             result = new ArrayList<Permission>();
@@ -258,11 +258,11 @@ public abstract class TcAccessController {
         return result;
     }
 
-    private NonLiteral createList(Iterator<String> iterator, LockableMGraph permissionMGraph) {
+    private BlankNodeOrIri createList(Iterator<String> iterator, LockableMGraph permissionMGraph) {
         if (!iterator.hasNext()) {
             return rdfNil;
         }
-        final BNode result = new BNode();
+        final BlankNode result = new BlankNode();
         permissionMGraph.add(new TripleImpl(result, first,
                 LiteralFactory.getInstance().createTypedLiteral(iterator.next())));
         permissionMGraph.add(new TripleImpl(result, rest,
@@ -272,23 +272,23 @@ public abstract class TcAccessController {
     }
 
     //called withiong write-lock
-    private void removeExistingRequiredReadPermissions(UriRef tripleCollectionUri,
+    private void removeExistingRequiredReadPermissions(Iri tripleCollectionUri,
             LockableMGraph permissionMGraph) {
         try {
             Triple t = permissionMGraph.filter(tripleCollectionUri, readPermissionListProperty, null).next();
-            Resource list = t.getObject();
-            removeList((NonLiteral) list, permissionMGraph);
+            RdfTerm list = t.getObject();
+            removeList((BlankNodeOrIri) list, permissionMGraph);
             permissionMGraph.remove(t);
         } catch (NoSuchElementException e) {
             //There was no existing to remove
         }
     }
 
-    private void removeList(NonLiteral list, LockableMGraph permissionMGraph) {
+    private void removeList(BlankNodeOrIri list, LockableMGraph permissionMGraph) {
         try {
             Triple t = permissionMGraph.filter(list, rest, null).next();
-            Resource restList = t.getObject();
-            removeList((NonLiteral) restList, permissionMGraph);
+            RdfTerm restList = t.getObject();
+            removeList((BlankNodeOrIri) restList, permissionMGraph);
             permissionMGraph.remove(t);
             Iterator<Triple> iter = permissionMGraph.filter(list, first, null);
             iter.next();
@@ -298,20 +298,20 @@ public abstract class TcAccessController {
         }
     }
 
-    private Collection<String> getRequiredReadWritePermissionStrings(final UriRef tripleCollectionUri) {
+    private Collection<String> getRequiredReadWritePermissionStrings(final Iri tripleCollectionUri) {
         return getRequiredPermissionStrings(tripleCollectionUri, readWritePermissionListProperty);
     }
-    private Collection<String> getRequiredReadPermissionStrings(final UriRef tripleCollectionUri) {
+    private Collection<String> getRequiredReadPermissionStrings(final Iri tripleCollectionUri) {
         return getRequiredPermissionStrings(tripleCollectionUri, readPermissionListProperty);
     }
-    private Collection<String> getRequiredPermissionStrings(final UriRef tripleCollectionUri, UriRef property) {
+    private Collection<String> getRequiredPermissionStrings(final Iri tripleCollectionUri, Iri property) {
         try {
             final LockableMGraph permissionMGraph = tcManager.getMGraph(permissionGraphName);
             Lock l = permissionMGraph.getLock().readLock();
             l.lock();
             try {
                 Triple t = permissionMGraph.filter(tripleCollectionUri, property, null).next();
-                NonLiteral list = (NonLiteral) t.getObject();
+                BlankNodeOrIri list = (BlankNodeOrIri) t.getObject();
                 LinkedList<String> result = new LinkedList<String>();
                 readList(list, permissionMGraph, result);
                 return result;
@@ -325,15 +325,15 @@ public abstract class TcAccessController {
         }
     }
 
-    private void readList(NonLiteral list, LockableMGraph permissionMGraph, LinkedList<String> target) {
+    private void readList(BlankNodeOrIri list, LockableMGraph permissionMGraph, LinkedList<String> target) {
         if (list.equals(rdfNil)) {
             return;
         }
         Triple restTriple = permissionMGraph.filter(list, rest, null).next();
-        NonLiteral restList = (NonLiteral) restTriple.getObject();
+        BlankNodeOrIri restList = (BlankNodeOrIri) restTriple.getObject();
         readList(restList, permissionMGraph, target);
         Triple firstTriple = permissionMGraph.filter(list, first, null).next();
-        TypedLiteral firstValue = (TypedLiteral) firstTriple.getObject();
+        Literal firstValue = (Literal) firstTriple.getObject();
         String value = LiteralFactory.getInstance().createObject(String.class, firstValue);
         target.addFirst(value);
     }

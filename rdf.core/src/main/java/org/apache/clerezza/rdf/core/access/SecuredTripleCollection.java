@@ -20,14 +20,14 @@ package org.apache.clerezza.rdf.core.access;
 
 import java.util.Collection;
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphListener;
+import org.apache.commons.rdf.event.FilterTriple;
+import org.apache.commons.rdf.event.GraphListener;
 
 /**
  * A Secured triple collection wraps a triple collection checking each access
@@ -39,10 +39,10 @@ import org.apache.clerezza.rdf.core.event.GraphListener;
 public class SecuredTripleCollection implements TripleCollection {
 
     private final TripleCollection wrapped;
-    private final UriRef name;
+    private final Iri name;
     private final TcAccessController tcAccessController;
 
-    public SecuredTripleCollection(TripleCollection wrapped, UriRef name,
+    public SecuredTripleCollection(TripleCollection wrapped, Iri name,
             TcAccessController tcAccessController) {
         this.wrapped = wrapped;
         this.name = name;
@@ -50,7 +50,7 @@ public class SecuredTripleCollection implements TripleCollection {
     }
 
     @Override
-    public Iterator<Triple> filter(final NonLiteral subject, final UriRef predicate, final Resource object) {
+    public Iterator<Triple> filter(final BlankNodeOrIri subject, final Iri predicate, final RdfTerm object) {
         final Iterator<Triple> baseIter = wrapped.filter(subject, predicate, object);
         return new Iterator<Triple>() {
 

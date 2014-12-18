@@ -19,15 +19,16 @@
 package org.apache.clerezza.rdf.core.impl;
 
 import java.io.Serializable;
+import org.apache.commons.rdf.Iri;
 
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.PlainLiteral;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.Literal;
 
 /**
  *
  * @author reto
  */
-public class PlainLiteralImpl implements PlainLiteral, Serializable {
+public class PlainLiteralImpl implements Literal, Serializable {
 
     private String lexicalForm;
     private Language language = null;
@@ -54,10 +55,10 @@ public class PlainLiteralImpl implements PlainLiteral, Serializable {
 
     @Override
     public boolean equals(Object otherObj) {
-        if (!(otherObj instanceof PlainLiteral)) {
+        if (!(otherObj instanceof Literal)) {
             return false;
         }
-        PlainLiteral other = (PlainLiteral) otherObj;
+        Literal other = (Literal) otherObj;
         if (!lexicalForm.equals(other.getLexicalForm())) {
             return false;
         }
@@ -93,4 +94,10 @@ public class PlainLiteralImpl implements PlainLiteral, Serializable {
         }
         return result.toString();
     }
+
+    @Override
+    public Iri getDataType() {
+        return XSD_STRING;
+    }
+    private static final Iri XSD_STRING = new Iri("http://www.w3.org/2001/XMLSchema#string");
 }

@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.impl.util;
 
-import org.apache.clerezza.rdf.core.Graph;
+import org.apache.commons.rdf.Graph;
 
 /**
  * Calls the methods of the wrapped <code>Graph</code> as privileged

@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.update.impl;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
@@ -30,8 +30,8 @@ import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
  */
 public abstract class BaseUpdateOperation implements UpdateOperation {
 
-    protected Set<UriRef> inputGraphs = new HashSet<UriRef>();
-    protected Set<UriRef> destinationGraphs = new HashSet<UriRef>();
+    protected Set<Iri> inputGraphs = new HashSet<Iri>();
+    protected Set<Iri> destinationGraphs = new HashSet<Iri>();
     protected GraphSpec inputGraphSpec = GraphSpec.GRAPH;
     protected GraphSpec destinationGraphSpec = GraphSpec.GRAPH;
 
@@ -52,14 +52,14 @@ public abstract class BaseUpdateOperation implements UpdateOperation {
     }
 
     @Override
-    public Set<UriRef> getInputGraphs(UriRef defaultGraph, TcProvider tcProvider) {
+    public Set<Iri> getInputGraphs(Iri defaultGraph, TcProvider tcProvider) {
         return getGraphs(defaultGraph, tcProvider, inputGraphSpec, inputGraphs);
     }
 
-    private Set<UriRef> getGraphs(UriRef defaultGraph, TcProvider tcProvider, GraphSpec graphSpec, Set<UriRef> graphs) {
+    private Set<Iri> getGraphs(Iri defaultGraph, TcProvider tcProvider, GraphSpec graphSpec, Set<Iri> graphs) {
         switch (graphSpec) {
             case DEFAULT:
-                Set<UriRef> result = new HashSet<UriRef>();
+                Set<Iri> result = new HashSet<Iri>();
                 result.add(defaultGraph);
                 return result;
             case NAMED:
@@ -71,15 +71,15 @@ public abstract class BaseUpdateOperation implements UpdateOperation {
     }
 
     @Override
-    public Set<UriRef> getDestinationGraphs(UriRef defaultGraph, TcProvider tcProvider) {
+    public Set<Iri> getDestinationGraphs(Iri defaultGraph, TcProvider tcProvider) {
         return getGraphs(defaultGraph, tcProvider, destinationGraphSpec, destinationGraphs);
     }
 
-    public void addInputGraph(UriRef graph) {
+    public void addInputGraph(Iri graph) {
         inputGraphs.add(graph);
     }
 
-    public void addDestinationGraph(UriRef graph) {
+    public void addDestinationGraph(Iri graph) {
         destinationGraphs.add(graph);
     }
 }

@@ -26,19 +26,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Triple;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Triple;
 
 public class Utils {
 
-    static Set<BNode> getBNodes(Collection<Triple> s) {
-        Set<BNode> result = new HashSet<BNode>();
+    static Set<BlankNode> getBNodes(Collection<Triple> s) {
+        Set<BlankNode> result = new HashSet<BlankNode>();
         for (Triple triple : s) {
-            if (triple.getSubject() instanceof BNode) {
-                result.add((BNode) triple.getSubject());
+            if (triple.getSubject() instanceof BlankNode) {
+                result.add((BlankNode) triple.getSubject());
             }
-            if (triple.getObject() instanceof BNode) {
-                result.add((BNode) triple.getObject());
+            if (triple.getObject() instanceof BlankNode) {
+                result.add((BlankNode) triple.getObject());
             }
         }
         return result;
@@ -70,10 +70,10 @@ public class Utils {
     }
 
     private static boolean isGrounded(Triple triple) {
-        if (triple.getSubject() instanceof BNode) {
+        if (triple.getSubject() instanceof BlankNode) {
             return false;
         }
-        if (triple.getObject() instanceof BNode) {
+        if (triple.getObject() instanceof BlankNode) {
             return false;
         }
         return true;

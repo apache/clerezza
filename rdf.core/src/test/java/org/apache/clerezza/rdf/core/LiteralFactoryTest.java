@@ -19,6 +19,8 @@
 package org.apache.clerezza.rdf.core;
 
 
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Iri;
 import java.util.Arrays;
 import java.util.Date;
 import org.junit.Test;
@@ -49,8 +51,8 @@ public class LiteralFactoryTest {
         for (byte i = 0; i < bytes.length; i++) {
             bytes[i] = i;
         }
-        TypedLiteral literal = LiteralFactory.getInstance().createTypedLiteral(bytes);
-        Assert.assertEquals(new UriRef("http://www.w3.org/2001/XMLSchema#base64Binary"), 
+        Literal literal = LiteralFactory.getInstance().createTypedLiteral(bytes);
+        Assert.assertEquals(new Iri("http://www.w3.org/2001/XMLSchema#base64Binary"), 
                 literal.getDataType());
         //we are using bytes.getClass() but there should be a way to get
         //that instance of Class without getting it from an instance
@@ -66,8 +68,8 @@ public class LiteralFactoryTest {
     @Test
     public void dateConversion() {
         Date date = new Date();
-        TypedLiteral literal = LiteralFactory.getInstance().createTypedLiteral(date);
-        Assert.assertEquals(new UriRef("http://www.w3.org/2001/XMLSchema#dateTime"),
+        Literal literal = LiteralFactory.getInstance().createTypedLiteral(date);
+        Assert.assertEquals(new Iri("http://www.w3.org/2001/XMLSchema#dateTime"),
                 literal.getDataType());
         Date dateBack = LiteralFactory.getInstance().createObject(Date.class, literal);
         Assert.assertEquals(date.getTime(), dateBack.getTime());
@@ -80,8 +82,8 @@ public class LiteralFactoryTest {
     @Test
     public void stringConversion() {
         String value = "Hello world";
-        TypedLiteral literal = LiteralFactory.getInstance().createTypedLiteral(value);
-        Assert.assertEquals(new UriRef("http://www.w3.org/2001/XMLSchema#string"),
+        Literal literal = LiteralFactory.getInstance().createTypedLiteral(value);
+        Assert.assertEquals(new Iri("http://www.w3.org/2001/XMLSchema#string"),
                 literal.getDataType());
         String valueBack = LiteralFactory.getInstance().createObject(String.class, literal);
         Assert.assertEquals(value, valueBack);
@@ -94,8 +96,8 @@ public class LiteralFactoryTest {
     @Test
     public void intConversion() {
         int value = 3;
-        TypedLiteral literal = LiteralFactory.getInstance().createTypedLiteral(value);
-        Assert.assertEquals(new UriRef("http://www.w3.org/2001/XMLSchema#int"),
+        Literal literal = LiteralFactory.getInstance().createTypedLiteral(value);
+        Assert.assertEquals(new Iri("http://www.w3.org/2001/XMLSchema#int"),
                 literal.getDataType());
         Integer valueBack = LiteralFactory.getInstance().createObject(Integer.class, literal);
         Assert.assertEquals(value, valueBack.intValue());
@@ -108,8 +110,8 @@ public class LiteralFactoryTest {
     @Test
     public void longConversion() {
         long value = 332314646;
-        TypedLiteral literal = LiteralFactory.getInstance().createTypedLiteral(value);
-        Assert.assertEquals(new UriRef("http://www.w3.org/2001/XMLSchema#long"),
+        Literal literal = LiteralFactory.getInstance().createTypedLiteral(value);
+        Assert.assertEquals(new Iri("http://www.w3.org/2001/XMLSchema#long"),
                 literal.getDataType());
         Long valueBack = LiteralFactory.getInstance().createObject(Long.class, literal);
         Assert.assertEquals(value, valueBack.longValue());

@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.core;
 
+import org.apache.commons.rdf.Iri;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.junit.Test;
@@ -38,11 +39,11 @@ public class UriRefTest {
     public void uriRefEqualityTest() {
         try {
             String uriRefString = "http://example.org/üöä";
-            UriRef uriRef1 = new UriRef(uriRefString);
-            UriRef uriRef2 = new UriRef(uriRefString);
+            Iri uriRef1 = new Iri(uriRefString);
+            Iri uriRef2 = new Iri(uriRefString);
             Assert.assertEquals(uriRef1, uriRef2);
-            UriRef uriRef3 =
-                    new UriRef(URLEncoder.encode(uriRefString, "utf-8"));
+            Iri uriRef3 =
+                    new Iri(URLEncoder.encode(uriRefString, "utf-8"));
             Assert.assertFalse(uriRef1.equals(uriRef3));
         } catch (UnsupportedEncodingException ex) {
             logger.error("Exception {} ", ex);
@@ -52,7 +53,7 @@ public class UriRefTest {
     @Test
     public void toStringTest() {
         String uriRefString = "http://example.org/üöä";
-        UriRef uriRef = new UriRef(uriRefString);
+        Iri uriRef = new Iri(uriRefString);
         Assert.assertEquals("<"+uriRefString+">", uriRef.toString());
     }
 

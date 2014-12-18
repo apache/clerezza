@@ -20,8 +20,8 @@ package org.apache.clerezza.rdf.core.access;
 
 import java.security.AccessControlException;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
@@ -37,7 +37,7 @@ public class SecuredMGraph extends SecuredTripleCollection implements LockableMG
 
     private LockableMGraph wrapped;
 
-    public SecuredMGraph(LockableMGraph wrapped, UriRef name,
+    public SecuredMGraph(LockableMGraph wrapped, Iri name,
             TcAccessController tcAccessController) {
         super(wrapped, name,  tcAccessController);
         this.wrapped = wrapped;

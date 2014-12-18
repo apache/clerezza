@@ -21,9 +21,9 @@ package org.apache.clerezza.rdf.core.impl.graphmatching;
 
 import java.util.Map;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,14 +35,14 @@ public class HashMatchingTest {
 
     @Test
     public void twoLine() throws GraphNotIsomorphicException {
-        NonLiteral start1 = new BNode();
+        BlankNodeOrIri start1 = new BlankNode();
         MGraph tc1 = Utils4Testing.generateLine(4,start1);
         tc1.addAll(Utils4Testing.generateLine(5,start1));
-        NonLiteral start2 = new BNode();
+        BlankNodeOrIri start2 = new BlankNode();
         MGraph tc2 = Utils4Testing.generateLine(5,start2);
         tc2.addAll(Utils4Testing.generateLine(4,start2));
         Assert.assertEquals(9, tc1.size());
-        final Map<BNode, BNode> mapping = new HashMatching(tc1, tc2).getMatchings();
+        final Map<BlankNode, BlankNode> mapping = new HashMatching(tc1, tc2).getMatchings();
         Assert.assertNotNull(mapping);
         Assert.assertEquals(10, mapping.size());
     }

@@ -19,26 +19,26 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.List;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 /**
  * Defines a function call which is one form of {@link Expression}.
- * A function call has a name of type {@link UriRef} and a list of arguments,
+ * A function call has a name of type {@link Iri} and a list of arguments,
  * where each argument is an {@link Expression}.
  *
  * @author hasan
  */
 public class FunctionCall implements Expression {
 
-    private final UriRef name;
+    private final Iri name;
     private final List<Expression> arguments;
 
-    public FunctionCall(UriRef name, List<Expression> arguments) {
+    public FunctionCall(Iri name, List<Expression> arguments) {
         this.name = name;
         this.arguments = arguments;
     }
 
-    public UriRef getName() {
+    public Iri getName() {
         return name;
     };
 

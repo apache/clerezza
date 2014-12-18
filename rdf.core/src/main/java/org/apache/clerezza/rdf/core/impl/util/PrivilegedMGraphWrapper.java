@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.impl.util;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.MGraph;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 
 /**

@@ -22,8 +22,8 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 
 /**
  *
@@ -31,9 +31,9 @@ import org.apache.clerezza.rdf.core.UriRef;
  */
 public class SimpleTripleCollectionTest {
 
-    private UriRef uriRef1 = new UriRef("http://example.org/foo");
-    private UriRef uriRef2 = new UriRef("http://example.org/bar");
-    private UriRef uriRef3 = new UriRef("http://example.org/test");
+    private Iri uriRef1 = new Iri("http://example.org/foo");
+    private Iri uriRef2 = new Iri("http://example.org/bar");
+    private Iri uriRef3 = new Iri("http://example.org/test");
     private Triple triple1 = new TripleImpl(uriRef1, uriRef2, uriRef3);
     private Triple triple2 = new TripleImpl(uriRef2, uriRef2, uriRef1);
     private Triple triple3 = new TripleImpl(uriRef3, uriRef1, uriRef3);

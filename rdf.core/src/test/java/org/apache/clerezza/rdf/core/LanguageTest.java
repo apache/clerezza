@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.core;
 
 
+import org.apache.commons.rdf.Language;
 import org.junit.Test;
 import junit.framework.Assert;
 

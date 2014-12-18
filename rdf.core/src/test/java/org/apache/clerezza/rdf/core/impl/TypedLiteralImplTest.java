@@ -21,9 +21,15 @@ package org.apache.clerezza.rdf.core.impl;
 import org.junit.Test;
 import junit.framework.Assert;
 
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.Literal;
 /**
+ *
+ * @author reto/**
+ *
+ * @author reto/**
+ *
+ * @author reto/**
  *
  * @author reto
  *
@@ -34,15 +40,15 @@ public class TypedLiteralImplTest {
     
     @Test public void typedLiteralEquality() {
         String stringValue = "some text";
-        UriRef uriRef = new UriRef("http://example.org/datatypes/magic");
-        TypedLiteral literal1 = new TypedLiteralImpl(stringValue, uriRef);
-        TypedLiteral literal2 = new TypedLiteralImpl(stringValue, uriRef);        
+        Iri uriRef = new Iri("http://example.org/datatypes/magic");
+        Literal literal1 = new TypedLiteralImpl(stringValue, uriRef);
+        Literal literal2 = new TypedLiteralImpl(stringValue, uriRef);        
         Assert.assertEquals(literal1, literal2);
         Assert.assertEquals(literal1.hashCode(), literal2.hashCode());
-        TypedLiteral literal3 = new TypedLiteralImpl("something else", uriRef);
+        Literal literal3 = new TypedLiteralImpl("something else", uriRef);
         Assert.assertFalse(literal1.equals(literal3));
-        UriRef uriRef2 = new UriRef("http://example.org/datatypes/other");
-        TypedLiteral literal4 = new TypedLiteralImpl(stringValue, uriRef2);
+        Iri uriRef2 = new Iri("http://example.org/datatypes/other");
+        Literal literal4 = new TypedLiteralImpl(stringValue, uriRef2);
         Assert.assertFalse(literal1.equals(literal4));
     }
 
@@ -52,8 +58,8 @@ public class TypedLiteralImplTest {
      */
     @Test public void checkHashCode() {
         String stringValue = "some text";
-        UriRef uriRef = new UriRef("http://example.org/datatypes/magic");
-        TypedLiteral literal =  new TypedLiteralImpl(stringValue, uriRef);
+        Iri uriRef = new Iri("http://example.org/datatypes/magic");
+        Literal literal =  new TypedLiteralImpl(stringValue, uriRef);
         Assert.assertEquals(stringValue.hashCode() + uriRef.hashCode(), literal.hashCode());
     }
 

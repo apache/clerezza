@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 /**
  *
@@ -40,12 +40,12 @@ public class CreateOperation extends BaseUpdateOperation {
         return silent;
     }
 
-    public void setDestinationGraph(UriRef destination) {
+    public void setDestinationGraph(Iri destination) {
         destinationGraphs.clear();
         destinationGraphs.add(destination);
     }
 
-    public UriRef getDestinationGraph() {
+    public Iri getDestinationGraph() {
         if (destinationGraphs.isEmpty()) {
             return null;
         } else {

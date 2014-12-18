@@ -20,29 +20,30 @@ package org.apache.clerezza.rdf.core.impl;
 
 import java.io.Serializable;
 
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.Literal;
 
 /**
  *
  * @author reto
  */
-public class TypedLiteralImpl implements TypedLiteral, Serializable {
+public class TypedLiteralImpl implements Literal, Serializable {
     private String lexicalForm;
-    private UriRef dataType;
+    private Iri dataType;
     private int hashCode;
 
     /**
      * @param lexicalForm 
      * @param dataType 
      */
-    public TypedLiteralImpl(String lexicalForm, UriRef dataType) {
+    public TypedLiteralImpl(String lexicalForm, Iri dataType) {
         this.lexicalForm = lexicalForm;
         this.dataType = dataType;
         this.hashCode = lexicalForm.hashCode()+dataType.hashCode();
     }
     
-    public UriRef getDataType() {
+    public Iri getDataType() {
         return dataType;
     }
 
@@ -64,8 +65,11 @@ public class TypedLiteralImpl implements TypedLiteral, Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof TypedLiteral) {
-            TypedLiteral other = (TypedLiteral) obj;
+        if (obj instanceof Literal) {
+            Literal other = (Literal) obj;
+            if (other.getLanguage() != null) {
+                return false;
+            }
             boolean res = getDataType().equals(other.getDataType())
                     && getLexicalForm().equals(other.getLexicalForm());
             return res;
@@ -83,6 +87,11 @@ public class TypedLiteralImpl implements TypedLiteral, Serializable {
         result.append("^^");
         result.append(getDataType());
         return result.toString();
+    }
+
+    @Override
+    public Language getLanguage() {
+        return null;
     }
 
 }

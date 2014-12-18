@@ -21,8 +21,8 @@ package org.apache.clerezza.rdf.core.access;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 
@@ -35,10 +35,10 @@ import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 public class GraphServiceFactory implements ServiceFactory {
     
     private final TcManager tcManager;
-    private final UriRef name;
+    private final Iri name;
     private final TcAccessController tcAccessController;
 
-    GraphServiceFactory(TcManager tcManager, UriRef name,
+    GraphServiceFactory(TcManager tcManager, Iri name,
             TcAccessController tcAccessController) {
         this.tcManager = tcManager;
         this.name = name;

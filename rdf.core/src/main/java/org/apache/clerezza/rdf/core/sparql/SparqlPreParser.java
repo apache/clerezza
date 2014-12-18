@@ -22,7 +22,7 @@ import java.io.StringReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.DataSet;
@@ -66,8 +66,8 @@ public class SparqlPreParser {
      * @return 
      * @throws ParseException 
      */
-    public Set<UriRef> getReferredGraphs(String queryString, UriRef defaultGraph) throws ParseException {
-        Set<UriRef> referredGraphs;
+    public Set<Iri> getReferredGraphs(String queryString, Iri defaultGraph) throws ParseException {
+        Set<Iri> referredGraphs;
         JavaCCGeneratedSparqlPreParser parser = new JavaCCGeneratedSparqlPreParser(new StringReader(queryString));
         SparqlUnit sparqlUnit;
         sparqlUnit = parser.parse();
@@ -79,7 +79,7 @@ public class SparqlPreParser {
                 referredGraphs = dataSet.getDefaultGraphs();
                 referredGraphs.addAll(dataSet.getNamedGraphs());
             } else {
-                referredGraphs = new HashSet<UriRef>();
+                referredGraphs = new HashSet<Iri>();
             }
             GroupGraphPattern queryPattern = q.getQueryPattern();
             if (queryPattern != null) {

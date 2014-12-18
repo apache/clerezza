@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;
@@ -57,13 +57,13 @@ public class UpdateOperationWithQuads implements UpdateOperation {
     }
 
     @Override
-    public Set<UriRef> getInputGraphs(UriRef defaultGraph, TcProvider tcProvider) {
-        return new HashSet<UriRef>();
+    public Set<Iri> getInputGraphs(Iri defaultGraph, TcProvider tcProvider) {
+        return new HashSet<Iri>();
     }
 
     @Override
-    public Set<UriRef> getDestinationGraphs(UriRef defaultGraph, TcProvider tcProvider) {
-        Set<UriRef> graphs = new HashSet<UriRef>();
+    public Set<Iri> getDestinationGraphs(Iri defaultGraph, TcProvider tcProvider) {
+        Set<Iri> graphs = new HashSet<Iri>();
         if (defaultQuad != null) {
             graphs.add(defaultGraph);
         }

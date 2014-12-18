@@ -23,15 +23,15 @@ import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.debug.ReentrantReadWriteLockTracker;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphListener;
+import org.apache.commons.rdf.event.FilterTriple;
+import org.apache.commons.rdf.event.GraphListener;
 
 /**
  * Wrappes an MGraph as a LockableMGraph, this class is used by TcManager to
@@ -90,7 +90,7 @@ public class LockableMGraphWrapper implements LockableMGraph {
     }
 
     @Override
-    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
+    public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
         readLock.lock();
         try {
             return new LockingIterator(wrapped.filter(subject, predicate, object), lock);

@@ -28,10 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 
 /**
  * For now this is a minimalistic implementation, without any indexes or other
@@ -140,7 +140,7 @@ class SimpleTripleCollection extends AbstractTripleCollection {
     }
 
     @Override
-    public Iterator<Triple> performFilter(final NonLiteral subject, final UriRef predicate, final Resource object) {
+    public Iterator<Triple> performFilter(final BlankNodeOrIri subject, final Iri predicate, final RdfTerm object) {
         final List<Triple> tripleList = new ArrayList<Triple>();
         synchronized (triples) {
             Iterator<Triple> baseIter = triples.iterator();

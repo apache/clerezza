@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.OutputStream;
 
-import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.commons.rdf.TripleCollection;
 
 
 /**

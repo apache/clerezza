@@ -38,13 +38,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.Literal;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
 import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
@@ -116,14 +115,14 @@ import org.apache.clerezza.rdf.core.sparql.update.impl.UpdateOperationWithQuads;
  */
 class JavaCCGeneratedSparqlPreParser {
 
-    private static final UriRef RDF_TYPE =
-        new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-    private static final UriRef RDF_FIRST =
-        new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
-    private static final UriRef RDF_REST =
-        new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
-    private static final UriRef RDF_NIL =
-        new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
+    private static final Iri RDF_TYPE =
+        new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+    private static final Iri RDF_FIRST =
+        new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
+    private static final Iri RDF_REST =
+        new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
+    private static final Iri RDF_NIL =
+        new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
 
     /** A RegEx pattern for separating out a namespace from a prefixed name. */
     private static final Pattern pfxNamePattern = Pattern.compile("([^:]*):(.*)");
@@ -135,17 +134,17 @@ class JavaCCGeneratedSparqlPreParser {
 
     private class GraphRefAllSpec {
         GraphSpec graphSpec;
-        UriRef graph;
+        Iri graph;
         public void setGraphSpec(GraphSpec graphSpec) {
             this.graphSpec = graphSpec;
         }
         public GraphSpec getGraphSpec() {
             return this.graphSpec;
         }
-        public void setGraph(UriRef graph){
+        public void setGraph(Iri graph){
             this.graph = graph;
         }
-        public UriRef getGraph() {
+        public Iri getGraph() {
             return this.graph;
         }
     }
@@ -274,7 +273,7 @@ class JavaCCGeneratedSparqlPreParser {
     }
 
     private ResourceOrVariable getNewBNode() {
-        ResourceOrVariable bNode = new ResourceOrVariable(new BNode());
+        ResourceOrVariable bNode = new ResourceOrVariable(new BlankNode());
         bNodes.put("*" + count++, bNode);
         return bNode;
     }
@@ -282,22 +281,22 @@ class JavaCCGeneratedSparqlPreParser {
     private ResourceOrVariable getBNode(String label) {
         ResourceOrVariable bNode = bNodes.get(label);
         if (bNode == null) {
-            bNode = new ResourceOrVariable(new BNode());
+            bNode = new ResourceOrVariable(new BlankNode());
             bNodes.put(label, bNode);
         }
         return bNode;
     }
 
-    private UriRef createUriRef(String r) throws ParseException {
+    private Iri createUriRef(String r) throws ParseException {
         // Create an IRI directly if the string does not start with a prefix
         Matcher m = pfxNamePattern.matcher(r);
         if (!m.matches()) {
             // either a normal IRI, or one with a BASE
-            return isRelative(r) ? new UriRef(base + r) : new UriRef(r);
+            return isRelative(r) ? new Iri(base + r) : new Iri(r);
         }
         // extract the prefix, and attempt to convert to a URI before creating the reference
         String ns = prefixes.get(m.group(1));
-        return ns == null ? new UriRef(r) : new UriRef(ns + m.group(2));
+        return ns == null ? new Iri(r) : new Iri(ns + m.group(2));
     }
 
     /**
@@ -598,7 +597,7 @@ private void DatasetClause(Query query) : {} {
 
 /* [14]    DefaultGraphClause ::= SourceSelector */
 private void DefaultGraphClause(Query query) : {
-    UriRef defaultGraph; } {
+    Iri defaultGraph; } {
 
     defaultGraph=SourceSelector() {
     ((SimpleQuery) query).addDefaultGraph(defaultGraph); }
@@ -606,15 +605,15 @@ private void DefaultGraphClause(Query query) : {
 
 /* [15]    NamedGraphClause ::= 'NAMED' SourceSelector */
 private void NamedGraphClause(Query query) : {
-    UriRef namedGraph; } {
+    Iri namedGraph; } {
 
     <NAMED> namedGraph=SourceSelector() {
     ((SimpleQuery) query).addNamedGraph(namedGraph); }
 }
 
 /* [16]    SourceSelector ::= iri */
-private UriRef SourceSelector() : {
-    UriRef graph; } {
+private Iri SourceSelector() : {
+    Iri graph; } {
 
     graph=Iri() {
     return graph; }
@@ -782,7 +781,7 @@ private void Update1(Update update) : {
 
 /* [31]    Load ::= 'LOAD' 'SILENT'? iri ( 'INTO' GraphRef )? */
 private UpdateOperation Load() : {
-    UriRef uriRef;
+    Iri uriRef;
     LoadOperation operation; } {
     <LOAD> {
     operation = new LoadOperation(); }
@@ -835,7 +834,7 @@ private UpdateOperation Drop() : {
 
 /* [34]    Create ::= 'CREATE' 'SILENT'? GraphRef */
 private UpdateOperation Create() : {
-    UriRef uriRef;
+    Iri uriRef;
     CreateOperation operation; } {
     <CREATE> {
     operation = new CreateOperation(); }
@@ -928,7 +927,7 @@ private UpdateOperation DeleteWhere() : {
 
 /* [41]    Modify ::= ( 'WITH' iri )? ( DeleteClause InsertClause? | InsertClause ) UsingClause* 'WHERE' GroupGraphPattern */
 private UpdateOperation Modify() : {
-    UriRef fallbackGraph = null;
+    Iri fallbackGraph = null;
     UpdateOperationWithQuads deleteOperation = null;
     UpdateOperationWithQuads insertOperation = null;
     SimpleDataSet dataSet = new SimpleDataSet();
@@ -987,7 +986,7 @@ private UpdateOperationWithQuads InsertClause() : {
 
 /* [44]    UsingClause ::= 'USING' ( iri | 'NAMED' iri ) */
 private void UsingClause(SimpleDataSet dataSet) : {
-    UriRef graph; } {
+    Iri graph; } {
     <USING>
     (
         graph = Iri() {
@@ -1001,7 +1000,7 @@ private void UsingClause(SimpleDataSet dataSet) : {
 
 /* [45]    GraphOrDefault ::= 'DEFAULT_T' | 'GRAPH'? iri */
 private GraphRefAllSpec GraphOrDefault() : {
-    UriRef uriRef;
+    Iri uriRef;
     GraphRefAllSpec graphRefAllSpec = new GraphRefAllSpec(); } {
     (
         <DEFAULT_T> {
@@ -1018,8 +1017,8 @@ private GraphRefAllSpec GraphOrDefault() : {
 }
 
 /* [46]    GraphRef ::= 'GRAPH' iri */
-private UriRef GraphRef() : {
-    UriRef uriRef; } {
+private Iri GraphRef() : {
+    Iri uriRef; } {
     <GRAPH>
     uriRef = Iri() {
     return uriRef; }
@@ -1027,7 +1026,7 @@ private UriRef GraphRef() : {
 
 /* [47]    GraphRefAll ::= GraphRef | 'DEFAULT_T' | 'NAMED' | 'ALL' */
 private GraphRefAllSpec GraphRefAll() : {
-    UriRef uriRef;
+    Iri uriRef;
     GraphRefAllSpec graphRefAllSpec = new GraphRefAllSpec(); } {
     (
         uriRef = GraphRef() {
@@ -1256,14 +1255,14 @@ private InlineData DataBlock() : {
 /* [63]    InlineDataOneVar ::= Var '{' DataBlockValue* '}' */
 private void InlineDataOneVar(InlineData inlineData) : {
     Variable var;
-    Resource val; } {
+    RdfTerm val; } {
 
     var=Var() {
     ((SimpleInlineData) inlineData).addVariable(var); }
     "{"
     (
         val=DataBlockValue() {
-        List<Resource> values = new ArrayList<Resource>();
+        List<RdfTerm> values = new ArrayList<RdfTerm>();
         values.add(val);
         ((SimpleInlineData) inlineData).addValues(values); }
     )*
@@ -1273,7 +1272,7 @@ private void InlineDataOneVar(InlineData inlineData) : {
 /* [64]    InlineDataFull ::= ( NIL | '(' Var* ')' ) '{' ( '(' DataBlockValue* ')' | NIL )* '}' */
 private void InlineDataFull(InlineData inlineData) : {
     Variable var;
-    Resource val; } {
+    RdfTerm val; } {
     (
         <NIL>
     |
@@ -1289,7 +1288,7 @@ private void InlineDataFull(InlineData inlineData) : {
     (
         (
             "(" {
-            List<Resource> values = new ArrayList<Resource>(); }
+            List<RdfTerm> values = new ArrayList<RdfTerm>(); }
             (
                 val=DataBlockValue() {
                 values.add(val); }
@@ -1299,14 +1298,14 @@ private void InlineDataFull(InlineData inlineData) : {
         )
     |
         <NIL> {
-        ((SimpleInlineData) inlineData).addValues(new ArrayList<Resource>()); }
+        ((SimpleInlineData) inlineData).addValues(new ArrayList<RdfTerm>()); }
     )*
     "}"
 }
 
 /* [65]    DataBlockValue ::= iri | RDFLiteral | NumericLiteral | BooleanLiteral | 'UNDEF' */
-private Resource DataBlockValue() : {
-    Resource r = null; } {
+private RdfTerm DataBlockValue() : {
+    RdfTerm r = null; } {
     (r=Iri() | r=RDFLiteral() | r=NumericLiteral() | r=BooleanLiteral() | <UNDEF> ) {
     return r; }
 }
@@ -1360,7 +1359,7 @@ private Expression Constraint() : {
 
 /* [70]    FunctionCall ::= iri ArgList */
 private FunctionCall FunctionCall() : {
-    UriRef name;
+    Iri name;
     List<Expression> arguments; } {
 
     name=Iri()
@@ -1686,7 +1685,7 @@ private String PathMod() : {} {
 /* [94]    PathPrimary ::= iri | 'a' | '!' PathNegatedPropertySet | '(' Path ')' */
 private PropertyPathExpression PathPrimary() : {
     PropertyPathExpression ppe;
-    UriRef uriRef; } {
+    Iri uriRef; } {
 
     (
         uriRef=Iri() {
@@ -1732,7 +1731,7 @@ private PropertyPathExpression PathNegatedPropertySet() : {
 
 /* [96]    PathOneInPropertySet ::= iri | 'a' | '^' ( iri | 'a' ) */
 private PropertyPathExpression PathOneInPropertySet() : {
-    UriRef uriRef; } {
+    Iri uriRef; } {
 
     (
         uriRef=Iri() {
@@ -1867,7 +1866,7 @@ private ResourceOrVariable VarOrTerm() : {
 /* [107]    VarOrIri ::= Var | iri */
 private UriRefOrVariable VarOrIri() : {
     Variable var;
-    UriRef uriRef; } {
+    Iri uriRef; } {
 
     (
     var=Var() {
@@ -1889,7 +1888,7 @@ private Variable Var() : {
 /* [109]    GraphTerm ::= Iri | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode | NIL */
 private ResourceOrVariable GraphTerm() : {
     ResourceOrVariable bNode = null;
-    Resource r = null; } {
+    RdfTerm r = null; } {
 
     (r=Iri() | r=RDFLiteral() | r=NumericLiteral() | r=BooleanLiteral() | bNode=BlankNode() | <NIL> {
         r = RDF_NIL; }) {
@@ -1984,7 +1983,7 @@ private Expression NumericExpression() : {
 /* [116]    AdditiveExpression ::= MultiplicativeExpression ( '+' MultiplicativeExpression | '-' MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( '*' UnaryExpression ) | ( '/' UnaryExpression ) )* )* */
 private Expression AdditiveExpression() : {
     Expression e, e2, u;
-    TypedLiteral l; } {
+    Literal l; } {
 
     e=MultiplicativeExpression()
     (
@@ -2286,7 +2285,7 @@ private Expression NotExistsFunc() : {
 
 /* [128]    IriOrFunction ::= iri ArgList? */
 private Expression IriOrFunction() : {
-    UriRef uriRef;
+    Iri uriRef;
     List<Expression> args; } {
 
     uriRef=Iri()
@@ -2301,7 +2300,7 @@ private Expression IriOrFunction() : {
 private Literal RDFLiteral() : {
     Token t;
     String s;
-    UriRef type; } {
+    Iri type; } {
 
     s = String()
     (
@@ -2318,8 +2317,8 @@ private Literal RDFLiteral() : {
 }
 
 /* [130]    NumericLiteral ::= NumericLiteralUnsigned | NumericLiteralPositive | NumericLiteralNegative */
-private TypedLiteral NumericLiteral() : {
-    TypedLiteral l; } {
+private Literal NumericLiteral() : {
+    Literal l; } {
 
     (
         l=NumericLiteralUnsigned()
@@ -2332,7 +2331,7 @@ private TypedLiteral NumericLiteral() : {
 }
 
 /* [131]    NumericLiteralUnsigned ::= INTEGER |  DECIMAL |  DOUBLE */
-private TypedLiteral NumericLiteralUnsigned() : {
+private Literal NumericLiteralUnsigned() : {
     Token t; } {
 
         t=<INTEGER> {
@@ -2346,7 +2345,7 @@ private TypedLiteral NumericLiteralUnsigned() : {
 }
 
 /* [132]    NumericLiteralPositive ::= INTEGER_POSITIVE |  DECIMAL_POSITIVE |  DOUBLE_POSITIVE */
-private TypedLiteral NumericLiteralPositive() : {
+private Literal NumericLiteralPositive() : {
     Token t; } {
 
         t=<INTEGER_POSITIVE> {
@@ -2360,7 +2359,7 @@ private TypedLiteral NumericLiteralPositive() : {
 }
 
 /* [133]    NumericLiteralNegative ::= INTEGER_NEGATIVE | DECIMAL_NEGATIVE | DOUBLE_NEGATIVE */
-private TypedLiteral NumericLiteralNegative() : {
+private Literal NumericLiteralNegative() : {
     Token t; } {
 
         t=<INTEGER_NEGATIVE> {
@@ -2374,7 +2373,7 @@ private TypedLiteral NumericLiteralNegative() : {
 }
 
 /* [134]    BooleanLiteral ::= 'true' | 'false' */
-private TypedLiteral BooleanLiteral() : {} {
+private Literal BooleanLiteral() : {} {
 
         <TRUE> {
         return LiteralFactory.getInstance().createTypedLiteral(true); }
@@ -2401,8 +2400,8 @@ private String String() : {
 }
 
 /* [136]    iri ::= IRIREF |  PrefixedName */
-private UriRef Iri() : {
-    UriRef uriRef;
+private Iri Iri() : {
+    Iri uriRef;
     Token t; } {
 
         t=<IRIREF> {
@@ -2413,7 +2412,7 @@ private UriRef Iri() : {
 }
 
 /* [137]    PrefixedName ::= PNAME_LN | PNAME_NS */
-private UriRef PrefixedName() : {
+private Iri PrefixedName() : {
     Token t; } {
 
     ( t=<PNAME_LN> | t=<PNAME_NS> ) {

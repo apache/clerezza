@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.clerezza.rdf.core.Resource;
+import org.apache.commons.rdf.RdfTerm;
 import org.apache.clerezza.rdf.core.sparql.query.InlineData;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 
@@ -31,7 +31,7 @@ import org.apache.clerezza.rdf.core.sparql.query.Variable;
 public class SimpleInlineData implements InlineData {
 
     private List<Variable> variables = new ArrayList<Variable>();
-    private List<List<Resource>> values = new ArrayList<List<Resource>>();
+    private List<List<RdfTerm>> values = new ArrayList<List<RdfTerm>>();
 
     @Override
     public List<Variable> getVariables() {
@@ -39,7 +39,7 @@ public class SimpleInlineData implements InlineData {
     }
 
     @Override
-    public List<List<Resource>> getValues() {
+    public List<List<RdfTerm>> getValues() {
         return values;
     }
 
@@ -47,7 +47,7 @@ public class SimpleInlineData implements InlineData {
         variables.add(variable);
     }
 
-    public void addValues(List<Resource> values) {
+    public void addValues(List<RdfTerm> values) {
         this.values.add(values);
     }
 }

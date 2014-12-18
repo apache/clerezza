@@ -20,11 +20,11 @@ package org.apache.clerezza.rdf.core.impl;
 
 import java.util.Iterator;
 
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 
 /**
  *
@@ -72,7 +72,7 @@ public class SimpleGraph extends AbstractGraph {
     }
 
     @Override
-    public Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate, Resource object) {
+    public Iterator<Triple> performFilter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
         return tripleCollection.filter(subject, predicate, object);
     }
 }

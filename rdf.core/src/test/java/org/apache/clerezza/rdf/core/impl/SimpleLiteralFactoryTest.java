@@ -19,8 +19,8 @@
 package org.apache.clerezza.rdf.core.impl;
 
 import junit.framework.Assert;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Iri;
 import org.junit.Test;
 
 /**
@@ -29,19 +29,19 @@ import org.junit.Test;
  */
 public class SimpleLiteralFactoryTest {
 
-    final private static UriRef xsdInteger = 
-            new UriRef("http://www.w3.org/2001/XMLSchema#integer");
-    final private static UriRef xsdInt =
-            new UriRef("http://www.w3.org/2001/XMLSchema#int");
-    final private static UriRef xsdLong =
-            new UriRef("http://www.w3.org/2001/XMLSchema#long");
+    final private static Iri xsdInteger = 
+            new Iri("http://www.w3.org/2001/XMLSchema#integer");
+    final private static Iri xsdInt =
+            new Iri("http://www.w3.org/2001/XMLSchema#int");
+    final private static Iri xsdLong =
+            new Iri("http://www.w3.org/2001/XMLSchema#long");
 
     SimpleLiteralFactory simpleLiteralFactory = new SimpleLiteralFactory();
 
     @Test
     public void longToXsdIntegerAndBackToMany() {
         long value = 14l;
-        TypedLiteral tl = simpleLiteralFactory.createTypedLiteral(value);
+        Literal tl = simpleLiteralFactory.createTypedLiteral(value);
         Assert.assertEquals(xsdLong, tl.getDataType());
         long longValue = simpleLiteralFactory.createObject(Long.class, tl);
         Assert.assertEquals(value, longValue);
@@ -52,7 +52,7 @@ public class SimpleLiteralFactoryTest {
     @Test
     public void intToXsdIntAndBackToMany() {
         int value = 14;
-        TypedLiteral tl = simpleLiteralFactory.createTypedLiteral(value);
+        Literal tl = simpleLiteralFactory.createTypedLiteral(value);
         Assert.assertEquals(xsdInt, tl.getDataType());
         long longValue = simpleLiteralFactory.createObject(Long.class, tl);
         Assert.assertEquals(value, longValue);

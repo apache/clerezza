@@ -21,8 +21,8 @@ package org.apache.clerezza.rdf.core.impl;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
-import org.apache.clerezza.rdf.core.event.GraphEvent;
-import org.apache.clerezza.rdf.core.event.GraphListener;
+import org.apache.commons.rdf.event.GraphEvent;
+import org.apache.commons.rdf.event.GraphListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

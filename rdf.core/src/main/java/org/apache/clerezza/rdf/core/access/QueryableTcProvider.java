@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 
 /**
@@ -38,6 +38,6 @@ public interface QueryableTcProvider extends TcProvider {
      *            FROM clause is present
      * @return the resulting ResultSet, Graph or Boolean value
      */
-    public Object executeSparqlQuery(String query, UriRef defaultGraphUri);
+    public Object executeSparqlQuery(String query, Iri defaultGraphUri);
 
 }

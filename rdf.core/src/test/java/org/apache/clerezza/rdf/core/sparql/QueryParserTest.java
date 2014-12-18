@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
 import org.apache.clerezza.rdf.core.sparql.query.BasicGraphPattern;
@@ -75,7 +75,7 @@ public class QueryParserTest {
         Assert.assertTrue(selectQuery.getSelection().get(0)
                 .equals(new Variable(variable)));
         Assert.assertTrue(selectQuery.getDataSet().getDefaultGraphs().toArray()[0]
-                .equals(new UriRef(defaultGraph)));
+                .equals(new Iri(defaultGraph)));
 
         GraphPattern gp = (GraphPattern) selectQuery.getQueryPattern()
                 .getGraphPatterns().toArray()[0];
@@ -85,8 +85,8 @@ public class QueryParserTest {
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
         Assert.assertTrue(triplePatterns.size()==1);
 
-        ResourceOrVariable s = new ResourceOrVariable(new UriRef(subject));
-        UriRefOrVariable p = new UriRefOrVariable(new UriRef(predicate));
+        ResourceOrVariable s = new ResourceOrVariable(new Iri(subject));
+        UriRefOrVariable p = new UriRefOrVariable(new Iri(predicate));
         ResourceOrVariable o = new ResourceOrVariable(new Variable(variable));
 
         Assert.assertTrue(triplePatterns.contains(
@@ -187,8 +187,8 @@ public class QueryParserTest {
                 .getConstructTemplate();
         Assert.assertTrue(triplePatterns.size()==1);
 
-        ResourceOrVariable s = new ResourceOrVariable(new UriRef(subject1));
-        UriRefOrVariable p = new UriRefOrVariable(new UriRef(predicate1));
+        ResourceOrVariable s = new ResourceOrVariable(new Iri(subject1));
+        UriRefOrVariable p = new UriRefOrVariable(new Iri(predicate1));
         ResourceOrVariable o = new ResourceOrVariable(new Variable(variable1));
 
         Assert.assertTrue(triplePatterns.contains(
@@ -202,7 +202,7 @@ public class QueryParserTest {
         Assert.assertTrue(triplePatterns.size()==1);
 
         s = new ResourceOrVariable(new Variable(variable2));
-        p = new UriRefOrVariable(new UriRef(predicate2));
+        p = new UriRefOrVariable(new Iri(predicate2));
 
         Assert.assertTrue(triplePatterns.contains(
                 new SimpleTriplePattern(s, p, o)));
@@ -222,7 +222,7 @@ public class QueryParserTest {
         Assert.assertTrue(DescribeQuery.class.isAssignableFrom(q.getClass()));
         DescribeQuery describeQuery = (DescribeQuery) q;
         Assert.assertTrue(describeQuery.getResourcesToDescribe().get(0)
-                .getResource().equals(new UriRef(resource)));
+                .getResource().equals(new Iri(resource)));
     }
 
     @Test
@@ -250,9 +250,8 @@ public class QueryParserTest {
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
         Assert.assertTrue(triplePatterns.size()==1);
 
-        Assert.assertTrue(triplePatterns.contains(
-                new SimpleTriplePattern(new Variable(variable),
-                new UriRef(predicate), new PlainLiteralImpl(object))));
+        Assert.assertTrue(triplePatterns.contains(new SimpleTriplePattern(new Variable(variable),
+                new Iri(predicate), new PlainLiteralImpl(object))));
     }
 
     @Test
@@ -293,8 +292,8 @@ public class QueryParserTest {
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
         Assert.assertTrue(triplePatterns.size()==1);
 
-        ResourceOrVariable s = new ResourceOrVariable(new UriRef(base+subject));
-        UriRefOrVariable p = new UriRefOrVariable(new UriRef(prefixUri+predicate));
+        ResourceOrVariable s = new ResourceOrVariable(new Iri(base+subject));
+        UriRefOrVariable p = new UriRefOrVariable(new Iri(prefixUri+predicate));
         ResourceOrVariable o = new ResourceOrVariable(new Variable(variable));
 
         Assert.assertTrue(triplePatterns.contains(
@@ -368,8 +367,7 @@ public class QueryParserTest {
 
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
         Assert.assertTrue(triplePatterns.size() == 1);
-        Assert.assertTrue(triplePatterns.contains(
-                new SimpleTriplePattern(var1, new UriRef(prefix1Uri + predicate1),
+        Assert.assertTrue(triplePatterns.contains(new SimpleTriplePattern(var1, new Iri(prefix1Uri + predicate1),
                 var2)));
 
         GraphPattern gp2 = (GraphPattern) ogp.getOptionalGraphPattern()
@@ -379,8 +377,7 @@ public class QueryParserTest {
 
         triplePatterns = bgp.getTriplePatterns();
         Assert.assertTrue(triplePatterns.size() == 1);
-        Assert.assertTrue(triplePatterns.contains(
-                new SimpleTriplePattern(var1, new UriRef(prefix2Uri + predicate2),
+        Assert.assertTrue(triplePatterns.contains(new SimpleTriplePattern(var1, new Iri(prefix2Uri + predicate2),
                 var3)));
     }
 }

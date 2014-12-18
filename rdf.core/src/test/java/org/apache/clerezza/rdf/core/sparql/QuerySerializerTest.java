@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.query.BinaryOperation;
 import org.apache.clerezza.rdf.core.sparql.query.BuiltInCall;
 import org.apache.clerezza.rdf.core.sparql.query.Expression;
@@ -61,12 +61,12 @@ public class QuerySerializerTest {
         SimpleSelectQuery selectQuery = new SimpleSelectQuery();
         Variable variable = new Variable("title");
         selectQuery.addSelection(variable);
-        UriRef defaultGraph = new UriRef("http://example.org/library");
+        Iri defaultGraph = new Iri("http://example.org/library");
         selectQuery.addDefaultGraph(defaultGraph);
         ResourceOrVariable subject = new ResourceOrVariable(
-                new UriRef("http://example.org/book/book1"));
+                new Iri("http://example.org/book/book1"));
         UriRefOrVariable predicate = new UriRefOrVariable(
-                new UriRef("http://purl.org/dc/elements/1.1/title"));
+                new Iri("http://purl.org/dc/elements/1.1/title"));
         ResourceOrVariable object = new ResourceOrVariable(variable);
         TriplePattern triplePattern = new SimpleTriplePattern(subject, predicate, object);
         Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
@@ -89,16 +89,16 @@ public class QuerySerializerTest {
                 "WHERE { ?x <http://xmlns.com/foaf/0.1/name> ?name . }";
 
         ResourceOrVariable s = new ResourceOrVariable(
-                new UriRef("http://example.org/person#Alice"));
+                new Iri("http://example.org/person#Alice"));
         UriRefOrVariable p = new UriRefOrVariable(
-                new UriRef("http://www.w3.org/2001/vcard-rdf/3.0#FN"));
+                new Iri("http://www.w3.org/2001/vcard-rdf/3.0#FN"));
         ResourceOrVariable o = new ResourceOrVariable(new Variable("name"));
         Set<TriplePattern> constructTriplePatterns = new HashSet<TriplePattern>();
         constructTriplePatterns.add(new SimpleTriplePattern(s, p, o));
         SimpleConstructQuery constructQuery = new SimpleConstructQuery(constructTriplePatterns);
 
         s = new ResourceOrVariable(new Variable("x"));
-        p = new UriRefOrVariable(new UriRef("http://xmlns.com/foaf/0.1/name"));
+        p = new UriRefOrVariable(new Iri("http://xmlns.com/foaf/0.1/name"));
         Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
         triplePatterns.add(new SimpleTriplePattern(s, p, o));
 
@@ -118,7 +118,7 @@ public class QuerySerializerTest {
 
         SimpleDescribeQuery describeQuery = new SimpleDescribeQuery();
         describeQuery.addResourceToDescribe(new ResourceOrVariable(
-                new UriRef("http://example.org/book/book1")));
+                new Iri("http://example.org/book/book1")));
 
         Assert.assertTrue(describeQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
@@ -132,7 +132,7 @@ public class QuerySerializerTest {
 
         ResourceOrVariable s = new ResourceOrVariable(new Variable("x"));
         UriRefOrVariable p = new UriRefOrVariable(
-                new UriRef("http://xmlns.com/foaf/0.1/name"));
+                new Iri("http://xmlns.com/foaf/0.1/name"));
         ResourceOrVariable o = new ResourceOrVariable(
                 LiteralFactory.getInstance().createTypedLiteral("Alice"));
 
@@ -167,9 +167,9 @@ public class QuerySerializerTest {
         Variable x = new Variable("x");
         Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
         triplePatterns.add(new SimpleTriplePattern(x,
-                new UriRef("http://example.org/ns#price"), price));
+                new Iri("http://example.org/ns#price"), price));
         triplePatterns.add(new SimpleTriplePattern(x,
-                new UriRef("http://purl.org/dc/elements/1.1/title"), title));
+                new Iri("http://purl.org/dc/elements/1.1/title"), title));
 
         SimpleBasicGraphPattern bgp = new SimpleBasicGraphPattern(triplePatterns);
         SimpleGroupGraphPattern queryPattern = new SimpleGroupGraphPattern();
@@ -198,13 +198,13 @@ public class QuerySerializerTest {
         Variable myType = new Variable("myType");
         Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
         triplePatterns.add(new SimpleTriplePattern(resource,
-                new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), myType));
+                new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), myType));
 
         SimpleBasicGraphPattern bgp = new SimpleBasicGraphPattern(triplePatterns);
         SimpleGroupGraphPattern queryPattern = new SimpleGroupGraphPattern();
         queryPattern.addGraphPattern(bgp);
         BinaryOperation constraint = new BinaryOperation("=",
-                resource, new UriRefExpression(new UriRef("http://example.org/ontology#special")));
+                resource, new UriRefExpression(new Iri("http://example.org/ontology#special")));
         queryPattern.addConstraint(constraint);
         selectQuery.setQueryPattern(queryPattern);
 
@@ -255,13 +255,13 @@ public class QuerySerializerTest {
         Variable x = new Variable("x");
         Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
         triplePatterns.add(new SimpleTriplePattern(x,
-                new UriRef("http://purl.org/dc/elements/1.1/title"), title));
+                new Iri("http://purl.org/dc/elements/1.1/title"), title));
 
         SimpleBasicGraphPattern bgp = new SimpleBasicGraphPattern(triplePatterns);
 
         Set<TriplePattern> triplePatternsOpt = new HashSet<TriplePattern>();
         triplePatternsOpt.add(new SimpleTriplePattern(x,
-                new UriRef("http://example.org/ns#price"), price));
+                new Iri("http://example.org/ns#price"), price));
 
         SimpleBasicGraphPattern bgpOpt =
                 new SimpleBasicGraphPattern(triplePatternsOpt);
@@ -293,7 +293,7 @@ public class QuerySerializerTest {
         Variable x = new Variable("x");
         Set<TriplePattern> triplePatterns = new HashSet<TriplePattern>();
         triplePatterns.add(new SimpleTriplePattern(
-                new UriRef("http://localhost/testitem"), p, x));
+                new Iri("http://localhost/testitem"), p, x));
 
         SimpleBasicGraphPattern bgp = new SimpleBasicGraphPattern(triplePatterns);
         SimpleGroupGraphPattern queryPattern = new SimpleGroupGraphPattern();

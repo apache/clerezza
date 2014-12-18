@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.MGraph;
 import java.io.InputStream;
 import junit.framework.Assert;
 
@@ -72,7 +74,7 @@ public class ParserTest {
     static class ParsingProviderA implements ParsingProvider {
 
         @Override
-        public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+        public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
             providerAInvoked = true;
         }
     };
@@ -80,7 +82,7 @@ public class ParserTest {
     static class ParsingProviderB implements ParsingProvider {
 
         @Override
-        public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+        public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
             providerBInvoked = true;
         }
     };

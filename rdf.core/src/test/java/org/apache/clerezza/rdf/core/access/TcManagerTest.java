@@ -24,10 +24,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA1;
 import org.apache.clerezza.rdf.core.access.providers.WeightedAHeavy;
@@ -50,10 +50,10 @@ import static org.junit.Assert.*;
  */
 public class TcManagerTest {
 
-	public static UriRef uriRefAHeavy = new UriRef("http://example.org/aHeavy");
-	public static UriRef uriRefB = new UriRef("http://example.org/b");;
-	public static final UriRef uriRefA = new UriRef("http://example.org/a");
-	public static final UriRef uriRefA1 = new UriRef("http://example.org/a1");
+	public static Iri uriRefAHeavy = new Iri("http://example.org/aHeavy");
+	public static Iri uriRefB = new Iri("http://example.org/b");;
+	public static final Iri uriRefA = new Iri("http://example.org/a");
+	public static final Iri uriRefA1 = new Iri("http://example.org/a1");
 	private TcManager graphAccess;
 	private QueryEngine queryEngine;
 	private final WeightedA weightedA = new WeightedA();

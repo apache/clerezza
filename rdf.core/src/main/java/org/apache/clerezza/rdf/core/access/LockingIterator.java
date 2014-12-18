@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.core.access;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.clerezza.rdf.core.Triple;
+import org.apache.commons.rdf.Triple;
 
 /**
  * Wrapps an iterator<Triple> reading entering a read-lock on every invocation

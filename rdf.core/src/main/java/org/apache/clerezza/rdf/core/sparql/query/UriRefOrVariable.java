@@ -18,10 +18,10 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 /**
- * Wraps either a {@link UriRef} or a {@link Variable}.
+ * Wraps either a {@link Iri} or a {@link Variable}.
  *
  * @author rbn
  */
@@ -31,13 +31,13 @@ public class UriRefOrVariable extends ResourceOrVariable {
         super(variable);
     }
 
-    public UriRefOrVariable(UriRef resource) {
+    public UriRefOrVariable(Iri resource) {
         super(resource);
     }
 
     @Override
-    public UriRef getResource() {
-        return (UriRef)super.getResource();
+    public Iri getResource() {
+        return (Iri)super.getResource();
     }
 
 }

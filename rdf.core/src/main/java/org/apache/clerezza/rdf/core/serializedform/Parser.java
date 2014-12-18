@@ -32,9 +32,9 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
@@ -206,7 +206,7 @@ public class Parser {
      * @throws UnsupportedFormatException
      */
     public Graph parse(InputStream serializedGraph,
-            String formatIdentifier, UriRef baseUri) throws UnsupportedFormatException {
+            String formatIdentifier, Iri baseUri) throws UnsupportedFormatException {
         MGraph mGraph = new SimpleMGraph();
         parse(mGraph, serializedGraph, formatIdentifier, baseUri);
         return mGraph.getGraph();
@@ -225,7 +225,7 @@ public class Parser {
      * @throws UnsupportedFormatException
      */
     public void parse(MGraph target, InputStream serializedGraph,
-            String formatIdentifier, UriRef baseUri) throws UnsupportedFormatException {
+            String formatIdentifier, Iri baseUri) throws UnsupportedFormatException {
         String deParameterizedIdentifier;
         int semicolonPos = formatIdentifier.indexOf(';');
         if (semicolonPos > -1) {

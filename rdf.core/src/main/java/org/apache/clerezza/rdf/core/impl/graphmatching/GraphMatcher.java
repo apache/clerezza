@@ -25,12 +25,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class GraphMatcher {
      * @param g2
      * @return a Set of NodePairs
      */
-    public static Map<BNode, BNode> getValidMapping(TripleCollection og1, TripleCollection og2) {
+    public static Map<BlankNode, BlankNode> getValidMapping(TripleCollection og1, TripleCollection og2) {
         MGraph g1 = new SimpleMGraph(og1);
         MGraph g2 = new SimpleMGraph(og2);
         if (!Utils.removeGrounded(g1,g2)) {
@@ -84,13 +84,13 @@ public class GraphMatcher {
         } catch (GraphNotIsomorphicException ex) {
             return null;
         }
-        Map<BNode, BNode> matchings = hashMatching.getMatchings();
+        Map<BlankNode, BlankNode> matchings = hashMatching.getMatchings();
         if (g1.size() > 0) {
             //start trial an error matching
             //TODO (CLEREZZA-81) at least in the situation where one matching
             //group is big (approx > 5) we should switch back to hash-based matching
             //after a first guessed matching, rather than try all permutations
-            Map<BNode, BNode> remainingMappings = trialAndErrorMatching(g1, g2, hashMatching.getMatchingGroups());
+            Map<BlankNode, BlankNode> remainingMappings = trialAndErrorMatching(g1, g2, hashMatching.getMatchingGroups());
             if (remainingMappings == null) {
                 return null;
             } else {
@@ -100,17 +100,17 @@ public class GraphMatcher {
         return matchings;
     }
 
-    private static Map<BNode, BNode> trialAndErrorMatching(MGraph g1, MGraph g2,
-            Map<Set<BNode>, Set<BNode>> matchingGroups) {
+    private static Map<BlankNode, BlankNode> trialAndErrorMatching(MGraph g1, MGraph g2,
+            Map<Set<BlankNode>, Set<BlankNode>> matchingGroups) {
         if (log.isDebugEnabled()) {
-            Set<BNode> bn1  = Utils.getBNodes(g1);
+            Set<BlankNode> bn1  = Utils.getBNodes(g1);
             log.debug("doing trial and error matching for {} bnodes, " +
                     "in graphs of size: {}.", bn1.size(), g1.size());
         }
-        Iterator<Map<BNode, BNode>> mappingIter
+        Iterator<Map<BlankNode, BlankNode>> mappingIter
                 = GroupMappingIterator.create(matchingGroups);
         while (mappingIter.hasNext()) {
-            Map<BNode, BNode> map = mappingIter.next();
+            Map<BlankNode, BlankNode> map = mappingIter.next();
             if (checkMapping(g1, g2, map)) {
                 return map;
             }
@@ -118,7 +118,7 @@ public class GraphMatcher {
         return null;
     }
 
-    private static boolean checkMapping(MGraph g1, MGraph g2, Map<BNode, BNode> map) {
+    private static boolean checkMapping(MGraph g1, MGraph g2, Map<BlankNode, BlankNode> map) {
         for (Triple triple : g1) {
             if (!g2.contains(map(triple, map))) {
                 return false;
@@ -127,15 +127,15 @@ public class GraphMatcher {
         return true;
     }
 
-    private static Triple map(Triple triple, Map<BNode, BNode> map) {
-        final NonLiteral oSubject = triple.getSubject();
+    private static Triple map(Triple triple, Map<BlankNode, BlankNode> map) {
+        final BlankNodeOrIri oSubject = triple.getSubject();
 
-        NonLiteral subject = oSubject instanceof BNode ?
-            map.get((BNode)oSubject) : oSubject;
+        BlankNodeOrIri subject = oSubject instanceof BlankNode ?
+            map.get((BlankNode)oSubject) : oSubject;
 
-        Resource oObject = triple.getObject();
-        Resource object = oObject instanceof BNode ?
-            map.get((BNode)oObject) : oObject;
+        RdfTerm oObject = triple.getObject();
+        RdfTerm object = oObject instanceof BlankNode ?
+            map.get((BlankNode)oObject) : oObject;
         return new TripleImpl(subject, triple.getPredicate(), object);
     }
 

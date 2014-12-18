@@ -30,10 +30,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.QueryEngine;
 
 /**
@@ -52,7 +52,7 @@ public class TcProviderMultiplexer implements TcProvider {
      * otherwise the locks in the <code>LockableMGraph</code>s would have no effect
      * between different instances and concurrency issues could occur.
      */
-    private Map<UriRef, MGraphHolder> mGraphCache = Collections.synchronizedMap(new HashMap<UriRef, MGraphHolder>());
+    private Map<Iri, MGraphHolder> mGraphCache = Collections.synchronizedMap(new HashMap<Iri, MGraphHolder>());
 
 	/**
 	 * Flag to indicate whether mgraphs should be cached for faster access. By
@@ -91,7 +91,7 @@ public class TcProviderMultiplexer implements TcProvider {
      *
      * @param name
      */
-    protected void graphAppears(UriRef name) {
+    protected void graphAppears(Iri name) {
     }
 
     /**
@@ -102,7 +102,7 @@ public class TcProviderMultiplexer implements TcProvider {
      *
      * @param name
      */
-    protected void mGraphAppears(UriRef name) {
+    protected void mGraphAppears(Iri name) {
     }
 
     /**
@@ -115,7 +115,7 @@ public class TcProviderMultiplexer implements TcProvider {
      *
      * @param name
      */
-    protected void tcDisappears(UriRef name) {
+    protected void tcDisappears(Iri name) {
     }
 
     /**
@@ -135,7 +135,7 @@ public class TcProviderMultiplexer implements TcProvider {
      */
     private void updateLockableMGraphCache(WeightedTcProvider provider,
             boolean providerAdded) {
-        Set<UriRef> uriSet = provider.listTripleCollections();
+        Set<Iri> uriSet = provider.listTripleCollections();
         if (!(uriSet == null || uriSet.isEmpty())) {
             if (providerAdded) {
                 weightedProviderAdded(provider, uriSet);
@@ -146,10 +146,10 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     private void weightedProviderAdded(WeightedTcProvider newProvider,
-            Set<UriRef> newProvidedUris) {
+            Set<Iri> newProvidedUris) {
         Set<WeightedTcProvider> lowerWeightedProviderList = getLowerWeightedProvider(newProvider);
     	if (isCachingEnabled()) {
-	        for (UriRef name : newProvidedUris) {
+	        for (Iri name : newProvidedUris) {
 	            final MGraphHolder holder = mGraphCache.get(name);
 	            if ((holder != null) && (holder.getWeightedTcProvider() != null)) {
 	                if (lowerWeightedProviderList.contains(holder.getWeightedTcProvider())) {
@@ -187,8 +187,8 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     private void weightedProviderRemoved(WeightedTcProvider oldProvider,
-            Set<UriRef> oldProvidedUris) {
-        for (UriRef name : oldProvidedUris) {
+            Set<Iri> oldProvidedUris) {
+        for (Iri name : oldProvidedUris) {
             final MGraphHolder holder = mGraphCache.get(name);
             if ((holder != null) && (holder.getWeightedTcProvider() != null)
                     && holder.getWeightedTcProvider().equals(oldProvider)) {
@@ -218,7 +218,7 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+    public Graph getGraph(Iri name) throws NoSuchEntityException {
         for (TcProvider provider : providerList) {
             try {
                 return provider.getGraph(name);
@@ -232,7 +232,7 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public LockableMGraph getMGraph(UriRef name)
+    public LockableMGraph getMGraph(Iri name)
             throws NoSuchEntityException {
         LockableMGraph result = getMGraphFromCache(name);
         if (result == null) {
@@ -246,7 +246,7 @@ public class TcProviderMultiplexer implements TcProvider {
         return result;
     }
 
-    private LockableMGraph getMGraphFromCache(UriRef name) {
+    private LockableMGraph getMGraphFromCache(Iri name) {
         MGraphHolder holder = mGraphCache.get(name);
         if (holder == null) {
             return null;
@@ -254,7 +254,7 @@ public class TcProviderMultiplexer implements TcProvider {
         return holder.getMGraph();
     }
 
-    private LockableMGraph getUnsecuredMGraphAndAddToCache(UriRef name)
+    private LockableMGraph getUnsecuredMGraphAndAddToCache(Iri name)
             throws NoSuchEntityException {
         for (WeightedTcProvider provider : providerList) {
             try {
@@ -276,7 +276,7 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public TripleCollection getTriples(UriRef name)
+    public TripleCollection getTriples(Iri name)
             throws NoSuchEntityException {
         TripleCollection result;
         for (WeightedTcProvider provider : providerList) {
@@ -298,7 +298,7 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public LockableMGraph createMGraph(UriRef name)
+    public LockableMGraph createMGraph(Iri name)
             throws UnsupportedOperationException {
 
         for (WeightedTcProvider provider : providerList) {
@@ -330,7 +330,7 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Graph createGraph(UriRef name, TripleCollection triples) {
+    public Graph createGraph(Iri name, TripleCollection triples) {
         for (WeightedTcProvider provider : providerList) {
             try {
                 Graph result = provider.createGraph(name, triples);
@@ -354,7 +354,7 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public void deleteTripleCollection(UriRef name) {
+    public void deleteTripleCollection(Iri name) {
         for (TcProvider provider : providerList) {
             try {
                 provider.deleteTripleCollection(name);
@@ -382,8 +382,8 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Set<UriRef> getNames(Graph graph) {
-        Set<UriRef> result = new HashSet<UriRef>();
+    public Set<Iri> getNames(Graph graph) {
+        Set<Iri> result = new HashSet<Iri>();
         for (TcProvider provider : providerList) {
             result.addAll(provider.getNames(graph));
         }
@@ -391,8 +391,8 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Set<UriRef> listGraphs() {
-        Set<UriRef> result = new HashSet<UriRef>();
+    public Set<Iri> listGraphs() {
+        Set<Iri> result = new HashSet<Iri>();
         for (TcProvider provider : providerList) {
             result.addAll(provider.listGraphs());
         }
@@ -400,8 +400,8 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Set<UriRef> listMGraphs() {
-        Set<UriRef> result = new HashSet<UriRef>();
+    public Set<Iri> listMGraphs() {
+        Set<Iri> result = new HashSet<Iri>();
         for (TcProvider provider : providerList) {
             result.addAll(provider.listMGraphs());
         }
@@ -409,8 +409,8 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Set<UriRef> listTripleCollections() {
-        Set<UriRef> result = new HashSet<UriRef>();
+    public Set<Iri> listTripleCollections() {
+        Set<Iri> result = new HashSet<Iri>();
         for (TcProvider provider : providerList) {
             result.addAll(provider.listTripleCollections());
         }

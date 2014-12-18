@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.impl;
 
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.clerezza.rdf.core.Graph;
+import org.apache.commons.rdf.Graph;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 
 

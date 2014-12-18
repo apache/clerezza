@@ -20,10 +20,10 @@ package org.apache.clerezza.rdf.core.access;
 
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 
 /**
  * A TC (TripleCollection) Provider allows access to and optionally 
@@ -41,7 +41,7 @@ public interface TcProvider {
      * @throws NoSuchEntityException if there is no <code>Graph</code>
      *         with the specified name
      */
-    Graph getGraph(UriRef name) throws NoSuchEntityException;
+    Graph getGraph(Iri name) throws NoSuchEntityException;
 
     /**
      * Get an <code>MGraph</code> by its name. The instances
@@ -52,7 +52,7 @@ public interface TcProvider {
      * @throws NoSuchEntityException if there is no <code>MGraph</code>
      *         with the specified name
      */
-    MGraph getMGraph(UriRef name) throws NoSuchEntityException;
+    MGraph getMGraph(Iri name) throws NoSuchEntityException;
     
     /**
      * This method is used to get a <code>TripleCollection</code> indifferently
@@ -67,7 +67,7 @@ public interface TcProvider {
      * @throws NoSuchEntityException if there is no <code>Graph</code>
      *         or <code>MGraph</code> with the specified name
      */
-    TripleCollection getTriples(UriRef name) throws NoSuchEntityException;
+    TripleCollection getTriples(Iri name) throws NoSuchEntityException;
 
     /**
      * Lists the name of the <Code>Graph</code>s available through this
@@ -77,7 +77,7 @@ public interface TcProvider {
      *
      * @return the list of <Code>Graph</code>s
      */
-    Set<UriRef> listGraphs();
+    Set<Iri> listGraphs();
 
     /**
      * Lists the name of the <Code>MGraph</code>s available through this
@@ -87,7 +87,7 @@ public interface TcProvider {
      *
      * @return the list of <Code>MGraph</code>s
      */
-    Set<UriRef> listMGraphs();
+    Set<Iri> listMGraphs();
 
     /**
      * Lists the name of the <Code>TripleCollection</code>s available through this
@@ -97,7 +97,7 @@ public interface TcProvider {
      *
      * @return the list of <Code>TripleCollection</code>s
      */
-    Set<UriRef> listTripleCollections();
+    Set<Iri> listTripleCollections();
 
     /**
      * Creates an initially empty <code>MGraph</code> with a specified name
@@ -109,7 +109,7 @@ public interface TcProvider {
      * @throws EntityAlreadyExistsException if an MGraph with the specified name
      *         already exists
      */
-    MGraph createMGraph(UriRef name) throws UnsupportedOperationException, 
+    MGraph createMGraph(Iri name) throws UnsupportedOperationException, 
             EntityAlreadyExistsException;
 
     /**
@@ -123,7 +123,7 @@ public interface TcProvider {
      * @throws EntityAlreadyExistsException if a Graph with the specified name
      *         already exists
      */
-    Graph createGraph(UriRef name, TripleCollection triples) 
+    Graph createGraph(Iri name, TripleCollection triples) 
             throws UnsupportedOperationException, EntityAlreadyExistsException;
     
     /**
@@ -138,7 +138,7 @@ public interface TcProvider {
      *           <code>Graph</code> or an <code>MGraph</code>.
      * @throws EntityUndeletableException if the specified Graph is undeletable
      */
-    void deleteTripleCollection(UriRef name) throws UnsupportedOperationException,
+    void deleteTripleCollection(Iri name) throws UnsupportedOperationException,
             NoSuchEntityException, EntityUndeletableException;
 
     /**
@@ -148,5 +148,5 @@ public interface TcProvider {
      * @return the set names of <code>Graph</code>, the set is empty if
      *         <code>Graph</code> is unknown
      */
-    Set<UriRef> getNames(Graph graph);
+    Set<Iri> getNames(Graph graph);
 }

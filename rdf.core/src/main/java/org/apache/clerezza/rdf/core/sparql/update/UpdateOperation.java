@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.update;
 
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 
 /**
@@ -41,7 +41,7 @@ public interface UpdateOperation {
      *      the specified tcProvider is used to get the named graphs referred as input graphs in this operation.
      * @return a set of graphs referred as input graphs in this operation.
      */
-    public Set<UriRef> getInputGraphs(UriRef defaultGraph, TcProvider tcProvider);
+    public Set<Iri> getInputGraphs(Iri defaultGraph, TcProvider tcProvider);
 
     /**
      * 
@@ -52,5 +52,5 @@ public interface UpdateOperation {
      *      the specified tcProvider is used to get the named graphs referred as destination graphs in this operation.
      * @return a set of graphs referred as destination graphs in this operation.
      */
-    public Set<UriRef> getDestinationGraphs(UriRef defaultGraph, TcProvider tcProvider);
+    public Set<Iri> getDestinationGraphs(Iri defaultGraph, TcProvider tcProvider);
 }

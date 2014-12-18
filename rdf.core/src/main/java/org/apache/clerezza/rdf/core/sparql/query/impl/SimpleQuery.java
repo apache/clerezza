@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.query.DataSet;
 import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.InlineData;
@@ -49,14 +49,14 @@ public abstract class SimpleQuery implements Query {
         return inlineData;
     }
 
-    public void addDefaultGraph(UriRef defaultGraph) {
+    public void addDefaultGraph(Iri defaultGraph) {
         if (dataSet == null) {
             dataSet = new SimpleDataSet();
         }
         dataSet.addDefaultGraph(defaultGraph);
     }
 
-    public void addNamedGraph(UriRef namedGraph) {
+    public void addNamedGraph(Iri namedGraph) {
         if (dataSet == null) {
             dataSet = new SimpleDataSet();
         }

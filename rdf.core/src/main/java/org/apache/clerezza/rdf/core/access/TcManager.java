@@ -32,10 +32,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
@@ -123,8 +123,8 @@ public class TcManager extends TcProviderMultiplexer {
         }
             
     };
-    private Map<UriRef, ServiceRegistration> serviceRegistrations = Collections
-            .synchronizedMap(new HashMap<UriRef, ServiceRegistration>());
+    private Map<Iri, ServiceRegistration> serviceRegistrations = Collections
+            .synchronizedMap(new HashMap<Iri, ServiceRegistration>());
     
     protected QueryEngine queryEngine;
     private boolean isActivated = false;
@@ -211,13 +211,13 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+    public Graph getGraph(Iri name) throws NoSuchEntityException {
         tcAccessController.checkReadPermission(name);
         return super.getGraph(name);
     }
 
     @Override
-    public LockableMGraph getMGraph(UriRef name) {
+    public LockableMGraph getMGraph(Iri name) {
         try {
             tcAccessController.checkReadWritePermission(name);
         } catch (AccessControlException e) {
@@ -228,7 +228,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public TripleCollection getTriples(UriRef name) {
+    public TripleCollection getTriples(Iri name) {
         try {
             tcAccessController.checkReadWritePermission(name);
         } catch (AccessControlException e) {
@@ -240,54 +240,54 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public LockableMGraph createMGraph(UriRef name)
+    public LockableMGraph createMGraph(Iri name)
             throws UnsupportedOperationException {
         tcAccessController.checkReadWritePermission(name);
         return super.createMGraph(name);
     }
 
     @Override
-    public Graph createGraph(UriRef name, TripleCollection triples) {
+    public Graph createGraph(Iri name, TripleCollection triples) {
         tcAccessController.checkReadWritePermission(name);
         return super.createGraph(name, triples);
     }
 
     @Override
-    public void deleteTripleCollection(UriRef name) {
+    public void deleteTripleCollection(Iri name) {
         tcAccessController.checkReadWritePermission(name);
         super.deleteTripleCollection(name);
     }
 
     @Override
-    public Set<UriRef> getNames(Graph graph) {
+    public Set<Iri> getNames(Graph graph) {
         return super.getNames(graph);
     }
 
     @Override
-    public Set<UriRef> listGraphs() {
-        Set<UriRef> result = super.listGraphs();
+    public Set<Iri> listGraphs() {
+        Set<Iri> result = super.listGraphs();
         return excludeNonReadable(result);
     }
 
     @Override
-    public Set<UriRef> listMGraphs() {
-        Set<UriRef> result = super.listMGraphs();
+    public Set<Iri> listMGraphs() {
+        Set<Iri> result = super.listMGraphs();
         return excludeNonReadable(result);
     }
 
     @Override
-    public Set<UriRef> listTripleCollections() {
-        Set<UriRef> result = super.listTripleCollections();
+    public Set<Iri> listTripleCollections() {
+        Set<Iri> result = super.listTripleCollections();
         return excludeNonReadable(result);
     }
 
-    private Set<UriRef> excludeNonReadable(Set<UriRef> tcNames) {
+    private Set<Iri> excludeNonReadable(Set<Iri> tcNames) {
         SecurityManager security = System.getSecurityManager();
         if (security == null) {
             return tcNames;
         }
-        Set<UriRef> result = new HashSet<UriRef>();
-        for (UriRef name : tcNames) {
+        Set<Iri> result = new HashSet<Iri>();
+        for (Iri name : tcNames) {
             try {
                 tcAccessController.checkReadPermission(name);
             } catch (AccessControlException e) {
@@ -311,9 +311,9 @@ public class TcManager extends TcProviderMultiplexer {
     public Object executeSparqlQuery(String query, TripleCollection defaultGraph) throws ParseException {
         TcProvider singleTargetTcProvider = null;
 
-        final UriRef defaultGraphName = new UriRef("urn:x-temp:/kjsfadfhfasdffds");
+        final Iri defaultGraphName = new Iri("urn:x-temp:/kjsfadfhfasdffds");
         final SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
-        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+        final Set<Iri> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
         if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
             singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
         }
@@ -342,9 +342,9 @@ public class TcManager extends TcProviderMultiplexer {
     	if (forceFastlane) {
             singleTargetTcProvider = getSingleTargetTcProvider(Collections.EMPTY_SET);
     	} else {    	
-	        final UriRef defaultGraphName = new UriRef("urn:x-temp:/kjsfadfhfasdffds");
+	        final Iri defaultGraphName = new Iri("urn:x-temp:/kjsfadfhfasdffds");
 	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
-	        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+	        final Set<Iri> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
 	        if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
 	            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
 	        }
@@ -370,7 +370,7 @@ public class TcManager extends TcProviderMultiplexer {
      * @param defaultGraphName the graph to be used as default graph in the Sparql Graph Store
      * @return the resulting ResultSet, Graph or Boolean value
      */
-    public Object executeSparqlQuery(String query, UriRef defaultGraphName) throws ParseException {
+    public Object executeSparqlQuery(String query, Iri defaultGraphName) throws ParseException {
       return executeSparqlQuery(query, defaultGraphName, false);
     }
 
@@ -384,13 +384,13 @@ public class TcManager extends TcProviderMultiplexer {
      * @param forceFastlane indicate whether to force fastlane usage.
      * @return the resulting ResultSet, Graph or Boolean value
      */
-    public Object executeSparqlQuery(String query, UriRef defaultGraphName, boolean forceFastlane) throws ParseException {
+    public Object executeSparqlQuery(String query, Iri defaultGraphName, boolean forceFastlane) throws ParseException {
         TcProvider singleTargetTcProvider = null;
     	if (forceFastlane) {
             singleTargetTcProvider = getSingleTargetTcProvider(Collections.singleton(defaultGraphName));
     	} else {    	
 	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
-	        final Set<UriRef> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+	        final Set<Iri> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
 	        if ((referencedGraphs != null)) {
 	            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
 	        }
@@ -557,7 +557,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    protected void mGraphAppears(UriRef name) {
+    protected void mGraphAppears(Iri name) {
     	if (isTcServicesEnabled()) {
     		// Only create the service when activated. When not activated
     		// creating will be delayed till after activation.
@@ -568,7 +568,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    protected void graphAppears(UriRef name) {
+    protected void graphAppears(Iri name) {
     	if (isTcServicesEnabled()) {
     		// Only create the service when activated. When not activated
     		// creating will be delayed till after activation.
@@ -578,7 +578,7 @@ public class TcManager extends TcProviderMultiplexer {
     	}
     }
 
-    private void registerTripleCollectionAsService(UriRef name, boolean isMGraph) {
+    private void registerTripleCollectionAsService(Iri name, boolean isMGraph) {
         Dictionary<String,Object> props = new Hashtable<String, Object>();
         props.put("name", name.getUnicodeString());
         String[] interfaceNames;
@@ -602,7 +602,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    protected void tcDisappears(UriRef name) {
+    protected void tcDisappears(Iri name) {
         ServiceRegistration reg = serviceRegistrations.get(name);
         if (reg != null) {
             reg.unregister();
@@ -610,15 +610,15 @@ public class TcManager extends TcProviderMultiplexer {
         }
     }
 
-    private TcProvider getSingleTargetTcProvider(final Set<UriRef> referencedGraphs) {
+    private TcProvider getSingleTargetTcProvider(final Set<Iri> referencedGraphs) {
         TcProvider singleTargetTcProvider = null;
         for (WeightedTcProvider provider : providerList) {
-            final Set<UriRef> providerTripleCollections = provider.listTripleCollections();
+            final Set<Iri> providerTripleCollections = provider.listTripleCollections();
             if (providerTripleCollections.containsAll(referencedGraphs)) {
                singleTargetTcProvider = provider;
                break; //success
             }
-            for (UriRef graphName : referencedGraphs) {
+            for (Iri graphName : referencedGraphs) {
                 if (providerTripleCollections.contains(graphName)) {
                     break; //failure
                 }

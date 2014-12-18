@@ -19,10 +19,10 @@
 
 package org.apache.clerezza.rdf.core.impl.graphmatching;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 
@@ -32,20 +32,20 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
  */
 public class Utils4Testing {
 
-    static MGraph generateLine(int size, final NonLiteral firstNode) {
+    static MGraph generateLine(int size, final BlankNodeOrIri firstNode) {
         if (size < 1) {
             throw new IllegalArgumentException();
         }
         MGraph result = new SimpleMGraph();
-        NonLiteral lastNode = firstNode;
+        BlankNodeOrIri lastNode = firstNode;
         for (int i = 0; i < size; i++) {
-            final BNode newNode = new BNode();
+            final BlankNode newNode = new BlankNode();
             result.add(new TripleImpl(lastNode, u1, newNode));
             lastNode = newNode;
         }
         return result;
     }
 
-    final static UriRef u1 = new UriRef("http://example.org/u1");
+    final static Iri u1 = new Iri("http://example.org/u1");
 
 }

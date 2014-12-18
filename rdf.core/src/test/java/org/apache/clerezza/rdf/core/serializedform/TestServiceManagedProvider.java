@@ -19,10 +19,10 @@
 package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.InputStream;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.commons.rdf.MGraph;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 /**
  * This class is listed in
@@ -36,7 +36,7 @@ public class TestServiceManagedProvider implements ParsingProvider {
     private static boolean parseInvoked;
 
     @Override
-    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
         parseInvoked = true;
     }
     

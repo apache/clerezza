@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphEvent;
-import org.apache.clerezza.rdf.core.event.GraphListener;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.event.FilterTriple;
+import org.apache.commons.rdf.event.GraphEvent;
+import org.apache.commons.rdf.event.GraphListener;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 
@@ -93,7 +93,7 @@ public class NotificationTest {
                 generateRandomUriRef());
     }
 
-    private static UriRef generateRandomUriRef() {
-        return new UriRef("http://example.org/"+Math.random());
+    private static Iri generateRandomUriRef() {
+        return new Iri("http://example.org/"+Math.random());
     }
 }

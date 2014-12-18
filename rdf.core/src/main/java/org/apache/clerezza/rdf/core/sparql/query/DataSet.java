@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 /**
  * This interface definition is not yet stable and may change in future.
@@ -34,7 +34,7 @@ public interface DataSet {
      *        an empty set if no default graph is specified,
      *        otherwise a set of their UriRefs
      */
-    public Set<UriRef> getDefaultGraphs();
+    public Set<Iri> getDefaultGraphs();
 
     /**
      *
@@ -42,5 +42,5 @@ public interface DataSet {
      *        an empty set if no named graph is specified,
      *        otherwise a set of their UriRefs
      */
-    public Set<UriRef> getNamedGraphs();
+    public Set<Iri> getNamedGraphs();
 }

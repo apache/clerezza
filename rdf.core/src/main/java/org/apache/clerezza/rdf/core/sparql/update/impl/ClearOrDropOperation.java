@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
@@ -43,14 +43,14 @@ public class ClearOrDropOperation extends BaseUpdateOperation {
         return silent;
     }
 
-    public void setDestinationGraph(UriRef destination) {
+    public void setDestinationGraph(Iri destination) {
         destinationGraphSpec = UpdateOperation.GraphSpec.GRAPH;
         destinationGraphs.clear();
         destinationGraphs.add(destination);
     }
 
-    public UriRef getDestinationGraph(UriRef defaultGraph, TcProvider tcProvider) {
-        Set<UriRef> result = getDestinationGraphs(defaultGraph, tcProvider);
+    public Iri getDestinationGraph(Iri defaultGraph, TcProvider tcProvider) {
+        Set<Iri> result = getDestinationGraphs(defaultGraph, tcProvider);
         if (result.isEmpty()) {
             return null;
         } else {

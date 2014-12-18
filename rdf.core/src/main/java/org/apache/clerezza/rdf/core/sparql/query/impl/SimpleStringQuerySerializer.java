@@ -20,9 +20,9 @@ package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.List;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.StringQuerySerializer;
 import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
@@ -92,10 +92,10 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
     private void appendDataSet(StringBuffer s, SimpleQuery q) {
         DataSet dataSet = q.getDataSet();
         if (dataSet != null) {
-            for (UriRef dg : dataSet.getDefaultGraphs()) {
+            for (Iri dg : dataSet.getDefaultGraphs()) {
                 s.append("FROM ").append(dg.toString()).append("\n");
             }
-            for (UriRef ng : dataSet.getNamedGraphs()) {
+            for (Iri ng : dataSet.getNamedGraphs()) {
                 s.append("FROM NAMED ").append(ng.toString()).append("\n");
             }
         }
@@ -186,8 +186,8 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
         if (n.isVariable()) {
             appendVariable(s, n.getVariable());
         } else {
-            Resource r = n.getResource();
-            if (r instanceof BNode) {
+            RdfTerm r = n.getResource();
+            if (r instanceof BlankNode) {
                 s.append("_:").append(r.toString().replace("@", "."));
             } else {
                 s.append(r.toString());

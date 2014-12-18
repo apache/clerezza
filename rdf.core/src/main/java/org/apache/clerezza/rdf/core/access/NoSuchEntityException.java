@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 /**
  * is thrown on an attempt to perform an operation on an entity (i.e. a
@@ -27,7 +27,7 @@ import org.apache.clerezza.rdf.core.UriRef;
  * @author reto
  */
 public class NoSuchEntityException extends RuntimeException {
-    private UriRef entityName;
+    private Iri entityName;
 
     /**
      * creates an exception indicating that the entity with the specified name
@@ -35,7 +35,7 @@ public class NoSuchEntityException extends RuntimeException {
      * 
      * @param entityName the name for which no entity exists
      */
-    public NoSuchEntityException(UriRef entityName) {
+    public NoSuchEntityException(Iri entityName) {
         super("No such entity: "+entityName);
         this.entityName = entityName;
     }
@@ -45,7 +45,7 @@ public class NoSuchEntityException extends RuntimeException {
      * 
      * @return the name of the entity that doesn't exist
      */
-    public UriRef getEntityName() {
+    public Iri getEntityName() {
         return entityName;
     }
 }

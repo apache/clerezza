@@ -22,13 +22,13 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphListener;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.event.FilterTriple;
+import org.apache.commons.rdf.event.GraphListener;
 
 /**
  * Calls the methods of the wrapped <code>TripleCollection</code> as privileged
@@ -46,8 +46,8 @@ public class PrivilegedTripleCollectionWrapper implements TripleCollection {
     }
 
     @Override
-    public Iterator<Triple> filter(final NonLiteral subject, final UriRef predicate,
-            final Resource object) {
+    public Iterator<Triple> filter(final BlankNodeOrIri subject, final Iri predicate,
+            final RdfTerm object) {
         return AccessController.doPrivileged(new PrivilegedAction<Iterator<Triple>>() {
 
             @Override

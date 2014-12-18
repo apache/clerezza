@@ -21,10 +21,10 @@ package org.apache.clerezza.rdf.core.impl;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
 import org.apache.clerezza.rdf.core.impl.graphmatching.GraphMatcher;
 
 /**
@@ -51,13 +51,13 @@ public abstract class AbstractGraph extends AbstractTripleCollection
      */
     private int getBlankNodeBlindHash(Triple triple) {
         int hash = triple.getPredicate().hashCode();
-        Resource subject = triple.getSubject();
+        RdfTerm subject = triple.getSubject();
 
-        if (!(subject instanceof BNode)) {
+        if (!(subject instanceof BlankNode)) {
             hash ^= subject.hashCode() >> 1;
         }
-        Resource object = triple.getObject();
-        if (!(object instanceof BNode)) {
+        RdfTerm object = triple.getObject();
+        if (!(object instanceof BlankNode)) {
             hash ^= object.hashCode() << 1;
         }
 

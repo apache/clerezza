@@ -18,22 +18,22 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 /**
- * Wraps a {@link UriRef} in an {@link Expression}.
+ * Wraps a {@link Iri} in an {@link Expression}.
  *
  * @author hasan
  */
 public class UriRefExpression implements Expression {
 
-    private final UriRef uriRef;
+    private final Iri uriRef;
 
-    public UriRefExpression(UriRef uriRef) {
+    public UriRefExpression(Iri uriRef) {
         this.uriRef = uriRef;
     }
 
-    public UriRef getUriRef() {
+    public Iri getUriRef() {
         return uriRef;
     }
 }

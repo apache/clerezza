@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
-import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.commons.rdf.TripleCollection;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 

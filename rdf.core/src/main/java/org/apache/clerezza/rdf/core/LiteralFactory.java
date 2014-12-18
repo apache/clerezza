@@ -19,6 +19,7 @@
 package org.apache.clerezza.rdf.core;
 
 import org.apache.clerezza.rdf.core.impl.SimpleLiteralFactory;
+import org.apache.commons.rdf.Literal;
 
 /**
  * This class provides methods to convert java objects to typed literals and
@@ -65,7 +66,7 @@ public abstract class LiteralFactory {
      * @return a TypedLiteral representing the value
      * @throws NoConvertorException thrown if <code>value</code> is of an invalid type
      */
-    public abstract TypedLiteral createTypedLiteral(Object value)
+    public abstract Literal createTypedLiteral(Object value)
             throws NoConvertorException;
 
     /**
@@ -78,6 +79,6 @@ public abstract class LiteralFactory {
      * @throws NoConvertorException thrown if <code>type</code> is unsupported
      * @throws InvalidLiteralTypeException if the literal type doesn't match the requested java type
      */
-    public abstract <T> T createObject(Class<T> type, TypedLiteral literal)
+    public abstract <T> T createObject(Class<T> type, Literal literal)
             throws NoConvertorException, InvalidLiteralTypeException;
 }

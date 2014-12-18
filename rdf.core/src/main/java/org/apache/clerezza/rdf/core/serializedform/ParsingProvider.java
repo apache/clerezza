@@ -20,8 +20,8 @@ package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.InputStream;
 
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Iri;
 
 /**
  * An instance of this class parses RDF-Graph from one or more serialization
@@ -44,6 +44,6 @@ public interface ParsingProvider {
      * @param baseUri the baseUri for interpreting relative uris, may be null
      */
     void parse(MGraph target, InputStream serializedGraph,
-            String formatIdentifier, UriRef baseUri);
+            String formatIdentifier, Iri baseUri);
 
 }

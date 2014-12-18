@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.BasicGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.Expression;
@@ -189,8 +189,8 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 	}
 
     @Override
-    public Set<UriRef> getReferredGraphs() {
-        Set<UriRef> referredGraphs = new HashSet<UriRef>();
+    public Set<Iri> getReferredGraphs() {
+        Set<Iri> referredGraphs = new HashSet<Iri>();
         if (subSelect != null) {
             GroupGraphPattern queryPattern = subSelect.getQueryPattern();
             referredGraphs.addAll(queryPattern.getReferredGraphs());
@@ -202,8 +202,8 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
         return referredGraphs;
     }
 
-    private Set<UriRef> getReferredGraphs(GraphPattern graphPattern) {
-        Set<UriRef> referredGraphs = new HashSet<UriRef>();
+    private Set<Iri> getReferredGraphs(GraphPattern graphPattern) {
+        Set<Iri> referredGraphs = new HashSet<Iri>();
         if (graphPattern instanceof GraphGraphPattern) {
             GraphGraphPattern graphGraphPattern = (GraphGraphPattern) graphPattern;
             UriRefOrVariable graph = graphGraphPattern.getGraph();

@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.List;
-import org.apache.clerezza.rdf.core.Resource;
+import org.apache.commons.rdf.RdfTerm;
 
 /**
  *
@@ -27,5 +27,5 @@ import org.apache.clerezza.rdf.core.Resource;
  */
 public interface InlineData extends GraphPattern {
     public List<Variable> getVariables();
-    public List<List<Resource>> getValues();
+    public List<List<RdfTerm>> getValues();
 }

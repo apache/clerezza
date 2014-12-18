@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql;
 
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import java.util.Map;
-import org.apache.clerezza.rdf.core.Resource;
+import org.apache.commons.rdf.RdfTerm;
 
 /**
  * A set of mapping from variable names to solutions.
@@ -35,7 +35,7 @@ import org.apache.clerezza.rdf.core.Resource;
  *
  * @author rbn
  */
-public interface SolutionMapping extends Map<Variable, Resource> {
+public interface SolutionMapping extends Map<Variable, RdfTerm> {
 
     /**
      * Should be the equivalent to this:
@@ -46,5 +46,5 @@ public interface SolutionMapping extends Map<Variable, Resource> {
      * @param name
      * @return
      */
-    public Resource get(String name);
+    public RdfTerm get(String name);
 }

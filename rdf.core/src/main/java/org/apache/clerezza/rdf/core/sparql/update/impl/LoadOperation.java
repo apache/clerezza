@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
 import java.util.Set;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
 /**
@@ -31,11 +31,11 @@ import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
  */
 public class LoadOperation extends SimpleUpdateOperation {
 
-    public void setSource(UriRef source) {
+    public void setSource(Iri source) {
         setInputGraph(source);
     }
 
-    public UriRef getSource() {
+    public Iri getSource() {
         return getInputGraph(null);
     }
 }

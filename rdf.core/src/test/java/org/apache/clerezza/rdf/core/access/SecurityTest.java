@@ -33,10 +33,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedDummy;
 import org.apache.clerezza.rdf.core.access.security.TcPermission;
@@ -57,8 +57,8 @@ public class SecurityTest {
         ////needed to unbind because this is injected with META-INF/services - file
         TcManager.getInstance().unbindWeightedTcProvider(new WeightedA());
         TcManager.getInstance().bindWeightedTcProvider(new WeightedDummy());
-        TcManager.getInstance().createMGraph(new UriRef("http://example.org/graph/alreadyexists"));
-        TcManager.getInstance().createMGraph(new UriRef("http://example.org/read/graph"));
+        TcManager.getInstance().createMGraph(new Iri("http://example.org/graph/alreadyexists"));
+        TcManager.getInstance().createMGraph(new Iri("http://example.org/read/graph"));
     }
 
     @AfterClass
@@ -112,69 +112,69 @@ public class SecurityTest {
 
     @Test(expected=NoSuchEntityException.class)
     public void testAcessGraph() {        
-        TcManager.getInstance().getGraph(new UriRef("http://example.org/permitted"));
+        TcManager.getInstance().getGraph(new Iri("http://example.org/permitted"));
     }
     
     @Test(expected=AccessControlException.class)
     public void testNoWildCard() {
-        TcManager.getInstance().getGraph(new UriRef("http://example.org/permitted/subthing"));
+        TcManager.getInstance().getGraph(new Iri("http://example.org/permitted/subthing"));
     }
     
     @Test(expected=NoSuchEntityException.class)
     public void testAllowedArea() {
-        TcManager.getInstance().getGraph(new UriRef("http://example.org/area/allowed/something"));
+        TcManager.getInstance().getGraph(new Iri("http://example.org/area/allowed/something"));
     }
     
     @Test(expected=AccessControlException.class)
     public void testAcessForbiddenGraph() {
-        TcManager.getInstance().getGraph(new UriRef("http://example.org/forbidden"));
+        TcManager.getInstance().getGraph(new Iri("http://example.org/forbidden"));
     }
 
     @Test(expected=NoSuchEntityException.class)
     public void testCustomPermissions() {
-        UriRef graphUri = new UriRef("http://example.org/custom");
+        Iri graphUri = new Iri("http://example.org/custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
+        TripleCollection ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/graph-access.graph"));
         System.out.print(ag.toString());
         TcManager.getInstance().getMGraph(graphUri);
     }
 
     @Test(expected=AccessControlException.class)
     public void testCustomPermissionsIncorrect() {
-        UriRef graphUri = new UriRef("http://example.org/custom");
+        Iri graphUri = new Iri("http://example.org/custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
+        TripleCollection ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/graph-access.graph"));
         System.out.print(ag.toString());
         TcManager.getInstance().createMGraph(graphUri);
     }
 
     @Test
     public void testCustomReadWritePermissions() {
-        UriRef graphUri = new UriRef("http://example.org/read-write-custom");
+        Iri graphUri = new Iri("http://example.org/read-write-custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        TripleCollection ag = TcManager.getInstance().getTriples(new UriRef("urn:x-localinstance:/graph-access.graph"));
+        TripleCollection ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/graph-access.graph"));
         System.out.print(ag.toString());
         TcManager.getInstance().createMGraph(graphUri);
     }
     
     @Test(expected=EntityAlreadyExistsException.class)
     public void testCreateMGraph() {
-        TcManager.getInstance().createMGraph(new UriRef("http://example.org/graph/alreadyexists"));
+        TcManager.getInstance().createMGraph(new Iri("http://example.org/graph/alreadyexists"));
     }
     @Test(expected=AccessControlException.class)
     public void testCreateMGraphWithoutWritePermission() {
-        TcManager.getInstance().createMGraph(new UriRef("http://example.org/read/graph"));
+        TcManager.getInstance().createMGraph(new Iri("http://example.org/read/graph"));
     }
     @Test(expected=ReadOnlyException.class)
     public void testAddTripleToMGraph() {
-        MGraph mGraph = TcManager.getInstance().getMGraph(new UriRef("http://example.org/read/graph"));
-        Triple triple = new TripleImpl(new UriRef("http://example.org/definition/isNonLiteral"), new UriRef("http://example.org/definition/isTest"), new PlainLiteralImpl("test"));
+        MGraph mGraph = TcManager.getInstance().getMGraph(new Iri("http://example.org/read/graph"));
+        Triple triple = new TripleImpl(new Iri("http://example.org/definition/isNonLiteral"), new Iri("http://example.org/definition/isTest"), new PlainLiteralImpl("test"));
         mGraph.add(triple);
     }
 }

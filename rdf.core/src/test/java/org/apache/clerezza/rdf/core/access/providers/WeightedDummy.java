@@ -23,10 +23,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
@@ -40,10 +40,10 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
  */
 public class WeightedDummy implements WeightedTcProvider {
 
-    private Map<UriRef, TripleCollection> tripleMap = new HashMap<UriRef, TripleCollection>();
+    private Map<Iri, TripleCollection> tripleMap = new HashMap<Iri, TripleCollection>();
 
     @Override
-    public Graph createGraph(UriRef name, TripleCollection triples)
+    public Graph createGraph(Iri name, TripleCollection triples)
             throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
@@ -69,7 +69,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public MGraph createMGraph(UriRef name) throws EntityAlreadyExistsException {
+    public MGraph createMGraph(Iri name) throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
             throw new IllegalArgumentException("Name must not be null");
@@ -88,7 +88,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public void deleteTripleCollection(UriRef name)
+    public void deleteTripleCollection(Iri name)
             throws NoSuchEntityException, EntityUndeletableException {
         if (tripleMap.remove(name) == null) {
             throw new NoSuchEntityException(name);
@@ -96,7 +96,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+    public Graph getGraph(Iri name) throws NoSuchEntityException {
         TripleCollection tripleCollection = tripleMap.get(name);
         if (tripleCollection == null) {
             throw new NoSuchEntityException(name);
@@ -107,7 +107,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+    public MGraph getMGraph(Iri name) throws NoSuchEntityException {
         TripleCollection tripleCollection = tripleMap.get(name);
         if (tripleCollection == null) {
             throw new NoSuchEntityException(name);
@@ -118,13 +118,13 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Set<UriRef> getNames(Graph graph) {
+    public Set<Iri> getNames(Graph graph) {
         throw new UnsupportedOperationException(
                 "Not supported yet. equals() has to be implemented first");
     }
 
     @Override
-    public TripleCollection getTriples(UriRef name)
+    public TripleCollection getTriples(Iri name)
             throws NoSuchEntityException {
         TripleCollection tripleCollection = tripleMap.get(name);
         if (tripleCollection == null) {
@@ -140,17 +140,17 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Set<UriRef> listGraphs() {
+    public Set<Iri> listGraphs() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<UriRef> listMGraphs() {
-        return new HashSet<UriRef>();
+    public Set<Iri> listMGraphs() {
+        return new HashSet<Iri>();
     }
 
     @Override
-    public Set<UriRef> listTripleCollections() {
+    public Set<Iri> listTripleCollections() {
         return listMGraphs();
     }
 }

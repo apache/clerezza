@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.MGraph;
 
 /**
  * <code>AbstractMGraph</code> is an abstract implementation of <code>MGraph</code> 

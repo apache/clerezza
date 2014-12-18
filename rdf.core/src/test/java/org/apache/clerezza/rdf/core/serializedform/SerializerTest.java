@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
+import org.apache.commons.rdf.TripleCollection;
 import java.io.OutputStream;
 
 import junit.framework.Assert;

@@ -26,16 +26,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import java.util.Set;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.event.AddEvent;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphEvent;
-import org.apache.clerezza.rdf.core.event.GraphListener;
-import org.apache.clerezza.rdf.core.event.RemoveEvent;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.event.AddEvent;
+import org.apache.commons.rdf.event.FilterTriple;
+import org.apache.commons.rdf.event.GraphEvent;
+import org.apache.commons.rdf.event.GraphListener;
+import org.apache.commons.rdf.event.RemoveEvent;
 
 /**
  * An abstract implementation of <code>TripleCollection</code> implementing
@@ -66,8 +66,8 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
     }
 
     @Override
-    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate,
-            Resource object) {
+    public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate,
+            RdfTerm object) {
         final Iterator<Triple> baseIter = performFilter(subject, predicate, object);
         return new Iterator<Triple>() {
 
@@ -104,8 +104,8 @@ public abstract class AbstractTripleCollection extends AbstractCollection<Triple
      * @param object
      * @return
      */
-    protected abstract Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate,
-            Resource object);
+    protected abstract Iterator<Triple> performFilter(BlankNodeOrIri subject, Iri predicate,
+            RdfTerm object);
 
     @Override
     public boolean add(Triple triple) {
