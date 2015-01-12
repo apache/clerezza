@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 
@@ -36,14 +36,14 @@ public interface QueryEngine {
 	 * @param tcManager
 	 *            where the query originates.
 	 * @param defaultGraph
-	 *            the default graph against which to execute the query if no
+	 *            the default ImmutableGraph against which to execute the query if no
 	 *            FROM clause is present
 	 * @param query
 	 *            Query object to be executed
-	 * @return the resulting ResultSet, Graph or Boolean value
+	 * @return the resulting ResultSet, ImmutableGraph or Boolean value
 	 */
     @Deprecated
-	public Object execute(TcManager tcManager, TripleCollection defaultGraph,
+	public Object execute(TcManager tcManager, Graph defaultGraph,
 			Query query);
 
 	/**
@@ -53,12 +53,12 @@ public interface QueryEngine {
 	 * @param tcManager
 	 *            where the query originates.
 	 * @param defaultGraph
-	 *            the default graph against which to execute the query if no
+	 *            the default ImmutableGraph against which to execute the query if no
 	 *            FROM clause is present
 	 * @param query
 	 *            string to be executed.
-	 * @return the resulting ResultSet, Graph or Boolean value
+	 * @return the resulting ResultSet, ImmutableGraph or Boolean value
 	 */
-	public Object execute(TcManager tcManager, TripleCollection defaultGraph,
+	public Object execute(TcManager tcManager, Graph defaultGraph,
 			String query);
 }

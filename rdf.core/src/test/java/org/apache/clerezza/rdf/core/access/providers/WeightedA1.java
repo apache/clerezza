@@ -21,9 +21,9 @@ package org.apache.clerezza.rdf.core.access.providers;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
@@ -45,50 +45,50 @@ public class WeightedA1 implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
         if (name.equals(TcManagerTest.uriRefA)) {
-            MGraph mResult = new SimpleMGraph();
+            Graph mResult = new SimpleMGraph();
             mResult.add(new TripleImpl(TcManagerTest.uriRefA1, 
                     TcManagerTest.uriRefA1, TcManagerTest.uriRefA1));
             mGraphList.add(name);
-            return mResult.getGraph();
+            return mResult.getImmutableGraph();
         }
         throw new NoSuchEntityException(name);
     }
 
     @Override
-    public MGraph getMGraph(Iri name) throws NoSuchEntityException {
+    public Graph getMGraph(Iri name) throws NoSuchEntityException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public TripleCollection getTriples(Iri name) throws NoSuchEntityException {
+    public Graph getTriples(Iri name) throws NoSuchEntityException {
         return getGraph(name);
     }
 
     @Override
-    public MGraph createMGraph(Iri name) {
+    public Graph createMGraph(Iri name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Graph createGraph(Iri name, TripleCollection triples) {
+    public ImmutableGraph createGraph(Iri name, Graph triples) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void deleteTripleCollection(Iri name) throws NoSuchEntityException, 
+    public void deleteGraph(Iri name) throws NoSuchEntityException, 
             EntityUndeletableException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<Iri> getNames(Graph graph) {
+    public Set<Iri> getNames(ImmutableGraph ImmutableGraph) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<Iri> listGraphs() {
+    public Set<Iri> listImmutableGraphs() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -98,7 +98,7 @@ public class WeightedA1 implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> listTripleCollections() {
+    public Set<Iri> listGraphs() {
         return listMGraphs();
     }
 }

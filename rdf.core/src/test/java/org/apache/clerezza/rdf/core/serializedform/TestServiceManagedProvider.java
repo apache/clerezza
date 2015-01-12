@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.InputStream;
-import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Graph;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.commons.rdf.Iri;
@@ -36,7 +36,7 @@ public class TestServiceManagedProvider implements ParsingProvider {
     private static boolean parseInvoked;
 
     @Override
-    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
+    public void parse(Graph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
         parseInvoked = true;
     }
     

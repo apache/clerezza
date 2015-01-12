@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * This is the generic interface for all types of graph patterns:
+ * This is the generic interface for all types of ImmutableGraph patterns:
  * {@link BasicGraphPattern}, {@link PathSupportedBasicGraphPattern}, {@link GroupGraphPattern},
  * {@link GraphGraphPattern}, {@link AlternativeGraphPattern}, and
  * {@link OptionalGraphPattern}

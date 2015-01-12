@@ -26,7 +26,7 @@ import java.util.List;
  * as per section 12.1.6 of http://www.w3.org/TR/rdf-sparql-query/.
  *
  * Note that the scope of blank nodes is the reult set and not the
- * TripleCollection from where they originate.
+ * Graph from where they originate.
  *
  * @author rbn
  */

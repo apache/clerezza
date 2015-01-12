@@ -33,9 +33,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedDummy;
@@ -57,8 +57,8 @@ public class SecurityTest {
         ////needed to unbind because this is injected with META-INF/services - file
         TcManager.getInstance().unbindWeightedTcProvider(new WeightedA());
         TcManager.getInstance().bindWeightedTcProvider(new WeightedDummy());
-        TcManager.getInstance().createMGraph(new Iri("http://example.org/graph/alreadyexists"));
-        TcManager.getInstance().createMGraph(new Iri("http://example.org/read/graph"));
+        TcManager.getInstance().createMGraph(new Iri("http://example.org/ImmutableGraph/alreadyexists"));
+        TcManager.getInstance().createMGraph(new Iri("http://example.org/read/ImmutableGraph"));
     }
 
     @AfterClass
@@ -74,10 +74,10 @@ public class SecurityTest {
             public PermissionCollection getPermissions(CodeSource codeSource) {
                 PermissionCollection result = new Permissions();
                 result.add(new TcPermission("http://example.org/permitted", "read"));
-                result.add(new TcPermission("http://example.org/graph/alreadyexists", "readwrite"));
-                result.add(new TcPermission("http://example.org/read/graph", "read"));
+                result.add(new TcPermission("http://example.org/ImmutableGraph/alreadyexists", "readwrite"));
+                result.add(new TcPermission("http://example.org/read/ImmutableGraph", "read"));
                 result.add(new TcPermission("http://example.org/area/allowed/*", "readwrite"));
-                result.add(new TcPermission("urn:x-localinstance:/graph-access.graph", "readwrite"));
+                result.add(new TcPermission("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph", "readwrite"));
                 //result.add(new AllPermission());
                 result.add(new RuntimePermission("*"));
                 result.add(new ReflectPermission("suppressAccessChecks"));
@@ -136,7 +136,7 @@ public class SecurityTest {
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        TripleCollection ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/graph-access.graph"));
+        Graph ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
         TcManager.getInstance().getMGraph(graphUri);
     }
@@ -147,7 +147,7 @@ public class SecurityTest {
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        TripleCollection ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/graph-access.graph"));
+        Graph ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
         TcManager.getInstance().createMGraph(graphUri);
     }
@@ -158,23 +158,23 @@ public class SecurityTest {
         TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        TripleCollection ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/graph-access.graph"));
+        Graph ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
         TcManager.getInstance().createMGraph(graphUri);
     }
     
     @Test(expected=EntityAlreadyExistsException.class)
     public void testCreateMGraph() {
-        TcManager.getInstance().createMGraph(new Iri("http://example.org/graph/alreadyexists"));
+        TcManager.getInstance().createMGraph(new Iri("http://example.org/ImmutableGraph/alreadyexists"));
     }
     @Test(expected=AccessControlException.class)
     public void testCreateMGraphWithoutWritePermission() {
-        TcManager.getInstance().createMGraph(new Iri("http://example.org/read/graph"));
+        TcManager.getInstance().createMGraph(new Iri("http://example.org/read/ImmutableGraph"));
     }
     @Test(expected=ReadOnlyException.class)
     public void testAddTripleToMGraph() {
-        MGraph mGraph = TcManager.getInstance().getMGraph(new Iri("http://example.org/read/graph"));
+        Graph graph = TcManager.getInstance().getMGraph(new Iri("http://example.org/read/ImmutableGraph"));
         Triple triple = new TripleImpl(new Iri("http://example.org/definition/isNonLiteral"), new Iri("http://example.org/definition/isTest"), new PlainLiteralImpl("test"));
-        mGraph.add(triple);
+        graph.add(triple);
     }
 }

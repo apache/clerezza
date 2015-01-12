@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * Defines a graph graph pattern.
+ * Defines a ImmutableGraph ImmutableGraph pattern.
  * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#queryDataset">
  * SPARQL Query Language: 8.3 Querying the Dataset</a>
  *
@@ -29,7 +29,7 @@ public interface GraphGraphPattern extends GraphPattern {
 
     /**
      *
-     * @return a {@link UriRefOrVariable} which specifies the graph
+     * @return a {@link UriRefOrVariable} which specifies the ImmutableGraph
      *        against which the pattern should match.
      */
     public UriRefOrVariable getGraph();

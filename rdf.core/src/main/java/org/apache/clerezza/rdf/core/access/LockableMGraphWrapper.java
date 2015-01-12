@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
@@ -34,7 +34,7 @@ import org.apache.commons.rdf.event.FilterTriple;
 import org.apache.commons.rdf.event.GraphListener;
 
 /**
- * Wrappes an MGraph as a LockableMGraph, this class is used by TcManager to
+ * Wrappes an Graph as a LockableMGraph, this class is used by TcManager to
  * support TcProviders that do not privide <code>LockableMGraph</code>.
  *
  * @author rbn
@@ -46,14 +46,14 @@ public class LockableMGraphWrapper implements LockableMGraph {
 
     private final Lock readLock;
     private final Lock writeLock;
-    private final MGraph wrapped;
+    private final Graph wrapped;
 
     /**
-     * Constructs a LocalbleMGraph for an MGraph.
+     * Constructs a LocalbleMGraph for an Graph.
      *
-     * @param providedMGraph a non-lockable mgraph
+     * @param providedMGraph a non-lockable graph
      */
-    public LockableMGraphWrapper(final MGraph providedMGraph) {
+    public LockableMGraphWrapper(final Graph providedMGraph) {
         this.wrapped = providedMGraph;
         {
             String debugMode = System.getProperty(DEBUG_MODE);
@@ -67,7 +67,7 @@ public class LockableMGraphWrapper implements LockableMGraph {
         writeLock = lock.writeLock();
     }
     
-    public LockableMGraphWrapper(final MGraph providedMGraph, final ReadWriteLock lock) {
+    public LockableMGraphWrapper(final Graph providedMGraph, final ReadWriteLock lock) {
         this.wrapped = providedMGraph;
         this.lock = lock;
         readLock = lock.readLock();
@@ -80,10 +80,10 @@ public class LockableMGraphWrapper implements LockableMGraph {
     }
 
     @Override
-    public Graph getGraph() {
+    public ImmutableGraph getImmutableGraph() {
         readLock.lock();
         try {
-            return wrapped.getGraph();
+            return wrapped.getImmutableGraph();
         } finally {
             readLock.unlock();
         }

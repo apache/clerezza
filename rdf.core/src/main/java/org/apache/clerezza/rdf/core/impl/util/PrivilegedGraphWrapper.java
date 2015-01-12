@@ -18,19 +18,253 @@
  */
 package org.apache.clerezza.rdf.core.impl.util;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Collection;
+import java.util.Iterator;
+import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
 import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.event.FilterTriple;
+import org.apache.commons.rdf.event.GraphListener;
 
 /**
  * Calls the methods of the wrapped <code>Graph</code> as privileged
  * code, because they may need permissions like writing to disk or accessing       
  * network.
- * 
+ *
  * @author mir
  */
-public class PrivilegedGraphWrapper extends PrivilegedTripleCollectionWrapper
-        implements Graph {
+public class PrivilegedGraphWrapper implements Graph {
 
-    public PrivilegedGraphWrapper(Graph graph) {
-        super(graph);
+    private Graph graph;
+
+    public PrivilegedGraphWrapper(Graph Graph) {
+        this.graph = Graph;
+    }
+
+    @Override
+    public Iterator<Triple> filter(final BlankNodeOrIri subject, final Iri predicate,
+            final RdfTerm object) {
+        return AccessController.doPrivileged(new PrivilegedAction<Iterator<Triple>>() {
+
+            @Override
+            public Iterator<Triple> run() {
+                return graph.filter(subject, predicate, object);
+            }
+        });
+    }
+
+    @Override
+    public int size() {
+        return AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+
+            @Override
+            public Integer run() {
+                return graph.size();
+            }
+        });
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                return graph.isEmpty();
+            }
+        });
+    }
+
+    @Override
+    public boolean contains(final Object o) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                return graph.contains(o);
+            }
+        });
+    }
+
+    @Override
+    public Iterator<Triple> iterator() {
+        return AccessController.doPrivileged(new PrivilegedAction<Iterator<Triple>>() {
+
+            @Override
+            public Iterator<Triple> run() {
+                return graph.iterator();
+            }
+        });
+    }
+
+    @Override
+    public Object[] toArray() {
+        return AccessController.doPrivileged(new PrivilegedAction<Object[]>() {
+
+            @Override
+            public Object[] run() {
+                return graph.toArray();
+            }
+        });
+    }
+
+    @Override
+    public <T> T[] toArray(final T[] a) {
+        return AccessController.doPrivileged(new PrivilegedAction<T[]>() {
+
+            @Override
+            public T[] run() {
+                return graph.toArray(a);
+            }
+        });
+    }
+
+    @Override
+    public boolean add(final Triple triple) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                return graph.add(triple);
+            }
+        });
+    }
+
+    @Override
+    public boolean remove(final Object o) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                return graph.remove(o);
+            }
+        });
+    }
+
+    @Override
+    public boolean containsAll(final Collection<?> c) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                return graph.containsAll(c);
+            }
+        });
+    }
+
+    @Override
+    public boolean addAll(final Collection<? extends Triple> c) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                return graph.addAll(c);
+            }
+        });
+    }
+
+    @Override
+    public boolean removeAll(final Collection<?> c) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                return graph.removeAll(c);
+            }
+        });
+    }
+
+    @Override
+    public boolean retainAll(final Collection<?> c) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                return graph.retainAll(c);
+            }
+        });
+    }
+
+    @Override
+    public void clear() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+            @Override
+            public Object run() {
+                graph.clear();
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
+        graph.addGraphListener(listener, filter, delay);
+    }
+
+    @Override
+    public void addGraphListener(GraphListener listener, FilterTriple filter) {
+        graph.addGraphListener(listener, filter);
+    }
+
+    @Override
+    public void removeGraphListener(GraphListener listener) {
+        graph.removeGraphListener(listener);
+    }
+
+    private static class PriviledgedTripleIterator implements Iterator<Triple> {
+
+        private final Iterator<Triple> wrappedIterator;
+
+        public PriviledgedTripleIterator(Iterator<Triple> wrappedIterator) {
+            this.wrappedIterator = wrappedIterator;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+                @Override
+                public Boolean run() {
+                    return wrappedIterator.hasNext();
+                }
+            });
+        }
+
+        @Override
+        public Triple next() {
+            return AccessController.doPrivileged(new PrivilegedAction<Triple>() {
+
+                @Override
+                public Triple run() {
+                    return wrappedIterator.next();
+                }
+            });
+        }
+
+        @Override
+        public void remove() {
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                @Override
+                public Object run() {
+                    wrappedIterator.remove();
+                    return null;
+                }
+            });
+        }
+    }
+    
+    
+
+    @Override
+    public ImmutableGraph getImmutableGraph() {
+        return new SimpleImmutableGraph(this);
     }
 }

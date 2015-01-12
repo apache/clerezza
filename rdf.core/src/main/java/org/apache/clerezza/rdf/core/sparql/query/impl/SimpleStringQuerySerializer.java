@@ -160,7 +160,7 @@ public class SimpleStringQuerySerializer extends StringQuerySerializer {
                 }
             }
         } else if (graphPattern instanceof GraphGraphPattern) {
-            s.append("GRAPH ");
+            s.append("ImmutableGraph ");
             appendResourceOrVariable(s, ((GraphGraphPattern) graphPattern).getGraph());
             s.append(" ");
             appendGroupGraphPattern(s, ((GraphGraphPattern) graphPattern).getGroupGraphPattern());

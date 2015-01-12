@@ -48,11 +48,11 @@ public class UpdateOperationWithQuads implements UpdateOperation {
         }
     }
 
-    public void addQuad(UriRefOrVariable graph, Set<TriplePattern> triplePatterns) {
-        if (graph == null) {
+    public void addQuad(UriRefOrVariable ImmutableGraph, Set<TriplePattern> triplePatterns) {
+        if (ImmutableGraph == null) {
             addQuad(triplePatterns);
         } else {
-            quads.add(new Quad(graph, triplePatterns));
+            quads.add(new Quad(ImmutableGraph, triplePatterns));
         }
     }
 
@@ -68,9 +68,9 @@ public class UpdateOperationWithQuads implements UpdateOperation {
             graphs.add(defaultGraph);
         }
         for (Quad quad : quads) {
-            UriRefOrVariable graph = quad.getGraph();
-            if (!graph.isVariable()) {
-                graphs.add(graph.getResource());
+            UriRefOrVariable ImmutableGraph = quad.getGraph();
+            if (!ImmutableGraph.isVariable()) {
+                graphs.add(ImmutableGraph.getResource());
             }
         }
         return graphs;

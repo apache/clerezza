@@ -25,27 +25,28 @@ import java.util.Iterator;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.ReadOnlyException;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.event.FilterTriple;
 import org.apache.commons.rdf.event.GraphListener;
 
 /**
  *
- * This is a wrapper object for <code>TripleCollection</code>. If <code>SecurityManger</code> 
+ * This is a wrapper object for <code>Graph</code>. If <code>SecurityManger</code> 
  * is not <code>null</code> <code>TcManager</code> checks the <code>TcPermission</code>. 
- * If read-only permissions are set this wrapper is used instead of <code>TripleCollection</code> 
+ * If read-only permissions are set this wrapper is used instead of <code>Graph</code> 
  * and throws exceptions when add or remove methods are called.
  *
  * @author tsuy
  */
-public class WriteBlockedTripleCollection extends AbstractCollection<Triple>
-        implements TripleCollection {
+public class WriteBlockedGraph extends AbstractCollection<Triple>
+        implements Graph {
 
-    private TripleCollection triples;
+    private Graph triples;
 
-    public WriteBlockedTripleCollection(TripleCollection triples) {
+    public WriteBlockedGraph(Graph triples) {
         this.triples = triples;
     }
 
@@ -127,5 +128,10 @@ public class WriteBlockedTripleCollection extends AbstractCollection<Triple>
     @Override
     public Iterator iterator() {
         return filter(null, null, null);
+    }
+    
+    @Override
+    public ImmutableGraph getImmutableGraph() {
+        return this.triples.getImmutableGraph();
     }
 }

@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 
@@ -34,9 +34,9 @@ public interface QueryableTcProvider extends TcProvider {
      * @param query
      *            the sparql query to execute
      * @param defaultGraph
-     *            the default graph against which to execute the query if not
+     *            the default ImmutableGraph against which to execute the query if not
      *            FROM clause is present
-     * @return the resulting ResultSet, Graph or Boolean value
+     * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */
     public Object executeSparqlQuery(String query, Iri defaultGraphUri);
 

@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * Defines a service graph pattern.
+ * Defines a service ImmutableGraph pattern.
  * @see <a href="http://www.w3.org/TR/sparql11-federated-query/">
  * SPARQL 1.1 Federated Query</a>
  *

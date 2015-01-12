@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This singleton class provides a method <code>serialize</code> to transform a
- * {@link Graph} into serialized RDF forms.
+ * {@link ImmutableGraph} into serialized RDF forms.
  * 
  * Functionality is delegated to registered {@link SerializingProvider}s. Such
  * <code>SerializingProvider</code>s can be registered and unregistered, later
@@ -151,20 +151,20 @@ public class Serializer {
     }
 
     /**
-     * Serializes a Graph into an OutputStream. This delegates the
+     * Serializes a ImmutableGraph into an OutputStream. This delegates the
      * processing to the provider registered for the specified format, if
      * the formatIdentifier contains a ';'-character only the section before
      * that character is used for choosing the provider.
      * 
      * @param serializedGraph
-     *            an outputStream into which the Graph will be serialized
-     * @param tc  the <code>TripleCollection</code> to be serialized
+     *            an outputStream into which the ImmutableGraph will be serialized
+     * @param tc  the <code>Graph</code> to be serialized
      * @param formatIdentifier
      *            a string specifying the serialization format (usually the
      *            MIME-type)
      * @throws UnsupportedFormatException
      */
-    public void serialize(OutputStream serializedGraph, TripleCollection tc,
+    public void serialize(OutputStream serializedGraph, Graph tc,
             String formatIdentifier) throws UnsupportedFormatException {
         String deParameterizedIdentifier;
         int semicolonPos = formatIdentifier.indexOf(';');

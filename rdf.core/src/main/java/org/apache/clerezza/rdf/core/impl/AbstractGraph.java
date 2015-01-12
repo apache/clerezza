@@ -18,89 +18,234 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import java.lang.ref.WeakReference;
+import java.util.AbstractCollection;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.Graph;
+import java.util.Set;
+import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
-import org.apache.clerezza.rdf.core.impl.graphmatching.GraphMatcher;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.event.AddEvent;
+import org.apache.commons.rdf.event.FilterTriple;
+import org.apache.commons.rdf.event.GraphEvent;
+import org.apache.commons.rdf.event.GraphListener;
+import org.apache.commons.rdf.event.RemoveEvent;
 
 /**
- * <code>AbstractGraph</code> is an abstract implementation of <code>Graph</code> 
- * implementing the <code>equals</code> and the <code>hashCode</code> methods.
- * 
+ * An abstract implementation of <code>Graph</code> implementing
+ * <code>iterator</code> and <code>contains</code> calling <code>filter</code>.
+ *
  * @author reto
- * 
  */
-public abstract class AbstractGraph extends AbstractTripleCollection
+public abstract class AbstractGraph extends AbstractCollection<Triple>
         implements Graph {
 
-    public final synchronized int hashCode() {
-        int result = 0;
-        for (Iterator<Triple> iter = iterator(); iter.hasNext();) {
-            result += getBlankNodeBlindHash(iter.next());
+    //all listeners
+    private final Set<ListenerConfiguration> listenerConfigs = Collections.synchronizedSet(
+            new HashSet<ListenerConfiguration>());
+    private DelayedNotificator delayedNotificator = new DelayedNotificator();
+
+    @Override
+    public Iterator<Triple> iterator() {
+        return filter(null, null, null);
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        if (!(o instanceof Triple)) {
+            return false;
         }
-        return result;
+        Triple t = (Triple) o;
+        return filter(t.getSubject(), t.getPredicate(), t.getObject()).hasNext();
+    }
+
+    @Override
+    public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate,
+            RdfTerm object) {
+        final Iterator<Triple> baseIter = performFilter(subject, predicate, object);
+        return new Iterator<Triple>() {
+
+            Triple currentTriple = null;
+
+            @Override
+            public boolean hasNext() {
+                return baseIter.hasNext();
+            }
+
+            @Override
+            public Triple next() {
+                currentTriple = baseIter.next();
+                return currentTriple;
+            }
+
+            @Override
+            public void remove() {
+                baseIter.remove();
+                dispatchEvent(new RemoveEvent(AbstractGraph.this, currentTriple));
+            }
+        };
     }
 
     /**
-     * @param triple
-     * @return hash without BNode hashes
+     * A subclass of <code>AbstractGraph</code> should override 
+     * this method instead of <code>filter</code> for ImmutableGraph event support to be
+     * added. The Iterator returned by <code>filter</code> will dispatch a
+     * GraphEvent after invoking the remove method of the iterator returned by
+     * this method.
+     * 
+     * @param subject
+     * @param predicate
+     * @param object
+     * @return
      */
-    private int getBlankNodeBlindHash(Triple triple) {
-        int hash = triple.getPredicate().hashCode();
-        RdfTerm subject = triple.getSubject();
-
-        if (!(subject instanceof BlankNode)) {
-            hash ^= subject.hashCode() >> 1;
-        }
-        RdfTerm object = triple.getObject();
-        if (!(object instanceof BlankNode)) {
-            hash ^= object.hashCode() << 1;
-        }
-
-        return hash;
-    }
+    protected abstract Iterator<Triple> performFilter(BlankNodeOrIri subject, Iri predicate,
+            RdfTerm object);
 
     @Override
-    public boolean add(Triple e) {
-        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
-
+    public boolean add(Triple triple) {
+        boolean success = performAdd(triple);
+        if (success) {
+            dispatchEvent(new AddEvent(this, triple));
+        }
+        return success;
     }
 
-    @Override
-    public boolean addAll(Collection<? extends Triple> c) {
-        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+    /**
+     * A subclass of <code>AbstractGraph</code> should override 
+     * this method instead of <code>add</code> for ImmutableGraph event support to be
+     * added.
+     * 
+     * @param e The triple to be added to the triple collection
+     * @return
+     */
+    protected boolean performAdd(Triple e) {
+        return super.add(e);
     }
 
     @Override
     public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+        Triple triple = (Triple) o;
+        boolean success = performRemove(triple);
+        if (success) {
+            dispatchEvent(new RemoveEvent(this, triple));
+        }
+        return success;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+        boolean modified = false;
+        for (Iterator<? extends Object> it = c.iterator(); it.hasNext();) {
+            Object object = it.next();
+            if (remove(object)) {
+                modified = true;
+            }
+        }
+        return modified;
+    }
+
+    /**
+     * A subclass of <code>AbstractGraph</code> should override 
+     * this method instead of <code>remove</code> for ImmutableGraph event support to be
+     * added.
+     * 
+     * @param o The triple to be removed from the triple collection
+     * @return
+     */
+    protected boolean performRemove(Triple triple) {
+        Iterator<Triple> e = performFilter(null, null, null);
+        while (e.hasNext()) {
+            if (triple.equals(e.next())) {
+                e.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Dispatches a <code>GraphEvent</code> to all registered listeners for which
+     * the specified <code>Triple</code> matches the <code>FilterTriple</code>s
+     * of the listeners.
+     * 
+     * @param triple The Triple that was modified
+     * @param type The type of modification
+     */
+    protected void dispatchEvent(GraphEvent event) {
+        synchronized(listenerConfigs) {
+            Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
+            while (iter.hasNext()) {
+                ListenerConfiguration config = iter.next();
+                GraphListener registeredListener = config.getListener();
+                if (registeredListener == null) {
+                    iter.remove();
+                    continue;
+                }
+                if (config.getFilter().match(event.getTriple())) {
+                    delayedNotificator.sendEventToListener(registeredListener, event);
+                }
+            }
+        }
     }
 
     @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Graphs are not mutable, use MGraph");
+    public void addGraphListener(GraphListener listener, FilterTriple filter) {
+        addGraphListener(listener, filter, 0);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+    public void addGraphListener(GraphListener listener, FilterTriple filter,
+            long delay) {
+        listenerConfigs.add(new ListenerConfiguration(listener, filter));
+        if (delay > 0) {
+            delayedNotificator.addDelayedListener(listener, delay);
         }
-        if (!(obj instanceof Graph)) {
-            return false;
+    }
+
+    @Override
+    public void removeGraphListener(GraphListener listener) {
+        synchronized(listenerConfigs) {
+            Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
+            while (iter.hasNext()) {
+                ListenerConfiguration listenerConfig = iter.next();
+                GraphListener registeredListener = listenerConfig.getListener();
+                if ((registeredListener == null) || (registeredListener.equals(listener))) {
+                    iter.remove();
+                }
+            }
         }
-        if (hashCode() != obj.hashCode()) {
-            return false;
+        delayedNotificator.removeDelayedListener(listener);
+    }
+
+    private static class ListenerConfiguration {
+
+        private WeakReference<GraphListener> listenerRef;
+        private FilterTriple filter;
+
+        private ListenerConfiguration(GraphListener listener, FilterTriple filter) {
+            this.listenerRef = new WeakReference<GraphListener>(listener);
+            this.filter = filter;
         }
-        return GraphMatcher.getValidMapping(this, (Graph) obj) != null;
+
+        /**
+         * @return the listener
+         */
+        GraphListener getListener() {
+            GraphListener listener = listenerRef.get();
+            return listener;
+        }
+
+        /**
+         * @return the filter
+         */
+        FilterTriple getFilter() {
+            return filter;
+        }
     }
 }

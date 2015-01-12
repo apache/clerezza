@@ -22,7 +22,7 @@ import java.security.AccessControlException;
 
 /**
  * is thrown on an attempt to add or remove triples to a 
- * read-only mutable graph 
+ * read-only mutable ImmutableGraph 
  *
  * @author tsuy
  */
@@ -31,12 +31,12 @@ public class ReadOnlyException extends AccessControlException {
     private String action;
 
     /**
-     * creates an exception indicating that the mutable graph is read-only
+     * creates an exception indicating that the mutable ImmutableGraph is read-only
      * 
      * @param action
      */
     public ReadOnlyException(String action) {
-        super("read only mutable graph, not allowed to "+action);
+        super("read only mutable ImmutableGraph, not allowed to "+action);
         this.action = action;
     }
 

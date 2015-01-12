@@ -25,10 +25,10 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * A permission to access <code>TripleCollection<code>s matching a specified 
+ * A permission to access <code>Graph<code>s matching a specified 
  * name pattern. A pattern is matched if and only if the pattern is equals
- * to name of the <code>TripleCollection<code> or the pattern ends with "/*" and
- * the name of the <code>TripleCollection<code> starts with the characters
+ * to name of the <code>Graph<code> or the pattern ends with "/*" and
+ * the name of the <code>Graph<code> starts with the characters
  * preceding the '*' in the pattern.
  *
  * @author reto, tsuy

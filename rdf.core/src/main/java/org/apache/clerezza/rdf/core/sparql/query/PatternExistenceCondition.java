@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This expression is intended to be used as a filter expression to test whether a graph pattern matches 
- * the dataset or not, given the values of variables in the group graph pattern in which the filter occurs.
+ * This expression is intended to be used as a filter expression to test whether a ImmutableGraph pattern matches 
+ * the dataset or not, given the values of variables in the group ImmutableGraph pattern in which the filter occurs.
  * It does not generate any additional bindings.
  * 
- * @see <a href="http://www.w3.org/TR/sparql11-query/#neg-pattern">SPARQL 1.1 Query Language: 8.1 Filtering Using Graph Patterns</a>
+ * @see <a href="http://www.w3.org/TR/sparql11-query/#neg-pattern">SPARQL 1.1 Query Language: 8.1 Filtering Using ImmutableGraph Patterns</a>
  * 
  * @author hasan
  */

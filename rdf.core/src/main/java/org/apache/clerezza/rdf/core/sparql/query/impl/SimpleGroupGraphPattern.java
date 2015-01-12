@@ -157,10 +157,10 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
 
 	/**
 	 * Adds an {@link OptionalGraphPattern} to the group consisting of
-	 * a main graph pattern and the specified {@link GroupGraphPattern} as
+	 * a main ImmutableGraph pattern and the specified {@link GroupGraphPattern} as
 	 * the optional pattern.
-	 * The main graph pattern is taken from the last added {@link GraphPattern}
-	 * in the group, if it exists. Otherwise, the main graph pattern is null.
+	 * The main ImmutableGraph pattern is taken from the last added {@link GraphPattern}
+	 * in the group, if it exists. Otherwise, the main ImmutableGraph pattern is null.
 	 *
 	 * @param optional
 	 *		a {@link GroupGraphPattern} as the optional pattern of
@@ -206,9 +206,9 @@ public class SimpleGroupGraphPattern implements GroupGraphPattern {
         Set<Iri> referredGraphs = new HashSet<Iri>();
         if (graphPattern instanceof GraphGraphPattern) {
             GraphGraphPattern graphGraphPattern = (GraphGraphPattern) graphPattern;
-            UriRefOrVariable graph = graphGraphPattern.getGraph();
-            if (!graph.isVariable()) {
-                referredGraphs.add(graph.getResource());
+            UriRefOrVariable ImmutableGraph = graphGraphPattern.getGraph();
+            if (!ImmutableGraph.isVariable()) {
+                referredGraphs.add(ImmutableGraph.getResource());
             }
             referredGraphs.addAll(graphGraphPattern.getGroupGraphPattern().getReferredGraphs());
         } else if (graphPattern instanceof AlternativeGraphPattern) {

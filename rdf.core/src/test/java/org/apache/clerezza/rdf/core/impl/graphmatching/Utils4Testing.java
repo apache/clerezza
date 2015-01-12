@@ -20,7 +20,7 @@
 package org.apache.clerezza.rdf.core.impl.graphmatching;
 
 import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
@@ -32,11 +32,11 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
  */
 public class Utils4Testing {
 
-    static MGraph generateLine(int size, final BlankNodeOrIri firstNode) {
+    static Graph generateLine(int size, final BlankNodeOrIri firstNode) {
         if (size < 1) {
             throw new IllegalArgumentException();
         }
-        MGraph result = new SimpleMGraph();
+        Graph result = new SimpleMGraph();
         BlankNodeOrIri lastNode = firstNode;
         for (int i = 0; i < size; i++) {
             final BlankNode newNode = new BlankNode();

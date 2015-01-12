@@ -25,7 +25,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.commons.rdf.event.FilterTriple;
 import org.apache.commons.rdf.event.GraphEvent;
@@ -39,7 +39,7 @@ import org.apache.clerezza.rdf.core.impl.TripleImpl;
  */
 public class NotificationTest {
     @Test public void getEventsTogether() throws Exception {
-        final TripleCollection tc = new SimpleMGraph();
+        final Graph tc = new SimpleMGraph();
         final List<List<GraphEvent>> eventChunks = new ArrayList<List<GraphEvent>>();
         GraphListener myGraphListener = new GraphListener() {
             @Override
@@ -68,7 +68,7 @@ public class NotificationTest {
 
 
     @Test public void synchroneousEvents() throws Exception {
-        final TripleCollection tc = new SimpleMGraph();
+        final Graph tc = new SimpleMGraph();
         final List<List<GraphEvent>> eventChunks = new ArrayList<List<GraphEvent>>();
         GraphListener myGraphListener = new GraphListener() {
             @Override

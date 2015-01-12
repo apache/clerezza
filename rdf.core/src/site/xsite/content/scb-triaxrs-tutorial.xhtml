@@ -174,11 +174,11 @@ import org.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
 import org.clerezza.platform.typerendering.RenderletManager;
 import org.clerezza.rdf.ontologies.FOAF;
 import org.clerezza.rdf.utils.GraphNode;
+import org.clerezza.rdf.core.ImmutableGraph;
 import org.clerezza.rdf.core.Graph;
-import org.clerezza.rdf.core.MGraph;
 import org.clerezza.rdf.core.NonLiteral;
 import org.clerezza.rdf.core.Triple;
-import org.clerezza.rdf.core.TripleCollection;
+import org.clerezza.rdf.core.Graph;
 import org.clerezza.rdf.core.UriRef;
 import org.clerezza.rdf.core.access.NoSuchEntityException;
 import org.clerezza.rdf.core.access.TcManager;
@@ -210,23 +210,23 @@ public class TutorialApp {
 	@GET
 	@Path("find")
 	@Produces("application/rdf+xml")
-	public Graph getPersonRdf(@QueryParam("mbox") String mboxString) {
-		MGraph mGraph = tcManager.getMGraph(graphName);
-		NonLiteral person = getPersonByMbox(mboxString, mGraph);
-		return new GraphNode(person, mGraph).getNodeContext();
+	public ImmutableGraph getPersonRdf(@QueryParam("mbox") String mboxString) {
+		Graph graph = tcManager.getMGraph(graphName);
+		NonLiteral person = getPersonByMbox(mboxString, graph);
+		return new GraphNode(person, graph).getNodeContext();
 	}
 
 	@GET
 	@Path("find")
 	@Produces("application/xhtml+xml")
 	public GraphNode getPersonHtml(@QueryParam("mbox") String mboxString) {
-		MGraph mGraph = tcManager.getMGraph(graphName);
-		NonLiteral person = getPersonByMbox(mboxString, mGraph);
-		return new GraphNode(person, mGraph);
+		Graph graph = tcManager.getMGraph(graphName);
+		NonLiteral person = getPersonByMbox(mboxString, graph);
+		return new GraphNode(person, graph);
 	}
 
-	private NonLiteral getPersonByMbox(String mboxString, MGraph mGraph) {
-		Iterator&lt;Triple&gt; iter = mGraph.filter(null, FOAF.mbox, new UriRef(mboxString));
+	private NonLiteral getPersonByMbox(String mboxString, Graph graph) {
+		Iterator&lt;Triple&gt; iter = graph.filter(null, FOAF.mbox, new UriRef(mboxString));
 		NonLiteral person = null;
 		while(iter.hasNext()) {
 			person = iter.next().getSubject();
@@ -236,7 +236,7 @@ public class TutorialApp {
 
 	/**
 	 * The activate method is called when SCR activates the component configuration.
-	 * This method gets the system graph or create a new one if it doesn't exist.
+	 * This method gets the system ImmutableGraph or create a new one if it doesn't exist.
 	 *
 	 * @param componentContext
 	 */
@@ -251,7 +251,7 @@ public class TutorialApp {
 		} catch (URISyntaxException ex) {
 			throw new WebApplicationException(ex);
 		}
-		TripleCollection tc;
+		Graph tc;
 		try {
 			tcManager.getMGraph(graphName);
 		} catch (NoSuchEntityException nsee) {
@@ -288,16 +288,16 @@ public class TutorialApp {
 			like to get from the server. Using JAX-RS we can define a
 			<code>MessageBodyWriter</code> which maps a Java type to a
 			representation. In this tutorial <code>getPersonRdf</code> returns
-			a Graph, whereas <code>getPersonHtml</code> returns a GraphNode,
-			which represents a node in the context of a graph. The clerezza
-			platform provides for either resources Graph and GraphNode a
+			a ImmutableGraph, whereas <code>getPersonHtml</code> returns a GraphNode,
+			which represents a node in the context of a ImmutableGraph. The clerezza
+			platform provides for either resources ImmutableGraph and GraphNode a
 			corresponding <code>MessageBodyWriter</code>.
 		</p>
 		<p>
 			The clerezza platform's <code>TemplatingMessageBodyWriter</code>
 			produces a representation of the format "application/xhtml+xml"
 			from a <code>GraphNode</code>, whereas the <code>GraphWriter</code>
-			produces "application/rdf+xml" from a <code>Graph</code>.
+			produces "application/rdf+xml" from a <code>ImmutableGraph</code>.
 			<code>GraphWriter</code> is implemented in the maven project
 			org.clerezza.jaxrs.rdf.providers.
 			The <code>TemplatingMessageBodyWriter</code> uses a templating engine
@@ -316,11 +316,11 @@ public class TutorialApp {
 		</p>
 		<p>
 			In the <code>activate</code> method we also use the <code>TcManager</code> to get
-			the <code>MGraph</code> called "http://localhost.mygraph". If this
-			graph doesn't exist, a <code>NoSuchEntityException</code> is thrown.
+			the <code>Graph</code> called "http://localhost.mygraph". If this
+			ImmutableGraph doesn't exist, a <code>NoSuchEntityException</code> is thrown.
 			In this latter case, we catch this exception and create an
-			<code>MGraph</code>. Afterwards we add the triples from the file
-			mentioned above into the graph.
+			<code>Graph</code>. Afterwards we add the triples from the file
+			mentioned above into the ImmutableGraph.
 		</p>
 
 		<p>

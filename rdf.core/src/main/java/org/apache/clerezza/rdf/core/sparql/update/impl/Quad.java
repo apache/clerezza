@@ -29,14 +29,14 @@ import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleBasicGraphPattern;
  */
 public class Quad extends SimpleBasicGraphPattern {
 
-    private UriRefOrVariable graph = null;
+    private UriRefOrVariable ImmutableGraph = null;
 
-    public Quad(UriRefOrVariable graph, Set<TriplePattern> triplePatterns) {
+    public Quad(UriRefOrVariable ImmutableGraph, Set<TriplePattern> triplePatterns) {
         super(triplePatterns);
-        this.graph = graph;
+        this.ImmutableGraph = ImmutableGraph;
     }
 
     public UriRefOrVariable getGraph() {
-        return this.graph;
+        return this.ImmutableGraph;
     }
 }

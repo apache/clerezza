@@ -27,11 +27,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.impl.graphmatching.collections.IntIterator;
@@ -53,7 +53,7 @@ public class HashMatching {
      * @param tc2
      * @throws GraphNotIsomorphicException
      */
-    HashMatching(MGraph tc1, MGraph tc2) throws GraphNotIsomorphicException {
+    HashMatching(Graph tc1, Graph tc2) throws GraphNotIsomorphicException {
         int foundMatchings = 0;
         int foundMatchingGroups = 0;
         Map<BlankNode, Integer> bNodeHashMap = new HashMap<BlankNode, Integer>();
@@ -101,14 +101,14 @@ public class HashMatching {
     }
     /*
      * returns a Map from bnodes to hash that can be used for future
-     * refinements, this could be separate for each graph.
+     * refinements, this could be separate for each ImmutableGraph.
      *
      * triples no longer containing an unmatched bnodes ae removed.
      *
      * Note that the matched node are not guaranteed to be equals, but only to
      * be the correct if the graphs are isomorphic.
      */
-    private Map<BlankNode, Integer> matchByHashes(MGraph g1, MGraph g2,
+    private Map<BlankNode, Integer> matchByHashes(Graph g1, Graph g2,
             Map<BlankNode, Integer> bNodeHashMap) {
         Map<BlankNode, Set<Property>> bNodePropMap1  = getBNodePropMap(g1);
         Map<BlankNode, Set<Property>> bNodePropMap2  = getBNodePropMap(g2);
@@ -155,7 +155,7 @@ public class HashMatching {
         }
         return result;
     }
-    private static Map<BlankNode, Set<Property>> getBNodePropMap(MGraph g) {
+    private static Map<BlankNode, Set<Property>> getBNodePropMap(Graph g) {
         Set<BlankNode> bNodes = Utils.getBNodes(g);
         Map<BlankNode, Set<Property>> result = new HashMap<BlankNode, Set<Property>>();
         for (BlankNode bNode : bNodes) {
@@ -163,7 +163,7 @@ public class HashMatching {
         }
         return result;
     }
-    private static Set<Property> getProperties(BlankNode bNode, MGraph g) {
+    private static Set<Property> getProperties(BlankNode bNode, Graph g) {
         Set<Property> result = new HashSet<Property>();
         Iterator<Triple> ti = g.filter(bNode, null, null);
         while (ti.hasNext()) {
@@ -189,16 +189,16 @@ public class HashMatching {
             return resource.hashCode();
         }
     }
-    private static void replaceNode(MGraph mGraph, BlankNode bNode, BlankNodeOrIri replacementNode) {
+    private static void replaceNode(Graph graph, BlankNode bNode, BlankNodeOrIri replacementNode) {
         Set<Triple> triplesToRemove = new HashSet<Triple>();
-        for (Triple triple : mGraph) {
+        for (Triple triple : graph) {
             Triple replacementTriple = getReplacement(triple, bNode, replacementNode);
             if (replacementTriple != null) {
                 triplesToRemove.add(triple);
-                mGraph.add(replacementTriple);
+                graph.add(replacementTriple);
             }
         }
-        mGraph.removeAll(triplesToRemove);
+        graph.removeAll(triplesToRemove);
     }
     private static Triple getReplacement(Triple triple, BlankNode bNode, BlankNodeOrIri replacementNode) {
         if (triple.getSubject().equals(bNode)) {

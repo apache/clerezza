@@ -19,38 +19,33 @@
 package org.apache.clerezza.rdf.core.impl;
 
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.rdf.core.access.LockableMGraph;
 
 
 /**
 *
-* This is a wrapper object for <code>MGraph</code>. If <code>SecurityManger</code> 
+* This is a wrapper object for <code>Graph</code>. If <code>SecurityManger</code> 
 * is not <code>null</code> <code>TcManager</code> checks the <code>TcPermission</code>. 
-* If read-only permissions are set this wrapper is used instead of <code>MGraph</code>.
+* If read-only permissions are set this wrapper is used instead of <code>Graph</code>.
 *
 * @author tsuy
 */
-public class WriteBlockedMGraph extends WriteBlockedTripleCollection 
+public class WriteBlockedMGraph extends WriteBlockedGraph 
         implements LockableMGraph {
 
-    private LockableMGraph mGraph;
+    private LockableMGraph graph;
     /**
      * Creates a wrapper of <code>SimpleMGraph</code>
      */
-    public WriteBlockedMGraph(LockableMGraph mGraph) {
-        super(mGraph);
-        this.mGraph = mGraph;
-    }
-
-    @Override
-    public Graph getGraph() {
-        return this.mGraph.getGraph();
+    public WriteBlockedMGraph(LockableMGraph graph) {
+        super(graph);
+        this.graph = graph;
     }
 
     @Override
     public ReadWriteLock getLock() {
-        return mGraph.getLock();
+        return graph.getLock();
     }
 }
 

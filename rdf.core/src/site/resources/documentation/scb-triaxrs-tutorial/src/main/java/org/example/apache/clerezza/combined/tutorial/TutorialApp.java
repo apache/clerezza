@@ -39,11 +39,11 @@ import org.apache.clerezza.platform.typerendering.seedsnipe.SeedsnipeRenderlet;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.clerezza.rdf.core.ImmutableGraph;
 import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.NonLiteral;
 import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
@@ -75,23 +75,23 @@ public class TutorialApp {
     @GET
     @Path("find")
     @Produces("application/rdf+xml")
-    public Graph getPersonRdf(@QueryParam("mbox") String mboxString) {
-        MGraph mGraph = tcManager.getMGraph(graphName);
-        NonLiteral person = getPersonByMbox(mboxString, mGraph);
-        return new GraphNode(person, mGraph).getNodeContext();
+    public ImmutableGraph getPersonRdf(@QueryParam("mbox") String mboxString) {
+        Graph graph = tcManager.getMGraph(graphName);
+        NonLiteral person = getPersonByMbox(mboxString, graph);
+        return new GraphNode(person, graph).getNodeContext();
     }
 
     @GET
     @Path("find")
     @Produces("application/xhtml+xml")
     public GraphNode getPersonHtml(@QueryParam("mbox") String mboxString) {
-        MGraph mGraph = tcManager.getMGraph(graphName);
-        NonLiteral person = getPersonByMbox(mboxString, mGraph);
-        return new GraphNode(person, mGraph);
+        Graph graph = tcManager.getMGraph(graphName);
+        NonLiteral person = getPersonByMbox(mboxString, graph);
+        return new GraphNode(person, graph);
     }
 
-    private NonLiteral getPersonByMbox(String mboxString, MGraph mGraph) {
-        Iterator<Triple> iter = mGraph.filter(null, FOAF.mbox, new UriRef(mboxString));
+    private NonLiteral getPersonByMbox(String mboxString, Graph graph) {
+        Iterator<Triple> iter = graph.filter(null, FOAF.mbox, new UriRef(mboxString));
         NonLiteral person = null;
         while(iter.hasNext()) {
             person = iter.next().getSubject();
@@ -101,7 +101,7 @@ public class TutorialApp {
     
     /**
      * The activate method is called when SCR activates the component configuration.
-     * This method gets the system graph or create a new one if it doesn't exist.
+     * This method gets the system ImmutableGraph or create a new one if it doesn't exist.
      * 
      * @param componentContext
      */
@@ -116,7 +116,7 @@ public class TutorialApp {
         } catch (URISyntaxException ex) {
             throw new WebApplicationException(ex);
         }
-        TripleCollection tc;
+        Graph tc;
         try {
             tcManager.getMGraph(graphName);
         } catch (NoSuchEntityException nsee) {

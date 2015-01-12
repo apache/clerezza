@@ -21,10 +21,10 @@ package org.apache.clerezza.rdf.core.access;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.clerezza.rdf.core.impl.SimpleGraph;
+import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
 
 /**
  * @see <a href="http://www.osgi.org/javadoc/r4v41/org/osgi/framework/ServiceFactory.html">
@@ -32,13 +32,13 @@ import org.apache.clerezza.rdf.core.impl.SimpleGraph;
  *
  * @author mir
  */
-public class GraphServiceFactory implements ServiceFactory {
+public class ImmutableGraphServiceFactory implements ServiceFactory {
     
     private final TcManager tcManager;
     private final Iri name;
     private final TcAccessController tcAccessController;
 
-    GraphServiceFactory(TcManager tcManager, Iri name,
+    ImmutableGraphServiceFactory(TcManager tcManager, Iri name,
             TcAccessController tcAccessController) {
         this.tcManager = tcManager;
         this.name = name;
@@ -47,10 +47,10 @@ public class GraphServiceFactory implements ServiceFactory {
 
     @Override
     public Object getService(Bundle arg0, ServiceRegistration arg1) {
-        TripleCollection tc = 
-                new SecuredTripleCollection(tcManager.getGraph(name), name,
+        Graph tc = 
+                new SecuredGraph(tcManager.getGraph(name), name,
                 tcAccessController);
-        return new SimpleGraph(tc);
+        return new SimpleImmutableGraph(tc);
     }
 
     @Override

@@ -18,26 +18,19 @@
  */
 package org.apache.clerezza.rdf.core.impl.util;
 
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleGraph;
+import org.apache.commons.rdf.ImmutableGraph;
 
 /**
- * Calls the methods of the wrapped <code>MGraph</code> as privileged
+ * Calls the methods of the wrapped <code>ImmutableGraph</code> as privileged
  * code, because they may need permissions like writing to disk or accessing       
  * network.
- *
+ * 
  * @author mir
  */
-public class PrivilegedMGraphWrapper extends PrivilegedTripleCollectionWrapper implements MGraph {
+public class PrivilegedImmuatbleGraphWrapper extends PrivilegedGraphWrapper
+        implements ImmutableGraph {
 
-    public PrivilegedMGraphWrapper(MGraph wrappedMGraph) {
-        super(wrappedMGraph);
+    public PrivilegedImmuatbleGraphWrapper(ImmutableGraph ImmutableGraph) {
+        super(ImmutableGraph);
     }
-
-    @Override
-    public Graph getGraph() {
-        return new SimpleGraph(this);
-    }
-
 }

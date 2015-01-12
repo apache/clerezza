@@ -21,13 +21,13 @@ package org.apache.clerezza.rdf.core.sparql.query;
 import java.util.Set;
 
 /**
- * Defines a basic graph pattern that supports property path expressions.
+ * Defines a basic ImmutableGraph pattern that supports property path expressions.
  * A {@link PathSupportedBasicGraphPattern} is a set of {@link PropertyPathPattern}s.
  * A {@link PropertyPathPattern} is a generalization of a {@link TriplePattern} to include
  * a {@link PropertyPathExpression} in the property position.
  * Therefore, a {@link PathSupportedBasicGraphPattern} can be seen as a generalization of a {@link BasicGraphPattern}
  * @see <a href="http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#sparqlBasicGraphPatterns">
- * SPARQL 1.1 Query Language: 18.1.6 Basic Graph Patterns</a>
+ * SPARQL 1.1 Query Language: 18.1.6 Basic ImmutableGraph Patterns</a>
  * and <a href="http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#sparqlPropertyPaths">
  * SPARQL 1.1 Query Language: 18.1.7 Property Path Patterns</a>
  *

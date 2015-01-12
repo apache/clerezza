@@ -29,7 +29,7 @@ import org.apache.commons.rdf.Iri;
  *
  * @author mir
  */
-public class SimpleTripleCollectionTest {
+public class SimpleGraphTest {
 
     private Iri uriRef1 = new Iri("http://example.org/foo");
     private Iri uriRef2 = new Iri("http://example.org/bar");
@@ -42,7 +42,7 @@ public class SimpleTripleCollectionTest {
         
     @Test
     public void iteratorRemove() {
-        SimpleTripleCollection stc = new SimpleTripleCollection();
+        SimpleGraph stc = new SimpleGraph();
         stc.add(triple1);
         stc.add(triple2);
         stc.add(triple3);
@@ -58,13 +58,13 @@ public class SimpleTripleCollectionTest {
 
     @Test
     public void removeAll() {
-        SimpleTripleCollection stc = new SimpleTripleCollection();
+        SimpleGraph stc = new SimpleGraph();
         stc.add(triple1);
         stc.add(triple2);
         stc.add(triple3);
         stc.add(triple4);
         stc.add(triple5);
-        SimpleTripleCollection stc2 = new SimpleTripleCollection();
+        SimpleGraph stc2 = new SimpleGraph();
         stc2.add(triple1);
         stc2.add(triple3);
         stc2.add(triple5);
@@ -74,7 +74,7 @@ public class SimpleTripleCollectionTest {
     
     @Test
     public void filterIteratorRemove() {
-        SimpleTripleCollection stc = new SimpleTripleCollection();
+        SimpleGraph stc = new SimpleGraph();
         stc.add(triple1);
         stc.add(triple2);
         stc.add(triple3);
@@ -90,7 +90,7 @@ public class SimpleTripleCollectionTest {
 
     @Test(expected=ConcurrentModificationException.class)
     public void remove() {
-        SimpleTripleCollection stc = new SimpleTripleCollection();
+        SimpleGraph stc = new SimpleGraph();
         stc.setCheckConcurrency(true);
         stc.add(triple1);
         stc.add(triple2);

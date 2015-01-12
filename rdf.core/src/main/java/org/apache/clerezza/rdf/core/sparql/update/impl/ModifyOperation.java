@@ -30,7 +30,7 @@ import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
  * This ModifyOperation is a DELETE/INSERT operation.
  * @see <a href="http://www.w3.org/TR/2013/REC-sparql11-update-20130321/#deleteInsert">SPARQL 1.1 Update: 3.1.3 DELETE/INSERT</a>
  * 
- * The DELETE/INSERT operation can be used to remove or add triples from/to the Graph Store based on bindings 
+ * The DELETE/INSERT operation can be used to remove or add triples from/to the ImmutableGraph Store based on bindings 
  * for a query pattern specified in a WHERE clause.
  * 
  * @author hasan
@@ -58,11 +58,11 @@ public class ModifyOperation implements UpdateOperation {
         this.dataSet = dataSet;
     }
 
-    public void addGraphToDataSet(Iri graph) {
+    public void addGraphToDataSet(Iri ImmutableGraph) {
         if (dataSet == null) {
             dataSet = new SimpleDataSet();
         }
-        dataSet.addDefaultGraph(graph);
+        dataSet.addDefaultGraph(ImmutableGraph);
     }
 
     public void addNamedGraphToDataSet(Iri namedGraph) {

@@ -20,11 +20,11 @@ package org.apache.clerezza.rdf.core.impl.graphmatching;
 
 import java.util.Map;
 import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
@@ -41,8 +41,8 @@ public class GraphMatcherTest {
 
     @Test
     public void testEmpty() {
-        TripleCollection tc1 = new SimpleMGraph();
-        TripleCollection tc2 = new SimpleMGraph();
+        Graph tc1 = new SimpleMGraph();
+        Graph tc2 = new SimpleMGraph();
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
         Assert.assertEquals(0, mapping.size());
@@ -50,18 +50,18 @@ public class GraphMatcherTest {
 
     @Test
     public void test2() {
-        TripleCollection tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleMGraph();
         tc1.add(new TripleImpl(u1, u1, u1));
-        TripleCollection tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleMGraph();
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNull(mapping);
     }
 
     @Test
     public void test3() {
-        TripleCollection tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleMGraph();
         tc1.add(new TripleImpl(u1, u1, u1));
-        TripleCollection tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleMGraph();
         tc2.add(new TripleImpl(u1, u1, u1));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -70,9 +70,9 @@ public class GraphMatcherTest {
 
     @Test
     public void test4() {
-        TripleCollection tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleMGraph();
         tc1.add(new TripleImpl(u1, u1, new BlankNode()));
-        TripleCollection tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleMGraph();
         tc2.add(new TripleImpl(u1, u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -81,9 +81,9 @@ public class GraphMatcherTest {
 
     @Test
     public void test5() {
-        TripleCollection tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleMGraph();
         tc1.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
-        TripleCollection tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleMGraph();
         tc2.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -92,25 +92,25 @@ public class GraphMatcherTest {
 
     @Test
     public void test6() {
-        TripleCollection tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleMGraph();
         final BlankNode b11 = new BlankNode();
         tc1.add(new TripleImpl(new BlankNode(), u1,b11));
         tc1.add(new TripleImpl(new BlankNode(), u1,b11));
-        TripleCollection tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleMGraph();
         tc2.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNull(mapping);
     }
 
-    private MGraph generateCircle(int size) {
+    private Graph generateCircle(int size) {
         return generateCircle(size, new BlankNode());
     }
 
-    private MGraph generateCircle(int size, final BlankNodeOrIri firstNode) {
+    private Graph generateCircle(int size, final BlankNodeOrIri firstNode) {
         if (size < 1) {
             throw new IllegalArgumentException();
         }
-        MGraph result = new SimpleMGraph();
+        Graph result = new SimpleMGraph();
         BlankNodeOrIri lastNode = firstNode;
         for (int i = 0; i < (size-1); i++) {
             final BlankNode newNode = new BlankNode();
@@ -123,8 +123,8 @@ public class GraphMatcherTest {
 
     @Test
     public void test7() {
-        TripleCollection tc1 = generateCircle(2);
-        TripleCollection tc2 = generateCircle(2);
+        Graph tc1 = generateCircle(2);
+        Graph tc2 = generateCircle(2);
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
         Assert.assertEquals(2, mapping.size());
@@ -132,8 +132,8 @@ public class GraphMatcherTest {
 
     @Test
     public void test8() {
-        TripleCollection tc1 = generateCircle(5);
-        TripleCollection tc2 = generateCircle(5);
+        Graph tc1 = generateCircle(5);
+        Graph tc2 = generateCircle(5);
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
         Assert.assertEquals(5, mapping.size());
@@ -142,9 +142,9 @@ public class GraphMatcherTest {
     @Test
     public void test9() {
         BlankNodeOrIri crossing = new Iri("http://example.org/");
-        TripleCollection tc1 = generateCircle(2,crossing);
+        Graph tc1 = generateCircle(2,crossing);
         tc1.addAll(generateCircle(3,crossing));
-        TripleCollection tc2 = generateCircle(2,crossing);
+        Graph tc2 = generateCircle(2,crossing);
         tc2.addAll(generateCircle(3,crossing));
         Assert.assertEquals(5, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
@@ -156,10 +156,10 @@ public class GraphMatcherTest {
     @Test
     public void test10() {
         BlankNodeOrIri crossing1 = new BlankNode();
-        TripleCollection tc1 = generateCircle(2,crossing1);
+        Graph tc1 = generateCircle(2,crossing1);
         tc1.addAll(generateCircle(3,crossing1));
         BlankNodeOrIri crossing2 = new BlankNode();
-        TripleCollection tc2 = generateCircle(2,crossing2);
+        Graph tc2 = generateCircle(2,crossing2);
         tc2.addAll(generateCircle(3,crossing2));
         Assert.assertEquals(5, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
@@ -171,10 +171,10 @@ public class GraphMatcherTest {
     @Test
     public void test11() {
         BlankNodeOrIri crossing1 = new BlankNode();
-        TripleCollection tc1 = generateCircle(2,crossing1);
+        Graph tc1 = generateCircle(2,crossing1);
         tc1.addAll(generateCircle(4,crossing1));
         BlankNodeOrIri crossing2 = new BlankNode();
-        TripleCollection tc2 = generateCircle(3,crossing2);
+        Graph tc2 = generateCircle(3,crossing2);
         tc2.addAll(generateCircle(3,crossing2));
         Assert.assertEquals(6, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
@@ -184,10 +184,10 @@ public class GraphMatcherTest {
     @Test
     public void test12() {
         BlankNodeOrIri start1 = new BlankNode();
-        TripleCollection tc1 = Utils4Testing.generateLine(4,start1);
+        Graph tc1 = Utils4Testing.generateLine(4,start1);
         tc1.addAll(Utils4Testing.generateLine(5,start1));
         BlankNodeOrIri start2 = new BlankNode();
-        TripleCollection tc2 = Utils4Testing.generateLine(5,start2);
+        Graph tc2 = Utils4Testing.generateLine(5,start2);
         tc2.addAll(Utils4Testing.generateLine(4,start2));
         Assert.assertEquals(9, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
@@ -198,10 +198,10 @@ public class GraphMatcherTest {
     @Test
     public void test13() {
         BlankNodeOrIri start1 = new BlankNode();
-        TripleCollection tc1 = Utils4Testing.generateLine(4,start1);
+        Graph tc1 = Utils4Testing.generateLine(4,start1);
         tc1.addAll(Utils4Testing.generateLine(5,start1));
         BlankNodeOrIri start2 = new BlankNode();
-        TripleCollection tc2 = Utils4Testing.generateLine(3,start2);
+        Graph tc2 = Utils4Testing.generateLine(3,start2);
         tc2.addAll(Utils4Testing.generateLine(3,start2));
         Assert.assertEquals(9, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);

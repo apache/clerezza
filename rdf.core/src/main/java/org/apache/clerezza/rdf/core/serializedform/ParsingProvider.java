@@ -20,11 +20,11 @@ package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.InputStream;
 
-import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 
 /**
- * An instance of this class parses RDF-Graph from one or more serialization
+ * An instance of this class parses RDF-ImmutableGraph from one or more serialization
  * formats. The supported formats are indicated using the {@link SupportedFormat}
  * annotation.
  *
@@ -38,12 +38,12 @@ public interface ParsingProvider {
      * before a ';'-character in the <code>formatIdentifier</code> matches
      * a <code>SupportedFormat</code> annotation of the implementing class.
      *
-     * @param target the mutable graph to which the read triples shall be added
-     * @param serializedGraph the stream from which the serialized graph is read
+     * @param target the mutable ImmutableGraph to which the read triples shall be added
+     * @param serializedGraph the stream from which the serialized ImmutableGraph is read
      * @param formatIdentifier a String identifying the format
      * @param baseUri the baseUri for interpreting relative uris, may be null
      */
-    void parse(MGraph target, InputStream serializedGraph,
+    void parse(Graph target, InputStream serializedGraph,
             String formatIdentifier, Iri baseUri);
 
 }

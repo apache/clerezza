@@ -23,9 +23,9 @@ import java.util.Set;
 import org.apache.commons.rdf.Iri;
 
 /**
- * Defines a group graph pattern.
+ * Defines a group ImmutableGraph pattern.
  * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#GroupPatterns">
- * SPARQL Query Language: 5.2 Group Graph Patterns</a>
+ * SPARQL Query Language: 5.2 Group ImmutableGraph Patterns</a>
  *
  * @author hasan
  */
@@ -56,7 +56,7 @@ public interface GroupGraphPattern extends GraphPattern {
     /**
      * 
      * @return
-     *      all graphs referred in this graph pattern.
+     *      all graphs referred in this ImmutableGraph pattern.
      */
     public Set<Iri> getReferredGraphs();
 

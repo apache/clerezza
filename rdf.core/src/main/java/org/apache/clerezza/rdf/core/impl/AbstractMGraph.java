@@ -18,19 +18,19 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
 
 /**
- * <code>AbstractMGraph</code> is an abstract implementation of <code>MGraph</code> 
+ * <code>AbstractMGraph</code> is an abstract implementation of <code>Graph</code> 
  * implementing the <code>getGraph</code> method.
  *
  * @author reto
  */
-public abstract class AbstractMGraph extends AbstractTripleCollection implements MGraph {
+public abstract class AbstractMGraph extends AbstractGraph implements Graph {
 
     @Override
-    public Graph getGraph() {
-        return new SimpleGraph(this);
+    public ImmutableGraph getImmutableGraph() {
+        return new SimpleImmutableGraph(this);
     }
 }

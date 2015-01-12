@@ -32,8 +32,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This singleton class provides a method
- * <code>parse</code> to transform serialized RDF forms into {@link Graph}s.
+ * <code>parse</code> to transform serialized RDF forms into {@link ImmutableGraph}s.
  *
  * Functionality is delegated to registered {@link ParsingProvider}s. Such
  * <code>ParsingProvider</code>s can be registered and unregistered, later
@@ -162,39 +162,39 @@ public class Parser {
     }
 
     /**
-     * Parses a serialized Graph from an InputStream. This delegates the
+     * Parses a serialized ImmutableGraph from an InputStream. This delegates the
      * processing to the provider registered for the specified format, if
      * the formatIdentifier contains a ';'-character only the section before
      * that character is used for choosing the provider.
      *
      * @param serializedGraph an inputstream with the serialization
      * @param formatIdentifier a string identifying the format (usually the MIME-type)
-     * @return the graph read from the stream
+     * @return the ImmutableGraph read from the stream
      * @throws UnsupportedFormatException
      */
-    public Graph parse(InputStream serializedGraph,
+    public ImmutableGraph parse(InputStream serializedGraph,
             String formatIdentifier) throws UnsupportedFormatException {
         return parse(serializedGraph, formatIdentifier, null);
     }
 
     /**
-     * Parses a serialized Graph from an InputStream. This delegates the
+     * Parses a serialized ImmutableGraph from an InputStream. This delegates the
      * processing to the provider registered for the specified format, if
      * the formatIdentifier contains a ';'-character only the section before
      * that character is used for choosing the provider.
      *
-     * @param target the MGraph to which the parsed triples are added
+     * @param target the Graph to which the parsed triples are added
      * @param serializedGraph an inputstream with the serialization
      * @param formatIdentifier a string identifying the format (usually the MIME-type)
      * @throws UnsupportedFormatException
      */
-    public void parse(MGraph target, InputStream serializedGraph,
+    public void parse(Graph target, InputStream serializedGraph,
             String formatIdentifier) throws UnsupportedFormatException {
         parse(target, serializedGraph, formatIdentifier, null);
     }
 
     /**
-     * Parses a serialized Graph from an InputStream. This delegates the
+     * Parses a serialized ImmutableGraph from an InputStream. This delegates the
      * processing to the provider registered for the specified format, if
      * the formatIdentifier contains a ';'-character only the section before
      * that character is used for choosing the provider.
@@ -202,29 +202,29 @@ public class Parser {
      * @param serializedGraph an inputstream with the serialization
      * @param formatIdentifier a string identifying the format (usually the MIME-type)
      * @param baseUri the uri against which relative uri-refs are evaluated
-     * @return the graph read from the stream
+     * @return the ImmutableGraph read from the stream
      * @throws UnsupportedFormatException
      */
-    public Graph parse(InputStream serializedGraph,
+    public ImmutableGraph parse(InputStream serializedGraph,
             String formatIdentifier, Iri baseUri) throws UnsupportedFormatException {
-        MGraph mGraph = new SimpleMGraph();
-        parse(mGraph, serializedGraph, formatIdentifier, baseUri);
-        return mGraph.getGraph();
+        Graph graph = new SimpleMGraph();
+        parse(graph, serializedGraph, formatIdentifier, baseUri);
+        return graph.getImmutableGraph();
     }
 
     /**
-     * Parses a serialized Graph from an InputStream. This delegates the
+     * Parses a serialized ImmutableGraph from an InputStream. This delegates the
      * processing to the provider registered for the specified format, if
      * the formatIdentifier contains a ';'-character only the section before
      * that character is used for choosing the provider.
      *
-     * @param target the MGraph to which the parsed triples are added
+     * @param target the Graph to which the parsed triples are added
      * @param serializedGraph an inputstream with the serialization
      * @param formatIdentifier a string identifying the format (usually the MIME-type)
      * @param baseUri the uri against which relative uri-refs are evaluated
      * @throws UnsupportedFormatException
      */
-    public void parse(MGraph target, InputStream serializedGraph,
+    public void parse(Graph target, InputStream serializedGraph,
             String formatIdentifier, Iri baseUri) throws UnsupportedFormatException {
         String deParameterizedIdentifier;
         int semicolonPos = formatIdentifier.indexOf(';');

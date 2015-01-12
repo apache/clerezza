@@ -34,7 +34,7 @@ public class SimpleOptionalGraphPattern implements OptionalGraphPattern {
 
     /**
      * Constructs an {@link OptionalGraphPattern} out of a {@link GraphPattern}
-     * as the main graph pattern and a {@link GroupGraphPattern} as the 
+     * as the main ImmutableGraph pattern and a {@link GroupGraphPattern} as the 
      * optional pattern.
      * 
      * @param mainGraphPattern
@@ -45,7 +45,7 @@ public class SimpleOptionalGraphPattern implements OptionalGraphPattern {
     public SimpleOptionalGraphPattern(GraphPattern mainGraphPattern,
             GroupGraphPattern optionalGraphPattern) {
         if (optionalGraphPattern == null) {
-            throw new IllegalArgumentException("Optional graph pattern may not be null");
+            throw new IllegalArgumentException("Optional ImmutableGraph pattern may not be null");
         }
         if (mainGraphPattern == null) {
             this.mainGraphPattern = new SimpleGroupGraphPattern();

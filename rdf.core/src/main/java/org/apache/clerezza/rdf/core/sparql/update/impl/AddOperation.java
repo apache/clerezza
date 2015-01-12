@@ -19,8 +19,8 @@
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
 /**
- * The ADD operation is a shortcut for inserting all data from an input graph into a destination graph. 
- * Data from the input graph is not affected, and initial data from the destination graph, if any, is kept intact.
+ * The ADD operation is a shortcut for inserting all data from an input ImmutableGraph into a destination ImmutableGraph. 
+ * Data from the input ImmutableGraph is not affected, and initial data from the destination ImmutableGraph, if any, is kept intact.
  * @see <a href="http://www.w3.org/TR/2013/REC-sparql11-update-20130321/#add">SPARQL 1.1 Update: 3.2.5 ADD</a>
  * 
  * @author hasan

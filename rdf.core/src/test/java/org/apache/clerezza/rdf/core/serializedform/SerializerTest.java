@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import java.io.OutputStream;
 
 import junit.framework.Assert;
@@ -74,7 +74,7 @@ public class SerializerTest {
     static class SerializingProviderA implements SerializingProvider {
 
         @Override
-        public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
+        public void serialize(OutputStream serializedGraph, Graph tc, String formatIdentifier) {
             providerAInvoked = true;
         }
     };
@@ -82,7 +82,7 @@ public class SerializerTest {
     static class SerializingProviderB implements SerializingProvider {
 
         @Override
-        public void serialize(OutputStream serializedGraph, TripleCollection tc, String formatIdentifier) {
+        public void serialize(OutputStream serializedGraph, Graph tc, String formatIdentifier) {
             providerBInvoked = true;
         }
     };

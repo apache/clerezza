@@ -21,9 +21,9 @@ package org.apache.clerezza.rdf.core.sparql.query;
 import java.util.Set;
 
 /**
- * Defines a basic graph pattern.
+ * Defines a basic ImmutableGraph pattern.
  * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#BasicGraphPatterns">
- * SPARQL Query Language: 5.1 Basic Graph Patterns</a>
+ * SPARQL Query Language: 5.1 Basic ImmutableGraph Patterns</a>
  *
  * @author hasan
  */

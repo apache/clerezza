@@ -23,26 +23,28 @@ import java.util.Iterator;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
+import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.event.FilterTriple;
 import org.apache.commons.rdf.event.GraphListener;
 
 /**
  * A Secured triple collection wraps a triple collection checking each access
- * for the rights on a the graph for which the uri is passed to the 
+ * for the rights on a the ImmutableGraph for which the uri is passed to the 
  * constructor.
  *
  * @author mir, hasan
  */
-public class SecuredTripleCollection implements TripleCollection {
+public class SecuredGraph implements Graph {
 
-    private final TripleCollection wrapped;
+    private final Graph wrapped;
     private final Iri name;
     private final TcAccessController tcAccessController;
 
-    public SecuredTripleCollection(TripleCollection wrapped, Iri name,
+    public SecuredGraph(Graph wrapped, Iri name,
             TcAccessController tcAccessController) {
         this.wrapped = wrapped;
         this.name = name;
@@ -174,5 +176,10 @@ public class SecuredTripleCollection implements TripleCollection {
     public boolean containsAll(Collection<?> c) {
         checkRead();
         return wrapped.containsAll(c);
+    }
+    
+    @Override
+    public ImmutableGraph getImmutableGraph() {
+        return new SimpleImmutableGraph(this);
     }
 }

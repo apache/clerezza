@@ -29,19 +29,19 @@ public interface Query {
 
     /**
      * <p>Gets {@link DataSet} containing the specification of the default
-     * graph and named graphs, if any.</p>
+     * ImmutableGraph and named graphs, if any.</p>
      * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#specifyingDataset">
      * SPARQL Query Language: 8.2 Specifying RDF Datasets</a>
      * @return
      *        null if no data set is specified, indicating the use of
-     *        system default graph. Otherwise a {@link DataSet} object is returned.
+     *        system default ImmutableGraph. Otherwise a {@link DataSet} object is returned.
      */
     public DataSet getDataSet();
 
     /**
      * <p>Gets the query pattern of the WHERE clause for the query.</p>
      * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#GraphPattern">
-     * SPARQL Query Language: 5 Graph Patterns</a>
+     * SPARQL Query Language: 5 ImmutableGraph Patterns</a>
      * @return
      *        the {@link GroupGraphPattern} of the WHERE clause for this query.
      *        If the WHERE clause is not specified, null is returned.

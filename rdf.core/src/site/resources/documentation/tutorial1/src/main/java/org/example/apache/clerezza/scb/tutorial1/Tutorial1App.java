@@ -46,8 +46,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
+import org.apache.clerezza.rdf.core.ImmutableGraph;
 import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.access.TcManager;
@@ -64,13 +64,13 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 public class Tutorial1App extends JPanel {
 
     //where our knowledge is stored
-    private MGraph mGraph;
+    private Graph graph;
     //the URI for which the context is shown
     private String selectedUri;
     //These get notified when the selected URI changes
     private Set<UriChangedListener> uriChangedListeners
             = new HashSet<UriChangedListener>();
-    //these get notified when mGraph was modified
+    //these get notified when graph was modified
     private Set<GraphChangedListener> graphChangedListeners
             = new HashSet<GraphChangedListener>();
 
@@ -100,10 +100,10 @@ public class Tutorial1App extends JPanel {
         this.selectedUri = selectedUri;
         //get the singleton instance of TcManager
         final TcManager tcManager = TcManager.getInstance();
-        //the arbitrary name we use for our mutable graph
+        //the arbitrary name we use for our mutable ImmutableGraph
         final UriRef mGraphName = new UriRef("http://tutorial.example.org/");
-        //the m-graph into which we'll put the triples we collect
-        mGraph = tcManager.createMGraph(mGraphName);
+        //the m-ImmutableGraph into which we'll put the triples we collect
+        graph = tcManager.createMGraph(mGraphName);
         try {
             loadContextFromWeb();
         } catch (IOException ex) {
@@ -111,7 +111,7 @@ public class Tutorial1App extends JPanel {
             ex.printStackTrace();
         }
 
-        Iterator<Triple> typeTriples = mGraph.filter(new UriRef(selectedUri), RDF.type, null);
+        Iterator<Triple> typeTriples = graph.filter(new UriRef(selectedUri), RDF.type, null);
         while (typeTriples.hasNext()) {
             System.out.println(typeTriples.next());
         }
@@ -145,12 +145,12 @@ public class Tutorial1App extends JPanel {
      * 
      * @return the context of the currently selected URI
      */
-    public Graph getCurrentContext() {
-        return new GraphNode(new UriRef(selectedUri), mGraph).getNodeContext();
+    public ImmutableGraph getCurrentContext() {
+        return new GraphNode(new UriRef(selectedUri), graph).getNodeContext();
     }
 
     /**
-     * Dereference the selected URI and add the retroieved triples to mGraph
+     * Dereference the selected URI and add the retroieved triples to graph
      *
      * @throws java.io.IOException
      */
@@ -162,9 +162,9 @@ public class Tutorial1App extends JPanel {
 
         //get the singleton instance of Parser
         final Parser parser = Parser.getInstance();
-        Graph deserializedGraph = parser.parse(inputStream, "application/rdf+xml");
+        ImmutableGraph deserializedGraph = parser.parse(inputStream, "application/rdf+xml");
 
-        mGraph.addAll(deserializedGraph);
+        graph.addAll(deserializedGraph);
         for (GraphChangedListener graphChangedListener : graphChangedListeners) {
             graphChangedListener.graphChanged();
         }
@@ -237,16 +237,16 @@ public class Tutorial1App extends JPanel {
 
     private Component createFooter() {
         JPanel footer = new JPanel();
-        footer.add(new JLabel("Size of local graph: "));
-        final JLabel sizeLabel = new JLabel(Integer.toString(mGraph.size()));
+        footer.add(new JLabel("Size of local ImmutableGraph: "));
+        final JLabel sizeLabel = new JLabel(Integer.toString(graph.size()));
         addGraphChangedListeners(new GraphChangedListener() {
 
             @Override
             public void graphChanged() {
-                sizeLabel.setText(Integer.toString(mGraph.size()));
+                sizeLabel.setText(Integer.toString(graph.size()));
             }
         });
-        sizeLabel.setText(Integer.toString(mGraph.size()));
+        sizeLabel.setText(Integer.toString(graph.size()));
         footer.add(sizeLabel);
         return footer;
     }

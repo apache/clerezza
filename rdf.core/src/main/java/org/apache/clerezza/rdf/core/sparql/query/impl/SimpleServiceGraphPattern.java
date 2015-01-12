@@ -38,7 +38,7 @@ public class SimpleServiceGraphPattern implements ServiceGraphPattern {
             throw new IllegalArgumentException("Service endpoint may not be null");
         }
         if (groupGraphPattern == null) {
-            throw new IllegalArgumentException("Group Graph Pattern may not be null");
+            throw new IllegalArgumentException("Group ImmutableGraph Pattern may not be null");
         }
         this.service = service;
         this.groupGraphPattern = groupGraphPattern;

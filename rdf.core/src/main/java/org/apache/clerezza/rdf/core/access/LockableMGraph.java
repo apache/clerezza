@@ -19,23 +19,23 @@
 package org.apache.clerezza.rdf.core.access;
 
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Graph;
 
 /**
  *
- * Represents an <code>MGraph</code> that can be locked for reading/writing.
+ * Represents an <code>Graph</code> that can be locked for reading/writing.
  *
  * @author rbn
  */
-public interface  LockableMGraph extends MGraph {
+public interface  LockableMGraph extends Graph {
 
     /**
      * The lock provided by this methods allows to create read- and write-locks
      * that span individual method calls. Having a read locks prevents other
-     * threads from writing to this MGraph, having a write-lock prevents other
+     * threads from writing to this Graph, having a write-lock prevents other
      * threads from reading and writing.
      *
-     * @return the lock of this MGraph
+     * @return the lock of this Graph
      */
     ReadWriteLock getLock();
 }

@@ -23,9 +23,9 @@ import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
 /**
- * The LOAD operation reads an RDF document from a IRI and inserts its triples into the specified graph in the Graph Store. 
- * If the destination graph already exists, then no data in that graph will be removed.
- * If no destination graph IRI is provided to load the triples into, then the data will be loaded into the default graph.
+ * The LOAD operation reads an RDF document from a IRI and inserts its triples into the specified ImmutableGraph in the ImmutableGraph Store. 
+ * If the destination ImmutableGraph already exists, then no data in that ImmutableGraph will be removed.
+ * If no destination ImmutableGraph IRI is provided to load the triples into, then the data will be loaded into the default ImmutableGraph.
  * @see <a href="http://www.w3.org/TR/2013/REC-sparql11-update-20130321/#load">SPARQL 1.1 Update: 3.1.4 LOAD</a>
  * @author hasan
  */

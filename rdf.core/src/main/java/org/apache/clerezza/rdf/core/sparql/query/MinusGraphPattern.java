@@ -27,14 +27,14 @@ public interface MinusGraphPattern extends GraphPattern {
     /**
      *
      * @return
-     *        the minuend graph pattern to match
+     *        the minuend ImmutableGraph pattern to match
      */
     public GraphPattern getMinuendGraphPattern();
 
     /**
      *
      * @return
-     *        the subtrahend graph pattern to match
+     *        the subtrahend ImmutableGraph pattern to match
      */
     public GroupGraphPattern getSubtrahendGraphPattern();
 }

@@ -20,11 +20,11 @@ package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.OutputStream;
 
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 
 
 /**
- * An instance of this class serializes <code>TripleCollection</code>s to a
+ * An instance of this class serializes <code>Graph</code>s to a
  * specified serialization format. The supported formats are indicated using the
  * {@link SupportedFormat} annotation.
  *
@@ -32,7 +32,7 @@ import org.apache.commons.rdf.TripleCollection;
  */
 public interface SerializingProvider {
     
-    /** Serializes a <code>TripleCollection</code> to a specified
+    /** Serializes a <code>Graph</code> to a specified
      * <code>OutputStream</code> in the format identified by
      * <code>formatIdentifier</code>. This method will be invoked
      * for a supported format, a format is considered as supported if the part
@@ -43,7 +43,7 @@ public interface SerializingProvider {
      * @param tc
      * @param formatIdentifier
      */
-    public void serialize(OutputStream outputStream, TripleCollection tc,
+    public void serialize(OutputStream outputStream, Graph tc,
             String formatIdentifier);
 
 }

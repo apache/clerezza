@@ -18,61 +18,203 @@
  */
 package org.apache.clerezza.rdf.core.impl;
 
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.TripleCollection;
 import org.apache.commons.rdf.Iri;
 
 /**
+ * For now this is a minimalistic implementation, without any indexes or other
+ * optimizations.
+ *
+ * This class is not public, implementations should use {@link SimpleGraph} or
+ * {@link SimpleMGraph}.
  *
  * @author reto
  */
-public class SimpleGraph extends AbstractGraph {
+class SimpleGraph extends AbstractGraph {
 
-    private TripleCollection tripleCollection;
+    final Set<Triple> triples;
+
+    private boolean checkConcurrency = false;
+
+    class SimpleIterator implements Iterator<Triple> {
+
+        private Iterator<Triple> listIter;
+        private boolean isValid = true;
+
+        public SimpleIterator(Iterator<Triple> listIter) {
+            this.listIter = listIter;
+        }
+        private Triple currentNext;
+
+        @Override
+        public boolean hasNext() {
+            checkValidity();
+            return listIter.hasNext();
+        }
+
+        @Override
+        public Triple next() {
+            checkValidity();
+            currentNext = listIter.next();
+            return currentNext;
+        }        
+
+        @Override
+        public void remove() {
+            checkValidity();
+            listIter.remove();
+            triples.remove(currentNext);            
+            invalidateIterators(this);            
+        }
+
+        private void checkValidity() throws ConcurrentModificationException {
+            if (checkConcurrency && !isValid) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        private void invalidate() {
+            isValid = false;
+        }
+    }    
+    
+    private final Set<SoftReference<SimpleIterator>> iterators =
+            Collections.synchronizedSet(new HashSet<SoftReference<SimpleIterator>>());
     
     /**
-     * Creates a graph with the triples in tripleCollection
-     * 
-     * @param tripleCollection the collection of triples this Graph shall consist of
+     * Creates an empty SimpleGraph
      */
-    public SimpleGraph(TripleCollection tripleCollection) {
-        this.tripleCollection = new SimpleTripleCollection(tripleCollection.iterator());
+    public SimpleGraph() {
+        triples = Collections.synchronizedSet(new HashSet<Triple>());
     }
 
     /**
-     * Creates a graph with the triples in tripleCollection.
-     *
-     * This construction allows to specify if the tripleCollection might change
-     * in future. If tripleCollectionWillNeverChange is set to true it will
-     * assume that the collection never changes, in this case the collection
-     * isn't copied making things more efficient.
-     *
-     * @param tripleCollection the collection of triples this Graph shall consist of
-     * @param tripleCollectionWillNeverChange true if the caller promises tripleCollection will never change
+     * Creates a SimpleGraph using the passed iterator, the iterator 
+     * is consumed before the constructor returns
+     * 
+     * @param iterator
      */
-    public SimpleGraph(TripleCollection tripleCollection, boolean tripleCollectionWillNeverChange) {
-        if (!tripleCollectionWillNeverChange) {
-            this.tripleCollection = new SimpleTripleCollection(tripleCollection.iterator());
-        } else {
-            this.tripleCollection = tripleCollection;
+    public SimpleGraph(Iterator<Triple> iterator) {
+        triples = new HashSet<Triple>();
+        while (iterator.hasNext()) {
+            Triple triple = iterator.next();
+            triples.add(triple);
         }
     }
-    
-    public SimpleGraph(Iterator<Triple> tripleIter) {
-        this.tripleCollection = new SimpleTripleCollection(tripleIter);
+
+    /**
+     * Creates a SimpleGraph for the specified set of triples, 
+     * subsequent modification of baseSet do affect the created instance.
+     * 
+     * @param baseSet
+     */
+    public SimpleGraph(Set<Triple> baseSet) {
+        this.triples = baseSet;
+    }
+
+    /**
+     * Creates a SimpleGraph for the specified collection of triples,
+     * subsequent modification of baseSet do not affect the created instance.
+     *
+     * @param baseSet
+     */
+    public SimpleGraph(Collection<Triple> baseCollection) {
+        this.triples = new HashSet<Triple>(baseCollection);
     }
 
     @Override
     public int size() {
-        return tripleCollection.size();
+        return triples.size();
     }
 
     @Override
-    public Iterator<Triple> performFilter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
-        return tripleCollection.filter(subject, predicate, object);
+    public Iterator<Triple> performFilter(final BlankNodeOrIri subject, final Iri predicate, final RdfTerm object) {
+        final List<Triple> tripleList = new ArrayList<Triple>();
+        synchronized (triples) {
+            Iterator<Triple> baseIter = triples.iterator();
+            while (baseIter.hasNext()) {
+                Triple triple = baseIter.next();
+                if ((subject != null)
+                        && (!triple.getSubject().equals(subject))) {
+                    continue;
+                }
+                if ((predicate != null)
+                        && (!triple.getPredicate().equals(predicate))) {
+                    continue;
+                }
+                if ((object != null)
+                        && (!triple.getObject().equals(object))) {
+                    continue;
+                }
+                tripleList.add(triple);
+            }
+
+            final Iterator<Triple> listIter = tripleList.iterator();
+            SimpleIterator resultIter = new SimpleIterator(listIter);
+            if (checkConcurrency) {
+                iterators.add(new SoftReference<SimpleIterator>(resultIter));
+            }
+            return resultIter;
+        }
+    }
+
+
+    @Override
+    public boolean performAdd(Triple e) {
+        boolean modified = triples.add(e);
+        if (modified) {
+            invalidateIterators(null);
+        }
+        return modified;
+    }
+    
+    private void invalidateIterators(SimpleIterator caller) {
+        if (!checkConcurrency) {
+            return;
+        }
+        Set<SoftReference> oldReferences = new HashSet<SoftReference>();
+        synchronized(iterators) {
+            for (SoftReference<SimpleGraph.SimpleIterator> softReference : iterators) {
+                SimpleIterator simpleIterator = softReference.get();
+                if (simpleIterator == null) {
+                    oldReferences.add(softReference);
+                    continue;
+                }
+                if (simpleIterator != caller) {
+                    simpleIterator.invalidate();
+                }
+            }
+        }
+        iterators.removeAll(oldReferences);
+    }
+
+    /**
+     * Specifies whether or not to throw <code>ConcurrentModificationException</code>s,
+     * if this simple triple collection is modified concurrently. Concurrency
+     * check is set to false by default.
+     *
+     * @param bool Specifies whether or not to check concurrent modifications.
+     */
+    public void setCheckConcurrency(boolean bool) {
+        checkConcurrency = bool;
+    }
+    
+    
+    @Override
+    public ImmutableGraph getImmutableGraph() {
+        return new SimpleImmutableGraph(this);
     }
 }

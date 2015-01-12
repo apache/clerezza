@@ -28,24 +28,24 @@ import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;
  */
 public class SimpleGraphGraphPattern implements GraphGraphPattern {
 
-    private UriRefOrVariable graph;
+    private UriRefOrVariable ImmutableGraph;
     private GroupGraphPattern groupGraphPattern;
 
-    public SimpleGraphGraphPattern(UriRefOrVariable graph,
+    public SimpleGraphGraphPattern(UriRefOrVariable ImmutableGraph,
             GroupGraphPattern groupGraphPattern) {
-        if (graph == null) {
-            throw new IllegalArgumentException("Graph may not be null");
+        if (ImmutableGraph == null) {
+            throw new IllegalArgumentException("ImmutableGraph may not be null");
         }
         if (groupGraphPattern == null) {
-            throw new IllegalArgumentException("Group Graph Pattern may not be null");
+            throw new IllegalArgumentException("Group ImmutableGraph Pattern may not be null");
         }
-        this.graph = graph;
+        this.ImmutableGraph = ImmutableGraph;
         this.groupGraphPattern = groupGraphPattern;
     }
 
     @Override
     public UriRefOrVariable getGraph() {
-        return graph;
+        return ImmutableGraph;
     }
 
     @Override

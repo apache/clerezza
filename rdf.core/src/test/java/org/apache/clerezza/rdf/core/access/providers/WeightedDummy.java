@@ -23,15 +23,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.clerezza.rdf.core.impl.SimpleGraph;
+import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 
 /**
@@ -40,10 +40,10 @@ import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
  */
 public class WeightedDummy implements WeightedTcProvider {
 
-    private Map<Iri, TripleCollection> tripleMap = new HashMap<Iri, TripleCollection>();
+    private Map<Iri, Graph> tripleMap = new HashMap<Iri, Graph>();
 
     @Override
-    public Graph createGraph(Iri name, TripleCollection triples)
+    public ImmutableGraph createGraph(Iri name, Graph triples)
             throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
@@ -51,15 +51,15 @@ public class WeightedDummy implements WeightedTcProvider {
         }
 
         try {
-            // throws NoSuchEntityException if a TripleCollection with that name
+            // throws NoSuchEntityException if a Graph with that name
             // already exists
             this.getTriples(name);
         } catch (NoSuchEntityException e) {
-            Graph result;
-            if (Graph.class.isAssignableFrom(triples.getClass())) {
-                result = (Graph) triples;
+            ImmutableGraph result;
+            if (ImmutableGraph.class.isAssignableFrom(triples.getClass())) {
+                result = (ImmutableGraph) triples;
             } else {
-                result = new SimpleGraph(triples);
+                result = new SimpleImmutableGraph(triples);
             }
             tripleMap.put(name, result);
 
@@ -69,18 +69,18 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public MGraph createMGraph(Iri name) throws EntityAlreadyExistsException {
+    public Graph createMGraph(Iri name) throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
             throw new IllegalArgumentException("Name must not be null");
         }
 
         try {
-            // throws NoSuchEntityException if a TripleCollection with that name
+            // throws NoSuchEntityException if a Graph with that name
             // already exists
             this.getTriples(name);
         } catch (NoSuchEntityException e) {
-            MGraph result = new SimpleMGraph();
+            Graph result = new SimpleMGraph();
             tripleMap.put(name, result);
             return result;
         }
@@ -88,7 +88,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public void deleteTripleCollection(Iri name)
+    public void deleteGraph(Iri name)
             throws NoSuchEntityException, EntityUndeletableException {
         if (tripleMap.remove(name) == null) {
             throw new NoSuchEntityException(name);
@@ -96,41 +96,41 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getGraph(Iri name) throws NoSuchEntityException {
-        TripleCollection tripleCollection = tripleMap.get(name);
-        if (tripleCollection == null) {
+    public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
+        Graph Graph = tripleMap.get(name);
+        if (Graph == null) {
             throw new NoSuchEntityException(name);
-        } else if (Graph.class.isAssignableFrom(tripleCollection.getClass())) {
-            return (Graph) tripleCollection;
+        } else if (ImmutableGraph.class.isAssignableFrom(Graph.getClass())) {
+            return (ImmutableGraph) Graph;
         }
         throw new NoSuchEntityException(name);
     }
 
     @Override
-    public MGraph getMGraph(Iri name) throws NoSuchEntityException {
-        TripleCollection tripleCollection = tripleMap.get(name);
-        if (tripleCollection == null) {
+    public Graph getMGraph(Iri name) throws NoSuchEntityException {
+        Graph Graph = tripleMap.get(name);
+        if (Graph == null) {
             throw new NoSuchEntityException(name);
-        } else if (MGraph.class.isAssignableFrom(tripleCollection.getClass())) {
-            return (MGraph) tripleCollection;
+        } else if (Graph.class.isAssignableFrom(Graph.getClass())) {
+            return (Graph) Graph;
         }
         throw new NoSuchEntityException(name);
     }
 
     @Override
-    public Set<Iri> getNames(Graph graph) {
+    public Set<Iri> getNames(ImmutableGraph ImmutableGraph) {
         throw new UnsupportedOperationException(
                 "Not supported yet. equals() has to be implemented first");
     }
 
     @Override
-    public TripleCollection getTriples(Iri name)
+    public Graph getTriples(Iri name)
             throws NoSuchEntityException {
-        TripleCollection tripleCollection = tripleMap.get(name);
-        if (tripleCollection == null) {
+        Graph Graph = tripleMap.get(name);
+        if (Graph == null) {
             throw new NoSuchEntityException(name);
         } else {
-            return tripleCollection;
+            return Graph;
         }
     }
 
@@ -140,7 +140,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> listGraphs() {
+    public Set<Iri> listImmutableGraphs() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -150,7 +150,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> listTripleCollections() {
+    public Set<Iri> listGraphs() {
         return listMGraphs();
     }
 }

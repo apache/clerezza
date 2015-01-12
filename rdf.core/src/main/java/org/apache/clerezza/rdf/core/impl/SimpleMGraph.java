@@ -22,15 +22,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
 import org.apache.commons.rdf.Triple;
 
 /**
  *
  * @author reto
  */
-public class SimpleMGraph extends SimpleTripleCollection implements MGraph {
+public class SimpleMGraph extends SimpleGraph implements Graph {
 
     /**
      * Creates an empty SimpleMGraph
@@ -50,10 +50,6 @@ public class SimpleMGraph extends SimpleTripleCollection implements MGraph {
         super(iterator);
     }
 
-    @Override
-    public Graph getGraph() {
-        return new SimpleGraph(this);
-    }
 }
 
     

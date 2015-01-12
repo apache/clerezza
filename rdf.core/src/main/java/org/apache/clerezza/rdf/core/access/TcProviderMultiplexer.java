@@ -30,9 +30,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.QueryEngine;
 
@@ -85,7 +85,7 @@ public class TcProviderMultiplexer implements TcProvider {
 
     /**
      * subclasses overwrite this method to be notified when a new
-     * Graph is available (either because it has been created or being
+     * ImmutableGraph is available (either because it has been created or being
      * provided by a newly added WeightedTcProvider). The default implementation
      * does nothing.
      *
@@ -96,7 +96,7 @@ public class TcProviderMultiplexer implements TcProvider {
 
     /**
      * subclasses overwrite this method to be notified when a new
-     * MGraph is available (either because it has been created or being
+     * Graph is available (either because it has been created or being
      * provided by a newly added WeightedTcProvider). The default implementation
      * does nothing.
      *
@@ -106,11 +106,11 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     /**
-     * subclasses overwrite this method to be notified whenTripleCollection is 
+     * subclasses overwrite this method to be notified whenGraph is 
      * no longer available (either because it has been deleted or bacause its
      * WeightedTcProvider was removed). The default implementation does nothing.
      *
-     * for implementational reasons even for name of TripleCollection not
+     * for implementational reasons even for name of Graph not
      * previously registered.
      *
      * @param name
@@ -135,7 +135,7 @@ public class TcProviderMultiplexer implements TcProvider {
      */
     private void updateLockableMGraphCache(WeightedTcProvider provider,
             boolean providerAdded) {
-        Set<Iri> uriSet = provider.listTripleCollections();
+        Set<Iri> uriSet = provider.listGraphs();
         if (!(uriSet == null || uriSet.isEmpty())) {
             if (providerAdded) {
                 weightedProviderAdded(provider, uriSet);
@@ -159,9 +159,9 @@ public class TcProviderMultiplexer implements TcProvider {
 	                    continue;
 	                }
 	            }
-	            TripleCollection triples = newProvider.getTriples(name);
-	            if (triples instanceof MGraph) {
-	           		mGraphCache.put(name, new MGraphHolder(newProvider, ensureLockable((MGraph)triples)));
+	            Graph triples = newProvider.getTriples(name);
+	            if (triples instanceof Graph) {
+	           		mGraphCache.put(name, new MGraphHolder(newProvider, ensureLockable((Graph)triples)));
 	                mGraphAppears(name);
 	            } else {
 	                graphAppears(name);
@@ -196,13 +196,13 @@ public class TcProviderMultiplexer implements TcProvider {
                 mGraphCache.remove(name);
 
             	if (isCachingEnabled()) {
-	                // check if another WeightedTcProvider has the TripleCollection.
+	                // check if another WeightedTcProvider has the Graph.
 	                // And if so register as service.
 	                for (WeightedTcProvider provider : providerList) {
 	                    try {
-	                        TripleCollection triples = provider.getTriples(name);
-	                        if (triples instanceof MGraph) {
-	                       		mGraphCache.put(name, new MGraphHolder(provider, ensureLockable((MGraph)triples)));
+	                        Graph triples = provider.getTriples(name);
+	                        if (triples instanceof Graph) {
+	                       		mGraphCache.put(name, new MGraphHolder(provider, ensureLockable((Graph)triples)));
 	                            mGraphAppears(name);
 	                        } else {
 	                            graphAppears(name);
@@ -218,7 +218,7 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Graph getGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
         for (TcProvider provider : providerList) {
             try {
                 return provider.getGraph(name);
@@ -258,7 +258,7 @@ public class TcProviderMultiplexer implements TcProvider {
             throws NoSuchEntityException {
         for (WeightedTcProvider provider : providerList) {
             try {
-                MGraph providedMGraph = provider.getMGraph(name);
+                Graph providedMGraph = provider.getMGraph(name);
                 LockableMGraph result = ensureLockable(providedMGraph);
 
                 if (isCachingEnabled()) {
@@ -276,16 +276,16 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public TripleCollection getTriples(Iri name)
+    public Graph getTriples(Iri name)
             throws NoSuchEntityException {
-        TripleCollection result;
+        Graph result;
         for (WeightedTcProvider provider : providerList) {
             try {
                 result = provider.getTriples(name);
-                if (!(result instanceof MGraph)) {
+                if (!(result instanceof Graph)) {
                     return result;
                 } else {
-                    // This is to ensure the MGraph gets added to the cache
+                    // This is to ensure the Graph gets added to the cache
                     return getMGraph(name);
                 }
             } catch (NoSuchEntityException e) {
@@ -303,7 +303,7 @@ public class TcProviderMultiplexer implements TcProvider {
 
         for (WeightedTcProvider provider : providerList) {
             try {
-                MGraph providedMGraph = provider.createMGraph(name);
+                Graph providedMGraph = provider.createMGraph(name);
                 LockableMGraph result;
                 if (providedMGraph instanceof LockableMGraph) {
                     result = (LockableMGraph) providedMGraph;
@@ -311,7 +311,7 @@ public class TcProviderMultiplexer implements TcProvider {
                     result = new LockableMGraphWrapper(providedMGraph);
                 }
 
-                // unregisters a possible Graph or MGraph service under this name
+                // unregisters a possible ImmutableGraph or Graph service under this name
                 // provided by a WeightedTcProvider with a lower weight.
                 tcDisappears(name);
                 if (isCachingEnabled()) {
@@ -326,16 +326,16 @@ public class TcProviderMultiplexer implements TcProvider {
             }
         }
         throw new UnsupportedOperationException(
-                "No provider could create MGraph.");
+                "No provider could create Graph.");
     }
 
     @Override
-    public Graph createGraph(Iri name, TripleCollection triples) {
+    public ImmutableGraph createGraph(Iri name, Graph triples) {
         for (WeightedTcProvider provider : providerList) {
             try {
-                Graph result = provider.createGraph(name, triples);
+                ImmutableGraph result = provider.createGraph(name, triples);
 
-                // unregisters a possible Graph or MGraph service under this name
+                // unregisters a possible ImmutableGraph or Graph service under this name
                 // provided by a WeightedTcProvider with a lower weight.
                 tcDisappears(name);
                 if (isCachingEnabled()) {
@@ -350,14 +350,14 @@ public class TcProviderMultiplexer implements TcProvider {
             }
         }
         throw new UnsupportedOperationException(
-                "No provider could create Graph.");
+                "No provider could create ImmutableGraph.");
     }
 
     @Override
-    public void deleteTripleCollection(Iri name) {
+    public void deleteGraph(Iri name) {
         for (TcProvider provider : providerList) {
             try {
-                provider.deleteTripleCollection(name);
+                provider.deleteGraph(name);
                 final MGraphHolder holder = mGraphCache.get(name);
                 if ((holder != null)
                         && (holder.getWeightedTcProvider() != null)
@@ -374,7 +374,7 @@ public class TcProviderMultiplexer implements TcProvider {
                 //we do nothing and try our luck with the next provider
             }
         }
-        // this throws a NoSuchEntityException if the graph doesn't exist
+        // this throws a NoSuchEntityException if the ImmutableGraph doesn't exist
         getTriples(name);
         // the entity exists but cannot be deleted
         throw new UnsupportedOperationException(
@@ -382,10 +382,10 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Set<Iri> getNames(Graph graph) {
+    public Set<Iri> getNames(ImmutableGraph ImmutableGraph) {
         Set<Iri> result = new HashSet<Iri>();
         for (TcProvider provider : providerList) {
-            result.addAll(provider.getNames(graph));
+            result.addAll(provider.getNames(ImmutableGraph));
         }
         return result;
     }
@@ -409,15 +409,15 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Set<Iri> listTripleCollections() {
+    public Set<Iri> listImmutableGraphs() {
         Set<Iri> result = new HashSet<Iri>();
         for (TcProvider provider : providerList) {
-            result.addAll(provider.listTripleCollections());
+            result.addAll(provider.listImmutableGraphs());
         }
         return result;
     }
 
-    private LockableMGraph ensureLockable(MGraph providedMGraph) {
+    private LockableMGraph ensureLockable(Graph providedMGraph) {
         LockableMGraph result;
         if (providedMGraph instanceof LockableMGraph) {
             result = (LockableMGraph) providedMGraph;
@@ -429,16 +429,16 @@ public class TcProviderMultiplexer implements TcProvider {
 
     /**
      * Contains an unsecured LockableMGraph, a ServiceRegistration and
-     * the WeightedTcProvider that generated the graph
+     * the WeightedTcProvider that generated the ImmutableGraph
      */
     private static class MGraphHolder {
 
         private WeightedTcProvider tcProvider;
         private WeakReference<LockableMGraph> mGraphReference;
 
-        MGraphHolder(WeightedTcProvider tcProvider, LockableMGraph mGraph) {
+        MGraphHolder(WeightedTcProvider tcProvider, LockableMGraph graph) {
             this.tcProvider = tcProvider;
-            this.mGraphReference = new WeakReference<LockableMGraph>(mGraph);
+            this.mGraphReference = new WeakReference<LockableMGraph>(graph);
         }
 
         LockableMGraph getMGraph() {

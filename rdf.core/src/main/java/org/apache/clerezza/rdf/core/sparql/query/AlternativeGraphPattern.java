@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.core.sparql.query;
 import java.util.List;
 
 /**
- * Defines alternative graph patterns.
+ * Defines alternative ImmutableGraph patterns.
  * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#alternatives">
  * SPARQL Query Language: 7 Matching Alternatives</a>
  *

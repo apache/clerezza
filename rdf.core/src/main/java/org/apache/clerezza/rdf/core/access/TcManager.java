@@ -32,14 +32,14 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
-import org.apache.clerezza.rdf.core.impl.WriteBlockedTripleCollection;
+import org.apache.clerezza.rdf.core.impl.WriteBlockedGraph;
 import org.apache.clerezza.rdf.core.sparql.NoQueryEngineException;
 import org.apache.clerezza.rdf.core.sparql.ParseException;
 import org.apache.clerezza.rdf.core.sparql.QueryEngine;
@@ -85,34 +85,34 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  *
  * This class returns
  * <code>LockableMGraph</code>s a subtype of
- * <code>MGraph</code> that allows read/write locks.
+ * <code>Graph</code> that allows read/write locks.
  *
- * This class also registers all TripleCollections as services with the property
+ * This class also registers all Graphs as services with the property
  * 'name' indicating there name.
  *
- * Security checks are done when a TripleCollection is retrieved. The returned
- * TripleCollection will do no further security checks. Because of this it
+ * Security checks are done when a Graph is retrieved. The returned
+ * Graph will do no further security checks. Because of this it
  * should not be passed to a context where different access control applies. If
- * an MGraph is retrieved without having write permission the returned mGraph
+ * an Graph is retrieved without having write permission the returned graph
  * will be read-only.
  *
- * If a TripleCollections needs to passed around across different security
+ * If a Graphs needs to passed around across different security
  * contexts the one retrieved from the OSGi service whiteboard should be used as
  * this performs access control on every access.
  *
  * @author reto, mir, hasan
  *
  */
-//immedia is set to true as this should register the graph services (even if manager service is not required)
+//immedia is set to true as this should register the ImmutableGraph services (even if manager service is not required)
 @Component(service = TcManager.class, immediate = true)
 @Properties({
 	@Property(name = TcManager.MGRAPH_CACHE_ENABLED, boolValue = true, description = "Enable caching mgraphs."),
-	@Property(name = TcManager.TRIPLECOLLECTION_SERVICES_ENABLED, boolValue = true, description = "Register triple collections as services.") })
+	@Property(name = TcManager.Graph_SERVICES_ENABLED, boolValue = true, description = "Register triple collections as services.") })
 public class TcManager extends TcProviderMultiplexer {
 
     public final static String GENERAL_PURPOSE_TC = "general.purpose.tc";
-    public final static String TRIPLECOLLECTION_SERVICES_ENABLED = "triplecollection.services.enabled";
-    public final static String MGRAPH_CACHE_ENABLED = "mgraph.cache.enabled";
+    public final static String Graph_SERVICES_ENABLED = "Graph.services.enabled";
+    public final static String MGRAPH_CACHE_ENABLED = "graph.cache.enabled";
 
     private static volatile TcManager instance;
     private TcAccessController tcAccessController = new TcAccessController() {
@@ -185,7 +185,7 @@ public class TcManager extends TcProviderMultiplexer {
         
         // Read configuration
 		isTcServicesEnabled = true;
-		Object configTcServicesEnabled = componentContext.getProperties().get(TRIPLECOLLECTION_SERVICES_ENABLED);
+		Object configTcServicesEnabled = componentContext.getProperties().get(Graph_SERVICES_ENABLED);
 		if ( configTcServicesEnabled != null && configTcServicesEnabled instanceof String ) {
 			isTcServicesEnabled = Boolean.valueOf((String)configTcServicesEnabled);				
 		}
@@ -211,7 +211,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public Graph getGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
         tcAccessController.checkReadPermission(name);
         return super.getGraph(name);
     }
@@ -228,12 +228,12 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public TripleCollection getTriples(Iri name) {
+    public Graph getTriples(Iri name) {
         try {
             tcAccessController.checkReadWritePermission(name);
         } catch (AccessControlException e) {
             tcAccessController.checkReadPermission(name);
-            return new WriteBlockedTripleCollection(
+            return new WriteBlockedGraph(
                     super.getTriples(name));
         }
         return super.getTriples(name);
@@ -247,20 +247,20 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public Graph createGraph(Iri name, TripleCollection triples) {
+    public ImmutableGraph createGraph(Iri name, Graph triples) {
         tcAccessController.checkReadWritePermission(name);
         return super.createGraph(name, triples);
     }
 
     @Override
-    public void deleteTripleCollection(Iri name) {
+    public void deleteGraph(Iri name) {
         tcAccessController.checkReadWritePermission(name);
-        super.deleteTripleCollection(name);
+        super.deleteGraph(name);
     }
 
     @Override
-    public Set<Iri> getNames(Graph graph) {
-        return super.getNames(graph);
+    public Set<Iri> getNames(ImmutableGraph ImmutableGraph) {
+        return super.getNames(ImmutableGraph);
     }
 
     @Override
@@ -276,8 +276,8 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public Set<Iri> listTripleCollections() {
-        Set<Iri> result = super.listTripleCollections();
+    public Set<Iri> listImmutableGraphs() {
+        Set<Iri> result = super.listImmutableGraphs();
         return excludeNonReadable(result);
     }
 
@@ -304,11 +304,11 @@ public class TcManager extends TcProviderMultiplexer {
      * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
      *
      * @param query the sparql query to execute
-     * @param defaultGraph the default graph against which to execute the query
+     * @param defaultGraph the default ImmutableGraph against which to execute the query
      * if no FROM clause is present
-     * @return the resulting ResultSet, Graph or Boolean value
+     * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */
-    public Object executeSparqlQuery(String query, TripleCollection defaultGraph) throws ParseException {
+    public Object executeSparqlQuery(String query, Graph defaultGraph) throws ParseException {
         TcProvider singleTargetTcProvider = null;
 
         final Iri defaultGraphName = new Iri("urn:x-temp:/kjsfadfhfasdffds");
@@ -331,11 +331,11 @@ public class TcManager extends TcProviderMultiplexer {
     /**
      * Executes any sparql query. The type of the result object will vary
      * depending on the type of the query. Note that this method only works for
-     * queries that do not need a default graph.
+     * queries that do not need a default ImmutableGraph.
      *
      * @param query the sparql query to execute
      * @param forceFastlane indicate whether to force fastlane usage.
-     * @return the resulting ResultSet, Graph or Boolean value
+     * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */
     public Object executeSparqlQuery(String query, boolean forceFastlane) throws ParseException {
         TcProvider singleTargetTcProvider = null;
@@ -367,8 +367,8 @@ public class TcManager extends TcProviderMultiplexer {
      * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
      *
      * @param query the sparql query to execute
-     * @param defaultGraphName the graph to be used as default graph in the Sparql Graph Store
-     * @return the resulting ResultSet, Graph or Boolean value
+     * @param defaultGraphName the ImmutableGraph to be used as default ImmutableGraph in the Sparql ImmutableGraph Store
+     * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */
     public Object executeSparqlQuery(String query, Iri defaultGraphName) throws ParseException {
       return executeSparqlQuery(query, defaultGraphName, false);
@@ -380,9 +380,9 @@ public class TcManager extends TcProviderMultiplexer {
      * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
      *
      * @param query the sparql query to execute
-     * @param defaultGraph the graph to be used as default graph in the Sparql Graph Store
+     * @param defaultGraph the ImmutableGraph to be used as default ImmutableGraph in the Sparql ImmutableGraph Store
      * @param forceFastlane indicate whether to force fastlane usage.
-     * @return the resulting ResultSet, Graph or Boolean value
+     * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */
     public Object executeSparqlQuery(String query, Iri defaultGraphName, boolean forceFastlane) throws ParseException {
         TcProvider singleTargetTcProvider = null;
@@ -411,14 +411,14 @@ public class TcManager extends TcProviderMultiplexer {
      * depending on the type of the query.
      *
      * @param query the sparql query to execute
-     * @param defaultGraph the default graph against which to execute the query
+     * @param defaultGraph the default ImmutableGraph against which to execute the query
      * if no FROM clause is present
-     * @return the resulting ResultSet, Graph or Boolean value
+     * @return the resulting ResultSet, ImmutableGraph or Boolean value
      *
      * @deprecated Query is discontinued
      */
     @Deprecated
-    public Object executeSparqlQuery(Query query, TripleCollection defaultGraph) {
+    public Object executeSparqlQuery(Query query, Graph defaultGraph) {
         final QueryEngine queryEngine = this.queryEngine;
         if (queryEngine != null) {
             return queryEngine.execute(this, defaultGraph, query);
@@ -431,14 +431,14 @@ public class TcManager extends TcProviderMultiplexer {
      * Executes a sparql SELECT query.
      *
      * @param query the sparql SELECT query to execute
-     * @param defaultGraph the default graph against which to execute the query
+     * @param defaultGraph the default ImmutableGraph against which to execute the query
      * if not FROM clause is present
      * @return the resulting ResultSet
      * @deprecated Query is discontinued
      */
     @Deprecated
     public ResultSet executeSparqlQuery(SelectQuery query,
-            TripleCollection defaultGraph) {
+            Graph defaultGraph) {
         return (ResultSet) executeSparqlQuery((Query) query, defaultGraph);
     }
 
@@ -446,14 +446,14 @@ public class TcManager extends TcProviderMultiplexer {
      * Executes a sparql ASK query.
      *
      * @param query the sparql ASK query to execute
-     * @param defaultGraph the default graph against which to execute the query
+     * @param defaultGraph the default ImmutableGraph against which to execute the query
      * if not FROM clause is present
      * @return the boolean value this query evaluates to
      * @deprecated Query is discontinued
      */
     @Deprecated
     public boolean executeSparqlQuery(AskQuery query,
-            TripleCollection defaultGraph) {
+            Graph defaultGraph) {
         return (Boolean) executeSparqlQuery((Query) query, defaultGraph);
     }
 
@@ -461,30 +461,30 @@ public class TcManager extends TcProviderMultiplexer {
      * Executes a sparql DESCRIBE query.
      *
      * @param query the sparql DESCRIBE query to execute
-     * @param defaultGraph the default graph against which to execute the query
+     * @param defaultGraph the default ImmutableGraph against which to execute the query
      * if not FROM clause is present
-     * @return the resulting Graph
+     * @return the resulting ImmutableGraph
      * @deprecated Query is discontinued
      */
     @Deprecated
-    public Graph executeSparqlQuery(DescribeQuery query,
-            TripleCollection defaultGraph) {
-        return (Graph) executeSparqlQuery((Query) query, defaultGraph);
+    public ImmutableGraph executeSparqlQuery(DescribeQuery query,
+            Graph defaultGraph) {
+        return (ImmutableGraph) executeSparqlQuery((Query) query, defaultGraph);
     }
 
     /**
      * Executes a sparql CONSTRUCT query.
      *
      * @param query the sparql CONSTRUCT query to execute
-     * @param defaultGraph the default graph against which to execute the query
+     * @param defaultGraph the default ImmutableGraph against which to execute the query
      * if not FROM clause is present
-     * @return the resulting Graph
+     * @return the resulting ImmutableGraph
      * @deprecated Query is discontinued
      */
     @Deprecated
-    public Graph executeSparqlQuery(ConstructQuery query,
-            TripleCollection defaultGraph) {
-        return (Graph) executeSparqlQuery((Query) query, defaultGraph);
+    public ImmutableGraph executeSparqlQuery(ConstructQuery query,
+            Graph defaultGraph) {
+        return (ImmutableGraph) executeSparqlQuery((Query) query, defaultGraph);
     }
 
     /**
@@ -562,7 +562,7 @@ public class TcManager extends TcProviderMultiplexer {
     		// Only create the service when activated. When not activated
     		// creating will be delayed till after activation.
 	        if (componentContext != null) {
-	            registerTripleCollectionAsService(name, true);
+	            registerGraphAsService(name, true);
 	        }
     	}
     }
@@ -573,25 +573,25 @@ public class TcManager extends TcProviderMultiplexer {
     		// Only create the service when activated. When not activated
     		// creating will be delayed till after activation.
 	        if (componentContext != null) {
-	            registerTripleCollectionAsService(name, false);
+	            registerGraphAsService(name, false);
 	        }
     	}
     }
 
-    private void registerTripleCollectionAsService(Iri name, boolean isMGraph) {
+    private void registerGraphAsService(Iri name, boolean isMGraph) {
         Dictionary<String,Object> props = new Hashtable<String, Object>();
         props.put("name", name.getUnicodeString());
         String[] interfaceNames;
         Object service;
         if (isMGraph) {
             interfaceNames = new String[]{
-                MGraph.class.getName(),
+                Graph.class.getName(),
                 LockableMGraph.class.getName()
             };
             service = new MGraphServiceFactory(this, name, tcAccessController);
         } else {
-            interfaceNames = new String[]{Graph.class.getName()};
-            service = new GraphServiceFactory(this, name, tcAccessController);
+            interfaceNames = new String[]{ImmutableGraph.class.getName()};
+            service = new ImmutableGraphServiceFactory(this, name, tcAccessController);
         }
         final int bundleState = componentContext.getBundleContext().getBundle().getState();
         if ((bundleState == Bundle.ACTIVE) || (bundleState == Bundle.STARTING)) {
@@ -613,13 +613,13 @@ public class TcManager extends TcProviderMultiplexer {
     private TcProvider getSingleTargetTcProvider(final Set<Iri> referencedGraphs) {
         TcProvider singleTargetTcProvider = null;
         for (WeightedTcProvider provider : providerList) {
-            final Set<Iri> providerTripleCollections = provider.listTripleCollections();
-            if (providerTripleCollections.containsAll(referencedGraphs)) {
+            final Set<Iri> providerGraphs = provider.listGraphs();
+            if (providerGraphs.containsAll(referencedGraphs)) {
                singleTargetTcProvider = provider;
                break; //success
             }
             for (Iri graphName : referencedGraphs) {
-                if (providerTripleCollections.contains(graphName)) {
+                if (providerGraphs.contains(graphName)) {
                     break; //failure
                 }
             }      

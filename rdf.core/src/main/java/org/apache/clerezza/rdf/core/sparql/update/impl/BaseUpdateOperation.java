@@ -64,7 +64,7 @@ public abstract class BaseUpdateOperation implements UpdateOperation {
                 return result;
             case NAMED:
             case ALL:
-                return tcProvider.listTripleCollections();
+                return tcProvider.listGraphs();
             default:
                 return graphs;
         }
@@ -75,11 +75,11 @@ public abstract class BaseUpdateOperation implements UpdateOperation {
         return getGraphs(defaultGraph, tcProvider, destinationGraphSpec, destinationGraphs);
     }
 
-    public void addInputGraph(Iri graph) {
-        inputGraphs.add(graph);
+    public void addInputGraph(Iri ImmutableGraph) {
+        inputGraphs.add(ImmutableGraph);
     }
 
-    public void addDestinationGraph(Iri graph) {
-        destinationGraphs.add(graph);
+    public void addDestinationGraph(Iri ImmutableGraph) {
+        destinationGraphs.add(ImmutableGraph);
     }
 }

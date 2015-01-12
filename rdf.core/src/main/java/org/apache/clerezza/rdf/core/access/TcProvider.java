@@ -20,54 +20,64 @@ package org.apache.clerezza.rdf.core.access;
 
 import java.util.Set;
 
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.MGraph;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 
 /**
- * A TC (TripleCollection) Provider allows access to and optionally 
- * creation of named {@link Graph}s and {@link MGraph}s (mutable graphs)
+ * A TC (Graph) Provider allows access to and optionally 
+ * creation of named {@link ImmutableGraph}s and {@link Graph}s (mutable graphs)
  *
  * @author reto
  */
 public interface TcProvider {
 
     /**
-     * Get a <code>Graph</code> by its name
+     * Get a <code>ImmutableGraph</code> by its name
      *
-     * @param name the name of the Graph
-     * @return the <code>Graph</code> with the specified name
-     * @throws NoSuchEntityException if there is no <code>Graph</code>
+     * @param name the name of the ImmutableGraph
+     * @return the <code>ImmutableGraph</code> with the specified name
+     * @throws NoSuchEntityException if there is no <code>ImmutableGraph</code>
      *         with the specified name
      */
-    Graph getGraph(Iri name) throws NoSuchEntityException;
+    ImmutableGraph getGraph(Iri name) throws NoSuchEntityException;
 
     /**
-     * Get an <code>MGraph</code> by its name. The instances
+     * Get an <code>Graph</code> by its name. The instances
      * returned in different invocations are <code>equals</code>.
      *
-     * @param the name of the <code>MGraph</code>
-     * @return name the <code>MGraph</code> with the specified name
-     * @throws NoSuchEntityException if there is no <code>MGraph</code>
+     * @param the name of the <code>Graph</code>
+     * @return name the <code>Graph</code> with the specified name
+     * @throws NoSuchEntityException if there is no <code>Graph</code>
      *         with the specified name
      */
-    MGraph getMGraph(Iri name) throws NoSuchEntityException;
+    Graph getMGraph(Iri name) throws NoSuchEntityException;
     
     /**
-     * This method is used to get a <code>TripleCollection</code> indifferently
-     * whether it's a Graph or an MGraph. If the <code>name</code> names an 
-     * <code>MGraph</code> the result is the same as when invoking 
+     * This method is used to get a <code>Graph</code> indifferently
+     * whether it's a ImmutableGraph or an Graph. If the <code>name</code> names an 
+     * <code>Graph</code> the result is the same as when invoking 
      * <code>getMGraph</code> with that argument, analogously for 
-     * <code>Graph</code>S the method returns an instance equals to what 
+     * <code>ImmutableGraph</code>S the method returns an instance equals to what 
      * <code>getGraph</code> would return. 
      * 
-     * @param name the name of the <Code>Graph</code> or <code>MGraph</code>
-     * @return the <Code>Graph</code> or <code>MGraph</code>
-     * @throws NoSuchEntityException if there is no <code>Graph</code>
-     *         or <code>MGraph</code> with the specified name
+     * @param name the name of the <Code>ImmutableGraph</code> or <code>Graph</code>
+     * @return the <Code>ImmutableGraph</code> or <code>Graph</code>
+     * @throws NoSuchEntityException if there is no <code>ImmutableGraph</code>
+     *         or <code>Graph</code> with the specified name
      */
-    TripleCollection getTriples(Iri name) throws NoSuchEntityException;
+    Graph getTriples(Iri name) throws NoSuchEntityException;
+
+    /**
+     * Lists the name of the <Code>ImmutableGraph</code>s available through this
+     * <code>TcProvider</code>, implementations may take into account the
+     * security context and omit <Code>ImmutableGraph</code>s for which access is not
+     * allowed.
+     *
+     * @return the list of <Code>ImmutableGraph</code>s
+     */
+    Set<Iri> listImmutableGraphs();
 
     /**
      * Lists the name of the <Code>Graph</code>s available through this
@@ -77,76 +87,66 @@ public interface TcProvider {
      *
      * @return the list of <Code>Graph</code>s
      */
-    Set<Iri> listGraphs();
-
-    /**
-     * Lists the name of the <Code>MGraph</code>s available through this
-     * <code>TcProvider</code>, implementations may take into account the
-     * security context and omit <Code>MGraph</code>s for which access is not
-     * allowed.
-     *
-     * @return the list of <Code>MGraph</code>s
-     */
     Set<Iri> listMGraphs();
 
     /**
-     * Lists the name of the <Code>TripleCollection</code>s available through this
+     * Lists the name of the <Code>Graph</code>s available through this
      * <code>TcProvider</code> indifferently whether they are Graphs or an
      * MGraphs, implementations may take into account the security context and
-     * omit <Code>TripleCollection</code>s for which access is not allowed.
+     * omit <Code>Graph</code>s for which access is not allowed.
      *
-     * @return the list of <Code>TripleCollection</code>s
+     * @return the list of <Code>Graph</code>s
      */
-    Set<Iri> listTripleCollections();
+    Set<Iri> listGraphs();
 
     /**
-     * Creates an initially empty <code>MGraph</code> with a specified name
+     * Creates an initially empty <code>Graph</code> with a specified name
      *
-     * @param name names the new <code>MGraph</code>
-     * @return the newly created <code>MGraph</code>
-     * @throws UnsupportedOperationException if this provider doesn't support
-     *         creating <code>MGraph</code>S
-     * @throws EntityAlreadyExistsException if an MGraph with the specified name
-     *         already exists
-     */
-    MGraph createMGraph(Iri name) throws UnsupportedOperationException, 
-            EntityAlreadyExistsException;
-
-    /**
-     * Creates a <code>Graph</code> with a specified name
-     *
-     * @param name the name of the <code>Graph</code> to be created
-     * @param triples the triples of the new <code>Graph</code>
+     * @param name names the new <code>Graph</code>
      * @return the newly created <code>Graph</code>
      * @throws UnsupportedOperationException if this provider doesn't support
      *         creating <code>Graph</code>S
-     * @throws EntityAlreadyExistsException if a Graph with the specified name
+     * @throws EntityAlreadyExistsException if an Graph with the specified name
      *         already exists
      */
-    Graph createGraph(Iri name, TripleCollection triples) 
+    Graph createMGraph(Iri name) throws UnsupportedOperationException, 
+            EntityAlreadyExistsException;
+
+    /**
+     * Creates a <code>ImmutableGraph</code> with a specified name
+     *
+     * @param name the name of the <code>ImmutableGraph</code> to be created
+     * @param triples the triples of the new <code>ImmutableGraph</code>
+     * @return the newly created <code>ImmutableGraph</code>
+     * @throws UnsupportedOperationException if this provider doesn't support
+     *         creating <code>ImmutableGraph</code>S
+     * @throws EntityAlreadyExistsException if a ImmutableGraph with the specified name
+     *         already exists
+     */
+    ImmutableGraph createGraph(Iri name, Graph triples) 
             throws UnsupportedOperationException, EntityAlreadyExistsException;
     
     /**
-     * Deletes the <code>Graph</code> or <code>MGraph</code> of a specified name.
-     * If <code>name</code> references a Graph and the graph has other names, it
+     * Deletes the <code>ImmutableGraph</code> or <code>Graph</code> of a specified name.
+     * If <code>name</code> references a ImmutableGraph and the ImmutableGraph has other names, it
      * will still be available with those other names.
      * 
      * @param name the entity to be removed
      * @throws UnsupportedOperationException if this provider doesn't support
      *         entities deletion.
      * @throws NoSuchEntityException if <code>name</code> doesn't refer to a 
-     *           <code>Graph</code> or an <code>MGraph</code>.
-     * @throws EntityUndeletableException if the specified Graph is undeletable
+     *           <code>ImmutableGraph</code> or an <code>Graph</code>.
+     * @throws EntityUndeletableException if the specified ImmutableGraph is undeletable
      */
-    void deleteTripleCollection(Iri name) throws UnsupportedOperationException,
+    void deleteGraph(Iri name) throws UnsupportedOperationException,
             NoSuchEntityException, EntityUndeletableException;
 
     /**
-     * get a set of the names of a <code>Graph</code>
+     * get a set of the names of a <code>ImmutableGraph</code>
      *
-     * @param graph
-     * @return the set names of <code>Graph</code>, the set is empty if
-     *         <code>Graph</code> is unknown
+     * @param ImmutableGraph
+     * @return the set names of <code>ImmutableGraph</code>, the set is empty if
+     *         <code>ImmutableGraph</code> is unknown
      */
-    Set<Iri> getNames(Graph graph);
+    Set<Iri> getNames(ImmutableGraph ImmutableGraph);
 }

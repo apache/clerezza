@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.MGraph;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
@@ -49,7 +49,7 @@ public class GraphMatcher {
      * get a mapping from g1 to g2 or null if the graphs are not isomorphic. The
      * returned map maps each <code>BNode</code>s from g1 to one
      * of g2. If the graphs are ground graphs the method return an empty map if
-     * the graph are equals and null otherwise.
+     * the ImmutableGraph are equals and null otherwise.
      * <p/>
      * NOTE: This method does not returned mapping from blank nodes to grounded
      * nodes, a bnode in g1 is not a vraiable that may match any node, but must
@@ -72,9 +72,9 @@ public class GraphMatcher {
      * @param g2
      * @return a Set of NodePairs
      */
-    public static Map<BlankNode, BlankNode> getValidMapping(TripleCollection og1, TripleCollection og2) {
-        MGraph g1 = new SimpleMGraph(og1);
-        MGraph g2 = new SimpleMGraph(og2);
+    public static Map<BlankNode, BlankNode> getValidMapping(Graph og1, Graph og2) {
+        Graph g1 = new SimpleMGraph(og1);
+        Graph g2 = new SimpleMGraph(og2);
         if (!Utils.removeGrounded(g1,g2)) {
             return null;
         }
@@ -100,7 +100,7 @@ public class GraphMatcher {
         return matchings;
     }
 
-    private static Map<BlankNode, BlankNode> trialAndErrorMatching(MGraph g1, MGraph g2,
+    private static Map<BlankNode, BlankNode> trialAndErrorMatching(Graph g1, Graph g2,
             Map<Set<BlankNode>, Set<BlankNode>> matchingGroups) {
         if (log.isDebugEnabled()) {
             Set<BlankNode> bn1  = Utils.getBNodes(g1);
@@ -118,7 +118,7 @@ public class GraphMatcher {
         return null;
     }
 
-    private static boolean checkMapping(MGraph g1, MGraph g2, Map<BlankNode, BlankNode> map) {
+    private static boolean checkMapping(Graph g1, Graph g2, Map<BlankNode, BlankNode> map) {
         for (Triple triple : g1) {
             if (!g2.contains(map(triple, map))) {
                 return false;

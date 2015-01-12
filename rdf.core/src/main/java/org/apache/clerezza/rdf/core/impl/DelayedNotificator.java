@@ -67,7 +67,7 @@ class DelayedNotificator {
                                 try {
                                     listener.graphChanged(eventsLocal);
                                 } catch (Exception e) {
-                                    log.warn("Exception delivering graph event", e);
+                                    log.warn("Exception delivering ImmutableGraph event", e);
                                 }
                             }
                         }

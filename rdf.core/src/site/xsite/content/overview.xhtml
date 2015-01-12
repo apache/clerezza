@@ -33,7 +33,7 @@
 		<p>
 			Smart Content Binding (SCB) is an open source framework developed by
 			clerezza.org aiming primarily at providing a java implementation of the
-			graph data model specified by W3C RDF [<a href="#ref1">1</a>] and
+			ImmutableGraph data model specified by W3C RDF [<a href="#ref1">1</a>] and
 			functionalities to operate on that data model. SCB offers a service
 			interface to access multiple named graphs and it can use various
 			providers to manage RDF graphs in a technology specific manner, e.g.,
@@ -44,7 +44,7 @@
                         your code against the Jena API while using the Sesame provider to store
                         your data in a Sesame store).
 			Furthermore, SCB offers a serialization and a parsing service to convert
-			a graph into a certain representation (format) and vice versa. In order
+			a ImmutableGraph into a certain representation (format) and vice versa. In order
 			to support ontologies usage, SCB provides a tool to convert ontologies
 			defined in various formats including RDF/XML into Java classes.
 		</p>
@@ -67,16 +67,16 @@
 			<br/><i>Figure 1: SCB Architecture</i>
 		</p>
 		<p>
-			The Core contains interface definitions of the RDF graph data model and its
-			implementation. The three main classes are <code>Graph</code>, <code>MGraph</code>,
-			and <code>TripleCollection</code>. The class <code>Graph</code> represents an
-			immutable RDF Graph, as such its identity criterion is defined in terms of
-			graph-isomorphism. The class <code>MGraph</code> represents a mutable RDF Graph,
-			which enables triples to be added to or removed from a graph. The class
-			<code>TripleCollection</code> is the super class of both the class <code>Graph</code>
-			and <code>MGraph</code>.
+			The Core contains interface definitions of the RDF ImmutableGraph data model and its
+			implementation. The three main classes are <code>ImmutableGraph</code>, <code>Graph</code>,
+			and <code>Graph</code>. The class <code>ImmutableGraph</code> represents an
+			immutable RDF ImmutableGraph, as such its identity criterion is defined in terms of
+			ImmutableGraph-isomorphism. The class <code>Graph</code> represents a mutable RDF ImmutableGraph,
+			which enables triples to be added to or removed from a ImmutableGraph. The class
+			<code>Graph</code> is the super class of both the class <code>ImmutableGraph</code>
+			and <code>Graph</code>.
 			SCB Core provides three services: <code>TcManager</code> [<a href="#ref4">4</a>] allows access to
-			the various <code>TripleCollection</code>s, <code>Parser</code> [<a href="#ref5">5</a>] and
+			the various <code>Graph</code>s, <code>Parser</code> [<a href="#ref5">5</a>] and
 			<code>Serializer</code> [<a href="#ref6">6</a>] to allow reading and writing graphs from and to
 			various formats. In an OSGi environment these services are accessed using the
 			service registry or injected using OSGi Declarative Services. In a non OSGi environment

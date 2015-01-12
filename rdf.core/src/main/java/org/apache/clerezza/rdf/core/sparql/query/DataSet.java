@@ -31,7 +31,7 @@ public interface DataSet {
     /**
      * 
      * @return
-     *        an empty set if no default graph is specified,
+     *        an empty set if no default ImmutableGraph is specified,
      *        otherwise a set of their UriRefs
      */
     public Set<Iri> getDefaultGraphs();
@@ -39,7 +39,7 @@ public interface DataSet {
     /**
      *
      * @return
-     *        an empty set if no named graph is specified,
+     *        an empty set if no named ImmutableGraph is specified,
      *        otherwise a set of their UriRefs
      */
     public Set<Iri> getNamedGraphs();

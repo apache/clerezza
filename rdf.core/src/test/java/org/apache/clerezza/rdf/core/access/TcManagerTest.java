@@ -24,9 +24,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA1;
@@ -82,11 +82,11 @@ public class TcManagerTest {
 
 	@Test
 	public void getGraphFromA() {
-		Graph graphA = graphAccess.getGraph(uriRefA);
+		ImmutableGraph graphA = graphAccess.getGraph(uriRefA);
 		Iterator<Triple> iterator = graphA.iterator();
 		assertEquals(new TripleImpl(uriRefA, uriRefA, uriRefA), iterator.next());
 		assertFalse(iterator.hasNext());
-		TripleCollection triplesA = graphAccess.getTriples(uriRefA);
+		Graph triplesA = graphAccess.getTriples(uriRefA);
 		iterator = triplesA.iterator();
 		assertEquals(new TripleImpl(uriRefA, uriRefA, uriRefA), iterator.next());
 		assertFalse(iterator.hasNext());
@@ -94,11 +94,11 @@ public class TcManagerTest {
 
 	@Test
 	public void getGraphFromB() {
-		Graph graphA = graphAccess.getGraph(uriRefB);
+		ImmutableGraph graphA = graphAccess.getGraph(uriRefB);
 		Iterator<Triple> iterator = graphA.iterator();
 		assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
 		assertFalse(iterator.hasNext());
-		TripleCollection triplesA = graphAccess.getTriples(uriRefB);
+		Graph triplesA = graphAccess.getTriples(uriRefB);
 		iterator = triplesA.iterator();
 		assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
 		assertFalse(iterator.hasNext());
@@ -107,12 +107,12 @@ public class TcManagerTest {
 	@Test
 	public void getGraphFromAAfterUnbinding() {
 		graphAccess.unbindWeightedTcProvider(weightedA);
-		Graph graphA = graphAccess.getGraph(uriRefA);
+		ImmutableGraph graphA = graphAccess.getGraph(uriRefA);
 		Iterator<Triple> iterator = graphA.iterator();
 		assertEquals(new TripleImpl(uriRefA1, uriRefA1, uriRefA1),
 				iterator.next());
 		assertFalse(iterator.hasNext());
-		TripleCollection triplesA = graphAccess.getTriples(uriRefA);
+		Graph triplesA = graphAccess.getTriples(uriRefA);
 		iterator = triplesA.iterator();
 		assertEquals(new TripleImpl(uriRefA1, uriRefA1, uriRefA1),
 				iterator.next());
@@ -123,12 +123,12 @@ public class TcManagerTest {
 	public void getGraphFromAWithHeavy() {
 		final WeightedAHeavy weightedAHeavy = new WeightedAHeavy();
 		graphAccess.bindWeightedTcProvider(weightedAHeavy);
-		Graph graphA = graphAccess.getGraph(uriRefA);
+		ImmutableGraph graphA = graphAccess.getGraph(uriRefA);
 		Iterator<Triple> iterator = graphA.iterator();
 		assertEquals(new TripleImpl(uriRefAHeavy, uriRefAHeavy, uriRefAHeavy),
 				iterator.next());
 		assertFalse(iterator.hasNext());
-		TripleCollection triplesA = graphAccess.getTriples(uriRefA);
+		Graph triplesA = graphAccess.getTriples(uriRefA);
 		iterator = triplesA.iterator();
 		assertEquals(new TripleImpl(uriRefAHeavy, uriRefAHeavy, uriRefAHeavy),
 				iterator.next());
@@ -196,16 +196,16 @@ public class TcManagerTest {
 	public void executeSparqlQueryWithEngineWithString() throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		TripleCollection tripleCollection = new SimpleMGraph();
+		Graph Graph = new SimpleMGraph();
 
 		// Execute
-		graphAccess.executeSparqlQuery("", tripleCollection);
+		graphAccess.executeSparqlQuery("", Graph);
 
 		// Verify
-		Mockito.verify(queryEngine).execute(graphAccess, tripleCollection, "");
+		Mockito.verify(queryEngine).execute(graphAccess, Graph, "");
 		Mockito.verify(queryEngine, Mockito.never()).execute(
 				(TcManager) Mockito.anyObject(),
-				(TripleCollection) Mockito.anyObject(),
+				(Graph) Mockito.anyObject(),
 				(Query) Mockito.anyObject());
 	}
 
@@ -213,41 +213,41 @@ public class TcManagerTest {
 	public void executeSparqlQueryWithEngineWithSelectQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		TripleCollection tripleCollection = new SimpleMGraph();
+		Graph Graph = new SimpleMGraph();
 		SelectQuery query = Mockito.mock(SelectQuery.class);
 
 		// Execute
-		graphAccess.executeSparqlQuery(query, tripleCollection);
+		graphAccess.executeSparqlQuery(query, Graph);
 
 		// Verify
-		Mockito.verify(queryEngine).execute(graphAccess, tripleCollection,
+		Mockito.verify(queryEngine).execute(graphAccess, Graph,
 				(Query) query);
 		Mockito.verify(queryEngine, Mockito.never()).execute(
 				(TcManager) Mockito.anyObject(),
-				(TripleCollection) Mockito.anyObject(), Mockito.anyString());
+				(Graph) Mockito.anyObject(), Mockito.anyString());
 	}
 
 	@Test
 	public void executeSparqlQueryWithEngineWithAskQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		TripleCollection tripleCollection = new SimpleMGraph();
+		Graph Graph = new SimpleMGraph();
 		AskQuery query = Mockito.mock(AskQuery.class);
 
 		Mockito.when(
 				queryEngine.execute((TcManager) Mockito.anyObject(),
-						(TripleCollection) Mockito.anyObject(),
+						(Graph) Mockito.anyObject(),
 						(Query) Mockito.anyObject())).thenReturn(Boolean.TRUE);
 
 		// Execute
-		graphAccess.executeSparqlQuery(query, tripleCollection);
+		graphAccess.executeSparqlQuery(query, Graph);
 
 		// Verify
-		Mockito.verify(queryEngine).execute(graphAccess, tripleCollection,
+		Mockito.verify(queryEngine).execute(graphAccess, Graph,
 				(Query) query);
 		Mockito.verify(queryEngine, Mockito.never()).execute(
 				(TcManager) Mockito.anyObject(),
-				(TripleCollection) Mockito.anyObject(), Mockito.anyString());
+				(Graph) Mockito.anyObject(), Mockito.anyString());
 	}
 
 	@Test
@@ -255,18 +255,18 @@ public class TcManagerTest {
 			throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		TripleCollection tripleCollection = new SimpleMGraph();
+		Graph Graph = new SimpleMGraph();
 		DescribeQuery query = Mockito.mock(DescribeQuery.class);
 
 		// Execute
-		graphAccess.executeSparqlQuery(query, tripleCollection);
+		graphAccess.executeSparqlQuery(query, Graph);
 
 		// Verify
-		Mockito.verify(queryEngine).execute(graphAccess, tripleCollection,
+		Mockito.verify(queryEngine).execute(graphAccess, Graph,
 				(Query) query);
 		Mockito.verify(queryEngine, Mockito.never()).execute(
 				(TcManager) Mockito.anyObject(),
-				(TripleCollection) Mockito.anyObject(), Mockito.anyString());
+				(Graph) Mockito.anyObject(), Mockito.anyString());
 	}
 
 	@Test
@@ -274,18 +274,18 @@ public class TcManagerTest {
 			throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		TripleCollection tripleCollection = new SimpleMGraph();
+		Graph Graph = new SimpleMGraph();
 		ConstructQuery query = Mockito.mock(ConstructQuery.class);
 
 		// Execute
-		graphAccess.executeSparqlQuery(query, tripleCollection);
+		graphAccess.executeSparqlQuery(query, Graph);
 
 		// Verify
-		Mockito.verify(queryEngine).execute(graphAccess, tripleCollection,
+		Mockito.verify(queryEngine).execute(graphAccess, Graph,
 				(Query) query);
 		Mockito.verify(queryEngine, Mockito.never()).execute(
 				(TcManager) Mockito.anyObject(),
-				(TripleCollection) Mockito.anyObject(), Mockito.anyString());
+				(Graph) Mockito.anyObject(), Mockito.anyString());
 	}
 
 	// ------------------------------------------------------------------------

@@ -20,20 +20,20 @@ package org.apache.clerezza.rdf.core.access;
 
 import java.security.AccessControlException;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.clerezza.rdf.core.impl.SimpleGraph;
+import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
 
 /**
  * A SecuredMGraph is a LockableMGraph that wraps a LockableMGraph checking each
- * access for the rights on a the graph for which the uri is passed to the 
+ * access for the rights on a the ImmutableGraph for which the uri is passed to the 
  * constructor.
  *
  * @author mir
  */
-public class SecuredMGraph extends SecuredTripleCollection implements LockableMGraph {
+public class SecuredMGraph extends SecuredGraph implements LockableMGraph {
 
     private LockableMGraph wrapped;
 
@@ -43,10 +43,6 @@ public class SecuredMGraph extends SecuredTripleCollection implements LockableMG
         this.wrapped = wrapped;
     }
 
-    @Override
-    public Graph getGraph() {
-        return new SimpleGraph(this);
-    }
 
     @Override
     public ReadWriteLock getLock() {

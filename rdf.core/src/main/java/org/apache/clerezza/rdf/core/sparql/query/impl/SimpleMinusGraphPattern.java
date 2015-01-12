@@ -34,7 +34,7 @@ public class SimpleMinusGraphPattern implements MinusGraphPattern {
 
     /**
      * Constructs a {@link MinusGraphPattern} out of a {@link GraphPattern}
-     * as the minuend graph pattern and a {@link GroupGraphPattern} as the 
+     * as the minuend ImmutableGraph pattern and a {@link GroupGraphPattern} as the 
      * subtrahend pattern.
      * 
      * @param minuendGraphPattern
@@ -44,7 +44,7 @@ public class SimpleMinusGraphPattern implements MinusGraphPattern {
      */
     public SimpleMinusGraphPattern(GraphPattern minuendGraphPattern, GroupGraphPattern subtrahendGraphPattern) {
         if (subtrahendGraphPattern == null) {
-            throw new IllegalArgumentException("Subtrahend graph pattern may not be null");
+            throw new IllegalArgumentException("Subtrahend ImmutableGraph pattern may not be null");
         }
         if (minuendGraphPattern == null) {
             this.minuendGraphPattern = new SimpleGroupGraphPattern();

@@ -19,9 +19,9 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 /**
- * Specifying an optional graph pattern implies the existence of a main graph
+ * Specifying an optional ImmutableGraph pattern implies the existence of a main ImmutableGraph
  * pattern.
- * The main graph pattern is an empty group pattern if it is not specified.
+ * The main ImmutableGraph pattern is an empty group pattern if it is not specified.
  * @see <a href="http://www.w3.org/TR/rdf-sparql-query/#optionals">
  * SPARQL Query Language: 6 Including Optional Values</a>
  * 
@@ -32,14 +32,14 @@ public interface OptionalGraphPattern extends GraphPattern {
     /**
      *
      * @return
-     *        the main graph pattern to match
+     *        the main ImmutableGraph pattern to match
      */
     public GraphPattern getMainGraphPattern();
 
     /**
      *
      * @return
-     *        the optional graph pattern to match
+     *        the optional ImmutableGraph pattern to match
      */
     public GroupGraphPattern getOptionalGraphPattern();
 }

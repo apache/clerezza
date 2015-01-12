@@ -22,7 +22,7 @@ import org.apache.commons.rdf.Iri;
 
 /**
  * is thrown on an attempt to perform an operation on an entity (i.e. a
- * <code>Graph</code> or <code>MGraph</code> that does not exist.
+ * <code>ImmutableGraph</code> or <code>Graph</code> that does not exist.
  *
  * @author reto
  */
