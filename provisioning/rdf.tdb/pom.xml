@@ -40,7 +40,11 @@
         This feature depends on java and OSGi platform libraries (javax.xml,
         org.osgi.service.cm and others) as well as rdf and slf4j logging.
     </description>
-
+    <properties>
+        <ver.httpcore>4.2.5</ver.httpcore>
+        <ver.httpclient>4.3.6</ver.httpclient>
+        <ver.jackson>2.3.3</ver.jackson> <!-- should match dependency in jsonld-java -->
+    </properties>
     <dependencies>
 
         <dependency>
@@ -48,12 +52,76 @@
             <artifactId>rdf.jena.tdb.storage</artifactId>
             <version>0.7</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-osgi</artifactId>
+            <version>2.12.2-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
-            <groupId>org.apache.clerezza.ext</groupId>            
-            <artifactId>org.apache.jena.jena-tdb</artifactId>
-            <version>1.0.1_1</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-osgi</artifactId>
+            <version>${ver.httpclient}</version>
+            <exclusions>
+                <!-- These are all embedded within httpclient-osgi -->
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpmime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient-cache</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>fluent-hc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore-osgi</artifactId>
+            <version>${ver.httpcore}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jsonld-java</groupId>
+            <artifactId>jsonld-java</artifactId>
+            <version>0.5.1</version>
+        </dependency>
+        <!--
+        but until jsonld-java 0.5.1, we'll need to depend on jackson-databind and jackson-core ourselves
+        as bundles:
+        <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${ver.jackson}</version>
+        </dependency>
+        <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${ver.jackson}</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.9.2</version>
+        </dependency>
+
 
     </dependencies>
 
@@ -65,5 +133,17 @@
             </plugin>
         </plugins>
     </build>
+    
+    <repositories>
+        <repository>
+            <id>taverna-incubating</id>
+            <name>Apache Taverna incubating Repository</name>
+            <url>http://repository.mygrid.org.uk/artifactory/incubator-snapshot-local/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots />
+        </repository>
+    </repositories>
     
 </project>
