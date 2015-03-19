@@ -18,35 +18,37 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.clerezza.rdf.core.*;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.*;
+import org.apache.commons.rdf.impl.utils.*;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
+import org.apache.clerezza.rdf.core.LiteralFactory;
+import org.apache.commons.rdf.*;
 
 /**
  * This class represents a node in the context of a graph. It provides
  * utility methods to explore and modify its neighbourhood. The method
  * modifying the graph will throw an {@link UnsupportedOperationException}
- * it the underlying TripleCollection in immutable (i.e. is a {@link Graph}.
+ * it the underlying Graph in immutable (i.e. is a {@link ImmutableGraph}.
  *
  * @since 0.2
  * @author reto, mir
  */
 public class GraphNode {
 
-    private final Resource resource;
-    private final TripleCollection graph;
+    private final RdfTerm resource;
+    private final Graph graph;
 
     /**
      * Create a GraphNode representing resource within graph.
      *
      * @param resource the resource this GraphNode represents
-     * @param graph the TripleCollection that describes the resource
+     * @param graph the Graph that describes the resource
      */
-    public GraphNode(Resource resource, TripleCollection graph) {
+    public GraphNode(RdfTerm resource, Graph graph) {
         if (resource == null) {
             throw new IllegalArgumentException("resource may not be null");
         }
@@ -62,7 +64,7 @@ public class GraphNode {
      *
      * @return the graph of this GraphNode
      */
-    public TripleCollection getGraph() {
+    public Graph getGraph() {
         return graph;
     }
 
@@ -71,7 +73,7 @@ public class GraphNode {
      *
      * @return the node represented by this GraphNode
      */
-    public Resource getNode() {
+    public RdfTerm getNode() {
         return resource;
     }
 
@@ -90,38 +92,38 @@ public class GraphNode {
      * as subject or object and recursively the context of the b-nodes in any
      * of these statements.
      *
-     * The triples in the Graph returned by this method contain the same bnode
+     * The triples in the ImmutableGraph returned by this method contain the same bnode
      * instances as in the original graph.
      *
      * @return the context of the node represented by the instance
      */
-    public Graph getNodeContext() {
+    public ImmutableGraph getNodeContext() {
         Lock l = readLock();
         l.lock();
         try {
-            final HashSet<Resource> dontExpand = new HashSet<Resource>();
+            final HashSet<RdfTerm> dontExpand = new HashSet<RdfTerm>();
             dontExpand.add(resource);
-            if (resource instanceof UriRef) {
-                return getContextOf((UriRef) resource, dontExpand).getGraph();
+            if (resource instanceof Iri) {
+                return getContextOf((Iri) resource, dontExpand).getImmutableGraph();
             }
-            return getContextOf(resource, dontExpand).getGraph();
+            return getContextOf(resource, dontExpand).getImmutableGraph();
         } finally {
             l.unlock();
         }
 
     }
 
-    private MGraph getContextOf(UriRef node, final Set<Resource> dontExpand) {
+    private Graph getContextOf(Iri node, final Set<RdfTerm> dontExpand) {
         final String uriPrefix = node.getUnicodeString()+'#';
         return getContextOf(node, dontExpand, new Acceptor() {
 
             @Override
-            public boolean expand(Resource resource) {
-                if (resource instanceof BNode) {
+            public boolean expand(RdfTerm resource) {
+                if (resource instanceof BlankNode) {
                     return true;
                 }
-                if (resource instanceof UriRef) {
-                    return ((UriRef)resource).getUnicodeString().startsWith(uriPrefix);
+                if (resource instanceof Iri) {
+                    return ((Iri)resource).getUnicodeString().startsWith(uriPrefix);
                 }
                 return false;
             }
@@ -129,19 +131,19 @@ public class GraphNode {
     }
 
     /**
-     * Returns the context of a <code>NonLiteral</code>
+     * Returns the context of a <code>BlankNodeOrIri</code>
      *
      * @param node
      * @param dontExpand a list of bnodes at which to stop expansion, if node
-     * is a BNode it should be contained (potentially faster)
+     * is a BlankNode it should be contained (potentially faster)
      * @return the context of a node
      */
-    private MGraph getContextOf(Resource node, final Set<Resource> dontExpand) {
+    private Graph getContextOf(RdfTerm node, final Set<RdfTerm> dontExpand) {
         return getContextOf(node, dontExpand, new Acceptor() {
 
             @Override
-            public boolean expand(Resource resource) {
-                if (resource instanceof BNode) {
+            public boolean expand(RdfTerm resource) {
+                if (resource instanceof BlankNode) {
                     return true;
                 }
                 return false;
@@ -150,16 +152,16 @@ public class GraphNode {
     }
 
     private interface Acceptor {
-        boolean expand(Resource resource);
+        boolean expand(RdfTerm resource);
     }
-    private MGraph getContextOf(Resource node, final Set<Resource> dontExpand, Acceptor acceptor) {
-        MGraph result = new SimpleMGraph();
-        if (node instanceof NonLiteral) {
-            Iterator<Triple> forwardProperties = graph.filter((NonLiteral) node, null, null);
+    private Graph getContextOf(RdfTerm node, final Set<RdfTerm> dontExpand, Acceptor acceptor) {
+        Graph result = new SimpleGraph();
+        if (node instanceof BlankNodeOrIri) {
+            Iterator<Triple> forwardProperties = graph.filter((BlankNodeOrIri) node, null, null);
             while (forwardProperties.hasNext()) {
                 Triple triple = forwardProperties.next();
                 result.add(triple);
-                Resource object = triple.getObject();
+                RdfTerm object = triple.getObject();
                 if (acceptor.expand(object) && !dontExpand.contains(object)) {
                     dontExpand.add(object);
                     result.addAll(getContextOf(object, dontExpand, acceptor));
@@ -170,7 +172,7 @@ public class GraphNode {
         while (backwardProperties.hasNext()) {
             Triple triple = backwardProperties.next();
             result.add(triple);
-            NonLiteral subject = triple.getSubject();
+            BlankNodeOrIri subject = triple.getSubject();
             if (acceptor.expand(subject) && !dontExpand.contains(subject)) {
                 dontExpand.add(subject);
                 result.addAll(getContextOf(subject, dontExpand, acceptor));
@@ -179,8 +181,8 @@ public class GraphNode {
         return result;
     }
 
-    private <T> Iterator<T> getTypeSelectedObjects(UriRef property, final Class<T> type) {
-        final Iterator<Resource> objects = getObjects(property);
+    private <T> Iterator<T> getTypeSelectedObjects(Iri property, final Class<T> type) {
+        final Iterator<RdfTerm> objects = getObjects(property);
         return new Iterator<T>() {
 
             T next = prepareNext();
@@ -204,7 +206,7 @@ public class GraphNode {
 
             private T prepareNext() {
                 while (objects.hasNext()) {
-                    Resource nextObject = objects.next();
+                    RdfTerm nextObject = objects.next();
                     if (type.isAssignableFrom(nextObject.getClass())) {
                         return (T) nextObject;
                     }
@@ -214,8 +216,8 @@ public class GraphNode {
         };
     }
 
-    public Iterator<Literal> getLiterals(UriRef property) {
-        final Iterator<Resource> objects = getObjects(property);
+    public Iterator<Literal> getLiterals(Iri property) {
+        final Iterator<RdfTerm> objects = getObjects(property);
         return new Iterator<Literal>() {
 
             Literal next = prepareNext();
@@ -239,7 +241,7 @@ public class GraphNode {
 
             private Literal prepareNext() {
                 while (objects.hasNext()) {
-                    Resource nextObject = objects.next();
+                    RdfTerm nextObject = objects.next();
                     if (nextObject instanceof Literal) {
                         return (Literal) nextObject;
                     }
@@ -257,8 +259,8 @@ public class GraphNode {
      * @return the number of triples in the underlying triple-collection
      *        which meet the specified condition
      */
-    public int countObjects(UriRef property) {
-        return countTriples(graph.filter((NonLiteral) resource, property, null));
+    public int countObjects(Iri property) {
+        return countTriples(graph.filter((BlankNodeOrIri) resource, property, null));
     }
 
     private int countTriples(final Iterator<Triple> triples) {
@@ -277,10 +279,10 @@ public class GraphNode {
      * @param property the property
      * @return
      */
-    public Iterator<Resource> getObjects(UriRef property) {
-        if (resource instanceof NonLiteral) {
-            final Iterator<Triple> triples = graph.filter((NonLiteral) resource, property, null);
-            return new Iterator<Resource>() {
+    public Iterator<RdfTerm> getObjects(Iri property) {
+        if (resource instanceof BlankNodeOrIri) {
+            final Iterator<Triple> triples = graph.filter((BlankNodeOrIri) resource, property, null);
+            return new Iterator<RdfTerm>() {
 
                 @Override
                 public boolean hasNext() {
@@ -288,7 +290,7 @@ public class GraphNode {
                 }
 
                 @Override
-                public Resource next() {
+                public RdfTerm next() {
                     final Triple triple = triples.next();
                     if (triple != null) {
                         return triple.getObject();
@@ -303,7 +305,7 @@ public class GraphNode {
                 }
             };
         } else {
-            return new Iterator<Resource>() {
+            return new Iterator<RdfTerm>() {
 
                 @Override
                 public boolean hasNext() {
@@ -311,7 +313,7 @@ public class GraphNode {
                 }
 
                 @Override
-                public Resource next() {
+                public RdfTerm next() {
                     return null;
                 }
 
@@ -333,11 +335,11 @@ public class GraphNode {
      * @return true if the node represented by this object is the subject of a
      *         statement with the given prediate and object, false otherwise
      */
-    public boolean hasProperty(UriRef property, Resource object) {
+    public boolean hasProperty(Iri property, RdfTerm object) {
         Lock l = readLock();
         l.lock();
         try {
-            Iterator<Resource> objects = getObjects(property);
+            Iterator<RdfTerm> objects = getObjects(property);
             if (object == null) {
                 return objects.hasNext();
             }
@@ -360,7 +362,7 @@ public class GraphNode {
      * @return the number of triples in the underlying triple-collection
      *        which meet the specified condition
      */
-    public int countSubjects(UriRef property) {
+    public int countSubjects(Iri property) {
         Lock l = readLock();
         l.lock();
         try {
@@ -377,9 +379,9 @@ public class GraphNode {
      * @param property the property
      * @return
      */
-    public Iterator<NonLiteral> getSubjects(UriRef property) {
+    public Iterator<BlankNodeOrIri> getSubjects(Iri property) {
         final Iterator<Triple> triples = graph.filter(null, property, resource);
-        return new Iterator<NonLiteral>() {
+        return new Iterator<BlankNodeOrIri>() {
 
             @Override
             public boolean hasNext() {
@@ -387,7 +389,7 @@ public class GraphNode {
             }
 
             @Override
-            public NonLiteral next() {
+            public BlankNodeOrIri next() {
                 return triples.next().getSubject();
             }
 
@@ -398,24 +400,24 @@ public class GraphNode {
         };
     }
 
-    public Iterator<UriRef> getUriRefObjects(UriRef property) {
-        return getTypeSelectedObjects(property, UriRef.class);
+    public Iterator<Iri> getIriObjects(Iri property) {
+        return getTypeSelectedObjects(property, Iri.class);
 
     }
 
     /**
-     * Get all available properties as an {@link Iterator}<{@link UriRef}>.
-     * You can use <code>getObjects(UriRef property)</code> to get the values of
+     * Get all available properties as an {@link Iterator}<{@link Iri}>.
+     * You can use <code>getObjects(Iri property)</code> to get the values of
      * each property
      *
      * @return an iterator over properties of this node
      */
-    public Iterator<UriRef> getProperties() {
-        if (resource instanceof NonLiteral) {
-            final Iterator<Triple> triples = graph.filter((NonLiteral) resource, null, null);
+    public Iterator<Iri> getProperties() {
+        if (resource instanceof BlankNodeOrIri) {
+            final Iterator<Triple> triples = graph.filter((BlankNodeOrIri) resource, null, null);
             return getUniquePredicates(triples);
         } else {
-            return new Iterator<UriRef>() {
+            return new Iterator<Iri>() {
 
                 @Override
                 public boolean hasNext() {
@@ -423,7 +425,7 @@ public class GraphNode {
                 }
 
                 @Override
-                public UriRef next() {
+                public Iri next() {
                     return null;
                 }
 
@@ -436,13 +438,13 @@ public class GraphNode {
     }
 
     /**
-     * Get all inverse properties as an {@link Iterator}<{@link UriRef}>.
-     * You can use <code>getSubject(UriRef property)</code> to get the values of
+     * Get all inverse properties as an {@link Iterator}<{@link Iri}>.
+     * You can use <code>getSubject(Iri property)</code> to get the values of
      * each inverse property
      *
      * @return an iterator over properties pointing to this node
      */
-    public Iterator<UriRef> getInverseProperties() {
+    public Iterator<Iri> getInverseProperties() {
         final Iterator<Triple> triples = graph.filter(null, null, resource);
         return getUniquePredicates(triples);
     }
@@ -450,11 +452,11 @@ public class GraphNode {
     /**
      *
      * @param triples
-     * @returnan {@link Iterator}<{@link UriRef}> containing the predicates from
+     * @returnan {@link Iterator}<{@link Iri}> containing the predicates from
      * an {@link Iterator}<{@link Triple}>
      */
-    private Iterator<UriRef> getUniquePredicates(final Iterator<Triple> triples) {
-        final Set<UriRef> resultSet = new HashSet<UriRef>();
+    private Iterator<Iri> getUniquePredicates(final Iterator<Triple> triples) {
+        final Set<Iri> resultSet = new HashSet<Iri>();
         while (triples.hasNext()) {
             resultSet.add(triples.next().getPredicate());
         }
@@ -467,9 +469,9 @@ public class GraphNode {
      * @param predicate
      * @param object
      */
-    public void addProperty(UriRef predicate, Resource object) {
-        if (resource instanceof NonLiteral) {
-            graph.add(new TripleImpl((NonLiteral) resource, predicate, object));
+    public void addProperty(Iri predicate, RdfTerm object) {
+        if (resource instanceof BlankNodeOrIri) {
+            graph.add(new TripleImpl((BlankNodeOrIri) resource, predicate, object));
         } else {
             throw new RuntimeException("Literals cannot be the subject of a statement");
         }
@@ -483,7 +485,7 @@ public class GraphNode {
      * @param property the predicate of the triple to be created
      * @param value the value of the typed literal object
      */
-    public void addPropertyValue(UriRef property, Object value) {
+    public void addPropertyValue(Iri property, Object value) {
         addProperty(property,
                 LiteralFactory.getInstance().createTypedLiteral(value));
     }
@@ -495,9 +497,9 @@ public class GraphNode {
      * @param predicate
      * @param subject
      */
-    public void addInverseProperty(UriRef predicate, Resource subject) {
-        if (subject instanceof NonLiteral) {
-            graph.add(new TripleImpl((NonLiteral) subject, predicate, resource));
+    public void addInverseProperty(Iri predicate, RdfTerm subject) {
+        if (subject instanceof BlankNodeOrIri) {
+            graph.add(new TripleImpl((BlankNodeOrIri) subject, predicate, resource));
         } else {
             throw new RuntimeException("Literals cannot be the subject of a statement");
         }
@@ -506,13 +508,13 @@ public class GraphNode {
 
     /**
      * creates and returns an <code>RdfList</code> for the node and
-     * TripleCollection represented by this object.
+     * Graph represented by this object.
      *
      * @return a List to easy access the rdf:List represented by this node
      */
-    public List<Resource> asList() {
-        if (resource instanceof NonLiteral) {
-            return new RdfList((NonLiteral) resource, graph);
+    public List<RdfTerm> asList() {
+        if (resource instanceof BlankNodeOrIri) {
+            return new RdfList((BlankNodeOrIri) resource, graph);
         } else {
             throw new RuntimeException("Literals cannot be the subject of a List");
         }
@@ -524,9 +526,9 @@ public class GraphNode {
      *
      * @param predicate
      */
-    public void deleteProperties(UriRef predicate) {
-        if (resource instanceof NonLiteral) {
-            Iterator<Triple> tripleIter = graph.filter((NonLiteral) resource, predicate, null);
+    public void deleteProperties(Iri predicate) {
+        if (resource instanceof BlankNodeOrIri) {
+            Iterator<Triple> tripleIter = graph.filter((BlankNodeOrIri) resource, predicate, null);
             Collection<Triple> toDelete = new ArrayList<Triple>();
             while (tripleIter.hasNext()) {
                 Triple triple = tripleIter.next();
@@ -544,9 +546,9 @@ public class GraphNode {
      * @param predicate
      * @param object
      */
-    public void deleteProperty(UriRef predicate, Resource object) {
-        if (resource instanceof NonLiteral) {
-            graph.remove(new TripleImpl((NonLiteral) resource, predicate, object));
+    public void deleteProperty(Iri predicate, RdfTerm object) {
+        if (resource instanceof BlankNodeOrIri) {
+            graph.remove(new TripleImpl((BlankNodeOrIri) resource, predicate, object));
         }
     }
 
@@ -556,27 +558,27 @@ public class GraphNode {
     }
 
     /**
-     * Replaces the graph node resouce with the specified <code>NonLiteral</code>.
+     * Replaces the graph node resouce with the specified <code>BlankNodeOrIri</code>.
      * The resource is only replaced where it is either subject or object.
      * @param replacement
      * @return a GraphNode representing the replecement node
      */
-    public GraphNode replaceWith(NonLiteral replacement) {
+    public GraphNode replaceWith(BlankNodeOrIri replacement) {
         return replaceWith(replacement, false);
     }
 
     /**
-     * Replaces the graph node resouce with the specified <code>NonLiteral</code>.
+     * Replaces the graph node resouce with the specified <code>BlankNodeOrIri</code>.
      * Over the boolean <code>checkPredicate</code> it can be specified if the
      * resource should also be replaced where it is used as predicate.
      * @param replacement
      * @param checkPredicates
      * @return a GraphNode representing the replecement node
      */
-    public GraphNode replaceWith(NonLiteral replacement, boolean checkPredicates) {
-        MGraph newTriples = new SimpleMGraph();
+    public GraphNode replaceWith(BlankNodeOrIri replacement, boolean checkPredicates) {
+        Graph newTriples = new SimpleGraph();
         if (!(resource instanceof Literal)) {
-            Iterator<Triple> subjectTriples = graph.filter((NonLiteral) resource, null,
+            Iterator<Triple> subjectTriples = graph.filter((BlankNodeOrIri) resource, null,
                     null);
             while (subjectTriples.hasNext()) {
                 Triple triple = subjectTriples.next();
@@ -600,14 +602,14 @@ public class GraphNode {
         graph.addAll(newTriples);
         newTriples.clear();
 
-        if (checkPredicates && replacement instanceof UriRef
-                && resource instanceof UriRef) {
+        if (checkPredicates && replacement instanceof Iri
+                && resource instanceof Iri) {
             Iterator<Triple> predicateTriples = graph.filter(null,
-                    (UriRef) resource, null);
+                    (Iri) resource, null);
             while (predicateTriples.hasNext()) {
                 Triple triple = predicateTriples.next();
                 Triple newTriple = new TripleImpl(triple.getSubject(),
-                        (UriRef) replacement, triple.getObject());
+                        (Iri) replacement, triple.getObject());
                 predicateTriples.remove();
                 newTriples.add(newTriple);
             }
@@ -624,8 +626,8 @@ public class GraphNode {
      * @param property
      * @return
      */
-    public Iterator<GraphNode> getObjectNodes(UriRef property) {
-        final Iterator<Resource> objects = this.getObjects(property);
+    public Iterator<GraphNode> getObjectNodes(Iri property) {
+        final Iterator<RdfTerm> objects = this.getObjects(property);
         return new Iterator<GraphNode>() {
 
             @Override
@@ -635,7 +637,7 @@ public class GraphNode {
 
             @Override
             public GraphNode next() {
-                Resource object = objects.next();
+                RdfTerm object = objects.next();
                 return new GraphNode(object, graph);
 
             }
@@ -655,8 +657,8 @@ public class GraphNode {
      * @param property
      * @return
      */
-    public Iterator<GraphNode> getSubjectNodes(UriRef property) {
-        final Iterator<NonLiteral> subjects = this.getSubjects(property);
+    public Iterator<GraphNode> getSubjectNodes(Iri property) {
+        final Iterator<BlankNodeOrIri> subjects = this.getSubjects(property);
         return new Iterator<GraphNode>() {
 
             @Override
@@ -666,7 +668,7 @@ public class GraphNode {
 
             @Override
             public GraphNode next() {
-                Resource object = subjects.next();
+                RdfTerm object = subjects.next();
                 return new GraphNode(object, graph);
 
             }
@@ -700,13 +702,12 @@ public class GraphNode {
     }
 
     /**
-     * @return a ReadLock if the underlying Graph is a LockableMGraph it returns its lock, otherwise null
+     * @return a ReadLock if the underlying ImmutableGraph is a LockableGraph it returns its lock, otherwise null
      */
     public Lock readLock() {
-        if (getGraph() instanceof LockableMGraph) {
-            return ((LockableMGraph) getGraph()).getLock().readLock();
-        }
-        return new FakeLock();
+
+            return getGraph().getLock().readLock();
+
     }
 
     /**
@@ -714,33 +715,8 @@ public class GraphNode {
      * @return
      */
     public Lock writeLock() {
-        if (getGraph() instanceof LockableMGraph) {
-            return ((LockableMGraph) getGraph()).getLock().writeLock();
-        }
-        return new FakeLock();
-    }
 
-    private static class FakeLock implements Lock {
+            return (getGraph()).getLock().writeLock();
 
-        public void lock() {
-        }
-
-        public void lockInterruptibly() throws java.lang.InterruptedException {
-        }
-
-        public boolean tryLock() {
-            return false;
-        }
-
-        public boolean tryLock(long l, java.util.concurrent.TimeUnit timeUnit) throws java.lang.InterruptedException {
-            return false;
-        }
-
-        public void unlock() {
-        }
-
-        public java.util.concurrent.locks.Condition newCondition() {
-            return null;
-        }
     }
 }

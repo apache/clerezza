@@ -19,39 +19,39 @@
 package org.apache.clerezza.rdf.utils;
 
 import java.util.Iterator;
-import junit.framework.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.junit.Assert;
 
 /**
  *
  * @author hasan
  */
-public class UnionMGraphTest {
+public class UnionGraphTest {
 
-    private final UriRef uriRef1 =
-            new UriRef("http://example.org/ontology#res1");
-    private final UriRef uriRef2 =
-            new UriRef("http://example.org/ontology#res2");
-    private final UriRef uriRef3 =
-            new UriRef("http://example.org/ontology#res3");
-    private final UriRef uriRef4 =
-            new UriRef("http://example.org/ontology#res4");
+    private final Iri uriRef1 =
+            new Iri("http://example.org/ontology#res1");
+    private final Iri uriRef2 =
+            new Iri("http://example.org/ontology#res2");
+    private final Iri uriRef3 =
+            new Iri("http://example.org/ontology#res3");
+    private final Iri uriRef4 =
+            new Iri("http://example.org/ontology#res4");
 
     @Test
     public void readAccess() {
-        MGraph graph = new SimpleMGraph();
-        MGraph graph2 = new SimpleMGraph();
-        BNode bnode = new BNode() {
+        Graph graph = new SimpleGraph();
+        Graph graph2 = new SimpleGraph();
+        BlankNode bnode = new BlankNode() {
         };
         graph.add(new TripleImpl(uriRef1, uriRef2, uriRef1));
         graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
-        MGraph unionGraph = new UnionMGraph(graph, graph2);
+        Graph unionGraph = new UnionGraph(graph, graph2);
         Iterator<Triple> unionTriples = unionGraph.iterator();
         Assert.assertTrue(unionTriples.hasNext());
         unionTriples.next();
@@ -63,12 +63,12 @@ public class UnionMGraphTest {
     
     @Test
     public void writeAccess() {
-        MGraph graph = new SimpleMGraph();
-        MGraph graph2 = new SimpleMGraph();
-        BNode bnode = new BNode() {
+        Graph graph = new SimpleGraph();
+        Graph graph2 = new SimpleGraph();
+        BlankNode bnode = new BlankNode() {
         };
         graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
-        MGraph unionGraph = new UnionMGraph(graph, graph2);
+        Graph unionGraph = new UnionGraph(graph, graph2);
         Assert.assertEquals(1, unionGraph.size());
         unionGraph.add(new TripleImpl(uriRef4, uriRef1, uriRef3));
         Assert.assertEquals(1, graph.size());

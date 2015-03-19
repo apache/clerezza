@@ -18,10 +18,7 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
+import org.apache.commons.rdf.Graph;
 import org.apache.clerezza.rdf.utils.smushing.IfpSmusher;
 import org.apache.clerezza.rdf.utils.smushing.SameAsSmusher;
 import org.slf4j.Logger;
@@ -46,8 +43,8 @@ public class Smusher {
      * @param mGraph
      * @param tBox
      */
-    public static void smush(MGraph mGraph, TripleCollection tBox) {
-        smush(lockable(mGraph), tBox);
+    public static void smush(Graph mGraph, Graph tBox) {
+        new IfpSmusher().smush(mGraph, tBox);
     }
 
     /**
@@ -56,20 +53,9 @@ public class Smusher {
      * @param mGraph
      * @param owlSameStatements 
      */
-    public static void sameAsSmush(MGraph mGraph, TripleCollection owlSameStatements) {
-        sameAsSmush(lockable(mGraph), owlSameStatements);
-    }
-    
-    public static void smush(LockableMGraph mGraph, TripleCollection tBox) {
-        new IfpSmusher().smush(mGraph, tBox);
-    }
-
-    public static void sameAsSmush(LockableMGraph mGraph, TripleCollection owlSameStatements) {
+    public static void sameAsSmush(Graph mGraph, Graph owlSameStatements) {
         new SameAsSmusher().smush(mGraph, owlSameStatements, true);
     }
 
-    private static LockableMGraph lockable(MGraph mGraph) {
-        return mGraph instanceof LockableMGraph ? 
-                (LockableMGraph) mGraph : new LockableMGraphWrapper(mGraph);
-    }
+
 }

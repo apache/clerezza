@@ -19,16 +19,14 @@
 package org.apache.clerezza.rdf.utils;
 
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -42,16 +40,16 @@ import org.junit.Test;
  */
 public class SameAsSmushTest {
     
-    private final UriRef uriA = new UriRef("http://example.org/A");
-    private final UriRef uriB = new UriRef("http://example.org/B");
+    private final Iri uriA = new Iri("http://example.org/A");
+    private final Iri uriB = new Iri("http://example.org/B");
     private final Literal lit = new PlainLiteralImpl("That's me (and you)");
 
-    private MGraph sameAsStatements = new SimpleMGraph();
+    private Graph sameAsStatements = new SimpleGraph();
     {
         sameAsStatements.add(new TripleImpl(uriA, OWL.sameAs, uriB));
     }
     
-    private MGraph  dataGraph = new SimpleMGraph();
+    private Graph  dataGraph = new SimpleGraph();
     {
         dataGraph.add(new TripleImpl(uriA, FOAF.knows, uriB));
         dataGraph.add(new TripleImpl(uriB, RDFS.label, lit));

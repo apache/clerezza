@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.rdf.utils.smushing;
 
-import org.apache.clerezza.rdf.utils.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,16 +25,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.slf4j.Logger;
@@ -61,35 +55,35 @@ public class IfpSmusher extends BaseSmusher {
      * @param mGraph
      * @param tBox
      */
-    public void smush(LockableMGraph mGraph, TripleCollection tBox) {
-        final Set<UriRef> ifps = getIfps(tBox);
-        final Map<PredicateObject, Set<NonLiteral>> ifp2nodesMap = new HashMap<PredicateObject, Set<NonLiteral>>();
+    public void smush(Graph mGraph, Graph tBox) {
+        final Set<Iri> ifps = getIfps(tBox);
+        final Map<PredicateObject, Set<BlankNodeOrIri>> ifp2nodesMap = new HashMap<PredicateObject, Set<BlankNodeOrIri>>();
         for (Iterator<Triple> it = mGraph.iterator(); it.hasNext();) {
             final Triple triple = it.next();
-            final UriRef predicate = triple.getPredicate();
+            final Iri predicate = triple.getPredicate();
             if (!ifps.contains(predicate)) {
                 continue;
             }
             final PredicateObject po = new PredicateObject(predicate, triple.getObject());
-            Set<NonLiteral> equivalentNodes = ifp2nodesMap.get(po);
+            Set<BlankNodeOrIri> equivalentNodes = ifp2nodesMap.get(po);
             if (equivalentNodes == null) {
-                equivalentNodes = new HashSet<NonLiteral>();
+                equivalentNodes = new HashSet<BlankNodeOrIri>();
                 ifp2nodesMap.put(po, equivalentNodes);
             }
             equivalentNodes.add(triple.getSubject());
         }
-        Set<Set<NonLiteral>> unitedEquivalenceSets = uniteSetsWithCommonElement(ifp2nodesMap.values());
+        Set<Set<BlankNodeOrIri>> unitedEquivalenceSets = uniteSetsWithCommonElement(ifp2nodesMap.values());
         smush(mGraph, unitedEquivalenceSets, true);
     }
     
 
-    private Set<UriRef> getIfps(TripleCollection tBox) {
+    private Set<Iri> getIfps(Graph tBox) {
         final Iterator<Triple> ifpDefinitions = tBox.filter(null, RDF.type,
                 OWL.InverseFunctionalProperty);
-        final Set<UriRef> ifps = new HashSet<UriRef>();
+        final Set<Iri> ifps = new HashSet<Iri>();
         while (ifpDefinitions.hasNext()) {
             final Triple triple = ifpDefinitions.next();
-            ifps.add((UriRef) triple.getSubject());
+            ifps.add((Iri) triple.getSubject());
         }
         return ifps;
     }
@@ -136,10 +130,10 @@ public class IfpSmusher extends BaseSmusher {
 
     class PredicateObject {
 
-        final UriRef predicate;
-        final Resource object;
+        final Iri predicate;
+        final RdfTerm object;
 
-        public PredicateObject(UriRef predicate, Resource object) {
+        public PredicateObject(Iri predicate, RdfTerm object) {
             this.predicate = predicate;
             this.object = object;
         }

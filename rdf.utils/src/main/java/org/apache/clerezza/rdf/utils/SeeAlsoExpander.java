@@ -23,9 +23,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.ontologies.RDFS;
@@ -37,7 +37,7 @@ import org.apache.clerezza.rdf.ontologies.RDFS;
  */
 public class SeeAlsoExpander {
     /**
-     * using TcManger instead of TcProvider as this ensures LockableMGraphs
+     * using TcManger instead of TcProvider as this ensures LockableGraphs
      */
     private final TcManager tcManager;
     public SeeAlsoExpander(TcManager tcManager) {
@@ -56,32 +56,32 @@ public class SeeAlsoExpander {
      * @return a new GraphNode over the union of the original and all expansion graphs
      */
     public GraphNode expand(GraphNode node, int recursion) {
-        Set<UriRef> alreadyVisited = new HashSet();
-        Set<TripleCollection> resultTripleCollections = new HashSet<TripleCollection>();
+        Set<Iri> alreadyVisited = new HashSet();
+        Set<Graph> resultTripleCollections = new HashSet<Graph>();
         resultTripleCollections.add(node.getGraph());
-        for (UriRef uriRef : expand(node, alreadyVisited, recursion)) {
+        for (Iri uriRef : expand(node, alreadyVisited, recursion)) {
             try {
-                resultTripleCollections.add(tcManager.getTriples(uriRef));
+                resultTripleCollections.add(tcManager.getGraph(uriRef));
             } catch (NoSuchEntityException e) {
                 //ignore
             }
         }
         return new GraphNode(node.getNode(),
-                new UnionMGraph(resultTripleCollections.toArray(
-                new TripleCollection[resultTripleCollections.size()])));
+                new UnionGraph(resultTripleCollections.toArray(
+                new Graph[resultTripleCollections.size()])));
 
     }
 
-    private Set<UriRef> getSeeAlsoObjectUris(GraphNode node) {
-        Set<UriRef> result = new HashSet<UriRef>();
+    private Set<Iri> getSeeAlsoObjectUris(GraphNode node) {
+        Set<Iri> result = new HashSet<Iri>();
         Lock l = node.readLock();
         l.lock();
         try {
-            Iterator<Resource> objects = node.getObjects(RDFS.seeAlso);
+            Iterator<RdfTerm> objects = node.getObjects(RDFS.seeAlso);
             while (objects.hasNext()) {
-                Resource next = objects.next();
-                if (next instanceof UriRef) {
-                    result.add((UriRef)next);
+                RdfTerm next = objects.next();
+                if (next instanceof Iri) {
+                    result.add((Iri)next);
                 }
             }
         } finally {
@@ -90,18 +90,18 @@ public class SeeAlsoExpander {
         return result;
     }
 
-    private Set<UriRef> expand(GraphNode node, Set<UriRef> alreadyVisited, int recursion) {
-        Set<UriRef> rdfSeeAlsoTargets = getSeeAlsoObjectUris(node);
-        Set<UriRef> result = new HashSet<UriRef>();
+    private Set<Iri> expand(GraphNode node, Set<Iri> alreadyVisited, int recursion) {
+        Set<Iri> rdfSeeAlsoTargets = getSeeAlsoObjectUris(node);
+        Set<Iri> result = new HashSet<Iri>();
         result.addAll(rdfSeeAlsoTargets);
         recursion++;
         if (recursion > 0) {
             rdfSeeAlsoTargets.removeAll(alreadyVisited);
             alreadyVisited.addAll(rdfSeeAlsoTargets);
-            for (UriRef target : rdfSeeAlsoTargets) {
+            for (Iri target : rdfSeeAlsoTargets) {
                 try {
                     result.addAll(expand(new GraphNode(node.getNode(),
-                        tcManager.getTriples(target)), alreadyVisited, recursion));
+                        tcManager.getGraph(target)), alreadyVisited, recursion));
                 } catch (NoSuchEntityException e) {
                     //ignore
                 }

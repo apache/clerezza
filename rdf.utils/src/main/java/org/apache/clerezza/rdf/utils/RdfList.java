@@ -27,59 +27,59 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.commons.rdf.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of an <code>java.util.List</code> backed by an RDF
  * collection (rdf:List). The list allows modification that are reflected
- * to the underlying <code>TripleCollection</code>. It reads the data from the
- * <code>TripleCollection</code> when it is first needed, so changes to the
- * TripleCollection affecting the rdf:List may or may not have an effect on the
+ * to the underlying <code>Graph</code>. It reads the data from the
+ * <code>Graph</code> when it is first needed, so changes to the
+ * Graph affecting the rdf:List may or may not have an effect on the
  * values returned by instances of this class. For that reason only one
  * instance of this class should be used for accessing an rdf:List of sublists
  * thereof when the lists are being modified, having multiple lists exclusively
- * for read operations (such as for immutable <code>TripleCollection</code>s) is
+ * for read operations (such as for immutable <code>Graph</code>s) is
  * not problematic.
  *
  * @author rbn, mir
  */
-public class RdfList extends AbstractList<Resource> {
+public class RdfList extends AbstractList<RdfTerm> {
 
     private static final Logger logger = LoggerFactory.getLogger(RdfList.class);
 
-    private final static UriRef RDF_NIL =
-            new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
+    private final static Iri RDF_NIL =
+            new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
     /**
      * a list of the linked rdf:List elements in order
      */
-    private List<NonLiteral> listList = new ArrayList<NonLiteral>();
-    private List<Resource> valueList = new ArrayList<Resource>();
-    private NonLiteral firstList;
-    private TripleCollection tc;
+    private List<BlankNodeOrIri> listList = new ArrayList<BlankNodeOrIri>();
+    private List<RdfTerm> valueList = new ArrayList<RdfTerm>();
+    private BlankNodeOrIri firstList;
+    private Graph tc;
     private boolean totallyExpanded = false;
 
     /**
      * Get a list for the specified resource.
      *
      * If the list is modified using the created instance
-     * <code>listResource</code> will always be the first list.
+     * <code>listRdfTerm</code> will always be the first list.
      *
-     * @param listResource
+     * @param listRdfTerm
      * @param tc
      */
-    public RdfList(NonLiteral listResource, TripleCollection tc) {
-        firstList = listResource;
+    public RdfList(BlankNodeOrIri listRdfTerm, Graph tc) {
+        firstList = listRdfTerm;
         this.tc = tc;
 
     }
@@ -90,28 +90,28 @@ public class RdfList extends AbstractList<Resource> {
      * @param listNode
      */
     public RdfList(GraphNode listNode) {
-        this((NonLiteral)listNode.getNode(), listNode.getGraph());
+        this((BlankNodeOrIri)listNode.getNode(), listNode.getGraph());
     }
 
     /**
      * Creates an empty RdfList by writing a triple
-     * "{@code listResource} owl:sameAs rdf.nil ." to {@code tc}.
+     * "{@code listRdfTerm} owl:sameAs rdf.nil ." to {@code tc}.
      *
-     * @param listResource
+     * @param listRdfTerm
      * @param tc
      * @return    an empty rdf:List.
      * @throws IllegalArgumentException
-     *        if the provided {@code  listResource} is a non-empty rdf:List.
+     *        if the provided {@code  listRdfTerm} is a non-empty rdf:List.
      */
-    public static RdfList createEmptyList(NonLiteral listResource, TripleCollection tc)
+    public static RdfList createEmptyList(BlankNodeOrIri listRdfTerm, Graph tc)
             throws IllegalArgumentException {
 
-        if (!tc.filter(listResource, RDF.first, null).hasNext()) {
-            RdfList list = new RdfList(listResource, tc);
-            list.tc.add(new TripleImpl(listResource, OWL.sameAs, RDF_NIL));
+        if (!tc.filter(listRdfTerm, RDF.first, null).hasNext()) {
+            RdfList list = new RdfList(listRdfTerm, tc);
+            list.tc.add(new TripleImpl(listRdfTerm, OWL.sameAs, RDF_NIL));
             return list;
         } else {
-            throw new IllegalArgumentException(listResource + "is a non-empty rdf:List.");
+            throw new IllegalArgumentException(listRdfTerm + "is a non-empty rdf:List.");
         }
     }
 
@@ -119,7 +119,7 @@ public class RdfList extends AbstractList<Resource> {
         if (totallyExpanded) {
             return;
         }
-        NonLiteral currentList;
+        BlankNodeOrIri currentList;
         if (listList.size() > 0) {
             currentList = listList.get(listList.size()-1);
         } else {
@@ -150,7 +150,7 @@ public class RdfList extends AbstractList<Resource> {
 
 
     @Override
-    public Resource get(int index) {
+    public RdfTerm get(int index) {
         expandTill(index + 1);
         return valueList.get(index);
     }
@@ -162,7 +162,7 @@ public class RdfList extends AbstractList<Resource> {
     }
 
     @Override
-    public void add(int index, Resource element) {
+    public void add(int index, RdfTerm element) {
         expandTill(index);
         if (index == 0) {
             //special casing to make sure the first list remains the same resource
@@ -187,9 +187,9 @@ public class RdfList extends AbstractList<Resource> {
      * @param index is > 0
      * @param element
      */
-    private void addInRdfList(int index, Resource element) {
+    private void addInRdfList(int index, RdfTerm element) {
         expandTill(index+1);
-        NonLiteral newList = new BNode() {
+        BlankNodeOrIri newList = new BlankNode() {
         };
         tc.add(new TripleImpl(newList, RDF.first, element));
         if (index < listList.size()) {
@@ -205,7 +205,7 @@ public class RdfList extends AbstractList<Resource> {
     }
 
     @Override
-    public Resource remove(int index) {
+    public RdfTerm remove(int index) {
         //keeping the first list resource
         tc.remove(new TripleImpl(listList.get(index), RDF.first, valueList.get(index)));
         if (index == (listList.size() - 1)) {
@@ -233,28 +233,28 @@ public class RdfList extends AbstractList<Resource> {
         return valueList.remove(index);
     }
 
-    private NonLiteral getRest(NonLiteral list) {
-        return (NonLiteral) tc.filter(list, RDF.rest, null).next().getObject();
+    private BlankNodeOrIri getRest(BlankNodeOrIri list) {
+        return (BlankNodeOrIri) tc.filter(list, RDF.rest, null).next().getObject();
     }
 
-    private Resource getFirstEntry(final NonLiteral listResource) {
+    private RdfTerm getFirstEntry(final BlankNodeOrIri listRdfTerm) {
         try {
-            return tc.filter(listResource, RDF.first, null).next().getObject();
+            return tc.filter(listRdfTerm, RDF.first, null).next().getObject();
         } catch (final NullPointerException e) {
             RuntimeException runtimeEx = AccessController.doPrivileged(new PrivilegedAction<RuntimeException>() {
                 @Override
                 public RuntimeException run(){
                     try {
                         final FileOutputStream fileOutputStream = new FileOutputStream("/tmp/broken-list.nt");
-                        final GraphNode graphNode = new GraphNode(listResource, tc);
+                        final GraphNode graphNode = new GraphNode(listRdfTerm, tc);
                         Serializer.getInstance().serialize(fileOutputStream, graphNode.getNodeContext(), SupportedFormat.N_TRIPLE);
                         fileOutputStream.flush();
                         logger.warn("GraphNode: " + graphNode);
-                        final Iterator<UriRef> properties = graphNode.getProperties();
+                        final Iterator<Iri> properties = graphNode.getProperties();
                         while (properties.hasNext()) {
                             logger.warn("available: " + properties.next());
                         }
-                        return new RuntimeException("broken list " + listResource, e);
+                        return new RuntimeException("broken list " + listRdfTerm, e);
                     } catch (Exception ex) {
                         return new RuntimeException(ex);
                     }
@@ -265,7 +265,7 @@ public class RdfList extends AbstractList<Resource> {
         }
     }
 
-    public NonLiteral getListResource() {
+    public BlankNodeOrIri getListRdfTerm() {
         return firstList;
     }
 

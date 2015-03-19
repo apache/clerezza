@@ -20,11 +20,11 @@ package org.apache.clerezza.rdf.utils;
 
 
 /**
- * A utility class for UriRef and String manipulations.
+ * A utility class for Iri and String manipulations.
  *
  * @author tio
  */
-public class UriRefUtil {
+public class IriUtil {
 
     /**
      * Strips #x00 - #x1F and #x7F-#x9F from a Unicode string
@@ -36,7 +36,7 @@ public class UriRefUtil {
      * @return the stripped string
      * 
      */
-    public static String stripNonUriRefChars(CharSequence inputChars) {
+    public static String stripNonIriChars(CharSequence inputChars) {
 
         if (inputChars == null) {
             return "";

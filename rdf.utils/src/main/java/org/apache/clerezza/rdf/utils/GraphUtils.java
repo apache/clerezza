@@ -22,39 +22,38 @@ package org.apache.clerezza.rdf.utils;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 
 /**
- * Utility methods to manipulate <code>MGraph</code>s
+ * Utility methods to manipulate <code>Graph</code>s
  *
  * @author reto
  */
-public class MGraphUtils {
+public class GraphUtils {
 
     /**
-     * Removes a subGraph from an MGraph. The subGraph must match a subgraph of
-     * MGraph so that for every node in <code>subGraph</code>
+     * Removes a subGraph from an Graph. The subGraph must match a subgraph of
+     * Graph so that for every node in <code>subGraph</code>
      * each triple it appears in is also present in <code>mGraph</code>. Two
      * bnodes are considered equals if their contexts (as returned by
      * <code>GraphNode.getNodeContext</code> are equals.
      *
      * @param mGraph
      * @param subGraph
-     * @throws org.apache.clerezza.rdf.utils.MGraphUtils.NoSuchSubGraphException
+     * @throws org.apache.clerezza.rdf.utils.GraphUtils.NoSuchSubGraphException
      */
-    public static void removeSubGraph(MGraph mGraph, TripleCollection subGraph)
+    public static void removeSubGraph(Graph mGraph, Graph subGraph)
             throws NoSuchSubGraphException {
         //point to triples of mGraph that are to be removed (if something is removed)
         final Set<Triple> removingTriples = new HashSet<Triple>();
         //we first check only the grounded triples and put the non-grounded in here:
-        final TripleCollection unGroundedTriples = new SimpleMGraph();
+        final Graph unGroundedTriples = new SimpleGraph();
         for (Triple triple : subGraph) {
             if (isGrounded(triple)) {
                 if (!mGraph.contains(triple)) {
@@ -68,19 +67,19 @@ public class MGraphUtils {
 
         //we first remove the context of bnodes we find in object position
         OBJ_BNODE_LOOP: while (true) {
-            final Triple triple = getTripleWithBNodeObject(unGroundedTriples);
+            final Triple triple = getTripleWithBlankNodeObject(unGroundedTriples);
             if (triple == null) {
                 break;
             }
             final GraphNode objectGN = new GraphNode(triple.getObject(), unGroundedTriples);
-            NonLiteral subject = triple.getSubject();
-            Graph context = objectGN.getNodeContext();
+            BlankNodeOrIri subject = triple.getSubject();
+            ImmutableGraph context = objectGN.getNodeContext();
             Iterator<Triple> potentialIter = mGraph.filter(subject, triple.getPredicate(), null);
             while (potentialIter.hasNext()) {
                 try {
                     final Triple potentialTriple = potentialIter.next();
-                    BNode potentialMatch = (BNode)potentialTriple.getObject();
-                    final Graph potentialContext = new GraphNode(potentialMatch, mGraph).getNodeContext();
+                    BlankNode potentialMatch = (BlankNode)potentialTriple.getObject();
+                    final ImmutableGraph potentialContext = new GraphNode(potentialMatch, mGraph).getNodeContext();
                     if (potentialContext.equals(context)) {
                         removingTriples.addAll(potentialContext);
                         unGroundedTriples.removeAll(context);
@@ -93,22 +92,22 @@ public class MGraphUtils {
             throw new NoSuchSubGraphException();
         }
         SUBJ_BNODE_LOOP: while (true) {
-            final Triple triple = getTripleWithBNodeSubject(unGroundedTriples);
+            final Triple triple = getTripleWithBlankNodeSubject(unGroundedTriples);
             if (triple == null) {
                 break;
             }
             final GraphNode subjectGN = new GraphNode(triple.getSubject(), unGroundedTriples);
-            Resource object = triple.getObject();
-            if (object instanceof BNode) {
+            RdfTerm object = triple.getObject();
+            if (object instanceof BlankNode) {
                 object = null;
             }
-            Graph context = subjectGN.getNodeContext();
+            ImmutableGraph context = subjectGN.getNodeContext();
             Iterator<Triple> potentialIter = mGraph.filter(null, triple.getPredicate(), object);
             while (potentialIter.hasNext()) {
                 try {
                     final Triple potentialTriple = potentialIter.next();
-                    BNode potentialMatch = (BNode)potentialTriple.getSubject();
-                    final Graph potentialContext = new GraphNode(potentialMatch, mGraph).getNodeContext();
+                    BlankNode potentialMatch = (BlankNode)potentialTriple.getSubject();
+                    final ImmutableGraph potentialContext = new GraphNode(potentialMatch, mGraph).getNodeContext();
                     if (potentialContext.equals(context)) {
                         removingTriples.addAll(potentialContext);
                         unGroundedTriples.removeAll(context);
@@ -124,10 +123,10 @@ public class MGraphUtils {
     }
 
     private static boolean isGrounded(Triple triple) {
-        if (triple.getSubject() instanceof BNode) {
+        if (triple.getSubject() instanceof BlankNode) {
             return false;
         }
-        if (triple.getObject() instanceof BNode) {
+        if (triple.getObject() instanceof BlankNode) {
             return false;
         }
         return true;
@@ -138,20 +137,20 @@ public class MGraphUtils {
      * @param triples
      * @return
      */
-    private static Triple getTripleWithBNodeObject(TripleCollection triples) {
+    private static Triple getTripleWithBlankNodeObject(Graph triples) {
         for (Triple triple : triples) {
-            if (triple.getSubject() instanceof BNode) {
+            if (triple.getSubject() instanceof BlankNode) {
                 continue;
             }
-            if (triple.getObject() instanceof BNode) {
+            if (triple.getObject() instanceof BlankNode) {
                 return triple;
             }
         }
         return null;
     }
-    private static Triple getTripleWithBNodeSubject(TripleCollection triples) {
+    private static Triple getTripleWithBlankNodeSubject(Graph triples) {
         for (Triple triple : triples) {
-            if (triple.getSubject() instanceof BNode) {
+            if (triple.getSubject() instanceof BlankNode) {
                 return triple;
             }
         }

@@ -18,12 +18,12 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -37,20 +37,20 @@ import org.junit.Test;
  */
 public class IfpSmushTest {
 
-    private MGraph ontology = new SimpleMGraph();
+    private Graph ontology = new SimpleGraph();
     {
         ontology.add(new TripleImpl(FOAF.mbox, RDF.type, OWL.InverseFunctionalProperty));
     }
 
     @Test
-    public void simpleBNode()  {
-        MGraph mGraph = new SimpleMGraph();
-        UriRef mbox1 = new UriRef("mailto:foo@example.org");
-        final BNode bNode1 = new BNode();
+    public void simpleBlankNode()  {
+        Graph mGraph = new SimpleGraph();
+        Iri mbox1 = new Iri("mailto:foo@example.org");
+        final BlankNode bNode1 = new BlankNode();
         mGraph.add(new TripleImpl(bNode1, FOAF.mbox, mbox1));
         mGraph.add(new TripleImpl(bNode1, RDFS.comment, 
                 new PlainLiteralImpl("a comment")));
-        final BNode bNode2 = new BNode();
+        final BlankNode bNode2 = new BlankNode();
         mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
         mGraph.add(new TripleImpl(bNode2, RDFS.comment, 
                 new PlainLiteralImpl("another comment")));
@@ -60,19 +60,19 @@ public class IfpSmushTest {
 
     @Test
     public void overlappingEquivalenceClasses()  {
-        MGraph mGraph = new SimpleMGraph();
-        UriRef mbox1 = new UriRef("mailto:foo@example.org");
-        final BNode bNode1 = new BNode();
+        Graph mGraph = new SimpleGraph();
+        Iri mbox1 = new Iri("mailto:foo@example.org");
+        final BlankNode bNode1 = new BlankNode();
         mGraph.add(new TripleImpl(bNode1, FOAF.mbox, mbox1));
         mGraph.add(new TripleImpl(bNode1, RDFS.comment,
                 new PlainLiteralImpl("a comment")));
-        final BNode bNode2 = new BNode();
-        UriRef mbox2 = new UriRef("mailto:bar@example.org");
+        final BlankNode bNode2 = new BlankNode();
+        Iri mbox2 = new Iri("mailto:bar@example.org");
         mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
         mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox2));
         mGraph.add(new TripleImpl(bNode2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));
-        final BNode bNode3 = new BNode();
+        final BlankNode bNode3 = new BlankNode();
         mGraph.add(new TripleImpl(bNode3, FOAF.mbox, mbox2));
         mGraph.add(new TripleImpl(bNode3, RDFS.comment,
                 new PlainLiteralImpl("yet another comment")));
@@ -81,14 +81,14 @@ public class IfpSmushTest {
     }
 
     @Test
-    public void oneUriRef()  {
-        MGraph mGraph = new SimpleMGraph();
-        UriRef mbox1 = new UriRef("mailto:foo@example.org");
-        final UriRef resource = new UriRef("http://example.org/");
+    public void oneIri()  {
+        Graph mGraph = new SimpleGraph();
+        Iri mbox1 = new Iri("mailto:foo@example.org");
+        final Iri resource = new Iri("http://example.org/");
         mGraph.add(new TripleImpl(resource, FOAF.mbox, mbox1));
         mGraph.add(new TripleImpl(resource, RDFS.comment,
                 new PlainLiteralImpl("a comment")));
-        final BNode bNode2 = new BNode();
+        final BlankNode bNode2 = new BlankNode();
         mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
         mGraph.add(new TripleImpl(bNode2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));
@@ -97,14 +97,14 @@ public class IfpSmushTest {
     }
 
     @Test
-    public void twoUriRefs()  {
-        MGraph mGraph = new SimpleMGraph();
-        UriRef mbox1 = new UriRef("mailto:foo@example.org");
-        final UriRef resource1 = new UriRef("http://example.org/");
+    public void twoIris()  {
+        Graph mGraph = new SimpleGraph();
+        Iri mbox1 = new Iri("mailto:foo@example.org");
+        final Iri resource1 = new Iri("http://example.org/");
         mGraph.add(new TripleImpl(resource1, FOAF.mbox, mbox1));
         mGraph.add(new TripleImpl(resource1, RDFS.comment,
                 new PlainLiteralImpl("a comment")));
-        final UriRef resource2 = new UriRef("http://2.example.org/");
+        final Iri resource2 = new Iri("http://2.example.org/");
         mGraph.add(new TripleImpl(resource2, FOAF.mbox, mbox1));
         mGraph.add(new TripleImpl(resource2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));

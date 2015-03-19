@@ -25,16 +25,16 @@ import java.util.Set;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.test.RandomMGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.rdf.core.test.RandomGraph;
 
 /**
  *
@@ -44,11 +44,11 @@ public class TestGraphNode {
 
     @Test
     public void nodeContext() {
-        MGraph g = new SimpleMGraph();
-        BNode bNode1 = new BNode() {};
-        BNode bNode2 = new BNode() {};
-        UriRef property1 = new UriRef("http://example.org/property1");
-        UriRef property2 = new UriRef("http://example.org/property2");
+        Graph g = new SimpleGraph();
+        BlankNode bNode1 = new BlankNode() {};
+        BlankNode bNode2 = new BlankNode() {};
+        Iri property1 = new Iri("http://example.org/property1");
+        Iri property2 = new Iri("http://example.org/property2");
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("literal")));
         g.add(new TripleImpl(bNode1, property2, property1));
         g.add(new TripleImpl(bNode2, property2, bNode1));
@@ -63,10 +63,10 @@ public class TestGraphNode {
 
     @Test
     public void addNode() {
-        MGraph g = new SimpleMGraph();
-        BNode bNode1 = new BNode() {};
-        BNode bNode2 = new BNode() {};
-        UriRef property1 = new UriRef("http://example.org/property1");
+        Graph g = new SimpleGraph();
+        BlankNode bNode1 = new BlankNode() {};
+        BlankNode bNode2 = new BlankNode() {};
+        Iri property1 = new Iri("http://example.org/property1");
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
         Assert.assertEquals(1, g.size());
@@ -74,14 +74,14 @@ public class TestGraphNode {
 
     @Test
     public void testGetSubjectAndObjectNodes() {
-        RandomMGraph graph = new RandomMGraph(500, 20, new SimpleMGraph());
+        RandomGraph graph = new RandomGraph(500, 20, new SimpleGraph());
         for (int j = 0; j < 200; j++) {
             Triple randomTriple = graph.getRandomTriple();
             GraphNode node = new GraphNode(randomTriple.getSubject(), graph);
-            Iterator<UriRef> properties = node.getProperties();
+            Iterator<Iri> properties = node.getProperties();
             while (properties.hasNext()) {
-                UriRef property = properties.next();
-                Set<Resource> objects = createSet(node.getObjects(property));
+                Iri property = properties.next();
+                Set<RdfTerm> objects = createSet(node.getObjects(property));
                 Iterator<GraphNode> objectNodes = node.getObjectNodes(property);
                 while (objectNodes.hasNext()) {
                     GraphNode graphNode = objectNodes.next();
@@ -93,10 +93,10 @@ public class TestGraphNode {
         for (int j = 0; j < 200; j++) {
             Triple randomTriple = graph.getRandomTriple();
             GraphNode node = new GraphNode(randomTriple.getObject(), graph);
-            Iterator<UriRef> properties = node.getProperties();
+            Iterator<Iri> properties = node.getProperties();
             while (properties.hasNext()) {
-                UriRef property = properties.next();
-                Set<Resource> subjects = createSet(node.getSubjects(property));
+                Iri property = properties.next();
+                Set<RdfTerm> subjects = createSet(node.getSubjects(property));
                 Iterator<GraphNode> subjectNodes = node.getSubjectNodes(property);
                 while (subjectNodes.hasNext()) {
                     GraphNode graphNode = subjectNodes.next();
@@ -108,14 +108,14 @@ public class TestGraphNode {
 
     @Test
     public void getAvailableProperties(){
-        MGraph g = new SimpleMGraph();
-        BNode bNode1 = new BNode() {};
-        BNode bNode2 = new BNode() {};
-        UriRef property1 = new UriRef("http://example.org/property1");
-        UriRef property2 = new UriRef("http://example.org/property2");
-        UriRef property3 = new UriRef("http://example.org/property3");
-        UriRef property4 = new UriRef("http://example.org/property4");
-        ArrayList<UriRef> props = new ArrayList<UriRef>();
+        Graph g = new SimpleGraph();
+        BlankNode bNode1 = new BlankNode() {};
+        BlankNode bNode2 = new BlankNode() {};
+        Iri property1 = new Iri("http://example.org/property1");
+        Iri property2 = new Iri("http://example.org/property2");
+        Iri property3 = new Iri("http://example.org/property3");
+        Iri property4 = new Iri("http://example.org/property4");
+        ArrayList<Iri> props = new ArrayList<Iri>();
         props.add(property1);
         props.add(property2);
         props.add(property3);
@@ -125,11 +125,11 @@ public class TestGraphNode {
         n.addProperty(property2, bNode2);
         n.addProperty(property3, bNode2);
         n.addProperty(property4, bNode2);
-        Iterator<UriRef> properties = n.getProperties();
+        Iterator<Iri> properties = n.getProperties();
         int i = 0;
         while(properties.hasNext()){
             i++;
-            UriRef prop = properties.next();
+            Iri prop = properties.next();
             Assert.assertTrue(props.contains(prop));
             props.remove(prop);
         }
@@ -140,11 +140,11 @@ public class TestGraphNode {
 
     @Test
     public void deleteAll() {
-        MGraph g = new SimpleMGraph();
-        BNode bNode1 = new BNode() {};
-        BNode bNode2 = new BNode() {};
-        UriRef property1 = new UriRef("http://example.org/property1");
-        UriRef property2 = new UriRef("http://example.org/property2");
+        Graph g = new SimpleGraph();
+        BlankNode bNode1 = new BlankNode() {};
+        BlankNode bNode2 = new BlankNode() {};
+        Iri property1 = new Iri("http://example.org/property1");
+        Iri property2 = new Iri("http://example.org/property2");
         //the two properties two be deleted
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("literal")));
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("bla bla")));
@@ -159,11 +159,11 @@ public class TestGraphNode {
 
     @Test
     public void deleteSingleProperty() {
-        MGraph g = new SimpleMGraph();
-        BNode bNode1 = new BNode() {};
-        BNode bNode2 = new BNode() {};
-        UriRef property1 = new UriRef("http://example.org/property1");
-        UriRef property2 = new UriRef("http://example.org/property2");
+        Graph g = new SimpleGraph();
+        BlankNode bNode1 = new BlankNode() {};
+        BlankNode bNode2 = new BlankNode() {};
+        Iri property1 = new Iri("http://example.org/property1");
+        Iri property2 = new Iri("http://example.org/property2");
         //the properties two be deleted
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("literal")));
         //this 4 properties should stay
@@ -178,13 +178,13 @@ public class TestGraphNode {
 
     @Test
     public void replaceWith() {
-        MGraph initialGraph = new SimpleMGraph();
-        BNode bNode1 = new BNode();
-        BNode bNode2 = new BNode();
-        BNode newBnode = new BNode();
-        UriRef property1 = new UriRef("http://example.org/property1");
-        UriRef property2 = new UriRef("http://example.org/property2");
-        UriRef newUriRef = new UriRef("http://example.org/newName");
+        Graph initialGraph = new SimpleGraph();
+        BlankNode bNode1 = new BlankNode();
+        BlankNode bNode2 = new BlankNode();
+        BlankNode newBnode = new BlankNode();
+        Iri property1 = new Iri("http://example.org/property1");
+        Iri property2 = new Iri("http://example.org/property2");
+        Iri newIri = new Iri("http://example.org/newName");
         Literal literal1 = new PlainLiteralImpl("literal");
         Literal literal2 = new PlainLiteralImpl("bla bla");
 
@@ -199,14 +199,14 @@ public class TestGraphNode {
         initialGraph.add(triple4);
         initialGraph.add(triple5);
         GraphNode node = new GraphNode(property1,
-                new SimpleMGraph(initialGraph.iterator()));
+                new SimpleGraph(initialGraph.iterator()));
 
-        node.replaceWith(newUriRef, true);
+        node.replaceWith(newIri, true);
         Assert.assertEquals(5, node.getGraph().size());
-        Triple expectedTriple1 = new TripleImpl(bNode1, newUriRef, literal1);
-        Triple expectedTriple2 = new TripleImpl(bNode1, property2, newUriRef);
-        Triple expectedTriple3 = new TripleImpl(newUriRef, newUriRef, bNode2);
-        Triple expectedTriple4 = new TripleImpl(newUriRef, newUriRef, literal2);
+        Triple expectedTriple1 = new TripleImpl(bNode1, newIri, literal1);
+        Triple expectedTriple2 = new TripleImpl(bNode1, property2, newIri);
+        Triple expectedTriple3 = new TripleImpl(newIri, newIri, bNode2);
+        Triple expectedTriple4 = new TripleImpl(newIri, newIri, literal2);
 
         Assert.assertTrue(node.getGraph().contains(expectedTriple1));
         Assert.assertTrue(node.getGraph().contains(expectedTriple2));
@@ -218,7 +218,7 @@ public class TestGraphNode {
         Assert.assertFalse(node.getGraph().contains(triple4));
         Assert.assertFalse(node.getGraph().contains(triple5));
 
-        node = new GraphNode(property1, new SimpleMGraph(initialGraph.iterator()));
+        node = new GraphNode(property1, new SimpleGraph(initialGraph.iterator()));
         node.replaceWith(newBnode);
         Triple expectedTriple5 = new TripleImpl(bNode1, property2, newBnode);
         Triple expectedTriple6 = new TripleImpl(newBnode, property1, bNode2);
@@ -229,16 +229,16 @@ public class TestGraphNode {
         Assert.assertTrue(node.getGraph().contains(expectedTriple6));
         Assert.assertTrue(node.getGraph().contains(expectedTriple7));
 
-        node = new GraphNode(literal1, new SimpleMGraph(initialGraph.iterator()));
+        node = new GraphNode(literal1, new SimpleGraph(initialGraph.iterator()));
         node.replaceWith(newBnode);
         Triple expectedTriple8 = new TripleImpl(bNode1, property1, newBnode);
         Assert.assertTrue(node.getGraph().contains(expectedTriple8));
 
-        node = new GraphNode(property1, new SimpleMGraph(initialGraph.iterator()));
-        node.replaceWith(newUriRef);
-        Triple expectedTriple9 = new TripleImpl(bNode1, property2, newUriRef);
-        Triple expectedTriple10 = new TripleImpl(newUriRef, property1, bNode2);
-        Triple expectedTriple11 = new TripleImpl(newUriRef, property1, literal2);
+        node = new GraphNode(property1, new SimpleGraph(initialGraph.iterator()));
+        node.replaceWith(newIri);
+        Triple expectedTriple9 = new TripleImpl(bNode1, property2, newIri);
+        Triple expectedTriple10 = new TripleImpl(newIri, property1, bNode2);
+        Triple expectedTriple11 = new TripleImpl(newIri, property1, literal2);
         Assert.assertTrue(node.getGraph().contains(triple1));
         Assert.assertTrue(node.getGraph().contains(expectedTriple9));
         Assert.assertTrue(node.getGraph().contains(expectedTriple10));
@@ -247,10 +247,10 @@ public class TestGraphNode {
 
     @Test
     public void equality() {
-        MGraph g = new SimpleMGraph();
-        BNode bNode1 = new BNode() {};
-        BNode bNode2 = new BNode() {};
-        UriRef property1 = new UriRef("http://example.org/property1");
+        Graph g = new SimpleGraph();
+        BlankNode bNode1 = new BlankNode() {};
+        BlankNode bNode2 = new BlankNode() {};
+        Iri property1 = new Iri("http://example.org/property1");
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
         Assert.assertTrue(n.equals(new GraphNode(bNode1, g)));
@@ -259,10 +259,10 @@ public class TestGraphNode {
         Assert.assertFalse(n.equals(n2));
     }
 
-    private Set<Resource> createSet(Iterator<? extends Resource> resources) {
-        Set<Resource> set = new HashSet<Resource>();
+    private Set<RdfTerm> createSet(Iterator<? extends RdfTerm> resources) {
+        Set<RdfTerm> set = new HashSet<RdfTerm>();
         while (resources.hasNext()) {
-            Resource resource = resources.next();
+            RdfTerm resource = resources.next();
             set.add(resource);
         }
         return set;

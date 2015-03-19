@@ -24,13 +24,13 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import static org.junit.Assert.*;
 
 /**
@@ -41,8 +41,8 @@ public class RdfListTest {
 
     @Test
     public void listCreationAndAccess() {
-        TripleCollection tc = new SimpleMGraph();
-        List<Resource> list = new RdfList(new UriRef("http://example.org/mytest"), tc);
+        Graph tc = new SimpleGraph();
+        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest"), tc);
         assertEquals(0, list.size());
         list.add(new PlainLiteralImpl("hello"));
         list.add(new PlainLiteralImpl("world"));
@@ -61,7 +61,7 @@ public class RdfListTest {
         assertEquals(5, list.size());
         assertEquals(new PlainLiteralImpl("hello"), list.get(1));
         assertEquals(new PlainLiteralImpl("interesting"), list.get(2));
-        List<Resource> list2 = new RdfList(new UriRef("http://example.org/mytest"), tc);
+        List<RdfTerm> list2 = new RdfList(new Iri("http://example.org/mytest"), tc);
         assertEquals(5, list2.size());
         assertEquals(new PlainLiteralImpl("hello"), list2.get(1));
         assertEquals(new PlainLiteralImpl("interesting"), list2.get(2));
@@ -86,13 +86,13 @@ public class RdfListTest {
 
     @Test
     public void listCreationAndAccess2() {
-        TripleCollection tc = new SimpleMGraph();
-        List<Resource> list = new RdfList(new UriRef("http://example.org/mytest"), tc);
+        Graph tc = new SimpleGraph();
+        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest"), tc);
         assertEquals(0, list.size());
         list.add(0,new PlainLiteralImpl("world"));
-        list = new RdfList(new UriRef("http://example.org/mytest"), tc);
+        list = new RdfList(new Iri("http://example.org/mytest"), tc);
         list.add(0,new PlainLiteralImpl("beautifuly"));
-        list = new RdfList(new UriRef("http://example.org/mytest"), tc);
+        list = new RdfList(new Iri("http://example.org/mytest"), tc);
         list.add(0,new PlainLiteralImpl("hello"));
         assertEquals(new PlainLiteralImpl("hello"), list.get(0));
         assertEquals(new PlainLiteralImpl("beautifuly"), list.get(1));
@@ -101,12 +101,12 @@ public class RdfListTest {
 
     @Test
     public void listCreationAndAccess3() {
-        TripleCollection tc = new SimpleMGraph();
-        List<Resource> list = new RdfList(new UriRef("http://example.org/mytest"), tc);
+        Graph tc = new SimpleGraph();
+        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest"), tc);
         assertEquals(0, list.size());
-        BNode node0 = new BNode() {};
-        BNode node1 = new BNode() {};
-        BNode node2 = new BNode() {};
+        BlankNode node0 = new BlankNode() {};
+        BlankNode node1 = new BlankNode() {};
+        BlankNode node2 = new BlankNode() {};
         list.add(0,node2);
         list.add(0,node1);
         list.add(0,node0);
@@ -117,8 +117,8 @@ public class RdfListTest {
 
     @Test
     public void secondButLastElementAccessTest() {
-        TripleCollection tc = new SimpleMGraph();
-        List<Resource> list = new RdfList(new UriRef("http://example.org/mytest2"), tc);
+        Graph tc = new SimpleGraph();
+        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest2"), tc);
         list.add(new PlainLiteralImpl("hello"));
         list.add(new PlainLiteralImpl("world"));
         list.remove(1);
@@ -127,8 +127,8 @@ public class RdfListTest {
 
     @Test
     public void cleanGraphAfterRemoval() {
-        TripleCollection tc = new SimpleMGraph();
-        List<Resource> list = new RdfList(new UriRef("http://example.org/mytest"), tc);
+        Graph tc = new SimpleGraph();
+        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest"), tc);
         list.add(new PlainLiteralImpl("hello"));
         list.add(new PlainLiteralImpl("world"));
         list.remove(1);
@@ -138,14 +138,14 @@ public class RdfListTest {
 
     @Test
     public void findContainingListNodesAndfindContainingListsTest() {
-        TripleCollection tc = new SimpleMGraph();
-        GraphNode listA = new GraphNode(new UriRef("http:///listA"), tc);
-        GraphNode listB = new GraphNode(new UriRef("http:///listB"), tc);
-        BNode element1 = new BNode();
-        BNode element2 = new BNode();
-        BNode element3 = new BNode();
-        BNode element4 = new BNode();
-        BNode element5 = new BNode();
+        Graph tc = new SimpleGraph();
+        GraphNode listA = new GraphNode(new Iri("http:///listA"), tc);
+        GraphNode listB = new GraphNode(new Iri("http:///listB"), tc);
+        BlankNode element1 = new BlankNode();
+        BlankNode element2 = new BlankNode();
+        BlankNode element3 = new BlankNode();
+        BlankNode element4 = new BlankNode();
+        BlankNode element5 = new BlankNode();
 
         RdfList rdfListA = new RdfList(listA);
         rdfListA.add(element1);

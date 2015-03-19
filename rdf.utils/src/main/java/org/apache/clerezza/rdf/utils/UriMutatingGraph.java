@@ -21,32 +21,34 @@ package org.apache.clerezza.rdf.utils;
 
 import java.util.Collection;
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphListener;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import java.util.concurrent.locks.ReadWriteLock;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.AbstractGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
 
 /**
- * This wrapps a Triplecollection changing a prefix for the UriRefs contained
+ * This wrapps a Triplecollection changing a prefix for the Iris contained
  * in subject or object position.
  *
  * Currently it only supports read opearations.
  *
  * @author reto
  */
-public class UriMutatingTripleCollection implements TripleCollection {
+public class UriMutatingGraph implements Graph {
 
-    private final TripleCollection base;
+    private final Graph base;
     private final String sourcePrefix;
     private final String targetPrefix;
     private final int sourcePrefixLength;
     private final int targetPrefixLength;
 
-    public UriMutatingTripleCollection(TripleCollection base, String sourcePrefix,
+    public UriMutatingGraph(Graph base, String sourcePrefix,
             String targetPrefix) {
         this.base = base;
         this.sourcePrefix = sourcePrefix;
@@ -55,66 +57,55 @@ public class UriMutatingTripleCollection implements TripleCollection {
         targetPrefixLength= targetPrefix.length();
     }
 
-    private <R extends Resource> R toTargetResource(final R sourceResource) {
-        if (sourceResource instanceof UriRef) {
-            final UriRef sourceUriRef = (UriRef) sourceResource;
-            if (sourceUriRef.getUnicodeString().startsWith(sourcePrefix)) {
-                final String uriRest = sourceUriRef.getUnicodeString()
+    private <R extends RdfTerm> R toTargetRdfTerm(final R sourceRdfTerm) {
+        if (sourceRdfTerm instanceof Iri) {
+            final Iri sourceIri = (Iri) sourceRdfTerm;
+            if (sourceIri.getUnicodeString().startsWith(sourcePrefix)) {
+                final String uriRest = sourceIri.getUnicodeString()
                         .substring(sourcePrefixLength);
-                return (R) new UriRef(targetPrefix+uriRest);
+                return (R) new Iri(targetPrefix+uriRest);
             }
         }
-        return sourceResource;            
+        return sourceRdfTerm;            
     }
 
     private Triple toTargetTriple(Triple triple) {
         if (triple == null) {
             return null;
         }
-        return new TripleImpl(toTargetResource(triple.getSubject()),
-                triple.getPredicate(), toTargetResource(triple.getObject()));
+        return new TripleImpl(toTargetRdfTerm(triple.getSubject()),
+                triple.getPredicate(), toTargetRdfTerm(triple.getObject()));
     }
 
-    private <R extends Resource> R toSourceResource(final R targetResource) {
-        if (targetResource instanceof UriRef) {
-            final UriRef sourceUriRef = (UriRef) targetResource;
-            if (sourceUriRef.getUnicodeString().startsWith(targetPrefix)) {
-                final String uriRest = sourceUriRef.getUnicodeString()
+    private <R extends RdfTerm> R toSourceRdfTerm(final R targetRdfTerm) {
+        if (targetRdfTerm instanceof Iri) {
+            final Iri sourceIri = (Iri) targetRdfTerm;
+            if (sourceIri.getUnicodeString().startsWith(targetPrefix)) {
+                final String uriRest = sourceIri.getUnicodeString()
                         .substring(targetPrefixLength);
-                return (R) new UriRef(sourcePrefix+uriRest);
+                return (R) new Iri(sourcePrefix+uriRest);
             }
         }
-        return targetResource;
+        return targetRdfTerm;
     }
 
     private Triple toSourceTriple(Triple triple) {
         if (triple == null) {
             return null;
         }
-        return new TripleImpl(toSourceResource(triple.getSubject()),
-                triple.getPredicate(), toSourceResource(triple.getObject()));
+        return new TripleImpl(toSourceRdfTerm(triple.getSubject()),
+                triple.getPredicate(), toSourceRdfTerm(triple.getObject()));
     }
 
     @Override
-    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
-        final Iterator<Triple> baseIter = base.filter(toSourceResource(subject),
-                predicate, toSourceResource(object));
+    public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
+        final Iterator<Triple> baseIter = base.filter(toSourceRdfTerm(subject),
+                predicate, toSourceRdfTerm(object));
         return new WrappedIteraror(baseIter);
 
 
     }
 
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
-    }
-
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter) {
-    }
-
-    @Override
-    public void removeGraphListener(GraphListener listener) {
-    }
 
     @Override
     public int size() {
@@ -194,6 +185,16 @@ public class UriMutatingTripleCollection implements TripleCollection {
     @Override
     public void clear() {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public ImmutableGraph getImmutableGraph() {
+        return new SimpleImmutableGraph(this);
+    }
+
+    @Override
+    public ReadWriteLock getLock() {
+        return base.getLock();
     }
 
     class WrappedIteraror implements Iterator<Triple>{

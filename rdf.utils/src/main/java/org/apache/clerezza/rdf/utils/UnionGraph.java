@@ -27,54 +27,51 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphListener;
-import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.AbstractGraph;
 
 /**
- * 
- * This class represents the union of multiple triple collections. A 
- * UnionGraph appears like a merge of the different graphs (see. 
+ *
+ * This class represents the union of multiple triple collections. A UnionGraph
+ * appears like a merge of the different graphs (see.
  * http://www.w3.org/TR/rdf-mt/#graphdefs).
- * 
+ *
  * @author hasan
  */
-public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
+public class UnionGraph extends AbstractGraph {
 
-    private TripleCollection[] baseTripleCollections;
+    protected Graph[] baseTripleCollections;
     private Lock readLock;
     private Lock writeLock;
 
     /**
-     * Constructs a UnionMGraph over the specified baseTripleCollections. Write
-     * and delete operations are forwarded to the first baseTripleCollections. 
-     * 
+     * Constructs a UnionGraph over the specified baseTripleCollections. Write
+     * and delete operations are forwarded to the first baseTripleCollections.
+     *
      * @param baseTripleCollections the baseTripleCollections
      */
-    public UnionMGraph(TripleCollection... baseTripleCollections) {
+    public UnionGraph(Graph... baseTripleCollections) {
         this.baseTripleCollections = baseTripleCollections;
         readLock = getPartialReadLock(0);
         writeLock = createWriteLock();
     }
 
     @Override
-    public int size() {
+    public int performSize() {
         int size = 0;
-        for (TripleCollection tripleCollection : baseTripleCollections) {
-            size += tripleCollection.size();
+        for (Graph graph : baseTripleCollections) {
+            size += graph.size();
         }
         return size;
     }
 
     @Override
-    public Iterator<Triple> performFilter(final NonLiteral subject,
-            final UriRef predicate, final Resource object) {
+    public Iterator<Triple> performFilter(final BlankNodeOrIri subject,
+            final Iri predicate, final RdfTerm object) {
         if (baseTripleCollections.length == 0) {
             return new HashSet<Triple>(0).iterator();
         }
@@ -139,11 +136,11 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
         if (!(obj.getClass().equals(getClass()))) {
             return false;
         }
-        UnionMGraph other = (UnionMGraph) obj;
-        Set<TripleCollection> otherGraphs =
-                new HashSet(Arrays.asList(other.baseTripleCollections));
-        Set<TripleCollection> thisGraphs =
-                new HashSet(Arrays.asList(baseTripleCollections));
+        UnionGraph other = (UnionGraph) obj;
+        Set<Graph> otherGraphs
+                = new HashSet(Arrays.asList(other.baseTripleCollections));
+        Set<Graph> thisGraphs
+                = new HashSet(Arrays.asList(baseTripleCollections));
         return thisGraphs.equals(otherGraphs)
                 && baseTripleCollections[0].equals(other.baseTripleCollections[0]);
     }
@@ -151,32 +148,11 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
     @Override
     public int hashCode() {
         int hash = 0;
-        for (TripleCollection graph : baseTripleCollections) {
+        for (Graph graph : baseTripleCollections) {
             hash += graph.hashCode();
         }
         hash *= baseTripleCollections[0].hashCode();
         return hash;
-    }
-
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter) {
-        for (TripleCollection tripleCollection : baseTripleCollections) {
-            tripleCollection.addGraphListener(listener, filter);
-        }
-    }
-
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
-        for (TripleCollection tripleCollection : baseTripleCollections) {
-            tripleCollection.addGraphListener(listener, filter, delay);
-        }
-    }
-
-    @Override
-    public void removeGraphListener(GraphListener listener) {
-        for (TripleCollection tripleCollection : baseTripleCollections) {
-            tripleCollection.removeGraphListener(listener);
-        }
     }
 
     @Override
@@ -196,58 +172,54 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
         }
     };
 
-
     private Lock getPartialReadLock(int startPos) {
         ArrayList<Lock> resultList = new ArrayList<Lock>();
         for (int i = startPos; i < baseTripleCollections.length; i++) {
-            TripleCollection tripleCollection = baseTripleCollections[i];
-            if (tripleCollection instanceof LockableMGraph) {
-                final Lock lock = ((LockableMGraph) tripleCollection).getLock().readLock();
-                resultList.add(lock);
-            }
+            Graph graph = baseTripleCollections[i];
+
+            final Lock lock = graph.getLock().readLock();
+            resultList.add(lock);
         }
         return new UnionLock(resultList.toArray(new Lock[resultList.size()]));
     }
 
-    
     private Lock createWriteLock() {
-        Lock partialReadLock =  getPartialReadLock(1);
-        if (baseTripleCollections[0] instanceof LockableMGraph) {
-            Lock baseWriteLock =
-                    ((LockableMGraph)baseTripleCollections[0]).getLock().writeLock();
-            return new UnionLock(baseWriteLock, partialReadLock);
+        Lock partialReadLock = getPartialReadLock(1);
 
-        } else {
-            return partialReadLock;
-        }
-    };
+        Lock baseWriteLock
+                = (baseTripleCollections[0]).getLock().writeLock();
+        return new UnionLock(baseWriteLock, partialReadLock);
+
+    }
+
+    ;
 
 
     private static class UnionLock implements Lock {
 
         Lock[] locks;
+
         public UnionLock(Lock... locks) {
             this.locks = locks;
         }
 
-
         @Override
         public void lock() {
             boolean isLocked = false;
-            while(!isLocked) {
+            while (!isLocked) {
                 try {
                     isLocked = tryLock(10000, TimeUnit.NANOSECONDS);
                 } catch (InterruptedException ex) {
-                    
+
                 }
-            } 
+            }
         }
 
         @Override
         public void lockInterruptibly() throws InterruptedException {
             Set<Lock> aquiredLocks = new HashSet<Lock>();
             try {
-                for(Lock lock : locks) {
+                for (Lock lock : locks) {
                     lock.lockInterruptibly();
                     aquiredLocks.add(lock);
                 }
@@ -262,7 +234,7 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
         @Override
         public boolean tryLock() {
             Set<Lock> aquiredLocks = new HashSet<Lock>();
-            for(Lock lock : locks) {
+            for (Lock lock : locks) {
                 if (!lock.tryLock()) {
                     for (Lock aquiredLock : aquiredLocks) {
                         aquiredLock.unlock();
@@ -280,8 +252,8 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
             long timeInNanos = unit.convert(time, TimeUnit.NANOSECONDS);
             long startTime = System.nanoTime();
             try {
-                for(Lock lock : locks) {
-                    if (!lock.tryLock((timeInNanos+startTime)-System.nanoTime(),
+                for (Lock lock : locks) {
+                    if (!lock.tryLock((timeInNanos + startTime) - System.nanoTime(),
                             TimeUnit.NANOSECONDS)) {
                         for (Lock aquiredLock : aquiredLocks) {
                             aquiredLock.unlock();
@@ -301,7 +273,7 @@ public class UnionMGraph extends AbstractMGraph implements LockableMGraph {
 
         @Override
         public void unlock() {
-            for(Lock lock : locks) {
+            for (Lock lock : locks) {
                 lock.unlock();
             }
         }

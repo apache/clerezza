@@ -19,12 +19,12 @@
 
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.utils.MGraphUtils.NoSuchSubGraphException;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.rdf.utils.GraphUtils.NoSuchSubGraphException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,33 +32,33 @@ import org.junit.Test;
  *
  * @author reto
  */
-public class MGraphUtilsTest {
+public class GraphUtilsTest {
 
-    final UriRef u1 = new UriRef("http://ex.org/1");
-    final UriRef u2 = new UriRef("http://ex.org/2");
-    final UriRef u3 = new UriRef("http://ex.org/3");
+    final Iri u1 = new Iri("http://ex.org/1");
+    final Iri u2 = new Iri("http://ex.org/2");
+    final Iri u3 = new Iri("http://ex.org/3");
 
     @Test
     public void removeSubGraph() throws NoSuchSubGraphException {
-        MGraph baseGraph = createBaseGraph();
+        Graph baseGraph = createBaseGraph();
 
-        MGraph subGraph = new SimpleMGraph();
+        Graph subGraph = new SimpleGraph();
         {
-            BNode bNode1 = new BNode();
-            BNode bNode2 = new BNode();
+            BlankNode bNode1 = new BlankNode();
+            BlankNode bNode2 = new BlankNode();
             subGraph.add(new TripleImpl(u1, u2, bNode2));
             subGraph.add(new TripleImpl(bNode2, u2, bNode2));
             subGraph.add(new TripleImpl(bNode2, u2, bNode1));
         }
-        MGraphUtils.removeSubGraph(baseGraph, subGraph);
+        GraphUtils.removeSubGraph(baseGraph, subGraph);
         Assert.assertEquals(1, baseGraph.size());
     }
 
-    private MGraph createBaseGraph() {
-        MGraph baseGraph = new SimpleMGraph();
+    private Graph createBaseGraph() {
+        Graph baseGraph = new SimpleGraph();
         {
-            BNode bNode1 = new BNode();
-            BNode bNode2 = new BNode();
+            BlankNode bNode1 = new BlankNode();
+            BlankNode bNode2 = new BlankNode();
             baseGraph.add(new TripleImpl(u1, u2, bNode2));
             baseGraph.add(new TripleImpl(bNode2, u2, bNode2));
             baseGraph.add(new TripleImpl(bNode2, u2, bNode1));
@@ -69,36 +69,36 @@ public class MGraphUtilsTest {
     
     /** It is required that the subgraph comprises the whole context of the Bnodes it ioncludes
      * 
-     * @throws org.apache.clerezza.rdf.utils.MGraphUtils.NoSuchSubGraphException
+     * @throws org.apache.clerezza.rdf.utils.GraphUtils.NoSuchSubGraphException
      */
     @Test(expected=NoSuchSubGraphException.class)
     public void removeIncompleteSubGraph() throws NoSuchSubGraphException {
-        MGraph baseGraph = createBaseGraph();
+        Graph baseGraph = createBaseGraph();
 
-        MGraph subGraph = new SimpleMGraph();
+        Graph subGraph = new SimpleGraph();
         {
-            BNode bNode1 = new BNode();
-            BNode bNode2 = new BNode();
+            BlankNode bNode1 = new BlankNode();
+            BlankNode bNode2 = new BlankNode();
             subGraph.add(new TripleImpl(u1, u2, bNode2));
             subGraph.add(new TripleImpl(bNode2, u2, bNode2));
         }
-        MGraphUtils.removeSubGraph(baseGraph, subGraph);
+        GraphUtils.removeSubGraph(baseGraph, subGraph);
     }
 
     @Test(expected=NoSuchSubGraphException.class)
     public void removeInvalidSubGraph() throws NoSuchSubGraphException {
-        MGraph baseGraph = createBaseGraph();
+        Graph baseGraph = createBaseGraph();
 
-        MGraph subGraph = new SimpleMGraph();
+        Graph subGraph = new SimpleGraph();
         {
-            BNode bNode1 = new BNode();
-            BNode bNode2 = new BNode();
+            BlankNode bNode1 = new BlankNode();
+            BlankNode bNode2 = new BlankNode();
             subGraph.add(new TripleImpl(u1, u2, bNode2));
             subGraph.add(new TripleImpl(bNode2, u2, bNode2));
             baseGraph.add(new TripleImpl(bNode2, u2, bNode1));
-            baseGraph.add(new TripleImpl(bNode2, u2, new BNode()));
+            baseGraph.add(new TripleImpl(bNode2, u2, new BlankNode()));
         }
-        MGraphUtils.removeSubGraph(baseGraph, subGraph);
+        GraphUtils.removeSubGraph(baseGraph, subGraph);
     }
 }
 

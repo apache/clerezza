@@ -24,11 +24,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,43 +49,43 @@ public class SameAsSmusher extends BaseSmusher {
      * @param owlSameStatements 
      * @param addCanonicalSameAsStatements if true owl:sameAsStatements with the preferedIri as object will be added
      */
-    public void smush(LockableMGraph mGraph, 
-            TripleCollection owlSameStatements,
+    public void smush(Graph mGraph, 
+            Graph owlSameStatements,
             boolean addCanonicalSameAsStatements) {
     	
     	log.info("Starting smushing");
         
     	// This hashmap contains a uri (key) and the set of equivalent uris (value)
-    	final Map<NonLiteral, Set<NonLiteral>> node2EquivalenceSet = new HashMap<NonLiteral, Set<NonLiteral>>();
+    	final Map<BlankNodeOrIri, Set<BlankNodeOrIri>> node2EquivalenceSet = new HashMap<BlankNodeOrIri, Set<BlankNodeOrIri>>();
     	
     	log.info("Creating the sets of equivalent uris of each subject or object in the owl:sameAs statements");
     	// Determines for each subject and object in all the owl:sameAs statements the set of ewquivalent uris 
     	for (Iterator<Triple> it = owlSameStatements.iterator(); it.hasNext();) {            
     		final Triple triple = it.next();
-            final UriRef predicate = triple.getPredicate();
+            final Iri predicate = triple.getPredicate();
             if (!predicate.equals(OWL.sameAs)) {
                 throw new RuntimeException("Statements must use only <http://www.w3.org/2002/07/owl#sameAs> predicate.");
             }
-            final NonLiteral subject = triple.getSubject();
+            final BlankNodeOrIri subject = triple.getSubject();
             //literals not yet supported
-            final NonLiteral object = (NonLiteral)triple.getObject();
+            final BlankNodeOrIri object = (BlankNodeOrIri)triple.getObject();
             
-            Set<NonLiteral> equivalentNodes = node2EquivalenceSet.get(subject);
+            Set<BlankNodeOrIri> equivalentNodes = node2EquivalenceSet.get(subject);
             
             // if there is not a set of equivalent uris then create a new set
             if (equivalentNodes == null) {
             	equivalentNodes = node2EquivalenceSet.get(object);
             	if (equivalentNodes == null) {
-                    equivalentNodes = new HashSet<NonLiteral>();
+                    equivalentNodes = new HashSet<BlankNodeOrIri>();
                 }
             } else {
-                Set<NonLiteral> objectSet = node2EquivalenceSet.get(object);
+                Set<BlankNodeOrIri> objectSet = node2EquivalenceSet.get(object);
                 if ((objectSet != null) && (objectSet != equivalentNodes)) {
                     //merge two sets
-                    for (NonLiteral res : objectSet) {
+                    for (BlankNodeOrIri res : objectSet) {
                         node2EquivalenceSet.remove(res);
                     }
-                    for (NonLiteral res : objectSet) {
+                    for (BlankNodeOrIri res : objectSet) {
                         node2EquivalenceSet.put(res,equivalentNodes);
                     }
                     equivalentNodes.addAll(objectSet);
@@ -106,7 +105,7 @@ public class SameAsSmusher extends BaseSmusher {
     	}
     	
     	// This set contains the sets of equivalent uris
-    	Set<Set<NonLiteral>> unitedEquivalenceSets = new HashSet<Set<NonLiteral>>(node2EquivalenceSet.values());
+    	Set<Set<BlankNodeOrIri>> unitedEquivalenceSets = new HashSet<Set<BlankNodeOrIri>>(node2EquivalenceSet.values());
         smush(mGraph, unitedEquivalenceSets, addCanonicalSameAsStatements);
     }
 
