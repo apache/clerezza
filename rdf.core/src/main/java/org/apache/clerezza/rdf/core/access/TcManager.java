@@ -206,9 +206,9 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
         tcAccessController.checkReadPermission(name);
-        return super.getGraph(name);
+        return super.getImmutableGraph(name);
     }
 
     @Override
@@ -223,28 +223,28 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public Graph getTriples(Iri name) {
+    public Graph getGraph(Iri name) {
         try {
             tcAccessController.checkReadWritePermission(name);
         } catch (AccessControlException e) {
             tcAccessController.checkReadPermission(name);
             return new WriteBlockedGraph(
-                    super.getTriples(name));
+                    super.getGraph(name));
         }
-        return super.getTriples(name);
+        return super.getGraph(name);
     }
 
     @Override
-    public Graph createMGraph(Iri name)
+    public Graph createGraph(Iri name)
             throws UnsupportedOperationException {
         tcAccessController.checkReadWritePermission(name);
-        return super.createMGraph(name);
+        return super.createGraph(name);
     }
 
     @Override
-    public ImmutableGraph createGraph(Iri name, Graph triples) {
+    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) {
         tcAccessController.checkReadWritePermission(name);
-        return super.createGraph(name, triples);
+        return super.createImmutableGraph(name, triples);
     }
 
     @Override
@@ -395,7 +395,7 @@ public class TcManager extends TcProviderMultiplexer {
         }
         final QueryEngine queryEngine = this.queryEngine;
         if (queryEngine != null) {
-            return queryEngine.execute(this, this.getTriples(defaultGraphName), query);
+            return queryEngine.execute(this, this.getGraph(defaultGraphName), query);
         } else {
             throw new NoQueryEngineException();
         }

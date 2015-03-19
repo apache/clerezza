@@ -43,7 +43,7 @@ public class WeightedDummy implements WeightedTcProvider {
     private Map<Iri, Graph> tripleMap = new HashMap<Iri, Graph>();
 
     @Override
-    public ImmutableGraph createGraph(Iri name, Graph triples)
+    public ImmutableGraph createImmutableGraph(Iri name, Graph triples)
             throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
@@ -53,7 +53,7 @@ public class WeightedDummy implements WeightedTcProvider {
         try {
             // throws NoSuchEntityException if a Graph with that name
             // already exists
-            this.getTriples(name);
+            this.getGraph(name);
         } catch (NoSuchEntityException e) {
             ImmutableGraph result;
             if (ImmutableGraph.class.isAssignableFrom(triples.getClass())) {
@@ -69,7 +69,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Graph createMGraph(Iri name) throws EntityAlreadyExistsException {
+    public Graph createGraph(Iri name) throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
             throw new IllegalArgumentException("Name must not be null");
@@ -78,7 +78,7 @@ public class WeightedDummy implements WeightedTcProvider {
         try {
             // throws NoSuchEntityException if a Graph with that name
             // already exists
-            this.getTriples(name);
+            this.getGraph(name);
         } catch (NoSuchEntityException e) {
             Graph result = new SimpleMGraph();
             tripleMap.put(name, result);
@@ -96,7 +96,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
         Graph Graph = tripleMap.get(name);
         if (Graph == null) {
             throw new NoSuchEntityException(name);
@@ -124,7 +124,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getTriples(Iri name)
+    public Graph getGraph(Iri name)
             throws NoSuchEntityException {
         Graph Graph = tripleMap.get(name);
         if (Graph == null) {

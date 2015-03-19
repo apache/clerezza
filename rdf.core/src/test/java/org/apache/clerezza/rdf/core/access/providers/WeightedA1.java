@@ -45,7 +45,7 @@ public class WeightedA1 implements WeightedTcProvider {
     }
 
     @Override
-    public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
         if (name.equals(TcManagerTest.uriRefA)) {
             Graph mResult = new SimpleMGraph();
             mResult.add(new TripleImpl(TcManagerTest.uriRefA1, 
@@ -62,17 +62,17 @@ public class WeightedA1 implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getTriples(Iri name) throws NoSuchEntityException {
-        return getGraph(name);
+    public Graph getGraph(Iri name) throws NoSuchEntityException {
+        return getImmutableGraph(name);
     }
 
     @Override
-    public Graph createMGraph(Iri name) {
+    public Graph createGraph(Iri name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ImmutableGraph createGraph(Iri name, Graph triples) {
+    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

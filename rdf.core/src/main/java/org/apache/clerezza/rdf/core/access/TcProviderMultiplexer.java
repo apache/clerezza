@@ -159,7 +159,7 @@ public class TcProviderMultiplexer implements TcProvider {
 	                    continue;
 	                }
 	            }
-	            Graph triples = newProvider.getTriples(name);
+	            Graph triples = newProvider.getGraph(name);
 	            if (triples instanceof Graph) {
 	           		mGraphCache.put(name, new MGraphHolder(newProvider, ensureLockable((Graph)triples)));
 	                mGraphAppears(name);
@@ -200,7 +200,7 @@ public class TcProviderMultiplexer implements TcProvider {
 	                // And if so register as service.
 	                for (WeightedTcProvider provider : providerList) {
 	                    try {
-	                        Graph triples = provider.getTriples(name);
+	                        Graph triples = provider.getGraph(name);
 	                        if (triples instanceof Graph) {
 	                       		mGraphCache.put(name, new MGraphHolder(provider, ensureLockable((Graph)triples)));
 	                            mGraphAppears(name);
@@ -218,10 +218,10 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
         for (TcProvider provider : providerList) {
             try {
-                return provider.getGraph(name);
+                return provider.getImmutableGraph(name);
             } catch (NoSuchEntityException e) {
                 //we do nothing and try our luck with the next provider
             } catch (IllegalArgumentException e) {
@@ -276,12 +276,12 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Graph getTriples(Iri name)
+    public Graph getGraph(Iri name)
             throws NoSuchEntityException {
         Graph result;
         for (WeightedTcProvider provider : providerList) {
             try {
-                result = provider.getTriples(name);
+                result = provider.getGraph(name);
                 if (result instanceof ImmutableGraph) {
                     return result;
                 } else {
@@ -298,12 +298,12 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public Graph createMGraph(Iri name)
+    public Graph createGraph(Iri name)
             throws UnsupportedOperationException {
 
         for (WeightedTcProvider provider : providerList) {
             try {
-                Graph result = provider.createMGraph(name);
+                Graph result = provider.createGraph(name);
                 // unregisters a possible ImmutableGraph or Graph service under this name
                 // provided by a WeightedTcProvider with a lower weight.
                 tcDisappears(name);
@@ -323,10 +323,10 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public ImmutableGraph createGraph(Iri name, Graph triples) {
+    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) {
         for (WeightedTcProvider provider : providerList) {
             try {
-                ImmutableGraph result = provider.createGraph(name, triples);
+                ImmutableGraph result = provider.createImmutableGraph(name, triples);
 
                 // unregisters a possible ImmutableGraph or Graph service under this name
                 // provided by a WeightedTcProvider with a lower weight.
@@ -368,7 +368,7 @@ public class TcProviderMultiplexer implements TcProvider {
             }
         }
         // this throws a NoSuchEntityException if the ImmutableGraph doesn't exist
-        getTriples(name);
+        getGraph(name);
         // the entity exists but cannot be deleted
         throw new UnsupportedOperationException(
                 "No provider could delete the entity.");

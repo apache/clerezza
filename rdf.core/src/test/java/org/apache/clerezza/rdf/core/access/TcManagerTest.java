@@ -82,11 +82,11 @@ public class TcManagerTest {
 
 	@Test
 	public void getGraphFromA() {
-		ImmutableGraph graphA = graphAccess.getGraph(uriRefA);
+		ImmutableGraph graphA = graphAccess.getImmutableGraph(uriRefA);
 		Iterator<Triple> iterator = graphA.iterator();
 		assertEquals(new TripleImpl(uriRefA, uriRefA, uriRefA), iterator.next());
 		assertFalse(iterator.hasNext());
-		Graph triplesA = graphAccess.getTriples(uriRefA);
+		Graph triplesA = graphAccess.getGraph(uriRefA);
 		iterator = triplesA.iterator();
 		assertEquals(new TripleImpl(uriRefA, uriRefA, uriRefA), iterator.next());
 		assertFalse(iterator.hasNext());
@@ -94,11 +94,11 @@ public class TcManagerTest {
 
 	@Test
 	public void getGraphFromB() {
-		ImmutableGraph graphA = graphAccess.getGraph(uriRefB);
+		ImmutableGraph graphA = graphAccess.getImmutableGraph(uriRefB);
 		Iterator<Triple> iterator = graphA.iterator();
 		assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
 		assertFalse(iterator.hasNext());
-		Graph triplesA = graphAccess.getTriples(uriRefB);
+		Graph triplesA = graphAccess.getGraph(uriRefB);
 		iterator = triplesA.iterator();
 		assertEquals(new TripleImpl(uriRefB, uriRefB, uriRefB), iterator.next());
 		assertFalse(iterator.hasNext());
@@ -107,12 +107,12 @@ public class TcManagerTest {
 	@Test
 	public void getGraphFromAAfterUnbinding() {
 		graphAccess.unbindWeightedTcProvider(weightedA);
-		ImmutableGraph graphA = graphAccess.getGraph(uriRefA);
+		ImmutableGraph graphA = graphAccess.getImmutableGraph(uriRefA);
 		Iterator<Triple> iterator = graphA.iterator();
 		assertEquals(new TripleImpl(uriRefA1, uriRefA1, uriRefA1),
 				iterator.next());
 		assertFalse(iterator.hasNext());
-		Graph triplesA = graphAccess.getTriples(uriRefA);
+		Graph triplesA = graphAccess.getGraph(uriRefA);
 		iterator = triplesA.iterator();
 		assertEquals(new TripleImpl(uriRefA1, uriRefA1, uriRefA1),
 				iterator.next());
@@ -123,12 +123,12 @@ public class TcManagerTest {
 	public void getGraphFromAWithHeavy() {
 		final WeightedAHeavy weightedAHeavy = new WeightedAHeavy();
 		graphAccess.bindWeightedTcProvider(weightedAHeavy);
-		ImmutableGraph graphA = graphAccess.getGraph(uriRefA);
+		ImmutableGraph graphA = graphAccess.getImmutableGraph(uriRefA);
 		Iterator<Triple> iterator = graphA.iterator();
 		assertEquals(new TripleImpl(uriRefAHeavy, uriRefAHeavy, uriRefAHeavy),
 				iterator.next());
 		assertFalse(iterator.hasNext());
-		Graph triplesA = graphAccess.getTriples(uriRefA);
+		Graph triplesA = graphAccess.getGraph(uriRefA);
 		iterator = triplesA.iterator();
 		assertEquals(new TripleImpl(uriRefAHeavy, uriRefAHeavy, uriRefAHeavy),
 				iterator.next());

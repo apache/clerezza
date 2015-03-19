@@ -47,7 +47,7 @@ public class ImmutableGraphServiceFactory implements ServiceFactory {
     @Override
     public Object getService(Bundle arg0, ServiceRegistration arg1) {
         Graph tc = 
-                new SecuredGraph(tcManager.getGraph(name), name,
+                new SecuredGraph(tcManager.getImmutableGraph(name), name,
                 tcAccessController);
         return tc.getImmutableGraph();
     }

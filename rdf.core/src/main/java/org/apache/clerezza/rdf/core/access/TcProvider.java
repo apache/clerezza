@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 
 /**
@@ -41,10 +40,10 @@ public interface TcProvider {
      * @throws NoSuchEntityException if there is no <code>ImmutableGraph</code>
      *         with the specified name
      */
-    ImmutableGraph getGraph(Iri name) throws NoSuchEntityException;
+    ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException;
 
     /**
-     * Get an <code>Graph</code> by its name. The instances
+     * Get an <code>Graph</code> taht is not <code>ImmutableGrah</code>. The instances
      * returned in different invocations are <code>equals</code>.
      *
      * @param the name of the <code>Graph</code>
@@ -56,18 +55,18 @@ public interface TcProvider {
     
     /**
      * This method is used to get a <code>Graph</code> indifferently
-     * whether it's a ImmutableGraph or an Graph. If the <code>name</code> names an 
+     * whether it's a ImmutableGraph or not. If the <code>name</code> names an 
      * <code>Graph</code> the result is the same as when invoking 
      * <code>getMGraph</code> with that argument, analogously for 
      * <code>ImmutableGraph</code>S the method returns an instance equals to what 
-     * <code>getGraph</code> would return. 
+     * <code>getImmutableGraph</code> would return. 
      * 
      * @param name the name of the <Code>ImmutableGraph</code> or <code>Graph</code>
      * @return the <Code>ImmutableGraph</code> or <code>Graph</code>
      * @throws NoSuchEntityException if there is no <code>ImmutableGraph</code>
      *         or <code>Graph</code> with the specified name
      */
-    Graph getTriples(Iri name) throws NoSuchEntityException;
+    Graph getGraph(Iri name) throws NoSuchEntityException;
 
     /**
      * Lists the name of the <Code>ImmutableGraph</code>s available through this
@@ -81,7 +80,7 @@ public interface TcProvider {
 
     /**
      * Lists the name of the <Code>Graph</code>s available through this
-     * <code>TcProvider</code>, implementations may take into account the
+     * <code>TcProvider</code> that are not <Code>ImmutableGraph</code>, implementations may take into account the
      * security context and omit <Code>Graph</code>s for which access is not
      * allowed.
      *
@@ -91,8 +90,8 @@ public interface TcProvider {
 
     /**
      * Lists the name of the <Code>Graph</code>s available through this
-     * <code>TcProvider</code> indifferently whether they are Graphs or an
-     * MGraphs, implementations may take into account the security context and
+     * <code>TcProvider</code> indifferently whether they are mutables or 
+     * immutables, implementations may take into account the security context and
      * omit <Code>Graph</code>s for which access is not allowed.
      *
      * @return the list of <Code>Graph</code>s
@@ -109,7 +108,7 @@ public interface TcProvider {
      * @throws EntityAlreadyExistsException if an Graph with the specified name
      *         already exists
      */
-    Graph createMGraph(Iri name) throws UnsupportedOperationException, 
+    Graph createGraph(Iri name) throws UnsupportedOperationException, 
             EntityAlreadyExistsException;
 
     /**
@@ -123,7 +122,7 @@ public interface TcProvider {
      * @throws EntityAlreadyExistsException if a ImmutableGraph with the specified name
      *         already exists
      */
-    ImmutableGraph createGraph(Iri name, Graph triples) 
+    ImmutableGraph createImmutableGraph(Iri name, Graph triples) 
             throws UnsupportedOperationException, EntityAlreadyExistsException;
     
     /**
@@ -148,5 +147,5 @@ public interface TcProvider {
      * @return the set names of <code>ImmutableGraph</code>, the set is empty if
      *         <code>ImmutableGraph</code> is unknown
      */
-    Set<Iri> getNames(ImmutableGraph ImmutableGraph);
+    Set<Iri> getNames(ImmutableGraph immutableGraph);
 }

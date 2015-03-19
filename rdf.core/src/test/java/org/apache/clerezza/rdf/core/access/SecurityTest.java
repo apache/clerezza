@@ -57,8 +57,8 @@ public class SecurityTest {
         ////needed to unbind because this is injected with META-INF/services - file
         TcManager.getInstance().unbindWeightedTcProvider(new WeightedA());
         TcManager.getInstance().bindWeightedTcProvider(new WeightedDummy());
-        TcManager.getInstance().createMGraph(new Iri("http://example.org/ImmutableGraph/alreadyexists"));
-        TcManager.getInstance().createMGraph(new Iri("http://example.org/read/ImmutableGraph"));
+        TcManager.getInstance().createGraph(new Iri("http://example.org/ImmutableGraph/alreadyexists"));
+        TcManager.getInstance().createGraph(new Iri("http://example.org/read/ImmutableGraph"));
     }
 
     @AfterClass
@@ -112,22 +112,22 @@ public class SecurityTest {
 
     @Test(expected=NoSuchEntityException.class)
     public void testAcessGraph() {        
-        TcManager.getInstance().getGraph(new Iri("http://example.org/permitted"));
+        TcManager.getInstance().getImmutableGraph(new Iri("http://example.org/permitted"));
     }
     
     @Test(expected=AccessControlException.class)
     public void testNoWildCard() {
-        TcManager.getInstance().getGraph(new Iri("http://example.org/permitted/subthing"));
+        TcManager.getInstance().getImmutableGraph(new Iri("http://example.org/permitted/subthing"));
     }
     
     @Test(expected=NoSuchEntityException.class)
     public void testAllowedArea() {
-        TcManager.getInstance().getGraph(new Iri("http://example.org/area/allowed/something"));
+        TcManager.getInstance().getImmutableGraph(new Iri("http://example.org/area/allowed/something"));
     }
     
     @Test(expected=AccessControlException.class)
     public void testAcessForbiddenGraph() {
-        TcManager.getInstance().getGraph(new Iri("http://example.org/forbidden"));
+        TcManager.getInstance().getImmutableGraph(new Iri("http://example.org/forbidden"));
     }
 
     @Test(expected=NoSuchEntityException.class)
@@ -136,7 +136,7 @@ public class SecurityTest {
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        Graph ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
+        Graph ag = TcManager.getInstance().getGraph(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
         TcManager.getInstance().getMGraph(graphUri);
     }
@@ -147,9 +147,9 @@ public class SecurityTest {
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        Graph ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
+        Graph ag = TcManager.getInstance().getGraph(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
-        TcManager.getInstance().createMGraph(graphUri);
+        TcManager.getInstance().createGraph(graphUri);
     }
 
     @Test
@@ -158,18 +158,18 @@ public class SecurityTest {
         TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        Graph ag = TcManager.getInstance().getTriples(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
+        Graph ag = TcManager.getInstance().getGraph(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
-        TcManager.getInstance().createMGraph(graphUri);
+        TcManager.getInstance().createGraph(graphUri);
     }
     
     @Test(expected=EntityAlreadyExistsException.class)
     public void testCreateMGraph() {
-        TcManager.getInstance().createMGraph(new Iri("http://example.org/ImmutableGraph/alreadyexists"));
+        TcManager.getInstance().createGraph(new Iri("http://example.org/ImmutableGraph/alreadyexists"));
     }
     @Test(expected=AccessControlException.class)
     public void testCreateMGraphWithoutWritePermission() {
-        TcManager.getInstance().createMGraph(new Iri("http://example.org/read/ImmutableGraph"));
+        TcManager.getInstance().createGraph(new Iri("http://example.org/read/ImmutableGraph"));
     }
     @Test(expected=ReadOnlyException.class)
     public void testAddTripleToMGraph() {

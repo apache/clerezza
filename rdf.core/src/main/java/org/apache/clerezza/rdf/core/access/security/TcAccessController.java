@@ -342,7 +342,7 @@ public abstract class TcAccessController {
         try {
             return tcManager.getMGraph(permissionGraphName);
         } catch (NoSuchEntityException e) {
-            return tcManager.createMGraph(permissionGraphName);
+            return tcManager.createGraph(permissionGraphName);
         }
     }
 
