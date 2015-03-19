@@ -20,14 +20,16 @@ package org.apache.clerezza.rdf.core.access;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
 import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
 import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.WatchableGraph;
 import org.apache.commons.rdf.event.FilterTriple;
 import org.apache.commons.rdf.event.GraphListener;
 
@@ -150,22 +152,6 @@ public class SecuredGraph implements Graph {
         return wrapped.contains((Triple) o);
     }
 
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
-        checkRead();
-        wrapped.addGraphListener(listener, filter, delay);
-    }
-
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter) {
-        checkRead();
-        wrapped.addGraphListener(listener, filter);
-    }
-
-    @Override
-    public void removeGraphListener(GraphListener listener) {
-        wrapped.removeGraphListener(listener);
-    }
 
     @Override
     public Iterator<Triple> iterator() {
@@ -181,5 +167,10 @@ public class SecuredGraph implements Graph {
     @Override
     public ImmutableGraph getImmutableGraph() {
         return new SimpleImmutableGraph(this);
+    }
+
+    @Override
+    public ReadWriteLock getLock() {
+        return wrapped.getLock();
     }
 }

@@ -31,9 +31,9 @@ import org.junit.Test;
  */
 public class SparqlPreParserTest {
 
-    private final static Iri DEFAULT_GRAPH = new Iri("http://example.org/default.ImmutableGraph"); 
-    private final static Iri NAMED_GRAPH = new Iri("http://example.org/dummy.ImmutableGraph"); 
-    private final static Iri TEST_GRAPH = new Iri("http://example.org/test.ImmutableGraph"); 
+    private final static Iri DEFAULT_GRAPH = new Iri("http://example.org/default.graph"); 
+    private final static Iri NAMED_GRAPH = new Iri("http://example.org/dummy.graph"); 
+    private final static Iri TEST_GRAPH = new Iri("http://example.org/test.graph"); 
 
     class MyTcManager extends TcManager {
         @Override
@@ -65,7 +65,7 @@ public class SparqlPreParserTest {
     public void testAllGraphReferenceInSelectQuery() throws ParseException {
 
         StringBuilder queryStrBuilder = new StringBuilder();
-        queryStrBuilder.append("SELECT DISTINCT ?g { ImmutableGraph ?g { ?s ?p ?o } }\n");
+        queryStrBuilder.append("SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o } }\n");
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -116,7 +116,7 @@ public class SparqlPreParserTest {
     @Test
     public void testLoadingToGraph() throws ParseException {
 
-        String queryStr = "LOAD SILENT <http://example.org/mydata> INTO ImmutableGraph " + TEST_GRAPH.toString();
+        String queryStr = "LOAD SILENT <http://example.org/mydata> INTO GRAPH " + TEST_GRAPH.toString();
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -149,7 +149,7 @@ public class SparqlPreParserTest {
     @Test
     public void testClearingGraph() throws ParseException {
 
-        String queryStr = "CLEAR SILENT ImmutableGraph " + TEST_GRAPH.toString();
+        String queryStr = "CLEAR SILENT GRAPH " + TEST_GRAPH.toString();
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -182,7 +182,7 @@ public class SparqlPreParserTest {
     @Test
     public void testDroppingGraph() throws ParseException {
 
-        String queryStr = "DROP SILENT ImmutableGraph " + TEST_GRAPH.toString();
+        String queryStr = "DROP SILENT GRAPH " + TEST_GRAPH.toString();
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -193,7 +193,7 @@ public class SparqlPreParserTest {
     @Test
     public void testCreatingGraph() throws ParseException {
 
-        String queryStr = "CREATE SILENT ImmutableGraph " + TEST_GRAPH.toString();
+        String queryStr = "CREATE SILENT GRAPH " + TEST_GRAPH.toString();
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -204,7 +204,7 @@ public class SparqlPreParserTest {
     @Test
     public void testAddingTriplesFromDefaultGraphToNamedGraph() throws ParseException {
 
-        String queryStr = "ADD SILENT DEFAULT TO ImmutableGraph " + TEST_GRAPH.toString();
+        String queryStr = "ADD SILENT DEFAULT TO GRAPH " + TEST_GRAPH.toString();
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -218,7 +218,7 @@ public class SparqlPreParserTest {
     @Test
     public void testAddingTriplesFromNamedGraphToDefaultGraph() throws ParseException {
 
-        String queryStr = "ADD SILENT ImmutableGraph " + TEST_GRAPH.toString() + " TO DEFAULT";
+        String queryStr = "ADD SILENT GRAPH " + TEST_GRAPH.toString() + " TO DEFAULT";
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -232,7 +232,7 @@ public class SparqlPreParserTest {
     @Test
     public void testMovingTriplesFromDefaultGraphToNamedGraph() throws ParseException {
 
-        String queryStr = "MOVE SILENT DEFAULT TO ImmutableGraph " + TEST_GRAPH.toString();
+        String queryStr = "MOVE SILENT DEFAULT TO GRAPH " + TEST_GRAPH.toString();
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -246,7 +246,7 @@ public class SparqlPreParserTest {
     @Test
     public void testMovingTriplesFromNamedGraphToDefaultGraph() throws ParseException {
 
-        String queryStr = "MOVE SILENT ImmutableGraph " + TEST_GRAPH.toString() + " TO DEFAULT";
+        String queryStr = "MOVE SILENT GRAPH " + TEST_GRAPH.toString() + " TO DEFAULT";
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -260,7 +260,7 @@ public class SparqlPreParserTest {
     @Test
     public void testCopyingTriplesFromDefaultGraphToNamedGraph() throws ParseException {
 
-        String queryStr = "COPY SILENT DEFAULT TO ImmutableGraph " + TEST_GRAPH.toString();
+        String queryStr = "COPY SILENT DEFAULT TO GRAPH " + TEST_GRAPH.toString();
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -274,7 +274,7 @@ public class SparqlPreParserTest {
     @Test
     public void testCopyingTriplesFromNamedGraphToDefaultGraph() throws ParseException {
 
-        String queryStr = "COPY SILENT ImmutableGraph " + TEST_GRAPH.toString() + " TO DEFAULT";
+        String queryStr = "COPY SILENT GRAPH " + TEST_GRAPH.toString() + " TO DEFAULT";
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -301,7 +301,7 @@ public class SparqlPreParserTest {
     public void testInsertDataToNamedGraph() throws ParseException {
 
         String queryStr = "PREFIX ns: <http://example.org/ns#>\n" +
-                "INSERT DATA { ImmutableGraph " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
+                "INSERT DATA { GRAPH " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<Iri> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
@@ -324,7 +324,7 @@ public class SparqlPreParserTest {
     public void testDeleteDataInNamedGraph() throws ParseException {
 
         String queryStr = "PREFIX ns: <http://example.org/ns#>\n" +
-                "DELETE DATA { ImmutableGraph " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
+                "DELETE DATA { GRAPH " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<Iri> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
@@ -336,7 +336,7 @@ public class SparqlPreParserTest {
 
         String queryStr = "PREFIX ns: <http://example.org/ns#> " +
                 "INSERT DATA { <http://example/book1>  ns:price  42 }; " +
-                "DELETE DATA { ImmutableGraph " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
+                "DELETE DATA { GRAPH " + TEST_GRAPH.toString() + " { <http://example/book1>  ns:price  42 } }";
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<Iri> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
@@ -364,8 +364,8 @@ public class SparqlPreParserTest {
     public void testDeleteWhereInNamedGraphs() throws ParseException {
 
         String queryStr = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> DELETE WHERE " +
-                "{ ImmutableGraph <http://example.com/names> { ?person foaf:givenName 'Fred' ; ?property1 ?value1 } " +
-                "  ImmutableGraph <http://example.com/addresses> { ?person ?property2 ?value2 } }";
+                "{ GRAPH <http://example.com/names> { ?person foaf:givenName 'Fred' ; ?property1 ?value1 } " +
+                "  GRAPH <http://example.com/addresses> { ?person ?property2 ?value2 } }";
 
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
@@ -404,8 +404,8 @@ public class SparqlPreParserTest {
     @Test
     public void testInsertOperationToNamedGraph() throws ParseException {
         String queryStr = "PREFIX dc:  <http://purl.org/dc/elements/1.1/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
-                "INSERT { ImmutableGraph <http://example/bookStore2> { ?book ?p ?v } } " +
-                "WHERE { ImmutableGraph <http://example/bookStore> { ?book dc:date ?date . " +
+                "INSERT { GRAPH <http://example/bookStore2> { ?book ?p ?v } } " +
+                "WHERE { GRAPH <http://example/bookStore> { ?book dc:date ?date . " +
                 "FILTER ( ?date > \"1970-01-01T00:00:00-02:00\"^^xsd:dateTime ) ?book ?p ?v } }";
 
         SparqlPreParser parser;
@@ -424,9 +424,9 @@ public class SparqlPreParserTest {
                 "PREFIX dcmitype: <http://purl.org/dc/dcmitype/>\n" +
                 "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n\n" +
                 "INSERT\n" +
-                "  { ImmutableGraph <http://example/bookStore2> { ?book ?p ?v } }\n" +
+                "  { GRAPH <http://example/bookStore2> { ?book ?p ?v } }\n" +
                 "WHERE\n" +
-                "  { ImmutableGraph <http://example/bookStore>\n" +
+                "  { GRAPH <http://example/bookStore>\n" +
                 "    { ?book dc:date ?date . \n" +
                 "      FILTER ( ?date < \"2000-01-01T00:00:00-02:00\"^^xsd:dateTime )\n" +
                 "      ?book ?p ?v\n" +

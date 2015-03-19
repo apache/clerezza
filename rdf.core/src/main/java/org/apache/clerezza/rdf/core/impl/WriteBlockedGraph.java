@@ -31,6 +31,7 @@ import org.apache.clerezza.rdf.core.access.ReadOnlyException;
 import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.event.FilterTriple;
 import org.apache.commons.rdf.event.GraphListener;
+import org.apache.commons.rdf.impl.utils.AbstractGraph;
 
 /**
  *
@@ -41,7 +42,7 @@ import org.apache.commons.rdf.event.GraphListener;
  *
  * @author tsuy
  */
-public class WriteBlockedGraph extends AbstractCollection<Triple>
+public class WriteBlockedGraph extends AbstractGraph
         implements Graph {
 
     private Graph triples;
@@ -51,12 +52,12 @@ public class WriteBlockedGraph extends AbstractCollection<Triple>
     }
 
     @Override
-    public int size() {
+    protected int performSize() {
         return triples.size();
     }
 
     @Override
-    public Iterator<Triple> filter(final BlankNodeOrIri subject, final Iri predicate, final RdfTerm object) {
+    protected Iterator<Triple> performFilter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
         final Iterator<Triple> baseIter = triples.filter(subject, predicate, object);
         return new Iterator<Triple>() {
             
@@ -110,22 +111,6 @@ public class WriteBlockedGraph extends AbstractCollection<Triple>
     }
 
     @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter,
-            long delay) {
-        triples.addGraphListener(listener, filter, delay);
-    }
-
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter) {
-        triples.addGraphListener(listener, filter);
-    }
-
-    @Override
-    public void removeGraphListener(GraphListener listener) {
-        triples.removeGraphListener(listener);
-    }
-
-    @Override
     public Iterator iterator() {
         return filter(null, null, null);
     }
@@ -134,4 +119,5 @@ public class WriteBlockedGraph extends AbstractCollection<Triple>
     public ImmutableGraph getImmutableGraph() {
         return this.triples.getImmutableGraph();
     }
+
 }

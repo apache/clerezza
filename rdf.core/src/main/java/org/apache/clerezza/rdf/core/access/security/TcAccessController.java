@@ -31,17 +31,17 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.Lock;
-import org.apache.commons.rdf.BlankNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
+import org.apache.commons.rdf.BlankNode;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
 import org.apache.commons.rdf.Iri;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.utils.security.PermissionParser;
+import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Literal;
 
 /**
@@ -146,7 +146,7 @@ public abstract class TcAccessController {
     public void setRequiredReadPermissionStrings(Iri GraphUri,
             Collection<String> permissionDescriptions) {
         readPermissionCache.remove(GraphUri);
-        final LockableMGraph permissionMGraph = getOrCreatePermisionGraph();
+        final Graph permissionMGraph = getOrCreatePermisionGraph();
         Lock l = permissionMGraph.getLock().writeLock();
         l.lock();
         try {
@@ -186,7 +186,7 @@ public abstract class TcAccessController {
     public void setRequiredReadWritePermissionStrings(Iri GraphUri,
             Collection<String> permissionDescriptions) {
         readWritePermissionCache.remove(GraphUri);
-        final LockableMGraph permissionMGraph = getOrCreatePermisionGraph();
+        final Graph permissionMGraph = getOrCreatePermisionGraph();
         Lock l = permissionMGraph.getLock().writeLock();
         l.lock();
         try {
@@ -258,7 +258,7 @@ public abstract class TcAccessController {
         return result;
     }
 
-    private BlankNodeOrIri createList(Iterator<String> iterator, LockableMGraph permissionMGraph) {
+    private BlankNodeOrIri createList(Iterator<String> iterator, Graph permissionMGraph) {
         if (!iterator.hasNext()) {
             return rdfNil;
         }
@@ -273,7 +273,7 @@ public abstract class TcAccessController {
 
     //called withiong write-lock
     private void removeExistingRequiredReadPermissions(Iri GraphUri,
-            LockableMGraph permissionMGraph) {
+            Graph permissionMGraph) {
         try {
             Triple t = permissionMGraph.filter(GraphUri, readPermissionListProperty, null).next();
             RdfTerm list = t.getObject();
@@ -284,7 +284,7 @@ public abstract class TcAccessController {
         }
     }
 
-    private void removeList(BlankNodeOrIri list, LockableMGraph permissionMGraph) {
+    private void removeList(BlankNodeOrIri list, Graph permissionMGraph) {
         try {
             Triple t = permissionMGraph.filter(list, rest, null).next();
             RdfTerm restList = t.getObject();
@@ -306,7 +306,7 @@ public abstract class TcAccessController {
     }
     private Collection<String> getRequiredPermissionStrings(final Iri GraphUri, Iri property) {
         try {
-            final LockableMGraph permissionMGraph = tcManager.getMGraph(permissionGraphName);
+            final Graph permissionMGraph = tcManager.getMGraph(permissionGraphName);
             Lock l = permissionMGraph.getLock().readLock();
             l.lock();
             try {
@@ -325,7 +325,7 @@ public abstract class TcAccessController {
         }
     }
 
-    private void readList(BlankNodeOrIri list, LockableMGraph permissionMGraph, LinkedList<String> target) {
+    private void readList(BlankNodeOrIri list, Graph permissionMGraph, LinkedList<String> target) {
         if (list.equals(rdfNil)) {
             return;
         }
@@ -338,7 +338,7 @@ public abstract class TcAccessController {
         target.addFirst(value);
     }
 
-    private LockableMGraph getOrCreatePermisionGraph() {
+    private Graph getOrCreatePermisionGraph() {
         try {
             return tcManager.getMGraph(permissionGraphName);
         } catch (NoSuchEntityException e) {

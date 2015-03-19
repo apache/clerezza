@@ -45,7 +45,7 @@ public class MGraphServiceFactory implements ServiceFactory {
 
     @Override
     public Object getService(Bundle arg0, ServiceRegistration arg1) {
-        return new SecuredMGraph(tcManager.getMGraph(name), name, tcAccessController);
+        return new SecuredGraph(tcManager.getMGraph(name), name, tcAccessController);
     }
 
     @Override

@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.impl;
+package org.apache.clerezza.rdf.core.impl.util;
 
+import org.apache.commons.rdf.impl.utils.TypedLiteralImpl;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;

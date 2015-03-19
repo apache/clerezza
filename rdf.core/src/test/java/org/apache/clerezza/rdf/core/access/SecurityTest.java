@@ -40,8 +40,8 @@ import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedDummy;
 import org.apache.clerezza.rdf.core.access.security.TcPermission;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 
 /**
  *

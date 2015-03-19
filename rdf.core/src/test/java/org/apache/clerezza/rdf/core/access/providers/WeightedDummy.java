@@ -31,8 +31,8 @@ import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleMGraph;
 
 /**
  *

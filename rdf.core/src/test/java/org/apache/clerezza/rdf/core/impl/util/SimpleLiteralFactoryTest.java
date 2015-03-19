@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core.impl;
+package org.apache.clerezza.rdf.core.impl.util;
 
 import junit.framework.Assert;
+import org.apache.clerezza.rdf.core.impl.util.SimpleLiteralFactory;
 import org.apache.commons.rdf.Literal;
 import org.apache.commons.rdf.Iri;
 import org.junit.Test;

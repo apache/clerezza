@@ -25,7 +25,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.apache.commons.rdf.Language;
 import org.apache.commons.rdf.Iri;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;
 import org.apache.clerezza.rdf.core.sparql.query.BasicGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.BuiltInCall;

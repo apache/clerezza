@@ -19,7 +19,6 @@
 package org.apache.clerezza.rdf.core.access;
 
 import java.security.AccessControlException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -34,11 +33,9 @@ import java.util.TreeSet;
 
 import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.WriteBlockedMGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedGraph;
 import org.apache.clerezza.rdf.core.sparql.NoQueryEngineException;
 import org.apache.clerezza.rdf.core.sparql.ParseException;
@@ -53,8 +50,6 @@ import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -84,7 +79,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * injects them the instance.
  *
  * This class returns
- * <code>LockableMGraph</code>s a subtype of
+ * <code>Graph</code>s a subtype of
  * <code>Graph</code> that allows read/write locks.
  *
  * This class also registers all Graphs as services with the property
@@ -217,12 +212,12 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public LockableMGraph getMGraph(Iri name) {
+    public Graph getMGraph(Iri name) {
         try {
             tcAccessController.checkReadWritePermission(name);
         } catch (AccessControlException e) {
             tcAccessController.checkReadPermission(name);
-            return new WriteBlockedMGraph(super.getMGraph(name));
+            return new WriteBlockedGraph(super.getMGraph(name));
         }
         return super.getMGraph(name);
     }
@@ -240,7 +235,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public LockableMGraph createMGraph(Iri name)
+    public Graph createMGraph(Iri name)
             throws UnsupportedOperationException {
         tcAccessController.checkReadWritePermission(name);
         return super.createMGraph(name);
@@ -355,7 +350,7 @@ public class TcManager extends TcProviderMultiplexer {
         }
         final QueryEngine queryEngine = this.queryEngine;
         if (queryEngine != null) {
-            return queryEngine.execute(this, new SimpleMGraph(), query);
+            return queryEngine.execute(this, new SimpleGraph(), query);
         } else {
             throw new NoQueryEngineException();
         }
@@ -586,7 +581,7 @@ public class TcManager extends TcProviderMultiplexer {
         if (isMGraph) {
             interfaceNames = new String[]{
                 Graph.class.getName(),
-                LockableMGraph.class.getName()
+                Graph.class.getName()
             };
             service = new MGraphServiceFactory(this, name, tcAccessController);
         } else {

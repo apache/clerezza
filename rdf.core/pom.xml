@@ -33,8 +33,13 @@
     <description>Interfaces and utilities to access RDF Graphs</description>
     <dependencies>
         <dependency>
-            <groupId>commons-rdf</groupId>
-            <artifactId>commons-rdf</artifactId>
+            <groupId>org.apache.clerezza.commons-rdf</groupId>
+            <artifactId>commons-rdf-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza.commons-rdf</groupId>
+            <artifactId>commons-rdf-impl-utils</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

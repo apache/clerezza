@@ -24,7 +24,6 @@ import org.osgi.framework.ServiceRegistration;
 import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
 
 /**
  * @see <a href="http://www.osgi.org/javadoc/r4v41/org/osgi/framework/ServiceFactory.html">
@@ -50,7 +49,7 @@ public class ImmutableGraphServiceFactory implements ServiceFactory {
         Graph tc = 
                 new SecuredGraph(tcManager.getGraph(name), name,
                 tcAccessController);
-        return new SimpleImmutableGraph(tc);
+        return tc.getImmutableGraph();
     }
 
     @Override

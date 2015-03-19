@@ -30,8 +30,9 @@ import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.access.TcManagerTest;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleMGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 
 /**
  *
@@ -47,7 +48,7 @@ public class WeightedAHeavy implements WeightedTcProvider {
     @Override
     public ImmutableGraph getGraph(Iri name) throws NoSuchEntityException {
         if (name.equals(TcManagerTest.uriRefA)) {
-            Graph mResult = new SimpleMGraph();
+            Graph mResult = new SimpleGraph();
             mResult.add(new TripleImpl(TcManagerTest.uriRefAHeavy, 
                     TcManagerTest.uriRefAHeavy, TcManagerTest.uriRefAHeavy));
             return mResult.getImmutableGraph();
@@ -57,7 +58,7 @@ public class WeightedAHeavy implements WeightedTcProvider {
 
     @Override
     public Graph getMGraph(Iri name) throws NoSuchEntityException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new NoSuchEntityException(name);
     }
 
     @Override

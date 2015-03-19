@@ -22,7 +22,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.impl.SimpleImmutableGraph;
+import java.util.concurrent.locks.ReadWriteLock;
+import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
@@ -204,18 +205,8 @@ public class PrivilegedGraphWrapper implements Graph {
     }
 
     @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
-        graph.addGraphListener(listener, filter, delay);
-    }
-
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter) {
-        graph.addGraphListener(listener, filter);
-    }
-
-    @Override
-    public void removeGraphListener(GraphListener listener) {
-        graph.removeGraphListener(listener);
+    public ReadWriteLock getLock() {
+        return graph.getLock();
     }
 
     private static class PriviledgedTripleIterator implements Iterator<Triple> {

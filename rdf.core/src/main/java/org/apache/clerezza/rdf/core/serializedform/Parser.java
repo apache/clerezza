@@ -35,7 +35,7 @@ import java.util.logging.Level;
 import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleMGraph;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;

@@ -47,9 +47,9 @@ public class TcProviderMultiplexer implements TcProvider {
     protected SortedSet<WeightedTcProvider> providerList = new TreeSet<WeightedTcProvider>(
             new WeightedProviderComparator());
     /**
-     * Mapping to LockableMGraph's and ServiceRegistration using their URI's as key.
-     * Makes sure that per URI only one instance of the LockableMGraph is used,
-     * otherwise the locks in the <code>LockableMGraph</code>s would have no effect
+     * Mapping to Graph's and ServiceRegistration using their URI's as key.
+     * Makes sure that per URI only one instance of the Graph is used,
+     * otherwise the locks in the <code>Graph</code>s would have no effect
      * between different instances and concurrency issues could occur.
      */
     private Map<Iri, MGraphHolder> mGraphCache = Collections.synchronizedMap(new HashMap<Iri, MGraphHolder>());
@@ -68,7 +68,7 @@ public class TcProviderMultiplexer implements TcProvider {
      */
     public void addWeightedTcProvider(WeightedTcProvider provider) {
         providerList.add(provider);
-        updateLockableMGraphCache(provider, true);
+        updateGraphCache(provider, true);
     }
 
     /**
@@ -80,7 +80,7 @@ public class TcProviderMultiplexer implements TcProvider {
     public void removeWeightedTcProvider(
             WeightedTcProvider provider) {
         providerList.remove(provider);
-        updateLockableMGraphCache(provider, false);
+        updateGraphCache(provider, false);
     }
 
     /**
@@ -133,7 +133,7 @@ public class TcProviderMultiplexer implements TcProvider {
      *            <code>org.apache.clerezza.rdf.core.TcManager.providerList</code>
      *            otherwise <code>false</code>
      */
-    private void updateLockableMGraphCache(WeightedTcProvider provider,
+    private void updateGraphCache(WeightedTcProvider provider,
             boolean providerAdded) {
         Set<Iri> uriSet = provider.listGraphs();
         if (!(uriSet == null || uriSet.isEmpty())) {
@@ -232,9 +232,9 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public LockableMGraph getMGraph(Iri name)
+    public Graph getMGraph(Iri name)
             throws NoSuchEntityException {
-        LockableMGraph result = getMGraphFromCache(name);
+        Graph result = getMGraphFromCache(name);
         if (result == null) {
             synchronized (this) {
                 result = getMGraphFromCache(name);
@@ -246,7 +246,7 @@ public class TcProviderMultiplexer implements TcProvider {
         return result;
     }
 
-    private LockableMGraph getMGraphFromCache(Iri name) {
+    private Graph getMGraphFromCache(Iri name) {
         MGraphHolder holder = mGraphCache.get(name);
         if (holder == null) {
             return null;
@@ -254,12 +254,12 @@ public class TcProviderMultiplexer implements TcProvider {
         return holder.getMGraph();
     }
 
-    private LockableMGraph getUnsecuredMGraphAndAddToCache(Iri name)
+    private Graph getUnsecuredMGraphAndAddToCache(Iri name)
             throws NoSuchEntityException {
         for (WeightedTcProvider provider : providerList) {
             try {
                 Graph providedMGraph = provider.getMGraph(name);
-                LockableMGraph result = ensureLockable(providedMGraph);
+                Graph result = ensureLockable(providedMGraph);
 
                 if (isCachingEnabled()) {
 	                mGraphCache.put(name, new MGraphHolder(
@@ -282,7 +282,7 @@ public class TcProviderMultiplexer implements TcProvider {
         for (WeightedTcProvider provider : providerList) {
             try {
                 result = provider.getTriples(name);
-                if (!(result instanceof Graph)) {
+                if (result instanceof ImmutableGraph) {
                     return result;
                 } else {
                     // This is to ensure the Graph gets added to the cache
@@ -298,19 +298,12 @@ public class TcProviderMultiplexer implements TcProvider {
     }
 
     @Override
-    public LockableMGraph createMGraph(Iri name)
+    public Graph createMGraph(Iri name)
             throws UnsupportedOperationException {
 
         for (WeightedTcProvider provider : providerList) {
             try {
-                Graph providedMGraph = provider.createMGraph(name);
-                LockableMGraph result;
-                if (providedMGraph instanceof LockableMGraph) {
-                    result = (LockableMGraph) providedMGraph;
-                } else {
-                    result = new LockableMGraphWrapper(providedMGraph);
-                }
-
+                Graph result = provider.createMGraph(name);
                 // unregisters a possible ImmutableGraph or Graph service under this name
                 // provided by a WeightedTcProvider with a lower weight.
                 tcDisappears(name);
@@ -417,31 +410,26 @@ public class TcProviderMultiplexer implements TcProvider {
         return result;
     }
 
-    private LockableMGraph ensureLockable(Graph providedMGraph) {
-        LockableMGraph result;
-        if (providedMGraph instanceof LockableMGraph) {
-            result = (LockableMGraph) providedMGraph;
-        } else {
-            result = new LockableMGraphWrapper(providedMGraph);
-        }
-        return result;
+    private Graph ensureLockable(Graph providedMGraph) {
+        //Graphs are alway locable now
+        return providedMGraph;
     }
 
     /**
-     * Contains an unsecured LockableMGraph, a ServiceRegistration and
+     * Contains an unsecured Graph, a ServiceRegistration and
      * the WeightedTcProvider that generated the ImmutableGraph
      */
     private static class MGraphHolder {
 
         private WeightedTcProvider tcProvider;
-        private WeakReference<LockableMGraph> mGraphReference;
+        private WeakReference<Graph> mGraphReference;
 
-        MGraphHolder(WeightedTcProvider tcProvider, LockableMGraph graph) {
+        MGraphHolder(WeightedTcProvider tcProvider, Graph graph) {
             this.tcProvider = tcProvider;
-            this.mGraphReference = new WeakReference<LockableMGraph>(graph);
+            this.mGraphReference = new WeakReference<Graph>(graph);
         }
 
-        LockableMGraph getMGraph() {
+        Graph getMGraph() {
             return this.mGraphReference.get();
         }
 

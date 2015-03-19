@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core;
 
-import org.apache.clerezza.rdf.core.impl.SimpleLiteralFactory;
+import org.apache.clerezza.rdf.core.impl.util.SimpleLiteralFactory;
 import org.apache.commons.rdf.Literal;
 
 /**
