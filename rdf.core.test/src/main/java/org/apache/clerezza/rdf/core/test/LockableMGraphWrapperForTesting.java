@@ -21,38 +21,37 @@ package org.apache.clerezza.rdf.core.test;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 
 /**
- * Wrappes an MGraph as a LockableMGraph. If a method is called that reads
+ * Wrappes an Graph as a LockableGraph. If a method is called that reads
  * or modifies the wrapped graph and the appropriate lock is not set, then a
  * RuntimeException is thrown.
  *
  * @author rbn, mir
  */
-public class LockableMGraphWrapperForTesting extends LockableMGraphWrapper {
+public class LockableMGraphWrapperForTesting extends GraphWrapper {
 
     private final ReentrantReadWriteLock lock = (ReentrantReadWriteLock) getLock();
     private final Lock readLock = lock.readLock();
-    private final MGraph wrapped;
+    private final Graph wrapped;
 
     /**
-     * Constructs a LocalbleMGraph for an MGraph.
+     * Constructs a LocalbleGraph for an Graph.
      *
-     * @param providedMGraph a non-lockable mgraph
+     * @param providedGraph a non-lockable mgraph
      */
-    public LockableMGraphWrapperForTesting(final MGraph providedMGraph) {
-        super(providedMGraph);
-        this.wrapped = providedMGraph;
+    public LockableMGraphWrapperForTesting(final Graph providedGraph) {
+        super(providedGraph);
+        this.wrapped = providedGraph;
     }
 
     @Override
-    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
+    public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
         LockChecker.checkIfReadLocked(lock);
         readLock.lock();
         try {

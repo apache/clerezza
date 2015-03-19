@@ -20,27 +20,27 @@ package org.apache.clerezza.rdf.core.test;
 
 import java.util.Iterator;
 import java.util.UUID;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.commons.lang.RandomStringUtils;
 
 /**
- * A <code>MGraph</code> wrapper that allows growing and shrinking of
+ * A <code>Graph</code> wrapper that allows growing and shrinking of
  * the wrapped mgraph.
  *
  * @author mir
  */
-public class RandomMGraph extends MGraphWrapper {
+public class RandomGraph extends GraphWrapper {
     
     private int interconnectivity = 2;
 
-    public RandomMGraph(MGraph mGraph, int interconnectivity) {
+    public RandomGraph(Graph mGraph, int interconnectivity) {
         super(mGraph);
         this.interconnectivity = interconnectivity;
     }
@@ -54,7 +54,7 @@ public class RandomMGraph extends MGraphWrapper {
      *        resource over creating a new resouce is 1-(1/interconnectivity).
      * @param mGraph
      */
-    public RandomMGraph(int initialSize, int interconnectivity, MGraph mGraph) {
+    public RandomGraph(int initialSize, int interconnectivity, Graph mGraph) {
         super(mGraph);
         if (interconnectivity <= 0) {
             throw new IllegalArgumentException("growth speed and the interconnectivity "
@@ -113,65 +113,65 @@ public class RandomMGraph extends MGraphWrapper {
         return new TripleImpl(getSubject(), getPredicate(), getObject());
     }
 
-    private NonLiteral getSubject() {
+    private BlankNodeOrIri getSubject() {
         int random = rollDice(interconnectivity);
         if (size() == 0) {
             random = 0;
         }
         switch (random) {
-            case 0: // create new NonLiteral
-                Resource newResource;
+            case 0: // create new BlankNodeOrIri
+                RdfTerm newRdfTerm;
                 do {
-                    newResource = createRandomResource();
-                } while (!(newResource instanceof NonLiteral));
-                return (NonLiteral) newResource;
-            default: // get existing NonLiteral
-                Resource existingResource;
+                    newRdfTerm = createRandomRdfTerm();
+                } while (!(newRdfTerm instanceof BlankNodeOrIri));
+                return (BlankNodeOrIri) newRdfTerm;
+            default: // get existing BlankNodeOrIri
+                RdfTerm existingRdfTerm;
                 do {
-                    existingResource = getExistingResource();
-                    if (existingResource == null) {
+                    existingRdfTerm = getExistingRdfTerm();
+                    if (existingRdfTerm == null) {
                         random = 0;
                     }
-                } while (!(existingResource instanceof NonLiteral));
+                } while (!(existingRdfTerm instanceof BlankNodeOrIri));
 
-                return (NonLiteral) existingResource;
+                return (BlankNodeOrIri) existingRdfTerm;
         }
     }
 
-    private UriRef getPredicate() {
+    private Iri getPredicate() {
         int random = rollDice(interconnectivity);
         if (size() == 0) {
             random = 0;
         }
         switch (random) {
-            case 0: // create new UriRef
-                return createRandomUriRef();
-            default: // get existing UriRef
-                Resource existingResource;
+            case 0: // create new Iri
+                return createRandomIri();
+            default: // get existing Iri
+                RdfTerm existingRdfTerm;
                 do {
-                    existingResource = getExistingResource();
-                    if (existingResource == null) {
+                    existingRdfTerm = getExistingRdfTerm();
+                    if (existingRdfTerm == null) {
                         random = 0;
                     }
-                } while (!(existingResource instanceof UriRef));
-                return (UriRef) existingResource;
+                } while (!(existingRdfTerm instanceof Iri));
+                return (Iri) existingRdfTerm;
         }
     }
 
-    private Resource getObject() {
+    private RdfTerm getObject() {
         int random = rollDice(interconnectivity);
         if (size() == 0) {
             random = 0;
         }        
         switch (random) {
             case 0: // create new resource
-                return createRandomResource();
+                return createRandomRdfTerm();
             default: // get existing resource
-                Resource existingResource = getExistingResource();
-                if (existingResource == null) {
+                RdfTerm existingRdfTerm = getExistingRdfTerm();
+                if (existingRdfTerm == null) {
                     random = 0;
                 }
-                return existingResource;
+                return existingRdfTerm;
         }
     }
 
@@ -179,19 +179,19 @@ public class RandomMGraph extends MGraphWrapper {
         return Double.valueOf(Math.random() * faces).intValue();
     }
 
-    private Resource createRandomResource() {
+    private RdfTerm createRandomRdfTerm() {
         switch (rollDice(3)) {
             case 0:
-                return new BNode();
+                return new BlankNode();
             case 1:
-                return createRandomUriRef();
+                return createRandomIri();
             case 2:
                 return new PlainLiteralImpl(RandomStringUtils.random(rollDice(100) + 1));
         }
-        throw new RuntimeException("in createRandomResource()");
+        throw new RuntimeException("in createRandomRdfTerm()");
     }
 
-    private Resource getExistingResource() {
+    private RdfTerm getExistingRdfTerm() {
         Triple triple = getRandomTriple();
         if (triple == null) {
             return null;
@@ -207,12 +207,12 @@ public class RandomMGraph extends MGraphWrapper {
         return null;
     }
 
-    private UriRef createRandomUriRef() {
-        return new UriRef("http://" + UUID.randomUUID().toString());
+    private Iri createRandomIri() {
+        return new Iri("http://" + UUID.randomUUID().toString());
     }
 
     /**
-     * Returns a random triple contained in the MGraph.
+     * Returns a random triple contained in the Graph.
      */
     public Triple getRandomTriple() {
         int size = this.size();

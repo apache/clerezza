@@ -21,46 +21,33 @@ package org.apache.clerezza.rdf.core.test;
 
 import java.util.Collection;
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphListener;
+import java.util.concurrent.locks.ReadWriteLock;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+
 
 /**
  *
  * @author mir
  */
-class TripleCollectionWrapper implements TripleCollection {
+class GraphWrapper implements Graph {
 
-    protected TripleCollection wrapped;
+    protected Graph wrapped;
 
-    public TripleCollectionWrapper(TripleCollection tc) {
+    public GraphWrapper(Graph tc) {
         this.wrapped = tc;
     }
 
     @Override
-    public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
+    public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
         return wrapped.filter(subject, predicate, object);
     }
 
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
-        wrapped.addGraphListener(listener, filter, delay);
-    }
-
-    @Override
-    public void addGraphListener(GraphListener listener, FilterTriple filter) {
-        wrapped.addGraphListener(listener, filter);
-    }
-
-    @Override
-    public void removeGraphListener(GraphListener listener) {
-        wrapped.removeGraphListener(listener);
-    }
-
+    
     @Override
     public int size() {
         return wrapped.size();
@@ -124,6 +111,16 @@ class TripleCollectionWrapper implements TripleCollection {
     @Override
     public void clear() {
         wrapped.clear();
+    }
+
+    @Override
+    public ImmutableGraph getImmutableGraph() {
+        return wrapped.getImmutableGraph();
+    }
+
+    @Override
+    public ReadWriteLock getLock() {
+        return wrapped.getLock();
     }
 
 }
