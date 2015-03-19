@@ -20,21 +20,17 @@ package org.apache.clerezza.rdf.jena.parser;
 
 import java.io.InputStream;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.rdf.core.serializedform.UnsupportedParsingFormatException;
+import org.apache.commons.rdf.Iri;
 /**
  * A {@link org.apache.clerezza.rdf.core.serializedform.ParsingProvider} based on Jena
  *
@@ -55,7 +51,7 @@ import org.apache.clerezza.rdf.core.serializedform.UnsupportedParsingFormatExcep
 public class JenaParserProvider implements ParsingProvider {
 
     @Override
-    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+    public void parse(org.apache.commons.rdf.Graph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
         String jenaFormat = getJenaFormat(formatIdentifier);
         com.hp.hpl.jena.graph.Graph graph = new JenaGraph(target);
         Model model = ModelFactory.createModelForGraph(graph);

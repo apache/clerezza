@@ -21,31 +21,30 @@ package org.apache.clerezza.rdf.jena.commons;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
 import java.util.Map;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+
 
 /**
  *
  * @author rbn
  */
 public class Tria2JenaUtil {
-    private Map<BNode, Node> tria2JenaBNodes;
+    private Map<BlankNode, Node> tria2JenaBNodes;
 
-    public Tria2JenaUtil(Map<BNode, Node> tria2JenaBNodes) {
+    public Tria2JenaUtil(Map<BlankNode, Node> tria2JenaBNodes) {
         this.tria2JenaBNodes = tria2JenaBNodes;
     }
 
-    public Node convert2JenaNode(NonLiteral nonLiteral, boolean createBlankNode) {
-        if (nonLiteral instanceof UriRef) {
-            return convert2JenaNode((UriRef)nonLiteral);
+    public Node convert2JenaNode(BlankNodeOrIri nonLiteral, boolean createBlankNode) {
+        if (nonLiteral instanceof Iri) {
+            return convert2JenaNode((Iri)nonLiteral);
         } else {
-            return convert2JenaNode((BNode)nonLiteral, createBlankNode);
+            return convert2JenaNode((BlankNode)nonLiteral, createBlankNode);
         }
     }
 
@@ -53,36 +52,26 @@ public class Tria2JenaUtil {
         if (literal == null) {
             throw new IllegalArgumentException("null argument not allowed");
         }
-        if (literal instanceof PlainLiteral) {
-            return convert2JenaNode((PlainLiteral)literal);
-        }
-        return convert2JenaNode((TypedLiteral)literal);
-    }
-    public Node convert2JenaNode(PlainLiteral literal) {
-        return com.hp.hpl.jena.graph.Node.createLiteral(
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(
                             literal.getLexicalForm(),
                             literal.getLanguage() == null ? null : literal.getLanguage().
-                            toString(), false);
-    }
-    public Node convert2JenaNode(TypedLiteral literal) {
-        return com.hp.hpl.jena.graph.Node.createLiteral(
-                            literal.getLexicalForm(), null, TypeMapper.getInstance().
+                            toString(), TypeMapper.getInstance().
                             getSafeTypeByName(
                             literal.getDataType().getUnicodeString()));
     }
 
-    public Node convert2JenaNode(Resource resource) {
+    public Node convert2JenaNode(RdfTerm resource) {
         return convert2JenaNode(resource, false);
     }
 
-    public Node convert2JenaNode(Resource resource, boolean createBlankNode) {
-        if (resource instanceof NonLiteral) {
-            return convert2JenaNode((NonLiteral)resource, createBlankNode);
+    public Node convert2JenaNode(RdfTerm resource, boolean createBlankNode) {
+        if (resource instanceof BlankNodeOrIri) {
+            return convert2JenaNode((BlankNodeOrIri)resource, createBlankNode);
         }
         return convert2JenaNode((Literal)resource);
     }
 
-    public Node convert2JenaNode(UriRef uriRef) {
+    public Node convert2JenaNode(Iri uriRef) {
         if (uriRef == null) {
             throw new IllegalArgumentException("null argument not allowed");
         }
@@ -90,11 +79,11 @@ public class Tria2JenaUtil {
                         uriRef.getUnicodeString());
     }
 
-    public Node convert2JenaNode(BNode bnode) {
+    public Node convert2JenaNode(BlankNode bnode) {
         return convert2JenaNode(bnode, false);
     }
     
-    public Node convert2JenaNode(BNode bnode, boolean createBlankNode) {
+    public Node convert2JenaNode(BlankNode bnode, boolean createBlankNode) {
         if (bnode == null) {
             throw new IllegalArgumentException("null argument not allowed");
         }

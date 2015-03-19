@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.rdf.jena.facade;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
@@ -28,12 +27,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
 import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
 import org.apache.clerezza.rdf.jena.commons.Tria2JenaUtil;
 import org.wymiwyg.commons.util.collections.BidiMap;
@@ -55,18 +53,18 @@ import org.wymiwyg.commons.util.collections.BidiMapImpl;
  *
  * @author reto
  */
-public class JenaGraph extends GraphBase implements Graph {
+public class JenaGraph extends GraphBase implements com.hp.hpl.jena.graph.Graph {
 
 
 
-    final TripleCollection graph;
-    final BidiMap<BNode, Node> tria2JenaBNodes = new BidiMapImpl<BNode, Node>();
+    final org.apache.commons.rdf.Graph graph;
+    final BidiMap<BlankNode, Node> tria2JenaBNodes = new BidiMapImpl<BlankNode, Node>();
     final Jena2TriaUtil jena2TriaUtil =
             new Jena2TriaUtil(tria2JenaBNodes.inverse());
     final Tria2JenaUtil tria2JenaUtil =
             new Tria2JenaUtil(tria2JenaBNodes);
 
-    public JenaGraph(TripleCollection graph) {
+    public JenaGraph(org.apache.commons.rdf.Graph graph) {
         this.graph = graph;
     }
 
@@ -115,9 +113,9 @@ public class JenaGraph extends GraphBase implements Graph {
      * @return TripleCollection
      */
     private Iterator<Triple> filter(TripleMatch m) {
-        NonLiteral subject = null;
-        UriRef predicate = null;
-        Resource object = null;
+        BlankNodeOrIri subject = null;
+        Iri predicate = null;
+        RdfTerm object = null;
         if (m.getMatchSubject() != null) {
             if (m.getMatchSubject().isLiteral()) {
                 return Collections.EMPTY_SET.iterator();
@@ -154,5 +152,10 @@ public class JenaGraph extends GraphBase implements Graph {
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m) {
         return new TrackingTripleIterator(convert(filter(m)));
+    }
+
+    @Override
+    protected ExtendedIterator<com.hp.hpl.jena.graph.Triple> graphBaseFind(com.hp.hpl.jena.graph.Triple triple) {
+        return new TrackingTripleIterator(convert(filter(triple)));
     }
 }

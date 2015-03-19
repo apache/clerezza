@@ -19,14 +19,14 @@
 
 package org.apache.clerezza.rdf.jena.commons;
 
-import org.apache.clerezza.rdf.core.BNode;
 import com.hp.hpl.jena.graph.Node;
+import org.apache.commons.rdf.BlankNode;
 
 /**
  *
  * @author reto
  */
-class JenaBNodeWrapper extends BNode {
+class JenaBNodeWrapper extends BlankNode {
 
     final Node node;
     

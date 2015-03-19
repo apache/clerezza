@@ -22,11 +22,12 @@ import java.io.InputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 
 
 
@@ -44,8 +45,8 @@ public class JenaParserProviderTest {
         ParsingProvider provider = new JenaParserProvider();
         InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
         InputStream turtleIn = getClass().getResourceAsStream("test-04.ttl");
-        Graph graphFromNTriples = parse(provider, nTriplesIn, "application/n-triples", null);
-        Graph graphFromTurtle = parse(provider, turtleIn, "text/turtle", null);
+        ImmutableGraph graphFromNTriples = parse(provider, nTriplesIn, "application/n-triples", null);
+        ImmutableGraph graphFromTurtle = parse(provider, turtleIn, "text/turtle", null);
         Assert.assertEquals(graphFromNTriples, graphFromTurtle);
     }
 
@@ -57,8 +58,8 @@ public class JenaParserProviderTest {
         ParsingProvider provider = new JenaParserProvider();
         InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
         InputStream rdfIn = getClass().getResourceAsStream("test-04.rdf");
-        Graph graphFromNTriples = parse(provider, nTriplesIn, "application/n-triples", null);
-        Graph graphFromTurtle = parse(provider, rdfIn, "application/rdf+xml", null);
+        ImmutableGraph graphFromNTriples = parse(provider, nTriplesIn, "application/n-triples", null);
+        ImmutableGraph graphFromTurtle = parse(provider, rdfIn, "application/rdf+xml", null);
         Assert.assertEquals(graphFromNTriples, graphFromTurtle);
     }
     
@@ -67,15 +68,15 @@ public class JenaParserProviderTest {
         ParsingProvider provider = new JenaParserProvider();
         InputStream nTriplesIn = getClass().getResourceAsStream("test-04.nt");
         InputStream turtleIn = getClass().getResourceAsStream("test-04.ttl");
-        Graph graphFromNTriples = parse(provider, nTriplesIn, "application/n-triples", null);
-        Graph graphFromTurtle = parse(provider, turtleIn, "text/turtle;charset=UTF-", null);
+        ImmutableGraph graphFromNTriples = parse(provider, nTriplesIn, "application/n-triples", null);
+        ImmutableGraph graphFromTurtle = parse(provider, turtleIn, "text/turtle;charset=UTF-", null);
         Assert.assertEquals(graphFromNTriples, graphFromTurtle);
     }
 
-    private Graph parse(ParsingProvider parsingProvider, InputStream in, String type, UriRef base) {
-        MGraph simpleMGraph = new SimpleMGraph();
+    private ImmutableGraph parse(ParsingProvider parsingProvider, InputStream in, String type, Iri base) {
+        Graph simpleMGraph = new SimpleGraph();
         parsingProvider.parse(simpleMGraph, in, type, base);
-        return simpleMGraph.getGraph();
+        return simpleMGraph.getImmutableGraph();
     }
 
 }

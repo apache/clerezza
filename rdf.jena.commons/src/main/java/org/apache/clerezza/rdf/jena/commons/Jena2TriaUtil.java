@@ -20,30 +20,30 @@ package org.apache.clerezza.rdf.jena.commons;
 
 import com.hp.hpl.jena.graph.Node;
 import java.util.Map;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.commons.rdf.impl.utils.TypedLiteralImpl;
 
 /**
  *
  * @author rbn
  */
 public class Jena2TriaUtil {
-    private final Map<Node, BNode> tria2JenaBNodes;
+    private final Map<Node, BlankNode> tria2JenaBNodes;
 
-    public Jena2TriaUtil(Map<Node,BNode> tria2JenaBNodes) {
+    public Jena2TriaUtil(Map<Node,BlankNode> tria2JenaBNodes) {
         this.tria2JenaBNodes = tria2JenaBNodes;
     }
 
-    private BNode convertJenaNode2TriaBlankNode(Node node) {
-        BNode result = tria2JenaBNodes.get(node);
+    private BlankNode convertJenaNode2TriaBlankNode(Node node) {
+        BlankNode result = tria2JenaBNodes.get(node);
         if (result == null) {
             result = new JenaBNodeWrapper(node);
             //tria2JenaBNodes.put(node,result);
@@ -61,7 +61,7 @@ public class Jena2TriaUtil {
         final String lexicalForm = node.getLiteralLexicalForm();
         String datatypeString = node.getLiteralDatatypeURI();
         if (datatypeString != null) {
-            UriRef dtUriRef = new UriRef(datatypeString);
+            Iri dtUriRef = new Iri(datatypeString);
             return new TypedLiteralImpl(lexicalForm, dtUriRef);
         } else {
             String language = node.getLiteralLanguage();
@@ -74,23 +74,23 @@ public class Jena2TriaUtil {
     }
 
     /**
-     * Converts a URI in jena node to a UriRef
+     * Converts a URI in jena node to a Iri
      * @param node
-     * @return UriRef
+     * @return Iri
      */
-    public UriRef convertJenaUri2UriRef(Node node) {
+    public Iri convertJenaUri2UriRef(Node node) {
         if (node == null) {
             throw new IllegalArgumentException("null argument not allowed");
         }
-        return new UriRef(node.getURI());
+        return new Iri(node.getURI());
     }
 
     /**
      * Converts a jena node to a resource
      * @param node
-     * @return BNode if it is a Blank Node, UriRef if it is a URI and Literal if it is a literal.
+     * @return BlankNode if it is a Blank Node, Iri if it is a URI and Literal if it is a literal.
      */
-    public Resource convertJenaNode2Resource(Node node) {
+    public RdfTerm convertJenaNode2Resource(Node node) {
         if (node == null) {
             throw new IllegalArgumentException("null argument not allowed");
         }
@@ -103,18 +103,18 @@ public class Jena2TriaUtil {
         if (node.isLiteral()) {
             return convertJenaLiteral2Literal(node);
         }
-        throw new RuntimeException("cannot convert " + node + " to Resource");
+        throw new RuntimeException("cannot convert " + node + " to RdfTerm");
     }
 
     /**
-     * Converts a node to a BNode if it is a Blank Node otherwise to a UriRef.
-     * If node is a BNode and no mapping to a Blank Node exists, then null is
+     * Converts a node to a BlankNode if it is a Blank Node otherwise to a Iri.
+     * If node is a BlankNode and no mapping to a Blank Node exists, then null is
      * returned, otherwise the existing mapping.
      *
      * @param node
-     * @return BNode if it is a Blank Node otherwise a UriRef
+     * @return BlankNode if it is a Blank Node otherwise a Iri
      */
-    public NonLiteral convertNonLiteral(Node node) {
+    public BlankNodeOrIri convertNonLiteral(Node node) {
         if (node == null) {
             throw new IllegalArgumentException("null argument not allowed");
         }
@@ -124,13 +124,13 @@ public class Jena2TriaUtil {
         if (node.isURI()) {
             return convertJenaUri2UriRef(node);
         }
-        throw new RuntimeException("cannot convert " + node + " to NonLiteral");
+        throw new RuntimeException("cannot convert " + node + " to BlankNodeOrIri");
     }
 
     public Triple convertTriple(com.hp.hpl.jena.graph.Triple triple) {
-        NonLiteral subject = convertNonLiteral(triple.getSubject());
-        UriRef predicate = convertJenaUri2UriRef(triple.getPredicate());
-        Resource object = convertJenaNode2Resource(triple.getObject());
+        BlankNodeOrIri subject = convertNonLiteral(triple.getSubject());
+        Iri predicate = convertJenaUri2UriRef(triple.getPredicate());
+        RdfTerm object = convertJenaNode2Resource(triple.getObject());
         if (subject == null || object == null) {
             return null;
         }
