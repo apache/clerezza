@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import org.apache.commons.rdf.BlankNode;
 import org.apache.commons.rdf.Literal;
@@ -34,14 +33,8 @@ import org.apache.commons.rdf.Iri;
 import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.junit.Test;
 import org.apache.commons.rdf.Language;
-import org.apache.commons.rdf.event.AddEvent;
-import org.apache.commons.rdf.event.FilterTriple;
-import org.apache.commons.rdf.event.GraphEvent;
-import org.apache.commons.rdf.event.GraphListener;
-import org.apache.commons.rdf.event.RemoveEvent;
 import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.commons.rdf.impl.utils.TypedLiteralImpl;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.junit.Assert;
 
 
