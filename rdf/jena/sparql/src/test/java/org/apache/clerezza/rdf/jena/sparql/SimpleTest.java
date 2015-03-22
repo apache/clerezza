@@ -22,13 +22,13 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.sparql.ParseException;
 import org.apache.clerezza.rdf.core.sparql.QueryParser;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
@@ -42,9 +42,9 @@ public class SimpleTest {
 
 	@Test
 	public void simpleStringQuery() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
+		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "SELECT ?title WHERE" + "{"
 				+ "    <http://example.org/book/book1> <"
@@ -61,9 +61,9 @@ public class SimpleTest {
 
 	@Test
 	public void simpleSelectQuery() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
+		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "SELECT ?title WHERE" + "{"
 				+ "    <http://example.org/book/book1> <"
@@ -77,9 +77,9 @@ public class SimpleTest {
 
 	@Test
 	public void simpleAskQuery() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
+		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "ASK WHERE" + "{"
 				+ "    <http://example.org/book/book1> <"
@@ -94,22 +94,22 @@ public class SimpleTest {
           
          @Test
 	public void simpleDescribe() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
+		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "DESCRIBE " + "    <http://example.org/book/book1>";
 		Assert.assertEquals(
 				1,
-				((Graph) TcManager.getInstance().executeSparqlQuery(
+				((ImmutableGraph) TcManager.getInstance().executeSparqlQuery(
 						QueryParser.getInstance().parse(query), data)).size());
 	}*/
 
 	@Test
 	public void simpleConstruct() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
+		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/> "
 				+ "CONSTRUCT { <http://foo/bar> foaf:name ?title } WHERE" + "{"
@@ -117,16 +117,16 @@ public class SimpleTest {
 				+ DC.title.getUnicodeString() + "> ?title ." + "}";
 		Assert.assertEquals(
 				1,
-				((Graph) TcManager.getInstance().executeSparqlQuery(
+				((ImmutableGraph) TcManager.getInstance().executeSparqlQuery(
 						QueryParser.getInstance().parse(query), data)).size());
 	}
     
     /* Currently fails because of Preparser not yet supporting this type of queries
     @Test
 	public void simpleInsert() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
+		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
         
 		String query = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/> "
@@ -137,9 +137,9 @@ public class SimpleTest {
     
     @Test
 	public void simpleDrop() throws ParseException {
-		SimpleMGraph data = new SimpleMGraph();
+		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new UriRef("http://example.org/book/book1"),
+		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
         
 		String query = "DROP ALL";

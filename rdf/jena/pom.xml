@@ -48,6 +48,7 @@
         <module>parser</module>
         <module>serializer</module>
         <module>storage</module>
+        <module>sparql</module>
     </modules>
 
 </project>

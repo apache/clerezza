@@ -18,7 +18,6 @@
  */
 package org.apache.clerezza.rdf.jena.sparql;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.shared.Lock;
@@ -26,8 +25,8 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.Context;
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.jena.facade.JenaGraph;
@@ -39,31 +38,31 @@ import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 class TcDatasetGraph implements DatasetGraph {
 
     private TcManager tcManager;
-    private TripleCollection defaultGraph;
+    private Graph defaultGraph;
 
-    TcDatasetGraph(TcManager tcManager, TripleCollection defaultGraph) {
+    TcDatasetGraph(TcManager tcManager, Graph defaultGraph) {
         this.tcManager = tcManager;
         this.defaultGraph = defaultGraph;
     
     }
 
     @Override
-    public Graph getDefaultGraph() {
+    public com.hp.hpl.jena.graph.Graph getDefaultGraph() {
         final JenaGraph jenaGraph = new JenaGraph(defaultGraph);
         return jenaGraph;
     }
 
     @Override
-    public Graph getGraph(Node node) {
+    public com.hp.hpl.jena.graph.Graph getGraph(Node node) {
         final JenaGraph jenaGraph = new JenaGraph(
-                tcManager.getTriples(new UriRef(node.getURI())));
+                tcManager.getGraph(new Iri(node.getURI())));
         return jenaGraph;
     }
 
     @Override
     public boolean containsGraph(Node node) {
         try {
-            tcManager.getTriples(new UriRef(node.getURI()));
+            tcManager.getGraph(new Iri(node.getURI()));
             return true;
         } catch (NoSuchEntityException e) {
             return false;
@@ -72,7 +71,7 @@ class TcDatasetGraph implements DatasetGraph {
 
     @Override
     public Iterator<Node> listGraphNodes() {
-        final Iterator<UriRef> graphsIter = tcManager.listTripleCollections().iterator();
+        final Iterator<Iri> graphsIter = tcManager.listGraphs().iterator();
         return new Iterator<Node>() {
 
             @Override
@@ -82,7 +81,7 @@ class TcDatasetGraph implements DatasetGraph {
 
             @Override
             public Node next() {
-                UriRef uriRef = graphsIter.next();
+                Iri uriRef = graphsIter.next();
                 if (uriRef == null) {
                     return null;
                 }
@@ -127,7 +126,7 @@ class TcDatasetGraph implements DatasetGraph {
     }
 
     @Override
-    public void addGraph(Node graphName, Graph graph) {
+    public void addGraph(Node graphName, com.hp.hpl.jena.graph.Graph graph) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -167,7 +166,7 @@ class TcDatasetGraph implements DatasetGraph {
     }
 
     @Override
-    public void setDefaultGraph(Graph g) {
+    public void setDefaultGraph(com.hp.hpl.jena.graph.Graph g) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
