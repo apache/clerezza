@@ -27,9 +27,8 @@ import org.apache.commons.rdf.Language;
 import org.apache.commons.rdf.Literal;
 import org.apache.commons.rdf.RdfTerm;
 import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.LiteralImpl;
 import org.apache.commons.rdf.impl.utils.TripleImpl;
-import org.apache.commons.rdf.impl.utils.TypedLiteralImpl;
 
 /**
  *
@@ -59,18 +58,19 @@ public class Jena2TriaUtil {
      */
     private Literal convertJenaLiteral2Literal(Node node) {
         final String lexicalForm = node.getLiteralLexicalForm();
-        String datatypeString = node.getLiteralDatatypeURI();
-        if (datatypeString != null) {
-            Iri dtUriRef = new Iri(datatypeString);
-            return new TypedLiteralImpl(lexicalForm, dtUriRef);
-        } else {
-            String language = node.getLiteralLanguage();
-            if ((language != null) && !language.equals("")) {
-                return new PlainLiteralImpl(lexicalForm, new Language(language));
-            } else {
-                return new PlainLiteralImpl(lexicalForm);
-            }
+        final String datatypeString = node.getLiteralDatatypeURI();
+        final String languageTag = node.getLiteralLanguage();
+        Language language = null;
+        if ((languageTag != null) && !languageTag.equals("")) {
+             language = new Language(languageTag);
         }
+        Iri dataType = null;
+        if (datatypeString != null) {
+            dataType = new Iri(datatypeString);
+        } else {
+            dataType = new Iri("http://www.w3.org/2001/XMLSchema#string");
+        }
+        return new LiteralImpl(lexicalForm, dataType, language);
     }
 
     /**

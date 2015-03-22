@@ -24,6 +24,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.commons.rdf.BlankNode;
 import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.commons.rdf.RdfTerm;
@@ -54,6 +55,11 @@ public class JenaGraphAdaptor extends AbstractGraph {
      * @param jenaGraph
      */
     public JenaGraphAdaptor(com.hp.hpl.jena.graph.Graph jenaGraph) {
+        this.jenaGraph = jenaGraph;
+    }
+    
+    public JenaGraphAdaptor(com.hp.hpl.jena.graph.Graph jenaGraph, ReadWriteLock lock) {
+        super(lock);
         this.jenaGraph = jenaGraph;
     }
 

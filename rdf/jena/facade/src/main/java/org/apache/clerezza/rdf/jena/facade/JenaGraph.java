@@ -154,7 +154,7 @@ public class JenaGraph extends GraphBase implements com.hp.hpl.jena.graph.Graph 
         return new TrackingTripleIterator(convert(filter(m)));
     }
 
-    @Override
+    //not yet @Override
     protected ExtendedIterator<com.hp.hpl.jena.graph.Triple> graphBaseFind(com.hp.hpl.jena.graph.Triple triple) {
         return new TrackingTripleIterator(convert(filter(triple)));
     }

@@ -43,6 +43,7 @@
     <name>Clerezza - RDF - Jena</name>
     <description>The clerezza RDF Implementation using Jena</description>
     <modules>
+        <module>dependencymanagement</module>
         <module>commons</module>
         <module>facade</module>
         <module>parser</module>

@@ -38,19 +38,16 @@ import java.util.logging.Level;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.util.PrivilegedMGraphWrapper;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.rdf.core.impl.util.PrivilegedGraphWrapper;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
@@ -89,8 +86,8 @@ public class TdbTcProvider implements WeightedTcProvider {
      */
     private static final String DATA_PATH_NAME = "tdb-data/";
     private String dataPathString = DATA_PATH_NAME;
-    private Map<UriRef, LockableMGraph> mGraphMap = new HashMap<UriRef, LockableMGraph>();
-    private Map<UriRef, Graph> graphMap = new HashMap<UriRef, Graph>();
+    private Map<Iri, Graph> mGraphMap = new HashMap<Iri, Graph>();
+    private Map<Iri, ImmutableGraph> graphMap = new HashMap<Iri, ImmutableGraph>();
     private Map<File, com.hp.hpl.jena.graph.Graph> dir2JenaGraphMap = new HashMap<File, com.hp.hpl.jena.graph.Graph>();
     private Map<File, Lock> dir2Lock = new HashMap<File, Lock>();
     private final Map<File, Dataset> dir2Dataset = new HashMap<File, Dataset>();
@@ -126,8 +123,8 @@ public class TdbTcProvider implements WeightedTcProvider {
 
     TdbTcProvider(File directory) {
         dataPathString = directory.getAbsolutePath();
-        loadMGraphs();
         loadGraphs();
+        loadImmutableGraphs();
     }
 
     public void activate(ComponentContext cCtx) {
@@ -138,8 +135,8 @@ public class TdbTcProvider implements WeightedTcProvider {
                     getDataFile(DATA_PATH_NAME).getAbsolutePath();
             syncInterval = Integer.parseInt(cCtx.getProperties().get(SYNC_INTERVAL).toString());
         }
-        loadMGraphs();
         loadGraphs();
+        loadImmutableGraphs();
         syncThread = new SyncThread();
         syncThread.start();
     }
@@ -163,7 +160,7 @@ public class TdbTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
         if (!graphMap.containsKey(name)) {
             throw new NoSuchEntityException(name);
         }
@@ -171,7 +168,7 @@ public class TdbTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public synchronized MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+    public synchronized Graph getMGraph(Iri name) throws NoSuchEntityException {
         if (!mGraphMap.containsKey(name)) {
             throw new NoSuchEntityException(name);
         }
@@ -179,18 +176,18 @@ public class TdbTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
+    public Graph getGraph(Iri name) throws NoSuchEntityException {
         try {
             return getMGraph(name);
         } catch (NoSuchEntityException e) {
-            return getGraph(name);
+            return getImmutableGraph(name);
         }
     }
 
     @Override
-    public synchronized MGraph createMGraph(UriRef name)
+    public synchronized Graph createGraph(Iri name)
             throws UnsupportedOperationException, EntityAlreadyExistsException {
-        File tcDir = getMGraphDir(name);
+        File tcDir = getGraphDir(name);
         if (tcDir.exists()) {
             throw new EntityAlreadyExistsException(name);
         }
@@ -201,22 +198,22 @@ public class TdbTcProvider implements WeightedTcProvider {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        LockableMGraph result = new LockableMGraphWrapper(getMGraph(tcDir));
+        Graph result = getGraph(tcDir);
         dir2Lock.put(tcDir, result.getLock().writeLock());
         mGraphMap.put(name, result);
         return result;
     }
 
     @Override
-    public Graph createGraph(UriRef name, TripleCollection triples)
+    public ImmutableGraph createImmutableGraph(Iri name, Graph triples)
             throws UnsupportedOperationException, EntityAlreadyExistsException {
-        File tcDir = getGraphDir(name);
+        File tcDir = getImmutableGraphDir(name);
         if (tcDir.exists()) {
             throw new EntityAlreadyExistsException(name);
         }
 
         if (triples == null) {
-            triples = new SimpleMGraph();
+            triples = new SimpleGraph();
         }
         tcDir.mkdirs();
         File otimizationIndicator = new File(tcDir, "fixed.opt");
@@ -225,24 +222,24 @@ public class TdbTcProvider implements WeightedTcProvider {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        MGraph mGraph = getMGraph(tcDir);
+        Graph mGraph = getGraph(tcDir);
         mGraph.addAll(triples);
-        Graph result = mGraph.getGraph();
+        ImmutableGraph result = mGraph.getImmutableGraph();
         TDB.sync(dir2Dataset.get(tcDir));
         graphMap.put(name, result);
         return result;
     }
 
     @Override
-    public void deleteTripleCollection(UriRef name)
+    public void deleteGraph(Iri name)
             throws UnsupportedOperationException, NoSuchEntityException,
             EntityUndeletableException {
         syncWithFileSystem();
-        if (deleteTcDir(getGraphDir(name))) {
+        if (deleteTcDir(getImmutableGraphDir(name))) {
             graphMap.remove(name);
             return;
         }
-        if (deleteTcDir(getMGraphDir(name))) {
+        if (deleteTcDir(getGraphDir(name))) {
             mGraphMap.remove(name);
             return;
         }
@@ -312,11 +309,11 @@ public class TdbTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<UriRef> getNames(Graph graph) {
+    public Set<Iri> getNames(ImmutableGraph graph) {
         //this could be done more efficiently with an index, could be done with
         //a MultiBidiMap (BidiMap allowing multiple keys for the same value)
-        Set<UriRef> result = new HashSet<UriRef>();
-        for (UriRef name : listGraphs()) {
+        Set<Iri> result = new HashSet<Iri>();
+        for (Iri name : listGraphs()) {
             if (getGraph(name).equals(graph)) {
                 result.add(name);
             }
@@ -325,33 +322,33 @@ public class TdbTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<UriRef> listTripleCollections() {
-        Set<UriRef> result = new HashSet<UriRef>();
+    public Set<Iri> listGraphs() {
+        Set<Iri> result = new HashSet<Iri>();
         result.addAll(listGraphs());
-        result.addAll(listMGraphs());
+        result.addAll(listGraphs());
         return result;
     }
 
     @Override
-    public Set<UriRef> listGraphs() {
+    public Set<Iri> listMGraphs() {
         return graphMap.keySet();
     }
 
     @Override
-    public Set<UriRef> listMGraphs() {
+    public Set<Iri> listImmutableGraphs() {
         return mGraphMap.keySet();
     }
 
-    private Graph getGraph(File tcDir) {
-        return getMGraph(tcDir).getGraph();
+    private ImmutableGraph getImmutableGraph(File tcDir) {
+        return getGraph(tcDir).getImmutableGraph();
     }
 
-    private File getGraphDir(UriRef name) {
+    private File getImmutableGraphDir(Iri name) {
         File base = new File(dataPathString);
         return getTcDir(new File(base, "graph"), name);
     }
 
-    private MGraph getMGraph(File tcDir) {
+    private Graph getGraph(File tcDir) {
         Dataset dataset = TDBFactory.createDataset(tcDir.getAbsolutePath());
         Model model = dataset.getDefaultModel();
         //Model model = TDBFactory.createModel(tcDir.getAbsolutePath());
@@ -361,15 +358,15 @@ public class TdbTcProvider implements WeightedTcProvider {
         synchronized (dir2Dataset) {
             dir2Dataset.put(tcDir, dataset);
         }
-        return new PrivilegedMGraphWrapper(new JenaGraphAdaptor(jenaGraph));
+        return new PrivilegedGraphWrapper(new JenaGraphAdaptor(jenaGraph));
     }
 
-    private File getMGraphDir(UriRef name) {
+    private File getGraphDir(Iri name) {
         File base = new File(dataPathString);
         return getTcDir(new File(base, "mgraph"), name);
     }
 
-    private File getTcDir(File directory, UriRef name) {
+    private File getTcDir(File directory, Iri name) {
         try {
             String subDirName = URLEncoder.encode(name.getUnicodeString(), "utf-8");
             return new File(directory, subDirName);
@@ -378,14 +375,14 @@ public class TdbTcProvider implements WeightedTcProvider {
         }
     }
 
-    private void loadGraphs() {
+    private void loadImmutableGraphs() {
         File graphsDir = new File(new File(dataPathString), "graph");
         if (graphsDir.exists()) {
             for (String graphDirName : graphsDir.list()) {
                 try {
-                    UriRef uri = new UriRef(URLDecoder.decode(graphDirName, "utf-8"));
+                    Iri uri = new Iri(URLDecoder.decode(graphDirName, "utf-8"));
                     log.info("loading: " + graphDirName);
-                    graphMap.put(uri, getGraph(new File(graphsDir, graphDirName)));
+                    graphMap.put(uri, getImmutableGraph(new File(graphsDir, graphDirName)));
                 } catch (UnsupportedEncodingException ex) {
                     throw new RuntimeException("utf-8 not supported", ex);
                 } catch (Exception e) {
@@ -395,17 +392,17 @@ public class TdbTcProvider implements WeightedTcProvider {
         }
     }
 
-    private void loadMGraphs() {
+    private void loadGraphs() {
         File mGraphsDir = new File(new File(dataPathString), "mgraph");
         if (mGraphsDir.exists()) {
             for (String mGraphDirName : mGraphsDir.list()) {
                 try {
-                    UriRef uri = new UriRef(URLDecoder.decode(mGraphDirName, "utf-8"));
+                    Iri uri = new Iri(URLDecoder.decode(mGraphDirName, "utf-8"));
                     log.info("loading: " + mGraphDirName);
                     final File tcDir = new File(mGraphsDir, mGraphDirName);
-                    final LockableMGraphWrapper lockableMGraph = new LockableMGraphWrapper(getMGraph(tcDir));
-                    mGraphMap.put(uri, lockableMGraph);
-                    dir2Lock.put(tcDir, lockableMGraph.getLock().writeLock());
+                    final Graph lockableGraph = getGraph(tcDir);
+                    mGraphMap.put(uri, lockableGraph);
+                    dir2Lock.put(tcDir, lockableGraph.getLock().writeLock());
                 } catch (UnsupportedEncodingException ex) {
                     throw new RuntimeException("utf-8 not supported", ex);
                 } catch (Exception e) {

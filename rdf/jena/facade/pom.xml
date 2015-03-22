@@ -18,7 +18,7 @@
  specific language governing permissions and limitations
  under the License.
 
--->
+    -->
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -33,7 +33,18 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - RDF - Jena - Facade: Jena API on SCB</name>
     <description>An implementation of the Jena API on top of Clerezza RDF Commons, allows to
-    run code written against the Jena API on a source exposing the Clerezza Commons API .</description>
+        run code written against the Jena API on a source exposing the Clerezza Commons API .</description>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.clerezza</groupId>
+                <artifactId>rdf.jena.dependencymanagement</artifactId>
+                <type>pom</type>
+                <version>1.0.0-SNAPSHOT</version>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.apache.clerezza.commons-rdf</groupId>
@@ -53,7 +64,11 @@
         <dependency>
             <groupId>org.wymiwyg</groupId>
             <artifactId>wymiwyg-commons-core</artifactId>
-        </dependency>        
+        </dependency>   
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
+        </dependency>     
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

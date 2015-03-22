@@ -31,15 +31,15 @@ import java.util.Hashtable;
 import java.util.Set;
 
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.felix.scr.annotations.Activate;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,7 +62,7 @@ public class MultiThreadedTestSingleTdb {
     private static final int DELAY = 15;
     
     
-    private MGraph mGraph;
+    private Graph mGraph;
     private Set<Triple> testTriples = Collections.synchronizedSet(new HashSet<Triple>()); 
 
     class TestThread extends Thread {
@@ -86,7 +86,7 @@ public class MultiThreadedTestSingleTdb {
             while (!stopRequested) {
                 try {
                     Literal randomLiteral = new PlainLiteralImpl(Util.createRandomString(22));
-                    Triple triple = new TripleImpl(new BNode(), new UriRef("http://example.com/property"), randomLiteral);
+                    Triple triple = new TripleImpl(new BlankNode(), new Iri("http://example.com/property"), randomLiteral);
                     mGraph.add(triple);
                     addedTripleCount++;
                     if ((addedTripleCount % 100) == 0) {
@@ -109,7 +109,7 @@ public class MultiThreadedTestSingleTdb {
     @Before
     public void setUp() throws IOException, ConfigurationException {
         File tempFile;
-        UriRef MGRAPHNAME = new UriRef("http://text.example.org/");
+        Iri MGRAPHNAME = new Iri("http://text.example.org/");
         TcProvider tdbTcProvider;
         tempFile = File.createTempFile("tdbtest", null);
         tempFile.delete();
@@ -118,7 +118,7 @@ public class MultiThreadedTestSingleTdb {
         dict.put(SingleTdbDatasetTcProvider.TDB_DIR, tempFile.getAbsolutePath());
         tdbTcProvider = new SingleTdbDatasetTcProvider(dict);
         //tdbTcProvider.activate(null);
-        mGraph = tdbTcProvider.createMGraph(MGRAPHNAME);
+        mGraph = tdbTcProvider.createGraph(MGRAPHNAME);
     }
 
     @Test

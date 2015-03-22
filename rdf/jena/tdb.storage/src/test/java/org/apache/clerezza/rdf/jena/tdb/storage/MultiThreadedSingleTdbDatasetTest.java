@@ -33,14 +33,13 @@ import java.util.Random;
 import java.util.Set;
 
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,7 +68,7 @@ public class MultiThreadedSingleTdbDatasetTest {
     private static final int DELAY = 15;
     
     
-    protected final List<MGraph> mGraphs = new ArrayList<MGraph>();
+    protected final List<Graph> mGraphs = new ArrayList<Graph>();
     protected final List<Set<Triple>> testTriplesList = new ArrayList<Set<Triple>>();
     private Random random = new Random();
 
@@ -94,7 +93,7 @@ public class MultiThreadedSingleTdbDatasetTest {
                 synchronized (random) {
                     r = random.nextFloat();
                 }
-                MGraph graph;
+                Graph graph;
                 Set<Triple> testTriples;
                 if(r > 0.995){
                     int num;
@@ -102,7 +101,7 @@ public class MultiThreadedSingleTdbDatasetTest {
                         num = graphNum[0];
                         graphNum[0]++;
                     }
-                    graph = provider.createMGraph(new UriRef(TEST_GRAPH_URI_PREFIX+num));
+                    graph = provider.createGraph(new Iri(TEST_GRAPH_URI_PREFIX+num));
                     log.info(" ... creating the {}. Grpah", num+1);
                     testTriples = new HashSet<Triple>();
                     synchronized (mGraphs) {
@@ -117,7 +116,7 @@ public class MultiThreadedSingleTdbDatasetTest {
                     }
                 }
                 Literal randomLiteral = new PlainLiteralImpl(Util.createRandomString(22));
-                Triple triple = new TripleImpl(new BNode(), new UriRef("http://example.com/property"), randomLiteral);
+                Triple triple = new TripleImpl(new BlankNode(), new Iri("http://example.com/property"), randomLiteral);
                 graph.add(triple);
                 addedTripleCount++;
                 if ((addedTripleCount % 100) == 0) {
@@ -132,7 +131,7 @@ public class MultiThreadedSingleTdbDatasetTest {
 
     }
     /**
-     * Iterates over max. the first 10 triples of a Graph
+     * Iterates over max. the first 10 triples of a ImmutableGraph
      * while acquiring a read lock on the graph.
      * @author westei
      *
@@ -158,9 +157,9 @@ public class MultiThreadedSingleTdbDatasetTest {
                     r = random.nextFloat();
                 }
                 int num = Math.round(r*(float)(mGraphs.size()-1));
-                LockableMGraph graph;
+                Graph graph;
                 synchronized (mGraphs) {
-                    graph = (LockableMGraph)mGraphs.get(num);
+                    graph = mGraphs.get(num);
                 }
                 int elem = 0;
                 graph.getLock().readLock().lock();
@@ -202,10 +201,10 @@ public class MultiThreadedSingleTdbDatasetTest {
     }
     @Before
     public void createGraphs(){
-        mGraphs.add(provider.createMGraph(new UriRef(TEST_GRAPH_URI_PREFIX+graphNum[0])));
+        mGraphs.add(provider.createGraph(new Iri(TEST_GRAPH_URI_PREFIX+graphNum[0])));
         testTriplesList.add(new HashSet<Triple>());
         graphNum[0]++;
-        mGraphs.add(provider.createMGraph(new UriRef(TEST_GRAPH_URI_PREFIX+graphNum[0])));
+        mGraphs.add(provider.createGraph(new Iri(TEST_GRAPH_URI_PREFIX+graphNum[0])));
         testTriplesList.add(new HashSet<Triple>());
         graphNum[0]++;
     }
@@ -239,7 +238,7 @@ public class MultiThreadedSingleTdbDatasetTest {
         int graphTriples = 0;
         log.info("Test created {} graphs with {} triples", mGraphs.size(), addedTriples);
         for(int i = 0;i < mGraphs.size(); i++){
-            MGraph graph = mGraphs.get(i);
+            Graph graph = mGraphs.get(i);
             graphTriples += graph.size();
             log.info("  > Grpah {}: {} triples",i,graph.size());
             for (Triple testTriple : testTriplesList.get(i)) {

@@ -3,7 +3,7 @@ package org.apache.clerezza.rdf.jena.tdb.storage;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.clerezza.rdf.core.access.QueryableTcProvider;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.jena.sparql.ResultSetWrapper;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 abstract class BaseTdbTcProvider implements QueryableTcProvider{
 
@@ -33,7 +33,7 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
 	// ------------------------------------------------------------------------
 
     @Override
-    public Object executeSparqlQuery(final String query, UriRef defaultGraph) {
+    public Object executeSparqlQuery(final String query, Iri defaultGraph) {
 		// Missing permission (java.lang.RuntimePermission getClassLoader)
 		// when calling QueryFactory.create causes ExceptionInInitializerError
 		// to be thrown.
@@ -71,10 +71,10 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
 				} catch (QueryExecException e2) {
 					try {
 						return new JenaGraphAdaptor(qexec.execDescribe()
-								.getGraph()).getGraph();
+								.getGraph()).getImmutableGraph();
 					} catch (QueryExecException e3) {
 						return new JenaGraphAdaptor(qexec.execConstruct()
-								.getGraph()).getGraph();
+								.getGraph()).getImmutableGraph();
 					}
 				}
 			}

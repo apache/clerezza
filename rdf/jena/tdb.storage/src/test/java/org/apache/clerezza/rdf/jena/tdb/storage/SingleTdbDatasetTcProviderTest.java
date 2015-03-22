@@ -9,16 +9,16 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcProvider;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.test.TcProviderTest;
 import org.junit.After;
 import org.junit.Assert;
@@ -31,7 +31,7 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
     private static File tempFile;
     private static Dictionary<String,Object> config;
     private static SingleTdbDatasetTcProvider provider;
-    private static UriRef UNION_GRAPH_NAME = new UriRef("http://www.example.org/unionGraph");
+    private static Iri UNION_GRAPH_NAME = new Iri("http://www.example.org/unionGraph");
     
     @Before
     public void setup() throws IOException, ConfigurationException {
@@ -84,7 +84,7 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
     @Test(expected=NoSuchEntityException.class)
     public void testUnionMgraph(){
         TcProvider provider = getInstance();
-        provider.getMGraph(UNION_GRAPH_NAME);
+        provider.getGraph(UNION_GRAPH_NAME);
     }
     
     /**
@@ -93,45 +93,45 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
     @Test
     public void testEmptyUnionGraph(){
         TcProvider provider = getInstance();
-        Graph graph = provider.getGraph(UNION_GRAPH_NAME);
+        ImmutableGraph graph = provider.getImmutableGraph(UNION_GRAPH_NAME);
         Assert.assertNotNull(graph);
     }
     
     @Test
     public void testUnionGraph() throws Exception{
         TcProvider provider = getInstance();
-        UriRef type = new UriRef("http://www.w3.org/2000/01/rdf-schema#type");
-        UriRef name = new UriRef("http://schema.org/name");
-        UriRef personType = new UriRef("http://schema.org/Person");
-        UriRef companyType = new UriRef("http://schema.org/Company");
-        UriRef worksFor = new UriRef("http://schema.org/works-for");
+        Iri type = new Iri("http://www.w3.org/2000/01/rdf-schema#type");
+        Iri name = new Iri("http://schema.org/name");
+        Iri personType = new Iri("http://schema.org/Person");
+        Iri companyType = new Iri("http://schema.org/Company");
+        Iri worksFor = new Iri("http://schema.org/works-for");
 
         //create a graph with persons
-        MGraph persons = new SimpleMGraph();
-        UriRef tim = new UriRef("http://people.org/tim.johnson");
+        Graph persons = new SimpleGraph();
+        Iri tim = new Iri("http://people.org/tim.johnson");
         persons.add(new TripleImpl(tim, type, personType));
         persons.add(new TripleImpl(tim, name, new PlainLiteralImpl("Tim Johnson")));
-        UriRef john = new UriRef("http://people.org/john.swenson");
+        Iri john = new Iri("http://people.org/john.swenson");
         persons.add(new TripleImpl(john, type, personType));
         persons.add(new TripleImpl(john, name, new PlainLiteralImpl("John Swenson")));
-        provider.createGraph(new UriRef("urn:persons"), persons.getGraph());
+        provider.createImmutableGraph(new Iri("urn:persons"), persons);
         
-        //create a MGraph with data about persons
-        MGraph orgdata = provider.createMGraph(new UriRef("urn:orgdata"));
-        UriRef talinor = new UriRef("http://company.org/talinor");
+        //create a Graph with data about persons
+        Graph orgdata = provider.createGraph(new Iri("urn:orgdata"));
+        Iri talinor = new Iri("http://company.org/talinor");
         orgdata.add(new TripleImpl(talinor, type, companyType));
         orgdata.add(new TripleImpl(talinor, name, new PlainLiteralImpl("Talinor Inc.")));
         orgdata.add(new TripleImpl(john, worksFor, talinor));
-        UriRef kondalor = new UriRef("http://company.org/kondalor");
+        Iri kondalor = new Iri("http://company.org/kondalor");
         orgdata.add(new TripleImpl(kondalor, type, companyType));
         orgdata.add(new TripleImpl(kondalor, name, new PlainLiteralImpl("Kondalor Ges.m.b.H.")));
         orgdata.add(new TripleImpl(tim, worksFor, kondalor));
         
         //now get the union graph
-        Graph data = provider.getGraph(UNION_GRAPH_NAME);
+        ImmutableGraph data = provider.getImmutableGraph(UNION_GRAPH_NAME);
         Assert.assertNotNull(data);
         //CLEREZZA-714: getTriples need to correctly return the UnionGraph
-        data = (Graph)provider.getTriples(UNION_GRAPH_NAME);
+        data = (ImmutableGraph)provider.getGraph(UNION_GRAPH_NAME);
         Assert.assertNotNull(data);
         //NOTE: Jena TDB does not support getSize for the union graph
 //        int expectedTripleCount = persons.size()+orgdata.size();
@@ -139,17 +139,17 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
 //            +" triples (expected "+expectedTripleCount+")",
 //            expectedTripleCount, data.size());
         Iterator<Triple> it = data.filter(null, type, companyType);
-        Set<UriRef> expected = new HashSet<UriRef>(Arrays.asList(talinor,kondalor));
+        Set<Iri> expected = new HashSet<Iri>(Arrays.asList(talinor,kondalor));
         while(it.hasNext()){
-            NonLiteral subject = it.next().getSubject();
+            BlankNodeOrIri subject = it.next().getSubject();
             Assert.assertTrue("Unexpected "+subject, expected.remove(subject));
         }
         Assert.assertTrue("Missing "+expected, expected.isEmpty());
 
         it = data.filter(null, type, personType);
-        expected = new HashSet<UriRef>(Arrays.asList(john,tim));
+        expected = new HashSet<Iri>(Arrays.asList(john,tim));
         while(it.hasNext()){
-            NonLiteral subject = it.next().getSubject();
+            BlankNodeOrIri subject = it.next().getSubject();
             Assert.assertTrue("Unexpected "+subject, expected.remove(subject));
         }
         Assert.assertTrue("Missing "+expected, expected.isEmpty());
@@ -158,11 +158,11 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
     @Test
     public void testListGraph(){
     	TcProvider provider = getInstance();
-    	//No union graph in listMGraphs
-    	Set<UriRef> mgl = provider.listMGraphs();
-        Assert.assertFalse("Mgraph list don't contain the read-only union-graph", mgl.contains(UNION_GRAPH_NAME));
+    	//No union graph in listGraphs
+    	Set<Iri> mgl = provider.listMGraphs();
+        Assert.assertFalse("Mgraph contains the read-only union-graph", mgl.contains(UNION_GRAPH_NAME));
         //Union graph in listGraphs
-        Set<UriRef> gl = provider.listGraphs();
-        Assert.assertTrue("Graph list contain the read-only union-graph", gl.contains(UNION_GRAPH_NAME));
+        Set<Iri> gl = provider.listGraphs();
+        Assert.assertTrue("ImmutableGraph does not contain the read-only union-graph", gl.contains(UNION_GRAPH_NAME));
     }
 }

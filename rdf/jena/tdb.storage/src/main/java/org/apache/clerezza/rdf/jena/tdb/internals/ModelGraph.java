@@ -2,14 +2,13 @@ package org.apache.clerezza.rdf.jena.tdb.internals;
 
 import java.util.concurrent.locks.ReadWriteLock;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
-import org.apache.clerezza.rdf.core.impl.SimpleGraph;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Graph;
+
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedGraphWrapper;
-import org.apache.clerezza.rdf.core.impl.util.PrivilegedMGraphWrapper;
+import org.apache.clerezza.rdf.core.impl.util.PrivilegedGraphWrapper;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
 import org.apache.clerezza.rdf.jena.tdb.storage.SingleTdbDatasetTcProvider;
 
@@ -17,12 +16,13 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.TDB;
+import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
 
 /**
- * Represents the Jena {@link Model} and the Clerezza {@link Graph} or
- * {@link MGraph}. It also provide access to the {@link JenaGraphAdaptor}
- * so that this component can add parsed data to {@link Graph}s created
- * by calls to {@link SingleTdbDatasetTcProvider#createGraph(UriRef, TripleCollection)}.
+ * Represents the Jena {@link Model} and the Clerezza {@link ImmutableGraph} or
+ * {@link Graph}. It also provide access to the {@link JenaGraphAdaptor}
+ * so that this component can add parsed data to {@link ImmutableGraph}s created
+ * by calls to {@link SingleTdbDatasetTcProvider#createGraph(Iri, TripleCollection)}.
  * @author Rupert Westenthaler
  *
  */
@@ -38,16 +38,16 @@ public class ModelGraph {
      */
     private JenaGraphAdaptor jenaAdapter;
     /**
-     * The {@link Graph}(in case of read-only) or {@link MGraph} (if read/write)
+     * The {@link ImmutableGraph}(in case of read-only) or {@link Graph} (if read/write)
      * that can be shared with other components. The instance stored by this
      * variable will use all the required Wrappers such as such as 
-     * {@link LockableMGraphWrapper lockable} and {@link PrivilegedMGraphWrapper
+     * {@link LockableGraphWrapper lockable} and {@link PrivilegedGraphWrapper
      * privileged}.
      */
-    private TripleCollection graph;
+    private Graph graph;
     /**
-     * keeps the state if this represents an {@link Graph} (read-only) or
-     * {@link MGraph}(read/write) ModelGraph.
+     * keeps the state if this represents an {@link ImmutableGraph} (read-only) or
+     * {@link Graph}(read/write) ModelGraph.
      */
     private final boolean readWrite;
     
@@ -71,21 +71,20 @@ public class ModelGraph {
                  * @return
                  */
                 @Override
-                public Graph getGraph() {
-                    return new SimpleGraph(this,true);
+                public ImmutableGraph getImmutableGraph() {
+                    return new SimpleImmutableGraph(this,true);
                 }
             };
-            graph = new PrivilegedGraphWrapper(jenaAdapter.getGraph());
-        } else { //construct an MGraph
-            jenaAdapter = new JenaGraphAdaptor(model.getGraph());
-            this.graph =  new DatasetLockedMGraph(lock,
-                new PrivilegedMGraphWrapper(jenaAdapter));
+            graph = new PrivilegedGraphWrapper(jenaAdapter).getImmutableGraph();
+        } else { //construct an Graph
+            jenaAdapter = new JenaGraphAdaptor(model.getGraph(), lock);
+            this.graph =  new PrivilegedGraphWrapper(jenaAdapter);
         }
     }
     /**
      * The {@link JenaGraphAdaptor}. For internal use only! Do not pass
      * this instance to other components. Use {@link #getGraph()} and
-     * {@link #getMGraph()} instead!
+     * {@link #getGraph()} instead!
      * @return the plain {@link JenaGraphAdaptor}
      */
     public JenaGraphAdaptor getJenaAdapter(){
@@ -96,28 +95,28 @@ public class ModelGraph {
         return readWrite;
     }
     /**
-     * Getter for the {@link MGraph}
-     * @return the {@link MGraph}
+     * Getter for the {@link Graph}
+     * @return the {@link Graph}
      * @throws IllegalStateException if this {@link ModelGraph} is NOT
      * {@link #readWrite}
      */
-    public MGraph getMGraph(){
+    public Graph getGraph(){
         if(!readWrite){
-            throw new IllegalStateException("Unable to return MGraph for read-only models");
+            throw new IllegalStateException("Unable to return Graph for read-only models");
         }
-        return (MGraph)graph;
+        return (Graph)graph;
     }
     /**
-     * Getter for the {@link Graph}
-     * @return the {@link Graph}
+     * Getter for the {@link ImmutableGraph}
+     * @return the {@link ImmutableGraph}
      * @throws IllegalStateException if this {@link ModelGraph} is 
      * {@link #readWrite}
      */
-    public Graph getGraph() {
+    public ImmutableGraph getImmutableGraph() {
         if(readWrite){
-            throw new IllegalStateException("Unable to return Graph for read/write models.");
+            throw new IllegalStateException("Unable to return ImmutableGraph for read/write models.");
         }
-        return (Graph)graph;
+        return (ImmutableGraph)graph;
     }
     /**
      * closes this ModelGraph and frees up all Jena TDB related resources.

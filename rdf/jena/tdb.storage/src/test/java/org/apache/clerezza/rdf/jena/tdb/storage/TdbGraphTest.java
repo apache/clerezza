@@ -22,17 +22,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
+import org.apache.commons.rdf.BlankNode;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.test.MGraphTest;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.rdf.core.test.GraphTest;
+import org.apache.commons.rdf.Literal;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -40,9 +40,9 @@ import org.junit.Test;
  *
  * @author reto
  */
-public class TdbMGraphTest extends MGraphTest {
+public class TdbGraphTest extends GraphTest {
     private static File tempFile;
-    final private UriRef MGRAPHNAME = new UriRef("http://text.example.org/");
+    final private Iri MGRAPHNAME = new Iri("http://text.example.org/");
     static private TdbTcProvider tdbTcProvider;
 
     @BeforeClass
@@ -64,34 +64,34 @@ public class TdbMGraphTest extends MGraphTest {
 
     @After
     public void cleanUpGraph() {
-        tdbTcProvider.deleteTripleCollection(MGRAPHNAME);
+        tdbTcProvider.deleteGraph(MGRAPHNAME);
     }
 
     @Override
-    protected MGraph getEmptyMGraph() {
-        return tdbTcProvider.createMGraph(MGRAPHNAME);
+    protected Graph getEmptyGraph() {
+        return tdbTcProvider.createGraph(MGRAPHNAME);
     }
 
     @Test
     public void dateStorage() {
-        MGraph graph = getEmptyMGraph();
+        Graph graph = getEmptyGraph();
         Date date = new Date(0);
         LiteralFactory literalFactory = LiteralFactory.getInstance();
-        TypedLiteral dateLiteral = literalFactory.createTypedLiteral(date);
-        Triple triple = new TripleImpl(new BNode(), new UriRef("http://example.com/property"), dateLiteral);
+        Literal dateLiteral = literalFactory.createTypedLiteral(date);
+        Triple triple = new TripleImpl(new BlankNode(), new Iri("http://example.com/property"), dateLiteral);
         graph.add(triple);
         Assert.assertTrue(graph.contains(triple));
     }
 
     @Test
     public void dateStorage2() {
-        MGraph graph = getEmptyMGraph();
+        Graph graph = getEmptyGraph();
         Date date = new Date(0);
         LiteralFactory literalFactory = LiteralFactory.getInstance();
-        TypedLiteral dateLiteral = literalFactory.createTypedLiteral(date);
+        Literal dateLiteral = literalFactory.createTypedLiteral(date);
         System.out.println(dateLiteral);
-        UriRef property = new UriRef("http://example.com/property");
-        Triple triple = new TripleImpl(new BNode(), property, dateLiteral);
+        Iri property = new Iri("http://example.com/property");
+        Triple triple = new TripleImpl(new BlankNode(), property, dateLiteral);
         graph.add(triple);
 
         Triple tripleFromGraph = null;
