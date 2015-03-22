@@ -22,12 +22,12 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>14</version>
+        <version>16</version>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>reactor</artifactId>
     <packaging>pom</packaging>
-    <name>Clerezza - Reactor build (root)</name>
+    <name>Clerezza</name>
     <url>http://incubator.apache.org/clerezza/mvn-site/</url>
     <version>0.4-SNAPSHOT</version>
     <description>A reactor to build all of clerezza</description>
@@ -73,18 +73,11 @@
                 <module>rdf.cris</module>
                 <module>rdf.enrichment</module>
                 <module>rdf.file.storage</module>
-                <module>rdf.jena.serializer</module>
-                <module>rdf.jena.sparql</module>
-                <module>rdf.jena.storage</module>
                 <module>rdf.jena.tdb.storage</module>
                 <module>rdf.locking</module>
-                <module>rdf.metadata</module>
-                <module>rdf.rdfa</module>
                 <module>rdf.rdfjson</module>
                 <module>rdf.scala.utils</module>
-                <module>rdf.simple.storage</module>
                 <module>rdf.stable.serializer</module>
-                <module>rdf.utils</module>
                 <module>rdf.web</module>
                 <module>shell</module>
                 <module>shell.felixshellcommand</module>
