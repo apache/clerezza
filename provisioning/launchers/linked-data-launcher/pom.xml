@@ -27,7 +27,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Clerezza - Launcher: Core Linked Data</name>
+    <name>Clerezza - Provisioning - Launchers - Linked Data Launcher (Core)</name>
     <description>Runnable jar using the clerezza partial bundlelists for Web
         access to the RDF Data.</description>
 

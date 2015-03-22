@@ -40,7 +40,7 @@
     <artifactId>reactor</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Clerezza - Provisioning - Reactor</name>
+    <name>Clerezza - Provisioning</name>
 
     <modules>
         <module>felixosgi</module>

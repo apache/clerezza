@@ -27,7 +27,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Clerezza - Launcher: TypeRendering</name>
+    <name>Clerezza - Provisioning - Launchers - TypeRendering</name>
     <description>Runnable jar using the clerezza partial bundlelists needed for
         typerendering.</description>
 

@@ -27,7 +27,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Clerezza - Launcher: Full (sling based)</name>
+    <name>Clerezza - Provisioning - Launchers - Full (sling based)</name>
     <description>Runnable jar using all the clerezza partial bundlelists.
     Note that this is not (yet) as complete as the clerezza platform tdb launcher.</description>
 
