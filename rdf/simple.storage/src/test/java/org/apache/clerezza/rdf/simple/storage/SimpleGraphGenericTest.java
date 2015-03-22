@@ -18,20 +18,20 @@
  */
 package org.apache.clerezza.rdf.simple.storage;
 
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.test.MGraphTest;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.rdf.core.test.GraphTest;
 
 
 /**
  *
  * @author mir
  */
-public class SimpleMGraphGenericTest extends MGraphTest{
+public class SimpleGraphGenericTest extends GraphTest{
 
     @Override
-    protected MGraph getEmptyMGraph() {
-        return new SimpleMGraph();
+    protected Graph getEmptyGraph() {
+        return new SimpleGraph();
     }
 
 }

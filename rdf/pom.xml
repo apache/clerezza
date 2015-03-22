@@ -51,6 +51,7 @@
         <module>jena</module>
         <module>metadata</module>
         <module>rdfa</module>
+        <module>simple.storage</module>
     </modules>
 
 </project>

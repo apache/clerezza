@@ -23,17 +23,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.clerezza.rdf.core.impl.SimpleGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
 import org.osgi.service.component.annotations.Component;
 
 
@@ -41,10 +40,10 @@ import org.osgi.service.component.annotations.Component;
 @Component(service = WeightedTcProvider.class, property = TcManager.GENERAL_PURPOSE_TC+"=true")
 public class SimpleTcProvider implements WeightedTcProvider {
 
-    private Map<UriRef, TripleCollection> tripleMap = new HashMap<UriRef, TripleCollection>();
+    private Map<Iri, Graph> tripleMap = new HashMap<Iri, Graph>();
 
     @Override
-    public Graph createGraph(UriRef name, TripleCollection triples)
+    public ImmutableGraph createImmutableGraph(Iri name, Graph triples)
             throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
@@ -52,18 +51,18 @@ public class SimpleTcProvider implements WeightedTcProvider {
         }
 
         try {
-            // throws NoSuchEntityException if a TripleCollection with that name
+            // throws NoSuchEntityException if a Graph with that name
             // already exists
-            this.getTriples(name);
+            this.getGraph(name);
         } catch (NoSuchEntityException e) {
-            Graph result;
+            ImmutableGraph result;
             if (triples == null) {
-                result = new SimpleGraph(new SimpleMGraph());
+                result = new SimpleImmutableGraph(new SimpleGraph());
             } else {
-                if (Graph.class.isAssignableFrom(triples.getClass())) {
-                    result = (Graph) triples;
+                if (ImmutableGraph.class.isAssignableFrom(triples.getClass())) {
+                    result = (ImmutableGraph) triples;
                 } else {
-                    result = new SimpleGraph(triples);
+                    result = new SimpleImmutableGraph(triples);
                 }
             }
             tripleMap.put(name, result);
@@ -74,18 +73,18 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public MGraph createMGraph(UriRef name) throws EntityAlreadyExistsException {
+    public Graph createGraph(Iri name) throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
             throw new IllegalArgumentException("Name must not be null");
         }
 
         try {
-            // throws NoSuchEntityException if a TripleCollection with that name
+            // throws NoSuchEntityException if a Graph with that name
             // already exists
-            this.getTriples(name);
+            this.getGraph(name);
         } catch (NoSuchEntityException e) {
-            MGraph result = new SimpleMGraph();
+            Graph result = new SimpleGraph();
             tripleMap.put(name, result);
             return result;
         }
@@ -93,7 +92,7 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public void deleteTripleCollection(UriRef name)
+    public void deleteGraph(Iri name)
             throws NoSuchEntityException, EntityUndeletableException {
         if (tripleMap.remove(name) == null) {
             throw new NoSuchEntityException(name);
@@ -101,37 +100,37 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getGraph(UriRef name) throws NoSuchEntityException {
-        TripleCollection tripleCollection = tripleMap.get(name);
+    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
+        Graph tripleCollection = tripleMap.get(name);
         if (tripleCollection == null) {
             throw new NoSuchEntityException(name);
-        } else if (Graph.class.isAssignableFrom(tripleCollection.getClass())) {
+        } else if (ImmutableGraph.class.isAssignableFrom(tripleCollection.getClass())) {
+            return (ImmutableGraph) tripleCollection;
+        }
+        throw new NoSuchEntityException(name);
+    }
+
+    @Override
+    public Graph getMGraph(Iri name) throws NoSuchEntityException {
+        Graph tripleCollection = tripleMap.get(name);
+        if (tripleCollection == null) {
+            throw new NoSuchEntityException(name);
+        } else if (!ImmutableGraph.class.isAssignableFrom(tripleCollection.getClass())) {
             return (Graph) tripleCollection;
         }
         throw new NoSuchEntityException(name);
     }
 
     @Override
-    public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
-        TripleCollection tripleCollection = tripleMap.get(name);
-        if (tripleCollection == null) {
-            throw new NoSuchEntityException(name);
-        } else if (MGraph.class.isAssignableFrom(tripleCollection.getClass())) {
-            return (MGraph) tripleCollection;
-        }
-        throw new NoSuchEntityException(name);
-    }
-
-    @Override
-    public Set<UriRef> getNames(Graph graph) {
+    public Set<Iri> getNames(ImmutableGraph graph) {
         throw new UnsupportedOperationException(
                 "Not supported yet. equals() has to be implemented first");
     }
 
     @Override
-    public TripleCollection getTriples(UriRef name)
+    public Graph getGraph(Iri name)
             throws NoSuchEntityException {
-        TripleCollection tripleCollection = tripleMap.get(name);
+        Graph tripleCollection = tripleMap.get(name);
         if (tripleCollection == null) {
             throw new NoSuchEntityException(name);
         } else {
@@ -145,10 +144,10 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<UriRef> listGraphs() {
-        Set<UriRef> result = new HashSet<UriRef>();
-        for (UriRef uriRef : listTripleCollections()) {
-            if (tripleMap.get(uriRef) instanceof Graph) {
+    public Set<Iri> listImmutableGraphs() {
+        Set<Iri> result = new HashSet<Iri>();
+        for (Iri uriRef : listGraphs()) {
+            if (tripleMap.get(uriRef) instanceof ImmutableGraph) {
                 result.add(uriRef);
             }
         }
@@ -156,10 +155,10 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<UriRef> listMGraphs() {
-        Set<UriRef> result = new HashSet<UriRef>();
-        for (UriRef uriRef : listTripleCollections()) {
-            if (tripleMap.get(uriRef) instanceof MGraph) {
+    public Set<Iri> listMGraphs() {
+        Set<Iri> result = new HashSet<Iri>();
+        for (Iri uriRef : listGraphs()) {
+            if (!(tripleMap.get(uriRef) instanceof ImmutableGraph)) {
                 result.add(uriRef);
             }
         }
@@ -167,7 +166,7 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<UriRef> listTripleCollections() {
+    public Set<Iri> listGraphs() {
         return tripleMap.keySet();
     }
 }

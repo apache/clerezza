@@ -271,7 +271,7 @@ public abstract class TcProviderTest {
         boolean expThrown = false;
 
         try {
-            Graph g = provider.getGraph(graphIri);
+            Graph g = provider.getMGraph(graphIri);
         } catch(NoSuchEntityException e) {
             expThrown = true;
         }
