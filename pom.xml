@@ -48,7 +48,6 @@
             <modules>
                 <module>parent</module>
                 <module>clerezza-jar-resource-bundle</module>
-                <module>platform.style.classic.webguiexamples</module>
                 <module>ext</module>
                 <module>ext.com.ibm.icu</module>
                 <module>ext.javax.mail</module>
@@ -64,75 +63,25 @@
                 <module>jaxrs.utils</module>
                 <module>jaxrs.whiteboard.jersey</module>
                 <module>maven-jaxrs-report-plugin</module>
-                <module>maven-ontologies-plugin</module>
                 <!-- <module>maven-pladoc-plugin</module> -->
                 <module>permissiondescriptions</module>
                 <module>ssl.keygen</module>
-                <module>platform</module>
-                <module>platform.accountcontrolpanel</module>
-                <module>platform.concepts</module>
-                <module>platform.config</module>
-                <module>platform.config.gui</module>
-                <module>platform.content.imagemetadata</module>
-                <module>platform.content</module>
-                <module>platform.content.default404</module>
-                <module>platform.content.fsadaptor</module>
-                <module>platform.content.representations</module>
-                <module>platform.cris</module>
-                <module>platform.curieprefixmanager</module>
-                <module>platform.dashboard</module>
-                <module>platform.dashboard.webinterface</module>
-                <module>platform.documentation</module>
-                <module>platform.documentation.viewer</module>
-                <module>platform.enrichment</module>
-                <module>platform.editor</module>
-                <module>platform.globalmenu.api</module>
-                <module>platform.graphnodeprovider</module>
-                <module>platform.graphprovider.content</module>
-                <module>platform.language</module>
-                <module>platform.launcher.storageless.parent</module>
-                <module>platform.launcher.tdb</module>
-                <module>platform.logging</module>
-                <module>platform.mail</module>
-                <module>platform.scripting</module>
-                <module>platform.scripting.scriptmanager</module>
-                <module>platform.security.foafssl</module>
-                <module>platform.security.conditions</module>
-                <module>platform.shellcustomizer</module>
-                <module>platform.typehandlerspace</module>
-                <module>platform.typehandlerspace.wink</module>
-                <module>platform.typehandlerspace.jaxrs2</module>
-                <module>platform.typerendering</module>
-                <module>platform.typerendering.gui</module>
-                <module>platform.typerendering.scala</module>
-                <module>platform.typerendering.scalaserverpages</module>
-                <module>platform.typerendering.seedsnipe</module>
-                <module>platform.typepriority</module>
-                <module>platform.usermanager</module>
-                <module>platform.usermanager.webinterface</module>
-                <module>platform.users</module>
-                <module>platform.xhtml2html</module>
                 <module>provisioning</module>
                 <module>osgi.services</module>
-                <module>rdf.core</module>
-                <module>rdf.core.test</module>
+                <module>platform</module>
+                <module>rdf</module>
                 <module>rdf.cris</module>
                 <module>rdf.enrichment</module>
                 <module>rdf.file.storage</module>
-                <module>rdf.jena.commons</module>
-                <module>rdf.jena.facade</module>
-                <module>rdf.jena.parser</module>
                 <module>rdf.jena.serializer</module>
                 <module>rdf.jena.sparql</module>
                 <module>rdf.jena.storage</module>
                 <module>rdf.jena.tdb.storage</module>
                 <module>rdf.locking</module>
-                <module>rdf.ontologies</module>
                 <module>rdf.metadata</module>
                 <module>rdf.rdfa</module>
                 <module>rdf.rdfjson</module>
                 <module>rdf.scala.utils</module>
-                <module>rdf.schemagen</module>
                 <module>rdf.simple.storage</module>
                 <module>rdf.stable.serializer</module>
                 <module>rdf.utils</module>
@@ -151,8 +100,6 @@
                 <module>web.fileserver</module>
                 <module>web.resources.jquery</module>
                 <module>web.resources.scripts</module>
-                <module>platform.style.default</module>
-                <module>platform.style.classic</module>
                 <module>web.resources.yui</module>
                 <module>rdf.storage.externalizer</module>
                 <module>rdf.storage.web</module>

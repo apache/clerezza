@@ -1,57 +1,114 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
+    <!--
 
-   http://www.apache.org/licenses/LICENSE-2.0
+        Licensed to the Apache Software Foundation (ASF) under one or more
+        contributor license agreements.  See the NOTICE file distributed with
+        this work for additional information regarding copyright ownership.
+        The ASF licenses this file to You under the Apache License, Version 2.0
+        (the "License"); you may not use this file except in compliance with
+        the License.  You may obtain a copy of the License at
 
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+           http://www.apache.org/licenses/LICENSE-2.0
 
--->
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    -->
+
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!                                !!!!!!
+    !!!!!!    This pom is only provided   !!!!!!
+    !!!!!!   for build convenience and    !!!!!!
+    !!!!!!   should not be released       !!!!!!
+    !!!!!!                                !!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
     <modelVersion>4.0.0</modelVersion>
+    
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5</version>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
+
     <groupId>org.apache.clerezza</groupId>
-    <artifactId>platform</artifactId>
-    <packaging>bundle</packaging>
+    <artifactId>rdf-platform-reactor</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - Platform</name>
-    <description>Artifact with dependencies to the clerezza platform components
-    providing documentation and boot-status monitoring.</description>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.scr.annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.core</artifactId>
-            <version>0.14</version>
-        </dependency>
-    </dependencies>
+    <packaging>pom</packaging>
+    <name>Clerezza - Platform - Reactor</name>
+    <description>The platform related bundles</description>
+
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>platform.style.classic.webguiexamples</module>
+                <module>platform</module>
+                <module>platform.accountcontrolpanel</module>
+                <module>platform.concepts</module>
+                <module>platform.config</module>
+                <module>platform.config.gui</module>
+                <module>platform.content.imagemetadata</module>
+                <module>platform.content</module>
+                <module>platform.content.default404</module>
+                <module>platform.content.fsadaptor</module>
+                <module>platform.content.representations</module>
+                <module>platform.cris</module>
+                <module>platform.curieprefixmanager</module>
+                <module>platform.dashboard</module>
+                <module>platform.dashboard.webinterface</module>
+                <module>platform.documentation</module>
+                <module>platform.documentation.viewer</module>
+                <module>platform.enrichment</module>
+                <module>platform.editor</module>
+                <module>platform.globalmenu.api</module>
+                <module>platform.graphnodeprovider</module>
+                <module>platform.graphprovider.content</module>
+                <module>platform.language</module>
+                <module>platform.launcher.storageless.parent</module>
+                <module>platform.launcher.tdb</module>
+                <module>platform.logging</module>
+                <module>platform.mail</module>
+                <module>platform.scripting</module>
+                <module>platform.scripting.scriptmanager</module>
+                <module>platform.security.foafssl</module>
+                <module>platform.security.conditions</module>
+                <module>platform.shellcustomizer</module>
+                <module>platform.typehandlerspace</module>
+                <module>platform.typehandlerspace.wink</module>
+                <module>platform.typehandlerspace.jaxrs2</module>
+                <module>platform.typerendering</module>
+                <module>platform.typerendering.gui</module>
+                <module>platform.typerendering.scala</module>
+                <module>platform.typerendering.scalaserverpages</module>
+                <module>platform.typerendering.seedsnipe</module>
+                <module>platform.typepriority</module>
+                <module>platform.usermanager</module>
+                <module>platform.usermanager.webinterface</module>
+                <module>platform.users</module>
+                <module>platform.xhtml2html</module>
+                <module>platform.style.default</module>
+                <module>platform.style.classic</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>additions</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>platform.launcher.sesame</module>
+            </modules>
+        </profile>        
+    </profiles>
+    
 </project>
