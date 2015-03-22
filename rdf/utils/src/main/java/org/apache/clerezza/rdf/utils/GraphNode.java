@@ -18,8 +18,6 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.commons.rdf.impl.*;
-import org.apache.commons.rdf.impl.utils.*;
 import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.commons.rdf.impl.utils.TripleImpl;
 
