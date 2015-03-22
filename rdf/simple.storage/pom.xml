@@ -31,7 +31,7 @@
     <artifactId>rdf.simple.storage</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB Simple TripleCollection Provider</name>
+    <name>Clerezza - RDF - Simple Storage Provider</name>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

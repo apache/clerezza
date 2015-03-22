@@ -31,8 +31,8 @@
     <artifactId>rdf.core.test</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB Testutils</name>
-    <description>Utilities to test SCB implementations</description>
+    <name>Clerezza - RDF - Core Testsuite</name>
+    <description>Utilities to test Clerezza rdf.core implementations</description>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

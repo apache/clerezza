@@ -31,7 +31,7 @@
     <artifactId>rdf.jena.sparql</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB Jena SPARQL engine</name>
+    <name>Clerezza - RDF - Jena - SPARQL</name>
     <description>Allows executing SPARQL queries on SCB using the jena sparql engine.</description>
     <dependencies>
         <dependency>

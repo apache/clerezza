@@ -22,14 +22,14 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>7-SNAPSHOT</version>
         <relativePath />
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.rdfa</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB RDFa parsing support</name>
+    <name>Clerezza - RDF - RDFa parsing support</name>
     <description>
         A SAX-based parser for RDFa 
     </description>

@@ -31,7 +31,7 @@
     <artifactId>rdf.jena.commons</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB Jena Commons</name>
+    <name>Clerezza - RDF - Jena - Commons</name>
     <description>Common classes needed by Jena adaptors</description>
     <dependencies>
         <dependency>

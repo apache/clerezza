@@ -31,7 +31,7 @@
     <artifactId>rdf.jena.storage</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB Jena Storage Provider</name>
+    <name>Clerezza - RDF - Jena - Storage</name>
     <description>Allows converting Jena graphs to SCB graphs. (Currently no TcProvider comprised)</description>
     <dependencies>
         <dependency>

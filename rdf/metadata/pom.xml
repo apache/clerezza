@@ -31,7 +31,7 @@
     <artifactId>rdf.metadata</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB Metadata</name>
+    <name>Clerezza - RDF - Metadata</name>
     <description>An interface that specifies how to create meta data about data
     depending on its media type.</description>
     <dependencies>

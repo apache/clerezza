@@ -31,7 +31,7 @@
     <artifactId>rdf.jena.parser</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB Jena based Parser</name>
+    <name>Clerezza - RDF - Jena - Parser</name>
     <description>A ParserProvider based on jena</description>
     <dependencies>
         <dependency>

@@ -33,7 +33,7 @@
     <version>1.0.0-SNAPSHOT</version>
     
     <packaging>bundle</packaging>
-    <name>Clerezza - SCB Ontologies</name>
+    <name>Clerezza - RDF - Ontologies</name>
     <description>Some java classes with constants for common ontologies.</description>
     <dependencies>
         <dependency>

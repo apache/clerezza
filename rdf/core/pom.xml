@@ -29,7 +29,7 @@
     <artifactId>rdf.core</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB Core</name>
+    <name>Clerezza - RDF - Core</name>
     <description>Interfaces and utilities to access RDF Graphs</description>
     <dependencies>
         <dependency>
