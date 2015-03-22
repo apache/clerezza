@@ -25,13 +25,12 @@ import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.jena.facade.JenaGraph;
-import org.apache.clerezza.rdf.ontologies.SKOS;
+import org.apache.clerezza.rdf.ontologies.SKOS04;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 
 /**
  *
@@ -41,18 +40,18 @@ public class RoundTripTest {
 
     @Test
     public void addAndCount() {
-        MGraph mGraph = new SimpleMGraph();
+        org.apache.commons.rdf.Graph mGraph = new SimpleGraph();
         Graph jenaGraph = new JenaGraph(mGraph);
         Model model = ModelFactory.createModelForGraph(jenaGraph);
         model.add(DC.title, RDFS.label, "title");
-        MGraph rewrappedMGraph = new JenaGraphAdaptor(jenaGraph);
-        Assert.assertEquals(1, rewrappedMGraph.size());
-        rewrappedMGraph.add(new TripleImpl(new BNode(), SKOS.prefLabel,
+        org.apache.commons.rdf.Graph rewrappedGraph = new JenaGraphAdaptor(jenaGraph);
+        Assert.assertEquals(1, rewrappedGraph.size());
+        rewrappedGraph.add(new TripleImpl(new BlankNode(), SKOS04.prefLabel,
                 LiteralFactory.getInstance().createTypedLiteral("foo")));
-        Assert.assertEquals(2, rewrappedMGraph.size());
+        Assert.assertEquals(2, rewrappedGraph.size());
         Assert.assertEquals(2, mGraph.size());
-        Assert.assertEquals(mGraph.getGraph(), rewrappedMGraph.getGraph());
-        rewrappedMGraph.clear();
-        Assert.assertEquals(0, rewrappedMGraph.size());
+        Assert.assertEquals(mGraph.getImmutableGraph(), rewrappedGraph.getImmutableGraph());
+        rewrappedGraph.clear();
+        Assert.assertEquals(0, rewrappedGraph.size());
     }
 }

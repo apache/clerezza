@@ -47,6 +47,7 @@
         <module>facade</module>
         <module>parser</module>
         <module>serializer</module>
+        <module>storage</module>
     </modules>
 
 </project>

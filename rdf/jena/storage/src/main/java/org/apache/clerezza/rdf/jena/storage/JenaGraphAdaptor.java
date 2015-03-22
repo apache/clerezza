@@ -18,60 +18,58 @@
  */
 package org.apache.clerezza.rdf.jena.storage;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.AbstractMGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
 import org.apache.clerezza.rdf.jena.commons.Tria2JenaUtil;
+import org.apache.commons.rdf.impl.utils.AbstractGraph;
 import org.wymiwyg.commons.util.collections.BidiMap;
-import org.wymiwyg.commons.util.collections.BidiMapImpl;
 
 /**
- * An adaptor to expose a Jena Graph as Clerezza MGraph.
+ * An adaptor to expose a Jena Graph as Clerezza Graph.
  *
  * @author rbn
  */
-public class JenaGraphAdaptor extends AbstractMGraph {
+public class JenaGraphAdaptor extends AbstractGraph {
 
     private final Graph jenaGraph;
-    final BidiMap<BNode, Node> tria2JenaBNodes = new WeakBidiMap<BNode, Node>();
+    final BidiMap<BlankNode, Node> tria2JenaBlankNodes = new WeakBidiMap<BlankNode, Node>();
     final Jena2TriaUtil jena2TriaUtil =
-            new Jena2TriaUtil(tria2JenaBNodes.inverse());
+            new Jena2TriaUtil(tria2JenaBlankNodes.inverse());
     final Tria2JenaUtil tria2JenaUtil =
-            new Tria2JenaUtil(tria2JenaBNodes);
+            new Tria2JenaUtil(tria2JenaBlankNodes);
 
     /**
-     * Constructs an MGraph based on the supplied jena Graph.
+     * Constructs an Graph based on the supplied jena ImmutableGraph.
      *
      * @param jenaGraph
      */
-    public JenaGraphAdaptor(Graph jenaGraph) {
+    public JenaGraphAdaptor(com.hp.hpl.jena.graph.Graph jenaGraph) {
         this.jenaGraph = jenaGraph;
     }
 
     @Override
     public void clear() {
         super.clear();
-        tria2JenaBNodes.clear();
+        tria2JenaBlankNodes.clear();
     }
 
     @Override
-    public int size() {
+    protected int performSize() {
         return jenaGraph.size();
     }
 
     @Override
-    public Iterator<Triple> performFilter(NonLiteral subject, UriRef predicate, Resource object) {
+    public Iterator<Triple> performFilter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
         Node jenaSubject = null;
         Node jenaPredicate = null;
         Node jenaObject = null;
@@ -146,6 +144,10 @@ public class JenaGraphAdaptor extends AbstractMGraph {
     }
 
     @Override
+    protected boolean performRemove(Object o) {
+        return performRemove((Triple)o); 
+    }
+
     public boolean performRemove(Triple triple) {
         if (!contains(triple)) {
             return false;
@@ -153,4 +155,5 @@ public class JenaGraphAdaptor extends AbstractMGraph {
         jenaGraph.delete(tria2JenaUtil.convertTriple(triple));
         return true;
     }
+
 }
