@@ -49,6 +49,8 @@
         <module>schemagen/main</module>
         <module>schemagen/maven-plugin</module>
         <module>jena</module>
+        <module>metadata</module>
+        <module>rdfa</module>
     </modules>
 
 </project>
