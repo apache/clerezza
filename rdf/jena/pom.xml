@@ -46,6 +46,7 @@
         <module>commons</module>
         <module>facade</module>
         <module>parser</module>
+        <module>serializer</module>
     </modules>
 
 </project>
