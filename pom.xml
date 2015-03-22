@@ -73,7 +73,6 @@
                 <module>rdf.cris</module>
                 <module>rdf.enrichment</module>
                 <module>rdf.file.storage</module>
-                <module>rdf.jena.tdb.storage</module>
                 <module>rdf.locking</module>
                 <module>rdf.rdfjson</module>
                 <module>rdf.scala.utils</module>
