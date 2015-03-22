@@ -45,13 +45,14 @@
     <modules>
         <module>core</module>
         <module>core.test</module>
-        <module>ontologies</module>
-        <module>schemagen/main</module>
-        <module>schemagen/maven-plugin</module>
         <module>jena</module>
         <module>metadata</module>
+        <module>schemagen/main</module>
+        <module>schemagen/maven-plugin</module>
+        <module>ontologies</module>
         <module>rdfa</module>
         <module>simple.storage</module>
+        <module>utils</module>
     </modules>
 
 </project>
