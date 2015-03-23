@@ -21,25 +21,33 @@ package org.apache.clerezza.rdf.scala.utils
 
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.core.impl._
+import org.apache.commons.rdf.BlankNode
+import org.apache.commons.rdf.BlankNodeOrIri
+import org.apache.commons.rdf.Graph
+import org.apache.commons.rdf.Iri
+import org.apache.commons.rdf.RdfTerm
+import org.apache.commons.rdf.Triple
+import org.apache.commons.rdf.impl.utils.AbstractGraph
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph
 import scala.collection.mutable.HashMap
 
 
 /**
- * EzMGraph enhances graph writing, it can make writing rdf graphs in code a lot more
+ * EzGraph enhances graph writing, it can make writing rdf graphs in code a lot more
  * readable, as it avoids a lot of repetition.
  *
  * @param graph: a Triple collection
  * @author hjs, reto
  */
-class EzMGraph(val baseTc: MGraph) extends AbstractMGraph with TcDependentConversions {
+class EzGraph(val baseTc: Graph) extends AbstractGraph with TcDependentConversions {
 
 
-  def this() = this (new SimpleMGraph())
+  def this() = this (new SimpleGraph())
 
-  def performFilter(subject: NonLiteral, predicate: UriRef,
-      obj: Resource): java.util.Iterator[Triple] = baseTc.filter(subject, predicate, obj)
+  def performFilter(subject: BlankNodeOrIri, predicate: Iri,
+      obj: RdfTerm): java.util.Iterator[Triple] = baseTc.filter(subject, predicate, obj)
 
-  override def size = baseTc.size
+  override def performSize = baseTc.size
 
   override def add(t: Triple) = baseTc.add(t)
 
@@ -53,20 +61,22 @@ class EzMGraph(val baseTc: MGraph) extends AbstractMGraph with TcDependentConver
   /**
    * create a new bnode
    */
-  def bnode: BNode = {
-    new BNode
+  def bnode = blankNode
+ 
+   def blankNode: BlankNode = {
+    new BlankNode
   }
 
-  private val namedBnodes = new HashMap[String,BNode]
+  private val namedBnodes = new HashMap[String,BlankNode]
 
   /**
    * create a new named bnode based EzGraphNode with the preferred writing style
    */
-  def b_(name: String): BNode = {
+  def b_(name: String): BlankNode = {
     namedBnodes.get(name) match {
       case Some(bnode) => bnode
       case None => {
-        val bn = new BNode
+        val bn = new BlankNode
         namedBnodes.put(name, bn);
         bn
       }

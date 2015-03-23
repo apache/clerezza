@@ -22,29 +22,38 @@ import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.core.impl._
 import org.apache.clerezza.rdf.ontologies._
+import org.apache.commons.rdf.BlankNode
+import org.apache.commons.rdf.Graph
+import org.apache.commons.rdf.Iri
+import org.apache.commons.rdf.Language
+import org.apache.commons.rdf.Literal
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl
+import org.apache.commons.rdf.impl.utils.TripleImpl
+import org.apache.commons.rdf.impl.utils.TypedLiteralImpl
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph
 import org.junit._
 import Preamble._
 
 class RichGraphNodeTest {
 
-  private val johnUri = new UriRef("http://example.org/john")
-  private val susanneUri = new UriRef("http://example.org/susanne")
-  private val listUri = new UriRef("http://example.org/list")
-  private val greetingsUri = new UriRef("http://example.org/greetings")
-  private val billBNode = new BNode()
+  private val johnUri = new Iri("http://example.org/john")
+  private val susanneUri = new Iri("http://example.org/susanne")
+  private val listUri = new Iri("http://example.org/list")
+  private val greetingsUri = new Iri("http://example.org/greetings")
+  private val billBlankNode = new BlankNode()
   private var node : RichGraphNode = null;
-  private var mGraph = new SimpleMGraph()
+  private var mGraph = new SimpleGraph()
 
   @Before
   def prepare() = {
     mGraph.add(new TripleImpl(johnUri, FOAF.name, new PlainLiteralImpl("John")));
     mGraph.add(new TripleImpl(johnUri, FOAF.nick, new PlainLiteralImpl("johny")));
     mGraph.add(new TripleImpl(johnUri, FOAF.name, new PlainLiteralImpl("Johnathan Guller")));
-    mGraph.add(new TripleImpl(johnUri, FOAF.knows, billBNode))
+    mGraph.add(new TripleImpl(johnUri, FOAF.knows, billBlankNode))
     mGraph.add(new TripleImpl(johnUri, RDF.`type`, FOAF.Person));
-    mGraph.add(new TripleImpl(billBNode, FOAF.nick, new PlainLiteralImpl("Bill")));
-    mGraph.add(new TripleImpl(billBNode, FOAF.name, new PlainLiteralImpl("William")));
-    mGraph.add(new TripleImpl(billBNode, RDF.`type`, FOAF.Person));
+    mGraph.add(new TripleImpl(billBlankNode, FOAF.nick, new PlainLiteralImpl("Bill")));
+    mGraph.add(new TripleImpl(billBlankNode, FOAF.name, new PlainLiteralImpl("William")));
+    mGraph.add(new TripleImpl(billBlankNode, RDF.`type`, FOAF.Person));
     mGraph.add(new TripleImpl(susanneUri, FOAF.knows, johnUri));
     mGraph.add(new TripleImpl(susanneUri, FOAF.name, new PlainLiteralImpl("Susanne")));
     mGraph.add(new TripleImpl(susanneUri, RDF.`type`, FOAF.Person));
@@ -85,11 +94,11 @@ class RichGraphNodeTest {
 
   @Test
   def testIterate = {
-    val simple: MGraph = new SimpleMGraph();
-    val node = new GraphNode(new BNode(), simple);
-    node.addProperty(DCTERMS.provenance, new UriRef("http://example.org/foo"));
-    node.addProperty(DCTERMS.language, new UriRef("http://www.bluewin.ch/"));
-    simple.add(new TripleImpl(new UriRef("http://www.bluewin.ch/"),RDF.`type`, RDFS.Container));
+    val simple: Graph = new SimpleGraph();
+    val node = new GraphNode(new BlankNode(), simple);
+    node.addProperty(DCTERMS.provenance, new Iri("http://example.org/foo"));
+    node.addProperty(DCTERMS.language, new Iri("http://www.bluewin.ch/"));
+    simple.add(new TripleImpl(new Iri("http://www.bluewin.ch/"),RDF.`type`, RDFS.Container));
     node.addProperty(RDF.`type`, PLATFORM.HeadedPage);
     node.addProperty(RDF.`type`, RDFS.Class);
     val test: CollectedIter[RichGraphNode] = node/DCTERMS.language/RDF.`type`;
@@ -149,8 +158,8 @@ class RichGraphNodeTest {
   @Test
   def literalAsObject = {
     val dateLiteral = new TypedLiteralImpl("2009-01-01T01:33:58Z",
-          new UriRef("http://www.w3.org/2001/XMLSchema#dateTime"))
-    val node = new GraphNode(dateLiteral, new SimpleMGraph())
+          new Iri("http://www.w3.org/2001/XMLSchema#dateTime"))
+    val node = new GraphNode(dateLiteral, new SimpleGraph())
     Assert.assertNotNull(node.as[java.util.Date])
   }
 
@@ -158,7 +167,7 @@ class RichGraphNodeTest {
   def literalLanguage = {
     node = new GraphNode(greetingsUri, mGraph)
     val lang = new Language("en")
-    val enValue = (node/RDF.value).find(l=>(l!).asInstanceOf[PlainLiteral].getLanguage == lang).get
+    val enValue = (node/RDF.value).find(l=>(l!).asInstanceOf[Literal].getLanguage == lang).get
     Assert.assertEquals("hello", enValue*)
   }
 

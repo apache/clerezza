@@ -18,8 +18,7 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl
-import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl
+
 import org.apache.clerezza.rdf.ontologies.XSD
 import org.apache.clerezza.rdf.utils.GraphNode
 import java.math.BigInteger
@@ -27,6 +26,13 @@ import java.net.URI
 import java.net.URL
 import java.util.Date
 import org.apache.clerezza.rdf.core._
+import org.apache.commons.rdf.Graph
+import org.apache.commons.rdf.Iri
+import org.apache.commons.rdf.Literal
+import org.apache.commons.rdf.RdfTerm
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph
+import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph
 
 /**
 * This object provides the implicit conversions. Typically this is used by
@@ -50,7 +56,7 @@ object Preamble extends TcIndependentConversions {
 * Typically this is used by
 * adding
 * {{{
-* val preamble = new org.apache.clerezza.rdf.scala.utils.Preamble(myMGraph)
+* val preamble = new org.apache.clerezza.rdf.scala.utils.Preamble(myGraph)
 * import preamble._
 * }}}
 * before the
@@ -58,14 +64,14 @@ object Preamble extends TcIndependentConversions {
 *
 * @author bblfish, reto
 */
-class Preamble(val baseTc: TripleCollection) extends TcDependentConversions {
+class Preamble(val baseTc: Graph) extends TcDependentConversions {
   
 }
 protected trait TcDependentConversions extends TcIndependentConversions {
   
-  def baseTc: TripleCollection
+  def baseTc: Graph
   
-  implicit def toRichGraphNode(resource: Resource) = {
+  implicit def toRichGraphNode(resource: RdfTerm) = {
     new RichGraphNode(new GraphNode(resource, baseTc))
   }
 }
@@ -102,16 +108,16 @@ protected trait TcIndependentConversions extends EzLiteralImplicits {
 
   implicit def double2lit(double: Double) = litFactory.createTypedLiteral(double)
 
-  implicit def uriRef2Prefix(uriRef: UriRef) = new NameSpace(uriRef.getUnicodeString)
+  implicit def uriRef2Prefix(uriRef: Iri) = new NameSpace(uriRef.getUnicodeString)
 
-  implicit def URItoUriRef(uri: URI) = new UriRef(uri.toString)
+  implicit def URItoIri(uri: URI) = new Iri(uri.toString)
 
-  implicit def URLtoUriRef(url: URL) = new UriRef(url.toExternalForm)
+  implicit def URLtoIri(url: URL) = new Iri(url.toExternalForm)
   
 }
 protected object TcIndependentConversions {
-  val emptyGraph = new impl.SimpleGraph(new impl.SimpleMGraph)
-  val emptyLiteral = new RichGraphNode(new GraphNode(new impl.PlainLiteralImpl(""), emptyGraph))
+  val emptyGraph = new SimpleImmutableGraph(new SimpleGraph)
+  val emptyLiteral = new RichGraphNode(new GraphNode(new PlainLiteralImpl(""), emptyGraph))
 
 }
 

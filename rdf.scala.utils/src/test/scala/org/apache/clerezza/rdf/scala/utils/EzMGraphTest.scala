@@ -18,6 +18,14 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
+import org.apache.commons.rdf.BlankNode
+import org.apache.commons.rdf.ImmutableGraph
+import org.apache.commons.rdf.Iri
+import org.apache.commons.rdf.Language
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl
+import org.apache.commons.rdf.impl.utils.TripleImpl
+import org.apache.commons.rdf.impl.utils.TypedLiteralImpl
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph
 import org.junit._
 import org.apache.clerezza.rdf.core._
 import impl._
@@ -27,7 +35,7 @@ import org.apache.clerezza.rdf.ontologies._
 /**
  * @author bblfish, reto
  */ 
-class EzMGraphTest {
+class EzGraphTest {
 
   val bblfishModulus = """
     9D ☮ 79 ☮ BF ☮ E2 ☮ F4 ☮ 98 ☮ BC ☮ 79 ☮ 6D ☮ AB ☮ 73 ☮ E2 ☮ 8B ☮ 39 ☮ 4D ☮ B5 26 ✜ 68 ✜ 49 ✜ EE ✜ 71 ✜ 87 ✜
@@ -40,28 +48,28 @@ class EzMGraphTest {
 
   /**import some references in order to reduce dependencies */
 
-  final val hex: UriRef = new UriRef("http://www.w3.org/ns/auth/cert#hex")
-  final val identity: UriRef = new UriRef("http://www.w3.org/ns/auth/cert#identity")
-  final val RSAPublicKey: UriRef = new UriRef("http://www.w3.org/ns/auth/rsa#RSAPublicKey")
-  final val modulus: UriRef = new UriRef("http://www.w3.org/ns/auth/rsa#modulus")
-  final val public_exponent: UriRef = new UriRef("http://www.w3.org/ns/auth/rsa#public_exponent")
+  final val hex: Iri = new Iri("http://www.w3.org/ns/auth/cert#hex")
+  final val identity: Iri = new Iri("http://www.w3.org/ns/auth/cert#identity")
+  final val RSAPublicKey: Iri = new Iri("http://www.w3.org/ns/auth/rsa#RSAPublicKey")
+  final val modulus: Iri = new Iri("http://www.w3.org/ns/auth/rsa#modulus")
+  final val public_exponent: Iri = new Iri("http://www.w3.org/ns/auth/rsa#public_exponent")
 
   val henryUri: String = "http://bblfish.net/#hjs"
   val retoUri: String = "http://farewellutopia.com/reto/#me"
   val danbriUri: String = "http://danbri.org/foaf.rdf#danbri"
 
 
-  private val tinyGraph: Graph = {
-    val gr = new SimpleMGraph
-    val reto = new BNode()
-    val danny = new BNode()
-    val henry = new UriRef(henryUri)
+  private val tinyGraph: ImmutableGraph = {
+    val gr = new SimpleGraph
+    val reto = new BlankNode()
+    val danny = new BlankNode()
+    val henry = new Iri(henryUri)
 
     gr.add(new TripleImpl(reto, RDF.`type`, FOAF.Person))
     gr.add(new TripleImpl(reto, FOAF.name, new PlainLiteralImpl("Reto Bachman-Gmür", new Language("rm"))))
     //it is difficult to remember that one needs to put a string literal if one does not want to specify a language
     gr.add(new TripleImpl(reto, FOAF.title, new TypedLiteralImpl("Mr", XSD.string)))
-    gr.add(new TripleImpl(reto, FOAF.currentProject, new UriRef("http://clerezza.org/")))
+    gr.add(new TripleImpl(reto, FOAF.currentProject, new Iri("http://clerezza.org/")))
     gr.add(new TripleImpl(reto, FOAF.knows, henry))
     gr.add(new TripleImpl(reto, FOAF.knows, danny))
 
@@ -71,56 +79,56 @@ class EzMGraphTest {
     gr.add(new TripleImpl(danny, FOAF.knows, reto))
 
     gr.add(new TripleImpl(henry, FOAF.name, new TypedLiteralImpl("Henry Story", XSD.string))) //It is tricky to remember that one needs this for pure strings
-    gr.add(new TripleImpl(henry, FOAF.currentProject, new UriRef("http://webid.info/")))
+    gr.add(new TripleImpl(henry, FOAF.currentProject, new Iri("http://webid.info/")))
     gr.add(new TripleImpl(henry, RDF.`type`, FOAF.Person))
     gr.add(new TripleImpl(henry, FOAF.knows, danny))
     gr.add(new TripleImpl(henry, FOAF.knows, reto))
 
-    val pk = new BNode()
+    val pk = new BlankNode()
     gr.add(new TripleImpl(pk, RDF.`type`, RSAPublicKey))
     gr.add(new TripleImpl(pk, identity, henry))
     gr.add(new TripleImpl(pk, modulus, LiteralFactory.getInstance().createTypedLiteral(65537)))
     gr.add(new TripleImpl(pk, public_exponent, new TypedLiteralImpl(bblfishModulus, hex)))
-    gr.getGraph
+    gr.getImmutableGraph
   }
 
 
   @Test
   def singleTriple {
     val expected = {
-      val s = new SimpleMGraph
-      s.add(new TripleImpl(henryUri.uri, FOAF.knows, retoUri.uri))
-      s.getGraph
+      val s = new SimpleGraph
+      s.add(new TripleImpl(henryUri.iri, FOAF.knows, retoUri.iri))
+      s.getImmutableGraph
     }
-    val ez = new EzMGraph() {
-      henryUri.uri -- FOAF.knows --> retoUri.uri
+    val ez = new EzGraph() {
+      henryUri.iri -- FOAF.knows --> retoUri.iri
     }
-    Assert.assertEquals("The two graphs should be equals", expected, ez.getGraph)
+    Assert.assertEquals("The two graphs should be equals", expected, ez.getImmutableGraph)
   }
 
   @Test
   def inverseTriple {
     val expected = {
-      val s = new SimpleMGraph
-      s.add(new TripleImpl(retoUri.uri, FOAF.knows, henryUri.uri))
-      s.getGraph
+      val s = new SimpleGraph
+      s.add(new TripleImpl(retoUri.iri, FOAF.knows, henryUri.iri))
+      s.getImmutableGraph
     }
-    val ez = new EzMGraph() {
-      henryUri.uri <--  FOAF.knows -- retoUri.uri
+    val ez = new EzGraph() {
+      henryUri.iri <--  FOAF.knows -- retoUri.iri
     }
-    Assert.assertEquals("The two graphs should be equals", expected, ez.getGraph)
+    Assert.assertEquals("The two graphs should be equals", expected, ez.getImmutableGraph)
   }
 
   @Test
   def usingAsciiArrows {
-    val ez = new EzMGraph() {(
+    val ez = new EzGraph() {(
       b_("reto").a(FOAF.Person) -- FOAF.name --> "Reto Bachman-Gmür".lang("rm")
         -- FOAF.title --> "Mr"
-        -- FOAF.currentProject --> "http://clerezza.org/".uri
+        -- FOAF.currentProject --> "http://clerezza.org/".iri
         -- FOAF.knows --> (
-          "http://bblfish.net/#hjs".uri.a(FOAF.Person)
+          "http://bblfish.net/#hjs".iri.a(FOAF.Person)
             -- FOAF.name --> "Henry Story"
-              -- FOAF.currentProject --> "http://webid.info/".uri
+              -- FOAF.currentProject --> "http://webid.info/".iri
               -- FOAF.knows -->> List(b_("reto"), b_("danny"))
           //one need to list properties before inverse properties, or use brackets
           <-- identity -- (
@@ -132,15 +140,15 @@ class EzMGraphTest {
         -- FOAF.knows --> (
           b_("danny").a(FOAF.Person)
             -- FOAF.name --> "Danny Ayers".lang("en")
-              -- FOAF.knows --> "http://bblfish.net/#hjs".uri //knows
+              -- FOAF.knows --> "http://bblfish.net/#hjs".iri //knows
             -- FOAF.knows --> b_("reto")
         )
     )}
     Assert.assertEquals("the two graphs should be of same size",tinyGraph.size,ez.size)
-    Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getGraph)
+    Assert.assertEquals("Both graphs should contain exactly the same triples",tinyGraph,ez.getImmutableGraph)
     //We can add triples by creating a new anonymous instance
-    new EzMGraph(ez) {(
-      "http://bblfish.net/#hjs".uri -- FOAF.name --> "William"
+    new EzGraph(ez) {(
+      "http://bblfish.net/#hjs".iri -- FOAF.name --> "William"
       -- FOAF.name --> "Bill"
     )}
     Assert.assertEquals("the triple colletion has grown by one",tinyGraph.size()+2,ez.size)

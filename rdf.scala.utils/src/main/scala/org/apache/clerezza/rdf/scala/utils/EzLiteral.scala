@@ -19,9 +19,14 @@
 
 package org.apache.clerezza.rdf.scala.utils
 
-import org.apache.clerezza.rdf.core.impl.{TypedLiteralImpl, PlainLiteralImpl}
+//import org.apache.clerezza.rdf.core.impl.{TypedLiteralImpl, PlainLiteralImpl}
 import org.apache.clerezza.rdf.ontologies.XSD
-import org.apache.clerezza.rdf.core.{TypedLiteral, Language, PlainLiteral, UriRef}
+import org.apache.commons.rdf.Iri
+import org.apache.commons.rdf.Language
+import org.apache.commons.rdf.Literal
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl
+import org.apache.commons.rdf.impl.utils.TypedLiteralImpl
+//import org.apache.commons.rdf.core.{TypedLiteral, Language, PlainLiteral, Iri}
 
 object EzLiteral extends EzLiteralImplicits
 
@@ -50,21 +55,27 @@ class EzLiteral(string: String) extends TypedLiteralImpl(string,XSD.string) {
   /**
    * @return a plain literal with language specified by lang
    */
-  def lang(lng: String): PlainLiteral = lang(new Language(lng))
+  def lang(lng: String): Literal = lang(new Language(lng))
 
   /**
    * @return a plain literal with language specified by lang
    */
-  def lang(lng: Language): PlainLiteral = new PlainLiteralImpl(string, lng)
+  def lang(lng: Language): Literal = new PlainLiteralImpl(string, lng)
 
   /**
    * Map to a Typed Literal of given type
    */
-  def ^^(typ: UriRef): TypedLiteral = new TypedLiteralImpl(string, typ)
+  def ^^(typ: Iri): Literal = new TypedLiteralImpl(string, typ)
 
   /**
-   * Map to a URI of given lexical form
+   * alias for iri
    */
-  def uri = new UriRef(string)
+  @deprecated(message ="use  `iri`", since="1.0.0")
+  def uri = iri
+  
+  /**
+   * Map to an IRI of given lexical form
+   */
+  def iri = new Iri(string)
 
 }

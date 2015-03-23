@@ -18,10 +18,13 @@ package org.apache.clerezza.rdf.scala.utils
  * specific language governing permissions and limitations
  * under the License.
  */
+import org.apache.commons.rdf.Iri
+import org.apache.commons.rdf.Language
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl
+import org.apache.commons.rdf.impl.utils.TripleImpl
+import org.apache.commons.rdf.impl.utils.TypedLiteralImpl
 import org.junit._
 import org.apache.clerezza.rdf.core._
-import impl.{TripleImpl, PlainLiteralImpl, TypedLiteralImpl}
-import com.sun.xml.internal.ws.developer.MemberSubmissionAddressing.Validation
 
 class TypeConversionTest {
 
@@ -31,27 +34,27 @@ class TypeConversionTest {
 
   @Test
   def useStringAsObject {
-    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value")
+    val t = new TripleImpl(new Iri(("http://example.org/subject")), new Iri(("http://example.org/predicate")), "a value")
     Assert.assertEquals(literalFactory.createTypedLiteral("a value"), t.getObject)
   }
 
   /*@Test
   def useStringWithLanguageTag {
-    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value"("en"))
+    val t = new TripleImpl(new Iri(("http://example.org/subject")), new Iri(("http://example.org/predicate")), "a value"("en"))
     Assert.assertEquals(new PlainLiteralImpl("a value", new Language("en")), t.getObject)
   }*/
 
   @Test
   def useStringWithLanguageTag {
      val lit = new PlainLiteralImpl("a value", new Language("en"))
-    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value" lang "en")
+    val t = new TripleImpl(new Iri(("http://example.org/subject")), new Iri(("http://example.org/predicate")), "a value" lang "en")
     Assert.assertEquals(lit, t.getObject)
   }
 
   @Test
   def useStringWithType {
-    val typeUri = new UriRef("http://example.org/dt")
-    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "a value"^^typeUri)
+    val typeUri = new Iri("http://example.org/dt")
+    val t = new TripleImpl(new Iri(("http://example.org/subject")), new Iri(("http://example.org/predicate")), "a value"^^typeUri)
     Assert.assertEquals(new TypedLiteralImpl("a value", typeUri), t.getObject)
   }
 
@@ -64,8 +67,8 @@ class TypeConversionTest {
 
   @Test
   def dotUri {
-    val t = new TripleImpl(new UriRef(("http://example.org/subject")), new UriRef(("http://example.org/predicate")), "http://example.org".uri)
-    Assert.assertEquals(new UriRef("http://example.org"), t.getObject)
+    val t = new TripleImpl(new Iri(("http://example.org/subject")), new Iri(("http://example.org/predicate")), "http://example.org".iri)
+    Assert.assertEquals(new Iri("http://example.org"), t.getObject)
   }
 
 }
