@@ -448,9 +448,9 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         datasetLock.readLock().lock();
         try {
             if(isExistingGraphName(name, Symbols.ImmutableGraph) || name.equals(defaultGraphName)){
-                return getMGraph(name);
-            } else if(isExistingGraphName(name, Symbols.Graph)){
                 return getImmutableGraph(name);
+            } else if(isExistingGraphName(name, Symbols.Graph)){
+                return getMGraph(name);
             } else {
                 throw new NoSuchEntityException(name);
             }

@@ -84,7 +84,7 @@ public class SingleTdbDatasetTcProviderTest extends TcProviderTest {
     @Test(expected=NoSuchEntityException.class)
     public void testUnionMgraph(){
         TcProvider provider = getInstance();
-        provider.getGraph(UNION_GRAPH_NAME);
+        provider.getMGraph(UNION_GRAPH_NAME);
     }
     
     /**

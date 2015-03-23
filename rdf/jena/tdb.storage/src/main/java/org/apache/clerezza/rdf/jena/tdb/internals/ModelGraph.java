@@ -75,7 +75,7 @@ public class ModelGraph {
                     return new SimpleImmutableGraph(this,true);
                 }
             };
-            graph = new PrivilegedGraphWrapper(jenaAdapter).getImmutableGraph();
+            graph = new PrivilegedGraphWrapper(jenaAdapter);
         } else { //construct an Graph
             jenaAdapter = new JenaGraphAdaptor(model.getGraph(), lock);
             this.graph =  new PrivilegedGraphWrapper(jenaAdapter);
@@ -104,7 +104,7 @@ public class ModelGraph {
         if(!readWrite){
             throw new IllegalStateException("Unable to return Graph for read-only models");
         }
-        return (Graph)graph;
+        return graph;
     }
     /**
      * Getter for the {@link ImmutableGraph}
@@ -116,7 +116,7 @@ public class ModelGraph {
         if(readWrite){
             throw new IllegalStateException("Unable to return ImmutableGraph for read/write models.");
         }
-        return (ImmutableGraph)graph;
+        return graph.getImmutableGraph();
     }
     /**
      * closes this ModelGraph and frees up all Jena TDB related resources.
