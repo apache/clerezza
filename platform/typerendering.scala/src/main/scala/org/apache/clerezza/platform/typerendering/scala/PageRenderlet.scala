@@ -24,7 +24,7 @@ import java.net.URI
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering.Renderlet.RequestProperties
 import org.apache.clerezza.platform.typerendering._
-import org.apache.clerezza.rdf.core.UriRef
+import org.apache.commons.rdf.Iri
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.osgi.service.component.ComponentContext
 import org.apache.clerezza.rdf.ontologies._
@@ -40,7 +40,7 @@ import org.apache.clerezza.rdf.scala.utils.Preamble._
 abstract class PageRenderlet extends AbstractRenderlet {
 
   def renderedPage(renderingArguments: RenderedPage.Arguments): RenderedPage
-  def rdfType: UriRef
+  def rdfType: Iri
   def mode = "naked"
 
   var renderletManager: RenderletManager = null;

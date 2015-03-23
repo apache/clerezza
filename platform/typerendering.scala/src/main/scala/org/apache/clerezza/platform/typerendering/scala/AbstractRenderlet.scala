@@ -24,7 +24,7 @@ import java.net.URI
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering.Renderlet.RequestProperties
 import org.apache.clerezza.platform.typerendering._
-import org.apache.clerezza.rdf.core.UriRef
+import org.apache.commons.rdf.Iri
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.osgi.service.component.ComponentContext
 import org.apache.clerezza.rdf.ontologies._

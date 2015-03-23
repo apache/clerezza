@@ -32,6 +32,7 @@ import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.security.{PrivilegedAction, AccessController}
+import org.apache.commons.rdf.Iri
 import org.osgi.framework.{BundleContext, ServiceReference}
 import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 
@@ -82,7 +83,7 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
    * renders the specified resource without using the base-graph from resource
    * rendered by the caller but getting a new context using the GraphNodeProvider
    */
-  def render(resource: UriRef): Seq[Node] = {
+  def render(resource: Iri): Seq[Node] = {
     modeOption match {
       case Some(m) => render(resource, m)
       case None => render(resource, "naked")
@@ -93,7 +94,7 @@ abstract class RenderedPage(arguments: RenderedPage.Arguments) {
    * renders the specified resource without using the base-graph from resource
    * rendered by the caller but getting a new context using the GraphNodeProvider
    */
-  def render(resource: UriRef, mode: String) = {
+  def render(resource: Iri, mode: String) = {
     def parseNodeSeq(string: String) = {
       _root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
     }
