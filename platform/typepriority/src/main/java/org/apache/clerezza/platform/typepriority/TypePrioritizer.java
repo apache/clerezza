@@ -32,14 +32,12 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
-import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.platform.config.SystemConfig;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.RdfList;
+import org.apache.commons.rdf.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,26 +49,26 @@ import org.slf4j.LoggerFactory;
 @References({
     @Reference(name="systemGraph",
         cardinality=ReferenceCardinality.MANDATORY_UNARY,
-        referenceInterface=LockableMGraph.class,
+        referenceInterface=Graph.class,
         target=SystemConfig.SYSTEM_GRAPH_FILTER)})
 public class TypePrioritizer {
-    public static final UriRef typePriorityListUri = new UriRef("urn:x-localinstance:/typePriorityList");
+    public static final Iri typePriorityListUri = new Iri("urn:x-localinstance:/typePriorityList");
 
-    private List<UriRef> typePriorityList;
+    private List<Iri> typePriorityList;
     private static final Logger log = LoggerFactory.getLogger(TypePrioritizer.class);
     
-    LockableMGraph systemGraph;
+    Graph systemGraph;
 
-    protected void bindSystemGraph(LockableMGraph systemGraph) {
+    protected void bindSystemGraph(Graph systemGraph) {
         Lock l = systemGraph.getLock().readLock();
         l.lock();
         try {
-            List<Resource> rdfTypePriorityList = new RdfList(
+            List<RdfTerm> rdfTypePriorityList = new RdfList(
                  typePriorityListUri, systemGraph);
-            typePriorityList  = new ArrayList<UriRef>(rdfTypePriorityList.size());
-            for (Resource resource : rdfTypePriorityList) {
-                if (resource instanceof UriRef) {
-                    typePriorityList.add((UriRef) resource);
+            typePriorityList  = new ArrayList<Iri>(rdfTypePriorityList.size());
+            for (RdfTerm resource : rdfTypePriorityList) {
+                if (resource instanceof Iri) {
+                    typePriorityList.add((Iri) resource);
                 } else {
                     log.warn("Type priority list contains a resource "
                             + "that is not a uri, skipping.");
@@ -79,10 +77,10 @@ public class TypePrioritizer {
         } finally {
             l.unlock();
         }
-        this.systemGraph = (LockableMGraph) systemGraph;
+        this.systemGraph = (Graph) systemGraph;
     }
 
-    protected void unbindSystemGraph(LockableMGraph systemGraph) {
+    protected void unbindSystemGraph(Graph systemGraph) {
         typePriorityList = null;
         this.systemGraph = null;
     }
@@ -92,17 +90,17 @@ public class TypePrioritizer {
      * @param rdfTypes the rdf types to be sorted
      * @return a sorted iterator of the types
      */
-    public Iterator<UriRef> iterate(final Collection<UriRef> rdfTypes) {
-        return new Iterator<UriRef>() {
-            final Set<UriRef> remaining = new HashSet<UriRef>(rdfTypes);
+    public Iterator<Iri> iterate(final Collection<Iri> rdfTypes) {
+        return new Iterator<Iri>() {
+            final Set<Iri> remaining = new HashSet<Iri>(rdfTypes);
             boolean rdfsResourceRemovedAndNotYetReturned = remaining.remove(RDFS.Resource);
-            final Iterator<UriRef> typePriorityIter = typePriorityList.iterator();
-            Iterator<UriRef> remainingIter = null;
-            UriRef next = prepareNext();
+            final Iterator<Iri> typePriorityIter = typePriorityList.iterator();
+            Iterator<Iri> remainingIter = null;
+            Iri next = prepareNext();
             
-            private UriRef prepareNext() {
+            private Iri prepareNext() {
                 while (typePriorityIter.hasNext()) {
-                    UriRef nextPriority = typePriorityIter.next();
+                    Iri nextPriority = typePriorityIter.next();
                     if (remaining.contains(nextPriority)) {
                         remaining.remove(nextPriority);
                         return nextPriority;
@@ -129,11 +127,11 @@ public class TypePrioritizer {
             }
 
             @Override
-            public UriRef next() {
+            public Iri next() {
                 if (next == null) {
                     throw new NoSuchElementException();
                 }
-                UriRef current = next;
+                Iri current = next;
                 next = prepareNext();
                 return current;
             }

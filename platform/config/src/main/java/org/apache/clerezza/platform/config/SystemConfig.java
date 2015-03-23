@@ -24,18 +24,17 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 import org.apache.clerezza.platform.Constants;
-import org.apache.clerezza.rdf.core.Graph;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.slf4j.Logger;
@@ -68,7 +67,7 @@ public class SystemConfig implements WeightedTcProvider {
      * @deprecated use org.apache.clerezza.platform.Contants instead
      */
     @Deprecated
-    public static final UriRef SYSTEM_GRAPH_URI = Constants.SYSTEM_GRAPH_URI;
+    public static final Iri SYSTEM_GRAPH_URI = Constants.SYSTEM_GRAPH_URI;
     /**
      * A filter that can be used to get the system graph as OSGi service, that
      * is provided by
@@ -87,14 +86,14 @@ public class SystemConfig implements WeightedTcProvider {
             "("+SupportedFormat.supportedFormat+"=" + SupportedFormat.N_TRIPLE + ")";
     @Reference(target = SERIALIZER_FILTER)
     private Serializer serializer;
-    private MGraph systemGraph;
+    private Graph systemGraph;
 
     @Activate
     protected void activate(ComponentContext componentContext) {
         final BundleContext bundleContext = componentContext.getBundleContext();
         File systemGraphFile = bundleContext.getDataFile(DATA_FILE_SYSTEM_GRAPH);
         boolean dataFileExisted = systemGraphFile.exists();
-        //yould be good to use IndexedMGraph to be faster
+        //yould be good to use IndexedGraph to be faster
         systemGraph = new FileMGraph(systemGraphFile, parser, serializer);
         if (!dataFileExisted) {
             readConfigGraphFile(systemGraph);
@@ -107,7 +106,7 @@ public class SystemConfig implements WeightedTcProvider {
         systemGraph = null;
     }
 
-    private void readConfigGraphFile(MGraph mGraph) {
+    private void readConfigGraphFile(Graph mGraph) {
         URL config = getClass().getResource(DEFAULT_SYSTEM_GRAPH);
         if (config == null) {
             throw new RuntimeException("no config file found");
@@ -123,7 +122,7 @@ public class SystemConfig implements WeightedTcProvider {
 
     /*
      * Reason to be high: don't allow overwriting of system graph (by accident or as an attack)
-     * Reason to be low: avoid that TcManager always first tries to create TripleCollections using this provider
+     * Reason to be low: avoid that TcManager always first tries to create Graphs using this provider
      */
     @Override
     public int getWeight() {
@@ -131,12 +130,12 @@ public class SystemConfig implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
         throw new NoSuchEntityException(name);
     }
 
     @Override
-    public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+    public Graph getMGraph(Iri name) throws NoSuchEntityException {
         if (name.equals(Constants.SYSTEM_GRAPH_URI)) {
             return systemGraph;
         } else {
@@ -145,42 +144,42 @@ public class SystemConfig implements WeightedTcProvider {
     }
 
     @Override
-    public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
+    public Graph getGraph(Iri name) throws NoSuchEntityException {
         return getMGraph(name);
     }
 
     @Override
-    public Set<UriRef> listGraphs() {
+    public Set<Iri> listImmutableGraphs() {
         return Collections.emptySet();
     }
 
     @Override
-    public Set<UriRef> listMGraphs() {
+    public Set<Iri> listMGraphs() {
         return Collections.singleton(Constants.SYSTEM_GRAPH_URI);
     }
 
     @Override
-    public Set<UriRef> listTripleCollections() {
+    public Set<Iri> listGraphs() {
         return listMGraphs();
     }
 
     @Override
-    public MGraph createMGraph(UriRef name) throws UnsupportedOperationException, EntityAlreadyExistsException {
+    public Graph createGraph(Iri name) throws UnsupportedOperationException, EntityAlreadyExistsException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Graph createGraph(UriRef name, TripleCollection triples) throws UnsupportedOperationException, EntityAlreadyExistsException {
+    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) throws UnsupportedOperationException, EntityAlreadyExistsException {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @Override
-    public void deleteTripleCollection(UriRef name) throws UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
+    public void deleteGraph(Iri name) throws UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<UriRef> getNames(Graph graph) {
+    public Set<Iri> getNames(ImmutableGraph graph) {
         return Collections.emptySet();
     }
 }

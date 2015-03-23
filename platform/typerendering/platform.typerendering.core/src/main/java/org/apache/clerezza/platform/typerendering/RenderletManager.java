@@ -18,7 +18,7 @@
 package org.apache.clerezza.platform.typerendering;
 
 import javax.ws.rs.core.MediaType;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 
 /**
  * Over the RenderletManagerImpl renderlets can be registered.
@@ -48,6 +48,6 @@ public interface RenderletManager {
      * required.
      * @param mediaType The media type of the rendered
      * @param builtIn ignored
-     */ void registerRenderlet(String renderletServiceName, final UriRef renderingSpecification, final UriRef rdfType, final String mode, final MediaType mediaType, boolean builtIn);
+     */ void registerRenderlet(String renderletServiceName, final Iri renderingSpecification, final Iri rdfType, final String mode, final MediaType mediaType, boolean builtIn);
 
 }

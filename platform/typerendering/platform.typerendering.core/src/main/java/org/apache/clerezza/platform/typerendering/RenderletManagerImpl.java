@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.ws.rs.core.MediaType;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
@@ -67,12 +67,12 @@ public class RenderletManagerImpl implements RenderletManager {
     private static class RegistrationRequest {
 
         String renderletServiceName;
-        UriRef renderingSpecification;
-        UriRef rdfType;
+        Iri renderingSpecification;
+        Iri rdfType;
         String mode;
         MediaType mediaType;
 
-        public RegistrationRequest(String renderletServiceName, UriRef renderingSpecification, UriRef rdfType, String mode, MediaType mediaType) {
+        public RegistrationRequest(String renderletServiceName, Iri renderingSpecification, Iri rdfType, String mode, MediaType mediaType) {
             this.renderletServiceName = renderletServiceName;
             this.renderingSpecification = renderingSpecification;
             this.rdfType = rdfType;
@@ -112,8 +112,8 @@ public class RenderletManagerImpl implements RenderletManager {
      * @param builtIn ignored
      */
     public void registerRenderlet(String renderletServiceName,
-            final UriRef renderingSpecification,
-            final UriRef rdfType,
+            final Iri renderingSpecification,
+            final Iri rdfType,
             final String mode,
             final MediaType mediaType, boolean builtIn) {
         RegistrationRequest registrationRequest = new RegistrationRequest(renderletServiceName,
@@ -232,8 +232,8 @@ public class RenderletManagerImpl implements RenderletManager {
 
     private boolean attemptRegistration(RegistrationRequest registrationRequest) {
         final String renderletServiceName = registrationRequest.renderletServiceName;
-        UriRef renderingSpecification = registrationRequest.renderingSpecification;
-        final UriRef rdfType = registrationRequest.rdfType;
+        Iri renderingSpecification = registrationRequest.renderingSpecification;
+        final Iri rdfType = registrationRequest.rdfType;
         final String modePattern = registrationRequest.mode;
         final MediaType mediaType = registrationRequest.mediaType;
 
@@ -252,7 +252,7 @@ public class RenderletManagerImpl implements RenderletManager {
         TypeRenderlet typeRenderlet = new TypeRenderlet() {
 
             @Override
-            public UriRef getRdfType() {
+            public Iri getRdfType() {
                 return rdfType;
             }
 
@@ -304,7 +304,7 @@ public class RenderletManagerImpl implements RenderletManager {
         return true;
     }
 
-    private ServiceRegistration getAlreadyRegisteredServiceReg(UriRef rdfType, 
+    private ServiceRegistration getAlreadyRegisteredServiceReg(Iri rdfType, 
             MediaType mediaType, String modePattern) {
         
         for (ServiceRegistration serviceRegistration : registeredTypeRenderlets) {

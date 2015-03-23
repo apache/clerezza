@@ -22,13 +22,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.ontologies.RDF;
+import org.apache.commons.rdf.Literal;
 
 /**
  * This exception is thrown when an exception occured while rendering a
@@ -51,15 +51,15 @@ public class RenderingException extends TypeRenderingException {
 
     @Override
     public GraphNode getExceptionGraphNode() {
-        GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
+        GraphNode result = new GraphNode(new BlankNode(), new SimpleGraph());
         result.addProperty(RDF.type, TYPERENDERING.Exception);
-        result.addProperty(TYPERENDERING.errorSource, new UriRef(renderingSpecification.toString()));
+        result.addProperty(TYPERENDERING.errorSource, new Iri(renderingSpecification.toString()));
         result.addProperty(TYPERENDERING.message, new PlainLiteralImpl(getMessage()));
         result.addProperty(TYPERENDERING.stackTrace, getStackTraceLiteral());
         return result;
     }
 
-    private PlainLiteral getStackTraceLiteral() {
+    private Literal getStackTraceLiteral() {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         cause.printStackTrace(pw);

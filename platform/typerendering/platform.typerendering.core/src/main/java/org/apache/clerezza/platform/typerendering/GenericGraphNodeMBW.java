@@ -59,8 +59,8 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,7 +214,7 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
     }
 
     private GraphNode getUserContext() {
-        GraphNode contextNode = new GraphNode(new BNode(), new SimpleMGraph());
+        GraphNode contextNode = new GraphNode(new BlankNode(), new SimpleGraph());
         synchronized(contextProviders) {
             Iterator<UserContextProvider> providersIter = contextProviders.iterator();
             while (providersIter.hasNext()) {

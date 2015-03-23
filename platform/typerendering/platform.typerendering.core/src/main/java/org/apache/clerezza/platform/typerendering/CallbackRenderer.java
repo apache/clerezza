@@ -21,7 +21,7 @@ package org.apache.clerezza.platform.typerendering;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -48,7 +48,7 @@ public interface CallbackRenderer {
 
     /**
      * Renders a specified named resource using the GraphNode returned by
-     * <code>org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider#get(org.apache.clerezza.rdf.core.UriRef)</code>.
+     * <code>org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider#get(org.apache.commons.rdf.Iri)</code>.
      *
      * Otherwise same as render(GraphNode, .GraphNode, String, OutputStream)
      *
@@ -58,7 +58,7 @@ public interface CallbackRenderer {
      * @param os
      * @throws IOException
      */
-    public void render(UriRef resource, GraphNode context, String mode,
+    public void render(Iri resource, GraphNode context, String mode,
             OutputStream os) throws IOException;
 
 }

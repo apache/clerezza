@@ -19,34 +19,17 @@
 package org.apache.clerezza.platform.typepriority;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.locks.Lock;
-
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.ReferenceCardinality;
-import org.apache.felix.scr.annotations.References;
-import org.apache.felix.scr.annotations.Service;
-import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.platform.config.SystemConfig;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.test.LockableMGraphWrapperForTesting;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.RdfList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author rbn
@@ -58,22 +41,21 @@ public class TypePrioritizerTest {
     @Before
     public void before() {
         typePrioritizer = new TypePrioritizer();
-        MGraph mGraph = new SimpleMGraph();
+        Graph mGraph = new SimpleGraph();
         RdfList rdfList = new RdfList(TypePrioritizer.typePriorityListUri, mGraph);
         rdfList.add(FOAF.Person);
         rdfList.add(FOAF.Group);
         rdfList.add(FOAF.Agent);
-        final LockableMGraph systemGraph = new LockableMGraphWrapperForTesting(mGraph);
-        typePrioritizer.bindSystemGraph(systemGraph);
+        typePrioritizer.bindSystemGraph(mGraph);
     }
 
     @Test
     public void oderList() {
-        List<UriRef> l = new ArrayList<UriRef>();
+        List<Iri> l = new ArrayList<Iri>();
         l.add(FOAF.Agent);
         l.add(RDF.Bag);
         l.add(FOAF.Person);
-        Iterator<UriRef> iter = typePrioritizer.iterate(l);
+        Iterator<Iri> iter = typePrioritizer.iterate(l);
         Assert.assertEquals(FOAF.Person, iter.next());
         Assert.assertEquals(FOAF.Agent, iter.next());
         Assert.assertEquals(RDF.Bag, iter.next());

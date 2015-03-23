@@ -30,17 +30,17 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.commons.rdf.Graph;
 
 /**
  * This class provides a OSGi service for getting system properties from
@@ -53,7 +53,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 public class PlatformConfig {
 
     @Reference(target = SystemConfig.SYSTEM_GRAPH_FILTER)
-    private LockableMGraph systemGraph;
+    private Graph systemGraph;
     private BundleContext context;
     private static String DEFAULT_PORT = "8080";
 
@@ -61,7 +61,7 @@ public class PlatformConfig {
      * @deprecated use org.apache.clerezza.platform.Contants instead
      */
     @Deprecated
-    public static final UriRef CONFIG_GRAPH_URI = Constants.CONFIG_GRAPH_URI;
+    public static final Iri CONFIG_GRAPH_URI = Constants.CONFIG_GRAPH_URI;
 
     /**
      * A filter that can be used to get the config graph as OSGi service,
@@ -78,27 +78,27 @@ public class PlatformConfig {
      * Returns the default base URI of the Clerezza platform instance.
      * @return the base URI of the Clerezza platform
      */
-    public UriRef getDefaultBaseUri() {
-        return AccessController.doPrivileged(new PrivilegedAction<UriRef>() {
+    public Iri getDefaultBaseUri() {
+        return AccessController.doPrivileged(new PrivilegedAction<Iri>() {
 
             @Override
-            public UriRef run() {
+            public Iri run() {
                 GraphNode platformInstance = getPlatformInstance();
                 Lock l = platformInstance.readLock();
                 l.lock();
                 try {
-                    Iterator<Resource> triples = platformInstance.getObjects(PLATFORM.defaultBaseUri);
+                    Iterator<RdfTerm> triples = platformInstance.getObjects(PLATFORM.defaultBaseUri);
                     if (triples.hasNext()) {
-                        return (UriRef) triples.next();
+                        return (Iri) triples.next();
                     } else {
                         String port = context.getProperty("org.osgi.service.http.port");
                         if (port == null) {
                             port = DEFAULT_PORT;
                         }
                         if (port.equals("80")) {
-                            return new UriRef("http://localhost/");
+                            return new Iri("http://localhost/");
                         }
-                        return new UriRef("http://localhost:" + port + "/");
+                        return new Iri("http://localhost:" + port + "/");
                     }
                 } finally {
                     l.unlock();
@@ -109,16 +109,16 @@ public class PlatformConfig {
 
     /**
      * Returns the platforminstance as <code>GraphNode</code> of the system
-     * graph (a LockableMGraph). Access controls applies to the system graph
+     * graph (a LockableGraph). Access controls applies to the system graph
      * instance underlying the <code>GraphNode</code>.
      *
      * @return
      */
     public GraphNode getPlatformInstance() {
-        return new GraphNode(getPlatformInstanceResource(), systemGraph);
+        return new GraphNode(getPlatformInstanceRdfTerm(), systemGraph);
     }
 
-    private NonLiteral getPlatformInstanceResource() {
+    private BlankNodeOrIri getPlatformInstanceRdfTerm() {
         Lock l = systemGraph.getLock().readLock();
         l.lock();
         try {
@@ -138,17 +138,17 @@ public class PlatformConfig {
      * @return the base URI of the Clerezza platform
      */
     //todo: if this is the only class that sets and reads base uris then getBaseURIs should keep a cache
-    public Set<UriRef> getBaseUris() {
+    public Set<Iri> getBaseUris() {
 
-        return AccessController.doPrivileged(new PrivilegedAction<Set<UriRef>>() {
+        return AccessController.doPrivileged(new PrivilegedAction<Set<Iri>>() {
 
             @Override
-            public Set<UriRef> run() {
-                Iterator<Resource> baseUrisIter = getPlatformInstance().
+            public Set<Iri> run() {
+                Iterator<RdfTerm> baseUrisIter = getPlatformInstance().
                         getObjects(PLATFORM.baseUri);
-                Set<UriRef> baseUris = new HashSet<UriRef>();
+                Set<Iri> baseUris = new HashSet<Iri>();
                 while (baseUrisIter.hasNext()) {
-                    UriRef baseUri = (UriRef) baseUrisIter.next();
+                    Iri baseUri = (Iri) baseUrisIter.next();
                     baseUris.add(baseUri);
                 }
                 baseUris.add(getDefaultBaseUri());
@@ -163,8 +163,8 @@ public class PlatformConfig {
      *
      * @param baseUri The base URI which will be added to the platform instance
      */
-    public void addBaseUri(UriRef baseUri) {
-        systemGraph.add(new TripleImpl(getPlatformInstanceResource(), PLATFORM.baseUri, baseUri));
+    public void addBaseUri(Iri baseUri) {
+        systemGraph.add(new TripleImpl(getPlatformInstanceRdfTerm(), PLATFORM.baseUri, baseUri));
     }
 
     /**
@@ -172,16 +172,16 @@ public class PlatformConfig {
      *
      * @param baseUri The base URI which will be removed from the platform instance
      */
-    public void removeBaseUri(UriRef baseUri) {
-        systemGraph.remove(new TripleImpl(getPlatformInstanceResource(), PLATFORM.baseUri, baseUri));
+    public void removeBaseUri(Iri baseUri) {
+        systemGraph.remove(new TripleImpl(getPlatformInstanceRdfTerm(), PLATFORM.baseUri, baseUri));
     }
 
     protected void activate(ComponentContext componentContext) {
         this.context = componentContext.getBundleContext();
         try {
-            tcManager.getMGraph(Constants.CONFIG_GRAPH_URI);
+            tcManager.getGraph(Constants.CONFIG_GRAPH_URI);
         } catch (NoSuchEntityException nsee) {
-            tcManager.createMGraph(Constants.CONFIG_GRAPH_URI);            
+            tcManager.createGraph(Constants.CONFIG_GRAPH_URI);            
         }
     }
     

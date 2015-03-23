@@ -46,19 +46,19 @@ public class TcPermissionDescriptionsProvider implements PermissionDescriptionsP
     private static final Set<PermissionDescripton> GRAPH_ACCESS_PERMISSION_DESCRIPTIONS =
             new HashSet<PermissionDescripton>();
     static {
-        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System Graph Read Permission",
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System ImmutableGraph Read Permission",
                 "Grants permission to the user to read the system graph", null, TcPermission.class,
                 "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/system.graph\" \"read\")"));
 
-        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System Graph Read/Write Permission",
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("System ImmutableGraph Read/Write Permission",
                 "Grants permission to the user to read and write the system graph", null, TcPermission.class,
                 "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/system.graph\" \"readwrite\")"));
 
-        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration Graph Read Permission",
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration ImmutableGraph Read Permission",
                 "Grants permission to the user to read the configuration graph", null, TcPermission.class,
                 "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/config.graph\" \"read\")"));
 
-        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration Graph Read/Write Permission",
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Configuration ImmutableGraph Read/Write Permission",
                 "Grants permission to the user to read and write the configuration graph", null, TcPermission.class,
                 "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/config.graph\" \"readwrite\")"));
     }

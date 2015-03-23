@@ -20,11 +20,11 @@ package org.apache.clerezza.platform.typerendering;
 
 import java.net.URI;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
-import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -121,10 +121,10 @@ public class RenderingspecificationException extends TypeRenderingException{
 
     @Override
     public GraphNode getExceptionGraphNode() {
-        GraphNode result = new GraphNode(new BNode(), new SimpleMGraph());
+        GraphNode result = new GraphNode(new BlankNode(), new SimpleGraph());
         result.addProperty(RDF.type, TYPERENDERING.Exception);
         LiteralFactory factory = LiteralFactory.getInstance();
-        result.addProperty(TYPERENDERING.errorSource, new UriRef(renderingSpecification.toString()));
+        result.addProperty(TYPERENDERING.errorSource, new Iri(renderingSpecification.toString()));
         if (lineNumber != -1) {
             result.addProperty(TYPERENDERING.line, factory.createTypedLiteral(new Integer(lineNumber)));
         }

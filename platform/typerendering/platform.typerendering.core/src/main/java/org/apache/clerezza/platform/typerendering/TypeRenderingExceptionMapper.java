@@ -29,7 +29,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
@@ -81,7 +81,7 @@ public class TypeRenderingExceptionMapper implements ExceptionMapper<TypeRenderi
         URL template = getClass().getResource("exception-template.ssp");
         renderletManager.registerRenderlet(
                 "org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet",
-                new UriRef(template.toURI().toString()),
+                new Iri(template.toURI().toString()),
                 TYPERENDERING.Exception, ".*",
                 MediaType.APPLICATION_XHTML_XML_TYPE, true);
     }

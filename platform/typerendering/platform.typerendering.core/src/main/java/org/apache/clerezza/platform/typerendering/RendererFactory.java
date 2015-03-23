@@ -25,11 +25,11 @@ import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.platform.typepriority.TypePrioritizer;
 import org.apache.clerezza.platform.typerendering.utils.MediaTypeMap;
 import org.apache.clerezza.platform.typerendering.utils.RegexMap;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.commons.rdf.Literal;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
@@ -91,8 +91,8 @@ public class RendererFactory {
         }
     }
 
-    private Map<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeRenderletMap =
-            Collections.synchronizedMap(new HashMap<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>>());
+    private Map<Iri, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeRenderletMap =
+            Collections.synchronizedMap(new HashMap<Iri, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>>());
 
     private BundleContext bundleContext;
 
@@ -125,14 +125,14 @@ public class RendererFactory {
      */
     public Renderer createRenderer(GraphNode resource, String mode,
             List<MediaType> acceptableMediaTypes) {
-        Set<UriRef> types = new HashSet<UriRef>();
-        if (resource.getNode() instanceof TypedLiteral) {
-            types.add(((TypedLiteral) resource.getNode()).getDataType());
+        Set<Iri> types = new HashSet<Iri>();
+        if (resource.getNode() instanceof Literal) {
+            types.add(((Literal) resource.getNode()).getDataType());
         } else {
             // extract rdf types
-            Iterator<UriRef> it = resource.getUriRefObjects(RDF.type);
+            Iterator<Iri> it = resource.getIriObjects(RDF.type);
             while (it.hasNext()) {
-                final UriRef rdfType = it.next();
+                final Iri rdfType = it.next();
                 types.add(rdfType);
             }
             types.add(RDFS.Resource);
@@ -140,11 +140,11 @@ public class RendererFactory {
         return getRenderer(types, mode, acceptableMediaTypes);
     }
 
-    private Renderer getRenderer(Set<UriRef> types, String mode,
+    private Renderer getRenderer(Set<Iri> types, String mode,
             List<MediaType> acceptableMediaTypes) {
-        Iterator<UriRef> sortedTypes = typePrioritizer.iterate(types);
+        Iterator<Iri> sortedTypes = typePrioritizer.iterate(types);
         while (sortedTypes.hasNext()) {
-            final UriRef currentType = sortedTypes.next();
+            final Iri currentType = sortedTypes.next();
             final RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeRenderletMap.get(currentType);
             if (regexMap != null) {
                 Iterator<MediaTypeMap<TypeRenderletStartLevel>> mediaTypeMapIter = regexMap.getMatching(mode);
@@ -190,7 +190,7 @@ public class RendererFactory {
     }
 
     private void registerRenderlet(TypeRenderlet typeRenderlet, int startLevel) {
-        final UriRef rdfType = typeRenderlet.getRdfType();
+        final Iri rdfType = typeRenderlet.getRdfType();
         RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeRenderletMap.get(rdfType);
         if (regexMap == null) {
             regexMap = new RegexMap<MediaTypeMap<TypeRenderletStartLevel>>();
@@ -208,7 +208,7 @@ public class RendererFactory {
 
     protected void unbindTypeRenderlet(TypeRenderlet typeRenderlet) {
         TypeRenderletStartLevel typeRenderletStartLevel = new TypeRenderletStartLevel(typeRenderlet, 0);
-        for (Map.Entry<UriRef, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeEntry: typeRenderletMap.entrySet()) {
+        for (Map.Entry<Iri, RegexMap<MediaTypeMap<TypeRenderletStartLevel>>> typeEntry: typeRenderletMap.entrySet()) {
             final RegexMap<MediaTypeMap<TypeRenderletStartLevel>> regexMap = typeEntry.getValue();
             for (Map.Entry<String, MediaTypeMap<TypeRenderletStartLevel>> regexEntry: regexMap.entrySet()) {
                 final MediaTypeMap<TypeRenderletStartLevel> mediaTypeMap = regexEntry.getValue();
