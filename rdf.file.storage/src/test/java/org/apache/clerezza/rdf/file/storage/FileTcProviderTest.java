@@ -31,15 +31,15 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 
 import org.apache.clerezza.rdf.core.access.TcProvider;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.test.TcProviderTest;
 import static org.junit.Assert.*;
 
@@ -54,10 +54,10 @@ public class FileTcProviderTest extends TcProviderTest {
     
     
     @Override
-    protected UriRef generateUri(String name) {
+    protected Iri generateUri(String name) {
             String prefix = testDir.startsWith("/") ? FILE_PROTOCOL : FILE_PROTOCOL +"/";
         String path =  prefix + testDir.replace('\\', '/') + "/";
-        return new UriRef(path + name + ".rdf");
+        return new Iri(path + name + ".rdf");
     }
 
     @Before
@@ -72,14 +72,20 @@ public class FileTcProviderTest extends TcProviderTest {
     
     @Test(expected=UnsupportedOperationException.class)
     @Override
-    public void testCreateGraph() {
-        super.testCreateGraph();
+    public void testCreateImmutableGraph() {
+        super.testCreateImmutableGraph();
+    }
+    
+    @Test(expected=UnsupportedOperationException.class)
+    @Override
+    public void testCreateImmutableGraphExtended() throws Exception {
+        super.testCreateImmutableGraphExtended();
     }
 
     @Test(expected=UnsupportedOperationException.class)
     @Override
-    public void testGetGraph() {
-        super.testGetGraph();
+    public void testGetImmutableGraph() {
+        super.testGetImmutableGraph();
     }
 
     
@@ -88,15 +94,15 @@ public class FileTcProviderTest extends TcProviderTest {
     public void testGetTriples() {
         TcProvider fileTcProvider = getInstance();
         // add Graphs
-        MGraph mGraph = new SimpleMGraph();
-        // add MGraphs
-        mGraph = fileTcProvider.createMGraph(uriRefA1);
+        Graph mGraph = new SimpleGraph();
+        // add Graphs
+        mGraph = fileTcProvider.createGraph(uriRefA1);
         mGraph.add(new TripleImpl(uriRefA1, uriRefA1, uriRefA1));
-        mGraph = fileTcProvider.createMGraph(uriRefB1);
+        mGraph = fileTcProvider.createGraph(uriRefB1);
         mGraph.add(new TripleImpl(uriRefB1, uriRefB1, uriRefB1));
 
-        // get a MGraph
-        TripleCollection tripleCollection2 = fileTcProvider.getTriples(uriRefB1);
+        // get a Graph
+        Graph tripleCollection2 = fileTcProvider.getGraph(uriRefB1);
 
         Iterator<Triple> iterator = tripleCollection2.iterator();
         assertEquals(new TripleImpl(uriRefB1, uriRefB1, uriRefB1), iterator.next());
@@ -107,18 +113,18 @@ public class FileTcProviderTest extends TcProviderTest {
     @Override
     public void testDeleteEntity() {
         TcProvider fileTcProvider = getInstance();
-        MGraph mGraph = fileTcProvider.createMGraph(uriRefA);
+        Graph mGraph = fileTcProvider.createGraph(uriRefA);
         mGraph.add(new TripleImpl(uriRefA, uriRefA, uriRefA));
-        fileTcProvider.deleteTripleCollection(uriRefA);
+        fileTcProvider.deleteGraph(uriRefA);
         try {
-            fileTcProvider.getMGraph(uriRefA);
+            fileTcProvider.getGraph(uriRefA);
             assertTrue(false);
         } catch (NoSuchEntityException e) {
             assertTrue(true);
         }
         fileTcProvider = getInstance();
         try {
-            fileTcProvider.getMGraph(uriRefA);
+            fileTcProvider.getGraph(uriRefA);
             assertTrue(false);
         } catch (NoSuchEntityException e) {
             assertTrue(true);
@@ -134,15 +140,15 @@ public class FileTcProviderTest extends TcProviderTest {
     @Test(expected=UnsupportedOperationException.class)
     public void testGetNames() {
         //super.testGetNames();
-        getInstance().getNames(new SimpleMGraph().getGraph());
+        getInstance().getNames(new SimpleGraph().getImmutableGraph());
     }
 
     
-    @Test(expected=UnsupportedOperationException.class)
+    /*@Test(expected=UnsupportedOperationException.class)
     @Override
     public void testCreateGraphExtended() throws Exception {
         super.testCreateGraphExtended();
-    }
+    }*/
 
     @Test(expected=UnsupportedOperationException.class)
     @Override
@@ -177,7 +183,7 @@ public class FileTcProviderTest extends TcProviderTest {
     @Test
     public void testDataFile() {
         TcProvider provider = getInstance();
-        provider.createMGraph(uriRefA);
+        provider.createGraph(uriRefA);
         File dataFile = new File("data");
         assertTrue(dataFile.exists());
 
@@ -185,27 +191,27 @@ public class FileTcProviderTest extends TcProviderTest {
         expected.add(uriRefA.getUnicodeString());
         assertTrue(expected.equals(getLinesFromFile(dataFile)));
 
-        provider.createMGraph(uriRefB);
+        provider.createGraph(uriRefB);
         expected.add(uriRefB.getUnicodeString());
         assertTrue(expected.equals(getLinesFromFile(dataFile)));
     
-        provider.deleteTripleCollection(uriRefA);
+        provider.deleteGraph(uriRefA);
         expected.remove(uriRefA.getUnicodeString());
         assertTrue(expected.equals(getLinesFromFile(dataFile)));
         
-        provider.deleteTripleCollection(uriRefB);
+        provider.deleteGraph(uriRefB);
         expected.remove(uriRefB.getUnicodeString());
         assertTrue(expected.equals(getLinesFromFile(dataFile)));
     }
 
     @Test
-    public void testAutoMGraphCreationFromExistingFile() throws Exception{
-        FileMGraphTest.setup();
+    public void testAutoGraphCreationFromExistingFile() throws Exception{
+        FileGraphTest.setup();
         TcProvider provider = getInstance();
-        MGraph mGraph = provider.getMGraph(new UriRef(
-                FileMGraphTest.getTempFileUri(FileMGraphTest.RDF_FILE_NAME)));
+        Graph mGraph = provider.getGraph(new Iri(
+                FileGraphTest.getTempFileUri(FileGraphTest.RDF_FILE_NAME)));
         assertEquals(2 ,mGraph.size());
-        FileMGraphTest.cleanUp();
+        FileGraphTest.cleanUp();
     }
     
     private Set<String> getLinesFromFile(File file) throws RuntimeException {

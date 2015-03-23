@@ -24,7 +24,6 @@ package org.apache.clerezza.platform.style.default
 import java.net.URLEncoder
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering._
-import org.apache.clerezza.rdf.core.UriRef
 import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.ontologies._
@@ -33,6 +32,7 @@ import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.platform.typerendering.scala._
 import org.apache.clerezza.rdf.ontologies.DC
+import org.apache.commons.rdf.Iri
 
 /**
  * A Renderlet for the menu
@@ -92,7 +92,7 @@ resultDocModifier.addScriptReference("/scripts/status-message.js");
       <div class="zz-control">
         <div class="login">
             {
-              def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#"+s)
+              def platform(s: Any) = new Iri("http://clerezza.org/2009/08/platform#"+s)
               val userName = context/platform("user")/platform("userName")*
               val displayName = if ((context/platform("user")/FOAF.name).length == 0) {
                     userName

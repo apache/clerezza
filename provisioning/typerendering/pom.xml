@@ -25,8 +25,8 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.5</version>
-        <relativePath>../../parent</relativePath>
+        <version>7-SNAPSHOT</version>
+        <relativePath />
     </parent>
 
     <groupId>org.apache.clerezza.provisioning</groupId>
@@ -63,6 +63,11 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-reflect</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-xml_2.11</artifactId>
+        </dependency>
        
         <dependency>
             <groupId>org.apache.clerezza.ext</groupId>
@@ -73,7 +78,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typepriority</artifactId>
-            <version>0.2</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <!-- required by platform.config -->
@@ -86,62 +91,62 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform</artifactId>
-            <version>0.2</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <!-- provides system graph as required by typepriority -->
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.config</artifactId>
-            <version>0.4</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.core</artifactId>
-            <version>0.3</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.ontologies</artifactId>
-            <version>0.3</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.seedsnipe</artifactId>
-            <version>0.7</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>templating</artifactId>
-            <version>0.9</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>templating.seedsnipe</artifactId>
-            <version>0.9</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scalaserverpages</artifactId>
-            <version>0.4</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scala</artifactId>
-            <version>0.2</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.gui</artifactId>
-            <version>0.2</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
@@ -153,7 +158,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.style.default</artifactId>
-            <version>0.2</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <!-- needed by default style -->
@@ -167,7 +172,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.scala.utils</artifactId>
-            <version>0.4</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>

@@ -22,13 +22,12 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.templating.RenderingFunction;
 
 /**
@@ -42,7 +41,7 @@ public class WebRenderingFunctionsTest {
     public void dateTest() throws IOException {
 
         Date date = new Date();
-        TypedLiteral dateLiteral = LiteralFactory.getInstance()
+        Literal dateLiteral = LiteralFactory.getInstance()
                 .createTypedLiteral(date);
 
         WebRenderingFunctions webRenderingFunctions = new WebRenderingFunctions(
@@ -106,7 +105,7 @@ public class WebRenderingFunctionsTest {
                 null, null, null, null);
         RenderingFunction<Object, Boolean> function = webRenderingFunctions
                 .getNamedFunctions().get("contains");
-        UriRef testObject = new UriRef("http://example.org/bla#fooBar");
+        Iri testObject = new Iri("http://example.org/bla#fooBar");
         Assert.assertTrue(function.process(testObject, "bla"));
         Assert.assertFalse(function.process(testObject, "hello"));
     }

@@ -21,7 +21,7 @@ package org.apache.clerezza.platform.typerendering.scalaserverpages;
 import java.util.logging.Level;
 import org.apache.clerezza.platform.typerendering.CallbackRenderer;
 import org.apache.clerezza.platform.typerendering.TypeRenderlet;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.scala.scripting.CompilerService;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ import java.util.Map;
 public class SspTypeRenderlet implements TypeRenderlet {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(ScalaServerPagesRenderlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(SspTypeRenderlet.class);
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final char[] headerChars
             = getChars(SspTypeRenderlet.class.getResource("typerenderlet-header.txt"));
@@ -53,7 +53,7 @@ public class SspTypeRenderlet implements TypeRenderlet {
             + lineSeparator + "}" + lineSeparator + "}" + lineSeparator).toCharArray();
     
 
-    private UriRef rdfType;
+    private Iri rdfType;
     private String modePattern;
     private MediaType mediaType;
     private URL sspLocation;
@@ -61,7 +61,7 @@ public class SspTypeRenderlet implements TypeRenderlet {
     private TypeRenderlet lastCompiledSsp = null;
     private CompilerService scalaCompilerService;
 
-    SspTypeRenderlet(URL sspLocation, UriRef rdfType, String modePattern, MediaType mediaType,
+    SspTypeRenderlet(URL sspLocation, Iri rdfType, String modePattern, MediaType mediaType,
                      CompilerService scalaCompilerService) {
         this.sspLocation = sspLocation;
         this.rdfType = rdfType;
@@ -71,7 +71,7 @@ public class SspTypeRenderlet implements TypeRenderlet {
     }
 
     @Override
-    public UriRef getRdfType() {
+    public Iri getRdfType() {
         return rdfType;
     }
 

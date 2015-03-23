@@ -41,11 +41,11 @@ public class TcPermissionDescriptionsProvider implements PermissionDescriptionsP
     private static final Set<PermissionDescripton> GRAPH_ACCESS_PERMISSION_DESCRIPTIONS =
             new HashSet<PermissionDescripton>();
     static {
-        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content Graph Read Permission",
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content ImmutableGraph Read Permission",
                 "Grants permission to the user to read the content graph", null, TcPermission.class,
                 "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/content.graph\" \"read\")"));
 
-        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content Graph Read/Write Permission",
+        GRAPH_ACCESS_PERMISSION_DESCRIPTIONS.add(new PermissionDescripton("Content ImmutableGraph Read/Write Permission",
                 "Grants permission to the user to read and write the content graph", null, TcPermission.class,
                 "(org.apache.clerezza.rdf.core.access.security.TcPermission \"urn:x-localinstance:/content.graph\" \"readwrite\")"));
 

@@ -20,6 +20,10 @@
 package org.apache.clerezza.rdf.storage.web
 
 
+import org.apache.commons.rdf.ImmutableGraph
+import org.apache.commons.rdf.Iri
+import org.apache.commons.rdf._
+import org.apache.commons.rdf.impl.utils.AbstractGraph
 import org.osgi.service.component.ComponentContext
 import java.io.IOException
 import java.net.{HttpURLConnection, URL}
@@ -29,7 +33,6 @@ import java.security.{PrivilegedExceptionAction, PrivilegedActionException, Acce
 
 import org.slf4j.scala._
 import org.apache.clerezza.rdf.core.access._
-import org.apache.clerezza.rdf.core.impl.AbstractMGraph
 import org.apache.clerezza.rdf.core._
 import java.sql.Time
 
@@ -87,24 +90,24 @@ class WebProxy extends WeightedTcProvider with Logging {
   }
 
   /**
-   * Any TripleCollection is available as Graph as well as immutable MGraph
+   * Any Graph is available as ImmutableGraph as well as immutable Graph
    *
    * @param name
    * @return
    * @throws NoSuchEntityException
    */
-  def getMGraph(name: UriRef): MGraph = {
-    val graph = getGraph(name)
-    return new AbstractMGraph() {
-      protected def performFilter(subject: NonLiteral, predicate: UriRef, `object` : Resource): java.util.Iterator[Triple] = {
+  def getMGraph(name: Iri): Graph = {
+    val graph = getImmutableGraph(name)
+    return new AbstractGraph() {
+      protected def performFilter(subject: BlankNodeOrIri, predicate: Iri, `object` : RdfTerm): java.util.Iterator[Triple] = {
         graph.filter(subject, predicate, `object`)
       }
 
-      def size = graph.size
+      def performSize = graph.size
     }
   }
 
-  def getGraph(name: UriRef): Graph = {
+  def getImmutableGraph(name: Iri): ImmutableGraph = {
     try {
       getGraph(name, Cache.Fetch)
     } catch {
@@ -116,54 +119,54 @@ class WebProxy extends WeightedTcProvider with Logging {
     }
   }
 
-  def getTriples(name: UriRef): TripleCollection = {
+  def getGraph(name: Iri): Graph = {
     return getMGraph(name)
   }
 
-  def createMGraph(name: UriRef): MGraph = {
+  def createGraph(name: Iri): Graph = {
     throw new UnsupportedOperationException
   }
 
-  def createGraph(name: UriRef, triples: TripleCollection): Graph = {
+  def createImmutableGraph(name: Iri, triples: Graph): ImmutableGraph = {
     throw new UnsupportedOperationException
   }
 
-  def deleteTripleCollection(name: UriRef): Unit = {
+  def deleteGraph(name: Iri): Unit = {
     throw new UnsupportedOperationException
   }
 
-  def getNames(graph: Graph): java.util.Set[UriRef] = {
-    var result: java.util.Set[UriRef] = new java.util.HashSet[UriRef]
+  def getNames(graph: ImmutableGraph): java.util.Set[Iri] = {
+    var result: java.util.Set[Iri] = new java.util.HashSet[Iri]
     import collection.JavaConversions._
     for (name <- listGraphs) {
-      if (getGraph(name).equals(graph)) {
+      if (getImmutableGraph(name).equals(graph)) {
         result.add(name)
       }
     }
     return result
   }
 
-  def listTripleCollections: java.util.Set[UriRef] = {
-    var result: java.util.Set[UriRef] = new java.util.HashSet[UriRef]
+  def listGraphs: java.util.Set[Iri] = {
+    var result: java.util.Set[Iri] = new java.util.HashSet[Iri]
     result.addAll(listGraphs)
-    result.addAll(listMGraphs)
+    result.addAll(listGraphs)
     return result
   }
 
-  def listGraphs: java.util.Set[UriRef] = {
+  def listMGraphs: java.util.Set[Iri] = {
     //or should we list graphs for which we have a cached version?
-    return java.util.Collections.emptySet[UriRef]
+    return java.util.Collections.emptySet[Iri]
   }
 
-  def listMGraphs: java.util.Set[UriRef] = {
-    return java.util.Collections.emptySet[UriRef]
+  def listImmutableGraphs: java.util.Set[Iri] = {
+    return java.util.Collections.emptySet[Iri]
   }
 
   /**
    * The semantics of this resource
    * @param update if a remote URI, update information on the resource first
    */
-  def getGraph(name: UriRef, updatePolicy: Cache.Value): Graph = {
+  def getGraph(name: Iri, updatePolicy: Cache.Value): ImmutableGraph = {
     logger.debug("getting graph " + name)
     if (name.getUnicodeString.indexOf('#') != -1) {
       logger.debug("not dereferencing URI with hash sign. Please see CLEREZZA-533 for debate.")
@@ -173,7 +176,7 @@ class WebProxy extends WeightedTcProvider with Logging {
       //these are not dereferenceable
       throw new NoSuchEntityException(name)
     }
-    val cacheGraphName = new UriRef("urn:x-localinstance:/cache/" + name.getUnicodeString)
+    val cacheGraphName = new Iri("urn:x-localinstance:/cache/" + name.getUnicodeString)
     //todo: follow redirects and keep track of them
     //todo: keep track of headers especially date and etag. test for etag similarity
     //todo: for https connection allow user to specify his webid and send his key: ie allow web server to be an agent
@@ -195,23 +198,23 @@ class WebProxy extends WeightedTcProvider with Logging {
       val remoteTriples = parser.parse(in, mediaType, name)
       tcProvider.synchronized {
         try {
-          tcProvider.deleteTripleCollection(cacheGraphName)
+          tcProvider.deleteGraph(cacheGraphName)
         } catch {
           case e: NoSuchEntityException =>;
         }
-        tcProvider.createGraph(cacheGraphName, remoteTriples)
+        tcProvider.createImmutableGraph(cacheGraphName, remoteTriples)
       }
     }
     try {
       //the logic here is not quite right, as we don't look at time of previous fetch.
       updatePolicy match {
         case Cache.Fetch => try {
-          tcProvider.getGraph(cacheGraphName)
+          tcProvider.getImmutableGraph(cacheGraphName)
         } catch {
-          case e: NoSuchEntityException => updateGraph(); tcProvider.getGraph(cacheGraphName)
+          case e: NoSuchEntityException => updateGraph(); tcProvider.getImmutableGraph(cacheGraphName)
         }
-        case Cache.ForceUpdate => updateGraph(); tcProvider.getGraph(cacheGraphName)
-        case Cache.CacheOnly => tcProvider.getGraph(cacheGraphName)
+        case Cache.ForceUpdate => updateGraph(); tcProvider.getImmutableGraph(cacheGraphName)
+        case Cache.CacheOnly => tcProvider.getImmutableGraph(cacheGraphName)
       }
     } catch {
       case ex: PrivilegedActionException => {

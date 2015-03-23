@@ -26,10 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -41,6 +40,7 @@ import org.apache.clerezza.templating.seedsnipe.datastructure.FieldDoesNotHaveDi
 import org.apache.clerezza.templating.seedsnipe.datastructure.FieldIndexOutOfBoundsException;
 import org.apache.clerezza.templating.seedsnipe.datastructure.InvalidElementException;
 import org.apache.clerezza.templating.seedsnipe.simpleparser.DefaultParser;
+import org.apache.commons.rdf.Graph;
 
 /**
  * Data Model for {@link GraphNode} to be used with {@link DefaultParser}.
@@ -61,10 +61,10 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
     }
 
     public static class PropertyKey {
-        private UriRef property;
+        private Iri property;
         private boolean reverse;
         
-        public PropertyKey(UriRef property, boolean reverse) {
+        public PropertyKey(Iri property, boolean reverse) {
             super();
             this.property = property;
             this.reverse = reverse;
@@ -101,7 +101,7 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
 
         
     }
-    private static final UriRef RDF_NIL = new UriRef(
+    private static final Iri RDF_NIL = new Iri(
             "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
     private RenderingFunctions renderingFunctions;
 
@@ -134,17 +134,17 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
     private class ExpandedNode {
 
         private GraphNode node;
-        private Resource value;
+        private RdfTerm value;
         private Map<PropertyKey, List<ExpandedNode>> children;
-        private List<Resource> list = null;
+        private List<RdfTerm> list = null;
 
-        private ExpandedNode(Resource value) {
+        private ExpandedNode(RdfTerm value) {
             this.value = value;
-            final TripleCollection tc = expandedNode.node.getGraph();
+            final Graph tc = expandedNode.node.getGraph();
             doListInitialization(tc);
         }
 
-        private ExpandedNode(GraphNode node, Resource value) {
+        private ExpandedNode(GraphNode node, RdfTerm value) {
             this.value = value;
             this.node = node;
             doListInitialization(node.getGraph());
@@ -153,12 +153,12 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
         /** if value id an rdf:list in tc, initialize list
          * @param tc
          */
-        private void doListInitialization(TripleCollection tc) {
-            if (value instanceof NonLiteral) {        
-                if ((tc.filter((NonLiteral) value, RDF.rest, null).hasNext())
+        private void doListInitialization(Graph tc) {
+            if (value instanceof BlankNodeOrIri) {        
+                if ((tc.filter((BlankNodeOrIri) value, RDF.rest, null).hasNext())
                         || (tc.filter(
-                        (NonLiteral) value, OWL.sameAs, RDF_NIL).hasNext())) {
-                    list = new RdfList((NonLiteral) value, tc);
+                        (BlankNodeOrIri) value, OWL.sameAs, RDF_NIL).hasNext())) {
+                    list = new RdfList((BlankNodeOrIri) value, tc);
                 }
             }
         }
@@ -207,7 +207,7 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
                 inverseResolve = false;
             }
             String uriString = getUriFromCuri(fieldName);
-            UriRef property = new UriRef(uriString);
+            Iri property = new Iri(uriString);
             List<ExpandedNode> childList = getChildList(property, inverseResolve);
             if (arrayPos.length == 0) {
                 arrayPos = new int[1];
@@ -226,7 +226,7 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
 
         }
 
-        private List<ExpandedNode> getChildList(UriRef property, boolean inverseResolve) {
+        private List<ExpandedNode> getChildList(Iri property, boolean inverseResolve) {
             PropertyKey propertyKey = new PropertyKey(property, inverseResolve); 
             List<ExpandedNode> result;
             if (children == null) {
@@ -238,16 +238,16 @@ public class GraphNodeDataFieldResolver extends DataFieldResolver {
             if (result == null) {
                 result = new ArrayList<ExpandedNode>();
                 if (node == null) {
-                    node = new GraphNode((NonLiteral) value, expandedNode.node.getGraph());
+                    node = new GraphNode((BlankNodeOrIri) value, expandedNode.node.getGraph());
                 }
                 if (inverseResolve) {
-                    Iterator<NonLiteral> subjects = node.getSubjects(property);
+                    Iterator<BlankNodeOrIri> subjects = node.getSubjects(property);
                     while (subjects.hasNext()) {
                         ExpandedNode childNode = new ExpandedNode(subjects.next());
                         result.add(childNode);
                     }
                 } else {
-                    Iterator<Resource> objects = node.getObjects(property);
+                    Iterator<RdfTerm> objects = node.getObjects(property);
                     while (objects.hasNext()) {
                         ExpandedNode childNode = new ExpandedNode(objects.next());
                         result.add(childNode);

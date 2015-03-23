@@ -29,14 +29,12 @@ import java.net.URI;
 import java.util.Collection;
 
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
@@ -45,18 +43,18 @@ import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
  *
  * @author mir
  */
-public class FileMGraph extends SimpleMGraph {
+public class FileGraph extends SimpleGraph {
 
     private Serializer serializer;
     private File file;
     private String fileType;
 
-    FileMGraph(UriRef uri, Parser parser,
+    FileGraph(Iri uri, Parser parser,
             Serializer serializer) {
         this(new File(URI.create(uri.getUnicodeString())), parser, serializer);    
     }
 
-    public FileMGraph(File file, Parser parser, Serializer serializer) {
+    public FileGraph(File file, Parser parser, Serializer serializer) {
         this.file = file;
         String fileEnding = extractFileEnding(file.getPath());
         fileType = getMediaTypeForFileEnding(fileEnding);
@@ -64,7 +62,7 @@ public class FileMGraph extends SimpleMGraph {
         try {
             if (file.exists() && file.length() != 0) {
                 InputStream fio = new FileInputStream(file);
-                Graph graph = parser.parse(fio, fileType);
+                ImmutableGraph graph = parser.parse(fio, fileType);
                 addAllNoFileAccess(graph);
             } else {
                 file.createNewFile();
@@ -123,9 +121,9 @@ public class FileMGraph extends SimpleMGraph {
     }
     
     @Override
-    public Iterator<Triple> filter(final NonLiteral subject,
-            final UriRef predicate,
-            final Resource object) {
+    public Iterator<Triple> filter(final BlankNodeOrIri subject,
+            final Iri predicate,
+            final RdfTerm object) {
         final Iterator<Triple> baseIter = super.filter(subject, predicate, object);
         Iterator<Triple> iterator = new Iterator<Triple>() {
 

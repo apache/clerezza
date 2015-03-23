@@ -23,8 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -34,7 +34,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class GenericTest {
 
-    private final UriRef root = new UriRef("http://tests.clerezza.org/root#");
+    private final Iri root = new Iri("http://tests.clerezza.org/root#");
     private final SeedsnipeRenderlet renderlet = new SeedsnipeRenderlet();
 
     @Test
@@ -55,7 +55,7 @@ public class GenericTest {
 
     private void testWithFiles(String triples, String template, String expected) 
             throws Exception {
-        TripleCollection tc = Parser.getInstance().parse(
+        Graph tc = Parser.getInstance().parse(
                 getClass().getResourceAsStream(triples),
                 "text/turtle");
         GraphNode res = new GraphNode(root, tc);

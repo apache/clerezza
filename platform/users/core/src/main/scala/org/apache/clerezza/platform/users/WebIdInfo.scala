@@ -19,8 +19,6 @@
 
 package org.apache.clerezza.platform.users
 
-import org.apache.clerezza.rdf.core.{MGraph, TripleCollection, UriRef}
-import org.apache.clerezza.rdf.core.access.LockableMGraph
 
 
 /*
@@ -29,24 +27,27 @@ import org.apache.clerezza.rdf.core.access.LockableMGraph
  * many things are easier for user with URIs.
  *
  */
+import org.apache.commons.rdf.Graph
+import org.apache.commons.rdf.Iri
+
 trait WebIdInfo {
 
   /**
    * The WebID this instance is about
    */
-  def webId: UriRef
+  def webId: Iri
 
   /**
    * The WebId profile graph, for remote users this is immutable
    */
-  def publicProfile: TripleCollection
+  def publicProfile: Graph
 
   /**
-   * An MGraph used to store public information about the user. For local
+   * An Graph used to store public information about the user. For local
    * users this is the same as publicProfile. In any case this contains the
    * triples of the publicProfile.
    */
-  def localPublicUserData: LockableMGraph
+  def localPublicUserData: Graph
 
   /**
    * indicates if this WebId is local.

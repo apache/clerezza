@@ -18,11 +18,11 @@
 /*package org.apache.clerezza.platform.users
 
 import org.apache.clerezza.platform.security.WebIdBasedPermissionProvider
-import org.apache.clerezza.rdf.core.UriRef
+import org.apache.commons.rdf.Iri
 
 class UserGraphAcessPermissionProvider extends WebIdBasedPermissionProvider {
   
-  override def getPermissions(webId: UriRef) : java.util.Collection[String] = {
+  override def getPermissions(webId: Iri) : java.util.Collection[String] = {
     import scala.collection.JavaConversions._
     val uriString = webId.getUnicodeString
     def uriStringWithoutFragment = {

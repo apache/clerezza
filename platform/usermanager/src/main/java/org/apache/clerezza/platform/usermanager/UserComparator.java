@@ -22,7 +22,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import org.apache.clerezza.rdf.core.Literal;
+import org.apache.commons.rdf.Literal;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 
 public class UserComparator implements Comparator<GraphNode> {

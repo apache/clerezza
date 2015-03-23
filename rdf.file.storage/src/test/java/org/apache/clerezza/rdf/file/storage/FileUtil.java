@@ -27,7 +27,7 @@ import java.io.File;
 public class FileUtil {
 
      /**
-     * Sets up a new <code>SesameMGraph</code>.
+     * Sets up a new <code>SesameGraph</code>.
      * @param testName  Name of the test to support.
      * @throws RepositoryException  If it failed to activate the graph.
      */

@@ -33,10 +33,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
@@ -46,9 +45,9 @@ import org.apache.clerezza.rdf.core.serializedform.Serializer;
 
 /**
  * The <code>FileTcProvider</code> is a <code>WeightedTcProvider</code> that
- * stores <code>MGraph</code>S in the file system. <code>Graph</code>S are not
+ * stores <code>Graph</code>S in the file system. <code>ImmutableGraph</code>S are not
  * supported.
- * The <code>UriRef</code> of a MGraph is location of the file in the file system
+ * The <code>Iri</code> of a Graph is location of the file in the file system
  * (e.g. "file:///home/user/myGraph.rdf"). The format of the rdf data in the file
  * depends on the file ending, for example ".rdf" or ".ttl".
  * <code>FileTcProvider</code> uses
@@ -75,8 +74,8 @@ public class FileTcProvider implements WeightedTcProvider {
      */
     private Serializer serializer;
     
-    private Map<UriRef, FileMGraph> uriRef2MGraphMap =
-            new HashMap<UriRef, FileMGraph>();
+    private Map<Iri, FileGraph> uriRef2GraphMap =
+            new HashMap<Iri, FileGraph>();
 
     protected static File dataFile = new File("data");
 
@@ -102,24 +101,24 @@ public class FileTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getGraph(UriRef name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
         throw new NoSuchEntityException(name);
     }
 
     /**
-     * Get an <code>MGraph</code> by its name. If the file at the specified
-     * location already exists, then a MGraph is returned even though it was not
-     * created with createMGraph().
+     * Get an <code>Graph</code> by its name. If the file at the specified
+     * location already exists, then a Graph is returned even though it was not
+     * created with createGraph().
      *
-     * @param the name of the <code>MGraph</code>
-     * @return name the <code>MGraph</code> with the specified name
-     * @throws NoSuchEntityException if there is no <code>MGraph</code>
+     * @param the name of the <code>Graph</code>
+     * @return name the <code>Graph</code> with the specified name
+     * @throws NoSuchEntityException if there is no <code>Graph</code>
      *         with the specified name or the file didn't exist.
      */
     @Override
-    public MGraph getMGraph(UriRef name) throws NoSuchEntityException {
+    public Graph getMGraph(Iri name) throws NoSuchEntityException {
         initialize();
-        MGraph mGraph = uriRef2MGraphMap.get(name);
+        Graph mGraph = uriRef2GraphMap.get(name);
         if (mGraph == null) {
             final String uriString = name.getUnicodeString();
             if (!uriString.startsWith("file:")) {
@@ -127,7 +126,7 @@ public class FileTcProvider implements WeightedTcProvider {
             }
             File file = new File(URI.create(uriString));
             if (file.exists()) {
-                return createMGraph(name);
+                return createGraph(name);
             } else {
                 throw new NoSuchEntityException(name);
             }            
@@ -136,58 +135,58 @@ public class FileTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
+    public Graph getGraph(Iri name) throws NoSuchEntityException {
         return getMGraph(name);
     }
 
     @Override
-    public Set<UriRef> listGraphs() {
+    public Set<Iri> listImmutableGraphs() {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
-    public Set<UriRef> listMGraphs() {
+    public Set<Iri> listMGraphs() {
         initialize();
-        return uriRef2MGraphMap.keySet();
+        return uriRef2GraphMap.keySet();
     }
 
     @Override
-    public Set<UriRef> listTripleCollections() {
+    public Set<Iri> listGraphs() {
         return listMGraphs();
     }
 
 
     @Override
-    public MGraph createMGraph(UriRef name) throws 
+    public Graph createGraph(Iri name) throws 
             UnsupportedOperationException, EntityAlreadyExistsException {
         initialize();
-        if (uriRef2MGraphMap.containsKey(name)) {
+        if (uriRef2GraphMap.containsKey(name)) {
             throw new EntityAlreadyExistsException(name);
         }
-        FileMGraph mGraph = new FileMGraph(name, parser, serializer);
-        uriRef2MGraphMap.put(name, mGraph);
+        FileGraph mGraph = new FileGraph(name, parser, serializer);
+        uriRef2GraphMap.put(name, mGraph);
         writeDataFile();
         return mGraph;
     }
 
     @Override
-    public Graph createGraph(UriRef name, TripleCollection triples) throws
+    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) throws
             UnsupportedOperationException, EntityAlreadyExistsException {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
-    public void deleteTripleCollection(UriRef name) throws 
+    public void deleteGraph(Iri name) throws 
             UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
         initialize();
-        FileMGraph mGraph = (FileMGraph)getMGraph(name);
+        FileGraph mGraph = (FileGraph)getGraph(name);
         mGraph.delete();
-        uriRef2MGraphMap.remove(name);
+        uriRef2GraphMap.remove(name);
         writeDataFile();
     }
 
     @Override
-    public Set<UriRef> getNames(Graph graph) {
+    public Set<Iri> getNames(ImmutableGraph graph) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -206,8 +205,8 @@ public class FileTcProvider implements WeightedTcProvider {
                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 String strLine;
                 while ((strLine = br.readLine()) != null) {
-                    UriRef uriRef = new UriRef(strLine);
-                    uriRef2MGraphMap.put(uriRef, new FileMGraph(uriRef, parser, serializer));
+                    Iri uriRef = new Iri(strLine);
+                    uriRef2GraphMap.put(uriRef, new FileGraph(uriRef, parser, serializer));
                 }
                 in.close();
             } else {
@@ -222,7 +221,7 @@ public class FileTcProvider implements WeightedTcProvider {
         FileOutputStream fout = null;
         try {
             fout = new FileOutputStream(dataFile);
-            for (UriRef uri : uriRef2MGraphMap.keySet()) {
+            for (Iri uri : uriRef2GraphMap.keySet()) {
                 fout.write((uri.getUnicodeString() + "\n").getBytes());
             }
         } catch (FileNotFoundException ex) {

@@ -34,14 +34,12 @@ import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
-import org.apache.clerezza.rdf.file.storage.FileMGraph;
+import org.apache.clerezza.rdf.file.storage.FileGraph;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -94,7 +92,7 @@ public class SystemConfig implements WeightedTcProvider {
         File systemGraphFile = bundleContext.getDataFile(DATA_FILE_SYSTEM_GRAPH);
         boolean dataFileExisted = systemGraphFile.exists();
         //yould be good to use IndexedGraph to be faster
-        systemGraph = new FileMGraph(systemGraphFile, parser, serializer);
+        systemGraph = new FileGraph(systemGraphFile, parser, serializer);
         if (!dataFileExisted) {
             readConfigGraphFile(systemGraph);
             logger.info("Add initial configuration to system graph");

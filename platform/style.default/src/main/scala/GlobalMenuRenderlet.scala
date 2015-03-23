@@ -23,7 +23,7 @@ package org.apache.clerezza.platform.style.default
 
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering._
-import org.apache.clerezza.rdf.core.UriRef
+import org.apache.commons.rdf.Iri
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._
@@ -50,10 +50,10 @@ class GlobalMenuRenderlet extends SRenderlet {
          <a href={href}>{label}</a>
       }
       override def content = {
-        def menu(s: Any) = new UriRef("http://clerezza.org/2009/11/global-menu#"+s)
-def rdfs(s: Any) = new UriRef("http://www.w3.org/2000/01/rdf-schema#"+s)
-def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#"+s)
-def dct(s: Any) = new UriRef("http://purl.org/dc/terms/"+s)
+        def menu(s: Any) = new Iri("http://clerezza.org/2009/11/global-menu#"+s)
+def rdfs(s: Any) = new Iri("http://www.w3.org/2000/01/rdf-schema#"+s)
+def platform(s: Any) = new Iri("http://clerezza.org/2009/08/platform#"+s)
+def dct(s: Any) = new Iri("http://purl.org/dc/terms/"+s)
 
 <div class="column nav">
               <ul>

@@ -24,14 +24,14 @@
      <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.5</version>
-        <relativePath>../parent</relativePath>
+        <version>7-SNAPSHOT</version>
+        <relativePath />
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.file.storage</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - SCB File Storage Provider</name>
+    <name>Clerezza - RDF File Storage Provider</name>
     <description>A file base storage provider</description>
     <dependencies>
         <dependency>
@@ -46,25 +46,25 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.14</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core.test</artifactId>
             <scope>test</scope>
-            <version>0.15</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
             <scope>test</scope>
-            <version>0.12</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.serializer</artifactId>
             <scope>test</scope>
-            <version>0.11</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

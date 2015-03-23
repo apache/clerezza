@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5</version>
-        <relativePath>../parent</relativePath>
+        <version>7-SNAPSHOT</version>
+        <relativePath />
     </parent>
     <artifactId>rdf.storage.web</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <name>Clerezza - SCB Caching Web Storage Provider</name>
+    <name>Clerezza - RDF Storage Web (Caching Web Storage Provider)</name>
     <description>A (currently read-only) storage provider retrieving graphs from the web. It
         implements a caching proxy, relying on another provider for storing triples.</description>
     <dependencies>
@@ -45,17 +45,17 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
-            <version>0.12</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>0.14</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.scala.utils</artifactId>
-            <version>0.4</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>

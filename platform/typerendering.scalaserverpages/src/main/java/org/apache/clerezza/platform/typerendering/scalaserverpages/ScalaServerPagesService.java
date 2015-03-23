@@ -19,7 +19,7 @@
 package org.apache.clerezza.platform.typerendering.scalaserverpages;
 
 import org.apache.clerezza.platform.typerendering.TypeRenderlet;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.scala.scripting.CompilerService;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
@@ -66,7 +66,7 @@ public class ScalaServerPagesService {
      * @param mediaType
      * @return
      */
-    public ServiceRegistration registerScalaServerPage(URL location,  UriRef rdfType,
+    public ServiceRegistration registerScalaServerPage(URL location,  Iri rdfType,
             String modePattern, MediaType mediaType) {
         return registerScalaServerPage(location, rdfType, modePattern, mediaType, bundleContext);
     }
@@ -83,7 +83,7 @@ public class ScalaServerPagesService {
      * @param callerBundleContext
      * @return
      */
-    public ServiceRegistration registerScalaServerPage(URL location,  UriRef rdfType,
+    public ServiceRegistration registerScalaServerPage(URL location,  Iri rdfType,
             String modePattern, MediaType mediaType, BundleContext callerBundleContext) {
         TypeRenderlet sspTypeRenderlet = new SspTypeRenderlet(location, rdfType,
                 modePattern, mediaType, scalaCompilerService);

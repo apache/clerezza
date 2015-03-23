@@ -25,18 +25,17 @@ import java.security.PrivilegedAction
 import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.config.SystemConfig
-import org.apache.clerezza.rdf.core.MGraph
-import org.apache.clerezza.rdf.core.TripleCollection
-import org.apache.clerezza.rdf.core.UriRef
-import org.apache.clerezza.rdf.core.access.LockableMGraph
+import org.apache.commons.rdf.Graph
+import org.apache.commons.rdf.Graph
+import org.apache.commons.rdf.Iri
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException
-import org.apache.clerezza.rdf.core.access.SecuredMGraph
+import org.apache.clerezza.rdf.core.access.SecuredGraph
 import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.rdf.core.access.security.TcPermission
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph
 import org.apache.clerezza.rdf.ontologies.PLATFORM
 import org.apache.clerezza.rdf.storage.web.WebProxy
-import org.apache.clerezza.rdf.utils.UnionMGraph
+import org.apache.clerezza.rdf.utils.UnionGraph
 import org.apache.clerezza.rdf.core.serializedform.{SupportedFormat, Parser}
 
 /**
@@ -79,7 +78,7 @@ class WebIdGraphsService {
    * @param uri the Web-Id
    * @return a WebIdInfo allowing to access the graphs of the user
    */
-  def getWebIdInfo(uri: UriRef): WebIdInfo = {
+  def getWebIdInfo(uri: Iri): WebIdInfo = {
     return new WebIdInfo {
 
       private val uriString = uri.getUnicodeString
@@ -104,7 +103,7 @@ class WebIdGraphsService {
       private lazy val localGraphUri = {
         if (isLocal) uri
         else {
-          new UriRef("urn:x-localinstance:/user/"+hashTruncatedUriString)
+          new Iri("urn:x-localinstance:/user/"+hashTruncatedUriString)
         }
       }
 
@@ -119,7 +118,7 @@ class WebIdGraphsService {
 
 
       private lazy val profileDocumentUri = {
-        new UriRef(profileDocumentUriString)
+        new Iri(profileDocumentUriString)
       }
 
       /**
@@ -158,11 +157,11 @@ class WebIdGraphsService {
 
 
       private def systemTriples = {
-        AccessController.doPrivileged(new PrivilegedAction[MGraph]() {
+        AccessController.doPrivileged(new PrivilegedAction[Graph]() {
           def run() = {
-            val systemGraph = tcManager.getMGraph(Constants.SYSTEM_GRAPH_URI)
+            val systemGraph = tcManager.getGraph(Constants.SYSTEM_GRAPH_URI)
             val triples = systemGraph.filter(uri, PLATFORM.userName, null)
-            val result = new SimpleMGraph
+            val result = new SimpleGraph
             while (triples.hasNext) {
               result.add(triples.next())
             }
@@ -172,7 +171,7 @@ class WebIdGraphsService {
       }
 
       private lazy val localGraph = try {
-        val g = tcManager.getMGraph(localGraphUri)
+        val g = tcManager.getGraph(localGraphUri)
         g
       } catch {
         case e: NoSuchEntityException => {
@@ -180,19 +179,19 @@ class WebIdGraphsService {
             tcManager.getTcAccessController.
             setRequiredReadPermissionStrings(localGraphUri,
                              List(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ).toString))
-            tcManager.createMGraph(localGraphUri)
+            tcManager.createGraph(localGraphUri)
           }
       }
       //implementing exposed methods (from WebIdInfo trait)
-      def publicProfile: TripleCollection = {
-        tcManager.getMGraph(profileDocumentUri)
+      def publicProfile: Graph = {
+        tcManager.getGraph(profileDocumentUri)
       }
 
-      def localPublicUserData: LockableMGraph = {
+      def localPublicUserData: Graph = {
         if (isLocal) {
-          new UnionMGraph(tcManager.getMGraph(profileDocumentUri), systemTriples)
+          new UnionGraph(tcManager.getGraph(profileDocumentUri), systemTriples)
         } else {
-          new UnionMGraph(localGraph, systemTriples, publicProfile)
+          new UnionGraph(localGraph, systemTriples, publicProfile)
         }
       }
 

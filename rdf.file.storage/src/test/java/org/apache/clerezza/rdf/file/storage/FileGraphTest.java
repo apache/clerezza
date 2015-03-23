@@ -28,9 +28,9 @@ import java.util.Iterator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import static org.junit.Assert.*;
@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
  *
  * @author mir
  */
-public class FileMGraphTest {
+public class FileGraphTest {
 
     private static String tempDir = System.getProperty("java.io.tmpdir");
     private static final String FILE_PROTOCOL = "file://";
@@ -48,16 +48,16 @@ public class FileMGraphTest {
     protected static final String RDF_FILE_NAME = "test-04.rdf";
     protected static final String TURTLE_FILE_NAME = "test-04.ttl";
 
-    private static final UriRef uriA = new UriRef("http://example.com/a");
-    private static final UriRef uriB = new UriRef("http://example.com/b");
-    private static final UriRef uriC = new UriRef("http://example.com/c");
+    private static final Iri uriA = new Iri("http://example.com/a");
+    private static final Iri uriB = new Iri("http://example.com/b");
+    private static final Iri uriC = new Iri("http://example.com/c");
 
 
     @BeforeClass
     public static void setup() throws Exception {
-        createTempFileFromResource(NT_FILE_NAME);
-        createTempFileFromResource(RDF_FILE_NAME);
-        createTempFileFromResource(TURTLE_FILE_NAME);
+        createTempFileFromRdfTerm(NT_FILE_NAME);
+        createTempFileFromRdfTerm(RDF_FILE_NAME);
+        createTempFileFromRdfTerm(TURTLE_FILE_NAME);
     }
 
     @AfterClass
@@ -67,7 +67,7 @@ public class FileMGraphTest {
         deleteTempFile(TURTLE_FILE_NAME);
     }
 
-    private static void createTempFileFromResource(String resourceName) 
+    private static void createTempFileFromRdfTerm(String resourceName) 
             throws FileNotFoundException, IOException {
         InputStream in = FileTcProviderTest.class.getResourceAsStream(resourceName);
         File file = new File(URI.create(getTempFileUri(resourceName)));
@@ -91,15 +91,15 @@ public class FileMGraphTest {
     
     @Test
     public void testReadingFromFile() {
-        FileMGraph mGraph = new FileMGraph(new UriRef(getTempFileUri(RDF_FILE_NAME)),
+        FileGraph mGraph = new FileGraph(new Iri(getTempFileUri(RDF_FILE_NAME)),
                 Parser.getInstance(), Serializer.getInstance());
         assertEquals(2, mGraph.size());
 
-        mGraph = new FileMGraph(new UriRef(getTempFileUri(TURTLE_FILE_NAME)),
+        mGraph = new FileGraph(new Iri(getTempFileUri(TURTLE_FILE_NAME)),
                 Parser.getInstance(), Serializer.getInstance());
         assertEquals(2, mGraph.size());
 
-        mGraph = new FileMGraph(new UriRef(getTempFileUri(NT_FILE_NAME)),
+        mGraph = new FileGraph(new Iri(getTempFileUri(NT_FILE_NAME)),
                 Parser.getInstance(), Serializer.getInstance());
         assertEquals(2, mGraph.size());
     }
@@ -107,13 +107,13 @@ public class FileMGraphTest {
     @Test
     public void testFilter() throws IOException {
         String fileName = "filter.rdf";
-        FileMGraph mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
+        FileGraph mGraph = new FileGraph(new Iri(getTempFileUri(fileName)),
                 Parser.getInstance(), Serializer.getInstance());
 
         mGraph.add(new TripleImpl(uriA, uriB, uriC));
         mGraph.add(new TripleImpl(uriC, uriB, uriA));
 
-        mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
+        mGraph = new FileGraph(new Iri(getTempFileUri(fileName)),
                 Parser.getInstance(), Serializer.getInstance());
         
         
@@ -124,7 +124,7 @@ public class FileMGraphTest {
         iterator.remove();
         assertEquals(1, mGraph.size());
 
-        mGraph = new FileMGraph(new UriRef(getTempFileUri(fileName)),
+        mGraph = new FileGraph(new Iri(getTempFileUri(fileName)),
                 Parser.getInstance(), Serializer.getInstance());
         assertEquals(1, mGraph.size());
         deleteTempFile(fileName);

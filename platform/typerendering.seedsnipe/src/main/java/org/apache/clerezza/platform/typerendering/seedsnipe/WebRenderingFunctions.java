@@ -27,18 +27,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.clerezza.platform.typerendering.CallbackRenderer;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.Literal;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.Literal;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.templating.RenderingFunction;
 import org.apache.clerezza.templating.RenderingFunctions;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.Graph;
 
 /**
  * 
@@ -46,16 +44,16 @@ import org.apache.clerezza.templating.RenderingFunctions;
  */
 class WebRenderingFunctions implements RenderingFunctions {
 
-    private static final UriRef XML_DATE_LITERAL = new UriRef(
+    private static final Iri XML_DATE_LITERAL = new Iri(
             "http://www.w3.org/2001/XMLSchema#dateTime");
-    private final static UriRef RDF_XML_LITERAL = new UriRef(
+    private final static Iri RDF_XML_LITERAL = new Iri(
             "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
-    private TripleCollection graph;
+    private Graph graph;
     private GraphNode context;
     private CallbackRenderer callbackRenderer;
     private String mode;
 
-    WebRenderingFunctions(TripleCollection graph,
+    WebRenderingFunctions(Graph graph,
             GraphNode context,
             CallbackRenderer callbackRenderer, String mode) {
         this.graph = graph;
@@ -78,16 +76,16 @@ class WebRenderingFunctions implements RenderingFunctions {
                 }
                 String stringValue;
                 if (value instanceof Literal) {
-                    if (value instanceof TypedLiteral) {
-                        TypedLiteral typedLiteral = (TypedLiteral) value;
+                    if (value instanceof Literal) {
+                        Literal typedLiteral = (Literal) value;
                         if (typedLiteral.getDataType().equals(RDF_XML_LITERAL)) {
                             return typedLiteral.getLexicalForm();
                         }
                     }
                     stringValue = ((Literal) value).getLexicalForm();
                 } else {
-                    if (value instanceof UriRef) {
-                        stringValue = ((UriRef) value).getUnicodeString();
+                    if (value instanceof Iri) {
+                        stringValue = ((Iri) value).getUnicodeString();
                     } else {
                         stringValue = value.toString();
                     }
@@ -140,7 +138,7 @@ class WebRenderingFunctions implements RenderingFunctions {
 
         @Override
         public String process(Object... values) throws IOException {
-            NonLiteral resource = (NonLiteral) values[0];
+            BlankNodeOrIri resource = (BlankNodeOrIri) values[0];
             GraphNode graphNode = new GraphNode(resource, graph);
             String mode = null;
             if (values.length > 1) {
@@ -176,24 +174,24 @@ class WebRenderingFunctions implements RenderingFunctions {
         @Override
         public Language process(Object... values) {
             Object value = values[0];
-            if (value instanceof PlainLiteral) {
-                return ((PlainLiteral) value).getLanguage();
+            if (value instanceof Literal) {
+                return ((Literal) value).getLanguage();
             }
             return null;
         }
     };
 
     /**
-     * A function that returns the Datatype of a TypedLiteral or null if the
-     * Literal has no language or if the object is not a TypedLiteral
+     * A function that returns the Datatype of a Literal or null if the
+     * Literal has no language or if the object is not a Literal
      */
-    private static RenderingFunction datatypeFunction = new RenderingFunction<Object, UriRef>() {
+    private static RenderingFunction datatypeFunction = new RenderingFunction<Object, Iri>() {
 
         @Override
-        public UriRef process(Object... values) {
+        public Iri process(Object... values) {
             Object value = values[0];
-            if (value instanceof PlainLiteral) {
-                return ((TypedLiteral) value).getDataType();
+            if (value instanceof Literal) {
+                return ((Literal) value).getDataType();
             }
             return null;
         }
@@ -224,17 +222,14 @@ class WebRenderingFunctions implements RenderingFunctions {
         @Override
         public String process(Object... values) {
             Object value = values[0];
-            if (value instanceof PlainLiteral) {
-                return "plainLiteral";
+            if (value instanceof Literal) {
+                return "literal";
             }
-            if (value instanceof TypedLiteral) {
-                return "typedLiteral";
+            if (value instanceof Iri) {
+                return "iri";
             }
-            if (value instanceof UriRef) {
-                return "uriRef";
-            }
-            if (value instanceof BNode) {
-                return "bNode";
+            if (value instanceof BlankNode) {
+                return "blankNode";
             }
             return value.getClass().getSimpleName();
         }
@@ -250,8 +245,8 @@ class WebRenderingFunctions implements RenderingFunctions {
 
         @Override
         public String process(Object... values) {
-            TypedLiteral typedLiteral;
-            if (values[0] instanceof TypedLiteral && (typedLiteral = (TypedLiteral) values[0]).getDataType().equals(XML_DATE_LITERAL)) {
+            Literal typedLiteral;
+            if (values[0] instanceof Literal && (typedLiteral = (Literal) values[0]).getDataType().equals(XML_DATE_LITERAL)) {
 
                 String dateString = typedLiteral.getLexicalForm();
 

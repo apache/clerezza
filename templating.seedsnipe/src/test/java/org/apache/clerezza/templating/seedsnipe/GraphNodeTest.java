@@ -27,16 +27,14 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.BlankNodeOrIri;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.UnsupportedFormatException;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -48,6 +46,8 @@ import org.apache.clerezza.templating.RenderingFunctions;
 import org.apache.clerezza.templating.seedsnipe.datastructure.DataFieldResolver;
 import org.apache.clerezza.templating.seedsnipe.graphnodeadapter.GraphNodeDataFieldResolver;
 import org.apache.clerezza.templating.seedsnipe.simpleparser.DefaultParser;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Literal;
 
 /**
  * Unit Test for RDF Templating.
@@ -99,8 +99,8 @@ public class GraphNodeTest {
 
     @Test
     public void simple() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
@@ -116,9 +116,9 @@ public class GraphNodeTest {
 
     @Test
     public void inverse() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral subject = new UriRef("http://example.org/subject");
-        UriRef object = new UriRef("http://example.org/object");
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri subject = new Iri("http://example.org/subject");
+        Iri object = new Iri("http://example.org/object");
         mGraph.add(new TripleImpl(subject, RDFS.comment, object));
         GraphNode node = new GraphNode(object, mGraph);
         DataFieldResolver dataFieldResolver = new GraphNodeDataFieldResolver(node, simpleFunctions);
@@ -133,8 +133,8 @@ public class GraphNodeTest {
 
     @Test
     public void defaultFunction() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
@@ -166,9 +166,9 @@ public class GraphNodeTest {
     }
 
     @Test
-    public void simpleUriRefRoot() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new UriRef("http://example.org/");
+    public void simpleIriRoot() throws IOException {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new Iri("http://example.org/");
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
         DataFieldResolver dataFieldResolver = new GraphNodeDataFieldResolver(node, simpleFunctions);
@@ -183,8 +183,8 @@ public class GraphNodeTest {
 
     @Test
     public void simpleWithNoOp() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
@@ -200,8 +200,8 @@ public class GraphNodeTest {
 
     @Test
     public void simpleWithUppercase() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
@@ -217,8 +217,8 @@ public class GraphNodeTest {
 
     @Test
     public void simpleWithLiteralUppercase() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
@@ -234,8 +234,8 @@ public class GraphNodeTest {
 
     @Test
     public void simpleWithCombinedFunctions() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
@@ -251,8 +251,8 @@ public class GraphNodeTest {
 
     @Test
     public void multiple() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("another resource")));
@@ -269,8 +269,8 @@ public class GraphNodeTest {
 
     @Test
     public void fieldTest() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
@@ -286,8 +286,8 @@ public class GraphNodeTest {
 
     @Test
     public void fieldTest2() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
@@ -304,13 +304,13 @@ public class GraphNodeTest {
 
     @Test
     public void foaf() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
+        Graph mGraph = new SimpleGraph();
         final Parser parser = Parser.getInstance();
 
         try {
-            Graph deserializedGraph = parser.parse(getClass().getResourceAsStream("libby-foaf.rdf"), "application/rdf+xml");
+            ImmutableGraph deserializedGraph = parser.parse(getClass().getResourceAsStream("libby-foaf.rdf"), "application/rdf+xml");
             mGraph.addAll(deserializedGraph);
-            UriRef document = new UriRef("http://swordfish.rdfweb.org/people/libby/rdfweb/webwho.xrdf");
+            Iri document = new Iri("http://swordfish.rdfweb.org/people/libby/rdfweb/webwho.xrdf");
 
             Assert.assertTrue((mGraph.size() > 0));
 
@@ -340,13 +340,13 @@ public class GraphNodeTest {
 
     @Test
     public void foafSorted() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
+        Graph mGraph = new SimpleGraph();
         final Parser parser = Parser.getInstance();
 
         try {
-            Graph deserializedGraph = parser.parse(getClass().getResourceAsStream("libby-foaf.rdf"), "application/rdf+xml");
+            ImmutableGraph deserializedGraph = parser.parse(getClass().getResourceAsStream("libby-foaf.rdf"), "application/rdf+xml");
             mGraph.addAll(deserializedGraph);
-            UriRef document = new UriRef("http://swordfish.rdfweb.org/people/libby/rdfweb/webwho.xrdf");
+            Iri document = new Iri("http://swordfish.rdfweb.org/people/libby/rdfweb/webwho.xrdf");
 
             Assert.assertTrue((mGraph.size() > 0));
 
@@ -380,13 +380,13 @@ public class GraphNodeTest {
 
     @Test
     public void rdfListAsPropertyValue() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
-        NonLiteral listNode = new BNode() {
+        BlankNodeOrIri listNode = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDF.value, listNode));
-        List<Resource> list = new RdfList(listNode, mGraph);
+        List<RdfTerm> list = new RdfList(listNode, mGraph);
         list.add(new PlainLiteralImpl("first"));
         list.add(new PlainLiteralImpl("second"));
         list.add(new PlainLiteralImpl("third"));
@@ -404,10 +404,10 @@ public class GraphNodeTest {
 
     @Test
     public void rdfListAsRoot() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
-        List<Resource> list = new RdfList(resource, mGraph);
+        List<RdfTerm> list = new RdfList(resource, mGraph);
         list.add(new PlainLiteralImpl("first"));
         list.add(new PlainLiteralImpl("second"));
         list.add(new PlainLiteralImpl("third"));
@@ -424,10 +424,10 @@ public class GraphNodeTest {
 
     @Test
     public void rdfListAsRootElementProperties() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
-        List<Resource> list = new RdfList(resource, mGraph);
+        List<RdfTerm> list = new RdfList(resource, mGraph);
         list.add(createLabeledRes("first", mGraph));
         list.add(createLabeledRes("second", mGraph));
         list.add(createLabeledRes("third", mGraph));
@@ -445,10 +445,10 @@ public class GraphNodeTest {
 
     @Test
     public void rdfListAsRootElementPropertiesWithPresenceTest() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
-        List<Resource> list = new RdfList(resource, mGraph);
+        List<RdfTerm> list = new RdfList(resource, mGraph);
         list.add(createLabeledRes("first", mGraph));
         list.add(createLabeledRes("second", mGraph));
         list.add(createLabeledRes("third", mGraph));
@@ -466,8 +466,8 @@ public class GraphNodeTest {
 
     @Test
     public void compareFunctionResultInIf() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode();
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode();
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));
         GraphNode node = new GraphNode(resource, mGraph);
         DataFieldResolver dataFieldResolver = new GraphNodeDataFieldResolver(node, simpleFunctions);
@@ -483,19 +483,19 @@ public class GraphNodeTest {
 
     @Test
     public void loopWithEmptyList() throws IOException {
-        TripleCollection mGraph = new SimpleMGraph();
-        NonLiteral resource = new BNode() {
+        Graph mGraph = new SimpleGraph();
+        BlankNodeOrIri resource = new BlankNode() {
         };
 
-        NonLiteral listNode1 = new BNode() {
+        BlankNodeOrIri listNode1 = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDF.value, listNode1));
-        List<Resource> list1 = new RdfList(listNode1, mGraph);
+        List<RdfTerm> list1 = new RdfList(listNode1, mGraph);
         list1.add(new PlainLiteralImpl("first"));
         list1.add(new PlainLiteralImpl("second"));
         list1.add(new PlainLiteralImpl("third"));
 
-        NonLiteral listNode2 = new BNode() {
+        BlankNodeOrIri listNode2 = new BlankNode() {
         };
         mGraph.add(new TripleImpl(resource, RDF.value, listNode2));
         RdfList.createEmptyList(listNode2, mGraph);
@@ -513,9 +513,9 @@ public class GraphNodeTest {
         Assert.assertEquals("\"first\"\"second\"\"third\"", writer.toString());
     }
 
-    private NonLiteral createLabeledRes(String label, TripleCollection mGraph) {
-        BNode bNode = new BNode();
-        PlainLiteral lit = new PlainLiteralImpl(label);
+    private BlankNodeOrIri createLabeledRes(String label, Graph mGraph) {
+        BlankNode bNode = new BlankNode();
+        Literal lit = new PlainLiteralImpl(label);
         mGraph.add(new TripleImpl(bNode, RDFS.label, lit));
         return bNode;
     }

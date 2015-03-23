@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.clerezza.rdf.core.NonLiteral;
+import org.apache.commons.rdf.BlankNodeOrIri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -57,24 +57,24 @@ public interface UserManager {
     /**
      *
      * @param title
-     * @return NonLiteral which is either a BNode or a UriRef
+     * @return BlankNodeOrIri which is either a BlankNode or a Iri
      */
-    public NonLiteral getRoleByTitle(String title);
+    public BlankNodeOrIri getRoleByTitle(String title);
 
     /**
      *
      * @return Iterator defining all roles, except base roles
      */
-    public Iterator<NonLiteral> getRoles();
+    public Iterator<BlankNodeOrIri> getRoles();
 
     /**
      *
      * @param user
-     *            the user is either a BNode or a UriRef
+     *            the user is either a BlankNode or a Iri
      *
      * @return Iterator defining all the Roles the specified user owns
      */
-    public Iterator<NonLiteral> getRolesOfUser(NonLiteral user);
+    public Iterator<BlankNodeOrIri> getRolesOfUser(BlankNodeOrIri user);
 
     /**
      *
@@ -95,11 +95,11 @@ public interface UserManager {
     /**
      *
      * @param role
-     *            the role is either a BNode or an UriRef
+     *            the role is either a BlankNode or an Iri
      *
      * @return Iterator defining all permissions of a role
      */
-    public Iterator<NonLiteral> getPermissionsOfRole(NonLiteral role);
+    public Iterator<BlankNodeOrIri> getPermissionsOfRole(BlankNodeOrIri role);
 
     /**
      *  Deletes the defined permissions of the role
@@ -171,13 +171,13 @@ public interface UserManager {
     /**
      *
      * @param name specifies the username of the user
-     * @return NonLiteral representing the user in the system Graph
+     * @return BlankNodeOrIri representing the user in the system ImmutableGraph
      */
     @Deprecated
-    public NonLiteral getUserByName(String name);
+    public BlankNodeOrIri getUserByName(String name);
 
     /**
-     * Returns the user with the specified name in an (editable) MGraph
+     * Returns the user with the specified name in an (editable) Graph
      * (i.e. a SimpleGraph but this is implementation specific) with the context
      * of the user node, editing the graphnode('s Mgraph) doesn't cause any
      * changes elsewhere. Returns null if the user does not exist.
@@ -185,7 +185,7 @@ public interface UserManager {
      * otherwise a AccessControlException will be thrown.
      *
      * @param name The username of the user
-     * @return GraphNode representing the user (WebID or blank node) with some context in a dedicated MGraph
+     * @return GraphNode representing the user (WebID or blank node) with some context in a dedicated Graph
      */
     public GraphNode getUserGraphNode(String name);
 
@@ -214,9 +214,9 @@ public interface UserManager {
     /**
      * Returns all users.
      *
-     * @return Iterator of users in the system Graph.
+     * @return Iterator of users in the system ImmutableGraph.
      */
-    public Iterator<NonLiteral> getUsers();
+    public Iterator<BlankNodeOrIri> getUsers();
 
     /**
      *
@@ -234,10 +234,10 @@ public interface UserManager {
     /**
      *
      * @param user
-     *            the user is either a BNode or a UriRef
+     *            the user is either a BlankNode or a Iri
      * @return  Iterator defining all permissions of the specified user
      */
-    public Iterator<NonLiteral> getPermissionsOfUser(NonLiteral user);
+    public Iterator<BlankNodeOrIri> getPermissionsOfUser(BlankNodeOrIri user);
 
     /**
      *
