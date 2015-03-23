@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
+import java.security.AccessControlException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -27,6 +28,7 @@ import org.apache.commons.rdf.Triple;
 import org.apache.commons.rdf.Graph;
 import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
+import org.apache.clerezza.rdf.core.impl.WriteBlockedGraph;
 import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
 import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.commons.rdf.WatchableGraph;
@@ -172,5 +174,25 @@ public class SecuredGraph implements Graph {
     @Override
     public ReadWriteLock getLock() {
         return wrapped.getLock();
+    }
+    
+    /**
+     * Returns the wrapped Graph if the caller has all access rights.
+     * If the caller has only the read access right, then a write-blocked
+     * Graph is returned. If the caller has neither the read nor the write
+     * access right then an AccessControlException is thrown.
+     *
+     * @return the wrapped Graph or a write-block Graph depending
+     *        on the access rights of the caller.
+     */
+    public Graph getUnsecuredGraph() {
+        try {
+            checkWrite();
+            return wrapped;
+        } catch (AccessControlException ex) {
+            checkRead();
+            return new WriteBlockedGraph(wrapped);
+        }
+        
     }
 }
