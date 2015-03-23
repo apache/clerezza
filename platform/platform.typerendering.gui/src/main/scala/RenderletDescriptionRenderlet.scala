@@ -23,7 +23,7 @@ package org.apache.clerezza.platform.typerendering.gui
 
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering._
-import org.apache.clerezza.rdf.core.UriRef
+import org.apache.commons.rdf.Iri
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._
@@ -31,7 +31,6 @@ import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.platform.typerendering.scala._
 import org.apache.clerezza.rdf.ontologies.DC
-
 /**
  * A Renderlet for the descriptions of RenderletDescription
  */

@@ -21,8 +21,8 @@
 
 package org.apache.clerezza.platform.typerendering.gui
 
-import org.apache.clerezza.rdf.core.BNode
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph
+import org.apache.commons.rdf.BlankNode
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph
 import org.osgi.framework.{BundleActivator, BundleContext, ServiceRegistration}
 import scala.collection.JavaConversions._
 import org.apache.clerezza.platform.globalmenu.GlobalMenuItem
@@ -51,17 +51,17 @@ class Activator extends BundleActivator {
   @Path(path)
   object RenderletsOverview {
     @GET def get() = {
-      val resultMGraph = new SimpleMGraph();
-      val preamble = new Preamble(resultMGraph)
+      val resultGraph = new SimpleGraph();
+      val preamble = new Preamble(resultGraph)
       import preamble._
-      val resultNode = new GraphNode(new BNode(), resultMGraph);
+      val resultNode = new GraphNode(new BlankNode(), resultGraph);
       resultNode.addProperty(RDF.`type` , Ontology.RenderletOverviewPage);
       resultNode.addProperty(RDF.`type` , PLATFORM.HeadedPage);
       resultNode.addProperty(RDF.`type` , RDF.List);
       val renderletList = resultNode.asList;
       for (sr <- bundleContext.getServiceReferences(classOf[TypeRenderlet].getName, null)) {
         val renderlet = bundleContext.getService(sr).asInstanceOf[TypeRenderlet]
-        val rendRes = new BNode()
+        val rendRes = new BlankNode()
         rendRes.addProperty(RDF.`type`, Ontology.Renderlet);
         rendRes.addPropertyValue(Ontology.mediaType,
                     renderlet.getMediaType.toString)

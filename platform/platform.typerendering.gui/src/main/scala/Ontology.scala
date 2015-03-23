@@ -21,11 +21,11 @@
 
 package org.apache.clerezza.platform.typerendering.gui
 
-import org.apache.clerezza.rdf.core.UriRef
+import org.apache.commons.rdf.Iri
 
 object Ontology {
 
-  private def p(s: String) = new UriRef("http://clerezza.org/2011/25/renderletgui#"+s)
+  private def p(s: String) = new Iri("http://clerezza.org/2011/25/renderletgui#"+s)
 
   val RenderletOverviewPage = p("RenderletOverviewPage")
   val Renderlet = p("Renderlet")
