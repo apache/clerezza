@@ -51,53 +51,53 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>platform.style.classic.webguiexamples</module>
+                <module>style.classic.webguiexamples</module>
                 <module>platform</module>
-                <module>platform.accountcontrolpanel</module>
-                <module>platform.concepts</module>
-                <module>platform.config</module>
-                <module>platform.config.gui</module>
-                <module>platform.content.imagemetadata</module>
-                <module>platform.content</module>
-                <module>platform.content.default404</module>
-                <module>platform.content.fsadaptor</module>
-                <module>platform.content.representations</module>
-                <module>platform.cris</module>
-                <module>platform.curieprefixmanager</module>
-                <module>platform.dashboard</module>
-                <module>platform.dashboard.webinterface</module>
-                <module>platform.documentation</module>
-                <module>platform.documentation.viewer</module>
-                <module>platform.enrichment</module>
-                <module>platform.editor</module>
-                <module>platform.globalmenu.api</module>
-                <module>platform.graphnodeprovider</module>
-                <module>platform.graphprovider.content</module>
-                <module>platform.language</module>
-                <module>platform.launcher.storageless.parent</module>
-                <module>platform.launcher.tdb</module>
-                <module>platform.logging</module>
-                <module>platform.mail</module>
-                <module>platform.scripting</module>
-                <module>platform.scripting.scriptmanager</module>
-                <module>platform.security.foafssl</module>
-                <module>platform.security.conditions</module>
-                <module>platform.shellcustomizer</module>
-                <module>platform.typehandlerspace</module>
-                <module>platform.typehandlerspace.wink</module>
-                <module>platform.typehandlerspace.jaxrs2</module>
-                <module>platform.typerendering</module>
-                <module>platform.typerendering.gui</module>
-                <module>platform.typerendering.scala</module>
-                <module>platform.typerendering.scalaserverpages</module>
-                <module>platform.typerendering.seedsnipe</module>
-                <module>platform.typepriority</module>
-                <module>platform.usermanager</module>
-                <module>platform.usermanager.webinterface</module>
-                <module>platform.users</module>
-                <module>platform.xhtml2html</module>
-                <module>platform.style.default</module>
-                <module>platform.style.classic</module>
+                <module>accountcontrolpanel</module>
+                <module>concepts</module>
+                <module>config</module>
+                <module>config.gui</module>
+                <module>content.imagemetadata</module>
+                <module>content</module>
+                <module>content.default404</module>
+                <module>content.fsadaptor</module>
+                <module>content.representations</module>
+                <module>cris</module>
+                <module>curieprefixmanager</module>
+                <module>dashboard</module>
+                <module>dashboard.webinterface</module>
+                <module>documentation</module>
+                <module>documentation.viewer</module>
+                <module>enrichment</module>
+                <module>editor</module>
+                <module>globalmenu.api</module>
+                <module>graphnodeprovider</module>
+                <module>graphprovider.content</module>
+                <module>language</module>
+                <module>launcher.storageless.parent</module>
+                <module>launcher.tdb</module>
+                <module>logging</module>
+                <module>mail</module>
+                <module>scripting</module>
+                <module>scripting.scriptmanager</module>
+                <module>security.foafssl</module>
+                <module>security.conditions</module>
+                <module>shellcustomizer</module>
+                <module>typehandlerspace</module>
+                <module>typehandlerspace.wink</module>
+                <module>typehandlerspace.jaxrs2</module>
+                <module>typerendering</module>
+                <module>typerendering.gui</module>
+                <module>typerendering.scala</module>
+                <module>typerendering.scalaserverpages</module>
+                <module>typerendering.seedsnipe</module>
+                <module>typepriority</module>
+                <module>usermanager</module>
+                <module>usermanager.webinterface</module>
+                <module>users</module>
+                <module>xhtml2html</module>
+                <module>style.default</module>
+                <module>style.classic</module>
             </modules>
         </profile>
         <profile>
@@ -106,7 +106,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <modules>
-                <module>platform.launcher.sesame</module>
+                <module>launcher.sesame</module>
             </modules>
         </profile>        
     </profiles>
