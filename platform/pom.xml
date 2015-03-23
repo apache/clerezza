@@ -40,7 +40,7 @@
     <artifactId>rdf-platform-reactor</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Clerezza - Platform - Reactor</name>
+    <name>Clerezza - Platform</name>
     <description>The platform related bundles</description>
 
 
