@@ -47,6 +47,7 @@
         <module>core.test</module>
         <module>jena</module>
         <module>metadata</module>
+        <module>scala.utils</module>
         <module>schemagen/main</module>
         <module>schemagen/maven-plugin</module>
         <module>ontologies</module>
