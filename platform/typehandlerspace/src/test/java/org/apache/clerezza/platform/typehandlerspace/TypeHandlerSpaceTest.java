@@ -18,40 +18,8 @@
  */
 package org.apache.clerezza.platform.typehandlerspace;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import java.util.concurrent.locks.ReadWriteLock;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Application;
-
-import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.event.FilterTriple;
-import org.apache.clerezza.rdf.core.event.GraphListener;
-//import org.apache.clerezza.jaxrs.testutils.TestWebServer;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.access.LockableMGraphWrapper;
-import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.ontologies.RDF;
 
 /**
  * @author mir
@@ -64,9 +32,9 @@ public class TypeHandlerSpaceTest {
     }
     
 //    
-//    private static LockableMGraph mGraph = new LockableMGraphWrapper(new SimpleMGraph());
+//    private static LockableGraph mGraph = new LockableGraphWrapper(new SimpleGraph());
 //
-//    UriRef myType = new UriRef("org.example/myType");
+//    Iri myType = new Iri("org.example/myType");
 //    
 //    @Path("/myTypeHandler")
 //    public static class MyTypeHandler {
@@ -106,7 +74,7 @@ public class TypeHandlerSpaceTest {
 //        
 //        int port = createTestWebServer().getPort();
 //
-//        UriRef uri = new UriRef("http://localhost:" + port + "/test");
+//        Iri uri = new Iri("http://localhost:" + port + "/test");
 //        // Setup mGraph
 //        Triple triple = new TripleImpl(uri, RDF.type, myType);
 //        mGraph.add(triple);
@@ -141,7 +109,7 @@ public class TypeHandlerSpaceTest {
 //    public void testGet() throws IOException {
 //        
 //        int port = createTestWebServer().getPort();        
-//        UriRef uri = new UriRef("http://localhost:" + port + "/test");
+//        Iri uri = new Iri("http://localhost:" + port + "/test");
 //        
 //        // Setup mGraph
 //        Triple triple = new TripleImpl(uri, RDF.type, myType);
@@ -170,7 +138,7 @@ public class TypeHandlerSpaceTest {
 //    public void testGetDescription() throws IOException {
 //        
 //        int port = createTestWebServer().getPort();
-//        UriRef uri = new UriRef("http://localhost:" + port + "/test");
+//        Iri uri = new Iri("http://localhost:" + port + "/test");
 //        
 //        // Setup mGraph
 //        Triple triple = new TripleImpl(uri, RDF.type, myType);
@@ -188,7 +156,7 @@ public class TypeHandlerSpaceTest {
 //        for (int ch = requestInput.read(); ch != -1; ch = requestInput.read()) {
 //            baos.write(ch);
 //        }
-//        Assert.assertEquals("Graph writer", baos.toString());
+//        Assert.assertEquals("ImmutableGraph writer", baos.toString());
 //    }
 //
 //    private TestWebServer createTestWebServer() {
@@ -209,8 +177,8 @@ public class TypeHandlerSpaceTest {
 //                TypeHandlerSpace typeHandlerSpace = new TypeHandlerSpace();
 //                typeHandlerSpace.tcManager = new TcManager(){
 //                    @Override
-//                    public LockableMGraph getMGraph(UriRef name) {
-//                        return new LockableMGraph() {
+//                    public LockableGraph getGraph(Iri name) {
+//                        return new LockableGraph() {
 //
 //                            @Override
 //                            public ReadWriteLock getLock() {
@@ -218,12 +186,12 @@ public class TypeHandlerSpaceTest {
 //                            }
 //
 //                            @Override
-//                            public Graph getGraph() {
+//                            public ImmutableGraph getGraph() {
 //                                return mGraph.getGraph();
 //                            }
 //
 //                            @Override
-//                            public Iterator<Triple> filter(NonLiteral subject, UriRef predicate, Resource object) {
+//                            public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
 //                                return mGraph.filter(subject, predicate, object);
 //                            }
 //
@@ -313,7 +281,7 @@ public class TypeHandlerSpaceTest {
 //                typeHandlerSpace.typeHandlerDiscovery = new TypeHandlerDiscovery() {
 //
 //                    @Override
-//                    public Object getTypeHandler(Set<UriRef> rdfTypes) {
+//                    public Object getTypeHandler(Set<Iri> rdfTypes) {
 //                        if (rdfTypes.contains(myType)){
 //                            return typeHandler;
 //                        }

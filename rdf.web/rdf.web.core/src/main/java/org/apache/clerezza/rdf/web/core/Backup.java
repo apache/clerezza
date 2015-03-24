@@ -22,10 +22,10 @@ import org.apache.clerezza.platform.Constants;
 import org.apache.clerezza.platform.globalmenu.GlobalMenuItem;
 import org.apache.clerezza.platform.globalmenu.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesService;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Graph;
 import org.apache.clerezza.rdf.core.access.security.TcPermission;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.web.ontologies.BACKUP;
@@ -128,8 +128,8 @@ public class Backup implements GlobalMenuItemsProvider {
 
     @GET
     public GraphNode overviewPage() {
-        MGraph resultGraph = new SimpleMGraph();
-        GraphNode result = new GraphNode(new BNode(), resultGraph);
+        Graph resultGraph = new SimpleGraph();
+        GraphNode result = new GraphNode(new BlankNode(), resultGraph);
         result.addProperty(RDF.type, BACKUP.BackupAdminPage);
         result.addProperty(RDF.type, PLATFORM.HeadedPage);
         return result;

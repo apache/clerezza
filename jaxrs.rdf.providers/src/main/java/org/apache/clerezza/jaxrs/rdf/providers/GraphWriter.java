@@ -30,7 +30,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 
@@ -46,7 +46,7 @@ import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 @Produces({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
     SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
     SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
-public class GraphWriter implements MessageBodyWriter<TripleCollection> {
+public class GraphWriter implements MessageBodyWriter<Graph> {
 
     /**
      * @scr.reference
@@ -56,17 +56,17 @@ public class GraphWriter implements MessageBodyWriter<TripleCollection> {
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, 
             Annotation[] annotations, MediaType mediaType) {
-        return TripleCollection.class.isAssignableFrom(type);
+        return Graph.class.isAssignableFrom(type);
     }
 
     @Override
-    public long getSize(TripleCollection t, Class<?> type, Type genericType, 
+    public long getSize(Graph t, Class<?> type, Type genericType, 
             Annotation[] annotations, MediaType mediaType) {
         return -1;
     }
 
     @Override
-    public void writeTo(TripleCollection t, Class<?> type, Type genericType,
+    public void writeTo(Graph t, Class<?> type, Type genericType,
             Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {

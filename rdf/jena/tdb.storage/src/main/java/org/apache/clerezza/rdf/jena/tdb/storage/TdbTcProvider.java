@@ -324,8 +324,8 @@ public class TdbTcProvider implements WeightedTcProvider {
     @Override
     public Set<Iri> listGraphs() {
         Set<Iri> result = new HashSet<Iri>();
-        result.addAll(listGraphs());
-        result.addAll(listGraphs());
+        result.addAll(listMGraphs());
+        result.addAll(listImmutableGraphs());
         return result;
     }
 

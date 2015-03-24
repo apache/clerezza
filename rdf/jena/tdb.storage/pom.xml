@@ -31,6 +31,14 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - RDF - Jena - TDB Storage Provider</name>
     <description>A Jena TDB based storage provider</description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
     <dependencyManagement>
         <dependencies>
             <dependency>

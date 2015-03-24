@@ -33,7 +33,7 @@ public class BackupPermission extends Permission {
 
 
     public BackupPermission() {
-        super("Graph Management permission");
+        super("ImmutableGraph Management permission");
     }
     /**
      *
@@ -41,7 +41,7 @@ public class BackupPermission extends Permission {
      * @param action ignored
      */
     public BackupPermission(String target, String actions) {
-        super("Graph Management permission");
+        super("ImmutableGraph Management permission");
     }
 
     @Override

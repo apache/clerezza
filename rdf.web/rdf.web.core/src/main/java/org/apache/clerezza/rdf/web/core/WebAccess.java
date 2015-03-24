@@ -43,14 +43,13 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.jaxrs.utils.form.FormFile;
 import org.apache.clerezza.jaxrs.utils.form.MultiPartBody;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
@@ -77,13 +76,13 @@ public class WebAccess {
     final Logger logger = LoggerFactory.getLogger(WebAccess.class);
 
     /**
-     * Gets the TripleCollection with specified name
+     * Gets the Graph with specified name
      *
      * @param name
      * @return
      */
     @GET
-    public TripleCollection getTriples(@QueryParam("name") UriRef name) {
+    public Graph getTriples(@QueryParam("name") Iri name) {
         AccessController.checkPermission(new WebAccessPermission());
         if (name == null) {
             Response r = Response.status(Response.Status.BAD_REQUEST)
@@ -91,7 +90,7 @@ public class WebAccess {
                     .type(MediaType.TEXT_PLAIN_TYPE).build();
             throw new WebApplicationException(r);
         }
-        TripleCollection result = tcManager.getTriples(name);
+        Graph result = tcManager.getGraph(name);
         logger.debug("Got graph of size {} ", result.size());
         int i = 1;
         if (logger.isDebugEnabled()) {
@@ -104,8 +103,8 @@ public class WebAccess {
     }
 
     /**
-     * Puts the triples replacing the triples of the existing MGraph with the
-     * specified name. If the graph doesn't exist creates a new <code>MGraph</code> 
+     * Puts the triples replacing the triples of the existing Graph with the
+     * specified name. If the graph doesn't exist creates a new <code>Graph</code> 
      * with the specified name and puts the triples
      * 
      *
@@ -113,13 +112,13 @@ public class WebAccess {
      * @param triples
      */
     @PUT
-    public void putTriples(@QueryParam("name") UriRef name, TripleCollection triples) {
+    public void putTriples(@QueryParam("name") Iri name, Graph triples) {
         AccessController.checkPermission(new WebAccessPermission());
-        LockableMGraph mGraph;
+        Graph mGraph;
         try {
-            mGraph = tcManager.getMGraph(name);
+            mGraph = tcManager.getGraph(name);
         } catch (NoSuchEntityException e) {
-            mGraph = tcManager.createMGraph(name);
+            mGraph = tcManager.createGraph(name);
         }
         Lock writeLock = mGraph.getLock().writeLock();
         writeLock.lock();
@@ -132,18 +131,18 @@ public class WebAccess {
     }
 
     /**
-     * Posts triples to be placed into an {@link MGraph} of the specified name.
-     * If an {@link MGraph} with this name doesn't already exist, a new one
+     * Posts triples to be placed into an {@link Graph} of the specified name.
+     * If an {@link Graph} with this name doesn't already exist, a new one
      * is created and filled with the triples posted.
      * @param form
      *        a multipart/form-data consisting of:
      *        - a {@link FormFile} labeled "graph" containing the triples and
      *            the mime-type.
-     *        - a text field labeled "name" specifying the name of the MGraph.
+     *        - a text field labeled "name" specifying the name of the Graph.
      *        - an optional text field labeled "mode" specifying the mode.
-     *            If the mode is "replace", existing triples of the MGraph will be
+     *            If the mode is "replace", existing triples of the Graph will be
      *            deleted before new triples are added. If the mode is not
-     *            specified or is "append", posted triples are added to the MGraph.
+     *            specified or is "append", posted triples are added to the Graph.
      *        - an optional text field labeled "redirection" specifying an URI
      *            which the client should be redirected to in case of success.
      * @return
@@ -152,9 +151,9 @@ public class WebAccess {
      *        satisfied, one of the following responses is returned:
      *        - SEE OTHER (303), if redirection is specified.
      *        - CREATED (201), if redirection is not specified and a new
-     *            {@link MGraph} is created.
+     *            {@link Graph} is created.
      *        - NO CONTENT (204), if redirection is not specified and no new
-     *            {@link MGraph} is created.
+     *            {@link Graph} is created.
      */
     @POST
     @Consumes("multipart/form-data")
@@ -193,14 +192,14 @@ public class WebAccess {
             mode = "append";
         }
         InputStream is = new ByteArrayInputStream(graph);
-        Graph parsedGraph = parser.parse(is, mediaType.toString());
-        UriRef graphUri = new UriRef(graphName);
-        LockableMGraph mGraph;
+        ImmutableGraph parsedGraph = parser.parse(is, mediaType.toString());
+        Iri graphUri = new Iri(graphName);
+        Graph mGraph;
         boolean newGraph = false;
         try {
-            mGraph = tcManager.getMGraph(graphUri);
+            mGraph = tcManager.getGraph(graphUri);
         } catch (NoSuchEntityException e) {
-            mGraph = tcManager.createMGraph(graphUri);
+            mGraph = tcManager.createGraph(graphUri);
             newGraph = true;
         }
         Lock writeLock = mGraph.getLock().writeLock();

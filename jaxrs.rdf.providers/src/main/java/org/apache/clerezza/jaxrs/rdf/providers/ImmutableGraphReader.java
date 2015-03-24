@@ -28,11 +28,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
-
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
+import org.apache.commons.rdf.ImmutableGraph;
 
 /**
  * @scr.component
@@ -45,22 +43,24 @@ import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 @Consumes({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
     SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
     SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
-public class TripleCollectionReader implements MessageBodyReader<TripleCollection> {
+public class ImmutableGraphReader implements MessageBodyReader<ImmutableGraph> {
 
     /**
      * @scr.reference
      */
     private Parser parser;
-    
     @Override
     public boolean isReadable(Class<?> type, Type genericType,
             Annotation[] annotations, MediaType mediaType) {
-        return type.isAssignableFrom(TripleCollection.class);
+        return type.isAssignableFrom(ImmutableGraph.class);
     }
 
     @Override
-    public TripleCollection readFrom(Class<TripleCollection> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
-        TripleCollection result = new SimpleMGraph();
+    public ImmutableGraph readFrom(Class<ImmutableGraph> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, String> httpHeaders,
+            InputStream entityStream)
+            throws IOException, WebApplicationException {
         return parser.parse(entityStream, mediaType.toString());
     }
 }

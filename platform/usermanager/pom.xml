@@ -80,6 +80,10 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.xsite</groupId>
                 <artifactId>xsite-maven-plugin</artifactId>
                 <configuration>

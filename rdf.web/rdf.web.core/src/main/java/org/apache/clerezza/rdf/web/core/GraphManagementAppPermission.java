@@ -22,18 +22,18 @@ import java.security.Permission;
 import org.apache.clerezza.permissiondescriptions.PermissionInfo;
 
 /**
- * Permission to use the Graph-Management page. Nothe that the user
- * additioonally needs permssion on the TripleCollections they manipulate.
+ * Permission to use the ImmutableGraph-Management page. Nothe that the user
+ * additioonally needs permssion on the Graphs they manipulate.
  *
  * @author reto
  */
-@PermissionInfo(value="Graph Management Access Permission", description="Grants access " +
-    "to the Graph Management page")
+@PermissionInfo(value="ImmutableGraph Management Access Permission", description="Grants access " +
+    "to the ImmutableGraph Management page")
 public class GraphManagementAppPermission extends Permission {
 
 
     public GraphManagementAppPermission() {
-        super("Graph Management permission");
+        super("ImmutableGraph Management permission");
     }
     /**
      * 
@@ -41,7 +41,7 @@ public class GraphManagementAppPermission extends Permission {
      * @param action ignored
      */
     public GraphManagementAppPermission(String target, String actions) {
-        super("Graph Management permission");
+        super("ImmutableGraph Management permission");
     }
 
     @Override

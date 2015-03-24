@@ -35,6 +35,14 @@
     <packaging>bundle</packaging>
     <name>Clerezza - Platform Graph Provider Content</name>
     <description>A service that provides the content-graph</description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>

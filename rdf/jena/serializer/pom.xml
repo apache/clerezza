@@ -33,6 +33,14 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - RDF - Jena - Serializer</name>
     <description>A SerializingProvider based on jena</description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
     <dependencyManagement>
         <dependencies>
             <dependency>

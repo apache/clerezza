@@ -38,20 +38,19 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.commons.rdf.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.core.serializedform.UnsupportedFormatException;
@@ -88,12 +87,12 @@ public class BackupMessageBodyWriter implements MessageBodyWriter<Backup> {
     }
 
     private void archive(ZipOutputStream compressedTcs, 
-            TripleCollection tripleCollection,
+            Graph tripleCollection,
             String fileName) throws IOException, UnsupportedFormatException {
         Lock readLock = null;
         compressedTcs.putNextEntry(new ZipEntry(fileName));
-        if (tripleCollection instanceof LockableMGraph) {
-            readLock = ((LockableMGraph) tripleCollection).getLock().readLock();
+        if (tripleCollection instanceof Graph) {
+            readLock = ((Graph) tripleCollection).getLock().readLock();
             readLock.lock();
         }
         try {
@@ -106,7 +105,7 @@ public class BackupMessageBodyWriter implements MessageBodyWriter<Backup> {
         }
     }
 
-    private String getTcFileName(UriRef tcUri, String extension,
+    private String getTcFileName(Iri tcUri, String extension,
             Map<String, Integer> fileNameCount) {
         String fileName = tcUri.getUnicodeString();
         fileName = fileName.substring(fileName.lastIndexOf("/")+1);
@@ -123,23 +122,23 @@ public class BackupMessageBodyWriter implements MessageBodyWriter<Backup> {
 
     private void writeBackup(OutputStream result) {
         Map<String, Integer> fileNameCount = new HashMap<String, Integer>();
-        MGraph backupContents = new SimpleMGraph();
+        Graph backupContents = new SimpleGraph();
         try {
             ZipOutputStream compressedTcs = new ZipOutputStream(result);
 
             compressedTcs.putNextEntry(new ZipEntry(folder));
 
-            Set<UriRef> tripleCollections = tcManager.listTripleCollections();
-            Iterator<UriRef> tcUriRefs = tripleCollections.iterator();
-            while (tcUriRefs.hasNext()) {
-                UriRef tcUri = tcUriRefs.next();
+            Set<Iri> tripleCollections = tcManager.listGraphs();
+            Iterator<Iri> tcIris = tripleCollections.iterator();
+            while (tcIris.hasNext()) {
+                Iri tcUri = tcIris.next();
                 String fileName = folder + getTcFileName(tcUri, ".nt",
                         fileNameCount);
-                TripleCollection tripleCollection = tcManager.getTriples(tcUri);
+                Graph tripleCollection = tcManager.getGraph(tcUri);
                 archive(compressedTcs, tripleCollection, fileName);
-                if (tripleCollection instanceof MGraph) {
+                if (tripleCollection instanceof Graph) {
                     backupContents.add(new TripleImpl(tcUri, RDF.type,
-                            BACKUP.MGraph));
+                            BACKUP.Graph));
                 } else {
                     backupContents.add(new TripleImpl(tcUri, RDF.type,
                             BACKUP.Graph));

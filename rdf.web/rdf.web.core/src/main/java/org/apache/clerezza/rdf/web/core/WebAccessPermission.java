@@ -23,17 +23,17 @@ import java.security.Permission;
 import org.apache.clerezza.permissiondescriptions.PermissionInfo;
 
 /**
- * Permission to use the Graph via Web. Note that the user
+ * Permission to use the ImmutableGraph via Web. Note that the user
  * additionally needs permission to read a graph.
  *
  * @author mir
  */
-@PermissionInfo(value="Graph via Web Access Permission", description="Grants access " +
-    "to the Graph via Web")
+@PermissionInfo(value="ImmutableGraph via Web Access Permission", description="Grants access " +
+    "to the ImmutableGraph via Web")
 public class WebAccessPermission extends Permission{
 
     public WebAccessPermission() {
-        super("Graph via Web access permission");
+        super("ImmutableGraph via Web access permission");
     }
     /**
      *
@@ -41,7 +41,7 @@ public class WebAccessPermission extends Permission{
      * @param action ignored
      */
     public WebAccessPermission(String target, String actions) {
-        super("Graph via Web access permission");
+        super("ImmutableGraph via Web access permission");
     }
 
     @Override

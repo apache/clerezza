@@ -31,7 +31,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.commons.rdf.Graph;
 
 /**
  * 
@@ -40,26 +40,26 @@ import org.apache.clerezza.rdf.core.TripleCollection;
  */
 @Provider
 @Produces("application/rdf+xml")
-public class GraphWriterDummy implements MessageBodyWriter<TripleCollection> {
+public class GraphWriterDummy implements MessageBodyWriter<Graph> {
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, 
             Annotation[] annotations, MediaType mediaType) {
-        return TripleCollection.class.isAssignableFrom(type);
+        return Graph.class.isAssignableFrom(type);
     }
 
     @Override
-    public long getSize(TripleCollection t, Class<?> type, Type genericType, 
+    public long getSize(Graph t, Class<?> type, Type genericType, 
             Annotation[] annotations, MediaType mediaType) {
         return -1;
     }
 
     @Override
-    public void writeTo(TripleCollection t, Class<?> type, Type genericType,
+    public void writeTo(Graph t, Class<?> type, Type genericType,
             Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {
-        entityStream.write("Graph writer".getBytes());
+        entityStream.write("ImmutableGraph writer".getBytes());
         entityStream.close();
     }
 }

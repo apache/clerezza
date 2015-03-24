@@ -26,17 +26,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.jaxrs.utils.RedirectUtil;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Graph;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
@@ -45,7 +45,7 @@ import org.apache.clerezza.rdf.utils.Smusher;
 import org.osgi.service.component.ComponentContext;
 
 /**
- * Provides a method to remove duplicate noded from (aka smush) a Graph
+ * Provides a method to remove duplicate noded from (aka smush) a ImmutableGraph
  * 
  * @author reto
  */
@@ -60,8 +60,8 @@ public class Delete {
 
     
     @POST
-    public Response delete(@Context UriInfo uriInfo, @FormParam("graphName") UriRef graphName) {
-        tcManager.deleteTripleCollection(graphName);
+    public Response delete(@Context UriInfo uriInfo, @FormParam("graphName") Iri graphName) {
+        tcManager.deleteGraph(graphName);
         return RedirectUtil.createSeeOtherResponse("./", uriInfo);
     }
 }

@@ -38,11 +38,11 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -98,17 +98,17 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
         this.uriInfo = uriInfo;
     }
 
-    private TripleCollection getExpandedContext(GraphNode node) {
-        final TripleCollection result = new SimpleMGraph(node.getNodeContext());
-        final Set<Resource> expandedResources = new HashSet<Resource>();
+    private Graph getExpandedContext(GraphNode node) {
+        final Graph result = new SimpleGraph(node.getNodeContext());
+        final Set<RdfTerm> expandedResources = new HashSet<RdfTerm>();
         expandedResources.add(node.getNode());
         while (true) {
-            Set<Resource> additionalExpansionRes = getAdditionalExpansionResources(result);
+            Set<RdfTerm> additionalExpansionRes = getAdditionalExpansionResources(result);
             additionalExpansionRes.removeAll(expandedResources);
             if (additionalExpansionRes.size() == 0) {
                 return result;
             }
-            for (Resource resource : additionalExpansionRes) {
+            for (RdfTerm resource : additionalExpansionRes) {
                 final GraphNode additionalNode = new GraphNode(resource, node.getGraph());
                 result.addAll(additionalNode.getNodeContext());
                 expandedResources.add(resource);
@@ -116,14 +116,14 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
         }
     }
 
-    private Set<Resource> getAdditionalExpansionResources(TripleCollection tc) {
-        final Set<UriRef> subjectExpansionProperties = getSubjectExpansionProperties();
-        final Set<UriRef> objectExpansionProperties = getObjectExpansionProperties();
-        final Set<Resource> result = new HashSet<Resource>();
+    private Set<RdfTerm> getAdditionalExpansionResources(Graph tc) {
+        final Set<Iri> subjectExpansionProperties = getSubjectExpansionProperties();
+        final Set<Iri> objectExpansionProperties = getObjectExpansionProperties();
+        final Set<RdfTerm> result = new HashSet<RdfTerm>();
         if ((subjectExpansionProperties.size() > 0)
                 || (objectExpansionProperties.size() > 0)) {
             for (Triple triple : tc) {
-                final UriRef predicate = triple.getPredicate();
+                final Iri predicate = triple.getPredicate();
                 if (subjectExpansionProperties.contains(predicate)) {
                     result.add(triple.getSubject());
                 }
@@ -135,28 +135,28 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
         return result;
     }
 
-    private Set<UriRef> getSubjectExpansionProperties() {
+    private Set<Iri> getSubjectExpansionProperties() {
         final MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
         final List<String> paramValues = queryParams.get(SUBJ_EXP_PARAM);
         if (paramValues == null) {
-            return new HashSet<UriRef>(0);
+            return new HashSet<Iri>(0);
         }
-        final Set<UriRef> result = new HashSet<UriRef>(paramValues.size());
+        final Set<Iri> result = new HashSet<Iri>(paramValues.size());
         for (String uriString : paramValues) {
-            result.add(new UriRef(uriString));
+            result.add(new Iri(uriString));
         }
         return result;
     }
 
-    private Set<UriRef> getObjectExpansionProperties() {
+    private Set<Iri> getObjectExpansionProperties() {
         final MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
         final List<String> paramValues = queryParams.get(OBJ_EXP_PARAM);
         if (paramValues == null) {
-            return new HashSet<UriRef>(0);
+            return new HashSet<Iri>(0);
         }
-        final Set<UriRef> result = new HashSet<UriRef>(paramValues.size());
+        final Set<Iri> result = new HashSet<Iri>(paramValues.size());
         for (String uriString : paramValues) {
-            result.add(new UriRef(uriString));
+            result.add(new Iri(uriString));
         }
         return result;
     }

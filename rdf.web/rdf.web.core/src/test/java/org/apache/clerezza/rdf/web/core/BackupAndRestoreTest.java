@@ -29,17 +29,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Triple;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.TcProvider;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
@@ -48,6 +47,7 @@ import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
 import org.apache.clerezza.rdf.jena.serializer.JenaSerializerProvider;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.web.ontologies.BACKUP;
+import org.apache.commons.rdf.Literal;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,25 +62,25 @@ public class BackupAndRestoreTest {
 
     private static String testGraphFileName = "test.graph";
 
-    private static MGraph testMGraph0 = new SimpleMGraph();
-    private static UriRef testMGraphUri0 = // the URI of testMGraph0
-            new UriRef("http://localhost/test0/"+testGraphFileName);
-    // a resource in testMGraph0
-    private    static UriRef uri0 = new UriRef("http://localhost/test0/testuri");
+    private static Graph testGraph0 = new SimpleGraph();
+    private static Iri testGraphUri0 = // the URI of testGraph0
+            new Iri("http://localhost/test0/"+testGraphFileName);
+    // a resource in testGraph0
+    private    static Iri uri0 = new Iri("http://localhost/test0/testuri");
 
-    private static MGraph testMGraph1 = new SimpleMGraph();
-    private static UriRef testMGraphUri1 = // the URI of testMGraph1
-            new UriRef("http://localhost/test1/"+testGraphFileName);
+    private static Graph testGraph1 = new SimpleGraph();
+    private static Iri testGraphUri1 = // the URI of testGraph1
+            new Iri("http://localhost/test1/"+testGraphFileName);
 
-    // a resource in testMGraph1
-    private    static UriRef uri1 = new UriRef("http://localhost/test1/testuri");
+    // a resource in testGraph1
+    private    static Iri uri1 = new Iri("http://localhost/test1/testuri");
 
-    private static Graph testGraphA;
-    private static UriRef testGraphUriA = // the URI of testGraphA
-            new UriRef("http://localhost/testA/"+testGraphFileName);
+    private static ImmutableGraph testGraphA;
+    private static Iri testGraphUriA = // the URI of testGraphA
+            new Iri("http://localhost/testA/"+testGraphFileName);
 
     // a resource in testGraphA
-    private    static UriRef uriA = new UriRef("http://localhost/testA/testuri");
+    private    static Iri uriA = new Iri("http://localhost/testA/testuri");
     
 
     private static String backupContentFileName = "triplecollections.nt";
@@ -94,24 +94,24 @@ public class BackupAndRestoreTest {
         backup.serializer = Serializer.getInstance();
         backup.serializer.bindSerializingProvider(
                 new JenaSerializerProvider());
-        testMGraph0.add(new TripleImpl(uri0, uri0, uri0));
-        testMGraph1.add(new TripleImpl(uri1, uri1, uri1));
-        MGraph graphBuilder = new SimpleMGraph();
+        testGraph0.add(new TripleImpl(uri0, uri0, uri0));
+        testGraph1.add(new TripleImpl(uri1, uri1, uri1));
+        Graph graphBuilder = new SimpleGraph();
         graphBuilder.add(new TripleImpl(uriA, uriA, uriA));
-        testGraphA = graphBuilder.getGraph();
+        testGraphA = graphBuilder.getImmutableGraph();
     }
 
     @Test
     public void testBackup() throws IOException {
-        //Graph downloadedTestGraphX = null;
-        //Graph downloadedTestGraphY = null;
-        Graph downloadedBackupContentsGraph = null;
+        //ImmutableGraph downloadedTestGraphX = null;
+        //ImmutableGraph downloadedTestGraphY = null;
+        ImmutableGraph downloadedBackupContentsGraph = null;
 
         byte[] download = backup.createBackup();
         ByteArrayInputStream bais = new ByteArrayInputStream(download);
         ZipInputStream compressedTcs = new ZipInputStream(bais);
 
-        Map<String, TripleCollection> extractedTc = new HashMap<String, TripleCollection>();
+        Map<String, Graph> extractedTc = new HashMap<String, Graph>();
         String folder = "";
         ZipEntry entry;
         while ((entry = compressedTcs.getNextEntry()) != null) {
@@ -140,7 +140,7 @@ public class BackupAndRestoreTest {
                     downloadedBackupContentsGraph = parser.parse(serializedGraph,
                             SupportedFormat.N_TRIPLE, null);
                 } else {
-                    Graph deserializedGraph = parser.parse(serializedGraph,
+                    ImmutableGraph deserializedGraph = parser.parse(serializedGraph,
                             SupportedFormat.N_TRIPLE, null);
                     extractedTc.put(entryName, deserializedGraph);
                 }
@@ -157,13 +157,13 @@ public class BackupAndRestoreTest {
     public void restoreFromBackup() throws IOException {
         byte[] backupData = backup.createBackup();
         TcProvider tcProvider = EasyMock.createMock(TcProvider.class);
-        EasyMock.expect(tcProvider.getMGraph(testMGraphUri0)).andReturn(
-                EasyMock.createNiceMock(MGraph.class));
-        EasyMock.expect(tcProvider.getMGraph(testMGraphUri1)).andReturn(
-                EasyMock.createNiceMock(MGraph.class));
-        tcProvider.deleteTripleCollection(testGraphUriA);
-        EasyMock.expect(tcProvider.createGraph(EasyMock.eq(testGraphUriA),
-                EasyMock.notNull(TripleCollection.class))).andReturn(new SimpleMGraph().getGraph());
+        EasyMock.expect(tcProvider.getGraph(testGraphUri0)).andReturn(
+                EasyMock.createNiceMock(Graph.class));
+        EasyMock.expect(tcProvider.getGraph(testGraphUri1)).andReturn(
+                EasyMock.createNiceMock(Graph.class));
+        tcProvider.deleteGraph(testGraphUriA);
+        EasyMock.expect(tcProvider.createImmutableGraph(EasyMock.eq(testGraphUriA),
+                EasyMock.notNull(Graph.class))).andReturn(new SimpleGraph().getImmutableGraph());
         EasyMock.replay(tcProvider);
         Restorer restore = new Restorer();
         restore.parser = Parser.getInstance();
@@ -171,36 +171,36 @@ public class BackupAndRestoreTest {
         EasyMock.verify(tcProvider);
     }
 
-    private void checkDownloadedGraphs(Map<String, TripleCollection> extractedTc,
-            Graph downloadedBackupContentsGraph, String folder) {
+    private void checkDownloadedGraphs(Map<String, Graph> extractedTc,
+            ImmutableGraph downloadedBackupContentsGraph, String folder) {
         Assert.assertFalse(extractedTc.isEmpty());
         Assert.assertNotNull(downloadedBackupContentsGraph);
 
         Assert.assertTrue(downloadedBackupContentsGraph.contains(new TripleImpl(
-                testMGraphUri0, RDF.type, BACKUP.MGraph)));
+                testGraphUri0, RDF.type, BACKUP.Graph)));
 
         Iterator<Triple> triples = downloadedBackupContentsGraph.filter(
-                testMGraphUri0, BACKUP.file, null);
+                testGraphUri0, BACKUP.file, null);
         Assert.assertTrue(triples.hasNext());
 
-        String fileName0 = ((TypedLiteral) triples.next().getObject()).getLexicalForm();
+        String fileName0 = ((Literal) triples.next().getObject()).getLexicalForm();
         Assert.assertTrue(fileName0.startsWith(folder+testGraphFileName));
 
-        TripleCollection extracted0 = extractedTc.get(fileName0);
+        Graph extracted0 = extractedTc.get(fileName0);
         Assert.assertNotNull(extracted0);
         Assert.assertTrue(extracted0.filter(uri0, uri0, uri0).hasNext());
 
         Assert.assertTrue(downloadedBackupContentsGraph.contains(new TripleImpl(
-                testMGraphUri1, RDF.type, BACKUP.MGraph)));
+                testGraphUri1, RDF.type, BACKUP.Graph)));
 
         triples = downloadedBackupContentsGraph.filter(
-                testMGraphUri1, BACKUP.file, null);
+                testGraphUri1, BACKUP.file, null);
         Assert.assertTrue(triples.hasNext());
 
-        String fileName1 = ((TypedLiteral) triples.next().getObject()).getLexicalForm();
+        String fileName1 = ((Literal) triples.next().getObject()).getLexicalForm();
         Assert.assertTrue(fileName1.startsWith(folder+testGraphFileName));
 
-        TripleCollection extracted1 = extractedTc.get(fileName1);
+        Graph extracted1 = extractedTc.get(fileName1);
         Assert.assertNotNull(extracted1);
 
         Assert.assertTrue(extracted1.filter(uri1, uri1, uri1).hasNext());
@@ -214,9 +214,9 @@ public class BackupAndRestoreTest {
                 testGraphUriA, BACKUP.file, null);
         Assert.assertTrue(triples.hasNext());
 
-        String fileNameA = ((TypedLiteral) triples.next().getObject()).getLexicalForm();
+        String fileNameA = ((Literal) triples.next().getObject()).getLexicalForm();
         Assert.assertTrue(fileNameA.startsWith(folder+testGraphFileName));
-        TripleCollection extractedA = extractedTc.get(fileNameA);
+        Graph extractedA = extractedTc.get(fileNameA);
         Assert.assertNotNull(extractedA);
 
         Assert.assertTrue(extractedA.filter(uriA, uriA, uriA).hasNext());
@@ -225,13 +225,13 @@ public class BackupAndRestoreTest {
 
     private class TestTcManager extends TcManager {
 
-        // Associates testGraphUri0 with testMGraph0 and testGraphUri1 with testGraph1
+        // Associates testGraphUri0 with testGraph0 and testGraphUri1 with testGraph1
         @Override
-        public TripleCollection getTriples(UriRef name) throws NoSuchEntityException {
-            if (name.equals(testMGraphUri0)) {
-                return testMGraph0;
-            } else if (name.equals(testMGraphUri1)) {
-                return testMGraph1;
+        public Graph getGraph(Iri name) throws NoSuchEntityException {
+            if (name.equals(testGraphUri0)) {
+                return testGraph0;
+            } else if (name.equals(testGraphUri1)) {
+                return testGraph1;
             } else if (name.equals(testGraphUriA)) {
                 return testGraphA;
             }
@@ -239,10 +239,10 @@ public class BackupAndRestoreTest {
         }
 
         @Override
-        public Set<UriRef> listTripleCollections() {
-            Set<UriRef> result = new HashSet<UriRef>();
-            result.add(testMGraphUri0);
-            result.add(testMGraphUri1);
+        public Set<Iri> listGraphs() {
+            Set<Iri> result = new HashSet<Iri>();
+            result.add(testGraphUri0);
+            result.add(testGraphUri1);
             result.add(testGraphUriA);
             return result;
         }

@@ -30,6 +30,8 @@ import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.utils.UnionGraph;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * A service providing a method to retrieve a <code>UnionGraph</code> containing
@@ -41,11 +43,9 @@ import org.apache.clerezza.rdf.utils.UnionGraph;
  * Temporarily means that after restarting the org.apache.clerezza.platform.graphprovider.content
  * bundle, these graphs will no longer be returned in the <code>UnionGraph</code>.
  * 
- * @scr.component
- * @scr.service interface="org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider"
- * 
- * @author rbn, mir
  */
+@Component
+@Service(ContentGraphProvider.class)
 public class ContentGraphProvider {
 
 

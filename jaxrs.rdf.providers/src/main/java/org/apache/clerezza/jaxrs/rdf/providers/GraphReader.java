@@ -28,9 +28,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
+
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
-import org.apache.clerezza.rdf.core.Graph;
 
 /**
  * @scr.component
@@ -49,6 +51,7 @@ public class GraphReader implements MessageBodyReader<Graph> {
      * @scr.reference
      */
     private Parser parser;
+    
     @Override
     public boolean isReadable(Class<?> type, Type genericType,
             Annotation[] annotations, MediaType mediaType) {
@@ -56,11 +59,8 @@ public class GraphReader implements MessageBodyReader<Graph> {
     }
 
     @Override
-    public Graph readFrom(Class<Graph> type, Type genericType,
-            Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, String> httpHeaders,
-            InputStream entityStream)
-            throws IOException, WebApplicationException {
+    public Graph readFrom(Class<Graph> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+        Graph result = new SimpleGraph();
         return parser.parse(entityStream, mediaType.toString());
     }
 }

@@ -33,18 +33,18 @@ import org.apache.clerezza.platform.globalmenu.GlobalMenuItem;
 import org.apache.clerezza.platform.globalmenu.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Graph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.TripleCollection;
+import org.apache.commons.rdf.Graph;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.TCPROVIDER;
@@ -74,7 +74,7 @@ public class GraphManagement implements GlobalMenuItemsProvider {
     protected void activate(ComponentContext componentContext) {
         URL templateURL = getClass().getResource("graph-management.ssp");
         renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-                new UriRef(templateURL.toString()), GRAPHMANAGEMENT.GraphManagementPage,
+                new Iri(templateURL.toString()), GRAPHMANAGEMENT.GraphManagementPage,
                 "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
     }
 
@@ -82,19 +82,19 @@ public class GraphManagement implements GlobalMenuItemsProvider {
     public GraphNode mainPage(@Context UriInfo uriInfo) {
         AccessController.checkPermission(new GraphManagementAppPermission());
         TrailingSlash.enforcePresent(uriInfo);
-        final SimpleMGraph resultGraph = new SimpleMGraph();
-        GraphNode graphNode = new GraphNode(new BNode(), resultGraph);
-        Set<UriRef> tripleCollections = tcManager.listTripleCollections();
-        for (UriRef uriRef : tripleCollections) {
+        final SimpleGraph resultGraph = new SimpleGraph();
+        GraphNode graphNode = new GraphNode(new BlankNode(), resultGraph);
+        Set<Iri> tripleCollections = tcManager.listGraphs();
+        for (Iri uriRef : tripleCollections) {
             graphNode.addProperty(GRAPHMANAGEMENT.tripleCollection, uriRef);
-            final TripleCollection tripleCollection = tcManager.getTriples(uriRef);
+            final Graph tripleCollection = tcManager.getGraph(uriRef);
             resultGraph.add(new TripleImpl(uriRef,GRAPHMANAGEMENT.size,
                     LiteralFactory.getInstance().createTypedLiteral(
                     tripleCollection.size())));
-            if (tripleCollection instanceof Graph) {
+            if (tripleCollection instanceof ImmutableGraph) {
                 resultGraph.add(new TripleImpl(uriRef,RDF.type, TCPROVIDER.Graph));
             } else {
-                resultGraph.add(new TripleImpl(uriRef,RDF.type, TCPROVIDER.MGraph));
+                resultGraph.add(new TripleImpl(uriRef,RDF.type, TCPROVIDER.Graph));
             }
         }
         graphNode.addProperty(RDF.type, GRAPHMANAGEMENT.GraphManagementPage);

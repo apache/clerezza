@@ -61,18 +61,16 @@ import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPa
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Graph;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.sparql.ParseException;
 import org.apache.clerezza.rdf.core.sparql.QueryParser;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
@@ -83,6 +81,7 @@ import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.web.ontologies.SPARQLENDPOINT;
+import org.apache.commons.rdf.Literal;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ProcessingInstruction;
@@ -115,18 +114,18 @@ public class SparqlEndpoint {
     protected void activate(ComponentContext componentContext) {
         URL templateURL = getClass().getResource("sparql-endpoint.ssp");
         renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-                new UriRef(templateURL.toString()), SPARQLENDPOINT.SparqlEndpoint,
+                new Iri(templateURL.toString()), SPARQLENDPOINT.SparqlEndpoint,
                 null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
     }
 
     @GET
     @Path("form")
-    public GraphNode getAvailableTripleCollectionUris(@Context UriInfo uriInfo) {
+    public GraphNode getAvailableGraphUris(@Context UriInfo uriInfo) {
         AccessController.checkPermission(new SparqlEndpointAccessPermission());
         TrailingSlash.enforceNotPresent(uriInfo);
-        GraphNode graphNode = new GraphNode(new BNode(), new SimpleMGraph());
-        Set<UriRef> tripleCollections = tcManager.listTripleCollections();
-        for (UriRef uriRef : tripleCollections) {
+        GraphNode graphNode = new GraphNode(new BlankNode(), new SimpleGraph());
+        Set<Iri> tripleCollections = tcManager.listGraphs();
+        for (Iri uriRef : tripleCollections) {
             graphNode.addProperty(SPARQLENDPOINT.tripleCollection, uriRef);
         }
         graphNode.addProperty(RDF.type, SPARQLENDPOINT.SparqlEndpoint);
@@ -134,7 +133,7 @@ public class SparqlEndpoint {
     }
 
     /**
-     * Returns either a {@link Graph} or a {@link DOMSource}. A {@link Graph} is
+     * Returns either a {@link ImmutableGraph} or a {@link DOMSource}. A {@link ImmutableGraph} is
      * returned if a CONSTRUCT or a DESCRIBE sparql query was submitted and
      * successfully carried out. A {@link DOMSource} is returned if an ASK or a
      * SELECT sparql query was submitted and successfully carried out. The query
@@ -144,15 +143,15 @@ public class SparqlEndpoint {
      * @param queryString
      *            URL encoded sparql query
      * @param defaultGraphUri
-     *            URI of the default graph, an {@link UriRef} is expected
+     *            URI of the default graph, an {@link Iri} is expected
      * @param applyStyleSheet
      * @param serverSide
      * @param styleSheetUri 
-     * @return either a {@link Graph} or a {@link DOMSource}
+     * @return either a {@link ImmutableGraph} or a {@link DOMSource}
      */
     @POST
     public Object runFormQuery(@FormParam("query") String queryString,
-            @FormParam("default-graph-uri") UriRef defaultGraphUri,
+            @FormParam("default-graph-uri") Iri defaultGraphUri,
             @FormParam("apply-style-sheet") String applyStyleSheet,
             @FormParam("server-side") String serverSide,
             @FormParam("style-sheet-uri") String styleSheetUri) {
@@ -170,12 +169,12 @@ public class SparqlEndpoint {
         } else {
             applyServerSide = false;
         }
-        //TripleCollection defaultGraph = null;
+        //Graph defaultGraph = null;
         Object result = null;
         try {
             if (defaultGraphUri == null
                     || defaultGraphUri.getUnicodeString().equals("")) {
-                defaultGraphUri = new UriRef(Constants.CONTENT_GRAPH_URI_STRING);
+                defaultGraphUri = new Iri(Constants.CONTENT_GRAPH_URI_STRING);
                 //defaultGraph = contentGraph;
             } else {
                 //defaultGraph = tcManager.getTriples(defaultGraphUri);
@@ -184,8 +183,8 @@ public class SparqlEndpoint {
             //TODO use ResultSet.getResultVars instead
             Query query = QueryParser.getInstance().parse(queryString);
             result = tcManager.executeSparqlQuery(queryString, defaultGraphUri);
-            if (result instanceof Graph) {
-                return (Graph) result;
+            if (result instanceof ImmutableGraph) {
+                return (ImmutableGraph) result;
             } else if ((result instanceof ResultSet)
                     || (result instanceof Boolean)) {
                 Source source = toXmlSource(result, query, applyStyle,
@@ -199,7 +198,7 @@ public class SparqlEndpoint {
             } else {
                 throw new WebApplicationException(
                         Response.status(Status.BAD_REQUEST).entity("Only " +
-                        "queries yielding to a Graph, a ResultSet or " +
+                        "queries yielding to a ImmutableGraph, a ResultSet or " +
                         "Boolean are supported").build());
             }
         } catch (ParseException e) {
@@ -210,7 +209,7 @@ public class SparqlEndpoint {
     }
 
     /**
-     * Returns either a {@link Graph} or a {@link DOMSource}. A {@link Graph} is
+     * Returns either a {@link ImmutableGraph} or a {@link DOMSource}. A {@link ImmutableGraph} is
      * returned if a CONSTRUCT or a DESCRIBE sparql query was submitted and
      * successfully carried out. A {@link DOMSource} is returned if an ASK or a
      * SELECT sparql query was submitted and successfully carried out. The query
@@ -225,7 +224,7 @@ public class SparqlEndpoint {
      */
     @GET
     public Object runGetQuery(@QueryParam("query") String queryString,
-            @QueryParam("default-graph-uri") UriRef defaultGraphUri,
+            @QueryParam("default-graph-uri") Iri defaultGraphUri,
             @QueryParam("style-sheet-uri") String styleSheetUri,
             @QueryParam("server-side") String serverSide) {
         AccessController.checkPermission(new SparqlEndpointAccessPermission());
@@ -375,7 +374,7 @@ public class SparqlEndpoint {
                 Element bindingElement = doc.createElement("binding");
                 bindingElement.setAttribute("name", key.getName());
                 bindingElement.appendChild(createValueElement(
-                        (Resource) solutionMap.get(key), doc));
+                        (RdfTerm) solutionMap.get(key), doc));
                 result.appendChild(bindingElement);
             }
         }
@@ -383,33 +382,29 @@ public class SparqlEndpoint {
     }
 
     /**
-     * Helper: creates value element from {@link Resource} depending on its
+     * Helper: creates value element from {@link RdfTerm} depending on its
      * class
      * 
      */
-    private Element createValueElement(Resource resource, Document doc) {
+    private Element createValueElement(RdfTerm resource, Document doc) {
         Element value = null;
-        if (resource instanceof UriRef) {
+        if (resource instanceof Iri) {
             value = doc.createElement("uri");
-            value.appendChild(doc.createTextNode(((UriRef) resource)
+            value.appendChild(doc.createTextNode(((Iri) resource)
                     .getUnicodeString()));
-        } else if (resource instanceof TypedLiteral) {
+        } else if (resource instanceof Literal) {
             value = doc.createElement("literal");
-            value.appendChild(doc.createTextNode(((TypedLiteral) resource)
+            value.appendChild(doc.createTextNode(((Literal) resource)
                     .getLexicalForm()));
-            value.setAttribute("datatype", (((TypedLiteral) resource)
+            value.setAttribute("datatype", (((Literal) resource)
                     .getDataType().getUnicodeString()));
-        } else if (resource instanceof PlainLiteral) {
-            value = doc.createElement("literal");
-            value.appendChild(doc.createTextNode(((PlainLiteral) resource)
-                    .getLexicalForm()));
-            Language lang = ((PlainLiteral) resource).getLanguage();
+            Language lang = ((Literal) resource).getLanguage();
             if (lang != null) {
                 value.setAttribute("xml:lang", (lang.toString()));
             }
         } else {
             value = doc.createElement("bnode");
-            value.appendChild(doc.createTextNode(((BNode) resource).toString()));
+            value.appendChild(doc.createTextNode(((BlankNode) resource).toString()));
         }
         return value;
     }

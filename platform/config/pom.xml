@@ -36,6 +36,20 @@
     provides a service to access configuration default values, and a GUI to
     edit such values.
     </description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <!-- a problem with more recent versions and combined targets target="(&amp;(foo=bar)(name=foo)"  -->
+                <version>2.5.0</version>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>

@@ -32,13 +32,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
+import org.apache.commons.rdf.Literal;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
@@ -180,7 +179,7 @@ public class ResultSetCsvMessageBodyWriter implements MessageBodyWriter<ResultSe
       if( !first ) {
         outputStream.write( separator );
       }
-      Resource resource = lineData.get( header );
+      RdfTerm resource = lineData.get( header );
       if( resource != null ) {
         writeEscaped( outputStream, getResourceValue( resource ) );
       }
@@ -190,17 +189,15 @@ public class ResultSetCsvMessageBodyWriter implements MessageBodyWriter<ResultSe
   }
 
   /**
-   * Helper to get the proper string representation for the given Resource.
+   * Helper to get the proper string representation for the given RdfTerm.
    */
-  private String getResourceValue( Resource resource ) {
+  private String getResourceValue( RdfTerm resource ) {
     StringBuilder value = new StringBuilder();
-    if( resource instanceof UriRef ) {
-      value.append( ((UriRef) resource).getUnicodeString() );
-    } else if( resource instanceof TypedLiteral ) {
-      value.append( ((TypedLiteral) resource).getLexicalForm() );
-    } else if( resource instanceof PlainLiteral ) {
-      value.append( ((PlainLiteral) resource).getLexicalForm() );
-    } else if( resource instanceof BNode ) {
+    if( resource instanceof Iri ) {
+      value.append( ((Iri) resource).getUnicodeString() );
+    } else if( resource instanceof Literal ) {
+      value.append( ((Literal) resource).getLexicalForm() );
+    } else if( resource instanceof BlankNode ) {
       value.append( "/" );
     } else {
       value.append( resource.toString() );

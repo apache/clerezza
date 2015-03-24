@@ -32,15 +32,14 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
+import org.apache.commons.rdf.Literal;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
@@ -115,27 +114,27 @@ public class ResultSetJsonMessageBodyWriter implements MessageBodyWriter<ResultS
 	}
 
 	/**
-	 * Helper: creates value element from {@link Resource} depending on its
+	 * Helper: creates value element from {@link RdfTerm} depending on its
 	 * class
 	 *
 	 */
-	private JSONObject createResultElement(Resource resource) {
+	private JSONObject createResultElement(RdfTerm resource) {
 		JSONObject element = new JSONObject();
-		if (resource instanceof UriRef) {
+		if (resource instanceof Iri) {
 			element.put("type", "uri");
-			element.put("value", UriRef.class.cast(resource).getUnicodeString());
-		} else if (resource instanceof PlainLiteral) {
+			element.put("value", Iri.class.cast(resource).getUnicodeString());
+		} else if (resource instanceof Literal) {
 			element.put("type", "literal");
-			element.put("value", PlainLiteral.class.cast(resource).getLexicalForm());
-			Language lang = PlainLiteral.class.cast(resource).getLanguage();
+			element.put("value", Literal.class.cast(resource).getLexicalForm());
+			Language lang = Literal.class.cast(resource).getLanguage();
 			if (lang != null) {
 				element.put("xml:lang", lang.toString());
 			}
-		} else if (resource instanceof TypedLiteral) {
+		} else if (resource instanceof Literal) {
 			element.put("type", "typed-literal");
-			element.put("datatype", TypedLiteral.class.cast(resource).getDataType().getUnicodeString());
-			element.put("value", TypedLiteral.class.cast(resource).getLexicalForm());
-		} else if (resource instanceof BNode) {
+			element.put("datatype", Literal.class.cast(resource).getDataType().getUnicodeString());
+			element.put("value", Literal.class.cast(resource).getLexicalForm());
+		} else if (resource instanceof BlankNode) {
 			element.put("type", "bnode");
 			element.put("value", "/");
 		} else {
@@ -152,7 +151,7 @@ public class ResultSetJsonMessageBodyWriter implements MessageBodyWriter<ResultS
 		JSONObject result = new JSONObject();
 		Set<Variable> keys = solutionMap.keySet();
 		for (Variable key : keys) {
-			result.put(key.getName(), createResultElement((Resource) solutionMap.get(key)));
+			result.put(key.getName(), createResultElement((RdfTerm) solutionMap.get(key)));
 		}
 		return result;
 	}

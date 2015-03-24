@@ -45,16 +45,15 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Language;
+import org.apache.commons.rdf.RdfTerm;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
+import org.apache.commons.rdf.Literal;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -154,33 +153,29 @@ public class ResultSetMessageBodyWriter implements MessageBodyWriter<ResultSet> 
 
 
     /**
-     * Helper: creates value element from {@link Resource} depending on its
+     * Helper: creates value element from {@link RdfTerm} depending on its
      * class
      *
      */
-    private Element createValueElement(Resource resource, Document doc) {
+    private Element createValueElement(RdfTerm resource, Document doc) {
         Element value = null;
-        if (resource instanceof UriRef) {
+        if (resource instanceof Iri) {
             value = doc.createElement("uri");
-            value.appendChild(doc.createTextNode(((UriRef) resource)
+            value.appendChild(doc.createTextNode(((Iri) resource)
                     .getUnicodeString()));
-        } else if (resource instanceof TypedLiteral) {
+        } else if (resource instanceof Literal) {
             value = doc.createElement("literal");
-            value.appendChild(doc.createTextNode(((TypedLiteral) resource)
+            value.appendChild(doc.createTextNode(((Literal) resource)
                     .getLexicalForm()));
-            value.setAttribute("datatype", (((TypedLiteral) resource)
+            value.setAttribute("datatype", (((Literal) resource)
                     .getDataType().getUnicodeString()));
-        } else if (resource instanceof PlainLiteral) {
-            value = doc.createElement("literal");
-            value.appendChild(doc.createTextNode(((PlainLiteral) resource)
-                    .getLexicalForm()));
-            Language lang = ((PlainLiteral) resource).getLanguage();
+            Language lang = ((Literal) resource).getLanguage();
             if (lang != null) {
                 value.setAttribute("xml:lang", (lang.toString()));
             }
         } else {
             value = doc.createElement("bnode");
-            value.appendChild(doc.createTextNode(((BNode) resource).toString()));
+            value.appendChild(doc.createTextNode(((BlankNode) resource).toString()));
         }
         return value;
     }
@@ -197,7 +192,7 @@ public class ResultSetMessageBodyWriter implements MessageBodyWriter<ResultSet> 
             Element bindingElement = doc.createElement("binding");
             bindingElement.setAttribute("name", key.getName());
             bindingElement.appendChild(createValueElement(
-                    (Resource) solutionMap.get(key), doc));
+                    (RdfTerm) solutionMap.get(key), doc));
             result.appendChild(bindingElement);
         }
     }

@@ -148,8 +148,8 @@ class WebProxy extends WeightedTcProvider with Logging {
 
   def listGraphs: java.util.Set[Iri] = {
     var result: java.util.Set[Iri] = new java.util.HashSet[Iri]
-    result.addAll(listGraphs)
-    result.addAll(listGraphs)
+    result.addAll(listMGraphs)
+    result.addAll(listImmutableGraphs)
     return result
   }
 

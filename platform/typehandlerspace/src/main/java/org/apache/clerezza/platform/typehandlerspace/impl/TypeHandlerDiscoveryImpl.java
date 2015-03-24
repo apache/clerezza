@@ -35,7 +35,7 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.typehandlerspace.SupportedTypes;
 import org.apache.clerezza.platform.typehandlerspace.TypeHandlerDiscovery;
 import org.apache.clerezza.platform.typepriority.TypePrioritizer;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 
@@ -56,8 +56,8 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
     @Reference
     private TypePrioritizer typePrioritizer;
 
-    private final Map<UriRef, Object> typeHandlerMap = Collections.synchronizedMap(
-            new HashMap<UriRef, Object>());
+    private final Map<Iri, Object> typeHandlerMap = Collections.synchronizedMap(
+            new HashMap<Iri, Object>());
     
     protected void bindTypeHandler(Object typeHandler) {
         SupportedTypes supportedTypes = typeHandler.getClass()
@@ -66,17 +66,17 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
             return;
         }
         for (String typeUriString : supportedTypes.types()) {
-            UriRef typeUri = new UriRef(typeUriString);
+            Iri typeUri = new Iri(typeUriString);
             typeHandlerMap.put(typeUri, typeHandler);
         }
     }
         
     protected void unbindTypeHandler(Object typeHandler) {
-        Iterator<UriRef> keys = typeHandlerMap.keySet().iterator();
-        Set<UriRef> toRemove = new HashSet<UriRef>(typeHandlerMap.size());
+        Iterator<Iri> keys = typeHandlerMap.keySet().iterator();
+        Set<Iri> toRemove = new HashSet<Iri>(typeHandlerMap.size());
         synchronized(typeHandlerMap) {
             while (keys.hasNext()) {
-                UriRef uriRef = keys.next();
+                Iri uriRef = keys.next();
                 if(typeHandlerMap.get(uriRef) == typeHandler) {
                     toRemove.add(uriRef);
                 }
@@ -89,12 +89,12 @@ public class TypeHandlerDiscoveryImpl implements TypeHandlerDiscovery {
     }
 
     @Override
-    public Object getTypeHandler(final Set<UriRef> types) {
+    public Object getTypeHandler(final Set<Iri> types) {
         return AccessController.doPrivileged(new PrivilegedAction<Object>() {
 
             @Override
             public Object run() {
-                Iterator<UriRef> prioritizedTypes = typePrioritizer.iterate(types);
+                Iterator<Iri> prioritizedTypes = typePrioritizer.iterate(types);
                 while (prioritizedTypes.hasNext()) {
                     Object result = typeHandlerMap.get(prioritizedTypes.next());
                     if (result != null) {
