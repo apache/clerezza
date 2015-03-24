@@ -53,7 +53,10 @@
         <module>ontologies</module>
         <module>rdfa</module>
         <module>simple.storage</module>
+        <module>storage.web</module>
+        <module>file.storage</module>
         <module>utils</module>
+        <module>web</module>
     </modules>
 
 </project>

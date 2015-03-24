@@ -72,11 +72,9 @@
                 <module>rdf</module>
                 <module>rdf.cris</module>
                 <module>rdf.enrichment</module>
-                <module>rdf.file.storage</module>
                 <module>rdf.locking</module>
                 <module>rdf.rdfjson</module>
                 <module>rdf.stable.serializer</module>
-                <module>rdf.web</module>
                 <module>shell</module>
                 <module>shell.felixshellcommand</module>
                 <module>bundledevtool</module>
@@ -93,7 +91,6 @@
                 <module>web.resources.scripts</module>
                 <module>web.resources.yui</module>
                 <module>rdf.storage.externalizer</module>
-                <module>rdf.storage.web</module>
 
                 <module>ext.virtuoso.jdbc</module>
                 <module>rdf.virtuoso.storage</module>
