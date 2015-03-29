@@ -32,7 +32,7 @@ import scala.reflect.io.VirtualDirectory
 class VirtualDirectoryWrapper(val wrapped: AbstractFile,
                 val childWrapper: (AbstractFile) => AbstractFile) extends VirtualDirectory(null, None)
                                            with GenericFileWrapperTrait {
-  lastModified =wrapped.lastModified
+  override val lastModified =wrapped.lastModified
 
   override def output = {
     wrapped.asInstanceOf[VirtualDirectory].output
@@ -52,9 +52,7 @@ class VirtualDirectoryWrapper(val wrapped: AbstractFile,
   override val name = {
     wrapped.name
   }
-  override def lookupPath(path: String, directory: Boolean): AbstractFile = {
-    childWrapper(wrapped.lookupPath(path, directory))
-  }
+
   override def lookupPathUnchecked(path: String, directory: Boolean): AbstractFile = {
     childWrapper(wrapped.lookupPathUnchecked(path, directory))
   }

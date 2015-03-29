@@ -121,7 +121,8 @@ public class ScalaServerPagesRenderlet implements Renderlet {
         } catch (MalformedURLException ex) {
             throw new WebApplicationException(ex);
         } catch (CompileErrorsException ex) {
-            logger.debug("ScriptException rendering ScalaServerPage: ", ex);
+            //logger.debug("ScriptException rendering ScalaServerPage: ", ex);
+            logger.error("Error compiling "+renderingSpecification+": "+ex.getMessage());
             Exception cause = (Exception) ex.getCause();
             if (cause != null) {
                 if (cause instanceof TypeRenderingException) {
@@ -176,6 +177,9 @@ public class ScalaServerPagesRenderlet implements Renderlet {
                 Throwable cause = e.getCause();
                 if (cause instanceof RuntimeException) {
                     throw (RuntimeException) cause;
+                }
+                if (cause instanceof CompileErrorsException) {
+                    throw (CompileErrorsException) cause;
                 }
                 throw new RuntimeException(e);
             }

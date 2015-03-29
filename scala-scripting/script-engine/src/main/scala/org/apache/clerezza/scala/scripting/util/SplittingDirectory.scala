@@ -70,9 +70,6 @@ class SplittingDirectory()
   }
   override val name = "(splitting)"
   
-  override def lookupPath(path: String, directory: Boolean): AbstractFile = {
-    childWrapper(wrapped.lookupPath(path, directory))
-  }
   override def lookupPathUnchecked(path: String, directory: Boolean): AbstractFile = {
     childWrapper(wrapped.lookupPathUnchecked(path, directory))
   }

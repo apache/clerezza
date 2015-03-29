@@ -163,7 +163,7 @@ class ScriptEngineFactory() extends  JavaxEngineFactory with BundleListener  {
                 println("visible stuff:")
                 System.out.println("stuff stuff stuff");
                 println("interpreter.valueOfTerm(\"zzScriptResult\"): "+interpreter.valueOfTerm("zzScriptResult"))
-                interpreter.visibleTermNames.foreach(println)
+                interpreter.allDefinedNames.foreach(println)
                 if (interpreter.reporter.hasErrors) {
                   throw new ScriptException("some error","script-file",1)
                 }

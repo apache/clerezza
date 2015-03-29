@@ -75,9 +75,6 @@ trait GenericFileWrapperTrait extends AbstractFile with Wrapper[AbstractFile] {
     wrapped.sizeOption
   }
 
-  override def lookupPath(path: String, directory: Boolean): AbstractFile = {
-    childWrapper(wrapped.lookupPath(path, directory))
-  }
   override def lookupPathUnchecked(path: String, directory: Boolean): AbstractFile = {
     childWrapper(wrapped.lookupPathUnchecked(path, directory))
   }

@@ -31,6 +31,8 @@ import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.utils.UnionGraph;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 
 /**
@@ -58,11 +60,12 @@ public class ContentGraphProvider {
      *               additional Graphs that are added to the content
      *               graph for reading"
      */
+    @Property(name = "additions", description = "Contains "
+     +               "additional Graphs that are added to the content "
+     +               "graph for reading", value = {"",""})
     public static final String CONTENT_ADDITIONS = "additions";
 
-    /**
-     * @scr.reference
-     */
+    @Reference
     private TcManager tcManager;
 
 

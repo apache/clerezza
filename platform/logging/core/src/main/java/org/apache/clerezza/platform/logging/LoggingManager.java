@@ -44,9 +44,9 @@ import org.apache.clerezza.platform.globalmenu.GlobalMenuItemsProvider;
 import org.apache.clerezza.platform.logging.ontologies.LOGGING;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.commons.rdf.BlankNode;
+import org.apache.commons.rdf.Iri;
+import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -78,7 +78,7 @@ public class LoggingManager implements GlobalMenuItemsProvider {
     public void activate(ComponentContext context)
             throws URISyntaxException, IOException {
         renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-                new UriRef(getClass().getResource(
+                new Iri(getClass().getResource(
                 "config-page-naked.ssp").toURI().toString()),
                 LOGGING.LoggingConfigPage, "naked",
                 MediaType.APPLICATION_XHTML_XML_TYPE, true);
@@ -112,8 +112,8 @@ public class LoggingManager implements GlobalMenuItemsProvider {
             throws IOException {
         AccessController.checkPermission(new LoggingManagerAccessPermission());
         TrailingSlash.enforcePresent(uriInfo);
-        SimpleMGraph resultMGraph = new SimpleMGraph();
-        GraphNode result = new GraphNode(new BNode(), resultMGraph);
+        SimpleGraph resultGraph = new SimpleGraph();
+        GraphNode result = new GraphNode(new BlankNode(), resultGraph);
         result.addPropertyValue(LOGGING.loggingConfig, getPropertiesAsString());
         result.addProperty(RDF.type, PLATFORM.HeadedPage);
         result.addProperty(RDF.type, LOGGING.LoggingConfigPage);

@@ -73,7 +73,7 @@ import org.xml.sax.SAXException;
  * 
  * @author daniel, mir, rbn
  */
-@Component
+@Component(immediate = true)
 @Service(Object.class)
 @Property(name = "javax.ws.rs", boolValue = true)
 @Reference(name = "contextProvider", referenceInterface = UserContextProvider.class,
@@ -187,6 +187,9 @@ public class GenericGraphNodeMBW implements MessageBodyWriter<GraphNode> {
                 } catch (TransformerException ex) {
                     throw new RuntimeException(ex);
                 }
+            } catch (RuntimeException ex) {
+                logger.error("error rendering GraphNode", ex);
+                throw ex;
             } finally {
                 ResultDocModifier.dispose();
             }

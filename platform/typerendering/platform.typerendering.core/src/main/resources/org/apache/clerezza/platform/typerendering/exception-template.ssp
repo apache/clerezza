@@ -19,7 +19,7 @@
  *
 */
 
-def typerendering(s: Any) = new UriRef("http://clerezza.org/2009/04/typerendering#"+s)
+def typerendering(s: Any) = new Iri("http://clerezza.org/2009/04/typerendering#"+s)
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 

@@ -20,10 +20,12 @@ package org.apache.clerezza.scala.scripting;
 
 import org.osgi.framework.BundleContext
 import scala.tools.nsc._;
-import scala.tools.nsc.interpreter._;
+//import scala.tools.nsc.interpreter._;
 import scala.tools.nsc.util._
 import java.io.PrintWriter
 import java.net._
+import scala.tools.nsc.interpreter.AbstractFileClassLoader
+import scala.tools.nsc.interpreter.IMain
 import scala.tools.nsc.reporters.Reporter
 
 
