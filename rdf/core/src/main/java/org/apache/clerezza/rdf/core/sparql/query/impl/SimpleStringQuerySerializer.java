@@ -20,9 +20,9 @@ package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.StringQuerySerializer;
 import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.AskQuery;

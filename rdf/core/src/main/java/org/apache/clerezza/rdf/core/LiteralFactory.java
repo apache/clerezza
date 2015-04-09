@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core;
 
 import org.apache.clerezza.rdf.core.impl.util.SimpleLiteralFactory;
-import org.apache.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Literal;
 
 /**
  * This class provides methods to convert java objects to typed literals and

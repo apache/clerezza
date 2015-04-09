@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core;
 
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * Thrown when a literal is of the wrong type for conversion to a java-type

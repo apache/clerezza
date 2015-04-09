@@ -15,10 +15,10 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.WatchableGraph;
-import org.apache.commons.rdf.event.FilterTriple;
-import org.apache.commons.rdf.event.GraphListener;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.WatchableGraph;
+import org.apache.clerezza.commons.rdf.event.FilterTriple;
+import org.apache.clerezza.commons.rdf.event.GraphListener;
 
 /**
  *

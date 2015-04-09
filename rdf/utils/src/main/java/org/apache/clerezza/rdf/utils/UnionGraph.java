@@ -27,12 +27,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.impl.utils.AbstractGraph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph;
 
 /**
  *

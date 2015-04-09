@@ -22,15 +22,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.access.TcManagerTest;
-import org.apache.commons.rdf.impl.utils.simple.SimpleMGraph;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleMGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 
 /**
  *

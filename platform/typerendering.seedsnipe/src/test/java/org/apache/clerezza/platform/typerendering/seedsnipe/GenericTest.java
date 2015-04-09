@@ -23,8 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.utils.GraphNode;
 

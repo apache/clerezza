@@ -26,8 +26,8 @@ import org.apache.clerezza.rdf.core.LiteralFactory;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.commons.rdf.Literal;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.templating.RenderingFunction;
 
 /**

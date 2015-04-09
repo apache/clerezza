@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;

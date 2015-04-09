@@ -31,15 +31,15 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 
 import org.apache.clerezza.rdf.core.access.TcProvider;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.test.TcProviderTest;
 import static org.junit.Assert.*;
 

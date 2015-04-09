@@ -38,17 +38,17 @@ import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.SecuredGraph;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.DC;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.OSGI;
@@ -57,7 +57,7 @@ import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.SIOC;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Literal;
 
 /**
  * @author hasan, tio

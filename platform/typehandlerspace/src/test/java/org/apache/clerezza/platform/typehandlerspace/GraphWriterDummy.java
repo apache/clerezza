@@ -31,7 +31,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 
 /**
  * 

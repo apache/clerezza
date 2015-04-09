@@ -3,8 +3,8 @@ package org.apache.clerezza.rdf.jena.tdb.internals;
 import java.util.AbstractSet;
 import java.util.Iterator;
 
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDF;
 
 /**

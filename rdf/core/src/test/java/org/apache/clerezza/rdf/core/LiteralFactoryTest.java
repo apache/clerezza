@@ -19,8 +19,8 @@
 package org.apache.clerezza.rdf.core;
 
 
-import org.apache.commons.rdf.Literal;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Iri;
 import java.util.Arrays;
 import java.util.Date;
 import org.junit.Test;

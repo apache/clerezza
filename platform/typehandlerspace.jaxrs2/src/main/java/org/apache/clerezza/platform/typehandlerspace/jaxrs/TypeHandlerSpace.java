@@ -31,8 +31,8 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.platform.typehandlerspace.TypeHandlerDiscovery;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;

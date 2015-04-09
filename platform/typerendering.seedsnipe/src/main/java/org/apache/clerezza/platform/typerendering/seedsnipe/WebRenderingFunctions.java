@@ -28,15 +28,15 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.clerezza.platform.typerendering.CallbackRenderer;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.Language;
-import org.apache.commons.rdf.Literal;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.Language;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.templating.RenderingFunction;
 import org.apache.clerezza.templating.RenderingFunctions;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.Graph;
 
 /**
  * 

@@ -38,11 +38,11 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**

@@ -40,13 +40,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
-import org.apache.commons.rdf.Language;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Language;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
-import org.apache.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;

@@ -17,7 +17,7 @@
 
 package org.apache.clerezza.platform;
 
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * This class gropus some constant values used by the clerezza.platform components

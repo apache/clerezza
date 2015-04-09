@@ -25,14 +25,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
 import org.apache.clerezza.rdf.jena.commons.Tria2JenaUtil;
-import org.apache.commons.rdf.impl.utils.AbstractGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph;
 import org.wymiwyg.commons.util.collections.BidiMap;
 
 /**

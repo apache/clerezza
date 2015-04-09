@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.junit.Assert;
 import org.junit.Test;

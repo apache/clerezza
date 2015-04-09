@@ -18,7 +18,7 @@ package org.apache.clerezza.rdf.utils.graphnodeprovider;
  * specific language governing permissions and limitations
  * under the License.
  */
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**

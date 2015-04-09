@@ -25,9 +25,9 @@ import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 import org.apache.clerezza.rdf.ontologies.SKOS04;
 import org.apache.clerezza.rdf.core.LiteralFactory;
@@ -40,11 +40,11 @@ public class RoundTripTest {
 
     @Test
     public void addAndCount() {
-        org.apache.commons.rdf.Graph mGraph = new SimpleGraph();
+        org.apache.clerezza.commons.rdf.Graph mGraph = new SimpleGraph();
         Graph jenaGraph = new JenaGraph(mGraph);
         Model model = ModelFactory.createModelForGraph(jenaGraph);
         model.add(DC.title, RDFS.label, "title");
-        org.apache.commons.rdf.Graph rewrappedGraph = new JenaGraphAdaptor(jenaGraph);
+        org.apache.clerezza.commons.rdf.Graph rewrappedGraph = new JenaGraphAdaptor(jenaGraph);
         Assert.assertEquals(1, rewrappedGraph.size());
         rewrappedGraph.add(new TripleImpl(new BlankNode(), SKOS04.prefLabel,
                 LiteralFactory.getInstance().createTypedLiteral("foo")));

@@ -25,8 +25,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.clerezza.platform.Constants;
 
 import org.osgi.service.component.ComponentContext;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.utils.UnionGraph;

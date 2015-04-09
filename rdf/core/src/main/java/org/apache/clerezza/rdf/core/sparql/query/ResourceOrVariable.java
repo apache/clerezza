@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RdfTerm;
 
 /**
  * Wraps either a {@link RdfTerm} or a {@link Variable}

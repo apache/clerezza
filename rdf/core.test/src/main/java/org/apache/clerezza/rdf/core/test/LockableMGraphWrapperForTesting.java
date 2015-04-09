@@ -21,11 +21,11 @@ package org.apache.clerezza.rdf.core.test;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * Wrappes an Graph as a LockableGraph. If a method is called that reads

@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.Set;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * This interface definition is not yet stable and may change in future.

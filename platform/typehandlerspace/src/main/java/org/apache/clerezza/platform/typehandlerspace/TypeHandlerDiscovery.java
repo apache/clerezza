@@ -20,7 +20,7 @@ package org.apache.clerezza.platform.typehandlerspace;
 
 import java.util.Set;
 
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * Implementations of this interface map RDF-types to type handlers. A type

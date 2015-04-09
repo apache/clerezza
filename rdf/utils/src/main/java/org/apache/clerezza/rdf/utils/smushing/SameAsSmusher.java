@@ -24,10 +24,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

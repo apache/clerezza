@@ -19,7 +19,7 @@
 package org.apache.clerezza.platform.typerendering.scalaserverpages;
 
 import org.apache.clerezza.platform.typerendering.TypeRenderlet;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.scala.scripting.CompilerService;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;

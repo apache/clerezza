@@ -29,8 +29,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 

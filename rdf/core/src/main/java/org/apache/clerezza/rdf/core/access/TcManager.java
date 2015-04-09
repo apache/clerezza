@@ -31,11 +31,11 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedGraph;
 import org.apache.clerezza.rdf.core.sparql.NoQueryEngineException;
 import org.apache.clerezza.rdf.core.sparql.ParseException;

@@ -1,6 +1,6 @@
 package org.apache.clerezza.rdf.jena.tdb.internals;
 
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * Provides static methods in order to represent classes used to

@@ -21,7 +21,7 @@
 
 package org.apache.clerezza.platform.typerendering.gui
 
-import org.apache.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Iri
 
 object Ontology {
 

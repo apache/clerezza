@@ -30,17 +30,17 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 
 /**
  * This class provides a OSGi service for getting system properties from

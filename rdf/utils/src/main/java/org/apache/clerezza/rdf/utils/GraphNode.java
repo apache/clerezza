@@ -18,13 +18,13 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.commons.rdf.*;
+import org.apache.clerezza.commons.rdf.*;
 
 /**
  * This class represents a node in the context of a graph. It provides

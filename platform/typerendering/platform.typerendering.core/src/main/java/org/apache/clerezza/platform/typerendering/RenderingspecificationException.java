@@ -21,10 +21,10 @@ package org.apache.clerezza.platform.typerendering;
 import java.net.URI;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 

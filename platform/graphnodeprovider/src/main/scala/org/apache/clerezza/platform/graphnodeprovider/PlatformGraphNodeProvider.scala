@@ -20,7 +20,7 @@ package org.apache.clerezza.platform.graphnodeprovider
  */
 
 import java.net.{HttpURLConnection, URL}
-import org.apache.commons.rdf._
+import org.apache.clerezza.commons.rdf._
 import org.slf4j.scala._
 import org.apache.clerezza.rdf.core.access._
 import org.apache.clerezza.rdf.core._

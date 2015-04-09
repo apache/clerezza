@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql;
 
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import java.util.Map;
-import org.apache.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RdfTerm;
 
 /**
  * A set of mapping from variable names to solutions.

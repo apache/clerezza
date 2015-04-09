@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Literal;
 
 /**
  * Wraps a {@link Literal} in an {@link Expression}.

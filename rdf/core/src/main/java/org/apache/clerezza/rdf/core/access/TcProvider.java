@@ -20,9 +20,9 @@ package org.apache.clerezza.rdf.core.access;
 
 import java.util.Set;
 
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * A TC (Graph) Provider allows access to and optionally 

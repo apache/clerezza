@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
-import org.apache.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Iri
 
 /**
  * A IRI-namespace prefix

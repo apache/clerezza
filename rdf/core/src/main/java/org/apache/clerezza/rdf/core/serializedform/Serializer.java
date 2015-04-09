@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;

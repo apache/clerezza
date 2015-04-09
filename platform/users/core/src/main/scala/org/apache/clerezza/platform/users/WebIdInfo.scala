@@ -27,8 +27,8 @@ package org.apache.clerezza.platform.users
  * many things are easier for user with URIs.
  *
  */
-import org.apache.commons.rdf.Graph
-import org.apache.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Graph
+import org.apache.clerezza.commons.rdf.Iri
 
 trait WebIdInfo {
 

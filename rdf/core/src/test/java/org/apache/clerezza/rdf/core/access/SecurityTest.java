@@ -33,15 +33,15 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedDummy;
 import org.apache.clerezza.rdf.core.access.security.TcPermission;
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 
 /**
  *

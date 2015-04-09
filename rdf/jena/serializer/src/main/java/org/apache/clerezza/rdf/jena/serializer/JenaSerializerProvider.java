@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.serializedform.UnsupportedSerializationFormatException;
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;

@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 

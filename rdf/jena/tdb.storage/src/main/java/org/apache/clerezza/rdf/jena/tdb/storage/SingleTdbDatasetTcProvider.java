@@ -13,18 +13,18 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.QueryableTcProvider;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.jena.tdb.internals.ModelGraph;
 import org.apache.clerezza.rdf.jena.tdb.internals.Symbols;
 import org.apache.clerezza.rdf.jena.tdb.internals.IriSet;
@@ -396,7 +396,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.clerezza.commons.rdf.Iri)
      */
     @Override
     public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
@@ -417,7 +417,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.clerezza.commons.rdf.Iri)
      */
     @Override
     public Graph getMGraph(Iri name) throws NoSuchEntityException {
@@ -438,7 +438,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#getTriples(org.apache.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#getTriples(org.apache.clerezza.commons.rdf.Iri)
      */
     @Override
     public Graph getGraph(Iri name) throws NoSuchEntityException {
@@ -503,7 +503,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
 
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.clerezza.commons.rdf.Iri)
      */
     @Override
     public Graph createGraph(Iri name) throws UnsupportedOperationException,
@@ -526,7 +526,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.commons.rdf.Iri, org.apache.commons.rdf.Graph)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.clerezza.commons.rdf.Iri, org.apache.clerezza.commons.rdf.Graph)
      */
     @Override
     public ImmutableGraph createImmutableGraph(Iri name, Graph triples) throws UnsupportedOperationException,
@@ -556,7 +556,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#deleteGraph(org.apache.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#deleteGraph(org.apache.clerezza.commons.rdf.Iri)
      */
     @Override
     public void deleteGraph(Iri name) throws UnsupportedOperationException,
@@ -587,7 +587,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#getNames(org.apache.commons.rdf.ImmutableGraph)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#getNames(org.apache.clerezza.commons.rdf.ImmutableGraph)
      */
     @Override
     public Set<Iri> getNames(ImmutableGraph graph) {

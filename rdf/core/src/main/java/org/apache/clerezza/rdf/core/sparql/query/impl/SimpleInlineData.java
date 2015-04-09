@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.query.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RdfTerm;
 import org.apache.clerezza.rdf.core.sparql.query.InlineData;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 

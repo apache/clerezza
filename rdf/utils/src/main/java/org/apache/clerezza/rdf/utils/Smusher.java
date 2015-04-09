@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.rdf.utils.smushing.IfpSmusher;
 import org.apache.clerezza.rdf.utils.smushing.SameAsSmusher;
 import org.slf4j.Logger;

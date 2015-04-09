@@ -30,7 +30,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
-import org.apache.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
 
 /**
  * @scr.component

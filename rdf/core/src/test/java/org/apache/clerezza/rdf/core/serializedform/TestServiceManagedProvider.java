@@ -19,10 +19,10 @@
 package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.InputStream;
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * This class is listed in

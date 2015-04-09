@@ -30,7 +30,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.rdf.core.serializedform.UnsupportedParsingFormatException;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 /**
  * A {@link org.apache.clerezza.rdf.core.serializedform.ParsingProvider} based on Jena
  *
@@ -51,7 +51,7 @@ import org.apache.commons.rdf.Iri;
 public class JenaParserProvider implements ParsingProvider {
 
     @Override
-    public void parse(org.apache.commons.rdf.Graph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
+    public void parse(org.apache.clerezza.commons.rdf.Graph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
         String jenaFormat = getJenaFormat(formatIdentifier);
         com.hp.hpl.jena.graph.Graph graph = new JenaGraph(target);
         Model model = ModelFactory.createModelForGraph(graph);

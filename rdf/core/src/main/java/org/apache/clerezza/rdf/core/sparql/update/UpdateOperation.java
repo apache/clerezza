@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.update;
 
 import java.util.Set;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 
 /**

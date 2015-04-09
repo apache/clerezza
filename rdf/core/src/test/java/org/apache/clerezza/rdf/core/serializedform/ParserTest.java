@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
 import java.io.InputStream;
 import junit.framework.Assert;
 

@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  *

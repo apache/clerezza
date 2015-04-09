@@ -27,14 +27,14 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.UnsupportedFormatException;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -46,8 +46,8 @@ import org.apache.clerezza.templating.RenderingFunctions;
 import org.apache.clerezza.templating.seedsnipe.datastructure.DataFieldResolver;
 import org.apache.clerezza.templating.seedsnipe.graphnodeadapter.GraphNodeDataFieldResolver;
 import org.apache.clerezza.templating.seedsnipe.simpleparser.DefaultParser;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Literal;
 
 /**
  * Unit Test for RDF Templating.

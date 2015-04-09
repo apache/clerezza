@@ -20,8 +20,8 @@ package org.apache.clerezza.rdf.core.serializedform;
 
 import java.io.InputStream;
 
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * An instance of this class parses RDF-ImmutableGraph from one or more serialization

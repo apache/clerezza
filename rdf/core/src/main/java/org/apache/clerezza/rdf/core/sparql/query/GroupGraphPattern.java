@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * Defines a group ImmutableGraph pattern.

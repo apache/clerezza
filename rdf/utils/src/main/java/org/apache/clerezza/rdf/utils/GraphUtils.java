@@ -22,13 +22,13 @@ package org.apache.clerezza.rdf.utils;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 
 /**
  * Utility methods to manipulate <code>Graph</code>s

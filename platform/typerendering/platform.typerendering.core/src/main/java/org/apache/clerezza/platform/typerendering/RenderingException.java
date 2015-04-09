@@ -22,13 +22,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.ontologies.RDF;
-import org.apache.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Literal;
 
 /**
  * This exception is thrown when an exception occured while rendering a

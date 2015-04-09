@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.core.test;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Triple;
 
 /**
  * Wrapps an iterator<Triple> reading all elements to a cache on construction

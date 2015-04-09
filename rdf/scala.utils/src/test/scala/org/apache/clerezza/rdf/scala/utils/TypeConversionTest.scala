@@ -18,11 +18,11 @@ package org.apache.clerezza.rdf.scala.utils
  * specific language governing permissions and limitations
  * under the License.
  */
-import org.apache.commons.rdf.Iri
-import org.apache.commons.rdf.Language
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl
-import org.apache.commons.rdf.impl.utils.TripleImpl
-import org.apache.commons.rdf.impl.utils.TypedLiteralImpl
+import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Language
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl
+import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl
 import org.junit._
 import org.apache.clerezza.rdf.core._
 

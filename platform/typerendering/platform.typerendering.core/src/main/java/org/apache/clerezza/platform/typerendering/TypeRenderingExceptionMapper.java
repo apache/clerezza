@@ -29,7 +29,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;

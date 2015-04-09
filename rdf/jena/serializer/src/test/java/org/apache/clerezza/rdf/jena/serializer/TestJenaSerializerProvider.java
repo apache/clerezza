@@ -24,19 +24,19 @@ import java.io.InputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.SerializingProvider;
 import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.BlankNode;
 
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 
 /**
  * Serializes a ImmutableGraph to different formats

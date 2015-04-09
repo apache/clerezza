@@ -18,9 +18,9 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.query.ResourceOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;

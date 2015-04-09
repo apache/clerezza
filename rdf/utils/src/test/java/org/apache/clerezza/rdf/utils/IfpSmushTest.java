@@ -18,12 +18,12 @@
  */
 package org.apache.clerezza.rdf.utils;
 
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;

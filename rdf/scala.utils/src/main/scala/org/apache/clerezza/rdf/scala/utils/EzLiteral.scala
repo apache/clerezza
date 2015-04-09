@@ -21,12 +21,12 @@ package org.apache.clerezza.rdf.scala.utils
 
 //import org.apache.clerezza.rdf.core.impl.{TypedLiteralImpl, PlainLiteralImpl}
 import org.apache.clerezza.rdf.ontologies.XSD
-import org.apache.commons.rdf.Iri
-import org.apache.commons.rdf.Language
-import org.apache.commons.rdf.Literal
-import org.apache.commons.rdf.impl.utils.PlainLiteralImpl
-import org.apache.commons.rdf.impl.utils.TypedLiteralImpl
-//import org.apache.commons.rdf.core.{TypedLiteral, Language, PlainLiteral, Iri}
+import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Language
+import org.apache.clerezza.commons.rdf.Literal
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl
+import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl
+//import org.apache.clerezza.commons.rdf.core.{TypedLiteral, Language, PlainLiteral, Iri}
 
 object EzLiteral extends EzLiteralImplicits
 

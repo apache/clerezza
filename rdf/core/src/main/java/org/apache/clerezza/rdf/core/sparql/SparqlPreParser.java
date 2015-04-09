@@ -22,7 +22,7 @@ import java.io.StringReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.query.AlternativeGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.DataSet;

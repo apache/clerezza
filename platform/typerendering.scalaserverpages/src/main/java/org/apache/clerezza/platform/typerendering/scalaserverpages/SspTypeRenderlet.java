@@ -21,7 +21,7 @@ package org.apache.clerezza.platform.typerendering.scalaserverpages;
 import java.util.logging.Level;
 import org.apache.clerezza.platform.typerendering.CallbackRenderer;
 import org.apache.clerezza.platform.typerendering.TypeRenderlet;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.scala.scripting.CompilerService;
 import org.slf4j.Logger;

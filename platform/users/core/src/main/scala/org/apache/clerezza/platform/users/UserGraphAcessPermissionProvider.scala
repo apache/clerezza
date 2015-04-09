@@ -18,7 +18,7 @@
 /*package org.apache.clerezza.platform.users
 
 import org.apache.clerezza.platform.security.WebIdBasedPermissionProvider
-import org.apache.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Iri
 
 class UserGraphAcessPermissionProvider extends WebIdBasedPermissionProvider {
   

@@ -27,11 +27,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
 import org.apache.clerezza.rdf.jena.commons.Tria2JenaUtil;
 import org.wymiwyg.commons.util.collections.BidiMap;
@@ -57,14 +57,14 @@ public class JenaGraph extends GraphBase implements com.hp.hpl.jena.graph.Graph 
 
 
 
-    final org.apache.commons.rdf.Graph graph;
+    final org.apache.clerezza.commons.rdf.Graph graph;
     final BidiMap<BlankNode, Node> tria2JenaBNodes = new BidiMapImpl<BlankNode, Node>();
     final Jena2TriaUtil jena2TriaUtil =
             new Jena2TriaUtil(tria2JenaBNodes.inverse());
     final Tria2JenaUtil tria2JenaUtil =
             new Tria2JenaUtil(tria2JenaBNodes);
 
-    public JenaGraph(org.apache.commons.rdf.Graph graph) {
+    public JenaGraph(org.apache.clerezza.commons.rdf.Graph graph) {
         this.graph = graph;
     }
 

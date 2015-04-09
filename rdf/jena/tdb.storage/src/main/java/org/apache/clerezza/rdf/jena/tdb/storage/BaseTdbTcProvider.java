@@ -3,7 +3,7 @@ package org.apache.clerezza.rdf.jena.tdb.storage;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.rdf.core.access.QueryableTcProvider;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.jena.sparql.ResultSetWrapper;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 abstract class BaseTdbTcProvider implements QueryableTcProvider{
 

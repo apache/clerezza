@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.List;
-import org.apache.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RdfTerm;
 
 /**
  *

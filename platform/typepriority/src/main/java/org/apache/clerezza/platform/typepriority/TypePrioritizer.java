@@ -33,11 +33,11 @@ import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.config.SystemConfig;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.RdfList;
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

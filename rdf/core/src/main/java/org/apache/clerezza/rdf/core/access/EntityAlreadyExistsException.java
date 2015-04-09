@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * is thrown on an attempt to create an entity with a name which already exists

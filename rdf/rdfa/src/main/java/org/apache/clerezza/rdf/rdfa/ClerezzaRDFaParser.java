@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.rootdev.javardfa.Parser;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

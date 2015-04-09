@@ -34,15 +34,15 @@ import java.util.TreeSet;
 
 
 import org.apache.clerezza.rdf.core.serializedform.Parser;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.Literal;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.wymiwyg.commons.util.arguments.AnnotatedInterfaceArguments;
 import org.wymiwyg.commons.util.arguments.ArgumentHandler;
 import org.wymiwyg.commons.util.arguments.InvalidArgumentsException;
@@ -133,7 +133,7 @@ public class SchemaGen {
             out.println(';');
         }
         out.println();
-        out.println("import org.apache.commons.rdf.Iri;");
+        out.println("import org.apache.clerezza.commons.rdf.Iri;");
         out.println();
         out.print("public class ");
         out.print(getSimpleName());

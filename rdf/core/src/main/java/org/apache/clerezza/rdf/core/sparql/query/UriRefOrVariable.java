@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * Wraps either a {@link Iri} or a {@link Variable}.

@@ -32,7 +32,7 @@ import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.platform.typerendering.scala._
 import org.apache.clerezza.rdf.ontologies.DC
-import org.apache.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Iri
 
 /**
  * A Renderlet for the menu

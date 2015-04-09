@@ -28,7 +28,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.osgi.framework.BundleContext;
 import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;

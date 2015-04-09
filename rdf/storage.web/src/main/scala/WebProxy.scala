@@ -20,10 +20,10 @@
 package org.apache.clerezza.rdf.storage.web
 
 
-import org.apache.commons.rdf.ImmutableGraph
-import org.apache.commons.rdf.Iri
-import org.apache.commons.rdf._
-import org.apache.commons.rdf.impl.utils.AbstractGraph
+import org.apache.clerezza.commons.rdf.ImmutableGraph
+import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf._
+import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph
 import org.osgi.service.component.ComponentContext
 import java.io.IOException
 import java.net.{HttpURLConnection, URL}

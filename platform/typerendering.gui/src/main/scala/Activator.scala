@@ -21,8 +21,8 @@
 
 package org.apache.clerezza.platform.typerendering.gui
 
-import org.apache.commons.rdf.BlankNode
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph
+import org.apache.clerezza.commons.rdf.BlankNode
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph
 import org.osgi.framework.{BundleActivator, BundleContext, ServiceRegistration}
 import scala.collection.JavaConversions._
 import org.apache.clerezza.platform.globalmenu.GlobalMenuItem

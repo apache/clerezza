@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.impl.util;
 
-import org.apache.commons.rdf.impl.utils.TypedLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,10 +31,10 @@ import java.util.Set;
 import org.apache.clerezza.rdf.core.InvalidLiteralTypeException;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.NoConvertorException;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.impl.util.Base64;
 import org.apache.clerezza.rdf.core.impl.util.W3CDateFormat;
-import org.apache.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Literal;
 
 /**
  * An implementation of literal factory currently supporting only

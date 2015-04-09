@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.List;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * Defines a function call which is one form of {@link Expression}.

@@ -35,7 +35,7 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.typehandlerspace.SupportedTypes;
 import org.apache.clerezza.platform.typehandlerspace.TypeHandlerDiscovery;
 import org.apache.clerezza.platform.typepriority.TypePrioritizer;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 

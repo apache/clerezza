@@ -24,11 +24,11 @@ import org.apache.clerezza.rdf.utils.GraphNode
 import java.util.Iterator
 import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
-import org.apache.commons.rdf.Graph
-import org.apache.commons.rdf.Iri
-import org.apache.commons.rdf.Literal
-import org.apache.commons.rdf.RdfTerm
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph
+import org.apache.clerezza.commons.rdf.Graph
+import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Literal
+import org.apache.clerezza.commons.rdf.RdfTerm
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph
 import org.apache.clerezza.rdf.utils.UnionGraph
 
 

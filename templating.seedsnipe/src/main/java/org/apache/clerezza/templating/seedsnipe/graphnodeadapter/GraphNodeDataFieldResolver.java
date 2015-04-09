@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -40,7 +40,7 @@ import org.apache.clerezza.templating.seedsnipe.datastructure.FieldDoesNotHaveDi
 import org.apache.clerezza.templating.seedsnipe.datastructure.FieldIndexOutOfBoundsException;
 import org.apache.clerezza.templating.seedsnipe.datastructure.InvalidElementException;
 import org.apache.clerezza.templating.seedsnipe.simpleparser.DefaultParser;
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Graph;
 
 /**
  * Data Model for {@link GraphNode} to be used with {@link DefaultParser}.

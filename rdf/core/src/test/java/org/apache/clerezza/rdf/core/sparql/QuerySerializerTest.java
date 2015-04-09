@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.sparql.query.BinaryOperation;
 import org.apache.clerezza.rdf.core.sparql.query.BuiltInCall;
 import org.apache.clerezza.rdf.core.sparql.query.Expression;

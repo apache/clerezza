@@ -18,7 +18,7 @@
 package org.apache.clerezza.platform.typerendering;
 
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 
 /**
  * Over the RenderletManagerImpl renderlets can be registered.

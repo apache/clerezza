@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.rdf.simple.storage;
 
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.test.GraphTest;
 
 

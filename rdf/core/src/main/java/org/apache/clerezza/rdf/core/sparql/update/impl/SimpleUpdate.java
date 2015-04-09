@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.update.Update;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;

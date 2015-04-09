@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathExpression;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathExpressionOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathPattern;

@@ -2,11 +2,11 @@ package org.apache.clerezza.rdf.jena.tdb.internals;
 
 import java.util.concurrent.locks.ReadWriteLock;
 
-import org.apache.commons.rdf.ImmutableGraph;
-import org.apache.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
 
-import org.apache.commons.rdf.Iri;
-import org.apache.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedGraphWrapper;
 import org.apache.clerezza.rdf.core.impl.util.PrivilegedGraphWrapper;
 import org.apache.clerezza.rdf.jena.storage.JenaGraphAdaptor;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.TDB;
-import org.apache.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
 
 /**
  * Represents the Jena {@link Model} and the Clerezza {@link ImmutableGraph} or

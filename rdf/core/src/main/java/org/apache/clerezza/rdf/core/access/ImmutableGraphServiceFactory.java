@@ -21,8 +21,8 @@ package org.apache.clerezza.rdf.core.access;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 
 /**

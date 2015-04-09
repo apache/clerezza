@@ -32,7 +32,7 @@ import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import java.security.{PrivilegedAction, AccessController}
-import org.apache.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.Iri
 import org.osgi.framework.{BundleContext, ServiceReference}
 import org.apache.clerezza.rdf.scala.utils.RichGraphNode
 

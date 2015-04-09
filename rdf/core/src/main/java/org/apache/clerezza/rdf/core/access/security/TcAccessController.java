@@ -32,17 +32,17 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.commons.rdf.BlankNode;
-import org.apache.commons.rdf.BlankNodeOrIri;
-import org.apache.commons.rdf.RdfTerm;
-import org.apache.commons.rdf.Triple;
-import org.apache.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Iri;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.utils.security.PermissionParser;
-import org.apache.commons.rdf.Graph;
-import org.apache.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Literal;
 
 /**
  * Controls the permissions needed to access a triple collection provided by
