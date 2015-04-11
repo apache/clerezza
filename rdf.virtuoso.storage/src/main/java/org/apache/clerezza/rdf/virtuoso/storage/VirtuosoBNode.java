@@ -30,7 +30,7 @@ public class VirtuosoBNode extends BNode {
 		return skolemId;
 	}
 	
-	public String asSkolemIri(){
+	public String asSkolemIRI(){
 		return new StringBuilder().append('<').append(skolemId).append('>').toString();
 	}
 	

@@ -115,10 +115,10 @@ public class PlatformConfig {
      * @return
      */
     public GraphNode getPlatformInstance() {
-        return new GraphNode(getPlatformInstanceRdfTerm(), systemGraph);
+        return new GraphNode(getPlatformInstanceRDFTerm(), systemGraph);
     }
 
-    private BlankNodeOrIRI getPlatformInstanceRdfTerm() {
+    private BlankNodeOrIRI getPlatformInstanceRDFTerm() {
         Lock l = systemGraph.getLock().readLock();
         l.lock();
         try {
@@ -164,7 +164,7 @@ public class PlatformConfig {
      * @param baseUri The base URI which will be added to the platform instance
      */
     public void addBaseUri(IRI baseUri) {
-        systemGraph.add(new TripleImpl(getPlatformInstanceRdfTerm(), PLATFORM.baseUri, baseUri));
+        systemGraph.add(new TripleImpl(getPlatformInstanceRDFTerm(), PLATFORM.baseUri, baseUri));
     }
 
     /**
@@ -173,7 +173,7 @@ public class PlatformConfig {
      * @param baseUri The base URI which will be removed from the platform instance
      */
     public void removeBaseUri(IRI baseUri) {
-        systemGraph.remove(new TripleImpl(getPlatformInstanceRdfTerm(), PLATFORM.baseUri, baseUri));
+        systemGraph.remove(new TripleImpl(getPlatformInstanceRDFTerm(), PLATFORM.baseUri, baseUri));
     }
 
     protected void activate(ComponentContext componentContext) {

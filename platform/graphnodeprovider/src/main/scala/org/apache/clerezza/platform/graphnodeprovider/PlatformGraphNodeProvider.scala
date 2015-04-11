@@ -47,7 +47,7 @@ class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
   /**
    * Get a GraphNode for the specified resource, see class comments for details.
    */
-  def get(uriRef: Iri): GraphNode = {
+  def get(uriRef: IRI): GraphNode = {
     val uriString = uriRef.getUnicodeString
     val isLocal: Boolean = {
       import scala.collection.JavaConversions._
@@ -59,10 +59,10 @@ class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
 
   /**
    * Get a GraphNode for the specified resource, The resource is assumed to be local, i.e. the method behaves like
-   * get(Iri) for a Uri with an authority section contained in the Set retuned by
+   * get(IRI) for a Uri with an authority section contained in the Set retuned by
    * <code>org.apache.clerezza.platform.config.PlatformConfig#getBaseUris()</code>
    */
-  def getLocal(uriRef: Iri): GraphNode = {
+  def getLocal(uriRef: IRI): GraphNode = {
     get(uriRef, true)
   }
     
@@ -70,17 +70,17 @@ class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
     /**
      *return true iff getLocal(uriRef).getNodeContext.size > 0
      */
-    def existsLocal(uriRef: Iri): Boolean = {
+    def existsLocal(uriRef: IRI): Boolean = {
         val cgGraph = cgProvider.getContentGraph
         lazy val localInstanceUri = {
             val uri = new java.net.URI(uriRef.getUnicodeString)
-      new Iri(Constants.URN_LOCAL_INSTANCE + uri.getPath)
+      new IRI(Constants.URN_LOCAL_INSTANCE + uri.getPath)
     }
         //TODO handle /user/
         existsInGraph(uriRef,cgGraph) || existsInGraph(localInstanceUri, cgGraph)
     }
   
-    private[this] def existsInGraph(nodeUri: Iri, tc: Graph): Boolean = {
+    private[this] def existsInGraph(nodeUri: IRI, tc: Graph): Boolean = {
         var readLock: Lock = tc.getLock.readLock
         readLock.lock
         try {
@@ -92,7 +92,7 @@ class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
     }
     
   
-  private def get(uriRef: Iri, isLocal: Boolean): GraphNode = {
+  private def get(uriRef: IRI, isLocal: Boolean): GraphNode = {
     val uriString = uriRef.getUnicodeString
     
 
@@ -106,7 +106,7 @@ class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
       uri.getScheme+"://"+uri.getAuthority
     }
 
-    val anyHostUri = new Iri(Constants.URN_LOCAL_INSTANCE + uriPath)
+    val anyHostUri = new IRI(Constants.URN_LOCAL_INSTANCE + uriPath)
 
     var mGraphs: List[Graph] = Nil
 
@@ -129,12 +129,12 @@ class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
       val nextSlash = uriPath.indexOf('/',6)    
       if (nextSlash != -1) {
         val userName = uriPath.substring(6, nextSlash)
-        val webIdOption = AccessController.doPrivileged(new PrivilegedAction[Option[Iri]]() {
-            def run(): Option[Iri] = {
+        val webIdOption = AccessController.doPrivileged(new PrivilegedAction[Option[IRI]]() {
+            def run(): Option[IRI] = {
               val userNode: GraphNode = userManager.getUserInSystemGraph(userName)
               if (userNode != null) {
                 userNode.getNode match {
-                  case u: Iri => Some(u)
+                  case u: IRI => Some(u)
                   case _ => None
                 }
               } else {
@@ -191,7 +191,7 @@ class PlatformGraphNodeProvider extends GraphNodeProvider with Logging {
         }
       }
       
-      addToUnion(tcManager.getGraph(new Iri(graphUriString)))
+      addToUnion(tcManager.getGraph(new IRI(graphUriString)))
     }
 
     val unionGraph = new UnionGraph(mGraphs:_*);

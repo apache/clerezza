@@ -678,9 +678,9 @@ public class DataAccess {
 		if (object == null)
 			return null;
 		if (object instanceof UriRef) {
-			return toVirtIri((UriRef) object);
+			return toVirtIRI((UriRef) object);
 		} else if (object instanceof BNode) {
-			return toVirtBnode((BNode) object).asSkolemIri();
+			return toVirtBnode((BNode) object).asSkolemIRI();
 		} else if (object instanceof PlainLiteral) {
 			return toVirtPlainLiteral((PlainLiteral) object);
 		} else if (object instanceof TypedLiteral) {
@@ -708,7 +708,7 @@ public class DataAccess {
 						.equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"));
 		return new StringBuilder().append('"').append('"').append('"')
 				.append(prepared).append('"').append('"').append('"')
-				.append("^^").append(toVirtIri(dt)).toString();
+				.append("^^").append(toVirtIRI(dt)).toString();
 	}
 
 	private StringBuilder prepareString(String str, boolean xml) {
@@ -766,11 +766,11 @@ public class DataAccess {
 		logger.debug("toVirtPredicate(UriRef {}) ", predicate);
 		if (predicate == null)
 			return null;
-		return toVirtIri(predicate);
+		return toVirtIRI(predicate);
 	}
 
-	private String toVirtIri(UriRef ur) {
-		logger.debug("toVirtIri(UriRef {})", ur);
+	private String toVirtIRI(UriRef ur) {
+		logger.debug("toVirtIRI(UriRef {})", ur);
 		return "<" + ur.getUnicodeString() + ">";
 	}
 
@@ -786,9 +786,9 @@ public class DataAccess {
 			return null;
 		}
 		if (subject instanceof UriRef) {
-			return toVirtIri((UriRef) subject);
+			return toVirtIRI((UriRef) subject);
 		} else if (subject instanceof BNode) {
-			return toVirtBnode((BNode) subject).asSkolemIri();
+			return toVirtBnode((BNode) subject).asSkolemIRI();
 		} else {
 			// These should be the only 2 implementations
 			throw new IllegalArgumentException(

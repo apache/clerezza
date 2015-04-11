@@ -129,9 +129,9 @@ public class BackupMessageBodyWriter implements MessageBodyWriter<Backup> {
             compressedTcs.putNextEntry(new ZipEntry(folder));
 
             Set<IRI> tripleCollections = tcManager.listGraphs();
-            Iterator<IRI> tcIris = tripleCollections.iterator();
-            while (tcIris.hasNext()) {
-                IRI tcUri = tcIris.next();
+            Iterator<IRI> tcIRIs = tripleCollections.iterator();
+            while (tcIRIs.hasNext()) {
+                IRI tcUri = tcIRIs.next();
                 String fileName = folder + getTcFileName(tcUri, ".nt",
                         fileNameCount);
                 Graph tripleCollection = tcManager.getGraph(tcUri);

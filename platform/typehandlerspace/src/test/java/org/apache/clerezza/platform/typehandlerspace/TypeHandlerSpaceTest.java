@@ -34,7 +34,7 @@ public class TypeHandlerSpaceTest {
 //    
 //    private static LockableGraph mGraph = new LockableGraphWrapper(new SimpleGraph());
 //
-//    Iri myType = new Iri("org.example/myType");
+//    IRI myType = new IRI("org.example/myType");
 //    
 //    @Path("/myTypeHandler")
 //    public static class MyTypeHandler {
@@ -74,7 +74,7 @@ public class TypeHandlerSpaceTest {
 //        
 //        int port = createTestWebServer().getPort();
 //
-//        Iri uri = new Iri("http://localhost:" + port + "/test");
+//        IRI uri = new IRI("http://localhost:" + port + "/test");
 //        // Setup mGraph
 //        Triple triple = new TripleImpl(uri, RDF.type, myType);
 //        mGraph.add(triple);
@@ -109,7 +109,7 @@ public class TypeHandlerSpaceTest {
 //    public void testGet() throws IOException {
 //        
 //        int port = createTestWebServer().getPort();        
-//        Iri uri = new Iri("http://localhost:" + port + "/test");
+//        IRI uri = new IRI("http://localhost:" + port + "/test");
 //        
 //        // Setup mGraph
 //        Triple triple = new TripleImpl(uri, RDF.type, myType);
@@ -138,7 +138,7 @@ public class TypeHandlerSpaceTest {
 //    public void testGetDescription() throws IOException {
 //        
 //        int port = createTestWebServer().getPort();
-//        Iri uri = new Iri("http://localhost:" + port + "/test");
+//        IRI uri = new IRI("http://localhost:" + port + "/test");
 //        
 //        // Setup mGraph
 //        Triple triple = new TripleImpl(uri, RDF.type, myType);
@@ -177,7 +177,7 @@ public class TypeHandlerSpaceTest {
 //                TypeHandlerSpace typeHandlerSpace = new TypeHandlerSpace();
 //                typeHandlerSpace.tcManager = new TcManager(){
 //                    @Override
-//                    public LockableGraph getGraph(Iri name) {
+//                    public LockableGraph getGraph(IRI name) {
 //                        return new LockableGraph() {
 //
 //                            @Override
@@ -191,7 +191,7 @@ public class TypeHandlerSpaceTest {
 //                            }
 //
 //                            @Override
-//                            public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
+//                            public Iterator<Triple> filter(BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
 //                                return mGraph.filter(subject, predicate, object);
 //                            }
 //
@@ -281,7 +281,7 @@ public class TypeHandlerSpaceTest {
 //                typeHandlerSpace.typeHandlerDiscovery = new TypeHandlerDiscovery() {
 //
 //                    @Override
-//                    public Object getTypeHandler(Set<Iri> rdfTypes) {
+//                    public Object getTypeHandler(Set<IRI> rdfTypes) {
 //                        if (rdfTypes.contains(myType)){
 //                            return typeHandler;
 //                        }

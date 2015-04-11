@@ -81,7 +81,7 @@ public class IfpSmushTest {
     }
 
     @Test
-    public void oneIri()  {
+    public void oneIRI()  {
         Graph mGraph = new SimpleGraph();
         IRI mbox1 = new IRI("mailto:foo@example.org");
         final IRI resource = new IRI("http://example.org/");
@@ -97,7 +97,7 @@ public class IfpSmushTest {
     }
 
     @Test
-    public void twoIris()  {
+    public void twoIRIs()  {
         Graph mGraph = new SimpleGraph();
         IRI mbox1 = new IRI("mailto:foo@example.org");
         final IRI resource1 = new IRI("http://example.org/");

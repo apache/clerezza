@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.scala.utils
 
 import org.apache.clerezza.commons.rdf.BlankNode
 import org.apache.clerezza.commons.rdf.ImmutableGraph
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.commons.rdf.Language
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl
@@ -48,11 +48,11 @@ class EzGraphTest {
 
   /**import some references in order to reduce dependencies */
 
-  final val hex: Iri = new Iri("http://www.w3.org/ns/auth/cert#hex")
-  final val identity: Iri = new Iri("http://www.w3.org/ns/auth/cert#identity")
-  final val RSAPublicKey: Iri = new Iri("http://www.w3.org/ns/auth/rsa#RSAPublicKey")
-  final val modulus: Iri = new Iri("http://www.w3.org/ns/auth/rsa#modulus")
-  final val public_exponent: Iri = new Iri("http://www.w3.org/ns/auth/rsa#public_exponent")
+  final val hex: IRI = new IRI("http://www.w3.org/ns/auth/cert#hex")
+  final val identity: IRI = new IRI("http://www.w3.org/ns/auth/cert#identity")
+  final val RSAPublicKey: IRI = new IRI("http://www.w3.org/ns/auth/rsa#RSAPublicKey")
+  final val modulus: IRI = new IRI("http://www.w3.org/ns/auth/rsa#modulus")
+  final val public_exponent: IRI = new IRI("http://www.w3.org/ns/auth/rsa#public_exponent")
 
   val henryUri: String = "http://bblfish.net/#hjs"
   val retoUri: String = "http://farewellutopia.com/reto/#me"
@@ -63,13 +63,13 @@ class EzGraphTest {
     val gr = new SimpleGraph
     val reto = new BlankNode()
     val danny = new BlankNode()
-    val henry = new Iri(henryUri)
+    val henry = new IRI(henryUri)
 
     gr.add(new TripleImpl(reto, RDF.`type`, FOAF.Person))
     gr.add(new TripleImpl(reto, FOAF.name, new PlainLiteralImpl("Reto Bachman-Gmür", new Language("rm"))))
     //it is difficult to remember that one needs to put a string literal if one does not want to specify a language
     gr.add(new TripleImpl(reto, FOAF.title, new TypedLiteralImpl("Mr", XSD.string)))
-    gr.add(new TripleImpl(reto, FOAF.currentProject, new Iri("http://clerezza.org/")))
+    gr.add(new TripleImpl(reto, FOAF.currentProject, new IRI("http://clerezza.org/")))
     gr.add(new TripleImpl(reto, FOAF.knows, henry))
     gr.add(new TripleImpl(reto, FOAF.knows, danny))
 
@@ -79,7 +79,7 @@ class EzGraphTest {
     gr.add(new TripleImpl(danny, FOAF.knows, reto))
 
     gr.add(new TripleImpl(henry, FOAF.name, new TypedLiteralImpl("Henry Story", XSD.string))) //It is tricky to remember that one needs this for pure strings
-    gr.add(new TripleImpl(henry, FOAF.currentProject, new Iri("http://webid.info/")))
+    gr.add(new TripleImpl(henry, FOAF.currentProject, new IRI("http://webid.info/")))
     gr.add(new TripleImpl(henry, RDF.`type`, FOAF.Person))
     gr.add(new TripleImpl(henry, FOAF.knows, danny))
     gr.add(new TripleImpl(henry, FOAF.knows, reto))

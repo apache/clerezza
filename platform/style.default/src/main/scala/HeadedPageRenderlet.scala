@@ -32,7 +32,7 @@ import org.apache.clerezza.rdf.utils._
 import org.apache.clerezza.rdf.scala.utils.Preamble._
 import org.apache.clerezza.platform.typerendering.scala._
 import org.apache.clerezza.rdf.ontologies.DC
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 
 /**
  * A Renderlet for the menu
@@ -92,7 +92,7 @@ resultDocModifier.addScriptReference("/scripts/status-message.js");
       <div class="zz-control">
         <div class="login">
             {
-              def platform(s: Any) = new Iri("http://clerezza.org/2009/08/platform#"+s)
+              def platform(s: Any) = new IRI("http://clerezza.org/2009/08/platform#"+s)
               val userName = context/platform("user")/platform("userName")*
               val displayName = if ((context/platform("user")/FOAF.name).length == 0) {
                     userName

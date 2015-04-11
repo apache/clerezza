@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.storage.web
 
 
 import org.apache.clerezza.commons.rdf.ImmutableGraph
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.commons.rdf._
 import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph
 import org.osgi.service.component.ComponentContext
@@ -96,10 +96,10 @@ class WebProxy extends WeightedTcProvider with Logging {
    * @return
    * @throws NoSuchEntityException
    */
-  def getMGraph(name: Iri): Graph = {
+  def getMGraph(name: IRI): Graph = {
     val graph = getImmutableGraph(name)
     return new AbstractGraph() {
-      protected def performFilter(subject: BlankNodeOrIri, predicate: Iri, `object` : RdfTerm): java.util.Iterator[Triple] = {
+      protected def performFilter(subject: BlankNodeOrIRI, predicate: IRI, `object` : RDFTerm): java.util.Iterator[Triple] = {
         graph.filter(subject, predicate, `object`)
       }
 
@@ -107,7 +107,7 @@ class WebProxy extends WeightedTcProvider with Logging {
     }
   }
 
-  def getImmutableGraph(name: Iri): ImmutableGraph = {
+  def getImmutableGraph(name: IRI): ImmutableGraph = {
     try {
       getGraph(name, Cache.Fetch)
     } catch {
@@ -119,24 +119,24 @@ class WebProxy extends WeightedTcProvider with Logging {
     }
   }
 
-  def getGraph(name: Iri): Graph = {
+  def getGraph(name: IRI): Graph = {
     return getMGraph(name)
   }
 
-  def createGraph(name: Iri): Graph = {
+  def createGraph(name: IRI): Graph = {
     throw new UnsupportedOperationException
   }
 
-  def createImmutableGraph(name: Iri, triples: Graph): ImmutableGraph = {
+  def createImmutableGraph(name: IRI, triples: Graph): ImmutableGraph = {
     throw new UnsupportedOperationException
   }
 
-  def deleteGraph(name: Iri): Unit = {
+  def deleteGraph(name: IRI): Unit = {
     throw new UnsupportedOperationException
   }
 
-  def getNames(graph: ImmutableGraph): java.util.Set[Iri] = {
-    var result: java.util.Set[Iri] = new java.util.HashSet[Iri]
+  def getNames(graph: ImmutableGraph): java.util.Set[IRI] = {
+    var result: java.util.Set[IRI] = new java.util.HashSet[IRI]
     import collection.JavaConversions._
     for (name <- listGraphs) {
       if (getImmutableGraph(name).equals(graph)) {
@@ -146,27 +146,27 @@ class WebProxy extends WeightedTcProvider with Logging {
     return result
   }
 
-  def listGraphs: java.util.Set[Iri] = {
-    var result: java.util.Set[Iri] = new java.util.HashSet[Iri]
+  def listGraphs: java.util.Set[IRI] = {
+    var result: java.util.Set[IRI] = new java.util.HashSet[IRI]
     result.addAll(listMGraphs)
     result.addAll(listImmutableGraphs)
     return result
   }
 
-  def listMGraphs: java.util.Set[Iri] = {
+  def listMGraphs: java.util.Set[IRI] = {
     //or should we list graphs for which we have a cached version?
-    return java.util.Collections.emptySet[Iri]
+    return java.util.Collections.emptySet[IRI]
   }
 
-  def listImmutableGraphs: java.util.Set[Iri] = {
-    return java.util.Collections.emptySet[Iri]
+  def listImmutableGraphs: java.util.Set[IRI] = {
+    return java.util.Collections.emptySet[IRI]
   }
 
   /**
    * The semantics of this resource
    * @param update if a remote URI, update information on the resource first
    */
-  def getGraph(name: Iri, updatePolicy: Cache.Value): ImmutableGraph = {
+  def getGraph(name: IRI, updatePolicy: Cache.Value): ImmutableGraph = {
     logger.debug("getting graph " + name)
     if (name.getUnicodeString.indexOf('#') != -1) {
       logger.debug("not dereferencing URI with hash sign. Please see CLEREZZA-533 for debate.")
@@ -176,7 +176,7 @@ class WebProxy extends WeightedTcProvider with Logging {
       //these are not dereferenceable
       throw new NoSuchEntityException(name)
     }
-    val cacheGraphName = new Iri("urn:x-localinstance:/cache/" + name.getUnicodeString)
+    val cacheGraphName = new IRI("urn:x-localinstance:/cache/" + name.getUnicodeString)
     //todo: follow redirects and keep track of them
     //todo: keep track of headers especially date and etag. test for etag similarity
     //todo: for https connection allow user to specify his webid and send his key: ie allow web server to be an agent

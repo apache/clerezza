@@ -105,15 +105,15 @@ public class BaseSmusher {
             case 0:
                 return new BlankNode();
         }
-        final IRI preferedIri = getPreferedIri(uriRefs);
+        final IRI preferedIRI = getPreferedIRI(uriRefs);
         final Iterator<IRI> uriRefIter = uriRefs.iterator();
         while (uriRefIter.hasNext()) {
             IRI uriRef = uriRefIter.next();
-            if (!uriRef.equals(preferedIri)) {
-                owlSameAsGraph.add(new TripleImpl(uriRef, OWL.sameAs, preferedIri));
+            if (!uriRef.equals(preferedIRI)) {
+                owlSameAsGraph.add(new TripleImpl(uriRef, OWL.sameAs, preferedIRI));
             }
         }
-        return preferedIri;
+        return preferedIRI;
     }
 
     
@@ -125,7 +125,7 @@ public class BaseSmusher {
      * @param uriRefs
      * @return 
      */
-    protected IRI getPreferedIri(Set<IRI> uriRefs) {
+    protected IRI getPreferedIRI(Set<IRI> uriRefs) {
         final Iterator<IRI> uriRefIter = uriRefs.iterator();
         //instead of an arbitrary one we might either decide lexicographically
         //or look at their frequency in mGraph

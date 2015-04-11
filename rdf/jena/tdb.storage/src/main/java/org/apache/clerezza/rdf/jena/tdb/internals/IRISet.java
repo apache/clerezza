@@ -8,14 +8,14 @@ import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.ontologies.RDF;
 
 /**
- * Represents a set of uri ref Set<Iri>
+ * Represents a set of uri ref Set<IRI>
  * @author Minto van der Sluis
  */
-public class IriSet extends AbstractSet<IRI> {
+public class IRISet extends AbstractSet<IRI> {
     private ModelGraph graphNameIndex;
     private IRI graphType;
 
-    public IriSet(ModelGraph index, IRI object) {
+    public IRISet(ModelGraph index, IRI object) {
         graphNameIndex = index;
         graphType = object;
     }

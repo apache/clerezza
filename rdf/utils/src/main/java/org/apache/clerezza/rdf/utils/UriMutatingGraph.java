@@ -33,7 +33,7 @@ import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
 
 /**
- * This wrapps a Triplecollection changing a prefix for the Iris contained
+ * This wrapps a Triplecollection changing a prefix for the IRIs contained
  * in subject or object position.
  *
  * Currently it only supports read opearations.
@@ -57,50 +57,50 @@ public class UriMutatingGraph implements Graph {
         targetPrefixLength= targetPrefix.length();
     }
 
-    private <R extends RDFTerm> R toTargetRdfTerm(final R sourceRdfTerm) {
-        if (sourceRdfTerm instanceof IRI) {
-            final IRI sourceIri = (IRI) sourceRdfTerm;
-            if (sourceIri.getUnicodeString().startsWith(sourcePrefix)) {
-                final String uriRest = sourceIri.getUnicodeString()
+    private <R extends RDFTerm> R toTargetRDFTerm(final R sourceRDFTerm) {
+        if (sourceRDFTerm instanceof IRI) {
+            final IRI sourceIRI = (IRI) sourceRDFTerm;
+            if (sourceIRI.getUnicodeString().startsWith(sourcePrefix)) {
+                final String uriRest = sourceIRI.getUnicodeString()
                         .substring(sourcePrefixLength);
                 return (R) new IRI(targetPrefix+uriRest);
             }
         }
-        return sourceRdfTerm;            
+        return sourceRDFTerm;            
     }
 
     private Triple toTargetTriple(Triple triple) {
         if (triple == null) {
             return null;
         }
-        return new TripleImpl(toTargetRdfTerm(triple.getSubject()),
-                triple.getPredicate(), toTargetRdfTerm(triple.getObject()));
+        return new TripleImpl(toTargetRDFTerm(triple.getSubject()),
+                triple.getPredicate(), toTargetRDFTerm(triple.getObject()));
     }
 
-    private <R extends RDFTerm> R toSourceRdfTerm(final R targetRdfTerm) {
-        if (targetRdfTerm instanceof IRI) {
-            final IRI sourceIri = (IRI) targetRdfTerm;
-            if (sourceIri.getUnicodeString().startsWith(targetPrefix)) {
-                final String uriRest = sourceIri.getUnicodeString()
+    private <R extends RDFTerm> R toSourceRDFTerm(final R targetRDFTerm) {
+        if (targetRDFTerm instanceof IRI) {
+            final IRI sourceIRI = (IRI) targetRDFTerm;
+            if (sourceIRI.getUnicodeString().startsWith(targetPrefix)) {
+                final String uriRest = sourceIRI.getUnicodeString()
                         .substring(targetPrefixLength);
                 return (R) new IRI(sourcePrefix+uriRest);
             }
         }
-        return targetRdfTerm;
+        return targetRDFTerm;
     }
 
     private Triple toSourceTriple(Triple triple) {
         if (triple == null) {
             return null;
         }
-        return new TripleImpl(toSourceRdfTerm(triple.getSubject()),
-                triple.getPredicate(), toSourceRdfTerm(triple.getObject()));
+        return new TripleImpl(toSourceRDFTerm(triple.getSubject()),
+                triple.getPredicate(), toSourceRDFTerm(triple.getObject()));
     }
 
     @Override
     public Iterator<Triple> filter(BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
-        final Iterator<Triple> baseIter = base.filter(toSourceRdfTerm(subject),
-                predicate, toSourceRdfTerm(object));
+        final Iterator<Triple> baseIter = base.filter(toSourceRDFTerm(subject),
+                predicate, toSourceRDFTerm(object));
         return new WrappedIteraror(baseIter);
 
 

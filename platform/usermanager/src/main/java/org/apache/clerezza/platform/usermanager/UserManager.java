@@ -57,7 +57,7 @@ public interface UserManager {
     /**
      *
      * @param title
-     * @return BlankNodeOrIRI which is either a BlankNode or a Iri
+     * @return BlankNodeOrIRI which is either a BlankNode or a IRI
      */
     public BlankNodeOrIRI getRoleByTitle(String title);
 
@@ -70,7 +70,7 @@ public interface UserManager {
     /**
      *
      * @param user
-     *            the user is either a BlankNode or a Iri
+     *            the user is either a BlankNode or a IRI
      *
      * @return Iterator defining all the Roles the specified user owns
      */
@@ -95,7 +95,7 @@ public interface UserManager {
     /**
      *
      * @param role
-     *            the role is either a BlankNode or an Iri
+     *            the role is either a BlankNode or an IRI
      *
      * @return Iterator defining all permissions of a role
      */
@@ -234,7 +234,7 @@ public interface UserManager {
     /**
      *
      * @param user
-     *            the user is either a BlankNode or a Iri
+     *            the user is either a BlankNode or a IRI
      * @return  Iterator defining all permissions of the specified user
      */
     public Iterator<BlankNodeOrIRI> getPermissionsOfUser(BlankNodeOrIRI user);

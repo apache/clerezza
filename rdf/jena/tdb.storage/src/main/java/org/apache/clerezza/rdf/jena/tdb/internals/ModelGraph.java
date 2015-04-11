@@ -22,7 +22,7 @@ import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
  * Represents the Jena {@link Model} and the Clerezza {@link ImmutableGraph} or
  * {@link Graph}. It also provide access to the {@link JenaGraphAdaptor}
  * so that this component can add parsed data to {@link ImmutableGraph}s created
- * by calls to {@link SingleTdbDatasetTcProvider#createGraph(Iri, TripleCollection)}.
+ * by calls to {@link SingleTdbDatasetTcProvider#createGraph(IRI, TripleCollection)}.
  * @author Rupert Westenthaler
  *
  */

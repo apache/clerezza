@@ -103,7 +103,7 @@ public class Jena2TriaUtil {
         if (node.isLiteral()) {
             return convertJenaLiteral2Literal(node);
         }
-        throw new RuntimeException("cannot convert " + node + " to RdfTerm");
+        throw new RuntimeException("cannot convert " + node + " to RDFTerm");
     }
 
     /**
@@ -124,7 +124,7 @@ public class Jena2TriaUtil {
         if (node.isURI()) {
             return convertJenaUri2UriRef(node);
         }
-        throw new RuntimeException("cannot convert " + node + " to BlankNodeOrIri");
+        throw new RuntimeException("cannot convert " + node + " to BlankNodeOrIRI");
     }
 
     public Triple convertTriple(com.hp.hpl.jena.graph.Triple triple) {

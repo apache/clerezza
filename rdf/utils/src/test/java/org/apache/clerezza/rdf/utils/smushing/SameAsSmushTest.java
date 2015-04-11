@@ -64,7 +64,7 @@ public class SameAsSmushTest {
         SameAsSmusher smusher = new SameAsSmusher() {
 
             @Override
-            protected IRI getPreferedIri(Set<IRI> uriRefs) {
+            protected IRI getPreferedIRI(Set<IRI> uriRefs) {
                 if (!uriRefs.contains(uriA)) throw new RuntimeException("not the set we excpect");
                 if (!uriRefs.contains(uriB)) throw new RuntimeException("not the set we excpect");
                 return uriC;

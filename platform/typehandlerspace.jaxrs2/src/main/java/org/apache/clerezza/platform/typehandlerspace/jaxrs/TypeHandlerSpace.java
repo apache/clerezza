@@ -95,7 +95,7 @@ public class TypeHandlerSpace {
             Lock lock =node.readLock();
             lock.lock();
             try {
-                Set<IRI> rdfTypes = getRdfTypesOfIri(node);
+                Set<IRI> rdfTypes = getRdfTypesOfIRI(node);
                 return typeHandlerDiscovery.getTypeHandler(rdfTypes);
             } finally {
                 lock.unlock();
@@ -105,7 +105,7 @@ public class TypeHandlerSpace {
         return null;
     }
 
-    private Set<IRI> getRdfTypesOfIri(GraphNode node) {
+    private Set<IRI> getRdfTypesOfIRI(GraphNode node) {
         Set<IRI> rdfTypes = new HashSet<IRI>();
         Iterator<RDFTerm> types = node.getObjects(RDF.type);
         while (types.hasNext()) {

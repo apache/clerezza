@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.scala.utils
 
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 
 /**
  * A IRI-namespace prefix
@@ -26,12 +26,12 @@ import org.apache.clerezza.commons.rdf.Iri
 class NameSpace(prefix: String) {
 
   /**
-   * returns a Iri applying this namespace prefix to the given symbol
+   * returns a IRI applying this namespace prefix to the given symbol
    */
-  def +(s: Symbol) = new Iri(prefix + s.name)
+  def +(s: Symbol) = new IRI(prefix + s.name)
 
   /**
-   * returns a Iri applying this prefix to the given string
+   * returns a IRI applying this prefix to the given string
    */
-  def +(s: String) = new Iri(prefix + s)
+  def +(s: String) = new IRI(prefix + s)
 }

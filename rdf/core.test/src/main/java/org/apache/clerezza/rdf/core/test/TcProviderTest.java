@@ -49,8 +49,8 @@ public abstract class TcProviderTest {
     protected final IRI uriRefB1 = generateUri("b1");
     protected final IRI uriRefC = generateUri("c");
 
-    protected final IRI graphIri = generateUri("myGraph");
-    protected final IRI otherGraphIri = new IRI(graphIri.getUnicodeString());
+    protected final IRI graphIRI = generateUri("myGraph");
+    protected final IRI otherGraphIRI = new IRI(graphIRI.getUnicodeString());
 
     @Test
     public void testCreateImmutableGraph() {
@@ -223,7 +223,7 @@ public abstract class TcProviderTest {
 //        simpleTcmProvider.createGraph(uriRefA, graph);
 //        simpleTcmProvider.createGraph(uriRefC, graph);
 //
-//        Set<Iri> names = simpleTcmProvider.getNames(graph);
+//        Set<IRI> names = simpleTcmProvider.getNames(graph);
 //
 //        assertTrue(names.contains(uriRefA));
 //        assertTrue(names.contains(uriRefC));
@@ -236,80 +236,80 @@ public abstract class TcProviderTest {
     public void testCreateGraphExtended() throws Exception {
 
         TcProvider provider = getInstance();
-        Graph graph = provider.createGraph(graphIri);
+        Graph graph = provider.createGraph(graphIRI);
         assertNotNull(graph);
         //get a new provider and check that graph is there
         provider = getInstance();
-        graph = provider.getGraph(graphIri);
+        graph = provider.getGraph(graphIRI);
         assertNotNull(graph);
         //check that there is no such graph, but only the mgraph
         boolean expThrown = false;
         try {
-            ImmutableGraph g = provider.getImmutableGraph(graphIri);
+            ImmutableGraph g = provider.getImmutableGraph(graphIRI);
         } catch(NoSuchEntityException e) {
             expThrown = true;
         }
 
         assertTrue(expThrown);
-        provider.deleteGraph(graphIri);
+        provider.deleteGraph(graphIRI);
     }
 
     @Test
     public void testCreateImmutableGraphExtended() throws Exception {
 
         TcProvider provider = getInstance();
-        ImmutableGraph graph = provider.createImmutableGraph(graphIri, null);
+        ImmutableGraph graph = provider.createImmutableGraph(graphIRI, null);
 
         assertNotNull(graph);
 
         //get a new provider and check that graph is there
         provider = getInstance();
-        graph = provider.getImmutableGraph(graphIri);
+        graph = provider.getImmutableGraph(graphIRI);
         assertNotNull(graph);
 
         //check that there is no such mgraph, but only the graph
         boolean expThrown = false;
 
         try {
-            Graph g = provider.getMGraph(graphIri);
+            Graph g = provider.getMGraph(graphIRI);
         } catch(NoSuchEntityException e) {
             expThrown = true;
         }
 
         assertTrue(expThrown);
-        provider.deleteGraph(graphIri);
+        provider.deleteGraph(graphIRI);
     }
 
     @Test
     public void testCreateGraphNoDuplicateNames() throws Exception {
 
         TcProvider provider = getInstance();
-        ImmutableGraph graph = provider.createImmutableGraph(graphIri, null);
+        ImmutableGraph graph = provider.createImmutableGraph(graphIRI, null);
         assertNotNull(graph);
         boolean expThrown = false;
         try {
-            ImmutableGraph other = provider.createImmutableGraph(otherGraphIri, null);
+            ImmutableGraph other = provider.createImmutableGraph(otherGraphIRI, null);
         } catch(EntityAlreadyExistsException eaee) {
             expThrown = true;
         }
         assertTrue(expThrown);
-        provider.deleteGraph(graphIri);
+        provider.deleteGraph(graphIRI);
     }
 
     @Test
     public void testCreateGraphNoDuplicateNames2() throws Exception {
 
         TcProvider provider = getInstance();
-        Graph graph = provider.createGraph(graphIri);
+        Graph graph = provider.createGraph(graphIRI);
         assertNotNull(graph);
         boolean expThrown = false;
         try {
-            Graph other = provider.createGraph(otherGraphIri);
+            Graph other = provider.createGraph(otherGraphIRI);
         } catch(EntityAlreadyExistsException eaee) {
             expThrown = true;
         }
         assertTrue(expThrown);
-        provider.deleteGraph(graphIri);
+        provider.deleteGraph(graphIRI);
     }
 
     @Test
@@ -319,11 +319,11 @@ public abstract class TcProviderTest {
 
         TcProvider provider = getInstance();
 
-        ImmutableGraph graph = provider.createImmutableGraph(graphIri, createTestTripleCollection(t1));
+        ImmutableGraph graph = provider.createImmutableGraph(graphIRI, createTestTripleCollection(t1));
 
         assertEquals(1, graph.size());
         assertTrue(graph.contains(t1));
-        provider.deleteGraph(graphIri);
+        provider.deleteGraph(graphIRI);
     }
 
     @Test
@@ -335,7 +335,7 @@ public abstract class TcProviderTest {
 
         TcProvider provider = getInstance();
 
-        ImmutableGraph graph = provider.createImmutableGraph(graphIri, createTestTripleCollection(t1));
+        ImmutableGraph graph = provider.createImmutableGraph(graphIRI, createTestTripleCollection(t1));
 
         boolean expThrown = false;
 
@@ -384,7 +384,7 @@ public abstract class TcProviderTest {
         }
 
         assertTrue(expThrown);
-        provider.deleteGraph(graphIri);
+        provider.deleteGraph(graphIRI);
     }
 
 //    This tests can not pass, because equals in AbstractGraph is not implemented
@@ -395,11 +395,11 @@ public abstract class TcProviderTest {
 //        TcProvider provider = getInstance();
 //
 //        Graph triples = createTestTripleCollection(createTestTriple());
-//        ImmutableGraph graph = provider.createGraph(graphIri, triples);
+//        ImmutableGraph graph = provider.createGraph(graphIRI, triples);
 //
 //        provider = getInstance();
-//        Set<Iri> names = provider.getNames(graph);
-//        assertTrue(names.contains(graphIri));
+//        Set<IRI> names = provider.getNames(graph);
+//        assertTrue(names.contains(graphIRI));
 //    }
 //
 //    @Test
@@ -414,7 +414,7 @@ public abstract class TcProviderTest {
 //        IRI name2 = new IRI("http://myGraph2");
 //        ImmutableGraph secondGraph = provider.createGraph(name2, triples);
 //
-//        Set<Iri> names = provider.getNames(graph);
+//        Set<IRI> names = provider.getNames(graph);
 //        assertNotNull(names);
 //        assertEquals(2, names.size());
 //    }
@@ -457,11 +457,11 @@ public abstract class TcProviderTest {
     public void testGetTriplesGraph() throws Exception {
         TcProvider provider = getInstance();
 
-        Graph graph = provider.createGraph(graphIri);
+        Graph graph = provider.createGraph(graphIRI);
 
-        Graph tc = provider.getGraph(graphIri);
+        Graph tc = provider.getGraph(graphIRI);
         assertNotNull(tc);
-        provider.deleteGraph(graphIri);
+        provider.deleteGraph(graphIRI);
     }
 
     private Triple createTestTriple() {

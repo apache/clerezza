@@ -40,7 +40,7 @@ class HashMapSolutionMapping extends HashMap<Variable, RDFTerm> implements Solut
         final Iterator<String> varNames = querySolution.varNames();
         while (varNames.hasNext()) {
             final String varName = varNames.next();
-            put(new Variable(varName), toRdfTerm(querySolution.get(varName)));
+            put(new Variable(varName), toRDFTerm(querySolution.get(varName)));
         }
     }
     @Override
@@ -48,7 +48,7 @@ class HashMapSolutionMapping extends HashMap<Variable, RDFTerm> implements Solut
         return get(new Variable(name));
     }
 
-    private RDFTerm toRdfTerm(RDFNode node) {
+    private RDFTerm toRDFTerm(RDFNode node) {
         return convertor.convertJenaNode2Resource(node.asNode());
     }
 }

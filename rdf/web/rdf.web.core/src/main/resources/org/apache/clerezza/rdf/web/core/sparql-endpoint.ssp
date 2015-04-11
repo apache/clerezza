@@ -19,7 +19,7 @@
  *
 */
 
-def se(s: Any) = new Iri("http://clerezza.org/2009/11/sparql-endpoint#"+s)
+def se(s: Any) = new IRI("http://clerezza.org/2009/11/sparql-endpoint#"+s)
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
 	<head>
 		<title>SPARQL Endpoint</title>

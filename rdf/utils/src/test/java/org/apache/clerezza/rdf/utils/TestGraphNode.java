@@ -184,7 +184,7 @@ public class TestGraphNode {
         BlankNode newBnode = new BlankNode();
         IRI property1 = new IRI("http://example.org/property1");
         IRI property2 = new IRI("http://example.org/property2");
-        IRI newIri = new IRI("http://example.org/newName");
+        IRI newIRI = new IRI("http://example.org/newName");
         Literal literal1 = new PlainLiteralImpl("literal");
         Literal literal2 = new PlainLiteralImpl("bla bla");
 
@@ -201,12 +201,12 @@ public class TestGraphNode {
         GraphNode node = new GraphNode(property1,
                 new SimpleGraph(initialGraph.iterator()));
 
-        node.replaceWith(newIri, true);
+        node.replaceWith(newIRI, true);
         Assert.assertEquals(5, node.getGraph().size());
-        Triple expectedTriple1 = new TripleImpl(bNode1, newIri, literal1);
-        Triple expectedTriple2 = new TripleImpl(bNode1, property2, newIri);
-        Triple expectedTriple3 = new TripleImpl(newIri, newIri, bNode2);
-        Triple expectedTriple4 = new TripleImpl(newIri, newIri, literal2);
+        Triple expectedTriple1 = new TripleImpl(bNode1, newIRI, literal1);
+        Triple expectedTriple2 = new TripleImpl(bNode1, property2, newIRI);
+        Triple expectedTriple3 = new TripleImpl(newIRI, newIRI, bNode2);
+        Triple expectedTriple4 = new TripleImpl(newIRI, newIRI, literal2);
 
         Assert.assertTrue(node.getGraph().contains(expectedTriple1));
         Assert.assertTrue(node.getGraph().contains(expectedTriple2));
@@ -235,10 +235,10 @@ public class TestGraphNode {
         Assert.assertTrue(node.getGraph().contains(expectedTriple8));
 
         node = new GraphNode(property1, new SimpleGraph(initialGraph.iterator()));
-        node.replaceWith(newIri);
-        Triple expectedTriple9 = new TripleImpl(bNode1, property2, newIri);
-        Triple expectedTriple10 = new TripleImpl(newIri, property1, bNode2);
-        Triple expectedTriple11 = new TripleImpl(newIri, property1, literal2);
+        node.replaceWith(newIRI);
+        Triple expectedTriple9 = new TripleImpl(bNode1, property2, newIRI);
+        Triple expectedTriple10 = new TripleImpl(newIRI, property1, bNode2);
+        Triple expectedTriple11 = new TripleImpl(newIRI, property1, literal2);
         Assert.assertTrue(node.getGraph().contains(triple1));
         Assert.assertTrue(node.getGraph().contains(expectedTriple9));
         Assert.assertTrue(node.getGraph().contains(expectedTriple10));

@@ -398,7 +398,7 @@ public class GraphNode {
         };
     }
 
-    public Iterator<IRI> getIriObjects(IRI property) {
+    public Iterator<IRI> getIRIObjects(IRI property) {
         return getTypeSelectedObjects(property, IRI.class);
 
     }
@@ -450,7 +450,7 @@ public class GraphNode {
     /**
      *
      * @param triples
-     * @returnan {@link Iterator}<{@link Iri}> containing the predicates from
+     * @returnan {@link Iterator}<{@link IRI}> containing the predicates from
      * an {@link Iterator}<{@link Triple}>
      */
     private Iterator<IRI> getUniquePredicates(final Iterator<Triple> triples) {

@@ -51,7 +51,7 @@ import org.osgi.service.component.ComponentContext;
  * see thread starting at http://www.mail-archive.com/users@felix.apache.org/msg07647.html
  */
 @Component(enabled = true, immediate = true)
-@Reference(name = "jaxrsRdfTerm",
+@Reference(name = "jaxrsRDFTerm",
 cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE,
 policy = ReferencePolicy.DYNAMIC,
 referenceInterface = Object.class,
@@ -60,7 +60,7 @@ public class BootMonitor {
 
     @Reference(target = "(javax.script.language=scala)")
     private ScriptEngineFactory scalaScriptEngineFactory;
-    private Set<Object> rootRdfTerms =
+    private Set<Object> rootRDFTerms =
             Collections.synchronizedSet(new HashSet<Object>());
     /**
      * true when the user has been notified that clerezza started
@@ -86,23 +86,23 @@ public class BootMonitor {
         t.start();
     }
 
-    protected void bindJaxrsRdfTerm(Object p) {
-        rootRdfTerms.add(p);
-        if (!clerezzaStarted && (rootRdfTerms.size() == 35)) {
+    protected void bindJaxrsRDFTerm(Object p) {
+        rootRDFTerms.add(p);
+        if (!clerezzaStarted && (rootRDFTerms.size() == 35)) {
             Thread t = new Thread() {
 
                 @Override
                 public void run() {
                     int lastSize = 0;
                     for (int i = 0; i < 100; i++) {
-                        if (rootRdfTerms.size() == lastSize) {
+                        if (rootRDFTerms.size() == lastSize) {
                             clerezzaStarted = true;
                             if (activated) {
                                 logger.info("The Apache Clerezza Platform is now operational.");
                                 return;
                             }
                         }
-                        lastSize = rootRdfTerms.size();
+                        lastSize = rootRDFTerms.size();
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException ex) {
@@ -115,7 +115,7 @@ public class BootMonitor {
         }
     }
 
-    protected void unbindJaxrsRdfTerm(Object p) {
-        rootRdfTerms.remove(p);
+    protected void unbindJaxrsRDFTerm(Object p) {
+        rootRDFTerms.remove(p);
     }
 }

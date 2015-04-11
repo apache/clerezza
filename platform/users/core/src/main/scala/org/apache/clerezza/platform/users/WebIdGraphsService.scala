@@ -27,7 +27,7 @@ import org.apache.clerezza.platform.config.PlatformConfig
 import org.apache.clerezza.platform.config.SystemConfig
 import org.apache.clerezza.commons.rdf.Graph
 import org.apache.clerezza.commons.rdf.Graph
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException
 import org.apache.clerezza.rdf.core.access.SecuredGraph
 import org.apache.clerezza.rdf.core.access.TcManager
@@ -78,7 +78,7 @@ class WebIdGraphsService {
    * @param uri the Web-Id
    * @return a WebIdInfo allowing to access the graphs of the user
    */
-  def getWebIdInfo(uri: Iri): WebIdInfo = {
+  def getWebIdInfo(uri: IRI): WebIdInfo = {
     return new WebIdInfo {
 
       private val uriString = uri.getUnicodeString
@@ -103,7 +103,7 @@ class WebIdGraphsService {
       private lazy val localGraphUri = {
         if (isLocal) uri
         else {
-          new Iri("urn:x-localinstance:/user/"+hashTruncatedUriString)
+          new IRI("urn:x-localinstance:/user/"+hashTruncatedUriString)
         }
       }
 
@@ -118,7 +118,7 @@ class WebIdGraphsService {
 
 
       private lazy val profileDocumentUri = {
-        new Iri(profileDocumentUriString)
+        new IRI(profileDocumentUriString)
       }
 
       /**

@@ -23,7 +23,7 @@ package org.apache.clerezza.platform.typerendering.gui
 
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering._
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._

@@ -55,9 +55,9 @@ public class FileGraphTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        createTempFileFromRdfTerm(NT_FILE_NAME);
-        createTempFileFromRdfTerm(RDF_FILE_NAME);
-        createTempFileFromRdfTerm(TURTLE_FILE_NAME);
+        createTempFileFromRDFTerm(NT_FILE_NAME);
+        createTempFileFromRDFTerm(RDF_FILE_NAME);
+        createTempFileFromRDFTerm(TURTLE_FILE_NAME);
     }
 
     @AfterClass
@@ -67,7 +67,7 @@ public class FileGraphTest {
         deleteTempFile(TURTLE_FILE_NAME);
     }
 
-    private static void createTempFileFromRdfTerm(String resourceName) 
+    private static void createTempFileFromRDFTerm(String resourceName) 
             throws FileNotFoundException, IOException {
         InputStream in = FileTcProviderTest.class.getResourceAsStream(resourceName);
         File file = new File(URI.create(getTempFileUri(resourceName)));

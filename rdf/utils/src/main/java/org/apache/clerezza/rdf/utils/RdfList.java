@@ -73,13 +73,13 @@ public class RdfList extends AbstractList<RDFTerm> {
      * Get a list for the specified resource.
      *
      * If the list is modified using the created instance
-     * <code>listRdfTerm</code> will always be the first list.
+     * <code>listRDFTerm</code> will always be the first list.
      *
-     * @param listRdfTerm
+     * @param listRDFTerm
      * @param tc
      */
-    public RdfList(BlankNodeOrIRI listRdfTerm, Graph tc) {
-        firstList = listRdfTerm;
+    public RdfList(BlankNodeOrIRI listRDFTerm, Graph tc) {
+        firstList = listRDFTerm;
         this.tc = tc;
 
     }
@@ -95,23 +95,23 @@ public class RdfList extends AbstractList<RDFTerm> {
 
     /**
      * Creates an empty RdfList by writing a triple
-     * "{@code listRdfTerm} owl:sameAs rdf.nil ." to {@code tc}.
+     * "{@code listRDFTerm} owl:sameAs rdf.nil ." to {@code tc}.
      *
-     * @param listRdfTerm
+     * @param listRDFTerm
      * @param tc
      * @return    an empty rdf:List.
      * @throws IllegalArgumentException
-     *        if the provided {@code  listRdfTerm} is a non-empty rdf:List.
+     *        if the provided {@code  listRDFTerm} is a non-empty rdf:List.
      */
-    public static RdfList createEmptyList(BlankNodeOrIRI listRdfTerm, Graph tc)
+    public static RdfList createEmptyList(BlankNodeOrIRI listRDFTerm, Graph tc)
             throws IllegalArgumentException {
 
-        if (!tc.filter(listRdfTerm, RDF.first, null).hasNext()) {
-            RdfList list = new RdfList(listRdfTerm, tc);
-            list.tc.add(new TripleImpl(listRdfTerm, OWL.sameAs, RDF_NIL));
+        if (!tc.filter(listRDFTerm, RDF.first, null).hasNext()) {
+            RdfList list = new RdfList(listRDFTerm, tc);
+            list.tc.add(new TripleImpl(listRDFTerm, OWL.sameAs, RDF_NIL));
             return list;
         } else {
-            throw new IllegalArgumentException(listRdfTerm + "is a non-empty rdf:List.");
+            throw new IllegalArgumentException(listRDFTerm + "is a non-empty rdf:List.");
         }
     }
 
@@ -237,16 +237,16 @@ public class RdfList extends AbstractList<RDFTerm> {
         return (BlankNodeOrIRI) tc.filter(list, RDF.rest, null).next().getObject();
     }
 
-    private RDFTerm getFirstEntry(final BlankNodeOrIRI listRdfTerm) {
+    private RDFTerm getFirstEntry(final BlankNodeOrIRI listRDFTerm) {
         try {
-            return tc.filter(listRdfTerm, RDF.first, null).next().getObject();
+            return tc.filter(listRDFTerm, RDF.first, null).next().getObject();
         } catch (final NullPointerException e) {
             RuntimeException runtimeEx = AccessController.doPrivileged(new PrivilegedAction<RuntimeException>() {
                 @Override
                 public RuntimeException run(){
                     try {
                         final FileOutputStream fileOutputStream = new FileOutputStream("/tmp/broken-list.nt");
-                        final GraphNode graphNode = new GraphNode(listRdfTerm, tc);
+                        final GraphNode graphNode = new GraphNode(listRDFTerm, tc);
                         Serializer.getInstance().serialize(fileOutputStream, graphNode.getNodeContext(), SupportedFormat.N_TRIPLE);
                         fileOutputStream.flush();
                         logger.warn("GraphNode: " + graphNode);
@@ -254,7 +254,7 @@ public class RdfList extends AbstractList<RDFTerm> {
                         while (properties.hasNext()) {
                             logger.warn("available: " + properties.next());
                         }
-                        return new RuntimeException("broken list " + listRdfTerm, e);
+                        return new RuntimeException("broken list " + listRDFTerm, e);
                     } catch (Exception ex) {
                         return new RuntimeException(ex);
                     }
@@ -265,7 +265,7 @@ public class RdfList extends AbstractList<RDFTerm> {
         }
     }
 
-    public BlankNodeOrIRI getListRdfTerm() {
+    public BlankNodeOrIRI getListRDFTerm() {
         return firstList;
     }
 

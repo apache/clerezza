@@ -27,7 +27,7 @@ import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.jena.tdb.internals.ModelGraph;
 import org.apache.clerezza.rdf.jena.tdb.internals.Symbols;
-import org.apache.clerezza.rdf.jena.tdb.internals.IriSet;
+import org.apache.clerezza.rdf.jena.tdb.internals.IRISet;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -62,7 +62,7 @@ import org.apache.clerezza.rdf.core.access.TcManager;
  * such as <code>"${myHome}/myRdfStore"</code><p>
  * The {@link #DEFAULT_GRAPH_NAME} property can be used to define the
  * name of the ImmutableGraph that exposes the {@link Dataset#getDefaultModel()} as
- * both {@link TcProvider#getGraph(Iri)} and {@link TcProvider#getGraph(Iri)}.
+ * both {@link TcProvider#getGraph(IRI)} and {@link TcProvider#getGraph(IRI)}.
  * This easily allows to access the union graph of the Jena TDB dataset.<p>
  * This {@link TcProvider} {@link ConfigurationPolicy#REQUIRE requires} an
  * configuration and uses the {@link Component#configurationFactory() 
@@ -401,7 +401,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     @Override
     public ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException {
         if(name == null){
-            throw new IllegalArgumentException("The parsed ImmutableGraph Iri MUST NOT be NULL!");
+            throw new IllegalArgumentException("The parsed ImmutableGraph IRI MUST NOT be NULL!");
         }
         datasetLock.readLock().lock();
         try {
@@ -422,7 +422,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     @Override
     public Graph getMGraph(IRI name) throws NoSuchEntityException {
         if(name == null){
-            throw new IllegalArgumentException("The parsed ImmutableGraph Iri MUST NOT be NULL!");
+            throw new IllegalArgumentException("The parsed ImmutableGraph IRI MUST NOT be NULL!");
         }
         datasetLock.readLock().lock();
         try {
@@ -443,7 +443,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     @Override
     public Graph getGraph(IRI name) throws NoSuchEntityException {
         if(name == null){
-            throw new IllegalArgumentException("The parsed ImmutableGraph Iri MUST NOT be NULL!");
+            throw new IllegalArgumentException("The parsed ImmutableGraph IRI MUST NOT be NULL!");
         }
         datasetLock.readLock().lock();
         try {
@@ -467,7 +467,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     public Set<IRI> listImmutableGraphs() {
         datasetLock.readLock().lock();
         try {
-            return new HashSet(new IriSet( graphNameIndex, Symbols.ImmutableGraph ));
+            return new HashSet(new IRISet( graphNameIndex, Symbols.ImmutableGraph ));
         } finally {
             datasetLock.readLock().unlock();
         }
@@ -481,7 +481,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     public Set<IRI> listMGraphs() {
         datasetLock.readLock().lock();
         try {
-            return  new HashSet(new IriSet( graphNameIndex, Symbols.Graph ));
+            return  new HashSet(new IRISet( graphNameIndex, Symbols.Graph ));
         } finally {
             datasetLock.readLock().unlock();
         }
@@ -495,7 +495,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     public Set<IRI> listGraphs() {
         datasetLock.readLock().lock();
         try {
-            return  new HashSet(new IriSet( graphNameIndex, null ));
+            return  new HashSet(new IRISet( graphNameIndex, null ));
         } finally {
             datasetLock.readLock().unlock();
         }

@@ -24,7 +24,7 @@ import org.apache.clerezza.rdf.core.impl._
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.commons.rdf.BlankNode
 import org.apache.clerezza.commons.rdf.Graph
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.commons.rdf.Language
 import org.apache.clerezza.commons.rdf.Literal
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl
@@ -36,10 +36,10 @@ import Preamble._
 
 class RichGraphNodeTest {
 
-  private val johnUri = new Iri("http://example.org/john")
-  private val susanneUri = new Iri("http://example.org/susanne")
-  private val listUri = new Iri("http://example.org/list")
-  private val greetingsUri = new Iri("http://example.org/greetings")
+  private val johnUri = new IRI("http://example.org/john")
+  private val susanneUri = new IRI("http://example.org/susanne")
+  private val listUri = new IRI("http://example.org/list")
+  private val greetingsUri = new IRI("http://example.org/greetings")
   private val billBlankNode = new BlankNode()
   private var node : RichGraphNode = null;
   private var mGraph = new SimpleGraph()
@@ -96,9 +96,9 @@ class RichGraphNodeTest {
   def testIterate = {
     val simple: Graph = new SimpleGraph();
     val node = new GraphNode(new BlankNode(), simple);
-    node.addProperty(DCTERMS.provenance, new Iri("http://example.org/foo"));
-    node.addProperty(DCTERMS.language, new Iri("http://www.bluewin.ch/"));
-    simple.add(new TripleImpl(new Iri("http://www.bluewin.ch/"),RDF.`type`, RDFS.Container));
+    node.addProperty(DCTERMS.provenance, new IRI("http://example.org/foo"));
+    node.addProperty(DCTERMS.language, new IRI("http://www.bluewin.ch/"));
+    simple.add(new TripleImpl(new IRI("http://www.bluewin.ch/"),RDF.`type`, RDFS.Container));
     node.addProperty(RDF.`type`, PLATFORM.HeadedPage);
     node.addProperty(RDF.`type`, RDFS.Class);
     val test: CollectedIter[RichGraphNode] = node/DCTERMS.language/RDF.`type`;
@@ -158,7 +158,7 @@ class RichGraphNodeTest {
   @Test
   def literalAsObject = {
     val dateLiteral = new TypedLiteralImpl("2009-01-01T01:33:58Z",
-          new Iri("http://www.w3.org/2001/XMLSchema#dateTime"))
+          new IRI("http://www.w3.org/2001/XMLSchema#dateTime"))
     val node = new GraphNode(dateLiteral, new SimpleGraph())
     Assert.assertNotNull(node.as[java.util.Date])
   }

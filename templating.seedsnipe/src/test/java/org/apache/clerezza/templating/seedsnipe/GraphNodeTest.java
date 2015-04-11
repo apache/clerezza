@@ -166,7 +166,7 @@ public class GraphNodeTest {
     }
 
     @Test
-    public void simpleIriRoot() throws IOException {
+    public void simpleIRIRoot() throws IOException {
         Graph mGraph = new SimpleGraph();
         BlankNodeOrIRI resource = new IRI("http://example.org/");
         mGraph.add(new TripleImpl(resource, RDFS.comment, new PlainLiteralImpl("a resource")));

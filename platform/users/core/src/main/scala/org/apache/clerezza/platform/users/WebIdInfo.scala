@@ -28,14 +28,14 @@ package org.apache.clerezza.platform.users
  *
  */
 import org.apache.clerezza.commons.rdf.Graph
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 
 trait WebIdInfo {
 
   /**
    * The WebID this instance is about
    */
-  def webId: Iri
+  def webId: IRI
 
   /**
    * The WebId profile graph, for remote users this is immutable

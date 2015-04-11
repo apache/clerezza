@@ -44,10 +44,10 @@ public class SameAsSmusher extends BaseSmusher {
     
     /**
      * This will ensure that all properties of sameAs resources are associated
-     * to the preferedIri as returned by {@code getPreferedIri}
+     * to the preferedIRI as returned by {@code getPreferedIRI}
      * @param mGraph
      * @param owlSameStatements 
-     * @param addCanonicalSameAsStatements if true owl:sameAsStatements with the preferedIri as object will be added
+     * @param addCanonicalSameAsStatements if true owl:sameAsStatements with the preferedIRI as object will be added
      */
     public void smush(Graph mGraph, 
             Graph owlSameStatements,

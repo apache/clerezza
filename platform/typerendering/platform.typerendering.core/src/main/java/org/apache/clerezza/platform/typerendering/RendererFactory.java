@@ -130,7 +130,7 @@ public class RendererFactory {
             types.add(((Literal) resource.getNode()).getDataType());
         } else {
             // extract rdf types
-            Iterator<IRI> it = resource.getIriObjects(RDF.type);
+            Iterator<IRI> it = resource.getIRIObjects(RDF.type);
             while (it.hasNext()) {
                 final IRI rdfType = it.next();
                 types.add(rdfType);

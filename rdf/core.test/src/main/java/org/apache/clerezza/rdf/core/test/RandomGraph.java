@@ -120,21 +120,21 @@ public class RandomGraph extends GraphWrapper {
         }
         switch (random) {
             case 0: // create new BlankNodeOrIRI
-                RDFTerm newRdfTerm;
+                RDFTerm newRDFTerm;
                 do {
-                    newRdfTerm = createRandomRdfTerm();
-                } while (!(newRdfTerm instanceof BlankNodeOrIRI));
-                return (BlankNodeOrIRI) newRdfTerm;
+                    newRDFTerm = createRandomRDFTerm();
+                } while (!(newRDFTerm instanceof BlankNodeOrIRI));
+                return (BlankNodeOrIRI) newRDFTerm;
             default: // get existing BlankNodeOrIRI
-                RDFTerm existingRdfTerm;
+                RDFTerm existingRDFTerm;
                 do {
-                    existingRdfTerm = getExistingRdfTerm();
-                    if (existingRdfTerm == null) {
+                    existingRDFTerm = getExistingRDFTerm();
+                    if (existingRDFTerm == null) {
                         random = 0;
                     }
-                } while (!(existingRdfTerm instanceof BlankNodeOrIRI));
+                } while (!(existingRDFTerm instanceof BlankNodeOrIRI));
 
-                return (BlankNodeOrIRI) existingRdfTerm;
+                return (BlankNodeOrIRI) existingRDFTerm;
         }
     }
 
@@ -145,16 +145,16 @@ public class RandomGraph extends GraphWrapper {
         }
         switch (random) {
             case 0: // create new IRI
-                return createRandomIri();
+                return createRandomIRI();
             default: // get existing IRI
-                RDFTerm existingRdfTerm;
+                RDFTerm existingRDFTerm;
                 do {
-                    existingRdfTerm = getExistingRdfTerm();
-                    if (existingRdfTerm == null) {
+                    existingRDFTerm = getExistingRDFTerm();
+                    if (existingRDFTerm == null) {
                         random = 0;
                     }
-                } while (!(existingRdfTerm instanceof IRI));
-                return (IRI) existingRdfTerm;
+                } while (!(existingRDFTerm instanceof IRI));
+                return (IRI) existingRDFTerm;
         }
     }
 
@@ -165,13 +165,13 @@ public class RandomGraph extends GraphWrapper {
         }        
         switch (random) {
             case 0: // create new resource
-                return createRandomRdfTerm();
+                return createRandomRDFTerm();
             default: // get existing resource
-                RDFTerm existingRdfTerm = getExistingRdfTerm();
-                if (existingRdfTerm == null) {
+                RDFTerm existingRDFTerm = getExistingRDFTerm();
+                if (existingRDFTerm == null) {
                     random = 0;
                 }
-                return existingRdfTerm;
+                return existingRDFTerm;
         }
     }
 
@@ -179,19 +179,19 @@ public class RandomGraph extends GraphWrapper {
         return Double.valueOf(Math.random() * faces).intValue();
     }
 
-    private RDFTerm createRandomRdfTerm() {
+    private RDFTerm createRandomRDFTerm() {
         switch (rollDice(3)) {
             case 0:
                 return new BlankNode();
             case 1:
-                return createRandomIri();
+                return createRandomIRI();
             case 2:
                 return new PlainLiteralImpl(RandomStringUtils.random(rollDice(100) + 1));
         }
-        throw new RuntimeException("in createRandomRdfTerm()");
+        throw new RuntimeException("in createRandomRDFTerm()");
     }
 
-    private RDFTerm getExistingRdfTerm() {
+    private RDFTerm getExistingRDFTerm() {
         Triple triple = getRandomTriple();
         if (triple == null) {
             return null;
@@ -207,7 +207,7 @@ public class RandomGraph extends GraphWrapper {
         return null;
     }
 
-    private IRI createRandomIri() {
+    private IRI createRandomIRI() {
         return new IRI("http://" + UUID.randomUUID().toString());
     }
 
