@@ -47,8 +47,8 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Language;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
@@ -153,15 +153,15 @@ public class ResultSetMessageBodyWriter implements MessageBodyWriter<ResultSet> 
 
 
     /**
-     * Helper: creates value element from {@link RdfTerm} depending on its
+     * Helper: creates value element from {@link RDFTerm} depending on its
      * class
      *
      */
-    private Element createValueElement(RdfTerm resource, Document doc) {
+    private Element createValueElement(RDFTerm resource, Document doc) {
         Element value = null;
-        if (resource instanceof Iri) {
+        if (resource instanceof IRI) {
             value = doc.createElement("uri");
-            value.appendChild(doc.createTextNode(((Iri) resource)
+            value.appendChild(doc.createTextNode(((IRI) resource)
                     .getUnicodeString()));
         } else if (resource instanceof Literal) {
             value = doc.createElement("literal");
@@ -191,8 +191,7 @@ public class ResultSetMessageBodyWriter implements MessageBodyWriter<ResultSet> 
         for (Variable key : keys) {
             Element bindingElement = doc.createElement("binding");
             bindingElement.setAttribute("name", key.getName());
-            bindingElement.appendChild(createValueElement(
-                    (RdfTerm) solutionMap.get(key), doc));
+            bindingElement.appendChild(createValueElement((RDFTerm) solutionMap.get(key), doc));
             result.appendChild(bindingElement);
         }
     }

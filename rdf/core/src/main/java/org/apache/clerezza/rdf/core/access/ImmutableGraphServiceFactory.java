@@ -22,7 +22,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 
 /**
@@ -34,10 +34,10 @@ import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 public class ImmutableGraphServiceFactory implements ServiceFactory {
     
     private final TcManager tcManager;
-    private final Iri name;
+    private final IRI name;
     private final TcAccessController tcAccessController;
 
-    ImmutableGraphServiceFactory(TcManager tcManager, Iri name,
+    ImmutableGraphServiceFactory(TcManager tcManager, IRI name,
             TcAccessController tcAccessController) {
         this.tcManager = tcManager;
         this.name = name;

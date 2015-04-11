@@ -17,7 +17,7 @@
 
 package org.apache.clerezza.platform;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * This class gropus some constant values used by the clerezza.platform components
@@ -40,8 +40,8 @@ public class Constants {
     /**
      * the uri of the system graph
      */
-    public static final Iri SYSTEM_GRAPH_URI =
-            new Iri(SYSTEM_GRAPH_URI_STRING);
+    public static final IRI SYSTEM_GRAPH_URI =
+            new IRI(SYSTEM_GRAPH_URI_STRING);
 
     /**
      * the uri of the config graph as string
@@ -51,8 +51,8 @@ public class Constants {
     /**
      * the uri of the config graph as string
      */
-    public static final Iri CONFIG_GRAPH_URI =
-            new Iri(CONFIG_GRAPH_URI_STRING);
+    public static final IRI CONFIG_GRAPH_URI =
+            new IRI(CONFIG_GRAPH_URI_STRING);
 
     /**
      * the uri of the content graph as string
@@ -62,8 +62,8 @@ public class Constants {
     /**
      * the uri of the content graph
      */
-    public static final Iri CONTENT_GRAPH_URI =
-            new Iri(CONTENT_GRAPH_URI_STRING);
+    public static final IRI CONTENT_GRAPH_URI =
+            new IRI(CONTENT_GRAPH_URI_STRING);
 
 
     /**

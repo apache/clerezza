@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.Context;
 import java.util.Iterator;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.jena.facade.JenaGraph;
@@ -55,14 +55,14 @@ class TcDatasetGraph implements DatasetGraph {
     @Override
     public com.hp.hpl.jena.graph.Graph getGraph(Node node) {
         final JenaGraph jenaGraph = new JenaGraph(
-                tcManager.getGraph(new Iri(node.getURI())));
+                tcManager.getGraph(new IRI(node.getURI())));
         return jenaGraph;
     }
 
     @Override
     public boolean containsGraph(Node node) {
         try {
-            tcManager.getGraph(new Iri(node.getURI()));
+            tcManager.getGraph(new IRI(node.getURI()));
             return true;
         } catch (NoSuchEntityException e) {
             return false;
@@ -71,7 +71,7 @@ class TcDatasetGraph implements DatasetGraph {
 
     @Override
     public Iterator<Node> listGraphNodes() {
-        final Iterator<Iri> graphsIter = tcManager.listGraphs().iterator();
+        final Iterator<IRI> graphsIter = tcManager.listGraphs().iterator();
         return new Iterator<Node>() {
 
             @Override
@@ -81,7 +81,7 @@ class TcDatasetGraph implements DatasetGraph {
 
             @Override
             public Node next() {
-                Iri uriRef = graphsIter.next();
+                IRI uriRef = graphsIter.next();
                 if (uriRef == null) {
                     return null;
                 }

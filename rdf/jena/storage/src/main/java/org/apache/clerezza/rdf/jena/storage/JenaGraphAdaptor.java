@@ -26,10 +26,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
 import org.apache.clerezza.rdf.jena.commons.Tria2JenaUtil;
 import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph;
@@ -75,7 +75,7 @@ public class JenaGraphAdaptor extends AbstractGraph {
     }
 
     @Override
-    public Iterator<Triple> performFilter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
+    public Iterator<Triple> performFilter(BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
         Node jenaSubject = null;
         Node jenaPredicate = null;
         Node jenaObject = null;

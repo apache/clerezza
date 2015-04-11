@@ -34,7 +34,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.io.StringWriter;
 import org.junit.Test;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.jena.facade.JenaGraph;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
@@ -50,7 +50,7 @@ public class TestBasics {
     @Test
     public void serializeGraph() {
         final String uriString = "http://example.org/foo#bar";
-        Iri uri = new Iri(uriString);
+        IRI uri = new IRI(uriString);
         Graph mGraph = new SimpleGraph();
         mGraph.add(new TripleImpl(uri, uri, new PlainLiteralImpl("bla bla")));
         com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);
@@ -62,7 +62,7 @@ public class TestBasics {
     
     @Test
     public void graphSize() {
-        Iri uri = new Iri("http://example.org/foo#bar");
+        IRI uri = new IRI("http://example.org/foo#bar");
         Graph mGraph = new SimpleGraph();
         mGraph.add(new TripleImpl(uri, uri, new PlainLiteralImpl("bla bla")));
         com.hp.hpl.jena.graph.Graph graph = new JenaGraph(mGraph);

@@ -38,7 +38,7 @@ import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
@@ -130,7 +130,7 @@ public class Restorer {
                 Graph mGraph;
                 boolean created = false;
                 try {
-                    mGraph = target.getGraph((Iri)graphGN.getNode());
+                    mGraph = target.getGraph((IRI)graphGN.getNode());
                     try {
                         mGraph.clear();
                     } catch (UnsupportedOperationException ex) {
@@ -139,7 +139,7 @@ public class Restorer {
                         continue;
                     }
                 } catch (NoSuchEntityException ex) {
-                    mGraph = target.createGraph((Iri)graphGN.getNode());
+                    mGraph = target.createGraph((IRI)graphGN.getNode());
                     created = true;
                 }
                 try {
@@ -158,7 +158,7 @@ public class Restorer {
                 String fileName = graphGN.getLiterals(BACKUP.file).next().getLexicalForm();
                 Graph extracted = extractedTc.get(fileName);
                 try {
-                    target.deleteGraph((Iri)graphGN.getNode());
+                    target.deleteGraph((IRI)graphGN.getNode());
                 } catch (UnsupportedOperationException ex) {
                     log.warn("could not restore "+graphGN.getNode()+" as the exsting triple "
                             + "collection could not be deleted");
@@ -166,7 +166,7 @@ public class Restorer {
                 } catch (NoSuchEntityException ex) {
                     log.debug("could not remove "+graphGN.getNode()+", no such entity");
                 }
-                target.createImmutableGraph((Iri)graphGN.getNode(), extracted);
+                target.createImmutableGraph((IRI)graphGN.getNode(), extracted);
             }
         }
         for (Map.Entry<String, Graph> pathTcPair : extractedTc.entrySet()) {

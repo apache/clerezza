@@ -26,7 +26,7 @@ import java.util.Set;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
@@ -40,10 +40,10 @@ import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleMGraph;
  */
 public class WeightedDummy implements WeightedTcProvider {
 
-    private Map<Iri, Graph> tripleMap = new HashMap<Iri, Graph>();
+    private Map<IRI, Graph> tripleMap = new HashMap<IRI, Graph>();
 
     @Override
-    public ImmutableGraph createImmutableGraph(Iri name, Graph triples)
+    public ImmutableGraph createImmutableGraph(IRI name, Graph triples)
             throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
@@ -69,7 +69,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Graph createGraph(Iri name) throws EntityAlreadyExistsException {
+    public Graph createGraph(IRI name) throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
             throw new IllegalArgumentException("Name must not be null");
@@ -88,7 +88,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public void deleteGraph(Iri name)
+    public void deleteGraph(IRI name)
             throws NoSuchEntityException, EntityUndeletableException {
         if (tripleMap.remove(name) == null) {
             throw new NoSuchEntityException(name);
@@ -96,7 +96,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException {
         Graph Graph = tripleMap.get(name);
         if (Graph == null) {
             throw new NoSuchEntityException(name);
@@ -107,7 +107,7 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getMGraph(Iri name) throws NoSuchEntityException {
+    public Graph getMGraph(IRI name) throws NoSuchEntityException {
         Graph Graph = tripleMap.get(name);
         if (Graph == null) {
             throw new NoSuchEntityException(name);
@@ -118,13 +118,13 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> getNames(ImmutableGraph ImmutableGraph) {
+    public Set<IRI> getNames(ImmutableGraph ImmutableGraph) {
         throw new UnsupportedOperationException(
                 "Not supported yet. equals() has to be implemented first");
     }
 
     @Override
-    public Graph getGraph(Iri name)
+    public Graph getGraph(IRI name)
             throws NoSuchEntityException {
         Graph Graph = tripleMap.get(name);
         if (Graph == null) {
@@ -140,17 +140,17 @@ public class WeightedDummy implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> listImmutableGraphs() {
+    public Set<IRI> listImmutableGraphs() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<Iri> listMGraphs() {
-        return new HashSet<Iri>();
+    public Set<IRI> listMGraphs() {
+        return new HashSet<IRI>();
     }
 
     @Override
-    public Set<Iri> listGraphs() {
+    public Set<IRI> listGraphs() {
         return listMGraphs();
     }
 }

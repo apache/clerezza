@@ -25,7 +25,7 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import javax.ws.rs.core.*;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -126,7 +126,7 @@ public interface TypeRenderlet {
     /**
      * @return the rdf type rendered by this renderlet
      */
-    Iri getRdfType();
+    IRI getRdfType();
 
     /**
      * The renderer may render resources in different modes. Such a mode is

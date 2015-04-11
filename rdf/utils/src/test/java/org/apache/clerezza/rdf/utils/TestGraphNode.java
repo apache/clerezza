@@ -28,9 +28,9 @@ import org.junit.Test;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
@@ -47,8 +47,8 @@ public class TestGraphNode {
         Graph g = new SimpleGraph();
         BlankNode bNode1 = new BlankNode() {};
         BlankNode bNode2 = new BlankNode() {};
-        Iri property1 = new Iri("http://example.org/property1");
-        Iri property2 = new Iri("http://example.org/property2");
+        IRI property1 = new IRI("http://example.org/property1");
+        IRI property2 = new IRI("http://example.org/property2");
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("literal")));
         g.add(new TripleImpl(bNode1, property2, property1));
         g.add(new TripleImpl(bNode2, property2, bNode1));
@@ -66,7 +66,7 @@ public class TestGraphNode {
         Graph g = new SimpleGraph();
         BlankNode bNode1 = new BlankNode() {};
         BlankNode bNode2 = new BlankNode() {};
-        Iri property1 = new Iri("http://example.org/property1");
+        IRI property1 = new IRI("http://example.org/property1");
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
         Assert.assertEquals(1, g.size());
@@ -78,10 +78,10 @@ public class TestGraphNode {
         for (int j = 0; j < 200; j++) {
             Triple randomTriple = graph.getRandomTriple();
             GraphNode node = new GraphNode(randomTriple.getSubject(), graph);
-            Iterator<Iri> properties = node.getProperties();
+            Iterator<IRI> properties = node.getProperties();
             while (properties.hasNext()) {
-                Iri property = properties.next();
-                Set<RdfTerm> objects = createSet(node.getObjects(property));
+                IRI property = properties.next();
+                Set<RDFTerm> objects = createSet(node.getObjects(property));
                 Iterator<GraphNode> objectNodes = node.getObjectNodes(property);
                 while (objectNodes.hasNext()) {
                     GraphNode graphNode = objectNodes.next();
@@ -93,10 +93,10 @@ public class TestGraphNode {
         for (int j = 0; j < 200; j++) {
             Triple randomTriple = graph.getRandomTriple();
             GraphNode node = new GraphNode(randomTriple.getObject(), graph);
-            Iterator<Iri> properties = node.getProperties();
+            Iterator<IRI> properties = node.getProperties();
             while (properties.hasNext()) {
-                Iri property = properties.next();
-                Set<RdfTerm> subjects = createSet(node.getSubjects(property));
+                IRI property = properties.next();
+                Set<RDFTerm> subjects = createSet(node.getSubjects(property));
                 Iterator<GraphNode> subjectNodes = node.getSubjectNodes(property);
                 while (subjectNodes.hasNext()) {
                     GraphNode graphNode = subjectNodes.next();
@@ -111,11 +111,11 @@ public class TestGraphNode {
         Graph g = new SimpleGraph();
         BlankNode bNode1 = new BlankNode() {};
         BlankNode bNode2 = new BlankNode() {};
-        Iri property1 = new Iri("http://example.org/property1");
-        Iri property2 = new Iri("http://example.org/property2");
-        Iri property3 = new Iri("http://example.org/property3");
-        Iri property4 = new Iri("http://example.org/property4");
-        ArrayList<Iri> props = new ArrayList<Iri>();
+        IRI property1 = new IRI("http://example.org/property1");
+        IRI property2 = new IRI("http://example.org/property2");
+        IRI property3 = new IRI("http://example.org/property3");
+        IRI property4 = new IRI("http://example.org/property4");
+        ArrayList<IRI> props = new ArrayList<IRI>();
         props.add(property1);
         props.add(property2);
         props.add(property3);
@@ -125,11 +125,11 @@ public class TestGraphNode {
         n.addProperty(property2, bNode2);
         n.addProperty(property3, bNode2);
         n.addProperty(property4, bNode2);
-        Iterator<Iri> properties = n.getProperties();
+        Iterator<IRI> properties = n.getProperties();
         int i = 0;
         while(properties.hasNext()){
             i++;
-            Iri prop = properties.next();
+            IRI prop = properties.next();
             Assert.assertTrue(props.contains(prop));
             props.remove(prop);
         }
@@ -143,8 +143,8 @@ public class TestGraphNode {
         Graph g = new SimpleGraph();
         BlankNode bNode1 = new BlankNode() {};
         BlankNode bNode2 = new BlankNode() {};
-        Iri property1 = new Iri("http://example.org/property1");
-        Iri property2 = new Iri("http://example.org/property2");
+        IRI property1 = new IRI("http://example.org/property1");
+        IRI property2 = new IRI("http://example.org/property2");
         //the two properties two be deleted
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("literal")));
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("bla bla")));
@@ -162,8 +162,8 @@ public class TestGraphNode {
         Graph g = new SimpleGraph();
         BlankNode bNode1 = new BlankNode() {};
         BlankNode bNode2 = new BlankNode() {};
-        Iri property1 = new Iri("http://example.org/property1");
-        Iri property2 = new Iri("http://example.org/property2");
+        IRI property1 = new IRI("http://example.org/property1");
+        IRI property2 = new IRI("http://example.org/property2");
         //the properties two be deleted
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("literal")));
         //this 4 properties should stay
@@ -182,9 +182,9 @@ public class TestGraphNode {
         BlankNode bNode1 = new BlankNode();
         BlankNode bNode2 = new BlankNode();
         BlankNode newBnode = new BlankNode();
-        Iri property1 = new Iri("http://example.org/property1");
-        Iri property2 = new Iri("http://example.org/property2");
-        Iri newIri = new Iri("http://example.org/newName");
+        IRI property1 = new IRI("http://example.org/property1");
+        IRI property2 = new IRI("http://example.org/property2");
+        IRI newIri = new IRI("http://example.org/newName");
         Literal literal1 = new PlainLiteralImpl("literal");
         Literal literal2 = new PlainLiteralImpl("bla bla");
 
@@ -250,7 +250,7 @@ public class TestGraphNode {
         Graph g = new SimpleGraph();
         BlankNode bNode1 = new BlankNode() {};
         BlankNode bNode2 = new BlankNode() {};
-        Iri property1 = new Iri("http://example.org/property1");
+        IRI property1 = new IRI("http://example.org/property1");
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
         Assert.assertTrue(n.equals(new GraphNode(bNode1, g)));
@@ -259,10 +259,10 @@ public class TestGraphNode {
         Assert.assertFalse(n.equals(n2));
     }
 
-    private Set<RdfTerm> createSet(Iterator<? extends RdfTerm> resources) {
-        Set<RdfTerm> set = new HashSet<RdfTerm>();
+    private Set<RDFTerm> createSet(Iterator<? extends RDFTerm> resources) {
+        Set<RDFTerm> set = new HashSet<RDFTerm>();
         while (resources.hasNext()) {
-            RdfTerm resource = resources.next();
+            RDFTerm resource = resources.next();
             set.add(resource);
         }
         return set;

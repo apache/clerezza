@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.core.serializedform;
 import java.io.InputStream;
 
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * An instance of this class parses RDF-ImmutableGraph from one or more serialization
@@ -44,6 +44,6 @@ public interface ParsingProvider {
      * @param baseUri the baseUri for interpreting relative uris, may be null
      */
     void parse(Graph target, InputStream serializedGraph,
-            String formatIdentifier, Iri baseUri);
+            String formatIdentifier, IRI baseUri);
 
 }

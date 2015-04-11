@@ -22,10 +22,10 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
 import java.util.Map;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 
 
@@ -40,9 +40,9 @@ public class Tria2JenaUtil {
         this.tria2JenaBNodes = tria2JenaBNodes;
     }
 
-    public Node convert2JenaNode(BlankNodeOrIri nonLiteral, boolean createBlankNode) {
-        if (nonLiteral instanceof Iri) {
-            return convert2JenaNode((Iri)nonLiteral);
+    public Node convert2JenaNode(BlankNodeOrIRI nonLiteral, boolean createBlankNode) {
+        if (nonLiteral instanceof IRI) {
+            return convert2JenaNode((IRI)nonLiteral);
         } else {
             return convert2JenaNode((BlankNode)nonLiteral, createBlankNode);
         }
@@ -60,18 +60,18 @@ public class Tria2JenaUtil {
                             literal.getDataType().getUnicodeString()));
     }
 
-    public Node convert2JenaNode(RdfTerm resource) {
+    public Node convert2JenaNode(RDFTerm resource) {
         return convert2JenaNode(resource, false);
     }
 
-    public Node convert2JenaNode(RdfTerm resource, boolean createBlankNode) {
-        if (resource instanceof BlankNodeOrIri) {
-            return convert2JenaNode((BlankNodeOrIri)resource, createBlankNode);
+    public Node convert2JenaNode(RDFTerm resource, boolean createBlankNode) {
+        if (resource instanceof BlankNodeOrIRI) {
+            return convert2JenaNode((BlankNodeOrIRI)resource, createBlankNode);
         }
         return convert2JenaNode((Literal)resource);
     }
 
-    public Node convert2JenaNode(Iri uriRef) {
+    public Node convert2JenaNode(IRI uriRef) {
         if (uriRef == null) {
             throw new IllegalArgumentException("null argument not allowed");
         }

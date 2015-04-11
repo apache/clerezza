@@ -31,11 +31,11 @@ import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Language;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.templating.RenderingFunction;
 import org.apache.clerezza.templating.RenderingFunctions;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
 import org.apache.clerezza.commons.rdf.Graph;
 
 /**
@@ -44,9 +44,9 @@ import org.apache.clerezza.commons.rdf.Graph;
  */
 class WebRenderingFunctions implements RenderingFunctions {
 
-    private static final Iri XML_DATE_LITERAL = new Iri(
+    private static final IRI XML_DATE_LITERAL = new IRI(
             "http://www.w3.org/2001/XMLSchema#dateTime");
-    private final static Iri RDF_XML_LITERAL = new Iri(
+    private final static IRI RDF_XML_LITERAL = new IRI(
             "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
     private Graph graph;
     private GraphNode context;
@@ -84,8 +84,8 @@ class WebRenderingFunctions implements RenderingFunctions {
                     }
                     stringValue = ((Literal) value).getLexicalForm();
                 } else {
-                    if (value instanceof Iri) {
-                        stringValue = ((Iri) value).getUnicodeString();
+                    if (value instanceof IRI) {
+                        stringValue = ((IRI) value).getUnicodeString();
                     } else {
                         stringValue = value.toString();
                     }
@@ -138,7 +138,7 @@ class WebRenderingFunctions implements RenderingFunctions {
 
         @Override
         public String process(Object... values) throws IOException {
-            BlankNodeOrIri resource = (BlankNodeOrIri) values[0];
+            BlankNodeOrIRI resource = (BlankNodeOrIRI) values[0];
             GraphNode graphNode = new GraphNode(resource, graph);
             String mode = null;
             if (values.length > 1) {
@@ -185,10 +185,10 @@ class WebRenderingFunctions implements RenderingFunctions {
      * A function that returns the Datatype of a Literal or null if the
      * Literal has no language or if the object is not a Literal
      */
-    private static RenderingFunction datatypeFunction = new RenderingFunction<Object, Iri>() {
+    private static RenderingFunction datatypeFunction = new RenderingFunction<Object, IRI>() {
 
         @Override
-        public Iri process(Object... values) {
+        public IRI process(Object... values) {
             Object value = values[0];
             if (value instanceof Literal) {
                 return ((Literal) value).getDataType();
@@ -225,7 +225,7 @@ class WebRenderingFunctions implements RenderingFunctions {
             if (value instanceof Literal) {
                 return "literal";
             }
-            if (value instanceof Iri) {
+            if (value instanceof IRI) {
                 return "iri";
             }
             if (value instanceof BlankNode) {

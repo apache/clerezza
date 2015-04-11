@@ -26,9 +26,9 @@ import org.junit.Test;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 
@@ -43,14 +43,14 @@ import static org.junit.Assert.*;
  */
 public abstract class TcProviderTest {
 
-    protected final Iri uriRefA = generateUri("a");
-    protected final Iri uriRefA1 = generateUri("a1");
-    protected final Iri uriRefB = generateUri("b");
-    protected final Iri uriRefB1 = generateUri("b1");
-    protected final Iri uriRefC = generateUri("c");
+    protected final IRI uriRefA = generateUri("a");
+    protected final IRI uriRefA1 = generateUri("a1");
+    protected final IRI uriRefB = generateUri("b");
+    protected final IRI uriRefB1 = generateUri("b1");
+    protected final IRI uriRefC = generateUri("c");
 
-    protected final Iri graphIri = generateUri("myGraph");
-    protected final Iri otherGraphIri = new Iri(graphIri.getUnicodeString());
+    protected final IRI graphIri = generateUri("myGraph");
+    protected final IRI otherGraphIri = new IRI(graphIri.getUnicodeString());
 
     @Test
     public void testCreateImmutableGraph() {
@@ -408,10 +408,10 @@ public abstract class TcProviderTest {
 //        Graph triples = createTestTripleCollection(createTestTriple());
 //
 //        TcProvider provider = getInstance();
-//        Iri name1 = new Iri("http://myGraph1");
+//        IRI name1 = new IRI("http://myGraph1");
 //        ImmutableGraph graph = provider.createGraph(name1, triples);
 //
-//        Iri name2 = new Iri("http://myGraph2");
+//        IRI name2 = new IRI("http://myGraph2");
 //        ImmutableGraph secondGraph = provider.createGraph(name2, triples);
 //
 //        Set<Iri> names = provider.getNames(graph);
@@ -425,10 +425,10 @@ public abstract class TcProviderTest {
         Graph triples = createTestTripleCollection(createTestTriple());
 
         TcProvider provider = getInstance();
-        Iri name1 = new Iri("http://myGraph1");
+        IRI name1 = new IRI("http://myGraph1");
         ImmutableGraph graph = provider.createImmutableGraph(name1, triples);
 
-        Iri name2 = new Iri("http://myGraph2");
+        IRI name2 = new IRI("http://myGraph2");
         ImmutableGraph secondGraph = provider.createImmutableGraph(name2, triples);
 
         //if we delete graph with name1, the second graph should still be there
@@ -465,9 +465,9 @@ public abstract class TcProviderTest {
     }
 
     private Triple createTestTriple() {
-        BlankNodeOrIri subject = new BlankNode() {};
-        Iri predicate = new Iri("http://test.com/");
-        BlankNodeOrIri object = new Iri("http://test.com/myObject");
+        BlankNodeOrIRI subject = new BlankNode() {};
+        IRI predicate = new IRI("http://test.com/");
+        BlankNodeOrIRI object = new IRI("http://test.com/myObject");
         return new TripleImpl(subject, predicate, object);
     }
 
@@ -477,8 +477,8 @@ public abstract class TcProviderTest {
         return new SimpleGraph(ts);
     }
 
-    protected Iri generateUri(String name) {
-        return new Iri("http://example.org/" + name);
+    protected IRI generateUri(String name) {
+        return new IRI("http://example.org/" + name);
     }
     
 }

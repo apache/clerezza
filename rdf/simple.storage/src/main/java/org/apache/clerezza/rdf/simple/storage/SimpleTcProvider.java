@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
@@ -40,10 +40,10 @@ import org.osgi.service.component.annotations.Component;
 @Component(service = WeightedTcProvider.class, property = TcManager.GENERAL_PURPOSE_TC+"=true")
 public class SimpleTcProvider implements WeightedTcProvider {
 
-    private Map<Iri, Graph> tripleMap = new HashMap<Iri, Graph>();
+    private Map<IRI, Graph> tripleMap = new HashMap<IRI, Graph>();
 
     @Override
-    public ImmutableGraph createImmutableGraph(Iri name, Graph triples)
+    public ImmutableGraph createImmutableGraph(IRI name, Graph triples)
             throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
@@ -73,7 +73,7 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Graph createGraph(Iri name) throws EntityAlreadyExistsException {
+    public Graph createGraph(IRI name) throws EntityAlreadyExistsException {
         if ((name == null) || (name.getUnicodeString() == null)
                 || (name.getUnicodeString().trim().length() == 0)) {
             throw new IllegalArgumentException("Name must not be null");
@@ -92,7 +92,7 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public void deleteGraph(Iri name)
+    public void deleteGraph(IRI name)
             throws NoSuchEntityException, EntityUndeletableException {
         if (tripleMap.remove(name) == null) {
             throw new NoSuchEntityException(name);
@@ -100,7 +100,7 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException {
         Graph tripleCollection = tripleMap.get(name);
         if (tripleCollection == null) {
             throw new NoSuchEntityException(name);
@@ -111,7 +111,7 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getMGraph(Iri name) throws NoSuchEntityException {
+    public Graph getMGraph(IRI name) throws NoSuchEntityException {
         Graph tripleCollection = tripleMap.get(name);
         if (tripleCollection == null) {
             throw new NoSuchEntityException(name);
@@ -122,13 +122,13 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> getNames(ImmutableGraph graph) {
+    public Set<IRI> getNames(ImmutableGraph graph) {
         throw new UnsupportedOperationException(
                 "Not supported yet. equals() has to be implemented first");
     }
 
     @Override
-    public Graph getGraph(Iri name)
+    public Graph getGraph(IRI name)
             throws NoSuchEntityException {
         Graph tripleCollection = tripleMap.get(name);
         if (tripleCollection == null) {
@@ -144,9 +144,9 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> listImmutableGraphs() {
-        Set<Iri> result = new HashSet<Iri>();
-        for (Iri uriRef : listGraphs()) {
+    public Set<IRI> listImmutableGraphs() {
+        Set<IRI> result = new HashSet<IRI>();
+        for (IRI uriRef : listGraphs()) {
             if (tripleMap.get(uriRef) instanceof ImmutableGraph) {
                 result.add(uriRef);
             }
@@ -155,9 +155,9 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> listMGraphs() {
-        Set<Iri> result = new HashSet<Iri>();
-        for (Iri uriRef : listGraphs()) {
+    public Set<IRI> listMGraphs() {
+        Set<IRI> result = new HashSet<IRI>();
+        for (IRI uriRef : listGraphs()) {
             if (!(tripleMap.get(uriRef) instanceof ImmutableGraph)) {
                 result.add(uriRef);
             }
@@ -166,7 +166,7 @@ public class SimpleTcProvider implements WeightedTcProvider {
     }
 
     @Override
-    public Set<Iri> listGraphs() {
+    public Set<IRI> listGraphs() {
         return tripleMap.keySet();
     }
 }

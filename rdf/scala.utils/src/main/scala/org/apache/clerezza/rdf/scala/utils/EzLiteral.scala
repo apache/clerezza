@@ -21,12 +21,12 @@ package org.apache.clerezza.rdf.scala.utils
 
 //import org.apache.clerezza.rdf.core.impl.{TypedLiteralImpl, PlainLiteralImpl}
 import org.apache.clerezza.rdf.ontologies.XSD
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.commons.rdf.Language
 import org.apache.clerezza.commons.rdf.Literal
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl
 import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl
-//import org.apache.clerezza.commons.rdf.core.{TypedLiteral, Language, PlainLiteral, Iri}
+//import org.apache.clerezza.commons.rdf.core.{TypedLiteral, Language, PlainLiteral, IRI}
 
 object EzLiteral extends EzLiteralImplicits
 
@@ -65,7 +65,7 @@ class EzLiteral(string: String) extends TypedLiteralImpl(string,XSD.string) {
   /**
    * Map to a Typed Literal of given type
    */
-  def ^^(typ: Iri): Literal = new TypedLiteralImpl(string, typ)
+  def ^^(typ: IRI): Literal = new TypedLiteralImpl(string, typ)
 
   /**
    * alias for iri
@@ -76,6 +76,6 @@ class EzLiteral(string: String) extends TypedLiteralImpl(string,XSD.string) {
   /**
    * Map to an IRI of given lexical form
    */
-  def iri = new Iri(string)
+  def iri = new IRI(string)
 
 }

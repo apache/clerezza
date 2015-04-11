@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * A TC (Graph) Provider allows access to and optionally 
@@ -40,7 +40,7 @@ public interface TcProvider {
      * @throws NoSuchEntityException if there is no <code>ImmutableGraph</code>
      *         with the specified name
      */
-    ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException;
+    ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException;
 
     /**
      * Get an <code>Graph</code> taht is not <code>ImmutableGrah</code>. The instances
@@ -51,7 +51,7 @@ public interface TcProvider {
      * @throws NoSuchEntityException if there is no <code>Graph</code>
      *         with the specified name
      */
-    Graph getMGraph(Iri name) throws NoSuchEntityException;
+    Graph getMGraph(IRI name) throws NoSuchEntityException;
     
     /**
      * This method is used to get a <code>Graph</code> indifferently
@@ -66,7 +66,7 @@ public interface TcProvider {
      * @throws NoSuchEntityException if there is no <code>ImmutableGraph</code>
      *         or <code>Graph</code> with the specified name
      */
-    Graph getGraph(Iri name) throws NoSuchEntityException;
+    Graph getGraph(IRI name) throws NoSuchEntityException;
 
     /**
      * Lists the name of the <Code>ImmutableGraph</code>s available through this
@@ -76,7 +76,7 @@ public interface TcProvider {
      *
      * @return the list of <Code>ImmutableGraph</code>s
      */
-    Set<Iri> listImmutableGraphs();
+    Set<IRI> listImmutableGraphs();
 
     /**
      * Lists the name of the <Code>Graph</code>s available through this
@@ -86,7 +86,7 @@ public interface TcProvider {
      *
      * @return the list of <Code>Graph</code>s
      */
-    Set<Iri> listMGraphs();
+    Set<IRI> listMGraphs();
 
     /**
      * Lists the name of the <Code>Graph</code>s available through this
@@ -96,7 +96,7 @@ public interface TcProvider {
      *
      * @return the list of <Code>Graph</code>s
      */
-    Set<Iri> listGraphs();
+    Set<IRI> listGraphs();
 
     /**
      * Creates an initially empty <code>Graph</code> with a specified name
@@ -108,7 +108,7 @@ public interface TcProvider {
      * @throws EntityAlreadyExistsException if an Graph with the specified name
      *         already exists
      */
-    Graph createGraph(Iri name) throws UnsupportedOperationException, 
+    Graph createGraph(IRI name) throws UnsupportedOperationException, 
             EntityAlreadyExistsException;
 
     /**
@@ -122,7 +122,7 @@ public interface TcProvider {
      * @throws EntityAlreadyExistsException if a ImmutableGraph with the specified name
      *         already exists
      */
-    ImmutableGraph createImmutableGraph(Iri name, Graph triples) 
+    ImmutableGraph createImmutableGraph(IRI name, Graph triples) 
             throws UnsupportedOperationException, EntityAlreadyExistsException;
     
     /**
@@ -137,7 +137,7 @@ public interface TcProvider {
      *           <code>ImmutableGraph</code> or an <code>Graph</code>.
      * @throws EntityUndeletableException if the specified ImmutableGraph is undeletable
      */
-    void deleteGraph(Iri name) throws UnsupportedOperationException,
+    void deleteGraph(IRI name) throws UnsupportedOperationException,
             NoSuchEntityException, EntityUndeletableException;
 
     /**
@@ -147,5 +147,5 @@ public interface TcProvider {
      * @return the set names of <code>ImmutableGraph</code>, the set is empty if
      *         <code>ImmutableGraph</code> is unknown
      */
-    Set<Iri> getNames(ImmutableGraph immutableGraph);
+    Set<IRI> getNames(ImmutableGraph immutableGraph);
 }

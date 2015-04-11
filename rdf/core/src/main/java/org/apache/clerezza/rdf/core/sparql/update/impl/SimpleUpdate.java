@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.update.Update;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
@@ -35,8 +35,8 @@ public class SimpleUpdate implements Update {
     protected List<UpdateOperation> operations = new ArrayList<UpdateOperation>();
 
     @Override
-    public Set<Iri> getReferredGraphs(Iri defaultGraph, TcProvider tcProvider) {
-        Set<Iri> referredGraphs = new HashSet<Iri>();
+    public Set<IRI> getReferredGraphs(IRI defaultGraph, TcProvider tcProvider) {
+        Set<IRI> referredGraphs = new HashSet<IRI>();
         for (UpdateOperation operation : operations) {
             referredGraphs.addAll(operation.getInputGraphs(defaultGraph, tcProvider));
             referredGraphs.addAll(operation.getDestinationGraphs(defaultGraph, tcProvider));

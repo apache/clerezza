@@ -26,10 +26,10 @@ import java.util.Set;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.junit.Test;
 import org.apache.clerezza.commons.rdf.Language;
@@ -47,16 +47,16 @@ import org.junit.Assert;
  */
 public abstract class GraphTest {
 
-    private final Iri uriRef1 =
-            new Iri("http://example.org/ontology#res1");
-    private final Iri uriRef2 =
-            new Iri("http://example.org/ontology#res2");
-    private final Iri uriRef3 =
-            new Iri("http://example.org/ontology#res3");
-    private final Iri uriRef4 =
-            new Iri("http://example.org/ontology#res4");
-    private final Iri xmlLiteralType =
-            new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
+    private final IRI uriRef1 =
+            new IRI("http://example.org/ontology#res1");
+    private final IRI uriRef2 =
+            new IRI("http://example.org/ontology#res2");
+    private final IRI uriRef3 =
+            new IRI("http://example.org/ontology#res3");
+    private final IRI uriRef4 =
+            new IRI("http://example.org/ontology#res4");
+    private final IRI xmlLiteralType =
+            new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
     private Literal literal1 = new PlainLiteralImpl("literal1");
     private Literal literal2 = new PlainLiteralImpl("literal2");
     private BlankNode bnode1 = new BlankNode();
@@ -91,8 +91,8 @@ public abstract class GraphTest {
         graph.add(new TripleImpl(bnode, uriRef1, uriRef3));
         graph.add(new TripleImpl(bnode, uriRef1, uriRef4));
         tripleIter = graph.filter(null, uriRef1, null);
-        Set<BlankNodeOrIri> subjectInMatchingTriples = new HashSet<BlankNodeOrIri>();
-        Set<RdfTerm> objectsInMatchingTriples = new HashSet<RdfTerm>();
+        Set<BlankNodeOrIRI> subjectInMatchingTriples = new HashSet<BlankNodeOrIRI>();
+        Set<RDFTerm> objectsInMatchingTriples = new HashSet<RDFTerm>();
         while (tripleIter.hasNext()) {
             Triple triple = tripleIter.next();
             subjectInMatchingTriples.add(triple.getSubject());
@@ -100,7 +100,7 @@ public abstract class GraphTest {
         }
         Assert.assertEquals(1, subjectInMatchingTriples.size());
         Assert.assertEquals(2, objectsInMatchingTriples.size());
-        Set<RdfTerm> expectedObjects = new HashSet<RdfTerm>();
+        Set<RDFTerm> expectedObjects = new HashSet<RDFTerm>();
         expectedObjects.add(uriRef3);
         expectedObjects.add(uriRef4);
         Assert.assertEquals(expectedObjects, objectsInMatchingTriples);
@@ -137,7 +137,7 @@ public abstract class GraphTest {
         graph.add(triple1);
         Iterator<Triple> tripleIter = graph.filter(uriRef1, uriRef2, null);
         Assert.assertTrue(tripleIter.hasNext());
-        RdfTerm gotValue = tripleIter.next().getObject();
+        RDFTerm gotValue = tripleIter.next().getObject();
         Assert.assertEquals(value, gotValue);
     }
 
@@ -151,7 +151,7 @@ public abstract class GraphTest {
         graph.add(triple1);
         Iterator<Triple> tripleIter = graph.filter(uriRef1, uriRef2, null);
         Assert.assertTrue(tripleIter.hasNext());
-        RdfTerm gotValue = tripleIter.next().getObject();
+        RDFTerm gotValue = tripleIter.next().getObject();
         Assert.assertEquals(value, gotValue);
         Assert.assertEquals(language, ((Literal)gotValue).getLanguage());
     }
@@ -242,7 +242,7 @@ public abstract class GraphTest {
     public void testGetSameBlankNode() throws Exception {
         Graph graph = getEmptyGraph();
         BlankNode bNode = new BlankNode();
-        final Iri HAS_NAME = new Iri("http://example.org/ontology/hasName");
+        final IRI HAS_NAME = new IRI("http://example.org/ontology/hasName");
         final PlainLiteralImpl name = new PlainLiteralImpl("http://example.org/people/alice");
         final PlainLiteralImpl name2 = new PlainLiteralImpl("http://example.org/people/bob");
         final Triple tripleAlice = new TripleImpl(bNode, HAS_NAME, name);
@@ -335,14 +335,14 @@ public abstract class GraphTest {
 
         // Find bob
         iterator = graph.filter(null, null,
-                new Iri("http://example.org/people/bob"));
+                new IRI("http://example.org/people/bob"));
         resultSet= toCollection(iterator);
         Assert.assertEquals(1, resultSet.size());
         Assert.assertTrue(resultSet.contains(tripleBob));
 
         // Find alice
         iterator = graph.filter(null, null,
-                new Iri("http://example.org/people/alice"));
+                new IRI("http://example.org/people/alice"));
         resultSet= toCollection(iterator);
         Assert.assertEquals(1, resultSet.size());
         Assert.assertTrue(resultSet.contains(tripleAlice));
@@ -566,8 +566,8 @@ public abstract class GraphTest {
      */
     private Triple createTriple(String subject, String predicate,
             String object) {
-        return new TripleImpl(new Iri(subject), new Iri(predicate),
-                new Iri(object));
+        return new TripleImpl(new IRI(subject), new IRI(predicate),
+                new IRI(object));
     }
     
 }

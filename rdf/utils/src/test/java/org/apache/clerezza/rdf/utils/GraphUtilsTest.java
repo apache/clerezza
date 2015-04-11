@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.utils;
 
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.utils.GraphUtils.NoSuchSubGraphException;
@@ -34,9 +34,9 @@ import org.junit.Test;
  */
 public class GraphUtilsTest {
 
-    final Iri u1 = new Iri("http://ex.org/1");
-    final Iri u2 = new Iri("http://ex.org/2");
-    final Iri u3 = new Iri("http://ex.org/3");
+    final IRI u1 = new IRI("http://ex.org/1");
+    final IRI u2 = new IRI("http://ex.org/2");
+    final IRI u3 = new IRI("http://ex.org/3");
 
     @Test
     public void removeSubGraph() throws NoSuchSubGraphException {

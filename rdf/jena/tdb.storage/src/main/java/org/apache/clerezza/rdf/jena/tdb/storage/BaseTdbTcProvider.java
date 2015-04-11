@@ -18,7 +18,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 abstract class BaseTdbTcProvider implements QueryableTcProvider{
 
@@ -33,7 +33,7 @@ abstract class BaseTdbTcProvider implements QueryableTcProvider{
 	// ------------------------------------------------------------------------
 
     @Override
-    public Object executeSparqlQuery(final String query, Iri defaultGraph) {
+    public Object executeSparqlQuery(final String query, IRI defaultGraph) {
 		// Missing permission (java.lang.RuntimePermission getClassLoader)
 		// when calling QueryFactory.create causes ExceptionInInitializerError
 		// to be thrown.

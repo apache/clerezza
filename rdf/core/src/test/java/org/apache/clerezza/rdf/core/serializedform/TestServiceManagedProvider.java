@@ -22,7 +22,7 @@ import java.io.InputStream;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * This class is listed in
@@ -36,7 +36,7 @@ public class TestServiceManagedProvider implements ParsingProvider {
     private static boolean parseInvoked;
 
     @Override
-    public void parse(Graph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
+    public void parse(Graph target, InputStream serializedGraph, String formatIdentifier, IRI baseUri) {
         parseInvoked = true;
     }
     

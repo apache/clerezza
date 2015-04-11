@@ -37,7 +37,7 @@ import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.junit.AfterClass;
@@ -101,7 +101,7 @@ public class MultiThreadedSingleTdbDatasetTest {
                         num = graphNum[0];
                         graphNum[0]++;
                     }
-                    graph = provider.createGraph(new Iri(TEST_GRAPH_URI_PREFIX+num));
+                    graph = provider.createGraph(new IRI(TEST_GRAPH_URI_PREFIX+num));
                     log.info(" ... creating the {}. Grpah", num+1);
                     testTriples = new HashSet<Triple>();
                     synchronized (mGraphs) {
@@ -116,7 +116,7 @@ public class MultiThreadedSingleTdbDatasetTest {
                     }
                 }
                 Literal randomLiteral = new PlainLiteralImpl(Util.createRandomString(22));
-                Triple triple = new TripleImpl(new BlankNode(), new Iri("http://example.com/property"), randomLiteral);
+                Triple triple = new TripleImpl(new BlankNode(), new IRI("http://example.com/property"), randomLiteral);
                 graph.add(triple);
                 addedTripleCount++;
                 if ((addedTripleCount % 100) == 0) {
@@ -201,10 +201,10 @@ public class MultiThreadedSingleTdbDatasetTest {
     }
     @Before
     public void createGraphs(){
-        mGraphs.add(provider.createGraph(new Iri(TEST_GRAPH_URI_PREFIX+graphNum[0])));
+        mGraphs.add(provider.createGraph(new IRI(TEST_GRAPH_URI_PREFIX+graphNum[0])));
         testTriplesList.add(new HashSet<Triple>());
         graphNum[0]++;
-        mGraphs.add(provider.createGraph(new Iri(TEST_GRAPH_URI_PREFIX+graphNum[0])));
+        mGraphs.add(provider.createGraph(new IRI(TEST_GRAPH_URI_PREFIX+graphNum[0])));
         testTriplesList.add(new HashSet<Triple>());
         graphNum[0]++;
     }

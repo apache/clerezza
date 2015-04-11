@@ -24,7 +24,7 @@ import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -34,7 +34,7 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  */
 public class GenericTest {
 
-    private final Iri root = new Iri("http://tests.clerezza.org/root#");
+    private final IRI root = new IRI("http://tests.clerezza.org/root#");
     private final SeedsnipeRenderlet renderlet = new SeedsnipeRenderlet();
 
     @Test

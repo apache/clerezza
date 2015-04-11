@@ -24,7 +24,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
@@ -33,7 +33,7 @@ import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
  *
  * @author rbn
  */
-class HashMapSolutionMapping extends HashMap<Variable, RdfTerm> implements SolutionMapping {
+class HashMapSolutionMapping extends HashMap<Variable, RDFTerm> implements SolutionMapping {
 
     transient Jena2TriaUtil convertor = new Jena2TriaUtil(new HashMap<Node,BlankNode>());
     public HashMapSolutionMapping(QuerySolution querySolution) {
@@ -44,11 +44,11 @@ class HashMapSolutionMapping extends HashMap<Variable, RdfTerm> implements Solut
         }
     }
     @Override
-    public RdfTerm get(String name) {
+    public RDFTerm get(String name) {
         return get(new Variable(name));
     }
 
-    private RdfTerm toRdfTerm(RDFNode node) {
+    private RDFTerm toRdfTerm(RDFNode node) {
         return convertor.convertJenaNode2Resource(node.asNode());
     }
 }

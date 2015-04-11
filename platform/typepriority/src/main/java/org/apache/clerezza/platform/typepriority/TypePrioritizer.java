@@ -33,8 +33,8 @@ import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.References;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.platform.config.SystemConfig;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.ontologies.RDFS;
 import org.apache.clerezza.rdf.utils.RdfList;
 import org.apache.clerezza.commons.rdf.Graph;
@@ -52,9 +52,9 @@ import org.slf4j.LoggerFactory;
         referenceInterface=Graph.class,
         target=SystemConfig.SYSTEM_GRAPH_FILTER)})
 public class TypePrioritizer {
-    public static final Iri typePriorityListUri = new Iri("urn:x-localinstance:/typePriorityList");
+    public static final IRI typePriorityListUri = new IRI("urn:x-localinstance:/typePriorityList");
 
-    private List<Iri> typePriorityList;
+    private List<IRI> typePriorityList;
     private static final Logger log = LoggerFactory.getLogger(TypePrioritizer.class);
     
     Graph systemGraph;
@@ -63,12 +63,12 @@ public class TypePrioritizer {
         Lock l = systemGraph.getLock().readLock();
         l.lock();
         try {
-            List<RdfTerm> rdfTypePriorityList = new RdfList(
+            List<RDFTerm> rdfTypePriorityList = new RdfList(
                  typePriorityListUri, systemGraph);
-            typePriorityList  = new ArrayList<Iri>(rdfTypePriorityList.size());
-            for (RdfTerm resource : rdfTypePriorityList) {
-                if (resource instanceof Iri) {
-                    typePriorityList.add((Iri) resource);
+            typePriorityList  = new ArrayList<IRI>(rdfTypePriorityList.size());
+            for (RDFTerm resource : rdfTypePriorityList) {
+                if (resource instanceof IRI) {
+                    typePriorityList.add((IRI) resource);
                 } else {
                     log.warn("Type priority list contains a resource "
                             + "that is not a uri, skipping.");
@@ -90,17 +90,17 @@ public class TypePrioritizer {
      * @param rdfTypes the rdf types to be sorted
      * @return a sorted iterator of the types
      */
-    public Iterator<Iri> iterate(final Collection<Iri> rdfTypes) {
-        return new Iterator<Iri>() {
-            final Set<Iri> remaining = new HashSet<Iri>(rdfTypes);
+    public Iterator<IRI> iterate(final Collection<IRI> rdfTypes) {
+        return new Iterator<IRI>() {
+            final Set<IRI> remaining = new HashSet<IRI>(rdfTypes);
             boolean rdfsResourceRemovedAndNotYetReturned = remaining.remove(RDFS.Resource);
-            final Iterator<Iri> typePriorityIter = typePriorityList.iterator();
-            Iterator<Iri> remainingIter = null;
-            Iri next = prepareNext();
+            final Iterator<IRI> typePriorityIter = typePriorityList.iterator();
+            Iterator<IRI> remainingIter = null;
+            IRI next = prepareNext();
             
-            private Iri prepareNext() {
+            private IRI prepareNext() {
                 while (typePriorityIter.hasNext()) {
-                    Iri nextPriority = typePriorityIter.next();
+                    IRI nextPriority = typePriorityIter.next();
                     if (remaining.contains(nextPriority)) {
                         remaining.remove(nextPriority);
                         return nextPriority;
@@ -127,11 +127,11 @@ public class TypePrioritizer {
             }
 
             @Override
-            public Iri next() {
+            public IRI next() {
                 if (next == null) {
                     throw new NoSuchElementException();
                 }
-                Iri current = next;
+                IRI current = next;
                 next = prepareNext();
                 return current;
             }

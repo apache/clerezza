@@ -17,7 +17,7 @@ import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
@@ -109,10 +109,10 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     private SyncThread syncThread;
 
     private final ReadWriteLock datasetLock = new ReentrantReadWriteLock();;
-    private Iri defaultGraphName;
+    private IRI defaultGraphName;
 
     // Ensure that models not yet garbage collected get properly synced.
-    private final ConcurrentMap<Iri, ModelGraph> syncModels = new MapMaker().weakValues().makeMap();
+    private final ConcurrentMap<IRI, ModelGraph> syncModels = new MapMaker().weakValues().makeMap();
     
     /**
      * This background thread ensures that changes to {@link Model}s are
@@ -167,7 +167,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * <li> {@link #TDB_DIR} (required): The directory used by Jena TDB. Property
      * substitution "${property-name}" with {@link System#getProperties()} is
      * supported.
-     * <li> {@link #DEFAULT_GRAPH_NAME}: The name ({@link Iri}) of the
+     * <li> {@link #DEFAULT_GRAPH_NAME}: The name ({@link IRI}) of the
      * {@link ImmutableGraph} that exports the union graph. This graph allows to query
      * triples in any named model managed by this {@link TcProvider}.
      * <li> {@link #SYNC_INTERVAL}: The sync interval that
@@ -257,7 +257,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
         if(value != null && !value.toString().isEmpty()){
             try {
                 new URI(value.toString());
-                defaultGraphName = new Iri(value.toString());
+                defaultGraphName = new IRI(value.toString());
             } catch (URISyntaxException e) {
                 throw new ConfigurationException(DEFAULT_GRAPH_NAME, "The parsed name '"
                         + value + "'for the default graph (union over all "
@@ -368,7 +368,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @throws NoSuchEntityException If <code>create == false</code> and no
      * {@link Model} for the parsed <code>name</code> exists.
      */
-    private ModelGraph getModelGraph(Iri name, boolean readWrite,boolean create) throws NoSuchEntityException {
+    private ModelGraph getModelGraph(IRI name, boolean readWrite,boolean create) throws NoSuchEntityException {
         ModelGraph modelGraph = null;
         datasetLock.readLock().lock();
         try {
@@ -396,10 +396,10 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.clerezza.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.clerezza.commons.rdf.IRI)
      */
     @Override
-    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException {
         if(name == null){
             throw new IllegalArgumentException("The parsed ImmutableGraph Iri MUST NOT be NULL!");
         }
@@ -417,10 +417,10 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.clerezza.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#getGraph(org.apache.clerezza.commons.rdf.IRI)
      */
     @Override
-    public Graph getMGraph(Iri name) throws NoSuchEntityException {
+    public Graph getMGraph(IRI name) throws NoSuchEntityException {
         if(name == null){
             throw new IllegalArgumentException("The parsed ImmutableGraph Iri MUST NOT be NULL!");
         }
@@ -438,10 +438,10 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#getTriples(org.apache.clerezza.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#getTriples(org.apache.clerezza.commons.rdf.IRI)
      */
     @Override
-    public Graph getGraph(Iri name) throws NoSuchEntityException {
+    public Graph getGraph(IRI name) throws NoSuchEntityException {
         if(name == null){
             throw new IllegalArgumentException("The parsed ImmutableGraph Iri MUST NOT be NULL!");
         }
@@ -464,7 +464,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @see org.apache.clerezza.rdf.core.access.TcProvider#listGraphs()
      */
     @Override
-    public Set<Iri> listImmutableGraphs() {
+    public Set<IRI> listImmutableGraphs() {
         datasetLock.readLock().lock();
         try {
             return new HashSet(new IriSet( graphNameIndex, Symbols.ImmutableGraph ));
@@ -478,7 +478,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @see org.apache.clerezza.rdf.core.access.TcProvider#listGraphs()
      */
     @Override
-    public Set<Iri> listMGraphs() {
+    public Set<IRI> listMGraphs() {
         datasetLock.readLock().lock();
         try {
             return  new HashSet(new IriSet( graphNameIndex, Symbols.Graph ));
@@ -492,7 +492,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @see org.apache.clerezza.rdf.core.access.TcProvider#listGraphs()
      */
     @Override
-    public Set<Iri> listGraphs() {
+    public Set<IRI> listGraphs() {
         datasetLock.readLock().lock();
         try {
             return  new HashSet(new IriSet( graphNameIndex, null ));
@@ -503,10 +503,10 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
 
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.clerezza.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.clerezza.commons.rdf.IRI)
      */
     @Override
-    public Graph createGraph(Iri name) throws UnsupportedOperationException,
+    public Graph createGraph(IRI name) throws UnsupportedOperationException,
                                            EntityAlreadyExistsException {
         if(name == null){
             throw new IllegalArgumentException("The parsed MGrpah name MUST NOT be NULL!");
@@ -526,10 +526,10 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.clerezza.commons.rdf.Iri, org.apache.clerezza.commons.rdf.Graph)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#createGraph(org.apache.clerezza.commons.rdf.IRI, org.apache.clerezza.commons.rdf.Graph)
      */
     @Override
-    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) throws UnsupportedOperationException,
+    public ImmutableGraph createImmutableGraph(IRI name, Graph triples) throws UnsupportedOperationException,
                                                                    EntityAlreadyExistsException {
         if(name == null){
             throw new IllegalArgumentException("The parsed Grpah name MUST NOT be NULL!");
@@ -556,10 +556,10 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
     
     /*
      * (non-Javadoc)
-     * @see org.apache.clerezza.rdf.core.access.TcProvider#deleteGraph(org.apache.clerezza.commons.rdf.Iri)
+     * @see org.apache.clerezza.rdf.core.access.TcProvider#deleteGraph(org.apache.clerezza.commons.rdf.IRI)
      */
     @Override
-    public void deleteGraph(Iri name) throws UnsupportedOperationException,
+    public void deleteGraph(IRI name) throws UnsupportedOperationException,
                                                    NoSuchEntityException,
                                                    EntityUndeletableException {
         if(name == null){
@@ -590,13 +590,13 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @see org.apache.clerezza.rdf.core.access.TcProvider#getNames(org.apache.clerezza.commons.rdf.ImmutableGraph)
      */
     @Override
-    public Set<Iri> getNames(ImmutableGraph graph) {
+    public Set<IRI> getNames(ImmutableGraph graph) {
         //TODO: this method would require to compare the triples within the graph
         //      because an equals check will not work with BlankNodes. 
-        Set<Iri> graphNames = new HashSet<Iri>();
+        Set<IRI> graphNames = new HashSet<IRI>();
         for( Iterator<Triple> iterator = graphNameIndex.getGraph().iterator(); iterator.hasNext(); ) {
             Triple triple = iterator.next();
-            Iri graphName = new Iri(triple.getSubject().toString());
+            IRI graphName = new IRI(triple.getSubject().toString());
             ImmutableGraph currentGraph = getModelGraph(graphName, false, false).getImmutableGraph();
             if(graph.equals(currentGraph)){
                 graphNames.add(graphName);
@@ -666,7 +666,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @param graphType the resource type
      * @return true if a resource with the given name and type already exists, false otherwise.
      */
-    private boolean isExistingGraphName(Iri graphName, Iri graphType) {
+    private boolean isExistingGraphName(IRI graphName, IRI graphType) {
         return graphNameIndex.getGraph().filter(graphName, RDF.type, graphType).hasNext();
     }
 
@@ -675,7 +675,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @param graphName the graph name
      * @return true if a graph or mgraph with the given name already exists, false otherwise.
      */
-    private boolean isExistingGraphName(Iri graphName) {
+    private boolean isExistingGraphName(IRI graphName) {
         return isExistingGraphName(graphName, null);
     }
     
@@ -684,7 +684,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @param graphName name of the graph
      * @param graphType resourcetype for the graph to add.
      */
-    private void addToIndex(Iri graphName, Iri graphType) {
+    private void addToIndex(IRI graphName, IRI graphType) {
         graphNameIndex.getGraph().add(new TripleImpl(graphName, RDF.type, graphType));
         graphNameIndex.sync();
     }
@@ -694,7 +694,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
      * @param graphName name of the graph to remove
      * @param graphType resource type of the graph to remove.
      */
-    private void removeFromIndex(Iri graphName, Iri graphType) {
+    private void removeFromIndex(IRI graphName, IRI graphType) {
         Graph index = graphNameIndex.getGraph();
         Iterator<Triple> triplesToRemove = index.filter(graphName, RDF.type, graphType);
         for( ; triplesToRemove.hasNext(); ) {
@@ -710,7 +710,7 @@ public class SingleTdbDatasetTcProvider extends BaseTdbTcProvider implements Wei
       for( ; triplesToRemove.hasNext(); ) {
           Triple triple = triplesToRemove.next();
           triplesToRemove.remove();
-          removeFromIndex( Iri.class.cast(triple.getSubject()), Symbols.ImmutableGraph );
+          removeFromIndex(IRI.class.cast(triple.getSubject()), Symbols.ImmutableGraph );
       }
       graphNameIndex.sync();
     }

@@ -41,8 +41,8 @@ import java.util.regex.Pattern;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Language;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
@@ -115,14 +115,14 @@ import org.apache.clerezza.rdf.core.sparql.update.impl.UpdateOperationWithQuads;
  */
 class JavaCCGeneratedSparqlPreParser {
 
-    private static final Iri RDF_TYPE =
-        new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-    private static final Iri RDF_FIRST =
-        new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
-    private static final Iri RDF_REST =
-        new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
-    private static final Iri RDF_NIL =
-        new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
+    private static final IRI RDF_TYPE =
+        new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+    private static final IRI RDF_FIRST =
+        new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
+    private static final IRI RDF_REST =
+        new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
+    private static final IRI RDF_NIL =
+        new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
 
     /** A RegEx pattern for separating out a namespace from a prefixed name. */
     private static final Pattern pfxNamePattern = Pattern.compile("([^:]*):(.*)");
@@ -134,17 +134,17 @@ class JavaCCGeneratedSparqlPreParser {
 
     private class GraphRefAllSpec {
         GraphSpec graphSpec;
-        Iri graph;
+        IRI graph;
         public void setGraphSpec(GraphSpec graphSpec) {
             this.graphSpec = graphSpec;
         }
         public GraphSpec getGraphSpec() {
             return this.graphSpec;
         }
-        public void setGraph(Iri graph){
+        public void setGraph(IRI graph){
             this.graph = graph;
         }
-        public Iri getGraph() {
+        public IRI getGraph() {
             return this.graph;
         }
     }
@@ -287,16 +287,16 @@ class JavaCCGeneratedSparqlPreParser {
         return bNode;
     }
 
-    private Iri createUriRef(String r) throws ParseException {
+    private IRI createUriRef(String r) throws ParseException {
         // Create an IRI directly if the string does not start with a prefix
         Matcher m = pfxNamePattern.matcher(r);
         if (!m.matches()) {
             // either a normal IRI, or one with a BASE
-            return isRelative(r) ? new Iri(base + r) : new Iri(r);
+            return isRelative(r) ? new IRI(base + r) : new IRI(r);
         }
         // extract the prefix, and attempt to convert to a URI before creating the reference
         String ns = prefixes.get(m.group(1));
-        return ns == null ? new Iri(r) : new Iri(ns + m.group(2));
+        return ns == null ? new IRI(r) : new IRI(ns + m.group(2));
     }
 
     /**
@@ -558,7 +558,7 @@ private Query ConstructQuery() : {
     return query; }
 }
 
-/* [11]    DescribeQuery ::= 'DESCRIBE' ( VarOrIri+ | '*' ) DatasetClause* WhereClause? SolutionModifier */
+/* [11]    DescribeQuery ::= 'DESCRIBE' ( VarOrIRI+ | '*' ) DatasetClause* WhereClause? SolutionModifier */
 private Query DescribeQuery() : {
     Query query;
     UriRefOrVariable node; } {
@@ -566,7 +566,7 @@ private Query DescribeQuery() : {
     <DESCRIBE> {
     query = new SimpleDescribeQuery(); }
     (
-        ( node=VarOrIri() {
+        ( node=VarOrIRI() {
             ((SimpleDescribeQuery) query).addResourceToDescribe(node); } )+
         |
         "*" {
@@ -597,7 +597,7 @@ private void DatasetClause(Query query) : {} {
 
 /* [14]    DefaultGraphClause ::= SourceSelector */
 private void DefaultGraphClause(Query query) : {
-    Iri defaultGraph; } {
+    IRI defaultGraph; } {
 
     defaultGraph=SourceSelector() {
     ((SimpleQuery) query).addDefaultGraph(defaultGraph); }
@@ -605,17 +605,17 @@ private void DefaultGraphClause(Query query) : {
 
 /* [15]    NamedGraphClause ::= 'NAMED' SourceSelector */
 private void NamedGraphClause(Query query) : {
-    Iri namedGraph; } {
+    IRI namedGraph; } {
 
     <NAMED> namedGraph=SourceSelector() {
     ((SimpleQuery) query).addNamedGraph(namedGraph); }
 }
 
 /* [16]    SourceSelector ::= iri */
-private Iri SourceSelector() : {
-    Iri graph; } {
+private IRI SourceSelector() : {
+    IRI graph; } {
 
-    graph=Iri() {
+    graph=IRI() {
     return graph; }
 }
 
@@ -781,7 +781,7 @@ private void Update1(Update update) : {
 
 /* [31]    Load ::= 'LOAD' 'SILENT'? iri ( 'INTO' GraphRef )? */
 private UpdateOperation Load() : {
-    Iri uriRef;
+    IRI uriRef;
     LoadOperation operation; } {
     <LOAD> {
     operation = new LoadOperation(); }
@@ -789,7 +789,7 @@ private UpdateOperation Load() : {
         <SILENT> {
         operation.setSilent(true); }
     )?
-    uriRef = Iri() {
+    uriRef = IRI() {
     operation.setSource(uriRef); }
     (
         <INTO>
@@ -834,7 +834,7 @@ private UpdateOperation Drop() : {
 
 /* [34]    Create ::= 'CREATE' 'SILENT'? GraphRef */
 private UpdateOperation Create() : {
-    Iri uriRef;
+    IRI uriRef;
     CreateOperation operation; } {
     <CREATE> {
     operation = new CreateOperation(); }
@@ -927,7 +927,7 @@ private UpdateOperation DeleteWhere() : {
 
 /* [41]    Modify ::= ( 'WITH' iri )? ( DeleteClause InsertClause? | InsertClause ) UsingClause* 'WHERE' GroupGraphPattern */
 private UpdateOperation Modify() : {
-    Iri fallbackGraph = null;
+    IRI fallbackGraph = null;
     UpdateOperationWithQuads deleteOperation = null;
     UpdateOperationWithQuads insertOperation = null;
     SimpleDataSet dataSet = new SimpleDataSet();
@@ -935,7 +935,7 @@ private UpdateOperation Modify() : {
     ModifyOperation operation; } {
     (
         <WITH>
-        fallbackGraph = Iri()
+        fallbackGraph = IRI()
     )?
     (
         deleteOperation = DeleteClause()
@@ -986,21 +986,21 @@ private UpdateOperationWithQuads InsertClause() : {
 
 /* [44]    UsingClause ::= 'USING' ( iri | 'NAMED' iri ) */
 private void UsingClause(SimpleDataSet dataSet) : {
-    Iri graph; } {
+    IRI graph; } {
     <USING>
     (
-        graph = Iri() {
+        graph = IRI() {
         dataSet.addDefaultGraph(graph); }
     |
         <NAMED>
-        graph = Iri() {
+        graph = IRI() {
         dataSet.addNamedGraph(graph); }
     )
 }
 
 /* [45]    GraphOrDefault ::= 'DEFAULT_T' | 'GRAPH'? iri */
 private GraphRefAllSpec GraphOrDefault() : {
-    Iri uriRef;
+    IRI uriRef;
     GraphRefAllSpec graphRefAllSpec = new GraphRefAllSpec(); } {
     (
         <DEFAULT_T> {
@@ -1009,7 +1009,7 @@ private GraphRefAllSpec GraphOrDefault() : {
         (
             <GRAPH>
         )?
-        uriRef = Iri() {
+        uriRef = IRI() {
         graphRefAllSpec.setGraph(uriRef);
         graphRefAllSpec.setGraphSpec(GraphSpec.GRAPH); }
     ) {
@@ -1017,16 +1017,16 @@ private GraphRefAllSpec GraphOrDefault() : {
 }
 
 /* [46]    GraphRef ::= 'GRAPH' iri */
-private Iri GraphRef() : {
-    Iri uriRef; } {
+private IRI GraphRef() : {
+    IRI uriRef; } {
     <GRAPH>
-    uriRef = Iri() {
+    uriRef = IRI() {
     return uriRef; }
 }
 
 /* [47]    GraphRefAll ::= GraphRef | 'DEFAULT_T' | 'NAMED' | 'ALL' */
 private GraphRefAllSpec GraphRefAll() : {
-    Iri uriRef;
+    IRI uriRef;
     GraphRefAllSpec graphRefAllSpec = new GraphRefAllSpec(); } {
     (
         uriRef = GraphRef() {
@@ -1076,13 +1076,13 @@ private void Quads(UpdateOperationWithQuads operation) : {
     )*
 }
 
-/* [51]    QuadsNotTriples ::= 'GRAPH' VarOrIri '{' TriplesTemplate? '}' */
+/* [51]    QuadsNotTriples ::= 'GRAPH' VarOrIRI '{' TriplesTemplate? '}' */
 private void QuadsNotTriples(UpdateOperationWithQuads operation) : {
     UriRefOrVariable graph;
     Set<TriplePattern> triplePatterns = null; } {
 
     <GRAPH>
-    graph=VarOrIri()
+    graph=VarOrIRI()
     "{"
     (
         triplePatterns=TriplesTemplate()
@@ -1184,18 +1184,18 @@ private void OptionalGraphPattern(GroupGraphPattern groupGraphPattern) : {
     ((SimpleGroupGraphPattern) groupGraphPattern).addOptionalGraphPattern(optional); }
 }
 
-/* [58]    GraphGraphPattern ::= 'GRAPH' VarOrIri GroupGraphPattern */
+/* [58]    GraphGraphPattern ::= 'GRAPH' VarOrIRI GroupGraphPattern */
 private void GraphGraphPattern(GroupGraphPattern groupGraphPattern) : {
     UriRefOrVariable graph;
     GroupGraphPattern g; } {
 
     <GRAPH>
-    graph=VarOrIri()
+    graph=VarOrIRI()
     g=GroupGraphPattern() {
     ((SimpleGroupGraphPattern) groupGraphPattern).addGraphPattern(new SimpleGraphGraphPattern(graph, g)); }
 }
 
-/* [59]    ServiceGraphPattern ::= 'SERVICE' 'SILENT'? VarOrIri GroupGraphPattern */
+/* [59]    ServiceGraphPattern ::= 'SERVICE' 'SILENT'? VarOrIRI GroupGraphPattern */
 private void ServiceGraphPattern(GroupGraphPattern groupGraphPattern) : {
     UriRefOrVariable service;
     GroupGraphPattern g;
@@ -1206,7 +1206,7 @@ private void ServiceGraphPattern(GroupGraphPattern groupGraphPattern) : {
         <SILENT> {
         silent = true; }
     )?
-    service=VarOrIri()
+    service=VarOrIRI()
     g=GroupGraphPattern() {
     SimpleServiceGraphPattern simpleServiceGraphPattern;
     simpleServiceGraphPattern = new SimpleServiceGraphPattern(service, g);
@@ -1255,14 +1255,14 @@ private InlineData DataBlock() : {
 /* [63]    InlineDataOneVar ::= Var '{' DataBlockValue* '}' */
 private void InlineDataOneVar(InlineData inlineData) : {
     Variable var;
-    RdfTerm val; } {
+    RDFTerm val; } {
 
     var=Var() {
     ((SimpleInlineData) inlineData).addVariable(var); }
     "{"
     (
         val=DataBlockValue() {
-        List<RdfTerm> values = new ArrayList<RdfTerm>();
+        List<RDFTerm> values = new ArrayList<RDFTerm>();
         values.add(val);
         ((SimpleInlineData) inlineData).addValues(values); }
     )*
@@ -1272,7 +1272,7 @@ private void InlineDataOneVar(InlineData inlineData) : {
 /* [64]    InlineDataFull ::= ( NIL | '(' Var* ')' ) '{' ( '(' DataBlockValue* ')' | NIL )* '}' */
 private void InlineDataFull(InlineData inlineData) : {
     Variable var;
-    RdfTerm val; } {
+    RDFTerm val; } {
     (
         <NIL>
     |
@@ -1288,7 +1288,7 @@ private void InlineDataFull(InlineData inlineData) : {
     (
         (
             "(" {
-            List<RdfTerm> values = new ArrayList<RdfTerm>(); }
+            List<RDFTerm> values = new ArrayList<RDFTerm>(); }
             (
                 val=DataBlockValue() {
                 values.add(val); }
@@ -1298,15 +1298,15 @@ private void InlineDataFull(InlineData inlineData) : {
         )
     |
         <NIL> {
-        ((SimpleInlineData) inlineData).addValues(new ArrayList<RdfTerm>()); }
+        ((SimpleInlineData) inlineData).addValues(new ArrayList<RDFTerm>()); }
     )*
     "}"
 }
 
 /* [65]    DataBlockValue ::= iri | RDFLiteral | NumericLiteral | BooleanLiteral | 'UNDEF' */
-private RdfTerm DataBlockValue() : {
-    RdfTerm r = null; } {
-    (r=Iri() | r=RDFLiteral() | r=NumericLiteral() | r=BooleanLiteral() | <UNDEF> ) {
+private RDFTerm DataBlockValue() : {
+    RDFTerm r = null; } {
+    (r=IRI() | r=RDFLiteral() | r=NumericLiteral() | r=BooleanLiteral() | <UNDEF> ) {
     return r; }
 }
 
@@ -1359,10 +1359,10 @@ private Expression Constraint() : {
 
 /* [70]    FunctionCall ::= iri ArgList */
 private FunctionCall FunctionCall() : {
-    Iri name;
+    IRI name;
     List<Expression> arguments; } {
 
-    name=Iri()
+    name=IRI()
     arguments=ArgList() {
     return new FunctionCall(name, arguments); }
 }
@@ -1477,11 +1477,11 @@ private void PropertyListNotEmpty(ResourceOrVariable subject, Set<TriplePattern>
     )*
 }
 
-/* [78]    Verb ::= VarOrIri | 'a' */
+/* [78]    Verb ::= VarOrIRI | 'a' */
 private UriRefOrVariable Verb() : {
     UriRefOrVariable predicate; } {
 
-    predicate=VarOrIri() {
+    predicate=VarOrIRI() {
     return predicate; }
     | "a" {
     return new UriRefOrVariable(RDF_TYPE); }
@@ -1685,10 +1685,10 @@ private String PathMod() : {} {
 /* [94]    PathPrimary ::= iri | 'a' | '!' PathNegatedPropertySet | '(' Path ')' */
 private PropertyPathExpression PathPrimary() : {
     PropertyPathExpression ppe;
-    Iri uriRef; } {
+    IRI uriRef; } {
 
     (
-        uriRef=Iri() {
+        uriRef=IRI() {
         return new PredicatePath(uriRef); }
     |
         "a" {
@@ -1731,10 +1731,10 @@ private PropertyPathExpression PathNegatedPropertySet() : {
 
 /* [96]    PathOneInPropertySet ::= iri | 'a' | '^' ( iri | 'a' ) */
 private PropertyPathExpression PathOneInPropertySet() : {
-    Iri uriRef; } {
+    IRI uriRef; } {
 
     (
-        uriRef=Iri() {
+        uriRef=IRI() {
         return new PredicatePath(uriRef); }
     |
         "a" {
@@ -1742,7 +1742,7 @@ private PropertyPathExpression PathOneInPropertySet() : {
     |
         "^"
         (
-            uriRef=Iri() {
+            uriRef=IRI() {
             return new UnaryPropertyPathOperation("^", new PredicatePath(uriRef)); }
         |
             "a" {
@@ -1863,16 +1863,16 @@ private ResourceOrVariable VarOrTerm() : {
     )
 }
 
-/* [107]    VarOrIri ::= Var | iri */
-private UriRefOrVariable VarOrIri() : {
+/* [107]    VarOrIRI ::= Var | iri */
+private UriRefOrVariable VarOrIRI() : {
     Variable var;
-    Iri uriRef; } {
+    IRI uriRef; } {
 
     (
     var=Var() {
     return new UriRefOrVariable(var); }
     |
-    uriRef=Iri() {
+    uriRef=IRI() {
     return new UriRefOrVariable(uriRef); }
     )
 }
@@ -1885,12 +1885,12 @@ private Variable Var() : {
     return createVariable(t.image); }
 }
 
-/* [109]    GraphTerm ::= Iri | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode | NIL */
+/* [109]    GraphTerm ::= IRI | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode | NIL */
 private ResourceOrVariable GraphTerm() : {
     ResourceOrVariable bNode = null;
-    RdfTerm r = null; } {
+    RDFTerm r = null; } {
 
-    (r=Iri() | r=RDFLiteral() | r=NumericLiteral() | r=BooleanLiteral() | bNode=BlankNode() | <NIL> {
+    (r=IRI() | r=RDFLiteral() | r=NumericLiteral() | r=BooleanLiteral() | bNode=BlankNode() | <NIL> {
         r = RDF_NIL; }) {
     if (bNode == null) {
         return new ResourceOrVariable(r);
@@ -2057,7 +2057,7 @@ private Expression PrimaryExpression() : {
         e=BuiltInCall()
 */
     |
-        e=IriOrFunction()
+        e=IRIOrFunction()
     |
         l=RDFLiteral()
     |
@@ -2283,12 +2283,12 @@ private Expression NotExistsFunc() : {
     return patternExistenceCondition; }
 }
 
-/* [128]    IriOrFunction ::= iri ArgList? */
-private Expression IriOrFunction() : {
-    Iri uriRef;
+/* [128]    IRIOrFunction ::= iri ArgList? */
+private Expression IRIOrFunction() : {
+    IRI uriRef;
     List<Expression> args; } {
 
-    uriRef=Iri()
+    uriRef=IRI()
     (
         args=ArgList() {
         return new FunctionCall(uriRef, args); }
@@ -2300,7 +2300,7 @@ private Expression IriOrFunction() : {
 private Literal RDFLiteral() : {
     Token t;
     String s;
-    Iri type; } {
+    IRI type; } {
 
     s = String()
     (
@@ -2309,7 +2309,7 @@ private Literal RDFLiteral() : {
     |
         (
             "^^"
-            type=Iri() {
+            type=IRI() {
             return new TypedLiteralImpl(s, type); }
         )
     )? {
@@ -2400,8 +2400,8 @@ private String String() : {
 }
 
 /* [136]    iri ::= IRIREF |  PrefixedName */
-private Iri Iri() : {
-    Iri uriRef;
+private IRI IRI() : {
+    IRI uriRef;
     Token t; } {
 
         t=<IRIREF> {
@@ -2412,7 +2412,7 @@ private Iri Iri() : {
 }
 
 /* [137]    PrefixedName ::= PNAME_LN | PNAME_NS */
-private Iri PrefixedName() : {
+private IRI PrefixedName() : {
     Token t; } {
 
     ( t=<PNAME_LN> | t=<PNAME_NS> ) {

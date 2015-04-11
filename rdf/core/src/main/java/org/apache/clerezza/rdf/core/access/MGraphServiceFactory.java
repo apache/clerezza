@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.core.access;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 
 /**
@@ -33,10 +33,10 @@ import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 public class MGraphServiceFactory implements ServiceFactory {
     
     private TcManager tcManager;
-    private Iri name;
+    private IRI name;
     private final TcAccessController tcAccessController;
 
-    MGraphServiceFactory(TcManager tcManager, Iri name,
+    MGraphServiceFactory(TcManager tcManager, IRI name,
             TcAccessController tcAccessController) {
         this.tcManager = tcManager;
         this.name = name;

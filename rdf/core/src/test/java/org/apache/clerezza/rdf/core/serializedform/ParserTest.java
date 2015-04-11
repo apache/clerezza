@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.Graph;
 import java.io.InputStream;
 import junit.framework.Assert;
@@ -74,7 +74,7 @@ public class ParserTest {
     static class ParsingProviderA implements ParsingProvider {
 
         @Override
-        public void parse(Graph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
+        public void parse(Graph target, InputStream serializedGraph, String formatIdentifier, IRI baseUri) {
             providerAInvoked = true;
         }
     };
@@ -82,7 +82,7 @@ public class ParserTest {
     static class ParsingProviderB implements ParsingProvider {
 
         @Override
-        public void parse(Graph target, InputStream serializedGraph, String formatIdentifier, Iri baseUri) {
+        public void parse(Graph target, InputStream serializedGraph, String formatIdentifier, IRI baseUri) {
             providerBInvoked = true;
         }
     };

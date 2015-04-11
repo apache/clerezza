@@ -47,7 +47,7 @@ import org.apache.clerezza.commons.rdf.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
@@ -105,7 +105,7 @@ public class BackupMessageBodyWriter implements MessageBodyWriter<Backup> {
         }
     }
 
-    private String getTcFileName(Iri tcUri, String extension,
+    private String getTcFileName(IRI tcUri, String extension,
             Map<String, Integer> fileNameCount) {
         String fileName = tcUri.getUnicodeString();
         fileName = fileName.substring(fileName.lastIndexOf("/")+1);
@@ -128,10 +128,10 @@ public class BackupMessageBodyWriter implements MessageBodyWriter<Backup> {
 
             compressedTcs.putNextEntry(new ZipEntry(folder));
 
-            Set<Iri> tripleCollections = tcManager.listGraphs();
-            Iterator<Iri> tcIris = tripleCollections.iterator();
+            Set<IRI> tripleCollections = tcManager.listGraphs();
+            Iterator<IRI> tcIris = tripleCollections.iterator();
             while (tcIris.hasNext()) {
-                Iri tcUri = tcIris.next();
+                IRI tcUri = tcIris.next();
                 String fileName = folder + getTcFileName(tcUri, ".nt",
                         fileNameCount);
                 Graph tripleCollection = tcManager.getGraph(tcUri);

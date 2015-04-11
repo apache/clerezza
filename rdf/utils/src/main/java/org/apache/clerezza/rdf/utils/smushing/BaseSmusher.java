@@ -23,10 +23,10 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.OWL;
@@ -49,12 +49,12 @@ public class BaseSmusher {
      * @param equivalenceSets sets of equivalent resources
      * @param addOwlSameAs whether owl:sameAs statements should be added
      */
-    public void smush(Graph mGraph, Set<Set<BlankNodeOrIri>> equivalenceSets, boolean addOwlSameAs) {
-        Map<BlankNodeOrIri, BlankNodeOrIri> current2ReplacementMap = new HashMap<BlankNodeOrIri, BlankNodeOrIri>();
+    public void smush(Graph mGraph, Set<Set<BlankNodeOrIRI>> equivalenceSets, boolean addOwlSameAs) {
+        Map<BlankNodeOrIRI, BlankNodeOrIRI> current2ReplacementMap = new HashMap<BlankNodeOrIRI, BlankNodeOrIRI>();
         final Graph owlSameAsGraph = new SimpleGraph();
-        for (Set<BlankNodeOrIri> equivalenceSet : equivalenceSets) {
-            final BlankNodeOrIri replacement = getReplacementFor(equivalenceSet, owlSameAsGraph);
-            for (BlankNodeOrIri current : equivalenceSet) {
+        for (Set<BlankNodeOrIRI> equivalenceSet : equivalenceSets) {
+            final BlankNodeOrIRI replacement = getReplacementFor(equivalenceSet, owlSameAsGraph);
+            for (BlankNodeOrIRI current : equivalenceSet) {
                 if (!current.equals(replacement)) {
                     current2ReplacementMap.put(current, replacement);
                 }
@@ -66,11 +66,11 @@ public class BaseSmusher {
         try {
             for (Iterator<Triple> it = mGraph.iterator(); it.hasNext();) {
                 final Triple triple = it.next();
-                final BlankNodeOrIri subject = triple.getSubject();
-                BlankNodeOrIri subjectReplacement = current2ReplacementMap.get(subject);
-                final RdfTerm object = triple.getObject();
+                final BlankNodeOrIRI subject = triple.getSubject();
+                BlankNodeOrIRI subjectReplacement = current2ReplacementMap.get(subject);
+                final RDFTerm object = triple.getObject();
                 @SuppressWarnings(value = "element-type-mismatch")
-                RdfTerm objectReplacement = current2ReplacementMap.get(object);
+                RDFTerm objectReplacement = current2ReplacementMap.get(object);
                 if ((subjectReplacement != null) || (objectReplacement != null)) {
                     it.remove();
                     if (subjectReplacement == null) {
@@ -91,12 +91,12 @@ public class BaseSmusher {
         }
     }
     
-    private BlankNodeOrIri getReplacementFor(Set<BlankNodeOrIri> equivalenceSet, 
+    private BlankNodeOrIRI getReplacementFor(Set<BlankNodeOrIRI> equivalenceSet, 
             Graph owlSameAsGraph) {
-        final Set<Iri> uriRefs = new HashSet<Iri>();
-        for (BlankNodeOrIri nonLiteral : equivalenceSet) {
-            if (nonLiteral instanceof Iri) {
-                uriRefs.add((Iri) nonLiteral);
+        final Set<IRI> uriRefs = new HashSet<IRI>();
+        for (BlankNodeOrIRI nonLiteral : equivalenceSet) {
+            if (nonLiteral instanceof IRI) {
+                uriRefs.add((IRI) nonLiteral);
             }
         }
         switch (uriRefs.size()) {
@@ -105,10 +105,10 @@ public class BaseSmusher {
             case 0:
                 return new BlankNode();
         }
-        final Iri preferedIri = getPreferedIri(uriRefs);
-        final Iterator<Iri> uriRefIter = uriRefs.iterator();
+        final IRI preferedIri = getPreferedIri(uriRefs);
+        final Iterator<IRI> uriRefIter = uriRefs.iterator();
         while (uriRefIter.hasNext()) {
-            Iri uriRef = uriRefIter.next();
+            IRI uriRef = uriRefIter.next();
             if (!uriRef.equals(preferedIri)) {
                 owlSameAsGraph.add(new TripleImpl(uriRef, OWL.sameAs, preferedIri));
             }
@@ -125,8 +125,8 @@ public class BaseSmusher {
      * @param uriRefs
      * @return 
      */
-    protected Iri getPreferedIri(Set<Iri> uriRefs) {
-        final Iterator<Iri> uriRefIter = uriRefs.iterator();
+    protected IRI getPreferedIri(Set<IRI> uriRefs) {
+        final Iterator<IRI> uriRefIter = uriRefs.iterator();
         //instead of an arbitrary one we might either decide lexicographically
         //or look at their frequency in mGraph
         return uriRefIter.next();

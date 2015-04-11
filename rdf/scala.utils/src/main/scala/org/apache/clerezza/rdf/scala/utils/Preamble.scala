@@ -27,9 +27,9 @@ import java.net.URL
 import java.util.Date
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.commons.rdf.Graph
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.commons.rdf.Literal
-import org.apache.clerezza.commons.rdf.RdfTerm
+import org.apache.clerezza.commons.rdf.RDFTerm
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleImmutableGraph
@@ -71,7 +71,7 @@ protected trait TcDependentConversions extends TcIndependentConversions {
   
   def baseTc: Graph
   
-  implicit def toRichGraphNode(resource: RdfTerm) = {
+  implicit def toRichGraphNode(resource: RDFTerm) = {
     new RichGraphNode(new GraphNode(resource, baseTc))
   }
 }
@@ -108,11 +108,11 @@ protected trait TcIndependentConversions extends EzLiteralImplicits {
 
   implicit def double2lit(double: Double) = litFactory.createTypedLiteral(double)
 
-  implicit def uriRef2Prefix(uriRef: Iri) = new NameSpace(uriRef.getUnicodeString)
+  implicit def uriRef2Prefix(uriRef: IRI) = new NameSpace(uriRef.getUnicodeString)
 
-  implicit def URItoIri(uri: URI) = new Iri(uri.toString)
+  implicit def URItoIRI(uri: URI) = new IRI(uri.toString)
 
-  implicit def URLtoIri(url: URL) = new Iri(url.toExternalForm)
+  implicit def URLtoIRI(url: URL) = new IRI(url.toExternalForm)
   
 }
 protected object TcIndependentConversions {

@@ -23,12 +23,12 @@ import java.util.Map;
 
 import net.rootdev.javardfa.StatementSink;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.Language;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
@@ -61,12 +61,12 @@ public class ClerezzaStatementSink implements StatementSink {
 
     @Override
     public void addObject(String subject, String predicate, String object) {
-        mgraph.add(new TripleImpl(transform(subject), new Iri(predicate), transform(object)));
+        mgraph.add(new TripleImpl(transform(subject), new IRI(predicate), transform(object)));
     }
 
-    private BlankNodeOrIri transform(String nonLiteral) {
-        BlankNodeOrIri s;
-        RdfTerm o;
+    private BlankNodeOrIRI transform(String nonLiteral) {
+        BlankNodeOrIRI s;
+        RDFTerm o;
         if (nonLiteral.startsWith("_:")) {
             s = bnodeLookup.get(nonLiteral);
             if (s == null) {
@@ -74,7 +74,7 @@ public class ClerezzaStatementSink implements StatementSink {
                 bnodeLookup.put(nonLiteral, (BlankNode) s);
             }
         } else {
-            s = new Iri(nonLiteral);
+            s = new IRI(nonLiteral);
         }
         return s;
     }
@@ -89,9 +89,9 @@ public class ClerezzaStatementSink implements StatementSink {
                 obj = new PlainLiteralImpl(lex, new Language(lang));
             }
         } else {
-            obj = new TypedLiteralImpl(lex, new Iri(datatype));
+            obj = new TypedLiteralImpl(lex, new IRI(datatype));
         }
-        mgraph.add(new TripleImpl(transform(subject), new Iri(predicate), obj));
+        mgraph.add(new TripleImpl(transform(subject), new IRI(predicate), obj));
     }
 
     @Override

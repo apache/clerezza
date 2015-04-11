@@ -31,9 +31,9 @@ import java.util.Set;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.felix.scr.annotations.Activate;
@@ -81,7 +81,7 @@ public class MultiThreadedTest {
             while (!stopRequested) {
                 try {
                     Literal randomLiteral = new PlainLiteralImpl(Util.createRandomString(22));
-                    Triple triple = new TripleImpl(new BlankNode(), new Iri("http://example.com/property"), randomLiteral);
+                    Triple triple = new TripleImpl(new BlankNode(), new IRI("http://example.com/property"), randomLiteral);
                     mGraph.add(triple);
                     addedTripleCount++;
                     if ((addedTripleCount % 100) == 0) {
@@ -104,7 +104,7 @@ public class MultiThreadedTest {
     @Before
     public void setUp() throws IOException {
         File tempFile;
-        Iri MGRAPHNAME = new Iri("http://text.example.org/");
+        IRI MGRAPHNAME = new IRI("http://text.example.org/");
         TdbTcProvider tdbTcProvider;
         tempFile = File.createTempFile("tdbtest", null);
         tempFile.delete();

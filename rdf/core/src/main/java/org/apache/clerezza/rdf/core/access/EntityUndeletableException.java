@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * is thrown on an attempt to delete an entity with a provider that
@@ -27,7 +27,7 @@ import org.apache.clerezza.commons.rdf.Iri;
  * @author reto
  */
 public class EntityUndeletableException extends RuntimeException {
-    private Iri entityName;
+    private IRI entityName;
 
     /**
      * creates an exception indicating that the entity with the specified name
@@ -35,7 +35,7 @@ public class EntityUndeletableException extends RuntimeException {
      * 
      * @param entityName the name of the entity which is undeletable
      */
-    public EntityUndeletableException(Iri entityName) {
+    public EntityUndeletableException(IRI entityName) {
         super("This entity is undeletable: "+entityName);
         this.entityName = entityName;
     }
@@ -44,7 +44,7 @@ public class EntityUndeletableException extends RuntimeException {
      * 
      * @return the name of the entity which is undeletable
      */
-    public Iri getEntityName() {
+    public IRI getEntityName() {
         return entityName;
     }
 }

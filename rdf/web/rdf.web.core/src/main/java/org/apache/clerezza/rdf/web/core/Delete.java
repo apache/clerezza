@@ -32,7 +32,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
@@ -60,7 +60,7 @@ public class Delete {
 
     
     @POST
-    public Response delete(@Context UriInfo uriInfo, @FormParam("graphName") Iri graphName) {
+    public Response delete(@Context UriInfo uriInfo, @FormParam("graphName") IRI graphName) {
         tcManager.deleteGraph(graphName);
         return RedirectUtil.createSeeOtherResponse("./", uriInfo);
     }

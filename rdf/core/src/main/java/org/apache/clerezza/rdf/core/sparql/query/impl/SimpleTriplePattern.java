@@ -18,9 +18,9 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.sparql.query.ResourceOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.TriplePattern;
 import org.apache.clerezza.rdf.core.sparql.query.UriRefOrVariable;
@@ -58,37 +58,37 @@ public class SimpleTriplePattern implements TriplePattern {
                 new ResourceOrVariable(object));
     }
 
-    public SimpleTriplePattern(BlankNodeOrIri subject, Variable predicate, Variable object) {
+    public SimpleTriplePattern(BlankNodeOrIRI subject, Variable predicate, Variable object) {
         this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
                 new ResourceOrVariable(object));
     }
 
-    public SimpleTriplePattern(Variable subject, Iri predicate, Variable object) {
+    public SimpleTriplePattern(Variable subject, IRI predicate, Variable object) {
         this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
                 new ResourceOrVariable(object));
     }
 
-    public SimpleTriplePattern(BlankNodeOrIri subject, Iri predicate, Variable object) {
+    public SimpleTriplePattern(BlankNodeOrIRI subject, IRI predicate, Variable object) {
         this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
                 new ResourceOrVariable(object));
     }
 
-    public SimpleTriplePattern(Variable subject, Variable predicate, RdfTerm object) {
+    public SimpleTriplePattern(Variable subject, Variable predicate, RDFTerm object) {
         this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
                 new ResourceOrVariable(object));
     }
 
-    public SimpleTriplePattern(BlankNodeOrIri subject, Variable predicate, RdfTerm object) {
+    public SimpleTriplePattern(BlankNodeOrIRI subject, Variable predicate, RDFTerm object) {
         this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
                 new ResourceOrVariable(object));
     }
 
-    public SimpleTriplePattern(Variable subject, Iri predicate, RdfTerm object) {
+    public SimpleTriplePattern(Variable subject, IRI predicate, RDFTerm object) {
         this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
                 new ResourceOrVariable(object));
     }
 
-    public SimpleTriplePattern(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
+    public SimpleTriplePattern(BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
         this(new ResourceOrVariable(subject), new UriRefOrVariable(predicate),
                 new ResourceOrVariable(object));
     }

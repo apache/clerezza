@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 import net.rootdev.javardfa.Parser;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public abstract class ClerezzaRDFaParser implements ParsingProvider {
 
 
     @Override
-    public void parse(Graph target, InputStream in, String formatIdentifier, Iri baseUri) {
+    public void parse(Graph target, InputStream in, String formatIdentifier, IRI baseUri) {
         try {
             parse(target, new InputSource(in), baseUri);
         } catch (IOException e) {
@@ -49,7 +49,7 @@ public abstract class ClerezzaRDFaParser implements ParsingProvider {
         }
     }
 
-    private void parse(Graph target, InputSource in, Iri baseURI) throws IOException {
+    private void parse(Graph target, InputSource in, IRI baseURI) throws IOException {
         Parser parser = new Parser(new ClerezzaStatementSink(target));
         if (baseURI != null) {
             parser.setBase(baseURI.getUnicodeString());

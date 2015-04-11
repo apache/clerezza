@@ -18,7 +18,7 @@ package org.apache.clerezza.rdf.utils.graphnodeprovider;
  * specific language governing permissions and limitations
  * under the License.
  */
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -34,18 +34,18 @@ public interface GraphNodeProvider {
      * Get a GraphNode for the specified resource, see class comments for
      * details.
      */
-    GraphNode get(Iri uriRef);
+    GraphNode get(IRI uriRef);
 
     /**
      * Get a GraphNode for the specified resource, The resource is assumed to be
-     * local, i.e. the method behaves like get(Iri) for a Uri with an
-     * authority section contained in the Set retuned by
-     * <code>org.apache.clerezza.platform.config.PlatformConfig#getBaseUris()</code>
+     * local, i.e. the method behaves like get(IRI) for a Uri with an
+ authority section contained in the Set retuned by
+ <code>org.apache.clerezza.platform.config.PlatformConfig#getBaseUris()</code>
      */
-    GraphNode getLocal(Iri uriRef);
+    GraphNode getLocal(IRI uriRef);
 
     /**
      * return true iff getLocal(uriRef).getNodeContext.size > 0
      */
-    boolean existsLocal(Iri uriRef);
+    boolean existsLocal(IRI uriRef);
 }

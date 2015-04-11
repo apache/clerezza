@@ -28,9 +28,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.Iri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.rdf.jena.commons.Jena2TriaUtil;
 import org.apache.clerezza.rdf.jena.commons.Tria2JenaUtil;
@@ -113,9 +113,9 @@ public class JenaGraph extends GraphBase implements com.hp.hpl.jena.graph.Graph 
      * @return TripleCollection
      */
     private Iterator<Triple> filter(TripleMatch m) {
-        BlankNodeOrIri subject = null;
-        Iri predicate = null;
-        RdfTerm object = null;
+        BlankNodeOrIRI subject = null;
+        IRI predicate = null;
+        RDFTerm object = null;
         if (m.getMatchSubject() != null) {
             if (m.getMatchSubject().isLiteral()) {
                 return Collections.EMPTY_SET.iterator();

@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 
 
@@ -73,7 +73,7 @@ public class JenaParserProviderTest {
         Assert.assertEquals(graphFromNTriples, graphFromTurtle);
     }
 
-    private ImmutableGraph parse(ParsingProvider parsingProvider, InputStream in, String type, Iri base) {
+    private ImmutableGraph parse(ParsingProvider parsingProvider, InputStream in, String type, IRI base) {
         Graph simpleMGraph = new SimpleGraph();
         parsingProvider.parse(simpleMGraph, in, type, base);
         return simpleMGraph.getImmutableGraph();

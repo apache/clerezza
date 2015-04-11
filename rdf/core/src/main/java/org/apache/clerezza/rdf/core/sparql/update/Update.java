@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.update;
 
 import java.util.Set;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 
 /**
@@ -38,7 +38,7 @@ public interface Update {
      *      the specified tcProvider is used to get the named graphs referred in the SPARQL {@link Update}.
      * @return a set of graphs referred in the {@link Update}.
      */
-    public Set<Iri> getReferredGraphs(Iri defaultGraph, TcProvider tcProvider);
+    public Set<IRI> getReferredGraphs(IRI defaultGraph, TcProvider tcProvider);
 
     public void addOperation(UpdateOperation updateOperation);
 

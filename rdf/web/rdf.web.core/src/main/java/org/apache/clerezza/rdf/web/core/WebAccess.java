@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
@@ -82,7 +82,7 @@ public class WebAccess {
      * @return
      */
     @GET
-    public Graph getTriples(@QueryParam("name") Iri name) {
+    public Graph getTriples(@QueryParam("name") IRI name) {
         AccessController.checkPermission(new WebAccessPermission());
         if (name == null) {
             Response r = Response.status(Response.Status.BAD_REQUEST)
@@ -112,7 +112,7 @@ public class WebAccess {
      * @param triples
      */
     @PUT
-    public void putTriples(@QueryParam("name") Iri name, Graph triples) {
+    public void putTriples(@QueryParam("name") IRI name, Graph triples) {
         AccessController.checkPermission(new WebAccessPermission());
         Graph mGraph;
         try {
@@ -193,7 +193,7 @@ public class WebAccess {
         }
         InputStream is = new ByteArrayInputStream(graph);
         ImmutableGraph parsedGraph = parser.parse(is, mediaType.toString());
-        Iri graphUri = new Iri(graphName);
+        IRI graphUri = new IRI(graphName);
         Graph mGraph;
         boolean newGraph = false;
         try {

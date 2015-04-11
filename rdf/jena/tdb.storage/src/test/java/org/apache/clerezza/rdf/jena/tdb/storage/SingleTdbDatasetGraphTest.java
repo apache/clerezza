@@ -6,7 +6,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.test.GraphTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -15,7 +15,7 @@ import org.osgi.service.cm.ConfigurationException;
 public class SingleTdbDatasetGraphTest extends GraphTest {
 
     private static final String MGRAPHNAME_PREFIX = "http://text.example.org/testGraph";
-    private static Iri UNION_GRAPH_NAME = new Iri("http://www.example.org/unionGraph");
+    private static IRI UNION_GRAPH_NAME = new IRI("http://www.example.org/unionGraph");
     private static int testGraphCounter = 0;
 
     private static File tempFile;
@@ -36,7 +36,7 @@ public class SingleTdbDatasetGraphTest extends GraphTest {
     @AfterClass
     public static void cleanUpDirectory() throws IOException {
         for(int i = 0; i < testGraphCounter;i++){
-            provider.deleteGraph(new Iri(MGRAPHNAME_PREFIX+i));
+            provider.deleteGraph(new IRI(MGRAPHNAME_PREFIX+i));
         }
         provider.deactivate(null);
         try {
@@ -48,7 +48,7 @@ public class SingleTdbDatasetGraphTest extends GraphTest {
 
     @Override
     protected Graph getEmptyGraph() {
-        Graph graph = provider.createGraph(new Iri(MGRAPHNAME_PREFIX+testGraphCounter));
+        Graph graph = provider.createGraph(new IRI(MGRAPHNAME_PREFIX+testGraphCounter));
         testGraphCounter++;
         return graph;
     }

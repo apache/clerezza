@@ -29,7 +29,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
@@ -48,9 +48,9 @@ public class FileGraphTest {
     protected static final String RDF_FILE_NAME = "test-04.rdf";
     protected static final String TURTLE_FILE_NAME = "test-04.ttl";
 
-    private static final Iri uriA = new Iri("http://example.com/a");
-    private static final Iri uriB = new Iri("http://example.com/b");
-    private static final Iri uriC = new Iri("http://example.com/c");
+    private static final IRI uriA = new IRI("http://example.com/a");
+    private static final IRI uriB = new IRI("http://example.com/b");
+    private static final IRI uriC = new IRI("http://example.com/c");
 
 
     @BeforeClass
@@ -91,15 +91,15 @@ public class FileGraphTest {
     
     @Test
     public void testReadingFromFile() {
-        FileGraph mGraph = new FileGraph(new Iri(getTempFileUri(RDF_FILE_NAME)),
+        FileGraph mGraph = new FileGraph(new IRI(getTempFileUri(RDF_FILE_NAME)),
                 Parser.getInstance(), Serializer.getInstance());
         assertEquals(2, mGraph.size());
 
-        mGraph = new FileGraph(new Iri(getTempFileUri(TURTLE_FILE_NAME)),
+        mGraph = new FileGraph(new IRI(getTempFileUri(TURTLE_FILE_NAME)),
                 Parser.getInstance(), Serializer.getInstance());
         assertEquals(2, mGraph.size());
 
-        mGraph = new FileGraph(new Iri(getTempFileUri(NT_FILE_NAME)),
+        mGraph = new FileGraph(new IRI(getTempFileUri(NT_FILE_NAME)),
                 Parser.getInstance(), Serializer.getInstance());
         assertEquals(2, mGraph.size());
     }
@@ -107,13 +107,13 @@ public class FileGraphTest {
     @Test
     public void testFilter() throws IOException {
         String fileName = "filter.rdf";
-        FileGraph mGraph = new FileGraph(new Iri(getTempFileUri(fileName)),
+        FileGraph mGraph = new FileGraph(new IRI(getTempFileUri(fileName)),
                 Parser.getInstance(), Serializer.getInstance());
 
         mGraph.add(new TripleImpl(uriA, uriB, uriC));
         mGraph.add(new TripleImpl(uriC, uriB, uriA));
 
-        mGraph = new FileGraph(new Iri(getTempFileUri(fileName)),
+        mGraph = new FileGraph(new IRI(getTempFileUri(fileName)),
                 Parser.getInstance(), Serializer.getInstance());
         
         
@@ -124,7 +124,7 @@ public class FileGraphTest {
         iterator.remove();
         assertEquals(1, mGraph.size());
 
-        mGraph = new FileGraph(new Iri(getTempFileUri(fileName)),
+        mGraph = new FileGraph(new IRI(getTempFileUri(fileName)),
                 Parser.getInstance(), Serializer.getInstance());
         assertEquals(1, mGraph.size());
         deleteTempFile(fileName);

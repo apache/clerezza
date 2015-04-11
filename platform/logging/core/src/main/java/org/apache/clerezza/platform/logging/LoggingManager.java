@@ -45,7 +45,7 @@ import org.apache.clerezza.platform.logging.ontologies.LOGGING;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -78,7 +78,7 @@ public class LoggingManager implements GlobalMenuItemsProvider {
     public void activate(ComponentContext context)
             throws URISyntaxException, IOException {
         renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-                new Iri(getClass().getResource(
+                new IRI(getClass().getResource(
                 "config-page-naked.ssp").toURI().toString()),
                 LOGGING.LoggingConfigPage, "naked",
                 MediaType.APPLICATION_XHTML_XML_TYPE, true);

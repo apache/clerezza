@@ -24,7 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
@@ -44,7 +44,7 @@ public class SimpleTest {
 	public void simpleStringQuery() throws ParseException {
 		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
+		data.add(new TripleImpl(new IRI("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "SELECT ?title WHERE" + "{"
 				+ "    <http://example.org/book/book1> <"
@@ -63,7 +63,7 @@ public class SimpleTest {
 	public void simpleSelectQuery() throws ParseException {
 		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
+		data.add(new TripleImpl(new IRI("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "SELECT ?title WHERE" + "{"
 				+ "    <http://example.org/book/book1> <"
@@ -79,7 +79,7 @@ public class SimpleTest {
 	public void simpleAskQuery() throws ParseException {
 		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
+		data.add(new TripleImpl(new IRI("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "ASK WHERE" + "{"
 				+ "    <http://example.org/book/book1> <"
@@ -96,7 +96,7 @@ public class SimpleTest {
 	public void simpleDescribe() throws ParseException {
 		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
+		data.add(new TripleImpl(new IRI("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "DESCRIBE " + "    <http://example.org/book/book1>";
 		Assert.assertEquals(
@@ -109,7 +109,7 @@ public class SimpleTest {
 	public void simpleConstruct() throws ParseException {
 		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
+		data.add(new TripleImpl(new IRI("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
 		String query = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/> "
 				+ "CONSTRUCT { <http://foo/bar> foaf:name ?title } WHERE" + "{"
@@ -126,7 +126,7 @@ public class SimpleTest {
 	public void simpleInsert() throws ParseException {
 		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
+		data.add(new TripleImpl(new IRI("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
         
 		String query = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/> "
@@ -139,7 +139,7 @@ public class SimpleTest {
 	public void simpleDrop() throws ParseException {
 		SimpleGraph data = new SimpleGraph();
 		final String titleValue = "SPARQL Tutorial";
-		data.add(new TripleImpl(new Iri("http://example.org/book/book1"),
+		data.add(new TripleImpl(new IRI("http://example.org/book/book1"),
 				DC.title, new PlainLiteralImpl(titleValue)));
         
 		String query = "DROP ALL";

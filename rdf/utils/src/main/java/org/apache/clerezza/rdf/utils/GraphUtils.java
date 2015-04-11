@@ -25,8 +25,8 @@ import java.util.Set;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 
@@ -72,7 +72,7 @@ public class GraphUtils {
                 break;
             }
             final GraphNode objectGN = new GraphNode(triple.getObject(), unGroundedTriples);
-            BlankNodeOrIri subject = triple.getSubject();
+            BlankNodeOrIRI subject = triple.getSubject();
             ImmutableGraph context = objectGN.getNodeContext();
             Iterator<Triple> potentialIter = mGraph.filter(subject, triple.getPredicate(), null);
             while (potentialIter.hasNext()) {
@@ -97,7 +97,7 @@ public class GraphUtils {
                 break;
             }
             final GraphNode subjectGN = new GraphNode(triple.getSubject(), unGroundedTriples);
-            RdfTerm object = triple.getObject();
+            RDFTerm object = triple.getObject();
             if (object instanceof BlankNode) {
                 object = null;
             }

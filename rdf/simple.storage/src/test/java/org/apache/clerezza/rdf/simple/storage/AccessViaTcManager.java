@@ -17,7 +17,7 @@ package org.apache.clerezza.rdf.simple.storage;
 
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class AccessViaTcManager {
     
     @Test
     public void simple() {
-        Graph g = TcManager.getInstance().createGraph(new Iri("http://example.org/foo"));
+        Graph g = TcManager.getInstance().createGraph(new IRI("http://example.org/foo"));
         Assert.assertTrue(g instanceof SimpleGraph);
     }
     

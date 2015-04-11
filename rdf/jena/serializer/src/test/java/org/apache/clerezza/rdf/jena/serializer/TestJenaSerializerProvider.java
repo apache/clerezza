@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.commons.rdf.BlankNode;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 
 /**
@@ -60,15 +60,15 @@ public class TestJenaSerializerProvider {
                 model.createResource().addProperty(
                         model.createProperty(URI + "E"), "F").addProperty(
                         model.createProperty(URI + "G"), "H"));
-        mGraph.add(new TripleImpl(new Iri("http://foo/bar"),
-                new Iri("http://foo/bar"),
+        mGraph.add(new TripleImpl(new IRI("http://foo/bar"),
+                new IRI("http://foo/bar"),
                 LiteralFactory.getInstance().createTypedLiteral("foo")));
-        mGraph.add(new TripleImpl(new Iri("http://foo/bar"),
-                new Iri("http://foo/bar"),
+        mGraph.add(new TripleImpl(new IRI("http://foo/bar"),
+                new IRI("http://foo/bar"),
                 LiteralFactory.getInstance().createTypedLiteral(54675)));
         mGraph.add(new TripleImpl(new BlankNode(),
-                new Iri("http://foo/bar"),
-                new Iri("http://foo/bar")));
+                new IRI("http://foo/bar"),
+                new IRI("http://foo/bar")));
     }
 
     /*

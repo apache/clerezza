@@ -31,7 +31,7 @@ import java.util.Set;
 import org.apache.clerezza.rdf.core.InvalidLiteralTypeException;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.core.NoConvertorException;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.impl.util.Base64;
 import org.apache.clerezza.rdf.core.impl.util.W3CDateFormat;
 import org.apache.clerezza.commons.rdf.Literal;
@@ -46,14 +46,14 @@ import org.apache.clerezza.commons.rdf.Literal;
 public class SimpleLiteralFactory extends LiteralFactory {
 
     private static final String XSD = "http://www.w3.org/2001/XMLSchema#";
-    final private static Iri xsdInteger = xsd("integer");
-    final private static Iri xsdInt = xsd("int");
-    final private static Iri xsdShort = xsd("short");
-    final private static Iri xsdByte = xsd("byte");
-    final private static Iri xsdLong = xsd("long");
+    final private static IRI xsdInteger = xsd("integer");
+    final private static IRI xsdInt = xsd("int");
+    final private static IRI xsdShort = xsd("short");
+    final private static IRI xsdByte = xsd("byte");
+    final private static IRI xsdLong = xsd("long");
     
 
-    final private static Set<Iri> decimalTypes = new HashSet<Iri>();
+    final private static Set<IRI> decimalTypes = new HashSet<IRI>();
 
     final private static Map<Class<?>, TypeConverter<?>> typeConverterMap = new HashMap<Class<?>, TypeConverter<?>>();
     final static Class<? extends byte[]> byteArrayType;
@@ -72,15 +72,15 @@ public class SimpleLiteralFactory extends LiteralFactory {
         typeConverterMap.put(Long.class, new LongConverter());
         typeConverterMap.put(Double.class, new DoubleConverter());
         typeConverterMap.put(Float.class, new FloatConverter());
-        typeConverterMap.put(Iri.class, new UriRefConverter());
+        typeConverterMap.put(IRI.class, new UriRefConverter());
     }
 
-    final private static Iri xsdDouble =xsd("double");
-    final private static Iri xsdFloat =xsd("float");
-    final private static Iri xsdAnyURI =xsd("anyURI");
+    final private static IRI xsdDouble =xsd("double");
+    final private static IRI xsdFloat =xsd("float");
+    final private static IRI xsdAnyURI =xsd("anyURI");
 
-    final private static Iri xsd(String name) {
-       return new Iri(XSD+name);
+    final private static IRI xsd(String name) {
+       return new IRI(XSD+name);
     }
 
     private static interface TypeConverter<T> {
@@ -90,7 +90,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
     private static class  ByteArrayConverter implements TypeConverter<byte[]> {
 
-        private static final Iri base64Uri =xsd("base64Binary");
+        private static final IRI base64Uri =xsd("base64Binary");
 
         @Override
         public Literal createLiteral(byte[] value) {
@@ -109,7 +109,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
     }
     private static class  DateConverter implements TypeConverter<Date> {
 
-        private static final Iri dateTimeUri =xsd("dateTime");
+        private static final IRI dateTimeUri =xsd("dateTime");
         private static final DateFormat DATE_FORMAT = new W3CDateFormat();
 
         @Override
@@ -134,7 +134,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
     private static class BooleanConverter implements TypeConverter<Boolean> {
 
-        private static final Iri booleanUri =xsd("boolean");
+        private static final IRI booleanUri =xsd("boolean");
         public static final TypedLiteralImpl TRUE = new TypedLiteralImpl("true", booleanUri);
         public static final TypedLiteralImpl FALSE = new TypedLiteralImpl("false", booleanUri);
 
@@ -157,7 +157,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
     private static class StringConverter implements TypeConverter<String> {
 
-        private static final Iri stringUri =xsd("string");
+        private static final IRI stringUri =xsd("string");
 
         @Override
         public Literal createLiteral(String value) {
@@ -261,21 +261,21 @@ public class SimpleLiteralFactory extends LiteralFactory {
         }
     }
     
-    private static class UriRefConverter implements TypeConverter<Iri> {
+    private static class UriRefConverter implements TypeConverter<IRI> {
 
 
 
         @Override
-        public Literal createLiteral(Iri value) {
+        public Literal createLiteral(IRI value) {
             return new TypedLiteralImpl(value.getUnicodeString(), xsdAnyURI);
         }
 
         @Override
-        public Iri createObject(Literal literal) {
+        public IRI createObject(Literal literal) {
             if (!literal.getDataType().equals(xsdAnyURI)) {
-                throw new InvalidLiteralTypeException(Iri.class, literal.getDataType());
+                throw new InvalidLiteralTypeException(IRI.class, literal.getDataType());
             }
-            return new Iri(literal.getLexicalForm());
+            return new IRI(literal.getLexicalForm());
         }
     }
 

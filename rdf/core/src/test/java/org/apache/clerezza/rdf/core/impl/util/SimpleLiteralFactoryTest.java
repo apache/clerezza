@@ -21,7 +21,7 @@ package org.apache.clerezza.rdf.core.impl.util;
 import junit.framework.Assert;
 import org.apache.clerezza.rdf.core.impl.util.SimpleLiteralFactory;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.junit.Test;
 
 /**
@@ -30,12 +30,12 @@ import org.junit.Test;
  */
 public class SimpleLiteralFactoryTest {
 
-    final private static Iri xsdInteger = 
-            new Iri("http://www.w3.org/2001/XMLSchema#integer");
-    final private static Iri xsdInt =
-            new Iri("http://www.w3.org/2001/XMLSchema#int");
-    final private static Iri xsdLong =
-            new Iri("http://www.w3.org/2001/XMLSchema#long");
+    final private static IRI xsdInteger = 
+            new IRI("http://www.w3.org/2001/XMLSchema#integer");
+    final private static IRI xsdInt =
+            new IRI("http://www.w3.org/2001/XMLSchema#int");
+    final private static IRI xsdLong =
+            new IRI("http://www.w3.org/2001/XMLSchema#long");
 
     SimpleLiteralFactory simpleLiteralFactory = new SimpleLiteralFactory();
 

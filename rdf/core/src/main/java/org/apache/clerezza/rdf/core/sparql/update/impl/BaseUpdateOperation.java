@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.update.impl;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
@@ -30,8 +30,8 @@ import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
  */
 public abstract class BaseUpdateOperation implements UpdateOperation {
 
-    protected Set<Iri> inputGraphs = new HashSet<Iri>();
-    protected Set<Iri> destinationGraphs = new HashSet<Iri>();
+    protected Set<IRI> inputGraphs = new HashSet<IRI>();
+    protected Set<IRI> destinationGraphs = new HashSet<IRI>();
     protected GraphSpec inputGraphSpec = GraphSpec.GRAPH;
     protected GraphSpec destinationGraphSpec = GraphSpec.GRAPH;
 
@@ -52,14 +52,14 @@ public abstract class BaseUpdateOperation implements UpdateOperation {
     }
 
     @Override
-    public Set<Iri> getInputGraphs(Iri defaultGraph, TcProvider tcProvider) {
+    public Set<IRI> getInputGraphs(IRI defaultGraph, TcProvider tcProvider) {
         return getGraphs(defaultGraph, tcProvider, inputGraphSpec, inputGraphs);
     }
 
-    private Set<Iri> getGraphs(Iri defaultGraph, TcProvider tcProvider, GraphSpec graphSpec, Set<Iri> graphs) {
+    private Set<IRI> getGraphs(IRI defaultGraph, TcProvider tcProvider, GraphSpec graphSpec, Set<IRI> graphs) {
         switch (graphSpec) {
             case DEFAULT:
-                Set<Iri> result = new HashSet<Iri>();
+                Set<IRI> result = new HashSet<IRI>();
                 result.add(defaultGraph);
                 return result;
             case NAMED:
@@ -71,15 +71,15 @@ public abstract class BaseUpdateOperation implements UpdateOperation {
     }
 
     @Override
-    public Set<Iri> getDestinationGraphs(Iri defaultGraph, TcProvider tcProvider) {
+    public Set<IRI> getDestinationGraphs(IRI defaultGraph, TcProvider tcProvider) {
         return getGraphs(defaultGraph, tcProvider, destinationGraphSpec, destinationGraphs);
     }
 
-    public void addInputGraph(Iri ImmutableGraph) {
+    public void addInputGraph(IRI ImmutableGraph) {
         inputGraphs.add(ImmutableGraph);
     }
 
-    public void addDestinationGraph(Iri ImmutableGraph) {
+    public void addDestinationGraph(IRI ImmutableGraph) {
         destinationGraphs.add(ImmutableGraph);
     }
 }

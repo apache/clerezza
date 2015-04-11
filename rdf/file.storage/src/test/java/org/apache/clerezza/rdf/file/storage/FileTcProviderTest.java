@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 
 import org.apache.clerezza.rdf.core.access.TcProvider;
@@ -54,10 +54,10 @@ public class FileTcProviderTest extends TcProviderTest {
     
     
     @Override
-    protected Iri generateUri(String name) {
+    protected IRI generateUri(String name) {
             String prefix = testDir.startsWith("/") ? FILE_PROTOCOL : FILE_PROTOCOL +"/";
         String path =  prefix + testDir.replace('\\', '/') + "/";
-        return new Iri(path + name + ".rdf");
+        return new IRI(path + name + ".rdf");
     }
 
     @Before
@@ -208,7 +208,7 @@ public class FileTcProviderTest extends TcProviderTest {
     public void testAutoGraphCreationFromExistingFile() throws Exception{
         FileGraphTest.setup();
         TcProvider provider = getInstance();
-        Graph mGraph = provider.getGraph(new Iri(
+        Graph mGraph = provider.getGraph(new IRI(
                 FileGraphTest.getTempFileUri(FileGraphTest.RDF_FILE_NAME)));
         assertEquals(2 ,mGraph.size());
         FileGraphTest.cleanUp();

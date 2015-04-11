@@ -4,18 +4,18 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.ontologies.RDF;
 
 /**
  * Represents a set of uri ref Set<Iri>
  * @author Minto van der Sluis
  */
-public class IriSet extends AbstractSet<Iri> {
+public class IriSet extends AbstractSet<IRI> {
     private ModelGraph graphNameIndex;
-    private Iri graphType;
+    private IRI graphType;
 
-    public IriSet(ModelGraph index, Iri object) {
+    public IriSet(ModelGraph index, IRI object) {
         graphNameIndex = index;
         graphType = object;
     }
@@ -27,17 +27,17 @@ public class IriSet extends AbstractSet<Iri> {
     }
   
     @Override
-    public Iterator<Iri> iterator() {
+    public Iterator<IRI> iterator() {
         final Iterator<Triple> indexIter = graphNameIndex.getGraph().filter( null, RDF.type, graphType );
-        return new Iterator<Iri>() {
+        return new Iterator<IRI>() {
             @Override
             public boolean hasNext() {
                 return indexIter.hasNext();
             }
   
             @Override
-            public Iri next() {
-                return Iri.class.cast(indexIter.next().getSubject());
+            public IRI next() {
+                return IRI.class.cast(indexIter.next().getSubject());
             }
   
             @Override
@@ -48,14 +48,14 @@ public class IriSet extends AbstractSet<Iri> {
     }
     
     @Override
-    public boolean add(Iri o) {
+    public boolean add(IRI o) {
         throw new UnsupportedOperationException();
     }
   
     @Override
     public boolean contains(Object o) {
-        if (o instanceof Iri) {
-            return graphNameIndex.getGraph().filter(Iri.class.cast(o), RDF.type, graphType).hasNext();
+        if (o instanceof IRI) {
+            return graphNameIndex.getGraph().filter(IRI.class.cast(o), RDF.type, graphType).hasNext();
         }
         return false;
     }

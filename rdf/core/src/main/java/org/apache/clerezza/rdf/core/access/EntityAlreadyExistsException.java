@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * is thrown on an attempt to create an entity with a name which already exists
@@ -27,7 +27,7 @@ import org.apache.clerezza.commons.rdf.Iri;
  */
 public class EntityAlreadyExistsException extends RuntimeException {
 
-    private Iri entityName;
+    private IRI entityName;
 
     /**
      * creates an exception indicating that an entity with the specified name
@@ -35,7 +35,7 @@ public class EntityAlreadyExistsException extends RuntimeException {
      * 
      * @param entityName the name of the entity which already exists
      */
-    public EntityAlreadyExistsException(Iri entityName) {
+    public EntityAlreadyExistsException(IRI entityName) {
         super("An entity with this name already exists: "+entityName);
         this.entityName = entityName;
     }
@@ -44,7 +44,7 @@ public class EntityAlreadyExistsException extends RuntimeException {
      * 
      * @return the name of the entity which already exists
      */
-    public Iri getEntityName() {
+    public IRI getEntityName() {
         return entityName;
     }
 }

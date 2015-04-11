@@ -23,9 +23,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.ontologies.RDFS;
@@ -56,10 +56,10 @@ public class SeeAlsoExpander {
      * @return a new GraphNode over the union of the original and all expansion graphs
      */
     public GraphNode expand(GraphNode node, int recursion) {
-        Set<Iri> alreadyVisited = new HashSet();
+        Set<IRI> alreadyVisited = new HashSet();
         Set<Graph> resultTripleCollections = new HashSet<Graph>();
         resultTripleCollections.add(node.getGraph());
-        for (Iri uriRef : expand(node, alreadyVisited, recursion)) {
+        for (IRI uriRef : expand(node, alreadyVisited, recursion)) {
             try {
                 resultTripleCollections.add(tcManager.getGraph(uriRef));
             } catch (NoSuchEntityException e) {
@@ -72,16 +72,16 @@ public class SeeAlsoExpander {
 
     }
 
-    private Set<Iri> getSeeAlsoObjectUris(GraphNode node) {
-        Set<Iri> result = new HashSet<Iri>();
+    private Set<IRI> getSeeAlsoObjectUris(GraphNode node) {
+        Set<IRI> result = new HashSet<IRI>();
         Lock l = node.readLock();
         l.lock();
         try {
-            Iterator<RdfTerm> objects = node.getObjects(RDFS.seeAlso);
+            Iterator<RDFTerm> objects = node.getObjects(RDFS.seeAlso);
             while (objects.hasNext()) {
-                RdfTerm next = objects.next();
-                if (next instanceof Iri) {
-                    result.add((Iri)next);
+                RDFTerm next = objects.next();
+                if (next instanceof IRI) {
+                    result.add((IRI)next);
                 }
             }
         } finally {
@@ -90,15 +90,15 @@ public class SeeAlsoExpander {
         return result;
     }
 
-    private Set<Iri> expand(GraphNode node, Set<Iri> alreadyVisited, int recursion) {
-        Set<Iri> rdfSeeAlsoTargets = getSeeAlsoObjectUris(node);
-        Set<Iri> result = new HashSet<Iri>();
+    private Set<IRI> expand(GraphNode node, Set<IRI> alreadyVisited, int recursion) {
+        Set<IRI> rdfSeeAlsoTargets = getSeeAlsoObjectUris(node);
+        Set<IRI> result = new HashSet<IRI>();
         result.addAll(rdfSeeAlsoTargets);
         recursion++;
         if (recursion > 0) {
             rdfSeeAlsoTargets.removeAll(alreadyVisited);
             alreadyVisited.addAll(rdfSeeAlsoTargets);
-            for (Iri target : rdfSeeAlsoTargets) {
+            for (IRI target : rdfSeeAlsoTargets) {
                 try {
                     result.addAll(expand(new GraphNode(node.getNode(),
                         tcManager.getGraph(target)), alreadyVisited, recursion));

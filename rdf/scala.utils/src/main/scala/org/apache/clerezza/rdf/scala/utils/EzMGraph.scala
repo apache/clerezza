@@ -22,10 +22,10 @@ package org.apache.clerezza.rdf.scala.utils
 import org.apache.clerezza.rdf.core._
 import org.apache.clerezza.rdf.core.impl._
 import org.apache.clerezza.commons.rdf.BlankNode
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI
 import org.apache.clerezza.commons.rdf.Graph
-import org.apache.clerezza.commons.rdf.Iri
-import org.apache.clerezza.commons.rdf.RdfTerm
+import org.apache.clerezza.commons.rdf.IRI
+import org.apache.clerezza.commons.rdf.RDFTerm
 import org.apache.clerezza.commons.rdf.Triple
 import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph
@@ -44,8 +44,8 @@ class EzGraph(val baseTc: Graph) extends AbstractGraph with TcDependentConversio
 
   def this() = this (new SimpleGraph())
 
-  def performFilter(subject: BlankNodeOrIri, predicate: Iri,
-      obj: RdfTerm): java.util.Iterator[Triple] = baseTc.filter(subject, predicate, obj)
+  def performFilter(subject: BlankNodeOrIRI, predicate: IRI,
+      obj: RDFTerm): java.util.Iterator[Triple] = baseTc.filter(subject, predicate, obj)
 
   override def performSize = baseTc.size
 

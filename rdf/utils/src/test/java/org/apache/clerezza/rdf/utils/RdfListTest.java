@@ -25,10 +25,10 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import static org.junit.Assert.*;
@@ -42,7 +42,7 @@ public class RdfListTest {
     @Test
     public void listCreationAndAccess() {
         Graph tc = new SimpleGraph();
-        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest"), tc);
+        List<RDFTerm> list = new RdfList(new IRI("http://example.org/mytest"), tc);
         assertEquals(0, list.size());
         list.add(new PlainLiteralImpl("hello"));
         list.add(new PlainLiteralImpl("world"));
@@ -61,7 +61,7 @@ public class RdfListTest {
         assertEquals(5, list.size());
         assertEquals(new PlainLiteralImpl("hello"), list.get(1));
         assertEquals(new PlainLiteralImpl("interesting"), list.get(2));
-        List<RdfTerm> list2 = new RdfList(new Iri("http://example.org/mytest"), tc);
+        List<RDFTerm> list2 = new RdfList(new IRI("http://example.org/mytest"), tc);
         assertEquals(5, list2.size());
         assertEquals(new PlainLiteralImpl("hello"), list2.get(1));
         assertEquals(new PlainLiteralImpl("interesting"), list2.get(2));
@@ -87,12 +87,12 @@ public class RdfListTest {
     @Test
     public void listCreationAndAccess2() {
         Graph tc = new SimpleGraph();
-        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest"), tc);
+        List<RDFTerm> list = new RdfList(new IRI("http://example.org/mytest"), tc);
         assertEquals(0, list.size());
         list.add(0,new PlainLiteralImpl("world"));
-        list = new RdfList(new Iri("http://example.org/mytest"), tc);
+        list = new RdfList(new IRI("http://example.org/mytest"), tc);
         list.add(0,new PlainLiteralImpl("beautifuly"));
-        list = new RdfList(new Iri("http://example.org/mytest"), tc);
+        list = new RdfList(new IRI("http://example.org/mytest"), tc);
         list.add(0,new PlainLiteralImpl("hello"));
         assertEquals(new PlainLiteralImpl("hello"), list.get(0));
         assertEquals(new PlainLiteralImpl("beautifuly"), list.get(1));
@@ -102,7 +102,7 @@ public class RdfListTest {
     @Test
     public void listCreationAndAccess3() {
         Graph tc = new SimpleGraph();
-        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest"), tc);
+        List<RDFTerm> list = new RdfList(new IRI("http://example.org/mytest"), tc);
         assertEquals(0, list.size());
         BlankNode node0 = new BlankNode() {};
         BlankNode node1 = new BlankNode() {};
@@ -118,7 +118,7 @@ public class RdfListTest {
     @Test
     public void secondButLastElementAccessTest() {
         Graph tc = new SimpleGraph();
-        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest2"), tc);
+        List<RDFTerm> list = new RdfList(new IRI("http://example.org/mytest2"), tc);
         list.add(new PlainLiteralImpl("hello"));
         list.add(new PlainLiteralImpl("world"));
         list.remove(1);
@@ -128,7 +128,7 @@ public class RdfListTest {
     @Test
     public void cleanGraphAfterRemoval() {
         Graph tc = new SimpleGraph();
-        List<RdfTerm> list = new RdfList(new Iri("http://example.org/mytest"), tc);
+        List<RDFTerm> list = new RdfList(new IRI("http://example.org/mytest"), tc);
         list.add(new PlainLiteralImpl("hello"));
         list.add(new PlainLiteralImpl("world"));
         list.remove(1);
@@ -139,8 +139,8 @@ public class RdfListTest {
     @Test
     public void findContainingListNodesAndfindContainingListsTest() {
         Graph tc = new SimpleGraph();
-        GraphNode listA = new GraphNode(new Iri("http:///listA"), tc);
-        GraphNode listB = new GraphNode(new Iri("http:///listB"), tc);
+        GraphNode listA = new GraphNode(new IRI("http:///listA"), tc);
+        GraphNode listB = new GraphNode(new IRI("http:///listB"), tc);
         BlankNode element1 = new BlankNode();
         BlankNode element2 = new BlankNode();
         BlankNode element3 = new BlankNode();

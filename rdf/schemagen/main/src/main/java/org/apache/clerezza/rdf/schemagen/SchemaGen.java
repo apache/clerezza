@@ -35,12 +35,12 @@ import java.util.TreeSet;
 
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.wymiwyg.commons.util.arguments.AnnotatedInterfaceArguments;
@@ -104,7 +104,7 @@ public class SchemaGen {
         Iterator<Triple> ontologyTriples = schemaGraph.filter(null, RDF.type, OWL.Ontology);
         String result;
         if(ontologyTriples.hasNext()) {
-            result = ((Iri) ontologyTriples.next().getSubject()).getUnicodeString();
+            result = ((IRI) ontologyTriples.next().getSubject()).getUnicodeString();
         } else {
             throw new RuntimeException("No OWL Ontology found!");
         }
@@ -133,7 +133,7 @@ public class SchemaGen {
             out.println(';');
         }
         out.println();
-        out.println("import org.apache.clerezza.commons.rdf.Iri;");
+        out.println("import org.apache.clerezza.commons.rdf.IRI;");
         out.println();
         out.print("public class ");
         out.print(getSimpleName());
@@ -188,16 +188,16 @@ public class SchemaGen {
                 out.println(description);
                 out.println("\t */");
             }
-            out.print("\tpublic static final Iri ");
+            out.print("\tpublic static final IRI ");
             out.print(ontologyResource.getLocalName());
-            out.print(" = new Iri(\"");
+            out.print(" = new IRI(\"");
             out.print(ontologyResource.getUriString());
             out.println("\");");
         }
 
     }
 
-    private Collection<OntologyResource> getResourcesOfType(Iri type) {
+    private Collection<OntologyResource> getResourcesOfType(IRI type) {
          return getResourcesOfType(type, null);
     }
 
@@ -207,13 +207,13 @@ public class SchemaGen {
      * @param ignore a set things to ignore
      * @return
      */
-    private Collection<OntologyResource> getResourcesOfType(Iri type, Collection<OntologyResource> ignore) {
+    private Collection<OntologyResource> getResourcesOfType(IRI type, Collection<OntologyResource> ignore) {
         Set<OntologyResource> result = new HashSet<OntologyResource>();
         Iterator<Triple> classStatemente = schemaGraph.filter(null, RDF.type,
                 type);
         while (classStatemente.hasNext()) {
             Triple triple = classStatemente.next();
-            BlankNodeOrIri classResource = triple.getSubject();
+            BlankNodeOrIRI classResource = triple.getSubject();
             if (classResource instanceof BlankNode) {
                 if (type !=null) System.err.println("Ignoring anonymous resource of type " + type.getUnicodeString());
                 else System.err.println("Ignoring anonymous resource");
@@ -224,7 +224,7 @@ public class SchemaGen {
             }
 
             // Test if the given resource belongs to the ontology
-            final Iri classUri = (Iri) classResource;
+            final IRI classUri = (IRI) classResource;
             final String strClassUri = classUri.getUnicodeString();
             if (strClassUri.startsWith(namespace)) {
                 // The remaining part of the class URI must not contain
@@ -248,7 +248,7 @@ public class SchemaGen {
         return result;
     }
 
-    private ImmutableGraph getNodeContext(BlankNodeOrIri resource, Graph graph) {
+    private ImmutableGraph getNodeContext(BlankNodeOrIRI resource, Graph graph) {
         final HashSet<BlankNode> dontExpand = new HashSet<BlankNode>();
         if (resource instanceof BlankNode) {
             dontExpand.add((BlankNode) resource);
@@ -257,14 +257,14 @@ public class SchemaGen {
 
     }
 
-    private Graph getContextOf(BlankNodeOrIri node, Set<BlankNode> dontExpand,
+    private Graph getContextOf(BlankNodeOrIRI node, Set<BlankNode> dontExpand,
             Graph graph) {
         Graph result = new SimpleGraph();
         Iterator<Triple> forwardProperties = graph.filter(node, null, null);
         while (forwardProperties.hasNext()) {
             Triple triple = forwardProperties.next();
             result.add(triple);
-            RdfTerm object = triple.getObject();
+            RDFTerm object = triple.getObject();
             if (object instanceof BlankNode) {
                 BlankNode bNodeObject = (BlankNode) object;
                 if (!dontExpand.contains(bNodeObject)) {
@@ -277,7 +277,7 @@ public class SchemaGen {
         while (backwardProperties.hasNext()) {
             Triple triple = backwardProperties.next();
             result.add(triple);
-            BlankNodeOrIri subject = triple.getSubject();
+            BlankNodeOrIRI subject = triple.getSubject();
             if (subject instanceof BlankNode) {
                 BlankNode bNodeSubject = (BlankNode) subject;
                 if (!dontExpand.contains(bNodeSubject)) {
@@ -309,7 +309,7 @@ public class SchemaGen {
             Comparable<OntologyResource> {
 
         final Graph graph;
-        final Iri uri;
+        final IRI uri;
 
         static final List<String> reservedWords = Arrays.asList(
                 "abstract", "assert", "boolean", "break", "byte", "case",
@@ -322,7 +322,7 @@ public class SchemaGen {
                 "synchronized", "this", "throw", "throws", "transient",
                 "true", "try", "void", "volatile", "while");
 
-        OntologyResource(Iri uri, Graph graph) {
+        OntologyResource(IRI uri, Graph graph) {
             this.uri = uri;
             this.graph = graph;
         }
@@ -348,7 +348,7 @@ public class SchemaGen {
             Iterator<Triple> titleStatements = graph.filter(
                     uri, DCTERMS.title, null);
             while (titleStatements.hasNext()) {
-                RdfTerm object = titleStatements.next().getObject();
+                RDFTerm object = titleStatements.next().getObject();
                 if (object instanceof Literal) {
                     result.append("title: ");
                     result.append (((Literal) object).getLexicalForm());
@@ -358,7 +358,7 @@ public class SchemaGen {
             Iterator<Triple> descriptionStatements = graph.filter(
                     uri, DCTERMS.description, null);
             while (descriptionStatements.hasNext()) {
-                RdfTerm object = descriptionStatements.next().getObject();
+                RDFTerm object = descriptionStatements.next().getObject();
                 if (object instanceof Literal) {
                     result.append("description: ");
                     result.append (((Literal) object).getLexicalForm());
@@ -368,7 +368,7 @@ public class SchemaGen {
             Iterator<Triple> skosDefStatements = graph.filter(
                     uri, SKOS.definition, null);
             while (skosDefStatements.hasNext()) {
-                RdfTerm object = skosDefStatements.next().getObject();
+                RDFTerm object = skosDefStatements.next().getObject();
                 if (object instanceof Literal) {
                     result.append("definition: ");
                     result.append (((Literal) object).getLexicalForm());
@@ -378,7 +378,7 @@ public class SchemaGen {
             Iterator<Triple> rdfsCommentStatements = graph.filter(
                     uri, RDFS.comment, null);
             while (rdfsCommentStatements.hasNext()) {
-                RdfTerm object = rdfsCommentStatements.next().getObject();
+                RDFTerm object = rdfsCommentStatements.next().getObject();
                 if (object instanceof Literal) {
                     result.append("comment: ");
                     result.append(((Literal) object).getLexicalForm());
@@ -388,7 +388,7 @@ public class SchemaGen {
             Iterator<Triple> skosNoteStatements = graph.filter(
                     uri, SKOS.note, null);
             while (skosNoteStatements.hasNext()) {
-                RdfTerm object = skosNoteStatements.next().getObject();
+                RDFTerm object = skosNoteStatements.next().getObject();
                 if (object instanceof Literal) {
                     result.append("note: ");
                     result.append (((Literal) object).getLexicalForm());
@@ -398,13 +398,13 @@ public class SchemaGen {
             Iterator<Triple> skosExampleStatements = graph.filter(
                     uri, SKOS.example, null);
             while (skosExampleStatements.hasNext()) {
-                RdfTerm object = skosExampleStatements.next().getObject();
+                RDFTerm object = skosExampleStatements.next().getObject();
                 if (object instanceof Literal) {
                     result.append("example: ");
                     result.append (((Literal) object).getLexicalForm());
                     result.append("\n");
-                } else if (object instanceof Iri) {
-                    result.append("see <a href="+((Iri)object).getUnicodeString()+">example</a>");
+                } else if (object instanceof IRI) {
+                    result.append("see <a href="+((IRI)object).getUnicodeString()+">example</a>");
                     result.append("\n");
                 }
             }
@@ -444,13 +444,13 @@ public class SchemaGen {
 
 
         private static final String NS = "http://www.w3.org/2002/07/owl#";
-        private static final Iri Class =
-                new Iri(NS + "Class");
-        public static final RdfTerm Ontology = new Iri(NS + "Ontology");
-        private static final Iri DatatypeProperty =
-                new Iri(NS + "DatatypeProperty");
-        private static final Iri ObjectProperty =
-                new Iri(NS + "ObjectProperty");
+        private static final IRI Class =
+                new IRI(NS + "Class");
+        public static final RDFTerm Ontology = new IRI(NS + "Ontology");
+        private static final IRI DatatypeProperty =
+                new IRI(NS + "DatatypeProperty");
+        private static final IRI ObjectProperty =
+                new IRI(NS + "ObjectProperty");
     }
 
     /** RDFS Ontology. */
@@ -458,9 +458,9 @@ public class SchemaGen {
 
         private static final String NS =
                 "http://www.w3.org/2000/01/rdf-schema#";
-        private static final Iri Class = new Iri(NS + "Class");
-        private static final Iri Datatype = new Iri(NS + "Datatype");
-        private static final Iri comment = new Iri(NS + "comment");
+        private static final IRI Class = new IRI(NS + "Class");
+        private static final IRI Datatype = new IRI(NS + "Datatype");
+        private static final IRI comment = new IRI(NS + "comment");
     }
 
     /** RDF Ontology. */
@@ -468,19 +468,19 @@ public class SchemaGen {
 
         private static final String NS =
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-        private static final Iri Property = new Iri(NS + "Property");
-        private static final Iri type = new Iri(NS + "type");
+        private static final IRI Property = new IRI(NS + "Property");
+        private static final IRI type = new IRI(NS + "type");
     }
 
     private static class SKOS {
-        static final Iri definition = new Iri("http://www.w3.org/2008/05/skos#definition");
-        static final Iri note = new Iri("http://www.w3.org/2004/02/skos/core#note");
-        static final Iri example = new Iri("http://www.w3.org/2004/02/skos/core#example");
+        static final IRI definition = new IRI("http://www.w3.org/2008/05/skos#definition");
+        static final IRI note = new IRI("http://www.w3.org/2004/02/skos/core#note");
+        static final IRI example = new IRI("http://www.w3.org/2004/02/skos/core#example");
     }
 
     private static class DCTERMS {
-        public static final Iri title = new Iri("http://purl.org/dc/terms/title");
-        public static final Iri description = new Iri("http://purl.org/dc/terms/description");
+        public static final IRI title = new IRI("http://purl.org/dc/terms/title");
+        public static final IRI description = new IRI("http://purl.org/dc/terms/description");
 
     }
 }

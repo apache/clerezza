@@ -27,7 +27,7 @@ import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.templating.RenderingFunction;
 
 /**
@@ -105,7 +105,7 @@ public class WebRenderingFunctionsTest {
                 null, null, null, null);
         RenderingFunction<Object, Boolean> function = webRenderingFunctions
                 .getNamedFunctions().get("contains");
-        Iri testObject = new Iri("http://example.org/bla#fooBar");
+        IRI testObject = new IRI("http://example.org/bla#fooBar");
         Assert.assertTrue(function.process(testObject, "bla"));
         Assert.assertFalse(function.process(testObject, "hello"));
     }

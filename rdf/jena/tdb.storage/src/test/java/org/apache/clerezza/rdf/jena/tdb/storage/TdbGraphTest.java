@@ -29,7 +29,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.test.GraphTest;
 import org.apache.clerezza.commons.rdf.Literal;
@@ -42,7 +42,7 @@ import org.junit.Test;
  */
 public class TdbGraphTest extends GraphTest {
     private static File tempFile;
-    final private Iri MGRAPHNAME = new Iri("http://text.example.org/");
+    final private IRI MGRAPHNAME = new IRI("http://text.example.org/");
     static private TdbTcProvider tdbTcProvider;
 
     @BeforeClass
@@ -78,7 +78,7 @@ public class TdbGraphTest extends GraphTest {
         Date date = new Date(0);
         LiteralFactory literalFactory = LiteralFactory.getInstance();
         Literal dateLiteral = literalFactory.createTypedLiteral(date);
-        Triple triple = new TripleImpl(new BlankNode(), new Iri("http://example.com/property"), dateLiteral);
+        Triple triple = new TripleImpl(new BlankNode(), new IRI("http://example.com/property"), dateLiteral);
         graph.add(triple);
         Assert.assertTrue(graph.contains(triple));
     }
@@ -90,7 +90,7 @@ public class TdbGraphTest extends GraphTest {
         LiteralFactory literalFactory = LiteralFactory.getInstance();
         Literal dateLiteral = literalFactory.createTypedLiteral(date);
         System.out.println(dateLiteral);
-        Iri property = new Iri("http://example.com/property");
+        IRI property = new IRI("http://example.com/property");
         Triple triple = new TripleImpl(new BlankNode(), property, dateLiteral);
         graph.add(triple);
 

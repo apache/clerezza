@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.sparql.update.impl;
 
 import java.util.Set;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
 
 /**
@@ -44,14 +44,14 @@ public class SimpleUpdateOperation extends BaseUpdateOperation {
         return silent;
     }
 
-    public void setInputGraph(Iri source) {
+    public void setInputGraph(IRI source) {
         inputGraphSpec = UpdateOperation.GraphSpec.GRAPH;
         inputGraphs.clear();
         inputGraphs.add(source);
     }
 
-    public Iri getInputGraph(Iri defaultGraph) {
-        Set<Iri> result = getInputGraphs(defaultGraph, null);
+    public IRI getInputGraph(IRI defaultGraph) {
+        Set<IRI> result = getInputGraphs(defaultGraph, null);
         if (result.isEmpty()) {
             return null;
         } else {
@@ -59,14 +59,14 @@ public class SimpleUpdateOperation extends BaseUpdateOperation {
         }
     }
 
-    public void setDestinationGraph(Iri destination) {
+    public void setDestinationGraph(IRI destination) {
         destinationGraphSpec = UpdateOperation.GraphSpec.GRAPH;
         destinationGraphs.clear();
         destinationGraphs.add(destination);
     }
 
-    public Iri getDestinationGraph(Iri defaultGraph) {
-        Set<Iri> result = getDestinationGraphs(defaultGraph, null);
+    public IRI getDestinationGraph(IRI defaultGraph) {
+        Set<IRI> result = getDestinationGraphs(defaultGraph, null);
         if (result.isEmpty()) {
             return null;
         } else {

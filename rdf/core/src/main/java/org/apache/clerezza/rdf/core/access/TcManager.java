@@ -33,7 +33,7 @@ import java.util.TreeSet;
 
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedGraph;
@@ -118,8 +118,8 @@ public class TcManager extends TcProviderMultiplexer {
         }
             
     };
-    private Map<Iri, ServiceRegistration> serviceRegistrations = Collections
-            .synchronizedMap(new HashMap<Iri, ServiceRegistration>());
+    private Map<IRI, ServiceRegistration> serviceRegistrations = Collections
+            .synchronizedMap(new HashMap<IRI, ServiceRegistration>());
     
     protected QueryEngine queryEngine;
     private boolean isActivated = false;
@@ -206,13 +206,13 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException {
         tcAccessController.checkReadPermission(name);
         return super.getImmutableGraph(name);
     }
 
     @Override
-    public Graph getMGraph(Iri name) {
+    public Graph getMGraph(IRI name) {
         try {
             tcAccessController.checkReadWritePermission(name);
         } catch (AccessControlException e) {
@@ -223,7 +223,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public Graph getGraph(Iri name) {
+    public Graph getGraph(IRI name) {
         try {
             tcAccessController.checkReadWritePermission(name);
         } catch (AccessControlException e) {
@@ -235,54 +235,54 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    public Graph createGraph(Iri name)
+    public Graph createGraph(IRI name)
             throws UnsupportedOperationException {
         tcAccessController.checkReadWritePermission(name);
         return super.createGraph(name);
     }
 
     @Override
-    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) {
+    public ImmutableGraph createImmutableGraph(IRI name, Graph triples) {
         tcAccessController.checkReadWritePermission(name);
         return super.createImmutableGraph(name, triples);
     }
 
     @Override
-    public void deleteGraph(Iri name) {
+    public void deleteGraph(IRI name) {
         tcAccessController.checkReadWritePermission(name);
         super.deleteGraph(name);
     }
 
     @Override
-    public Set<Iri> getNames(ImmutableGraph ImmutableGraph) {
+    public Set<IRI> getNames(ImmutableGraph ImmutableGraph) {
         return super.getNames(ImmutableGraph);
     }
 
     @Override
-    public Set<Iri> listGraphs() {
-        Set<Iri> result = super.listGraphs();
+    public Set<IRI> listGraphs() {
+        Set<IRI> result = super.listGraphs();
         return excludeNonReadable(result);
     }
 
     @Override
-    public Set<Iri> listMGraphs() {
-        Set<Iri> result = super.listMGraphs();
+    public Set<IRI> listMGraphs() {
+        Set<IRI> result = super.listMGraphs();
         return excludeNonReadable(result);
     }
 
     @Override
-    public Set<Iri> listImmutableGraphs() {
-        Set<Iri> result = super.listImmutableGraphs();
+    public Set<IRI> listImmutableGraphs() {
+        Set<IRI> result = super.listImmutableGraphs();
         return excludeNonReadable(result);
     }
 
-    private Set<Iri> excludeNonReadable(Set<Iri> tcNames) {
+    private Set<IRI> excludeNonReadable(Set<IRI> tcNames) {
         SecurityManager security = System.getSecurityManager();
         if (security == null) {
             return tcNames;
         }
-        Set<Iri> result = new HashSet<Iri>();
-        for (Iri name : tcNames) {
+        Set<IRI> result = new HashSet<IRI>();
+        for (IRI name : tcNames) {
             try {
                 tcAccessController.checkReadPermission(name);
             } catch (AccessControlException e) {
@@ -306,9 +306,9 @@ public class TcManager extends TcProviderMultiplexer {
     public Object executeSparqlQuery(String query, Graph defaultGraph) throws ParseException {
         TcProvider singleTargetTcProvider = null;
 
-        final Iri defaultGraphName = new Iri("urn:x-temp:/kjsfadfhfasdffds");
+        final IRI defaultGraphName = new IRI("urn:x-temp:/kjsfadfhfasdffds");
         final SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
-        final Set<Iri> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+        final Set<IRI> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
         if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
             singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
         }
@@ -337,9 +337,9 @@ public class TcManager extends TcProviderMultiplexer {
     	if (forceFastlane) {
             singleTargetTcProvider = getSingleTargetTcProvider(Collections.EMPTY_SET);
     	} else {    	
-	        final Iri defaultGraphName = new Iri("urn:x-temp:/kjsfadfhfasdffds");
+	        final IRI defaultGraphName = new IRI("urn:x-temp:/kjsfadfhfasdffds");
 	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
-	        final Set<Iri> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+	        final Set<IRI> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
 	        if ((referencedGraphs != null) && (!referencedGraphs.contains(defaultGraphName))) {
 	            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
 	        }
@@ -365,7 +365,7 @@ public class TcManager extends TcProviderMultiplexer {
      * @param defaultGraphName the ImmutableGraph to be used as default ImmutableGraph in the Sparql ImmutableGraph Store
      * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */
-    public Object executeSparqlQuery(String query, Iri defaultGraphName) throws ParseException {
+    public Object executeSparqlQuery(String query, IRI defaultGraphName) throws ParseException {
       return executeSparqlQuery(query, defaultGraphName, false);
     }
 
@@ -379,13 +379,13 @@ public class TcManager extends TcProviderMultiplexer {
      * @param forceFastlane indicate whether to force fastlane usage.
      * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */
-    public Object executeSparqlQuery(String query, Iri defaultGraphName, boolean forceFastlane) throws ParseException {
+    public Object executeSparqlQuery(String query, IRI defaultGraphName, boolean forceFastlane) throws ParseException {
         TcProvider singleTargetTcProvider = null;
     	if (forceFastlane) {
             singleTargetTcProvider = getSingleTargetTcProvider(Collections.singleton(defaultGraphName));
     	} else {    	
 	        SparqlPreParser sparqlPreParser = new SparqlPreParser(this);
-	        final Set<Iri> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
+	        final Set<IRI> referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
 	        if ((referencedGraphs != null)) {
 	            singleTargetTcProvider = getSingleTargetTcProvider(referencedGraphs);
 	        }
@@ -552,7 +552,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    protected void mGraphAppears(Iri name) {
+    protected void mGraphAppears(IRI name) {
     	if (isTcServicesEnabled()) {
     		// Only create the service when activated. When not activated
     		// creating will be delayed till after activation.
@@ -563,7 +563,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    protected void graphAppears(Iri name) {
+    protected void graphAppears(IRI name) {
     	if (isTcServicesEnabled()) {
     		// Only create the service when activated. When not activated
     		// creating will be delayed till after activation.
@@ -573,7 +573,7 @@ public class TcManager extends TcProviderMultiplexer {
     	}
     }
 
-    private void registerGraphAsService(Iri name, boolean isMGraph) {
+    private void registerGraphAsService(IRI name, boolean isMGraph) {
         Dictionary<String,Object> props = new Hashtable<String, Object>();
         props.put("name", name.getUnicodeString());
         String[] interfaceNames;
@@ -597,7 +597,7 @@ public class TcManager extends TcProviderMultiplexer {
     }
 
     @Override
-    protected void tcDisappears(Iri name) {
+    protected void tcDisappears(IRI name) {
         ServiceRegistration reg = serviceRegistrations.get(name);
         if (reg != null) {
             reg.unregister();
@@ -605,15 +605,15 @@ public class TcManager extends TcProviderMultiplexer {
         }
     }
 
-    private TcProvider getSingleTargetTcProvider(final Set<Iri> referencedGraphs) {
+    private TcProvider getSingleTargetTcProvider(final Set<IRI> referencedGraphs) {
         TcProvider singleTargetTcProvider = null;
         for (WeightedTcProvider provider : providerList) {
-            final Set<Iri> providerGraphs = provider.listGraphs();
+            final Set<IRI> providerGraphs = provider.listGraphs();
             if (providerGraphs.containsAll(referencedGraphs)) {
                singleTargetTcProvider = provider;
                break; //success
             }
-            for (Iri graphName : referencedGraphs) {
+            for (IRI graphName : referencedGraphs) {
                 if (providerGraphs.contains(graphName)) {
                     break; //failure
                 }

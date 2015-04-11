@@ -23,7 +23,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import org.apache.clerezza.platform.typerendering.ontologies.TYPERENDERING;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -53,7 +53,7 @@ public class RenderingException extends TypeRenderingException {
     public GraphNode getExceptionGraphNode() {
         GraphNode result = new GraphNode(new BlankNode(), new SimpleGraph());
         result.addProperty(RDF.type, TYPERENDERING.Exception);
-        result.addProperty(TYPERENDERING.errorSource, new Iri(renderingSpecification.toString()));
+        result.addProperty(TYPERENDERING.errorSource, new IRI(renderingSpecification.toString()));
         result.addProperty(TYPERENDERING.message, new PlainLiteralImpl(getMessage()));
         result.addProperty(TYPERENDERING.stackTrace, getStackTraceLiteral());
         return result;

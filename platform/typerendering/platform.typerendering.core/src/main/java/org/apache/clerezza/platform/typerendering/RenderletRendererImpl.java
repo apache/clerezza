@@ -28,7 +28,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.osgi.framework.BundleContext;
 import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
@@ -52,7 +52,7 @@ class RenderletRendererImpl implements Renderer {
     private GraphNodeProvider graphNodeProvider;
 
 
-    RenderletRendererImpl(Iri renderingSpecification, org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider graphNodeProvider,
+    RenderletRendererImpl(IRI renderingSpecification, org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider graphNodeProvider,
             Renderlet renderlet, MediaType mediaType, 
             RendererFactory rendererFactory,
             BundleContext bundleContext) {

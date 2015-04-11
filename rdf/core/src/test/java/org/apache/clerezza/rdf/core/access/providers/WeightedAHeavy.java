@@ -25,7 +25,7 @@ import java.util.Set;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
@@ -46,7 +46,7 @@ public class WeightedAHeavy implements WeightedTcProvider {
     }
 
     @Override
-    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException {
         if (name.equals(TcManagerTest.uriRefA)) {
             Graph mResult = new SimpleGraph();
             mResult.add(new TripleImpl(TcManagerTest.uriRefAHeavy, 
@@ -57,47 +57,47 @@ public class WeightedAHeavy implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getMGraph(Iri name) throws NoSuchEntityException {
+    public Graph getMGraph(IRI name) throws NoSuchEntityException {
         throw new NoSuchEntityException(name);
     }
 
     @Override
-    public Graph getGraph(Iri name) throws NoSuchEntityException {
+    public Graph getGraph(IRI name) throws NoSuchEntityException {
         return getImmutableGraph(name);
     }
 
     @Override
-    public Graph createGraph(Iri name) {
+    public Graph createGraph(IRI name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) {
+    public ImmutableGraph createImmutableGraph(IRI name, Graph triples) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void deleteGraph(Iri name) throws NoSuchEntityException, 
+    public void deleteGraph(IRI name) throws NoSuchEntityException, 
             EntityUndeletableException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<Iri> getNames(ImmutableGraph ImmutableGraph) {
+    public Set<IRI> getNames(ImmutableGraph ImmutableGraph) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     @Override
-    public Set<Iri> listGraphs() {
+    public Set<IRI> listGraphs() {
         return Collections.singleton(TcManagerTest.uriRefA);
     }
 
     @Override
-    public Set<Iri> listMGraphs() {
-        return new HashSet<Iri>();
+    public Set<IRI> listMGraphs() {
+        return new HashSet<IRI>();
     }
 
     @Override
-    public Set<Iri> listImmutableGraphs() {
+    public Set<IRI> listImmutableGraphs() {
         return listGraphs();
     }
 }

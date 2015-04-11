@@ -1,6 +1,6 @@
 package org.apache.clerezza.rdf.jena.tdb.internals;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * Provides static methods in order to represent classes used to
@@ -11,12 +11,12 @@ import org.apache.clerezza.commons.rdf.Iri;
  */
 public class Symbols {
 
-    public static Iri Index = new Iri("http://clerezza.apache.org/storage/Index");
+    public static IRI Index = new IRI("http://clerezza.apache.org/storage/Index");
 
-    public static Iri Default = new Iri("http://clerezza.apache.org/storage/Default");
+    public static IRI Default = new IRI("http://clerezza.apache.org/storage/Default");
     
-    public static Iri ImmutableGraph = new Iri("http://clerezza.apache.org/storage/ImmutableGraph");
+    public static IRI ImmutableGraph = new IRI("http://clerezza.apache.org/storage/ImmutableGraph");
 
-    public static Iri Graph = new Iri("http://clerezza.apache.org/storage/Graph");
+    public static IRI Graph = new IRI("http://clerezza.apache.org/storage/Graph");
 
 }

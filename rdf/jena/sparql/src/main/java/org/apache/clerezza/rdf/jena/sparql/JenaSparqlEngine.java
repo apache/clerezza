@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.sparql.ParseException;
 import org.apache.clerezza.rdf.core.sparql.SparqlPreParser;
 import org.apache.clerezza.commons.rdf.Graph;
@@ -67,14 +67,14 @@ public class JenaSparqlEngine implements QueryEngine {
     public Object execute(TcManager tcManager, Graph defaultGraph,
             final String query) {
         final SparqlPreParser sparqlPreParser = new SparqlPreParser(tcManager);
-        final Iri defaultGraphName = new Iri("http://fake-default.uri/879872");
-        Set<Iri> referencedGraphs;
+        final IRI defaultGraphName = new IRI("http://fake-default.uri/879872");
+        Set<IRI> referencedGraphs;
         try {
             referencedGraphs = sparqlPreParser.getReferredGraphs(query, defaultGraphName);
         } catch (ParseException ex) {
             throw new RuntimeException(ex);
         }
-        Set<Iri> graphsToLock = referencedGraphs != null ? referencedGraphs : tcManager.listGraphs();
+        Set<IRI> graphsToLock = referencedGraphs != null ? referencedGraphs : tcManager.listGraphs();
         final DatasetGraph datasetGraph = new TcDatasetGraph(tcManager, defaultGraph);
         final Dataset dataset = DatasetFactory.create(datasetGraph);
 
@@ -108,7 +108,7 @@ public class JenaSparqlEngine implements QueryEngine {
             return executeUpdate(dataset, query);
         }
         List<Lock> locks = new ArrayList<Lock>(graphsToLock.size());
-        for (Iri uriRef : graphsToLock) {
+        for (IRI uriRef : graphsToLock) {
             Graph tc;
             if (uriRef.equals(defaultGraphName)) {
                 tc = defaultGraph;

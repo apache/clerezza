@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedDummy;
 import org.apache.clerezza.rdf.core.access.security.TcPermission;
@@ -57,8 +57,8 @@ public class SecurityTest {
         ////needed to unbind because this is injected with META-INF/services - file
         TcManager.getInstance().unbindWeightedTcProvider(new WeightedA());
         TcManager.getInstance().bindWeightedTcProvider(new WeightedDummy());
-        TcManager.getInstance().createGraph(new Iri("http://example.org/ImmutableGraph/alreadyexists"));
-        TcManager.getInstance().createGraph(new Iri("http://example.org/read/ImmutableGraph"));
+        TcManager.getInstance().createGraph(new IRI("http://example.org/ImmutableGraph/alreadyexists"));
+        TcManager.getInstance().createGraph(new IRI("http://example.org/read/ImmutableGraph"));
     }
 
     @AfterClass
@@ -112,69 +112,69 @@ public class SecurityTest {
 
     @Test(expected=NoSuchEntityException.class)
     public void testAcessGraph() {        
-        TcManager.getInstance().getImmutableGraph(new Iri("http://example.org/permitted"));
+        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted"));
     }
     
     @Test(expected=AccessControlException.class)
     public void testNoWildCard() {
-        TcManager.getInstance().getImmutableGraph(new Iri("http://example.org/permitted/subthing"));
+        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted/subthing"));
     }
     
     @Test(expected=NoSuchEntityException.class)
     public void testAllowedArea() {
-        TcManager.getInstance().getImmutableGraph(new Iri("http://example.org/area/allowed/something"));
+        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/area/allowed/something"));
     }
     
     @Test(expected=AccessControlException.class)
     public void testAcessForbiddenGraph() {
-        TcManager.getInstance().getImmutableGraph(new Iri("http://example.org/forbidden"));
+        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/forbidden"));
     }
 
     @Test(expected=NoSuchEntityException.class)
     public void testCustomPermissions() {
-        Iri graphUri = new Iri("http://example.org/custom");
+        IRI graphUri = new IRI("http://example.org/custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        Graph ag = TcManager.getInstance().getGraph(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
+        Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
         TcManager.getInstance().getMGraph(graphUri);
     }
 
     @Test(expected=AccessControlException.class)
     public void testCustomPermissionsIncorrect() {
-        Iri graphUri = new Iri("http://example.org/custom");
+        IRI graphUri = new IRI("http://example.org/custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        Graph ag = TcManager.getInstance().getGraph(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
+        Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
         TcManager.getInstance().createGraph(graphUri);
     }
 
     @Test
     public void testCustomReadWritePermissions() {
-        Iri graphUri = new Iri("http://example.org/read-write-custom");
+        IRI graphUri = new IRI("http://example.org/read-write-custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadWritePermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
-        Graph ag = TcManager.getInstance().getGraph(new Iri("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
+        Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph"));
         System.out.print(ag.toString());
         TcManager.getInstance().createGraph(graphUri);
     }
     
     @Test(expected=EntityAlreadyExistsException.class)
     public void testCreateMGraph() {
-        TcManager.getInstance().createGraph(new Iri("http://example.org/ImmutableGraph/alreadyexists"));
+        TcManager.getInstance().createGraph(new IRI("http://example.org/ImmutableGraph/alreadyexists"));
     }
     @Test(expected=AccessControlException.class)
     public void testCreateMGraphWithoutWritePermission() {
-        TcManager.getInstance().createGraph(new Iri("http://example.org/read/ImmutableGraph"));
+        TcManager.getInstance().createGraph(new IRI("http://example.org/read/ImmutableGraph"));
     }
     @Test(expected=ReadOnlyException.class)
     public void testAddTripleToMGraph() {
-        Graph graph = TcManager.getInstance().getMGraph(new Iri("http://example.org/read/ImmutableGraph"));
-        Triple triple = new TripleImpl(new Iri("http://example.org/definition/isNonLiteral"), new Iri("http://example.org/definition/isTest"), new PlainLiteralImpl("test"));
+        Graph graph = TcManager.getInstance().getMGraph(new IRI("http://example.org/read/ImmutableGraph"));
+        Triple triple = new TripleImpl(new IRI("http://example.org/definition/isNonLiteral"), new IRI("http://example.org/definition/isTest"), new PlainLiteralImpl("test"));
         graph.add(triple);
     }
 }

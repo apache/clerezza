@@ -33,7 +33,7 @@ import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.TcProvider;
@@ -63,24 +63,24 @@ public class BackupAndRestoreTest {
     private static String testGraphFileName = "test.graph";
 
     private static Graph testGraph0 = new SimpleGraph();
-    private static Iri testGraphUri0 = // the URI of testGraph0
-            new Iri("http://localhost/test0/"+testGraphFileName);
+    private static IRI testGraphUri0 = // the URI of testGraph0
+            new IRI("http://localhost/test0/"+testGraphFileName);
     // a resource in testGraph0
-    private    static Iri uri0 = new Iri("http://localhost/test0/testuri");
+    private    static IRI uri0 = new IRI("http://localhost/test0/testuri");
 
     private static Graph testGraph1 = new SimpleGraph();
-    private static Iri testGraphUri1 = // the URI of testGraph1
-            new Iri("http://localhost/test1/"+testGraphFileName);
+    private static IRI testGraphUri1 = // the URI of testGraph1
+            new IRI("http://localhost/test1/"+testGraphFileName);
 
     // a resource in testGraph1
-    private    static Iri uri1 = new Iri("http://localhost/test1/testuri");
+    private    static IRI uri1 = new IRI("http://localhost/test1/testuri");
 
     private static ImmutableGraph testGraphA;
-    private static Iri testGraphUriA = // the URI of testGraphA
-            new Iri("http://localhost/testA/"+testGraphFileName);
+    private static IRI testGraphUriA = // the URI of testGraphA
+            new IRI("http://localhost/testA/"+testGraphFileName);
 
     // a resource in testGraphA
-    private    static Iri uriA = new Iri("http://localhost/testA/testuri");
+    private    static IRI uriA = new IRI("http://localhost/testA/testuri");
     
 
     private static String backupContentFileName = "triplecollections.nt";
@@ -227,7 +227,7 @@ public class BackupAndRestoreTest {
 
         // Associates testGraphUri0 with testGraph0 and testGraphUri1 with testGraph1
         @Override
-        public Graph getGraph(Iri name) throws NoSuchEntityException {
+        public Graph getGraph(IRI name) throws NoSuchEntityException {
             if (name.equals(testGraphUri0)) {
                 return testGraph0;
             } else if (name.equals(testGraphUri1)) {
@@ -239,8 +239,8 @@ public class BackupAndRestoreTest {
         }
 
         @Override
-        public Set<Iri> listGraphs() {
-            Set<Iri> result = new HashSet<Iri>();
+        public Set<IRI> listGraphs() {
+            Set<IRI> result = new HashSet<IRI>();
             result.add(testGraphUri0);
             result.add(testGraphUri1);
             result.add(testGraphUriA);

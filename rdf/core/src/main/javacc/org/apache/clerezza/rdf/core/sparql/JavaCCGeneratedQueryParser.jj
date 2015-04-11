@@ -42,8 +42,8 @@ import java.util.regex.Pattern;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Language;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
@@ -81,14 +81,14 @@ import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleTriplePattern;
  */
 class JavaCCGeneratedQueryParser {
 
-	private static final Iri RDF_TYPE =
-		new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-	private static final Iri RDF_FIRST =
-		new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
-	private static final Iri RDF_REST =
-		new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
-	private static final Iri RDF_NIL =
-		new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
+	private static final IRI RDF_TYPE =
+		new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+	private static final IRI RDF_FIRST =
+		new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
+	private static final IRI RDF_REST =
+		new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
+	private static final IRI RDF_NIL =
+		new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
 
 	/** A RegEx pattern for separating out a namespace from a prefixed name. */
 	private static final Pattern pfxNamePattern = Pattern.compile("([^:]*):(.*)");
@@ -200,16 +200,16 @@ class JavaCCGeneratedQueryParser {
 		return bNode;
 	}
 
-	private Iri createUriRef(String r) throws ParseException {
+	private IRI createUriRef(String r) throws ParseException {
 		// Create an IRI directly if the string does not start with a prefix
 		Matcher m = pfxNamePattern.matcher(r);
 		if (!m.matches()) {
 			// either a normal IRI, or one with a BASE
-			return isRelative(r) ? new Iri(base + r) : new Iri(r);
+			return isRelative(r) ? new IRI(base + r) : new IRI(r);
 		}
 		// extract the prefix, and attempt to convert to a URI before creating the reference
 		String ns = prefixes.get(m.group(1));
-		return ns == null ? new Iri(r) : new Iri(ns + m.group(2));
+		return ns == null ? new IRI(r) : new IRI(ns + m.group(2));
 	}
 
 	/**
@@ -386,7 +386,7 @@ private void DatasetClause() : {} {
 
 /* [10]    DefaultGraphClause    ::=    SourceSelector */
 private void DefaultGraphClause() : {
-	Iri defaultGraph; } {
+	IRI defaultGraph; } {
 
 	defaultGraph=SourceSelector() {
 	((SimpleQuery) query).addDefaultGraph(defaultGraph); }
@@ -394,15 +394,15 @@ private void DefaultGraphClause() : {
 
 /* [11]    NamedGraphClause    ::=    'NAMED' SourceSelector */
 private void NamedGraphClause() : {
-	Iri namedGraph; } {
+	IRI namedGraph; } {
 
 	<NAMED> namedGraph=SourceSelector() {
 	((SimpleQuery) query).addNamedGraph(namedGraph); }
 }
 
 /* [12]    SourceSelector    ::=    IRIref */
-private Iri SourceSelector() : {
-	Iri graph; } {
+private IRI SourceSelector() : {
+	IRI graph; } {
 
 	graph=IRIref() {
 	return graph; }
@@ -572,7 +572,7 @@ private Expression Constraint() : {
 
 /* [28]    FunctionCall    ::=    IRIref ArgList */
 private FunctionCall FunctionCall() : {
-	Iri name;
+	IRI name;
 	List<Expression> arguments;} {
 
 	name=IRIref()
@@ -761,14 +761,14 @@ private ResourceOrVariable VarOrTerm() : {
 /* [43]    VarOrIRIref    ::=    Var | IRIref */
 private UriRefOrVariable VarOrIRIref() : {
 	Variable var;
-	Iri Iri; } {
+	IRI IRI; } {
 
 	(
 	var=Var() {
 	return new UriRefOrVariable(var); }
 	|
-	Iri=IRIref() {
-	return new UriRefOrVariable(Iri); }
+	IRI=IRIref() {
+	return new UriRefOrVariable(IRI); }
 	)
 }
 
@@ -783,7 +783,7 @@ private Variable Var() : {
 /* [45]    GraphTerm    ::=    IRIref |  RDFLiteral |  NumericLiteral |  BooleanLiteral |  BlankNode |  NIL */
 private ResourceOrVariable GraphTerm() : {
 	ResourceOrVariable bNode = null;
-	RdfTerm r = null; } {
+	RDFTerm r = null; } {
 
 	(r=IRIref() | r=RDFLiteral() | r=NumericLiteral() | r=BooleanLiteral() | bNode=BlankNode() | <NIL> {
 		r = RDF_NIL; }) {
@@ -1046,22 +1046,22 @@ private BuiltInCall RegexExpression() : {
 
 /* [59]    IRIrefOrFunction    ::=    IRIref ArgList? */
 private Expression IRIrefOrFunction() : {
-	Iri Iri;
+	IRI IRI;
 	List<Expression> args; } {
 
-	Iri=IRIref()
+	IRI=IRIref()
 	(
 		args=ArgList() {
-		return new FunctionCall(Iri, args); }
+		return new FunctionCall(IRI, args); }
 	)? {
-	return new UriRefExpression(Iri); }
+	return new UriRefExpression(IRI); }
 }
 
 /* [60]    RDFLiteral    ::=    String ( LANGTAG | ( '^^' IRIref ) )? */
 private Literal RDFLiteral() : {
 	Token t;
 	String s;
-	Iri type; } {
+	IRI type; } {
 
 	s = String()
 	(
@@ -1143,19 +1143,19 @@ private String String() : {
 }
 
 /* [67]    IRIref    ::=    IRI_REF |  PrefixedName */
-private Iri IRIref() : {
-	Iri Iri;
+private IRI IRIref() : {
+	IRI IRI;
 	Token t; } {
 
 	t=<IRI_REF> {
 	return createUriRef(unquote(t.image)); }
 	|
-	Iri=PrefixedName() {
-	return Iri; }
+	IRI=PrefixedName() {
+	return IRI; }
 }
 
 /* [68]    PrefixedName    ::=    PNAME_LN | PNAME_NS */
-private Iri PrefixedName() : {
+private IRI PrefixedName() : {
 	Token t; } {
 
 	( t=<PNAME_LN> | t=<PNAME_NS> ) {

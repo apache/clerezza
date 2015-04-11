@@ -31,8 +31,8 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
 import org.apache.clerezza.platform.typehandlerspace.TypeHandlerDiscovery;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.felix.scr.annotations.Component;
@@ -89,13 +89,13 @@ public class TypeHandlerSpace {
     }
 
     private Object getTypeHandler(String absoluteUriPath) {
-        Iri uri = new Iri(absoluteUriPath);
+        IRI uri = new IRI(absoluteUriPath);
         if (gnp.existsLocal(uri)) {
             GraphNode node = gnp.getLocal(uri);
             Lock lock =node.readLock();
             lock.lock();
             try {
-                Set<Iri> rdfTypes = getRdfTypesOfIri(node);
+                Set<IRI> rdfTypes = getRdfTypesOfIri(node);
                 return typeHandlerDiscovery.getTypeHandler(rdfTypes);
             } finally {
                 lock.unlock();
@@ -105,17 +105,17 @@ public class TypeHandlerSpace {
         return null;
     }
 
-    private Set<Iri> getRdfTypesOfIri(GraphNode node) {
-        Set<Iri> rdfTypes = new HashSet<Iri>();
-        Iterator<RdfTerm> types = node.getObjects(RDF.type);
+    private Set<IRI> getRdfTypesOfIri(GraphNode node) {
+        Set<IRI> rdfTypes = new HashSet<IRI>();
+        Iterator<RDFTerm> types = node.getObjects(RDF.type);
         while (types.hasNext()) {
-            RdfTerm typeStmtObj = types.next();
-            if (!(typeStmtObj instanceof Iri)) {
+            RDFTerm typeStmtObj = types.next();
+            if (!(typeStmtObj instanceof IRI)) {
                 throw new RuntimeException(
                         "RDF type is expected to be a URI but is " + typeStmtObj
                         + "(of " + node.getNode() + ")");
             }
-            Iri rdfType = (Iri) typeStmtObj;
+            IRI rdfType = (IRI) typeStmtObj;
             rdfTypes.add(rdfType);
         }
         
@@ -128,7 +128,7 @@ public class TypeHandlerSpace {
         public Object getDescription(@Context UriInfo uriInfo){
             String absoluteUriPath = uriInfo.getAbsolutePath().toString();
             //Graph contentGraph = cgp.getContentGraph();
-                Iri uri = new Iri(absoluteUriPath.substring(0,
+                IRI uri = new IRI(absoluteUriPath.substring(0,
                         absoluteUriPath.length() - DESCRIPTION_SUFFIX.length()));
                 GraphNode graphNode = gnp.getLocal(uri);
                 return graphNode.getNodeContext();

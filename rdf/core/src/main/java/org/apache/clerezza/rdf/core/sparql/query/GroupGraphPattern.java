@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.query;
 
 import java.util.List;
 import java.util.Set;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * Defines a group ImmutableGraph pattern.
@@ -58,7 +58,7 @@ public interface GroupGraphPattern extends GraphPattern {
      * @return
      *      all graphs referred in this ImmutableGraph pattern.
      */
-    public Set<Iri> getReferredGraphs();
+    public Set<IRI> getReferredGraphs();
 
     /**
 	 * @return 

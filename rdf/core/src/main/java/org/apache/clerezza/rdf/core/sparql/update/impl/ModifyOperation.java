@@ -20,7 +20,7 @@ package org.apache.clerezza.rdf.core.sparql.update.impl;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.sparql.query.GroupGraphPattern;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleDataSet;
@@ -36,13 +36,13 @@ import org.apache.clerezza.rdf.core.sparql.update.UpdateOperation;
  * @author hasan
  */
 public class ModifyOperation implements UpdateOperation {
-    private Iri fallbackGraph = null;
+    private IRI fallbackGraph = null;
     private UpdateOperationWithQuads deleteOperation = null;
     private UpdateOperationWithQuads insertOperation = null;
     private SimpleDataSet dataSet = null;
     private GroupGraphPattern queryPattern = null;
 
-    public void setFallbackGraph(Iri fallbackGraph) {
+    public void setFallbackGraph(IRI fallbackGraph) {
         this.fallbackGraph = fallbackGraph;
     }
 
@@ -58,14 +58,14 @@ public class ModifyOperation implements UpdateOperation {
         this.dataSet = dataSet;
     }
 
-    public void addGraphToDataSet(Iri ImmutableGraph) {
+    public void addGraphToDataSet(IRI ImmutableGraph) {
         if (dataSet == null) {
             dataSet = new SimpleDataSet();
         }
         dataSet.addDefaultGraph(ImmutableGraph);
     }
 
-    public void addNamedGraphToDataSet(Iri namedGraph) {
+    public void addNamedGraphToDataSet(IRI namedGraph) {
         if (dataSet == null) {
             dataSet = new SimpleDataSet();
         }
@@ -77,8 +77,8 @@ public class ModifyOperation implements UpdateOperation {
     }
 
     @Override
-    public Set<Iri> getInputGraphs(Iri defaultGraph, TcProvider tcProvider) {
-        Set<Iri> graphs = new HashSet<Iri>();
+    public Set<IRI> getInputGraphs(IRI defaultGraph, TcProvider tcProvider) {
+        Set<IRI> graphs = new HashSet<IRI>();
         if (dataSet != null) {
             graphs.addAll(dataSet.getDefaultGraphs());
             graphs.addAll(dataSet.getNamedGraphs());
@@ -97,9 +97,9 @@ public class ModifyOperation implements UpdateOperation {
     }
 
     @Override
-    public Set<Iri> getDestinationGraphs(Iri defaultGraph, TcProvider tcProvider) {
-        Set<Iri> graphs = new HashSet<Iri>();
-        Iri dfltGraph = (fallbackGraph != null) ? fallbackGraph : defaultGraph;
+    public Set<IRI> getDestinationGraphs(IRI defaultGraph, TcProvider tcProvider) {
+        Set<IRI> graphs = new HashSet<IRI>();
+        IRI dfltGraph = (fallbackGraph != null) ? fallbackGraph : defaultGraph;
         if (deleteOperation != null) {
             graphs.addAll(deleteOperation.getDestinationGraphs(dfltGraph, tcProvider));
         }

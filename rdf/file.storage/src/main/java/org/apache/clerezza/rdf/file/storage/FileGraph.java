@@ -30,10 +30,10 @@ import java.util.Collection;
 
 import java.util.Iterator;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
@@ -49,7 +49,7 @@ public class FileGraph extends SimpleGraph {
     private File file;
     private String fileType;
 
-    FileGraph(Iri uri, Parser parser,
+    FileGraph(IRI uri, Parser parser,
             Serializer serializer) {
         this(new File(URI.create(uri.getUnicodeString())), parser, serializer);    
     }
@@ -121,9 +121,9 @@ public class FileGraph extends SimpleGraph {
     }
     
     @Override
-    public Iterator<Triple> filter(final BlankNodeOrIri subject,
-            final Iri predicate,
-            final RdfTerm object) {
+    public Iterator<Triple> filter(final BlankNodeOrIRI subject,
+            final IRI predicate,
+            final RDFTerm object) {
         final Iterator<Triple> baseIter = super.filter(subject, predicate, object);
         Iterator<Triple> iterator = new Iterator<Triple>() {
 

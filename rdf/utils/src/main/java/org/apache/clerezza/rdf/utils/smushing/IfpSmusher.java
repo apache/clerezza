@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.slf4j.Logger;
@@ -56,34 +56,34 @@ public class IfpSmusher extends BaseSmusher {
      * @param tBox
      */
     public void smush(Graph mGraph, Graph tBox) {
-        final Set<Iri> ifps = getIfps(tBox);
-        final Map<PredicateObject, Set<BlankNodeOrIri>> ifp2nodesMap = new HashMap<PredicateObject, Set<BlankNodeOrIri>>();
+        final Set<IRI> ifps = getIfps(tBox);
+        final Map<PredicateObject, Set<BlankNodeOrIRI>> ifp2nodesMap = new HashMap<PredicateObject, Set<BlankNodeOrIRI>>();
         for (Iterator<Triple> it = mGraph.iterator(); it.hasNext();) {
             final Triple triple = it.next();
-            final Iri predicate = triple.getPredicate();
+            final IRI predicate = triple.getPredicate();
             if (!ifps.contains(predicate)) {
                 continue;
             }
             final PredicateObject po = new PredicateObject(predicate, triple.getObject());
-            Set<BlankNodeOrIri> equivalentNodes = ifp2nodesMap.get(po);
+            Set<BlankNodeOrIRI> equivalentNodes = ifp2nodesMap.get(po);
             if (equivalentNodes == null) {
-                equivalentNodes = new HashSet<BlankNodeOrIri>();
+                equivalentNodes = new HashSet<BlankNodeOrIRI>();
                 ifp2nodesMap.put(po, equivalentNodes);
             }
             equivalentNodes.add(triple.getSubject());
         }
-        Set<Set<BlankNodeOrIri>> unitedEquivalenceSets = uniteSetsWithCommonElement(ifp2nodesMap.values());
+        Set<Set<BlankNodeOrIRI>> unitedEquivalenceSets = uniteSetsWithCommonElement(ifp2nodesMap.values());
         smush(mGraph, unitedEquivalenceSets, true);
     }
     
 
-    private Set<Iri> getIfps(Graph tBox) {
+    private Set<IRI> getIfps(Graph tBox) {
         final Iterator<Triple> ifpDefinitions = tBox.filter(null, RDF.type,
                 OWL.InverseFunctionalProperty);
-        final Set<Iri> ifps = new HashSet<Iri>();
+        final Set<IRI> ifps = new HashSet<IRI>();
         while (ifpDefinitions.hasNext()) {
             final Triple triple = ifpDefinitions.next();
-            ifps.add((Iri) triple.getSubject());
+            ifps.add((IRI) triple.getSubject());
         }
         return ifps;
     }
@@ -130,10 +130,10 @@ public class IfpSmusher extends BaseSmusher {
 
     class PredicateObject {
 
-        final Iri predicate;
-        final RdfTerm object;
+        final IRI predicate;
+        final RDFTerm object;
 
-        public PredicateObject(Iri predicate, RdfTerm object) {
+        public PredicateObject(IRI predicate, RDFTerm object) {
             this.predicate = predicate;
             this.object = object;
         }

@@ -18,19 +18,19 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 
 /**
- * Wraps either a {@link RdfTerm} or a {@link Variable}
+ * Wraps either a {@link RDFTerm} or a {@link Variable}
  *
  * @author hasan
  */
 public class ResourceOrVariable {
 
-    private final RdfTerm resource;
+    private final RDFTerm resource;
     private final Variable variable;
 
-    public ResourceOrVariable(RdfTerm resource) {
+    public ResourceOrVariable(RDFTerm resource) {
         if (resource == null) {
             throw new IllegalArgumentException("Invalid resource: null");
         }
@@ -49,7 +49,7 @@ public class ResourceOrVariable {
     /**
      *
      * @return
-     *        true if it is a {@link Variable}, false if it is a {@link RdfTerm}
+     *        true if it is a {@link Variable}, false if it is a {@link RDFTerm}
      */
     public boolean isVariable() {
         return resource == null;
@@ -60,7 +60,7 @@ public class ResourceOrVariable {
      * @return
      *        the wrapped Resource if it is a Resource, null otherwise
      */
-    public RdfTerm getResource() {
+    public RDFTerm getResource() {
         return resource;
     }
     

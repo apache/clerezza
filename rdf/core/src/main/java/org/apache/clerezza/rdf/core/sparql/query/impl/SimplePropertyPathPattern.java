@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query.impl;
 
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathExpression;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathExpressionOrVariable;
 import org.apache.clerezza.rdf.core.sparql.query.PropertyPathPattern;
@@ -58,17 +58,17 @@ public class SimplePropertyPathPattern implements PropertyPathPattern {
                 new ResourceOrVariable(object));
     }
 
-    public SimplePropertyPathPattern(BlankNodeOrIri subject, Variable propertyPathExpression, Variable object) {
+    public SimplePropertyPathPattern(BlankNodeOrIRI subject, Variable propertyPathExpression, Variable object) {
         this(new ResourceOrVariable(subject), new PropertyPathExpressionOrVariable(propertyPathExpression),
                 new ResourceOrVariable(object));
     }
 
-    public SimplePropertyPathPattern(Variable subject, Variable propertyPathExpression, RdfTerm object) {
+    public SimplePropertyPathPattern(Variable subject, Variable propertyPathExpression, RDFTerm object) {
         this(new ResourceOrVariable(subject), new PropertyPathExpressionOrVariable(propertyPathExpression),
                 new ResourceOrVariable(object));
     }
 
-    public SimplePropertyPathPattern(BlankNodeOrIri subject, Variable propertyPathExpression, RdfTerm object) {
+    public SimplePropertyPathPattern(BlankNodeOrIRI subject, Variable propertyPathExpression, RDFTerm object) {
         this(new ResourceOrVariable(subject), new PropertyPathExpressionOrVariable(propertyPathExpression),
                 new ResourceOrVariable(object));
     }
@@ -78,17 +78,17 @@ public class SimplePropertyPathPattern implements PropertyPathPattern {
                 new ResourceOrVariable(object));
     }
 
-    public SimplePropertyPathPattern(BlankNodeOrIri subject, PropertyPathExpression propertyPathExpression, Variable object) {
+    public SimplePropertyPathPattern(BlankNodeOrIRI subject, PropertyPathExpression propertyPathExpression, Variable object) {
         this(new ResourceOrVariable(subject), new PropertyPathExpressionOrVariable(propertyPathExpression),
                 new ResourceOrVariable(object));
     }
 
-    public SimplePropertyPathPattern(Variable subject, PropertyPathExpression propertyPathExpression, RdfTerm object) {
+    public SimplePropertyPathPattern(Variable subject, PropertyPathExpression propertyPathExpression, RDFTerm object) {
         this(new ResourceOrVariable(subject), new PropertyPathExpressionOrVariable(propertyPathExpression),
                 new ResourceOrVariable(object));
     }
 
-    public SimplePropertyPathPattern(BlankNodeOrIri subject, PropertyPathExpression propertyPathExpression, RdfTerm object) {
+    public SimplePropertyPathPattern(BlankNodeOrIRI subject, PropertyPathExpression propertyPathExpression, RDFTerm object) {
         this(new ResourceOrVariable(subject), new PropertyPathExpressionOrVariable(propertyPathExpression),
                 new ResourceOrVariable(object));
     }

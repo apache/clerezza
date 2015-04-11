@@ -19,7 +19,7 @@
 package org.apache.clerezza.rdf.core.access;
 
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 
 /**
@@ -38,6 +38,6 @@ public interface QueryableTcProvider extends TcProvider {
      *            FROM clause is present
      * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */
-    public Object executeSparqlQuery(String query, Iri defaultGraphUri);
+    public Object executeSparqlQuery(String query, IRI defaultGraphUri);
 
 }

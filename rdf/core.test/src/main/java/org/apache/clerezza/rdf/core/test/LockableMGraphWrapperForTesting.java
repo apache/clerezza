@@ -22,10 +22,10 @@ import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * Wrappes an Graph as a LockableGraph. If a method is called that reads
@@ -51,7 +51,7 @@ public class LockableMGraphWrapperForTesting extends GraphWrapper {
     }
 
     @Override
-    public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
+    public Iterator<Triple> filter(BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
         LockChecker.checkIfReadLocked(lock);
         readLock.lock();
         try {

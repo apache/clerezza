@@ -41,7 +41,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
@@ -74,7 +74,7 @@ public class GraphManagement implements GlobalMenuItemsProvider {
     protected void activate(ComponentContext componentContext) {
         URL templateURL = getClass().getResource("graph-management.ssp");
         renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-                new Iri(templateURL.toString()), GRAPHMANAGEMENT.GraphManagementPage,
+                new IRI(templateURL.toString()), GRAPHMANAGEMENT.GraphManagementPage,
                 "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
     }
 
@@ -84,8 +84,8 @@ public class GraphManagement implements GlobalMenuItemsProvider {
         TrailingSlash.enforcePresent(uriInfo);
         final SimpleGraph resultGraph = new SimpleGraph();
         GraphNode graphNode = new GraphNode(new BlankNode(), resultGraph);
-        Set<Iri> tripleCollections = tcManager.listGraphs();
-        for (Iri uriRef : tripleCollections) {
+        Set<IRI> tripleCollections = tcManager.listGraphs();
+        for (IRI uriRef : tripleCollections) {
             graphNode.addProperty(GRAPHMANAGEMENT.tripleCollection, uriRef);
             final Graph tripleCollection = tcManager.getGraph(uriRef);
             resultGraph.add(new TripleImpl(uriRef,GRAPHMANAGEMENT.size,

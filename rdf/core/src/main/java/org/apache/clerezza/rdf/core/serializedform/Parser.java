@@ -34,7 +34,7 @@ import java.util.logging.Level;
 
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleMGraph;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
@@ -206,7 +206,7 @@ public class Parser {
      * @throws UnsupportedFormatException
      */
     public ImmutableGraph parse(InputStream serializedGraph,
-            String formatIdentifier, Iri baseUri) throws UnsupportedFormatException {
+            String formatIdentifier, IRI baseUri) throws UnsupportedFormatException {
         Graph graph = new SimpleMGraph();
         parse(graph, serializedGraph, formatIdentifier, baseUri);
         return graph.getImmutableGraph();
@@ -225,7 +225,7 @@ public class Parser {
      * @throws UnsupportedFormatException
      */
     public void parse(Graph target, InputStream serializedGraph,
-            String formatIdentifier, Iri baseUri) throws UnsupportedFormatException {
+            String formatIdentifier, IRI baseUri) throws UnsupportedFormatException {
         String deParameterizedIdentifier;
         int semicolonPos = formatIdentifier.indexOf(';');
         if (semicolonPos > -1) {

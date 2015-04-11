@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -51,11 +51,11 @@ public class TypePrioritizerTest {
 
     @Test
     public void oderList() {
-        List<Iri> l = new ArrayList<Iri>();
+        List<IRI> l = new ArrayList<IRI>();
         l.add(FOAF.Agent);
         l.add(RDF.Bag);
         l.add(FOAF.Person);
-        Iterator<Iri> iter = typePrioritizer.iterate(l);
+        Iterator<IRI> iter = typePrioritizer.iterate(l);
         Assert.assertEquals(FOAF.Person, iter.next());
         Assert.assertEquals(FOAF.Agent, iter.next());
         Assert.assertEquals(RDF.Bag, iter.next());

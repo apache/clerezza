@@ -65,9 +65,9 @@ import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Language;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
@@ -114,7 +114,7 @@ public class SparqlEndpoint {
     protected void activate(ComponentContext componentContext) {
         URL templateURL = getClass().getResource("sparql-endpoint.ssp");
         renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-                new Iri(templateURL.toString()), SPARQLENDPOINT.SparqlEndpoint,
+                new IRI(templateURL.toString()), SPARQLENDPOINT.SparqlEndpoint,
                 null, MediaType.APPLICATION_XHTML_XML_TYPE, true);
     }
 
@@ -124,8 +124,8 @@ public class SparqlEndpoint {
         AccessController.checkPermission(new SparqlEndpointAccessPermission());
         TrailingSlash.enforceNotPresent(uriInfo);
         GraphNode graphNode = new GraphNode(new BlankNode(), new SimpleGraph());
-        Set<Iri> tripleCollections = tcManager.listGraphs();
-        for (Iri uriRef : tripleCollections) {
+        Set<IRI> tripleCollections = tcManager.listGraphs();
+        for (IRI uriRef : tripleCollections) {
             graphNode.addProperty(SPARQLENDPOINT.tripleCollection, uriRef);
         }
         graphNode.addProperty(RDF.type, SPARQLENDPOINT.SparqlEndpoint);
@@ -143,7 +143,7 @@ public class SparqlEndpoint {
      * @param queryString
      *            URL encoded sparql query
      * @param defaultGraphUri
-     *            URI of the default graph, an {@link Iri} is expected
+     *            URI of the default graph, an {@link IRI} is expected
      * @param applyStyleSheet
      * @param serverSide
      * @param styleSheetUri 
@@ -151,7 +151,7 @@ public class SparqlEndpoint {
      */
     @POST
     public Object runFormQuery(@FormParam("query") String queryString,
-            @FormParam("default-graph-uri") Iri defaultGraphUri,
+            @FormParam("default-graph-uri") IRI defaultGraphUri,
             @FormParam("apply-style-sheet") String applyStyleSheet,
             @FormParam("server-side") String serverSide,
             @FormParam("style-sheet-uri") String styleSheetUri) {
@@ -174,7 +174,7 @@ public class SparqlEndpoint {
         try {
             if (defaultGraphUri == null
                     || defaultGraphUri.getUnicodeString().equals("")) {
-                defaultGraphUri = new Iri(Constants.CONTENT_GRAPH_URI_STRING);
+                defaultGraphUri = new IRI(Constants.CONTENT_GRAPH_URI_STRING);
                 //defaultGraph = contentGraph;
             } else {
                 //defaultGraph = tcManager.getTriples(defaultGraphUri);
@@ -224,7 +224,7 @@ public class SparqlEndpoint {
      */
     @GET
     public Object runGetQuery(@QueryParam("query") String queryString,
-            @QueryParam("default-graph-uri") Iri defaultGraphUri,
+            @QueryParam("default-graph-uri") IRI defaultGraphUri,
             @QueryParam("style-sheet-uri") String styleSheetUri,
             @QueryParam("server-side") String serverSide) {
         AccessController.checkPermission(new SparqlEndpointAccessPermission());
@@ -373,8 +373,7 @@ public class SparqlEndpoint {
             for (Variable key : keys) {
                 Element bindingElement = doc.createElement("binding");
                 bindingElement.setAttribute("name", key.getName());
-                bindingElement.appendChild(createValueElement(
-                        (RdfTerm) solutionMap.get(key), doc));
+                bindingElement.appendChild(createValueElement((RDFTerm) solutionMap.get(key), doc));
                 result.appendChild(bindingElement);
             }
         }
@@ -382,15 +381,15 @@ public class SparqlEndpoint {
     }
 
     /**
-     * Helper: creates value element from {@link RdfTerm} depending on its
+     * Helper: creates value element from {@link RDFTerm} depending on its
      * class
      * 
      */
-    private Element createValueElement(RdfTerm resource, Document doc) {
+    private Element createValueElement(RDFTerm resource, Document doc) {
         Element value = null;
-        if (resource instanceof Iri) {
+        if (resource instanceof IRI) {
             value = doc.createElement("uri");
-            value.appendChild(doc.createTextNode(((Iri) resource)
+            value.appendChild(doc.createTextNode(((IRI) resource)
                     .getUnicodeString()));
         } else if (resource instanceof Literal) {
             value = doc.createElement("literal");

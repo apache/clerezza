@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
 /**
@@ -57,15 +57,15 @@ public interface UserManager {
     /**
      *
      * @param title
-     * @return BlankNodeOrIri which is either a BlankNode or a Iri
+     * @return BlankNodeOrIRI which is either a BlankNode or a Iri
      */
-    public BlankNodeOrIri getRoleByTitle(String title);
+    public BlankNodeOrIRI getRoleByTitle(String title);
 
     /**
      *
      * @return Iterator defining all roles, except base roles
      */
-    public Iterator<BlankNodeOrIri> getRoles();
+    public Iterator<BlankNodeOrIRI> getRoles();
 
     /**
      *
@@ -74,7 +74,7 @@ public interface UserManager {
      *
      * @return Iterator defining all the Roles the specified user owns
      */
-    public Iterator<BlankNodeOrIri> getRolesOfUser(BlankNodeOrIri user);
+    public Iterator<BlankNodeOrIRI> getRolesOfUser(BlankNodeOrIRI user);
 
     /**
      *
@@ -99,7 +99,7 @@ public interface UserManager {
      *
      * @return Iterator defining all permissions of a role
      */
-    public Iterator<BlankNodeOrIri> getPermissionsOfRole(BlankNodeOrIri role);
+    public Iterator<BlankNodeOrIRI> getPermissionsOfRole(BlankNodeOrIRI role);
 
     /**
      *  Deletes the defined permissions of the role
@@ -171,10 +171,10 @@ public interface UserManager {
     /**
      *
      * @param name specifies the username of the user
-     * @return BlankNodeOrIri representing the user in the system ImmutableGraph
+     * @return BlankNodeOrIRI representing the user in the system ImmutableGraph
      */
     @Deprecated
-    public BlankNodeOrIri getUserByName(String name);
+    public BlankNodeOrIRI getUserByName(String name);
 
     /**
      * Returns the user with the specified name in an (editable) Graph
@@ -216,7 +216,7 @@ public interface UserManager {
      *
      * @return Iterator of users in the system ImmutableGraph.
      */
-    public Iterator<BlankNodeOrIri> getUsers();
+    public Iterator<BlankNodeOrIRI> getUsers();
 
     /**
      *
@@ -237,7 +237,7 @@ public interface UserManager {
      *            the user is either a BlankNode or a Iri
      * @return  Iterator defining all permissions of the specified user
      */
-    public Iterator<BlankNodeOrIri> getPermissionsOfUser(BlankNodeOrIri user);
+    public Iterator<BlankNodeOrIRI> getPermissionsOfUser(BlankNodeOrIRI user);
 
     /**
      *

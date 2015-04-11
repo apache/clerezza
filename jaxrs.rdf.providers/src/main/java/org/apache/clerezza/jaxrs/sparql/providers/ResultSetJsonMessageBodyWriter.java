@@ -34,8 +34,8 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Language;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
@@ -114,15 +114,15 @@ public class ResultSetJsonMessageBodyWriter implements MessageBodyWriter<ResultS
 	}
 
 	/**
-	 * Helper: creates value element from {@link RdfTerm} depending on its
+	 * Helper: creates value element from {@link RDFTerm} depending on its
 	 * class
 	 *
 	 */
-	private JSONObject createResultElement(RdfTerm resource) {
+	private JSONObject createResultElement(RDFTerm resource) {
 		JSONObject element = new JSONObject();
-		if (resource instanceof Iri) {
+		if (resource instanceof IRI) {
 			element.put("type", "uri");
-			element.put("value", Iri.class.cast(resource).getUnicodeString());
+			element.put("value", IRI.class.cast(resource).getUnicodeString());
 		} else if (resource instanceof Literal) {
 			element.put("type", "literal");
 			element.put("value", Literal.class.cast(resource).getLexicalForm());
@@ -151,7 +151,7 @@ public class ResultSetJsonMessageBodyWriter implements MessageBodyWriter<ResultS
 		JSONObject result = new JSONObject();
 		Set<Variable> keys = solutionMap.keySet();
 		for (Variable key : keys) {
-			result.put(key.getName(), createResultElement((RdfTerm) solutionMap.get(key)));
+			result.put(key.getName(), createResultElement((RDFTerm) solutionMap.get(key)));
 		}
 		return result;
 	}

@@ -25,9 +25,9 @@ import java.util.Iterator
 import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
 import org.apache.clerezza.commons.rdf.Graph
-import org.apache.clerezza.commons.rdf.Iri
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.commons.rdf.Literal
-import org.apache.clerezza.commons.rdf.RdfTerm
+import org.apache.clerezza.commons.rdf.RDFTerm
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph
 import org.apache.clerezza.rdf.utils.UnionGraph
 
@@ -41,7 +41,7 @@ import org.apache.clerezza.rdf.utils.UnionGraph
  * @param resource the node represented by this RichGraphNode
  * @param graph the Graph that describes the resource
  */
-class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource, graph) {
+class RichGraphNode(resource: RDFTerm, graph: Graph ) extends GraphNode(resource, graph) {
 
   /**
    * Construct a RichGraphNode given an existing [[GraphNde]]
@@ -55,7 +55,7 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
    *
    * @return all objects of the specified property of the node wrapped by this object
    */
-  def /(property: Iri): CollectedIter[RichGraphNode] = {
+  def /(property: IRI): CollectedIter[RichGraphNode] = {
     new CollectedIter[RichGraphNode](() => new GraphNodeIter(getObjects(property)), readLock)
   }
 
@@ -65,7 +65,7 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
    * @param property the property for which the subjects pointing to this node by that property are requested
    * @return the matching resources
    */
-  def /-(property: Iri): CollectedIter[RichGraphNode] = {
+  def /-(property: IRI): CollectedIter[RichGraphNode] = {
     new CollectedIter[RichGraphNode](() => new GraphNodeIter(getSubjects(property)), readLock)
   }
 
@@ -87,14 +87,14 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
 
   /**
    * produces a default String representation for the node, this is the lexical form of literals,
-   * the unicode-string for Iri and for BlankNodes the value returned by toString
+   * the unicode-string for IRI and for BlankNodes the value returned by toString
    *
    * @return the default string representation of the node
    */
   def * : String = {
     getNode() match {
       case lit: Literal => lit.getLexicalForm
-      case uri: Iri => uri.getUnicodeString
+      case uri: IRI => uri.getUnicodeString
       case wrappedNode => wrappedNode.toString
     }
   }
@@ -119,16 +119,16 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
   }
 
   /**
-   * Operator syntax shortcut to get the <code>RdfTerm</code> wrapped by this
+   * Operator syntax shortcut to get the <code>RDFTerm</code> wrapped by this
    * <code>GraphNode</code>
    *
-   * @return the node represented by this GraphNode as RdfTerm, same as <code>getNode</code>
+   * @return the node represented by this GraphNode as RDFTerm, same as <code>getNode</code>
    */
   def ! = {
     getNode()
   }
 
-  private class GraphNodeIter[T <: RdfTerm](base: Iterator[T]) extends Iterator[RichGraphNode] {
+  private class GraphNodeIter[T <: RDFTerm](base: Iterator[T]) extends Iterator[RichGraphNode] {
     override def hasNext() = {
         base.hasNext();
     }
@@ -144,7 +144,7 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
 
   /**
    *Sets the RDF:type of the subject */
-  def a(rdfclass: Iri): RichGraphNode = {
+  def a(rdfclass: IRI): RichGraphNode = {
     addProperty(RDF.`type`, rdfclass)
     return this
   }
@@ -159,7 +159,7 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
   /**
    * relate the subject via the given relation to....
    */
-  def --(rel: RdfTerm): DashTuple = new DashTuple(rel)
+  def --(rel: RDFTerm): DashTuple = new DashTuple(rel)
 
   def --(rel: RichGraphNode): DashTuple = new DashTuple(rel.getNode)
 
@@ -169,9 +169,9 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
    */
   def <--(tuple: RichGraphNode#DashTuple): RichGraphNode = {
     val inversePropertyRes = tuple.first.getNode
-    val inverseProperty: Iri =  inversePropertyRes match {
-      case p: Iri => p
-      case _ => throw new RuntimeException("DashTuple must be a Iri")
+    val inverseProperty: IRI =  inversePropertyRes match {
+      case p: IRI => p
+      case _ => throw new RuntimeException("DashTuple must be a IRI")
     }
     RichGraphNode.this.addInverseProperty(inverseProperty, tuple.second)
     RichGraphNode.this
@@ -185,7 +185,7 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
 //    /**
 //     * ...to the following non literal
 //     */
-//    def --(subj: BlankNodeOrIri): RichGraphNode = {
+//    def --(subj: BlankNodeOrIRI): RichGraphNode = {
 //      RichGraphNode.this.addInverseProperty(rel, subj)
 //      RichGraphNode.this
 //    }
@@ -193,14 +193,14 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
 //    /**
 //     * ...to the following resource (given as a string)
 //     */
-//    def --(subj: String): RichGraphNode = --(new Iri(subj))
+//    def --(subj: String): RichGraphNode = --(new IRI(subj))
 //
 //    /**
 //     * ...to the following EzGraphNode
 //     * (useful for opening a new parenthesis and specifying other things in more detail
 //     */
 //    def --(subj: GraphNode): RichGraphNode = {
-//      --(subj.getNode.asInstanceOf[BlankNodeOrIri])
+//      --(subj.getNode.asInstanceOf[BlankNodeOrIRI])
 //    }
 //    // since we can only have inverses from non literals (howto deal with bndoes?)
 //  }
@@ -208,16 +208,16 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
   /**
    *  class for relations with the current RichGraphNode.ref as subject
    */
-  class DashTuple(val second: RdfTerm) {
+  class DashTuple(val second: RDFTerm) {
 
     val first = RichGraphNode.this
     /**
      * ...to the following non resource
      */
-    def -->(obj: RdfTerm): RichGraphNode = {
+    def -->(obj: RDFTerm): RichGraphNode = {
       val property = second match {
-        case u: Iri => u;
-        case _ => throw new RuntimeException("Property must be a Iri")
+        case u: IRI => u;
+        case _ => throw new RuntimeException("Property must be a IRI")
       }
       RichGraphNode.this.addProperty(property, obj)
       RichGraphNode.this
@@ -234,7 +234,7 @@ class RichGraphNode(resource: RdfTerm, graph: Graph ) extends GraphNode(resource
     /**
      * Add one relation for each member of the iterable collection
      */
-    def -->>[T <: RdfTerm](uris: Iterable[T]): RichGraphNode = {
+    def -->>[T <: RDFTerm](uris: Iterable[T]): RichGraphNode = {
       for (u <- uris) -->(u)
       RichGraphNode.this
     }

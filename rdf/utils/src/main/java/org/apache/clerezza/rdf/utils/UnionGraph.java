@@ -27,11 +27,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph;
 
 /**
@@ -70,8 +70,8 @@ public class UnionGraph extends AbstractGraph {
     }
 
     @Override
-    public Iterator<Triple> performFilter(final BlankNodeOrIri subject,
-            final Iri predicate, final RdfTerm object) {
+    public Iterator<Triple> performFilter(final BlankNodeOrIRI subject,
+            final IRI predicate, final RDFTerm object) {
         if (baseTripleCollections.length == 0) {
             return new HashSet<Triple>(0).iterator();
         }

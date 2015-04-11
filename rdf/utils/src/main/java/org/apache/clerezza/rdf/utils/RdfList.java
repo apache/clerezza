@@ -28,9 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
@@ -54,18 +54,18 @@ import org.slf4j.LoggerFactory;
  *
  * @author rbn, mir
  */
-public class RdfList extends AbstractList<RdfTerm> {
+public class RdfList extends AbstractList<RDFTerm> {
 
     private static final Logger logger = LoggerFactory.getLogger(RdfList.class);
 
-    private final static Iri RDF_NIL =
-            new Iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
+    private final static IRI RDF_NIL =
+            new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
     /**
      * a list of the linked rdf:List elements in order
      */
-    private List<BlankNodeOrIri> listList = new ArrayList<BlankNodeOrIri>();
-    private List<RdfTerm> valueList = new ArrayList<RdfTerm>();
-    private BlankNodeOrIri firstList;
+    private List<BlankNodeOrIRI> listList = new ArrayList<BlankNodeOrIRI>();
+    private List<RDFTerm> valueList = new ArrayList<RDFTerm>();
+    private BlankNodeOrIRI firstList;
     private Graph tc;
     private boolean totallyExpanded = false;
 
@@ -78,7 +78,7 @@ public class RdfList extends AbstractList<RdfTerm> {
      * @param listRdfTerm
      * @param tc
      */
-    public RdfList(BlankNodeOrIri listRdfTerm, Graph tc) {
+    public RdfList(BlankNodeOrIRI listRdfTerm, Graph tc) {
         firstList = listRdfTerm;
         this.tc = tc;
 
@@ -90,7 +90,7 @@ public class RdfList extends AbstractList<RdfTerm> {
      * @param listNode
      */
     public RdfList(GraphNode listNode) {
-        this((BlankNodeOrIri)listNode.getNode(), listNode.getGraph());
+        this((BlankNodeOrIRI)listNode.getNode(), listNode.getGraph());
     }
 
     /**
@@ -103,7 +103,7 @@ public class RdfList extends AbstractList<RdfTerm> {
      * @throws IllegalArgumentException
      *        if the provided {@code  listRdfTerm} is a non-empty rdf:List.
      */
-    public static RdfList createEmptyList(BlankNodeOrIri listRdfTerm, Graph tc)
+    public static RdfList createEmptyList(BlankNodeOrIRI listRdfTerm, Graph tc)
             throws IllegalArgumentException {
 
         if (!tc.filter(listRdfTerm, RDF.first, null).hasNext()) {
@@ -119,7 +119,7 @@ public class RdfList extends AbstractList<RdfTerm> {
         if (totallyExpanded) {
             return;
         }
-        BlankNodeOrIri currentList;
+        BlankNodeOrIRI currentList;
         if (listList.size() > 0) {
             currentList = listList.get(listList.size()-1);
         } else {
@@ -150,7 +150,7 @@ public class RdfList extends AbstractList<RdfTerm> {
 
 
     @Override
-    public RdfTerm get(int index) {
+    public RDFTerm get(int index) {
         expandTill(index + 1);
         return valueList.get(index);
     }
@@ -162,7 +162,7 @@ public class RdfList extends AbstractList<RdfTerm> {
     }
 
     @Override
-    public void add(int index, RdfTerm element) {
+    public void add(int index, RDFTerm element) {
         expandTill(index);
         if (index == 0) {
             //special casing to make sure the first list remains the same resource
@@ -187,9 +187,9 @@ public class RdfList extends AbstractList<RdfTerm> {
      * @param index is > 0
      * @param element
      */
-    private void addInRdfList(int index, RdfTerm element) {
+    private void addInRdfList(int index, RDFTerm element) {
         expandTill(index+1);
-        BlankNodeOrIri newList = new BlankNode() {
+        BlankNodeOrIRI newList = new BlankNode() {
         };
         tc.add(new TripleImpl(newList, RDF.first, element));
         if (index < listList.size()) {
@@ -205,7 +205,7 @@ public class RdfList extends AbstractList<RdfTerm> {
     }
 
     @Override
-    public RdfTerm remove(int index) {
+    public RDFTerm remove(int index) {
         //keeping the first list resource
         tc.remove(new TripleImpl(listList.get(index), RDF.first, valueList.get(index)));
         if (index == (listList.size() - 1)) {
@@ -233,11 +233,11 @@ public class RdfList extends AbstractList<RdfTerm> {
         return valueList.remove(index);
     }
 
-    private BlankNodeOrIri getRest(BlankNodeOrIri list) {
-        return (BlankNodeOrIri) tc.filter(list, RDF.rest, null).next().getObject();
+    private BlankNodeOrIRI getRest(BlankNodeOrIRI list) {
+        return (BlankNodeOrIRI) tc.filter(list, RDF.rest, null).next().getObject();
     }
 
-    private RdfTerm getFirstEntry(final BlankNodeOrIri listRdfTerm) {
+    private RDFTerm getFirstEntry(final BlankNodeOrIRI listRdfTerm) {
         try {
             return tc.filter(listRdfTerm, RDF.first, null).next().getObject();
         } catch (final NullPointerException e) {
@@ -250,7 +250,7 @@ public class RdfList extends AbstractList<RdfTerm> {
                         Serializer.getInstance().serialize(fileOutputStream, graphNode.getNodeContext(), SupportedFormat.N_TRIPLE);
                         fileOutputStream.flush();
                         logger.warn("GraphNode: " + graphNode);
-                        final Iterator<Iri> properties = graphNode.getProperties();
+                        final Iterator<IRI> properties = graphNode.getProperties();
                         while (properties.hasNext()) {
                             logger.warn("available: " + properties.next());
                         }
@@ -265,7 +265,7 @@ public class RdfList extends AbstractList<RdfTerm> {
         }
     }
 
-    public BlankNodeOrIri getListRdfTerm() {
+    public BlankNodeOrIRI getListRdfTerm() {
         return firstList;
     }
 

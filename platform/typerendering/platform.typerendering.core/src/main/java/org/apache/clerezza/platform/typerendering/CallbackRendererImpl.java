@@ -30,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.utils.graphnodeprovider.GraphNodeProvider;
 
@@ -71,7 +71,7 @@ public class CallbackRendererImpl implements CallbackRenderer {
     }
 
     @Override
-    public void render(final Iri resource, GraphNode context, String mode,
+    public void render(final IRI resource, GraphNode context, String mode,
             OutputStream os) throws IOException {
         final GraphNode resourceNode = AccessController.doPrivileged( new PrivilegedAction<GraphNode>() {
                     @Override

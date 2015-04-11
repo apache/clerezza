@@ -27,7 +27,7 @@ import org.mockito.Mockito;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA1;
 import org.apache.clerezza.rdf.core.access.providers.WeightedAHeavy;
@@ -50,10 +50,10 @@ import static org.junit.Assert.*;
  */
 public class TcManagerTest {
 
-	public static Iri uriRefAHeavy = new Iri("http://example.org/aHeavy");
-	public static Iri uriRefB = new Iri("http://example.org/b");;
-	public static final Iri uriRefA = new Iri("http://example.org/a");
-	public static final Iri uriRefA1 = new Iri("http://example.org/a1");
+	public static IRI uriRefAHeavy = new IRI("http://example.org/aHeavy");
+	public static IRI uriRefB = new IRI("http://example.org/b");;
+	public static final IRI uriRefA = new IRI("http://example.org/a");
+	public static final IRI uriRefA1 = new IRI("http://example.org/a1");
 	private TcManager graphAccess;
 	private QueryEngine queryEngine;
 	private final WeightedA weightedA = new WeightedA();

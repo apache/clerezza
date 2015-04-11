@@ -22,11 +22,11 @@ import java.security.AccessControlException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.security.TcAccessController;
 import org.apache.clerezza.rdf.core.impl.WriteBlockedGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
@@ -45,10 +45,10 @@ import org.apache.clerezza.commons.rdf.event.GraphListener;
 public class SecuredGraph implements Graph {
 
     private final Graph wrapped;
-    private final Iri name;
+    private final IRI name;
     private final TcAccessController tcAccessController;
 
-    public SecuredGraph(Graph wrapped, Iri name,
+    public SecuredGraph(Graph wrapped, IRI name,
             TcAccessController tcAccessController) {
         this.wrapped = wrapped;
         this.name = name;
@@ -56,7 +56,7 @@ public class SecuredGraph implements Graph {
     }
 
     @Override
-    public Iterator<Triple> filter(final BlankNodeOrIri subject, final Iri predicate, final RdfTerm object) {
+    public Iterator<Triple> filter(final BlankNodeOrIRI subject, final IRI predicate, final RDFTerm object) {
         final Iterator<Triple> baseIter = wrapped.filter(subject, predicate, object);
         return new Iterator<Triple>() {
 

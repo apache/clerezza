@@ -31,7 +31,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
@@ -53,7 +53,7 @@ import org.osgi.service.component.ComponentContext;
 @Property(name="javax.ws.rs", boolValue=true)
 @Path("/admin/graphs/smush")
 public class Smush {
-    private final Iri tBoxName = new Iri("urn:x-localinstance:/tbox.graph");
+    private final IRI tBoxName = new IRI("urn:x-localinstance:/tbox.graph");
 
     @Reference
     private TcManager tcManager;
@@ -80,7 +80,7 @@ public class Smush {
 
     
     @POST
-    public Response smush(@Context UriInfo uriInfo, @FormParam("graphName") Iri graphName) {
+    public Response smush(@Context UriInfo uriInfo, @FormParam("graphName") IRI graphName) {
         Graph mGraph = tcManager.getGraph(graphName);
         Smusher.smush(mGraph, tBox);
         return RedirectUtil.createSeeOtherResponse("./", uriInfo);

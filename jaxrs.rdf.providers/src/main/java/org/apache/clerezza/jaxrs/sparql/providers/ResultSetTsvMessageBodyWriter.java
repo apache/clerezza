@@ -33,8 +33,8 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.clerezza.commons.rdf.BlankNode;
-import org.apache.clerezza.commons.rdf.RdfTerm;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 import org.apache.clerezza.commons.rdf.Literal;
@@ -179,7 +179,7 @@ public class ResultSetTsvMessageBodyWriter implements MessageBodyWriter<ResultSe
       if( !first ) {
         outputStream.write( separator );
       }
-      RdfTerm resource = lineData.get( header );
+      RDFTerm resource = lineData.get( header );
       if( resource != null ) {
         writeEscaped( outputStream, getResourceValue( resource ) );
       }
@@ -189,11 +189,11 @@ public class ResultSetTsvMessageBodyWriter implements MessageBodyWriter<ResultSe
   }
 
   /**
-   * Helper to get the proper string representation for the given RdfTerm.
+   * Helper to get the proper string representation for the given RDFTerm.
    */
-  private String getResourceValue( RdfTerm resource ) {
+  private String getResourceValue( RDFTerm resource ) {
     StringBuilder value = new StringBuilder();
-    if( resource instanceof Iri ) {
+    if( resource instanceof IRI ) {
       value.append( resource.toString() );
     } else if( resource instanceof Literal ) {
       value.append( "\"" );

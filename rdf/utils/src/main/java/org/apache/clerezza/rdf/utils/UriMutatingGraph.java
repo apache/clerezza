@@ -22,12 +22,12 @@ package org.apache.clerezza.rdf.utils;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleImmutableGraph;
@@ -57,13 +57,13 @@ public class UriMutatingGraph implements Graph {
         targetPrefixLength= targetPrefix.length();
     }
 
-    private <R extends RdfTerm> R toTargetRdfTerm(final R sourceRdfTerm) {
-        if (sourceRdfTerm instanceof Iri) {
-            final Iri sourceIri = (Iri) sourceRdfTerm;
+    private <R extends RDFTerm> R toTargetRdfTerm(final R sourceRdfTerm) {
+        if (sourceRdfTerm instanceof IRI) {
+            final IRI sourceIri = (IRI) sourceRdfTerm;
             if (sourceIri.getUnicodeString().startsWith(sourcePrefix)) {
                 final String uriRest = sourceIri.getUnicodeString()
                         .substring(sourcePrefixLength);
-                return (R) new Iri(targetPrefix+uriRest);
+                return (R) new IRI(targetPrefix+uriRest);
             }
         }
         return sourceRdfTerm;            
@@ -77,13 +77,13 @@ public class UriMutatingGraph implements Graph {
                 triple.getPredicate(), toTargetRdfTerm(triple.getObject()));
     }
 
-    private <R extends RdfTerm> R toSourceRdfTerm(final R targetRdfTerm) {
-        if (targetRdfTerm instanceof Iri) {
-            final Iri sourceIri = (Iri) targetRdfTerm;
+    private <R extends RDFTerm> R toSourceRdfTerm(final R targetRdfTerm) {
+        if (targetRdfTerm instanceof IRI) {
+            final IRI sourceIri = (IRI) targetRdfTerm;
             if (sourceIri.getUnicodeString().startsWith(targetPrefix)) {
                 final String uriRest = sourceIri.getUnicodeString()
                         .substring(targetPrefixLength);
-                return (R) new Iri(sourcePrefix+uriRest);
+                return (R) new IRI(sourcePrefix+uriRest);
             }
         }
         return targetRdfTerm;
@@ -98,7 +98,7 @@ public class UriMutatingGraph implements Graph {
     }
 
     @Override
-    public Iterator<Triple> filter(BlankNodeOrIri subject, Iri predicate, RdfTerm object) {
+    public Iterator<Triple> filter(BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
         final Iterator<Triple> baseIter = base.filter(toSourceRdfTerm(subject),
                 predicate, toSourceRdfTerm(object));
         return new WrappedIteraror(baseIter);

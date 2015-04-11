@@ -29,7 +29,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
 import org.apache.clerezza.rdf.core.access.EntityUndeletableException;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
@@ -65,7 +65,7 @@ public class SystemConfig implements WeightedTcProvider {
      * @deprecated use org.apache.clerezza.platform.Contants instead
      */
     @Deprecated
-    public static final Iri SYSTEM_GRAPH_URI = Constants.SYSTEM_GRAPH_URI;
+    public static final IRI SYSTEM_GRAPH_URI = Constants.SYSTEM_GRAPH_URI;
     /**
      * A filter that can be used to get the system graph as OSGi service, that
      * is provided by
@@ -128,12 +128,12 @@ public class SystemConfig implements WeightedTcProvider {
     }
 
     @Override
-    public ImmutableGraph getImmutableGraph(Iri name) throws NoSuchEntityException {
+    public ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException {
         throw new NoSuchEntityException(name);
     }
 
     @Override
-    public Graph getMGraph(Iri name) throws NoSuchEntityException {
+    public Graph getMGraph(IRI name) throws NoSuchEntityException {
         if (name.equals(Constants.SYSTEM_GRAPH_URI)) {
             return systemGraph;
         } else {
@@ -142,42 +142,42 @@ public class SystemConfig implements WeightedTcProvider {
     }
 
     @Override
-    public Graph getGraph(Iri name) throws NoSuchEntityException {
+    public Graph getGraph(IRI name) throws NoSuchEntityException {
         return getMGraph(name);
     }
 
     @Override
-    public Set<Iri> listImmutableGraphs() {
+    public Set<IRI> listImmutableGraphs() {
         return Collections.emptySet();
     }
 
     @Override
-    public Set<Iri> listMGraphs() {
+    public Set<IRI> listMGraphs() {
         return Collections.singleton(Constants.SYSTEM_GRAPH_URI);
     }
 
     @Override
-    public Set<Iri> listGraphs() {
+    public Set<IRI> listGraphs() {
         return listMGraphs();
     }
 
     @Override
-    public Graph createGraph(Iri name) throws UnsupportedOperationException, EntityAlreadyExistsException {
+    public Graph createGraph(IRI name) throws UnsupportedOperationException, EntityAlreadyExistsException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ImmutableGraph createImmutableGraph(Iri name, Graph triples) throws UnsupportedOperationException, EntityAlreadyExistsException {
+    public ImmutableGraph createImmutableGraph(IRI name, Graph triples) throws UnsupportedOperationException, EntityAlreadyExistsException {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @Override
-    public void deleteGraph(Iri name) throws UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
+    public void deleteGraph(IRI name) throws UnsupportedOperationException, NoSuchEntityException, EntityUndeletableException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<Iri> getNames(ImmutableGraph graph) {
+    public Set<IRI> getNames(ImmutableGraph graph) {
         return Collections.emptySet();
     }
 }

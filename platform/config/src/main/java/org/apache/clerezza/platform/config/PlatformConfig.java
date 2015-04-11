@@ -30,10 +30,10 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-import org.apache.clerezza.commons.rdf.BlankNodeOrIri;
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
@@ -61,7 +61,7 @@ public class PlatformConfig {
      * @deprecated use org.apache.clerezza.platform.Contants instead
      */
     @Deprecated
-    public static final Iri CONFIG_GRAPH_URI = Constants.CONFIG_GRAPH_URI;
+    public static final IRI CONFIG_GRAPH_URI = Constants.CONFIG_GRAPH_URI;
 
     /**
      * A filter that can be used to get the config graph as OSGi service,
@@ -78,27 +78,27 @@ public class PlatformConfig {
      * Returns the default base URI of the Clerezza platform instance.
      * @return the base URI of the Clerezza platform
      */
-    public Iri getDefaultBaseUri() {
-        return AccessController.doPrivileged(new PrivilegedAction<Iri>() {
+    public IRI getDefaultBaseUri() {
+        return AccessController.doPrivileged(new PrivilegedAction<IRI>() {
 
             @Override
-            public Iri run() {
+            public IRI run() {
                 GraphNode platformInstance = getPlatformInstance();
                 Lock l = platformInstance.readLock();
                 l.lock();
                 try {
-                    Iterator<RdfTerm> triples = platformInstance.getObjects(PLATFORM.defaultBaseUri);
+                    Iterator<RDFTerm> triples = platformInstance.getObjects(PLATFORM.defaultBaseUri);
                     if (triples.hasNext()) {
-                        return (Iri) triples.next();
+                        return (IRI) triples.next();
                     } else {
                         String port = context.getProperty("org.osgi.service.http.port");
                         if (port == null) {
                             port = DEFAULT_PORT;
                         }
                         if (port.equals("80")) {
-                            return new Iri("http://localhost/");
+                            return new IRI("http://localhost/");
                         }
-                        return new Iri("http://localhost:" + port + "/");
+                        return new IRI("http://localhost:" + port + "/");
                     }
                 } finally {
                     l.unlock();
@@ -118,7 +118,7 @@ public class PlatformConfig {
         return new GraphNode(getPlatformInstanceRdfTerm(), systemGraph);
     }
 
-    private BlankNodeOrIri getPlatformInstanceRdfTerm() {
+    private BlankNodeOrIRI getPlatformInstanceRdfTerm() {
         Lock l = systemGraph.getLock().readLock();
         l.lock();
         try {
@@ -138,17 +138,17 @@ public class PlatformConfig {
      * @return the base URI of the Clerezza platform
      */
     //todo: if this is the only class that sets and reads base uris then getBaseURIs should keep a cache
-    public Set<Iri> getBaseUris() {
+    public Set<IRI> getBaseUris() {
 
-        return AccessController.doPrivileged(new PrivilegedAction<Set<Iri>>() {
+        return AccessController.doPrivileged(new PrivilegedAction<Set<IRI>>() {
 
             @Override
-            public Set<Iri> run() {
-                Iterator<RdfTerm> baseUrisIter = getPlatformInstance().
+            public Set<IRI> run() {
+                Iterator<RDFTerm> baseUrisIter = getPlatformInstance().
                         getObjects(PLATFORM.baseUri);
-                Set<Iri> baseUris = new HashSet<Iri>();
+                Set<IRI> baseUris = new HashSet<IRI>();
                 while (baseUrisIter.hasNext()) {
-                    Iri baseUri = (Iri) baseUrisIter.next();
+                    IRI baseUri = (IRI) baseUrisIter.next();
                     baseUris.add(baseUri);
                 }
                 baseUris.add(getDefaultBaseUri());
@@ -163,7 +163,7 @@ public class PlatformConfig {
      *
      * @param baseUri The base URI which will be added to the platform instance
      */
-    public void addBaseUri(Iri baseUri) {
+    public void addBaseUri(IRI baseUri) {
         systemGraph.add(new TripleImpl(getPlatformInstanceRdfTerm(), PLATFORM.baseUri, baseUri));
     }
 
@@ -172,7 +172,7 @@ public class PlatformConfig {
      *
      * @param baseUri The base URI which will be removed from the platform instance
      */
-    public void removeBaseUri(Iri baseUri) {
+    public void removeBaseUri(IRI baseUri) {
         systemGraph.remove(new TripleImpl(getPlatformInstanceRdfTerm(), PLATFORM.baseUri, baseUri));
     }
 

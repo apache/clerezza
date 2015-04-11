@@ -18,20 +18,20 @@
  */
 package org.apache.clerezza.rdf.core.sparql.query;
 
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  *
  * @author hasan
  */
 public class PredicatePath implements PropertyPathExpression {
-    private Iri predicatePath;
+    private IRI predicatePath;
 
-    public PredicatePath(Iri predicatePath) {
+    public PredicatePath(IRI predicatePath) {
         this.predicatePath = predicatePath;
     }
 
-    public Iri getPredicatePath() {
+    public IRI getPredicatePath() {
         return predicatePath;
     }
 

@@ -38,10 +38,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.clerezza.commons.rdf.RdfTerm;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -100,15 +100,15 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
 
     private Graph getExpandedContext(GraphNode node) {
         final Graph result = new SimpleGraph(node.getNodeContext());
-        final Set<RdfTerm> expandedResources = new HashSet<RdfTerm>();
+        final Set<RDFTerm> expandedResources = new HashSet<RDFTerm>();
         expandedResources.add(node.getNode());
         while (true) {
-            Set<RdfTerm> additionalExpansionRes = getAdditionalExpansionResources(result);
+            Set<RDFTerm> additionalExpansionRes = getAdditionalExpansionResources(result);
             additionalExpansionRes.removeAll(expandedResources);
             if (additionalExpansionRes.size() == 0) {
                 return result;
             }
-            for (RdfTerm resource : additionalExpansionRes) {
+            for (RDFTerm resource : additionalExpansionRes) {
                 final GraphNode additionalNode = new GraphNode(resource, node.getGraph());
                 result.addAll(additionalNode.getNodeContext());
                 expandedResources.add(resource);
@@ -116,14 +116,14 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
         }
     }
 
-    private Set<RdfTerm> getAdditionalExpansionResources(Graph tc) {
-        final Set<Iri> subjectExpansionProperties = getSubjectExpansionProperties();
-        final Set<Iri> objectExpansionProperties = getObjectExpansionProperties();
-        final Set<RdfTerm> result = new HashSet<RdfTerm>();
+    private Set<RDFTerm> getAdditionalExpansionResources(Graph tc) {
+        final Set<IRI> subjectExpansionProperties = getSubjectExpansionProperties();
+        final Set<IRI> objectExpansionProperties = getObjectExpansionProperties();
+        final Set<RDFTerm> result = new HashSet<RDFTerm>();
         if ((subjectExpansionProperties.size() > 0)
                 || (objectExpansionProperties.size() > 0)) {
             for (Triple triple : tc) {
-                final Iri predicate = triple.getPredicate();
+                final IRI predicate = triple.getPredicate();
                 if (subjectExpansionProperties.contains(predicate)) {
                     result.add(triple.getSubject());
                 }
@@ -135,28 +135,28 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
         return result;
     }
 
-    private Set<Iri> getSubjectExpansionProperties() {
+    private Set<IRI> getSubjectExpansionProperties() {
         final MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
         final List<String> paramValues = queryParams.get(SUBJ_EXP_PARAM);
         if (paramValues == null) {
-            return new HashSet<Iri>(0);
+            return new HashSet<IRI>(0);
         }
-        final Set<Iri> result = new HashSet<Iri>(paramValues.size());
+        final Set<IRI> result = new HashSet<IRI>(paramValues.size());
         for (String uriString : paramValues) {
-            result.add(new Iri(uriString));
+            result.add(new IRI(uriString));
         }
         return result;
     }
 
-    private Set<Iri> getObjectExpansionProperties() {
+    private Set<IRI> getObjectExpansionProperties() {
         final MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
         final List<String> paramValues = queryParams.get(OBJ_EXP_PARAM);
         if (paramValues == null) {
-            return new HashSet<Iri>(0);
+            return new HashSet<IRI>(0);
         }
-        final Set<Iri> result = new HashSet<Iri>(paramValues.size());
+        final Set<IRI> result = new HashSet<IRI>(paramValues.size());
         for (String uriString : paramValues) {
-            result.add(new Iri(uriString));
+            result.add(new IRI(uriString));
         }
         return result;
     }

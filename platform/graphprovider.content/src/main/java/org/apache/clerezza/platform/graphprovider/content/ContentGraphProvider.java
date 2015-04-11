@@ -26,7 +26,7 @@ import org.apache.clerezza.platform.Constants;
 
 import org.osgi.service.component.ComponentContext;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.apache.clerezza.commons.rdf.Iri;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.utils.UnionGraph;
@@ -73,7 +73,7 @@ public class ContentGraphProvider {
     /**
      * The URIs of the read-only addition-<code>Graph</code>s
      */
-    private Iri[] additions;
+    private IRI[] additions;
 
     private ReentrantReadWriteLock configLock = new ReentrantReadWriteLock();
 
@@ -85,9 +85,9 @@ public class ContentGraphProvider {
         }
         String[] additionUriStrings = (String[]) context.getProperties().get(
                 CONTENT_ADDITIONS);
-        additions = new Iri[additionUriStrings.length];
+        additions = new IRI[additionUriStrings.length];
         for (int i = 0; i < additionUriStrings.length; i++) {
-            additions[i] = new Iri(additionUriStrings[i]);
+            additions[i] = new IRI(additionUriStrings[i]);
 
         }
     }
@@ -98,7 +98,7 @@ public class ContentGraphProvider {
             Graph[] united = new Graph[additions.length + 1];
             int i = 0;
             united[i++] = tcManager.getGraph(Constants.CONTENT_GRAPH_URI);
-            for (Iri uriRef : additions) {
+            for (IRI uriRef : additions) {
                 united[i++] = tcManager.getGraph(uriRef);
             }
             return new UnionGraph(united);
@@ -107,25 +107,25 @@ public class ContentGraphProvider {
         }
     }
 
-    public void addTemporaryAdditionGraph(Iri graphName) {
+    public void addTemporaryAdditionGraph(IRI graphName) {
         configLock.writeLock().lock();
         try {
-            Set<Iri> additionsSet = new HashSet<Iri>(Arrays
+            Set<IRI> additionsSet = new HashSet<IRI>(Arrays
                     .asList(additions));
             additionsSet.add(graphName);
-            additions = additionsSet.toArray(new Iri[additionsSet.size()]);
+            additions = additionsSet.toArray(new IRI[additionsSet.size()]);
         } finally {
             configLock.writeLock().unlock();
         }
     }
 
-    public void removeTemporaryAdditionGraph(Iri graphName) {
+    public void removeTemporaryAdditionGraph(IRI graphName) {
         configLock.writeLock().lock();
         try {
-            Set<Iri> additionsSet = new HashSet<Iri>(Arrays
+            Set<IRI> additionsSet = new HashSet<IRI>(Arrays
                     .asList(additions));
             additionsSet.remove(graphName);
-            additions = additionsSet.toArray(new Iri[additionsSet.size()]);
+            additions = additionsSet.toArray(new IRI[additionsSet.size()]);
         } finally {
             configLock.writeLock().unlock();
         }
