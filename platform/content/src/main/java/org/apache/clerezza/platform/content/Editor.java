@@ -37,7 +37,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Providers;
-import org.apache.clerezza.rdf.utils.MGraphUtils.NoSuchSubGraphException;
+import org.apache.clerezza.rdf.utils.GraphUtils.NoSuchSubGraphException;
 
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.ComponentContext;
@@ -49,13 +49,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.rdf.utils.MGraphUtils;
+import org.apache.clerezza.rdf.utils.GraphUtils;
 import org.apache.clerezza.web.fileserver.BundlePathNode;
 import org.apache.clerezza.web.fileserver.FileServer;
 import org.wymiwyg.commons.util.dirbrowser.PathNode;
@@ -114,10 +114,10 @@ public class Editor extends FileServer {
 
     @GET
     @Path("get")
-    public GraphNode getDiscobit(@QueryParam("resource") UriRef uri,
-            @QueryParam("graph") UriRef graphUri) {
-        final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
-            tcManager.getMGraph(graphUri);
+    public GraphNode getDiscobit(@QueryParam("resource") IRI uri,
+            @QueryParam("graph") IRI graphUri) {
+        final Graph mGraph = graphUri == null ? cgProvider.getContentGraph() :
+            tcManager.getGraph(graphUri);
         return new GraphNode(uri, mGraph);
     }
 
@@ -127,12 +127,12 @@ public class Editor extends FileServer {
      *
      * @param graphUri the graph within which the replacement has to take place or null
      * for the content graph
-     * @param assertedString the asserted Graph as RDF/XML
-     * @param revokedString the revoked Graph as RDF/XML
+     * @param assertedString the asserted ImmutableGraph as RDF/XML
+     * @param revokedString the revoked ImmutableGraph as RDF/XML
      */
     @POST
     @Path("post")
-    public void postDiscobit(@QueryParam("graph") UriRef graphUri,
+    public void postDiscobit(@QueryParam("graph") IRI graphUri,
             @FormParam("assert") String assertedString,
             @FormParam("revoke") String revokedString,
             @FormParam("rdfFormat") String rdfFormat) {
@@ -140,24 +140,24 @@ public class Editor extends FileServer {
             rdfFormat = rdfXml;
         }
         MediaType mediaType = MediaType.valueOf(rdfFormat);
-        MessageBodyReader<Graph> graphReader = providers.getMessageBodyReader(Graph.class, Graph.class, null,mediaType);
-        final Graph assertedGraph;
-        final Graph revokedGraph;
+        MessageBodyReader<ImmutableGraph> graphReader = providers.getMessageBodyReader(ImmutableGraph.class, ImmutableGraph.class, null,mediaType);
+        final ImmutableGraph assertedGraph;
+        final ImmutableGraph revokedGraph;
         try {
-            assertedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], mediaType, null, new ByteArrayInputStream(assertedString.getBytes()));
-            revokedGraph = graphReader.readFrom(Graph.class, Graph.class, new Annotation[0], mediaType, null, new ByteArrayInputStream(revokedString.getBytes()));
+            assertedGraph = graphReader.readFrom(ImmutableGraph.class, ImmutableGraph.class, new Annotation[0], mediaType, null, new ByteArrayInputStream(assertedString.getBytes()));
+            revokedGraph = graphReader.readFrom(ImmutableGraph.class, ImmutableGraph.class, new Annotation[0], mediaType, null, new ByteArrayInputStream(revokedString.getBytes()));
         } catch (IOException ex) {
             logger.error("reading graph {}", ex);
             throw new WebApplicationException(ex, 500);
         }
-        final MGraph mGraph = graphUri == null ? cgProvider.getContentGraph() :
-            tcManager.getMGraph(graphUri);
+        final Graph mGraph = graphUri == null ? cgProvider.getContentGraph() :
+            tcManager.getGraph(graphUri);
         try {
             serializer.serialize(System.out, revokedGraph, "text/turtle");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             serializer.serialize(baos, revokedGraph, "text/turtle");
             System.out.println(new String(baos.toByteArray()).contains("\r"));
-            MGraphUtils.removeSubGraph(mGraph, revokedGraph);
+            GraphUtils.removeSubGraph(mGraph, revokedGraph);
         } catch (NoSuchSubGraphException ex) {
             throw new RuntimeException(ex);
         }

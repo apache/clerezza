@@ -21,26 +21,26 @@ package org.apache.clerezza.platform.content.collections;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.RDF;
 
 /**
- * Creates the collections containing a resource in an underlying MGraph
+ * Creates the collections containing a resource in an underlying Graph
  *
  * @author reto
  */
 public class CollectionCreator {
 
-    private MGraph mGraph;
+    private Graph mGraph;
 
-    public CollectionCreator(MGraph mGraph) {
+    public CollectionCreator(Graph mGraph) {
         this.mGraph = mGraph;
     }
 
-    public void createContainingCollections(UriRef uriRef) {
+    public void createContainingCollections(IRI uriRef) {
         try {
             URI uri = new URI(uriRef.getUnicodeString());
             if (uri.getHost() == null) {
@@ -59,10 +59,10 @@ public class CollectionCreator {
                 }
                 final String unicodeString = uriRef.getUnicodeString();
                 int lastIndexOf = unicodeString.lastIndexOf(section);
-                UriRef parentUriRef = new UriRef(unicodeString.substring(0, lastIndexOf));
-                mGraph.add(new TripleImpl(uriRef, HIERARCHY.parent, parentUriRef));
-                mGraph.add(new TripleImpl(parentUriRef, RDF.type, HIERARCHY.Collection));
-                uriRef = parentUriRef;
+                IRI parentIRI = new IRI(unicodeString.substring(0, lastIndexOf));
+                mGraph.add(new TripleImpl(uriRef, HIERARCHY.parent, parentIRI));
+                mGraph.add(new TripleImpl(parentIRI, RDF.type, HIERARCHY.Collection));
+                uriRef = parentIRI;
 
             }
         } catch (URISyntaxException ex) {

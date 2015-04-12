@@ -20,8 +20,8 @@ package org.apache.clerezza.platform.content;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  * Provides utility methods to create, retrieve and remove binary contents.
@@ -39,7 +39,7 @@ public interface DiscobitsHandler {
      * @param mediaType
      * @param data
      */
-    public abstract void put(UriRef infoDiscoBitUri, MediaType mediaType,
+    public abstract void put(IRI infoDiscoBitUri, MediaType mediaType,
             byte[] data);
 
     /**
@@ -49,7 +49,7 @@ public interface DiscobitsHandler {
      * 
      * @param node
      */
-    public abstract void remove(NonLiteral node);
+    public abstract void remove(BlankNodeOrIRI node);
 
     /**
      * 
@@ -57,7 +57,7 @@ public interface DiscobitsHandler {
      * @return the media type of the InfoDiscoBit with the specified URI or null
      *         if no MediaType for that URI is known
      */
-    public MediaType getMediaType(UriRef uriRef);
+    public MediaType getMediaType(IRI uriRef);
 
     /**
      * 
@@ -65,6 +65,6 @@ public interface DiscobitsHandler {
      * @return a byte[] with the data of the InfoDiscoBit with the specified URI
      *         or null if no data for that URI is known
      */
-    public byte[] getData(UriRef uriRef);
+    public byte[] getData(IRI uriRef);
 
 }

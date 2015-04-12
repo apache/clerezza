@@ -22,19 +22,19 @@ package org.apache.clerezza.platform.content.fsadaptor
 import java.util.Collections
 import org.apache.clerezza.platform.Constants
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider
-import org.apache.clerezza.rdf.core.Graph
-import org.apache.clerezza.rdf.core.MGraph
-import org.apache.clerezza.rdf.core.NonLiteral
-import org.apache.clerezza.rdf.core.Resource
-import org.apache.clerezza.rdf.core.TripleCollection
-import org.apache.clerezza.rdf.core.Triple
-import org.apache.clerezza.rdf.core.UriRef
+import org.apache.clerezza.commons.rdf.ImmutableGraph
+import org.apache.clerezza.commons.rdf.Graph
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI
+import org.apache.clerezza.commons.rdf.RDFTerm
+import org.apache.clerezza.commons.rdf.Graph
+import org.apache.clerezza.commons.rdf.Triple
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.rdf.core.access.NoSuchEntityException
 import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider
 import org.apache.clerezza.rdf.core.access.security.TcPermission
-import org.apache.clerezza.rdf.core.impl.AbstractMGraph
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph
+import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph
 import org.apache.clerezza.utils.osgi.BundlePathNode
 import org.osgi.framework.Bundle
 import org.osgi.framework.BundleEvent
@@ -55,28 +55,28 @@ import scala.util._
  */
 class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider {
 
-  private val RESOURCE_MGRAPH_URI = new UriRef(Constants.URN_LOCAL_INSTANCE+"/web-resources.graph")
+  private val RESOURCE_MGRAPH_URI = new IRI(Constants.URN_LOCAL_INSTANCE+"/web-resources.graph")
   private val cacheGraphPrefix = Constants.URN_LOCAL_INSTANCE+"/web-resources-cache.graph"
-  private var currentCacheUri: UriRef = null
+  private var currentCacheUri: IRI = null
 
   private var tcManager: TcManager = null
   private var cgProvider: ContentGraphProvider = null
   private var startLevel: StartLevel = null
   private var pathNodes: List[PathNode] = Nil 
   private var bundleList = List[Bundle]()
-  private var currentCacheMGraph: MGraph = null
+  private var currentCacheGraph: Graph = null
   
   private var frequentUpdateDirectory: Option[PathNode] = None
 
-  private val virtualMGraph: MGraph = new AbstractMGraph() {
+  private val virtualGraph: Graph = new AbstractGraph() {
     
-    private def baseGraph: TripleCollection = frequentUpdateDirectory match {
-        case Some(p) => new DirectoryOverlay(p, currentCacheMGraph)
-        case None => currentCacheMGraph
+    private def baseGraph: Graph = frequentUpdateDirectory match {
+        case Some(p) => new DirectoryOverlay(p, currentCacheGraph)
+        case None => currentCacheGraph
     }
     
-    override def performFilter(s: NonLiteral, p: UriRef,
-                      o: Resource): java.util.Iterator[Triple] = {
+    override def performFilter(s: BlankNodeOrIRI, p: IRI,
+                      o: RDFTerm): java.util.Iterator[Triple] = {
       val baseIter = baseGraph.filter(s,p,o)
       new java.util.Iterator[Triple]() {
         override def next = {
@@ -87,7 +87,7 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
       }
     }
 
-    override def size = baseGraph.size
+    override def performSize = baseGraph.size
     
     override def toString = "BundleFsLoader virtual graph"
     
@@ -126,9 +126,9 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 
   private def deleteCacheGraphs() {
     import collection.JavaConversions._
-    for(mGraphUri <- tcManager.listMGraphs) {
+    for(mGraphUri <- tcManager.listGraphs) {
       if(mGraphUri.getUnicodeString.startsWith(cacheGraphPrefix)) {
-        tcManager.deleteTripleCollection(mGraphUri);
+        tcManager.deleteGraph(mGraphUri);
       }
     }
   }
@@ -153,36 +153,36 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
       context.getBundleContext().removeBundleListener(this);
       updateThread.interrupt()
       cgProvider.removeTemporaryAdditionGraph(RESOURCE_MGRAPH_URI)
-      tcManager.deleteTripleCollection(currentCacheUri);
+      tcManager.deleteGraph(currentCacheUri);
       updateThread == null;
     }
   }
 
   private def updateCache() = {
-    def getVirtualTripleCollection(bundles: Seq[Bundle]): TripleCollection = {
+    def getVirtualGraph(bundles: Seq[Bundle]): Graph = {
       if (bundles.isEmpty) {
-        new SimpleMGraph()
+        new SimpleGraph()
       } else {
         val pathNode = new BundlePathNode(bundles.head, "CLEREZZA-INF/web-resources");
         if (pathNode.isDirectory) {
           BundleFsLoader.log.debug("Creating directory overlay for "+bundles.head)
-          new DirectoryOverlay(pathNode, getVirtualTripleCollection(bundles.tail))
+          new DirectoryOverlay(pathNode, getVirtualGraph(bundles.tail))
         } else {
-          getVirtualTripleCollection(bundles.tail)
+          getVirtualGraph(bundles.tail)
         }
       }
     }
     synchronized {
       val sortedList = Sorting.stableSort(bundleList, (b:Bundle) => -startLevel.getBundleStartLevel(b))
-      val newCacheUri = new UriRef(cacheGraphPrefix+System.currentTimeMillis)
-      val newChacheMGraph = tcManager.createMGraph(newCacheUri);
+      val newCacheUri = new IRI(cacheGraphPrefix+System.currentTimeMillis)
+      val newChacheGraph = tcManager.createGraph(newCacheUri);
       tcManager.getTcAccessController.setRequiredReadPermissions(
           newCacheUri, Collections.singleton(new TcPermission(Constants.CONTENT_GRAPH_URI_STRING, TcPermission.READ)))
-      newChacheMGraph.addAll(getVirtualTripleCollection(sortedList))
-      currentCacheMGraph = newChacheMGraph
+      newChacheGraph.addAll(getVirtualGraph(sortedList))
+      currentCacheGraph = newChacheGraph
       val oldCacheUri = currentCacheUri
       currentCacheUri = newCacheUri
-      if (oldCacheUri != null) tcManager.deleteTripleCollection(oldCacheUri);
+      if (oldCacheUri != null) tcManager.deleteGraph(oldCacheUri);
       BundleFsLoader.log.debug("updated web-resource cache")
     }
   }
@@ -191,49 +191,41 @@ class BundleFsLoader extends BundleListener with Logger with WeightedTcProvider 
 
   override def getWeight() = 30
 
-  override def getMGraph(name: UriRef) = {
+  override def getGraph(name: IRI) = {
     if (name.equals(RESOURCE_MGRAPH_URI)) {
-      virtualMGraph
+      virtualGraph
     } else {
       throw new NoSuchEntityException(name);
     }
   }
+  
+  override def getMGraph(name: IRI) = getGraph(name);
 
-  override def getTriples(name: UriRef) = {
-    getMGraph(name);
-  }
-
-  override def getGraph(name: UriRef) = {
-    throw new NoSuchEntityException(name);
-  }
-
-
-  override def listMGraphs(): java.util.Set[UriRef] = {
+  override def getImmutableGraph(name: IRI) = throw new NoSuchEntityException(name);
+  
+  override def listGraphs(): java.util.Set[IRI] = {
     java.util.Collections.singleton(RESOURCE_MGRAPH_URI);
   }
+  
+  override def listMGraphs() = listGraphs();
+  
+  override def listImmutableGraphs(): java.util.Set[IRI] = java.util.Collections.emptySet();
 
-  override def listGraphs() = {
-    new java.util.HashSet[UriRef]();
-  }
 
-  override def listTripleCollections() = {
-    Collections.singleton(RESOURCE_MGRAPH_URI);
-  }
-
-  override def createMGraph(name: UriRef) =  {
+  override def createGraph(name: IRI) =  {
     throw new UnsupportedOperationException("Not supported.");
   }
 
-  override def createGraph(name: UriRef, triples: TripleCollection): Graph = {
+  override def createImmutableGraph(name: IRI, triples: Graph): ImmutableGraph = {
     throw new UnsupportedOperationException("Not supported.");
   }
 
-  override def deleteTripleCollection(name: UriRef) {
+  override def deleteGraph(name: IRI) {
     throw new UnsupportedOperationException("Not supported.");
   }
 
-  override def getNames(graph: Graph) = {
-    val result = new java.util.HashSet[UriRef]();
+  override def getNames(graph: ImmutableGraph) = {
+    val result = new java.util.HashSet[IRI]();
     result;
   }
 

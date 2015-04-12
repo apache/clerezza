@@ -31,23 +31,22 @@ import javax.ws.rs.ext.Provider;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 
-/**
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
- * 
- * @author reto
- */
+
+@Component
+@Service(Object.class)
+@Property(name = "javax.ws.rs", boolValue = true)
 @Provider
 @Consumes({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
     SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
     SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class ImmutableGraphReader implements MessageBodyReader<ImmutableGraph> {
 
-    /**
-     * @scr.reference
-     */
+    @Reference
     private Parser parser;
     @Override
     public boolean isReadable(Class<?> type, Type genericType,

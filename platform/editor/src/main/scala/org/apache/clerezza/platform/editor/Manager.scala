@@ -24,7 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider
-import org.apache.clerezza.rdf.core.Graph
+import org.apache.clerezza.commons.rdf.ImmutableGraph
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
@@ -45,7 +45,7 @@ class Manager {
   def sayHello = "Size of content graph: "+cgp.getContentGraph.size
   
   @PUT
-  def putData(graph: Graph) = {
+  def putData(graph: ImmutableGraph) = {
     //TODO implement
     graph
   }

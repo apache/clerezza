@@ -42,6 +42,9 @@ import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
 import org.apache.clerezza.rdf.core.access.WeightedTcProvider;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * The <code>FileTcProvider</code> is a <code>WeightedTcProvider</code> that
@@ -57,12 +60,11 @@ import org.apache.clerezza.rdf.core.serializedform.Serializer;
  * availability of these services.
  * The default weight of the provider is 300.
  *
- * @scr.component
- * @scr.service interface="org.apache.clerezza.rdf.core.access.WeightedTcProvider"
- * @scr.property name="weight" type="Integer" value="300"
- * 
  * @author mir
  */
+@Component
+@Service(WeightedTcProvider.class)
+@Property(name = "weight", intValue = 300)
 public class FileTcProvider implements WeightedTcProvider {
 
     /**

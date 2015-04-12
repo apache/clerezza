@@ -34,18 +34,18 @@ import org.apache.clerezza.platform.content.webdav.UNLOCK;
 import org.apache.clerezza.platform.typehandlerspace.SupportedTypes;
 import org.apache.clerezza.platform.typerendering.RenderletManager;
 import org.apache.clerezza.platform.typerendering.scalaserverpages.ScalaServerPagesRenderlet;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.PLATFORM;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.rdf.utils.UnionMGraph;
+import org.apache.clerezza.rdf.utils.UnionGraph;
 import org.apache.felix.scr.annotations.Services;
 import org.osgi.service.component.ComponentContext;
 
@@ -78,7 +78,7 @@ public class CollectionTypeHandler extends DiscobitsTypeHandler{
     protected void activate(ComponentContext componentContext) {
         URL templateURL = getClass().getResource("collection.ssp");
         renderletManager.registerRenderlet(ScalaServerPagesRenderlet.class.getName(),
-                new UriRef(templateURL.toString()), HIERARCHY.Collection,
+                new IRI(templateURL.toString()), HIERARCHY.Collection,
                 "naked", MediaType.APPLICATION_XHTML_XML_TYPE, true);
 
         logger.info("CollectionTypeHandler activated.");
@@ -91,31 +91,31 @@ public class CollectionTypeHandler extends DiscobitsTypeHandler{
     @GET
     @Override
     public GraphNode getResource(@Context UriInfo uriInfo) {
-        final MGraph contentGraph = cgProvider.getContentGraph();
+        final Graph contentGraph = cgProvider.getContentGraph();
         final String uriString = uriInfo.getAbsolutePath().toString();
-        final UriRef indexUri = new UriRef(uriString+"index");
+        final IRI indexUri = new IRI(uriString+"index");
         if (contentGraph.filter(indexUri, null, null).hasNext()) {
             return new GraphNode(indexUri, contentGraph);
         }
-        final UriRef uri = new UriRef(uriString);
-        MGraph mGraph = new UnionMGraph(new SimpleMGraph(), contentGraph);
+        final IRI uri = new IRI(uriString);
+        Graph mGraph = new UnionGraph(new SimpleGraph(), contentGraph);
         final GraphNode graphNode = new GraphNode(uri, mGraph);
         graphNode.addProperty(RDF.type, PLATFORM.HeadedPage);
 
-        UriRef collectionUri = new UriRef(uriInfo.getAbsolutePath().toString());
+        IRI collectionUri = new IRI(uriInfo.getAbsolutePath().toString());
         return graphNode;
     }
 
     @Override
-    Map<UriRef, PropertyMap> getPropNames(GraphNode node, String depthHeader) {
+    Map<IRI, PropertyMap> getPropNames(GraphNode node, String depthHeader) {
         return WebDavUtils.getCollectionProps(null, null, null, node,
                             depthHeader, false /* doesNotIncludeValues */);
     }
 
     @Override
-    Map<UriRef, PropertyMap> getPropsByName(Node requestNode, GraphNode node,
+    Map<IRI, PropertyMap> getPropsByName(Node requestNode, GraphNode node,
             String depthHeader) {
-        Map<UriRef, PropertyMap> result;
+        Map<IRI, PropertyMap> result;
         NodeList children = requestNode.getChildNodes();
         result = WebDavUtils.getPropsByName(children, node, depthHeader,
                 true /* includeValues */);
@@ -123,7 +123,7 @@ public class CollectionTypeHandler extends DiscobitsTypeHandler{
     }
 
     @Override
-    Map<UriRef, PropertyMap> getAllProps(GraphNode node, String depthHeader) {
+    Map<IRI, PropertyMap> getAllProps(GraphNode node, String depthHeader) {
         return WebDavUtils.getCollectionProps(null, null, null, node,
                             depthHeader, true /* includeValues */);
     }

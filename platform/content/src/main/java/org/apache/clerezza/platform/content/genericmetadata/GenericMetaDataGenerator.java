@@ -20,12 +20,12 @@ package org.apache.clerezza.platform.content.genericmetadata;
 
 import java.util.Date;
 import javax.ws.rs.core.MediaType;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.TypedLiteral;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
 
 /**
@@ -39,7 +39,7 @@ public class GenericMetaDataGenerator implements MetaDataGenerator {
 
     @Override
     public void generate(GraphNode node, byte[] data, MediaType mediaType) {
-        TypedLiteral dateLiteral = LiteralFactory.getInstance()
+        Literal dateLiteral = LiteralFactory.getInstance()
                     .createTypedLiteral(new Date());
         if(node.getObjects(DCTERMS.dateSubmitted).hasNext()) {
             if(node.getObjects(DCTERMS.modified).hasNext()) {

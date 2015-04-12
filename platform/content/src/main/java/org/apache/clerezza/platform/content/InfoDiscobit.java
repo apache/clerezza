@@ -20,10 +20,9 @@ package org.apache.clerezza.platform.content;
 
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
-import org.apache.clerezza.rdf.core.Literal;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.TypedLiteral;
 
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
@@ -48,7 +47,7 @@ public class InfoDiscobit {
         Lock l = node.readLock();
         l.lock();
         try {
-            Iterator<Resource> types = node.getObjects(RDF.type);
+            Iterator<RDFTerm> types = node.getObjects(RDF.type);
             while(types.hasNext()) {
                 if (types.next().equals(DISCOBITS.InfoDiscoBit)){
                     return new InfoDiscobit(node);
@@ -87,12 +86,8 @@ public class InfoDiscobit {
             Iterator<Literal> infoBitLits = infoBit.getLiterals(DISCOBITS.infoBit);
             if (infoBitLits.hasNext()) {
                 final Literal literalValue = infoBitLits.next();
-                if (literalValue instanceof TypedLiteral) {
-                    result = LiteralFactory.getInstance().createObject(
-                            (new byte[0]).getClass(), (TypedLiteral) literalValue);
-                } else {
-                    throw new RuntimeException("InfoDiscobit has infoBit value which is not a TypedLiteral but "+literalValue);
-                }
+                result = LiteralFactory.getInstance().createObject(
+                        (new byte[0]).getClass(), literalValue);
             } else {
                 throw new RuntimeException("InfoDiscobit has not infoBit property");
             }

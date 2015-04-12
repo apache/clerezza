@@ -27,13 +27,12 @@ import java.util.concurrent.locks.Lock;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.content.collections.CollectionCreator;
 
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -50,9 +49,9 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 
     /**
      *
-     * @return the MGraph to be used to retrieve and create discobits
+     * @return the Graph to be used to retrieve and create discobits
      */
-    protected abstract MGraph getMGraph();
+    protected abstract Graph getGraph();
 
     /**
      * A <code>Set</code> containing <code>MetaDataGenerator</code>s to be used
@@ -64,11 +63,11 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
 
     
     @Override
-    public void put(UriRef infoDiscoBitUri, MediaType mediaType,
+    public void put(IRI infoDiscoBitUri, MediaType mediaType,
             byte[] data) {
 
         GraphNode infoDiscoBitNode;
-        final LockableMGraph mGraph = (LockableMGraph) getMGraph();
+        final Graph mGraph = getGraph();
         infoDiscoBitNode = new GraphNode(infoDiscoBitUri, mGraph);
         CollectionCreator collectionCreator = new CollectionCreator(mGraph);
         collectionCreator.createContainingCollections(infoDiscoBitUri);
@@ -76,10 +75,10 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
         writeLock.lock();
         try {
             infoDiscoBitNode.addProperty(RDF.type, DISCOBITS.InfoDiscoBit);
-            TypedLiteral dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
+            Literal dataLiteral = LiteralFactory.getInstance().createTypedLiteral(data);
             infoDiscoBitNode.deleteProperties(DISCOBITS.infoBit);
             infoDiscoBitNode.addProperty(DISCOBITS.infoBit, dataLiteral);
-            TypedLiteral mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
+            Literal mediaTypeLiteral = LiteralFactory.getInstance().createTypedLiteral(mediaType.toString());
             infoDiscoBitNode.deleteProperties(DISCOBITS.mediaType);
             infoDiscoBitNode.addProperty(DISCOBITS.mediaType,mediaTypeLiteral);
         } finally {
@@ -98,8 +97,8 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
     }
 
     @Override
-    public  void remove(NonLiteral node) {
-        MGraph mGraph = getMGraph();        
+    public  void remove(BlankNodeOrIRI node) {
+        Graph mGraph = getGraph();        
         Iterator<Triple> properties = mGraph.filter(node, null, null);
         //copying properties to set, as we're modifying underlying graph
         Set<Triple> propertiesSet = new HashSet<Triple>();
@@ -109,10 +108,10 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
         properties = propertiesSet.iterator();
         while (properties.hasNext()) {
             Triple triple = properties.next();
-            UriRef predicate = triple.getPredicate();
+            IRI predicate = triple.getPredicate();
             if (predicate.equals(DISCOBITS.contains)) {
                 try {
-                    GraphNode containedNode = new GraphNode((NonLiteral)triple.getObject(), mGraph);
+                    GraphNode containedNode = new GraphNode((BlankNodeOrIRI)triple.getObject(), mGraph);
                     //The following includes triple
                     containedNode.deleteNodeContext();
                 } catch (ClassCastException e) {
@@ -128,8 +127,8 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
     }
 
     @Override
-    public byte[] getData(UriRef uriRef) {
-        MGraph mGraph = getMGraph();
+    public byte[] getData(IRI uriRef) {
+        Graph mGraph = getGraph();
         GraphNode node = new GraphNode(uriRef, mGraph);
         final InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(node);
         if (infoDiscobit == null) {
@@ -139,8 +138,8 @@ public abstract class AbstractDiscobitsHandler implements DiscobitsHandler {
     }
 
     @Override
-    public MediaType getMediaType(UriRef uriRef) {
-        MGraph mGraph = getMGraph();
+    public MediaType getMediaType(IRI uriRef) {
+        Graph mGraph = getGraph();
         GraphNode node = new GraphNode(uriRef, mGraph);
         final InfoDiscobit infoDiscobit = InfoDiscobit.createInstance(node);
         if (infoDiscobit == null) {

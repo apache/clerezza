@@ -18,32 +18,33 @@
  specific language governing permissions and limitations
  under the License.
 
--->
+    -->
 
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5</version>
+        <version>7-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
-    </parent>    <groupId>org.apache.clerezza</groupId>
+    </parent>    
+    <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.content</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Clerezza - Platform Content</name>
     <description>Clerezza CMS - A handler to manage and access data modeled using
-    the discobits ontology</description>
+        the discobits ontology</description>
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
-             <artifactId>org.osgi.core</artifactId>
-         </dependency>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-             <artifactId>org.osgi.compendium</artifactId>
-         </dependency>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
@@ -51,37 +52,37 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.14</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typehandlerspace</artifactId>
-            <version>0.9</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>0.14</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
-            <version>0.12</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.graphprovider.content</artifactId>
-            <version>0.7</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.graphnodeprovider</artifactId>
-            <version>0.2</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.seedsnipe</artifactId>
-            <version>0.7</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -92,7 +93,7 @@
                     <groupId>org.apache.felix</groupId>
                 </exclusion>
             </exclusions>
-            <version>0.10</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.wymiwyg</groupId>
@@ -110,27 +111,27 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.config</artifactId>
-            <version>0.4</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
-    <!--    <dependency>
+        <!--    <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.security</artifactId>
         </dependency> -->
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scalaserverpages</artifactId>
-            <version>0.4</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.metadata</artifactId>
-            <version>0.2</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core.test</artifactId>
             <scope>test</scope>
-            <version>0.15</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -149,6 +150,10 @@
                 <groupId>net.sf.alchim</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin> 
         </plugins>
     </build>
 </project>

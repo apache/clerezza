@@ -20,10 +20,10 @@ package org.apache.clerezza.platform.content.collections;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.RDF;
 
@@ -33,15 +33,15 @@ import org.apache.clerezza.rdf.ontologies.RDF;
  */
 public class CollectionsCreatorTest{
 
-    private static UriRef root = new UriRef("http://localhost:8282/");
-    private UriRef foo = new UriRef("http://localhost:8282/foo/");
-    private UriRef fooResource = new UriRef("http://localhost:8282/foo/resource");
-    private UriRef fooTest = new UriRef("http://localhost:8282/foo/test/");
-    private UriRef fooTestResource4 = new UriRef("http://localhost:8282/foo/test/resource4");
+    private static IRI root = new IRI("http://localhost:8282/");
+    private IRI foo = new IRI("http://localhost:8282/foo/");
+    private IRI fooResource = new IRI("http://localhost:8282/foo/resource");
+    private IRI fooTest = new IRI("http://localhost:8282/foo/test/");
+    private IRI fooTestResource4 = new IRI("http://localhost:8282/foo/test/resource4");
         
     @Test
     public void listPositionTest() throws Exception {
-        MGraph mGraph = new SimpleMGraph();
+        Graph mGraph = new SimpleGraph();
         CollectionCreator collectionCreator = new CollectionCreator(mGraph);
         collectionCreator.createContainingCollections(fooTestResource4);
         Assert.assertTrue(mGraph.contains(new TripleImpl(fooTest, RDF.type, HIERARCHY.Collection)));

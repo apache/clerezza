@@ -20,7 +20,7 @@ package org.apache.clerezza.platform.content;
 
 import org.apache.clerezza.rdf.metadata.MetaDataGenerator;
 import java.util.Set;
-import org.apache.clerezza.rdf.core.MGraph;
+import org.apache.clerezza.commons.rdf.Graph;
 
 /**
  *
@@ -28,14 +28,14 @@ import org.apache.clerezza.rdf.core.MGraph;
  */
 class SimpleDiscobitsHandler extends AbstractDiscobitsHandler {
     
-    private final MGraph mGraph;
+    private final Graph mGraph;
 
-    public SimpleDiscobitsHandler(MGraph mGraph) {
+    public SimpleDiscobitsHandler(Graph mGraph) {
         this.mGraph = mGraph;
     }
 
     @Override
-    protected MGraph getMGraph() {
+    protected Graph getGraph() {
         return mGraph;
     }
 

@@ -19,19 +19,19 @@
 
 package org.apache.clerezza.platform.content.fsadaptor
 
-import org.apache.clerezza.rdf.core.NonLiteral
-import org.apache.clerezza.rdf.core.Resource
-import org.apache.clerezza.rdf.core.Triple
-import org.apache.clerezza.rdf.core.TripleCollection
-import org.apache.clerezza.rdf.core.UriRef
-import org.apache.clerezza.rdf.core.impl.AbstractTripleCollection
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI
+import org.apache.clerezza.commons.rdf.RDFTerm
+import org.apache.clerezza.commons.rdf.Triple
+import org.apache.clerezza.commons.rdf.Graph
+import org.apache.clerezza.commons.rdf.IRI
+import org.apache.clerezza.commons.rdf.impl.utils.AbstractGraph
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph
 import org.apache.clerezza.utils.IteratorMerger
 import org.wymiwyg.commons.util.dirbrowser.PathNode
 import java.util.Iterator
 
-class DirectoryOverlay(pathNode: PathNode, base: TripleCollection)
-  extends AbstractTripleCollection {
+class DirectoryOverlay(pathNode: PathNode, base: Graph)
+  extends AbstractGraph {
 
   
 
@@ -39,11 +39,11 @@ class DirectoryOverlay(pathNode: PathNode, base: TripleCollection)
 
   
 
-  override def performFilter(s: NonLiteral, p: UriRef,
-    o: Resource): Iterator[Triple] = {
-    val addedTriples = new SimpleMGraph()
+  override def performFilter(s: BlankNodeOrIRI, p: IRI,
+    o: RDFTerm): Iterator[Triple] = {
+    val addedTriples = new SimpleGraph()
 
-    PathNode2MGraph.describeInGraph(pathNode, addedTriples)
+    PathNode2Graph.describeInGraph(pathNode, addedTriples)
     
     val subjects = (for (triple <- addedTriples; subject = triple.getSubject) yield {
       subject
@@ -76,10 +76,10 @@ class DirectoryOverlay(pathNode: PathNode, base: TripleCollection)
   /**
    * returns an upper bound of the size (removals in abse are not deducted)
    */
-  override def size = {
-    val addedTriples = new SimpleMGraph()
+  override def performSize = {
+    val addedTriples = new SimpleGraph()
 
-      PathNode2MGraph.describeInGraph(pathNode, addedTriples)
+      PathNode2Graph.describeInGraph(pathNode, addedTriples)
 
    base.size+addedTriples.size 
   }

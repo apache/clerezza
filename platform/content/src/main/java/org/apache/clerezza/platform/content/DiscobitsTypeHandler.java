@@ -70,17 +70,16 @@ import org.slf4j.LoggerFactory;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typehandlerspace.OPTIONS;
 import org.apache.clerezza.platform.typehandlerspace.SupportedTypes;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.rdf.utils.UnionMGraph;
-import org.apache.clerezza.rdf.utils.UriMutatingTripleCollection;
+import org.apache.clerezza.rdf.utils.UnionGraph;
+import org.apache.clerezza.rdf.utils.UriMutatingGraph;
 import org.apache.clerezza.web.fileserver.util.MediaTypeGuesser;
 import org.osgi.service.component.ComponentContext;
 import org.w3c.dom.Document;
@@ -145,7 +144,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
     @GET
     @Produces({"*/*"})
     public Object getResource(@Context UriInfo uriInfo) {
-        final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
+        final IRI uri = new IRI(uriInfo.getAbsolutePath().toString());
             final GraphNode graphNode = getResourceAsGraphNode(uriInfo);
         if (graphNode == null) {
             return resourceUnavailable(uri, uriInfo);
@@ -163,10 +162,10 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
     }
 
     private GraphNode getResourceAsGraphNode(UriInfo uriInfo) {
-        final UriRef uri = new UriRef(uriInfo.getAbsolutePath().toString());
+        final IRI uri = new IRI(uriInfo.getAbsolutePath().toString());
         GraphNode result = graphNodeProvider.getLocal(uri);
         //could chck if nodeContext > 0, but this would be less efficient
-        TripleCollection tc = result.getGraph();
+        Graph tc = result.getGraph();
         if (tc.filter(uri, null, null).hasNext()) {
             return result;
         }
@@ -200,7 +199,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
             }
             
         }    
-        final UriRef infoDiscoBitUri = new UriRef(uriInfo.getAbsolutePath().toString());
+        final IRI infoDiscoBitUri = new IRI(uriInfo.getAbsolutePath().toString());
         put(infoDiscoBitUri, MediaType.valueOf(contentType), data);
         return Response.status(Status.CREATED).build();
     }
@@ -221,8 +220,8 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
         if (uriString.charAt(uriString.length()-1) != '/') {
             uriString += '/';
         }
-        UriRef nodeUri = new UriRef(uriString);
-        final MGraph mGraph = cgProvider.getContentGraph();
+        IRI nodeUri = new IRI(uriString);
+        final Graph mGraph = cgProvider.getContentGraph();
         Triple typeTriple = new TripleImpl(nodeUri, RDF.type, HIERARCHY.Collection);
         if (mGraph.contains(typeTriple)) {
             return Response.status(405) // Method Not Allowed
@@ -252,17 +251,17 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
     @Produces({"application/xml", "text/xml", "*/*"})
     public Response propfind(@Context UriInfo uriInfo,
             @Context HttpHeaders headers, DOMSource body) {
-        final UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
+        final IRI nodeUri = new IRI(uriInfo.getAbsolutePath().toString());
         if (!nodeAtUriExists(nodeUri)) {
             return resourceUnavailable(nodeUri, uriInfo);
         }
-            Map<UriRef, PropertyMap> result;
+            Map<IRI, PropertyMap> result;
         try {
             String depthHeader = WebDavUtils.getHeaderAsString(headers, "Depth");
             if (depthHeader == null) {
                 depthHeader = WebDavUtils.infinite;
             }
-            final MGraph mGraph = cgProvider.getContentGraph();
+            final Graph mGraph = cgProvider.getContentGraph();
             GraphNode node = new GraphNode(nodeUri, mGraph);
             if (body != null) {
                 Document requestDoc = WebDavUtils.sourceToDocument(body);
@@ -294,22 +293,22 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
         }
     }
 
-    Map<UriRef, PropertyMap> getPropNames(GraphNode node, String depthHeader) {
-        Map<UriRef, PropertyMap> result = new HashMap<UriRef, PropertyMap>();
+    Map<IRI, PropertyMap> getPropNames(GraphNode node, String depthHeader) {
+        Map<IRI, PropertyMap> result = new HashMap<IRI, PropertyMap>();
         WebDavUtils.addNodeProperties(result, null, null, node, false);
         return result;
     }
 
-    Map<UriRef, PropertyMap> getPropsByName(Node requestNode, GraphNode node,
+    Map<IRI, PropertyMap> getPropsByName(Node requestNode, GraphNode node,
             String depthHeader) {
-        Map<UriRef, PropertyMap> result;
+        Map<IRI, PropertyMap> result;
         NodeList children = requestNode.getChildNodes();
         result = WebDavUtils.getPropsByName(children, node, "0", true);
         return result;
     }
 
-    Map<UriRef, PropertyMap> getAllProps(GraphNode node, String depthHeader) {
-        HashMap<UriRef, PropertyMap> result = new HashMap<UriRef, PropertyMap>();
+    Map<IRI, PropertyMap> getAllProps(GraphNode node, String depthHeader) {
+        HashMap<IRI, PropertyMap> result = new HashMap<IRI, PropertyMap>();
         WebDavUtils.addNodeProperties(result, null, null, node, true);
         return result;
     }
@@ -329,13 +328,13 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
     @Consumes({"application/xml", "text/xml", "*/*"})
     @Produces({"application/xml", "text/xml", "*/*"})
     public Response proppatch(@Context UriInfo uriInfo, DOMSource body) {
-        UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
+        IRI nodeUri = new IRI(uriInfo.getAbsolutePath().toString());
         if (!nodeAtUriExists(nodeUri)) {
             return resourceUnavailable(nodeUri, uriInfo);
         }
         try {
             Document requestDoc = WebDavUtils.sourceToDocument(body);
-            final MGraph mGraph = cgProvider.getContentGraph();
+            final Graph mGraph = cgProvider.getContentGraph();
             GraphNode node = new GraphNode(nodeUri, mGraph);
             NodeList propsToSet = null;
             NodeList propsToRemove = null;
@@ -381,12 +380,12 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
      */
     @MOVE
     public Response move(@Context UriInfo uriInfo, @Context HttpHeaders headers) {
-        UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
-        final LockableMGraph mGraph = cgProvider.getContentGraph();
+        IRI nodeUri = new IRI(uriInfo.getAbsolutePath().toString());
+        final Graph mGraph = cgProvider.getContentGraph();
         GraphNode node = new GraphNode(nodeUri, mGraph);
         String targetString = WebDavUtils.getHeaderAsString(headers,
                     "Destination");
-        UriRef targetUri = new UriRef(targetString);
+        IRI targetUri = new IRI(targetString);
         String overwriteHeader = WebDavUtils.getHeaderAsString(headers, "Overwrite");
         boolean overwriteTarget = "T".equalsIgnoreCase(overwriteHeader);
         if (nodeAtUriExists(targetUri)) {
@@ -439,12 +438,12 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
      */
     @DELETE
     public Response delete(@Context UriInfo uriInfo) {
-        UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
+        IRI nodeUri = new IRI(uriInfo.getAbsolutePath().toString());
         if (!nodeAtUriExists(nodeUri)) {
             return Response.status(Status.NOT_FOUND).entity(
                     uriInfo.getAbsolutePath()).type(MediaType.TEXT_PLAIN).build();
         }
-        final LockableMGraph mGraph = cgProvider.getContentGraph();
+        final Graph mGraph = cgProvider.getContentGraph();
         GraphNode node = new GraphNode(nodeUri, mGraph);
         node.deleteNodeContext();
         return Response.ok().build();
@@ -462,7 +461,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
      */
     @OPTIONS
     public Response options(@Context UriInfo uriInfo) {
-        final UriRef nodeUri = new UriRef(uriInfo.getAbsolutePath().toString());
+        final IRI nodeUri = new IRI(uriInfo.getAbsolutePath().toString());
         if (!nodeAtUriExists(nodeUri)) {
             return resourceUnavailable(nodeUri, uriInfo);
         }
@@ -501,7 +500,7 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
     }
 
     @Override
-    protected MGraph getMGraph() {
+    protected Graph getGraph() {
         return cgProvider.getContentGraph();
     }
 
@@ -512,8 +511,8 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
 
     
 
-    private boolean nodeAtUriExists(UriRef nodeUri) {
-        LockableMGraph mGraph = (LockableMGraph) getMGraph();
+    private boolean nodeAtUriExists(IRI nodeUri) {
+        Graph mGraph = getGraph();
         Lock readLock = mGraph.getLock().readLock();
         readLock.lock();
         try {
@@ -524,9 +523,9 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
         }
     }
 
-    private Response resourceUnavailable(UriRef nodeUri,
+    private Response resourceUnavailable(IRI nodeUri,
             UriInfo uriInfo) {
-        UriRef oppositUri = makeOppositeUriRef(nodeUri);
+        IRI oppositUri = makeOppositeIRI(nodeUri);
         if (nodeAtUriExists(oppositUri)) {
             return RedirectUtil.createSeeOtherResponse(
                     oppositUri.getUnicodeString(), uriInfo);
@@ -541,16 +540,16 @@ public class DiscobitsTypeHandler extends AbstractDiscobitsHandler
      * @param uri
      * @return
      */
-    private static UriRef makeOppositeUriRef(UriRef uri) {
+    private static IRI makeOppositeIRI(IRI uri) {
         String uriString = uri.getUnicodeString();
         if (uriString.endsWith("/")) {
-            return new UriRef(uriString.substring(0, uriString.length() - 1));
+            return new IRI(uriString.substring(0, uriString.length() - 1));
         } else {
-            return new UriRef(uriString + "/");
+            return new IRI(uriString + "/");
         }
     }
 
-    private UriRef createAnyHostUri(UriInfo uriInfo) {
-        return new UriRef(Constants.ALL_HOSTS_URI_PREFIX+uriInfo.getPath());
+    private IRI createAnyHostUri(UriInfo uriInfo) {
+        return new IRI(Constants.ALL_HOSTS_URI_PREFIX+uriInfo.getPath());
     }
 }

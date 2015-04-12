@@ -22,11 +22,11 @@ package org.apache.clerezza.platform.content.fsadaptor;
 import java.io.ByteArrayOutputStream
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.Constants
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl
 import org.apache.clerezza.rdf.core.LiteralFactory
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl
-import org.apache.clerezza.rdf.core.impl.TripleImpl
 import org.apache.clerezza.rdf.ontologies.DISCOBITS
 import org.apache.clerezza.rdf.ontologies.HIERARCHY
 import org.apache.clerezza.rdf.ontologies.RDF
@@ -39,7 +39,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode
  *
  * @author reto
  */
-object PathNode2MGraph {
+object PathNode2Graph {
 
   private val URI_PREFIX = Constants.URN_LOCAL_INSTANCE
 
@@ -68,9 +68,9 @@ object PathNode2MGraph {
     baos.toByteArray
   }
 
-  def describeInGraph(directory: PathNode, mGraph: MGraph) {
+  def describeInGraph(directory: PathNode, mGraph: Graph) {
     val basePathLength = directory.getPath.length
-    def createUriRef(file: PathNode, isDirectory: Boolean) = {
+    def createIRI(file: PathNode, isDirectory: Boolean) = {
       def addSlashIfNeeded(s: String) = {
          if (s.endsWith("/")) {
            s
@@ -83,15 +83,15 @@ object PathNode2MGraph {
       } else {
         file.getPath.substring(basePathLength)
       }
-      new UriRef(URI_PREFIX+path)
+      new IRI(URI_PREFIX+path)
     }
     def processDirectory(directory: PathNode) {
-      val directoryResource = createUriRef(directory, true)
+      val directoryResource = createIRI(directory, true)
       mGraph.add(new TripleImpl(directoryResource, RDF.`type`, HIERARCHY.Collection))
       for (subPath <- directory.list) {
         val file = directory.getSubPath(subPath)
         val isDirectory = file.isDirectory
-        val resource = createUriRef(file, isDirectory)
+        val resource = createIRI(file, isDirectory)
         mGraph.add(new TripleImpl(resource, HIERARCHY.parent, directoryResource))
         if (isDirectory) {
           processDirectory(file)
@@ -107,9 +107,9 @@ object PathNode2MGraph {
     processDirectory(directory)
   }
 
-  def removeNodesFromGraph(directory: PathNode, mGraph: MGraph) {
+  def removeNodesFromGraph(directory: PathNode, mGraph: Graph) {
     val basePathLength = directory.getPath.length
-    def createUriRef(file: PathNode, isDirectory: Boolean) = {
+    def createIRI(file: PathNode, isDirectory: Boolean) = {
       def addSlashIfNeeded(s: String) = {
          if (s.endsWith("/")) {
            s
@@ -122,15 +122,15 @@ object PathNode2MGraph {
       } else {
         file.getPath.substring(basePathLength)
       }
-      new UriRef(URI_PREFIX+path)
+      new IRI(URI_PREFIX+path)
     }
     def processDirectory(directory: PathNode) {
-      val directoryResource = createUriRef(directory, true)
+      val directoryResource = createIRI(directory, true)
       mGraph.remove(new TripleImpl(directoryResource, RDF.`type`, HIERARCHY.Collection))
       for (subPath <- directory.list) {
         val file = directory.getSubPath(subPath)
         val isDirectory = file.isDirectory
-        val resource = createUriRef(file, isDirectory)
+        val resource = createIRI(file, isDirectory)
         val node = new GraphNode(resource, mGraph)
         if (isDirectory) {
           processDirectory(file)

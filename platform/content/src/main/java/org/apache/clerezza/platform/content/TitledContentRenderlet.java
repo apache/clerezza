@@ -32,9 +32,9 @@ import java.util.TreeSet;
 import javax.ws.rs.core.MediaType;
 import org.apache.clerezza.platform.typerendering.CallbackRenderer;
 import org.apache.clerezza.platform.typerendering.Renderlet;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.utils.GraphNode;
 
@@ -70,8 +70,8 @@ public class TitledContentRenderlet implements Renderlet {
         PrintWriter writer = new PrintWriter(os);
         List<GraphNode> containedNodes = getContainedNodes(res);
         if (containedNodes.size() < 2) {
-            String nodeLabel = res.getNode() instanceof UriRef ?
-                ((UriRef)res.getNode()).getUnicodeString() : " Bnode";
+            String nodeLabel = res.getNode() instanceof IRI ?
+                ((IRI)res.getNode()).getUnicodeString() : " Bnode";
             writer.print(nodeLabel+": titled and/or content could not be found");
             writer.flush();
             return;
@@ -112,14 +112,14 @@ public class TitledContentRenderlet implements Renderlet {
             }
 
         });
-        final Iterator<Resource> entriesIter = titledContent.getObjects(DISCOBITS.contains);
+        final Iterator<RDFTerm> entriesIter = titledContent.getObjects(DISCOBITS.contains);
         while (entriesIter.hasNext()) {
-            Resource resource = entriesIter.next();
-            entries.add(new GraphNode((NonLiteral) resource,titledContent.getGraph()));
+            RDFTerm resource = entriesIter.next();
+            entries.add(new GraphNode((BlankNodeOrIRI) resource,titledContent.getGraph()));
         }
         final List<GraphNode> result = new ArrayList<GraphNode>();
         for (GraphNode graphNode : entries) {
-            Iterator<Resource> holded = graphNode.getObjects(DISCOBITS.holds);
+            Iterator<RDFTerm> holded = graphNode.getObjects(DISCOBITS.holds);
             if (!holded.hasNext()) {
                 throw new RuntimeException(
                         "Titled Content must contain a first element: "+graphNode.getNodeContext());

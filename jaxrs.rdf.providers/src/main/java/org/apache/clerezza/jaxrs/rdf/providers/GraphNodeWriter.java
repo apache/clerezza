@@ -44,6 +44,10 @@ import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * By default this returns a serialization of the context of the GraphNode.
@@ -53,12 +57,13 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  * repeated). For the specified properties their objects respectively subjects
  * are expanded as if they were bnodes.
  *
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
  * 
  * @author reto
  */
+
+@Component
+@Service(Object.class)
+@Property(name = "javax.ws.rs", boolValue = true)
 @Provider
 @Produces({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
     SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
@@ -67,9 +72,8 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
 
     public static final String OBJ_EXP_PARAM = "xPropObj";
     public static final String SUBJ_EXP_PARAM = "xPropSubj";
-    /**
-     * @scr.reference
-     */
+    
+    @Reference
     private Serializer serializer;
     private UriInfo uriInfo;
 

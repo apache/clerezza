@@ -50,7 +50,7 @@ import org.apache.clerezza.commons.rdf.Literal;
  *
  * Clients with a ConfigureTcAcessPermission can set the permissions required to
  * access a Graph. These permissions are stored persistently in an
- * Graph named urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph
+ * Graph named urn:x-localinstance:/graph-access.graph
  *
  * Clients should get an instance from TcManager.getTcAccessController()
  * 
@@ -59,7 +59,7 @@ import org.apache.clerezza.commons.rdf.Literal;
 public abstract class TcAccessController {
 
     private final TcManager tcManager;
-    private final IRI permissionGraphName = new IRI("urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph");
+    private final IRI permissionGraphName = new IRI("urn:x-localinstance:/graph-access.graph");
     //we can't rely on ontology plugin in rdf core
     private String ontologyNamespace = "http://clerezza.apache.org/2010/07/10/graphpermssions#";
     private final IRI readPermissionListProperty = new IRI(ontologyNamespace + "readPermissionList");
@@ -80,7 +80,7 @@ public abstract class TcAccessController {
 
     /**
      *
-     * @param tcManager the tcManager used to locate urn:x-localinstance:/ImmutableGraph-access.ImmutableGraph
+     * @param tcManager the tcManager used to locate urn:x-localinstance:/graph-access.graph
      */
     public TcAccessController() {
         this.tcManager = getTcManager();

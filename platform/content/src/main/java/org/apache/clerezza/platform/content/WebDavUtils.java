@@ -41,13 +41,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMResult;
-import org.apache.clerezza.rdf.core.Literal;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
 import org.apache.clerezza.rdf.ontologies.HIERARCHY;
 import org.apache.clerezza.rdf.ontologies.RDF;
@@ -203,16 +203,16 @@ class WebDavUtils {
      * Putting the properties in a DOM Document *
      *------------------------------------------*/
 
-    static Document createResponseDoc(Map<UriRef, PropertyMap> resultMap)
+    static Document createResponseDoc(Map<IRI, PropertyMap> resultMap)
             throws ParserConfigurationException {
         Document responseDoc = DocumentBuilderFactory.newInstance().
                 newDocumentBuilder().newDocument();
-        Set<UriRef> nodeNameSet = resultMap.keySet();
+        Set<IRI> nodeNameSet = resultMap.keySet();
 
         Element multistatElement = responseDoc.createElementNS(davUri,"D:" + multistat);
         // add multistat element to response
         responseDoc.appendChild(multistatElement);
-        for (UriRef nodeName : nodeNameSet) {
+        for (IRI nodeName : nodeNameSet) {
             Element responseElement = responseDoc.createElementNS(davUri, "D:" + response);
             // add response element to response Document
             multistatElement.appendChild(responseElement);
@@ -223,7 +223,7 @@ class WebDavUtils {
     }
 
     private static void addElementsToResponse(PropertyMap propertyMap,
-            Element responseElement, Document responseDoc, UriRef nodeName) {
+            Element responseElement, Document responseDoc, IRI nodeName) {
         Element hrefElement = responseDoc.createElementNS(davUri, "D:" + href);
         hrefElement.setTextContent(nodeName.getUnicodeString());
         // add hrefElement element to responseElement
@@ -282,7 +282,7 @@ class WebDavUtils {
      * Get the properties from the CollectionNode and its members *
      *------------------------------------------------------------*/
 
-    static Map<UriRef, PropertyMap> getPropsByName(NodeList children,
+    static Map<IRI, PropertyMap> getPropsByName(NodeList children,
             GraphNode node, String depthHeader, boolean includeValues) {
         List<Property> requestedUserProps = new ArrayList<Property>();
         List<Property> requestedDavProps = new ArrayList<Property>();
@@ -300,7 +300,7 @@ class WebDavUtils {
                 requestedUserProps.add(new Property(nsUri, localName));
             }
         }
-        Map<UriRef, PropertyMap> allprops = new HashMap<UriRef, PropertyMap>();
+        Map<IRI, PropertyMap> allprops = new HashMap<IRI, PropertyMap>();
 
         if (node.hasProperty(RDF.type, HIERARCHY.Collection)) {
             return getCollectionProps(allprops, requestedUserProps, requestedDavProps,
@@ -313,11 +313,11 @@ class WebDavUtils {
 
     }
     
-    static Map<UriRef, PropertyMap> getCollectionProps(Map<UriRef, PropertyMap> allprops,
+    static Map<IRI, PropertyMap> getCollectionProps(Map<IRI, PropertyMap> allprops,
             List<Property> requestedUserProps, List<Property> requestedDavProps,
             GraphNode collection, String depthHeader, boolean includeValues) {
         if(allprops == null){
-            allprops = new HashMap<UriRef, PropertyMap>();
+            allprops = new HashMap<IRI, PropertyMap>();
         }
         addNodeProperties(allprops, requestedUserProps, requestedDavProps, collection,
                 includeValues);
@@ -333,7 +333,7 @@ class WebDavUtils {
         return allprops;
     }
 
-    private static void addMemberProps(Map<UriRef, PropertyMap> allprops,
+    private static void addMemberProps(Map<IRI, PropertyMap> allprops,
             List<Property> requestedUserProps, List<Property> requestedDavProps,
             List<GraphNode> members, String depthHeader, boolean includeValues) {
         for (GraphNode member : members) {
@@ -347,7 +347,7 @@ class WebDavUtils {
         }
     }
 
-    static void addNodeProperties(Map<UriRef, PropertyMap> allprops,
+    static void addNodeProperties(Map<IRI, PropertyMap> allprops,
             List<Property> requestedUserProps, List<Property> requestedDavProps,
             GraphNode node,    boolean includeValues) {
 
@@ -365,13 +365,13 @@ class WebDavUtils {
             addDavPropsWithoutValues(propertyMap);
             addUserPropsWithoutValues(node, propertyMap);
         }
-        allprops.put((UriRef) node.getNode(), propertyMap);
+        allprops.put((IRI) node.getNode(), propertyMap);
 
     }
 
     private static void addUserProps(GraphNode node, PropertyMap propertyMap,
             List<Property> requestedProps) {
-        Iterator<UriRef> userPropsIter;
+        Iterator<IRI> userPropsIter;
         Lock readLock = node.readLock();
         readLock.lock(); 
         try {
@@ -379,18 +379,18 @@ class WebDavUtils {
         } finally {
             readLock.unlock();
         }
-        Set<UriRef> userProps = new HashSet<UriRef>();
+        Set<IRI> userProps = new HashSet<IRI>();
         while (userPropsIter.hasNext()) {
             userProps.add(userPropsIter.next());
         }
         userProps.remove(HIERARCHY.members);
         if (requestedProps != null) {
             for (Property requestedProp : requestedProps) {
-                UriRef predicate = new UriRef(requestedProp.value());
+                IRI predicate = new IRI(requestedProp.value());
                 if (userProps.contains(predicate)) {
                     readLock.lock();
                     try {
-                        Iterator<Resource> value = node.getObjects(predicate);
+                        Iterator<RDFTerm> value = node.getObjects(predicate);
                         if (value.hasNext()) {
                             propertyMap.put(requestedProp, getValue(value.next()));
                         } else {
@@ -404,7 +404,7 @@ class WebDavUtils {
                 }
             }
         } else {
-            for (UriRef uri : userProps) {
+            for (IRI uri : userProps) {
                 String userProp = uri.getUnicodeString();
                 int index = userProp.lastIndexOf("#");
                 if (index == -1) {
@@ -413,7 +413,7 @@ class WebDavUtils {
                 Property property = new Property(userProp.substring(0, index + 1),
                         userProp.substring(index + 1));
 
-                Iterator<Resource> value = node.getObjects(uri);
+                Iterator<RDFTerm> value = node.getObjects(uri);
                 readLock.lock();
                 try {
                     if (value.hasNext()) {
@@ -430,7 +430,7 @@ class WebDavUtils {
 
     private static void addUserPropsWithoutValues(GraphNode node,
             PropertyMap propertyMap) {
-        Iterator<UriRef> userPropsIter;
+        Iterator<IRI> userPropsIter;
         Lock readLock = node.readLock();
         readLock.lock();
         try {
@@ -438,12 +438,12 @@ class WebDavUtils {
         } finally {
             readLock.unlock();
         }
-        Set<UriRef> userProps = new HashSet<UriRef>();
+        Set<IRI> userProps = new HashSet<IRI>();
         while (userPropsIter.hasNext()) {
             userProps.add(userPropsIter.next());
         }
         userProps.remove(HIERARCHY.members);
-        for (UriRef uri : userProps) {
+        for (IRI uri : userProps) {
             String userProp = uri.getUnicodeString();
             int index = userProp.lastIndexOf("#");
             if (index == -1) {
@@ -457,12 +457,12 @@ class WebDavUtils {
 
     /**
      * @param resource
-     * @return returns the unicode string of an UriRef or the lexical form of a
-     * Literal or the return value of a toString() on a BNode
+     * @return returns the unicode string of an IRI or the lexical form of a
+     * Literal or the return value of a toString() on a BlankNode
      */
-    private static String getValue(Resource resource){
-        if(resource instanceof UriRef){
-            return ((UriRef)resource).getUnicodeString();
+    private static String getValue(RDFTerm resource){
+        if(resource instanceof IRI){
+            return ((IRI)resource).getUnicodeString();
         }else if(resource instanceof Literal){
             return ((Literal)resource).getLexicalForm();
         }else {
@@ -482,7 +482,7 @@ class WebDavUtils {
         for (Property property : requestedProps) {
             if (davProps.contains(property.prop)) {
                 if (property.prop.equalsIgnoreCase(displayname)) {
-                    propertyMap.put(property, getLastSection(((UriRef)node.getNode()).getUnicodeString()));
+                    propertyMap.put(property, getLastSection(((IRI)node.getNode()).getUnicodeString()));
                 } else if (property.prop.equalsIgnoreCase(resourcetype)) {
                     if (node.hasProperty(RDF.type, HIERARCHY.Collection)) {
                         propertyMap.put(property, "collection");
@@ -493,7 +493,7 @@ class WebDavUtils {
                     Lock readLock = node.readLock();
                     readLock.lock();
                     try {
-                        Iterator<Resource> date = node.getObjects(DCTERMS.dateSubmitted);
+                        Iterator<RDFTerm> date = node.getObjects(DCTERMS.dateSubmitted);
                         if (date.hasNext()) {
                             String st = getValue(date.next());
                             propertyMap.put(property, st);
@@ -507,7 +507,7 @@ class WebDavUtils {
                     Lock readLock = node.readLock();
                     readLock.lock();
                     try {
-                        Iterator<Resource> date = node.getObjects(DCTERMS.modified);
+                        Iterator<RDFTerm> date = node.getObjects(DCTERMS.modified);
                         if (date.hasNext()) {
                             String st = getValue(date.next());
                             propertyMap.put(property, st);
@@ -521,7 +521,7 @@ class WebDavUtils {
                     Lock readLock = node.readLock();
                     readLock.lock();
                     try {
-                        Iterator<Resource> mediaType = node.getObjects(DCTERMS.MediaType);
+                        Iterator<RDFTerm> mediaType = node.getObjects(DCTERMS.MediaType);
                         if (mediaType.hasNext()) {
                             String st = getValue(mediaType.next());
                             propertyMap.put(property, st);
@@ -554,7 +554,7 @@ class WebDavUtils {
             NodeList propsToRemove) throws ParserConfigurationException {
         Document responseDoc = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder().newDocument();
-        UriRef subject = (UriRef) hierarchyNode.getNode();
+        IRI subject = (IRI) hierarchyNode.getNode();
         Element hrefElement = responseDoc.createElementNS(davUri, href);
         hrefElement.setTextContent(subject.getUnicodeString());
         Element multistatus = responseDoc.createElementNS(davUri, multistat);
@@ -568,7 +568,7 @@ class WebDavUtils {
 
         Map<Property, String> setMap = getNodeListAsMap(propsToSet);
         Map<Property, String> removeMap = getNodeListAsMap(propsToRemove);
-        TripleCollection contentGraph = hierarchyNode.getGraph();
+        Graph contentGraph = hierarchyNode.getGraph();
         for(Map.Entry<Property, String> entry : setMap.entrySet()){
             Property property = entry.getKey();
             if(property.ns.equalsIgnoreCase(davUri)){
@@ -576,11 +576,11 @@ class WebDavUtils {
                     propForbidden.appendChild(responseDoc
                             .createElementNS(davUri, property.prop));
                 } else {
-                    UriRef predicate = new UriRef(property.value());
+                    IRI predicate = new IRI(property.value());
                     Lock writeLock = hierarchyNode.writeLock();
                     writeLock.lock();
                     try {
-                        Iterator<Resource> valIter = hierarchyNode.getObjects(predicate);
+                        Iterator<RDFTerm> valIter = hierarchyNode.getObjects(predicate);
                         replaceProp(subject, predicate, valIter, contentGraph, entry);
                     } finally {
                         writeLock.unlock();
@@ -588,11 +588,11 @@ class WebDavUtils {
                     propOk.appendChild(responseDoc.createElementNS(davUri, property.prop));
                 }
             } else {
-                UriRef predicate = new UriRef(property.value());
+                IRI predicate = new IRI(property.value());
                 Lock writeLock = hierarchyNode.writeLock();
                 writeLock.lock();
                 try {
-                    Iterator<Resource> valIter = hierarchyNode.getObjects(predicate);
+                    Iterator<RDFTerm> valIter = hierarchyNode.getObjects(predicate);
                     replaceProp(subject, predicate, valIter, contentGraph, entry);
                 } finally {
                     writeLock.unlock();
@@ -607,11 +607,11 @@ class WebDavUtils {
                 propForbidden.appendChild(responseDoc
                             .createElementNS(davUri, property.prop));
             } else {
-                UriRef predicate = new UriRef(property.value());
+                IRI predicate = new IRI(property.value());
                 Lock writeLock = hierarchyNode.writeLock();
                 writeLock.lock();
                 try {
-                    Iterator<Resource> valIter = hierarchyNode.getObjects(predicate);
+                    Iterator<RDFTerm> valIter = hierarchyNode.getObjects(predicate);
                     Set<Triple> triplesToBeRemoved = new HashSet<Triple>();
                     while (valIter.hasNext()) {
                         triplesToBeRemoved.add(new TripleImpl(subject, predicate, valIter.next()));
@@ -661,8 +661,8 @@ class WebDavUtils {
         return result;
     }
 
-    private static void replaceProp(UriRef subject, UriRef predicate,
-            Iterator<Resource> valIter, TripleCollection contentGraph,
+    private static void replaceProp(IRI subject, IRI predicate,
+            Iterator<RDFTerm> valIter, Graph contentGraph,
             Map.Entry<Property, String> entry) {
         LiteralFactory fac = LiteralFactory.getInstance();
         Set<Triple> triplesToBeRemoved = new HashSet<Triple>();

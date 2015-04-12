@@ -19,7 +19,7 @@
  *
 */
 
-def hierarchy(s: Any) = new UriRef("http://clerezza.org/2009/09/hierarchy#" + s)
+def hierarchy(s: Any) = new IRI("http://clerezza.org/2009/09/hierarchy#" + s)
 <div id="tx-content">
 	<h3>{res*}</h3>
 	{ifx ((res/hierarchy("parent")).length != 0){
