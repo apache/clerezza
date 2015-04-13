@@ -37,6 +37,9 @@ import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.utils.GraphNode;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * A renderlet for rendering TitledContent. The contained elements are rendered
@@ -47,9 +50,9 @@ import org.apache.clerezza.rdf.utils.GraphNode;
  *
  * @author rbn, mir
  *
- * @scr.component
- * @scr.service interface="org.apache.clerezza.platform.typerendering.Renderlet"
  */
+@Component
+@Service(Renderlet.class)
 public class TitledContentRenderlet implements Renderlet {
 
     private static ThreadLocal<Integer> headingLevel  = new ThreadLocal<Integer>() {
