@@ -20,8 +20,9 @@ package org.apache.clerezza.rdf.core;
 
 
 import org.apache.clerezza.commons.rdf.Language;
+import org.junit.Assert;
 import org.junit.Test;
-import junit.framework.Assert;
+
 
 /**
  *
@@ -41,7 +42,7 @@ public class LanguageTest {
     
     @Test
     public void toStringTest() {
-        final String id = "DE";
+        final String id = "de";
         Language lang1 = new Language(id);
         Assert.assertEquals(lang1.toString(), id);
     }
