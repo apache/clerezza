@@ -51,7 +51,6 @@
                 <module>ext</module>
                 <module>ext.com.ibm.icu</module>
                 <module>ext.javax.mail</module>
-                <module>ext.org.json.simple</module>
                 <module>ext.org.ops4j.pax.swissbox.tinybundles</module>
                 <module>ext.org.apache.lucene</module>
                 <module>slf4j-scala-api</module>
