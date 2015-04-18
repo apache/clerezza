@@ -27,6 +27,8 @@ import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 
 
@@ -48,6 +50,16 @@ public class JenaParserProviderTest {
         ImmutableGraph graphFromNTriples = parse(provider, nTriplesIn, "application/n-triples", null);
         ImmutableGraph graphFromTurtle = parse(provider, turtleIn, "text/turtle", null);
         Assert.assertEquals(graphFromNTriples, graphFromTurtle);
+    }
+    
+    @Test
+    public void testNTriplesDataType() {
+        ParsingProvider provider = new JenaParserProvider();
+        InputStream nTriplesIn = getClass().getResourceAsStream("test-05.nt");
+        ImmutableGraph graphFromNTriples = parse(provider, nTriplesIn, "application/n-triples", null);
+        Assert.assertEquals(2, graphFromNTriples.size());
+        Triple t1 = graphFromNTriples.filter(null, new IRI("http://discobits.org/ontology#infoBit"), null).next();
+        Assert.assertEquals(new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"), ((Literal)t1.getObject()).getDataType());
     }
 
     /*
