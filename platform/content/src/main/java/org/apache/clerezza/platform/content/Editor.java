@@ -69,7 +69,7 @@ import org.wymiwyg.commons.util.dirbrowser.PathNode;
  */
 @Component
 @Service(Object.class)
-@Property(name="javax.ws.rs", boolValue=true)
+@Property(name = "javax.ws.rs", boolValue = true)
 @Path("tools/editor")
 public class Editor extends FileServer {
 
@@ -78,18 +78,15 @@ public class Editor extends FileServer {
 
     @Reference
     private TcManager tcManager;
-    
+
     @Reference
     private Serializer serializer;
 
-    
     private static final Logger logger = LoggerFactory.getLogger(Editor.class);
 
     private Providers providers;
     private final String rdfXml = "application/rdf+xml";
-    
-    
-    
+
     /**
      * On activation the {@link FileServer} is prepared
      *
@@ -99,7 +96,6 @@ public class Editor extends FileServer {
         configure(context.getBundleContext());
     }
 
-    
     /**
      * The providers are injected by the Jax-rs implementation and used to
      * locate readers for the RDF content of the body
@@ -111,13 +107,12 @@ public class Editor extends FileServer {
         this.providers = providers;
     }
 
-
     @GET
     @Path("get")
     public GraphNode getDiscobit(@QueryParam("resource") IRI uri,
             @QueryParam("graph") IRI graphUri) {
-        final Graph mGraph = graphUri == null ? cgProvider.getContentGraph() :
-            tcManager.getGraph(graphUri);
+        final Graph mGraph = graphUri == null ? cgProvider.getContentGraph()
+                : tcManager.getGraph(graphUri);
         return new GraphNode(uri, mGraph);
     }
 
@@ -125,8 +120,8 @@ public class Editor extends FileServer {
      * replaces the subgraph serialized with RDF/XML in <code>revokedString
      * </code> with the one from <code>assertedString</code>.
      *
-     * @param graphUri the graph within which the replacement has to take place or null
-     * for the content graph
+     * @param graphUri the graph within which the replacement has to take place
+     * or null for the content graph
      * @param assertedString the asserted ImmutableGraph as RDF/XML
      * @param revokedString the revoked ImmutableGraph as RDF/XML
      */
@@ -140,7 +135,7 @@ public class Editor extends FileServer {
             rdfFormat = rdfXml;
         }
         MediaType mediaType = MediaType.valueOf(rdfFormat);
-        MessageBodyReader<ImmutableGraph> graphReader = providers.getMessageBodyReader(ImmutableGraph.class, ImmutableGraph.class, null,mediaType);
+        MessageBodyReader<ImmutableGraph> graphReader = providers.getMessageBodyReader(ImmutableGraph.class, ImmutableGraph.class, null, mediaType);
         final ImmutableGraph assertedGraph;
         final ImmutableGraph revokedGraph;
         try {
@@ -150,18 +145,28 @@ public class Editor extends FileServer {
             logger.error("reading graph {}", ex);
             throw new WebApplicationException(ex, 500);
         }
-        final Graph mGraph = graphUri == null ? cgProvider.getContentGraph() :
-            tcManager.getGraph(graphUri);
+        final Graph mGraph = graphUri == null ? cgProvider.getContentGraph()
+                : tcManager.getGraph(graphUri);
         try {
-            serializer.serialize(System.out, revokedGraph, "text/turtle");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            serializer.serialize(baos, revokedGraph, "text/turtle");
-            System.out.println(new String(baos.toByteArray()).contains("\r"));
+            System.out.println("Revoked:");
+            logGraph(revokedGraph);
+            System.out.println("Asserted:");
+            logGraph(assertedGraph);
             GraphUtils.removeSubGraph(mGraph, revokedGraph);
         } catch (NoSuchSubGraphException ex) {
             throw new RuntimeException(ex);
         }
         mGraph.addAll(assertedGraph);
+    }
+
+    private void logGraph(Graph graph) {
+        serializer.serialize(System.out, graph, "text/turtle");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        serializer.serialize(baos, graph, "text/turtle");
+        if (new String(baos.toByteArray()).contains("\r")) {
+            System.out.println("The above graph conatins \\r");
+        }
+        System.out.println();
     }
 
     @GET
@@ -173,5 +178,5 @@ public class Editor extends FileServer {
         logger.debug("serving static {}", node);
         return node;
     }
-    
+
 }
