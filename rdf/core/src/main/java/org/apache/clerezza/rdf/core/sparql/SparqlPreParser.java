@@ -54,12 +54,11 @@ public class SparqlPreParser {
     }
 
     /**
-     * This returns the graphs targeted by the queryString. This are the the 
-     * triple collections explicitely refreded in FROM and FROM NAMED clauses, 
+     * This returns the graphs targeted by the queryString. These are the 
+     * triple collections explicitly referred in FROM and FROM NAMED clauses, 
      * and if the queryString contains no FROM clause the defaultGraph.
      * 
-     * For queries that are not limited to specified set of graphs null is returned.
-     * 
+     * For queries that are not limited to a specified set of graphs, null is returned.
      * 
      * @param queryString
      * @param defaultGraph

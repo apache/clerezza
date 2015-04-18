@@ -110,7 +110,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        Assert.assertTrue(referredGraphs.contains(DEFAULT_GRAPH));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+        Assert.assertTrue(referredGraphs.contains(TEST_GRAPH));
     }
 
     @Test
@@ -386,7 +386,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+        Assert.assertTrue(referredGraphs.contains(TEST_GRAPH));
     }
 
     @Test
