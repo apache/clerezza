@@ -73,12 +73,9 @@ abstract class XmlResult(arguments: XmlResult.Arguments) {
   }
 
   def render(resource: GraphNode, mode: String) = {
-    def parseNodeSeq(string: String) = {
-      _root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
-    }
     val baos = new java.io.ByteArrayOutputStream
     renderer.render(resource, context, mode, baos)
-    parseNodeSeq(new String(baos.toByteArray, UTF8))
+    Unparsed(new String(baos.toByteArray, UTF8))
   }
 
   /**
@@ -97,12 +94,9 @@ abstract class XmlResult(arguments: XmlResult.Arguments) {
    * rendered by the caller but getting a new context using the GraphNodeProvider
    */
   def render(resource: IRI, mode: String) = {
-    def parseNodeSeq(string: String) = {
-      _root_.scala.xml.XML.loadString("<elem>" + string + "</elem>").child
-    }
     val baos = new java.io.ByteArrayOutputStream
     renderer.render(resource, context, mode, baos)
-    parseNodeSeq(new String(baos.toByteArray, UTF8))
+    Unparsed(new String(baos.toByteArray, UTF8))
   }
 
   /**
