@@ -1345,6 +1345,9 @@ RDFaSubject.prototype.toObject = function() {
                }
             } 
             p.objects.push({ type: object.type, value: value, language: object.language });
+         } else if (object.type==RDFaProcessor.HTMLLiteralURI) {
+            var value = object.value.length==0 ? "" : object.value[0].parentNode.innerHTML;
+            p.objects.push({ type: object.type, value: value, language: object.language });
          } else {
             p.objects.push({ type: object.type, value: object.value, language: object.language });
          }
@@ -1408,7 +1411,6 @@ RDFaPredicate.prototype.toString = function(options) {
       if (i>0) {
          s += ", ";
       }
-      // TODO: handle HTML literal
       if (this.objects[i].type=="http://www.w3.org/1999/02/22-rdf-syntax-ns#object") {
          if (this.objects[i].value.substring(0,2)=="_:") {
             if (options && options.filterBlankNode) {
@@ -1451,13 +1453,20 @@ RDFaPredicate.prototype.toString = function(options) {
                value += this.objects[i].value[x].nodeValue;
             }
          }
-         s += '"""'+value.replace(/"""/,"\\\"\\\"\\\"")+'"""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral>';
+         s += '"""'+value.replace(/"""/g,"\\\"\\\"\\\"")+'"""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral>';
+      } else if (this.objects[i].type=="http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML") {
+         // We can use innerHTML as a shortcut from the parentNode if the list is not empty
+         if (this.objects[i].value.length==0) {
+            s += '""""""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML>';
+         } else {
+            s += '"""'+this.objects[i].value[0].parentNode.innerHTML.replace(/"""/g,"\\\"\\\"\\\"")+'"""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML>';
+         }
       } else {
          var l = this.objects[i].value;
          if (l.indexOf("\n")>=0 || l.indexOf("\r")>=0) {
-            s += '"""' + l.replace(/"""/,"\\\"\\\"\\\"") + '"""';
+            s += '"""' + l.replace(/"""/g,"\\\"\\\"\\\"") + '"""';
          } else {
-            s += '"' + l.replace(/"/,"\\\"") + '"';
+            s += '"' + l.replace(/"/g,"\\\"") + '"';
          }
          if (this.objects[i].type!="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral") {
              s += "^^<"+this.objects[i].type+">";

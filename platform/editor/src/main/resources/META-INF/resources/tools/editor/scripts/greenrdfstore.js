@@ -6,9 +6,9 @@ function GreenRdfStore() {
 }
 
 GreenRdfStore.getGraph = function(element, callback) {
-    var store = rdfstore.create();
-    store.graph(function(success,graph) {
-        var env = store.rdf;
+    var graph = rdf.createGraph();
+
+        var env = rdf;
         CallbackProcessor.prototype = new RDFaProcessor();
         CallbackProcessor.prototype.constructor=RDFaProcessor;
         function CallbackProcessor() {
@@ -60,13 +60,13 @@ GreenRdfStore.getGraph = function(element, callback) {
                     //according to the spec this attribute should be ignored for xmlLiterals, we don't
                     var value = origin.getAttribute("content");
                 } else {
-                    if (object.value.length) {
+                    if (object.value instanceof NodeList) {
                         var value = serializeNodeList(object.value);
                     } else {
                         var value = object.value;
                     }
                 }
-                var objectRS = env.createLiteral(value.toString(), object.language, object.type);
+                var objectRS = env.createLiteral(value.toString(), object.language, env.createNamedNode(object.type));
             }
             graph.add(env.createTriple(subjectRS, predicateRS, objectRS));
         };
@@ -74,5 +74,4 @@ GreenRdfStore.getGraph = function(element, callback) {
                     //gp.target.graph = new RDFaGraph();
         gp.process(element);
         callback(graph)
-    });
 };

@@ -1,4 +1,4 @@
-/** @preserve green-turtle version 1.3.0 Copyright (c) 2011-2013, R. Alexander Milowski <alex@milowski.com> All rights reserved. */
+/** @preserve green-turtle version 1.3.0 Copyright (c) 2011-2014, R. Alexander Milowski <alex@milowski.com> All rights reserved. */
 /**         
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -1353,6 +1353,9 @@ RDFaSubject.prototype.toObject = function() {
                }
             } 
             p.objects.push({ type: object.type, value: value, language: object.language });
+         } else if (object.type==RDFaProcessor.HTMLLiteralURI) {
+            var value = object.value.length==0 ? "" : object.value[0].parentNode.innerHTML;
+            p.objects.push({ type: object.type, value: value, language: object.language });
          } else {
             p.objects.push({ type: object.type, value: object.value, language: object.language });
          }
@@ -1416,7 +1419,6 @@ RDFaPredicate.prototype.toString = function(options) {
       if (i>0) {
          s += ", ";
       }
-      // TODO: handle HTML literal
       if (this.objects[i].type=="http://www.w3.org/1999/02/22-rdf-syntax-ns#object") {
          if (this.objects[i].value.substring(0,2)=="_:") {
             if (options && options.filterBlankNode) {
@@ -1459,13 +1461,20 @@ RDFaPredicate.prototype.toString = function(options) {
                value += this.objects[i].value[x].nodeValue;
             }
          }
-         s += '"""'+value.replace(/"""/,"\\\"\\\"\\\"")+'"""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral>';
+         s += '"""'+value.replace(/"""/g,"\\\"\\\"\\\"")+'"""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral>';
+      } else if (this.objects[i].type=="http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML") {
+         // We can use innerHTML as a shortcut from the parentNode if the list is not empty
+         if (this.objects[i].value.length==0) {
+            s += '""""""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML>';
+         } else {
+            s += '"""'+this.objects[i].value[0].parentNode.innerHTML.replace(/"""/g,"\\\"\\\"\\\"")+'"""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML>';
+         }
       } else {
          var l = this.objects[i].value;
          if (l.indexOf("\n")>=0 || l.indexOf("\r")>=0) {
-            s += '"""' + l.replace(/"""/,"\\\"\\\"\\\"") + '"""';
+            s += '"""' + l.replace(/"""/g,"\\\"\\\"\\\"") + '"""';
          } else {
-            s += '"' + l.replace(/"/,"\\\"") + '"';
+            s += '"' + l.replace(/"/g,"\\\"") + '"';
          }
          if (this.objects[i].type!="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral") {
              s += "^^<"+this.objects[i].type+">";
@@ -2065,9 +2074,10 @@ DocumentData.prototype.merge = function(graph,options) {
             }
             return mapSubject ? mapSubject : u;
          };
-      for (var subject in graph) {
+      var subjects = typeof graph.subjects != "undefined" ? graph.subjects : graph;
+      for (var subject in subjects) {
          var mapSubject = subjectMap(subject);
-         var snode = graph[subject];
+         var snode = subjects[subject];
          subject = mapSubject ? mapSubject : subject;
          var target = this._data_.graph.subjects[subject];
          if (target) {
@@ -2079,7 +2089,7 @@ DocumentData.prototype.merge = function(graph,options) {
                      var object = pnode.objects[i];
                      var toAdd = [];
                      for (var j=0; j<targetPredicate.objects.length; j++) {
-                        if (object.type==RDFaProcessor.XMLLiteralURI && (targetPredicate.objects[j].type!=object.type || targetPredicate.objects[j].value!==object.value)) {
+                        if ((object.type==RDFaProcessor.XMLLiteralURI || object.type==RDFaProcessor.HTMLLiteralURI) && (targetPredicate.objects[j].type!=object.type || targetPredicate.objects[j].value!==object.value)) {
                            toAdd.push(object);
                         } else if (targetPredicate.objects[j].type!=object.type || targetPredicate.objects[j].value==object.value) {
                            toAdd.push(object);
@@ -2664,7 +2674,19 @@ TurtleParser.prototype.parseObject = function(subject,predicate,text) {
    }
    var match = this.parseLiteral(text);
    if (match) {
-      this.addTriple(subject,predicate,{ type: match.type ? match.type : TurtleParser.plainLiteralURI, value: match.literal, language: match.language});
+      var value = match.literal;
+      if (match.type=="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral") {
+         var xml = "<root>"+match.literal+"</root>";
+         var parser = new DOMParser();
+         var doc = parser.parseFromString(xml,"application/xml");
+         value = doc.documentElement.childNodes;
+      } else if (match.type=="http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML") {
+         var xml = "<html><head/><body>"+match.literal+"</body></html>";
+         var parser = new DOMParser();
+         var doc = parser.parseFromString(xml,"text/html");
+         value = doc.body.childNodes;
+      }
+      this.addTriple(subject,predicate,{ type: match.type ? match.type : TurtleParser.plainLiteralURI, value: value, language: match.language});
       return match.remaining;
    }
    this.reportError("Terminating: Cannot parse literal at "+text.substring(0,20));
