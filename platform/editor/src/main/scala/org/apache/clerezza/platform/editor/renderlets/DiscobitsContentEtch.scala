@@ -30,15 +30,17 @@ abstract class DiscobitsContentEtch extends SRenderlet {
             <head>
                 <meta charset="utf-8"/>
                 <link type="text/css" href="/style/style.css" rel="stylesheet" />
+                <link type="text/css" href="/tools/editor/styles/jquery-ui.css" rel="stylesheet" />
                 <link rel="stylesheet" href="/tools/editor/styles/etch.css" />
                 {for (part <- res/DISCOBITS.contains;  if ((part/DISCOBITS.pos*) == "0")) yield
                 <title>Editing: {part/DISCOBITS.holds/DISCOBITS.infoBit*}</title> }
-                <script src="/tools/editor/scripts/RDFaProcessor.1.3.0.js"></script>
-                <script src="/tools/editor/scripts/RDFa.1.3.0.js"></script>
+                <script src="/tools/editor/scripts/jquery.min.js"></script>
+                <script src="/tools/editor/scripts/jquery-ui.min.js"></script>
             </head>
           <body>
             {render(res, "rdfa-naked")}
-            <script src="/tools/editor/scripts/jquery.min.js"></script>
+            <script src="/tools/editor/scripts/RDFaProcessor.1.3.0.js"></script>
+            <script src="/tools/editor/scripts/RDFa.1.3.0.js"></script>
             <script src="/tools/editor/scripts/underscore-min.js"></script>
             <script src="/tools/editor/scripts/backbone-min.js"></script>
             <script src="/tools/editor/scripts/etch.js"></script>

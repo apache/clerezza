@@ -111,7 +111,34 @@ $(function () {
         $('[property="disco:infoBit"]').attr("data-button-class", "all")
         //this ensure two way binding with stickit
         $('[property="disco:infoBit"]').attr("contenteditable", "true")
-        $('[property="disco:infoBit"]').children().attr("contenteditable", "true")
+        $('[property="disco:infoBit"]').each(function () {
+            //Add edit source link
+            var elem = $(this);
+            var editLink = $('<a><img src="/tools/editor/images/pencil-icon.gif" alt="edit source"  width="23" height="23" /></a>');
+            editLink.on("click", function () {
+                var dialog = $('<div id="dialog-1" title="Edit source"><textarea style="width:90%;height:80%">' + elem.html() + '</textarea></div>');
+                dialog.dialog({
+                    maxWidth: '90%',
+                    maxHeight: '90%',
+                    width: 600,
+                    height: 500,
+                    modal: true,
+                    buttons: {
+                        "Apply": function () {
+                            elem.html(dialog.children('textarea').val());
+                            $(this).dialog("close");
+                        },
+                        Cancel: function () {
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function () {
+                    }
+                });
+            });
+            elem.after(editLink);
+        })
+
         $article = $('[typeof="disco:XHTMLInfoDiscoBit"]');
         _.forEach($article, function (art) {
             console.log(art);
