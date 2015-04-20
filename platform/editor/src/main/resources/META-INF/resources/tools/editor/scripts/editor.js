@@ -137,8 +137,8 @@ $(function () {
                 });
             });
             elem.after(editLink);
-        })
-
+        });
+        
         $article = $('[typeof="disco:XHTMLInfoDiscoBit"]');
         _.forEach($article, function (art) {
             console.log(art);
@@ -150,6 +150,69 @@ $(function () {
             });
             new InfoBitView({model: model, el: art, tagName: art.tagName});
             discoBitsCollection.add(model)
+        });
+        
+        $('[typeof="disco:OrderedContent"]').each(function() {
+            var elem = $(this);
+            //add "add element"-link
+            var entryCount = elem.children('[typeof="disco:Entry"]').size();
+            var baseURI = elem.attr('about');
+            if (!baseURI.endsWith('/')) {
+                baseURI += '-el/';
+            }
+            function alreadyExists(uri) {
+                var exists = false;
+                elem.children('[typeof="disco:Entry"]').children('[property="disco:holds"]').each(
+                        function() {
+                            if ($(this).attr("resource") === uri) {
+                                exists = true;
+                            }
+                        });
+                //TODO also check that the URI 404s
+                return exists;
+            } 
+            while (alreadyExists(baseURI+entryCount)) {
+                entryCount ++;
+            }
+            var newURI = baseURI+entryCount;
+            elem.children('[typeof="disco:Entry"]').children('[property="disco:holds"]').each(function() {console.log($(this).attr("resource"))});
+            var addLink = $('<div>New: <select><option value="titled">Titled content</option></select>\n\
+                            At IRI:<input type="text" size="80" value="'+newURI+'"></input>\n\
+                            <a><img src="/tools/editor/images/add-icon.png" alt="add new element"  width="23" height="23" /></a>');
+            addLink.children('a').on('click', function() {
+               if (addLink.children('select').val() === 'titled') { 
+                   var uri = addLink.children('input').val()
+                   var newTitledContent = '<div typeof="disco:Entry" property="disco:contains">\n\
+                    <div style="display: none" property="disco:pos">'+elem.children('[typeof="disco:Entry"]').size()+'</div>\n\
+                    <div resource="'+uri+'" property="disco:holds">\n\
+                     <div typeof="disco:TitledContent" about="'+uri+'">\n\
+                       <span property="disco:contains" typeof="disco:Entry">\n\
+                       <span property="disco:pos" style="display: none">0</span>\n\
+                         <h1 resource="'+uri+'-title" property="disco:holds">\n\
+                           <div typeof="disco:XHTMLInfoDiscoBit" about="'+uri+'-title">\n\
+                           <span property="disco:infoBit" datatype="rdf:XMLLiteral">Title</span>\n\
+                           </div>\n\
+                         </h1>\n\
+                       </span>\n\
+                       <div property="disco:contains" typeof="disco:Entry">\n\
+                         <div property="disco:pos" style="display: none">1</div>\n\
+                         <div property="disco:holds" resource="'+uri+'-content">\n\
+                         <div about="'+uri+'-content" typeof="disco:OrderedContent">\n\
+                           <div property="disco:contains" typeof="disco:Entry">\n\
+                              <div property="disco:pos" style="display: none">0</div>\n\
+                              <div property="disco:holds" resource="'+uri+'-content-el/0">\n\
+                              <div typeof="disco:XHTMLInfoDiscoBit" about="'+uri+'-content-el/0">\n\
+                              <span property="disco:infoBit" datatype="rdf:XMLLiteral">content 1</span>\n\
+                           </div>\n\
+                         </div>\n\
+                       </div>\n\
+                     </div>\n\
+                    </div></div>'
+                    addLink.before(newTitledContent)
+               }  
+               alert('please save and reload'); 
+            });
+            elem.append(addLink);
         });
 
 
