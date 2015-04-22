@@ -22,7 +22,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcManager;
+import org.apache.clerezza.rdf.core.access.TcManagerTest;
+import org.apache.clerezza.rdf.core.access.providers.WeightedA;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -31,18 +35,22 @@ import org.junit.Test;
  */
 public class SparqlPreParserTest {
 
-    private final static IRI DEFAULT_GRAPH = new IRI("http://example.org/default.graph"); 
-    private final static IRI NAMED_GRAPH = new IRI("http://example.org/dummy.graph"); 
-    private final static IRI TEST_GRAPH = new IRI("http://example.org/test.graph"); 
+    private TcManager graphAccess;
+    private final WeightedA weightedA = new WeightedA();
+    private final static IRI DEFAULT_GRAPH = new IRI("http://example.org/default.graph");
+    private final static IRI TEST_GRAPH = new IRI("http://example.org/test.graph");
 
-    class MyTcManager extends TcManager {
-        @Override
-        public Set<IRI> listGraphs() {
-            Set<IRI> result = new HashSet<>();
-            result.add(NAMED_GRAPH);
-            return result;
-        }
-    }
+    @Before
+	public void setUp() {
+		graphAccess = TcManager.getInstance();
+		graphAccess.addWeightedTcProvider(weightedA);
+	}
+
+	@After
+	public void tearDown() {
+		graphAccess = TcManager.getInstance();
+		graphAccess.removeWeightedTcProvider(weightedA);
+	}
 
     @Test
     public void testDefaultGraphInSelectQuery() throws ParseException {
@@ -147,9 +155,9 @@ public class SparqlPreParserTest {
         String queryStr = "CLEAR SILENT NAMED";
 
         SparqlPreParser parser;
-        parser = new SparqlPreParser(new MyTcManager());
+        parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(NAMED_GRAPH));
+        Assert.assertTrue(referredGraphs.contains(TcManagerTest.uriRefA));
     }
 
     @Test
@@ -180,9 +188,9 @@ public class SparqlPreParserTest {
         String queryStr = "DROP SILENT NAMED";
 
         SparqlPreParser parser;
-        parser = new SparqlPreParser(new MyTcManager());
+        parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(NAMED_GRAPH));
+        Assert.assertTrue(referredGraphs.contains(TcManagerTest.uriRefA));
     }
 
     @Test
