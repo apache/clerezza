@@ -73,7 +73,6 @@
                 <module>rdf.enrichment</module>
                 <module>rdf.locking</module>
                 <module>rdf.rdfjson</module>
-                <module>rdf.stable.serializer</module>
                 <module>shell</module>
                 <module>shell.felixshellcommand</module>
                 <module>bundledevtool</module>
