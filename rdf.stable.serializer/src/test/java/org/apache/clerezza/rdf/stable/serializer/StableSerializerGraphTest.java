@@ -23,9 +23,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.junit.Assert;
 import org.junit.Test;
@@ -70,10 +70,10 @@ public class StableSerializerGraphTest {
         StableSerializerProvider ssp = new StableSerializerProvider();
 
         Parser parser = Parser.getInstance();
-        Graph deserializedGraphOld = parser.parse(
+        ImmutableGraph deserializedGraphOld = parser.parse(
                 getClass().getResourceAsStream(inputFileName), format);
 
-        TripleCollection tc = new SimpleMGraph();
+        Graph tc = new SimpleGraph();
         tc.addAll(deserializedGraphOld);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -81,7 +81,7 @@ public class StableSerializerGraphTest {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 
-        Graph deserializedGraphNew = parser.parse(bais, "application/n-triples");
+        ImmutableGraph deserializedGraphNew = parser.parse(bais, "application/n-triples");
 
         Assert.assertEquals(deserializedGraphOld, deserializedGraphNew);
 

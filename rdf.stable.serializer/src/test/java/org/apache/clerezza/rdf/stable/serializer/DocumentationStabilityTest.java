@@ -24,11 +24,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.junit.Assert;
@@ -41,21 +41,21 @@ public class DocumentationStabilityTest {
     public void RDFTestCases() throws Exception {
         
         Parser parser = Parser.getInstance();
-        Graph tc1 = parser.parse(
+        ImmutableGraph tc1 = parser.parse(
                 getClass().getResourceAsStream("documentation-example.nt"), SupportedFormat.N_TRIPLE);
         final Set<String> lines1 = serializeToLines(tc1);
-        TripleCollection tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleGraph();
         tc2.addAll(tc1);
         //add <bundle:///intro> <http://clerezza.org/2009/08/documentation#after> <bundle://org.apache.clerezza.platform.documentation/intro> .
-        tc2.add(new TripleImpl(new UriRef("bundle:///intro"), 
-                new UriRef("http://clerezza.org/2009/08/documentation#after"), 
-                new UriRef("bundle://org.apache.clerezza.platform.documentation/intro")));
+        tc2.add(new TripleImpl(new IRI("bundle:///intro"), 
+                new IRI("http://clerezza.org/2009/08/documentation#after"), 
+                new IRI("bundle://org.apache.clerezza.platform.documentation/intro")));
         final Set<String> lines2 = serializeToLines(tc2);
         lines2.removeAll(lines1);
         Assert.assertEquals(1, lines2.size());
     }
     
-    private Set<String> serializeToLines(TripleCollection tc) throws UnsupportedEncodingException {
+    private Set<String> serializeToLines(Graph tc) throws UnsupportedEncodingException {
         StableSerializerProvider ssp = new StableSerializerProvider();
         final ByteArrayOutputStream os1 = new ByteArrayOutputStream();
         ssp.serialize(os1, tc, SupportedFormat.N_TRIPLE);

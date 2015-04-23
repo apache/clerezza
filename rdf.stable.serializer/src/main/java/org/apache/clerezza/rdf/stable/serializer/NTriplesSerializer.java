@@ -22,13 +22,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.rdf.ontologies.XSD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ class NTriplesSerializer {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private long genSymCounter = 0;
-    private HashMap<BNode, String> bNodeLabels;
+    private HashMap<BlankNode, String> bNodeLabels;
 
     /**
      * Resets the counter to zero that constitutes
@@ -57,36 +56,36 @@ class NTriplesSerializer {
     }
 
     /**
-     * Serializes a given TripleCollection using the N-Triples format.
+     * Serializes a given Graph using the N-Triples format.
      *
      * @param os
      *                An outputstream.
      * @param tc
      *                the triples of the graph to be serialized.
      */
-    void serialize(OutputStream os, TripleCollection tc) {
+    void serialize(OutputStream os, Graph tc) {
         try {
-            bNodeLabels = new HashMap<BNode, String>(tc.size() / 2);
+            bNodeLabels = new HashMap<BlankNode, String>(tc.size() / 2);
 
             for (Triple t : tc) {
-                if (t.getSubject() instanceof BNode) {
-                    os.write(serializeBNode((BNode) t.getSubject()).getBytes());
+                if (t.getSubject() instanceof BlankNode) {
+                    os.write(serializeBlankNode((BlankNode) t.getSubject()).getBytes());
                 } else {
-                    os.write(serializeUriRef(
-                            (UriRef) t.getSubject()).getBytes());
+                    os.write(serializeIRI(
+                            (IRI) t.getSubject()).getBytes());
                 }
 
                 os.write((t.getPredicate().toString() + " ").getBytes());
 
-                if (t.getObject() instanceof BNode) {
-                    os.write(serializeBNode((BNode) t.getObject()).getBytes());
+                if (t.getObject() instanceof BlankNode) {
+                    os.write(serializeBlankNode((BlankNode) t.getObject()).getBytes());
                     os.write(".\n".getBytes());
                 } else {
                     if (t.getObject() instanceof Literal) {
                         os.write((serializeLiteral((Literal) t.getObject()) +
                                 ".\n").getBytes());
                     } else {
-                        os.write((serializeUriRef((UriRef) t.getObject()) +
+                        os.write((serializeIRI((IRI) t.getObject()) +
                                 ".\n").getBytes());
                     }
                 }
@@ -96,7 +95,7 @@ class NTriplesSerializer {
         }
     }
 
-    private String serializeUriRef(UriRef uriRef) {
+    private String serializeIRI(IRI uriRef) {
         StringBuffer sb = new StringBuffer("<");
         escapeUtf8ToUsAscii(uriRef.getUnicodeString(), sb, true);
         sb.append("> ");
@@ -104,7 +103,7 @@ class NTriplesSerializer {
         return sb.toString() ;
     }
 
-    private String serializeBNode(BNode bNode) {
+    private String serializeBlankNode(BlankNode bNode) {
         if (bNodeLabels.containsKey(bNode)) {
             return bNodeLabels.get(bNode) + " ";
         } else {
@@ -119,21 +118,19 @@ class NTriplesSerializer {
         escapeUtf8ToUsAscii(literal.getLexicalForm(), sb, false);
         sb = sb.append("\"");
 
-        if(literal instanceof TypedLiteral) {
-            TypedLiteral typedLiteral = (TypedLiteral) literal;
-            sb.append("^^<");
-            escapeUtf8ToUsAscii(
-                    typedLiteral.getDataType().getUnicodeString(), sb, false);
-            sb.append(">");
-        } else if(literal instanceof PlainLiteral) {
-            PlainLiteral plainLiteral = (PlainLiteral) literal;
-            if(plainLiteral.getLanguage() != null &&
-                    !plainLiteral.getLanguage().toString().equals("")) {
+        if(literal.getDataType().equals(XSD.string)) {
+            if(literal.getLanguage() != null &&
+                    !literal.getLanguage().toString().equals("")) {
 
                 sb.append("@");
-                sb.append(plainLiteral.getLanguage().toString());
+                sb.append(literal.getLanguage().toString());
             }
-        }
+        } else {
+            sb.append("^^<");
+            escapeUtf8ToUsAscii(
+                    literal.getDataType().getUnicodeString(), sb, false);
+            sb.append(">");
+        } 
 
         sb.append(" ");
 

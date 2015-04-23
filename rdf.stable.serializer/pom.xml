@@ -24,22 +24,27 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>0.5</version>
+        <version>7-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.stable.serializer</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Clerezza - Stable Serializer</name>
+    <name>Clerezza - RDF Stable Serializer</name>
     <description>A SerializingProvider that prodocues a stable output. This means
         if the graph to be serialized changes a little, then also the output 
         changes a little.</description>
     <dependencies>
         <dependency>
+            <groupId>org.apache.clerezza.commons-rdf</groupId>
+            <artifactId>commons-rdf-api</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.14</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -49,19 +54,18 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.serializer</artifactId>
             <scope>test</scope>
-            <version>0.11</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
             <scope>test</scope>
-            <version>0.12</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-         <version>0.14</version>
-         <type>bundle</type>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

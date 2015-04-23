@@ -33,14 +33,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.core.serializedform.SerializingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.utils.GraphNode;
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * Blank node labeling algorithm by Jeremy J. Carroll (see "Signing RDF Graphs",
  * HP technical report 2003)
  *
- * Minimum Self-contained Graph (MSG) decomposition algorithm by
+ * Minimum Self-contained ImmutableGraph (MSG) decomposition algorithm by
  * Giovanni Tummarello, Christian Morbidoni, Paolo Puliti, Francesco Piazza,
  * Università Politecnica delle Marche, Italy
  * (see "Signing individual fragments of an RDF graph", 14th International
@@ -95,7 +95,7 @@ public class StableSerializerProvider implements SerializingProvider {
     }
 
     @Override
-    public void serialize(OutputStream os, TripleCollection tc,
+    public void serialize(OutputStream os, Graph tc,
             String formatIdentifier) {
 
         try {
@@ -124,50 +124,50 @@ public class StableSerializerProvider implements SerializingProvider {
         }
     }
 
-    private List<MSG> decomposeGraphToMSGs(TripleCollection tc) {
+    private List<MSG> decomposeGraphToMSGs(Graph tc) {
 
-        TripleCollection tmp = new SimpleMGraph();
+        Graph tmp = new SimpleGraph();
         tmp.addAll(tc);
 
         List<MSG> msgSet = new LinkedList<MSG>();
 
         while (tmp.size() > 0) {
             Triple triple = tmp.iterator().next();
-            TripleCollection msgTc = new SimpleMGraph();
+            Graph msgTc = new SimpleGraph();
 
-            boolean containsBNode = fillMSG(triple, tmp, msgTc);
+            boolean containsBlankNode = fillMSG(triple, tmp, msgTc);
             MSG msg = new MSG(msgTc);
-            msg.containsBlankNodes = containsBNode;
+            msg.containsBlankNodes = containsBlankNode;
             msgSet.add(msg);
         }
 
         return msgSet;
     }
 
-    private boolean fillMSG(Triple triple, TripleCollection tc,
-            TripleCollection msg) {
+    private boolean fillMSG(Triple triple, Graph tc,
+            Graph msg) {
 
-        boolean containsBNode = false;
+        boolean containsBlankNode = false;
 
-        Resource resource = triple.getSubject();
-        if (resource instanceof BNode) {
-            containsBNode = true;
+        RDFTerm resource = triple.getSubject();
+        if (resource instanceof BlankNode) {
+            containsBlankNode = true;
         } else {
             resource = triple.getObject();
-            if (resource instanceof BNode) {
-                containsBNode = true;
+            if (resource instanceof BlankNode) {
+                containsBlankNode = true;
             }
         }
-        if (containsBNode) {
+        if (containsBlankNode) {
             GraphNode gn = new GraphNode(resource, tc);
-            Graph context = gn.getNodeContext();
+            ImmutableGraph context = gn.getNodeContext();
             msg.addAll(context);
             tc.removeAll(context);
         } else {
             msg.add(triple);
             tc.remove(triple);
         }
-        return containsBNode;
+        return containsBlankNode;
     }
 
     private List<String> labelBlankNodes(BufferedReader serializedGraph,
@@ -405,16 +405,16 @@ public class StableSerializerProvider implements SerializingProvider {
             List<String> tripleHashes = new ArrayList<String>(msg.tc.size());
             for (Triple t : msg.tc) {
                 StringBuilder tripleHash = new StringBuilder();
-                if (!(t.getSubject() instanceof BNode)) {
-                    tripleHash.append(((UriRef) t.getSubject()).hashCode());
+                if (!(t.getSubject() instanceof BlankNode)) {
+                    tripleHash.append(((IRI) t.getSubject()).hashCode());
                 }
                 tripleHash.append(t.getPredicate().hashCode());
-                if (!(t.getObject() instanceof BNode)) {
+                if (!(t.getObject() instanceof BlankNode)) {
                     if (t.getObject() instanceof Literal) {
                         tripleHash.append(((Literal) t.getObject()).
                                 toString().hashCode());
                     } else {
-                        tripleHash.append(((UriRef) t.getObject()).hashCode());
+                        tripleHash.append(((IRI) t.getObject()).hashCode());
                     }
                 }
                 tripleHashes.add(tripleHash.toString());
@@ -457,11 +457,11 @@ public class StableSerializerProvider implements SerializingProvider {
 
     private static class MSG {
 
-        final TripleCollection tc;
+        final Graph tc;
         String hash = null;
         boolean containsBlankNodes = false;
 
-        MSG(TripleCollection tc) {
+        MSG(Graph tc) {
             this.tc = tc;
         }
     }
