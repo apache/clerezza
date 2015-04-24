@@ -35,6 +35,14 @@
     <description>A SerializingProvider that prodocues a stable output. This means
         if the graph to be serialized changes a little, then also the output 
         changes a little.</description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.apache.clerezza.commons-rdf</groupId>
@@ -75,7 +83,6 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
