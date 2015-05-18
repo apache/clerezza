@@ -33,31 +33,35 @@
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
         <version>7-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
+        <relativePath>../../parent</relativePath>
      </parent>
 
-    <groupId>org.apache.clerezza</groupId>
-    <artifactId>rdf-reactor</artifactId>
-    <version>7-SNAPSHOT</version>
+    <groupId>org.apache.clerezza.releases</groupId>
+    <artifactId>201505</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Clerezza - RDF</name>
+    <name>Clerezza - Release 201505</name>
 
     <modules>
-        <module>core</module>
-        <module>core.test</module>
-        <module>jena</module>
-        <module>metadata</module>
-        <module>scala.utils</module>
-        <module>schemagen/main</module>
-        <module>schemagen/maven-plugin</module>
-        <module>ontologies</module>
-        <module>rdfa</module>
-        <module>simple.storage</module>
-        <module>stable.serializer</module>
-        <module>storage.web</module>
-        <module>file.storage</module>
-        <module>utils</module>
-        <module>web</module>
+        <module>../../parent</module>
+        <module>../../platform/config</module>
+        <module>../../platform/config.gui</module>
+        <module>../../platform/content</module>
+        <module>../../platform/content.default404</module>
+        <module>../../platform/content.fsadaptor</module>
+        <module>../../platform/typerendering</module>
+        <module>../../platform/typerendering.scala</module>
+        <module>../../platform/typerendering.scalaserverpages</module>
+        <module>../../platform/typerendering.seedsnipe</module>
+        <module>../../platform/typerendering.gui</module>
+        <module>../../platform/editor</module>
+        <module>../../platform/graphnodeprovider</module>
+        <module>../../platform/graphprovider.content</module>
+        <module>../../platform/documentation</module>
+        <module>../../platform/documentation.viewer</module>
+        <module>../../platform/users</module>
+        <module>../../platform/typepriority</module>
+        <module>../../rdf</module>
     </modules>
 
 </project>

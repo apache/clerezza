@@ -23,7 +23,7 @@
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
         <version>13</version>
-        <relativePath />
+        <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza.scala</groupId>
     <artifactId>scala</artifactId>
