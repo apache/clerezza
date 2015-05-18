@@ -1,12 +1,12 @@
 Editing and deploying the clerezza website
 
-- start clerezza on localhost:8080
+- start the webiste luancher, provisioning/launchers/website-launcher
 
-- install the directory with the site project (the directory containing this readme) with: Dev load LocationSpec("/path/to/apache/clerezza/trunk/site", noFastUpdate)
+- Go to http://localhost:8080/graph/upload-form and upload graph.nt to the content graph
 
-- you'll now see the contents of the clerezza site on your local instance, the content-graph is regularly written to the graph.nt file
+- change the site as needed, do not create pages ending with /, create a page ending with /index instead, the entry page is http://localhost:8080/index (you may add "?mode=edit" to edit a page)
 
-- change the site as needed, do not create pages ending with /, create a page ending with /index instead, the entry page is http://localhost:8080/index (you may open http://localhost:8080/tools/editor with firefox to edit it)
+- retrieve the modified graph: curl 'http://localhost:8080/graph?name=urn%3Ax-localinstance%3A%2Fcontent.graph' -H 'Accept: application/n-triples' > graph.nt
 
 - commit the changed graph.nt to version control
 

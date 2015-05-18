@@ -25,8 +25,8 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5</version>
-        <relativePath>../parent</relativePath>
+        <version>7-SNAPSHOT</version>
+        <relativePath />
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.documentation.viewer</artifactId>
@@ -36,6 +36,14 @@
     <name>Clerezza - Platform Documentation Viewer</name>
     <description>Presents the documentation of the Clerezza Platform
     </description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>  
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>javax.ws.rs</groupId>
@@ -44,12 +52,12 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>0.14</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.documentation</artifactId>
-            <version>0.4</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>

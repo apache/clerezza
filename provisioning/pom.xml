@@ -55,6 +55,7 @@
         <module>rdf.web</module>
         <module>platform.content</module>
         <module>platform.tools</module>
+        <module>site.tools</module>
         <module>shell</module>
         <module>security</module>
         <module>launchers</module>

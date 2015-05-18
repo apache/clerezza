@@ -35,39 +35,41 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.apache.clerezza.jaxrs.utils.TrailingSlash;
 import org.apache.clerezza.platform.documentation.DocumentationProvider;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.ImmutableGraph;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.ontologies.DISCOBITS;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.DOCUMENTATION;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.clerezza.rdf.utils.UnionMGraph;
+import org.apache.clerezza.rdf.utils.UnionGraph;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  *
  * The documentation viewer provides a webpage that shows the available
  * documentation.
  *
- * @scr.component
- * @scr.service interface="java.lang.Object"
- * @scr.property name="javax.ws.rs" type="Boolean" value="true"
  *
  * @author mir
  */
+@Component()
+@Service(Object.class)
+@Property(name="javax.ws.rs", boolValue=true)
 @Path("/documentation")
 public class DocumentationViewer {
 
-    /**
-     * @scr.reference
-     */
+    @Reference
     private TcManager tcManager;
         
     /**
@@ -79,33 +81,33 @@ public class DocumentationViewer {
     @GET
     public GraphNode documentationPage(@Context UriInfo uriInfo) {
         TrailingSlash.enforcePresent(uriInfo);
-        Graph documentations = tcManager.getGraph(
+        ImmutableGraph documentations = tcManager.getImmutableGraph(
                 DocumentationProvider.DOCUMENTATION_GRAPH_URI);        
         Collection<DocumentationItem> docItems = getDocItems(documentations);        
         List<DocumentationItem> sortedDocItems = sortDocItems(docItems);        
-        MGraph mGraph = new SimpleMGraph();
-        BNode orderedContent = createOrderedContent(sortedDocItems, mGraph);
-        BNode titledContent = createTitledContent(orderedContent, mGraph);
-        MGraph resultGraph = new UnionMGraph(mGraph, documentations);
+        Graph mGraph = new SimpleGraph();
+        BlankNode orderedContent = createOrderedContent(sortedDocItems, mGraph);
+        BlankNode titledContent = createTitledContent(orderedContent, mGraph);
+        Graph resultGraph = new UnionGraph(mGraph, documentations);
         GraphNode resultNode = new GraphNode(titledContent, resultGraph);
         return resultNode;
     }
 
-    private Collection<DocumentationItem> getDocItems(Graph documentations) {
+    private Collection<DocumentationItem> getDocItems(ImmutableGraph documentations) {
         Iterator<Triple> docs = documentations.filter(null, 
                 DOCUMENTATION.documentation, null);        
 
-        Map<UriRef,DocumentationItem> uri2docItemObj = 
-            new HashMap<UriRef,DocumentationItem>();
+        Map<IRI,DocumentationItem> uri2docItemObj = 
+            new HashMap<IRI,DocumentationItem>();
         
         while (docs.hasNext()) {
             Triple docc = docs.next();
-            UriRef docItem = (UriRef) docc.getObject();
+            IRI docItem = (IRI) docc.getObject();
             Iterator<Triple> afterDocItemsIter = documentations.filter(docItem,
                 DOCUMENTATION.after, null);
-            Set<UriRef> afterDocItems = new HashSet<UriRef>();
+            Set<IRI> afterDocItems = new HashSet<IRI>();
             while (afterDocItemsIter.hasNext()) {
-                afterDocItems.add((UriRef) afterDocItemsIter.next().getObject());
+                afterDocItems.add((IRI) afterDocItemsIter.next().getObject());
             }
             DocumentationItem docItemObj = new DocumentationItem(
                     docItem, afterDocItems, uri2docItemObj);
@@ -133,15 +135,15 @@ public class DocumentationViewer {
         return result;
     }
 
-    private BNode createOrderedContent(List<DocumentationItem> sortedDocItems,
-        MGraph mGraph) {
-        BNode orderedContent = new BNode();
+    private BlankNode createOrderedContent(List<DocumentationItem> sortedDocItems,
+        Graph mGraph) {
+        BlankNode orderedContent = new BlankNode();
         mGraph.add(new TripleImpl(orderedContent, RDF.type, DISCOBITS.OrderedContent));
         Integer pos = 0;
         Iterator<DocumentationItem> docItemObjsIter = sortedDocItems.iterator();
         while (docItemObjsIter.hasNext()) {
             DocumentationItem docItemObj = docItemObjsIter.next();
-            BNode containedDoc = new BNode();
+            BlankNode containedDoc = new BlankNode();
             mGraph.add(new TripleImpl(orderedContent, DISCOBITS.contains,
                     containedDoc));
             mGraph.add(new TripleImpl(containedDoc, DISCOBITS.pos,
@@ -153,19 +155,19 @@ public class DocumentationViewer {
         return orderedContent;
     }
 
-    private BNode createTitledContent(BNode orderedContent, MGraph mGraph) {
-        BNode titledContent = new BNode();
+    private BlankNode createTitledContent(BlankNode orderedContent, Graph mGraph) {
+        BlankNode titledContent = new BlankNode();
         mGraph.add(new TripleImpl(titledContent, RDF.type, DISCOBITS.TitledContent));
-        BNode title = new BNode();
+        BlankNode title = new BlankNode();
         mGraph.add(new TripleImpl(title, DISCOBITS.pos, new PlainLiteralImpl("0")));
-        BNode titleXml = new BNode();
+        BlankNode titleXml = new BlankNode();
         mGraph.add(new TripleImpl(titleXml, RDF.type, DISCOBITS.XHTMLInfoDiscoBit));
         mGraph.add(new TripleImpl(titleXml, DISCOBITS.infoBit,
                 LiteralFactory.getInstance().createTypedLiteral("Documentation")));
         mGraph.add(new TripleImpl(title, DISCOBITS.holds, titleXml));
         mGraph.add(new TripleImpl(title, RDF.type, DISCOBITS.Entry));
         mGraph.add(new TripleImpl(titledContent, DISCOBITS.contains, title));        
-        BNode content = new BNode();
+        BlankNode content = new BlankNode();
         mGraph.add(new TripleImpl(content, DISCOBITS.pos, new PlainLiteralImpl("1")));
         mGraph.add(new TripleImpl(content, DISCOBITS.holds, orderedContent));
         mGraph.add(new TripleImpl(content, RDF.type, DISCOBITS.Entry));
@@ -175,34 +177,35 @@ public class DocumentationViewer {
 
     protected static class DocumentationItem {
 
-        private UriRef documentationItem;
-        private Set<UriRef> afterDocItems;
+        private IRI documentationItem;
+        private Set<IRI> afterDocItems;
         
         private boolean transitiveAfterDocItemsAdded = false;
-        private Map<UriRef, DocumentationItem> uri2docItemObj;
+        private Map<IRI, DocumentationItem> uri2docItemObj;
 
-        DocumentationItem(UriRef doumentationItem, Set<UriRef> explicitAfterDocItems,
-            Map<UriRef, DocumentationItem> uri2docItemObj) {
+        DocumentationItem(IRI doumentationItem, Set<IRI> explicitAfterDocItems,
+            Map<IRI, DocumentationItem> uri2docItemObj) {
             this.documentationItem = doumentationItem;
             this.afterDocItems = explicitAfterDocItems;
             this.uri2docItemObj = uri2docItemObj;
         }
 
-        public boolean isAfer(UriRef docItem) {
+        public boolean isAfer(IRI docItem) {
             return getAfterDocItems().contains(docItem);
         }
         
-        private Set<UriRef> getAfterDocItems() {
+        private Set<IRI> getAfterDocItems() {
             Stack<DocumentationItem> stack = new Stack<DocumentationItem>();
             stack.add(this);
             return getAfterDocItems(stack);
         }
         
-        private Set<UriRef> getAfterDocItems(Stack<DocumentationItem> stack) {
+        private Set<IRI> getAfterDocItems(Stack<DocumentationItem> stack) {
             if (!transitiveAfterDocItemsAdded) {
-                Iterator<UriRef> afterDocUrisIter = afterDocItems.iterator();
+                Set<IRI> afterDocItemsClone = new HashSet<>(afterDocItems);
+                Iterator<IRI> afterDocUrisIter = afterDocItemsClone.iterator();
                 while (afterDocUrisIter.hasNext()) {
-                    UriRef uriRef = afterDocUrisIter.next();
+                    IRI uriRef = afterDocUrisIter.next();
                     DocumentationItem docItem = uri2docItemObj.get(uriRef);
                     if (stack.contains(docItem)) {
                         throw new RuntimeException("Documentation: cycle detected!\n"
@@ -223,9 +226,9 @@ public class DocumentationViewer {
             writer.append("[");
             writer.append(documentationItem.getUnicodeString());
             writer.append(" is after (");
-            Iterator<UriRef> afterDocs = afterDocItems.iterator();
+            Iterator<IRI> afterDocs = afterDocItems.iterator();
             while (afterDocs.hasNext()) {
-                UriRef uriRef = afterDocs.next();
+                IRI uriRef = afterDocs.next();
                 writer.append(uriRef.getUnicodeString());
                 if (afterDocs.hasNext()) {
                     writer.append(",");

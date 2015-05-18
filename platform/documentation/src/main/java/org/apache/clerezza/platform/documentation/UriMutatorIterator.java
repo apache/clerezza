@@ -37,18 +37,18 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Replaces the <code>BASE_URI_PLACEHOLDER</code> in the <code>UriRef</code>s 
+ * Replaces the <code>BASE_URI_PLACEHOLDER</code> in the <code>IRI</code>s 
  * as well as in the XML Literal of the <code>Triple</code>s provided by the
  * specified <code>Iterator</code>s with the specified base URI.
  *
@@ -60,8 +60,8 @@ public class UriMutatorIterator implements Iterator<Triple> {
 
     private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-    public static final UriRef XML_LITERAL =
-            new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
+    public static final IRI XML_LITERAL =
+            new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
 
     public static final String BASE_URI_PLACEHOLDER = "bundle://";
     private Iterator<Triple> wrapped;
@@ -87,17 +87,17 @@ public class UriMutatorIterator implements Iterator<Triple> {
     public Triple next() {
         Triple triple = wrapped.next();
 
-        NonLiteral subject = triple.getSubject();
-        if (subject instanceof UriRef) {
-            subject = replacePlaceHolder((UriRef) subject);
+        BlankNodeOrIRI subject = triple.getSubject();
+        if (subject instanceof IRI) {
+            subject = replacePlaceHolder((IRI) subject);
         }
-        UriRef predicate = replacePlaceHolder(triple.getPredicate());
+        IRI predicate = replacePlaceHolder(triple.getPredicate());
 
-        Resource object = triple.getObject();
-        if (object instanceof UriRef) {
-            object = replacePlaceHolder((UriRef) object);
-        } else if (object instanceof TypedLiteral) {
-            TypedLiteral literal = (TypedLiteral) object;
+        RDFTerm object = triple.getObject();
+        if (object instanceof IRI) {
+            object = replacePlaceHolder((IRI) object);
+        } else if (object instanceof Literal) {
+            Literal literal = (Literal) object;
             if (literal.getDataType().equals(XML_LITERAL)) {
                 object = replacePlaceHolderInUrl(literal);
             }
@@ -110,7 +110,7 @@ public class UriMutatorIterator implements Iterator<Triple> {
         throw new UnsupportedOperationException("Not supported.");
     }
 
-    private UriRef replacePlaceHolder(UriRef uriRef) {
+    private IRI replacePlaceHolder(IRI uriRef) {
         String orig = uriRef.getUnicodeString();
         if (orig.startsWith(BASE_URI_PLACEHOLDER)) {
             int nextSlash = orig.indexOf("/", BASE_URI_PLACEHOLDER.length());
@@ -121,13 +121,13 @@ public class UriMutatorIterator implements Iterator<Triple> {
             } else {
                 bundleSymbolicName = originBundleSymbName;
             }
-            return new UriRef(baseUri + "bundle-doc/" + bundleSymbolicName +
+            return new IRI(baseUri + "bundle-doc/" + bundleSymbolicName +
                     orig.substring(nextSlash));
         }
         return uriRef;
     }
 
-    private TypedLiteral replacePlaceHolderInUrl(TypedLiteral xmlLiteral) {
+    private Literal replacePlaceHolderInUrl(Literal xmlLiteral) {
         final String tagName = "infoBit";
         final String openingTag = "<" + tagName + ">";
         final String closingTag = "</" + tagName + ">";

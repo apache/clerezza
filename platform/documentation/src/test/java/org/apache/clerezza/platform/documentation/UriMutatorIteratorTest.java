@@ -21,13 +21,13 @@ package org.apache.clerezza.platform.documentation;
 import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.Literal;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
 
 /**
  *
@@ -43,37 +43,37 @@ public class UriMutatorIteratorTest {
 
     @Test
     public void testMutator() {
-        MGraph mGraph = new SimpleMGraph();
-        UriRef uriRef = new UriRef(UriMutatorIterator.BASE_URI_PLACEHOLDER +
+        Graph mGraph = new SimpleGraph();
+        IRI uriRef = new IRI(UriMutatorIterator.BASE_URI_PLACEHOLDER +
                 REFERENCED_BUNDLE_NAME + "/bla#Test");
-        UriRef expectedUriRef = new UriRef(HOST + 
+        IRI expectedIRI = new IRI(HOST + 
                 "bundle-doc/"+ REFERENCED_BUNDLE_NAME +"/bla#Test");
         mGraph.add(new TripleImpl(uriRef, uriRef, uriRef));
         Iterator<Triple> it = new UriMutatorIterator(mGraph.iterator(), HOST,
                 ORIGIN_BUNDLE_NAME);
-        Triple expectedTriple = new TripleImpl(expectedUriRef, expectedUriRef,
-                expectedUriRef);
+        Triple expectedTriple = new TripleImpl(expectedIRI, expectedIRI,
+                expectedIRI);
         Assert.assertEquals(expectedTriple, it.next());        
     }
 
     @Test
     public void testMutatorNoSymbolicName() {
-        MGraph mGraph = new SimpleMGraph();
-        UriRef uriRef = new UriRef(UriMutatorIterator.BASE_URI_PLACEHOLDER +
+        Graph mGraph = new SimpleGraph();
+        IRI uriRef = new IRI(UriMutatorIterator.BASE_URI_PLACEHOLDER +
                 "/bla#Test");
-        UriRef expectedUriRef = new UriRef(HOST +
+        IRI expectedIRI = new IRI(HOST +
                 "bundle-doc/"+ ORIGIN_BUNDLE_NAME +"/bla#Test");
         mGraph.add(new TripleImpl(uriRef, uriRef, uriRef));
         Iterator<Triple> it = new UriMutatorIterator(mGraph.iterator(), HOST,
                 ORIGIN_BUNDLE_NAME);
-        Triple expectedTriple = new TripleImpl(expectedUriRef, expectedUriRef,
-                expectedUriRef);
+        Triple expectedTriple = new TripleImpl(expectedIRI, expectedIRI,
+                expectedIRI);
         Assert.assertEquals(expectedTriple, it.next());
     }
 
     @Test
     public void baseUriTransformation() {
-        MGraph mGraph = new SimpleMGraph();
+        Graph mGraph = new SimpleGraph();
         String xml = "<a href=\"" + UriMutatorIterator.BASE_URI_PLACEHOLDER +
             REFERENCED_BUNDLE_NAME + "/bla\"/>";
         Literal literal = new TypedLiteralImpl(xml,
@@ -82,7 +82,7 @@ public class UriMutatorIteratorTest {
             "bundle-doc/"+ REFERENCED_BUNDLE_NAME +"/bla\"/>";
         Literal expectedLiteral = new TypedLiteralImpl(expectedXml,
                     UriMutatorIterator.XML_LITERAL);
-        UriRef uriRef = new UriRef("bla");
+        IRI uriRef = new IRI("bla");
             mGraph.add(new TripleImpl(uriRef, uriRef, literal));
         Iterator<Triple> it = new UriMutatorIterator(mGraph.iterator(), HOST,
                 ORIGIN_BUNDLE_NAME);
@@ -93,7 +93,7 @@ public class UriMutatorIteratorTest {
 
     @Test
     public void baseUriTransformationNoSymbolicName() {
-        MGraph mGraph = new SimpleMGraph();
+        Graph mGraph = new SimpleGraph();
         String xml = "<a href=\"" + UriMutatorIterator.BASE_URI_PLACEHOLDER +
             "/bla\"/>";
         Literal literal = new TypedLiteralImpl(xml,
@@ -102,7 +102,7 @@ public class UriMutatorIteratorTest {
             "bundle-doc/"+ ORIGIN_BUNDLE_NAME +"/bla\"/>";
         Literal expectedLiteral = new TypedLiteralImpl(expectedXml,
                     UriMutatorIterator.XML_LITERAL);
-        UriRef uriRef = new UriRef("bla");
+        IRI uriRef = new IRI("bla");
             mGraph.add(new TripleImpl(uriRef, uriRef, literal));
         Iterator<Triple> it = new UriMutatorIterator(mGraph.iterator(), HOST,
                 ORIGIN_BUNDLE_NAME);
