@@ -28,7 +28,7 @@
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
         <version>0.11-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
+        <relativePath>../../../../../../../parent</relativePath>
     </parent>
     <repositories>
         <repository>

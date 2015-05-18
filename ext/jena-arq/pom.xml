@@ -25,7 +25,7 @@
         <groupId>org.apache.clerezza.ext</groupId>
         <artifactId>bundles-pom</artifactId>
         <version>0.1</version>
-        <relativePath>../bundles-pom/pom.xml</relativePath>
+        <relativePath>../../parent</relativePath>
     </parent>
 
     <groupId>org.apache.clerezza.ext</groupId>

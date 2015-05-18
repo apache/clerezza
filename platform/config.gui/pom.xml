@@ -25,7 +25,7 @@
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
         <version>0.5</version>
-        <relativePath>../parent</relativePath>
+        <relativePath>../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.config.gui</artifactId>
