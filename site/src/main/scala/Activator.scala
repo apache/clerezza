@@ -3,11 +3,11 @@ package org.apache.clerezza.site
 import org.osgi.framework.{BundleActivator, BundleContext, ServiceRegistration}
 import scala.collection.JavaConversions.asJavaDictionary
 import org.apache.clerezza.platform.typerendering.{TypeRenderlet, RenderletManager}
-import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider
+//import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider
 import org.apache.clerezza.rdf.core.access.TcManager
 import org.apache.clerezza.osgi.services.ServicesDsl
 import org.apache.clerezza.platform.Constants
-import org.apache.clerezza.rdf.core.event.{GraphEvent, FilterTriple, GraphListener}
+//import org.apache.clerezza.rdf.core.event.{GraphEvent, FilterTriple, GraphListener}
 import org.apache.clerezza.rdf.core.serializedform.{Serializer, SupportedFormat, Parser}
 import java.io.{FileOutputStream, FileInputStream, File}
 
@@ -19,7 +19,7 @@ class Activator extends BundleActivator {
   var renderletRegistration, 
   titledContentRenderletRegistration,
   globalMenuRenderletRegistration: ServiceRegistration[TypeRenderlet] = null
-  var graphListenerOption: Option[GraphListener] = null
+  //var graphListenerOption: Option[GraphListener] = null
 
   /**
    * called when the bundle is started, this method initializes the provided service
@@ -35,16 +35,16 @@ class Activator extends BundleActivator {
                           new TitledContentRenderlet, null)
     globalMenuRenderletRegistration = context.registerService(classOf[TypeRenderlet],
                           new GlobalMenuRenderlet, null)
-    context.installBundle("mvn:org.apache.clerezza/rdf.stable.serializer").start();
-    context.installBundle("mvn:org.apache.clerezza/tools.offline").start();
+    //context.installBundle("mvn:org.apache.clerezza/rdf.stable.serializer").start();
+    //context.installBundle("mvn:org.apache.clerezza/tools.offline").start();
     val path = {
       val bl = context.getBundle.getLocation
       bl.substring(bl.indexOf(':')+1)
     }
-    val graphFile = new File(new File(path), "graph.nt");
+    /*val graphFile = new File(new File(path), "graph.nt");
     doWith {
       (tcManager: TcManager, parser: Parser) =>  {
-        val contentGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI)
+        val contentGraph = tcManager.getGraph(Constants.CONTENT_GRAPH_URI)
         val fileGraph = parser.parse(new FileInputStream(graphFile), SupportedFormat.N_TRIPLE)
         if (contentGraph.size > fileGraph.size) {
           println("content graph if bigger than the graph from file, not replacing with the content from file and not " +
@@ -66,7 +66,7 @@ class Activator extends BundleActivator {
           println("A GraphListener has been added that writes changes to the content graph to graph.nt")
         }
       }
-    }
+    }*/
   }
 
 
@@ -80,11 +80,11 @@ class Activator extends BundleActivator {
     val servicesDsl = new ServicesDsl(context)
     import servicesDsl._
     val tcManager = $[TcManager]
-    val contentGraph = tcManager.getMGraph(Constants.CONTENT_GRAPH_URI)
-    graphListenerOption match {
+    val contentGraph = tcManager.getGraph(Constants.CONTENT_GRAPH_URI)
+    /*graphListenerOption match {
       case Some(l) => contentGraph.removeGraphListener(l)
       case None => ;
-    }
+    }*/
     println("bye")
   }
 

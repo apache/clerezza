@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>0.5</version>
+        <version>7-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
@@ -33,6 +33,14 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Tools Offline Site Generator</name>
     <description>The core part of SCB Web Access</description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>  
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -41,30 +49,18 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typerendering.core</artifactId>
-            <version>0.3</version>
+            <artifactId>platform.graphprovider.content</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.typerendering.scalaserverpages</artifactId>
-            <version>0.4</version>
+            <artifactId>platform.typerendering.core</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>0.14</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.jena.serializer</artifactId>
-            <scope>test</scope>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.jena.parser</artifactId>
-            <scope>test</scope>
-            <version>0.12</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
@@ -72,33 +68,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
-            <artifactId>jaxrs.utils</artifactId>
-            <version>0.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.ontologies</artifactId>
-            <version>0.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>rdf.web.ontologies</artifactId>
-            <version>0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
             <artifactId>web.fileserver</artifactId>
-            <version>0.10</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>utils</artifactId>
-            <version>0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.clerezza</groupId>
-            <artifactId>platform.content.representations.core</artifactId>
-            <version>0.2</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

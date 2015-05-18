@@ -18,8 +18,7 @@
  */
 package org.apache.clerezza.tools.offline;
 
-import java.util.logging.Level;
-import org.apache.clerezza.tools.offline.utils.ConditionalOutputStream;
+//import org.apache.clerezza.tools.offline.utils.ConditionalOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,14 +43,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import org.apache.clerezza.platform.Constants;
-import org.apache.clerezza.platform.content.representations.core.ThumbnailService;
 import org.apache.clerezza.platform.graphprovider.content.ContentGraphProvider;
 import org.apache.clerezza.platform.typerendering.RendererFactory;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -85,8 +82,8 @@ public class Generator {
     @Reference
     private RendererFactory rendererFactory;
 
-    @Reference
-    private ThumbnailService thumbnailService;
+    //@Reference
+    //private ThumbnailService thumbnailService;
 
     private MediaTypeGuesser mediaTypeGuesser = MediaTypeGuesser.getInstance();
 
@@ -165,20 +162,20 @@ public class Generator {
     private PathNode createFileHierarchy(String baseUri, String retrievalBaseUri, String targetUri,
             String rootLinkPrefix, List<String> formatExtensions) throws IOException {
         Hierarchy result = new Hierarchy("");
-        MGraph contentGraph = cgp.getContentGraph();
-        Set<UriRef> matchingUri = new HashSet<UriRef>();
+        Graph contentGraph = cgp.getContentGraph();
+        Set<IRI> matchingUri = new HashSet<IRI>();
         for (Triple triple : contentGraph) {
-            final NonLiteral subject = triple.getSubject();
-            if ((subject instanceof UriRef) &&
-                    ((UriRef)subject).getUnicodeString().startsWith(baseUri)) {
-                matchingUri.add((UriRef)subject);
+            final BlankNodeOrIRI subject = triple.getSubject();
+            if ((subject instanceof IRI) &&
+                    ((IRI)subject).getUnicodeString().startsWith(baseUri)) {
+                matchingUri.add((IRI)subject);
             }
         }
-        for (UriRef uriRef : matchingUri) {
-            if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index"))) {
+        for (IRI uriRef : matchingUri) {
+            if (matchingUri.contains(new IRI(uriRef.getUnicodeString()+"index"))) {
                 continue;
             }
-            if (matchingUri.contains(new UriRef(uriRef.getUnicodeString()+"index.html"))) {
+            if (matchingUri.contains(new IRI(uriRef.getUnicodeString()+"index.html"))) {
                 continue;
             }
             generateFilesForResource(baseUri, retrievalBaseUri, targetUri,
@@ -193,29 +190,29 @@ public class Generator {
      * handling of infodicscobits
      */
     private void generateFilesForResource(String baseUri, String retrievalBaseUri,
-            String targetBaseUri, String rootLinkPrefix, UriRef resourceUriRef, TripleCollection graph,
+            String targetBaseUri, String rootLinkPrefix, IRI resourceIRI, Graph graph,
             List<String> formatExtensions, Hierarchy hierarchy) throws IOException {
-        final String path = getPathForUriRef(resourceUriRef, baseUri);
-        UriRef retreivalUriRef = new UriRef(retrievalBaseUri+path);
+        final String path = getPathForIRI(resourceIRI, baseUri);
+        IRI retreivalIRI = new IRI(retrievalBaseUri+path);
         for (String formatExtension : formatExtensions) {
             MediaType mediaType = mediaTypeGuesser.getTypeForExtension(formatExtension);
             try {
-                final byte[] variant = getVariant(retreivalUriRef, mediaType);
+                final byte[] variant = getVariant(retreivalIRI, mediaType);
                 if (mediaType.getSubtype().equals("png"))
                     logger.info("Got variant of length : {}",variant.length);
-                final byte[] addedThumbnailUris = applyThumbnailService(variant);
-                final byte[] dataPrefixApplied = applyRootLinkPrefix(addedThumbnailUris,
+                //final byte[] addedThumbnailUris = applyThumbnailService(variant);
+                final byte[] dataPrefixApplied = applyRootLinkPrefix(variant,
                         rootLinkPrefix, mediaType);
-                final String filePath = resourceUriRef.getUnicodeString().endsWith("/") ? path+"index" : path;
+                final String filePath = resourceIRI.getUnicodeString().endsWith("/") ? path+"index" : path;
                 final String dottedExtension = "."+formatExtension;
                 final String extendedPath = filePath.endsWith(dottedExtension) ?
                     filePath : filePath + dottedExtension;
-                if (mediaType.getSubtype().equals("png"))
-                    logger.info("Processed length : {}",dataPrefixApplied.length);
+                /*if (mediaType.getSubtype().equals("png"))
+                    logger.info("Processed length : {}",dataPrefixApplied.length);*/
                 hierarchy.addChild(extendedPath, 
                         changeBaseUri(dataPrefixApplied, baseUri, targetBaseUri));
             } catch (VariantUnavailableException ex) {
-                logger.debug("{} not available as {}", resourceUriRef, mediaType);
+                logger.debug("{} not available as {}", resourceIRI, mediaType);
             }
         }    
     }
@@ -237,7 +234,7 @@ public class Generator {
         }
     }
 
-    private byte[] getVariant(UriRef uriRef, MediaType mediaType) throws 
+    private byte[] getVariant(IRI uriRef, MediaType mediaType) throws 
             IOException, VariantUnavailableException {
         logger.info("requested uri " + uriRef.getUnicodeString() + ",mediatype " + mediaType.toString());
         try{
@@ -275,7 +272,7 @@ public class Generator {
         }
     }
 
-    private String getPathForUriRef(UriRef uriRef, String baseUri) {
+    private String getPathForIRI(IRI uriRef, String baseUri) {
         if (!uriRef.getUnicodeString().startsWith(baseUri)) {
             throw new RuntimeException(uriRef+" doesn't start with "+baseUri);
         }
@@ -316,7 +313,7 @@ public class Generator {
         }
     }
 
-    private byte[] applyThumbnailService(byte[] variant) {
+    /*private byte[] applyThumbnailService(byte[] variant) {
         try {            
             final ByteArrayOutputStream resultWriter = new ByteArrayOutputStream(variant.length);
             OutputStream thumbnailCorrectingStream = new ConditionalOutputStream(resultWriter,
@@ -327,7 +324,7 @@ public class Generator {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-    }
+    }*/
 
 
 

@@ -2,7 +2,7 @@ package org.apache.clerezza.site
 
 import javax.ws.rs.core.MediaType
 import org.apache.clerezza.platform.typerendering._
-import org.apache.clerezza.rdf.core.UriRef
+import org.apache.clerezza.commons.rdf.IRI
 import org.apache.clerezza.rdf.utils.GraphNode
 import org.apache.clerezza.rdf.ontologies._
 import org.apache.clerezza.rdf.core._
@@ -67,7 +67,7 @@ resultDocModifier.addScriptReference("/scripts/status-message.js");
       <div class="zz-control">
         <div class="login">
             {
-              def platform(s: Any) = new UriRef("http://clerezza.org/2009/08/platform#"+s)
+              def platform(s: Any) = new IRI("http://clerezza.org/2009/08/platform#"+s)
               val username = (context/platform("user")/platform("userName")*)
               if((username).equals("anonymous")) {
                 <span>

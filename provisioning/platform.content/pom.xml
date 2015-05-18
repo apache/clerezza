@@ -74,11 +74,16 @@
             <artifactId>rdf.stable.serializer</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        <!-- this doesn't strictly belongs to here -->
+        <!-- thess don't strictly belong to here -->
         <dependency>
             <groupId>org.apache.stanbol</groupId>
             <artifactId>org.apache.stanbol.commons.web.resources</artifactId>
             <version>0.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>platform.xhtml2html</artifactId>
+            <version>0.6</version>
         </dependency>
     </dependencies>
 

@@ -721,6 +721,9 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <bundleStartLevel>30</bundleStartLevel>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
