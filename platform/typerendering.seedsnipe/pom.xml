@@ -33,6 +33,14 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>Clerezza - Platform Seedsnipe Renderlet</name>
     <description>Renderlet implementation wrapping org.apache.clerezza.templating.seedsnipe</description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

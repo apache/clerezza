@@ -130,7 +130,7 @@ public class Restorer {
                 Graph mGraph;
                 boolean created = false;
                 try {
-                    mGraph = target.getGraph((IRI)graphGN.getNode());
+                    mGraph = target.getMGraph((IRI)graphGN.getNode());
                     try {
                         mGraph.clear();
                     } catch (UnsupportedOperationException ex) {

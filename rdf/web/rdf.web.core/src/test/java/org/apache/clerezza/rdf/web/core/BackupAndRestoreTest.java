@@ -157,12 +157,20 @@ public class BackupAndRestoreTest {
     public void restoreFromBackup() throws IOException {
         byte[] backupData = backup.createBackup();
         TcProvider tcProvider = EasyMock.createMock(TcProvider.class);
-        EasyMock.expect(tcProvider.getGraph(testGraphUri0)).andReturn(
+        EasyMock.expect(tcProvider.getMGraph(testGraphUri0)).andReturn(
                 EasyMock.createNiceMock(Graph.class));
-        EasyMock.expect(tcProvider.getGraph(testGraphUri1)).andReturn(
+        EasyMock.expect(tcProvider.getMGraph(testGraphUri1)).andReturn(
+                EasyMock.createNiceMock(Graph.class));
+        EasyMock.expect(tcProvider.getMGraph(testGraphUriA)).andReturn(
                 EasyMock.createNiceMock(Graph.class));
         tcProvider.deleteGraph(testGraphUriA);
+        tcProvider.deleteGraph(testGraphUri0);
+        tcProvider.deleteGraph(testGraphUri1);
         EasyMock.expect(tcProvider.createImmutableGraph(EasyMock.eq(testGraphUriA),
+                EasyMock.notNull(Graph.class))).andReturn(new SimpleGraph().getImmutableGraph());
+        EasyMock.expect(tcProvider.createImmutableGraph(EasyMock.eq(testGraphUri0),
+                EasyMock.notNull(Graph.class))).andReturn(new SimpleGraph().getImmutableGraph());
+        EasyMock.expect(tcProvider.createImmutableGraph(EasyMock.eq(testGraphUri1),
                 EasyMock.notNull(Graph.class))).andReturn(new SimpleGraph().getImmutableGraph());
         EasyMock.replay(tcProvider);
         Restorer restore = new Restorer();

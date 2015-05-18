@@ -30,15 +30,17 @@ import org.apache.clerezza.platform.typerendering.Renderlet;
 import org.apache.clerezza.rdf.utils.GraphNode;
 import org.apache.clerezza.templating.RenderingFunctions;
 import org.apache.clerezza.templating.seedsnipe.simpleparser.SeedsnipeTemplatingEngine;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 
 /**
  * Renderlet for Seedsnipe
  *
  * @author mir
  *
- * @scr.component
- * @scr.service interface="org.apache.clerezza.platform.typerendering.Renderlet"
  */
+@Component
+@Service(Renderlet.class)
 public class SeedsnipeRenderlet implements Renderlet{
 
     private SeedsnipeTemplatingEngine seedsnipeEngine;

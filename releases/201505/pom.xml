@@ -43,12 +43,21 @@
     <name>Clerezza - Release 201505</name>
 
     <modules>
+        <module>../../jaxrs.rdf.providers</module>
+        <module>../../rdf</module>
+        <module>../../templating</module>
+        <module>../../templating.seedsnipe</module>
         <module>../../parent</module>
         <module>../../platform/config</module>
         <module>../../platform/config.gui</module>
         <module>../../platform/content</module>
         <module>../../platform/content.default404</module>
         <module>../../platform/content.fsadaptor</module>
+        <module>../../platform/globalmenu.api</module>
+        <module>../../platform/platform</module>
+        <module>../../platform/style.default</module>
+        <module>../../platform/typehandlerspace</module>
+        <module>../../platform/typehandlerspace.jaxrs2</module>
         <module>../../platform/typerendering</module>
         <module>../../platform/typerendering.scala</module>
         <module>../../platform/typerendering.scalaserverpages</module>
@@ -60,8 +69,28 @@
         <module>../../platform/documentation</module>
         <module>../../platform/documentation.viewer</module>
         <module>../../platform/users</module>
+        <module>../../platform/usermanager</module>
         <module>../../platform/typepriority</module>
-        <module>../../rdf</module>
+        <module>../../provisioning/felixosgi</module>
+        <module>../../provisioning/felixweb</module>
+        <!-- <module>../../provisioning/security</module> -->
+        <module>../../provisioning/jaxrs-whiteboard</module>
+        <module>../../provisioning/launchers/content-launcher</module>
+        <module>../../provisioning/launchers/linked-data-launcher</module>
+        <module>../../provisioning/launchers/typerendering-launcher</module>
+        <module>../../provisioning/launchers/website-launcher</module>
+        <module>../../provisioning/platform.content</module>
+        <module>../../provisioning/platform.graphnodeprovider</module>
+        <module>../../provisioning/rdf</module>
+        <module>../../provisioning/rdf.tdb</module>
+        <module>../../provisioning/rdf.web</module>
+        <module>../../provisioning/site.tools</module>
+        <module>../../provisioning/typehandlerspace</module>
+        <module>../../provisioning/typerendering</module>
+        <module>../../scala-scripting</module>
+        <module>../../site</module>
+        <module>../../tools.offline</module>
+        <module>../../web.fileserver</module>
     </modules>
 
 </project>
