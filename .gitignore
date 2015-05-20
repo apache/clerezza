@@ -5,4 +5,4 @@ target/
 .project
 .classpath
 dependency-reduced-pom.xml
-
+release.properties

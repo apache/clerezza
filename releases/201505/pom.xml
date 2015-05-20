@@ -20,12 +20,12 @@
     -->
 
     <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-         !!!!!!                                !!!!!!
-         !!!!!!    This pom is only provided   !!!!!!
-         !!!!!!   for build convenience and    !!!!!!
-         !!!!!!   should not be released       !!!!!!
-         !!!!!!                                !!!!!!
-         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+    !!!!!!                                !!!!!!
+    !!!!!!    This pom is only provided   !!!!!!
+    !!!!!!   for build convenience and    !!!!!!
+    !!!!!!   should not be released       !!!!!!
+    !!!!!!                                !!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
     <modelVersion>4.0.0</modelVersion>
     
@@ -34,7 +34,7 @@
         <artifactId>clerezza</artifactId>
         <version>7-SNAPSHOT</version>
         <relativePath>../../parent</relativePath>
-     </parent>
+    </parent>
 
     <groupId>org.apache.clerezza.releases</groupId>
     <artifactId>201505</artifactId>
@@ -73,7 +73,6 @@
         <module>../../platform/typepriority</module>
         <module>../../provisioning/felixosgi</module>
         <module>../../provisioning/felixweb</module>
-        <!-- <module>../../provisioning/security</module> -->
         <module>../../provisioning/jaxrs-whiteboard</module>
         <module>../../provisioning/launchers/content-launcher</module>
         <module>../../provisioning/launchers/linked-data-launcher</module>
@@ -93,4 +92,26 @@
         <module>../../web.fileserver</module>
     </modules>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.4</version>
+                <executions>
+                    <execution>
+                        <id>distro-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/source-release.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
