@@ -32,13 +32,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../parent</relativePath>
     </parent>
 
     <groupId>org.apache.clerezza.releases</groupId>
     <artifactId>201505</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Clerezza - Release 201505</name>
 
@@ -91,7 +91,11 @@
         <module>../../tools.offline</module>
         <module>../../web.fileserver</module>
     </modules>
-
+    <scm>
+        <connection>scm:git:git://git.apache.org/clerezza.git</connection>
+        <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
+        <url>http://git.apache.org/clerezza.git</url>
+    </scm>
     <build>
         <plugins>
             <plugin>
