@@ -25,13 +25,13 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../../parent</relativePath>
     </parent>
     
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>rdf</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - RDF</name>

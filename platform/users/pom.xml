@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.users</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>Clerezza - Platform Users</name>
     <description>Utilities to access graphs with information about and for 
     specific agents/users</description>

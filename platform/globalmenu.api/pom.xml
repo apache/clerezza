@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.globalmenu.api</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>Clerezza - Platform GlobalMenu API</name>
     <description>
         The API for providing entries to the global clerezza menu

@@ -24,13 +24,13 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>jaxrs.rdf.providers</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>Clerezza - JAX-RS MessageBodyProviders for RDF</name>
     <build>
         <plugins>

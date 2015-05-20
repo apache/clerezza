@@ -32,13 +32,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../../parent</relativePath>
      </parent>
 
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf-jena-reactor</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Clerezza - RDF - Jena</name>
     <description>The clerezza RDF Implementation using Jena</description>

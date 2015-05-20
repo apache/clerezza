@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform.typerendering.core</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>Clerezza - Platform Type Rendering Core</name>
     <description>
     This project provides a JAX-RS MessageBodyWriter to render GraphNodes. Rendering requests are delegated to registered renderlets. 

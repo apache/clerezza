@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.clerezza.scala</groupId>
         <artifactId>scala</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.clerezza.scala</groupId>
     <artifactId>tests</artifactId>

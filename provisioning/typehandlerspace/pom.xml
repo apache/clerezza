@@ -25,13 +25,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../../parent</relativePath>
     </parent>
 
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>typehandlerspace</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - Typehandlerspace</name>
@@ -72,7 +72,7 @@
         <url>http://git.apache.org/clerezza.git/</url>
         <connection>scm:git:git://git.apache.org/clerezza.git</connection>
         <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
-      <tag>201505-1.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
     
 </project>

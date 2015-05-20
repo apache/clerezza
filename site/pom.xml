@@ -3,11 +3,11 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
     <artifactId>website</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Website</name>
     <dependencies>

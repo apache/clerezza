@@ -32,13 +32,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
      </parent>
 
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf-reactor</artifactId>
-    <version>7</version>
+    <version>8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Clerezza - RDF</name>
 
