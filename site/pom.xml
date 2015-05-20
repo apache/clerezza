@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../parent</relativePath>
     </parent>
     <artifactId>website</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Website</name>
     <dependencies>
@@ -22,32 +22,32 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scala</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.graphprovider.content</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.scala.utils</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>

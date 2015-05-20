@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>web.fileserver</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Clerezza - Jax-Rs File Server</name>
     <dependencies>
         <dependency>

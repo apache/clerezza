@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.web.core</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Clerezza - RDF Web Access Core</name>
     <description>The core part of Clerezza RDF  Web Access</description>
     <build>
@@ -50,29 +50,29 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scalaserverpages</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.serializer</artifactId>
             <scope>test</scope>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
             <scope>test</scope>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
@@ -91,17 +91,17 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.web.ontologies</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.globalmenu.api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>

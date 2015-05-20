@@ -95,7 +95,8 @@
         <connection>scm:git:git://git.apache.org/clerezza.git</connection>
         <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
         <url>http://git.apache.org/clerezza.git</url>
-    </scm>
+      <tag>201505-1.0.0</tag>
+  </scm>
     <build>
         <plugins>
             <plugin>

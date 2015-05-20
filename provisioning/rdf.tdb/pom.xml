@@ -25,13 +25,13 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../parent</relativePath>
     </parent>
     
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>rdf.tdb</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - Jena TDB Storage</name>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.tdb.storage</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>

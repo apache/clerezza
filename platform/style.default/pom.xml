@@ -24,11 +24,11 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../parent</relativePath>
     </parent>
     <artifactId>platform.style.default</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>bundle</packaging>
     <name>Clerezza - Platform - Style Default</name>
     <dependencies>
@@ -43,27 +43,27 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typerendering.scala</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.ontologies</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.utils</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.scala.utils</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>

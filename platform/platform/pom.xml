@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>platform</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Clerezza - Platform - Bootmonitor and Constants</name>
     <description>Artifact with dependencies to the clerezza platform components
     providing documentation and boot-status monitoring.</description>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

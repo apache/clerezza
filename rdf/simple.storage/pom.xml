@@ -24,13 +24,13 @@
     <parent>
         <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.simple.storage</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Clerezza - RDF - Simple Storage Provider</name>
     <dependencies>
         <dependency>
@@ -41,13 +41,13 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core.test</artifactId>
             <scope>test</scope>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>

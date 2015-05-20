@@ -27,7 +27,7 @@
     </parent>
     <groupId>org.apache.clerezza.scala</groupId>
     <artifactId>scala</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Scala OSGi Services</name>
     <description>Provides bundles and services to allow compiling and executing scala code
@@ -182,6 +182,6 @@
     </build>
 
   <scm>
-    <tag>reactor-0.3</tag>
+    <tag>201505-1.0.0</tag>
   </scm>
 </project>

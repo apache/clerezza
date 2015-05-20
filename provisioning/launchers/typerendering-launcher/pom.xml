@@ -19,12 +19,12 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>typerendering-launcher</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Clerezza - Provisioning - Launchers - TypeRendering</name>
@@ -214,7 +214,7 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>felixosgi</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
@@ -226,20 +226,20 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <type>partialbundlelist</type>
         </dependency>
 		
         <dependency>
              <groupId>org.apache.clerezza.provisioning</groupId>
              <artifactId>rdf.tdb</artifactId>
-             <version>1.0.0-SNAPSHOT</version>
+             <version>1.0.0</version>
              <type>partialbundlelist</type>
          </dependency>
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>platform.graphnodeprovider</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
@@ -251,7 +251,7 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>typerendering</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <type>partialbundlelist</type>
         </dependency>
     </dependencies>

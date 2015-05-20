@@ -25,13 +25,13 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../parent</relativePath>
     </parent>
 
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>typehandlerspace</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - Typehandlerspace</name>
@@ -44,19 +44,19 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typepriority</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency> 	
  
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typehandlerspace.jaxrs</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency> 	
 
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>platform.typehandlerspace</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
@@ -72,7 +72,7 @@
         <url>http://git.apache.org/clerezza.git/</url>
         <connection>scm:git:git://git.apache.org/clerezza.git</connection>
         <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>201505-1.0.0</tag>
   </scm>
     
 </project>
