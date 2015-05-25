@@ -28,18 +28,17 @@ import java.util.List;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Language;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.Language;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.Literal;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.core.LiteralFactory;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SerializingProvider;
 import org.apache.clerezza.rdf.ontologies.FOAF;
@@ -58,23 +57,23 @@ import org.junit.BeforeClass;
 public class RdfJsonSerializerProviderTest {
 
     private final static LiteralFactory lf = LiteralFactory.getInstance();
-    private final static UriRef RDF_NIL = new UriRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
-    private final static UriRef node1 = new UriRef("http://example.org/node1");
-    private final static UriRef node2 = new UriRef("http://example.org/node2");
-    private final static UriRef prop1 = new UriRef("http://example.org/prop1");
-    private final static UriRef prop2 = new UriRef("http://example.org/prop2");
-    private final static UriRef prop3 = new UriRef("http://example.org/prop3");
-    private final static UriRef prop4 = new UriRef("http://example.org/prop4");
-    private final static UriRef prop5 = new UriRef("http://example.org/prop5");
-    private final static UriRef prop6 = new UriRef("http://example.org/prop6");
-    private final static BNode blank1 = new BNode();
-    private final static BNode blank2 = new BNode();
+    private final static IRI RDF_NIL = new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
+    private final static IRI node1 = new IRI("http://example.org/node1");
+    private final static IRI node2 = new IRI("http://example.org/node2");
+    private final static IRI prop1 = new IRI("http://example.org/prop1");
+    private final static IRI prop2 = new IRI("http://example.org/prop2");
+    private final static IRI prop3 = new IRI("http://example.org/prop3");
+    private final static IRI prop4 = new IRI("http://example.org/prop4");
+    private final static IRI prop5 = new IRI("http://example.org/prop5");
+    private final static IRI prop6 = new IRI("http://example.org/prop6");
+    private final static BlankNode blank1 = new BlankNode();
+    private final static BlankNode blank2 = new BlankNode();
     private final static PlainLiteralImpl plainLiteralA = new PlainLiteralImpl("A");
     private final static PlainLiteralImpl plainLiteralB = new PlainLiteralImpl("B");
     private final static PlainLiteralImpl plainLiteralC = new PlainLiteralImpl("C");
-    private final static TypedLiteral typedLiteralA = lf.createTypedLiteral("A");
+    private final static Literal typedLiteralA = lf.createTypedLiteral("A");
 
-    private MGraph mGraph;
+    private Graph mGraph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -86,7 +85,7 @@ public class RdfJsonSerializerProviderTest {
 
     @Before
     public void setUp() {
-        mGraph = new SimpleMGraph();
+        mGraph = new SimpleGraph();
     }
 
     @After
@@ -94,7 +93,7 @@ public class RdfJsonSerializerProviderTest {
     }
 
     @Test
-    public void testSerializationOfBNode() {
+    public void testSerializationOfBlankNode() {
         mGraph.add(new TripleImpl(node1, prop1, blank1));
         SerializingProvider provider = new RdfJsonSerializingProvider();
         ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
@@ -118,10 +117,10 @@ public class RdfJsonSerializerProviderTest {
 
         ParsingProvider parsingProvider = new RdfJsonParsingProvider();
         ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph.toByteArray());
-        MGraph parsedMGraph = new SimpleMGraph();
-        parsingProvider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
+        Graph parsedGraph = new SimpleGraph();
+        parsingProvider.parse(parsedGraph, jsonIn, "application/rdf+json", null);
 
-        Assert.assertEquals(mGraph.getGraph(), parsedMGraph.getGraph());
+        Assert.assertEquals(mGraph.getImmutableGraph(), parsedGraph.getImmutableGraph());
     }
 
     /*
@@ -135,18 +134,15 @@ public class RdfJsonSerializerProviderTest {
         mGraph.add(new TripleImpl(blank1, prop4, plainLiteralC));
         mGraph.add(new TripleImpl(blank1, prop5, typedLiteralA));
         mGraph.add(new TripleImpl(node1, prop6, blank1));
-
-        SerializingProvider provider = new RdfJsonSerializingProvider();
-        ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
-        provider.serialize(serializedGraph, mGraph, "application/rdf+json");
-//        System.out.println(serializedGraph.toString());
-        ParsingProvider parsingProvider = new RdfJsonParsingProvider();
-        ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph.toByteArray());
-        MGraph parsedMGraph = new SimpleMGraph();
-        parsingProvider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
-
-        Assert.assertEquals(6, parsedMGraph.size());
-        Assert.assertEquals(mGraph.getGraph(), parsedMGraph.getGraph());
+        serializeDeserialize(mGraph);
+    }
+    
+    @Test
+    public void literalWithLanguage() {
+        Literal l = new PlainLiteralImpl("Ein deutsches Literal.", 
+                new Language("de"));
+        mGraph.add(new TripleImpl(blank1, RDF.first, l));
+        serializeDeserialize(mGraph);
     }
     
     /**
@@ -154,7 +150,7 @@ public class RdfJsonSerializerProviderTest {
      */
     @Test
     public void testBigGraph() throws Exception {
-        //reduced Graph size to 5000 to allow equals test between the
+        //reduced ImmutableGraph size to 5000 to allow equals test between the
         //serialised and parsed RDF graphs. Equals tests on bigger graphs
         //would take to much time
         int NUM_TRIPLES = 5000;
@@ -165,9 +161,9 @@ public class RdfJsonSerializerProviderTest {
         double b = 2.0;//bNode
         double nb = b - (l * 2 / 3); //create new bNode
         double random;
-        NonLiteral subject = null;
-        UriRef predicate = null;
-        List<UriRef> predicateList = new ArrayList<UriRef>();
+        BlankNodeOrIRI subject = null;
+        IRI predicate = null;
+        List<IRI> predicateList = new ArrayList<IRI>();
         predicateList.add(RDF.first);
         predicateList.add(RDF.rest);
         predicateList.add(RDF.type);
@@ -183,14 +179,14 @@ public class RdfJsonSerializerProviderTest {
         String URI_PREFIX = "http://www.test.org/bigGraph/ref";
         Language DE = new Language("de");
         Language EN = new Language("en");
-        Iterator<UriRef> predicates = predicateList.iterator();
-        List<BNode> bNodes = new ArrayList<BNode>();
-        bNodes.add(new BNode());
+        Iterator<IRI> predicates = predicateList.iterator();
+        List<BlankNode> bNodes = new ArrayList<BlankNode>();
+        bNodes.add(new BlankNode());
         for (int count = 0; mGraph.size() < NUM_TRIPLES; count++) {
             random = Math.random() * 3;
             if (random >= 2.5 || count == 0) {
                 if (random <= 2.75) {
-                    subject = new UriRef(URI_PREFIX + count);
+                    subject = new IRI(URI_PREFIX + count);
                 } else {
                     int rndIndex = (int) ((random - 2.75) * bNodes.size() / (3.0 - 2.75));
                     subject = bNodes.get(rndIndex);
@@ -209,7 +205,7 @@ public class RdfJsonSerializerProviderTest {
                 } else if (random <= d) {
                     mGraph.add(new TripleImpl(subject, predicate, lf.createTypedLiteral(random)));
                 } else {
-                    PlainLiteral text;
+                    Literal text;
                     if (random <= i) {
                         text = new PlainLiteralImpl("Literal for " + count);
                     } else if (random <= d) {
@@ -220,26 +216,26 @@ public class RdfJsonSerializerProviderTest {
                     mGraph.add(new TripleImpl(subject, predicate, text));
                 }
             } else if (random <= b) { //bnode
-                BNode bnode;
+                BlankNode bnode;
                 if (random <= nb) {
-                    bnode = new BNode();
+                    bnode = new BlankNode();
                     bNodes.add(bnode);
                 } else { //>nb <b
                     int rndIndex = (int) ((random - nb) * bNodes.size() / (b - nb));
                     bnode = bNodes.get(rndIndex);
                 }
                 mGraph.add(new TripleImpl(subject, predicate, bnode));
-            } else { //UriRef
+            } else { //IRI
                 mGraph.add(new TripleImpl(subject, predicate,
-                        new UriRef(URI_PREFIX + (int) count * random)));
+                        new IRI(URI_PREFIX + (int) count * random)));
             }
         }
         //Asserts the correct sorting of the triples in the graph by the
         //Comparator used by the JSON serializer
-        Set<NonLiteral> subjects = new HashSet<NonLiteral>();
+        Set<BlankNodeOrIRI> subjects = new HashSet<BlankNodeOrIRI>();
         Triple[] sortedTriples = mGraph.toArray(new Triple[mGraph.size()]);
         Arrays.sort(sortedTriples, RdfJsonSerializingProvider.SUBJECT_COMPARATOR);
-        NonLiteral current = sortedTriples[0].getSubject();
+        BlankNodeOrIRI current = sortedTriples[0].getSubject();
         for(Triple triple : sortedTriples){
             if(!triple.getSubject().equals(current)){
                 subjects.add(current);
@@ -259,11 +255,23 @@ public class RdfJsonSerializerProviderTest {
         System.out.println("Serialized " + mGraph.size() + " Triples in " + (System.currentTimeMillis() - start) + " ms");
         ParsingProvider parsingProvider = new RdfJsonParsingProvider();
         ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph.toByteArray());
-        MGraph parsedMGraph = new SimpleMGraph();
-        parsingProvider.parse(parsedMGraph, jsonIn, "application/rdf+json", null);
-        Assert.assertEquals(originalSize, parsedMGraph.size());
-        sortedTriples = parsedMGraph.toArray(new Triple[parsedMGraph.size()]);
+        Graph parsedGraph = new SimpleGraph();
+        parsingProvider.parse(parsedGraph, jsonIn, "application/rdf+json", null);
+        Assert.assertEquals(originalSize, parsedGraph.size());
+        sortedTriples = parsedGraph.toArray(new Triple[parsedGraph.size()]);
         Arrays.sort(sortedTriples, RdfJsonSerializingProvider.SUBJECT_COMPARATOR);
-        Assert.assertEquals(mGraph.getGraph(), parsedMGraph.getGraph());
+        Assert.assertEquals(mGraph.getImmutableGraph(), parsedGraph.getImmutableGraph());
+    }
+
+    private void serializeDeserialize(Graph mGraph) {
+        SerializingProvider provider = new RdfJsonSerializingProvider();
+        ByteArrayOutputStream serializedGraph = new ByteArrayOutputStream();
+        provider.serialize(serializedGraph, mGraph, "application/rdf+json");
+        ParsingProvider parsingProvider = new RdfJsonParsingProvider();
+        ByteArrayInputStream jsonIn = new ByteArrayInputStream(serializedGraph.toByteArray());
+        Graph parsedGraph = new SimpleGraph();
+        parsingProvider.parse(parsedGraph, jsonIn, "application/rdf+json", null);
+        Assert.assertEquals(mGraph.size(), parsedGraph.size());
+        Assert.assertEquals(mGraph.getImmutableGraph(), parsedGraph.getImmutableGraph());
     }
 }

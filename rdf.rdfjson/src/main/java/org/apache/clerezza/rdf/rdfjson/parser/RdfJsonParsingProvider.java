@@ -28,36 +28,39 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.Language;
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.impl.PlainLiteralImpl;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.impl.TypedLiteralImpl;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.Language;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.LiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
 import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 
 /**
- * A {@link org.apache.clerezza.rdf.core.serializedform.ParsingProvider} for rdf/json
- * 
+ * A {@link org.apache.clerezza.rdf.core.serializedform.ParsingProvider} for
+ * rdf/json
+ *
  * @author tio, hasan
- * 
+ *
  */
-@Component(immediate=true)
+@Component(immediate = true)
 @Service(ParsingProvider.class)
 @SupportedFormat(SupportedFormat.RDF_JSON)
 public class RdfJsonParsingProvider implements ParsingProvider {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final IRI XSD_STRING = new IRI("http://www.w3.org/2001/XMLSchema#string");
 
     @Override
-    public void parse(MGraph target, InputStream serializedGraph, String formatIdentifier, UriRef baseUri) {
+    public void parse(Graph target, InputStream serializedGraph, String formatIdentifier, IRI baseUri) {
 
-        BNodeManager bNodeMgr = new BNodeManager();
+        BlankNodeManager bNodeMgr = new BlankNodeManager();
 
         JSONParser parser = new JSONParser();
         InputStreamReader reader;
@@ -72,13 +75,13 @@ public class RdfJsonParsingProvider implements ParsingProvider {
         try {
             JSONObject root = (JSONObject) parser.parse(reader);
 
-            NonLiteral nonLiteral = null;
+            BlankNodeOrIRI nonLiteral = null;
             for (Object key : root.keySet()) {
                 String keyString = (String) key;
                 if (keyString.startsWith("_:")) {
-                    nonLiteral = bNodeMgr.getBNode(keyString);
+                    nonLiteral = bNodeMgr.getBlankNode(keyString);
                 } else {
-                    nonLiteral = new UriRef(keyString);
+                    nonLiteral = new IRI(keyString);
                 }
                 JSONObject predicates = (JSONObject) root.get(keyString);
                 addTriplesToGraph(nonLiteral, bNodeMgr, predicates, target);
@@ -92,45 +95,48 @@ public class RdfJsonParsingProvider implements ParsingProvider {
         }
     }
 
-    private class BNodeManager {
-        private Map<String, BNode> bNodeMap = new HashMap<String, BNode>();
+    private class BlankNodeManager {
 
-        public BNode getBNode(String id) {
-            BNode bNode = bNodeMap.get(id);
+        private Map<String, BlankNode> bNodeMap = new HashMap<String, BlankNode>();
+
+        public BlankNode getBlankNode(String id) {
+            BlankNode bNode = bNodeMap.get(id);
             if (bNode == null) {
-                bNode = new BNode();
+                bNode = new BlankNode();
                 bNodeMap.put(id, bNode);
             }
             return bNode;
         }
     }
 
-    private void addTriplesToGraph(NonLiteral subject, BNodeManager bNodeMgr, JSONObject predicates, MGraph mGraph) {
+    private void addTriplesToGraph(BlankNodeOrIRI subject, BlankNodeManager bNodeMgr, JSONObject predicates, Graph mGraph) {
         for (Object predicate : predicates.keySet()) {
             JSONArray objects = (JSONArray) predicates.get(predicate);
             for (Object object : objects) {
                 JSONObject values = (JSONObject) object;
                 String value = (String) values.get("value");
                 if (values.get("type").equals("literal")) {
-                    Object dataType = values.get("datatype");
-                    if (dataType != null && 
-                            !dataType.toString().isEmpty()) {
-                        mGraph.add(new TripleImpl(subject, new UriRef((String) predicate),
-                                //LiteralFactory.getInstance().createTypedLiteral(value)));
-                                new TypedLiteralImpl(value.toString(),new UriRef(dataType.toString()))));
-                    } else if (values.containsKey("lang")
+                    IRI dataType;
+                    Object dataTypeValue = values.get("datatype");
+                    if (dataTypeValue == null
+                            || dataTypeValue.toString().isEmpty()) {
+                        dataType = XSD_STRING;
+                    } else {
+                        dataType = new IRI(dataTypeValue.toString());
+                    }
+                    Language language = null;
+                    if (values.containsKey("lang")
                             && !values.get("lang").equals("")
                             && values.get("lang") != null) {
-                        mGraph.add(new TripleImpl(subject, new UriRef((String) predicate),
-                                new PlainLiteralImpl(value, new Language((String) values.get("lang")))));
-                    } else {
-                        mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), new PlainLiteralImpl(value)));
+                        language = new Language((String) values.get("lang"));
                     }
+                    mGraph.add(new TripleImpl(subject, new IRI((String) predicate),
+                            new LiteralImpl(value.toString(), dataType, language)));
                 } else if (values.get("type").equals("uri")) {
-                    mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), new UriRef(value)));
+                    mGraph.add(new TripleImpl(subject, new IRI((String) predicate), new IRI(value)));
                 } else if (values.get("type").equals("bnode")) {
-                    NonLiteral bNode = bNodeMgr.getBNode(value);
-                    mGraph.add(new TripleImpl(subject, new UriRef((String) predicate), bNode));
+                    BlankNodeOrIRI bNode = bNodeMgr.getBlankNode(value);
+                    mGraph.add(new TripleImpl(subject, new IRI((String) predicate), bNode));
                 }
             }
         }

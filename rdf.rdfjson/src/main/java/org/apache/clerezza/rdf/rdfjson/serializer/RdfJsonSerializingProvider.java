@@ -27,14 +27,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.clerezza.rdf.core.BNode;
-import org.apache.clerezza.rdf.core.NonLiteral;
-import org.apache.clerezza.rdf.core.PlainLiteral;
-import org.apache.clerezza.rdf.core.Resource;
-import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.TypedLiteral;
-import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.commons.rdf.BlankNode;
+import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
+import org.apache.clerezza.commons.rdf.RDFTerm;
+import org.apache.clerezza.commons.rdf.Triple;
+import org.apache.clerezza.commons.rdf.Graph;
+import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.rdf.core.serializedform.SerializingProvider;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.felix.scr.annotations.Component;
@@ -47,7 +46,7 @@ import org.json.simple.JSONObject;
  * rdf/json.
  * 
  * This implementation is based on first sorting the triples within the parsed
- * {@link TripleCollection} based on the {@link #SUBJECT_COMPARATOR subject}.
+ * {@link Graph} based on the {@link #SUBJECT_COMPARATOR subject}.
  * <p>
  * The serialization is done on a subject scope. Meaning that all triples for a
  * subject are serialized and instantly written to the provided
@@ -64,7 +63,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void serialize(OutputStream serializedGraph, TripleCollection tc,
+    public void serialize(OutputStream serializedGraph, Graph tc,
             String formatIdentifier) {
         if (tc.isEmpty()) { // ensure writing an empty element in case of an
                             // empty collection
@@ -77,7 +76,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
             }
             return;
         }
-        BNodeManager bNodeMgr = new BNodeManager();
+        BlankNodeManager bNodeMgr = new BlankNodeManager();
         BufferedWriter out;
         try {
             out = new BufferedWriter(new OutputStreamWriter(serializedGraph,
@@ -89,10 +88,10 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
         Triple[] sortedTriples = tc.toArray(new Triple[tc.size()]);
         Arrays.sort(sortedTriples, SUBJECT_COMPARATOR);
         Triple triple;
-        NonLiteral subject = null;
+        BlankNodeOrIRI subject = null;
         String subjectStr = null;
-        UriRef predicate = null;
-        Map<UriRef, JSONArray> predicateValues = new HashMap<UriRef, JSONArray>();
+        IRI predicate = null;
+        Map<IRI, JSONArray> predicateValues = new HashMap<IRI, JSONArray>();
         JSONObject jSubject = new JSONObject();
         try {
             out.write("{"); // start the root object
@@ -102,7 +101,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
                 if (subjectChange) {
                     if (subject != null) {
                         // write the predicate values
-                        for (Entry<UriRef, JSONArray> predicates : predicateValues
+                        for (Entry<IRI, JSONArray> predicates : predicateValues
                                 .entrySet()) {
                             jSubject.put(
                                     predicates.getKey().getUnicodeString(),
@@ -116,10 +115,10 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
                     }
                     // init next subject
                     subject = triple.getSubject();
-                    if (subject instanceof BNode) {
-                        subjectStr = bNodeMgr.getBNodeId((BNode) subject);
-                    } else { // if (subject instanceof UriRef)
-                        subjectStr = ((UriRef) subject).getUnicodeString();
+                    if (subject instanceof BlankNode) {
+                        subjectStr = bNodeMgr.getBlankNodeId((BlankNode) subject);
+                    } else { // if (subject instanceof IRI)
+                        subjectStr = ((IRI) subject).getUnicodeString();
                     }
                 }
                 predicate = triple.getPredicate();
@@ -131,7 +130,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
                 values.add(writeObject(bNodeMgr, triple.getObject()));
             }
             if (subjectStr != null) {
-                for (Entry<UriRef, JSONArray> predicates : predicateValues
+                for (Entry<IRI, JSONArray> predicates : predicateValues
                         .entrySet()) {
                     jSubject.put(predicates.getKey().getUnicodeString(),
                             predicates.getValue());
@@ -146,50 +145,46 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
         }
     }
 
-    private class BNodeManager {
-        private Map<BNode, String> bNodeMap = new HashMap<BNode, String>();
+    private class BlankNodeManager {
+        private Map<BlankNode, String> bNodeMap = new HashMap<BlankNode, String>();
         private int counter = 0;
 
-        public String getBNodeId(BNode node) {
+        public String getBlankNodeId(BlankNode node) {
             String bNodeId = bNodeMap.get(node);
             if (bNodeId == null) {
                 bNodeId = "_:b" + ++counter;
-                bNodeMap.put((BNode) node, bNodeId);
+                bNodeMap.put((BlankNode) node, bNodeId);
             }
             return bNodeId;
         }
     }
 
     /**
-     * Converts the {@link Resource object} of an triple to JSON
+     * Converts the {@link RDFTerm object} of an triple to JSON
      * 
      * @param bNodeMgr
-     *            used to lookup {@link BNode} instances
+     *            used to lookup {@link BlankNode} instances
      * @param object
      *            the object of the triple
      * @return the JSON representation of parsed object
      */
     @SuppressWarnings("unchecked")
-    private JSONObject writeObject(BNodeManager bNodeMgr, Resource object) {
+    private JSONObject writeObject(BlankNodeManager bNodeMgr, RDFTerm object) {
         JSONObject jObject = new JSONObject();
-        if (object instanceof PlainLiteral) {
-            PlainLiteral plainLiteral = (PlainLiteral) object;
-            jObject.put("value", plainLiteral.getLexicalForm());
-            jObject.put("type", "literal");
-            if (plainLiteral.getLanguage() != null) {
-                jObject.put("lang", plainLiteral.getLanguage().toString());
-            }
-        } else if (object instanceof TypedLiteral) {
-            TypedLiteral literal = (TypedLiteral) object;
+        if (object instanceof Literal) {
+            Literal literal = (Literal) object;
             jObject.put("value", literal.getLexicalForm());
             jObject.put("type", "literal");
             jObject.put("datatype", literal.getDataType().getUnicodeString());
-        } else if (object instanceof UriRef) {
-            UriRef uriRef = (UriRef) object;
+            if (literal.getLanguage() != null) {
+                jObject.put("lang", literal.getLanguage().toString());
+            }
+        } else if (object instanceof IRI) {
+            IRI uriRef = (IRI) object;
             jObject.put("value", uriRef.getUnicodeString());
             jObject.put("type", "uri");
-        } else if (object instanceof BNode) {
-            String bNodeId = bNodeMgr.getBNodeId((BNode) object);
+        } else if (object instanceof BlankNode) {
+            String bNodeId = bNodeMgr.getBlankNodeId((BlankNode) object);
             jObject.put("value", bNodeId);
             jObject.put("type", "bnode");
         }
@@ -209,7 +204,7 @@ public class RdfJsonSerializingProvider implements SerializingProvider {
             return compare(a.getSubject(), b.getSubject());
         }
 
-        private int compare(NonLiteral a, NonLiteral b) {
+        private int compare(BlankNodeOrIRI a, BlankNodeOrIRI b) {
             int hashA = a.hashCode();
             int hashB = b.hashCode();
             if (hashA != hashB) {
