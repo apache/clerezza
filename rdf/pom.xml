@@ -52,6 +52,7 @@
         <module>schemagen/maven-plugin</module>
         <module>ontologies</module>
         <module>rdfa</module>
+        <module>rdfjson</module>
         <module>simple.storage</module>
         <module>stable.serializer</module>
         <module>storage.web</module>
