@@ -164,16 +164,6 @@
             </build>
         </profile>
         <profile>
-            <id>it</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <modules>
-                <module>integrationtest.web</module>
-                <module>integrationtest.web.performance</module>
-            </modules>
-        </profile>
-        <profile>
             <id>additions</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
