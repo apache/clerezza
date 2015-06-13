@@ -31,7 +31,7 @@
     <artifactId>rdf.rdfjson</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.1-SNAPSHOT</version>
-    <name>Clerezza - SCB rdf/json Parser and Serializer</name>
+    <name>Clerezza - RDF - rdf/json Parser and Serializer</name>
     <description>A rdf/json Parser- and SerializerProvider</description>
     <dependencies>
         <dependency>
