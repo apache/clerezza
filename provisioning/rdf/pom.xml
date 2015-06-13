@@ -132,16 +132,15 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         -->
-        <!-- <dependency>
+        <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.rdfjson</artifactId>
-            <version>0.4</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.clerezza.ext</groupId>
-            <artifactId>org.json.simple</artifactId>
-            <version>0.4</version>
-        </dependency> -->
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.serializer</artifactId>
@@ -155,7 +154,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.sparql</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
