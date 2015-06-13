@@ -51,9 +51,8 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.clerezza.ext</groupId>
-            <artifactId>org.json.simple</artifactId>
-            <version>0.4</version>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
