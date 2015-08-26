@@ -34,6 +34,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.ReferencePolicyOption;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.component.ComponentContext;
@@ -48,17 +49,17 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
- * Jersey-based RESTful endpoint for the Stanbol Enhancer engines and store.
- * <p>
- * This OSGi component serves as a bridge between the OSGi context and the Servlet context available to JAX-RS
- * resources.
+ * Jersey-based JAXRS whiteboard implementation.
+ * 
+ * This exposes JAX-RS resources available as services exposing Object with the property javax.ws.rs=true
  */
 @Component(immediate = true, metatype = true)
 @References({
     @Reference(name="component", referenceInterface=Object.class, 
         target="(javax.ws.rs=true)", 
 		cardinality=ReferenceCardinality.OPTIONAL_MULTIPLE, 
-        policy=ReferencePolicy.DYNAMIC)})
+        policy=ReferencePolicy.STATIC,
+        policyOption=ReferencePolicyOption.GREEDY)})
 public class JerseyEndpoint {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -91,31 +92,12 @@ public class JerseyEndpoint {
     }
 
     @Activate
-    protected void activate(ComponentContext ctx) throws IOException,
+    protected void activate(ComponentContext componentContext) throws IOException,
                                                  ServletException,
                                                  NamespaceException,
                                                  ConfigurationException {
-        componentContext = ctx;
-        initJersey();
-        
-    }
 
-    /** Initialize the Jersey subsystem */
-    private synchronized void initJersey() throws NamespaceException, ServletException {
-        if (componentContext == null) {
-            //we have not yet been activated
-            return;
-        }
-        //end of STANBOL-1073 work around
-        if (componentContext == null) {
-            log.debug(" ... can not init Jersey Endpoint - Component not yet activated!");
-            //throw new IllegalStateException("Null ComponentContext, not activated?");
-            return;
-        }
-
-        shutdownJersey();
-
-        log.info("(Re)initializing the Stanbol Jersey subsystem");
+        log.info("Activating Jersey subsystem");
 
         // register all the JAX-RS resources into a a JAX-RS application and bind it to a configurable URL
         // prefix
@@ -150,20 +132,17 @@ public class JerseyEndpoint {
     protected void deactivate(ComponentContext ctx) {
         shutdownJersey();
         servletContext = null;
-        componentContext = null;
     }
     
     protected void bindComponent(Object component) throws IOException,
                                                           ServletException,
                                                           NamespaceException  {
         components.add(component);
-        initJersey();
     }
 
     protected void unbindComponent(Object component) throws IOException,
                                                           ServletException,
                                                           NamespaceException  {
         components.remove(component);
-        initJersey();
     }    
 }
