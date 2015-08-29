@@ -43,7 +43,7 @@
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0</version>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -58,17 +58,17 @@
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-common</artifactId>
-            <version>2.17</version>
+            <version>2.21</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>2.17</version>
+            <version>2.21</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.17</version>
+            <version>2.21</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
@@ -76,22 +76,22 @@
             use "jersey-container-servlet-core", otherwise
             "jersey-container-servlet"        -->
             <artifactId>jersey-container-servlet-core</artifactId>
-            <version>2.17</version>
+            <version>2.21</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-api</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0-b31</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-locator</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0-b31</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-utils</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0-b31</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
@@ -102,32 +102,32 @@
         <dependency>
             <groupId>org.glassfish.hk2.external</groupId>
             <artifactId>javax.inject</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0-b31</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.glassfish.hk2.external</groupId>
             <artifactId>asm-all-repackaged</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0-b31</version>
         </dependency>
-        <dependency>
+         <dependency>
             <groupId>org.glassfish.hk2.external</groupId>
             <artifactId>cglib</artifactId>
             <version>2.2.0-b23</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.glassfish.hk2.external</groupId>
             <artifactId>aopalliance-repackaged</artifactId>
-            <version>2.2.0</version>
+            <version>2.4.0-b31</version>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.18.0-GA</version>
+            <version>3.20.0-GA</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
             <artifactId>jersey-guava</artifactId>
-            <version>2.17</version>
+            <version>2.21</version>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>

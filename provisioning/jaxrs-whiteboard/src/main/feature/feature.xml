@@ -22,6 +22,8 @@
         <details>${project.description}</details>
         <!-- <config>foo=bar</config> -->
         <bundle start-level="1">mvn:javax.annotation/javax.annotation-api/1.2</bundle>
+        <!-- to prevent "No generator was provided and there is no default generator registered" Exception, see https://java.net/jira/browse/JERSEY-2788 -->
+        <bundle start-level="15">mvn:org.glassfish.hk2/osgi-resource-locator/1.0.1</bundle>
     </feature>
 
 </features>
