@@ -38,7 +38,7 @@
 
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf-jena-reactor</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>2</version>
     <packaging>pom</packaging>
     <name>Clerezza - RDF - Jena</name>
     <description>The clerezza RDF Implementation using Jena</description>
@@ -53,4 +53,8 @@
         <module>tdb.storage</module>
     </modules>
 
+
+  <scm>
+    <tag>201508-1</tag>
+  </scm>
 </project>
