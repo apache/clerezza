@@ -18,6 +18,7 @@
  */
 package org.apache.clerezza.rdf.web.core;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -60,6 +61,7 @@ public class Delete {
 
     
     @POST
+    @Consumes("application/x-www-form-urlencoded")
     public Response delete(@Context UriInfo uriInfo, @FormParam("graphName") IRI graphName) {
         tcManager.deleteGraph(graphName);
         return RedirectUtil.createSeeOtherResponse("./", uriInfo);

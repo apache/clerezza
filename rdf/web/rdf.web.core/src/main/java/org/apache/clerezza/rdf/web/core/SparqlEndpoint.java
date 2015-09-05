@@ -27,6 +27,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.FormParam;
@@ -150,6 +151,7 @@ public class SparqlEndpoint {
      * @return either a {@link ImmutableGraph} or a {@link DOMSource}
      */
     @POST
+    @Consumes("application/x-www-form-urlencoded")
     public Object runFormQuery(@FormParam("query") String queryString,
             @FormParam("default-graph-uri") IRI defaultGraphUri,
             @FormParam("apply-style-sheet") String applyStyleSheet,
