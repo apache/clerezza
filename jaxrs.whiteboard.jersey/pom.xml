@@ -56,15 +56,8 @@
                 <configuration>
                     <instructions>
                         <Private-Package>
-                            org.apache.stanbol.commons.web.base.jersey;version=${project.version}
+                            org.apache.clerezza.jaxrs.whiteboard.jersey;version=${project.version}
                         </Private-Package>
-                        <!-- <Import-Package>
-                          javax.servlet; version="[2.5.0,4.0.0)",
-                          javax.servlet.http; version="[2.5.0,4.0.0)",
-                          org.apache.stanbol.commons.web.base,
-                          org.apache.stanbol.commons.web.base.*,
-                          *
-                        </Import-Package> -->
                     </instructions>
                 </configuration>
             </plugin>

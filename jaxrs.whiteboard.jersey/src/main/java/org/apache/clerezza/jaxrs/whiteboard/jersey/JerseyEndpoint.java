@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.stanbol.commons.web.base.jersey;
+package org.apache.clerezza.jaxrs.whiteboard.jersey;
 
 import java.io.IOException;
 import java.util.ArrayList;
