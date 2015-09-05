@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>8-SNAPSHOT</version>
+        <version>7</version>
         <relativePath>../../../parent</relativePath>
     </parent>
     <groupId>org.apache.clerezza.provisioning</groupId>
@@ -268,7 +268,7 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf.web</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <type>partialbundlelist</type>
         </dependency>
     </dependencies>
