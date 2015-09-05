@@ -55,7 +55,10 @@
         <module>../../provisioning/rdf.web</module>
         <module>../../provisioning/launchers/content-launcher</module>
         <module>../../provisioning/launchers/linked-data-launcher</module>
-        <module>../../provisioning/launchers/tests/content-launcher-tests</module>
+        <!-- This cannot be released as it has a SNAPSHOT dependency to a stanboltest utility,
+        also it isn't particularly useful to have this in mavencentral.
+        It is howver included in the source distribution.
+        <module>../../provisioning/launchers/tests/content-launcher-tests</module> -->
     </modules>
     <scm>
         <connection>scm:git:git://git.apache.org/clerezza.git</connection>
