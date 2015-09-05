@@ -15,54 +15,19 @@
             <directory>../../</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>jaxrs.rdf.providers/**</include>
-                <include>rdf/**</include>
-                <include>templating/**</include>
-                <include>templating.seedsnipe/**</include>
-                <include>parent/**</include>
-                <include>platform/config/**</include>
-                <include>platform/config.gui/**</include>
-                <include>platform/content/**</include>
-                <include>platform/content.default404/**</include>
-                <include>platform/content.fsadaptor/**</include>
-                <include>platform/globalmenu.api/**</include>
-                <include>platform/platform/**</include>
-                <include>platform/style.default/**</include>
-                <include>platform/typehandlerspace/**</include>
-                <include>platform/typehandlerspace.jaxrs2/**</include>
-                <include>platform/typerendering/**</include>
-                <include>platform/typerendering.scala/**</include>
-                <include>platform/typerendering.scalaserverpages/**</include>
-                <include>platform/typerendering.seedsnipe/**</include>
-                <include>platform/typerendering.gui/**</include>
-                <include>platform/editor/**</include>
-                <include>platform/graphnodeprovider/**</include>
-                <include>platform/graphprovider.content/**</include>
-                <include>platform/documentation/**</include>
-                <include>platform/documentation.viewer/**</include>
-                <include>platform/users/**</include>
-                <include>platform/usermanager/**</include>
-                <include>platform/typepriority/**</include>
-                <include>provisioning/felixosgi/**</include>
-                <include>provisioning/felixweb/**</include>
+                <include>ext/**</include>
+                <include>rdf/jena/**</include>
+                <include>rdf/rdfjson/**</include>
+                <include>rdf/web/rdf.web.core/**</include>
+                <include>jaxrs.whiteboard.jersey/**</include>
                 <include>provisioning/jaxrs-whiteboard/**</include>
-                <include>provisioning/launchers/content-launcher/**</include>
-                <include>provisioning/launchers/linked-data-launcher/**</include>
-                <include>provisioning/launchers/typerendering-launcher/**</include>
-                <include>provisioning/launchers/website-launcher/**</include>
-                <include>provisioning/platform.content/**</include>
-                <include>provisioning/platform.graphnodeprovider/**</include>
                 <include>provisioning/rdf/**</include>
                 <include>provisioning/rdf.tdb/**</include>
                 <include>provisioning/rdf.web/**</include>
-                <include>provisioning/site.tools/**</include>
-                <include>provisioning/typehandlerspace/**</include>
-                <include>provisioning/typerendering/**</include>
-                <include>scala-scripting/**</include>
-                <include>site/**</include>
-                <include>tools.offline/**</include>
-                <include>web.fileserver/**</include>
-                <include>releases/201505/**</include>
+                <include>provisioning/launchers/content-launcher/**</include>
+                <include>provisioning/launchers/linked-data-launcher/**</include>
+                <include>provisioning/launchers/tests/content-launcher-tests/**</include>
+                <include>releases/201508/**</include>
             </includes>
             <excludes>
                 <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/).*${project.build.directory}.*]</exclude>
