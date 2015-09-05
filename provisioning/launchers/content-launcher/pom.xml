@@ -24,7 +24,7 @@
     </parent>
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>content-launcher</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Clerezza - Provisioning - Launchers - Content Launcher</name>
@@ -278,10 +278,4 @@
             <type>partialbundlelist</type>
         </dependency>
     </dependencies>
-  
-  
-
-  <scm>
-    <tag>201508-1</tag>
-  </scm>
 </project>

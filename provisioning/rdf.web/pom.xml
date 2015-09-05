@@ -31,7 +31,7 @@
     
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>rdf.web</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - RDF Web</name>
@@ -89,9 +89,4 @@
             </plugin>
         </plugins>
     </build>
-    
-
-  <scm>
-    <tag>201508-1</tag>
-  </scm>
 </project>

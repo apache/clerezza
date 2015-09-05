@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.jena.parser</artifactId>
     <packaging>bundle</packaging>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <name>Clerezza - RDF - Jena - Parser</name>
     <description>A ParserProvider based on jena</description>
     <dependencyManagement>
@@ -89,8 +89,4 @@
             </plugin>
         </plugins>
     </build>
-
-  <scm>
-    <tag>201508-1</tag>
-  </scm>
 </project>

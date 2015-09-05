@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.jena.facade</artifactId>
     <packaging>bundle</packaging>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <name>Clerezza - RDF - Jena - Facade: Jena API on Clerezza RDF Commons</name>
     <description>An implementation of the Jena API on top of Clerezza RDF Commons, allows to
         run code written against the Jena API on a source exposing the Clerezza Commons API .</description>
@@ -97,8 +97,4 @@
             </plugin>
         </plugins>
     </build>
-
-  <scm>
-    <tag>201508-1</tag>
-  </scm>
 </project>

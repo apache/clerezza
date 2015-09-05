@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.web.core</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>Clerezza - RDF Web Access Core</name>
     <description>The core part of Clerezza RDF  Web Access</description>
     <build>
@@ -114,8 +114,4 @@
             <version>0.10</version>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>201508-1</tag>
-  </scm>
 </project>

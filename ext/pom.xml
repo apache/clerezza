@@ -38,7 +38,7 @@
 
     <groupId>org.apache.clerezza.ext</groupId>
     <artifactId>org.apache.clerezza.ext.reactor</artifactId>
-    <version>2</version>
+    <version>3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apache Clerezza :: Ext Bundles :: Reactor</name>
 
@@ -49,9 +49,4 @@
         <module>jena-arq</module>
         <module>jena-tdb</module>
     </modules>
-
-
-  <scm>
-    <tag>201508-1</tag>
-  </scm>
 </project>
