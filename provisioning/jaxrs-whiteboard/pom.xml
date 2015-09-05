@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>jaxrs.whiteboard.jersey</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>0.1</version>
         </dependency>
         
         <dependency>
@@ -76,6 +76,11 @@
             use "jersey-container-servlet-core", otherwise
             "jersey-container-servlet"        -->
             <artifactId>jersey-container-servlet-core</artifactId>
+            <version>2.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-jaxb</artifactId>
             <version>2.21</version>
         </dependency>
         <dependency>
@@ -157,6 +162,9 @@
             <plugin>
                 <groupId>org.wymiwyg.karaf.tooling</groupId>
                 <artifactId>karaf-sling-maven-plugin</artifactId>
+                <configuration>
+                    <startLevel>24</startLevel>
+                </configuration>
             </plugin>
         </plugins>
     </build>

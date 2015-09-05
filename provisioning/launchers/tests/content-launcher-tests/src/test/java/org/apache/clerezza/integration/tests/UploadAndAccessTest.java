@@ -45,7 +45,7 @@ public class UploadAndAccessTest extends BaseTest {
     
     @Test
     public void uploadAndQuery() throws Exception {
-        smallGraphTurtle = "<"+RestAssured.baseURI+"/test-resource> <http://www.w3.org/2000/01/rdf-schema#comment> \"A test resource\".";
+        smallGraphTurtle = "<"+RestAssured.baseURI+"/test-resource> <http://www.w3.org/2000/01/rdf-schema#comment> \"A test resource\"^^<http://www.w3.org/2001/XMLSchema#string>.";
         smallGraph = Parser.getInstance().parse(new ByteArrayInputStream(smallGraphTurtle.getBytes("utf-8")), "text/turtle");
         uploadTurtle();
         sparqlAsk();
