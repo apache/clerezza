@@ -31,7 +31,7 @@
 
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>jaxrs</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - JAX-RS Whiteboard</name>
@@ -168,4 +168,5 @@
             </plugin>
         </plugins>
     </build>
+    
 </project>

@@ -24,7 +24,7 @@
     </parent>
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>content-launcher</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Clerezza - Provisioning - Launchers - Content Launcher</name>
@@ -230,14 +230,14 @@
        <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.0-SNAPSHOT</version>
             <type>partialbundlelist</type>
         </dependency>
 		
         <dependency>
              <groupId>org.apache.clerezza.provisioning</groupId>
              <artifactId>rdf.tdb</artifactId>
-             <version>1.1.0</version>
+             <version>1.1.0-SNAPSHOT</version>
              <type>partialbundlelist</type>
          </dependency>
 		 
@@ -250,7 +250,7 @@
       <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>jaxrs</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.1-SNAPSHOT</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
@@ -268,7 +268,7 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf.web</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.1-SNAPSHOT</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
@@ -278,4 +278,6 @@
             <type>partialbundlelist</type>
         </dependency>
     </dependencies>
+  
+  
 </project>
