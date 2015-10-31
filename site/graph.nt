@@ -117,46 +117,46 @@
 <http://localhost:8080/documentation/> <http://discobits.org/ontology#contains> _:c5438bf3ae898ce833947f48e69d90671 . 
 <http://localhost:8080/documentation/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
 <http://localhost:8080/downloads/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://clerezza.org/2009/09/hierarchy#Collection> .
-<http://localhost:8080/downloads/index-content-el/0> <http://discobits.org/ontology#infoBit> "<h2 xmlns=\"http://www.w3.org/1999/xhtml\">Releases</h2>\n<p xmlns=\"http://www.w3.org/1999/xhtml\">\n<strong>0.2-incubating:</strong>\n<br></br>\n<table>\n<tr><th>Artifact</th><th>Description</th><th>Download</th></tr>\n<tr><td>clerezza-0.2-incubating-source-release.zip</td><td>Apache Clerezza sources</td><td><a href=\"http://www.apache.org/dyn/closer.cgi/incubator/clerezza/clerezza-0.2-incubating-source-release.zip\" target=\"_blank\">ZIP</a> (<a href=\"http://www.apache.org/dist/incubator/clerezza/clerezza-0.2-incubating-source-release.zip.md5\" target=\"_blank\">MD5</a>|<a href=\"http://www.apache.org/dist/incubator/clerezza/clerezza-0.2-incubating-source-release.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n<tr><td>clerezza-tdb-distribution.zip</td><td>(binary) Apache Clerezza launcher based on Jena TDB</td><td><a href=\"http://www.apache.org/dyn/closer.cgi/incubator/clerezza/clerezza-tdb-distribution.zip\" target=\"_blank\">ZIP</a> (<a href=\"http://www.apache.org/dist/incubator/clerezza/clerezza-tdb-distribution.zip.md5\" target=\"_blank\">MD5</a>|<a href=\"http://www.apache.org/dist/incubator/clerezza/clerezza-tdb-distribution.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n</table>\n</p>\n<p xmlns=\"http://www.w3.org/1999/xhtml\">\n<strong>Maven:</strong>\n<br></br>\n<br></br>\nAll Apache Clerezza Modules are also available in the <a href=\"https://repository.apache.org/content/repositories/releases/org/apache/clerezza/\" target=\"_blank\">Maven Repository</a>.\n</p>\n\n<p xmlns=\"http://www.w3.org/1999/xhtml\">\n<strong>Verify your Downloads</strong>\n<br></br>\n<br></br>\nYou should verify the MD5 checksums of your downloaded archives. \n<br></br>\nAll Apache Clerezza releases are signed. To verify the signature of a release, you have to download the project's <a href=\"http://www.apache.org/dist/incubator/KEYS\" target=\"_blank\">GPG keys</a>.\n</p>\n\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://localhost:8080/downloads/index-content-el/0> <http://discobits.org/ontology#infoBit> "<h2 xmlns=\"http://www.w3.org/1999/xhtml\">Releases</h2>\n<p xmlns=\"http://www.w3.org/1999/xhtml\"><br /><br />\n<table>\n<tbody><tr><th>Artifact</th><th>Description</th><th>Release Date</th><th>Download</th></tr>\n<tr><td>rdf.rdfjson-1.0.0-source-release.zip</td><td> </td><td>May 28, 2015</td><td><a href=\"https://dist.apache.org/repos/dist/release/clerezza/rdfjson-1.0.0/rdf.rdfjson-1.0.0-source-release.zip\" target=\"_blank\">ZIP</a> (<a href=\"\" target=\"_blank\">MD5</a>|<a href=\"https://dist.apache.org/repos/dist/release/clerezza/rdfjson-1.0.0/rdf.rdfjson-1.0.0-source-release.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n<tr><td>partial release 201505-1.0.0-src.zip</td><td> </td><td>May 26, 2015</td><td><a href=\"https://dist.apache.org/repos/dist/release/clerezza/partial-release-201505/201505-1.0.0-src.zip\" target=\"_blank\">ZIP</a> (<a href=\"\" target=\"_blank\">MD5</a>|<a href=\"https://dist.apache.org/repos/dist/release/clerezza/partial-release-201505/201505-1.0.0-src.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n<tr><td>rdf-core-0.1</td><td> </td><td>April 13, 2015</td><td><a href=\"https://dist.apache.org/repos/dist/release/clerezza/rdf-core-0.1/commons-reactor-0.1-source-release.zip\" target=\"_blank\">ZIP</a> (<a href=\"\" target=\"_blank\">MD5</a>|<a href=\"https://dist.apache.org/repos/dist/release/clerezza/rdf-core-0.1/commons-reactor-0.1-source-release.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n<tr><td>parent 6</td><td> </td><td>Mar 24, 2015</td><td><a href=\"https://dist.apache.org/repos/dist/release/clerezza/parent-6/clerezza-6-source-release.zip\" target=\"_blank\">ZIP</a> (<a href=\"https://dist.apache.org/repos/dist/release/clerezza/parent-6/clerezza-6-source-release.zip.md5\" target=\"_blank\">MD5</a>|<a href=\"https://dist.apache.org/repos/dist/release/clerezza/parent-6/clerezza-6-source-release.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n<tr><td>typehandlerspace-0.2-source-release.zip</td><td> </td><td>Sep 22, 2014</td><td><a href=\"https://dist.apache.org/repos/dist/release/clerezza/typehandlerspace-02/typehandlerspace-0.2-source-release.zip\" target=\"_blank\">ZIP</a> (<a href=\"https://dist.apache.org/repos/dist/release/clerezza/typehandlerspace-02/typehandlerspace-0.2-source-release.zip.md5\" target=\"_blank\">MD5</a>|<a href=\"https://dist.apache.org/repos/dist/release/clerezza/typehandlerspace-02/typehandlerspace-0.2-source-release.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n<tr><td>clerezza-0.2-incubating-source-release.zip</td><td>Apache Clerezza sources</td><td> </td><td><a href=\"http://www.apache.org/dyn/closer.cgi/incubator/clerezza/clerezza-0.2-incubating-source-release.zip\" target=\"_blank\">ZIP</a> (<a href=\"http://www.apache.org/dist/incubator/clerezza/clerezza-0.2-incubating-source-release.zip.md5\" target=\"_blank\">MD5</a>|<a href=\"http://www.apache.org/dist/incubator/clerezza/clerezza-0.2-incubating-source-release.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n<tr><td>clerezza-tdb-distribution.zip</td><td>(binary) Apache Clerezza launcher based on Jena TDB</td><td> </td><td><a href=\"http://www.apache.org/dyn/closer.cgi/incubator/clerezza/clerezza-tdb-distribution.zip\" target=\"_blank\">ZIP</a> (<a href=\"http://www.apache.org/dist/incubator/clerezza/clerezza-tdb-distribution.zip.md5\" target=\"_blank\">MD5</a>|<a href=\"http://www.apache.org/dist/incubator/clerezza/clerezza-tdb-distribution.zip.asc\" target=\"_blank\">ASC</a>)</td></tr>\n</tbody></table>\n</p>\n<p xmlns=\"http://www.w3.org/1999/xhtml\">\n<strong>Maven:</strong>\n<br />\nAll Apache Clerezza Modules are also available in the <a href=\"https://repository.apache.org/content/repositories/releases/org/apache/clerezza/\" target=\"_blank\">Maven Repository</a>.\n</p>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
-<http://localhost:8080/downloads/index-content-el/1-content> <http://discobits.org/ontology#infoBit> "<p xmlns=\"http://www.w3.org/1999/xhtml\">\n</p>\n<p xmlns=\"http://www.w3.org/1999/xhtml\">\nSee the source code repository section below.<br /></p>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://localhost:8080/downloads/index-content-el/1-content> <http://discobits.org/ontology#infoBit> "<p xmlns=\"http://www.w3.org/1999/xhtml\">\n</p>\n<p xmlns=\"http://www.w3.org/1999/xhtml\">\nYou should verify the MD5 checksums of your downloaded archives. \n<br /><br />\nAll Apache Clerezza releases are signed. To verify the signature of a release, you have to download the project's <a href=\"https://dist.apache.org/repos/dist/release/clerezza/KEYS\" target=\"_blank\">GPG keys</a>.\n</p>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/1-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
-<http://localhost:8080/downloads/index-content-el/1-title> <http://discobits.org/ontology#infoBit> "Development Version"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://localhost:8080/downloads/index-content-el/1-title> <http://discobits.org/ontology#infoBit> "Verify your Downloads"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/1-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
-<http://localhost:8080/downloads/index-content-el/1> <http://discobits.org/ontology#contains> _:10a2f4ff9e69bba0f1095843f88c652b1 . 
-<http://localhost:8080/downloads/index-content-el/1> <http://discobits.org/ontology#contains> _:ac40d8fe91c8906f49571226e7cf3f061 . 
+<http://localhost:8080/downloads/index-content-el/1> <http://discobits.org/ontology#contains> _:246c0c7e11739e614851f1e1f88954441 . 
+<http://localhost:8080/downloads/index-content-el/1> <http://discobits.org/ontology#contains> _:b77acb57bb31a839ce66119fb42a95b91 . 
 <http://localhost:8080/downloads/index-content-el/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
-<http://localhost:8080/downloads/index-content-el/2-content> <http://discobits.org/ontology#infoBit> "Refer to <a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://incubator.apache.org/clerezza/getting-started/launching-clerezza/\" target=\"_blank\">Launching Clerezza</a> for instructions on how to run Apache Clerezza."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://localhost:8080/downloads/index-content-el/2-content> <http://discobits.org/ontology#infoBit> "Refer to <a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://clerezza.apache.org/getting-started/launching-clerezza/\" target=\"_blank\">Launching Clerezza</a> for instructions on how to run Apache Clerezza."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/2-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
 <http://localhost:8080/downloads/index-content-el/2-title> <http://discobits.org/ontology#infoBit> "Running Apache Clerezza"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/2-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
-<http://localhost:8080/downloads/index-content-el/2> <http://discobits.org/ontology#contains> _:8bb31c7b30690737a15a4e8e1a9984f31 . 
-<http://localhost:8080/downloads/index-content-el/2> <http://discobits.org/ontology#contains> _:cb1a7482f2a795ef501d7ae3be778e521 . 
+<http://localhost:8080/downloads/index-content-el/2> <http://discobits.org/ontology#contains> _:8459fd758df0744434e8c2ff3e8747dc1 . 
+<http://localhost:8080/downloads/index-content-el/2> <http://discobits.org/ontology#contains> _:860735efae6fe059b65df5c03cca14cf1 . 
 <http://localhost:8080/downloads/index-content-el/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
 <http://localhost:8080/downloads/index-content-el/3-content> <http://discobits.org/ontology#infoBit> "<p xmlns=\"http://www.w3.org/1999/xhtml\">The Apache Clerezza source code Repository can be viewed <a target=\"_blank\" href=\"https://git-wip-us.apache.org/repos/asf?p=clerezza.git\">here</a>.</p>\n\n<p xmlns=\"http://www.w3.org/1999/xhtml\">To obtain a local working copy execute this command:</p>\n\n<pre xmlns=\"http://www.w3.org/1999/xhtml\">git clone https://git-wip-us.apache.org/repos/asf/clerezza.git</pre>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/3-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
 <http://localhost:8080/downloads/index-content-el/3-title> <http://discobits.org/ontology#infoBit> "Source Code Repository"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/3-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
-<http://localhost:8080/downloads/index-content-el/3> <http://discobits.org/ontology#contains> _:0c70f9d330d6e7d630c702f3610119271 . 
-<http://localhost:8080/downloads/index-content-el/3> <http://discobits.org/ontology#contains> _:1a19da85990242701afec82e9c7b95861 . 
+<http://localhost:8080/downloads/index-content-el/3> <http://discobits.org/ontology#contains> _:5ab5851d567cc4f9e6f6ac745bcba1191 . 
+<http://localhost:8080/downloads/index-content-el/3> <http://discobits.org/ontology#contains> _:fd41a9a33df321423ea3a2426895a79f1 . 
 <http://localhost:8080/downloads/index-content-el/3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
 <http://localhost:8080/downloads/index-content-el/4-content> <http://discobits.org/ontology#infoBit> "All Clerezza packages and Source Code is distributed under the terms of <a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://www.apache.org/licenses/\" target=\"_blank\">The Apache Software License (Version 2.0)</a>."^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/4-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
 <http://localhost:8080/downloads/index-content-el/4-title> <http://discobits.org/ontology#infoBit> "License"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/4-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
-<http://localhost:8080/downloads/index-content-el/4> <http://discobits.org/ontology#contains> _:11bf57da28bf0bc69c8993995cb57f091 . 
-<http://localhost:8080/downloads/index-content-el/4> <http://discobits.org/ontology#contains> _:32d9e435032895fe9b8ba8346ac5e3bc1 . 
+<http://localhost:8080/downloads/index-content-el/4> <http://discobits.org/ontology#contains> _:4ea7f6acb02829aacad39ed5a3868fcd1 . 
+<http://localhost:8080/downloads/index-content-el/4> <http://discobits.org/ontology#contains> _:65160e4b15d45b390530dc168b3e3b691 . 
 <http://localhost:8080/downloads/index-content-el/4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
-<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:39429cccd9948db170665447147397471 . 
-<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:60e753ee520f2ec4b14f2800f9a803011 . 
-<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:6c584373a645c498d66644dc4e6f1aec1 . 
-<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:9e6d016c980ea24b0f05885e6fcd8d561 . 
-<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:a9eb41ffca0748dc1284555f0d476ca61 . 
+<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:36e20e98fa2d5dbc2a7843dee1584cbc1 . 
+<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:a77a59dc07ed94c3afa8e04b3703d67f1 . 
+<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:c0d0f4af3c852dc4c4a3fba3388956cc1 . 
+<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:f118e9aa30176ede03dc116eec5111f21 . 
+<http://localhost:8080/downloads/index-content> <http://discobits.org/ontology#contains> _:f22b9c9cf6b73dae2fbc2a78631d13901 . 
 <http://localhost:8080/downloads/index-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#OrderedContent> .
 <http://localhost:8080/downloads/index-title> <http://discobits.org/ontology#infoBit> "Downloads"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
-<http://localhost:8080/downloads/index> <http://discobits.org/ontology#contains> _:6c42509fcecd474aa9a97b356440a28e1 . 
-<http://localhost:8080/downloads/index> <http://discobits.org/ontology#contains> _:c016f32302acda0e7c6989751b62071d1 . 
+<http://localhost:8080/downloads/index> <http://discobits.org/ontology#contains> _:c7d7927eb415a8f9f189ce3cec49a5d61 . 
+<http://localhost:8080/downloads/index> <http://discobits.org/ontology#contains> _:d6888fc15bb88aa0399eb959c52ae63b1 . 
 <http://localhost:8080/downloads/index> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
 <http://localhost:8080/faq/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://clerezza.org/2009/09/hierarchy#Collection> .
 <http://localhost:8080/faq/index-content-el/0-content> <http://discobits.org/ontology#infoBit> "On the login-page there is a \"Forgot password\" link, however this only works if the admin user is configured with an email address and an smtp-server is configured for Clerezza to send mails.<br xmlns=\"http://www.w3.org/1999/xhtml\"></br>\nYou can reset the password on the Clerezza shell (which is accessible without password on the console on which Clerezza is started) withe the following commands:\n<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"tx-blockcode\">\nzz&gt;import  rdf.core.access.TcManager\nimport rdf.core.access.TcManager\n\nzz&gt;val tcm = $[TcManager]\ntcm: org.apache.clerezza.rdf.core.access.TcManager = org.apache.clerezza.rdf.core.access.TcManager@6de35b46\n\nzz&gt;import platform.Constants\nimport platform.Constants\n\nzz&gt;val sysGraph = tcm.getMGraph(Constants.SYSTEM_GRAPH_URI)\nsysGraph: org.apache.clerezza.rdf.core.access.LockableMGraph = org.apache.clerezza.rdf.core.access.LockableMGraphWrapper@39b7e5ee\n\nzz&gt;import rdf.core.impl._                                                            \nimport rdf.core.impl._\n\nzz&gt;import rdf.scala.utils.Preamble\nimport rdf.scala.utils.Preamble\n\nzz&gt;val p = new Preamble(sysGraph) \np: org.apache.clerezza.rdf.scala.utils.Preamble = org.apache.clerezza.rdf.scala.utils.Preamble@670583f6\n\nzz&gt;import p._\nimport p._\n\nzz&gt;import rdf.scala.utils._                                                  \nimport rdf.scala.utils._\n\nzz&gt;import rdf.ontologies.PLATFORM         \nimport rdf.ontologies.PLATFORM\n\nzz&gt;val user: RichGraphNode = new PlainLiteralImpl(\"admin\")/-PLATFORM.userName\nuser: org.apache.clerezza.rdf.scala.utils.RichGraphNode = org.apache.clerezza.rdf.jena.commons.JenaBNodeWrapper@957eb29c\n\nzz&gt;import rdf.ontologies.PERMISSION \nimport rdf.ontologies.PERMISSION\n\nzz&gt;user.deleteProperties(PERMISSION.passwordSha1)\n\nzz&gt;user.addPropertyValue(PERMISSION.passwordSha1, \"d033e22ae348aeb5660fc2140aec35850c4da997\")\n</div>\n\nThe above will set the password of the user admin to \"admin\". Replace the value of PERMISSION.passwordSha1 to the sha1 sum of the the desired password, which you may compute on a typical unix shell with: echo -n password | sha1sum"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
@@ -417,18 +417,9 @@ _:098f006dbee0e41922a3c3022670f5dd1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:0a41bff217c602298a96bc11adc9ae2b1 <http://discobits.org/ontology#holds> <http://localhost:8080/faq/index-content-el/2-title> . 
 _:0a41bff217c602298a96bc11adc9ae2b1 <http://discobits.org/ontology#pos> "0" . 
 _:0a41bff217c602298a96bc11adc9ae2b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:0c70f9d330d6e7d630c702f3610119271 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/3-content> . 
-_:0c70f9d330d6e7d630c702f3610119271 <http://discobits.org/ontology#pos> "1" . 
-_:0c70f9d330d6e7d630c702f3610119271 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:0ce57d802fe1a2b2e7d8c85b21b365ac1 <http://discobits.org/ontology#holds> <http://localhost:8080/clerezza-uima/index-content-el/1> . 
 _:0ce57d802fe1a2b2e7d8c85b21b365ac1 <http://discobits.org/ontology#pos> "1" . 
 _:0ce57d802fe1a2b2e7d8c85b21b365ac1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:10a2f4ff9e69bba0f1095843f88c652b1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/1-title> . 
-_:10a2f4ff9e69bba0f1095843f88c652b1 <http://discobits.org/ontology#pos> "0" . 
-_:10a2f4ff9e69bba0f1095843f88c652b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:11bf57da28bf0bc69c8993995cb57f091 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/4-title> . 
-_:11bf57da28bf0bc69c8993995cb57f091 <http://discobits.org/ontology#pos> "0" . 
-_:11bf57da28bf0bc69c8993995cb57f091 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:12dc8ccc758b49f9708f5d83cfa697d21 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/building-clerezza/index-content-el/0> . 
 _:12dc8ccc758b49f9708f5d83cfa697d21 <http://discobits.org/ontology#pos> "0" . 
 _:12dc8ccc758b49f9708f5d83cfa697d21 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -444,9 +435,6 @@ _:16a8cc18fa7457d4003effac3245e0dd1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:186d4b4c53a1b799e755a4157bb133761 <http://discobits.org/ontology#holds> <http://localhost:8080/contributing/index-content-el/4-content-el/1> . 
 _:186d4b4c53a1b799e755a4157bb133761 <http://discobits.org/ontology#pos> "1" . 
 _:186d4b4c53a1b799e755a4157bb133761 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:1a19da85990242701afec82e9c7b95861 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/3-title> . 
-_:1a19da85990242701afec82e9c7b95861 <http://discobits.org/ontology#pos> "0" . 
-_:1a19da85990242701afec82e9c7b95861 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:1c2fb72151a5b5f4f51a543a328ad6321 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/shell/content-el/4-title> . 
 _:1c2fb72151a5b5f4f51a543a328ad6321 <http://discobits.org/ontology#pos> "0" . 
 _:1c2fb72151a5b5f4f51a543a328ad6321 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -462,6 +450,9 @@ _:23c44138f71e0bf15391a46a9dad20cc1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:243137667a8dd8558ba9e7bc0f7dd1761 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/install-as-service/index-content-el/1-content-el/1> . 
 _:243137667a8dd8558ba9e7bc0f7dd1761 <http://discobits.org/ontology#pos> "1" . 
 _:243137667a8dd8558ba9e7bc0f7dd1761 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:246c0c7e11739e614851f1e1f88954441 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/1-content> . 
+_:246c0c7e11739e614851f1e1f88954441 <http://discobits.org/ontology#pos> "1"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:246c0c7e11739e614851f1e1f88954441 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:25a0a81f7f2e8b3443937088b1015f4a1 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/install-as-service/index-content-el/2> . 
 _:25a0a81f7f2e8b3443937088b1015f4a1 <http://discobits.org/ontology#pos> "2" . 
 _:25a0a81f7f2e8b3443937088b1015f4a1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -494,12 +485,9 @@ _:30bc20643d1d3989dfcb901d2f6801321 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:3106d287cde1088eb1deac6bcc8d66e51 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/launching-clerezza/index-title> . 
 _:3106d287cde1088eb1deac6bcc8d66e51 <http://discobits.org/ontology#pos> "0" . 
 _:3106d287cde1088eb1deac6bcc8d66e51 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:32d9e435032895fe9b8ba8346ac5e3bc1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/4-content> . 
-_:32d9e435032895fe9b8ba8346ac5e3bc1 <http://discobits.org/ontology#pos> "1" . 
-_:32d9e435032895fe9b8ba8346ac5e3bc1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:39429cccd9948db170665447147397471 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/0> . 
-_:39429cccd9948db170665447147397471 <http://discobits.org/ontology#pos> "0" . 
-_:39429cccd9948db170665447147397471 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:36e20e98fa2d5dbc2a7843dee1584cbc1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/0> . 
+_:36e20e98fa2d5dbc2a7843dee1584cbc1 <http://discobits.org/ontology#pos> "0"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:36e20e98fa2d5dbc2a7843dee1584cbc1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:39ce10aed38a336241fbdd4d70d234161 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/shell/title> . 
 _:39ce10aed38a336241fbdd4d70d234161 <http://discobits.org/ontology#pos> "0" . 
 _:39ce10aed38a336241fbdd4d70d234161 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -530,6 +518,9 @@ _:46f25a5b95c8a2141ea759b8180901041 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:4a0bbb095bdef313e8a2043ab94cd9971 <http://discobits.org/ontology#holds> <http://localhost:8080/content-el/2-content-el/0> . 
 _:4a0bbb095bdef313e8a2043ab94cd9971 <http://discobits.org/ontology#pos> "0" . 
 _:4a0bbb095bdef313e8a2043ab94cd9971 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:4ea7f6acb02829aacad39ed5a3868fcd1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/4-title> . 
+_:4ea7f6acb02829aacad39ed5a3868fcd1 <http://discobits.org/ontology#pos> "0"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:4ea7f6acb02829aacad39ed5a3868fcd1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:4f76fa605a704c3c5c1bd8507e086aa41 <http://discobits.org/ontology#holds> <http://localhost:8080/faq/index-content-el/1-content> . 
 _:4f76fa605a704c3c5c1bd8507e086aa41 <http://discobits.org/ontology#pos> "1" . 
 _:4f76fa605a704c3c5c1bd8507e086aa41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -562,6 +553,9 @@ _:59e83e28db0053b861c9b0f671d4f21d1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:5a2b69e03101058343f572f66abe980b1 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/index-content> . 
 _:5a2b69e03101058343f572f66abe980b1 <http://discobits.org/ontology#pos> "1" . 
 _:5a2b69e03101058343f572f66abe980b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:5ab5851d567cc4f9e6f6ac745bcba1191 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/3-content> . 
+_:5ab5851d567cc4f9e6f6ac745bcba1191 <http://discobits.org/ontology#pos> "1"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:5ab5851d567cc4f9e6f6ac745bcba1191 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:5b2b701360bced58eff7d77631a0c8a91 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/shell/content-el/3-content-el/1> . 
 _:5b2b701360bced58eff7d77631a0c8a91 <http://discobits.org/ontology#pos> "1" . 
 _:5b2b701360bced58eff7d77631a0c8a91 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -574,9 +568,6 @@ _:5ca21ef6ed2b0a61f84092d5acb069b21 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:5f205ab6f8dae0da9465dbd58ad68d221 <http://discobits.org/ontology#holds> <http://localhost:8080/content-el/3-title> . 
 _:5f205ab6f8dae0da9465dbd58ad68d221 <http://discobits.org/ontology#pos> "0" . 
 _:5f205ab6f8dae0da9465dbd58ad68d221 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:60e753ee520f2ec4b14f2800f9a803011 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/2> . 
-_:60e753ee520f2ec4b14f2800f9a803011 <http://discobits.org/ontology#pos> "2" . 
-_:60e753ee520f2ec4b14f2800f9a803011 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:6194923897ef1e7f15f7a0089703c4921 <http://discobits.org/ontology#holds> <http://localhost:8080/faq/index-content-el/0> . 
 _:6194923897ef1e7f15f7a0089703c4921 <http://discobits.org/ontology#pos> "2" . 
 _:6194923897ef1e7f15f7a0089703c4921 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -586,6 +577,9 @@ _:62ceb5a17ceeefb12fc4c11d2ef82b1f1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:64709c684417ad8f092a63d4a06246cc1 <http://discobits.org/ontology#holds> <http://localhost:8080/contributing/index-content-el/4-content> . 
 _:64709c684417ad8f092a63d4a06246cc1 <http://discobits.org/ontology#pos> "1" . 
 _:64709c684417ad8f092a63d4a06246cc1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:65160e4b15d45b390530dc168b3e3b691 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/4-content> . 
+_:65160e4b15d45b390530dc168b3e3b691 <http://discobits.org/ontology#pos> "1"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:65160e4b15d45b390530dc168b3e3b691 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:651df1884f2f6a8eb23fb878a330260e1 <http://discobits.org/ontology#holds> <http://localhost:8080/faq/index-content-el/2-content> . 
 _:651df1884f2f6a8eb23fb878a330260e1 <http://discobits.org/ontology#pos> "1" . 
 _:651df1884f2f6a8eb23fb878a330260e1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -598,12 +592,6 @@ _:65ff20a77d0e2e553d34e864c53f39951 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:68c310f391082b90761cda14a9fcf0011 <http://discobits.org/ontology#holds> <http://localhost:8080/faq/index-content-el/2> . 
 _:68c310f391082b90761cda14a9fcf0011 <http://discobits.org/ontology#pos> "1" . 
 _:68c310f391082b90761cda14a9fcf0011 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:6c42509fcecd474aa9a97b356440a28e1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-title> . 
-_:6c42509fcecd474aa9a97b356440a28e1 <http://discobits.org/ontology#pos> "0" . 
-_:6c42509fcecd474aa9a97b356440a28e1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:6c584373a645c498d66644dc4e6f1aec1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/4> . 
-_:6c584373a645c498d66644dc4e6f1aec1 <http://discobits.org/ontology#pos> "4" . 
-_:6c584373a645c498d66644dc4e6f1aec1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:6daa53f79bbe085d47a917ef0e84a2771 <http://clerezza.org/2009/06/custompropery#category> <http://clerezza.org/2008/10/permission#Role> . 
 _:6daa53f79bbe085d47a917ef0e84a2771 <http://clerezza.org/2009/06/custompropery#categoryproperty> "CommunityUser" . 
 _:6daa53f79bbe085d47a917ef0e84a2771 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://clerezza.org/2009/06/custompropery#CustomFieldCollection> . 
@@ -642,12 +630,18 @@ _:7c5fe1fd03c5c8c30394a39592285add1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:7e8df2757134365f16373306f72eb0aa1 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/launching-clerezza/index-content-el/3> . 
 _:7e8df2757134365f16373306f72eb0aa1 <http://discobits.org/ontology#pos> "4" . 
 _:7e8df2757134365f16373306f72eb0aa1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:8459fd758df0744434e8c2ff3e8747dc1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/2-title> . 
+_:8459fd758df0744434e8c2ff3e8747dc1 <http://discobits.org/ontology#pos> "0"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:8459fd758df0744434e8c2ff3e8747dc1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:849fc0307742bbc42ef9038dd89ec5231 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/shell/content-el/1-content-el/0> . 
 _:849fc0307742bbc42ef9038dd89ec5231 <http://discobits.org/ontology#pos> "0" . 
 _:849fc0307742bbc42ef9038dd89ec5231 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:8542bfbd6e0a319cd645f4611e9da75e1 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/install-as-service/index-content-el/1-content-el/2-content-el/4> . 
 _:8542bfbd6e0a319cd645f4611e9da75e1 <http://discobits.org/ontology#pos> "4" . 
 _:8542bfbd6e0a319cd645f4611e9da75e1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:860735efae6fe059b65df5c03cca14cf1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/2-content> . 
+_:860735efae6fe059b65df5c03cca14cf1 <http://discobits.org/ontology#pos> "1"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:860735efae6fe059b65df5c03cca14cf1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:8707e0d62abb3427fcbfe0f98583eca51 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/building-clerezza/index-content> . 
 _:8707e0d62abb3427fcbfe0f98583eca51 <http://discobits.org/ontology#pos> "1" . 
 _:8707e0d62abb3427fcbfe0f98583eca51 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -657,9 +651,6 @@ _:882231d180792ca493da33463a3d8bb91 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:8ab48dce36c9a6c17f942ce87cbf33021 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/install-as-service/index-content-el/1-content-el/2-content-el/0> . 
 _:8ab48dce36c9a6c17f942ce87cbf33021 <http://discobits.org/ontology#pos> "0" . 
 _:8ab48dce36c9a6c17f942ce87cbf33021 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:8bb31c7b30690737a15a4e8e1a9984f31 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/2-title> . 
-_:8bb31c7b30690737a15a4e8e1a9984f31 <http://discobits.org/ontology#pos> "0" . 
-_:8bb31c7b30690737a15a4e8e1a9984f31 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:8bf38a2592107ed88425b6c7a1ac52381 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/install-as-service/index-content-el/1-content-el/2-content-el/1> . 
 _:8bf38a2592107ed88425b6c7a1ac52381 <http://discobits.org/ontology#pos> "1" . 
 _:8bf38a2592107ed88425b6c7a1ac52381 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -676,18 +667,12 @@ _:994e3a90913f6cd82b0dac3e0be8be1e1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:9dd01269b0ab49a21885765528dadc311 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/shell/content-el/2-content> . 
 _:9dd01269b0ab49a21885765528dadc311 <http://discobits.org/ontology#pos> "1" . 
 _:9dd01269b0ab49a21885765528dadc311 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:9e6d016c980ea24b0f05885e6fcd8d561 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/3> . 
-_:9e6d016c980ea24b0f05885e6fcd8d561 <http://discobits.org/ontology#pos> "3" . 
-_:9e6d016c980ea24b0f05885e6fcd8d561 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:a3b5fb21971de500f85d7da22622847a1 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/shell/content-el/2> . 
 _:a3b5fb21971de500f85d7da22622847a1 <http://discobits.org/ontology#pos> "3" . 
 _:a3b5fb21971de500f85d7da22622847a1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:a9eb41ffca0748dc1284555f0d476ca61 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/1> . 
-_:a9eb41ffca0748dc1284555f0d476ca61 <http://discobits.org/ontology#pos> "1" . 
-_:a9eb41ffca0748dc1284555f0d476ca61 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:ac40d8fe91c8906f49571226e7cf3f061 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/1-content> . 
-_:ac40d8fe91c8906f49571226e7cf3f061 <http://discobits.org/ontology#pos> "1" . 
-_:ac40d8fe91c8906f49571226e7cf3f061 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:a77a59dc07ed94c3afa8e04b3703d67f1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/3> . 
+_:a77a59dc07ed94c3afa8e04b3703d67f1 <http://discobits.org/ontology#pos> "3"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:a77a59dc07ed94c3afa8e04b3703d67f1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:acde0a583c16c0e2e7c2c46249c1cfbd1 <http://discobits.org/ontology#holds> <http://localhost:8080/content-el/2-title> . 
 _:acde0a583c16c0e2e7c2c46249c1cfbd1 <http://discobits.org/ontology#pos> "0" . 
 _:acde0a583c16c0e2e7c2c46249c1cfbd1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -697,12 +682,15 @@ _:ae884b491673ac56bf77d2221125c3a21 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:b252ece001f146a1fc39cae6070dd1851 <http://discobits.org/ontology#holds> <http://localhost:8080/contributing/index-content-el/0> . 
 _:b252ece001f146a1fc39cae6070dd1851 <http://discobits.org/ontology#pos> "0" . 
 _:b252ece001f146a1fc39cae6070dd1851 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:b77acb57bb31a839ce66119fb42a95b91 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/1-title> . 
+_:b77acb57bb31a839ce66119fb42a95b91 <http://discobits.org/ontology#pos> "0"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:b77acb57bb31a839ce66119fb42a95b91 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:bbca97c81d87e772ec12d55a1c9696f41 <http://discobits.org/ontology#holds> <http://localhost:8080/contributing/index-content-el/3-content-el/0> . 
 _:bbca97c81d87e772ec12d55a1c9696f41 <http://discobits.org/ontology#pos> "0" . 
 _:bbca97c81d87e772ec12d55a1c9696f41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:c016f32302acda0e7c6989751b62071d1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content> . 
-_:c016f32302acda0e7c6989751b62071d1 <http://discobits.org/ontology#pos> "1" . 
-_:c016f32302acda0e7c6989751b62071d1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:c0d0f4af3c852dc4c4a3fba3388956cc1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/4> . 
+_:c0d0f4af3c852dc4c4a3fba3388956cc1 <http://discobits.org/ontology#pos> "4"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:c0d0f4af3c852dc4c4a3fba3388956cc1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:c1af318c5c0ac9177a51deb36f7231ff1 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/building-clerezza/index-title> . 
 _:c1af318c5c0ac9177a51deb36f7231ff1 <http://discobits.org/ontology#pos> "0" . 
 _:c1af318c5c0ac9177a51deb36f7231ff1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -718,18 +706,21 @@ _:c5438bf3ae898ce833947f48e69d90671 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:c59069f6c15050361444a3acaa0bcb231 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/shell/content-el/3-title> . 
 _:c59069f6c15050361444a3acaa0bcb231 <http://discobits.org/ontology#pos> "0" . 
 _:c59069f6c15050361444a3acaa0bcb231 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:c7d7927eb415a8f9f189ce3cec49a5d61 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-title> . 
+_:c7d7927eb415a8f9f189ce3cec49a5d61 <http://discobits.org/ontology#pos> "0"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:c7d7927eb415a8f9f189ce3cec49a5d61 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:c9f0cce906793436372a626d1a86dfa71 <http://discobits.org/ontology#holds> <http://localhost:8080/content-el/2-content> . 
 _:c9f0cce906793436372a626d1a86dfa71 <http://discobits.org/ontology#pos> "1" . 
 _:c9f0cce906793436372a626d1a86dfa71 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:ca6bdeb7eb8cb97d673319a850f91b461 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/launching-clerezza/index-content> . 
 _:ca6bdeb7eb8cb97d673319a850f91b461 <http://discobits.org/ontology#pos> "1" . 
 _:ca6bdeb7eb8cb97d673319a850f91b461 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
-_:cb1a7482f2a795ef501d7ae3be778e521 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/2-content> . 
-_:cb1a7482f2a795ef501d7ae3be778e521 <http://discobits.org/ontology#pos> "1" . 
-_:cb1a7482f2a795ef501d7ae3be778e521 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:d042d1d55af2ac4b1e33c549b19b0cb81 <http://discobits.org/ontology#holds> <http://localhost:8080/contributing/index-content-el/4-content-el/2> . 
 _:d042d1d55af2ac4b1e33c549b19b0cb81 <http://discobits.org/ontology#pos> "2" . 
 _:d042d1d55af2ac4b1e33c549b19b0cb81 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:d6888fc15bb88aa0399eb959c52ae63b1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content> . 
+_:d6888fc15bb88aa0399eb959c52ae63b1 <http://discobits.org/ontology#pos> "1"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:d6888fc15bb88aa0399eb959c52ae63b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:d6945d42f50336830304f1cc1f354cba1 <http://discobits.org/ontology#holds> <http://localhost:8080/contributing/index-content-el/1> . 
 _:d6945d42f50336830304f1cc1f354cba1 <http://discobits.org/ontology#pos> "1" . 
 _:d6945d42f50336830304f1cc1f354cba1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -772,9 +763,15 @@ _:f075920a3dd4e392cb6f6b9a29be9cb41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:f075d27152b68f372d949d51265439171 <http://discobits.org/ontology#holds> <http://localhost:8080/contributing/index-content-el/2-title> . 
 _:f075d27152b68f372d949d51265439171 <http://discobits.org/ontology#pos> "0" . 
 _:f075d27152b68f372d949d51265439171 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:f118e9aa30176ede03dc116eec5111f21 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/2> . 
+_:f118e9aa30176ede03dc116eec5111f21 <http://discobits.org/ontology#pos> "2"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:f118e9aa30176ede03dc116eec5111f21 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:f1ec94e30c5da6f5748dc72d0dd2d7941 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/building-clerezza/index-content-el/1-title> . 
 _:f1ec94e30c5da6f5748dc72d0dd2d7941 <http://discobits.org/ontology#pos> "0" . 
 _:f1ec94e30c5da6f5748dc72d0dd2d7941 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:f22b9c9cf6b73dae2fbc2a78631d13901 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/1> . 
+_:f22b9c9cf6b73dae2fbc2a78631d13901 <http://discobits.org/ontology#pos> "1"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:f22b9c9cf6b73dae2fbc2a78631d13901 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:f29c2ad7a7fc7b1137acb8ae5bec08181 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/install-as-service/index-content-el/1-content-el/2-content-el/5> . 
 _:f29c2ad7a7fc7b1137acb8ae5bec08181 <http://discobits.org/ontology#pos> "5" . 
 _:f29c2ad7a7fc7b1137acb8ae5bec08181 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
@@ -793,6 +790,9 @@ _:fbb69762403e0a6c787c3236c8cacf3e1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#
 _:fd0402effa446644b73b1110bb8037f81 <http://discobits.org/ontology#holds> <http://localhost:8080/getting-started/index-title> . 
 _:fd0402effa446644b73b1110bb8037f81 <http://discobits.org/ontology#pos> "0" . 
 _:fd0402effa446644b73b1110bb8037f81 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
+_:fd41a9a33df321423ea3a2426895a79f1 <http://discobits.org/ontology#holds> <http://localhost:8080/downloads/index-content-el/3-title> . 
+_:fd41a9a33df321423ea3a2426895a79f1 <http://discobits.org/ontology#pos> "0"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> . 
+_:fd41a9a33df321423ea3a2426895a79f1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
 _:fff3bde7c78fa045bd406417e0b7aef01 <http://discobits.org/ontology#holds> <http://localhost:8080/contributing/index-content-el/3-content-el/1-content> . 
 _:fff3bde7c78fa045bd406417e0b7aef01 <http://discobits.org/ontology#pos> "1" . 
 _:fff3bde7c78fa045bd406417e0b7aef01 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#Entry> . 
