@@ -66,7 +66,7 @@ class TitledContentRenderlet extends SRenderlet {
                     <li>{menuLink("/mailinglists/","Mailing lists")}</li>
                     <li><a href="http://issues.apache.org/jira/browse/CLEREZZA" target="_blank">Issue Tracker</a></li>
 
-                    <li><a href="http://svn.apache.org/viewvc/clerezza/trunk/" target="_blank">Source Repository</a></li>
+                    <li><a href="https://git-wip-us.apache.org/repos/asf?p=clerezza.git" target="_blank">Source Repository</a></li>
                   </ul>
                 </li>
                 <li class="top-nav-entry"><div class="title">Sponsorship</div>
@@ -111,7 +111,7 @@ class TitledContentRenderlet extends SRenderlet {
                         <li><a href="mailinglists/">Mailing lists</a></li>
                         <li><a href="http://issues.apache.org/jira/browse/CLEREZZA" target="_blank">Issue Tracker</a></li>
 
-                        <li><a href="http://svn.apache.org/viewvc/clerezza/trunk/" target="_blank">Source Repository</a></li>
+                        <li><a href="https://git-wip-us.apache.org/repos/asf?p=clerezza.git" target="_blank">Source Repository</a></li>
                       </ul>
                     </div>
                     <div class="sitemap-column">
