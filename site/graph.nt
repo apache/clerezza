@@ -133,9 +133,9 @@
 <http://localhost:8080/downloads/index-content-el/2> <http://discobits.org/ontology#contains> _:8459fd758df0744434e8c2ff3e8747dc1 . 
 <http://localhost:8080/downloads/index-content-el/2> <http://discobits.org/ontology#contains> _:860735efae6fe059b65df5c03cca14cf1 . 
 <http://localhost:8080/downloads/index-content-el/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#TitledContent> .
-<http://localhost:8080/downloads/index-content-el/3-content> <http://discobits.org/ontology#infoBit> "<p xmlns=\"http://www.w3.org/1999/xhtml\">The Apache Clerezza source code Repository can be viewed <a target=\"_blank\" href=\"https://git-wip-us.apache.org/repos/asf?p=clerezza.git\">here</a>.</p>\n\n<p xmlns=\"http://www.w3.org/1999/xhtml\">To obtain a local working copy execute this command:</p>\n\n<pre xmlns=\"http://www.w3.org/1999/xhtml\">git clone https://git-wip-us.apache.org/repos/asf/clerezza.git</pre>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://localhost:8080/downloads/index-content-el/3-content> <http://discobits.org/ontology#infoBit> "<p xmlns=\"http://www.w3.org/1999/xhtml\">\n</p>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/3-content> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
-<http://localhost:8080/downloads/index-content-el/3-title> <http://discobits.org/ontology#infoBit> "Source Code Repository"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://localhost:8080/downloads/index-content-el/3-title> <http://discobits.org/ontology#infoBit> " "^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <http://localhost:8080/downloads/index-content-el/3-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
 <http://localhost:8080/downloads/index-content-el/3> <http://discobits.org/ontology#contains> _:5ab5851d567cc4f9e6f6ac745bcba1191 . 
 <http://localhost:8080/downloads/index-content-el/3> <http://discobits.org/ontology#contains> _:fd41a9a33df321423ea3a2426895a79f1 . 
