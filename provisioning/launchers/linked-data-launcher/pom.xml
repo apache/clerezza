@@ -55,6 +55,9 @@
             <plugin>
                 <groupId>org.apache.sling</groupId>
                 <artifactId>maven-launchpad-plugin</artifactId>
+                <configuration>
+                    <includeDefaultBundles>false</includeDefaultBundles>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-package</id>
