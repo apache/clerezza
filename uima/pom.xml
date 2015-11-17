@@ -42,7 +42,7 @@
     <module>uima.casconsumer</module>
     <module>uima.metadata-generator</module>
     <module>uima.concept-tagging</module>
-    <module>uima.samples</module>
+    <!-- build failing due to missing transitive dependency jwnl of opennlp-tools <module>uima.samples</module> -->
   </modules>
   <dependencies>
     <dependency>
