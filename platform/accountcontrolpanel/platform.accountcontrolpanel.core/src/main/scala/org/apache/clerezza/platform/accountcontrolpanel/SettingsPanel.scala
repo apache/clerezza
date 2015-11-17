@@ -265,7 +265,7 @@ class SettingsPanel {
     }
     val bundleInputStream: InputStream = new ByteArrayInputStream(bundleBytes)
     val location: String = "userbundle:" + id + "/" + filename
-    logger.info("Install bundle {} to location {}", id, location)
+    logger.info("Install bundle {} to location {}", id, location, null) //third arg to prevent ambiguity
     AccessController.doPrivileged(new PrivilegedAction[AnyRef] {
       def run: Array[Bundle] = {
         val agent: NonLiteral = getAgent(id)

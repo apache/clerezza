@@ -262,7 +262,7 @@ class ProfilePanel extends SRenderlet {
 
 
 
-    def beautifyDate(dtIt: CollectedIter[RichGraphNode]) {
+    def beautifyDate(dtIt: CollectedIter[RichGraphNode]): String = {
       if (0 == dtIt.size) return "_"
       DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.FULL).format(dtIt.as[Date])
     }

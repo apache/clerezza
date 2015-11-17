@@ -70,11 +70,11 @@
                 <module>rdf.cris</module>
                 <module>rdf.enrichment</module>
                 <module>rdf.locking</module>
-                <module>shell</module>
-                <module>shell.felixshellcommand</module>
+                <!-- <module>shell</module>
+                <module>shell.felixshellcommand</module> -->
                 <module>site</module>
                 <module>bundledevtool</module>
-                <module>sshshell</module>
+                <!-- <module>sshshell</module> -->
                 <module>templating</module>
                 <module>templating.seedsnipe</module>
                 <module>tools.offline</module>
