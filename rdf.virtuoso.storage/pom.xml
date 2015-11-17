@@ -176,6 +176,10 @@
           </excludes>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-scr-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
 		</profile>
@@ -231,13 +235,6 @@
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
-                        <Include-Resource>
-                            src/main/resources,
-                            target/scr-plugin-generated
-                        </Include-Resource>
-                        <Service-Component>
-                          OSGI-INF/serviceComponents.xml
-                        </Service-Component>
                             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         </instructions>
                     </configuration>
