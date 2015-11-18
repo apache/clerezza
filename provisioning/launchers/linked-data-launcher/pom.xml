@@ -24,7 +24,7 @@
     </parent>
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>linked-data-launcher</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>Clerezza - Provisioning - Launchers - Linked Data Launcher (Core)</name>
@@ -233,14 +233,14 @@
        <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
             <type>partialbundlelist</type>
         </dependency>
 		
         <dependency>
              <groupId>org.apache.clerezza.provisioning</groupId>
              <artifactId>rdf.tdb</artifactId>
-             <version>1.1.0-SNAPSHOT</version>
+             <version>1.1.0</version>
              <type>partialbundlelist</type>
          </dependency>
 		 
@@ -253,7 +253,7 @@
       <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>jaxrs</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
             <type>partialbundlelist</type>
         </dependency>
         <dependency>
@@ -271,10 +271,14 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>rdf.web</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
             <type>partialbundlelist</type>
         </dependency>
     </dependencies>
   
   
+
+  <scm>
+    <tag>201508-1</tag>
+  </scm>
 </project>

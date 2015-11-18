@@ -31,7 +31,7 @@
     
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>rdf</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - RDF</name>
@@ -124,12 +124,12 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.commons</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.facade</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <!-- requirws an older version jena-iri
         <dependency>
@@ -141,7 +141,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.rdfjson</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
@@ -150,22 +150,22 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.serializer</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.sparql</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.storage</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <!-- <dependency>
             <groupId>org.apache.clerezza</groupId>
@@ -238,4 +238,8 @@
         </plugins>
     </build>
     
+
+  <scm>
+    <tag>201508-1</tag>
+  </scm>
 </project>
