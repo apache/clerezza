@@ -43,7 +43,6 @@
     <name>Clerezza - Release 201508</name>
 
     <modules>
-        <module>../../ext</module>
         <module>../../rdf/jena</module>
         <module>../../rdf/rdfjson</module>
         <module>../../rdf/web/rdf.web.core</module>
