@@ -61,14 +61,16 @@ public class Jena2TriaUtil {
         final String datatypeString = node.getLiteralDatatypeURI();
         final String languageTag = node.getLiteralLanguage();
         Language language = null;
+        IRI dataType = null;
         if ((languageTag != null) && !languageTag.equals("")) {
              language = new Language(languageTag);
-        }
-        IRI dataType = null;
-        if (datatypeString != null) {
-            dataType = new IRI(datatypeString);
+             dataType = new IRI("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
         } else {
-            dataType = new IRI("http://www.w3.org/2001/XMLSchema#string");
+            if (datatypeString != null) {
+                dataType = new IRI(datatypeString);
+            } else {
+                dataType = new IRI("http://www.w3.org/2001/XMLSchema#string");
+            }
         }
         return new LiteralImpl(lexicalForm, dataType, language);
     }
