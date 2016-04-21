@@ -51,8 +51,6 @@
         <module>../../rdf/jena/storage</module>
         <module>../../rdf/jena/tdb.storage</module>
         <module>../../rdf/core</module>
-        <!-- this is not yet used in launcher (as it needs to be listed inthe feature.xml -->
-        <module>../../provisioning/jaxrs-whiteboard</module>
         <module>../../provisioning/rdf</module>
         <module>../../provisioning/launchers/content-launcher</module>
         <module>../../provisioning/launchers/linked-data-launcher</module>

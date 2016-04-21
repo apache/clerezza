@@ -46,19 +46,24 @@ public class UploadAndAccessTest extends BaseTest {
     @Test
     public void uploadAndQuery() throws Exception {
         smallGraphTurtle = "<"+RestAssured.baseURI+"/test-resource> <http://www.w3.org/2000/01/rdf-schema#comment> \"A test resource\"^^<http://www.w3.org/2001/XMLSchema#string>.";
+        smallGraphTurtle += "<"+RestAssured.baseURI+"/test-resource> <http://www.w3.org/2000/01/rdf-schema#comment> \"Another comment\"@en.";
         smallGraph = Parser.getInstance().parse(new ByteArrayInputStream(smallGraphTurtle.getBytes("utf-8")), "text/turtle");
-        uploadTurtle();
+        uploadRDF();
         sparqlAsk();
         dereferenceResource();
     }
     
-    protected void uploadTurtle() {
+    protected byte[] getSerializedRdfToUpload() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Serializer.getInstance().serialize(baos, smallGraph, getRdfFormat());
+        return baos.toByteArray();
+    }
+    
+    protected void uploadRDF() { 
         RestAssured.given().header("Accept", "text/html")
                 .auth().basic("admin", "admin")
                 .formParam("name", Constants.CONTENT_GRAPH_URI_STRING)
-                .multiPart("graph", "test.ttl", baos.toByteArray(), getRdfFormat())
+                .multiPart("graph", "test.ttl", getSerializedRdfToUpload(), getRdfFormat())
                 .formParam("append", "Append")
                 .expect().statusCode(HttpStatus.SC_NO_CONTENT).when()
                 .post("/graph");
@@ -87,7 +92,7 @@ public class UploadAndAccessTest extends BaseTest {
                 .when()
                 .get("/test-resource");
         ImmutableGraph returnedGraph = Parser.getInstance().parse(response.getBody().asInputStream(), getRdfFormat());
-        Assert.assertEquals("Returned Graph has wrong size", 1, returnedGraph.size());
+        Assert.assertEquals("Returned Graph has wrong size", 2, returnedGraph.size());
         Assert.assertEquals(smallGraph, returnedGraph);
     }
     
