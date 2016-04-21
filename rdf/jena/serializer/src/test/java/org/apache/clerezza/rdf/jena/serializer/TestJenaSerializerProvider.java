@@ -141,7 +141,6 @@ public class TestJenaSerializerProvider {
     /*
      * Serialize ImmutableGraph to rdf+nt format and deserialize.
      */
-    @Ignore("currently broken: serializer adds langauge and datatype")
     @Test
     public void testRdfNtSerializer() {
         initializeGraph();

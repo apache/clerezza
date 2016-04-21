@@ -55,9 +55,9 @@ public class Tria2JenaUtil {
         return com.hp.hpl.jena.graph.NodeFactory.createLiteral(
                             literal.getLexicalForm(),
                             literal.getLanguage() == null ? null : literal.getLanguage().
-                            toString(), TypeMapper.getInstance().
+                            toString(), literal.getLanguage() == null ? TypeMapper.getInstance().
                             getSafeTypeByName(
-                            literal.getDataType().getUnicodeString()));
+                            literal.getDataType().getUnicodeString()) : null);
     }
 
     public Node convert2JenaNode(RDFTerm resource) {
