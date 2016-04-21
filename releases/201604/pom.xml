@@ -37,21 +37,23 @@
     </parent>
 
     <groupId>org.apache.clerezza.releases</groupId>
-    <artifactId>201508</artifactId>
+    <artifactId>201506</artifactId>
     <version>1</version>
     <packaging>pom</packaging>
-    <name>Clerezza - Release 201508</name>
+    <name>Clerezza - Release 201604</name>
 
     <modules>
-        <module>../../rdf/jena</module>
-        <module>../../rdf/rdfjson</module>
-        <module>../../rdf/web/rdf.web.core</module>
+        <module>../../rdf/jena/commons</module>
+        <module>../../rdf/jena/facade</module>
+        <module>../../rdf/jena/parser</module>
+        <module>../../rdf/jena/serializer</module>
+        <module>../../rdf/jena/sparql</module>
+        <module>../../rdf/jena/storage</module>
+        <module>../../rdf/jena/tdb.storage</module>
+        <module>../../rdf/core</module>
         <!-- this is not yet used in launcher (as it needs to be listed inthe feature.xml -->
-        <module>../../jaxrs.whiteboard.jersey</module>
         <module>../../provisioning/jaxrs-whiteboard</module>
         <module>../../provisioning/rdf</module>
-        <module>../../provisioning/rdf.tdb</module>
-        <module>../../provisioning/rdf.web</module>
         <module>../../provisioning/launchers/content-launcher</module>
         <module>../../provisioning/launchers/linked-data-launcher</module>
         <!-- This cannot be released as it has a SNAPSHOT dependency to a stanboltest utility,

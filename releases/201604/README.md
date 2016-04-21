@@ -1,4 +1,4 @@
-# CLEREZZA 201508 release
+# CLEREZZA 201604 release
 
 This is a partial relase of clerezza.
 
@@ -8,8 +8,6 @@ To build it run
 
 from the folder
 
-    releases/201508/
+    releases/201604/
 
-after that will have several launchers in the target directories below
 
-    provisioning/launchers/
