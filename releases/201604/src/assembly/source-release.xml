@@ -1,0 +1,48 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
+    <id>src</id>
+    <formats>
+
+        <format>zip</format>
+
+    </formats>
+
+    <baseDirectory>clerezza</baseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>../../</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>rdf/jena/**</include>
+                <include>rdf/rdfjson/**</include>
+                <include>rdf/web/rdf.web.core/**</include>
+                <include>jaxrs.whiteboard.jersey/**</include>
+                <include>provisioning/jaxrs-whiteboard/**</include>
+                <include>provisioning/rdf/**</include>
+                <include>provisioning/rdf.tdb/**</include>
+                <include>provisioning/rdf.web/**</include>
+                <include>provisioning/launchers/content-launcher/**</include>
+                <include>provisioning/launchers/linked-data-launcher/**</include>
+                <include>provisioning/launchers/tests/content-launcher-tests/**</include>
+                <include>releases/201508/**</include>
+            </includes>
+            <excludes>
+                <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/).*${project.build.directory}.*]</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <!-- license, readme, etc. calculated at build time -->
+        <fileSet>
+            <directory>./</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>README.md</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>

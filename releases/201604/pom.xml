@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!--
+
+        Licensed to the Apache Software Foundation (ASF) under one or more
+        contributor license agreements.  See the NOTICE file distributed with
+        this work for additional information regarding copyright ownership.
+        The ASF licenses this file to You under the Apache License, Version 2.0
+        (the "License"); you may not use this file except in compliance with
+        the License.  You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    -->
+
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!                                !!!!!!
+    !!!!!!    This pom is only provided   !!!!!!
+    !!!!!!   for build convenience and    !!!!!!
+    !!!!!!   should not be released       !!!!!!
+    !!!!!!                                !!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>clerezza</artifactId>
+        <version>7</version>
+        <relativePath>../../parent</relativePath>
+    </parent>
+
+    <groupId>org.apache.clerezza.releases</groupId>
+    <artifactId>201508</artifactId>
+    <version>1</version>
+    <packaging>pom</packaging>
+    <name>Clerezza - Release 201508</name>
+
+    <modules>
+        <module>../../rdf/jena</module>
+        <module>../../rdf/rdfjson</module>
+        <module>../../rdf/web/rdf.web.core</module>
+        <!-- this is not yet used in launcher (as it needs to be listed inthe feature.xml -->
+        <module>../../jaxrs.whiteboard.jersey</module>
+        <module>../../provisioning/jaxrs-whiteboard</module>
+        <module>../../provisioning/rdf</module>
+        <module>../../provisioning/rdf.tdb</module>
+        <module>../../provisioning/rdf.web</module>
+        <module>../../provisioning/launchers/content-launcher</module>
+        <module>../../provisioning/launchers/linked-data-launcher</module>
+        <!-- This cannot be released as it has a SNAPSHOT dependency to a stanboltest utility,
+        also it isn't particularly useful to have this in mavencentral.
+        It is howver included in the source distribution.
+        <module>../../provisioning/launchers/tests/content-launcher-tests</module> -->
+    </modules>
+    <scm>
+        <connection>scm:git:git://git.apache.org/clerezza.git</connection>
+        <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
+        <url>http://git.apache.org/clerezza.git</url>
+    <tag>201508-1</tag>
+  </scm>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.4</version>
+                <executions>
+                    <execution>
+                        <id>distro-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/source-release.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.2</version>
+                <configuration>
+                    <updateDependencies>false</updateDependencies>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
