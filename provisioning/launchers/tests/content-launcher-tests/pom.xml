@@ -117,7 +117,7 @@
         <dependency>
             <groupId>org.apache.clerezza.provisioning</groupId>
             <artifactId>content-launcher</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
@@ -176,7 +176,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.rdfjson</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
