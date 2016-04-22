@@ -27,6 +27,7 @@ import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.XSD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,18 +119,18 @@ class NTriplesSerializer {
         escapeUtf8ToUsAscii(literal.getLexicalForm(), sb, false);
         sb = sb.append("\"");
 
-        if(literal.getDataType().equals(XSD.string)) {
-            if(literal.getLanguage() != null &&
-                    !literal.getLanguage().toString().equals("")) {
+        if(literal.getLanguage() != null &&
+                !literal.getLanguage().toString().equals("")) {
 
-                sb.append("@");
-                sb.append(literal.getLanguage().toString());
-            }
+            sb.append("@");
+            sb.append(literal.getLanguage().toString());
         } else {
-            sb.append("^^<");
-            escapeUtf8ToUsAscii(
-                    literal.getDataType().getUnicodeString(), sb, false);
-            sb.append(">");
+            if(!literal.getDataType().equals(XSD.string)) {
+                sb.append("^^<");
+                escapeUtf8ToUsAscii(
+                        literal.getDataType().getUnicodeString(), sb, false);
+                sb.append(">");
+            }
         } 
 
         sb.append(" ");

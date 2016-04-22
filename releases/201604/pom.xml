@@ -51,7 +51,9 @@
         <module>../../rdf/jena/storage</module>
         <module>../../rdf/jena/tdb.storage</module>
         <module>../../rdf/core</module>
+        <module>../../rdf/stable.serializer</module>
         <module>../../provisioning/rdf</module>
+        <module>../../provisioning/platform.content</module>
         <module>../../provisioning/launchers/content-launcher</module>
         <module>../../provisioning/launchers/linked-data-launcher</module>
         <!-- This cannot be released as it has a SNAPSHOT dependency to a stanboltest utility,

@@ -61,7 +61,8 @@ public class StableSerializerGraphTest {
                     {"Talks.rdf", "application/rdf+xml"},
                     {"elvisimp.rdf", "application/rdf+xml"}, 
                     //{"images.xrdf", "application/rdf+xml"}, //large
-                    {"libby.foaf", "application/rdf+xml"}
+                    {"libby.foaf", "application/rdf+xml"},
+                    {"documentation-example.nt", "application/n-triples"}
                 });
     }
 
