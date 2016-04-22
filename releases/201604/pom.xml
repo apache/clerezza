@@ -37,7 +37,7 @@
     </parent>
 
     <groupId>org.apache.clerezza.releases</groupId>
-    <artifactId>201506</artifactId>
+    <artifactId>201604</artifactId>
     <version>1</version>
     <packaging>pom</packaging>
     <name>Clerezza - Release 201604</name>
@@ -66,8 +66,7 @@
         <connection>scm:git:git://git.apache.org/clerezza.git</connection>
         <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
         <url>http://git.apache.org/clerezza.git</url>
-    <tag>201508-1</tag>
-  </scm>
+    </scm>
     <build>
         <plugins>
             <plugin>

@@ -15,18 +15,23 @@
             <directory>../../</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>rdf/jena/**</include>
-                <include>rdf/rdfjson/**</include>
-                <include>rdf/web/rdf.web.core/**</include>
-                <include>jaxrs.whiteboard.jersey/**</include>
-                <include>provisioning/jaxrs-whiteboard/**</include>
+                <include>rdf/jena/commons/**</include>
+                <include>rdf/jena/facade/**</include>
+                <include>rdf/jena/parser/**</include>
+                <include>rdf/jena/serializer/**</include>
+                <include>rdf/jena/sparql/**</include>
+                <include>rdf/jena/storage/**</include>
+                <include>rdf/jena/tdb.storage/**</include>
+                <include>rdf/core/**</include>
+                <include>rdf/stable.serializer/**</include>
                 <include>provisioning/rdf/**</include>
                 <include>provisioning/rdf.tdb/**</include>
-                <include>provisioning/rdf.web/**</include>
+                <include>provisioning/platform.content/**</include>
                 <include>provisioning/launchers/content-launcher/**</include>
                 <include>provisioning/launchers/linked-data-launcher/**</include>
                 <include>provisioning/launchers/tests/content-launcher-tests/**</include>
-                <include>releases/201508/**</include>
+                <include>releases/201604/**</include>
+                        
             </includes>
             <excludes>
                 <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/).*${project.build.directory}.*]</exclude>
@@ -41,7 +46,7 @@
             <directory>./</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>README.md</include>
+                <include>README.md/**</include>
             </includes>
         </fileSet>
     </fileSets>
