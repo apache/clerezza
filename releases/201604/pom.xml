@@ -53,6 +53,7 @@
         <module>../../rdf/core</module>
         <module>../../rdf/stable.serializer</module>
         <module>../../provisioning/rdf</module>
+        <module>../../provisioning/rdf.tdb</module>
         <module>../../provisioning/platform.content</module>
         <module>../../provisioning/launchers/content-launcher</module>
         <module>../../provisioning/launchers/linked-data-launcher</module>
