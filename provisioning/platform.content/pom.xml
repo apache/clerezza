@@ -31,7 +31,7 @@
     
     <groupId>org.apache.clerezza.provisioning</groupId>
     <artifactId>platform.content</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>Clerezza - Provisioning - Platform Content</name>
@@ -95,9 +95,4 @@
             </plugin>
         </plugins>
     </build>
-    
-
-  <scm>
-    <tag>201604</tag>
-  </scm>
 </project>

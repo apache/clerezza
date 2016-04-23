@@ -30,7 +30,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.stable.serializer</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>Clerezza - RDF Stable Serializer</name>
     <description>A SerializingProvider that prodocues a stable output. This means
         if the graph to be serialized changes a little, then also the output 
@@ -86,8 +86,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>201604</tag>
-  </scm>
 </project>

@@ -28,7 +28,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.core</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>Clerezza - RDF - Core</name>
     <description>Interfaces and utilities to access RDF Graphs</description>
     <dependencies>
@@ -133,8 +133,4 @@
             </plugin>
         </plugins>
     </build>
-
-  <scm>
-    <tag>201604</tag>
-  </scm>
 </project>
