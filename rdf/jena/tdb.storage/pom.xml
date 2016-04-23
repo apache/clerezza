@@ -28,7 +28,7 @@
     <groupId>org.apache.clerezza</groupId>
     <artifactId>rdf.jena.tdb.storage</artifactId>
     <packaging>bundle</packaging>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
     <name>Clerezza - RDF - Jena - TDB Storage Provider</name>
     <description>A Jena TDB based storage provider</description>
     <build>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.core</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -69,17 +69,17 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.commons</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.storage</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.sparql</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -130,6 +130,6 @@
     </dependencies>
 
   <scm>
-    <tag>201508-1</tag>
+    <tag>201604</tag>
   </scm>
 </project>
