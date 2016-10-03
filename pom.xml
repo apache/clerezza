@@ -41,59 +41,6 @@
 
     <profiles>
         <profile>
-            <id>release</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>parent</module>
-                <module>clerezza-jar-resource-bundle</module>
-                <module>ext.com.ibm.icu</module>
-                <module>ext.javax.mail</module>
-                <module>ext.org.ops4j.pax.swissbox.tinybundles</module>
-                <module>ext.org.apache.lucene</module>
-                <module>internal.archetype</module>
-                <module>scala-scripting</module>
-                <module>jaxrs.extensions</module>
-                <module>jaxrs.rdf.providers</module>
-                <module>jaxrs.stanbol.fragments</module>
-                <module>jaxrs.utils</module>
-                <module>jaxrs.whiteboard.jersey</module>
-                <module>maven-jaxrs-report-plugin</module>
-                <!-- <module>maven-pladoc-plugin</module> -->
-                <module>permissiondescriptions</module>
-                <module>ssl.keygen</module>
-                <module>provisioning</module>
-                <module>osgi.services</module>
-                <module>platform</module>
-                <module>rdf</module>
-                <module>rdf.cris</module>
-                <module>rdf.enrichment</module>
-                <module>rdf.locking</module>
-                <!-- <module>shell</module>
-                <module>shell.felixshellcommand</module> -->
-                <module>site</module>
-                <module>bundledevtool</module>
-                <!-- <module>sshshell</module> -->
-                <module>templating</module>
-                <module>templating.seedsnipe</module>
-                <module>tools.offline</module>
-                <module>uima</module>
-                <module>utils.customproperty</module>
-                <module>utils.imageprocessing</module>
-                <module>utils</module>
-                <module>web.fileserver</module>
-                <module>web.resources.jquery</module>
-                <module>web.resources.scripts</module>
-                <module>web.resources.yui</module>
-                <module>rdf.storage.externalizer</module>
-
-                <module>ext.virtuoso.jdbc</module>
-                <module>rdf.virtuoso.storage</module>
-                <!-- <module>platform.launcher.virtuoso</module> -->
-            </modules>
-        </profile>
-        <profile>
             <id>rat</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -134,23 +81,10 @@
                                         <exclude>**/src/test/**/*.foaf</exclude>
                                         <exclude>**/src/test/**/*.turtle</exclude>
                                         <exclude>**/documentation.nt</exclude>
-                                        <!-- yui is bsd licensed -->
-                                        <exclude>web.resources.yui/src/main/resources/**/*</exclude>
-                                        <exclude>web.resources.jquery/src/main/resources/org/apache/clerezza/web/resources/jquery/staticweb/**/*</exclude>
-                                        <exclude>platform.scripting.scriptmanager/src/main/resources/org/apache/clerezza/platform/scripting/scriptmanager/scriptmanager-script-information.xhtml</exclude>
-                                        <exclude>templating.seedsnipe/src/test/resources/org/apache/clerezza/templating/seedsnipe/libby-foaf.rdf</exclude>
-                                        <exclude>platform.usermanager.webinterface/src/main/resources/org/apache/clerezza/platform/usermanager/webinterface/reset_mail.txt</exclude>
-                                        <exclude>rdf.ontologies/src/main/resources/org/apache/clerezza/rdf/ontologies/*</exclude>
-                                        <exclude>platform.security.foafssl/ontologies/src/main/resources/org/apache/clerezza/foafssl/ontologies/*</exclude>
                                         <!-- text files for inclusion -->
-                                        <exclude>platform.typerendering.scalaserverpages/src/main/resources/org/apache/clerezza/platform/typerendering/scalaserverpages/*.txt</exclude>
                                         <exclude>**/META-INF/services/*</exclude>
                                         <exclude>**/LICENSE*</exclude>
                                         <exclude>**/META-INF/MANIFEST.MF</exclude>
-                                        <exclude>ssl.keygen/samplewebapp/src/main/webapp/cacert.crt</exclude>
-                                        <exclude>web.fileserver/src/main/resources/org/apache/clerezza/web/fileserver/util/mime.types</exclude>
-                                        <exclude>platform.content/src/main/resources/org/apache/clerezza/platform/content/staticweb/discoscripts/**/*</exclude>
-                                        <exclude>platform.content/src/main/resources/org/apache/clerezza/platform/content/*</exclude>
                                     </excludes>
                                     <numUnapprovedLicenses>0</numUnapprovedLicenses>
                                     <excludeSubProjects>false</excludeSubProjects>
@@ -162,34 +96,7 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>additions</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <modules>
-                <!-- tests depends on availability of right version of imagemagick, see CLEREZZA-326-->
-                <module>utils.imagemagick</module>
-                <!-- have dependencies that are not in maven central -->
-                <module>ext.org.jruby</module>
-                <module>ext.org.openrdf.sesame</module>
-                <module>platform.launcher.sesame</module>
-                <module>rdf.sesame.storage</module>
-                <module>rdf.sesame.parser</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>site-build</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>apache.snapshots</id>
-                    <url>http://repository.apache.org/snapshots/</url>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
+        
     </profiles>
     <build>
         <plugins>

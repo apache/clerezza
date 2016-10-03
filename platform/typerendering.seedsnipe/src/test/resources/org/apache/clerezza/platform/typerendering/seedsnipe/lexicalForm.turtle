@@ -1,7 +1,0 @@
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
-@prefix sportex: <http://www.exampleRatings.com/terms/>.
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#>.
-
-<http://tests.clerezza.org/root#>
-     sportex:ratingBy    "Richard Roe"^^xsd:string;
-     sportex:numberStars "5"^^xsd:integer.

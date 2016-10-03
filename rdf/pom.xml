@@ -45,20 +45,12 @@
     <modules>
         <module>core</module>
         <module>core.test</module>
-        <module>jena</module>
-        <module>metadata</module>
         <module>scala.utils</module>
         <module>schemagen/main</module>
         <module>schemagen/maven-plugin</module>
         <module>ontologies</module>
-        <module>rdfa</module>
-        <module>rdfjson</module>
         <module>simple.storage</module>
-        <module>stable.serializer</module>
-        <module>storage.web</module>
-        <module>file.storage</module>
         <module>utils</module>
-        <module>web</module>
     </modules>
 
 </project>

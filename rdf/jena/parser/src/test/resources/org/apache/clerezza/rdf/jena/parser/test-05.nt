@@ -1,2 +1,0 @@
-<http://localhost:8080/getting-started/shell/content-el/3-title> <http://discobits.org/ontology#infoBit> "Commands and Expressions"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
-<http://localhost:8080/getting-started/shell/content-el/3-title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://discobits.org/ontology#XHTMLInfoDiscoBit> .
