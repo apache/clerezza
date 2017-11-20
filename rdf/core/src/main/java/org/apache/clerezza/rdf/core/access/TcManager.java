@@ -47,8 +47,6 @@ import org.apache.clerezza.rdf.core.sparql.query.ConstructQuery;
 import org.apache.clerezza.rdf.core.sparql.query.DescribeQuery;
 import org.apache.clerezza.rdf.core.sparql.query.Query;
 import org.apache.clerezza.rdf.core.sparql.query.SelectQuery;
-import org.apache.felix.scr.annotations.Properties;
-import org.apache.felix.scr.annotations.Property;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -99,10 +97,10 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  *
  */
 //immedia is set to true as this should register the ImmutableGraph services (even if manager service is not required)
-@Component(service = TcManager.class, immediate = true)
-@Properties({
-	@Property(name = TcManager.MGRAPH_CACHE_ENABLED, boolValue = true, description = "Enable caching mgraphs."),
-	@Property(name = TcManager.Graph_SERVICES_ENABLED, boolValue = true, description = "Register triple collections as services.") })
+@Component(service = TcManager.class, immediate = true,
+        property={
+            "graph.cache.enabled=true",
+            "Graph.services.enabled=true"})
 public class TcManager extends TcProviderMultiplexer {
 
     public final static String GENERAL_PURPOSE_TC = "general.purpose.tc";

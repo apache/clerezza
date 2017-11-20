@@ -47,9 +47,7 @@ import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -62,9 +60,7 @@ import org.w3c.dom.Element;
  * 
  * @author mir, reto
  */
-@Component
-@Service(Object.class)
-@Property(name="javax.ws.rs", boolValue=true)
+@Component(service=Object.class, property={"javax.ws.rs=true"})
 @Produces({"application/xml", "text/xml", "application/sparql-results+xml"})
 @Provider
 public class ResultSetXmlMessageBodyWriter implements MessageBodyWriter<ResultSet> {

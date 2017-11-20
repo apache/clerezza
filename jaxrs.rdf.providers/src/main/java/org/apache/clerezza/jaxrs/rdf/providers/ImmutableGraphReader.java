@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Objects;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -31,23 +32,30 @@ import javax.ws.rs.ext.Provider;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 
-@Component
-@Service(Object.class)
-@Property(name = "javax.ws.rs", boolValue = true)
+@Component(service=Object.class, property={"javax.ws.rs=true"})
 @Provider
 @Consumes({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
     SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
     SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class ImmutableGraphReader implements MessageBodyReader<ImmutableGraph> {
 
-    @Reference
     private Parser parser;
+
+    @Reference
+    public synchronized void setParser(Parser parser) {
+        this.parser = parser;
+    }
+
+    public synchronized void unsetParser(Parser parser) {
+        if (Objects.equals(this.parser, parser)) {
+            this.parser = null;
+        }
+    }
+
     @Override
     public boolean isReadable(Class<?> type, Type genericType,
             Annotation[] annotations, MediaType mediaType) {

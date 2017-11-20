@@ -27,6 +27,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.ws.rs.Produces;
@@ -44,10 +45,8 @@ import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.rdf.utils.GraphNode;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * By default this returns a serialization of the context of the GraphNode.
@@ -61,9 +60,7 @@ import org.apache.felix.scr.annotations.Service;
  * @author reto
  */
 
-@Component
-@Service(Object.class)
-@Property(name = "javax.ws.rs", boolValue = true)
+@Component(service=Object.class, property={"javax.ws.rs=true"})
 @Provider
 @Produces({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
     SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
@@ -73,9 +70,19 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
     public static final String OBJ_EXP_PARAM = "xPropObj";
     public static final String SUBJ_EXP_PARAM = "xPropSubj";
     
-    @Reference
     private Serializer serializer;
     private UriInfo uriInfo;
+
+    @Reference
+    public synchronized void setSerializer(Serializer serializer) {
+        this.serializer = serializer;
+    }
+
+    public synchronized void unsetSerializer(Serializer serializer) {
+        if (Objects.equals(this.serializer, serializer)) {
+            this.serializer = null;
+        }
+    }
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType,

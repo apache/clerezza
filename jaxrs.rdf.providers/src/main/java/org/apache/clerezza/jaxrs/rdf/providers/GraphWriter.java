@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Objects;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -33,24 +34,30 @@ import javax.ws.rs.ext.Provider;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 
-@Component
-@Service(Object.class)
-@Property(name = "javax.ws.rs", boolValue = true)
+@Component(service=Object.class, property={"javax.ws.rs=true"})
 @Provider
 @Produces({SupportedFormat.N3, SupportedFormat.N_TRIPLE,
     SupportedFormat.RDF_XML, SupportedFormat.TURTLE,
     SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class GraphWriter implements MessageBodyWriter<Graph> {
 
-    @Reference
     private Serializer serializer;
-    
+
+    @Reference
+    public synchronized void setSerializer(Serializer serializer) {
+        this.serializer = serializer;
+    }
+
+    public synchronized void unsetSerializer(Serializer serializer) {
+        if (Objects.equals(this.serializer, serializer)) {
+            this.serializer = null;
+        }
+    }
+
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, 
             Annotation[] annotations, MediaType mediaType) {

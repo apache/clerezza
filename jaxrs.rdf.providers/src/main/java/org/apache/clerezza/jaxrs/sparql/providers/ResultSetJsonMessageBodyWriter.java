@@ -40,9 +40,7 @@ import org.apache.clerezza.rdf.core.sparql.ResultSet;
 import org.apache.clerezza.rdf.core.sparql.SolutionMapping;
 import org.apache.clerezza.rdf.core.sparql.query.Variable;
 import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -55,9 +53,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author misl
  */
-@Component
-@Service(Object.class)
-@Property(name="javax.ws.rs", boolValue=true)
+@Component(service=Object.class, property={"javax.ws.rs=true"})
 @Produces({"application/json", "application/sparql-results+json"})
 @Provider
 @SuppressWarnings("unchecked")
