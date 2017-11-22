@@ -18,12 +18,12 @@
  */
 package org.apache.clerezza.rdf.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.RDFTerm;
 import org.apache.clerezza.commons.rdf.Triple;
@@ -31,12 +31,16 @@ import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
-import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author rbn
  */
+@RunWith(JUnitPlatform.class)
 public class RdfListTest {
 
     @Test
@@ -132,7 +136,7 @@ public class RdfListTest {
         list.add(new PlainLiteralImpl("hello"));
         list.add(new PlainLiteralImpl("world"));
         list.remove(1);
-        Assert.assertEquals(2, tc.size());
+        assertEquals(2, tc.size());
 
     }
 
@@ -160,24 +164,24 @@ public class RdfListTest {
 
         Set<GraphNode> containingListNodes = RdfList.findContainingListNodes(
                 new GraphNode(element3, tc));
-        Assert.assertEquals(1, containingListNodes.size());
-        Assert.assertTrue(containingListNodes.contains(listA));
+        assertEquals(1, containingListNodes.size());
+        assertTrue(containingListNodes.contains(listA));
 
         Set<RdfList> containingLists = RdfList.findContainingLists(
                 new GraphNode(element3, tc));
-        Assert.assertEquals(1, containingLists.size());
-        Assert.assertTrue(containingLists.contains(rdfListA));
+        assertEquals(1, containingLists.size());
+        assertTrue(containingLists.contains(rdfListA));
 
         containingListNodes = RdfList.findContainingListNodes(
                 new GraphNode(element4, tc));
-        Assert.assertEquals(2, containingListNodes.size());
-        Assert.assertTrue(containingListNodes.contains(listA));
-        Assert.assertTrue(containingListNodes.contains(listB));
+        assertEquals(2, containingListNodes.size());
+        assertTrue(containingListNodes.contains(listA));
+        assertTrue(containingListNodes.contains(listB));
 
         containingLists = RdfList.findContainingLists(
                 new GraphNode(element4, tc));
-        Assert.assertEquals(2, containingLists.size());
-        Assert.assertTrue(containingLists.contains(rdfListA));
-        Assert.assertTrue(containingLists.contains(rdfListB));
+        assertEquals(2, containingLists.size());
+        assertTrue(containingLists.contains(rdfListA));
+        assertTrue(containingLists.contains(rdfListB));
     }
 }

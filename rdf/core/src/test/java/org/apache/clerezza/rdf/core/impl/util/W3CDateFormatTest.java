@@ -18,17 +18,22 @@
  */
 package org.apache.clerezza.rdf.core.impl.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class W3CDateFormatTest {
 
     @Test

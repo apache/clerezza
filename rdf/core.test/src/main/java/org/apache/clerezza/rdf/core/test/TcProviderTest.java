@@ -18,29 +18,36 @@
  */
 package org.apache.clerezza.rdf.core.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashSet;
 import java.util.Iterator;
-
 import java.util.Set;
-import org.junit.Test;
+
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.ImmutableGraph;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.BlankNodeOrIRI;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.IRI;
-import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
-import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
-
-import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
-import static org.junit.Assert.*;
+import org.apache.clerezza.rdf.core.access.EntityAlreadyExistsException;
+import org.apache.clerezza.rdf.core.access.NoSuchEntityException;
+import org.apache.clerezza.rdf.core.access.TcProvider;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * 
  * @author mir,rbn
  */
+@RunWith(JUnitPlatform.class)
 public abstract class TcProviderTest {
 
     protected final IRI uriRefA = generateUri("a");

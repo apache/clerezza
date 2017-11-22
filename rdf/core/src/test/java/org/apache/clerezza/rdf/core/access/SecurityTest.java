@@ -18,6 +18,9 @@
  */
 package org.apache.clerezza.rdf.core.access;
 
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.FilePermission;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessControlException;
@@ -28,11 +31,7 @@ import java.security.Permissions;
 import java.security.Policy;
 import java.util.Collections;
 import java.util.PropertyPermission;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.Graph;
@@ -43,16 +42,28 @@ import org.apache.clerezza.rdf.core.access.security.TcPermission;
 import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+
 /**
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class SecurityTest {
-    
+
+    private static final Logger LOGGER = getLogger(SecurityTest.class);
+
     public SecurityTest() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         ////needed to unbind because this is injected with META-INF/services - file
         TcManager.getInstance().unbindWeightedTcProvider(new WeightedA());
@@ -61,11 +72,11 @@ public class SecurityTest {
         TcManager.getInstance().createGraph(new IRI("http://example.org/read/ImmutableGraph"));
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         
         Policy.setPolicy(new Policy() {
@@ -91,65 +102,73 @@ public class SecurityTest {
 
             @Override
             public void checkPermission(Permission perm) {
-                //System.out.println("Checking "+perm);
+                LOGGER.debug("Checking {}", perm);
                 super.checkPermission(perm);
             }
 
             @Override
             public void checkPermission(Permission perm, Object context) {
-                //System.out.println("Checking "+perm);
+                LOGGER.debug("Checking {}", perm);
                 super.checkPermission(perm, context);
             }
 
         });
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setSecurityManager(null);
     }
 
 
-    @Test(expected=NoSuchEntityException.class)
-    public void testAcessGraph() {        
-        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted"));
-    }
-    
-    @Test(expected=AccessControlException.class)
-    public void testNoWildCard() {
-        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted/subthing"));
-    }
-    
-    @Test(expected=NoSuchEntityException.class)
-    public void testAllowedArea() {
-        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/area/allowed/something"));
-    }
-    
-    @Test(expected=AccessControlException.class)
-    public void testAcessForbiddenGraph() {
-        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/forbidden"));
+    @Test
+    public void testAcessGraph() {
+        assertThrows(NoSuchEntityException.class, () ->
+                TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted")));
     }
 
-    @Test(expected=NoSuchEntityException.class)
+    @Test
+    public void testNoWildCard() {
+        assertThrows(AccessControlException.class, () ->
+                TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted/subthing")));
+    }
+
+    @Test
+    public void testAllowedArea() {
+        assertThrows(NoSuchEntityException.class, () ->
+                TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/area/allowed/something")));
+    }
+
+    @Test
+    public void testAcessForbiddenGraph() {
+        assertThrows(AccessControlException.class, () ->
+                TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/forbidden")));
+    }
+
+    @Test
     public void testCustomPermissions() {
         IRI graphUri = new IRI("http://example.org/custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
         Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/graph-access.graph"));
-        System.out.print(ag.toString());
-        TcManager.getInstance().getMGraph(graphUri);
+
+        LOGGER.info("Custom permissions graph: {}", ag);
+        assertThrows(NoSuchEntityException.class, () ->
+                TcManager.getInstance().getMGraph(graphUri));
     }
 
-    @Test(expected=AccessControlException.class)
+    @Test
     public void testCustomPermissionsIncorrect() {
         IRI graphUri = new IRI("http://example.org/custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
         Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/graph-access.graph"));
-        System.out.print(ag.toString());
-        TcManager.getInstance().createGraph(graphUri);
+
+        LOGGER.info("Incorrect custom permissions graph: {}", ag);
+        assertThrows(AccessControlException.class, () ->
+                TcManager.getInstance().createGraph(graphUri));
     }
 
     @Test
@@ -159,22 +178,27 @@ public class SecurityTest {
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
         Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/graph-access.graph"));
-        System.out.print(ag.toString());
+
+        LOGGER.info("Custom read/write permissions graph: {}", ag);
         TcManager.getInstance().createGraph(graphUri);
     }
-    
-    @Test(expected=EntityAlreadyExistsException.class)
+
+    @Test
     public void testCreateMGraph() {
-        TcManager.getInstance().createGraph(new IRI("http://example.org/ImmutableGraph/alreadyexists"));
+        assertThrows(EntityAlreadyExistsException.class, () ->
+                TcManager.getInstance().createGraph(new IRI("http://example.org/ImmutableGraph/alreadyexists")));
     }
-    @Test(expected=AccessControlException.class)
+
+    @Test
     public void testCreateMGraphWithoutWritePermission() {
-        TcManager.getInstance().createGraph(new IRI("http://example.org/read/ImmutableGraph"));
+        assertThrows(AccessControlException.class, () ->
+                TcManager.getInstance().createGraph(new IRI("http://example.org/read/ImmutableGraph")));
     }
-    @Test(expected=ReadOnlyException.class)
+
+    @Test
     public void testAddTripleToMGraph() {
         Graph graph = TcManager.getInstance().getMGraph(new IRI("http://example.org/read/ImmutableGraph"));
         Triple triple = new TripleImpl(new IRI("http://example.org/definition/isNonLiteral"), new IRI("http://example.org/definition/isTest"), new PlainLiteralImpl("test"));
-        graph.add(triple);
+        assertThrows(ReadOnlyException.class, () -> graph.add(triple));
     }
 }

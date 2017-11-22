@@ -18,10 +18,13 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.sparql.query.BinaryOperation;
@@ -42,14 +45,17 @@ import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleOptionalGraphPattern
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleOrderCondition;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleSelectQuery;
 import org.apache.clerezza.rdf.core.sparql.query.impl.SimpleTriplePattern;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author hasan
  */
+@RunWith(JUnitPlatform.class)
 public class QuerySerializerTest {
 
     @Test
@@ -78,7 +84,7 @@ public class QuerySerializerTest {
         queryPattern.addGraphPattern(bgp);
         selectQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(selectQuery.toString()
+        assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -108,7 +114,7 @@ public class QuerySerializerTest {
         queryPattern.addGraphPattern(bgp);
         constructQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(constructQuery.toString()
+        assertTrue(constructQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -121,7 +127,7 @@ public class QuerySerializerTest {
         describeQuery.addResourceToDescribe(new ResourceOrVariable(
                 new IRI("http://example.org/book/book1")));
 
-        Assert.assertTrue(describeQuery.toString()
+        assertTrue(describeQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -146,7 +152,7 @@ public class QuerySerializerTest {
         queryPattern.addGraphPattern(bgp);
         askQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(askQuery.toString()
+        assertTrue(askQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -154,7 +160,7 @@ public class QuerySerializerTest {
      * Ignoring: given that triplePatterns is a Set I don't see what is supposed 
      * to guarantee the expected ordering.
      */
-    @Ignore
+    @Disabled
     @Test
     public void testFilter() {
 
@@ -185,7 +191,7 @@ public class QuerySerializerTest {
         queryPattern.addConstraint(constraint);
         selectQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(selectQuery.toString()
+        assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -214,7 +220,7 @@ public class QuerySerializerTest {
         queryPattern.addConstraint(constraint);
         selectQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(selectQuery.toString()
+        assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -240,7 +246,7 @@ public class QuerySerializerTest {
         selectQuery.setQueryPattern(queryPattern);
         selectQuery.addOrderCondition(new SimpleOrderCondition(c, false));
 
-        Assert.assertTrue(selectQuery.toString()
+        assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -281,7 +287,7 @@ public class QuerySerializerTest {
         queryPattern.addGraphPattern(ogp);
         selectQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(selectQuery.toString()
+        assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -312,7 +318,7 @@ public class QuerySerializerTest {
         BuiltInCall constraint = new BuiltInCall("REGEX", arguments);
         queryPattern.addConstraint(constraint);
         selectQuery.setQueryPattern(queryPattern);
-        Assert.assertTrue(selectQuery.toString()
+        assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 }

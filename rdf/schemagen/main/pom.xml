@@ -34,11 +34,6 @@
     <name>Clerezza - RDF - SchemaGen: Class Generator for Ontologies</name>
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.wymiwyg</groupId>
             <artifactId>wymiwyg-commons-core</artifactId>
         </dependency>

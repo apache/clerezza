@@ -18,16 +18,21 @@
  */
 package org.apache.clerezza.rdf.core.impl.util;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.clerezza.rdf.core.impl.util.SimpleLiteralFactory;
 import org.apache.clerezza.commons.rdf.Literal;
 import org.apache.clerezza.commons.rdf.IRI;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class SimpleLiteralFactoryTest {
 
     final private static IRI xsdInteger = 
@@ -43,21 +48,21 @@ public class SimpleLiteralFactoryTest {
     public void longToXsdIntegerAndBackToMany() {
         long value = 14l;
         Literal tl = simpleLiteralFactory.createTypedLiteral(value);
-        Assert.assertEquals(xsdLong, tl.getDataType());
+        assertEquals(xsdLong, tl.getDataType());
         long longValue = simpleLiteralFactory.createObject(Long.class, tl);
-        Assert.assertEquals(value, longValue);
+        assertEquals(value, longValue);
         int intValue = simpleLiteralFactory.createObject(Integer.class, tl);
-        Assert.assertEquals(value, intValue);
+        assertEquals(value, intValue);
     }
 
     @Test
     public void intToXsdIntAndBackToMany() {
         int value = 14;
         Literal tl = simpleLiteralFactory.createTypedLiteral(value);
-        Assert.assertEquals(xsdInt, tl.getDataType());
+        assertEquals(xsdInt, tl.getDataType());
         long longValue = simpleLiteralFactory.createObject(Long.class, tl);
-        Assert.assertEquals(value, longValue);
+        assertEquals(value, longValue);
         int intValue = simpleLiteralFactory.createObject(Integer.class, tl);
-        Assert.assertEquals(value, intValue);
+        assertEquals(value, intValue);
     }
 }

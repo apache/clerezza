@@ -18,18 +18,24 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.Graph;
 import java.io.InputStream;
-import junit.framework.Assert;
 
 import org.apache.clerezza.rdf.core.*;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class ParserTest {
 
     private static boolean providerAInvoked;
@@ -43,7 +49,7 @@ public class ParserTest {
         parser.bindParsingProvider(parsingProviderA);
         providerAInvoked = false;
         parser.parse(null, "application/x-fantasy2+rdf");
-        Assert.assertTrue(providerAInvoked);
+        assertTrue(providerAInvoked);
     }
     
     @Test
@@ -54,19 +60,19 @@ public class ParserTest {
         providerAInvoked = false;
         providerBInvoked = false;
         parser.parse(null, "application/x-fantasy2+rdf");
-        Assert.assertFalse(providerAInvoked);
-        Assert.assertTrue(providerBInvoked);
+        assertFalse(providerAInvoked);
+        assertTrue(providerBInvoked);
         providerAInvoked = false;
         providerBInvoked = false;
         parser.parse(null, "application/x-fantasy1+rdf");
-        Assert.assertTrue(providerAInvoked);
-        Assert.assertFalse(providerBInvoked);
+        assertTrue(providerAInvoked);
+        assertFalse(providerBInvoked);
         parser.unbindParsingProvider(parsingProviderB);
         providerAInvoked = false;
         providerBInvoked = false;
         parser.parse(null, "application/x-fantasy2+rdf");
-        Assert.assertTrue(providerAInvoked);
-        Assert.assertFalse(providerBInvoked);
+        assertTrue(providerAInvoked);
+        assertFalse(providerBInvoked);
         
     }
 

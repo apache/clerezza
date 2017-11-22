@@ -31,9 +31,15 @@ import org.apache.clerezza.commons.rdf.impl.utils.PlainLiteralImpl
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl
 import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph
-import org.junit._
 import Preamble._
 
+import org.junit.jupiter.api.Assertions._;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
+
+@RunWith(classOf[JUnitPlatform])
 class RichGraphNodeTest {
 
   private val johnUri = new IRI("http://example.org/john")
@@ -44,7 +50,7 @@ class RichGraphNodeTest {
   private var node : RichGraphNode = null;
   private var mGraph = new SimpleGraph()
 
-  @Before
+  @BeforeEach
   def prepare() = {
     mGraph.add(new TripleImpl(johnUri, FOAF.name, new PlainLiteralImpl("John")));
     mGraph.add(new TripleImpl(johnUri, FOAF.nick, new PlainLiteralImpl("johny")));
@@ -77,19 +83,19 @@ class RichGraphNodeTest {
     import preamble._
     def asGn(gn: GraphNode)  = gn
     val johnUriNode = asGn(johnUri)
-    Assert.assertEquals(johnUriNode, node)
+    assertEquals(johnUriNode, node)
   }
 
   @Test
   def testSlash = {
     val rNode = new RichGraphNode(node)
-    Assert.assertEquals(new PlainLiteralImpl("johny"), (rNode/FOAF.nick)(0).getNode)
-    Assert.assertEquals(2, (rNode/FOAF.name).length(20))
+    assertEquals(new PlainLiteralImpl("johny"), (rNode/FOAF.nick)(0).getNode)
+    assertEquals(2, (rNode/FOAF.name).length(20))
     val stringNames = (for(name <- (rNode/FOAF.name).iterator) yield {
       name.toString
     }).toList
-    Assert.assertTrue(stringNames.contains("\"Johnathan Guller\""))
-    Assert.assertTrue(stringNames.contains("\"John\""))
+    assertTrue(stringNames.contains("\"Johnathan Guller\""))
+    assertTrue(stringNames.contains("\"John\""))
   }
 
   @Test
@@ -102,57 +108,57 @@ class RichGraphNodeTest {
     node.addProperty(RDF.`type`, PLATFORM.HeadedPage);
     node.addProperty(RDF.`type`, RDFS.Class);
     val test: CollectedIter[RichGraphNode] = node/DCTERMS.language/RDF.`type`;
-    Assert.assertEquals(1, test.length)
+    assertEquals(1, test.length)
     var counter = 0;
     for(k <- test) { counter = counter + 1 }
-    Assert.assertEquals(1, counter)
+    assertEquals(1, counter)
   }
 
   @Test
   def testInverse = {
     val rNode = new RichGraphNode(node)
-    Assert.assertEquals(1, (rNode/-FOAF.knows).length)
+    assertEquals(1, (rNode/-FOAF.knows).length)
   }
 
   @Test
   def testMissingProperty = {
     val rNode = new RichGraphNode(node)
-    Assert.assertEquals(0, (rNode/FOAF.thumbnail).length)
-    Assert.assertEquals("", rNode/FOAF.thumbnail*)
+    assertEquals(0, (rNode/FOAF.thumbnail).length)
+    assertEquals("", rNode/FOAF.thumbnail*)
 
   }
 
   @Test
   def testInverseImplicit = {
-    Assert.assertEquals(1, (node/-FOAF.knows).length)
+    assertEquals(1, (node/-FOAF.knows).length)
   }
 
   @Test
   def testPath = {
-    Assert.assertEquals(1, (node/-FOAF.knows).length)
-    Assert.assertEquals(new PlainLiteralImpl("Susanne"), node/-FOAF.knows%0/FOAF.name%0!)
-    Assert.assertEquals(new PlainLiteralImpl("Susanne"), ((node/-FOAF.knows)(0)/FOAF.name)(0)!)
-    Assert.assertEquals(new PlainLiteralImpl("Susanne"), node/-FOAF.knows/FOAF.name!)
-    Assert.assertEquals(new PlainLiteralImpl("Bill"), node/FOAF.knows/FOAF.nick!)
-    Assert.assertEquals("Bill", (node/FOAF.knows/FOAF.nick)(0)*)
-    Assert.assertEquals("Bill", node/FOAF.knows/FOAF.nick*)
+    assertEquals(1, (node/-FOAF.knows).length)
+    assertEquals(new PlainLiteralImpl("Susanne"), node/-FOAF.knows%0/FOAF.name%0!)
+    assertEquals(new PlainLiteralImpl("Susanne"), ((node/-FOAF.knows)(0)/FOAF.name)(0)!)
+    assertEquals(new PlainLiteralImpl("Susanne"), node/-FOAF.knows/FOAF.name!)
+    assertEquals(new PlainLiteralImpl("Bill"), node/FOAF.knows/FOAF.nick!)
+    assertEquals("Bill", (node/FOAF.knows/FOAF.nick)(0)*)
+    assertEquals("Bill", node/FOAF.knows/FOAF.nick*)
   }
 
   @Test
   def testLists = {
-    Assert.assertEquals(new PlainLiteralImpl("foo"),(node/SKOS04.related).asList().get(1))
-    Assert.assertEquals(new PlainLiteralImpl("foo"), (node/SKOS04.related%0!!)(1)!)
-    Assert.assertEquals(new PlainLiteralImpl("foo"),
+    assertEquals(new PlainLiteralImpl("foo"),(node/SKOS04.related).asList().get(1))
+    assertEquals(new PlainLiteralImpl("foo"), (node/SKOS04.related%0!!)(1)!)
+    assertEquals(new PlainLiteralImpl("foo"),
               (for (value <- node/SKOS04.related%0!!) yield value!).toList(1))
-    Assert.assertEquals(new PlainLiteralImpl("bar"),
+    assertEquals(new PlainLiteralImpl("bar"),
               (for (value <- node/SKOS04.related%0!!) yield value!).toList(2))
-    Assert.assertEquals(new PlainLiteralImpl("foo"), node/SKOS04.related%0%!!1!)
+    assertEquals(new PlainLiteralImpl("foo"), node/SKOS04.related%0%!!1!)
   }
 
   @Test
   def sortProperties = {
-    Assert.assertEquals(new PlainLiteralImpl("bar"), (node/SKOS04.related%0!!).sortWith((a,b) => ((a*) < (b*)))(0)!)
-    Assert.assertEquals(johnUri, (node/SKOS04.related%0!!).sortWith((a,b) => ((a*) > (b*)))(0)!)
+    assertEquals(new PlainLiteralImpl("bar"), (node/SKOS04.related%0!!).sortWith((a,b) => ((a*) < (b*)))(0)!)
+    assertEquals(johnUri, (node/SKOS04.related%0!!).sortWith((a,b) => ((a*) > (b*)))(0)!)
   }
 
   @Test
@@ -160,7 +166,7 @@ class RichGraphNodeTest {
     val dateLiteral = new TypedLiteralImpl("2009-01-01T01:33:58Z",
           new IRI("http://www.w3.org/2001/XMLSchema#dateTime"))
     val node = new GraphNode(dateLiteral, new SimpleGraph())
-    Assert.assertNotNull(node.as[java.util.Date])
+    assertNotNull(node.as[java.util.Date])
   }
 
   @Test
@@ -168,7 +174,7 @@ class RichGraphNodeTest {
     node = new GraphNode(greetingsUri, mGraph)
     val lang = new Language("en")
     val enValue = (node/RDF.value).find(l=>(l!).asInstanceOf[Literal].getLanguage == lang).get
-    Assert.assertEquals("hello", enValue*)
+    assertEquals("hello", enValue*)
   }
 
 }

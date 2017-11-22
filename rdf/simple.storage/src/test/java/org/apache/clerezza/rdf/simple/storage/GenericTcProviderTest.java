@@ -18,9 +18,10 @@
  */
 package org.apache.clerezza.rdf.simple.storage;
 
-import org.junit.After;
 import org.apache.clerezza.rdf.core.access.TcProvider;
 import org.apache.clerezza.rdf.core.test.TcProviderTest;
+
+import org.junit.jupiter.api.AfterEach;
 
 /**
  *
@@ -30,7 +31,7 @@ public class GenericTcProviderTest extends TcProviderTest {
 
     SimpleTcProvider provider = new SimpleTcProvider();
 
-    @After
+    @AfterEach
     public void cleanUp() {
         provider = new SimpleTcProvider();
     }
