@@ -38,7 +38,11 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
+    <modules>
+        <module>jaxrs.rdf.providers</module>
+        <module>parent</module>
+        <module>rdf</module>
+    </modules>
     <profiles>
         <profile>
             <id>rat</id>
