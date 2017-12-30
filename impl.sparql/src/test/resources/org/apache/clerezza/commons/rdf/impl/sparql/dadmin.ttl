@@ -1,0 +1,5 @@
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ns1:	<http://schema.org/> .
+
+_:b10521
+	ns1:articleBody	"\n  <li><a href=\"http://data.admin.ch/datasets\" title=\"Available Data\">Data</a></li>\n  <li><a href=\"http://data.admin.ch/apps\" title=\"Applications\">Applications</a></li>\n  <li><a href=\"http://data.admin.ch/sparql\" title=\"SPARQL Endpoint\">SPARQL</a></li>\n  <li><a title=\"About the Portal\" href=\"http://data.admin.ch/about\">About the Portal</a></li>\n  <li><a title=\"Contact Us\" href=\"http://data.admin.ch/contact\">Contact</a></li>\n" .

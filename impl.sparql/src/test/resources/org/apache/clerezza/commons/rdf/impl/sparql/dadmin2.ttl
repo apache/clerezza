@@ -1,0 +1,17 @@
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ns1:	<http://data.admin.ch/> .
+@prefix ns2:	<http://schema.org/> .
+ns1:apps	rdf:type	ns2:WebPage ;
+	ns2:hasPart	_:b10511 .
+@prefix ns3:	<http://schema.zazuko.com/site/> .
+ns1:apps	ns3:hasIntro	_:b10510 ;
+	ns3:hasMenu	_:b10509 .
+_:b10509	rdf:type	ns3:Menu ;
+	ns2:articleBody	"\n  <li><a href=\"http://data.admin.ch/datasets\" title=\"Available Data\">Data</a></li>\n  <li><a href=\"http://data.admin.ch/apps\" title=\"Applications\">Applications</a></li>\n  <li><a href=\"http://data.admin.ch/sparql\" title=\"SPARQL Endpoint\">SPARQL</a></li>\n  <li><a title=\"About the Portal\" href=\"http://data.admin.ch/about\">About the Portal</a></li>\n  <li><a title=\"Contact Us\" href=\"http://data.admin.ch/contact\">Contact</a></li>\n" .
+_:b10510	rdf:type	ns3:Intro ;
+	ns2:articleBody	"\n<p><a href=\"http://data.admin.ch/map/\">Sample application</a> based on STATTAB-SDMX-01-2A01+2011 data. This visualization was made within the prototype phase in colaboration with <a href=\"http://www.ti.bfh.ch/\">Berner Fachhochschule</a>. There are currently no other STATPOP datasets available as RDF.</p>\n" ;
+	ns3:title	"Choropleth" .
+_:b10511	rdf:type	ns3:Footer ;
+	ns2:articleBody	"<p>Do you have questions about the Linked Data pilot portal? Contact us via our\n<a title=\"github\" href=\"https://github.com/zazuko/fso-lod\">Github page</a>.</p>" .
+@prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
+_:b10511	ns2:dateCreated	"2015-11-15+01:00"^^xsd:date .
