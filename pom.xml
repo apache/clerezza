@@ -1,44 +1,50 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+         !!!!!!                                !!!!!!
+         !!!!!!    This pom is only provided   !!!!!!
+         !!!!!!   for build convenience and    !!!!!!
+         !!!!!!   should not be released       !!!!!!
+         !!!!!!                                !!!!!!
+         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
-
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <parent>
-        <groupId>org.apache</groupId>
-        <artifactId>apache</artifactId>
-        <version>16</version>
-    </parent>
-    <groupId>org.apache.clerezza</groupId>
-    <artifactId>reactor</artifactId>
+        <groupId>org.apache.clerezza</groupId>
+        <artifactId>clerezza</artifactId>
+        <version>7</version>
+        <relativePath />
+     </parent>
+
+    <groupId>org.apache.clerezza.commons-rdf</groupId>
+    <artifactId>clerezza-reactor</artifactId>
     <packaging>pom</packaging>
-    <name>Clerezza</name>
-    <url>http://incubator.apache.org/clerezza/mvn-site/</url>
-    <version>0.4-SNAPSHOT</version>
-    <description>A reactor to build all of clerezza</description>
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+    <version>0.3-SNAPSHOT</version>
+    <name>Clerezza - Reactor</name>
+    <description>
+        Apache Commons RDF provides an API modelling the RDF data model as defined by 
+        http://www.w3.org/TR/rdf11-concepts/
+    </description>
+    
+    <url>http://clerezza.apache.org/commons-rdf/</url>
+    
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.apache.org/jira/browse/CLEREZZA</url>
+    </issueManagement>
+    
+    <inceptionYear>2015</inceptionYear>
+    <scm>
+        <connection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</connection>
+        <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
+        <url>https://git-wip-us.apache.org/repos/asf/clerezza-rdf-core.git</url>
+      <tag>HEAD</tag>
+  </scm>
+
     <modules>
+        <module>api</module>
+        <module>impl.utils</module>
+        <module>impl.sparql</module>
         <module>jaxrs.rdf.providers</module>
         <module>parent</module>
         <module>rdf</module>
@@ -102,171 +108,5 @@
         </profile>
         
     </profiles>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-scr-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.xsite</groupId>
-                <artifactId>xsite-maven-plugin</artifactId>
-            </plugin>
-            <!-- having this here has the effect that the resources copied by the resources plugin (below) have
-            priority over the remote resources -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <configuration>        
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <goals>deploy</goals>
-                    <arguments>-Papache-release </arguments>
-                </configuration>
-            </plugin>
-        </plugins>
-        <resources>
-            <resource>
-                <targetPath>META-INF</targetPath>
-                <filtering>false</filtering>
-                <directory>${basedir}</directory>
-                <includes>
-                    <include>NOTICE</include>
-                    <include>LICENSE.*</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-    </build>
-    <distributionManagement>
-        <!-- where to deploy the web site -->
-        <site>
-            <id>people.apache.org</id>
-            <url>scp://people.apache.org/www/incubator.apache.org/clerezza/mvn-site/</url>
-        </site>
-
-        <!-- where to deploy the artifacts -->
-        <repository>
-            <id>apache.releases.https</id>
-            <name>Apache Release Distribution Repository</name>
-            <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
-        </repository>
-        <snapshotRepository>
-            <id>apache.snapshots.https</id>
-            <name>Apache Development Snapshot Repository</name>
-            <url>https://repository.apache.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <!-- jira -->
-    <issueManagement>
-        <system>Jira</system>
-        <url>https://issues.apache.org/jira/browse/CLEREZZA</url>
-    </issueManagement>
-    <ciManagement>
-        <system>Jenkins</system>
-        <url>https://builds.apache.org/job/clerezza-trunk-1.6/</url>
-    </ciManagement>
-
-
-    <scm>
-        <url>http://git.apache.org/clerezza.git/</url>
-        <connection>scm:git:git://git.apache.org/clerezza.git</connection>
-        <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
-      <tag>reactor-0.3</tag>
-  </scm>
-
-    <!-- lets generate reports -->
-    <reporting>
-        <plugins>
-            <!-- javadoc -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <!-- Version 2.6  passes invalid arguments to the wadl doclet -->
-                <version>2.4</version>
-            </plugin>
-
-            <!-- test results -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.4.2</version>
-            </plugin>
-
-            <!-- pmd reports (potential bugs, suboptimal code, duplicate code) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <targetJdk>1.6</targetJdk>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.clerezza</groupId>
-                <artifactId>maven-jaxrs-report-plugin</artifactId>
-                <version>0.1-incubating</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>2.5.1</version>
-            </plugin>
-            <!--            <plugin>
-                <groupId>org.apache.clerezza</groupId>
-                <artifactId>maven-pladoc-plugin.core</artifactId>
-                <version>0.1</version>
-            </plugin> -->
-        </plugins>
-    </reporting>
+    
 </project>
