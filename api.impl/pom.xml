@@ -18,39 +18,58 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
         <version>8-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
-    <artifactId>api</artifactId>
+    <artifactId>api.impl</artifactId>
     <packaging>bundle</packaging>
-    <name>Clerezza API</name>
+    <name>Clerezza API Implementation</name>
     <description>
-        Apache Clerezza API implements the RDF data model as defined by
-        http://www.w3.org/TR/rdf11-concepts/
+        This module implements Apache Clerezza API
     </description>
 
     <issueManagement>
         <system>jira</system>
         <url>http://issues.apache.org/jira/browse/CLEREZZA</url>
     </issueManagement>
-
+    
     <inceptionYear>2015</inceptionYear>
     <scm>
         <connection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</connection>
         <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
         <url>https://git-wip-us.apache.org/repos/asf/clerezza.git</url>
-        <tag>HEAD</tag>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.apache.clerezza.api.impl.*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.clerezza</groupId>
+            <artifactId>api</artifactId>
+            <version>8-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
