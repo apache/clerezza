@@ -1,32 +1,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-         !!!!!!                                !!!!!!
-         !!!!!!    This pom is only provided   !!!!!!
-         !!!!!!   for build convenience and    !!!!!!
-         !!!!!!   should not be released       !!!!!!
-         !!!!!!                                !!!!!!
-         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+         !!!!!!                               !!!!!!
+         !!!!!!   This pom is only provided   !!!!!!
+         !!!!!!   for build convenience and   !!!!!!
+         !!!!!!   should not be released      !!!!!!
+         !!!!!!                               !!!!!!
+         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath />
      </parent>
 
-    <groupId>org.apache.clerezza.commons-rdf</groupId>
     <artifactId>clerezza-reactor</artifactId>
     <packaging>pom</packaging>
-    <version>0.3-SNAPSHOT</version>
+    <version>8-SNAPSHOT</version>
     <name>Clerezza - Reactor</name>
     <description>
-        Apache Commons RDF provides an API modelling the RDF data model as defined by 
+        Apache Clerezza provides an API modelling RDF data as defined by 
         http://www.w3.org/TR/rdf11-concepts/
     </description>
     
-    <url>http://clerezza.apache.org/commons-rdf/</url>
+    <url>http://clerezza.apache.org/</url>
     
     <issueManagement>
         <system>jira</system>
@@ -37,13 +36,13 @@
     <scm>
         <connection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</connection>
         <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
-        <url>https://git-wip-us.apache.org/repos/asf/clerezza-rdf-core.git</url>
+        <url>https://git-wip-us.apache.org/repos/asf/clerezza.git</url>
       <tag>HEAD</tag>
   </scm>
 
     <modules>
         <module>api</module>
-        <module>impl.utils</module>
+        <module>api.impl</module>
         <module>impl.sparql</module>
         <module>jaxrs.rdf.providers</module>
         <module>parent</module>
