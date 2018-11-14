@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core;
+package org.apache.clerezza.api.impl.literal;
 
 
-import org.apache.clerezza.commons.rdf.Literal;
-import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.api.Literal;
+import org.apache.clerezza.api.IRI;
 import java.util.Arrays;
 import java.util.Date;
-import org.junit.Test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
@@ -52,7 +52,7 @@ public class LiteralFactoryTest {
             bytes[i] = i;
         }
         Literal literal = LiteralFactory.getInstance().createTypedLiteral(bytes);
-        Assert.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#base64Binary"), 
+        Assert.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#base64Binary"),
                 literal.getDataType());
         //we are using bytes.getClass() but there should be a way to get
         //that instance of Class without getting it from an instance

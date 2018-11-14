@@ -16,35 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.rdf.core;
+package org.apache.clerezza.api.impl;
 
+import org.apache.clerezza.api.IRI;
 
-import org.apache.clerezza.commons.rdf.Language;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.junit.Assert;
 import org.junit.Test;
-
 
 /**
  *
  * @author reto
  */
-public class LanguageTest {
+public class UriRefTest {
     
     @Test
-    public void languageEqualityTest() {
-        Language lang1 = new Language("DE");
-        Language lang2 = new Language("DE");
-        Assert.assertEquals(lang1, lang2);
-        Assert.assertEquals(lang1.hashCode(), lang2.hashCode());
-        Language lang3 = new Language("EN");
-        Assert.assertFalse(lang1.equals(lang3));
+    public void uriRefEqualityTest() throws UnsupportedEncodingException {
+        String uriRefString = "http://example.org/üöä";
+        IRI uriRef1 = new IRI(uriRefString);
+        IRI uriRef2 = new IRI(uriRefString);
+        Assert.assertEquals(uriRef1, uriRef2);
+        IRI uriRef3 = new IRI(URLEncoder.encode(uriRefString, "utf-8"));
+        Assert.assertFalse(uriRef1.equals(uriRef3));
     }
     
     @Test
     public void toStringTest() {
-        final String id = "de";
-        Language lang1 = new Language(id);
-        Assert.assertEquals(lang1.toString(), id);
+        String uriRefString = "http://example.org/üöä";
+        IRI uriRef = new IRI(uriRefString);
+        Assert.assertEquals("<"+uriRefString+">", uriRef.toString());
     }
 
 }
