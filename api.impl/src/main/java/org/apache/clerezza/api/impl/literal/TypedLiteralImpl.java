@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.api.impl;
+package org.apache.clerezza.api.impl.literal;
 
 import java.io.Serializable;
 
@@ -27,21 +27,18 @@ import org.apache.clerezza.api.Language;
  *
  * @author reto
  */
-public class LiteralImpl extends AbstractLiteral implements  Serializable {
+public class TypedLiteralImpl extends AbstractLiteral implements  Serializable {
     private String lexicalForm;
     private IRI dataType;
     private int hashCode;
-    private Language language;
 
     /**
      * @param lexicalForm 
      * @param dataType 
-     * @param Language the language of this literal
      */
-    public LiteralImpl(String lexicalForm, IRI dataType, Language language) {
+    public TypedLiteralImpl(String lexicalForm, IRI dataType) {
         this.lexicalForm = lexicalForm;
         this.dataType = dataType;
-        this.language = language;
         this.hashCode = super.hashCode();
     }
     
@@ -76,7 +73,7 @@ public class LiteralImpl extends AbstractLiteral implements  Serializable {
 
     @Override
     public Language getLanguage() {
-        return language;
+        return null;
     }
 
 }

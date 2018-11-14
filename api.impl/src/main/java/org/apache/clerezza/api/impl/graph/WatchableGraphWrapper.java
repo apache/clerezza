@@ -13,28 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.clerezza.api.impl;
+package org.apache.clerezza.api.impl.graph;
+
+import org.apache.clerezza.api.*;
+import org.apache.clerezza.api.event.*;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
-
-import org.apache.clerezza.api.BlankNodeOrIRI;
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.ImmutableGraph;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.RDFTerm;
-import org.apache.clerezza.api.Triple;
-import org.apache.clerezza.api.WatchableGraph;
-import org.apache.clerezza.api.event.AddEvent;
-import org.apache.clerezza.api.event.FilterTriple;
-import org.apache.clerezza.api.event.GraphEvent;
-import org.apache.clerezza.api.event.GraphListener;
-import org.apache.clerezza.api.event.RemoveEvent;
 
 /**
  *

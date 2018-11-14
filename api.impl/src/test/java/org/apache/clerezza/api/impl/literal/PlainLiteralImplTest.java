@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.api.impl.simple;
+package org.apache.clerezza.api.impl.literal;
 
-import org.apache.clerezza.api.impl.PlainLiteralImpl;
 import org.junit.Test;
 
 import org.apache.clerezza.api.Language;
 import org.apache.clerezza.api.Literal;
 import org.junit.Assert;
+
 /**
  *
  * @author reto

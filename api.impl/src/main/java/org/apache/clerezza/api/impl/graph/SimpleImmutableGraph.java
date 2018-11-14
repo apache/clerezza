@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.api.impl.simple;
-
-import org.apache.clerezza.api.impl.AbstractImmutableGraph;
+package org.apache.clerezza.api.impl.graph;
 
 import java.util.Iterator;
 

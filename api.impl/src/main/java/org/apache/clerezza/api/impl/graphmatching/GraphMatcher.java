@@ -32,7 +32,7 @@ import org.apache.clerezza.api.Graph;
 import org.apache.clerezza.api.RDFTerm;
 import org.apache.clerezza.api.Triple;
 import org.apache.clerezza.api.impl.TripleImpl;
-import org.apache.clerezza.api.impl.simple.SimpleMGraph;
+import org.apache.clerezza.api.impl.graph.SimpleMGraph;
 
 /**
  * @author reto
