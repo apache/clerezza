@@ -30,7 +30,7 @@ import org.apache.clerezza.api.BlankNodeOrIRI;
 import org.apache.clerezza.api.IRI;
 import org.apache.clerezza.api.RDFTerm;
 import org.apache.clerezza.api.Triple;
-import org.apache.clerezza.api.impl.PlainLiteralImpl;
+import org.apache.clerezza.api.impl.literal.PlainLiteralImpl;
 import org.apache.clerezza.api.impl.TripleImpl;
 import org.junit.Test;
 import junit.framework.Assert;

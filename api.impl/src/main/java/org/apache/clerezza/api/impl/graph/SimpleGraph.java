@@ -16,25 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.api.impl.simple;
+package org.apache.clerezza.api.impl.graph;
 
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.impl.AbstractGraph;
+import org.apache.clerezza.api.*;
 
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.clerezza.api.BlankNodeOrIRI;
-import org.apache.clerezza.api.ImmutableGraph;
-import org.apache.clerezza.api.RDFTerm;
-import org.apache.clerezza.api.Triple;
+import java.util.*;
 
 /**
  * For now this is a minimalistic implementation, without any indexes or other

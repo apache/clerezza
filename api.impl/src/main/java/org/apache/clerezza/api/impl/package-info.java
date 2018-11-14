@@ -15,7 +15,4 @@
  * limitations under the License.
  */
 
-/**
- * Common RDF API Implementation utilities.
- */
 package org.apache.clerezza.api.impl;

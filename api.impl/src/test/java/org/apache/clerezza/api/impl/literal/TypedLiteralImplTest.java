@@ -19,7 +19,7 @@
 package org.apache.clerezza.api.impl.simple;
 
 import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.impl.TypedLiteralImpl;
+import org.apache.clerezza.api.impl.literal.TypedLiteralImpl;
 import org.junit.Test;
 import junit.framework.Assert;
 

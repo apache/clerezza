@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.clerezza.api.impl;
+package org.apache.clerezza.api.impl.literal;
 
 import org.apache.clerezza.api.Literal;
 

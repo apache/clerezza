@@ -16,36 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.clerezza.api.impl.literal;
 
-package org.apache.clerezza.api.impl.graphmatching;
-
-import org.apache.clerezza.api.BlankNode;
-import org.apache.clerezza.api.Graph;
 import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.impl.graph.SimpleMGraph;
-import org.apache.clerezza.api.impl.TripleImpl;
-import org.apache.clerezza.api.BlankNodeOrIRI;
 
 /**
+ * Thrown when a literal is of the wrong type for conversion to a java-type
  *
  * @author reto
  */
-public class Utils4Testing {
-
-    static Graph generateLine(int size, final BlankNodeOrIRI firstNode) {
-        if (size < 1) {
-            throw new IllegalArgumentException();
-        }
-        Graph result = new SimpleMGraph();
-        BlankNodeOrIRI lastNode = firstNode;
-        for (int i = 0; i < size; i++) {
-            final BlankNode newNode = new BlankNode();
-            result.add(new TripleImpl(lastNode, u1, newNode));
-            lastNode = newNode;
-        }
-        return result;
+public class InvalidLiteralTypeException extends RuntimeException {
+    
+    /**
+     * Constructs the exception to be thrown when a literal cannot be 
+     * converted to an instance of the specified class
+     *
+     * @param javaType the <code>Class</code> to convert to
+     * @param literalType the literalType which can't be converted
+     */
+    public InvalidLiteralTypeException(Class<?> javaType, IRI literalType) {
+        super("Cannot create a "+javaType+" from a literal of type "+literalType);
     }
-
-    final static IRI u1 = new IRI("http://example.org/u1");
-
 }

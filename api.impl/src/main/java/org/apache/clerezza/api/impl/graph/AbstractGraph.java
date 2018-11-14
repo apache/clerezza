@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.api.impl;
+package org.apache.clerezza.api.impl.graph;
 
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -32,7 +32,6 @@ import org.apache.clerezza.api.BlankNodeOrIRI;
 import org.apache.clerezza.api.RDFTerm;
 import org.apache.clerezza.api.Triple;
 import org.apache.clerezza.api.ImmutableGraph;
-import org.apache.clerezza.api.impl.simple.SimpleImmutableGraph;
 import org.apache.clerezza.api.impl.debug.ReentrantReadWriteLockTracker;
 
 /**

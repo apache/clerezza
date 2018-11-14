@@ -16,12 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.clerezza.api.impl.simple;
+package org.apache.clerezza.api.impl.graph;
 
 import org.apache.clerezza.api.impl.TripleImpl;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.clerezza.api.Triple;
