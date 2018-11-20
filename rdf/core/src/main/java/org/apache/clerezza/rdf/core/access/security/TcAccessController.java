@@ -148,8 +148,8 @@ public abstract class TcAccessController {
         readPermissionCache.remove(GraphUri);
         final Graph permissionMGraph = getOrCreatePermisionGraph();
         Lock l = permissionMGraph.getLock().writeLock();
-        l.lock();
         try {
+            l.lock();
             removeExistingRequiredReadPermissions(GraphUri, permissionMGraph);
             final BlankNodeOrIRI permissionList = createList(permissionDescriptions.iterator(), permissionMGraph);
             permissionMGraph.add(new TripleImpl(GraphUri,
@@ -188,8 +188,8 @@ public abstract class TcAccessController {
         readWritePermissionCache.remove(GraphUri);
         final Graph permissionMGraph = getOrCreatePermisionGraph();
         Lock l = permissionMGraph.getLock().writeLock();
-        l.lock();
         try {
+            l.lock();
             removeExistingRequiredReadPermissions(GraphUri, permissionMGraph);
             final BlankNodeOrIRI permissionList = createList(permissionDescriptions.iterator(), permissionMGraph);
             permissionMGraph.add(new TripleImpl(GraphUri,
@@ -308,8 +308,8 @@ public abstract class TcAccessController {
         try {
             final Graph permissionMGraph = tcManager.getMGraph(permissionGraphName);
             Lock l = permissionMGraph.getLock().readLock();
-            l.lock();
             try {
+                l.lock();
                 Triple t = permissionMGraph.filter(GraphUri, property, null).next();
                 BlankNodeOrIRI list = (BlankNodeOrIRI) t.getObject();
                 LinkedList<String> result = new LinkedList<String>();
