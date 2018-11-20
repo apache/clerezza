@@ -209,7 +209,7 @@ public class GraphNode {
                         return (T) nextObject;
                     }
                 }
-                return null;
+                throw new NoSuchElementException();
             }
         };
     }
