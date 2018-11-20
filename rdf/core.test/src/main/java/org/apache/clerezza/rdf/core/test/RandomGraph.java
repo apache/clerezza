@@ -176,7 +176,7 @@ public class RandomGraph extends GraphWrapper {
     }
 
     private static int rollDice(int faces) {
-        return Double.valueOf(Math.random() * faces).intValue();
+        return (int) (Math.random() * faces);
     }
 
     private RDFTerm createRandomRDFTerm() {
