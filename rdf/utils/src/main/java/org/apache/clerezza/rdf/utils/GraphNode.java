@@ -209,7 +209,7 @@ public class GraphNode {
                         return (T) nextObject;
                     }
                 }
-                return null;
+                throw new NoSuchElementException();
             }
         };
     }
@@ -312,7 +312,7 @@ public class GraphNode {
 
                 @Override
                 public RDFTerm next() {
-                    return null;
+                    throw new NoSuchElementException();
                 }
 
                 @Override
@@ -424,7 +424,7 @@ public class GraphNode {
 
                 @Override
                 public IRI next() {
-                    return null;
+                    throw new NoSuchElementException();
                 }
 
                 @Override
