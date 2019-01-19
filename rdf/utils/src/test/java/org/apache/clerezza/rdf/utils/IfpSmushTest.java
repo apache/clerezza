@@ -18,6 +18,8 @@
  */
 package org.apache.clerezza.rdf.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
@@ -28,13 +30,16 @@ import org.apache.clerezza.rdf.ontologies.FOAF;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.RDFS;
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class IfpSmushTest {
 
     private Graph ontology = new SimpleGraph();
@@ -55,7 +60,7 @@ public class IfpSmushTest {
         mGraph.add(new TripleImpl(bNode2, RDFS.comment, 
                 new PlainLiteralImpl("another comment")));
         Smusher.smush(mGraph, ontology);
-        Assert.assertEquals(3, mGraph.size());
+        assertEquals(3, mGraph.size());
     }
 
     @Test
@@ -77,7 +82,7 @@ public class IfpSmushTest {
         mGraph.add(new TripleImpl(bNode3, RDFS.comment,
                 new PlainLiteralImpl("yet another comment")));
         Smusher.smush(mGraph, ontology);
-        Assert.assertEquals(5, mGraph.size());
+        assertEquals(5, mGraph.size());
     }
 
     @Test
@@ -93,7 +98,7 @@ public class IfpSmushTest {
         mGraph.add(new TripleImpl(bNode2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));
         Smusher.smush(mGraph, ontology);
-        Assert.assertEquals(3, mGraph.size());
+        assertEquals(3, mGraph.size());
     }
 
     @Test
@@ -109,7 +114,7 @@ public class IfpSmushTest {
         mGraph.add(new TripleImpl(resource2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));
         Smusher.smush(mGraph, ontology);
-        Assert.assertEquals(4, mGraph.size());
+        assertEquals(4, mGraph.size());
     }
 
 }

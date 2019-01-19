@@ -18,18 +18,23 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.clerezza.commons.rdf.Graph;
 import java.io.OutputStream;
 
-import junit.framework.Assert;
-
 import org.apache.clerezza.rdf.core.*;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author mir
  */
+@RunWith(JUnitPlatform.class)
 public class SerializerTest {
 
     private static boolean providerAInvoked;
@@ -43,7 +48,7 @@ public class SerializerTest {
         serializer.bindSerializingProvider(serializingProviderA);
         providerAInvoked = false;
         serializer.serialize(null, null, "application/x-fantasy2+rdf");
-        Assert.assertTrue(providerAInvoked);
+        assertTrue(providerAInvoked);
     }
     
     @Test
@@ -54,19 +59,19 @@ public class SerializerTest {
         providerAInvoked = false;
         providerBInvoked = false;
         serializer.serialize(null, null, "application/x-fantasy2+rdf");
-        Assert.assertFalse(providerAInvoked);
-        Assert.assertTrue(providerBInvoked);
+        assertFalse(providerAInvoked);
+        assertTrue(providerBInvoked);
         providerAInvoked = false;
         providerBInvoked = false;
         serializer.serialize(null, null, "application/x-fantasy1+rdf");
-        Assert.assertTrue(providerAInvoked);
-        Assert.assertFalse(providerBInvoked);
+        assertTrue(providerAInvoked);
+        assertFalse(providerBInvoked);
         serializer.unbindSerializingProvider(serializingProviderB);
         providerAInvoked = false;
         providerBInvoked = false;
         serializer.serialize(null, null, "application/x-fantasy2+rdf");
-        Assert.assertTrue(providerAInvoked);
-        Assert.assertFalse(providerBInvoked);
+        assertTrue(providerAInvoked);
+        assertFalse(providerBInvoked);
         
     }
 

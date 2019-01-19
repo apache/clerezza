@@ -18,36 +18,41 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.clerezza.rdf.core.sparql.query.Query;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author hasan
  */
+@RunWith(JUnitPlatform.class)
 public class QueryParserSerializerCombinationTest {
-    
+
     public QueryParserSerializerCombinationTest() {
     }
-    
-    @BeforeClass
+
+    @BeforeAll
     public static void setUpClass() {
     }
-    
-    @AfterClass
+
+    @AfterAll
     public static void tearDownClass() {
     }
-    
-    @Before
+
+    @BeforeEach
     public void setUp() {
     }
-    
-    @After
+
+    @AfterEach
     public void tearDown() {
     }
 
@@ -80,7 +85,7 @@ public class QueryParserSerializerCombinationTest {
                 + "} \n";
 
         Query query = QueryParser.getInstance().parse(queryString);
-        Assert.assertEquals(queryString.replaceAll("\\s", "").trim(), query.toString().replaceAll("\\s", "").trim());
+        assertEquals(queryString.replaceAll("\\s", "").trim(), query.toString().replaceAll("\\s", "").trim());
     }
 
     @Test
@@ -135,6 +140,6 @@ public class QueryParserSerializerCombinationTest {
         Query query1 = QueryParser.getInstance().parse(queryString);
         Thread.sleep(5000l);
         Query query2 = QueryParser.getInstance().parse(queryString);
-        Assert.assertEquals(query1.toString(), query2.toString());
+        assertEquals(query1.toString(), query2.toString());
     }
 }

@@ -19,19 +19,25 @@
 
 package org.apache.clerezza.rdf.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.rdf.utils.GraphUtils.NoSuchSubGraphException;
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class GraphUtilsTest {
 
     final IRI u1 = new IRI("http://ex.org/1");
@@ -51,7 +57,7 @@ public class GraphUtilsTest {
             subGraph.add(new TripleImpl(bNode2, u2, bNode1));
         }
         GraphUtils.removeSubGraph(baseGraph, subGraph);
-        Assert.assertEquals(1, baseGraph.size());
+        assertEquals(1, baseGraph.size());
     }
 
     private Graph createBaseGraph() {
@@ -71,7 +77,7 @@ public class GraphUtilsTest {
      * 
      * @throws org.apache.clerezza.rdf.utils.GraphUtils.NoSuchSubGraphException
      */
-    @Test(expected=NoSuchSubGraphException.class)
+    @Test
     public void removeIncompleteSubGraph() throws NoSuchSubGraphException {
         Graph baseGraph = createBaseGraph();
 
@@ -82,10 +88,11 @@ public class GraphUtilsTest {
             subGraph.add(new TripleImpl(u1, u2, bNode2));
             subGraph.add(new TripleImpl(bNode2, u2, bNode2));
         }
-        GraphUtils.removeSubGraph(baseGraph, subGraph);
+        assertThrows(NoSuchSubGraphException.class, () ->
+                GraphUtils.removeSubGraph(baseGraph, subGraph));
     }
 
-    @Test(expected=NoSuchSubGraphException.class)
+    @Test
     public void removeInvalidSubGraph() throws NoSuchSubGraphException {
         Graph baseGraph = createBaseGraph();
 
@@ -98,7 +105,8 @@ public class GraphUtilsTest {
             baseGraph.add(new TripleImpl(bNode2, u2, bNode1));
             baseGraph.add(new TripleImpl(bNode2, u2, new BlankNode()));
         }
-        GraphUtils.removeSubGraph(baseGraph, subGraph);
+        assertThrows(NoSuchSubGraphException.class, () ->
+                GraphUtils.removeSubGraph(baseGraph, subGraph));
     }
 }
 

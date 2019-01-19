@@ -18,11 +18,15 @@
  */
 package org.apache.clerezza.rdf.core.serializedform;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.InputStream;
 import org.apache.clerezza.commons.rdf.Graph;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.clerezza.commons.rdf.IRI;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * This class is listed in
@@ -30,6 +34,7 @@ import org.apache.clerezza.commons.rdf.IRI;
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 @SupportedFormat("application/x-test+rdf")
 public class TestServiceManagedProvider implements ParsingProvider {
 
@@ -44,6 +49,6 @@ public class TestServiceManagedProvider implements ParsingProvider {
     public void registerOneProvider() {
         Parser parser = Parser.getInstance();
         parser.parse(null, "application/x-test+rdf");
-        Assert.assertTrue(parseInvoked);
+        assertTrue(parseInvoked);
     }
 }

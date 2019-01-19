@@ -18,21 +18,27 @@
  */
 package org.apache.clerezza.rdf.core.sparql;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashSet;
 import java.util.Set;
+
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.rdf.core.access.TcManagerTest;
 import org.apache.clerezza.rdf.core.access.providers.WeightedA;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author hasan
  */
+@RunWith(JUnitPlatform.class)
 public class SparqlPreParserTest {
 
     private TcManager graphAccess;
@@ -40,13 +46,13 @@ public class SparqlPreParserTest {
     private final static IRI DEFAULT_GRAPH = new IRI("http://example.org/default.graph");
     private final static IRI TEST_GRAPH = new IRI("http://example.org/test.graph");
 
-    @Before
+    @BeforeEach
 	public void setUp() {
 		graphAccess = TcManager.getInstance();
 		graphAccess.addWeightedTcProvider(weightedA);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		graphAccess = TcManager.getInstance();
 		graphAccess.removeWeightedTcProvider(weightedA);
@@ -66,7 +72,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -78,7 +84,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs == null);
+        assertTrue(referredGraphs == null);
     }
 
     @Test
@@ -96,7 +102,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStrBuilder.toString(), DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
     }
 
     @Test
@@ -107,7 +113,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -121,7 +127,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(DEFAULT_GRAPH);
         expected.add(new IRI("http://example.org/mydata"));
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -135,7 +141,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(TEST_GRAPH);
         expected.add(new IRI("http://example.org/mydata"));
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -146,7 +152,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -157,7 +163,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.contains(TcManagerTest.uriRefA));
+        assertTrue(referredGraphs.contains(TcManagerTest.uriRefA));
     }
 
     @Test
@@ -168,7 +174,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
     }
 
     @Test
@@ -179,7 +185,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -190,7 +196,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.contains(TcManagerTest.uriRefA));
+        assertTrue(referredGraphs.contains(TcManagerTest.uriRefA));
     }
 
     @Test
@@ -201,7 +207,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
     }
 
     @Test
@@ -212,7 +218,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
     }
 
     @Test
@@ -226,7 +232,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(DEFAULT_GRAPH);
         expected.add(TEST_GRAPH);
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -240,7 +246,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(DEFAULT_GRAPH);
         expected.add(TEST_GRAPH);
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -254,7 +260,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(DEFAULT_GRAPH);
         expected.add(TEST_GRAPH);
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -268,7 +274,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(DEFAULT_GRAPH);
         expected.add(TEST_GRAPH);
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -282,7 +288,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(DEFAULT_GRAPH);
         expected.add(TEST_GRAPH);
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -296,7 +302,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(DEFAULT_GRAPH);
         expected.add(TEST_GRAPH);
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -308,7 +314,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -319,7 +325,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
     }
 
     @Test
@@ -331,7 +337,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -342,7 +348,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(TEST_GRAPH));
     }
 
     @Test
@@ -358,7 +364,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(DEFAULT_GRAPH);
         expected.add(TEST_GRAPH);
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -371,7 +377,7 @@ public class SparqlPreParserTest {
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
 
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -388,7 +394,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(new IRI("http://example.com/names"));
         expected.add(new IRI("http://example.com/addresses"));
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -403,7 +409,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(TEST_GRAPH);
         expected.add(DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -415,7 +421,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -432,7 +438,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(new IRI("http://example/bookStore2"));
         expected.add(new IRI("http://example/bookStore"));
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -466,7 +472,7 @@ public class SparqlPreParserTest {
         Set<IRI> expected = new HashSet<>();
         expected.add(new IRI("http://example/bookStore2"));
         expected.add(new IRI("http://example/bookStore"));
-        Assert.assertTrue(referredGraphs.containsAll(expected));
+        assertTrue(referredGraphs.containsAll(expected));
     }
 
     @Test
@@ -483,7 +489,7 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 
     @Test
@@ -500,6 +506,6 @@ public class SparqlPreParserTest {
         SparqlPreParser parser;
         parser = new SparqlPreParser(TcManager.getInstance());
         Set<IRI> referredGraphs = parser.getReferredGraphs(queryStr, DEFAULT_GRAPH);
-        Assert.assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
+        assertTrue(referredGraphs.toArray()[0].equals(DEFAULT_GRAPH));
     }
 }

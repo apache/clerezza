@@ -18,20 +18,28 @@
  */
 package org.apache.clerezza.rdf.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Iterator;
-import org.junit.Test;
+
 import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.Triple;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
-import org.junit.Assert;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author hasan
  */
+@RunWith(JUnitPlatform.class)
 public class UnionGraphTest {
 
     private final IRI uriRef1 =
@@ -53,12 +61,12 @@ public class UnionGraphTest {
         graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
         Graph unionGraph = new UnionGraph(graph, graph2);
         Iterator<Triple> unionTriples = unionGraph.iterator();
-        Assert.assertTrue(unionTriples.hasNext());
+        assertTrue(unionTriples.hasNext());
         unionTriples.next();
-        Assert.assertTrue(unionTriples.hasNext());
+        assertTrue(unionTriples.hasNext());
         unionTriples.next();
-        Assert.assertFalse(unionTriples.hasNext());
-        Assert.assertEquals(2, unionGraph.size());
+        assertFalse(unionTriples.hasNext());
+        assertEquals(2, unionGraph.size());
     }
     
     @Test
@@ -69,10 +77,10 @@ public class UnionGraphTest {
         };
         graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
         Graph unionGraph = new UnionGraph(graph, graph2);
-        Assert.assertEquals(1, unionGraph.size());
+        assertEquals(1, unionGraph.size());
         unionGraph.add(new TripleImpl(uriRef4, uriRef1, uriRef3));
-        Assert.assertEquals(1, graph.size());
-        Assert.assertEquals(2, unionGraph.size());
-        Assert.assertEquals(1, graph2.size());
+        assertEquals(1, graph.size());
+        assertEquals(2, unionGraph.size());
+        assertEquals(1, graph2.size());
     }
 }

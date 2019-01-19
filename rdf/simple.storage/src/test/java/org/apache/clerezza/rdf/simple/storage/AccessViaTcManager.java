@@ -15,23 +15,28 @@
  */
 package org.apache.clerezza.rdf.simple.storage;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author developer
  */
+@RunWith(JUnitPlatform.class)
 public class AccessViaTcManager {
-    
+
     @Test
     public void simple() {
         Graph g = TcManager.getInstance().createGraph(new IRI("http://example.org/foo"));
-        Assert.assertTrue(g instanceof SimpleGraph);
+        assertTrue(g instanceof SimpleGraph);
     }
-    
+
 }

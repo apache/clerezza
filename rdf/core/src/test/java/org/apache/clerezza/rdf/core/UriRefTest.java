@@ -18,12 +18,16 @@
  */
 package org.apache.clerezza.rdf.core;
 
-import org.apache.clerezza.commons.rdf.IRI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.junit.Test;
-import junit.framework.Assert;
 
+import org.apache.clerezza.commons.rdf.IRI;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,10 +45,10 @@ public class UriRefTest {
             String uriRefString = "http://example.org/üöä";
             IRI uriRef1 = new IRI(uriRefString);
             IRI uriRef2 = new IRI(uriRefString);
-            Assert.assertEquals(uriRef1, uriRef2);
+            assertEquals(uriRef1, uriRef2);
             IRI uriRef3 =
                     new IRI(URLEncoder.encode(uriRefString, "utf-8"));
-            Assert.assertFalse(uriRef1.equals(uriRef3));
+            assertFalse(uriRef1.equals(uriRef3));
         } catch (UnsupportedEncodingException ex) {
             logger.error("Exception {} ", ex);
         }
@@ -54,7 +58,7 @@ public class UriRefTest {
     public void toStringTest() {
         String uriRefString = "http://example.org/üöä";
         IRI uriRef = new IRI(uriRefString);
-        Assert.assertEquals("<"+uriRefString+">", uriRef.toString());
+        assertEquals("<"+uriRefString+">", uriRef.toString());
     }
 
 }
