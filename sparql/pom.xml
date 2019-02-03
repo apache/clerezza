@@ -31,7 +31,7 @@
 
     <artifactId>sparql</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>8-SNAPSHOT</version>
     <name>Clerezza - SPARQL</name>
     <description>Model SPARQL query and update</description>
 
