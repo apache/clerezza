@@ -45,8 +45,8 @@
         <module>api.impl</module>
         <module>sparql</module>
         <module>representation</module>
-        <module>dataset</module>
         <module>test.utils</module>
+        <module>dataset</module>
         <module>impl.sparql</module>
         <module>jaxrs.rdf.providers</module>
         <module>parent</module>
