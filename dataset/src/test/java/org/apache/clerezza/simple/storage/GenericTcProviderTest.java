@@ -19,7 +19,7 @@
 package org.apache.clerezza.simple.storage;
 
 import org.apache.clerezza.dataset.TcProvider;
-import org.apache.clerezza.test.utils.TcProviderTest;
+import org.apache.clerezza.dataset.test.utils.TcProviderTest;
 import org.junit.After;
 
 /**
