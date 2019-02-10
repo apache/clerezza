@@ -41,6 +41,7 @@
   </scm>
 
     <modules>
+        <module>parent</module>
         <module>api</module>
         <module>api.impl</module>
         <module>sparql</module>
@@ -49,8 +50,6 @@
         <module>dataset</module>
         <module>impl.sparql</module>
         <module>jaxrs.rdf.providers</module>
-        <module>parent</module>
-        <module>rdf</module>
     </modules>
     <profiles>
         <profile>
