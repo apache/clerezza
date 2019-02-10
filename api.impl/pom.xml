@@ -30,7 +30,7 @@
 
     <artifactId>api.impl</artifactId>
     <packaging>bundle</packaging>
-    <name>Clerezza API Implementation</name>
+    <name>Clerezza - API Implementation</name>
     <description>
         This module implements Apache Clerezza API
     </description>

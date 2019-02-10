@@ -31,7 +31,7 @@
 
     <artifactId>api</artifactId>
     <packaging>bundle</packaging>
-    <name>Clerezza API</name>
+    <name>Clerezza - API</name>
     <description>
         Apache Clerezza API implements the RDF data model as defined by
         http://www.w3.org/TR/rdf11-concepts/
