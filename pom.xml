@@ -47,6 +47,7 @@
         <module>sparql</module>
         <module>representation</module>
         <module>test.utils</module>
+        <module>ontologies</module>
         <module>dataset</module>
         <module>impl.sparql</module>
         <module>jaxrs.rdf.providers</module>
