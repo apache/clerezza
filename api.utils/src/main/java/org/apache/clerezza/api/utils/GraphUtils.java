@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.*;
@@ -61,7 +60,8 @@ public class GraphUtils {
         }
 
         //we first remove the context of bnodes we find in object position
-        OBJ_BNODE_LOOP: while (true) {
+        OBJ_BNODE_LOOP:
+        while (true) {
             final Triple triple = getTripleWithBlankNodeObject(unGroundedTriples);
             if (triple == null) {
                 break;
@@ -73,7 +73,7 @@ public class GraphUtils {
             while (potentialIter.hasNext()) {
                 try {
                     final Triple potentialTriple = potentialIter.next();
-                    BlankNode potentialMatch = (BlankNode)potentialTriple.getObject();
+                    BlankNode potentialMatch = (BlankNode) potentialTriple.getObject();
                     final ImmutableGraph potentialContext = new GraphNode(potentialMatch, mGraph).getNodeContext();
                     if (potentialContext.equals(context)) {
                         removingTriples.addAll(potentialContext);
@@ -86,7 +86,8 @@ public class GraphUtils {
             }
             throw new NoSuchSubGraphException();
         }
-        SUBJ_BNODE_LOOP: while (true) {
+        SUBJ_BNODE_LOOP:
+        while (true) {
             final Triple triple = getTripleWithBlankNodeSubject(unGroundedTriples);
             if (triple == null) {
                 break;
@@ -101,7 +102,7 @@ public class GraphUtils {
             while (potentialIter.hasNext()) {
                 try {
                     final Triple potentialTriple = potentialIter.next();
-                    BlankNode potentialMatch = (BlankNode)potentialTriple.getSubject();
+                    BlankNode potentialMatch = (BlankNode) potentialTriple.getSubject();
                     final ImmutableGraph potentialContext = new GraphNode(potentialMatch, mGraph).getNodeContext();
                     if (potentialContext.equals(context)) {
                         removingTriples.addAll(potentialContext);
@@ -127,7 +128,8 @@ public class GraphUtils {
         return true;
     }
 
-    /** retrun triples with a bnode only at object position
+    /**
+     * retrun triples with a bnode only at object position
      *
      * @param triples
      * @return
@@ -143,6 +145,7 @@ public class GraphUtils {
         }
         return null;
     }
+
     private static Triple getTripleWithBlankNodeSubject(Graph triples) {
         for (Triple triple : triples) {
             if (triple.getSubject() instanceof BlankNode) {

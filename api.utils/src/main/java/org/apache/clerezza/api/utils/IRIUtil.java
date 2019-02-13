@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 /**
@@ -27,13 +26,12 @@ public class IRIUtil {
 
     /**
      * Strips #x00 - #x1F and #x7F-#x9F from a Unicode string
-     * @see <a href="http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">
-     * http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference</a> and
-     * replaces all US-ASCII space character with a "+".
      *
      * @param inputChars
      * @return the stripped string
-     * 
+     * @see <a href="http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference">
+     * http://www.w3.org/TR/rdf-concepts/#dfn-URI-reference</a> and
+     * replaces all US-ASCII space character with a "+".
      */
     public static String stripNonIRIChars(CharSequence inputChars) {
 

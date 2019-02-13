@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.*;
@@ -63,7 +62,7 @@ public class RdfList extends AbstractList<RDFTerm> {
 
     /**
      * Get a list for the specified resource.
-     *
+     * <p>
      * If the list is modified using the created instance
      * <code>listRDFTerm</code> will always be the first list.
      *
@@ -73,7 +72,6 @@ public class RdfList extends AbstractList<RDFTerm> {
     public RdfList(BlankNodeOrIRI listRDFTerm, Graph tc) {
         firstList = listRDFTerm;
         this.tc = tc;
-
     }
 
     /**
@@ -82,7 +80,7 @@ public class RdfList extends AbstractList<RDFTerm> {
      * @param listNode
      */
     public RdfList(GraphNode listNode) {
-        this((BlankNodeOrIRI)listNode.getNode(), listNode.getGraph());
+        this((BlankNodeOrIRI) listNode.getNode(), listNode.getGraph());
     }
 
     /**
@@ -91,9 +89,8 @@ public class RdfList extends AbstractList<RDFTerm> {
      *
      * @param listRDFTerm
      * @param tc
-     * @return    an empty rdf:List.
-     * @throws IllegalArgumentException
-     *        if the provided {@code  listRDFTerm} is a non-empty rdf:List.
+     * @return an empty rdf:List.
+     * @throws IllegalArgumentException if the provided {@code  listRDFTerm} is a non-empty rdf:List.
      */
     public static RdfList createEmptyList(BlankNodeOrIRI listRDFTerm, Graph tc)
             throws IllegalArgumentException {
@@ -113,7 +110,7 @@ public class RdfList extends AbstractList<RDFTerm> {
         }
         BlankNodeOrIRI currentList;
         if (listList.size() > 0) {
-            currentList = listList.get(listList.size()-1);
+            currentList = listList.get(listList.size() - 1);
         } else {
             currentList = firstList;
             if (!tc.filter(currentList, RDF.first, null).hasNext()) {
@@ -125,7 +122,7 @@ public class RdfList extends AbstractList<RDFTerm> {
         if (listList.size() >= pos) {
             return;
         }
-        while (true) {                
+        while (true) {
             currentList = getRest(currentList);
             if (currentList.equals(RDF_NIL)) {
                 totallyExpanded = true;
@@ -140,7 +137,6 @@ public class RdfList extends AbstractList<RDFTerm> {
     }
 
 
-
     @Override
     public RDFTerm get(int index) {
         expandTill(index + 1);
@@ -149,7 +145,7 @@ public class RdfList extends AbstractList<RDFTerm> {
 
     @Override
     public int size() {
-        expandTill(Integer.MAX_VALUE);        
+        expandTill(Integer.MAX_VALUE);
         return valueList.size();
     }
 
@@ -173,14 +169,13 @@ public class RdfList extends AbstractList<RDFTerm> {
         }
         valueList.add(index, element);
     }
-    
+
     /**
-     *
-     * @param index is > 0
+     * @param index   is > 0
      * @param element
      */
     private void addInRdfList(int index, RDFTerm element) {
-        expandTill(index+1);
+        expandTill(index + 1);
         BlankNodeOrIRI newList = new BlankNode() {
         };
         tc.add(new TripleImpl(newList, RDF.first, element));
@@ -201,7 +196,7 @@ public class RdfList extends AbstractList<RDFTerm> {
         //keeping the first list resource
         tc.remove(new TripleImpl(listList.get(index), RDF.first, valueList.get(index)));
         if (index == (listList.size() - 1)) {
-            tc.remove(new TripleImpl(listList.get(index), RDF.rest, RDF_NIL));    
+            tc.remove(new TripleImpl(listList.get(index), RDF.rest, RDF_NIL));
             if (index > 0) {
                 tc.remove(new TripleImpl(listList.get(index - 1), RDF.rest, listList.get(index)));
                 tc.add(new TripleImpl(listList.get(index - 1), RDF.rest, RDF_NIL));
@@ -210,7 +205,7 @@ public class RdfList extends AbstractList<RDFTerm> {
             }
             listList.remove(index);
         } else {
-            tc.add(new TripleImpl(listList.get(index), RDF.first, valueList.get(index+1)));
+            tc.add(new TripleImpl(listList.get(index), RDF.first, valueList.get(index + 1)));
             tc.remove(new TripleImpl(listList.get(index), RDF.rest, listList.get(index + 1)));
             tc.remove(new TripleImpl(listList.get(index + 1), RDF.first, valueList.get(index + 1)));
             if (index == (listList.size() - 2)) {
@@ -220,7 +215,7 @@ public class RdfList extends AbstractList<RDFTerm> {
                 tc.remove(new TripleImpl(listList.get(index + 1), RDF.rest, listList.get(index + 2)));
                 tc.add(new TripleImpl(listList.get(index), RDF.rest, listList.get(index + 2)));
             }
-            listList.remove(index+1);
+            listList.remove(index + 1);
         }
         return valueList.remove(index);
     }
@@ -235,7 +230,7 @@ public class RdfList extends AbstractList<RDFTerm> {
         } catch (final NullPointerException e) {
             RuntimeException runtimeEx = AccessController.doPrivileged(new PrivilegedAction<RuntimeException>() {
                 @Override
-                public RuntimeException run(){
+                public RuntimeException run() {
                     try {
                         final FileOutputStream fileOutputStream = new FileOutputStream("/tmp/broken-list.nt");
                         final GraphNode graphNode = new GraphNode(listRDFTerm, tc);
@@ -301,7 +296,7 @@ public class RdfList extends AbstractList<RDFTerm> {
         }
 
         Set<RdfList> rdfLists = new HashSet<RdfList>();
-        for (Iterator<GraphNode> it = listNodes.iterator(); it.hasNext();) {
+        for (Iterator<GraphNode> it = listNodes.iterator(); it.hasNext(); ) {
             GraphNode listNode = it.next();
             rdfLists.add(new RdfList(listNode));
         }
@@ -328,7 +323,7 @@ public class RdfList extends AbstractList<RDFTerm> {
         }
         return listNodes;
     }
-    
+
     private static Set<GraphNode> findAllListNodes(GraphNode listPart) {
         Iterator<GraphNode> invRestNodesIter;
         Set<GraphNode> listNodes = new HashSet<GraphNode>();

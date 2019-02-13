@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils.smushing;
 
 import org.apache.clerezza.api.*;
@@ -27,7 +26,6 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 
 /**
- *
  * @author Reto
  */
 public class BaseSmusher {
@@ -35,14 +33,14 @@ public class BaseSmusher {
     /**
      * Smushes the resources in mGraph that belong to the same set in equivalenceSets,
      * i.e. it adds all properties to one of the resources in the equivalence set.
-     * 
-     * Optionally owl:sameAs statement are added that point from the IRIs that 
+     * <p>
+     * Optionally owl:sameAs statement are added that point from the IRIs that
      * no longer have properties to the one with properties. If addOwlSameAs
      * is false the IRIs will just disappear from the graph.
-     * 
-     * @param mGraph the graph to smush
+     *
+     * @param mGraph          the graph to smush
      * @param equivalenceSets sets of equivalent resources
-     * @param addOwlSameAs whether owl:sameAs statements should be added
+     * @param addOwlSameAs    whether owl:sameAs statements should be added
      */
     public void smush(Graph mGraph, Set<Set<BlankNodeOrIRI>> equivalenceSets, boolean addOwlSameAs) {
         Map<BlankNodeOrIRI, BlankNodeOrIRI> current2ReplacementMap = new HashMap<BlankNodeOrIRI, BlankNodeOrIRI>();
@@ -59,7 +57,7 @@ public class BaseSmusher {
         Lock l = mGraph.getLock().writeLock();
         l.lock();
         try {
-            for (Iterator<Triple> it = mGraph.iterator(); it.hasNext();) {
+            for (Iterator<Triple> it = mGraph.iterator(); it.hasNext(); ) {
                 final Triple triple = it.next();
                 final BlankNodeOrIRI subject = triple.getSubject();
                 BlankNodeOrIRI subjectReplacement = current2ReplacementMap.get(subject);
@@ -85,9 +83,9 @@ public class BaseSmusher {
             l.unlock();
         }
     }
-    
-    private BlankNodeOrIRI getReplacementFor(Set<BlankNodeOrIRI> equivalenceSet, 
-            Graph owlSameAsGraph) {
+
+    private BlankNodeOrIRI getReplacementFor(Set<BlankNodeOrIRI> equivalenceSet,
+                                             Graph owlSameAsGraph) {
         final Set<IRI> uriRefs = new HashSet<IRI>();
         for (BlankNodeOrIRI nonLiteral : equivalenceSet) {
             if (nonLiteral instanceof IRI) {
@@ -111,14 +109,14 @@ public class BaseSmusher {
         return preferedIRI;
     }
 
-    
+
     /**
      * Returns a prefered IRI for the IRIs in a set. Typically and in the
-     * default implementation the IRI will be one of the set. Note however that 
+     * default implementation the IRI will be one of the set. Note however that
      * subclass implementations may also return another IRI to be used.
-     * 
+     *
      * @param uriRefs
-     * @return 
+     * @return
      */
     protected IRI getPreferedIRI(Set<IRI> uriRefs) {
         final Iterator<IRI> uriRefIter = uriRefs.iterator();
@@ -126,5 +124,5 @@ public class BaseSmusher {
         //or look at their frequency in mGraph
         return uriRefIter.next();
     }
-    
+
 }

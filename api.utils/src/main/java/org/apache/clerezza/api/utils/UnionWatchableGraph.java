@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.Graph;
@@ -24,34 +23,32 @@ import org.apache.clerezza.api.event.FilterTriple;
 import org.apache.clerezza.api.event.GraphListener;
 
 /**
- *
  * @author developer
  */
 public class UnionWatchableGraph extends UnionGraph implements WatchableGraph {
-    
+
     public UnionWatchableGraph(WatchableGraph... baseTripleCollections) {
         super(baseTripleCollections);
     }
-        @Override
+
+    @Override
     public void addGraphListener(GraphListener listener, FilterTriple filter) {
         for (Graph graph : baseTripleCollections) {
-            ((WatchableGraph)graph).addGraphListener(listener, filter);
+            ((WatchableGraph) graph).addGraphListener(listener, filter);
         }
     }
 
     @Override
     public void addGraphListener(GraphListener listener, FilterTriple filter, long delay) {
         for (Graph graph : baseTripleCollections) {
-            ((WatchableGraph)graph).addGraphListener(listener, filter, delay);
+            ((WatchableGraph) graph).addGraphListener(listener, filter, delay);
         }
     }
 
     @Override
     public void removeGraphListener(GraphListener listener) {
         for (Graph graph : baseTripleCollections) {
-            ((WatchableGraph)graph).removeGraphListener(listener);
+            ((WatchableGraph) graph).removeGraphListener(listener);
         }
     }
-
-    
 }

@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.BlankNode;
@@ -28,7 +27,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
  * @author reto
  */
 public class GraphUtilsTest {
@@ -65,12 +63,13 @@ public class GraphUtilsTest {
         }
         return baseGraph;
     }
-    
-    /** It is required that the subgraph comprises the whole context of the Bnodes it ioncludes
-     * 
+
+    /**
+     * It is required that the subgraph comprises the whole context of the Bnodes it ioncludes
+     *
      * @throws org.apache.clerezza.utils.GraphUtils.NoSuchSubGraphException
      */
-    @Test(expected=NoSuchSubGraphException.class)
+    @Test(expected = NoSuchSubGraphException.class)
     public void removeIncompleteSubGraph() throws NoSuchSubGraphException {
         Graph baseGraph = createBaseGraph();
 
@@ -84,7 +83,7 @@ public class GraphUtilsTest {
         GraphUtils.removeSubGraph(baseGraph, subGraph);
     }
 
-    @Test(expected=NoSuchSubGraphException.class)
+    @Test(expected = NoSuchSubGraphException.class)
     public void removeInvalidSubGraph() throws NoSuchSubGraphException {
         Graph baseGraph = createBaseGraph();
 

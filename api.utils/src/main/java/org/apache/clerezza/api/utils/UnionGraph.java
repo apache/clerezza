@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.*;
@@ -28,7 +27,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
- *
  * This class represents the union of multiple triple collections. A UnionGraph
  * appears like a merge of the different graphs (see.
  * http://www.w3.org/TR/rdf-mt/#graphdefs).
@@ -64,7 +62,7 @@ public class UnionGraph extends AbstractGraph {
 
     @Override
     public Iterator<Triple> performFilter(final BlankNodeOrIRI subject,
-            final IRI predicate, final RDFTerm object) {
+                                          final IRI predicate, final RDFTerm object) {
         if (baseTripleCollections.length == 0) {
             return new HashSet<Triple>(0).iterator();
         }
@@ -152,6 +150,7 @@ public class UnionGraph extends AbstractGraph {
     public ReadWriteLock getLock() {
         return readWriteLock;
     }
+
     private ReadWriteLock readWriteLock = new ReadWriteLock() {
 
         @Override
@@ -184,9 +183,6 @@ public class UnionGraph extends AbstractGraph {
         return new UnionLock(baseWriteLock, partialReadLock);
 
     }
-
-    ;
-
 
     private static class UnionLock implements Lock {
 

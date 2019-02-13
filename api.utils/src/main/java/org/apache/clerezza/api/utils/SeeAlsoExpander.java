@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.Graph;
@@ -40,9 +39,9 @@ public class SeeAlsoExpander {
      * using TcManger instead of TcProvider as this ensures LockableGraphs
      */
     private final TcManager tcManager;
+
     public SeeAlsoExpander(TcManager tcManager) {
         this.tcManager = tcManager;
-
     }
 
     /**
@@ -51,7 +50,7 @@ public class SeeAlsoExpander {
      * also associate rdfs:seeAlso properties to node this are expanded till
      * the maximum recursion depth specified.
      *
-     * @param node the node to be expanded
+     * @param node      the node to be expanded
      * @param recursion the maximum recursion depth
      * @return a new GraphNode over the union of the original and all expansion graphs
      */
@@ -68,8 +67,7 @@ public class SeeAlsoExpander {
         }
         return new GraphNode(node.getNode(),
                 new UnionGraph(resultTripleCollections.toArray(
-                new Graph[resultTripleCollections.size()])));
-
+                        new Graph[resultTripleCollections.size()])));
     }
 
     private Set<IRI> getSeeAlsoObjectUris(GraphNode node) {
@@ -81,7 +79,7 @@ public class SeeAlsoExpander {
             while (objects.hasNext()) {
                 RDFTerm next = objects.next();
                 if (next instanceof IRI) {
-                    result.add((IRI)next);
+                    result.add((IRI) next);
                 }
             }
         } finally {
@@ -101,7 +99,7 @@ public class SeeAlsoExpander {
             for (IRI target : rdfSeeAlsoTargets) {
                 try {
                     result.addAll(expand(new GraphNode(node.getNode(),
-                        tcManager.getGraph(target)), alreadyVisited, recursion));
+                            tcManager.getGraph(target)), alreadyVisited, recursion));
                 } catch (NoSuchEntityException e) {
                     //ignore
                 }

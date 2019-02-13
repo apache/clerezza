@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.BlankNode;
@@ -32,34 +31,34 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
  * @author reto
  */
 public class IfpSmushTest {
 
     private Graph ontology = new SimpleGraph();
+
     {
         ontology.add(new TripleImpl(FOAF.mbox, RDF.type, OWL.InverseFunctionalProperty));
     }
 
     @Test
-    public void simpleBlankNode()  {
+    public void simpleBlankNode() {
         Graph mGraph = new SimpleGraph();
         IRI mbox1 = new IRI("mailto:foo@example.org");
         final BlankNode bNode1 = new BlankNode();
         mGraph.add(new TripleImpl(bNode1, FOAF.mbox, mbox1));
-        mGraph.add(new TripleImpl(bNode1, RDFS.comment, 
+        mGraph.add(new TripleImpl(bNode1, RDFS.comment,
                 new PlainLiteralImpl("a comment")));
         final BlankNode bNode2 = new BlankNode();
         mGraph.add(new TripleImpl(bNode2, FOAF.mbox, mbox1));
-        mGraph.add(new TripleImpl(bNode2, RDFS.comment, 
+        mGraph.add(new TripleImpl(bNode2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));
         Smusher.smush(mGraph, ontology);
         Assert.assertEquals(3, mGraph.size());
     }
 
     @Test
-    public void overlappingEquivalenceClasses()  {
+    public void overlappingEquivalenceClasses() {
         Graph mGraph = new SimpleGraph();
         IRI mbox1 = new IRI("mailto:foo@example.org");
         final BlankNode bNode1 = new BlankNode();
@@ -81,7 +80,7 @@ public class IfpSmushTest {
     }
 
     @Test
-    public void oneIRI()  {
+    public void oneIRI() {
         Graph mGraph = new SimpleGraph();
         IRI mbox1 = new IRI("mailto:foo@example.org");
         final IRI resource = new IRI("http://example.org/");
@@ -97,7 +96,7 @@ public class IfpSmushTest {
     }
 
     @Test
-    public void twoIRIs()  {
+    public void twoIRIs() {
         Graph mGraph = new SimpleGraph();
         IRI mbox1 = new IRI("mailto:foo@example.org");
         final IRI resource1 = new IRI("http://example.org/");
