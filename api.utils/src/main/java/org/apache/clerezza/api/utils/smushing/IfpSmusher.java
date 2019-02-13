@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils.smushing;
 
 import org.apache.clerezza.api.*;
@@ -27,13 +26,13 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
- * A utility to equate duplicate nodes in an Mgarph, currently only nodes with 
+ * A utility to equate duplicate nodes in an Mgarph, currently only nodes with
  * a shared ifp are equated.
  *
  * @author reto
  */
 public class IfpSmusher extends BaseSmusher {
-    
+
     static final Logger log = LoggerFactory.getLogger(IfpSmusher.class);
 
     /**
@@ -49,7 +48,7 @@ public class IfpSmusher extends BaseSmusher {
     public void smush(Graph mGraph, Graph tBox) {
         final Set<IRI> ifps = getIfps(tBox);
         final Map<PredicateObject, Set<BlankNodeOrIRI>> ifp2nodesMap = new HashMap<PredicateObject, Set<BlankNodeOrIRI>>();
-        for (Iterator<Triple> it = mGraph.iterator(); it.hasNext();) {
+        for (Iterator<Triple> it = mGraph.iterator(); it.hasNext(); ) {
             final Triple triple = it.next();
             final IRI predicate = triple.getPredicate();
             if (!ifps.contains(predicate)) {
@@ -66,7 +65,6 @@ public class IfpSmusher extends BaseSmusher {
         Set<Set<BlankNodeOrIRI>> unitedEquivalenceSets = uniteSetsWithCommonElement(ifp2nodesMap.values());
         smush(mGraph, unitedEquivalenceSets, true);
     }
-    
 
     private Set<IRI> getIfps(Graph tBox) {
         final Iterator<Triple> ifpDefinitions = tBox.filter(null, RDF.type,
@@ -102,7 +100,7 @@ public class IfpSmusher extends BaseSmusher {
 
     private <T> Set<T> getMatchinSet(Set<T> set, Set<Set<T>> setOfSet) {
         for (Set<T> current : setOfSet) {
-            if (shareElements(set,current)) {
+            if (shareElements(set, current)) {
                 return current;
             }
         }
@@ -117,7 +115,6 @@ public class IfpSmusher extends BaseSmusher {
         }
         return false;
     }
-    
 
     class PredicateObject {
 
@@ -157,9 +154,7 @@ public class IfpSmusher extends BaseSmusher {
 
         @Override
         public String toString() {
-            return "("+predicate+", "+object+")";
+            return "(" + predicate + ", " + object + ")";
         }
-
-
-    };
+    }
 }

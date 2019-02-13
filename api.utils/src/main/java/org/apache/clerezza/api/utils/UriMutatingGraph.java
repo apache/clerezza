@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.*;
@@ -29,7 +28,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 /**
  * This wrapps a Triplecollection changing a prefix for the IRIs contained
  * in subject or object position.
- *
+ * <p>
  * Currently it only supports read opearations.
  *
  * @author reto
@@ -43,12 +42,12 @@ public class UriMutatingGraph implements Graph {
     private final int targetPrefixLength;
 
     public UriMutatingGraph(Graph base, String sourcePrefix,
-            String targetPrefix) {
+                            String targetPrefix) {
         this.base = base;
         this.sourcePrefix = sourcePrefix;
-        sourcePrefixLength= sourcePrefix.length();
+        sourcePrefixLength = sourcePrefix.length();
         this.targetPrefix = targetPrefix;
-        targetPrefixLength= targetPrefix.length();
+        targetPrefixLength = targetPrefix.length();
     }
 
     private <R extends RDFTerm> R toTargetRDFTerm(final R sourceRDFTerm) {
@@ -57,10 +56,10 @@ public class UriMutatingGraph implements Graph {
             if (sourceIRI.getUnicodeString().startsWith(sourcePrefix)) {
                 final String uriRest = sourceIRI.getUnicodeString()
                         .substring(sourcePrefixLength);
-                return (R) new IRI(targetPrefix+uriRest);
+                return (R) new IRI(targetPrefix + uriRest);
             }
         }
-        return sourceRDFTerm;            
+        return sourceRDFTerm;
     }
 
     private Triple toTargetTriple(Triple triple) {
@@ -77,7 +76,7 @@ public class UriMutatingGraph implements Graph {
             if (sourceIRI.getUnicodeString().startsWith(targetPrefix)) {
                 final String uriRest = sourceIRI.getUnicodeString()
                         .substring(targetPrefixLength);
-                return (R) new IRI(sourcePrefix+uriRest);
+                return (R) new IRI(sourcePrefix + uriRest);
             }
         }
         return targetRDFTerm;
@@ -96,10 +95,7 @@ public class UriMutatingGraph implements Graph {
         final Iterator<Triple> baseIter = base.filter(toSourceRDFTerm(subject),
                 predicate, toSourceRDFTerm(object));
         return new WrappedIteraror(baseIter);
-
-
     }
-
 
     @Override
     public int size() {
@@ -113,7 +109,7 @@ public class UriMutatingGraph implements Graph {
 
     @Override
     public boolean contains(Object o) {
-        return base.contains(toSourceTriple((Triple)o));
+        return base.contains(toSourceTriple((Triple) o));
     }
 
     @Override
@@ -191,7 +187,7 @@ public class UriMutatingGraph implements Graph {
         return base.getLock();
     }
 
-    class WrappedIteraror implements Iterator<Triple>{
+    class WrappedIteraror implements Iterator<Triple> {
         private final Iterator<Triple> baseIter;
 
         private WrappedIteraror(Iterator<Triple> baseIter) {

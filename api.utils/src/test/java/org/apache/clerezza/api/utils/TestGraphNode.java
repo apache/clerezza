@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import junit.framework.Assert;
@@ -32,7 +31,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- *
  * @author reto, mir
  */
 public class TestGraphNode {
@@ -40,8 +38,10 @@ public class TestGraphNode {
     @Test
     public void nodeContext() {
         Graph g = new SimpleGraph();
-        BlankNode bNode1 = new BlankNode() {};
-        BlankNode bNode2 = new BlankNode() {};
+        BlankNode bNode1 = new BlankNode() {
+        };
+        BlankNode bNode2 = new BlankNode() {
+        };
         IRI property1 = new IRI("http://example.org/property1");
         IRI property2 = new IRI("http://example.org/property2");
         g.add(new TripleImpl(bNode1, property1, new PlainLiteralImpl("literal")));
@@ -59,8 +59,10 @@ public class TestGraphNode {
     @Test
     public void addNode() {
         Graph g = new SimpleGraph();
-        BlankNode bNode1 = new BlankNode() {};
-        BlankNode bNode2 = new BlankNode() {};
+        BlankNode bNode1 = new BlankNode() {
+        };
+        BlankNode bNode2 = new BlankNode() {
+        };
         IRI property1 = new IRI("http://example.org/property1");
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
@@ -102,10 +104,12 @@ public class TestGraphNode {
     }
 
     @Test
-    public void getAvailableProperties(){
+    public void getAvailableProperties() {
         Graph g = new SimpleGraph();
-        BlankNode bNode1 = new BlankNode() {};
-        BlankNode bNode2 = new BlankNode() {};
+        BlankNode bNode1 = new BlankNode() {
+        };
+        BlankNode bNode2 = new BlankNode() {
+        };
         IRI property1 = new IRI("http://example.org/property1");
         IRI property2 = new IRI("http://example.org/property2");
         IRI property3 = new IRI("http://example.org/property3");
@@ -122,7 +126,7 @@ public class TestGraphNode {
         n.addProperty(property4, bNode2);
         Iterator<IRI> properties = n.getProperties();
         int i = 0;
-        while(properties.hasNext()){
+        while (properties.hasNext()) {
             i++;
             IRI prop = properties.next();
             Assert.assertTrue(props.contains(prop));
@@ -136,8 +140,10 @@ public class TestGraphNode {
     @Test
     public void deleteAll() {
         Graph g = new SimpleGraph();
-        BlankNode bNode1 = new BlankNode() {};
-        BlankNode bNode2 = new BlankNode() {};
+        BlankNode bNode1 = new BlankNode() {
+        };
+        BlankNode bNode2 = new BlankNode() {
+        };
         IRI property1 = new IRI("http://example.org/property1");
         IRI property2 = new IRI("http://example.org/property2");
         //the two properties two be deleted
@@ -155,8 +161,10 @@ public class TestGraphNode {
     @Test
     public void deleteSingleProperty() {
         Graph g = new SimpleGraph();
-        BlankNode bNode1 = new BlankNode() {};
-        BlankNode bNode2 = new BlankNode() {};
+        BlankNode bNode1 = new BlankNode() {
+        };
+        BlankNode bNode2 = new BlankNode() {
+        };
         IRI property1 = new IRI("http://example.org/property1");
         IRI property2 = new IRI("http://example.org/property2");
         //the properties two be deleted
@@ -243,8 +251,10 @@ public class TestGraphNode {
     @Test
     public void equality() {
         Graph g = new SimpleGraph();
-        BlankNode bNode1 = new BlankNode() {};
-        BlankNode bNode2 = new BlankNode() {};
+        BlankNode bNode1 = new BlankNode() {
+        };
+        BlankNode bNode2 = new BlankNode() {
+        };
         IRI property1 = new IRI("http://example.org/property1");
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
@@ -262,5 +272,4 @@ public class TestGraphNode {
         }
         return set;
     }
-
 }

@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils.smushing;
 
 import org.apache.clerezza.api.Graph;
@@ -35,23 +34,24 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- *
  * @author reto
  */
 public class SameAsSmushTest {
-    
+
     private final IRI uriA = new IRI("http://example.org/A");
     private final IRI uriB = new IRI("http://example.org/B");
     private final IRI uriC = new IRI("http://example.org/C");
-    
+
     private final Literal lit = new PlainLiteralImpl("That's me (and you)");
 
     private Graph sameAsStatements = new SimpleGraph();
+
     {
         sameAsStatements.add(new TripleImpl(uriA, OWL.sameAs, uriB));
     }
-    
-    private Graph  dataGraph = new SimpleGraph();
+
+    private Graph dataGraph = new SimpleGraph();
+
     {
         dataGraph.add(new TripleImpl(uriA, FOAF.knows, uriB));
         dataGraph.add(new TripleImpl(uriB, RDFS.label, lit));
@@ -59,7 +59,7 @@ public class SameAsSmushTest {
     }
 
     @Test
-    public void simple()  {
+    public void simple() {
         SameAsSmusher smusher = new SameAsSmusher() {
 
             @Override
@@ -68,7 +68,7 @@ public class SameAsSmushTest {
                 if (!uriRefs.contains(uriB)) throw new RuntimeException("not the set we excpect");
                 return uriC;
             }
-            
+
         };
         Assert.assertEquals(3, dataGraph.size());
         smusher.smush(dataGraph, sameAsStatements, true);
@@ -87,5 +87,4 @@ public class SameAsSmushTest {
         Assert.assertEquals(litStmt.getSubject(), dataGraph.filter(null, OWL.sameAs, null).next().getObject());
         Assert.assertEquals(knowStmt.getSubject(), uriC);
     }
-
 }

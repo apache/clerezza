@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.BlankNode;
@@ -30,7 +29,6 @@ import org.junit.Test;
 import java.util.Iterator;
 
 /**
- *
  * @author hasan
  */
 public class UnionGraphTest {
@@ -61,7 +59,7 @@ public class UnionGraphTest {
         Assert.assertFalse(unionTriples.hasNext());
         Assert.assertEquals(2, unionGraph.size());
     }
-    
+
     @Test
     public void writeAccess() {
         Graph graph = new SimpleGraph();

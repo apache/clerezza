@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.Graph;
@@ -25,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A utility to smush equivalent resources. For greater flexibility use the 
+ * A utility to smush equivalent resources. For greater flexibility use the
  * classes in the smushing package.
- * 
+ *
  * @author reto
  */
 public class Smusher {
@@ -49,13 +48,11 @@ public class Smusher {
 
     /**
      * Smushes the specified graph adding owl:sameAs statements pointing to the new canonical IRI
-     * 
+     *
      * @param mGraph
-     * @param owlSameStatements 
+     * @param owlSameStatements
      */
     public static void sameAsSmush(Graph mGraph, Graph owlSameStatements) {
         new SameAsSmusher().smush(mGraph, owlSameStatements, true);
     }
-
-
 }

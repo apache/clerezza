@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.Graph;
@@ -34,21 +33,22 @@ import org.junit.Test;
 import java.util.Iterator;
 
 /**
- *
  * @author reto
  */
 public class SameAsSmushTest {
-    
+
     private final IRI uriA = new IRI("http://example.org/A");
     private final IRI uriB = new IRI("http://example.org/B");
     private final Literal lit = new PlainLiteralImpl("That's me (and you)");
 
     private Graph sameAsStatements = new SimpleGraph();
+
     {
         sameAsStatements.add(new TripleImpl(uriA, OWL.sameAs, uriB));
     }
-    
-    private Graph  dataGraph = new SimpleGraph();
+
+    private Graph dataGraph = new SimpleGraph();
+
     {
         dataGraph.add(new TripleImpl(uriA, FOAF.knows, uriB));
         dataGraph.add(new TripleImpl(uriB, RDFS.label, lit));
@@ -56,7 +56,7 @@ public class SameAsSmushTest {
     }
 
     @Test
-    public void simple()  {
+    public void simple() {
         Assert.assertEquals(3, dataGraph.size());
         Smusher.sameAsSmush(dataGraph, sameAsStatements);
         Assert.assertEquals(3, dataGraph.size());
@@ -73,5 +73,4 @@ public class SameAsSmushTest {
         Assert.assertEquals(litStmt.getSubject(), knowStmt.getObject());
         Assert.assertEquals(litStmt.getSubject(), dataGraph.filter(null, OWL.sameAs, null).next().getObject());
     }
-
 }

@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import org.apache.clerezza.api.*;
@@ -32,8 +31,8 @@ import java.util.concurrent.locks.Lock;
  * modifying the graph will throw an {@link UnsupportedOperationException}
  * it the underlying Graph in immutable (i.e. is a {@link ImmutableGraph}.
  *
- * @since 0.2
  * @author reto, mir
+ * @since 0.2
  */
 public class GraphNode {
 
@@ -44,7 +43,7 @@ public class GraphNode {
      * Create a GraphNode representing resource within graph.
      *
      * @param resource the resource this GraphNode represents
-     * @param graph the Graph that describes the resource
+     * @param graph    the Graph that describes the resource
      */
     public GraphNode(RDFTerm resource, Graph graph) {
         if (resource == null) {
@@ -77,6 +76,7 @@ public class GraphNode {
 
     /**
      * Deletes the context of a node
+     *
      * @see getNodeContext()
      */
     public void deleteNodeContext() {
@@ -89,7 +89,7 @@ public class GraphNode {
      * The context of a node are the triples containing a node
      * as subject or object and recursively the context of the b-nodes in any
      * of these statements.
-     *
+     * <p>
      * The triples in the ImmutableGraph returned by this method contain the same bnode
      * instances as in the original graph.
      *
@@ -112,7 +112,7 @@ public class GraphNode {
     }
 
     private Graph getContextOf(IRI node, final Set<RDFTerm> dontExpand) {
-        final String uriPrefix = node.getUnicodeString()+'#';
+        final String uriPrefix = node.getUnicodeString() + '#';
         return getContextOf(node, dontExpand, new Acceptor() {
 
             @Override
@@ -121,7 +121,7 @@ public class GraphNode {
                     return true;
                 }
                 if (resource instanceof IRI) {
-                    return ((IRI)resource).getUnicodeString().startsWith(uriPrefix);
+                    return ((IRI) resource).getUnicodeString().startsWith(uriPrefix);
                 }
                 return false;
             }
@@ -133,7 +133,7 @@ public class GraphNode {
      *
      * @param node
      * @param dontExpand a list of bnodes at which to stop expansion, if node
-     * is a BlankNode it should be contained (potentially faster)
+     *                   is a BlankNode it should be contained (potentially faster)
      * @return the context of a node
      */
     private Graph getContextOf(RDFTerm node, final Set<RDFTerm> dontExpand) {
@@ -152,6 +152,7 @@ public class GraphNode {
     private interface Acceptor {
         boolean expand(RDFTerm resource);
     }
+
     private Graph getContextOf(RDFTerm node, final Set<RDFTerm> dontExpand, Acceptor acceptor) {
         Graph result = new SimpleGraph();
         if (node instanceof BlankNodeOrIRI) {
@@ -255,7 +256,7 @@ public class GraphNode {
      *
      * @param property the property to be examined
      * @return the number of triples in the underlying triple-collection
-     *        which meet the specified condition
+     * which meet the specified condition
      */
     public int countObjects(IRI property) {
         return countTriples(graph.filter((BlankNodeOrIRI) resource, property, null));
@@ -331,7 +332,7 @@ public class GraphNode {
      * @param property
      * @param object
      * @return true if the node represented by this object is the subject of a
-     *         statement with the given prediate and object, false otherwise
+     * statement with the given prediate and object, false otherwise
      */
     public boolean hasProperty(IRI property, RDFTerm object) {
         Lock l = readLock();
@@ -358,7 +359,7 @@ public class GraphNode {
      *
      * @param property the property to be examined
      * @return the number of triples in the underlying triple-collection
-     *        which meet the specified condition
+     * which meet the specified condition
      */
     public int countSubjects(IRI property) {
         Lock l = readLock();
@@ -448,7 +449,6 @@ public class GraphNode {
     }
 
     /**
-     *
      * @param triples
      * @returnan {@link Iterator}<{@link IRI}> containing the predicates from
      * an {@link Iterator}<{@link Triple}>
@@ -481,7 +481,7 @@ public class GraphNode {
      * specified property
      *
      * @param property the predicate of the triple to be created
-     * @param value the value of the typed literal object
+     * @param value    the value of the typed literal object
      */
     public void addPropertyValue(IRI property, Object value) {
         addProperty(property,
@@ -558,6 +558,7 @@ public class GraphNode {
     /**
      * Replaces the graph node resouce with the specified <code>BlankNodeOrIRI</code>.
      * The resource is only replaced where it is either subject or object.
+     *
      * @param replacement
      * @return a GraphNode representing the replecement node
      */
@@ -569,6 +570,7 @@ public class GraphNode {
      * Replaces the graph node resouce with the specified <code>BlankNodeOrIRI</code>.
      * Over the boolean <code>checkPredicate</code> it can be specified if the
      * resource should also be replaced where it is used as predicate.
+     *
      * @param replacement
      * @param checkPredicates
      * @return a GraphNode representing the replecement node
@@ -679,7 +681,6 @@ public class GraphNode {
     }
 
     /**
-     *
      * @param obj
      * @return true if obj is an instance of the same class represening the same
      * node in the same graph, subclasses may have different identity criteria.
@@ -704,17 +705,16 @@ public class GraphNode {
      */
     public Lock readLock() {
 
-            return getGraph().getLock().readLock();
+        return getGraph().getLock().readLock();
 
     }
 
     /**
-     *
      * @return
      */
     public Lock writeLock() {
 
-            return (getGraph()).getLock().writeLock();
+        return (getGraph()).getLock().writeLock();
 
     }
 }

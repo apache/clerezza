@@ -15,7 +15,6 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.utils;
 
 import junit.framework.Assert;
@@ -33,7 +32,6 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
  * @author rbn
  */
 public class RdfListTest {
@@ -88,11 +86,11 @@ public class RdfListTest {
         Graph tc = new SimpleGraph();
         List<RDFTerm> list = new RdfList(new IRI("http://example.org/mytest"), tc);
         assertEquals(0, list.size());
-        list.add(0,new PlainLiteralImpl("world"));
+        list.add(0, new PlainLiteralImpl("world"));
         list = new RdfList(new IRI("http://example.org/mytest"), tc);
-        list.add(0,new PlainLiteralImpl("beautifuly"));
+        list.add(0, new PlainLiteralImpl("beautifuly"));
         list = new RdfList(new IRI("http://example.org/mytest"), tc);
-        list.add(0,new PlainLiteralImpl("hello"));
+        list.add(0, new PlainLiteralImpl("hello"));
         assertEquals(new PlainLiteralImpl("hello"), list.get(0));
         assertEquals(new PlainLiteralImpl("beautifuly"), list.get(1));
         assertEquals(new PlainLiteralImpl("world"), list.get(2));
@@ -103,12 +101,15 @@ public class RdfListTest {
         Graph tc = new SimpleGraph();
         List<RDFTerm> list = new RdfList(new IRI("http://example.org/mytest"), tc);
         assertEquals(0, list.size());
-        BlankNode node0 = new BlankNode() {};
-        BlankNode node1 = new BlankNode() {};
-        BlankNode node2 = new BlankNode() {};
-        list.add(0,node2);
-        list.add(0,node1);
-        list.add(0,node0);
+        BlankNode node0 = new BlankNode() {
+        };
+        BlankNode node1 = new BlankNode() {
+        };
+        BlankNode node2 = new BlankNode() {
+        };
+        list.add(0, node2);
+        list.add(0, node1);
+        list.add(0, node0);
         assertEquals(node0, list.get(0));
         assertEquals(node1, list.get(1));
         assertEquals(node2, list.get(2));

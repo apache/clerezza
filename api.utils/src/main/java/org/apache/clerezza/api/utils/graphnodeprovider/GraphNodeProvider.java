@@ -39,8 +39,8 @@ public interface GraphNodeProvider {
     /**
      * Get a GraphNode for the specified resource, The resource is assumed to be
      * local, i.e. the method behaves like get(IRI) for a Uri with an
- authority section contained in the Set retuned by
- <code>org.apache.clerezza.platform.config.PlatformConfig#getBaseUris()</code>
+     * authority section contained in the Set retuned by
+     * <code>org.apache.clerezza.platform.config.PlatformConfig#getBaseUris()</code>
      */
     GraphNode getLocal(IRI uriRef);
 
