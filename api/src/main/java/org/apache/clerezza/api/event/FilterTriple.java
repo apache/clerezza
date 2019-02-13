@@ -1,25 +1,24 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.api.event;
 
-import org.apache.clerezza.api.IRI;
 import org.apache.clerezza.api.BlankNodeOrIRI;
+import org.apache.clerezza.api.IRI;
 import org.apache.clerezza.api.RDFTerm;
 import org.apache.clerezza.api.Triple;
 
@@ -34,17 +33,17 @@ public class FilterTriple {
     private BlankNodeOrIRI subject;
     private IRI predicate;
     private RDFTerm object;
-    
+
     /**
      * Creates a new <code>FilterTriple</code>. The specified subject,
      * predicate and object are used to test a given <code>Triple</code>. Any
      * of these values can be null, which acts as wildcard in the test.
      *
-     * @param subject  the subject.
-     * @param predicate  the predicate.
-     * @param object  the object.
+     * @param subject   the subject.
+     * @param predicate the predicate.
+     * @param object    the object.
      */
-    public FilterTriple (BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
+    public FilterTriple(BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
         this.subject = subject;
         this.predicate = predicate;
         this.object = object;
@@ -55,13 +54,14 @@ public class FilterTriple {
      * <code>Triple</code> match the subject, predicate and object of this
      * <code>FilterTriple</code>. Null values in the <code>FilterTriple</code>
      * act as wildcards.
+     *
      * @param triple
      * @return
      */
     public boolean match(Triple triple) {
         boolean subjectMatch, predicateMatch, objectMatch;
         if (this.subject == null) {
-            subjectMatch = true;            
+            subjectMatch = true;
         } else {
             subjectMatch = this.subject.equals(triple.getSubject());
         }
@@ -80,7 +80,7 @@ public class FilterTriple {
 
     @Override
     public String toString() {
-        return "FilterTriples: "+subject+" "+predicate+" "+object;
+        return "FilterTriples: " + subject + " " + predicate + " " + object;
     }
 
 }
