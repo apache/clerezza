@@ -1,34 +1,25 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.impl.graphmatching;
 
-
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
- *
  * An Iterator over all permuations of a list.
  *
  * @author reto
@@ -77,8 +68,9 @@ class PermutationIterator<T> implements Iterator<List<T>> {
 
     private void prepareNext() {
         next = getNext();
-        
+
     }
+
     private List<T> getNext() {
         if (list.size() == 0) {
             return null;
@@ -91,7 +83,7 @@ class PermutationIterator<T> implements Iterator<List<T>> {
             }
         } else {
             if (!restIterator.hasNext()) {
-                if (posInList < (list.size()-1)) {
+                if (posInList < (list.size() - 1)) {
                     posInList++;
                     createRestList();
                 } else {

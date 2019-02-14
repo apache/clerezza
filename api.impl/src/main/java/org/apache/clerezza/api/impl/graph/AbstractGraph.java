@@ -1,38 +1,31 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.api.impl.graph;
+
+import org.apache.clerezza.api.*;
+import org.apache.clerezza.api.impl.debug.ReentrantReadWriteLockTracker;
 
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
-
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.BlankNodeOrIRI;
-import org.apache.clerezza.api.RDFTerm;
-import org.apache.clerezza.api.Triple;
-import org.apache.clerezza.api.ImmutableGraph;
-import org.apache.clerezza.api.impl.debug.ReentrantReadWriteLockTracker;
 
 /**
  * An abstract implementation of <code>Graph</code> implementing
@@ -43,7 +36,6 @@ import org.apache.clerezza.api.impl.debug.ReentrantReadWriteLockTracker;
 public abstract class AbstractGraph extends AbstractCollection<Triple>
         implements Graph {
 
-    
     private static final String DEBUG_MODE = "rdfLocksDebugging";
     private final ReadWriteLock lock;
 
@@ -67,7 +59,7 @@ public abstract class AbstractGraph extends AbstractCollection<Triple>
         readLock = lock.readLock();
         writeLock = lock.writeLock();
     }
-    
+
     public AbstractGraph(final ReadWriteLock lock) {
         this.lock = lock;
         readLock = lock.readLock();
@@ -88,7 +80,7 @@ public abstract class AbstractGraph extends AbstractCollection<Triple>
             readLock.unlock();
         }
     }
-    
+
     public ImmutableGraph performGetImmutableGraph() {
         return new SimpleImmutableGraph(this);
     }
@@ -234,7 +226,7 @@ public abstract class AbstractGraph extends AbstractCollection<Triple>
         }
     }
 
-    
+
     @Override
     public boolean equals(Object obj) {
         /*if (obj == null) {
@@ -302,5 +294,5 @@ public abstract class AbstractGraph extends AbstractCollection<Triple>
         return super.add(e);
     }
 
- 
+
 }

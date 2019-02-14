@@ -1,43 +1,31 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 
 package org.apache.clerezza.api.impl.graphmatching;
 
-
-import org.apache.clerezza.api.BlankNode;
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.api.*;
 import org.apache.clerezza.api.impl.TripleImpl;
-import org.apache.clerezza.api.impl.graphmatching.collections.IntIterator;
 import org.apache.clerezza.api.impl.graphmatching.collections.IntHashMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import org.apache.clerezza.api.impl.graphmatching.collections.IntIterator;
 
-import org.apache.clerezza.api.BlankNodeOrIRI;
-import org.apache.clerezza.api.RDFTerm;
-import org.apache.clerezza.api.Triple;
+import java.util.*;
 
 /**
- *
  * @author reto
  */
 public class HashMatching {
@@ -73,7 +61,6 @@ public class HashMatching {
     }
 
     /**
-     *
      * @return a map containing set of which each bnodes mappes one of the other set
      */
     public Map<Set<BlankNode>, Set<BlankNode>> getMatchingGroups() {
@@ -84,7 +71,7 @@ public class HashMatching {
         return matchings;
     }
 
-    
+
     private static IntHashMap<Set<BlankNode>> getHashNodes(Map<BlankNode,
             Set<Property>> bNodePropMap, Map<BlankNode, Integer> bNodeHashMap) {
         IntHashMap<Set<BlankNode>> result = new IntHashMap<Set<BlankNode>>();
@@ -93,12 +80,13 @@ public class HashMatching {
             Set<BlankNode> bNodeSet = result.get(hash);
             if (bNodeSet == null) {
                 bNodeSet = new HashSet<BlankNode>();
-                result.put(hash,bNodeSet);
+                result.put(hash, bNodeSet);
             }
             bNodeSet.add(entry.getKey());
         }
         return result;
     }
+
     /*
      * returns a Map from bnodes to hash that can be used for future
      * refinements, this could be separate for each ImmutableGraph.
@@ -109,9 +97,9 @@ public class HashMatching {
      * be the correct if the graphs are isomorphic.
      */
     private Map<BlankNode, Integer> matchByHashes(Graph g1, Graph g2,
-            Map<BlankNode, Integer> bNodeHashMap) {
-        Map<BlankNode, Set<Property>> bNodePropMap1  = getBNodePropMap(g1);
-        Map<BlankNode, Set<Property>> bNodePropMap2  = getBNodePropMap(g2);
+                                                  Map<BlankNode, Integer> bNodeHashMap) {
+        Map<BlankNode, Set<Property>> bNodePropMap1 = getBNodePropMap(g1);
+        Map<BlankNode, Set<Property>> bNodePropMap2 = getBNodePropMap(g2);
         IntHashMap<Set<BlankNode>> hashNodeMap1 = getHashNodes(bNodePropMap1, bNodeHashMap);
         IntHashMap<Set<BlankNode>> hashNodeMap2 = getHashNodes(bNodePropMap2, bNodeHashMap);
         if (!hashNodeMap1.keySet().equals(hashNodeMap2.keySet())) {
@@ -133,13 +121,13 @@ public class HashMatching {
             }
             final BlankNode bNode1 = nodes1.iterator().next();
             final BlankNode bNode2 = nodes2.iterator().next();
-            matchings.put(bNode1,bNode2);
+            matchings.put(bNode1, bNode2);
             //in the graphs replace node occurences with grounded node,
             BlankNodeOrIRI mappedNode = new MappedNode(bNode1, bNode2);
-            replaceNode(g1,bNode1, mappedNode);
+            replaceNode(g1, bNode1, mappedNode);
             replaceNode(g2, bNode2, mappedNode);
             //remove grounded triples
-            if (!Utils.removeGrounded(g1,g2)) {
+            if (!Utils.removeGrounded(g1, g2)) {
                 return null;
             }
         }
@@ -148,6 +136,7 @@ public class HashMatching {
         addInverted(result, hashNodeMap2);
         return result;
     }
+
     private static int computeHash(Set<Property> propertySet, Map<BlankNode, Integer> bNodeHashMap) {
         int result = 0;
         for (Property property : propertySet) {
@@ -155,6 +144,7 @@ public class HashMatching {
         }
         return result;
     }
+
     private static Map<BlankNode, Set<Property>> getBNodePropMap(Graph g) {
         Set<BlankNode> bNodes = Utils.getBNodes(g);
         Map<BlankNode, Set<Property>> result = new HashMap<BlankNode, Set<Property>>();
@@ -163,6 +153,7 @@ public class HashMatching {
         }
         return result;
     }
+
     private static Set<Property> getProperties(BlankNode bNode, Graph g) {
         Set<Property> result = new HashSet<Property>();
         Iterator<Triple> ti = g.filter(bNode, null, null);
@@ -177,9 +168,10 @@ public class HashMatching {
         }
         return result;
     }
+
     private static int nodeHash(RDFTerm resource, Map<BlankNode, Integer> bNodeHashMap) {
         if (resource instanceof BlankNode) {
-            Integer mapValue = bNodeHashMap.get((BlankNode)resource);
+            Integer mapValue = bNodeHashMap.get((BlankNode) resource);
             if (mapValue == null) {
                 return 0;
             } else {
@@ -189,6 +181,7 @@ public class HashMatching {
             return resource.hashCode();
         }
     }
+
     private static void replaceNode(Graph graph, BlankNode bNode, BlankNodeOrIRI replacementNode) {
         Set<Triple> triplesToRemove = new HashSet<Triple>();
         for (Triple triple : graph) {
@@ -200,6 +193,7 @@ public class HashMatching {
         }
         graph.removeAll(triplesToRemove);
     }
+
     private static Triple getReplacement(Triple triple, BlankNode bNode, BlankNodeOrIRI replacementNode) {
         if (triple.getSubject().equals(bNode)) {
             if (triple.getObject().equals(bNode)) {
@@ -215,6 +209,7 @@ public class HashMatching {
             }
         }
     }
+
     private static void addInverted(Map<BlankNode, Integer> result, IntHashMap<Set<BlankNode>> hashNodeMap) {
         for (int hash : hashNodeMap.keySet()) {
             Set<BlankNode> bNodes = hashNodeMap.get(hash);
@@ -223,45 +218,48 @@ public class HashMatching {
             }
         }
     }
-    
+
     private static class BackwardProperty implements Property {
         private BlankNodeOrIRI subject;
         private IRI predicate;
-    
+
         public BackwardProperty(BlankNodeOrIRI subject, IRI predicate) {
             this.subject = subject;
             this.predicate = predicate;
         }
-    
+
         @Override
         public int hashCode(Map<BlankNode, Integer> bNodeHashMap) {
-            return  0xFF ^ predicate.hashCode() ^ nodeHash(subject, bNodeHashMap);
+            return 0xFF ^ predicate.hashCode() ^ nodeHash(subject, bNodeHashMap);
         }
-    
+
     }
+
     private static class ForwardProperty implements Property {
         private IRI predicate;
         private RDFTerm object;
-    
+
         public ForwardProperty(IRI predicate, RDFTerm object) {
             this.predicate = predicate;
             this.object = object;
         }
-    
+
         @Override
         public int hashCode(Map<BlankNode, Integer> bNodeHashMap) {
             return predicate.hashCode() ^ nodeHash(object, bNodeHashMap);
         }
     }
+
     private static class MappedNode implements BlankNodeOrIRI {
         private BlankNode bNode1, bNode2;
-    
+
         public MappedNode(BlankNode bNode1, BlankNode bNode2) {
             this.bNode1 = bNode1;
             this.bNode2 = bNode2;
         }
-        
+
     }
+
     private static interface Property {
         public int hashCode(Map<BlankNode, Integer> bNodeHashMap);
     }

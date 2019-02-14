@@ -1,45 +1,37 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 
 package org.apache.clerezza.api.impl.graphmatching;
 
-
+import org.apache.clerezza.api.*;
+import org.apache.clerezza.api.impl.TripleImpl;
+import org.apache.clerezza.api.impl.graph.SimpleMGraph;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.clerezza.api.BlankNode;
-import org.apache.clerezza.api.BlankNodeOrIRI;
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.RDFTerm;
-import org.apache.clerezza.api.Triple;
-import org.apache.clerezza.api.impl.TripleImpl;
-import org.apache.clerezza.api.impl.graph.SimpleMGraph;
 
 /**
  * @author reto
- * 
  */
 public class GraphMatcher {
-
 
     private final static Logger log = Logger.getLogger(GraphMatcher.class.getName());
 
@@ -53,7 +45,7 @@ public class GraphMatcher {
      * nodes, a bnode in g1 is not a vraiable that may match any node, but must
      * match a bnode in g2.
      * <p/>
-     *
+     * <p>
      * On the algorithm:<br/>
      * - In a first step it checked if every grounded triple in g1 matches one
      * in g2<br/>
@@ -65,7 +57,7 @@ public class GraphMatcher {
      * each bnode, in the first step when calculating the hash  aconstant value
      * is taken for the bnodes that might be subject or object in the (inverse properties)
      * - hash-classes:
-     * 
+     *
      * @param g1
      * @param g2
      * @return a Set of NodePairs
@@ -73,7 +65,7 @@ public class GraphMatcher {
     public static Map<BlankNode, BlankNode> getValidMapping(Graph og1, Graph og2) {
         Graph g1 = new SimpleMGraph(og1);
         Graph g2 = new SimpleMGraph(og2);
-        if (!Utils.removeGrounded(g1,g2)) {
+        if (!Utils.removeGrounded(g1, g2)) {
             return null;
         }
         final HashMatching hashMatching;
@@ -99,10 +91,10 @@ public class GraphMatcher {
     }
 
     private static Map<BlankNode, BlankNode> trialAndErrorMatching(Graph g1, Graph g2,
-            Map<Set<BlankNode>, Set<BlankNode>> matchingGroups) {
+                                                                   Map<Set<BlankNode>, Set<BlankNode>> matchingGroups) {
         if (log.isLoggable(Level.FINE)) {
-            Set<BlankNode> bn1  = Utils.getBNodes(g1);
-            log.log(Level.FINE,"doing trial and error matching for {0}"+" bnodes, "+"in graphs of size: {1}.", new Object[]{bn1.size(), g1.size()});
+            Set<BlankNode> bn1 = Utils.getBNodes(g1);
+            log.log(Level.FINE, "doing trial and error matching for {0}" + " bnodes, " + "in graphs of size: {1}.", new Object[]{bn1.size(), g1.size()});
         }
         Iterator<Map<BlankNode, BlankNode>> mappingIter
                 = GroupMappingIterator.create(matchingGroups);
@@ -128,13 +120,11 @@ public class GraphMatcher {
         final BlankNodeOrIRI oSubject = triple.getSubject();
 
         BlankNodeOrIRI subject = oSubject instanceof BlankNode ?
-            map.get((BlankNode)oSubject) : oSubject;
+                map.get((BlankNode) oSubject) : oSubject;
 
         RDFTerm oObject = triple.getObject();
         RDFTerm object = oObject instanceof BlankNode ?
-            map.get((BlankNode)oObject) : oObject;
+                map.get((BlankNode) oObject) : oObject;
         return new TripleImpl(subject, triple.getPredicate(), object);
     }
-
-
 }

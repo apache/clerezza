@@ -1,17 +1,21 @@
 /*
  * Copyright 2015 The Apache Software Foundation.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.api.impl.graph;
 
@@ -23,18 +27,17 @@ import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
- *
  * @author developer
  */
 public class WatchableGraphWrapper implements WatchableGraph {
-    
+
     final Graph wrapped;
 
     public WatchableGraphWrapper(Graph wrapped) {
         this.wrapped = wrapped;
     }
-    
-       
+
+
     //all listeners
     private final Set<ListenerConfiguration> listenerConfigs = Collections.synchronizedSet(
             new HashSet<ListenerConfiguration>());
@@ -91,10 +94,10 @@ public class WatchableGraphWrapper implements WatchableGraph {
     }
 
     /**
-     * A subclass of <code>AbstractGraph</code> should override 
+     * A subclass of <code>AbstractGraph</code> should override
      * this method instead of <code>add</code> for Graph event support to be
      * added.
-     * 
+     *
      * @param e The triple to be added to the triple collection
      * @return
      */
@@ -115,7 +118,7 @@ public class WatchableGraphWrapper implements WatchableGraph {
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean modified = false;
-        for (Iterator<? extends Object> it = c.iterator(); it.hasNext();) {
+        for (Iterator<? extends Object> it = c.iterator(); it.hasNext(); ) {
             Object object = it.next();
             if (remove(object)) {
                 modified = true;
@@ -125,10 +128,10 @@ public class WatchableGraphWrapper implements WatchableGraph {
     }
 
     /**
-     * A subclass of <code>AbstractGraph</code> should override 
+     * A subclass of <code>AbstractGraph</code> should override
      * this method instead of <code>remove</code> for ImmutableGraph event support to be
      * added.
-     * 
+     *
      * @param o The triple to be removed from the triple collection
      * @return
      */
@@ -147,12 +150,12 @@ public class WatchableGraphWrapper implements WatchableGraph {
      * Dispatches a <code>GraphEvent</code> to all registered listeners for which
      * the specified <code>Triple</code> matches the <code>FilterTriple</code>s
      * of the listeners.
-     * 
+     *
      * @param triple The Triple that was modified
-     * @param type The type of modification
+     * @param type   The type of modification
      */
     protected void dispatchEvent(GraphEvent event) {
-        synchronized(listenerConfigs) {
+        synchronized (listenerConfigs) {
             Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
             while (iter.hasNext()) {
                 ListenerConfiguration config = iter.next();
@@ -175,7 +178,7 @@ public class WatchableGraphWrapper implements WatchableGraph {
 
     @Override
     public void addGraphListener(GraphListener listener, FilterTriple filter,
-            long delay) {
+                                 long delay) {
         listenerConfigs.add(new ListenerConfiguration(listener, filter));
         if (delay > 0) {
             delayedNotificator.addDelayedListener(listener, delay);
@@ -184,7 +187,7 @@ public class WatchableGraphWrapper implements WatchableGraph {
 
     @Override
     public void removeGraphListener(GraphListener listener) {
-        synchronized(listenerConfigs) {
+        synchronized (listenerConfigs) {
             Iterator<ListenerConfiguration> iter = listenerConfigs.iterator();
             while (iter.hasNext()) {
                 ListenerConfiguration listenerConfig = iter.next();
@@ -272,5 +275,5 @@ public class WatchableGraphWrapper implements WatchableGraph {
             return filter;
         }
     }
-    
+
 }
