@@ -1,36 +1,34 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.api.impl.graphmatching;
 
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.impl.graph.SimpleMGraph;
-import org.apache.clerezza.api.impl.TripleImpl;
-
-import java.util.Map;
 import org.apache.clerezza.api.BlankNode;
 import org.apache.clerezza.api.BlankNodeOrIRI;
+import org.apache.clerezza.api.Graph;
+import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.api.impl.TripleImpl;
+import org.apache.clerezza.api.impl.graph.SimpleMGraph;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Map;
+
 /**
- *
  * @author reto
  */
 public class GraphMatcherTest {
@@ -92,8 +90,8 @@ public class GraphMatcherTest {
     public void test6() {
         Graph tc1 = new SimpleMGraph();
         final BlankNode b11 = new BlankNode();
-        tc1.add(new TripleImpl(new BlankNode(), u1,b11));
-        tc1.add(new TripleImpl(new BlankNode(), u1,b11));
+        tc1.add(new TripleImpl(new BlankNode(), u1, b11));
+        tc1.add(new TripleImpl(new BlankNode(), u1, b11));
         Graph tc2 = new SimpleMGraph();
         tc2.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
@@ -110,7 +108,7 @@ public class GraphMatcherTest {
         }
         Graph result = new SimpleMGraph();
         BlankNodeOrIRI lastNode = firstNode;
-        for (int i = 0; i < (size-1); i++) {
+        for (int i = 0; i < (size - 1); i++) {
             final BlankNode newNode = new BlankNode();
             result.add(new TripleImpl(lastNode, u1, newNode));
             lastNode = newNode;
@@ -140,10 +138,10 @@ public class GraphMatcherTest {
     @Test
     public void test9() {
         BlankNodeOrIRI crossing = new IRI("http://example.org/");
-        Graph tc1 = generateCircle(2,crossing);
-        tc1.addAll(generateCircle(3,crossing));
-        Graph tc2 = generateCircle(2,crossing);
-        tc2.addAll(generateCircle(3,crossing));
+        Graph tc1 = generateCircle(2, crossing);
+        tc1.addAll(generateCircle(3, crossing));
+        Graph tc2 = generateCircle(2, crossing);
+        tc2.addAll(generateCircle(3, crossing));
         Assert.assertEquals(5, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -154,11 +152,11 @@ public class GraphMatcherTest {
     @Test
     public void test10() {
         BlankNodeOrIRI crossing1 = new BlankNode();
-        Graph tc1 = generateCircle(2,crossing1);
-        tc1.addAll(generateCircle(3,crossing1));
+        Graph tc1 = generateCircle(2, crossing1);
+        tc1.addAll(generateCircle(3, crossing1));
         BlankNodeOrIRI crossing2 = new BlankNode();
-        Graph tc2 = generateCircle(2,crossing2);
-        tc2.addAll(generateCircle(3,crossing2));
+        Graph tc2 = generateCircle(2, crossing2);
+        tc2.addAll(generateCircle(3, crossing2));
         Assert.assertEquals(5, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -169,11 +167,11 @@ public class GraphMatcherTest {
     @Test
     public void test11() {
         BlankNodeOrIRI crossing1 = new BlankNode();
-        Graph tc1 = generateCircle(2,crossing1);
-        tc1.addAll(generateCircle(4,crossing1));
+        Graph tc1 = generateCircle(2, crossing1);
+        tc1.addAll(generateCircle(4, crossing1));
         BlankNodeOrIRI crossing2 = new BlankNode();
-        Graph tc2 = generateCircle(3,crossing2);
-        tc2.addAll(generateCircle(3,crossing2));
+        Graph tc2 = generateCircle(3, crossing2);
+        tc2.addAll(generateCircle(3, crossing2));
         Assert.assertEquals(6, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNull(mapping);
@@ -182,11 +180,11 @@ public class GraphMatcherTest {
     @Test
     public void test12() {
         BlankNodeOrIRI start1 = new BlankNode();
-        Graph tc1 = Utils4Testing.generateLine(4,start1);
-        tc1.addAll(Utils4Testing.generateLine(5,start1));
+        Graph tc1 = Utils4Testing.generateLine(4, start1);
+        tc1.addAll(Utils4Testing.generateLine(5, start1));
         BlankNodeOrIRI start2 = new BlankNode();
-        Graph tc2 = Utils4Testing.generateLine(5,start2);
-        tc2.addAll(Utils4Testing.generateLine(4,start2));
+        Graph tc2 = Utils4Testing.generateLine(5, start2);
+        tc2.addAll(Utils4Testing.generateLine(4, start2));
         Assert.assertEquals(9, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -196,11 +194,11 @@ public class GraphMatcherTest {
     @Test
     public void test13() {
         BlankNodeOrIRI start1 = new BlankNode();
-        Graph tc1 = Utils4Testing.generateLine(4,start1);
-        tc1.addAll(Utils4Testing.generateLine(5,start1));
+        Graph tc1 = Utils4Testing.generateLine(4, start1);
+        tc1.addAll(Utils4Testing.generateLine(5, start1));
         BlankNodeOrIRI start2 = new BlankNode();
-        Graph tc2 = Utils4Testing.generateLine(3,start2);
-        tc2.addAll(Utils4Testing.generateLine(3,start2));
+        Graph tc2 = Utils4Testing.generateLine(3, start2);
+        tc2.addAll(Utils4Testing.generateLine(3, start2));
         Assert.assertEquals(9, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNull(mapping);

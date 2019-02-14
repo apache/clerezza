@@ -1,20 +1,19 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.api.impl.graph;
 
@@ -43,6 +42,7 @@ public class SimpleGraph extends AbstractGraph {
         public SimpleIterator(Iterator<Triple> listIter) {
             this.listIter = listIter;
         }
+
         private Triple currentNext;
 
         @Override
@@ -56,14 +56,14 @@ public class SimpleGraph extends AbstractGraph {
             checkValidity();
             currentNext = listIter.next();
             return currentNext;
-        }        
+        }
 
         @Override
         public void remove() {
             checkValidity();
             listIter.remove();
-            triples.remove(currentNext);            
-            invalidateIterators(this);            
+            triples.remove(currentNext);
+            invalidateIterators(this);
         }
 
         private void checkValidity() throws ConcurrentModificationException {
@@ -75,11 +75,11 @@ public class SimpleGraph extends AbstractGraph {
         private void invalidate() {
             isValid = false;
         }
-    }    
-    
+    }
+
     private final Set<SoftReference<SimpleIterator>> iterators =
             Collections.synchronizedSet(new HashSet<SoftReference<SimpleIterator>>());
-    
+
     /**
      * Creates an empty SimpleGraph
      */
@@ -88,9 +88,9 @@ public class SimpleGraph extends AbstractGraph {
     }
 
     /**
-     * Creates a SimpleGraph using the passed iterator, the iterator 
+     * Creates a SimpleGraph using the passed iterator, the iterator
      * is consumed before the constructor returns
-     * 
+     *
      * @param iterator
      */
     public SimpleGraph(Iterator<Triple> iterator) {
@@ -102,9 +102,9 @@ public class SimpleGraph extends AbstractGraph {
     }
 
     /**
-     * Creates a SimpleGraph for the specified set of triples, 
+     * Creates a SimpleGraph for the specified set of triples,
      * subsequent modification of baseSet do affect the created instance.
-     * 
+     *
      * @param baseSet
      */
     public SimpleGraph(Set<Triple> baseSet) {
@@ -166,13 +166,13 @@ public class SimpleGraph extends AbstractGraph {
         }
         return modified;
     }
-    
+
     private void invalidateIterators(SimpleIterator caller) {
         if (!checkConcurrency) {
             return;
         }
         Set<SoftReference> oldReferences = new HashSet<SoftReference>();
-        synchronized(iterators) {
+        synchronized (iterators) {
             for (SoftReference<SimpleGraph.SimpleIterator> softReference : iterators) {
                 SimpleIterator simpleIterator = softReference.get();
                 if (simpleIterator == null) {
@@ -197,8 +197,8 @@ public class SimpleGraph extends AbstractGraph {
     public void setCheckConcurrency(boolean bool) {
         checkConcurrency = bool;
     }
-    
-    
+
+
     @Override
     public ImmutableGraph getImmutableGraph() {
         return new SimpleImmutableGraph(this);

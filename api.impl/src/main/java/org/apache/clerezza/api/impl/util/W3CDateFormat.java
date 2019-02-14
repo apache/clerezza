@@ -5,44 +5,37 @@
  [See end of file]
  $Id: W3CDateFormat.java,v 1.6 2007/05/07 18:45:22 rebach Exp $
  */
-package org.apache.clerezza.api.impl.util;
 /*
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
-*/
-
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
+ */
+package org.apache.clerezza.api.impl.util;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * @author reto implements http://www.w3.org/TR/NOTE-datetime with the
- *         limitation that it expects exactly a three digits decimal fraction of
- *         seconds. if a time zone designator other than 'Z' is present it must
- *         contain a column
+ * limitation that it expects exactly a three digits decimal fraction of
+ * seconds. if a time zone designator other than 'Z' is present it must
+ * contain a column
  */
 public class W3CDateFormat extends DateFormat {
     /**
@@ -72,17 +65,17 @@ public class W3CDateFormat extends DateFormat {
 
     /**
      * @see java.text.DateFormat#format(java.util.Date, java.lang.StringBuffer,
-     *      java.text.FieldPosition)
+     * java.text.FieldPosition)
      */
     @Override
     public StringBuffer format(Date date, StringBuffer toAppendTo,
-            FieldPosition fieldPosition) {
+                               FieldPosition fieldPosition) {
 
         final DateFormat dateFormat = (date.getTime() % 1000) == 0 ?
-            dateFormatNoMillis : dateFormatWithMillis;
+                dateFormatNoMillis : dateFormatWithMillis;
         String string = dateFormat.format(date);
         if (string.endsWith("0000")) {
-            StringBuffer result = new StringBuffer(string.substring(0, string.length()-5));
+            StringBuffer result = new StringBuffer(string.substring(0, string.length() - 5));
             result.append('Z');
             return result;
         } else {
@@ -94,7 +87,7 @@ public class W3CDateFormat extends DateFormat {
 
     /**
      * @see java.text.DateFormat#parse(java.lang.String,
-     *      java.text.ParsePosition)
+     * java.text.ParsePosition)
      */
     public Date parse(String dateString, ParsePosition parsePos) {
 
@@ -136,7 +129,7 @@ public class W3CDateFormat extends DateFormat {
             //read decimal part, this is till there is a 'Z', a '+' or a '-'
             char nextChar = dateString.charAt(position++);
             while ((nextChar != 'Z') && (nextChar != '-') && (nextChar != '+')) {
-                msecs += (nextChar - '0')*Math.pow(10, 3+startPos-position);
+                msecs += (nextChar - '0') * Math.pow(10, 3 + startPos - position);
                 nextChar = dateString.charAt(position++);
             }
             tzd1 = nextChar;

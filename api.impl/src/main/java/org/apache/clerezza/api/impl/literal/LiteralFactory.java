@@ -1,20 +1,19 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.api.impl.literal;
 
@@ -25,14 +24,14 @@ import org.apache.clerezza.api.Literal;
  * vice versa. While the default implementation will provide literal objects
  * storing the data's lexical form in memory, other implementations may
  * create literal optimized for processing within the store.
- *
- * Note: this class uses the notion of "Convertor" (in the Exception naming), 
+ * <p>
+ * Note: this class uses the notion of "Convertor" (in the Exception naming),
  * but does not currently provide a mechanism to register such
  * <code>Convertor</code>s. An implementation is said to provide
  * <code>Convertor</code>s for the types it supports.
  *
- * @since 0.3
  * @author reto
+ * @since 0.3
  */
 public abstract class LiteralFactory {
 
@@ -72,10 +71,10 @@ public abstract class LiteralFactory {
      * Converts a literal to an instance of the specified class
      *
      * @param <T>
-     * @param type the <code>Class</code> of the returned object
+     * @param type    the <code>Class</code> of the returned object
      * @param literal the literal to be converted
      * @return a java object representing the value of the literal
-     * @throws NoConvertorException thrown if <code>type</code> is unsupported
+     * @throws NoConvertorException        thrown if <code>type</code> is unsupported
      * @throws InvalidLiteralTypeException if the literal type doesn't match the requested java type
      */
     public abstract <T> T createObject(Class<T> type, Literal literal)

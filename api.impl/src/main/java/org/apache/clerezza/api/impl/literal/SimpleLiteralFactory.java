@@ -1,20 +1,19 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.api.impl.literal;
 
@@ -31,7 +30,7 @@ import java.util.*;
 /**
  * An implementation of literal factory currently supporting only
  * byte[]/base64Binary and Java.util.Date/date
- * 
+ *
  * @author reto
  */
 
@@ -43,7 +42,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
     final private static IRI xsdShort = xsd("short");
     final private static IRI xsdByte = xsd("byte");
     final private static IRI xsdLong = xsd("long");
-    
+
 
     final private static Set<IRI> decimalTypes = new HashSet<IRI>();
 
@@ -51,7 +50,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
     final static Class<? extends byte[]> byteArrayType;
 
     static {
-        Collections.addAll(decimalTypes, xsdInteger, xsdInt, xsdByte, xsdShort, xsdLong );
+        Collections.addAll(decimalTypes, xsdInteger, xsdInt, xsdByte, xsdShort, xsdLong);
 
         byte[] byteArray = new byte[0];
         byteArrayType = byteArray.getClass();
@@ -67,22 +66,23 @@ public class SimpleLiteralFactory extends LiteralFactory {
         typeConverterMap.put(IRI.class, new UriRefConverter());
     }
 
-    final private static IRI xsdDouble =xsd("double");
-    final private static IRI xsdFloat =xsd("float");
-    final private static IRI xsdAnyURI =xsd("anyURI");
+    final private static IRI xsdDouble = xsd("double");
+    final private static IRI xsdFloat = xsd("float");
+    final private static IRI xsdAnyURI = xsd("anyURI");
 
     final private static IRI xsd(String name) {
-       return new IRI(XSD+name);
+        return new IRI(XSD + name);
     }
 
     private static interface TypeConverter<T> {
         Literal createLiteral(T value);
-        T createObject(Literal literal);        
+
+        T createObject(Literal literal);
     }
 
-    private static class  ByteArrayConverter implements TypeConverter<byte[]> {
+    private static class ByteArrayConverter implements TypeConverter<byte[]> {
 
-        private static final IRI base64Uri =xsd("base64Binary");
+        private static final IRI base64Uri = xsd("base64Binary");
 
         @Override
         public Literal createLiteral(byte[] value) {
@@ -97,11 +97,12 @@ public class SimpleLiteralFactory extends LiteralFactory {
             return (byte[]) Base64.decode(literal.getLexicalForm());
         }
 
-        
+
     }
+
     private static class DateConverter implements TypeConverter<Date> {
 
-        private static final IRI dateTimeUri =xsd("dateTime");
+        private static final IRI dateTimeUri = xsd("dateTime");
         private static final DateFormat DATE_FORMAT = new W3CDateFormat();
 
         @Override
@@ -126,7 +127,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
     private static class BooleanConverter implements TypeConverter<Boolean> {
 
-        private static final IRI booleanUri =xsd("boolean");
+        private static final IRI booleanUri = xsd("boolean");
         public static final TypedLiteralImpl TRUE = new TypedLiteralImpl("true", booleanUri);
         public static final TypedLiteralImpl FALSE = new TypedLiteralImpl("false", booleanUri);
 
@@ -149,7 +150,7 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
     private static class StringConverter implements TypeConverter<String> {
 
-        private static final IRI stringUri =xsd("string");
+        private static final IRI stringUri = xsd("string");
 
         @Override
         public Literal createLiteral(String value) {
@@ -184,7 +185,6 @@ public class SimpleLiteralFactory extends LiteralFactory {
 
     private static class LongConverter implements TypeConverter<Long> {
 
-        
 
         @Override
         public Literal createLiteral(Long value) {
@@ -216,9 +216,8 @@ public class SimpleLiteralFactory extends LiteralFactory {
             return Float.valueOf(literal.getLexicalForm());
         }
     }
-    
-    private static class DoubleConverter implements TypeConverter<Double> {
 
+    private static class DoubleConverter implements TypeConverter<Double> {
 
 
         @Override
@@ -238,7 +237,6 @@ public class SimpleLiteralFactory extends LiteralFactory {
     private static class BigIntegerConverter implements TypeConverter<BigInteger> {
 
 
-
         @Override
         public Literal createLiteral(BigInteger value) {
             return new TypedLiteralImpl(value.toString(), xsdInteger);
@@ -252,9 +250,8 @@ public class SimpleLiteralFactory extends LiteralFactory {
             return new BigInteger(literal.getLexicalForm());
         }
     }
-    
-    private static class UriRefConverter implements TypeConverter<IRI> {
 
+    private static class UriRefConverter implements TypeConverter<IRI> {
 
 
         @Override
@@ -279,14 +276,13 @@ public class SimpleLiteralFactory extends LiteralFactory {
         return converter.createLiteral(value);
     }
 
-    
-    
+
     @Override
     public <T> T createObject(Class<T> type, Literal literal)
             throws NoConvertorException, InvalidLiteralTypeException {
         final TypeConverter<T> converter = getConverterFor(type);
         return converter.createObject(literal);
-        
+
     }
 
     @SuppressWarnings("unchecked")

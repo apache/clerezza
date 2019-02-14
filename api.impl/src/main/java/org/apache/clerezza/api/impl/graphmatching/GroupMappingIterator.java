@@ -1,28 +1,23 @@
 /*
- *  Copyright 2010 reto.
- * 
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- * 
- *       http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
-
 package org.apache.clerezza.api.impl.graphmatching;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Iterates over all mappings from each element of every Set<T> to each
@@ -30,14 +25,14 @@ import java.util.Set;
  *
  * @author reto
  */
-class GroupMappingIterator<T,U> implements Iterator<Map<T, U>> {
+class GroupMappingIterator<T, U> implements Iterator<Map<T, U>> {
 
     private Iterator<Map<T, U>> firstPartIter;
     private Map<T, U> currentFirstPart;
     final private Map<Set<T>, Set<U>> restMap;
     private Iterator<Map<T, U>> currentRestPartIter;
 
-    static <T,U> Iterator<Map<T, U>> create(Map<Set<T>, Set<U>> matchingGroups) {
+    static <T, U> Iterator<Map<T, U>> create(Map<Set<T>, Set<U>> matchingGroups) {
         if (matchingGroups.size() > 1) {
             return new GroupMappingIterator<T, U>(matchingGroups);
         } else {
@@ -45,8 +40,8 @@ class GroupMappingIterator<T,U> implements Iterator<Map<T, U>> {
                 return new ArrayList<Map<T, U>>(0).iterator();
             }
             Map.Entry<Set<T>, Set<U>> entry = matchingGroups.entrySet().iterator().next();
-            return new MappingIterator<T,U>(entry.getKey(),
-                        entry.getValue());
+            return new MappingIterator<T, U>(entry.getKey(),
+                    entry.getValue());
         }
     }
 
@@ -58,7 +53,7 @@ class GroupMappingIterator<T,U> implements Iterator<Map<T, U>> {
         boolean first = true;
         for (Map.Entry<Set<T>, Set<U>> entry : matchingGroups.entrySet()) {
             if (first) {
-                firstPartIter = new MappingIterator<T,U>(entry.getKey(),
+                firstPartIter = new MappingIterator<T, U>(entry.getKey(),
                         entry.getValue());
                 first = false;
             } else {
