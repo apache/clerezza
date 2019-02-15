@@ -4,12 +4,6 @@ Build using Apache Maven with
 
     mvn install
 
-## Documentation
-
-You can build the documentation with:
-
-    mvn site
-
 ## FAQ
 
 Some more advanced questions focused on showing the differences to other proposed APIs.
