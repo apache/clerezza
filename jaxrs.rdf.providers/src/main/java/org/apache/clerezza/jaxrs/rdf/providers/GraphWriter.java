@@ -42,7 +42,7 @@ import java.util.Objects;
         SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class GraphWriter implements MessageBodyWriter<Graph> {
 
-    private Serializer serializer;
+    private Serializer serializer = Serializer.getInstance();
 
     @Reference
     public synchronized void setSerializer(Serializer serializer) {
@@ -51,7 +51,7 @@ public class GraphWriter implements MessageBodyWriter<Graph> {
 
     public synchronized void unsetSerializer(Serializer serializer) {
         if (Objects.equals(this.serializer, serializer)) {
-            this.serializer = null;
+            this.serializer = Serializer.getInstance();
         }
     }
 
