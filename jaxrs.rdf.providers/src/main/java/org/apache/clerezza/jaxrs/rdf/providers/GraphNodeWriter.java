@@ -66,8 +66,9 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
     public static final String OBJ_EXP_PARAM = "xPropObj";
     public static final String SUBJ_EXP_PARAM = "xPropSubj";
 
-    private Serializer serializer;
     private UriInfo uriInfo;
+
+    private Serializer serializer = Serializer.getInstance();
 
     @Reference
     public synchronized void setSerializer(Serializer serializer) {
@@ -76,7 +77,7 @@ public class GraphNodeWriter implements MessageBodyWriter<GraphNode> {
 
     public synchronized void unsetSerializer(Serializer serializer) {
         if (Objects.equals(this.serializer, serializer)) {
-            this.serializer = null;
+            this.serializer = Serializer.getInstance();
         }
     }
 

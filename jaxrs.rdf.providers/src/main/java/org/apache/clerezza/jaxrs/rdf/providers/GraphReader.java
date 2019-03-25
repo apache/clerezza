@@ -43,7 +43,7 @@ import java.util.Objects;
         SupportedFormat.X_TURTLE, SupportedFormat.RDF_JSON})
 public class GraphReader implements MessageBodyReader<Graph> {
 
-    private Parser parser;
+    private Parser parser = Parser.getInstance();
 
     @Reference
     public synchronized void setParser(Parser parser) {
@@ -52,7 +52,7 @@ public class GraphReader implements MessageBodyReader<Graph> {
 
     public synchronized void unsetParser(Parser parser) {
         if (Objects.equals(this.parser, parser)) {
-            this.parser = null;
+            this.parser = Parser.getInstance();
         }
     }
 
