@@ -16,21 +16,20 @@
   either  express  or implied.  See  the License  for  the  specific
   language governing permissions and limitations under  the License.
 -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.apache.clerezza</groupId>
         <artifactId>clerezza</artifactId>
-        <version>8-SNAPSHOT</version>
-        <relativePath/>
+        <version>8</version>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>dataset</artifactId>
+    <version>2.0.0</version>
     <packaging>bundle</packaging>
-    <version>8-SNAPSHOT</version>
     <name>Clerezza - DataSet</name>
     <description>Interfaces and utilities to access RDF Graphs</description>
 
@@ -38,22 +37,22 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>api</artifactId>
-            <version>8-SNAPSHOT</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>api.impl</artifactId>
-            <version>8-SNAPSHOT</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>sparql</artifactId>
-            <version>8-SNAPSHOT</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>test.utils</artifactId>
-            <version>8-SNAPSHOT</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -84,6 +83,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -92,7 +92,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.apache.clerezza.dataset.*, org.apache.clerezza.simple.storage.*</Export-Package>
+                        <Export-Package>${project.groupId}.${project.artifactId}.*, org.apache.clerezza.simple.storage.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

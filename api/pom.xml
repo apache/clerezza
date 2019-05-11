@@ -19,33 +19,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>clerezza</artifactId>
         <groupId>org.apache.clerezza</groupId>
-        <version>8-SNAPSHOT</version>
+        <artifactId>clerezza</artifactId>
+        <version>8</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>api</artifactId>
+    <version>2.0.0</version>
     <packaging>bundle</packaging>
     <name>Clerezza - API</name>
     <description>
         Apache Clerezza API implements the RDF data model as defined by
         http://www.w3.org/TR/rdf11-concepts/
     </description>
-
-    <issueManagement>
-        <system>jira</system>
-        <url>http://issues.apache.org/jira/browse/CLEREZZA</url>
-    </issueManagement>
-
-    <scm>
-        <connection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</connection>
-        <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/clerezza.git</developerConnection>
-        <url>https://git-wip-us.apache.org/repos/asf/clerezza.git</url>
-        <tag>HEAD</tag>
-    </scm>
 
     <dependencies>
         <dependency>
@@ -63,7 +52,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.apache.clerezza.api.*</Export-Package>
+                        <Export-Package>${project.groupId}.${project.artifactId}.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
