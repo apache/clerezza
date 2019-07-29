@@ -17,12 +17,12 @@
  */
 package org.apache.clerezza.implementation.graphmatching;
 
-import org.apache.clerezza.BlankNodeOrIRI;
 import org.apache.clerezza.BlankNode;
+import org.apache.clerezza.BlankNodeOrIRI;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.in_memory.SimpleMGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,8 +37,8 @@ public class GraphMatcherTest {
 
     @Test
     public void testEmpty() {
-        Graph tc1 = new SimpleMGraph();
-        Graph tc2 = new SimpleMGraph();
+        Graph tc1 = new SimpleGraph();
+        Graph tc2 = new SimpleGraph();
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
         Assert.assertEquals(0, mapping.size());
@@ -46,18 +46,18 @@ public class GraphMatcherTest {
 
     @Test
     public void test2() {
-        Graph tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleGraph();
         tc1.add(new TripleImpl(u1, u1, u1));
-        Graph tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleGraph();
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNull(mapping);
     }
 
     @Test
     public void test3() {
-        Graph tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleGraph();
         tc1.add(new TripleImpl(u1, u1, u1));
-        Graph tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleGraph();
         tc2.add(new TripleImpl(u1, u1, u1));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -66,9 +66,9 @@ public class GraphMatcherTest {
 
     @Test
     public void test4() {
-        Graph tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleGraph();
         tc1.add(new TripleImpl(u1, u1, new BlankNode()));
-        Graph tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleGraph();
         tc2.add(new TripleImpl(u1, u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -77,9 +77,9 @@ public class GraphMatcherTest {
 
     @Test
     public void test5() {
-        Graph tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleGraph();
         tc1.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
-        Graph tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleGraph();
         tc2.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNotNull(mapping);
@@ -88,11 +88,11 @@ public class GraphMatcherTest {
 
     @Test
     public void test6() {
-        Graph tc1 = new SimpleMGraph();
+        Graph tc1 = new SimpleGraph();
         final BlankNode b11 = new BlankNode();
         tc1.add(new TripleImpl(new BlankNode(), u1, b11));
         tc1.add(new TripleImpl(new BlankNode(), u1, b11));
-        Graph tc2 = new SimpleMGraph();
+        Graph tc2 = new SimpleGraph();
         tc2.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
         Assert.assertNull(mapping);
@@ -106,7 +106,7 @@ public class GraphMatcherTest {
         if (size < 1) {
             throw new IllegalArgumentException();
         }
-        Graph result = new SimpleMGraph();
+        Graph result = new SimpleGraph();
         BlankNodeOrIRI lastNode = firstNode;
         for (int i = 0; i < (size - 1); i++) {
             final BlankNode newNode = new BlankNode();

@@ -22,12 +22,12 @@ import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.ImmutableGraph;
 import org.apache.clerezza.Triple;
-import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.in_memory.SimpleMGraph;
 import org.apache.clerezza.dataset.providers.WeightedA;
 import org.apache.clerezza.dataset.providers.WeightedA1;
 import org.apache.clerezza.dataset.providers.WeightedAHeavy;
 import org.apache.clerezza.dataset.providers.WeightedBlight;
+import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.sparql.NoQueryEngineException;
 import org.apache.clerezza.sparql.QueryEngine;
 import org.apache.clerezza.sparql.query.*;
@@ -39,7 +39,8 @@ import org.mockito.Mockito;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * 
@@ -139,7 +140,7 @@ public class TcManagerTest {
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery("", new SimpleMGraph());
+		graphAccess.executeSparqlQuery("", new SimpleGraph());
 	}
 
 	@Test(expected = NoQueryEngineException.class)
@@ -148,7 +149,7 @@ public class TcManagerTest {
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery((Query) null, new SimpleMGraph());
+		graphAccess.executeSparqlQuery((Query) null, new SimpleGraph());
 	}
 
 	@Test(expected = NoQueryEngineException.class)
@@ -157,7 +158,7 @@ public class TcManagerTest {
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery((SelectQuery) null, new SimpleMGraph());
+		graphAccess.executeSparqlQuery((SelectQuery) null, new SimpleGraph());
 	}
 
 	@Test(expected = NoQueryEngineException.class)
@@ -166,7 +167,7 @@ public class TcManagerTest {
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery((AskQuery) null, new SimpleMGraph());
+		graphAccess.executeSparqlQuery((AskQuery) null, new SimpleGraph());
 	}
 
 	@Test(expected = NoQueryEngineException.class)
@@ -176,7 +177,7 @@ public class TcManagerTest {
 
 		// Execute
 		graphAccess
-				.executeSparqlQuery((DescribeQuery) null, new SimpleMGraph());
+				.executeSparqlQuery((DescribeQuery) null, new SimpleGraph());
 	}
 
 	@Test(expected = NoQueryEngineException.class)
@@ -186,14 +187,14 @@ public class TcManagerTest {
 
 		// Execute
 		graphAccess.executeSparqlQuery((ConstructQuery) null,
-				new SimpleMGraph());
+				new SimpleGraph());
 	}
 
 	@Test
 	public void executeSparqlQueryWithEngineWithString() throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		Graph Graph = new SimpleMGraph();
+		Graph Graph = new SimpleGraph();
 
 		// Execute
 		graphAccess.executeSparqlQuery("", Graph);
@@ -210,7 +211,7 @@ public class TcManagerTest {
 	public void executeSparqlQueryWithEngineWithSelectQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		Graph Graph = new SimpleMGraph();
+		Graph Graph = new SimpleGraph();
 		SelectQuery query = Mockito.mock(SelectQuery.class);
 
 		// Execute
@@ -228,7 +229,7 @@ public class TcManagerTest {
 	public void executeSparqlQueryWithEngineWithAskQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		Graph Graph = new SimpleMGraph();
+		Graph Graph = new SimpleGraph();
 		AskQuery query = Mockito.mock(AskQuery.class);
 
 		Mockito.when(
@@ -252,7 +253,7 @@ public class TcManagerTest {
 			throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		Graph Graph = new SimpleMGraph();
+		Graph Graph = new SimpleGraph();
 		DescribeQuery query = Mockito.mock(DescribeQuery.class);
 
 		// Execute
@@ -271,7 +272,7 @@ public class TcManagerTest {
 			throws Exception {
 		// Prepare
 		injectQueryEngine(queryEngine);
-		Graph Graph = new SimpleMGraph();
+		Graph Graph = new SimpleGraph();
 		ConstructQuery query = Mockito.mock(ConstructQuery.class);
 
 		// Execute

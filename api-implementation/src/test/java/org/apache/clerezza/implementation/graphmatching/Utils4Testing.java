@@ -23,7 +23,7 @@ import org.apache.clerezza.BlankNodeOrIRI;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.in_memory.SimpleMGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 
 /**
  * @author reto
@@ -34,7 +34,7 @@ public class Utils4Testing {
         if (size < 1) {
             throw new IllegalArgumentException();
         }
-        Graph result = new SimpleMGraph();
+        Graph result = new SimpleGraph();
         BlankNodeOrIRI lastNode = firstNode;
         for (int i = 0; i < size; i++) {
             final BlankNode newNode = new BlankNode();

@@ -21,12 +21,12 @@ package org.apache.clerezza.dataset.providers;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.ImmutableGraph;
-import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.in_memory.SimpleMGraph;
 import org.apache.clerezza.dataset.EntityUndeletableException;
 import org.apache.clerezza.dataset.NoSuchEntityException;
 import org.apache.clerezza.dataset.TcManagerTest;
 import org.apache.clerezza.dataset.WeightedTcProvider;
+import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,7 +46,7 @@ public class WeightedA implements WeightedTcProvider {
     @Override
     public ImmutableGraph getImmutableGraph(IRI name) throws NoSuchEntityException {
         if (name.equals(TcManagerTest.uriRefA)) {
-            Graph mResult = new SimpleMGraph();
+            Graph mResult = new SimpleGraph();
             mResult.add(new TripleImpl(TcManagerTest.uriRefA, 
                     TcManagerTest.uriRefA, TcManagerTest.uriRefA));
             mGraphList.add(name);

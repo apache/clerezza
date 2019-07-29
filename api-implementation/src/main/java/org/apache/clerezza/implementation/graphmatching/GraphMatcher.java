@@ -20,7 +20,7 @@ package org.apache.clerezza.implementation.graphmatching;
 
 import org.apache.clerezza.*;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.in_memory.SimpleMGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -63,8 +63,8 @@ public class GraphMatcher {
      * @return a Set of NodePairs
      */
     public static Map<BlankNode, BlankNode> getValidMapping(Graph og1, Graph og2) {
-        Graph g1 = new SimpleMGraph(og1);
-        Graph g2 = new SimpleMGraph(og2);
+        Graph g1 = new SimpleGraph(og1);
+        Graph g2 = new SimpleGraph(og2);
         if (!Utils.removeGrounded(g1, g2)) {
             return null;
         }

@@ -21,12 +21,12 @@ package org.apache.clerezza.dataset.providers;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.ImmutableGraph;
-import org.apache.clerezza.implementation.in_memory.SimpleImmutableGraph;
-import org.apache.clerezza.implementation.in_memory.SimpleMGraph;
 import org.apache.clerezza.dataset.EntityAlreadyExistsException;
 import org.apache.clerezza.dataset.EntityUndeletableException;
 import org.apache.clerezza.dataset.NoSuchEntityException;
 import org.apache.clerezza.dataset.WeightedTcProvider;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleImmutableGraph;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,7 +79,7 @@ public class WeightedDummy implements WeightedTcProvider {
             // already exists
             this.getGraph(name);
         } catch (NoSuchEntityException e) {
-            Graph result = new SimpleMGraph();
+            Graph result = new SimpleGraph();
             tripleMap.put(name, result);
             return result;
         }
