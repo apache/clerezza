@@ -31,14 +31,14 @@ PARSER_BEGIN(JavaCCGeneratedQueryParser)
 
 package org.apache.clerezza.sparql;
 
-import org.apache.clerezza.api.BlankNode;
-import org.apache.clerezza.api.Language;
-import org.apache.clerezza.api.Literal;
-import org.apache.clerezza.api.RDFTerm;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.impl.literal.LiteralFactory;
-import org.apache.clerezza.api.impl.literal.PlainLiteralImpl;
-import org.apache.clerezza.api.impl.literal.TypedLiteralImpl;
+import org.apache.clerezza.BlankNode;
+import org.apache.clerezza.Language;
+import org.apache.clerezza.Literal;
+import org.apache.clerezza.RDFTerm;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.impl.literal.LiteralFactory;
+import org.apache.clerezza.impl.literal.PlainLiteralImpl;
+import org.apache.clerezza.impl.literal.TypedLiteralImpl;
 import org.apache.clerezza.sparql.query.GroupGraphPattern;
 import org.apache.clerezza.sparql.query.BinaryOperation;
 import org.apache.clerezza.sparql.query.Variable;

@@ -18,7 +18,7 @@
 
 package org.apache.clerezza.test.utils;
 
-import org.apache.clerezza.api.*;
+import org.apache.clerezza.*;
 
 import java.util.Collection;
 import java.util.Iterator;

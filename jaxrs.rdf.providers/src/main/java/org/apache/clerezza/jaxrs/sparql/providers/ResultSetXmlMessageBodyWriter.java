@@ -17,10 +17,10 @@
  */
 package org.apache.clerezza.jaxrs.sparql.providers;
 
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.Language;
-import org.apache.clerezza.api.Literal;
-import org.apache.clerezza.api.RDFTerm;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.Language;
+import org.apache.clerezza.Literal;
+import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.sparql.ResultSet;
 import org.apache.clerezza.sparql.SolutionMapping;
 import org.apache.clerezza.sparql.query.Variable;

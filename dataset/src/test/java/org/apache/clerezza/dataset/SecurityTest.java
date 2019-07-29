@@ -18,12 +18,12 @@
  */
 package org.apache.clerezza.dataset;
 
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.Triple;
-import org.apache.clerezza.api.impl.graph.ReadOnlyException;
-import org.apache.clerezza.api.impl.literal.PlainLiteralImpl;
-import org.apache.clerezza.api.impl.TripleImpl;
+import org.apache.clerezza.Graph;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.Triple;
+import org.apache.clerezza.impl.graph.ReadOnlyException;
+import org.apache.clerezza.impl.literal.PlainLiteralImpl;
+import org.apache.clerezza.impl.TripleImpl;
 import org.apache.clerezza.dataset.providers.WeightedA;
 import org.apache.clerezza.dataset.providers.WeightedDummy;
 import org.apache.clerezza.dataset.security.TcPermission;

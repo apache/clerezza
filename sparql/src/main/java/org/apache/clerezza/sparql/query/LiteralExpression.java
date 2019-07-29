@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.sparql.query;
 
-import org.apache.clerezza.api.Literal;
+import org.apache.clerezza.Literal;
 
 /**
  * Wraps a {@link Literal} in an {@link Expression}.

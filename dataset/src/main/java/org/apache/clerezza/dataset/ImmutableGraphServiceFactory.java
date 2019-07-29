@@ -18,8 +18,8 @@
  */
 package org.apache.clerezza.dataset;
 
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.Graph;
+import org.apache.clerezza.IRI;
 import org.apache.clerezza.dataset.security.TcAccessController;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;

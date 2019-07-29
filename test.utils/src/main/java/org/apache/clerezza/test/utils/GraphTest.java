@@ -18,10 +18,10 @@
 
 package org.apache.clerezza.test.utils;
 
-import org.apache.clerezza.api.*;
-import org.apache.clerezza.api.impl.TripleImpl;
-import org.apache.clerezza.api.impl.literal.PlainLiteralImpl;
-import org.apache.clerezza.api.impl.literal.TypedLiteralImpl;
+import org.apache.clerezza.*;
+import org.apache.clerezza.impl.TripleImpl;
+import org.apache.clerezza.impl.literal.PlainLiteralImpl;
+import org.apache.clerezza.impl.literal.TypedLiteralImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,0 +1,16 @@
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/Triple.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/WatchableGraph.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/BlankNodeOrIRI.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/Language.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/event/GraphEvent.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/IRI.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/ImmutableGraph.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/event/RemoveEvent.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/event/GraphListener.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/package-info.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/event/AddEvent.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/event/FilterTriple.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/BlankNode.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/RDFTerm.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/Graph.java
+/home/hhn/repos/apache/zz/clerezza/api/src/main/java/org/apache/clerezza/api/Literal.java

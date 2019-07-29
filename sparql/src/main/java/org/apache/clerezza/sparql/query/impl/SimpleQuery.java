@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.sparql.query.impl;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 import org.apache.clerezza.sparql.query.DataSet;
 import org.apache.clerezza.sparql.query.GroupGraphPattern;
 import org.apache.clerezza.sparql.query.InlineData;

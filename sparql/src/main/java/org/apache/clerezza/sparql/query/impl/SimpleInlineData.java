@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.sparql.query.impl;
 
-import org.apache.clerezza.api.RDFTerm;
+import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.sparql.query.InlineData;
 import org.apache.clerezza.sparql.query.Variable;
 

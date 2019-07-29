@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.sparql.update.impl;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 import org.apache.clerezza.sparql.update.UpdateOperation;
 
 import java.util.Set;

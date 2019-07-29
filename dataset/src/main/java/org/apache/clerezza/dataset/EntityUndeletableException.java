@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.dataset;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 
 /**
  * is thrown on an attempt to delete an entity with a provider that

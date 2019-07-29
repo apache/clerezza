@@ -17,7 +17,7 @@
  */
 package org.apache.clerezza.jaxrs.rdf.providers;
 
-import org.apache.clerezza.api.ImmutableGraph;
+import org.apache.clerezza.ImmutableGraph;
 import org.apache.clerezza.representation.Parser;
 import org.apache.clerezza.representation.SupportedFormat;
 import org.osgi.service.component.annotations.Component;

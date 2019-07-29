@@ -17,7 +17,7 @@
  */
 package org.apache.clerezza.jaxrs.rdf.providers;
 
-import org.apache.clerezza.api.Graph;
+import org.apache.clerezza.Graph;
 import org.apache.clerezza.representation.Serializer;
 import org.apache.clerezza.representation.SupportedFormat;
 import org.osgi.service.component.annotations.Component;

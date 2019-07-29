@@ -18,9 +18,9 @@
  */
 package org.apache.clerezza.sparql.query.impl;
 
-import org.apache.clerezza.api.BlankNode;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.RDFTerm;
+import org.apache.clerezza.BlankNode;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.sparql.StringQuerySerializer;
 import org.apache.clerezza.sparql.query.*;
 import org.slf4j.Logger;

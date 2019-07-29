@@ -18,7 +18,7 @@
 
 package org.apache.clerezza.representation;
 
-import org.apache.clerezza.api.Graph;
+import org.apache.clerezza.Graph;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.*;

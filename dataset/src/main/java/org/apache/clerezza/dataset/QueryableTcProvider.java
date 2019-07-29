@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.dataset;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 
 /**
  * Extends the TcProvider interface for providers that support sparql queries.

@@ -52,7 +52,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>${project.groupId}.${project.artifactId}.*</Export-Package>
+                        <Export-Package>${project.groupId}.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

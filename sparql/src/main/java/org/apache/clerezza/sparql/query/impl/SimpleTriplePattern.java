@@ -18,9 +18,9 @@
  */
 package org.apache.clerezza.sparql.query.impl;
 
-import org.apache.clerezza.api.BlankNodeOrIRI;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.RDFTerm;
+import org.apache.clerezza.BlankNodeOrIRI;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.sparql.query.ResourceOrVariable;
 import org.apache.clerezza.sparql.query.TriplePattern;
 import org.apache.clerezza.sparql.query.UriRefOrVariable;

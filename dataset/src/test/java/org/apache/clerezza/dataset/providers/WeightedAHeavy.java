@@ -18,11 +18,11 @@
  */
 package org.apache.clerezza.dataset.providers;
 
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.ImmutableGraph;
-import org.apache.clerezza.api.impl.TripleImpl;
-import org.apache.clerezza.api.impl.graph.SimpleGraph;
+import org.apache.clerezza.Graph;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.ImmutableGraph;
+import org.apache.clerezza.impl.TripleImpl;
+import org.apache.clerezza.impl.graph.SimpleGraph;
 import org.apache.clerezza.dataset.EntityUndeletableException;
 import org.apache.clerezza.dataset.NoSuchEntityException;
 import org.apache.clerezza.dataset.TcManagerTest;

@@ -1,6 +1,6 @@
 package org.apache.clerezza.sparql;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 
 import java.util.Set;
 

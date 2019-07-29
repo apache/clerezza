@@ -17,7 +17,7 @@
  */
 package org.apache.clerezza.jaxrs.sparql.providers;
 
-import org.apache.clerezza.api.*;
+import org.apache.clerezza.*;
 import org.apache.clerezza.sparql.ResultSet;
 import org.apache.clerezza.sparql.SolutionMapping;
 import org.apache.clerezza.sparql.query.Variable;

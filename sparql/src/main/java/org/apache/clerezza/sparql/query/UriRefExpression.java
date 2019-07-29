@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.sparql.query;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 
 /**
  * Wraps a {@link IRI} in an {@link Expression}.

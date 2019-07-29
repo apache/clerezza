@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.sparql.update;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 import org.apache.clerezza.sparql.GraphStore;
 
 import java.util.Set;

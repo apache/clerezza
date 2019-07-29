@@ -18,10 +18,10 @@
 
 package org.apache.clerezza.representation;
 
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.ImmutableGraph;
-import org.apache.clerezza.api.impl.graph.SimpleMGraph;
+import org.apache.clerezza.Graph;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.ImmutableGraph;
+import org.apache.clerezza.impl.graph.SimpleMGraph;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.*;

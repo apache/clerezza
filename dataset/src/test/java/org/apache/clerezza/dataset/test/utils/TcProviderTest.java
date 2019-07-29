@@ -18,9 +18,9 @@
 
 package org.apache.clerezza.dataset.test.utils;
 
-import org.apache.clerezza.api.*;
-import org.apache.clerezza.api.impl.TripleImpl;
-import org.apache.clerezza.api.impl.graph.SimpleGraph;
+import org.apache.clerezza.*;
+import org.apache.clerezza.impl.TripleImpl;
+import org.apache.clerezza.impl.graph.SimpleGraph;
 import org.apache.clerezza.dataset.EntityAlreadyExistsException;
 import org.apache.clerezza.dataset.NoSuchEntityException;
 import org.apache.clerezza.dataset.TcProvider;
@@ -30,8 +30,6 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import static org.junit.Assert.*;
 
 /**
  * 

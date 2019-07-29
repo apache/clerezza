@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.sparql;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 import org.junit.Assert;
 import org.junit.Test;
 

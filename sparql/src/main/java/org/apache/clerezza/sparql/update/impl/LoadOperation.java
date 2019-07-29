@@ -18,7 +18,7 @@
  */
 package org.apache.clerezza.sparql.update.impl;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 
 /**
  * The LOAD operation reads an RDF document from a IRI and inserts its triples into the specified ImmutableGraph in the ImmutableGraph Store. 

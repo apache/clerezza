@@ -18,7 +18,7 @@
 
 package org.apache.clerezza.representation;
 
-import org.apache.clerezza.api.Graph;
+import org.apache.clerezza.Graph;
 
 import java.io.OutputStream;
 

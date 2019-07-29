@@ -1,6 +1,6 @@
 package org.apache.clerezza.ontologies;
 
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.IRI;
 
 public class PLATFORM {
 	// Classes

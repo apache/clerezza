@@ -18,9 +18,9 @@
  */
 package org.apache.clerezza.sparql;
 
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.Language;
-import org.apache.clerezza.api.impl.literal.PlainLiteralImpl;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.Language;
+import org.apache.clerezza.impl.literal.PlainLiteralImpl;
 import org.apache.clerezza.sparql.query.*;
 import org.apache.clerezza.sparql.query.impl.SimpleTriplePattern;
 import org.junit.Assert;

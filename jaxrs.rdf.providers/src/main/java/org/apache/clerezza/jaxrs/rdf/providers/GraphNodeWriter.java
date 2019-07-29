@@ -17,12 +17,12 @@
  */
 package org.apache.clerezza.jaxrs.rdf.providers;
 
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
-import org.apache.clerezza.api.RDFTerm;
-import org.apache.clerezza.api.Triple;
-import org.apache.clerezza.api.impl.graph.SimpleGraph;
-import org.apache.clerezza.api.utils.GraphNode;
+import org.apache.clerezza.Graph;
+import org.apache.clerezza.IRI;
+import org.apache.clerezza.RDFTerm;
+import org.apache.clerezza.Triple;
+import org.apache.clerezza.impl.graph.SimpleGraph;
+import org.apache.clerezza.utils.GraphNode;
 import org.apache.clerezza.representation.Serializer;
 import org.apache.clerezza.representation.SupportedFormat;
 import org.osgi.service.component.annotations.Component;

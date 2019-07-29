@@ -18,8 +18,7 @@
  */
 package org.apache.clerezza.sparql;
 
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.sparql.query.Query;
+import org.apache.clerezza.Graph;
 
 /**
  * A QueryEngine can process SPARQL queries against an arbitrary set of graphs.

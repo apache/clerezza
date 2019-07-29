@@ -19,7 +19,7 @@
 package org.apache.clerezza.representation;
 
 import junit.framework.Assert;
-import org.apache.clerezza.api.Graph;
+import org.apache.clerezza.Graph;
 import org.junit.Test;
 
 import java.io.OutputStream;

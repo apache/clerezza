@@ -18,9 +18,9 @@
 
 package org.apache.clerezza.test.utils;
 
-import org.apache.clerezza.api.*;
-import org.apache.clerezza.api.impl.TripleImpl;
-import org.apache.clerezza.api.impl.literal.PlainLiteralImpl;
+import org.apache.clerezza.*;
+import org.apache.clerezza.impl.TripleImpl;
+import org.apache.clerezza.impl.literal.PlainLiteralImpl;
 import org.apache.commons.lang.RandomStringUtils;
 
 import java.util.Iterator;

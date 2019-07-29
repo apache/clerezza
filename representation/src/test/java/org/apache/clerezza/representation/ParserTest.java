@@ -19,8 +19,8 @@
 package org.apache.clerezza.representation;
 
 import junit.framework.Assert;
-import org.apache.clerezza.api.Graph;
-import org.apache.clerezza.api.IRI;
+import org.apache.clerezza.Graph;
+import org.apache.clerezza.IRI;
 import org.junit.Test;
 
 import java.io.InputStream;
