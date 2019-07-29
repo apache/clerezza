@@ -22,7 +22,7 @@ import org.apache.clerezza.IRI;
 import org.apache.clerezza.Literal;
 import org.apache.clerezza.Triple;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.implementation.literal.PlainLiteralImpl;
 import org.apache.clerezza.ontologies.FOAF;
 import org.apache.clerezza.ontologies.OWL;

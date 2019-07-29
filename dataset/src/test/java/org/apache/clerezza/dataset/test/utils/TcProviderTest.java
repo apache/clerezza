@@ -20,7 +20,7 @@ package org.apache.clerezza.dataset.test.utils;
 
 import org.apache.clerezza.*;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.dataset.EntityAlreadyExistsException;
 import org.apache.clerezza.dataset.NoSuchEntityException;
 import org.apache.clerezza.dataset.TcProvider;

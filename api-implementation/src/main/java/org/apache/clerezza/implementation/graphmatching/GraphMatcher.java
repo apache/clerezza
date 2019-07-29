@@ -20,7 +20,7 @@ package org.apache.clerezza.implementation.graphmatching;
 
 import org.apache.clerezza.*;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.graph.SimpleMGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleMGraph;
 
 import java.util.Iterator;
 import java.util.Map;

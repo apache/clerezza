@@ -20,6 +20,7 @@ package org.apache.clerezza.implementation.graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.Triple;
 import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.junit.Assert;
 import org.junit.Test;
 

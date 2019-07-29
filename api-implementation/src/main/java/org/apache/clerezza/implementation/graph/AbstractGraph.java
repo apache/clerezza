@@ -19,6 +19,7 @@ package org.apache.clerezza.implementation.graph;
 
 import org.apache.clerezza.*;
 import org.apache.clerezza.implementation.debug.ReentrantReadWriteLockTracker;
+import org.apache.clerezza.implementation.in_memory.SimpleImmutableGraph;
 
 import java.util.AbstractCollection;
 import java.util.Collection;

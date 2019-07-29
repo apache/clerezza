@@ -18,7 +18,7 @@
 package org.apache.clerezza.jaxrs.rdf.providers;
 
 import org.apache.clerezza.Graph;
-import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.representation.Parser;
 import org.apache.clerezza.representation.SupportedFormat;
 import org.osgi.service.component.annotations.Component;

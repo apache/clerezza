@@ -19,7 +19,7 @@ package org.apache.clerezza.utils;
 
 import org.apache.clerezza.*;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.implementation.literal.LiteralFactory;
 
 import java.util.*;

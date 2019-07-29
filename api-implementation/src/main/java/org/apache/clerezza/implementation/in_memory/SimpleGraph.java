@@ -15,9 +15,10 @@
  * either  express  or implied.  See  the License  for  the  specific
  * language governing permissions and limitations under  the License.
  */
-package org.apache.clerezza.implementation.graph;
+package org.apache.clerezza.implementation.in_memory;
 
 import org.apache.clerezza.*;
+import org.apache.clerezza.implementation.graph.AbstractGraph;
 
 import java.lang.ref.SoftReference;
 import java.util.*;

@@ -23,7 +23,7 @@ import org.apache.clerezza.IRI;
 import org.apache.clerezza.ImmutableGraph;
 import org.apache.clerezza.Triple;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.apache.clerezza.implementation.graph.SimpleMGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleMGraph;
 import org.apache.clerezza.dataset.providers.WeightedA;
 import org.apache.clerezza.dataset.providers.WeightedA1;
 import org.apache.clerezza.dataset.providers.WeightedAHeavy;

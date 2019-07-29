@@ -18,7 +18,7 @@
 package org.apache.clerezza.utils;
 
 import org.apache.clerezza.*;
-import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 
 import java.util.HashSet;
 import java.util.Iterator;

@@ -18,6 +18,7 @@
 package org.apache.clerezza.implementation.graph;
 
 import org.apache.clerezza.*;
+import org.apache.clerezza.implementation.in_memory.SimpleImmutableGraph;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;

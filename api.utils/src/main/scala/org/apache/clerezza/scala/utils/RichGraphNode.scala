@@ -21,10 +21,9 @@ import java.util.Iterator
 
 import org.apache.clerezza.{Graph, IRI, Literal, RDFTerm}
 import org.apache.clerezza._
-import org.apache.clerezza.implementation.graph.SimpleGraph
 import org.apache.clerezza.implementation.literal.LiteralFactory
 import org.apache.clerezza.utils.{GraphNode, UnionGraph}
-import org.apache.clerezza.implementation.graph.SimpleGraph
+import org.apache.clerezza.implementation.in_memory.SimpleGraph
 import org.apache.clerezza.implementation.literal.LiteralFactory
 import org.apache.clerezza.ontologies.RDF
 import org.apache.clerezza.utils.{GraphNode, UnionGraph}

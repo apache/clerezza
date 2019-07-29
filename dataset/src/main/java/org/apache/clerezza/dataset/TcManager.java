@@ -21,7 +21,7 @@ package org.apache.clerezza.dataset;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.ImmutableGraph;
-import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.implementation.graph.WriteBlockedGraph;
 import org.apache.clerezza.dataset.security.TcAccessController;
 import org.apache.clerezza.sparql.*;

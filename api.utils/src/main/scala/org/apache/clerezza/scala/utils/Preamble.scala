@@ -26,7 +26,7 @@ import org.apache.clerezza._
 import org.apache.clerezza.implementation.graph._
 import org.apache.clerezza.implementation.literal._
 import org.apache.clerezza.utils.GraphNode
-import org.apache.clerezza.implementation.graph.{SimpleGraph, SimpleImmutableGraph}
+import org.apache.clerezza.implementation.in_memory.{SimpleGraph, SimpleImmutableGraph}
 import org.apache.clerezza.implementation.literal.{LiteralFactory, PlainLiteralImpl}
 import org.apache.clerezza.utils.GraphNode
 

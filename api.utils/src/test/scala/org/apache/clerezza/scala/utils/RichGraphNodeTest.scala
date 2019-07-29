@@ -25,7 +25,7 @@ import Preamble._
 import org.apache.clerezza._
 import org.apache.clerezza.utils._
 import org.apache.clerezza.implementation.TripleImpl
-import org.apache.clerezza.implementation.graph.SimpleGraph
+import org.apache.clerezza.implementation.in_memory.SimpleGraph
 import org.apache.clerezza.implementation.literal.{PlainLiteralImpl, TypedLiteralImpl}
 import org.apache.clerezza.ontologies._
 import org.apache.clerezza.utils.{GraphNode, RdfList}

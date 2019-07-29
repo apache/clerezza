@@ -21,7 +21,7 @@ import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.Triple;
-import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.utils.GraphNode;
 import org.apache.clerezza.representation.Serializer;
 import org.apache.clerezza.representation.SupportedFormat;
