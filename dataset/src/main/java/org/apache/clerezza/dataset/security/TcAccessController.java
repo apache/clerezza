@@ -18,8 +18,8 @@
 package org.apache.clerezza.dataset.security;
 
 import org.apache.clerezza.*;
-import org.apache.clerezza.impl.TripleImpl;
-import org.apache.clerezza.impl.literal.LiteralFactory;
+import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.literal.LiteralFactory;
 import org.apache.clerezza.dataset.NoSuchEntityException;
 import org.apache.clerezza.dataset.TcManager;
 

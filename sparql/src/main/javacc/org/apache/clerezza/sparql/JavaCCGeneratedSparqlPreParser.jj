@@ -31,9 +31,9 @@ PARSER_BEGIN(JavaCCGeneratedSparqlPreParser)
 package org.apache.clerezza.sparql;
 
 import org.apache.clerezza.BlankNode;
-import org.apache.clerezza.impl.literal.LiteralFactory;
-import org.apache.clerezza.impl.literal.PlainLiteralImpl;
-import org.apache.clerezza.impl.literal.TypedLiteralImpl;
+import org.apache.clerezza.implementation.literal.LiteralFactory;
+import org.apache.clerezza.implementation.literal.PlainLiteralImpl;
+import org.apache.clerezza.implementation.literal.TypedLiteralImpl;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.Language;
 import org.apache.clerezza.Literal;

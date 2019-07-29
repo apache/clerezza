@@ -19,8 +19,8 @@ package org.apache.clerezza.scala.utils
 
 import org.apache.clerezza
 import org.apache.clerezza._
-import org.apache.clerezza.impl.graph._
-import org.apache.clerezza.impl.graph.{AbstractGraph, SimpleGraph}
+import org.apache.clerezza.implementation.graph._
+import org.apache.clerezza.implementation.graph.{AbstractGraph, SimpleGraph}
 
 import _root_.scala.collection.mutable.HashMap
 

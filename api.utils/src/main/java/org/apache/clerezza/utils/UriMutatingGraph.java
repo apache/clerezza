@@ -18,8 +18,8 @@
 package org.apache.clerezza.utils;
 
 import org.apache.clerezza.*;
-import org.apache.clerezza.impl.TripleImpl;
-import org.apache.clerezza.impl.graph.SimpleImmutableGraph;
+import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.graph.SimpleImmutableGraph;
 
 import java.util.Collection;
 import java.util.Iterator;

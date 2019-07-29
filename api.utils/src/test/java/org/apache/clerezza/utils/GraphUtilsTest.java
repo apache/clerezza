@@ -20,8 +20,8 @@ package org.apache.clerezza.utils;
 import org.apache.clerezza.BlankNode;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
-import org.apache.clerezza.impl.TripleImpl;
-import org.apache.clerezza.impl.graph.SimpleGraph;
+import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.graph.SimpleGraph;
 import org.junit.Assert;
 import org.junit.Test;
 

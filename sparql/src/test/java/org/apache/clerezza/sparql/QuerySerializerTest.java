@@ -19,7 +19,7 @@
 package org.apache.clerezza.sparql;
 
 import org.apache.clerezza.IRI;
-import org.apache.clerezza.impl.literal.LiteralFactory;
+import org.apache.clerezza.implementation.literal.LiteralFactory;
 import org.apache.clerezza.sparql.query.*;
 import org.apache.clerezza.sparql.query.impl.*;
 import org.junit.Assert;

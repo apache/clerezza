@@ -18,7 +18,7 @@
 package org.apache.clerezza.utils;
 
 import org.apache.clerezza.*;
-import org.apache.clerezza.impl.graph.AbstractGraph;
+import org.apache.clerezza.implementation.graph.AbstractGraph;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;

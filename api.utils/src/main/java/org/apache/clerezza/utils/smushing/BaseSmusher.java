@@ -18,8 +18,8 @@
 package org.apache.clerezza.utils.smushing;
 
 import org.apache.clerezza.*;
-import org.apache.clerezza.impl.TripleImpl;
-import org.apache.clerezza.impl.graph.SimpleGraph;
+import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.graph.SimpleGraph;
 import org.apache.clerezza.ontologies.OWL;
 
 import java.util.*;

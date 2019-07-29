@@ -23,11 +23,11 @@ import java.util.Date
 
 import org.apache.clerezza.{Graph, IRI, Literal, RDFTerm}
 import org.apache.clerezza._
-import org.apache.clerezza.impl.graph._
-import org.apache.clerezza.impl.literal._
+import org.apache.clerezza.implementation.graph._
+import org.apache.clerezza.implementation.literal._
 import org.apache.clerezza.utils.GraphNode
-import org.apache.clerezza.impl.graph.{SimpleGraph, SimpleImmutableGraph}
-import org.apache.clerezza.impl.literal.{LiteralFactory, PlainLiteralImpl}
+import org.apache.clerezza.implementation.graph.{SimpleGraph, SimpleImmutableGraph}
+import org.apache.clerezza.implementation.literal.{LiteralFactory, PlainLiteralImpl}
 import org.apache.clerezza.utils.GraphNode
 
 /**

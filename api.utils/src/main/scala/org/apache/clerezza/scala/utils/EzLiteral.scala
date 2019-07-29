@@ -18,8 +18,8 @@
 package org.apache.clerezza.scala.utils
 
 import org.apache.clerezza.{IRI, Language, Literal}
-import org.apache.clerezza.impl.literal._
-import org.apache.clerezza.impl.literal.{PlainLiteralImpl, TypedLiteralImpl}
+import org.apache.clerezza.implementation.literal._
+import org.apache.clerezza.implementation.literal.{PlainLiteralImpl, TypedLiteralImpl}
 import org.apache.clerezza.ontologies.XSD
 
 object EzLiteral extends EzLiteralImplicits

@@ -18,13 +18,13 @@
 package org.apache.clerezza.scala.utils
 
 import org.apache.clerezza._
-import org.apache.clerezza.impl._
-import org.apache.clerezza.impl.literal._
+import org.apache.clerezza.implementation._
+import org.apache.clerezza.implementation.literal._
 import Preamble._
 import org.apache.clerezza.{BlankNode, IRI, ImmutableGraph, Language}
-import org.apache.clerezza.impl.TripleImpl
-import org.apache.clerezza.impl.graph.SimpleGraph
-import org.apache.clerezza.impl.literal.{LiteralFactory, PlainLiteralImpl, TypedLiteralImpl}
+import org.apache.clerezza.implementation.TripleImpl
+import org.apache.clerezza.implementation.graph.SimpleGraph
+import org.apache.clerezza.implementation.literal.{LiteralFactory, PlainLiteralImpl, TypedLiteralImpl}
 import org.apache.clerezza.ontologies._
 import org.junit._
 

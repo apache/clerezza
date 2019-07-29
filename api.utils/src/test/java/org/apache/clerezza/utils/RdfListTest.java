@@ -22,8 +22,8 @@ import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.BlankNode;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
-import org.apache.clerezza.impl.graph.SimpleGraph;
-import org.apache.clerezza.impl.literal.PlainLiteralImpl;
+import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.literal.PlainLiteralImpl;
 import org.junit.Test;
 
 import java.util.List;

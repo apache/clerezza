@@ -19,10 +19,10 @@ package org.apache.clerezza.scala.utils
 
 import org.apache.clerezza.{IRI, Language}
 import org.apache.clerezza._
-import org.apache.clerezza.impl._
-import org.apache.clerezza.impl.literal._
-import org.apache.clerezza.impl.TripleImpl
-import org.apache.clerezza.impl.literal.{LiteralFactory, PlainLiteralImpl, TypedLiteralImpl}
+import org.apache.clerezza.implementation._
+import org.apache.clerezza.implementation.literal._
+import org.apache.clerezza.implementation.TripleImpl
+import org.apache.clerezza.implementation.literal.{LiteralFactory, PlainLiteralImpl, TypedLiteralImpl}
 import org.junit._
 
 class TypeConversionTest {

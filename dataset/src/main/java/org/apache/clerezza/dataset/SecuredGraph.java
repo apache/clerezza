@@ -19,8 +19,8 @@
 package org.apache.clerezza.dataset;
 
 import org.apache.clerezza.*;
-import org.apache.clerezza.impl.graph.SimpleImmutableGraph;
-import org.apache.clerezza.impl.graph.WriteBlockedGraph;
+import org.apache.clerezza.implementation.graph.SimpleImmutableGraph;
+import org.apache.clerezza.implementation.graph.WriteBlockedGraph;
 import org.apache.clerezza.dataset.security.TcAccessController;
 
 import java.security.AccessControlException;

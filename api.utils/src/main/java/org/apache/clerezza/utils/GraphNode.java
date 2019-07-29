@@ -18,9 +18,9 @@
 package org.apache.clerezza.utils;
 
 import org.apache.clerezza.*;
-import org.apache.clerezza.impl.TripleImpl;
-import org.apache.clerezza.impl.graph.SimpleGraph;
-import org.apache.clerezza.impl.literal.LiteralFactory;
+import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.graph.SimpleGraph;
+import org.apache.clerezza.implementation.literal.LiteralFactory;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;

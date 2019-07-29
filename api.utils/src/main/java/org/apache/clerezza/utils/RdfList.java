@@ -18,7 +18,7 @@
 package org.apache.clerezza.utils;
 
 import org.apache.clerezza.*;
-import org.apache.clerezza.impl.TripleImpl;
+import org.apache.clerezza.implementation.TripleImpl;
 import org.apache.clerezza.ontologies.OWL;
 import org.apache.clerezza.ontologies.RDF;
 import org.apache.clerezza.representation.Serializer;

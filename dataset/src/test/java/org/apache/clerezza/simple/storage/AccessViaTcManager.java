@@ -20,7 +20,7 @@ package org.apache.clerezza.simple.storage;
 
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
-import org.apache.clerezza.impl.graph.SimpleGraph;
+import org.apache.clerezza.implementation.graph.SimpleGraph;
 import org.apache.clerezza.dataset.TcManager;
 import org.junit.Assert;
 import org.junit.Test;
