@@ -24,6 +24,7 @@
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
         <version>17</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>clerezza</artifactId>
