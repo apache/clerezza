@@ -1,3 +1,17 @@
+This file contains the PGP keys of various developers.
+
+Users:
+        pgp < KEYS
+or
+        gpg --import KEYS
+
+Developers:
+        pgp -kxa <your name> and append it to this file.
+or
+        (pgpk -ll <your name> && pgpk -xa <your name>) >> this file.
+or
+        (gpg --list-sigs <your name> && gpg --armor --export <your name>) >> this file.
+
 pub   1024D/57A262A0 2009-01-05 [expires: 2017-01-03]
 uid                  Reto Bachmann-Gmür <reto@apache.org>
 sig 3        57A262A0 2011-07-14  Reto Bachmann-Gmür <reto@apache.org>
@@ -46,3 +60,4 @@ KksgM5P1MvFeRS6ITwQYEQIADwUCSWKEfAIbDAUJDwmcAAAKCRCyKNNZV6JioBgJ
 AJ431MC0r4Qs6CX3Va9SXlZekkj95ACcDSlwedcVUp1mQq/jvBv1kjSUiXw=
 =fEdB
 -----END PGP PUBLIC KEY BLOCK-----
+
