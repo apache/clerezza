@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>17</version>
+        <version>21</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.apache.clerezza</groupId>
@@ -292,13 +292,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-remote-resources-plugin</artifactId>
+                <configuration>
+                    <resourceBundles>
+<!--                        <resourceBundle></resourceBundle> -->
+                    </resourceBundles>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>process</goal>
                         </goals>
-                        <configuration>        
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
