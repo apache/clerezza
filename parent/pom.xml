@@ -561,18 +561,19 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <!-- inherit from org.apache.apache
     <distributionManagement>
-        <!-- where to deploy the web site -->
-        <!-- <site>
+        *** where to deploy the web site *** we may want to specify this later ***
+        <site>
             <id></id>
             <url></url>
-        </site> -->
+        </site>
 
-        <!-- where to deploy the artifacts -->
+        *** where to deploy the artifacts *** should be inherited from org.apache.apache
         <repository>
             <id>apache.releases.https</id>
             <name>Apache Release Distribution Repository</name>
-            <url>https://repository.apache.org/content/repositories/releases/</url>
+            <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
             <id>apache.snapshots.https</id>
@@ -580,7 +581,7 @@
             <url>https://repository.apache.org/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
+    -->
     <issueManagement>
         <system>Jira</system>
         <url>https://issues.apache.org/jira/projects/CLEREZZA</url>
