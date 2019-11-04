@@ -16,22 +16,20 @@
   either  express  or implied.  See  the License  for  the  specific
   language governing permissions and limitations under  the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
         <version>21</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.apache.clerezza</groupId>
     <artifactId>clerezza</artifactId>
     <packaging>pom</packaging>
     <name>Clerezza - Parent</name>
     <url>https://mvnrepository.com/artifact/org.apache.clerezza</url>
-    <version>8-SNAPSHOT</version>
+    <version>8</version>
     <description>The direct or indirect parent of all Clerezza artifacts</description>
     <properties>
         <sourceReleaseAssemblyDescriptor>multimodule-source-release</sourceReleaseAssemblyDescriptor>
@@ -419,7 +417,7 @@
         <url>https://github.com/apache/clerezza</url>
         <connection>scm:git:https://gitbox.apache.org/repos/asf/clerezza.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/clerezza.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>clerezza-parent-8</tag>
     </scm>
 
     <!-- lets generate reports -->
