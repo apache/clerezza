@@ -44,6 +44,13 @@
         </dependency>
     </dependencies>
 
+    <scm>
+        <url>https://github.com/apache/clerezza</url>
+        <connection>scm:git:https://gitbox.apache.org/repos/asf/clerezza.git</connection>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/clerezza.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <build>
         <plugins>
             <plugin>
