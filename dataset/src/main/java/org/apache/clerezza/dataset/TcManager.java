@@ -1,20 +1,19 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.dataset;
 
@@ -38,15 +37,11 @@ import java.security.AccessControlException;
 import java.util.*;
 
 /**
- * This class implements
- * <code>TcManager</code>, delegating the actual provision and creation of
- * Graphs or MGraphs to registered
- * <code>TcProvider</code>s. The class attempts to satisfy the request using the
- * register
- * <code>WeightedTcProvider</code> in decreasing order of weight. If multiple
- * providers have the same weight the lexicographical order of the fully
- * qualified class name determines which one is used, namely the one that occurs
- * earlier. If a call to a registered provider causes an
+ * This class extends <code>TcProviderMultiplexer</code>, delegating the actual provision and creation of
+ * Graphs or MGraphs to registered <code>WeightedTcProvider</code>s. The class attempts to satisfy the
+ * request using the registered <code>WeightedTcProvider</code> in decreasing order of weight. If multiple
+ * providers have the same weight the lexicographical order of the fully qualified class name determines
+ * which one is used, namely the one that occurs earlier. If a call to a registered provider causes an
  * <code>IllegalArgumentException</code>,
  * <code>NoSuchEntityException</code> or
  * <code>UnsupportedOperationException</code> then the call is delegated to the
@@ -133,21 +128,16 @@ public class TcManager extends TcProviderMultiplexer implements GraphStore {
                 if (instance == null) {
                     instance = new TcManager();
                     instance.isActivated = true;
-                    Iterator<WeightedTcProvider> weightedProviders = ServiceLoader
-                            .load(WeightedTcProvider.class).iterator();
+                    Iterator<WeightedTcProvider> weightedProviders = ServiceLoader.load(WeightedTcProvider.class).iterator();
                     while (weightedProviders.hasNext()) {
-                        WeightedTcProvider weightedProvider = weightedProviders
-                                .next();
-                        instance
-                                .bindWeightedTcProvider(weightedProvider);
+                        WeightedTcProvider weightedProvider = weightedProviders.next();
+                        instance.bindWeightedTcProvider(weightedProvider);
                     }
-                    Iterator<QueryEngine> queryEngines = ServiceLoader.load(
-                            QueryEngine.class).iterator();
+                    Iterator<QueryEngine> queryEngines = ServiceLoader.load(QueryEngine.class).iterator();
                     System.out.println("looking for QE");
                     if (queryEngines.hasNext()) {
                         instance.queryEngine = queryEngines.next();
-                        System.out.println("QE: "
-                                + instance.queryEngine.getClass());
+                        System.out.println("QE: " + instance.queryEngine.getClass());
                     }
                 }
             }
@@ -208,8 +198,7 @@ public class TcManager extends TcProviderMultiplexer implements GraphStore {
             tcAccessController.checkReadWritePermission(name);
         } catch (AccessControlException e) {
             tcAccessController.checkReadPermission(name);
-            return new WriteBlockedGraph(
-                    super.getGraph(name));
+            return new WriteBlockedGraph(super.getGraph(name));
         }
         return super.getGraph(name);
     }
@@ -360,7 +349,7 @@ public class TcManager extends TcProviderMultiplexer implements GraphStore {
      * in this TcManages executeSparqlQuery(String, UriRef) should be used instead.
      *
      * @param query the sparql query to execute
-     * @param defaultGraph the ImmutableGraph to be used as default ImmutableGraph in the Sparql ImmutableGraph Store
+     * @param defaultGraphName the ImmutableGraph to be used as default ImmutableGraph in the Sparql ImmutableGraph Store
      * @param forceFastlane indicate whether to force fastlane usage.
      * @return the resulting ResultSet, ImmutableGraph or Boolean value
      */

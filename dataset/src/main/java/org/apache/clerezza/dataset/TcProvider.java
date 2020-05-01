@@ -1,20 +1,19 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor  license  agreements.  See the NOTICE file distributed
+ * with this work  for  additional  information  regarding  copyright
+ * ownership.  The ASF  licenses  this file to you under  the  Apache
+ * License, Version 2.0 (the "License"); you may not  use  this  file
+ * except in compliance with the License.  You may obtain  a copy  of
+ * the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless  required  by  applicable law  or  agreed  to  in  writing,
+ * software  distributed  under  the  License  is  distributed  on an
+ * "AS IS"  BASIS,  WITHOUT  WARRANTIES  OR  CONDITIONS  OF ANY KIND,
+ * either  express  or implied.  See  the License  for  the  specific
+ * language governing permissions and limitations under  the License.
  */
 package org.apache.clerezza.dataset;
 
@@ -46,8 +45,8 @@ public interface TcProvider {
      * Get an <code>Graph</code> taht is not <code>ImmutableGrah</code>. The instances
      * returned in different invocations are <code>equals</code>.
      *
-     * @param the name of the <code>Graph</code>
-     * @return name the <code>Graph</code> with the specified name
+     * @param name the name of the <code>Graph</code>
+     * @return <code>Graph</code> with the specified name
      * @throws NoSuchEntityException if there is no <code>Graph</code>
      *         with the specified name
      */
@@ -143,7 +142,7 @@ public interface TcProvider {
     /**
      * get a set of the names of a <code>ImmutableGraph</code>
      *
-     * @param ImmutableGraph
+     * @param immutableGraph
      * @return the set names of <code>ImmutableGraph</code>, the set is empty if
      *         <code>ImmutableGraph</code> is unknown
      */

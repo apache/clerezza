@@ -64,10 +64,6 @@ public abstract class TcAccessController {
     private final Map<IRI, Collection<Permission>> readWritePermissionCache =
             Collections.synchronizedMap(new HashMap<IRI, Collection<Permission>>());
 
-    /**
-     *
-     * @param tcManager the tcManager used to locate urn:x-localinstance:/graph-access.graph
-     */
     public TcAccessController() {
         this.tcManager = getTcManager();
     }
@@ -149,16 +145,16 @@ public abstract class TcAccessController {
      * Set the set of permissions required for read access to a triple-collection, if
      * the set is non-empty the default TCPermisson is no longer required.
      *
-     * @param GraphUri
-     * @param permissionDescriptions
+     * @param graphUri
+     * @param permissions
      */
-    public void setRequiredReadPermissions(IRI GraphUri,
+    public void setRequiredReadPermissions(IRI graphUri,
             Collection<Permission> permissions) {
         Collection<String> permissionStrings = new ArrayList<String>();
         for (Permission permission : permissions) {
             permissionStrings.add(permission.toString());
         }
-        setRequiredReadPermissionStrings(GraphUri, permissionStrings);
+        setRequiredReadPermissionStrings(graphUri, permissionStrings);
     }
 
     /**
@@ -166,19 +162,19 @@ public abstract class TcAccessController {
      * triple-collection, if
      * the set is non-empty the default TCPermisson is no longer required.
      *
-     * @param GraphUri
+     * @param graphUri
      * @param permissionDescriptions
      */
-    public void setRequiredReadWritePermissionStrings(IRI GraphUri,
+    public void setRequiredReadWritePermissionStrings(IRI graphUri,
             Collection<String> permissionDescriptions) {
-        readWritePermissionCache.remove(GraphUri);
+        readWritePermissionCache.remove(graphUri);
         final Graph permissionMGraph = getOrCreatePermisionGraph();
         Lock l = permissionMGraph.getLock().writeLock();
         l.lock();
         try {
-            removeExistingRequiredReadPermissions(GraphUri, permissionMGraph);
+            removeExistingRequiredReadPermissions(graphUri, permissionMGraph);
             final BlankNodeOrIRI permissionList = createList(permissionDescriptions.iterator(), permissionMGraph);
-            permissionMGraph.add(new TripleImpl(GraphUri,
+            permissionMGraph.add(new TripleImpl(graphUri,
                     readWritePermissionListProperty, permissionList));
         } finally {
             l.unlock();
@@ -190,16 +186,16 @@ public abstract class TcAccessController {
      * triple-collection, if
      * the set is non-empty the default TCPermisson is no longer required.
      *
-     * @param GraphUri
-     * @param permissionDescriptions
+     * @param graphUri
+     * @param permissions
      */
-    public void setRequiredReadWritePermissions(IRI GraphUri,
+    public void setRequiredReadWritePermissions(IRI graphUri,
             Collection<Permission> permissions) {
         Collection<String> permissionStrings = new ArrayList<String>();
         for (Permission permission : permissions) {
             permissionStrings.add(permission.toString());
         }
-        setRequiredReadWritePermissionStrings(GraphUri, permissionStrings);
+        setRequiredReadWritePermissionStrings(graphUri, permissionStrings);
     }
 
     /**
@@ -207,18 +203,18 @@ public abstract class TcAccessController {
      * triple-collection, the set may be empty meaning that the default
      * TCPermission is required.
      *
-     * @param GraphUri
+     * @param graphUri
      * @return the collection of permissions
      */
-    public Collection<Permission> getRequiredReadPermissions(IRI GraphUri) {
-        Collection<Permission> result = readPermissionCache.get(GraphUri);
+    public Collection<Permission> getRequiredReadPermissions(IRI graphUri) {
+        Collection<Permission> result = readPermissionCache.get(graphUri);
         if (result == null) {
             result = new ArrayList<Permission>();
-            Collection<String> permissionStrings = getRequiredReadPermissionStrings(GraphUri);
+            Collection<String> permissionStrings = getRequiredReadPermissionStrings(graphUri);
             for (String string : permissionStrings) {
                 result.add(PermissionParser.getPermission(string, getClass().getClassLoader()));
             }
-            readPermissionCache.put(GraphUri, result);
+            readPermissionCache.put(graphUri, result);
         }
         return result;
     }
@@ -228,18 +224,18 @@ public abstract class TcAccessController {
      * triple-collection, the set may be empty meaning that the default
      * TCPermission is required.
      *
-     * @param GraphUri
+     * @param graphUri
      * @return the collection of permissions
      */
-    public Collection<Permission> getRequiredReadWritePermissions(IRI GraphUri) {
-        Collection<Permission> result = readWritePermissionCache.get(GraphUri);
+    public Collection<Permission> getRequiredReadWritePermissions(IRI graphUri) {
+        Collection<Permission> result = readWritePermissionCache.get(graphUri);
         if (result == null) {
             result = new ArrayList<Permission>();
-            Collection<String> permissionStrings = getRequiredReadWritePermissionStrings(GraphUri);
+            Collection<String> permissionStrings = getRequiredReadWritePermissionStrings(graphUri);
             for (String string : permissionStrings) {
                 result.add(PermissionParser.getPermission(string, getClass().getClassLoader()));
             }
-            readWritePermissionCache.put(GraphUri, result);
+            readWritePermissionCache.put(graphUri, result);
         }
         return result;
     }
@@ -258,10 +254,10 @@ public abstract class TcAccessController {
     }
 
     //called withiong write-lock
-    private void removeExistingRequiredReadPermissions(IRI GraphUri,
+    private void removeExistingRequiredReadPermissions(IRI graphUri,
             Graph permissionMGraph) {
         try {
-            Triple t = permissionMGraph.filter(GraphUri, readPermissionListProperty, null).next();
+            Triple t = permissionMGraph.filter(graphUri, readPermissionListProperty, null).next();
             RDFTerm list = t.getObject();
             removeList((BlankNodeOrIRI) list, permissionMGraph);
             permissionMGraph.remove(t);
@@ -284,19 +280,19 @@ public abstract class TcAccessController {
         }
     }
 
-    private Collection<String> getRequiredReadWritePermissionStrings(final IRI GraphUri) {
-        return getRequiredPermissionStrings(GraphUri, readWritePermissionListProperty);
+    private Collection<String> getRequiredReadWritePermissionStrings(final IRI graphUri) {
+        return getRequiredPermissionStrings(graphUri, readWritePermissionListProperty);
     }
-    private Collection<String> getRequiredReadPermissionStrings(final IRI GraphUri) {
-        return getRequiredPermissionStrings(GraphUri, readPermissionListProperty);
+    private Collection<String> getRequiredReadPermissionStrings(final IRI graphUri) {
+        return getRequiredPermissionStrings(graphUri, readPermissionListProperty);
     }
-    private Collection<String> getRequiredPermissionStrings(final IRI GraphUri, IRI property) {
+    private Collection<String> getRequiredPermissionStrings(final IRI graphUri, IRI property) {
         try {
             final Graph permissionMGraph = tcManager.getMGraph(permissionGraphName);
             Lock l = permissionMGraph.getLock().readLock();
             l.lock();
             try {
-                Triple t = permissionMGraph.filter(GraphUri, property, null).next();
+                Triple t = permissionMGraph.filter(graphUri, property, null).next();
                 BlankNodeOrIRI list = (BlankNodeOrIRI) t.getObject();
                 LinkedList<String> result = new LinkedList<String>();
                 readList(list, permissionMGraph, result);
@@ -334,7 +330,7 @@ public abstract class TcAccessController {
 
     /**
      * Note that this will only be invoked once
-     * @return 
+     * @return TcManager
      */
     protected abstract TcManager getTcManager();
 }

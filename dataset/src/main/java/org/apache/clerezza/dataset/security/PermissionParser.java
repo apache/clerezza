@@ -42,7 +42,7 @@ public class PermissionParser {
      * the ClassLoader of this class.
      *  
      * @param permissionDescription
-     * @return
+     * @return Permission
      */
     public static Permission getPermission(String permissionDescription) {
         return getPermission(permissionDescription, PermissionParser.class.getClassLoader());
@@ -54,7 +54,7 @@ public class PermissionParser {
      *
      * @param permissionDescription
      * @param classLoader
-     * @return
+     * @return Permission
      */
     public static Permission getPermission(String permissionDescription, ClassLoader classLoader) {
         PermissionInfo permissionInfo = parse(permissionDescription);
