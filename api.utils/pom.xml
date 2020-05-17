@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>api.utils</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Clerezza - API Utilities</name>
     <description>Utility classes to work with Clerezza API</description>
@@ -86,7 +86,7 @@
         <url>https://github.com/apache/clerezza</url>
         <connection>scm:git:https://gitbox.apache.org/repos/asf/clerezza.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/clerezza.git</developerConnection>
-        <tag>api.utils-2.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <build>
