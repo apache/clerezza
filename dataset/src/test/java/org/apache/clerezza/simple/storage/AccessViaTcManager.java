@@ -22,19 +22,21 @@ import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.dataset.TcManager;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author developer
  */
+@RunWith(JUnitPlatform.class)
 public class AccessViaTcManager {
     
     @Test
     public void simple() {
         Graph g = TcManager.getInstance().createGraph(new IRI("http://example.org/foo"));
-        Assert.assertTrue(g instanceof SimpleGraph);
+        Assertions.assertTrue(g instanceof SimpleGraph);
     }
-    
 }

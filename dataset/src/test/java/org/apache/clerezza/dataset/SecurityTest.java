@@ -21,13 +21,16 @@ package org.apache.clerezza.dataset;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.Triple;
-import org.apache.clerezza.implementation.graph.ReadOnlyException;
-import org.apache.clerezza.implementation.literal.PlainLiteralImpl;
-import org.apache.clerezza.implementation.TripleImpl;
 import org.apache.clerezza.dataset.providers.WeightedA;
 import org.apache.clerezza.dataset.providers.WeightedDummy;
 import org.apache.clerezza.dataset.security.TcPermission;
-import org.junit.*;
+import org.apache.clerezza.implementation.TripleImpl;
+import org.apache.clerezza.implementation.graph.ReadOnlyException;
+import org.apache.clerezza.implementation.literal.PlainLiteralImpl;
+import org.junit.jupiter.api.*;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 
 import java.io.FilePermission;
 import java.lang.reflect.ReflectPermission;
@@ -35,16 +38,21 @@ import java.security.*;
 import java.util.Collections;
 import java.util.PropertyPermission;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class SecurityTest {
-    
+
+    private static final Logger LOGGER = getLogger(SecurityTest.class);
+
     public SecurityTest() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         ////needed to unbind because this is injected with META-INF/services - file
         TcManager.getInstance().unbindWeightedTcProvider(new WeightedA());
@@ -53,11 +61,11 @@ public class SecurityTest {
         TcManager.getInstance().createGraph(new IRI("http://example.org/read/ImmutableGraph"));
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         
         Policy.setPolicy(new Policy() {
@@ -83,65 +91,90 @@ public class SecurityTest {
 
             @Override
             public void checkPermission(Permission perm) {
-                //System.out.println("Checking "+perm);
+                LOGGER.debug("Checking {}", perm);
                 super.checkPermission(perm);
             }
 
             @Override
             public void checkPermission(Permission perm, Object context) {
-                //System.out.println("Checking "+perm);
+                LOGGER.debug("Checking {}", perm);
                 super.checkPermission(perm, context);
             }
 
         });
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setSecurityManager(null);
     }
 
 
-    @Test(expected=NoSuchEntityException.class)
-    public void testAcessGraph() {        
-        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted"));
-    }
-    
-    @Test(expected=AccessControlException.class)
-    public void testNoWildCard() {
-        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted/subthing"));
-    }
-    
-    @Test(expected=NoSuchEntityException.class)
-    public void testAllowedArea() {
-        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/area/allowed/something"));
-    }
-    
-    @Test(expected=AccessControlException.class)
-    public void testAcessForbiddenGraph() {
-        TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/forbidden"));
+    @Test
+    public void testAcessGraph()
+    {
+        Assertions.assertThrows(
+                NoSuchEntityException.class,
+                () -> TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/permitted"))
+        );
     }
 
-    @Test(expected=NoSuchEntityException.class)
+    @Test
+    public void testNoWildCard() {
+        Assertions.assertThrows(
+                AccessControlException.class,
+                () -> TcManager.getInstance().getImmutableGraph(
+                        new IRI("http://example.org/permitted/subthing")
+                )
+        );
+    }
+    
+    @Test
+    public void testAllowedArea() {
+        Assertions.assertThrows(
+                NoSuchEntityException.class,
+                () -> TcManager.getInstance().getImmutableGraph(
+                        new IRI("http://example.org/area/allowed/something")
+                )
+        );
+    }
+    
+    @Test
+    public void testAcessForbiddenGraph() {
+        Assertions.assertThrows(
+                AccessControlException.class,
+                () -> TcManager.getInstance().getImmutableGraph(new IRI("http://example.org/forbidden"))
+        );
+    }
+
+    @Test
     public void testCustomPermissions() {
         IRI graphUri = new IRI("http://example.org/custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
         Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/graph-access.graph"));
-        System.out.print(ag.toString());
-        TcManager.getInstance().getMGraph(graphUri);
+
+        LOGGER.info("Custom permissions graph: {}", ag);
+        Assertions.assertThrows(
+                NoSuchEntityException.class,
+                () -> TcManager.getInstance().getMGraph(graphUri)
+        );
     }
 
-    @Test(expected=AccessControlException.class)
+    @Test
     public void testCustomPermissionsIncorrect() {
         IRI graphUri = new IRI("http://example.org/custom");
         TcManager.getInstance().getTcAccessController().setRequiredReadPermissionStrings(graphUri,
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
         Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/graph-access.graph"));
-        System.out.print(ag.toString());
-        TcManager.getInstance().createGraph(graphUri);
+
+        LOGGER.info("Incorrect custom permissions graph: {}", ag);
+        Assertions.assertThrows(
+                AccessControlException.class,
+                () -> TcManager.getInstance().createGraph(graphUri)
+        );
     }
 
     @Test
@@ -151,25 +184,36 @@ public class SecurityTest {
                 Collections.singletonList("(java.io.FilePermission \"/etc\" \"write\")"));
         //new FilePermission("/etc", "write").toString()));
         Graph ag = TcManager.getInstance().getGraph(new IRI("urn:x-localinstance:/graph-access.graph"));
-        System.out.print(ag.toString());
+        LOGGER.info("Custom read/write permissions graph: {}", ag);
         TcManager.getInstance().createGraph(graphUri);
     }
     
-    @Test(expected=EntityAlreadyExistsException.class)
+    @Test
     public void testCreateMGraph() {
-        TcManager.getInstance().createGraph(new IRI("http://example.org/ImmutableGraph/alreadyexists"));
+        Assertions.assertThrows(
+                EntityAlreadyExistsException.class,
+                () -> TcManager.getInstance().createGraph(
+                        new IRI("http://example.org/ImmutableGraph/alreadyexists")
+                )
+        );
     }
-    @Test(expected=AccessControlException.class)
+
+    @Test
     public void testCreateMGraphWithoutWritePermission() {
-        TcManager.getInstance().createGraph(new IRI("http://example.org/read/ImmutableGraph"));
+        Assertions.assertThrows(
+                AccessControlException.class,
+                () -> TcManager.getInstance().createGraph(new IRI("http://example.org/read/ImmutableGraph"))
+        );
     }
-    @Test(expected=ReadOnlyException.class)
+
+    @Test
     public void testAddTripleToMGraph() {
         Graph graph = TcManager.getInstance().getMGraph(new IRI("http://example.org/read/ImmutableGraph"));
         Triple triple = new TripleImpl(
                 new IRI("http://example.org/definition/isNonLiteral"),
                 new IRI("http://example.org/definition/isTest"),
                 new PlainLiteralImpl("test"));
-        graph.add(triple);
+
+        Assertions.assertThrows(ReadOnlyException.class, () -> graph.add(triple));
     }
 }

@@ -31,21 +31,23 @@ import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.sparql.NoQueryEngineException;
 import org.apache.clerezza.sparql.QueryEngine;
 import org.apache.clerezza.sparql.query.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class TcManagerTest {
 
 	public static IRI uriRefAHeavy = new IRI("http://example.org/aHeavy");
@@ -58,7 +60,7 @@ public class TcManagerTest {
 	private final WeightedA1 weightedA1 = new WeightedA1();
 	private WeightedTcProvider weightedBlight = new WeightedBlight();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		graphAccess = TcManager.getInstance();
 		graphAccess.bindWeightedTcProvider(weightedA);
@@ -68,7 +70,7 @@ public class TcManagerTest {
 		queryEngine = Mockito.mock(QueryEngine.class);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		graphAccess = TcManager.getInstance();
 		graphAccess.unbindWeightedTcProvider(weightedA);
@@ -134,60 +136,73 @@ public class TcManagerTest {
 		graphAccess.unbindWeightedTcProvider(weightedAHeavy);
 	}
 
-	@Test(expected = NoQueryEngineException.class)
+	@Test
 	public void executeSparqlQueryNoEngineWithString() throws Exception {
 		// Prepare
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery("", new SimpleGraph());
+		assertThrows(NoQueryEngineException.class, () -> graphAccess.executeSparqlQuery("", new SimpleGraph()));
 	}
 
-	@Test(expected = NoQueryEngineException.class)
+	@Test
 	public void executeSparqlQueryNoEngineWithQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery((Query) null, new SimpleGraph());
+		assertThrows(
+				NoQueryEngineException.class,
+				() -> graphAccess.executeSparqlQuery((Query) null, new SimpleGraph())
+		);
 	}
 
-	@Test(expected = NoQueryEngineException.class)
+	@Test
 	public void executeSparqlQueryNoEngineWithSelectQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery((SelectQuery) null, new SimpleGraph());
+		assertThrows(
+				NoQueryEngineException.class,
+				() -> graphAccess.executeSparqlQuery((SelectQuery) null, new SimpleGraph())
+		);
 	}
 
-	@Test(expected = NoQueryEngineException.class)
+	@Test
 	public void executeSparqlQueryNoEngineWithAskQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery((AskQuery) null, new SimpleGraph());
+		assertThrows(
+				NoQueryEngineException.class,
+				() -> graphAccess.executeSparqlQuery((AskQuery) null, new SimpleGraph())
+		);
 	}
 
-	@Test(expected = NoQueryEngineException.class)
+	@Test
 	public void executeSparqlQueryNoEngineWithDescribeQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess
-				.executeSparqlQuery((DescribeQuery) null, new SimpleGraph());
+		assertThrows(
+				NoQueryEngineException.class,
+				() -> graphAccess.executeSparqlQuery((DescribeQuery) null, new SimpleGraph())
+		);
 	}
 
-	@Test(expected = NoQueryEngineException.class)
+	@Test
 	public void executeSparqlQueryNoEngineWithConstructQuery() throws Exception {
 		// Prepare
 		injectQueryEngine(null);
 
 		// Execute
-		graphAccess.executeSparqlQuery((ConstructQuery) null,
-				new SimpleGraph());
+		assertThrows(
+				NoQueryEngineException.class,
+				() -> graphAccess.executeSparqlQuery((ConstructQuery) null, new SimpleGraph())
+		);
 	}
 
 	@Test

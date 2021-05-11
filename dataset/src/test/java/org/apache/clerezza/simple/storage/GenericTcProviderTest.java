@@ -20,7 +20,7 @@ package org.apache.clerezza.simple.storage;
 
 import org.apache.clerezza.dataset.TcProvider;
 import org.apache.clerezza.dataset.test.utils.TcProviderTest;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 /**
  *
@@ -30,7 +30,7 @@ public class GenericTcProviderTest extends TcProviderTest {
 
     SimpleTcProvider provider = new SimpleTcProvider();
 
-    @After
+    @AfterEach
     public void cleanUp() {
         provider = new SimpleTcProvider();
     }
