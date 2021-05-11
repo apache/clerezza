@@ -18,8 +18,8 @@
 package org.apache.clerezza.event;
 
 import org.apache.clerezza.BlankNodeOrIRI;
-import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.IRI;
+import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.Triple;
 
 /**
