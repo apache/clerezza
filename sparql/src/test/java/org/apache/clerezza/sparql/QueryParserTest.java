@@ -23,8 +23,10 @@ import org.apache.clerezza.Language;
 import org.apache.clerezza.implementation.literal.PlainLiteralImpl;
 import org.apache.clerezza.sparql.query.*;
 import org.apache.clerezza.sparql.query.impl.SimpleTriplePattern;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.Set;
  *
  * @author hasan
  */
+@RunWith(JUnitPlatform.class)
 public class QueryParserTest {
 
     @Test
@@ -54,32 +57,34 @@ public class QueryParserTest {
                 .append(predicate).append("> ?").append(variable).append(" . }");
 
         Query q = QueryParser.getInstance().parse(queryStrBuf.toString());
-        Assert.assertTrue(SelectQuery.class.isAssignableFrom(q.getClass()));
+        Assertions.assertTrue(SelectQuery.class.isAssignableFrom(q.getClass()));
         SelectQuery selectQuery = (SelectQuery) q;
-        Assert.assertTrue(selectQuery.getSelection().get(0)
+        Assertions.assertTrue(selectQuery.getSelection().get(0)
                 .equals(new Variable(variable)));
-        Assert.assertTrue(selectQuery.getDataSet().getDefaultGraphs().toArray()[0]
+        Assertions.assertTrue(selectQuery.getDataSet().getDefaultGraphs().toArray()[0]
                 .equals(new IRI(defaultGraph)));
 
         GraphPattern gp = (GraphPattern) selectQuery.getQueryPattern()
                 .getGraphPatterns().toArray()[0];
-        Assert.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
+        Assertions.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
         BasicGraphPattern bgp = (BasicGraphPattern) gp;
 
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
-        Assert.assertTrue(triplePatterns.size()==1);
+        Assertions.assertTrue(triplePatterns.size()==1);
 
         ResourceOrVariable s = new ResourceOrVariable(new IRI(subject));
         UriRefOrVariable p = new UriRefOrVariable(new IRI(predicate));
         ResourceOrVariable o = new ResourceOrVariable(new Variable(variable));
 
-        Assert.assertTrue(triplePatterns.contains(
+        Assertions.assertTrue(triplePatterns.contains(
                 new SimpleTriplePattern(s, p, o)));
     }
 
-    @Test(expected=ParseException.class)
+    @Test
     public void testInvalidQuery() throws ParseException {
-        Query q = QueryParser.getInstance().parse("Hello");
+        Assertions.assertThrows(ParseException.class, () -> {
+            Query q = QueryParser.getInstance().parse("Hello");
+        });
     }
 
     @Test
@@ -91,8 +96,8 @@ public class QueryParserTest {
         Set<Variable> expected = new HashSet<Variable>();
         expected.add(new Variable("a"));
         expected.add(new Variable("b"));
-        Assert.assertEquals(expected, selectionSet);
-        Assert.assertFalse(q.isSelectAll());
+        Assertions.assertEquals(expected, selectionSet);
+        Assertions.assertFalse(q.isSelectAll());
 
     }
 
@@ -106,8 +111,8 @@ public class QueryParserTest {
         expected.add(new Variable("a"));
         expected.add(new Variable("b"));
         expected.add(new Variable("x"));
-        Assert.assertEquals(expected, selectionSet);
-        Assert.assertTrue(q.isSelectAll());
+        Assertions.assertEquals(expected, selectionSet);
+        Assertions.assertTrue(q.isSelectAll());
 
     }
 
@@ -118,17 +123,17 @@ public class QueryParserTest {
 
         GraphPattern gp = (GraphPattern) q.getQueryPattern()
                 .getGraphPatterns().toArray()[0];
-        Assert.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
+        Assertions.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
         BasicGraphPattern bgp = (BasicGraphPattern) gp;
 
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
-        Assert.assertTrue(triplePatterns.size()==2);
+        Assertions.assertTrue(triplePatterns.size()==2);
 
-        Assert.assertTrue(triplePatterns.contains(new SimpleTriplePattern(
+        Assertions.assertTrue(triplePatterns.contains(new SimpleTriplePattern(
                 new Variable("a"), new Variable("x"),
                 new PlainLiteralImpl("tiger"))));
 
-        Assert.assertTrue(triplePatterns.contains(new SimpleTriplePattern(
+        Assertions.assertTrue(triplePatterns.contains(new SimpleTriplePattern(
                 new Variable("a"), new Variable("x"),
                 new PlainLiteralImpl("lion", new Language("en")))));
     }
@@ -139,10 +144,10 @@ public class QueryParserTest {
                 "SELECT * WHERE {?a ?x ?b} ORDER BY DESC(?b)");
 
         List<OrderCondition> oc = ((QueryWithSolutionModifier) q).getOrderConditions();
-        Assert.assertTrue(oc.size()==1);
-        Assert.assertFalse(oc.get(0).isAscending());
+        Assertions.assertTrue(oc.size()==1);
+        Assertions.assertFalse(oc.get(0).isAscending());
         Variable b = new Variable("b");
-        Assert.assertEquals(b, oc.get(0).getExpression());
+        Assertions.assertEquals(b, oc.get(0).getExpression());
     }
 
     @Test
@@ -165,30 +170,30 @@ public class QueryParserTest {
                 .append(predicate2).append("> ?").append(variable1).append("}");
 
         Query q = QueryParser.getInstance().parse(queryStrBuf.toString());
-        Assert.assertTrue(ConstructQuery.class.isAssignableFrom(q.getClass()));
+        Assertions.assertTrue(ConstructQuery.class.isAssignableFrom(q.getClass()));
         ConstructQuery constructQuery = (ConstructQuery) q;
         Set<TriplePattern> triplePatterns = constructQuery
                 .getConstructTemplate();
-        Assert.assertTrue(triplePatterns.size()==1);
+        Assertions.assertTrue(triplePatterns.size()==1);
 
         ResourceOrVariable s = new ResourceOrVariable(new IRI(subject1));
         UriRefOrVariable p = new UriRefOrVariable(new IRI(predicate1));
         ResourceOrVariable o = new ResourceOrVariable(new Variable(variable1));
 
-        Assert.assertTrue(triplePatterns.contains(
+        Assertions.assertTrue(triplePatterns.contains(
                 new SimpleTriplePattern(s, p, o)));
 
         GraphPattern gp = (GraphPattern) constructQuery.getQueryPattern()
                 .getGraphPatterns().toArray()[0];
-        Assert.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
+        Assertions.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
         BasicGraphPattern bgp = (BasicGraphPattern) gp;
         triplePatterns = bgp.getTriplePatterns();
-        Assert.assertTrue(triplePatterns.size()==1);
+        Assertions.assertTrue(triplePatterns.size()==1);
 
         s = new ResourceOrVariable(new Variable(variable2));
         p = new UriRefOrVariable(new IRI(predicate2));
 
-        Assert.assertTrue(triplePatterns.contains(
+        Assertions.assertTrue(triplePatterns.contains(
                 new SimpleTriplePattern(s, p, o)));
     }
 
@@ -203,9 +208,9 @@ public class QueryParserTest {
         queryStrBuf.append("DESCRIBE <").append(resource).append(">");
 
         Query q = QueryParser.getInstance().parse(queryStrBuf.toString());
-        Assert.assertTrue(DescribeQuery.class.isAssignableFrom(q.getClass()));
+        Assertions.assertTrue(DescribeQuery.class.isAssignableFrom(q.getClass()));
         DescribeQuery describeQuery = (DescribeQuery) q;
-        Assert.assertTrue(describeQuery.getResourcesToDescribe().get(0)
+        Assertions.assertTrue(describeQuery.getResourcesToDescribe().get(0)
                 .getResource().equals(new IRI(resource)));
     }
 
@@ -223,18 +228,18 @@ public class QueryParserTest {
                 .append(predicate).append("> \"").append(object).append("\" }");
 
         Query q = QueryParser.getInstance().parse(queryStrBuf.toString());
-        Assert.assertTrue(AskQuery.class.isAssignableFrom(q.getClass()));
+        Assertions.assertTrue(AskQuery.class.isAssignableFrom(q.getClass()));
         AskQuery askQuery = (AskQuery) q;
 
         GraphPattern gp = (GraphPattern) askQuery.getQueryPattern()
                 .getGraphPatterns().toArray()[0];
-        Assert.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
+        Assertions.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
         BasicGraphPattern bgp = (BasicGraphPattern) gp;
 
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
-        Assert.assertTrue(triplePatterns.size()==1);
+        Assertions.assertTrue(triplePatterns.size()==1);
 
-        Assert.assertTrue(triplePatterns.contains(new SimpleTriplePattern(new Variable(variable),
+        Assertions.assertTrue(triplePatterns.contains(new SimpleTriplePattern(new Variable(variable),
                 new IRI(predicate), new PlainLiteralImpl(object))));
     }
 
@@ -263,24 +268,24 @@ public class QueryParserTest {
                 .append(variable).append(" }");
 
         Query q = QueryParser.getInstance().parse(queryStrBuf.toString());
-        Assert.assertTrue(SelectQuery.class.isAssignableFrom(q.getClass()));
+        Assertions.assertTrue(SelectQuery.class.isAssignableFrom(q.getClass()));
         SelectQuery selectQuery = (SelectQuery) q;
-        Assert.assertTrue(selectQuery.getSelection().get(0)
+        Assertions.assertTrue(selectQuery.getSelection().get(0)
                 .equals(new Variable(variable)));
 
         GraphPattern gp = (GraphPattern) selectQuery.getQueryPattern()
                 .getGraphPatterns().toArray()[0];
-        Assert.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
+        Assertions.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp.getClass()));
         BasicGraphPattern bgp = (BasicGraphPattern) gp;
 
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
-        Assert.assertTrue(triplePatterns.size()==1);
+        Assertions.assertTrue(triplePatterns.size()==1);
 
         ResourceOrVariable s = new ResourceOrVariable(new IRI(base+subject));
         UriRefOrVariable p = new UriRefOrVariable(new IRI(prefixUri+predicate));
         ResourceOrVariable o = new ResourceOrVariable(new Variable(variable));
 
-        Assert.assertTrue(triplePatterns.contains(
+        Assertions.assertTrue(triplePatterns.contains(
                 new SimpleTriplePattern(s, p, o)));
     }
 
@@ -319,49 +324,49 @@ public class QueryParserTest {
                 .append(" .} FILTER ( ! bound(?").append(variable3).append(") ) }");
 
         Query q = QueryParser.getInstance().parse(queryStrBuf.toString());
-        Assert.assertTrue(SelectQuery.class.isAssignableFrom(q.getClass()));
+        Assertions.assertTrue(SelectQuery.class.isAssignableFrom(q.getClass()));
         SelectQuery selectQuery = (SelectQuery) q;
-        Assert.assertTrue(selectQuery.getSelection().size() == 2);
+        Assertions.assertTrue(selectQuery.getSelection().size() == 2);
         Set<Variable> vars = new HashSet<Variable>(2);
         Variable var1 = new Variable(variable1);
         Variable var2 = new Variable(variable2);
         vars.add(var1);
         vars.add(var2);
-        Assert.assertTrue(selectQuery.getSelection().containsAll(vars));
+        Assertions.assertTrue(selectQuery.getSelection().containsAll(vars));
 
         GroupGraphPattern ggp = selectQuery.getQueryPattern();
         List<Expression> constraints = ggp.getFilter();
-        Assert.assertTrue(UnaryOperation.class.isAssignableFrom(constraints
+        Assertions.assertTrue(UnaryOperation.class.isAssignableFrom(constraints
                 .get(0).getClass()));
         UnaryOperation uop = (UnaryOperation) constraints.get(0);
-        Assert.assertTrue(uop.getOperatorString().equals("!"));
-        Assert.assertTrue(BuiltInCall.class.isAssignableFrom(uop.getOperand()
+        Assertions.assertTrue(uop.getOperatorString().equals("!"));
+        Assertions.assertTrue(BuiltInCall.class.isAssignableFrom(uop.getOperand()
                 .getClass()));
         BuiltInCall bic = (BuiltInCall) uop.getOperand();
-        Assert.assertTrue(bic.getName().equals("BOUND"));
+        Assertions.assertTrue(bic.getName().equals("BOUND"));
         Variable var3 = new Variable(variable3);
-        Assert.assertTrue(bic.getArguements().get(0).equals(var3));
+        Assertions.assertTrue(bic.getArguements().get(0).equals(var3));
 
         GraphPattern gp = (GraphPattern) ggp.getGraphPatterns().toArray()[0];
-        Assert.assertTrue(OptionalGraphPattern.class.isAssignableFrom(gp.getClass()));
+        Assertions.assertTrue(OptionalGraphPattern.class.isAssignableFrom(gp.getClass()));
         OptionalGraphPattern ogp = (OptionalGraphPattern) gp;
-        Assert.assertTrue(BasicGraphPattern.class.isAssignableFrom(
+        Assertions.assertTrue(BasicGraphPattern.class.isAssignableFrom(
                 ogp.getMainGraphPattern().getClass()));
         BasicGraphPattern bgp = (BasicGraphPattern) ogp.getMainGraphPattern();
 
         Set<TriplePattern> triplePatterns = bgp.getTriplePatterns();
-        Assert.assertTrue(triplePatterns.size() == 1);
-        Assert.assertTrue(triplePatterns.contains(new SimpleTriplePattern(var1, new IRI(prefix1Uri + predicate1),
+        Assertions.assertTrue(triplePatterns.size() == 1);
+        Assertions.assertTrue(triplePatterns.contains(new SimpleTriplePattern(var1, new IRI(prefix1Uri + predicate1),
                 var2)));
 
         GraphPattern gp2 = (GraphPattern) ogp.getOptionalGraphPattern()
                 .getGraphPatterns().toArray()[0];
-        Assert.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp2.getClass()));
+        Assertions.assertTrue(BasicGraphPattern.class.isAssignableFrom(gp2.getClass()));
         bgp = (BasicGraphPattern) gp2;
 
         triplePatterns = bgp.getTriplePatterns();
-        Assert.assertTrue(triplePatterns.size() == 1);
-        Assert.assertTrue(triplePatterns.contains(new SimpleTriplePattern(var1, new IRI(prefix2Uri + predicate2),
+        Assertions.assertTrue(triplePatterns.size() == 1);
+        Assertions.assertTrue(triplePatterns.contains(new SimpleTriplePattern(var1, new IRI(prefix2Uri + predicate2),
                 var3)));
     }
 }
