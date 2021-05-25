@@ -20,8 +20,10 @@ package org.apache.clerezza.representation;
 
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.io.InputStream;
 
@@ -31,6 +33,7 @@ import java.io.InputStream;
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 @SupportedFormat("application/x-test+rdf")
 public class TestServiceManagedProvider implements ParsingProvider {
 
@@ -45,6 +48,6 @@ public class TestServiceManagedProvider implements ParsingProvider {
     public void registerOneProvider() {
         Parser parser = Parser.getInstance();
         parser.parse(null, "application/x-test+rdf");
-        Assert.assertTrue(parseInvoked);
+        Assertions.assertTrue(parseInvoked);
     }
 }
