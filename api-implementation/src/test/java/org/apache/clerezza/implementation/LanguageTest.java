@@ -18,29 +18,32 @@
 package org.apache.clerezza.implementation;
 
 import org.apache.clerezza.Language;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class LanguageTest {
 
     @Test
     public void languageEqualityTest() {
         Language lang1 = new Language("DE");
         Language lang2 = new Language("DE");
-        Assert.assertEquals(lang1, lang2);
-        Assert.assertEquals(lang1.hashCode(), lang2.hashCode());
+        Assertions.assertEquals(lang1, lang2);
+        Assertions.assertEquals(lang1.hashCode(), lang2.hashCode());
         Language lang3 = new Language("EN");
-        Assert.assertFalse(lang1.equals(lang3));
+        Assertions.assertFalse(lang1.equals(lang3));
     }
 
     @Test
     public void toStringTest() {
         final String id = "de";
         Language lang1 = new Language(id);
-        Assert.assertEquals(lang1.toString(), id);
+        Assertions.assertEquals(lang1.toString(), id);
     }
 
 }

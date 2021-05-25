@@ -21,8 +21,10 @@ import org.apache.clerezza.IRI;
 import org.apache.clerezza.Triple;
 import org.apache.clerezza.implementation.TripleImpl;
 import org.apache.clerezza.implementation.in_memory.SimpleGraph;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ import java.util.Iterator;
 /**
  * @author mir
  */
+@RunWith(JUnitPlatform.class)
 public class SimpleGraphTest {
 
     private IRI uriRef1 = new IRI("http://example.org/foo");
@@ -54,7 +57,7 @@ public class SimpleGraphTest {
             Triple triple = iter.next();
             iter.remove();
         }
-        Assert.assertEquals(0, stc.size());
+        Assertions.assertEquals(0, stc.size());
     }
 
     @Test
@@ -70,7 +73,7 @@ public class SimpleGraphTest {
         stc2.add(triple3);
         stc2.add(triple5);
         stc.removeAll(stc2);
-        Assert.assertEquals(2, stc.size());
+        Assertions.assertEquals(2, stc.size());
     }
 
     @Test
@@ -86,10 +89,10 @@ public class SimpleGraphTest {
             Triple triple = iter.next();
             iter.remove();
         }
-        Assert.assertEquals(3, stc.size());
+        Assertions.assertEquals(3, stc.size());
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void remove() {
         SimpleGraph stc = new SimpleGraph();
         stc.setCheckConcurrency(true);
@@ -99,10 +102,14 @@ public class SimpleGraphTest {
         stc.add(triple4);
         stc.add(triple5);
         Iterator<Triple> iter = stc.filter(uriRef1, null, null);
-        while (iter.hasNext()) {
-            Triple triple = iter.next();
-            stc.remove(triple);
-        }
-        Assert.assertEquals(3, stc.size());
+
+        Assertions.assertThrows(ConcurrentModificationException.class, () -> {
+            while (iter.hasNext()) {
+                Triple triple = iter.next();
+                stc.remove(triple);
+            }
+        });
+
+        Assertions.assertEquals(4, stc.size());
     }
 }

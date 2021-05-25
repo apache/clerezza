@@ -18,8 +18,10 @@
 package org.apache.clerezza.implementation;
 
 import org.apache.clerezza.IRI;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -27,6 +29,7 @@ import java.net.URLEncoder;
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class UriRefTest {
 
     @Test
@@ -34,16 +37,16 @@ public class UriRefTest {
         String uriRefString = "http://example.org/üöä";
         IRI uriRef1 = new IRI(uriRefString);
         IRI uriRef2 = new IRI(uriRefString);
-        Assert.assertEquals(uriRef1, uriRef2);
+        Assertions.assertEquals(uriRef1, uriRef2);
         IRI uriRef3 = new IRI(URLEncoder.encode(uriRefString, "utf-8"));
-        Assert.assertFalse(uriRef1.equals(uriRef3));
+        Assertions.assertFalse(uriRef1.equals(uriRef3));
     }
 
     @Test
     public void toStringTest() {
         String uriRefString = "http://example.org/üöä";
         IRI uriRef = new IRI(uriRefString);
-        Assert.assertEquals("<" + uriRefString + ">", uriRef.toString());
+        Assertions.assertEquals("<" + uriRefString + ">", uriRef.toString());
     }
 
 }

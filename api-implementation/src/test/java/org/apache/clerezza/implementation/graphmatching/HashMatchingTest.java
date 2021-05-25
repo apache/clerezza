@@ -21,14 +21,17 @@ package org.apache.clerezza.implementation.graphmatching;
 import org.apache.clerezza.BlankNodeOrIRI;
 import org.apache.clerezza.BlankNode;
 import org.apache.clerezza.Graph;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.Map;
 
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class HashMatchingTest {
 
     @Test
@@ -39,10 +42,10 @@ public class HashMatchingTest {
         BlankNodeOrIRI start2 = new BlankNode();
         Graph tc2 = Utils4Testing.generateLine(5, start2);
         tc2.addAll(Utils4Testing.generateLine(4, start2));
-        Assert.assertEquals(9, tc1.size());
+        Assertions.assertEquals(9, tc1.size());
         final Map<BlankNode, BlankNode> mapping = new HashMatching(tc1, tc2).getMatchings();
-        Assert.assertNotNull(mapping);
-        Assert.assertEquals(10, mapping.size());
+        Assertions.assertNotNull(mapping);
+        Assertions.assertEquals(10, mapping.size());
     }
 
 }
