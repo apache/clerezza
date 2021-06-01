@@ -1,0 +1,3 @@
+@prefix ex: <http://clerezza.apache.org/2017/01/example#> .
+_:a ex:hasFirstName "Hasan" .
+_:a ex:isA ex:ClerezzaUser .
