@@ -19,8 +19,10 @@ package org.apache.clerezza.implementation.literal;
 
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.Literal;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -28,16 +30,19 @@ import java.util.Date;
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class LiteralFactoryTest {
 
     /**
      * Test that a NoConvertorException thrown for an unsupported convertor
      */
-    @Test(expected = NoConvertorException.class)
+    @Test
     public void unavailableConvertor() {
         Object value = new Object() {
         };
-        LiteralFactory.getInstance().createTypedLiteral(value);
+        Assertions.assertThrows(NoConvertorException.class, () ->
+                LiteralFactory.getInstance().createTypedLiteral(value)
+        );
     }
 
     /**
@@ -50,13 +55,13 @@ public class LiteralFactoryTest {
             bytes[i] = i;
         }
         Literal literal = LiteralFactory.getInstance().createTypedLiteral(bytes);
-        Assert.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#base64Binary"),
+        Assertions.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#base64Binary"),
                 literal.getDataType());
         //we are using bytes.getClass() but there should be a way to get
         //that instance of Class without getting it from an instance
         //but this is java-bug 4071439 (would like byte[].class or byte.class.getArrayType())
         byte[] bytesBack = LiteralFactory.getInstance().createObject(bytes.getClass(), literal);
-        Assert.assertTrue(Arrays.equals(bytes, bytesBack));
+        Assertions.assertTrue(Arrays.equals(bytes, bytesBack));
 
     }
 
@@ -67,10 +72,10 @@ public class LiteralFactoryTest {
     public void dateConversion() {
         Date date = new Date();
         Literal literal = LiteralFactory.getInstance().createTypedLiteral(date);
-        Assert.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#dateTime"),
+        Assertions.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#dateTime"),
                 literal.getDataType());
         Date dateBack = LiteralFactory.getInstance().createObject(Date.class, literal);
-        Assert.assertEquals(date.getTime(), dateBack.getTime());
+        Assertions.assertEquals(date.getTime(), dateBack.getTime());
 
     }
 
@@ -81,10 +86,10 @@ public class LiteralFactoryTest {
     public void stringConversion() {
         String value = "Hello world";
         Literal literal = LiteralFactory.getInstance().createTypedLiteral(value);
-        Assert.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#string"),
+        Assertions.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#string"),
                 literal.getDataType());
         String valueBack = LiteralFactory.getInstance().createObject(String.class, literal);
-        Assert.assertEquals(value, valueBack);
+        Assertions.assertEquals(value, valueBack);
 
     }
 
@@ -95,10 +100,10 @@ public class LiteralFactoryTest {
     public void intConversion() {
         int value = 3;
         Literal literal = LiteralFactory.getInstance().createTypedLiteral(value);
-        Assert.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#int"),
+        Assertions.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#int"),
                 literal.getDataType());
         Integer valueBack = LiteralFactory.getInstance().createObject(Integer.class, literal);
-        Assert.assertEquals(value, valueBack.intValue());
+        Assertions.assertEquals(value, valueBack.intValue());
 
     }
 
@@ -109,12 +114,10 @@ public class LiteralFactoryTest {
     public void longConversion() {
         long value = 332314646;
         Literal literal = LiteralFactory.getInstance().createTypedLiteral(value);
-        Assert.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#long"),
+        Assertions.assertEquals(new IRI("http://www.w3.org/2001/XMLSchema#long"),
                 literal.getDataType());
         Long valueBack = LiteralFactory.getInstance().createObject(Long.class, literal);
-        Assert.assertEquals(value, valueBack.longValue());
+        Assertions.assertEquals(value, valueBack.longValue());
 
     }
-
-
 }

@@ -22,9 +22,11 @@ import org.apache.clerezza.IRI;
 import org.apache.clerezza.implementation.literal.LiteralFactory;
 import org.apache.clerezza.sparql.query.*;
 import org.apache.clerezza.sparql.query.impl.*;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,6 +37,7 @@ import java.util.Set;
  *
  * @author hasan
  */
+@RunWith(JUnitPlatform.class)
 public class QuerySerializerTest {
 
     @Test
@@ -63,7 +66,7 @@ public class QuerySerializerTest {
         queryPattern.addGraphPattern(bgp);
         selectQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(selectQuery.toString()
+        Assertions.assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -93,7 +96,7 @@ public class QuerySerializerTest {
         queryPattern.addGraphPattern(bgp);
         constructQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(constructQuery.toString()
+        Assertions.assertTrue(constructQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -106,7 +109,7 @@ public class QuerySerializerTest {
         describeQuery.addResourceToDescribe(new ResourceOrVariable(
                 new IRI("http://example.org/book/book1")));
 
-        Assert.assertTrue(describeQuery.toString()
+        Assertions.assertTrue(describeQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -131,7 +134,7 @@ public class QuerySerializerTest {
         queryPattern.addGraphPattern(bgp);
         askQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(askQuery.toString()
+        Assertions.assertTrue(askQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -139,7 +142,7 @@ public class QuerySerializerTest {
      * Ignoring: given that triplePatterns is a Set I don't see what is supposed 
      * to guarantee the expected ordering.
      */
-    @Ignore
+    @Disabled
     @Test
     public void testFilter() {
 
@@ -170,7 +173,7 @@ public class QuerySerializerTest {
         queryPattern.addConstraint(constraint);
         selectQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(selectQuery.toString()
+        Assertions.assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -199,7 +202,7 @@ public class QuerySerializerTest {
         queryPattern.addConstraint(constraint);
         selectQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(selectQuery.toString()
+        Assertions.assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -225,7 +228,7 @@ public class QuerySerializerTest {
         selectQuery.setQueryPattern(queryPattern);
         selectQuery.addOrderCondition(new SimpleOrderCondition(c, false));
 
-        Assert.assertTrue(selectQuery.toString()
+        Assertions.assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -266,7 +269,7 @@ public class QuerySerializerTest {
         queryPattern.addGraphPattern(ogp);
         selectQuery.setQueryPattern(queryPattern);
 
-        Assert.assertTrue(selectQuery.toString()
+        Assertions.assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 
@@ -297,7 +300,7 @@ public class QuerySerializerTest {
         BuiltInCall constraint = new BuiltInCall("REGEX", arguments);
         queryPattern.addConstraint(constraint);
         selectQuery.setQueryPattern(queryPattern);
-        Assert.assertTrue(selectQuery.toString()
+        Assertions.assertTrue(selectQuery.toString()
                 .replaceAll("( |\n)+", " ").trim().equals(queryString));
     }
 }

@@ -18,10 +18,12 @@
 
 package org.apache.clerezza.representation;
 
-import junit.framework.Assert;
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.io.InputStream;
 
@@ -29,6 +31,7 @@ import java.io.InputStream;
  *
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class ParserTest {
 
     private static boolean providerAInvoked;
@@ -42,7 +45,7 @@ public class ParserTest {
         parser.bindParsingProvider(parsingProviderA);
         providerAInvoked = false;
         parser.parse(null, "application/x-fantasy2+rdf");
-        Assert.assertTrue(providerAInvoked);
+        Assertions.assertTrue(providerAInvoked);
     }
     
     @Test
@@ -53,19 +56,19 @@ public class ParserTest {
         providerAInvoked = false;
         providerBInvoked = false;
         parser.parse(null, "application/x-fantasy2+rdf");
-        Assert.assertFalse(providerAInvoked);
-        Assert.assertTrue(providerBInvoked);
+        Assertions.assertFalse(providerAInvoked);
+        Assertions.assertTrue(providerBInvoked);
         providerAInvoked = false;
         providerBInvoked = false;
         parser.parse(null, "application/x-fantasy1+rdf");
-        Assert.assertTrue(providerAInvoked);
-        Assert.assertFalse(providerBInvoked);
+        Assertions.assertTrue(providerAInvoked);
+        Assertions.assertFalse(providerBInvoked);
         parser.unbindParsingProvider(parsingProviderB);
         providerAInvoked = false;
         providerBInvoked = false;
         parser.parse(null, "application/x-fantasy2+rdf");
-        Assert.assertTrue(providerAInvoked);
-        Assert.assertFalse(providerBInvoked);
+        Assertions.assertTrue(providerAInvoked);
+        Assertions.assertFalse(providerBInvoked);
         
     }
 

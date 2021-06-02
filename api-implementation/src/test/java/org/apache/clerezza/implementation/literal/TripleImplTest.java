@@ -17,17 +17,20 @@
  */
 package org.apache.clerezza.implementation.literal;
 
-import junit.framework.Assert;
 import org.apache.clerezza.BlankNodeOrIRI;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.RDFTerm;
 import org.apache.clerezza.Triple;
 import org.apache.clerezza.implementation.TripleImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class TripleImplTest {
 
     @Test
@@ -37,8 +40,7 @@ public class TripleImplTest {
         RDFTerm object = new PlainLiteralImpl("property value");
         Triple triple1 = new TripleImpl(subject, predicate, object);
         Triple triple2 = new TripleImpl(subject, predicate, object);
-        Assert.assertEquals(triple1.hashCode(), triple2.hashCode());
-        Assert.assertEquals(triple1, triple2);
+        Assertions.assertEquals(triple1.hashCode(), triple2.hashCode());
+        Assertions.assertEquals(triple1, triple2);
     }
-
 }

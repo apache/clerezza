@@ -17,16 +17,18 @@
  */
 package org.apache.clerezza.implementation.literal;
 
-import junit.framework.Assert;
 import org.apache.clerezza.Literal;
 import org.apache.clerezza.IRI;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class TypedLiteralImplTest {
-
 
     @Test
     public void typedLiteralEquality() {
@@ -34,13 +36,13 @@ public class TypedLiteralImplTest {
         IRI uriRef = new IRI("http://example.org/datatypes/magic");
         Literal literal1 = new TypedLiteralImpl(stringValue, uriRef);
         Literal literal2 = new TypedLiteralImpl(stringValue, uriRef);
-        Assert.assertEquals(literal1, literal2);
-        Assert.assertEquals(literal1.hashCode(), literal2.hashCode());
+        Assertions.assertEquals(literal1, literal2);
+        Assertions.assertEquals(literal1.hashCode(), literal2.hashCode());
         Literal literal3 = new TypedLiteralImpl("something else", uriRef);
-        Assert.assertFalse(literal1.equals(literal3));
+        Assertions.assertFalse(literal1.equals(literal3));
         IRI uriRef2 = new IRI("http://example.org/datatypes/other");
         Literal literal4 = new TypedLiteralImpl(stringValue, uriRef2);
-        Assert.assertFalse(literal1.equals(literal4));
+        Assertions.assertFalse(literal1.equals(literal4));
     }
 
     /**
@@ -51,7 +53,7 @@ public class TypedLiteralImplTest {
         String stringValue = "some text";
         IRI uriRef = new IRI("http://example.org/datatypes/magic");
         Literal literal = new TypedLiteralImpl(stringValue, uriRef);
-        Assert.assertEquals(stringValue.hashCode() + uriRef.hashCode(), literal.hashCode());
+        Assertions.assertEquals(stringValue.hashCode() + uriRef.hashCode(), literal.hashCode());
     }
 
 }
