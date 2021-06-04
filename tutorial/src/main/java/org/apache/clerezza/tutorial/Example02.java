@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.Set;
 
 public class Example02 {
 
@@ -41,4 +40,5 @@ public class Example02 {
             logger.warn( String.format( "%s is not supported by the used parser", SupportedFormat.TURTLE ) );
         }
     }
+
 }
