@@ -19,30 +19,33 @@
 package org.apache.clerezza.sparql;
 
 import org.apache.clerezza.sparql.query.Query;
-import org.junit.*;
+import org.junit.jupiter.api.*;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author hasan
  */
+@RunWith(JUnitPlatform.class)
 public class QueryParserSerializerCombinationTest {
     
     public QueryParserSerializerCombinationTest() {
     }
     
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -75,7 +78,7 @@ public class QueryParserSerializerCombinationTest {
                 + "} \n";
 
         Query query = QueryParser.getInstance().parse(queryString);
-        Assert.assertEquals(queryString.replaceAll("\\s", "").trim(), query.toString().replaceAll("\\s", "").trim());
+        Assertions.assertEquals(queryString.replaceAll("\\s", "").trim(), query.toString().replaceAll("\\s", "").trim());
     }
 
     @Test
@@ -130,6 +133,6 @@ public class QueryParserSerializerCombinationTest {
         Query query1 = QueryParser.getInstance().parse(queryString);
         Thread.sleep(5000l);
         Query query2 = QueryParser.getInstance().parse(queryString);
-        Assert.assertEquals(query1.toString(), query2.toString());
+        Assertions.assertEquals(query1.toString(), query2.toString());
     }
 }

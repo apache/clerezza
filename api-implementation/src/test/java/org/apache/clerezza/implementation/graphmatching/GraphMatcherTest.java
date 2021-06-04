@@ -23,14 +23,17 @@ import org.apache.clerezza.Graph;
 import org.apache.clerezza.IRI;
 import org.apache.clerezza.implementation.TripleImpl;
 import org.apache.clerezza.implementation.in_memory.SimpleGraph;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.Map;
 
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class GraphMatcherTest {
 
     final static IRI u1 = new IRI("http://example.org/u1");
@@ -40,8 +43,8 @@ public class GraphMatcherTest {
         Graph tc1 = new SimpleGraph();
         Graph tc2 = new SimpleGraph();
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
-        Assert.assertEquals(0, mapping.size());
+        Assertions.assertNotNull(mapping);
+        Assertions.assertEquals(0, mapping.size());
     }
 
     @Test
@@ -50,7 +53,7 @@ public class GraphMatcherTest {
         tc1.add(new TripleImpl(u1, u1, u1));
         Graph tc2 = new SimpleGraph();
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNull(mapping);
+        Assertions.assertNull(mapping);
     }
 
     @Test
@@ -60,8 +63,8 @@ public class GraphMatcherTest {
         Graph tc2 = new SimpleGraph();
         tc2.add(new TripleImpl(u1, u1, u1));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
-        Assert.assertEquals(0, mapping.size());
+        Assertions.assertNotNull(mapping);
+        Assertions.assertEquals(0, mapping.size());
     }
 
     @Test
@@ -71,8 +74,8 @@ public class GraphMatcherTest {
         Graph tc2 = new SimpleGraph();
         tc2.add(new TripleImpl(u1, u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
-        Assert.assertEquals(1, mapping.size());
+        Assertions.assertNotNull(mapping);
+        Assertions.assertEquals(1, mapping.size());
     }
 
     @Test
@@ -82,8 +85,8 @@ public class GraphMatcherTest {
         Graph tc2 = new SimpleGraph();
         tc2.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
-        Assert.assertEquals(2, mapping.size());
+        Assertions.assertNotNull(mapping);
+        Assertions.assertEquals(2, mapping.size());
     }
 
     @Test
@@ -95,7 +98,7 @@ public class GraphMatcherTest {
         Graph tc2 = new SimpleGraph();
         tc2.add(new TripleImpl(new BlankNode(), u1, new BlankNode()));
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNull(mapping);
+        Assertions.assertNull(mapping);
     }
 
     private Graph generateCircle(int size) {
@@ -122,8 +125,8 @@ public class GraphMatcherTest {
         Graph tc1 = generateCircle(2);
         Graph tc2 = generateCircle(2);
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
-        Assert.assertEquals(2, mapping.size());
+        Assertions.assertNotNull(mapping);
+        Assertions.assertEquals(2, mapping.size());
     }
 
     @Test
@@ -131,8 +134,8 @@ public class GraphMatcherTest {
         Graph tc1 = generateCircle(5);
         Graph tc2 = generateCircle(5);
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
-        Assert.assertEquals(5, mapping.size());
+        Assertions.assertNotNull(mapping);
+        Assertions.assertEquals(5, mapping.size());
     }
 
     @Test
@@ -142,11 +145,11 @@ public class GraphMatcherTest {
         tc1.addAll(generateCircle(3, crossing));
         Graph tc2 = generateCircle(2, crossing);
         tc2.addAll(generateCircle(3, crossing));
-        Assert.assertEquals(5, tc1.size());
+        Assertions.assertEquals(5, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
+        Assertions.assertNotNull(mapping);
         //a circle of 2 with 1 bnode and one of 2 bnodes
-        Assert.assertEquals(3, mapping.size());
+        Assertions.assertEquals(3, mapping.size());
     }
 
     @Test
@@ -157,11 +160,11 @@ public class GraphMatcherTest {
         BlankNodeOrIRI crossing2 = new BlankNode();
         Graph tc2 = generateCircle(2, crossing2);
         tc2.addAll(generateCircle(3, crossing2));
-        Assert.assertEquals(5, tc1.size());
+        Assertions.assertEquals(5, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
+        Assertions.assertNotNull(mapping);
         //a circle of 2 and one of 3 with one common node
-        Assert.assertEquals(4, mapping.size());
+        Assertions.assertEquals(4, mapping.size());
     }
 
     @Test
@@ -172,9 +175,9 @@ public class GraphMatcherTest {
         BlankNodeOrIRI crossing2 = new BlankNode();
         Graph tc2 = generateCircle(3, crossing2);
         tc2.addAll(generateCircle(3, crossing2));
-        Assert.assertEquals(6, tc1.size());
+        Assertions.assertEquals(6, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNull(mapping);
+        Assertions.assertNull(mapping);
     }
 
     @Test
@@ -185,10 +188,10 @@ public class GraphMatcherTest {
         BlankNodeOrIRI start2 = new BlankNode();
         Graph tc2 = Utils4Testing.generateLine(5, start2);
         tc2.addAll(Utils4Testing.generateLine(4, start2));
-        Assert.assertEquals(9, tc1.size());
+        Assertions.assertEquals(9, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNotNull(mapping);
-        Assert.assertEquals(10, mapping.size());
+        Assertions.assertNotNull(mapping);
+        Assertions.assertEquals(10, mapping.size());
     }
 
     @Test
@@ -199,8 +202,8 @@ public class GraphMatcherTest {
         BlankNodeOrIRI start2 = new BlankNode();
         Graph tc2 = Utils4Testing.generateLine(3, start2);
         tc2.addAll(Utils4Testing.generateLine(3, start2));
-        Assert.assertEquals(9, tc1.size());
+        Assertions.assertEquals(9, tc1.size());
         final Map<BlankNode, BlankNode> mapping = GraphMatcher.getValidMapping(tc1, tc2);
-        Assert.assertNull(mapping);
+        Assertions.assertNull(mapping);
     }
 }

@@ -18,8 +18,10 @@
 
 package org.apache.clerezza.implementation.graphmatching;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,13 +31,14 @@ import java.util.Set;
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class PermutationIteratorTest {
 
     @Test
     public void simple() {
         List<String> list = new ArrayList<String>();
         PermutationIterator<String> pi = new PermutationIterator<String>(list);
-        Assert.assertFalse(pi.hasNext());
+        Assertions.assertFalse(pi.hasNext());
     }
 
     @Test
@@ -43,7 +46,7 @@ public class PermutationIteratorTest {
         List<String> list = new ArrayList<String>();
         list.add("Hasan");
         PermutationIterator<String> pi = new PermutationIterator<String>(list);
-        Assert.assertTrue(pi.hasNext());
+        Assertions.assertTrue(pi.hasNext());
     }
 
     @Test
@@ -56,7 +59,7 @@ public class PermutationIteratorTest {
         while (pi.hasNext()) {
             permutations.add(pi.next());
         }
-        Assert.assertEquals(2, permutations.size());
+        Assertions.assertEquals(2, permutations.size());
     }
 
     @Test
@@ -70,7 +73,7 @@ public class PermutationIteratorTest {
         while (pi.hasNext()) {
             permutations.add(pi.next());
         }
-        Assert.assertEquals(6, permutations.size());
+        Assertions.assertEquals(6, permutations.size());
     }
 
 }

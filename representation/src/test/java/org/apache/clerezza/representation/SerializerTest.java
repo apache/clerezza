@@ -18,9 +18,11 @@
 
 package org.apache.clerezza.representation;
 
-import junit.framework.Assert;
 import org.apache.clerezza.Graph;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.io.OutputStream;
 
@@ -28,6 +30,7 @@ import java.io.OutputStream;
  *
  * @author mir
  */
+@RunWith(JUnitPlatform.class)
 public class SerializerTest {
 
     private static boolean providerAInvoked;
@@ -41,7 +44,7 @@ public class SerializerTest {
         serializer.bindSerializingProvider(serializingProviderA);
         providerAInvoked = false;
         serializer.serialize(null, null, "application/x-fantasy2+rdf");
-        Assert.assertTrue(providerAInvoked);
+        Assertions.assertTrue(providerAInvoked);
     }
     
     @Test
@@ -52,19 +55,19 @@ public class SerializerTest {
         providerAInvoked = false;
         providerBInvoked = false;
         serializer.serialize(null, null, "application/x-fantasy2+rdf");
-        Assert.assertFalse(providerAInvoked);
-        Assert.assertTrue(providerBInvoked);
+        Assertions.assertFalse(providerAInvoked);
+        Assertions.assertTrue(providerBInvoked);
         providerAInvoked = false;
         providerBInvoked = false;
         serializer.serialize(null, null, "application/x-fantasy1+rdf");
-        Assert.assertTrue(providerAInvoked);
-        Assert.assertFalse(providerBInvoked);
+        Assertions.assertTrue(providerAInvoked);
+        Assertions.assertFalse(providerBInvoked);
         serializer.unbindSerializingProvider(serializingProviderB);
         providerAInvoked = false;
         providerBInvoked = false;
         serializer.serialize(null, null, "application/x-fantasy2+rdf");
-        Assert.assertTrue(providerAInvoked);
-        Assert.assertFalse(providerBInvoked);
+        Assertions.assertTrue(providerAInvoked);
+        Assertions.assertFalse(providerBInvoked);
         
     }
 
