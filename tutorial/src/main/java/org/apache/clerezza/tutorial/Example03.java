@@ -1,6 +1,8 @@
 package org.apache.clerezza.tutorial;
 
 import org.apache.clerezza.Graph;
+import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
+import org.apache.clerezza.rdf.jena.serializer.JenaSerializerProvider;
 import org.apache.clerezza.representation.Parser;
 import org.apache.clerezza.representation.Serializer;
 import org.apache.clerezza.representation.SupportedFormat;
@@ -19,6 +21,7 @@ public class Example03 {
     public static void main( String[] args ) {
         InputStream inputStream = Example03.class.getResourceAsStream( "example03.ttl" );
         Parser parser = Parser.getInstance();
+        parser.bindParsingProvider( new JenaParserProvider() );
 
         Graph graph;
         try {
@@ -29,6 +32,8 @@ public class Example03 {
         }
 
         Serializer serializer = Serializer.getInstance();
+        serializer.serialize( new JenaSerializerProvider() );
+
         try {
             FileOutputStream outputStream = new FileOutputStream( "/tmp/example03.rdf" );
             serializer.serialize( outputStream, graph, SupportedFormat.RDF_XML );
