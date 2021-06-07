@@ -32,7 +32,7 @@ public class Example03 {
         }
 
         Serializer serializer = Serializer.getInstance();
-        serializer.serialize( new JenaSerializerProvider() );
+        serializer.bindSerializingProvider( new JenaSerializerProvider() );
 
         try {
             FileOutputStream outputStream = new FileOutputStream( "/tmp/example03.rdf" );
