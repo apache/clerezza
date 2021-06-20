@@ -77,7 +77,7 @@ public class OntologyJavaClassCreatorMojo extends AbstractMojo {
      */
     private MavenProject project;
 
-    private Map<String, String> supportedFormats = new HashMap<String, String>();
+    private Map<String, String> supportedFormats = new HashMap<>();
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -86,7 +86,7 @@ public class OntologyJavaClassCreatorMojo extends AbstractMojo {
         supportedFormats.put( ".rdf", "application/rdf+xml" );
         supportedFormats.put( ".ttl", "text/turtle" );
         supportedFormats.put( ".turtle", "text/turtle" );
-        File file = null;
+        File file;
 
         if ( resourcePath == null ) {
             resourcePath = baseDir + File.separator + "src" + File.separator
@@ -99,9 +99,9 @@ public class OntologyJavaClassCreatorMojo extends AbstractMojo {
         file = new File( resourcePath );
         checkDir( file );
         if ( sources != null ) {
-            for ( int i = 0; i < sources.length; ++i ) {
-                project.addCompileSourceRoot( this.sources[ i ].getAbsolutePath() );
-                getLog().info( "Source directory: " + this.sources[ i ] + " added." );
+            for ( File source : sources ) {
+                project.addCompileSourceRoot( source.getAbsolutePath() );
+                getLog().info( "Source directory: " + source + " added." );
             }
         }
     }
@@ -172,9 +172,9 @@ public class OntologyJavaClassCreatorMojo extends AbstractMojo {
                 + "main" + File.separator + "java" + File.separator;
         File dir = new File( rootPath + pathToJavaClass );
         dir.mkdirs();
-        PrintWriter out = null;
+        PrintWriter out;
         try {
-            out = new PrintWriter( new File( rootPath + pathToJavaClass + className + ".java" ), "utf-8" );
+            out = new PrintWriter( rootPath + pathToJavaClass + className + ".java", "utf-8" );
         } catch ( FileNotFoundException e ) {
             getLog().error( e.getMessage(), e );
             return;
