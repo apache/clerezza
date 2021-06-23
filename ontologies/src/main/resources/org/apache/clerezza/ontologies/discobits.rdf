@@ -1,0 +1,144 @@
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ns0="http://www.w3.org/2004/02/skos/core#"
+   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+  <rdf:Description rdf:about="http://discobits.org/ontology#TitledContent">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">TitledContent</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#DiscoBit"/>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#OrderedContent"/>
+    <ns0:defintion xml:lang="en">A TitledContent is an OrderedContent with exactly two elements, where the first contained DiscoBit is a title</ns0:defintion>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#mediaType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#InfoBit"/>
+    <rdfs:label xml:lang="en">mediaType</rdfs:label>
+    <ns0:definition xml:lang="en">The media-type of the subject</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#thumbnail">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>	
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#InfoBit"/>
+	<rdfs:range rdf:resource="http://discobits.org/ontology#InfoBit"/>
+    <rdfs:label xml:lang="en">thumbnail</rdfs:label>	
+    <ns0:definition xml:lang="en">A thumbnail representation of the subject</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#InfoDiscoBit">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">InfoDiscoBit</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#DiscoBit"/>
+    <ns0:definition xml:lang="en">A DiscoBit associated to exactly one InfoBit</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#contains">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#OrderedContent"/>
+    <rdfs:label xml:lang="en">contains</rdfs:label>
+    <rdfs:range rdf:resource="http://discobits.org/ontology#Entry"/>
+    <ns0:definition xml:lang="en">An entry of the subject</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#DiscoBit">
+    <dc:comment xml:lang="en">Whenever something is said about an InfoBit which is not implied 
+		by its nature a DicoBit is created.</dc:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">DiscoBit</rdfs:label>
+    <ns0:definition xml:lang="en">The functional role of an InfoBit in a discoursive context.</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#holds">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#Entry"/>
+    <rdfs:label xml:lang="en">hols</rdfs:label>
+    <rdfs:range rdf:resource="http://discobits.org/ontology#InfoBit"/>
+    <ns0:definition xml:lang="en">The discobit hold by an entry</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#contained">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#PositionedDiscoBit"/>
+    <rdfs:label xml:lang="en">contained</rdfs:label>
+    <rdfs:range rdf:resource="http://discobits.org/ontology#DiscoBit"/>
+    <ns0:definition xml:lang="en">The property-value represented by the subject.</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#OrderedContent">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">OrderedContent</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#DiscoBit"/>
+    <ns0:definition xml:lang="en">A DiscoBit of which a representation is created by sequentially
+		concatenation the InfoBits of a sequence of DiscoBits</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#BinaryInfoDiscoBit">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">Some binary data</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#InfoDiscoBit"/>
+    <ns0:definition xml:lang="en">A DiscoBit associated to exactly one binary InfoBit</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#representedProperty">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#PositionedDiscoBit"/>
+    <rdfs:label xml:lang="en">representedProperty</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <ns0:definition xml:lang="en">The property-value represented by the subject.</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#infoBit">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#InfoDiscoBit"/>
+    <rdfs:label>infoBit</rdfs:label>
+    <rdfs:range rdf:resource="http://discobits.org/ontology#InfoBit"/>
+    <ns0:definition xml:lang="en">The InfoBit of the subject</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#XHTMLInfoDiscoBit">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">Some XHTML</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#InfoDiscoBit"/>
+    <ns0:definition xml:lang="en">A DiscoBit associated to exactly one InfoBit of type XHTML</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#AlternativeSet">
+    <dc:comment xml:lang="en">The different alternatives typically have to properties to allow an agent
+		presenting the DiscoBit can choose the best variant</dc:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">AlternativeSet</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#DiscoBit"/>
+    <ns0:definition xml:lang="en">A DiscoBit composed by different alternatives.</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#ImageInfoDiscoBit">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">An Image</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#InfoDiscoBit"/>
+    <ns0:definition xml:lang="en">A DiscoBit associated to exactly one InfoBit containing an Image</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#InfoBit">
+    <dc:comment xml:lang="en">This is at least similar to a webarch:Representation.It may be slightly
+		broader as numbers match the definition even if they have no associated media-type</dc:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">InfoBit</rdfs:label>
+    <ns0:definition xml:lang="en">Something that can be made perceivable in its entirety	by
+		a computer.</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#">
+    <dc:comment xml:lang="en">An ontology for modelling information as it is found on the web or in email. The
+        main classes are DiscoBit and InfoBit. An InfoBit is a something that can be shown by a computer,
+        a DiscoBit is a information related subject of conversiation it is either associated to exaclty 
+        one InfoBit or to a sequence of InfoBits. Subclasses of InfoBit define how this Sequence is to 
+        interpreted. </dc:comment>
+    <dc:creator xml:lang="de">Reto Bachmann-Gmür</dc:creator>
+    <dc:creator xml:lang="en">Reto Bachmann-Gmuer</dc:creator>
+    <dc:title xml:lang="en">Dicobits Ontology</dc:title>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#bytes">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#InfoBit"/>
+    <rdfs:label xml:lang="en">byte</rdfs:label>
+    <ns0:definition xml:lang="en">The bytes of the subject</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#Entry">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label xml:lang="en">Entry</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://discobits.org/ontology#DiscoBit"/>
+    <ns0:definition xml:lang="en">An entry</ns0:definition>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://discobits.org/ontology#pos">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://discobits.org/ontology#Entry"/>
+    <rdfs:label xml:lang="en">pos</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
+    <ns0:definition xml:lang="en">The position of an entry within its containing OrderedContent</ns0:definition>
+  </rdf:Description>
+</rdf:RDF>
