@@ -28,7 +28,7 @@ import org.wymiwyg.commons.util.arguments.CommandLine;
  * @author reto
  */
 public interface SchemaGenArguments {
-    // comments ommitted as redundant with description
+    // comments omitted as redundant with description
 
     @CommandLine(longName = "schema", shortName = { "S" }, required = true, 
             description = "The URL from which the vocabulary can be retrieved")
