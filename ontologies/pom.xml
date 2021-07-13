@@ -35,12 +35,41 @@
         <dependency>
             <groupId>org.apache.clerezza</groupId>
             <artifactId>api</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.clerezza</groupId>
+                <artifactId>ontologies-maven-plugin</artifactId>
+                <version>2.0.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <resourcePath>${basedir}/src/main/resources</resourcePath>
+                            <sources>
+                                <source>${basedir}/target/generated-sources/main/java</source>
+                            </sources>
+                            <namespaceOfOntology>
+                                <property>
+                                    <name>dc.rdf</name>
+                                    <value>http://purl.org/dc/elements/1.1/</value>
+                                </property>
+                                <property>
+                                    <name>dcterms.rdf</name>
+                                    <value>http://purl.org/dc/terms/</value>
+                                </property>
+                            </namespaceOfOntology>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
