@@ -61,6 +61,7 @@
         <module>dataset</module>
         <module>api.utils</module>
         <module>jaxrs.rdf.providers</module>
+        <module>tutorial</module>
     </modules>
 
     <profiles>
