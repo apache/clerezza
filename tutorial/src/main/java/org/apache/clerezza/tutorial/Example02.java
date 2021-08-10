@@ -2,7 +2,6 @@ package org.apache.clerezza.tutorial;
 
 import org.apache.clerezza.Graph;
 import org.apache.clerezza.Triple;
-import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
 import org.apache.clerezza.representation.Parser;
 import org.apache.clerezza.representation.SupportedFormat;
 import org.apache.clerezza.representation.UnsupportedFormatException;
@@ -21,7 +20,7 @@ public class Example02 {
         InputStream inputStream = Example02.class.getResourceAsStream( "example02.ttl" );
         Parser parser = Parser.getInstance();
 
-        parser.bindParsingProvider( new JenaParserProvider() );
+        //parser.bindParsingProvider( new JenaParserProvider() );
         try {
             Graph graph = parser.parse( inputStream, SupportedFormat.TURTLE );
 
