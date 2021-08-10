@@ -21,8 +21,6 @@ public class Example03 {
     public static void main( String[] args ) {
         InputStream inputStream = Example03.class.getResourceAsStream( "example03.ttl" );
         Parser parser = Parser.getInstance();
-        //parser.bindParsingProvider( new JenaParserProvider() );
-
         Graph graph;
         try {
             graph = parser.parse( inputStream, SupportedFormat.TURTLE );
@@ -32,8 +30,6 @@ public class Example03 {
         }
 
         Serializer serializer = Serializer.getInstance();
-        //serializer.bindSerializingProvider( new JenaSerializerProvider() );
-
         try {
             FileOutputStream outputStream = new FileOutputStream( "/tmp/example03.rdf" );
             serializer.serialize( outputStream, graph, SupportedFormat.RDF_XML );

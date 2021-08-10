@@ -20,7 +20,6 @@ public class Example02 {
         InputStream inputStream = Example02.class.getResourceAsStream( "example02.ttl" );
         Parser parser = Parser.getInstance();
 
-        //parser.bindParsingProvider( new JenaParserProvider() );
         try {
             Graph graph = parser.parse( inputStream, SupportedFormat.TURTLE );
 
