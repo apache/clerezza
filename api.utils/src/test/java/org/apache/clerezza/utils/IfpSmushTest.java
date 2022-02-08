@@ -27,12 +27,15 @@ import org.apache.clerezza.ontologies.FOAF;
 import org.apache.clerezza.ontologies.OWL;
 import org.apache.clerezza.ontologies.RDF;
 import org.apache.clerezza.ontologies.RDFS;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class IfpSmushTest {
 
     private Graph ontology = new SimpleGraph();
@@ -54,7 +57,7 @@ public class IfpSmushTest {
         mGraph.add(new TripleImpl(bNode2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));
         Smusher.smush(mGraph, ontology);
-        Assert.assertEquals(3, mGraph.size());
+        Assertions.assertEquals(3, mGraph.size());
     }
 
     @Test
@@ -76,7 +79,7 @@ public class IfpSmushTest {
         mGraph.add(new TripleImpl(bNode3, RDFS.comment,
                 new PlainLiteralImpl("yet another comment")));
         Smusher.smush(mGraph, ontology);
-        Assert.assertEquals(5, mGraph.size());
+        Assertions.assertEquals(5, mGraph.size());
     }
 
     @Test
@@ -92,7 +95,7 @@ public class IfpSmushTest {
         mGraph.add(new TripleImpl(bNode2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));
         Smusher.smush(mGraph, ontology);
-        Assert.assertEquals(3, mGraph.size());
+        Assertions.assertEquals(3, mGraph.size());
     }
 
     @Test
@@ -108,7 +111,6 @@ public class IfpSmushTest {
         mGraph.add(new TripleImpl(resource2, RDFS.comment,
                 new PlainLiteralImpl("another comment")));
         Smusher.smush(mGraph, ontology);
-        Assert.assertEquals(4, mGraph.size());
+        Assertions.assertEquals(4, mGraph.size());
     }
-
 }

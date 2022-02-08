@@ -17,13 +17,15 @@
  */
 package org.apache.clerezza.utils;
 
-import junit.framework.Assert;
 import org.apache.clerezza.*;
 import org.apache.clerezza.implementation.TripleImpl;
 import org.apache.clerezza.implementation.in_memory.SimpleGraph;
 import org.apache.clerezza.implementation.literal.PlainLiteralImpl;
 import org.apache.clerezza.test.utils.RandomGraph;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,6 +35,7 @@ import java.util.Set;
 /**
  * @author reto, mir
  */
+@RunWith(JUnitPlatform.class)
 public class TestGraphNode {
 
     @Test
@@ -50,10 +53,10 @@ public class TestGraphNode {
         g.add(new TripleImpl(property1, property1, bNode2));
         g.add(new TripleImpl(property1, property1, new PlainLiteralImpl("bla bla")));
         GraphNode n = new GraphNode(bNode1, g);
-        Assert.assertEquals(4, n.getNodeContext().size());
+        Assertions.assertEquals(4, n.getNodeContext().size());
         n.deleteNodeContext();
-        Assert.assertEquals(1, g.size());
-        Assert.assertFalse(n.getObjects(property2).hasNext());
+        Assertions.assertEquals(1, g.size());
+        Assertions.assertFalse(n.getObjects(property2).hasNext());
     }
 
     @Test
@@ -66,7 +69,7 @@ public class TestGraphNode {
         IRI property1 = new IRI("http://example.org/property1");
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
-        Assert.assertEquals(1, g.size());
+        Assertions.assertEquals(1, g.size());
     }
 
     @Test
@@ -82,7 +85,7 @@ public class TestGraphNode {
                 Iterator<GraphNode> objectNodes = node.getObjectNodes(property);
                 while (objectNodes.hasNext()) {
                     GraphNode graphNode = objectNodes.next();
-                    Assert.assertTrue(objects.contains(graphNode.getNode()));
+                    Assertions.assertTrue(objects.contains(graphNode.getNode()));
                 }
             }
         }
@@ -97,7 +100,7 @@ public class TestGraphNode {
                 Iterator<GraphNode> subjectNodes = node.getSubjectNodes(property);
                 while (subjectNodes.hasNext()) {
                     GraphNode graphNode = subjectNodes.next();
-                    Assert.assertTrue(subjects.contains(graphNode.getNode()));
+                    Assertions.assertTrue(subjects.contains(graphNode.getNode()));
                 }
             }
         }
@@ -129,11 +132,11 @@ public class TestGraphNode {
         while (properties.hasNext()) {
             i++;
             IRI prop = properties.next();
-            Assert.assertTrue(props.contains(prop));
+            Assertions.assertTrue(props.contains(prop));
             props.remove(prop);
         }
-        Assert.assertEquals(i, 4);
-        Assert.assertEquals(props.size(), 0);
+        Assertions.assertEquals(i, 4);
+        Assertions.assertEquals(props.size(), 0);
 
     }
 
@@ -155,7 +158,7 @@ public class TestGraphNode {
         g.add(new TripleImpl(bNode2, property1, new PlainLiteralImpl("bla bla")));
         GraphNode n = new GraphNode(bNode1, g);
         n.deleteProperties(property1);
-        Assert.assertEquals(3, g.size());
+        Assertions.assertEquals(3, g.size());
     }
 
     @Test
@@ -176,7 +179,7 @@ public class TestGraphNode {
         g.add(new TripleImpl(bNode2, property1, new PlainLiteralImpl("bla bla")));
         GraphNode n = new GraphNode(bNode1, g);
         n.deleteProperty(property1, new PlainLiteralImpl("literal"));
-        Assert.assertEquals(4, g.size());
+        Assertions.assertEquals(4, g.size());
     }
 
     @Test
@@ -205,21 +208,21 @@ public class TestGraphNode {
                 new SimpleGraph(initialGraph.iterator()));
 
         node.replaceWith(newIRI, true);
-        Assert.assertEquals(5, node.getGraph().size());
+        Assertions.assertEquals(5, node.getGraph().size());
         Triple expectedTriple1 = new TripleImpl(bNode1, newIRI, literal1);
         Triple expectedTriple2 = new TripleImpl(bNode1, property2, newIRI);
         Triple expectedTriple3 = new TripleImpl(newIRI, newIRI, bNode2);
         Triple expectedTriple4 = new TripleImpl(newIRI, newIRI, literal2);
 
-        Assert.assertTrue(node.getGraph().contains(expectedTriple1));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple2));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple3));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple4));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple1));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple2));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple3));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple4));
 
-        Assert.assertFalse(node.getGraph().contains(triple1));
-        Assert.assertFalse(node.getGraph().contains(triple2));
-        Assert.assertFalse(node.getGraph().contains(triple4));
-        Assert.assertFalse(node.getGraph().contains(triple5));
+        Assertions.assertFalse(node.getGraph().contains(triple1));
+        Assertions.assertFalse(node.getGraph().contains(triple2));
+        Assertions.assertFalse(node.getGraph().contains(triple4));
+        Assertions.assertFalse(node.getGraph().contains(triple5));
 
         node = new GraphNode(property1, new SimpleGraph(initialGraph.iterator()));
         node.replaceWith(newBnode);
@@ -227,25 +230,25 @@ public class TestGraphNode {
         Triple expectedTriple6 = new TripleImpl(newBnode, property1, bNode2);
         Triple expectedTriple7 = new TripleImpl(newBnode, property1, literal2);
 
-        Assert.assertTrue(node.getGraph().contains(triple1));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple5));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple6));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple7));
+        Assertions.assertTrue(node.getGraph().contains(triple1));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple5));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple6));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple7));
 
         node = new GraphNode(literal1, new SimpleGraph(initialGraph.iterator()));
         node.replaceWith(newBnode);
         Triple expectedTriple8 = new TripleImpl(bNode1, property1, newBnode);
-        Assert.assertTrue(node.getGraph().contains(expectedTriple8));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple8));
 
         node = new GraphNode(property1, new SimpleGraph(initialGraph.iterator()));
         node.replaceWith(newIRI);
         Triple expectedTriple9 = new TripleImpl(bNode1, property2, newIRI);
         Triple expectedTriple10 = new TripleImpl(newIRI, property1, bNode2);
         Triple expectedTriple11 = new TripleImpl(newIRI, property1, literal2);
-        Assert.assertTrue(node.getGraph().contains(triple1));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple9));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple10));
-        Assert.assertTrue(node.getGraph().contains(expectedTriple11));
+        Assertions.assertTrue(node.getGraph().contains(triple1));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple9));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple10));
+        Assertions.assertTrue(node.getGraph().contains(expectedTriple11));
     }
 
     @Test
@@ -258,10 +261,10 @@ public class TestGraphNode {
         IRI property1 = new IRI("http://example.org/property1");
         GraphNode n = new GraphNode(bNode1, g);
         n.addProperty(property1, bNode2);
-        Assert.assertTrue(n.equals(new GraphNode(bNode1, g)));
-        Assert.assertFalse(n.equals(new GraphNode(bNode2, g)));
+        Assertions.assertTrue(n.equals(new GraphNode(bNode1, g)));
+        Assertions.assertFalse(n.equals(new GraphNode(bNode2, g)));
         GraphNode n2 = null;
-        Assert.assertFalse(n.equals(n2));
+        Assertions.assertFalse(n.equals(n2));
     }
 
     private Set<RDFTerm> createSet(Iterator<? extends RDFTerm> resources) {

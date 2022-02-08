@@ -17,14 +17,15 @@
  */
 package org.apache.clerezza.scala.utils
 
-import org.apache.clerezza.{IRI, Language}
-import org.apache.clerezza._
-import org.apache.clerezza.implementation._
-import org.apache.clerezza.implementation.literal._
 import org.apache.clerezza.implementation.TripleImpl
 import org.apache.clerezza.implementation.literal.{LiteralFactory, PlainLiteralImpl, TypedLiteralImpl}
-import org.junit._
+import org.apache.clerezza.{IRI, Language}
+import org.junit.jupiter.api.Assertions._
+import org.junit.jupiter.api.Test
+import org.junit.platform.runner.JUnitPlatform
+import org.junit.runner.RunWith
 
+@RunWith(classOf[JUnitPlatform])
 class TypeConversionTest {
 
     private val literalFactory = LiteralFactory.getInstance()
@@ -34,7 +35,7 @@ class TypeConversionTest {
     @Test
     def useStringAsObject {
         val t = new TripleImpl(new IRI(("http://example.org/subject")), new IRI(("http://example.org/predicate")), "a value")
-        Assert.assertEquals(literalFactory.createTypedLiteral("a value"), t.getObject)
+        assertEquals(literalFactory.createTypedLiteral("a value"), t.getObject)
     }
 
     /*@Test
@@ -47,27 +48,27 @@ class TypeConversionTest {
     def useStringWithLanguageTag {
         val lit = new PlainLiteralImpl("a value", new Language("en"))
         val t = new TripleImpl(new IRI(("http://example.org/subject")), new IRI(("http://example.org/predicate")), "a value" lang "en")
-        Assert.assertEquals(lit, t.getObject)
+        assertEquals(lit, t.getObject)
     }
 
     @Test
     def useStringWithType {
         val typeUri = new IRI("http://example.org/dt")
         val t = new TripleImpl(new IRI(("http://example.org/subject")), new IRI(("http://example.org/predicate")), "a value" ^^ typeUri)
-        Assert.assertEquals(new TypedLiteralImpl("a value", typeUri), t.getObject)
+        assertEquals(new TypedLiteralImpl("a value", typeUri), t.getObject)
     }
 
     @Test
     def literaToString {
         val lit = literalFactory.createTypedLiteral("a value")
         val s: String = lit
-        Assert.assertEquals("a value", s)
+        assertEquals("a value", s)
     }
 
     @Test
     def dotUri {
         val t = new TripleImpl(new IRI(("http://example.org/subject")), new IRI(("http://example.org/predicate")), "http://example.org".iri)
-        Assert.assertEquals(new IRI("http://example.org"), t.getObject)
+        assertEquals(new IRI("http://example.org"), t.getObject)
     }
 
 }

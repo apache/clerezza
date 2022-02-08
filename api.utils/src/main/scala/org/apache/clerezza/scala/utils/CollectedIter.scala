@@ -18,11 +18,12 @@
 package org.apache.clerezza.scala.utils
 
 import java.util.concurrent.locks.Lock
-import java.util.{ConcurrentModificationException, Iterator}
+import java.util.{ConcurrentModificationException, Iterator, List}
 
-import _root_.scala.collection.JavaConversions._
+//import _root_.scala.collection.JavaConverters._
 import scala.collection.immutable
 import scala.collection.mutable._
+import _root_.scala.jdk.CollectionConverters._;
 
 /**
   *
@@ -35,7 +36,7 @@ import scala.collection.mutable._
   */
 class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends immutable.Seq[T] {
 
-    def this(jList: java.util.List[T], readLock: Lock) = this(() => jList.iterator(), readLock)
+    def this(jList: List[T], readLock: Lock) = this(() => jList.iterator(), readLock)
 
     def this() = this(() => java.util.Collections.emptyList[T].iterator(), null)
 
@@ -56,11 +57,10 @@ class CollectedIter[T](iterCreator: () => Iterator[T], readLock: Lock) extends i
     /**
       * returns a new fully expanded and sorted CollectediterCreator
       */
-    def sort(lt: (T, T) => Boolean) = {
+    def sort(lt: (T, T) => Boolean, readLock: Lock) = {
         val sortedElems = iterator.toList.sortWith(lt)
         //TODO this re-expands everything, return sorted-list directly
-        new CollectedIter[T](sortedElems, readLock)
-
+        new CollectedIter[T](() => sortedElems.iterator.asJava, readLock)
     }
 
     /**

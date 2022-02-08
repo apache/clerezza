@@ -28,8 +28,9 @@ import org.apache.clerezza.implementation.literal.LiteralFactory
 import org.apache.clerezza.ontologies.RDF
 import org.apache.clerezza.utils.{GraphNode, UnionGraph}
 
-import _root_.scala.collection.JavaConversions._
+//import _root_.scala.collection.JavaConversions._
 import _root_.scala.reflect.Manifest
+import _root_.scala.jdk.CollectionConverters._;
 
 /**
   * A RichGraphNode decorates A GraphNode with additional method to be part on a DSL-style scala library.
@@ -73,7 +74,7 @@ class RichGraphNode(resource: RDFTerm, graph: Graph) extends GraphNode(resource,
       *
       * @return a List with the elements of the rdf:List represented by this node
       */
-    def !! = (for (listElem <- asList) yield {
+    def !! = (for (listElem <- asList.asScala) yield {
         new RichGraphNode(new GraphNode(listElem, getGraph))
     }).toList
 

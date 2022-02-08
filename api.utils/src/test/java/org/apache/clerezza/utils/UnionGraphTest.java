@@ -23,14 +23,17 @@ import org.apache.clerezza.IRI;
 import org.apache.clerezza.Triple;
 import org.apache.clerezza.implementation.TripleImpl;
 import org.apache.clerezza.implementation.in_memory.SimpleGraph;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.Iterator;
 
 /**
  * @author hasan
  */
+@RunWith(JUnitPlatform.class)
 public class UnionGraphTest {
 
     private final IRI uriRef1 =
@@ -52,12 +55,12 @@ public class UnionGraphTest {
         graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
         Graph unionGraph = new UnionGraph(graph, graph2);
         Iterator<Triple> unionTriples = unionGraph.iterator();
-        Assert.assertTrue(unionTriples.hasNext());
+        Assertions.assertTrue(unionTriples.hasNext());
         unionTriples.next();
-        Assert.assertTrue(unionTriples.hasNext());
+        Assertions.assertTrue(unionTriples.hasNext());
         unionTriples.next();
-        Assert.assertFalse(unionTriples.hasNext());
-        Assert.assertEquals(2, unionGraph.size());
+        Assertions.assertFalse(unionTriples.hasNext());
+        Assertions.assertEquals(2, unionGraph.size());
     }
 
     @Test
@@ -68,10 +71,10 @@ public class UnionGraphTest {
         };
         graph2.add(new TripleImpl(bnode, uriRef1, uriRef3));
         Graph unionGraph = new UnionGraph(graph, graph2);
-        Assert.assertEquals(1, unionGraph.size());
+        Assertions.assertEquals(1, unionGraph.size());
         unionGraph.add(new TripleImpl(uriRef4, uriRef1, uriRef3));
-        Assert.assertEquals(1, graph.size());
-        Assert.assertEquals(2, unionGraph.size());
-        Assert.assertEquals(1, graph2.size());
+        Assertions.assertEquals(1, graph.size());
+        Assertions.assertEquals(2, unionGraph.size());
+        Assertions.assertEquals(1, graph2.size());
     }
 }

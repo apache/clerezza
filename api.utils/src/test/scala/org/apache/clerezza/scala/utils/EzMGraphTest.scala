@@ -17,20 +17,21 @@
  */
 package org.apache.clerezza.scala.utils
 
-import org.apache.clerezza._
-import org.apache.clerezza.implementation._
-import org.apache.clerezza.implementation.literal._
-import Preamble._
-import org.apache.clerezza.{BlankNode, IRI, ImmutableGraph, Language}
 import org.apache.clerezza.implementation.TripleImpl
 import org.apache.clerezza.implementation.in_memory.SimpleGraph
 import org.apache.clerezza.implementation.literal.{LiteralFactory, PlainLiteralImpl, TypedLiteralImpl}
 import org.apache.clerezza.ontologies._
-import org.junit._
+import org.apache.clerezza.scala.utils.Preamble._
+import org.apache.clerezza.{BlankNode, IRI, ImmutableGraph, Language}
+import org.junit.jupiter.api.Assertions._
+import org.junit.jupiter.api.Test
+import org.junit.platform.runner.JUnitPlatform
+import org.junit.runner.RunWith;
 
 /**
   * @author bblfish, reto
   */
+@RunWith(classOf[JUnitPlatform])
 class EzGraphTest {
 
     val bblfishModulus =
@@ -100,7 +101,7 @@ class EzGraphTest {
         val ez = new EzGraph() {
             henryUri.iri -- FOAF.knows --> retoUri.iri
         }
-        Assert.assertEquals("The two graphs should be equals", expected, ez.getImmutableGraph)
+        assertEquals(expected, ez.getImmutableGraph, "The two graphs should be equals")
     }
 
     @Test
@@ -113,7 +114,7 @@ class EzGraphTest {
         val ez = new EzGraph() {
             henryUri.iri <-- FOAF.knows -- retoUri.iri
         }
-        Assert.assertEquals("The two graphs should be equals", expected, ez.getImmutableGraph)
+        assertEquals(expected, ez.getImmutableGraph, "The two graphs should be equals")
     }
 
     @Test
@@ -143,8 +144,8 @@ class EzGraphTest {
                             )
                     )
         }
-        Assert.assertEquals("the two graphs should be of same size", tinyGraph.size, ez.size)
-        Assert.assertEquals("Both graphs should contain exactly the same triples", tinyGraph, ez.getImmutableGraph)
+        assertEquals(tinyGraph.size, ez.size, "the two graphs should be of same size")
+        assertEquals(tinyGraph, ez.getImmutableGraph, "Both graphs should contain exactly the same triples")
         //We can add triples by creating a new anonymous instance
         new EzGraph(ez) {
             (
@@ -152,11 +153,10 @@ class EzGraphTest {
                             -- FOAF.name --> "Bill"
                     )
         }
-        Assert.assertEquals("the triple colletion has grown by one", tinyGraph.size() + 2, ez.size)
+        assertEquals(tinyGraph.size() + 2, ez.size, "the triple colletion has grown by one")
         //or by just importing it
         import ez._
         ez.b_("danny") -- FOAF.name --> "George"
-        Assert.assertEquals("the triple colletion has grown by one", tinyGraph.size() + 3, ez.size)
+        assertEquals(tinyGraph.size() + 3, ez.size, "the triple colletion has grown by one")
     }
-
 }

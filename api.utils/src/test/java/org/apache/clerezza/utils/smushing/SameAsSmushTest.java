@@ -27,8 +27,10 @@ import org.apache.clerezza.implementation.literal.PlainLiteralImpl;
 import org.apache.clerezza.ontologies.FOAF;
 import org.apache.clerezza.ontologies.OWL;
 import org.apache.clerezza.ontologies.RDFS;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -36,6 +38,7 @@ import java.util.Set;
 /**
  * @author reto
  */
+@RunWith(JUnitPlatform.class)
 public class SameAsSmushTest {
 
     private final IRI uriA = new IRI("http://example.org/A");
@@ -70,21 +73,21 @@ public class SameAsSmushTest {
             }
 
         };
-        Assert.assertEquals(3, dataGraph.size());
+        Assertions.assertEquals(3, dataGraph.size());
         smusher.smush(dataGraph, sameAsStatements, true);
-        Assert.assertEquals(4, dataGraph.size());
-        Assert.assertTrue(dataGraph.filter(null, OWL.sameAs, null).hasNext());
+        Assertions.assertEquals(4, dataGraph.size());
+        Assertions.assertTrue(dataGraph.filter(null, OWL.sameAs, null).hasNext());
         //exactly one statement with literal 
         Iterator<Triple> litStmts = dataGraph.filter(null, null, lit);
-        Assert.assertTrue(litStmts.hasNext());
+        Assertions.assertTrue(litStmts.hasNext());
         Triple litStmt = litStmts.next();
-        Assert.assertFalse(litStmts.hasNext());
+        Assertions.assertFalse(litStmts.hasNext());
         Iterator<Triple> knowsStmts = dataGraph.filter(null, FOAF.knows, null);
-        Assert.assertTrue(knowsStmts.hasNext());
+        Assertions.assertTrue(knowsStmts.hasNext());
         Triple knowStmt = knowsStmts.next();
-        Assert.assertEquals(knowStmt.getSubject(), knowStmt.getObject());
-        Assert.assertEquals(litStmt.getSubject(), knowStmt.getObject());
-        Assert.assertEquals(litStmt.getSubject(), dataGraph.filter(null, OWL.sameAs, null).next().getObject());
-        Assert.assertEquals(knowStmt.getSubject(), uriC);
+        Assertions.assertEquals(knowStmt.getSubject(), knowStmt.getObject());
+        Assertions.assertEquals(litStmt.getSubject(), knowStmt.getObject());
+        Assertions.assertEquals(litStmt.getSubject(), dataGraph.filter(null, OWL.sameAs, null).next().getObject());
+        Assertions.assertEquals(knowStmt.getSubject(), uriC);
     }
 }
