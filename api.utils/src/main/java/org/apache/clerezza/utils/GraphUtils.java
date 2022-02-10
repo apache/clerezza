@@ -40,7 +40,7 @@ public class GraphUtils {
      *
      * @param mGraph
      * @param subGraph
-     * @throws org.apache.clerezza.rdf.utils.GraphUtils.NoSuchSubGraphException
+     * @throws org.apache.clerezza.utils.GraphUtils.NoSuchSubGraphException
      */
     public static void removeSubGraph(Graph mGraph, Graph subGraph)
             throws NoSuchSubGraphException {
