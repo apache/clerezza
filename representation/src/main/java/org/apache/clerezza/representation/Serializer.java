@@ -31,8 +31,8 @@ import java.util.*;
 
 /**
  * This singleton class provides a method <code>serialize</code> to transform a
- * {@link ImmutableGraph} into serialized RDF forms.
- * 
+ * {@link Graph} into serialized RDF forms.
+ *
  * Functionality is delegated to registered {@link SerializingProvider}s. Such
  * <code>SerializingProvider</code>s can be registered and unregistered, later
  * registered <code>SerializingProvider</code>s shadow previously registered

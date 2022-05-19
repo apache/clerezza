@@ -42,8 +42,8 @@ public @interface SupportedFormat {
     public static final String X_TURTLE = "application/x-turtle";
     public static final String N_TRIPLE = "application/n-triples";
     /**
-    * @deprecated: The mime-type for N Triples is "application/n-triples": http://www.w3.org/TR/n-triples/#sec-mediaReg-n-triples
-    */
+     * @deprecated The mime-type for N Triples is "application/n-triples": http://www.w3.org/TR/n-triples/#sec-mediaReg-n-triples
+     */
     @Deprecated
     public static final String TEXT_RDF_NT = "text/rdf+nt";
     public static final String N3 = "text/rdf+n3";
