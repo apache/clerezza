@@ -27,7 +27,6 @@ package org.apache.clerezza;
  * add/remove-methods are called.
  *
  * @author reto
- * @see org.apache.clerezza.rdf.core.impl.AbstractGraph
  */
 public interface ImmutableGraph extends Graph {
 
@@ -42,8 +41,8 @@ public interface ImmutableGraph extends Graph {
     /**
      * Return the sum of the blank-nodes independent hashes of the triples.
      * More precisely the hash of the triple is calculated as follows:
-     * (hash(subject) >> 1) ^  hash(hashCode) ^ (hash(hashCode) << 1)
-     * Where the hash-fucntion return the hashCode of the argument
+     * {@literal (hash(subject) >> 1) ^  hash(hashCode) ^ (hash(hashCode) << 1)}
+     * Where the hash-function return the hashCode of the argument
      * for grounded arguments and 0 otherwise.
      *
      * @return hash code

@@ -40,7 +40,7 @@ public interface Triple {
 
     /**
      * The hash code is computed as follow
-     * (subject.hashCode() >> 1) ^  predicate.hashCode() ^ object.hashCode() << 1)
+     * {@literal (subject.hashCode() >> 1) ^  predicate.hashCode() ^ object.hashCode() << 1)}
      * <p>
      * Note that the hash returned is computed including the hash of BNodes, so
      * it is not blank-node blind as in Graph.

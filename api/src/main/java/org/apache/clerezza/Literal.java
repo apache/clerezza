@@ -20,9 +20,8 @@ package org.apache.clerezza;
 /**
  * Represents a literal value that can be a node in an RDF Graph.
  * Literals are used to identify values such as numbers and dates by
- * means of a lexical representation. There are two types of literals
- * represented by the subinterfaces {@link PlainLiteral}
- * and {@link TypedLiteral}
+ * means of a lexical representation. There are two types of literals:
+ * PlainLiteral and TypedLiteral.
  *
  * @author reto
  */

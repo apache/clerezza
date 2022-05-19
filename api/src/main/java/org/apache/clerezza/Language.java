@@ -29,7 +29,7 @@ public class Language {
     /**
      * Constructs the language tag defined by RDF 4646, normalized to lowercase.
      *
-     * @param the id as defined by RDF 4646, normalized to lowercase.
+     * @param id as defined by RDF 4646, normalized to lowercase.
      */
     public Language(String id) {
         if ((id == null) || (id.equals(""))) {

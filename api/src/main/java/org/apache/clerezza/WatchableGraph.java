@@ -54,12 +54,12 @@ public interface WatchableGraph extends Graph {
      * listener can be garbage collected if its no longer referenced by another
      * object.
      * <p>
-     * If delay is 0 notification will happen synchroneously.
+     * If delay is 0 notification will happen synchronously.
      *
      * @param listener The listener that will be notified
      * @param filter   The triple filter with which triples are tested,
      *                 that were part of the modification.
-     * @param delay    The time period afer which the listener will be notified in milliseconds.
+     * @param delay    The time period after which the listener will be notified in milliseconds.
      */
     public void addGraphListener(GraphListener listener, FilterTriple filter,
                                  long delay);
@@ -67,10 +67,10 @@ public interface WatchableGraph extends Graph {
     /**
      * Adds the specified <code>GraphListener</code> to the graph. This listener
      * will be notified, when the graph is modified and the <code>Triple</code>
-     * that was part of the modifiaction matched the specified
+     * that was part of the modification matched the specified
      * <code>FilterTriple</code>. The notification will be passed without delay.
      * <p>
-     * Same as <code>addGraphListener(listener, filter, 0).
+     * Same as <code>addGraphListener(listener, filter, 0)</code>.
      *
      * @param listener The listener that will be notified
      * @param filter   The triple filter with which triples are tested,
