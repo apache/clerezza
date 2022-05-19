@@ -343,9 +343,9 @@ public class SchemaGen {
             while (descriptionStatements.hasNext()) {
                 RDFTerm object = descriptionStatements.next().getObject();
                 if (object instanceof Literal) {
-                    result.append("description: ");
+                    result.append("{@literal description: ");
                     result.append(((Literal) object).getLexicalForm());
-                    result.append("\n");
+                    result.append("}\n");
                 }
             }
             Iterator<Triple> skosDefStatements = graph.filter(
@@ -353,9 +353,9 @@ public class SchemaGen {
             while (skosDefStatements.hasNext()) {
                 RDFTerm object = skosDefStatements.next().getObject();
                 if (object instanceof Literal) {
-                    result.append("definition: ");
+                    result.append("{@literal definition: ");
                     result.append(((Literal) object).getLexicalForm());
-                    result.append("\n");
+                    result.append("}\n");
                 }
             }
             Iterator<Triple> rdfsCommentStatements = graph.filter(
@@ -374,9 +374,9 @@ public class SchemaGen {
             while (skosNoteStatements.hasNext()) {
                 RDFTerm object = skosNoteStatements.next().getObject();
                 if (object instanceof Literal) {
-                    result.append("note: ");
+                    result.append("{@literal note: ");
                     result.append(((Literal) object).getLexicalForm());
-                    result.append("\n");
+                    result.append("}\n");
                 }
             }
             Iterator<Triple> skosExampleStatements = graph.filter(
@@ -384,9 +384,9 @@ public class SchemaGen {
             while (skosExampleStatements.hasNext()) {
                 RDFTerm object = skosExampleStatements.next().getObject();
                 if (object instanceof Literal) {
-                    result.append("example: ");
+                    result.append("{@literal example: ");
                     result.append(((Literal) object).getLexicalForm());
-                    result.append("\n");
+                    result.append("}\n");
                 } else if (object instanceof IRI) {
                     result.append("see <a href=").append(((IRI) object).getUnicodeString()).append(">example</a>");
                     result.append("\n");
