@@ -46,6 +46,7 @@ public class GraphMatcher {
      * match a bnode in g2.
      *
      * <p>On the algorithm:</p>
+     * <ul>
      * <li>In a first step it checked if every grounded triple in g1 matches one in g2</li>
      * <li>[optional] blank node blind matching</li>
      * <li>in a map mbng1 bnode of g1 is mapped to a set of of its
@@ -54,6 +55,7 @@ public class GraphMatcher {
      * <li>based on the incoming and outgoing properties a hash is calculated for
      * each bnode, in the first step when calculating the hash a constant value
      * is taken for the bnodes that might be subject or object in the (inverse properties)</li>
+     * </ul>
      * - hash-classes:
      *
      * @param og1
