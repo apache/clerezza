@@ -77,7 +77,7 @@ public class GraphNode {
     /**
      * Deletes the context of a node
      *
-     * @see getNodeContext()
+     * @see #getNodeContext()
      */
     public void deleteNodeContext() {
         for (Triple triple : getNodeContext()) {
@@ -89,7 +89,7 @@ public class GraphNode {
      * The context of a node are the triples containing a node
      * as subject or object and recursively the context of the b-nodes in any
      * of these statements.
-     * <p>
+     *
      * The triples in the ImmutableGraph returned by this method contain the same bnode
      * instances as in the original graph.
      *
@@ -405,7 +405,7 @@ public class GraphNode {
     }
 
     /**
-     * Get all available properties as an {@link Iterator}<{@link IRI}>.
+     * Get all available properties as an {@link Iterator}{@literal <}{@link IRI}{@literal >}.
      * You can use <code>getObjects(IRI property)</code> to get the values of
      * each property
      *
@@ -437,7 +437,7 @@ public class GraphNode {
     }
 
     /**
-     * Get all inverse properties as an {@link Iterator}<{@link IRI}>.
+     * Get all inverse properties as an {@link Iterator}{@literal <}{@link IRI}{@literal >}.
      * You can use <code>getSubject(IRI property)</code> to get the values of
      * each inverse property
      *
