@@ -41,10 +41,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 /**
- * MessageBodyWirter for <code>ResultSet</code>. Resulting output is tsv and
+ * MessageBodyWriter for <code>ResultSet</code>. Resulting output is tsv and
  * conforms to:
  * http://www.w3.org/TR/2013/REC-sparql11-results-csv-tsv-20130321/#tsv
- * <p>
+ *
  * Also see: http://www.iana.org/assignments/media-types/text/tab-separated-values
  *
  * @author misl
@@ -134,7 +134,7 @@ public class ResultSetTsvMessageBodyWriter implements MessageBodyWriter<ResultSe
     }
 
     /**
-     * Write resultset header to the given output stream.
+     * Write result set header to the given output stream.
      *
      * @param outputStream stream to write to.
      * @param headers      the headers to write.

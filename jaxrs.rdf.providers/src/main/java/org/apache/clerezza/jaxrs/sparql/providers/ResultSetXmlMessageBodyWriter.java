@@ -101,8 +101,6 @@ public class ResultSetXmlMessageBodyWriter implements MessageBodyWriter<ResultSe
      * {@link DOMSource}
      *
      * @param queryResult
-     * @param query
-     * @param applyStyle
      */
     private Source toXmlSource(ResultSet queryResult) {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -131,7 +129,7 @@ public class ResultSetXmlMessageBodyWriter implements MessageBodyWriter<ResultSe
     }
 
     /**
-     * Creates a WebApplicationexception and prints a logger entry
+     * Creates a WebApplicationException and prints a logger entry
      */
     private WebApplicationException createWebApplicationException(Exception e) {
         return new WebApplicationException(Response.status(Status.BAD_REQUEST)

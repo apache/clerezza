@@ -47,7 +47,7 @@ import java.util.Set;
 
 /**
  * By default this returns a serialization of the context of the GraphNode.
- * <p>
+ *
  * The expansion can be widened by using the query parameters xPropObj and
  * xProSubj. These parameters specify property uris (both parameters might be
  * repeated). For the specified properties their objects respectively subjects

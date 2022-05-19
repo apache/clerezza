@@ -41,10 +41,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 /**
- * MessageBodyWirter for <code>ResultSet</code>. Resulting output is csv and
+ * MessageBodyWriter for <code>ResultSet</code>. Resulting output is csv and
  * conforms to:
  * http://www.w3.org/TR/2013/REC-sparql11-results-csv-tsv-20130321/#csv
- * <p>
+ *
  * Also see: http://tools.ietf.org/html/rfc4180
  *
  * @author misl
@@ -134,7 +134,7 @@ public class ResultSetCsvMessageBodyWriter implements MessageBodyWriter<ResultSe
     }
 
     /**
-     * Write resultset header to the given output stream.
+     * Write result set header to the given output stream.
      *
      * @param outputStream stream to write to.
      * @param headers      the headers to write.
