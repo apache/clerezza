@@ -39,7 +39,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
-<!--
                 <executions>
                     <execution>
                         <id>first-example</id>
@@ -60,7 +59,11 @@
                         </configuration>
                     </execution>
                 </executions>
--->
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.8.2</version>
             </plugin>
         </plugins>
     </build>
