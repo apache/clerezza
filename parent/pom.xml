@@ -466,6 +466,20 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <!-- Version 2.6  passes invalid arguments to the wadl doclet -->
                 <version>3.1.1</version>
+                <configuration>
+                    <tags>
+                        <tag>
+                            <name>goal</name>
+                            <placement>a</placement>
+                            <head>Goal:</head>
+                        </tag>
+                        <tag>
+                            <name>phase</name>
+                            <placement>a</placement>
+                            <head>Phase:</head>
+                        </tag>
+                    </tags>
+                </configuration>
             </plugin>
 
             <!-- test results -->
