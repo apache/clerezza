@@ -363,9 +363,10 @@ public class SchemaGen {
             while (rdfsCommentStatements.hasNext()) {
                 RDFTerm object = rdfsCommentStatements.next().getObject();
                 if (object instanceof Literal) {
-                    result.append("comment: ");
+                    // Use {@literal ...} to avoid javadoc complaining about "malformed HTML" in some texts
+                    result.append("{@literal comment: ");
                     result.append(((Literal) object).getLexicalForm());
-                    result.append("\n");
+                    result.append("}\n");
                 }
             }
             Iterator<Triple> skosNoteStatements = graph.filter(
