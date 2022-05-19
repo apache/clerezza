@@ -40,7 +40,7 @@ public abstract class LiteralFactory {
     /**
      * Get a <code>LiteralFactory</code>. If this has not been set using
      * setInstance it returns an instance of
-     * {@link org.apache.clerezza.model.impl.SimpleLiteralFactory}.
+     * {@link org.apache.clerezza.implementation.literal.SimpleLiteralFactory}.
      *
      * @return a concrete <code>LiteralFactory</code>
      */

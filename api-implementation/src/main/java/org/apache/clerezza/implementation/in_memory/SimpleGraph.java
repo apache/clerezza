@@ -116,7 +116,7 @@ public class SimpleGraph extends AbstractGraph {
      * Creates a SimpleGraph for the specified collection of triples,
      * subsequent modification of baseSet do not affect the created instance.
      *
-     * @param baseSet
+     * @param baseCollection
      */
     public SimpleGraph(Collection<Triple> baseCollection) {
         this.triples = new HashSet<Triple>(baseCollection);

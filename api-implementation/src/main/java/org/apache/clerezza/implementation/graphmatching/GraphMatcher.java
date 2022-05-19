@@ -40,26 +40,24 @@ public class GraphMatcher {
      * returned map maps each <code>BNode</code>s from g1 to one
      * of g2. If the graphs are ground graphs the method return an empty map if
      * the ImmutableGraph are equals and null otherwise.
-     * <p/>
+     *
      * NOTE: This method does not returned mapping from blank nodes to grounded
-     * nodes, a bnode in g1 is not a vraiable that may match any node, but must
+     * nodes, a bnode in g1 is not a variable that may match any node, but must
      * match a bnode in g2.
-     * <p/>
-     * <p>
-     * On the algorithm:<br/>
-     * - In a first step it checked if every grounded triple in g1 matches one
-     * in g2<br/>
-     * - [optional] blank node blind matching</br>
-     * - in a map mbng1 bnode of g1 is mapped to a set of of its
+     *
+     * <p>On the algorithm:</p>
+     * <li>In a first step it checked if every grounded triple in g1 matches one in g2</li>
+     * <li>[optional] blank node blind matching</li>
+     * <li>in a map mbng1 bnode of g1 is mapped to a set of of its
      * properties and inverse properties, this is the predicate and the object
-     * or subject respectively, analoguosly in mbgn2 every bnode of g2<br/>
-     * - based on the incoming and outgoing properties a hash is calculated for
-     * each bnode, in the first step when calculating the hash  aconstant value
-     * is taken for the bnodes that might be subject or object in the (inverse properties)
+     * or subject respectively, analoguosly in mbgn2 every bnode of g2</li>
+     * <li>based on the incoming and outgoing properties a hash is calculated for
+     * each bnode, in the first step when calculating the hash a constant value
+     * is taken for the bnodes that might be subject or object in the (inverse properties)</li>
      * - hash-classes:
      *
-     * @param g1
-     * @param g2
+     * @param og1
+     * @param og2
      * @return a Set of NodePairs
      */
     public static Map<BlankNode, BlankNode> getValidMapping(Graph og1, Graph og2) {

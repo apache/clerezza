@@ -34,7 +34,7 @@ public class LiteralImpl extends AbstractLiteral implements Serializable {
     /**
      * @param lexicalForm
      * @param dataType
-     * @param Language    the language of this literal
+     * @param language    the language of this literal
      */
     public LiteralImpl(String lexicalForm, IRI dataType, Language language) {
         this.lexicalForm = lexicalForm;

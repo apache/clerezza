@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 /**
- * This is currently just a placeholder implementation based onm HashSet<Integer>
+ * This is currently just a placeholder implementation based on {@literal HashSet<Integer>}
  * an efficient implementation is to store the primitives directly.
  *
  * @author reto

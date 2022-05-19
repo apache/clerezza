@@ -132,7 +132,7 @@ public class WatchableGraphWrapper implements WatchableGraph {
      * this method instead of <code>remove</code> for ImmutableGraph event support to be
      * added.
      *
-     * @param o The triple to be removed from the triple collection
+     * @param triple The triple to be removed from the triple collection
      * @return
      */
     protected boolean performRemove(Triple triple) {
@@ -151,8 +151,7 @@ public class WatchableGraphWrapper implements WatchableGraph {
      * the specified <code>Triple</code> matches the <code>FilterTriple</code>s
      * of the listeners.
      *
-     * @param triple The Triple that was modified
-     * @param type   The type of modification
+     * @param event The GraphEvent to dispatch
      */
     protected void dispatchEvent(GraphEvent event) {
         synchronized (listenerConfigs) {

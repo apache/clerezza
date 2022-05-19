@@ -27,7 +27,6 @@ package org.apache.clerezza.implementation.graphmatching.collections;
 
 /**
  * <p>A hash map that uses primitive ints for the key rather than objects.</p>
- * <p>
  * <p>Note that this class is for internal optimization purposes only, and may
  * not be supported in future releases of Jakarta Commons Lang.  Utilities of
  * this sort may be included in future releases of Jakarta Commons Collections.</p>
@@ -171,7 +170,7 @@ public class IntHashMap<T> {
      * @param value a value to search for.
      * @return <code>true</code> if and only if some key maps to the
      * <code>value</code> argument in this hashtable as
-     * determined by the <tt>equals</tt> method;
+     * determined by the <code>equals</code> method;
      * <code>false</code> otherwise.
      * @throws NullPointerException if the value is <code>null</code>.
      * @see #containsKey(int)
@@ -197,7 +196,7 @@ public class IntHashMap<T> {
     /**
      * <p>Returns <code>true</code> if this HashMap maps one or more keys
      * to this value.</p>
-     * <p>
+     *
      * <p>Note that this method is identical in functionality to contains
      * (which predates the Map interface).</p>
      *
@@ -214,7 +213,7 @@ public class IntHashMap<T> {
      *
      * @param key possible key.
      * @return <code>true</code> if and only if the specified object is a
-     * key in this hashtable, as determined by the <tt>equals</tt>
+     * key in this hashtable, as determined by the <code>equals</code>
      * method; <code>false</code> otherwise.
      * @see #contains(Object)
      */

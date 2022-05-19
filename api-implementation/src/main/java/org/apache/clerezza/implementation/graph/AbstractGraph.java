@@ -43,11 +43,6 @@ public abstract class AbstractGraph extends AbstractCollection<Triple>
     private final Lock readLock;
     private final Lock writeLock;
 
-    /**
-     * Constructs a LocalbleMGraph for an Graph.
-     *
-     * @param providedMGraph a non-lockable graph
-     */
     public AbstractGraph() {
         {
             String debugMode = System.getProperty(DEBUG_MODE);
@@ -61,6 +56,9 @@ public abstract class AbstractGraph extends AbstractCollection<Triple>
         writeLock = lock.writeLock();
     }
 
+    /**
+     * @param lock
+     */
     public AbstractGraph(final ReadWriteLock lock) {
         this.lock = lock;
         readLock = lock.readLock();

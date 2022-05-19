@@ -23,7 +23,7 @@ package org.apache.clerezza.implementation.graphmatching.collections;
 import java.util.Iterator;
 
 /**
- * An iterator allowing to iterate over ints, Iterator<Integer> is extended for
+ * An iterator allowing to iterate over ints, {@literal Iterator<Integer>} is extended for
  * compatibility, however accessing nextInt allows faster implementations.
  *
  * @author reto

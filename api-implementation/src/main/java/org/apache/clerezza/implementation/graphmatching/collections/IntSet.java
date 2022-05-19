@@ -23,8 +23,8 @@ package org.apache.clerezza.implementation.graphmatching.collections;
 import java.util.Set;
 
 /**
- * A IntSet allows directly adding primitive ints to a set, Set<Integer> is
- * extended, but accessingt he respective methods is less efficient.
+ * An IntSet allows directly adding primitive ints to a set,
+ * {@literal Set<Integer>} is extended, but accessing the respective methods is less efficient.
  *
  * @author reto
  */
